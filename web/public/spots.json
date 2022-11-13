@@ -1,0 +1,122 @@
+{
+  "maps": [
+    {
+      "name": "Abberation",
+      "spots": [
+        {
+          "name": "Hole in the Wall",
+          "lat": 0.0,
+          "lon": 0.0
+        }
+      ]
+    },
+    {
+      "name": "The Island",
+      "spots": [
+        {
+          "name": "Pearl Cave",
+          "lat": 91,
+          "lon": 13
+        }
+      ]
+    },
+    {
+      "name": "The Center",
+      "spots": []
+    },
+    {
+      "name": "Ragnarok",
+      "spots": []
+    },
+    {
+      "name": "Extinction",
+      "spots": []
+    },
+    {
+      "name": "Valguero",
+      "spots": [
+        {
+          "name": "Blossom Cave",
+          "description": "",
+          "img": "",
+          "lat": 0.0,
+          "lon": 0.0
+        },
+        {
+          "name": "Red Obelisk Cave",
+          "description": "This is a smaller cave that may be better suited for solo players or those looking for a quick place to set up shop.",
+          "img": "https://d.newsweek.com/en/full/1506001/ark-valguero-cave-2.webp?w=790&f=aa5cac796dcd6f52665e6512352ffc38",
+          "lat": 82,
+          "lon": 25
+        },
+        {
+          "name": "Westtern Cave",
+          "description": "As seen below, you'll come to this waterfall. Enter through the middle of the fall or the smaller falls at the base of the structure. Once you get inside there's lots of space, but you'll need to be careful about ensuring those pathways are thoroughly guarded. Not only is the open area great for breeding, but there's also an underwater cave inside this cave, making it perfect for aquatic tames.",
+          "img": "https://d.newsweek.com/en/full/1506004/ark-valguero-cave-1.webp?w=790&f=27680a51ee9ed6bd7cdc46f70eaf5045",
+          "lat": 33,
+          "lon": 10
+        },
+        {
+          "name": "Spider Cave",
+          "description": "If you want a much bigger cave that's also close to lots of resources go here. There are winding paths that go on forever in multiple directions. It should be noted that this is one of the big Artifact Caves you'll need to head towards if you want to conquer Valguero's boss. Be aware that you'll need scuba gear too because there's tons of water here.",
+          "lat": 73,
+          "lon": 40
+        },
+        {
+          "name": "Temple Cave",
+          "description": "This is the second Artifact Cave you'll need to make your way through if beating the boss is your goal.",
+          "lat": 44,
+          "lon": 84
+        },
+        {
+          "name": "Abberation Zone Cave",
+          "description": "If you're hunting for Aberration creatures, this is where you'll find them.",
+          "lat": 38,
+          "lon": 57
+        },
+        {
+          "name": "Ice Cave",
+          "description": "This is a narrow ice cave with an artifact inside.",
+          "lat": 15,
+          "lon": 27
+        },
+        {
+          "name": "Solid Hiding Spot",
+          "description": "This is a small, narrow cave network that will keep you concealed from enemies or Dinos.",
+          "lat": 53,
+          "lon": 87
+        },
+        {
+          "name": "Under castle cave",
+          "description": "There's a massive breeding cave in this area with plenty of water.",
+          "lat": 37,
+          "lon": 90
+        }
+      ]
+    },
+    {
+      "name": "Genesis",
+      "spots": []
+    },
+    {
+      "name": "Crystal Isles",
+      "spots": []
+    },
+    {
+      "name": "Genesis 2",
+      "spots": []
+    },
+    {
+      "name": "Lost Island",
+      "spots": []
+    },
+    {
+      "name": "Fjordur",
+      "spots": []
+    },
+    {
+      "name": "Scorched Earth",
+      "spots": []
+    }
+  ]
+}
