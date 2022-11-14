@@ -1,3 +1,242 @@
+<a name="readme-top"></a>
+
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![Version][version-shield]][version-url]
+
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/ArvidWedtstein/ArkDashboard">
+    <img src="img/logo.png" alt="Logo" width="80" height="80">
+  </a>
+
+  <h3 align="center">ArkDashboard</h3>
+
+  <p align="center">
+    Website for ark Basespots and more
+    <br />
+    <a href="https://github.com/ArvidWedtstein/ArkDashboard"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/ArvidWedtstein/ArkDashboard/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/ArvidWedtstein/ArkDashboard/issues">Request Feature</a>
+  </p>
+</div>
+
+
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
+
+
+
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+
+Description will come later
+
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+### Built With
+
+This project is mainly written in React, together with these frameworks and libraries:
+
+<!-- * [![DiscordJS][DiscordJS]][Discordjs-url]
+* [![MongoDB][MongoDB]][MongoDB-url] -->
+
+<div align="left">
+
+![Stuff used in this project](https://arvidgithubembed.herokuapp.com/skills?languages=typescript,redwood,prisma,sql,react&backgroundcolor=0D1117&title=-&titlecolor=ffffff&textcolor=ffffff&boxcolor=CFCDFF&bordercolor=0D1117)
+
+</div>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+
+To get a local copy up and running follow these simple steps.
+
+### Prerequisites
+
+To run this project you'll need to have nodejs installed on your computer. You can download it [here](https://nodejs.org/en/download/)
+
+Get latest npm version
+* npm
+  ```sh
+  npm install npm@latest -g
+  ```
+
+### Installation
+
+
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/ArvidWedtstein/ArkDashboard.git
+   ```
+2. Install NPM packages
+   ```sh
+   npm install
+   ```
+3. Create a .env file in the root directory and add your environment variables
+   ```JS
+   TOKEN=YOUR_TOKEN
+   ```
+4. Run the bot
+   ```sh
+   npm run dev
+   ```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Deploying
+Deploying image to scaleway:
+
+1. build the docker image
+   ```sh
+   docker build -t ArkDashboard .
+   ```
+2. pull docker image
+   ```sh
+   docker pull ubuntu:latest
+   ```
+3. tag the image
+    ```sh
+    docker tag ArkDashboard arvidwedtstein/ArkDashboard:latest
+    ```
+4. push the image to docker hub
+    ```sh
+    docker push arvidwedtstein/ArkDashboard:latest
+    ```
+
+<!-- USAGE EXAMPLES -->
+## Usage
+
+This bot is still in development. I will add more features in the future.
+
+
+Apply changes to database:
+```sh
+yarn rw prisma migrate dev
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- ROADMAP -->
+## Roadmap
+
+- [ ] Get to know Redwood and React
+- [ ] Add a base spot system
+- [ ] Add a map system
+
+
+
+See the [open issues](https://github.com/ArvidWedtstein/ArkDashboard/issues) for a full list of proposed features (and known issues).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Any contributions you make are **greatly appreciated**.
+
+If you have a suggestion that would make this project better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! <3
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- LICENSE -->
+## License
+
+Distributed under the MIT License. See `LICENSE.txt` for more information.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- CONTACT -->
+## Contact
+
+Invite the bot to your server [here](https://discord.com/oauth2/authorize?client_id=787324889634963486&scope=bot&permissions=10200548352)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+Will come later
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+[contributors-shield]: https://img.shields.io/github/contributors/ArvidWedtstein/ArkDashboard.svg?style=for-the-badge
+[contributors-url]: https://github.com/ArvidWedtstein/ArkDashboard/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/ArvidWedtstein/ArkDashboard.svg?style=for-the-badge
+[forks-url]: https://github.com/ArvidWedtstein/ArkDashboard/network/members
+[stars-shield]: https://img.shields.io/github/stars/ArvidWedtstein/ArkDashboard.svg?style=for-the-badge
+[stars-url]: https://github.com/ArvidWedtstein/ArkDashboard/stargazers
+[issues-shield]: https://img.shields.io/github/issues/ArvidWedtstein/ArkDashboard.svg?style=for-the-badge
+[issues-url]: https://github.com/ArvidWedtstein/ArkDashboard/issues
+[license-shield]: https://img.shields.io/github/license/ArvidWedtstein/ArkDashboard.svg?style=for-the-badge
+[license-url]: https://github.com/ArvidWedtstein/ArkDashboard/blob/master/LICENSE.txt
+[version-shield]: https://img.shields.io/github/package-json/v/arvidwedtstein/ArkDashboard?style=for-the-badge
+[version-url]: https://github.com/ArvidWedtstein/ArkDashboard
+[DiscordJS]: https://img.shields.io/badge/discord.js-000000?style=for-the-badge&logo=discord&logoColor=white
+[Discordjs-url]: https://discord.com/developers/docs/intro
+[MongoDB]: https://img.shields.io/badge/MongoDB-000000?style=for-the-badge&logo=mongodb&logoColor=white
+[MongoDB-url]: https://www.mongodb.com/
+
+
 # README
 
 Welcome to [RedwoodJS](https://redwoodjs.com)!
