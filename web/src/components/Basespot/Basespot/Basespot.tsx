@@ -49,8 +49,20 @@ const Basespot = ({ basespot }: Props) => {
             <img src={basespot.image} alt={basespot.name} className="max-w-none" />
           </div>
           <div className="bg-slate-600 p-4 text-white font-heading ">
-            <h1>assssssssss</h1>
+            <h1 className="text-2xl relative first-of-type:mt-5 before:absolute before:h-1 before:w-9 before:bg-red-500 before:-bottom-3 before:rounded">{basespot.name}</h1>
+            <p className="text-base mt-5">{basespot.description}</p>
 
+            <div className="mt-5">
+              <span className="bg-black text-slate-200 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-black">
+                Lat: {basespot.latitude}
+              </span>
+              <span className="bg-black text-slate-200 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-black">
+                Lon: {basespot.longitude}
+              </span>
+            </div>
+            <p className="bg-black text-slate-200 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-black">
+              Estimated for {basespot.EstimatedForPlayers} players
+            </p>
           </div>
         </div>
         <table className="rw-table">

@@ -161,6 +161,11 @@ To view SQLite data in a GUI:
 yarn rw prisma studio
 ```
 
+
+To generate types:
+```sh
+yarn rw g types
+```
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 

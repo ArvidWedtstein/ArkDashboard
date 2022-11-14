@@ -44,7 +44,8 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
       "lat": 82,
       "lon": 25,
       "map": "Valguero",
-      "created": "2021-05-01T00:00:00.000Z"
+      "created": "2021-05-01T00:00:00.000Z",
+      "EstimatedForPlayers": "4-6"
     },
     {
       "id": 2,
@@ -54,7 +55,8 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
       "lat": 33,
       "lon": 10,
       "map": "Valguero",
-      "created": "2021-05-01T00:00:00.000Z"
+      "created": "2021-05-01T00:00:00.000Z",
+      "EstimatedForPlayers": "?"
     },
     {
       "id": 3,
@@ -63,7 +65,8 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
       "lat": 73,
       "lon": 40,
       "map": "Valguero",
-      "created": "2021-05-01T00:00:00.000Z"
+      "created": "2021-05-01T00:00:00.000Z",
+      "EstimatedForPlayers": "?"
     },
     {
       "id": 4,
@@ -72,7 +75,8 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
       "lat": 44,
       "lon": 84,
       "map": "Valguero",
-      "created": "2021-05-01T00:00:00.000Z"
+      "created": "2021-05-01T00:00:00.000Z",
+      "EstimatedForPlayers": "?"
     },
     {
       "id": 5,
@@ -81,7 +85,8 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
       "lat": 38,
       "lon": 57,
       "map": "Valguero",
-      "created": "2021-05-01T00:00:00.000Z"
+      "created": "2021-05-01T00:00:00.000Z",
+      "EstimatedForPlayers": "?"
     },
     {
       "id": 6,
@@ -90,7 +95,8 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
       "lat": 15,
       "lon": 27,
       "map": "Valguero",
-      "created": "2021-05-01T00:00:00.000Z"
+      "created": "2021-05-01T00:00:00.000Z",
+      "EstimatedForPlayers": "?"
     },
     {
       "id": 7,
@@ -99,7 +105,8 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
       "lat": 53,
       "lon": 87,
       "map": "Valguero",
-      "created": "2021-05-01T00:00:00.000Z"
+      "created": "2021-05-01T00:00:00.000Z",
+      "EstimatedForPlayers": "?"
     },
     {
       "id": 8,
@@ -108,7 +115,8 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
       "lat": 37,
       "lon": 90,
       "map": "Valguero",
-      "created": "2021-05-01T00:00:00.000Z"
+      "created": "2021-05-01T00:00:00.000Z",
+      "EstimatedForPlayers": "?"
     }
   ]
   return (
@@ -145,9 +153,6 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
             <Link to={routes.basespot({ id: basespot.id })} target="_blank" className="leading-none m-0 text-2xl text-gray-100">
               {basespot.name}
             </Link>
-            {/* <h2 className="text-base font-light uppercase mt-1.5 text-lime-500">
-              teeest
-            </h2> */}
             <div className="relative flex flex-row mt-2">
               <span className="bg-black text-slate-200 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-black">
                 {basespot.map}

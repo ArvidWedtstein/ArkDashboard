@@ -8,6 +8,7 @@ export const schema = gql`
     image: String
     createdAt: DateTime!
     Map: String
+    EstimatedForPlayers: String
   }
 
   type Query {
@@ -22,6 +23,7 @@ export const schema = gql`
     longitude: Float!
     image: String
     Map: String
+    EstimatedForPlayers: String
   }
 
   input UpdateBasespotInput {
@@ -31,6 +33,7 @@ export const schema = gql`
     longitude: Float
     image: String
     Map: String
+    EstimatedForPlayers: String
   }
 
   type Mutation {
