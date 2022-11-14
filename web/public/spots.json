@@ -31,7 +31,7 @@
           "name": "Desert Crack",
           "lat": 0,
           "lon": 0
-          
+
         }
       ]
     },
@@ -107,7 +107,20 @@
     },
     {
       "name": "Crystal Isles",
-      "spots": []
+      "spots": [
+        {
+          "name": "Waterfall spot swamp",
+          "description": "Hidden spot in waterfall, goes down a lot",
+          "lat": 0.0,
+          "lon": 0.0
+        },
+        {
+          "name": "Floating Island Spot",
+          "description": "Hidden spot under a floating island",
+          "lat": 0.0,
+          "lon": 0.0
+        }
+      ]
     },
     {
       "name": "Genesis 2",
