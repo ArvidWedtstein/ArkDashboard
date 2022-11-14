@@ -2,6 +2,7 @@
 import { Link, routes, navigate } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
+import { Maps } from 'src/components/Maps'
 
 import { timeTag, } from 'src/lib/formatters'
 
@@ -60,12 +61,13 @@ const Basespot = ({ basespot }: Props) => {
                 Lon: {basespot.longitude}
               </span>
             </div>
-            <p className="bg-black text-slate-200 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-black">
-              Estimated for {basespot.EstimatedForPlayers} players
-            </p>
+            {/* <p className="bg-black text-slate-200 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-black">
+              Estimated for {basespot.EstimateForPlayers} players
+            </p> */}
           </div>
         </div>
-        <table className="rw-table">
+        <Maps map={basespot.Map} size={{ width: 500, height: 500 }} pos={{ lat: basespot.latitude, lon: basespot.longitude}}/>
+        {/* <table className="rw-table">
           <tbody>
             <tr>
               <th>Id</th>
@@ -93,7 +95,7 @@ const Basespot = ({ basespot }: Props) => {
               <td>{basespot.Map}</td>
             </tr>
           </tbody>
-        </table>
+        </table> */}
       </div>
       <nav className="rw-button-group">
         <Link

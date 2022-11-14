@@ -6,11 +6,12 @@ type LayoutProps = {
   children: React.ReactNode
 }
 
+
 const MainLayout = ({
   children,
 }: LayoutProps) => {
   return (
-    <div className="container">
+    <div className="bg-zinc-900 text-zinc-200 overflow-hidden">
       <Navbar />
       <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
       <main className="container-xl   mx-3">{children}</main>
@@ -19,3 +20,5 @@ const MainLayout = ({
 }
 
 export default MainLayout
+
+// TODO: add shopping system
