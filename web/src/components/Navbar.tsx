@@ -2,7 +2,6 @@ import { Link, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 import { useAuth } from '@redwoodjs/auth'
-import { QUERY } from 'src/components/Post/PostsCell'
 import { timeTag, truncate } from 'src/lib/formatters'
 import { useEffect } from 'react'
 
@@ -24,9 +23,9 @@ const Navbar = () => {
                 <img className="h-9" src="favicon.png" alt="logo" />
               </a>
               <ul className="hidden md:flex px-4 font-semibold font-heading space-x-12">
-                <li><a className="hover:text-gray-200" href="/">Home</a></li>
-                <li><a className="hover:text-gray-200" href="#">Ark</a></li>
-                <li><a className="hover:text-gray-200" href="#">Calculator</a></li>
+                <li><Link className="hover:text-gray-200" to={routes.home()}>Home</Link></li>
+                <li><Link className="hover:text-gray-200" to={routes.basespots()}>Ark</Link></li>
+                <li><Link className="hover:text-gray-200" to={routes.newBasespot()}>Calculator</Link></li>
               </ul>
               {/* <div className="hidden xl:flex items-center space-x-5 ml-3">
                 <a className="flex items-center hover:text-gray-200" href="#">
