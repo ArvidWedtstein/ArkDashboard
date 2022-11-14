@@ -155,6 +155,12 @@ Apply changes to database:
 yarn rw prisma migrate dev
 ```
 
+
+To view SQLite data in a GUI:
+```sh
+yarn rw prisma studio
+```
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 

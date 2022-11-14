@@ -13,7 +13,7 @@ const MainLayout = ({
     <div className="container">
       <Navbar />
       <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
-      <main className="rw-main">{children}</main>
+      <main className="container-xl   mx-3">{children}</main>
     </div>
   )
 }

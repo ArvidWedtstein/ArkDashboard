@@ -3,7 +3,7 @@ import { Link, routes, navigate } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
-import { timeTag,  } from 'src/lib/formatters'
+import { timeTag, } from 'src/lib/formatters'
 
 import type { DeleteBasespotMutationVariables, FindBasespotById } from 'types/graphql'
 
@@ -38,12 +38,21 @@ const Basespot = ({ basespot }: Props) => {
 
   return (
     <>
-      <div className="rw-segment">
-        <header className="rw-segment-header">
-          <h2 className="rw-heading rw-heading-secondary">
+      <div className="container mx-auto">
+        <header className="bg-slate-900 p-3 text-white">
+          <h2 className="">
             Basespot {basespot.id} Detail
           </h2>
         </header>
+        <div className="grid grid-cols-2 auto-cols-auto">
+          <div>
+            <img src={basespot.image} alt={basespot.name} className="max-w-none" />
+          </div>
+          <div className="bg-slate-600 p-4 text-white font-heading ">
+            <h1>assssssssss</h1>
+
+          </div>
+        </div>
         <table className="rw-table">
           <tbody>
             <tr>
