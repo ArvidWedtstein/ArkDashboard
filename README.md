@@ -152,7 +152,11 @@ This bot is still in development. I will add more features in the future.
 
 Apply changes to database:
 ```sh
-yarn rw prisma migrate dev
+yarn rw prisma migrate dev (yarn rw db push for mongodb)
+```
+
+```sh
+prisma migrate dev --name added_job_title
 ```
 
 
@@ -166,9 +170,19 @@ To generate types:
 ```sh
 yarn rw g types
 ```
+
+
+Generate schema:
+```sh
+yarn rw g sdl basespot
+```
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
+To deploy:
+```sh
+yarn rw prisma migrate deploy
+```
 
 <!-- ROADMAP -->
 ## Roadmap

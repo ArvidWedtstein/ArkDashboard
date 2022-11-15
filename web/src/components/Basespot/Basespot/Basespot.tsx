@@ -39,64 +39,28 @@ const Basespot = ({ basespot }: Props) => {
 
   return (
     <>
-      <div className="container mx-auto">
-        <header className="bg-slate-900 p-3 text-white">
-          <h2 className="">
-            Basespot {basespot.id} Detail
-          </h2>
-        </header>
-        <div className="grid grid-cols-2 auto-cols-auto">
-          <div>
-            <img src={basespot.image} alt={basespot.name} className="max-w-none" />
-          </div>
-          <div className="bg-slate-600 p-4 text-white font-heading ">
-            <h1 className="text-2xl relative first-of-type:mt-5 before:absolute before:h-1 before:w-9 before:bg-red-500 before:-bottom-3 before:rounded">{basespot.name}</h1>
-            <p className="text-base mt-5">{basespot.description}</p>
-
-            <div className="mt-5">
-              <span className="bg-black text-slate-200 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-black">
-                Lat: {basespot.latitude}
-              </span>
-              <span className="bg-black text-slate-200 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-black">
-                Lon: {basespot.longitude}
-              </span>
-            </div>
-            {/* <p className="bg-black text-slate-200 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-black">
-              Estimated for {basespot.EstimateForPlayers} players
-            </p> */}
-          </div>
+      <div className="grid grid-cols-2 auto-cols-auto">
+        <div>
+          <img src={basespot.image} alt={basespot.name} className="max-w-none" />
         </div>
-        <Maps map={basespot.Map} size={{ width: 500, height: 500 }} pos={{ lat: basespot.latitude, lon: basespot.longitude}}/>
-        {/* <table className="rw-table">
-          <tbody>
-            <tr>
-              <th>Id</th>
-              <td>{basespot.id}</td>
-            </tr><tr>
-              <th>Name</th>
-              <td>{basespot.name}</td>
-            </tr><tr>
-              <th>Description</th>
-              <td>{basespot.description}</td>
-            </tr><tr>
-              <th>Latitude</th>
-              <td>{basespot.latitude}</td>
-            </tr><tr>
-              <th>Longitude</th>
-              <td>{basespot.longitude}</td>
-            </tr><tr>
-              <th>Image</th>
-              <td>{basespot.image}</td>
-            </tr><tr>
-              <th>Created at</th>
-              <td>{timeTag(basespot.createdAt)}</td>
-            </tr><tr>
-              <th>Map</th>
-              <td>{basespot.Map}</td>
-            </tr>
-          </tbody>
-        </table> */}
+        <div className="bg-slate-600 p-4 text-white font-heading ">
+          <h1 className="text-2xl relative first-of-type:mt-5 before:absolute before:h-1 before:w-9 before:bg-red-500 before:-bottom-3 before:rounded">{basespot.name}</h1>
+          <p className="text-base mt-5">{basespot.description}</p>
+
+          <div className="mt-5">
+            <span className="bg-black text-slate-200 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-black">
+              Lat: {basespot.latitude}
+            </span>
+            <span className="bg-black text-slate-200 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-black">
+              Lon: {basespot.longitude}
+            </span>
+          </div>
+          <p className="bg-black text-slate-200 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-slate-200 dark:text-black">
+            Estimated for {basespot.estimatedForPlayers} players
+          </p>
+        </div>
       </div>
+      <Maps map={basespot.Map} size={{ width: 500, height: 500}}  pos={{ lat: basespot.latitude, lon: basespot.longitude }} />
       <nav className="rw-button-group">
         <Link
           to={routes.editBasespot({ id: basespot.id })}

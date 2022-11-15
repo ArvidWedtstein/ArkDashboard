@@ -16,6 +16,7 @@ export const QUERY = gql`
       image
       createdAt
       Map
+      estimatedForPlayers
     }
   }
 `

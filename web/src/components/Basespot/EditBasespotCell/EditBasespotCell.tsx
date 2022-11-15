@@ -18,6 +18,7 @@ export const QUERY = gql`
       image
       createdAt
       Map
+      estimatedForPlayers
     }
   }
 `
@@ -32,6 +33,7 @@ const UPDATE_BASESPOT_MUTATION = gql`
       image
       createdAt
       Map
+      estimatedForPlayers
     }
   }
 `

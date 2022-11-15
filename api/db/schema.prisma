@@ -16,7 +16,7 @@ model Basespot {
   image       String?
   createdAt   DateTime @default(now())
   Map         String?
-  EstimatedForPlayers String @default("0")
+  estimatedForPlayers String? @default("0")
 }
 
 
