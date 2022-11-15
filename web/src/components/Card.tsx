@@ -1,22 +1,12 @@
-interface cardProps {
-  title?: string
-  sub?: string
-  content?: string
-  tamingFood: {
-    item: string
-    amount: number
-    time: string
-  }[]
-}
 
-export const Card = ({ title, sub, content, tamingFood }: cardProps) => {
+export const Card = ({ data }: any) => {
 
   return (
     <>
       <div className="pt-10 pb-10 focus:outline-none">
         <div className="bg-white inline-block m-auto relative text-center shadow-xl rounded-xl w-[300px]">
           <div className="relative h-56 mb-8 bg-[url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/barbarian-bg.jpg)] absolute rounded-t-xl">
-            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/barbarian.png" alt="barbarian" />
+            <img src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/c/c9/Raptor_PaintRegion3.png" alt="barbarian" />
           </div>
           {sub ?? <div className="uppercase text-xs font-bold mb-1 text-red-900">{sub}</div>}
           <div className="text-2xl text-black font-black mb-1">{title}</div>

@@ -17,20 +17,12 @@ interface tameProps {
   tameMethod?: string
   tamingMultiplier?: number
   consumptionMultiplier?: number
-  data?: {
-    item: string
-    amount: number
-    time: string
-  }[]
+  data?: any[]
 }
 const TamingPage = (props: BasespotFormProps) => {
   const [dino, setDino] = useState('')
-  const [tame, setTame] = useState<Partial<tameProps> | null>(null)
+  const [tame, setTame] = useState<any>()
 
-
-  useEffect(() => {
-    console.log(tame)
-  }, [tame])
 
   const onSubmit = (data) => {
     fetch(`https://ark-survival-evolved-tame-data.p.rapidapi.com?creature=${dino}&level=150&tamingMultiplier=1&consumptionMultiplier=1`, {
