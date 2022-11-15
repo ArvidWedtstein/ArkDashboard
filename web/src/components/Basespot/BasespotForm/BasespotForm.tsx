@@ -24,28 +24,7 @@ interface BasespotFormProps {
 
 const BasespotForm = (props: BasespotFormProps) => {
   const onSubmit = (data: FormBasespot) => {
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
+
     props.onSave(data, props?.basespot?.id)
   }
 
@@ -58,7 +37,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
-      
+
         <Label
           name="name"
           className="rw-label"
@@ -66,7 +45,7 @@ const BasespotForm = (props: BasespotFormProps) => {
         >
           Name
         </Label>
-        
+
           <TextField
             name="name"
             defaultValue={props.basespot?.name}
@@ -74,7 +53,7 @@ const BasespotForm = (props: BasespotFormProps) => {
             errorClassName="rw-input rw-input-error"
             validation={{ required: true }}
           />
-        
+
 
         <FieldError name="name" className="rw-field-error" />
 
@@ -85,7 +64,7 @@ const BasespotForm = (props: BasespotFormProps) => {
         >
           Description
         </Label>
-        
+
           <TextField
             name="description"
             defaultValue={props.basespot?.description}
@@ -93,7 +72,7 @@ const BasespotForm = (props: BasespotFormProps) => {
             errorClassName="rw-input rw-input-error"
             validation={{ required: true }}
           />
-        
+
 
         <FieldError name="description" className="rw-field-error" />
 
@@ -104,7 +83,7 @@ const BasespotForm = (props: BasespotFormProps) => {
         >
           Latitude
         </Label>
-        
+
           <TextField
             name="latitude"
             defaultValue={props.basespot?.latitude}
@@ -112,7 +91,7 @@ const BasespotForm = (props: BasespotFormProps) => {
             errorClassName="rw-input rw-input-error"
             validation={{ valueAsNumber: true, required: true }}
           />
-        
+
 
         <FieldError name="latitude" className="rw-field-error" />
 
@@ -123,7 +102,7 @@ const BasespotForm = (props: BasespotFormProps) => {
         >
           Longitude
         </Label>
-        
+
           <TextField
             name="longitude"
             defaultValue={props.basespot?.longitude}
@@ -131,7 +110,7 @@ const BasespotForm = (props: BasespotFormProps) => {
             errorClassName="rw-input rw-input-error"
             validation={{ valueAsNumber: true, required: true }}
           />
-        
+
 
         <FieldError name="longitude" className="rw-field-error" />
 
@@ -142,14 +121,14 @@ const BasespotForm = (props: BasespotFormProps) => {
         >
           Image
         </Label>
-        
+
           <TextField
             name="image"
             defaultValue={props.basespot?.image}
             className="rw-input"
             errorClassName="rw-input rw-input-error"
           />
-        
+
 
         <FieldError name="image" className="rw-field-error" />
 
@@ -160,14 +139,14 @@ const BasespotForm = (props: BasespotFormProps) => {
         >
           Map
         </Label>
-        
+
           <TextField
             name="Map"
             defaultValue={props.basespot?.Map}
             className="rw-input"
             errorClassName="rw-input rw-input-error"
           />
-        
+
 
         <FieldError name="Map" className="rw-field-error" />
 
@@ -178,14 +157,14 @@ const BasespotForm = (props: BasespotFormProps) => {
         >
           Estimated for players
         </Label>
-        
+
           <TextField
             name="estimatedForPlayers"
             defaultValue={props.basespot?.estimatedForPlayers}
             className="rw-input"
             errorClassName="rw-input rw-input-error"
           />
-        
+
 
         <FieldError name="estimatedForPlayers" className="rw-field-error" />
 

@@ -25,6 +25,7 @@ const Navbar = () => {
                 <li><Link className="hover:text-gray-200" to={routes.home()}>Home</Link></li>
                 <li><Link className="hover:text-gray-200" to={routes.basespots()}>Ark</Link></li>
                 <li><Link className="hover:text-gray-200" to={routes.newBasespot()}>Calculator</Link></li>
+                <li><Link className="hover:text-gray-200" to={routes.taming()}>Taming</Link></li>
               </ul>
             </div>
             <a className="flex mr-6 items-center" href="#">

@@ -1,0 +1,12 @@
+[build]
+  command = "yarn rw deploy netlify --prisma=true --dm=true"
+  publish = "web/dist"
+  functions = "api/dist/functions"
+
+[dev]
+  command = "yarn rw dev"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

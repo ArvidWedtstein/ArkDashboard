@@ -1,10 +1,12 @@
 import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 import { useAuth } from '@redwoodjs/auth'
-import { useEffect } from 'react'
-import { Maps } from 'src/components/Maps'
+import { useEffect, useState } from 'react'
+
 
 const HomePage = () => {
+
+
   return (
     <>
       <MetaTags title="Home" description="Home page" />

@@ -243,7 +243,7 @@ Invite the bot to your server [here](https://discord.com/oauth2/authorize?client
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
-
+https://rapidapi.com/arkbuddy-arkbuddy-default/api/ark-survival-evolved-tame-data/
 Will come later
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
