@@ -9,7 +9,11 @@
   },
   "devDependencies": {
     "@redwoodjs/core": "3.4.0",
-    "prettier-plugin-tailwindcss": "^0.1.13"
+    "@vercel/nft": "^0.22.1",
+    "archiver": "^5.3.1",
+    "fs-extra": "^10.1.0",
+    "prettier-plugin-tailwindcss": "^0.1.13",
+    "serverless": "^3.24.1"
   },
   "eslintConfig": {
     "extends": "@redwoodjs/eslint-config",

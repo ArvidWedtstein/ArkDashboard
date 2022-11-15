@@ -6,5 +6,8 @@
     "@redwoodjs/api": "3.4.0",
     "@redwoodjs/graphql-server": "3.4.0",
     "@simplewebauthn/server": "^6.2.2"
+  },
+  "devDependencies": {
+    "serverless": "^3.24.1"
   }
 }

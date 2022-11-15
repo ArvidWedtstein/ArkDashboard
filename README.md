@@ -177,6 +177,12 @@ Generate schema:
 yarn rw g sdl basespot
 ```
 
+
+Generate Secret:
+```sh
+yarn rw g secret
+```
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 To deploy:
