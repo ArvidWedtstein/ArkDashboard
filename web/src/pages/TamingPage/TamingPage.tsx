@@ -28,7 +28,7 @@ const TamingPage = (props: BasespotFormProps) => {
     fetch(`https://ark-survival-evolved-tame-data.p.rapidapi.com?creature=${dino}&level=150&tamingMultiplier=1&consumptionMultiplier=1`, {
       method: 'GET',
       headers: {
-        'X-RapidAPI-Key': 'aa2f4cacb6msh1b645c2f85f2575p13d67ajsn15e8f8d32997',
+        'X-RapidAPI-Key': process.env.ARK_KEY,
         'X-RapidAPI-Host': 'ark-survival-evolved-tame-data.p.rapidapi.com',
       }
     })
