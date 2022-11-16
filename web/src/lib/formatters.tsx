@@ -48,3 +48,16 @@ export const timeTag = (dateTime?: string) => {
 export const checkboxInputTag = (checked: boolean) => {
   return <input type="checkbox" checked={checked} disabled />
 }
+
+
+export const combineBySummingKeys = (...objects) => {
+  const mergedObj = {};
+
+  objects.forEach((obj) => {
+    Object.keys(obj).forEach((key) => {
+      mergedObj[key] = (mergedObj[key] || 0) + obj[key];
+    });
+  });
+
+  return mergedObj;
+};
