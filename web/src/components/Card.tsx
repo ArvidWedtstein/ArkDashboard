@@ -1,6 +1,7 @@
 
 export const Card = ({ data }: any) => {
-
+  if (!data) return (<></>)
+  const { title, sub, content, tamingFood }  = data
   return (
     <>
       <div className="pt-10 pb-10 focus:outline-none">
@@ -14,7 +15,7 @@ export const Card = ({ data }: any) => {
             {content}
           </div>}
 
-          {tamingFood ?? <div className="text-white font-bold bg-slate-800 rounded-b-xl">
+          {data.tamingFood ?? <div className="text-white font-bold bg-slate-800 rounded-b-xl">
             {tamingFood.map((food, o) => (
               <div key={o}>
                 <div className="float-left p-3 w-[33%] bg-inherit rounded-bl-xl">

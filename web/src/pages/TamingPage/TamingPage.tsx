@@ -33,7 +33,12 @@ const TamingPage = (props: BasespotFormProps) => {
       }
     })
       .then((response) => response.json())
-      .then((json) => setTame(json))
+      .then((json) => {
+        setTame(json);
+        console.log(json)
+      })
+
+
   }
 
 
@@ -73,15 +78,8 @@ const TamingPage = (props: BasespotFormProps) => {
         <FieldError name="dino" className="rw-field-error" />
 
       </Form>
-      <ul>
-        <li>{tame?.name}</li>
-        <li>{tame?.level}</li>
-        <li>{tame?.tameMethod}</li>
-        <li>{tame?.tamingMultiplier}</li>
-        <li>{tame?.consumptionMultiplier}</li>
 
-      </ul>
-      <Card title={tame?.name} sub={tame ? `Level ${tame?.level}` : undefined} tamingFood={tame ? tame.data.splice(0, 1) : []}/>
+      <Card data={tame} />
     </div>
     </>
   )
