@@ -25,7 +25,7 @@ interface MaterialCalculatorFormProps {
 
 const MaterialCalculatorForm = (props: MaterialCalculatorFormProps) => {
   let { itemStats, items } = arkitems
-  items = items.map(v => ({ ...v, amount: 0 }))
+  items = items.map(v => ({ ...v, amount: 1 }))
   const reducer = (state, action) => {
     switch (action.type) {
       case "ADD_AMOUNT":
@@ -106,6 +106,11 @@ const MaterialCalculatorForm = (props: MaterialCalculatorFormProps) => {
 
         <div className="container mx-auto bg-slate-500">
           <ul className="py-4">
+            <li className="border-0 border-b-2 py-4 text-white">
+              <div className=" flex flex-row items-center w-fit pl-4">
+                Total
+              </div>
+            </li>
             {item.map((item, i) => (
               <li className="" key={`${item.id}+${i}`}>
                 <div className="flex flex-row items-center w-fit pl-4">
@@ -115,26 +120,17 @@ const MaterialCalculatorForm = (props: MaterialCalculatorFormProps) => {
                   <button type="button" className="bg-slate-200 relative text-black mx-2 rounded-full w-8 h-8" onClick={() => onRemoveAmount(i)}>
                     -
                   </button>
-                  <TextField
-                    name="amount"
-                    value={item.amount}
-                    className="rw-input w-10"
-                    errorClassName="rw-input rw-input-error"
-                    validation={{
-                      required: true,
-                      pattern: {
-                        message: 'Must be a number',
-                        value: /^[0-9]*$/,
-                      },
-                    }}
-                  />
+                  <p
+                    defaultValue={item.amount}
+                    className="rw-input w-10 text-white"
+                  >{item.amount}</p>
                   <button type="button" className="bg-slate-200 relative text-black mx-2 rounded-full w-8 h-8" onClick={() => onAddAmount(i)}>
                     +
                   </button>
                   {item.recipe.map((recipe, t) => (
                     <div className="flex flex-col justify-center items-center ml-2" key={`${recipe}-${i}${t}`}>
                       <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${items.find((item) => item.itemId === recipe.itemId).image}`} className="w-6 h-6" title={items.find((item) => item.itemId === recipe.itemId).name} alt={items.find((item) => item.itemId === recipe.itemId).name} />
-                      <span className="text-sm text-white">{recipe.count}</span>
+                      <span className="text-sm text-white">{recipe.count * item.amount}</span>
                     </div>
                   ))}
                 </div>

@@ -25,18 +25,18 @@ const TamingPage = (props: BasespotFormProps) => {
 
 
   const onSubmit = (data) => {
-    fetch(`https://ark-survival-evolved-tame-data.p.rapidapi.com?creature=${dino}&level=150&tamingMultiplier=1&consumptionMultiplier=1`, {
-      method: 'GET',
-      headers: {
-        'X-RapidAPI-Key': process.env.ARK_KEY,
-        'X-RapidAPI-Host': 'ark-survival-evolved-tame-data.p.rapidapi.com',
-      }
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        setTame(json);
-        console.log(json)
-      })
+    // fetch(`https://ark-survival-evolved-tame-data.p.rapidapi.com?creature=${dino}&level=150&tamingMultiplier=1&consumptionMultiplier=1`, {
+    //   method: 'GET',
+    //   headers: {
+    //     'X-RapidAPI-Key': process.env.ARK_KEY,
+    //     'X-RapidAPI-Host': 'ark-survival-evolved-tame-data.p.rapidapi.com',
+    //   }
+    // })
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     setTame(json);
+    //     console.log(json)
+    //   })
 
 
   }
@@ -44,25 +44,25 @@ const TamingPage = (props: BasespotFormProps) => {
 
   return (
     <>
-    <MetaTags title="Taming" description="Taming page" />
+      <MetaTags title="Taming" description="Taming page" />
 
-    <h1 className="text-xl">TamingPage</h1>
+      <h1 className="text-xl">TamingPage</h1>
 
-    <div className="container text-center p-4">
-      <Form onSubmit={onSubmit} error={props.error}>
-        <FormError
-          error={props.error}
-          wrapperClassName="rw-form-error-wrapper"
-          titleClassName="rw-form-error-title"
-          listClassName="rw-form-error-list"
-        />
-        <Label
-          name="dino"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Dino
-        </Label>
+      <div className="container text-center p-4">
+        <Form onSubmit={onSubmit} error={props.error}>
+          <FormError
+            error={props.error}
+            wrapperClassName="rw-form-error-wrapper"
+            titleClassName="rw-form-error-title"
+            listClassName="rw-form-error-list"
+          />
+          <Label
+            name="dino"
+            className="rw-label"
+            errorClassName="rw-label rw-label-error"
+          >
+            Dino
+          </Label>
 
           <TextField
             name="dino"
@@ -75,12 +75,12 @@ const TamingPage = (props: BasespotFormProps) => {
           />
 
 
-        <FieldError name="dino" className="rw-field-error" />
+          <FieldError name="dino" className="rw-field-error" />
 
-      </Form>
+        </Form>
 
-      <Card data={tame} />
-    </div>
+        {/* <Card data={tame} /> */}
+      </div>
     </>
   )
 }
