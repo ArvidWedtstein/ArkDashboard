@@ -4,8 +4,8 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
 [![Version][version-shield]][version-url]
+[![Netlify Status](https://api.netlify.com/api/v1/badges/6eca3877-cf13-47fa-9f48-2f722ba00ea4/deploy-status)](https://app.netlify.com/sites/arkdashboard/deploys)
 
 <!-- PROJECT LOGO -->
 <br />
@@ -27,8 +27,6 @@
     <a href="https://github.com/ArvidWedtstein/ArkDashboard/issues">Request Feature</a>
   </p>
 </div>
-
-
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -56,18 +54,13 @@
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
-## About The Project
 
+## About The Project
 
 Description will come later
 
-
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 ### Built With
 
@@ -83,11 +76,9 @@ This project is mainly written in React, together with these frameworks and libr
 </div>
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- GETTING STARTED -->
-## Getting Started
 
+## Getting Started
 
 To get a local copy up and running follow these simple steps.
 
@@ -96,14 +87,13 @@ To get a local copy up and running follow these simple steps.
 To run this project you'll need to have nodejs installed on your computer. You can download it [here](https://nodejs.org/en/download/)
 
 Get latest npm version
-* npm
+
+- npm
   ```sh
   npm install npm@latest -g
   ```
 
 ### Installation
-
-
 
 1. Clone the repo
    ```sh
@@ -125,6 +115,7 @@ Get latest npm version
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Deploying
+
 Deploying image to scaleway:
 
 1. build the docker image
@@ -136,21 +127,22 @@ Deploying image to scaleway:
    docker pull ubuntu:latest
    ```
 3. tag the image
-    ```sh
-    docker tag ArkDashboard arvidwedtstein/ArkDashboard:latest
-    ```
+   ```sh
+   docker tag ArkDashboard arvidwedtstein/ArkDashboard:latest
+   ```
 4. push the image to docker hub
-    ```sh
-    docker push arvidwedtstein/ArkDashboard:latest
-    ```
+   ```sh
+   docker push arvidwedtstein/ArkDashboard:latest
+   ```
 
 <!-- USAGE EXAMPLES -->
+
 ## Usage
 
 This bot is still in development. I will add more features in the future.
 
-
 Apply changes to database:
+
 ```sh
 yarn rw prisma migrate dev (yarn rw db push for mongodb)
 ```
@@ -159,26 +151,26 @@ yarn rw prisma migrate dev (yarn rw db push for mongodb)
 prisma migrate dev --name added_job_title
 ```
 
-
 To view SQLite data in a GUI:
+
 ```sh
 yarn rw prisma studio
 ```
 
-
 To generate types:
+
 ```sh
 yarn rw g types
 ```
 
-
 Generate schema:
+
 ```sh
 yarn rw g sdl basespot
 ```
 
-
 Generate Secret:
+
 ```sh
 yarn rw g secret
 ```
@@ -186,26 +178,25 @@ yarn rw g secret
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 To deploy:
+
 ```sh
 yarn rw prisma migrate deploy
 ```
 
 <!-- ROADMAP -->
+
 ## Roadmap
 
 - [ ] Get to know Redwood and React
 - [ ] Add a base spot system
 - [ ] Add a map system
 
-
-
 See the [open issues](https://github.com/ArvidWedtstein/ArkDashboard/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
 Any contributions you make are **greatly appreciated**.
@@ -221,35 +212,33 @@ Don't forget to give the project a star! <3
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- CONTACT -->
+
 ## Contact
 
 Invite the bot to your server [here](https://discord.com/oauth2/authorize?client_id=787324889634963486&scope=bot&permissions=10200548352)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- ACKNOWLEDGMENTS -->
+
 ## Acknowledgments
+
 https://rapidapi.com/arkbuddy-arkbuddy-default/api/ark-survival-evolved-tame-data/
 Will come later
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/ArvidWedtstein/ArkDashboard.svg?style=for-the-badge
 [contributors-url]: https://github.com/ArvidWedtstein/ArkDashboard/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/ArvidWedtstein/ArkDashboard.svg?style=for-the-badge
@@ -262,11 +251,10 @@ Will come later
 [license-url]: https://github.com/ArvidWedtstein/ArkDashboard/blob/master/LICENSE.txt
 [version-shield]: https://img.shields.io/github/package-json/v/arvidwedtstein/ArkDashboard?style=for-the-badge
 [version-url]: https://github.com/ArvidWedtstein/ArkDashboard
-[DiscordJS]: https://img.shields.io/badge/discord.js-000000?style=for-the-badge&logo=discord&logoColor=white
-[Discordjs-url]: https://discord.com/developers/docs/intro
-[MongoDB]: https://img.shields.io/badge/MongoDB-000000?style=for-the-badge&logo=mongodb&logoColor=white
-[MongoDB-url]: https://www.mongodb.com/
-
+[discordjs]: https://img.shields.io/badge/discord.js-000000?style=for-the-badge&logo=discord&logoColor=white
+[discordjs-url]: https://discord.com/developers/docs/intro
+[mongodb]: https://img.shields.io/badge/MongoDB-000000?style=for-the-badge&logo=mongodb&logoColor=white
+[mongodb-url]: https://www.mongodb.com/
 
 # README
 
@@ -297,9 +285,11 @@ Your browser should automatically open to http://localhost:8910 where you'll see
 > Congratulations on running your first Redwood CLI command!
 > From dev to deploy, the CLI is with you the whole way.
 > And there's quite a few commands at your disposal:
+>
 > ```
 > yarn redwood --help
 > ```
+>
 > For all the details, see the [CLI reference](https://redwoodjs.com/docs/cli-commands).
 
 ## Prisma and the database
@@ -364,7 +354,7 @@ Redwood fully integrates Jest with the front and the backends and makes it easy 
 yarn rw test
 ```
 
-To make the integration even more seamless, Redwood augments Jest with database [scenarios](https://redwoodjs.com/docs/testing.md#scenarios)  and [GraphQL mocking](https://redwoodjs.com/docs/testing.md#mocking-graphql-calls).
+To make the integration even more seamless, Redwood augments Jest with database [scenarios](https://redwoodjs.com/docs/testing.md#scenarios) and [GraphQL mocking](https://redwoodjs.com/docs/testing.md#mocking-graphql-calls).
 
 ## Ship it
 
