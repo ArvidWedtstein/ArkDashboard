@@ -9,6 +9,7 @@
 
 import { Set, Router, Route, Private } from '@redwoodjs/router'
 
+
 import MainLayout from 'src/layouts/MainLayout/MainLayout'
 import ScaffoldLayout from 'src/layouts/ScaffoldLayout/ScaffoldLayout'
 
@@ -22,8 +23,13 @@ const Routes = () => {
             <Route path="/basespots/{id:Int}/edit" page={BasespotEditBasespotPage} name="editBasespot" />
             <Route path="/basespots/{id:Int}" page={BasespotBasespotPage} name="basespot" />
           </Private>
-
           <Route path="/basespots" page={BasespotBasespotsPage} name="basespots" />
+        </Set>
+        <Set wrap={ScaffoldLayout} title="Tribes" titleTo="tribes" buttonLabel="New Tribe" buttonTo="newTribe">
+          <Route path="/tribes/new" page={TribeNewTribePage} name="newTribe" />
+          <Route path="/tribes/{id:Int}/edit" page={TribeEditTribePage} name="editTribe" />
+          <Route path="/tribes/{id:Int}" page={TribeTribePage} name="tribe" />
+          <Route path="/tribes" page={TribeTribesPage} name="tribes" />
         </Set>
         <Route path="/login" page={LoginPage} name="login" />
         <Route path="/signup" page={SignupPage} name="signup" />
