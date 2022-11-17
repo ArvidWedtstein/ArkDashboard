@@ -1,15 +1,14 @@
 datasource db {
-  provider = "mongodb"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 generator client {
   provider      = "prisma-client-js"
-  previewFeatures = ["mongoDb"]
-//  binaryTargets   = "native"
+  binaryTargets   = "native"
 }
 
 model Basespot {
-  id          String      @id @default(auto()) @map("_id") @db.ObjectId //@id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   description String
   latitude    Float
@@ -22,7 +21,7 @@ model Basespot {
 
 
 model User {
-  id                  String              @id @default(auto()) @map("_id") @db.ObjectId // @id @default(autoincrement())
+  id                  Int              @id @default(autoincrement())
   email               String           @unique
   hashedPassword      String
   salt                String
@@ -30,11 +29,13 @@ model User {
   resetTokenExpiresAt DateTime?
   webAuthnChallenge   String?          @unique
   credentials         UserCredential[]
+  RoleId              Int?
+  Role               Role?             @relation(fields: [RoleId], references: [id])
 }
 
 model UserCredential {
-  id         String  @id @map("_id")
-  userId     String
+  id         Int  @id
+  userId     Int
   user       User    @relation(fields: [userId], references: [id])
   publicKey  Bytes
   transports String?
@@ -42,9 +43,17 @@ model UserCredential {
 }
 
 model Tribe {
-  id          String      @id @default(auto()) @map("_id") @db.ObjectId // @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   description String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Role {
+  id          Int      @id @default(autoincrement())
+  name        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Users       User[]
 }
