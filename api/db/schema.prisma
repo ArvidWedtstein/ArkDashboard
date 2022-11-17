@@ -7,7 +7,7 @@ generator client {
   binaryTargets   = "native"
 }
 
-model Basespot {
+model basespot {
   id          Int      @id @default(autoincrement())
   name        String
   description String
@@ -20,7 +20,7 @@ model Basespot {
 }
 
 
-model User {
+model user {
   id                  Int              @id @default(autoincrement())
   email               String           @unique
   hashedPassword      String
@@ -28,21 +28,21 @@ model User {
   resetToken          String?
   resetTokenExpiresAt DateTime?
   webAuthnChallenge   String?          @unique
-  credentials         UserCredential[]
+  credentials         userCredential[]
   RoleId              Int?
-  Role               Role?             @relation(fields: [RoleId], references: [id])
+  Role               role?             @relation(fields: [RoleId], references: [id])
 }
 
-model UserCredential {
+model userCredential {
   id         Int  @id
   userId     Int
-  user       User    @relation(fields: [userId], references: [id])
+  user       user    @relation(fields: [userId], references: [id])
   publicKey  Bytes
   transports String?
   counter    BigInt
 }
 
-model Tribe {
+model tribe {
   id          Int      @id @default(autoincrement())
   name        String
   description String
@@ -50,10 +50,10 @@ model Tribe {
   updatedAt   DateTime @updatedAt
 }
 
-model Role {
+model role {
   id          Int      @id @default(autoincrement())
   name        String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  Users       User[]
+  Users       user[]
 }
