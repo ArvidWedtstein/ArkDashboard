@@ -1,25 +1,25 @@
-import type { Prisma, Basespot } from '@prisma/client'
+import type { Prisma, basespot } from '@prisma/client'
 import type { ScenarioData } from '@redwoodjs/testing/api'
 
-export const standard = defineScenario<Prisma.BasespotCreateArgs>({
+export const standard = defineScenario<Prisma.basespotCreateArgs>({
   basespot: {
     one: {
       data: {
         name: 'String',
         description: 'String',
-        latitude: 7533731.607565706,
-        longitude: 5432524.179146543,
+        latitude: 449043.0178136551,
+        longitude: 5552600.707802355,
       },
     },
     two: {
       data: {
         name: 'String',
         description: 'String',
-        latitude: 596443.2605507874,
-        longitude: 3458014.157946405,
+        latitude: 6982812.684359019,
+        longitude: 2345235.1868476737,
       },
     },
   },
 })
 
-export type StandardScenario = ScenarioData<Basespot, 'basespot'>
+export type StandardScenario = ScenarioData<basespot, 'basespot'>

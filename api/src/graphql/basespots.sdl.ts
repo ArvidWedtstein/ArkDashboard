@@ -12,7 +12,7 @@ export const schema = gql`
   }
 
   type Query {
-    basespots: [Basespot!]! @skipAuth
+    basespots: [Basespot!]! @requireAuth
     basespot(id: Int!): Basespot @requireAuth
   }
 

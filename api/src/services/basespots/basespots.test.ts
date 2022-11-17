@@ -1,4 +1,4 @@
-import type { Basespot } from '@prisma/client'
+import type { basespot } from '@prisma/client'
 
 import {
   basespots,
@@ -33,21 +33,21 @@ describe('basespots', () => {
       input: {
         name: 'String',
         description: 'String',
-        latitude: 2459370.935948728,
-        longitude: 1445210.3954793173,
+        latitude: 840349.344557485,
+        longitude: 2705271.503425981,
       },
     })
 
     expect(result.name).toEqual('String')
     expect(result.description).toEqual('String')
-    expect(result.latitude).toEqual(2459370.935948728)
-    expect(result.longitude).toEqual(1445210.3954793173)
+    expect(result.latitude).toEqual(840349.344557485)
+    expect(result.longitude).toEqual(2705271.503425981)
   })
 
   scenario('updates a basespot', async (scenario: StandardScenario) => {
     const original = (await basespot({
       id: scenario.basespot.one.id,
-    })) as Basespot
+    })) as basespot
     const result = await updateBasespot({
       id: original.id,
       input: { name: 'String2' },
@@ -59,7 +59,7 @@ describe('basespots', () => {
   scenario('deletes a basespot', async (scenario: StandardScenario) => {
     const original = (await deleteBasespot({
       id: scenario.basespot.one.id,
-    })) as Basespot
+    })) as basespot
     const result = await basespot({ id: original.id })
 
     expect(result).toEqual(null)

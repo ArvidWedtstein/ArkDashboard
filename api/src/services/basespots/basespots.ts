@@ -2,15 +2,16 @@ import type { QueryResolvers, MutationResolvers } from "types/graphql";
 
 import { db } from "src/lib/db";
 
+export const basespots: QueryResolvers["basespots"] = () => {
+  return db.basespot.findMany();
+};
+
 export const basespot: QueryResolvers["basespot"] = ({ id }) => {
   return db.basespot.findUnique({
     where: { id },
   });
 };
 
-export const basespots: QueryResolvers["basespots"] = () => {
-  return db.basespot.findMany();
-};
 export const createBasespot: MutationResolvers["createBasespot"] = ({
   input,
 }) => {
