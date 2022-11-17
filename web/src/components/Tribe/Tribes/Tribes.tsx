@@ -2,7 +2,7 @@ import { Link, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
-import { QUERY } from 'src/components/Tribe/TribesCell'
+import { QUERY } from 'src/components/Tribe/TribesCell/TribesCell'
 import { timeTag, truncate } from 'src/lib/formatters'
 
 import type { DeleteTribeMutationVariables, FindTribes } from 'types/graphql'

@@ -27,6 +27,7 @@ const Navbar = () => {
                 <li><Link className="hover:text-gray-200" to={routes.materialCalculator()}>Calculator</Link></li>
                 <li><Link className="hover:text-gray-200" to={routes.taming()}>Taming</Link></li>
                 <li><Link className="hover:text-gray-200" to={routes.gtw()}>GTW</Link></li>
+                <li><Link className="hover:text-gray-200" to={routes.tribes()}>Tribe</Link></li>
               </ul>
             </div>
             <a className="flex mr-6 items-center" href="#">

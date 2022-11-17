@@ -1,14 +1,15 @@
 datasource db {
-  provider = "sqlite"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = "native"
+  previewFeatures = ["mongoDb"]
+//  binaryTargets   = "native"
 }
 
 model Basespot {
-  id          Int      @id @default(autoincrement())
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId //@id @default(autoincrement())
   name        String
   description String
   latitude    Float
@@ -21,7 +22,7 @@ model Basespot {
 
 
 model User {
-  id                  Int              @id @default(autoincrement())
+  id                  String              @id @default(auto()) @map("_id") @db.ObjectId // @id @default(autoincrement())
   email               String           @unique
   hashedPassword      String
   salt                String
@@ -32,8 +33,8 @@ model User {
 }
 
 model UserCredential {
-  id         String  @id
-  userId     Int
+  id         String  @id @map("_id")
+  userId     String
   user       User    @relation(fields: [userId], references: [id])
   publicKey  Bytes
   transports String?
@@ -41,7 +42,7 @@ model UserCredential {
 }
 
 model Tribe {
-  id          Int      @id @default(autoincrement())
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId // @id @default(autoincrement())
   name        String
   description String
   createdAt   DateTime @default(now())
