@@ -203,6 +203,12 @@ yarn rw prisma db seed
 
 Sometimes typescript doesn't detect all changes so you'll have to restart the server by pressing Ctrl + Shift + P and then typing "Restart TS Server"
 
+Check for stuff:
+
+```sh
+yarn redwood check
+```
+
 <!-- ROADMAP -->
 
 ## Roadmap

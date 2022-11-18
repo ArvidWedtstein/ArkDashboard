@@ -13,10 +13,10 @@ export default async () => {
       // To try this example data with the UserExample model in schema.prisma,
       // uncomment the lines below and run 'yarn rw prisma migrate dev'
       //
-      { email: "alice@example.com", hashedPassword: "12345", salt: "12345" },
-      { email: "mark@example.com", hashedPassword: "12345", salt: "12345" },
-      { email: "jackie@example.com", hashedPassword: "12345", salt: "12345" },
-      { email: "bob@example.com", hashedPassword: "12345", salt: "12345" },
+      // { email: "alice@example.com", hashedPassword: "12345", salt: "12345" },
+      // { email: "mark@example.com", hashedPassword: "12345", salt: "12345" },
+      // { email: "jackie@example.com", hashedPassword: "12345", salt: "12345" },
+      // { email: "bob@example.com", hashedPassword: "12345", salt: "12345" },
     ];
     console.log(
       "\nUsing the default './scripts/seed.{js,ts}' template\nEdit the file to add seed data\n"

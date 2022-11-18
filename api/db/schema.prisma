@@ -19,7 +19,7 @@ model basespot {
   estimatedForPlayers String? @default("0")
 }
 
-// https://redwoodjs.com/docs/tutorial/chapter7/api-side-currentuser
+
 
 model user {
   id                  Int              @id @default(autoincrement())
@@ -32,6 +32,7 @@ model user {
   credentials         userCredential[]
   roles               String           @default("PEASANT")
 }
+
 
 model userCredential {
   id         Int  @id
