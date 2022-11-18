@@ -183,13 +183,33 @@ To deploy:
 yarn rw prisma migrate deploy
 ```
 
+To open redwood console:
+
+```sh
+yarn rw c
+```
+
+Fucked up the database? Start all over again with
+
+```sh
+yarn rw prisma migrate reset
+```
+
+Seed the database with
+
+```sh
+yarn rw prisma db seed
+```
+
+Sometimes typescript doesn't detect all changes so you'll have to restart the server by pressing Ctrl + Shift + P and then typing "Restart TS Server"
+
 <!-- ROADMAP -->
 
 ## Roadmap
 
 - [ ] Get to know Redwood and React
 - [ ] Add a base spot system
-- [ ] Add a map system
+- [x] Add a map system
 
 See the [open issues](https://github.com/ArvidWedtstein/ArkDashboard/issues) for a full list of proposed features (and known issues).
 

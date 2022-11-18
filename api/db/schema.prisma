@@ -19,6 +19,7 @@ model basespot {
   estimatedForPlayers String? @default("0")
 }
 
+// https://redwoodjs.com/docs/tutorial/chapter7/api-side-currentuser
 
 model user {
   id                  Int              @id @default(autoincrement())
@@ -29,8 +30,7 @@ model user {
   resetTokenExpiresAt DateTime?
   webAuthnChallenge   String?          @unique
   credentials         userCredential[]
-  RoleId              Int?
-  Role               role?             @relation(fields: [RoleId], references: [id])
+  roles               String           @default("PEASANT")
 }
 
 model userCredential {
@@ -48,12 +48,4 @@ model tribe {
   description String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-}
-
-model role {
-  id          Int      @id @default(autoincrement())
-  name        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  Users       user[]
 }
