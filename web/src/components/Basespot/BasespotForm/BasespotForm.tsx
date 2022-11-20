@@ -5,28 +5,25 @@ import {
   Label,
   TextField,
   Submit,
-} from '@redwoodjs/forms'
+  SelectField,
+} from "@redwoodjs/forms";
 
-import type { EditBasespotById, UpdateBasespotInput } from 'types/graphql'
-import type { RWGqlError } from '@redwoodjs/forms'
+import type { EditBasespotById, UpdateBasespotInput } from "types/graphql";
+import type { RWGqlError } from "@redwoodjs/forms";
 
-
-
-
-type FormBasespot = NonNullable<EditBasespotById['basespot']>
+type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
 
 interface BasespotFormProps {
-  basespot?: EditBasespotById['basespot']
-  onSave: (data: UpdateBasespotInput, id?: FormBasespot['id']) => void
-  error: RWGqlError
-  loading: boolean
+  basespot?: EditBasespotById["basespot"];
+  onSave: (data: UpdateBasespotInput, id?: FormBasespot["id"]) => void;
+  error: RWGqlError;
+  loading: boolean;
 }
 
 const BasespotForm = (props: BasespotFormProps) => {
   const onSubmit = (data: FormBasespot) => {
-
-    props.onSave(data, props?.basespot?.id)
-  }
+    props.onSave(data, props?.basespot?.id);
+  };
 
   return (
     <div className="rw-form-wrapper">
@@ -46,14 +43,13 @@ const BasespotForm = (props: BasespotFormProps) => {
           Name
         </Label>
 
-          <TextField
-            name="name"
-            defaultValue={props.basespot?.name}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ required: true }}
-          />
-
+        <TextField
+          name="name"
+          defaultValue={props.basespot?.name}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ required: true }}
+        />
 
         <FieldError name="name" className="rw-field-error" />
 
@@ -65,14 +61,13 @@ const BasespotForm = (props: BasespotFormProps) => {
           Description
         </Label>
 
-          <TextField
-            name="description"
-            defaultValue={props.basespot?.description}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ required: true }}
-          />
-
+        <TextField
+          name="description"
+          defaultValue={props.basespot?.description}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ required: true }}
+        />
 
         <FieldError name="description" className="rw-field-error" />
 
@@ -84,14 +79,13 @@ const BasespotForm = (props: BasespotFormProps) => {
           Latitude
         </Label>
 
-          <TextField
-            name="latitude"
-            defaultValue={props.basespot?.latitude}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ valueAsNumber: true, required: true }}
-          />
-
+        <TextField
+          name="latitude"
+          defaultValue={props.basespot?.latitude}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ valueAsNumber: true, required: true }}
+        />
 
         <FieldError name="latitude" className="rw-field-error" />
 
@@ -103,14 +97,13 @@ const BasespotForm = (props: BasespotFormProps) => {
           Longitude
         </Label>
 
-          <TextField
-            name="longitude"
-            defaultValue={props.basespot?.longitude}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ valueAsNumber: true, required: true }}
-          />
-
+        <TextField
+          name="longitude"
+          defaultValue={props.basespot?.longitude}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ valueAsNumber: true, required: true }}
+        />
 
         <FieldError name="longitude" className="rw-field-error" />
 
@@ -122,13 +115,12 @@ const BasespotForm = (props: BasespotFormProps) => {
           Image
         </Label>
 
-          <TextField
-            name="image"
-            defaultValue={props.basespot?.image}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-
+        <TextField
+          name="image"
+          defaultValue={props.basespot?.image}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
 
         <FieldError name="image" className="rw-field-error" />
 
@@ -139,14 +131,31 @@ const BasespotForm = (props: BasespotFormProps) => {
         >
           Map
         </Label>
-
-          <TextField
-            name="Map"
-            defaultValue={props.basespot?.Map}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-
+        <SelectField
+          className="rw-input"
+          name="Map"
+          defaultValue={props.basespot?.Map}
+          errorClassName="rw-input rw-input-error"
+        >
+          <option value="TheIsland">The Island</option>
+          <option value="TheCenter">The Center</option>
+          <option value="ScorchedEarth">Scorched Earth</option>
+          <option value="Ragnarok">Ragnarok</option>
+          <option value="Abberation">Abberation</option>
+          <option value="Extinction">Extinction</option>
+          <option value="Gen1">Genesis</option>
+          <option value="Gen2">Genesis 2</option>
+          <option value="Valguero">Valguero</option>
+          <option value="CrystalIsles">Crystal Isles</option>
+          <option value="Fjordur">Fjordur</option>
+          <option value="LostIsland">Lost Island</option>
+        </SelectField>
+        {/* <TextField
+          name="Map"
+          defaultValue={props.basespot?.Map}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        /> */}
 
         <FieldError name="Map" className="rw-field-error" />
 
@@ -158,27 +167,23 @@ const BasespotForm = (props: BasespotFormProps) => {
           Estimated for players
         </Label>
 
-          <TextField
-            name="estimatedForPlayers"
-            defaultValue={props.basespot?.estimatedForPlayers}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-
+        <TextField
+          name="estimatedForPlayers"
+          defaultValue={props.basespot?.estimatedForPlayers}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
 
         <FieldError name="estimatedForPlayers" className="rw-field-error" />
 
         <div className="rw-button-group">
-          <Submit
-            disabled={props.loading}
-            className="rw-button rw-button-blue"
-          >
+          <Submit disabled={props.loading} className="rw-button rw-button-blue">
             Save
           </Submit>
         </div>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default BasespotForm
+export default BasespotForm;
