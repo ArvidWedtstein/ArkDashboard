@@ -8,9 +8,8 @@
 [web]
   title = "ArkDashboard"
   port = 8910
-  apiUrl = "/.netlify/functions"
-  includeEnvironmentVariables = [] # any ENV vars that should be available to the web side, see https://redwoodjs.com/docs/environment-variables#web
-  experimentalFastRefresh = true
+  apiUrl = "/.redwood/functions"
+  includeEnvironmentVariables = ["SUPABASE_URL", "SUPABASE_KEY"] # any ENV vars that should be available to the web side, see https://redwoodjs.com/docs/environment-variables#web
 [api]
   port = 8911
 [browser]
