@@ -136,7 +136,7 @@ const SignupPage = () => {
 
   return (
     <>
-      <h1>Sign Up</h1>
+      <h1>Sign Uppo</h1>
       <Form onSubmit={onSubmit}>
         {error && <p>{error}</p>}
         <TextField name="email" placeholder="email" />
