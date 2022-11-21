@@ -29,7 +29,8 @@ const Account = () => {
       setLoading(true)
       console.log(supabase)
 
-      const user = supabase.auth.user()
+      // const user = supabase.auth.user()
+      const user = currentUser
 
       let { data, error, status } = await supabase
         .from('profiles')
@@ -57,7 +58,8 @@ const Account = () => {
   async function updateProfile({ username, website, avatar_url }) {
     try {
       setLoading(true)
-      const user = supabase.auth.user()
+      // const user = supabase.auth.user()
+      const user = currentUser
       const updates = {
         id: user.id,
         username,
