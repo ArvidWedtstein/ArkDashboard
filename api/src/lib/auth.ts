@@ -39,10 +39,10 @@ export const getCurrentUser = async (
     return null;
   }
 
-  const { roles } = parseJWT({ decoded });
+  const { roles, ...t } = parseJWT({ decoded });
 
   if (roles) {
-    return { ...decoded, roles, test: "test" };
+    return { ...decoded, roles, test: "test", t };
   }
 
   console.log(decoded);
