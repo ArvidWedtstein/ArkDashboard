@@ -19,13 +19,13 @@ const supabaseClient = createClient(
 const App = () => (
   <FatalErrorBoundary page={FatalErrorPage}>
     <RedwoodProvider titleTemplate="%PageTitle | %AppTitle">
-      <AuthProvider client={supabaseClient} type="supabase">
-        <AuthProvider type="dbAuth" client={WebAuthnClient}>
-          <RedwoodApolloProvider>
-            <Routes />
-          </RedwoodApolloProvider>
-        </AuthProvider>
+      {/* <AuthProvider type="dbAuth" client={WebAuthnClient}> */}
+      <AuthProvider type="supabase" client={supabaseClient}>
+        <RedwoodApolloProvider>
+          <Routes />
+        </RedwoodApolloProvider>
       </AuthProvider>
+      {/* </AuthProvider> */}
     </RedwoodProvider>
   </FatalErrorBoundary>
 );

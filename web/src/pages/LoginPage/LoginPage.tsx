@@ -25,21 +25,33 @@ const LoginPage = ({ type }) => {
     logIn,
     reauthenticate,
   } = useAuth()
-  const [shouldShowWebAuthn, setShouldShowWebAuthn] = useState(false)
-  const [showWebAuthn, setShowWebAuthn] = useState(
-    webAuthn.isEnabled() && type !== 'password'
-  )
+
+
+  // const [shouldShowWebAuthn, setShouldShowWebAuthn] = useState(false)
+  // const [showWebAuthn, setShowWebAuthn] = useState(
+  //   webAuthn.isEnabled() && type !== 'password'
+  // )
 
   // should redirect right after login or wait to show the webAuthn prompts?
+  // useEffect(() => {
+  //   if (isAuthenticated && (!shouldShowWebAuthn || webAuthn.isEnabled())) {
+  //     navigate(REDIRECT)
+  //   }
+  // }, [isAuthenticated, shouldShowWebAuthn])
   useEffect(() => {
-    if (isAuthenticated && (!shouldShowWebAuthn || webAuthn.isEnabled())) {
+    if (isAuthenticated) {
       navigate(REDIRECT)
     }
-  }, [isAuthenticated, shouldShowWebAuthn])
+  }, [isAuthenticated])
 
   // if WebAuthn is enabled, show the prompt as soon as the page loads
+  // useEffect(() => {
+  //   if (!loading && !isAuthenticated && showWebAuthn) {
+  //     onAuthenticate()
+  //   }
+  // }, [loading, isAuthenticated])
   useEffect(() => {
-    if (!loading && !isAuthenticated && showWebAuthn) {
+    if (!loading && !isAuthenticated) {
       onAuthenticate()
     }
   }, [loading, isAuthenticated])
@@ -51,11 +63,11 @@ const LoginPage = ({ type }) => {
   }, [])
 
   const onSubmit = async (data) => {
-    const webAuthnSupported = await webAuthn.isSupported()
+    // const webAuthnSupported = await webAuthn.isSupported()
 
-    if (webAuthnSupported) {
-      setShouldShowWebAuthn(true)
-    }
+    // if (webAuthnSupported) {
+    //   setShouldShowWebAuthn(true)
+    // }
     const response = await logIn({ ...data })
 
     if (response.message) {
@@ -66,8 +78,8 @@ const LoginPage = ({ type }) => {
       toast.error(response.error)
     } else {
       // user logged in
-      if (webAuthnSupported) {
-        setShowWebAuthn(true)
+      if (false) { // if (webAuthnSupported)
+        // setShowWebAuthn(true)
       } else {
         toast.success(WELCOME_MESSAGE)
       }
@@ -104,7 +116,7 @@ const LoginPage = ({ type }) => {
 
   const onSkip = () => {
     toast.success(WELCOME_MESSAGE)
-    setShouldShowWebAuthn(false)
+    // setShouldShowWebAuthn(false)
   }
 
   const AuthWebAuthnPrompt = () => {
@@ -199,6 +211,7 @@ const LoginPage = ({ type }) => {
   )
 
   const formToRender = () => {
+    let showWebAuthn = false
     if (showWebAuthn) {
       if (webAuthn.isEnabled()) {
         return <AuthWebAuthnPrompt />
@@ -211,6 +224,7 @@ const LoginPage = ({ type }) => {
   }
 
   const linkToRender = () => {
+    let showWebAuthn = false
     if (showWebAuthn) {
       if (webAuthn.isEnabled()) {
         return (
