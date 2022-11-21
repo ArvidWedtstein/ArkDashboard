@@ -64,7 +64,7 @@ const Avatar = ({ url, size, onUpload, className = "" }: { url: string, size: nu
       ) : (
         <div className="avatar no-image" style={{ height: size, width: size }} />
       )}
-      <div style={{ width: size }}>
+      <form style={{ width: size }}>
         {/* <label className="button primary block" htmlFor="single">
           {uploading ? 'Uploading ...' : 'Upload'}
         </label> */}
@@ -85,7 +85,7 @@ const Avatar = ({ url, size, onUpload, className = "" }: { url: string, size: nu
           disabled={uploading}
           onChange={uploadAvatar}
         />
-      </div>
+      </form>
     </div>
   )
 }
