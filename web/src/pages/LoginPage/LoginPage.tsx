@@ -20,54 +20,54 @@ const REDIRECT = routes.home()
 const LoginPage = ({ type }) => {
   const {
     isAuthenticated,
-    client: webAuthn,
+    client,
     loading,
     logIn,
     reauthenticate,
   } = useAuth()
 
+  const [shouldShowclient, setShouldShowclient] = useState(false)
+  const [showclient, setShowclient] = useState(
+    client.isEnabled() && type !== 'password'
+  )
 
-  // const [shouldShowWebAuthn, setShouldShowWebAuthn] = useState(false)
-  // const [showWebAuthn, setShowWebAuthn] = useState(
-  //   webAuthn.isEnabled() && type !== 'password'
-  // )
-
-  // should redirect right after login or wait to show the webAuthn prompts?
-  // useEffect(() => {
-  //   if (isAuthenticated && (!shouldShowWebAuthn || webAuthn.isEnabled())) {
-  //     navigate(REDIRECT)
-  //   }
-  // }, [isAuthenticated, shouldShowWebAuthn])
+  // should redirect right after login or wait to show the client prompts?
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && (!shouldShowclient || client.isEnabled())) {
       navigate(REDIRECT)
     }
-  }, [isAuthenticated])
-
-  // if WebAuthn is enabled, show the prompt as soon as the page loads
+  }, [isAuthenticated, shouldShowclient])
   // useEffect(() => {
-  //   if (!loading && !isAuthenticated && showWebAuthn) {
-  //     onAuthenticate()
+  //   if (isAuthenticated) {
+  //     navigate(REDIRECT)
   //   }
-  // }, [loading, isAuthenticated])
+  // }, [isAuthenticated])
+
+  // if client is enabled, show the prompt as soon as the page loads
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
+    if (!loading && !isAuthenticated && showclient) {
       onAuthenticate()
     }
   }, [loading, isAuthenticated])
+  // useEffect(() => {
+  //   if (!loading && !isAuthenticated) {
+  //     onAuthenticate()
+  //   }
+  // }, [loading, isAuthenticated])
 
   // focus on the username field as soon as the page loads
   const usernameRef = useRef(null)
+  // const passwordRef = useRef(null)
   useEffect(() => {
     usernameRef.current && usernameRef.current?.focus()
   }, [])
 
   const onSubmit = async (data) => {
-    // const webAuthnSupported = await webAuthn.isSupported()
+    const clientSupported = await client.isSupported()
 
-    // if (webAuthnSupported) {
-    //   setShouldShowWebAuthn(true)
-    // }
+    if (clientSupported) {
+      setShouldShowclient(true)
+    }
     const response = await logIn({ ...data })
 
     if (response.message) {
@@ -78,8 +78,8 @@ const LoginPage = ({ type }) => {
       toast.error(response.error)
     } else {
       // user logged in
-      if (false) { // if (webAuthnSupported)
-        // setShowWebAuthn(true)
+      if (clientSupported) {
+        setShowclient(true)
       } else {
         toast.success(WELCOME_MESSAGE)
       }
@@ -88,16 +88,18 @@ const LoginPage = ({ type }) => {
 
   const onAuthenticate = async () => {
     try {
-      // await webAuthn.authenticate()
+      // let resp = await logIn({ email: usernameRef.current.value, password: passwordRef.current.value })
+      await client.authenticate()
       await reauthenticate()
+      // console.log(resp)
       toast.success(WELCOME_MESSAGE)
       navigate(REDIRECT)
     } catch (e) {
-      if (e.name === 'WebAuthnDeviceNotFoundError') {
+      if (e.name === 'clientDeviceNotFoundError') {
         toast.error(
           'Device not found, log in with username/password to continue'
         )
-        // setShowWebAuthn(false)
+        setShowclient(false)
       } else {
         toast.error(e.message)
       }
@@ -106,7 +108,7 @@ const LoginPage = ({ type }) => {
 
   const onRegister = async () => {
     try {
-      await webAuthn.register()
+      await client.register()
       toast.success(WELCOME_MESSAGE)
       navigate(REDIRECT)
     } catch (e) {
@@ -116,13 +118,13 @@ const LoginPage = ({ type }) => {
 
   const onSkip = () => {
     toast.success(WELCOME_MESSAGE)
-    // setShouldShowWebAuthn(false)
+    setShouldShowclient(false)
   }
 
-  const AuthWebAuthnPrompt = () => {
+  const AuthclientPrompt = () => {
     return (
-      <div className="rw-webauthn-wrapper">
-        <h2>WebAuthn Login Enabled</h2>
+      <div className="rw-client-wrapper">
+        <h2>client Login Enabled</h2>
         <p>Log in with your fingerprint, face or PIN</p>
         <div className="rw-button-group">
           <button className="rw-button rw-button-blue" onClick={onAuthenticate}>
@@ -133,8 +135,8 @@ const LoginPage = ({ type }) => {
     )
   }
 
-  const RegisterWebAuthnPrompt = () => (
-    <div className="rw-webauthn-wrapper">
+  const RegisterclientPrompt = () => (
+    <div className="rw-client-wrapper">
       <h2>No more passwords!</h2>
       <p>
         Depending on your device you can log in with your fingerprint, face or
@@ -188,6 +190,7 @@ const LoginPage = ({ type }) => {
         className="rw-input"
         errorClassName="rw-input rw-input-error"
         autoComplete="current-password"
+        // ref={passwordRef}
         validation={{
           required: {
             value: true,
@@ -211,12 +214,12 @@ const LoginPage = ({ type }) => {
   )
 
   const formToRender = () => {
-    let showWebAuthn = false
-    if (showWebAuthn) {
-      if (webAuthn.isEnabled()) {
-        return <AuthWebAuthnPrompt />
+    let showclient = false
+    if (showclient) {
+      if (client.isEnabled()) {
+        return <AuthclientPrompt />
       } else {
-        return <RegisterWebAuthnPrompt />
+        return <RegisterclientPrompt />
       }
     } else {
       return <PasswordForm />
@@ -224,9 +227,9 @@ const LoginPage = ({ type }) => {
   }
 
   const linkToRender = () => {
-    let showWebAuthn = false
-    if (showWebAuthn) {
-      if (webAuthn.isEnabled()) {
+    let showclient = false
+    if (showclient) {
+      if (client.isEnabled()) {
         return (
           <div className="rw-login-link">
             <span>or login with </span>{' '}

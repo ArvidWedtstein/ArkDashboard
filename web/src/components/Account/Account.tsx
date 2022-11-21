@@ -27,7 +27,7 @@ const Account = () => {
   async function getProfile() {
     try {
       setLoading(true)
-      console.log(supabase)
+      console.log(currentUser)
 
       // const user = supabase.auth.user()
       const user = currentUser

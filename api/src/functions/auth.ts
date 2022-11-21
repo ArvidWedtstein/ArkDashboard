@@ -173,7 +173,7 @@ export const handler = async (
       salt: "salt",
       resetToken: "resetToken",
       resetTokenExpiresAt: "resetTokenExpiresAt",
-      // challenge: "webAuthnChallenge",
+      challenge: "webAuthnChallenge",
     },
 
     // Specifies attributes on the cookie that dbAuth sets in order to remember
@@ -196,7 +196,7 @@ export const handler = async (
 
     // See https://redwoodjs.com/docs/authentication/dbauth#webauthn for options
     webAuthn: {
-      enabled: false,
+      enabled: true,
       expires: 60 * 60 * 14,
       name: "Webauthn Test",
       domain:
