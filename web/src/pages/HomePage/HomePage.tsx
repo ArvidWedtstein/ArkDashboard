@@ -38,7 +38,7 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-          {isAuthenticated ? <Account /> : null}
+          {/* {isAuthenticated ? <Account /> : <></>} */}
         </div>
       </div>
     </>
