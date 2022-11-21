@@ -135,7 +135,7 @@ const Account = () => {
     //     </div>
     //   </div>
     // </div>
-    <main className="row flex-center flex">
+    <main className="">
       <section className="relative block h-500-px">
         <div className="absolute top-0 w-full h-full bg-center bg-cover" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1499336315816-097655dcfbda?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=crop&amp;w=2710&amp;q=80');" }}>
           <span id="blackOverlay" className="w-full h-full absolute opacity-50 bg-black"></span>
@@ -147,8 +147,8 @@ const Account = () => {
         </div>
       </section>
       <section className="relative py-16 bg-blueGray-200">
-        <div className="container mx-auto px-4">
-          <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
+        <div className="container-fluid mx-auto px-4">
+          <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg">
             <div className="px-6">
               <div className="flex flex-wrap justify-center">
                 <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
@@ -223,7 +223,6 @@ const Account = () => {
 
                       Thank you, God Bless you, and God Bless the United States of America.
                     </p>
-                    <a href="#pablo" className="font-normal text-pink-500">Show more</a>
                   </div>
                 </div>
               </div>
