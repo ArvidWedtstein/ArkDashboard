@@ -3,8 +3,6 @@ import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "@redwoodjs/auth";
 import { useEffect, useState } from "react";
 import Account from "src/components/Account/Account";
-import Lookup from "src/components/Lookup/Lookup";
-
 const HomePage = () => {
   const { isAuthenticated } = useAuth()
   return (
@@ -41,7 +39,6 @@ const HomePage = () => {
           </div>
         </div>
         {/* {isAuthenticated ? <Account /> : <></>} */}
-        <Lookup items={[{ name: "test" }, { name: "test2" }]}>Test</Lookup>
       </div>
     </>
   );

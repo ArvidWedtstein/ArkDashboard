@@ -26,7 +26,6 @@ const LoginPage = ({ type }) => {
     reauthenticate,
   } = useAuth()
   const [shouldShowWebAuthn, setShouldShowWebAuthn] = useState(false)
-  console.log(webAuthn)
   const [showWebAuthn, setShowWebAuthn] = useState(
     webAuthn.isEnabled() && type !== 'password'
   )
