@@ -8,13 +8,9 @@ import { toast } from '@redwoodjs/web/dist/toast'
 const Account = () => {
 
   const { client: supabase, currentUser, logOut } = useAuth()
-
   const [loading, setLoading] = useState(true)
-
   const [username, setUsername] = useState(null)
-
   const [website, setWebsite] = useState(null)
-
   const [avatar_url, setAvatarUrl] = useState(null)
 
 
@@ -30,7 +26,6 @@ const Account = () => {
   async function getProfile() {
     try {
       setLoading(true)
-      console.log(supabase)
 
       const user = supabase.auth.user()
 
