@@ -21,13 +21,13 @@ const Account = () => {
 
     getProfile()
 
-  }, [supabase.auth.session])
+  }, [])
 
 
   async function getProfile() {
     try {
       setLoading(true)
-      console.log(supabase.auth)
+      console.log(supabase)
 
       const user = supabase.auth.user()
 
