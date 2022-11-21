@@ -26,6 +26,7 @@ const LoginPage = ({ type }) => {
     reauthenticate,
   } = useAuth()
   const [shouldShowWebAuthn, setShouldShowWebAuthn] = useState(false)
+  console.log(webAuthn)
   const [showWebAuthn, setShowWebAuthn] = useState(
     webAuthn.isEnabled() && type !== 'password'
   )
@@ -45,9 +46,9 @@ const LoginPage = ({ type }) => {
   }, [loading, isAuthenticated])
 
   // focus on the username field as soon as the page loads
-  const usernameRef = useRef()
+  const usernameRef = useRef(null)
   useEffect(() => {
-    usernameRef.current && usernameRef.current.focus()
+    usernameRef.current && usernameRef.current?.focus()
   }, [])
 
   const onSubmit = async (data) => {
