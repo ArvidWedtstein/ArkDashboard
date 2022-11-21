@@ -28,7 +28,7 @@ const Dropdown = ({ }) => {
 
       {isComponentVisible ? <div className="absolute right-0 top-16 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabIndex={-1}>
         <div className="py-1" role="none">
-          {isAuthenticated ? <Link to={routes.tribes()} className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabIndex={-1} id="menu-item-0">Account</Link> : null}
+          {isAuthenticated ? <Link to={routes.account()} className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabIndex={-1} id="menu-item-0">Account</Link> : null}
           {isAuthenticated ? <button onClick={logOut} className="text-gray-700 block w-full px-4 py-2 text-left text-sm" role="menuitem" tabIndex={-1} id="menu-item-3">Sign out</button>
             : <Link className="text-gray-700 block w-full px-4 py-2 text-left text-sm" to={routes.login()}>Login</Link>}
         </div>

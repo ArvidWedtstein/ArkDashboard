@@ -25,12 +25,16 @@ const Routes = () => {
           </Private>
           <Route path="/basespots" page={BasespotBasespotsPage} name="basespots" />
         </Set>
+
         <Set wrap={ScaffoldLayout} title="Tribes" titleTo="tribes" buttonLabel="New Tribe" buttonTo="newTribe">
           <Route path="/tribes/new" page={TribeNewTribePage} name="newTribe" />
           <Route path="/tribes/{id:Int}/edit" page={TribeEditTribePage} name="editTribe" />
           <Route path="/tribes/{id:Int}" page={TribeTribePage} name="tribe" />
           <Route path="/tribes" page={TribeTribesPage} name="tribes" />
         </Set>
+        <Private unauthenticated="login">
+          <Route path="/account" page={AccountPage} name="account" />
+        </Private>
         <Route path="/login" page={LoginPage} name="login" />
         <Route path="/signup" page={SignupPage} name="signup" />
         <Route path="/forgot-password" page={ForgotPasswordPage} name="forgotPassword" />
