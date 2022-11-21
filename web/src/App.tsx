@@ -1,6 +1,7 @@
-import { AuthProvider } from "@redwoodjs/auth";
-import { createClient } from "@supabase/supabase-js";
-import WebAuthnClient from "@redwoodjs/auth/webAuthn";
+import { AuthProvider } from '@redwoodjs/auth'
+import { createClient } from '@supabase/supabase-js'
+
+// import WebAuthnClient from "@redwoodjs/auth/webAuthn";
 
 import { FatalErrorBoundary, RedwoodProvider } from "@redwoodjs/web";
 import { RedwoodApolloProvider } from "@redwoodjs/web/apollo";
@@ -19,12 +20,12 @@ const supabaseClient = createClient(
 const App = () => (
   <FatalErrorBoundary page={FatalErrorPage}>
     <RedwoodProvider titleTemplate="%PageTitle | %AppTitle">
-      <AuthProvider type="supabase" client={supabaseClient}>
-        <AuthProvider type="dbAuth" client={WebAuthnClient}>
-          <RedwoodApolloProvider>
-            <Routes />
-          </RedwoodApolloProvider>
-        </AuthProvider>
+      <AuthProvider client={supabaseClient} type="supabase">
+        {/* <AuthProvider type="dbAuth" client={WebAuthnClient}> */}
+        <RedwoodApolloProvider>
+          <Routes />
+        </RedwoodApolloProvider>
+        {/* </AuthProvider> */}
       </AuthProvider>
     </RedwoodProvider>
   </FatalErrorBoundary>

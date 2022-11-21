@@ -5,10 +5,7 @@ import { AuthenticationError, ForbiddenError } from "@redwoodjs/graphql-server";
  * Represents the user attributes returned by the decoding the
  * Authentication provider's JWT together with an optional list of roles.
  */
-type RedwoodUser = Record<string, unknown> & {
-  roles?: string[];
-  email?: string;
-};
+type RedwoodUser = Record<string, unknown> & { roles?: string[] };
 
 /**
  * getCurrentUser returns the user information together with
@@ -39,13 +36,11 @@ export const getCurrentUser = async (
     return null;
   }
 
-  const { roles, ...t } = parseJWT({ decoded });
+  const { roles } = parseJWT({ decoded });
 
   if (roles) {
-    return { ...decoded, roles, test: "test", t };
+    return { ...decoded, roles };
   }
-
-  console.log(decoded);
 
   return { ...decoded };
 };
