@@ -196,7 +196,7 @@ export const handler = async (
 
     // See https://redwoodjs.com/docs/authentication/dbauth#webauthn for options
     webAuthn: {
-      enabled: true,
+      enabled: false,
       expires: 60 * 60 * 14,
       name: "Webauthn Test",
       domain:

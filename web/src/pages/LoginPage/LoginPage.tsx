@@ -76,7 +76,7 @@ const LoginPage = ({ type }) => {
 
   const onAuthenticate = async () => {
     try {
-      await webAuthn.authenticate()
+      // await webAuthn.authenticate()
       await reauthenticate()
       toast.success(WELCOME_MESSAGE)
       navigate(REDIRECT)
@@ -85,7 +85,7 @@ const LoginPage = ({ type }) => {
         toast.error(
           'Device not found, log in with username/password to continue'
         )
-        setShowWebAuthn(false)
+        // setShowWebAuthn(false)
       } else {
         toast.error(e.message)
       }

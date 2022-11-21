@@ -1,11 +1,14 @@
-import { parseJWT, Decoded } from '@redwoodjs/api'
-import { AuthenticationError, ForbiddenError } from '@redwoodjs/graphql-server'
+import { parseJWT, Decoded } from "@redwoodjs/api";
+import { AuthenticationError, ForbiddenError } from "@redwoodjs/graphql-server";
 
 /**
  * Represents the user attributes returned by the decoding the
  * Authentication provider's JWT together with an optional list of roles.
  */
-type RedwoodUser = Record<string, unknown> & { roles?: string[] }
+type RedwoodUser = Record<string, unknown> & {
+  roles?: string[];
+  email?: string;
+};
 
 /**
  * getCurrentUser returns the user information together with
@@ -33,17 +36,17 @@ export const getCurrentUser = async (
   decoded: Decoded
 ): Promise<RedwoodUser | null> => {
   if (!decoded) {
-    return null
+    return null;
   }
 
-  const { roles } = parseJWT({ decoded })
+  const { roles } = parseJWT({ decoded });
 
   if (roles) {
-    return { ...decoded, roles }
+    return { ...decoded, roles };
   }
 
-  return { ...decoded }
-}
+  return { ...decoded };
+};
 
 /**
  * The user is authenticated if there is a currentUser in the context
@@ -51,14 +54,14 @@ export const getCurrentUser = async (
  * @returns {boolean} - If the currentUser is authenticated
  */
 export const isAuthenticated = (): boolean => {
-  return !!context.currentUser
-}
+  return !!context.currentUser;
+};
 
 /**
  * When checking role membership, roles can be a single value, a list, or none.
  * You can use Prisma enums too (if you're using them for roles), just import your enum type from `@prisma/client`
  */
-type AllowedRoles = string | string[] | undefined
+type AllowedRoles = string | string[] | undefined;
 
 /**
  * Checks if the currentUser is authenticated (and assigned one of the given roles)
@@ -70,18 +73,18 @@ type AllowedRoles = string | string[] | undefined
  */
 export const hasRole = (roles: AllowedRoles): boolean => {
   if (!isAuthenticated()) {
-    return false
+    return false;
   }
 
-  const currentUserRoles = context.currentUser?.roles
+  const currentUserRoles = context.currentUser?.roles;
 
-  if (typeof roles === 'string') {
-    if (typeof currentUserRoles === 'string') {
+  if (typeof roles === "string") {
+    if (typeof currentUserRoles === "string") {
       // roles to check is a string, currentUser.roles is a string
-      return currentUserRoles === roles
+      return currentUserRoles === roles;
     } else if (Array.isArray(currentUserRoles)) {
       // roles to check is a string, currentUser.roles is an array
-      return currentUserRoles?.some((allowedRole) => roles === allowedRole)
+      return currentUserRoles?.some((allowedRole) => roles === allowedRole);
     }
   }
 
@@ -90,16 +93,16 @@ export const hasRole = (roles: AllowedRoles): boolean => {
       // roles to check is an array, currentUser.roles is an array
       return currentUserRoles?.some((allowedRole) =>
         roles.includes(allowedRole)
-      )
-    } else if (typeof currentUserRoles === 'string') {
+      );
+    } else if (typeof currentUserRoles === "string") {
       // roles to check is an array, currentUser.roles is a string
-      return roles.some((allowedRole) => currentUserRoles === allowedRole)
+      return roles.some((allowedRole) => currentUserRoles === allowedRole);
     }
   }
 
   // roles not found
-  return false
-}
+  return false;
+};
 
 /**
  * Use requireAuth in your services to check that a user is logged in,
@@ -117,10 +120,10 @@ export const hasRole = (roles: AllowedRoles): boolean => {
  */
 export const requireAuth = ({ roles }: { roles?: AllowedRoles } = {}) => {
   if (!isAuthenticated()) {
-    throw new AuthenticationError("You don't have permission to do that.")
+    throw new AuthenticationError("You don't have permission to do that.");
   }
 
   if (roles && !hasRole(roles)) {
-    throw new ForbiddenError("You don't have access to do that.")
+    throw new ForbiddenError("You don't have access to do that.");
   }
-}
+};
