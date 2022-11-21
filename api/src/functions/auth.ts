@@ -173,13 +173,13 @@ export const handler = async (
       salt: "salt",
       resetToken: "resetToken",
       resetTokenExpiresAt: "resetTokenExpiresAt",
-      challenge: "webAuthnChallenge",
+      // challenge: "webAuthnChallenge",
     },
 
     // Specifies attributes on the cookie that dbAuth sets in order to remember
     // who is logged in. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#restrict_access_to_cookies
     cookie: {
-      HttpOnly: true,
+      HttpOnly: false,
       Path: "/",
       SameSite: "Strict",
       Secure: process.env.NODE_ENV !== "development" ? true : false,
@@ -200,11 +200,11 @@ export const handler = async (
       expires: 60 * 60 * 14,
       name: "Webauthn Test",
       domain:
-        process.env.NODE_ENV === "development" ? "localhost" : "server.com",
+        process.env.NODE_ENV === "development" ? "localhost" : "netlify.app",
       origin:
         process.env.NODE_ENV === "development"
           ? "http://localhost:8910"
-          : "https://server.com",
+          : "https://arkdashboard.netlify.app/",
       type: "platform",
       timeout: 60000,
       credentialFields: {
