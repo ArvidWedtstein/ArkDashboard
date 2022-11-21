@@ -66,7 +66,7 @@ const SignupPage = () => {
                   >
                     Email
                   </Label>
-                  <EmailField
+                  <TextField
                     name="email"
                     className="rw-input"
                     errorClassName="rw-input rw-input-error"

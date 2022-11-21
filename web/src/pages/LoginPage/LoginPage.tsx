@@ -39,7 +39,7 @@ const LoginPage = ({ type }) => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await logIn({ email: data.email, password: data.password })
+      const response = await logIn({ ...data })
 
       if (response?.error) {
         toast.error(response.error)
@@ -61,7 +61,7 @@ const LoginPage = ({ type }) => {
       >
         Email
       </Label>
-      <EmailField
+      <TextField
         name="email"
         className="rw-input"
         errorClassName="rw-input rw-input-error"
