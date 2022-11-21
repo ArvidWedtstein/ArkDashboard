@@ -65,9 +65,9 @@ const Avatar = ({ url, size, onUpload, className = "" }: { url: string, size: nu
         <div className="avatar no-image" style={{ height: size, width: size }} />
       )}
       <div style={{ width: size }}>
-        <label className="button primary block" htmlFor="single">
+        {/* <label className="button primary block" htmlFor="single">
           {uploading ? 'Uploading ...' : 'Upload'}
-        </label>
+        </label> */}
         <input
           style={{
             visibility: 'hidden',
@@ -79,12 +79,12 @@ const Avatar = ({ url, size, onUpload, className = "" }: { url: string, size: nu
           onChange={uploadAvatar}
           disabled={uploading}
         />
-        {/* <ImageField
+        <ImageField
           name="image"
           accept="image/*"
           disabled={uploading}
           onChange={uploadAvatar}
-        /> */}
+        />
       </div>
     </div>
   )

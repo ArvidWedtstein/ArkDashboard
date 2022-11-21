@@ -39,7 +39,10 @@ const LoginPage = ({ type }) => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await logIn({ ...data })
+      const response = await logIn({
+        // provider: 'discord',
+        ...data
+      })
 
       if (response?.error) {
         toast.error(response.error)
