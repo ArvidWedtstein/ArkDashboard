@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@redwoodjs/auth'
+import { ImageField } from '@redwoodjs/forms'
 
-const Avatar = ({ url, size, onUpload }) => {
+const Avatar = ({ url, size, onUpload, className = "" }: { url: string, size: number, onUpload: any, className?: string }) => {
   const { client: supabase } = useAuth()
 
   const [avatarUrl, setAvatarUrl] = useState(null)
@@ -57,7 +58,7 @@ const Avatar = ({ url, size, onUpload }) => {
         <img
           src={avatarUrl}
           alt="Avatar"
-          className="avatar image"
+          className={className}
           style={{ height: size, width: size }}
         />
       ) : (
@@ -77,6 +78,12 @@ const Avatar = ({ url, size, onUpload }) => {
           accept="image/*"
           onChange={uploadAvatar}
           disabled={uploading}
+        />
+        <ImageField
+          name="image"
+          accept="image/*"
+          disabled={uploading}
+          onChange={uploadAvatar}
         />
       </div>
     </div>

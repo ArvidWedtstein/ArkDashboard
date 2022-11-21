@@ -78,7 +78,7 @@ const SignupPage = () => {
                       },
                     }}
                   />
-                  <FieldError name="Email" className="rw-field-error" />
+                  <FieldError name="email" className="rw-field-error" />
 
                   <Label
                     name="password"
