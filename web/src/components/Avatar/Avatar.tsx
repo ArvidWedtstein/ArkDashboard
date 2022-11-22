@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@redwoodjs/auth'
 import { ImageField } from '@redwoodjs/forms'
 
-const Avatar = ({ url, size, onUpload, className = "" }: { url: string, size: number, onUpload: any, className?: string }) => {
+const Avatar = ({ url, size, onUpload, className = "", storage = "avatars" }: { url: string, size: number, onUpload: any, className?: string, storage?: string }) => {
   const { client: supabase } = useAuth()
 
   const [avatarUrl, setAvatarUrl] = useState(null)
@@ -14,7 +14,7 @@ const Avatar = ({ url, size, onUpload, className = "" }: { url: string, size: nu
 
   async function downloadImage(path) {
     try {
-      const { data, error } = await supabase.storage.from('avatars').download(path)
+      const { data, error } = await supabase.storage.from(storage).download(path)
       if (error) {
         throw error
       }
@@ -38,7 +38,7 @@ const Avatar = ({ url, size, onUpload, className = "" }: { url: string, size: nu
       const fileName = `${Math.random()}.${fileExt}`
       const filePath = `${fileName}`
 
-      let { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file)
+      let { error: uploadError } = await supabase.storage.from(storage).upload(filePath, file)
 
       if (uploadError) {
         throw uploadError
@@ -65,9 +65,9 @@ const Avatar = ({ url, size, onUpload, className = "" }: { url: string, size: nu
         <div className="avatar no-image" style={{ height: size, width: size }} />
       )}
       <form style={{ width: size }}>
-        {/* <label className="button primary block" htmlFor="single">
+        <label className="mx-auto px-8 py-4 bg-slate-700 text-white" htmlFor="single">
           {uploading ? 'Uploading ...' : 'Upload'}
-        </label> */}
+        </label>
         <input
           style={{
             visibility: 'hidden',
@@ -79,12 +79,6 @@ const Avatar = ({ url, size, onUpload, className = "" }: { url: string, size: nu
           onChange={uploadAvatar}
           disabled={uploading}
         />
-        {/* <ImageField
-          name="image"
-          accept="image/*"
-          disabled={uploading}
-          onChange={uploadAvatar}
-        /> */}
       </form>
     </div>
   )

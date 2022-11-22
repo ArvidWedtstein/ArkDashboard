@@ -54,8 +54,9 @@ export default RedwoodDevFatalErrorPage ||
       />
       <section>
         <h1>
-          <span>Something went wrong</span>
+          <span>Something went terribly wrong.</span>
         </h1>
+        <h6>Or maybe you fucked up?</h6>
       </section>
     </main>
   ))

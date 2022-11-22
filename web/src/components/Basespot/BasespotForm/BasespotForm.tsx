@@ -10,6 +10,8 @@ import {
 
 import type { EditBasespotById, UpdateBasespotInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
+import Avatar from "src/components/Avatar/Avatar";
+import { useState } from "react";
 
 type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
 
@@ -21,10 +23,11 @@ interface BasespotFormProps {
 }
 
 const BasespotForm = (props: BasespotFormProps) => {
+  const [thumbnailUrl, setThumbnailUrl] = useState(null)
   const onSubmit = (data: FormBasespot) => {
+    data.Map = thumbnailUrl
     props.onSave(data, props?.basespot?.id);
   };
-
   return (
     <div className="rw-form-wrapper">
       <Form<FormBasespot> onSubmit={onSubmit} error={props.error}>
@@ -114,6 +117,15 @@ const BasespotForm = (props: BasespotFormProps) => {
         >
           Image
         </Label>
+
+        <Avatar
+          className="shadow-xl rounded-full h-auto align-middle border-none absolute -mt-16 max-w-150-px"
+          url={props.basespot?.image}
+          size={150}
+          storage="basespotimages/thumbnails"
+          onUpload={(url) => {
+            setThumbnailUrl(url)
+          }} />
 
         <TextField
           name="image"

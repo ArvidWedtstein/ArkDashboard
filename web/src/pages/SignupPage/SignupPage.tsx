@@ -45,11 +45,12 @@ const SignupPage = () => {
         toast.error(response.error)
       } else {
         toast.success('Check your email for the login link!')
-        navigate(routes.home())
+        // navigate(routes.home())
       }
     } catch (error) {
       toast.error(error.message)
     }
+    return
   }
   return (
     <>
