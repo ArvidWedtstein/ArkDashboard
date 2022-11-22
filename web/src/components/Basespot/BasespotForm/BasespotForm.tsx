@@ -150,12 +150,6 @@ const BasespotForm = (props: BasespotFormProps) => {
           <option value="Fjordur">Fjordur</option>
           <option value="LostIsland">Lost Island</option>
         </SelectField>
-        {/* <TextField
-          name="Map"
-          defaultValue={props.basespot?.Map}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        /> */}
 
         <FieldError name="Map" className="rw-field-error" />
 

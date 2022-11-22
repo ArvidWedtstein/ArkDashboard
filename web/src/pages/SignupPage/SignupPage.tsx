@@ -25,14 +25,17 @@ const SignupPage = () => {
   }, [isAuthenticated])
 
   // focus on email box on page load
-  const usernameRef = useRef<HTMLInputElement>(null)
+  const emailRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
-    usernameRef.current?.focus()
+    emailRef.current?.focus()
   }, [])
 
   const onSubmit = async (data) => {
     try {
-      const response = await client.auth.signUp({ ...data })
+      const response = await client.auth.signUp({
+        email: data.email,
+        password: data.password,
+      })
 
       if (response?.error) {
         toast.error(response.error)
@@ -70,7 +73,7 @@ const SignupPage = () => {
                     name="email"
                     className="rw-input"
                     errorClassName="rw-input rw-input-error"
-                    ref={usernameRef}
+                    ref={emailRef}
                     validation={{
                       required: {
                         value: true,
