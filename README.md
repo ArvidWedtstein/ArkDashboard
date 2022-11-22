@@ -281,7 +281,7 @@ Will come later
 [discordjs-url]: https://discord.com/developers/docs/intro
 [mongodb]: https://img.shields.io/badge/MongoDB-000000?style=for-the-badge&logo=mongodb&logoColor=white
 [mongodb-url]: https://www.mongodb.com/
-
+https://supabase.com/docs/guides/auth/auth-discord
 # README
 
 Welcome to [RedwoodJS](https://redwoodjs.com)!
