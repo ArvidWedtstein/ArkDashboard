@@ -18,11 +18,11 @@ import { toast, Toaster } from '@redwoodjs/web/toast'
 const SignupPage = () => {
   const { isAuthenticated, signUp, client } = useAuth()
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate(routes.home())
-    }
-  }, [isAuthenticated])
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     navigate(routes.home())
+  //   }
+  // }, [isAuthenticated])
 
   // focus on email box on page load
   // const emailRef = useRef<HTMLInputElement>(null)
@@ -32,7 +32,11 @@ const SignupPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await client.auth.signUp({
+      // const response = await client.auth.signUp({
+      //   email: data.email,
+      //   password: data.password,
+      // })
+      const response = await signUp({
         email: data.email,
         password: data.password,
       })
