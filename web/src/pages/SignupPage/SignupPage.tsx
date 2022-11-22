@@ -25,10 +25,10 @@ const SignupPage = () => {
   }, [isAuthenticated])
 
   // focus on email box on page load
-  const emailRef = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    emailRef.current?.focus()
-  }, [])
+  // const emailRef = useRef<HTMLInputElement>(null)
+  // useEffect(() => {
+  //   emailRef.current?.focus()
+  // }, [])
 
   const onSubmit = async (data) => {
     try {
@@ -73,7 +73,6 @@ const SignupPage = () => {
                     name="email"
                     className="rw-input"
                     errorClassName="rw-input rw-input-error"
-                    ref={emailRef}
                     validation={{
                       required: {
                         value: true,
