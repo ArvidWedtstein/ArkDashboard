@@ -79,12 +79,12 @@ const Avatar = ({ url, size, onUpload, className = "" }: { url: string, size: nu
           onChange={uploadAvatar}
           disabled={uploading}
         />
-        <ImageField
+        {/* <ImageField
           name="image"
           accept="image/*"
           disabled={uploading}
           onChange={uploadAvatar}
-        />
+        /> */}
       </form>
     </div>
   )
