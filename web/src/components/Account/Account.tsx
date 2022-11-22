@@ -219,9 +219,7 @@ const Account = () => {
                 <div className="flex flex-wrap justify-center">
                   <div className="w-full lg:w-9/12 px-4">
                     <p className="mb-4 text-lg leading-relaxed text-blueGray-700">
-                      They saw that I knew the Scriptures and that many of the values I held and that propelled me in my work were values they shared. Religious leaders like my friends Rev. Jim Wallis and Rabbi David Saperstein and Nathan Diament are working for justice and fighting for change. If you have health care, my plan will lower your premiums.
-
-                      Thank you, God Bless you, and God Bless the United States of America.
+                      When other websites give you text, they’re not sending the best. They’re not sending you, they’re sending words that have lots of problems and they’re bringing those problems with us. They’re bringing mistakes. They’re bringing misspellings. They’re typists… And some, I assume, are good words. I know words. I have the best words.
                     </p>
                   </div>
                 </div>
