@@ -150,7 +150,7 @@ const Account = () => {
                     value={username || ''}
                     onChange={(e) => setUsername(e.target.value)}
                   />
-                  <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Full Name</label>
+                  <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900">Full Name</label>
                   <input
                     id="fullname"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -160,7 +160,7 @@ const Account = () => {
                   />
                 </h3>
                 <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
-                  <label htmlFor="website" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Website</label>
+                  <label htmlFor="website" className="block mb-2 text-sm font-medium text-gray-900">Website</label>
                   <input
                     id="website"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -170,7 +170,7 @@ const Account = () => {
                   />
                 </div>
                 <div className="mb-2 text-blueGray-600 mt-10">
-                  <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                  <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Email</label>
                   <input
                     id="email"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -180,7 +180,7 @@ const Account = () => {
                   />
                 </div>
                 <div className="mb-2 text-blueGray-600">
-                  <label htmlFor="biography" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Biography</label>
+                  <label htmlFor="biography" className="block mb-2 text-sm font-medium text-gray-900">Biography</label>
                   <input
                     id="biography"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"

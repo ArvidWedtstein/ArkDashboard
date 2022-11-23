@@ -25,7 +25,7 @@ interface BasespotFormProps {
 const BasespotForm = (props: BasespotFormProps) => {
   const [thumbnailUrl, setThumbnailUrl] = useState(null)
   const onSubmit = (data: FormBasespot) => {
-    data.Map = thumbnailUrl
+    data.image = thumbnailUrl
     props.onSave(data, props?.basespot?.id);
   };
   return (
@@ -127,12 +127,12 @@ const BasespotForm = (props: BasespotFormProps) => {
             setThumbnailUrl(url)
           }} />
 
-        <TextField
+        {/* <TextField
           name="image"
           defaultValue={props.basespot?.image}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
-        />
+        /> */}
 
         <FieldError name="image" className="rw-field-error" />
 
