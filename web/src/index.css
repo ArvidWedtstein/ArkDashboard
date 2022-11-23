@@ -12,7 +12,7 @@
  * END --- SETUP TAILWINDCSS EDIT
  */
 
-.card-stack {
+.slides-stack {
   will-change: transform;
   position: relative;
   width: 20rem;
@@ -20,10 +20,10 @@
   margin-right: auto;
   margin-top: 1rem;
 }
-.card-set {
+.slides-set {
   display: none;
 }
-.card-set:checked + .card {
+.slides-set:checked + .slide {
   display: flex;
   opacity: 1;
   filter: blur(0);
@@ -32,7 +32,7 @@
   transition-delay: 0.3s;
   z-index: 0;
 }
-.card-set:checked + .card ~ .card {
+.slides-set:checked + .slide ~ .slide {
   z-index: -1;
   display: flex;
   opacity: 0.9;
@@ -41,7 +41,7 @@
   transition: transform 1.5s, opacity 1.5s, filter 0.5s;
   transition-delay: 0.4s;
 }
-.card-set:checked + .card ~ .card ~ .card {
+.slides-set:checked + .slide ~ .slide ~ .slide {
   z-index: -2;
   display: flex;
   opacity: 0.7;
@@ -50,7 +50,7 @@
   transition: transform 2s, opacity 2s, filter 1.5s;
   transition-delay: 0.5s;
 }
-.card-set:checked + .card ~ .card ~ .card ~ .card {
+.slides-set:checked + .slide ~ .slide ~ .slide ~ .slide {
   z-index: -3;
   display: flex;
   opacity: 0.5;
@@ -59,7 +59,7 @@
   transition: transform 2.5s, opacity 2.5s, filter 2s;
   transition-delay: 0.7s;
 }
-.card-set:checked + .card ~ .card ~ .card ~ .card ~ .card {
+.slides-set:checked + .slide ~ .slide ~ .slide ~ .slide ~ .slide {
   z-index: -4;
   display: flex;
   opacity: 0;
@@ -68,7 +68,7 @@
   transition: transform 3s, opacity 3s, filter 2.5s;
   transition-delay: 0.8s;
 }
-.card {
+.slide {
   display: flex;
   will-change: filter opacity transform;
   position: absolute;
@@ -86,12 +86,12 @@
   z-index: 1;
   min-height: 50vh;
 }
-.card::before {
+.slide::before {
   content: "";
   display: block;
   padding-bottom: 130%;
 }
-.card .content {
+.slide .content {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -99,7 +99,7 @@
   padding: 2rem;
   text-align: center;
 }
-.card label {
+.slide label {
   color: white;
   display: inline-block;
   padding: 1rem 2rem;
@@ -108,9 +108,74 @@
   border-radius: 200px;
   user-select: none;
 }
-.card label:hover {
+.slide label:hover {
   background-color: #6fda92;
 }
-.card label:active {
+.slide label:active {
   background-color: #248c46;
+}
+
+:root {
+  --card-padding: 24px;
+  --card-height: 340px;
+  --card-skeleton: linear-gradient(lightgrey var(--card-height), transparent 0);
+  --avatar-size: 32px;
+  --avatar-position: var(--card-padding) var(--card-padding);
+  --avatar-skeleton: radial-gradient(
+    circle 16px at center,
+    white 99%,
+    transparent 0
+  );
+  --title-height: 32px;
+  --title-width: 200px;
+  --title-position: var(--card-padding) 180px;
+  --title-skeleton: linear-gradient(white var(--title-height), transparent 0);
+  --desc-line-height: 16px;
+  --desc-line-skeleton: linear-gradient(
+    white var(--desc-line-height),
+    transparent 0
+  );
+  --desc-line-1-width: 230px;
+  --desc-line-1-position: var(--card-padding) 242px;
+  --desc-line-2-width: 180px;
+  --desc-line-2-position: var(--card-padding) 265px;
+  --blur-width: 200px;
+  --blur-size: var(--blur-width) var(--card-height);
+}
+/* * Card Skeleton for Loading */
+.skeleton-card {
+  width: 280px;
+  height: var(--card-height);
+}
+.skeleton-card:empty::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  box-shadow: 0 10px 45px rgba(0, 0, 0, 0.1);
+  background-image: linear-gradient(
+      90deg,
+      rgba(211, 211, 211, 0) 0,
+      rgba(211, 211, 211, 0.8) 50%,
+      rgba(211, 211, 211, 0) 100%
+    ),
+    var(--title-skeleton), var(--desc-line-skeleton), var(--desc-line-skeleton),
+    var(--avatar-skeleton), var(--card-skeleton);
+  background-size: var(--blur-size), var(--title-width) var(--title-height),
+    var(--desc-line-1-width) var(--desc-line-height),
+    var(--desc-line-2-width) var(--desc-line-height),
+    var(--avatar-size) var(--avatar-size), 100% 100%;
+  background-position: -150% 0, var(--title-position),
+    var(--desc-line-1-position), var(--desc-line-2-position),
+    var(--avatar-position), 0 0;
+  background-repeat: no-repeat;
+  animation: loading 1.5s infinite;
+}
+@keyframes loading {
+  to {
+    background-position: 350% 0, var(--title-position),
+      var(--desc-line-1-position), var(--desc-line-2-position),
+      var(--avatar-position), var(--footer-position), 0 0;
+  }
 }

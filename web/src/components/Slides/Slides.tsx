@@ -1,15 +1,15 @@
 const Slides = ({ slides }: { slides: any[] }) => {
   return (
-    <div className="card-stack">
+    <div className="slides-stack">
 
       {slides.map((slide, index) => (
         <>
-          <input id={`card-${index}`} className="card-set" type="radio" checked={index === 0} />
-          <div className="card">
+          <input id={`slide-${index}`} className="slides-set" type="radio" checked={index === 0} />
+          <div className="slide">
             <div className="content">
               <h2>Step {index + 1}</h2>
               <p>{slide}</p>
-              <label htmlFor={`card-${index + 1 === slides.length ? 0 : index + 1}`}>Learn More</label>
+              <label htmlFor={`slide-${index + 1 === slides.length ? 0 : index + 1}`}>Learn More</label>
             </div>
           </div>
         </>

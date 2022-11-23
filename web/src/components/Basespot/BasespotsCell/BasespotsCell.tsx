@@ -21,8 +21,11 @@ export const QUERY = gql`
   }
 `
 
-export const Loading = () => <div>Loading...</div>
-
+export const Loading = () => {
+  return (
+    <div className="skeleton-card"></div>
+  )
+}
 export const Empty = () => {
   return (
     <div className="rw-text-center">
