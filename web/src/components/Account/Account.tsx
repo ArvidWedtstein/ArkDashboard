@@ -28,7 +28,7 @@ const Account = () => {
       setLoading(true)
 
       const user = supabase.auth.user()
-
+      console.log(user)
       let { data, error, status } = await supabase
         .from('profiles')
         .select(`username, website, avatar_url, full_name, biography, role_id`)
@@ -39,6 +39,12 @@ const Account = () => {
       if (error && status !== 406) {
         throw error
       }
+
+      let { data: role, error: roleError, status: roleStatus } = await supabase
+        .from('roles')
+        .select(`name`)
+        .eq('id', data.role_id)
+        .single()
 
       if (data) {
         setUsername(data.username)
@@ -90,7 +96,7 @@ const Account = () => {
     <main className="">
       <section className="relative h-500-px">
         <div className="absolute top-0 w-full h-full bg-center bg-cover" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1499336315816-097655dcfbda?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2710&q=80');" }}>
-          <span id="blackOverlay" className="w-full h-full absolute opacity-50 bg-black">.</span>
+          <span id="blackOverlay" className="w-full h-full absolute opacity-50 bg-black"></span>
         </div>
         <div className="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden h-70-px" style={{ transform: "translateZ(0px)" }}>
           <svg className="absolute bottom-0 overflow-hidden" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" version="1.1" viewBox="0 0 2560 100" x="0" y="0">
