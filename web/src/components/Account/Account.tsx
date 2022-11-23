@@ -10,7 +10,7 @@ const Account = () => {
   const { client: supabase, currentUser, logOut } = useAuth()
   const [loading, setLoading] = useState(true)
   const [username, setUsername] = useState(null)
-  const [fullname, setFullname] = useState(null)
+  const [full_name, setFullname] = useState(null)
   const [biography, setBiography] = useState(null)
   const [website, setWebsite] = useState(null)
   const [avatar_url, setAvatarUrl] = useState(null)
@@ -54,7 +54,7 @@ const Account = () => {
     }
   }
 
-  async function updateProfile({ username, website, avatar_url, fullname, biography }) {
+  async function updateProfile({ username, website, avatar_url, full_name, biography }) {
     try {
       setLoading(true)
       const user = supabase.auth.user()
@@ -63,7 +63,7 @@ const Account = () => {
         username,
         website,
         avatar_url,
-        fullname,
+        full_name,
         biography,
         updated_at: new Date(),
       }
@@ -111,7 +111,7 @@ const Account = () => {
                       size={150}
                       onUpload={(url) => {
                         setAvatarUrl(url)
-                        updateProfile({ username, website, avatar_url: url, fullname, biography })
+                        updateProfile({ username, website, avatar_url: url, full_name, biography })
                       }}
                     />
                     {/* <img alt="..." src="https://demos.creative-tim.com/notus-js/assets/img/team-2-800x800.jpg" className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px" /> */}
@@ -121,7 +121,7 @@ const Account = () => {
                   <div className="py-6 px-3 mt-32 sm:mt-0">
                     <button
                       className="bg-blue-500 active:bg-blue-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
-                      onClick={() => updateProfile({ username, website, avatar_url, fullname, biography })}
+                      onClick={() => updateProfile({ username, website, avatar_url, full_name, biography })}
                       disabled={loading}
                     >
                       {loading ? 'Loading ...' : 'Update'}
@@ -155,7 +155,7 @@ const Account = () => {
                     id="fullname"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     type="text"
-                    value={fullname}
+                    value={full_name}
                     onChange={(e) => setFullname(e.target.value)}
                   />
                 </h3>
