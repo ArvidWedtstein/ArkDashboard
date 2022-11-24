@@ -16,6 +16,7 @@ export const schema = gql`
   input CreateTribeInput {
     name: String!
     description: String!
+    createdBy: String
   }
 
   input UpdateTribeInput {
