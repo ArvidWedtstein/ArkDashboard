@@ -27,7 +27,6 @@ const Navbar = () => {
                 <li><Link className="hover:text-gray-200" to={routes.home()}>Home</Link></li>
                 <li><Link className="hover:text-gray-200" to={routes.basespots()}>Ark</Link></li>
                 <li><Link className="hover:text-gray-200" to={routes.materialCalculator()}>Calculator</Link></li>
-                <li><Link className="hover:text-gray-200" to={routes.taming()}>Taming</Link></li>
                 <li><Link className="hover:text-gray-200" to={routes.gtw()}>GTW</Link></li>
                 <li><Link className="hover:text-gray-200" to={routes.tribes()}>Tribe</Link></li>
               </ul>
