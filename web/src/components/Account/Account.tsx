@@ -29,7 +29,7 @@ const Account = () => {
       setLoading(true)
 
       const user = supabase.auth.user()
-      console.log(user)
+      // console.log(user)
       let { data, error, status } = await supabase
         .from('profiles')
         .select(`username, website, avatar_url, full_name, biography, role_id`)
@@ -41,11 +41,11 @@ const Account = () => {
         throw error
       }
 
-      let { data: role, error: roleError, status: roleStatus } = await supabase
-        .from('roles')
-        .select(`id, name`)
+      // let { data: role, error: roleError, status: roleStatus } = await supabase
+      //   .from('roles')
+      //   .select(`id, name`)
 
-      console.log(role)
+      // console.log(role)
       if (data) {
         setUsername(data.username)
         setWebsite(data.website)

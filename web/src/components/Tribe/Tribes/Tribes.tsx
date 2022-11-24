@@ -46,6 +46,7 @@ const TribesList = ({ tribes }: FindTribes) => {
             <th>Description</th>
             <th>Created at</th>
             <th>Updated at</th>
+            <th>Created by</th>
             <th>&nbsp;</th>
           </tr>
         </thead>
@@ -57,6 +58,7 @@ const TribesList = ({ tribes }: FindTribes) => {
               <td>{truncate(tribe.description)}</td>
               <td>{timeTag(tribe.createdAt)}</td>
               <td>{timeTag(tribe.updatedAt)}</td>
+              <td>{truncate(tribe.createdBy)}</td>
               <td>
                 <nav className="rw-table-actions">
                   <Link
