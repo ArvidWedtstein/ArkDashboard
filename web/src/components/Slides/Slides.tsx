@@ -1,6 +1,6 @@
 const Slides = ({ slides }: { slides: any[] }) => {
   return (
-    <div className="slides-stack">
+    <div className="relative slides-stack">
 
       {slides.map((slide, index) => (
         <>
