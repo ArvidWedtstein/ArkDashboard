@@ -46,6 +46,7 @@ const Account = () => {
         .eq('id', data.role_id)
         .single()
 
+      console.log(role)
       if (data) {
         setUsername(data.username)
         setWebsite(data.website)
