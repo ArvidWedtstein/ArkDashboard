@@ -35,13 +35,16 @@ export const timeTag = (dateTime?: string) => {
   let output: string | JSX.Element = ''
 
   if (dateTime) {
+    let options: Intl.DateTimeFormatOptions = {
+      weekday: "long", year: "numeric", month: "short",
+      day: "numeric", hour: "2-digit", minute: "2-digit"
+    };
     output = (
       <time dateTime={dateTime} title={dateTime}>
-        {new Date(dateTime).toUTCString()}
+        {new Date(dateTime).toLocaleString('no-NO', options)}
       </time>
     )
   }
-
   return output
 }
 
