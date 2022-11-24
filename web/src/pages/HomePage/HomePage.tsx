@@ -40,7 +40,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        {/* <Slides slides={["t", "1", "r", "t"]} /> */}
+        <Slides slides={["t", "1", "r", "t"]} />
       </div>
     </>
   );

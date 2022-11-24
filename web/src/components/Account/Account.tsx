@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@redwoodjs/auth'
 import Avatar from '../Avatar/Avatar'
 import { toast } from '@redwoodjs/web/dist/toast'
+import StatCard from '../StatCard/StatCard'
 
 
 const Account = () => {
@@ -42,9 +43,7 @@ const Account = () => {
 
       let { data: role, error: roleError, status: roleStatus } = await supabase
         .from('roles')
-        .select(`name`)
-        .eq('id', data.role_id)
-        .single()
+        .select(`id, name`)
 
       console.log(role)
       if (data) {
@@ -74,7 +73,7 @@ const Account = () => {
         biography,
         updated_at: new Date(),
       }
-
+      const { data: authorized, errors } = await supabase.rpc('authorize', { requested_permission: 'role:update', user_id: `${user.id}` })
 
       let { error } = await supabase.from('profiles').upsert(updates, {
         returning: 'minimal', // Don't return the value after inserting
@@ -91,7 +90,6 @@ const Account = () => {
       setLoading(false)
     }
   }
-
 
   return (
     <main className="">
@@ -121,7 +119,8 @@ const Account = () => {
                         updateProfile({ username, website, avatar_url: url, full_name, biography })
                       }}
                     />
-                    {/* <img alt="..." src="https://demos.creative-tim.com/notus-js/assets/img/team-2-800x800.jpg" className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px" /> */}
+                    <StatCard />
+
                   </div>
                 </div>
                 <div className="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">

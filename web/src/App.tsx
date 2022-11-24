@@ -11,6 +11,7 @@ import Routes from "src/Routes";
 
 import "./scaffold.css";
 import "./index.css";
+import { supabase } from '@redwoodjs/auth/dist/authClients/supabase';
 
 const supabaseClient = createClient(
   process.env.SUPABASE_URL,
