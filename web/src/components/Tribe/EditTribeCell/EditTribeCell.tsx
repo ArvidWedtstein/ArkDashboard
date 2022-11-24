@@ -15,8 +15,6 @@ export const QUERY = gql`
       description
       createdAt
       updatedAt
-      createdBy
-      updatedBy
     }
   }
 `
@@ -28,8 +26,6 @@ const UPDATE_TRIBE_MUTATION = gql`
       description
       createdAt
       updatedAt
-      createdBy
-      updatedBy
     }
   }
 `
