@@ -5,7 +5,7 @@ const AdminPage = () => {
   return (
     <>
       <MetaTags title="Admin" description="Admin page" />
-
+      {/* https://api.yomomma.info/ */}
       <div className="container-xl p-3 text-center overflow-hidden">
         <div className="app-main-right cards-area">
           <div className="app-main-right-header">

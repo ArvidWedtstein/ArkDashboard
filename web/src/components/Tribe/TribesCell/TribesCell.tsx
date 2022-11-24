@@ -13,6 +13,7 @@ export const QUERY = gql`
       description
       createdAt
       updatedAt
+      createdBy
     }
   }
 `
