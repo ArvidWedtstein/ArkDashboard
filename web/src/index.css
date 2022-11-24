@@ -89,7 +89,7 @@
 .slide::before {
   content: "";
   display: block;
-  padding-bottom: 130%;
+  padding-bottom: 30%; /* 130% */
 }
 .slide .content {
   display: flex;
@@ -119,6 +119,13 @@
   flex: 2;
   margin-left: 24px;
   max-width: 400px;
+}
+.cards-area {
+  background-color: #dddddd;
+  padding: 24px;
+  height: 100%;
+  overflow-y: auto;
+  border-radius: 20px;
 }
 .app-main-right .card-image-wrapper {
   max-height: 100%;

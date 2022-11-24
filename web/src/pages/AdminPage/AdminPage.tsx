@@ -6,7 +6,7 @@ const AdminPage = () => {
     <>
       <MetaTags title="Admin" description="Admin page" />
 
-      <div className="container-xl p-3 text-center">
+      <div className="container-xl p-3 text-center overflow-hidden">
         <div className="app-main-right cards-area">
           <div className="app-main-right-header">
             <span>Latest Deals</span>
