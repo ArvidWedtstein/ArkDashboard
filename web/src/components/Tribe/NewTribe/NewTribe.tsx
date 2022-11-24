@@ -31,8 +31,8 @@ const NewTribe = () => {
   )
 
   const onSave = (input: CreateTribeInput) => {
-    console.log(supabase.auth.user())
-    // input['createdBy'] = supabase.auth.user().id;
+    // console.log(supabase.auth.user())
+    input['createdBy'] = supabase.auth.user().id;
     createTribe({ variables: { input } })
   }
 
