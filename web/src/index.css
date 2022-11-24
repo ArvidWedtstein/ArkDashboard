@@ -119,6 +119,7 @@
   flex: 2;
   margin-left: 24px;
   max-width: 400px;
+  max-height: 300px;
 }
 .cards-area {
   background-color: #dddddd;
