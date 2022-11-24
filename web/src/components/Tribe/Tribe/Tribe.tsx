@@ -3,7 +3,7 @@ import { Link, routes, navigate } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
-import { timeTag,  } from 'src/lib/formatters'
+import { timeTag, } from 'src/lib/formatters'
 
 import type { DeleteTribeMutationVariables, FindTribeById } from 'types/graphql'
 
@@ -61,6 +61,12 @@ const Tribe = ({ tribe }: Props) => {
             </tr><tr>
               <th>Updated at</th>
               <td>{timeTag(tribe.updatedAt)}</td>
+            </tr><tr>
+              <th>Created by</th>
+              <td>{tribe.createdBy}</td>
+            </tr><tr>
+              <th>Updated by</th>
+              <td>{tribe.updatedBy}</td>
             </tr>
           </tbody>
         </table>

@@ -24,13 +24,7 @@ interface TribeFormProps {
 
 const TribeForm = (props: TribeFormProps) => {
   const onSubmit = (data: FormTribe) => {
-  
-    
-    
-  
-    
-    
-  
+
     props.onSave(data, props?.tribe?.id)
   }
 
@@ -43,7 +37,7 @@ const TribeForm = (props: TribeFormProps) => {
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
-      
+
         <Label
           name="name"
           className="rw-label"
@@ -51,15 +45,15 @@ const TribeForm = (props: TribeFormProps) => {
         >
           Name
         </Label>
-        
-          <TextField
-            name="name"
-            defaultValue={props.tribe?.name}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ required: true }}
-          />
-        
+
+        <TextField
+          name="name"
+          defaultValue={props.tribe?.name}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ required: true }}
+        />
+
 
         <FieldError name="name" className="rw-field-error" />
 
@@ -70,15 +64,15 @@ const TribeForm = (props: TribeFormProps) => {
         >
           Description
         </Label>
-        
-          <TextField
-            name="description"
-            defaultValue={props.tribe?.description}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ required: true }}
-          />
-        
+
+        <TextField
+          name="description"
+          defaultValue={props.tribe?.description}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ required: true }}
+        />
+
 
         <FieldError name="description" className="rw-field-error" />
 

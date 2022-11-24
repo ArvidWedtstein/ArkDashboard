@@ -4,7 +4,7 @@ import { navigate, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
-
+import { useAuth } from '@redwoodjs/auth'
 import TribeForm from 'src/components/Tribe/TribeForm'
 
 export const QUERY = gql`
@@ -15,6 +15,8 @@ export const QUERY = gql`
       description
       createdAt
       updatedAt
+      createdBy
+      updatedBy
     }
   }
 `
@@ -26,6 +28,8 @@ const UPDATE_TRIBE_MUTATION = gql`
       description
       createdAt
       updatedAt
+      createdBy
+      updatedBy
     }
   }
 `
@@ -37,6 +41,7 @@ export const Failure = ({ error }: CellFailureProps) => (
 )
 
 export const Success = ({ tribe }: CellSuccessProps<EditTribeById>) => {
+  const { client: supabase, currentUser } = useAuth()
   const [updateTribe, { loading, error }] = useMutation(
     UPDATE_TRIBE_MUTATION,
     {

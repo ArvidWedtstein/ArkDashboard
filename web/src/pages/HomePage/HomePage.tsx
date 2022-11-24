@@ -4,7 +4,6 @@ import { useAuth } from "@redwoodjs/auth";
 import { useEffect, useState } from "react";
 import Account from 'src/components/Account';
 import Auth from 'src/components/Auth/Auth';
-import Slides from "src/components/Slides/Slides";
 const HomePage = () => {
   const { isAuthenticated } = useAuth()
   return (
@@ -40,7 +39,6 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        <Slides slides={["t", "1", "r", "t"]} />
       </div>
     </>
   );
