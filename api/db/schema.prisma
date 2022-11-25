@@ -5,7 +5,6 @@ datasource db {
 generator client {
   provider      = "prisma-client-js"
   binaryTargets   = "native"
-   previewFeatures = ["multiSchema"]
 }
 
 model basespot {
@@ -31,7 +30,7 @@ model user {
   resetTokenExpiresAt DateTime?
   webAuthnChallenge   String?          @unique
   credentials         userCredential[]
-  roles               String           @default("PEASANT")
+  role_id               String           @default("PEASANT")
 }
 
 
