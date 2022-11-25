@@ -4,6 +4,8 @@ import { useAuth } from '@redwoodjs/auth'
 import Avatar from '../Avatar/Avatar'
 import { toast } from '@redwoodjs/web/dist/toast'
 import StatCard from '../StatCard/StatCard'
+import PingAlert from '../PingAlert/PingAlert'
+import ArkCard from '../ArkCard/ArkCard'
 
 
 const Account = () => {
@@ -11,7 +13,7 @@ const Account = () => {
   const { client: supabase, currentUser, logOut } = useAuth()
   const [loading, setLoading] = useState(true)
   const [username, setUsername] = useState(null)
-  const [full_name, setFullname] = useState(null)
+  const [fullname, setFullname] = useState(null)
   const [biography, setBiography] = useState(null)
   const [website, setWebsite] = useState(null)
   const [avatar_url, setAvatarUrl] = useState(null)
@@ -31,7 +33,7 @@ const Account = () => {
       // console.log(user)
       let { data, error, status } = await supabase
         .from('user_view')
-        .select(`email, username, website, avatar_url, full_name, biography, role_name, tribescreated`)
+        .select(`email, username, website, avatar_url, fullname, biography, role_name, tribescreated`)
         .eq('id', user.id)
         .single()
 
@@ -45,7 +47,7 @@ const Account = () => {
         setUsername(data.username)
         setWebsite(data.website)
         setAvatarUrl(data.avatar_url)
-        setFullname(data.full_name)
+        setFullname(data.fullname)
         setBiography(data.biography)
         setTribescreated(data.tribescreated)
       }
@@ -56,7 +58,7 @@ const Account = () => {
     }
   }
 
-  async function updateProfile({ username, website, avatar_url, full_name, biography }) {
+  async function updateProfile({ username, website, avatar_url, fullname, biography }) {
     try {
       setLoading(true)
       const user = supabase.auth.user()
@@ -65,12 +67,12 @@ const Account = () => {
         username,
         website,
         avatar_url,
-        full_name,
+        fullname,
         biography,
         updated_at: new Date(),
       }
       const { data: authorized, errors } = await supabase.rpc('authorize', { requested_permission: 'role:update', user_id: `${user.id}` })
-
+      console.log("auth", authorized)
       let { error } = await supabase.from('profiles').upsert(updates, {
         returning: 'minimal', // Don't return the value after inserting
       })
@@ -90,7 +92,7 @@ const Account = () => {
   return (
     <main className="">
       <section className="relative h-[200px]">
-        <div className="absolute top-0 w-full h-full bg-center bg-cover" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1499336315816-097655dcfbda?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2710&q=80')" }}>
+        <div className="absolute top-0 w-full h-full bg-center bg-cover" style={{ backgroundImage: "url('https://c4.wallpaperflare.com/wallpaper/506/22/433/ark-ark-survival-evolved-cherry-blossom-video-games-wallpaper-preview.jpg')" }}>
           <span id="blackOverlay" className="left-0 w-full h-full absolute opacity-50 bg-black"></span>
         </div>
         {/* <div className="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden h-[70px]" style={{ transform: "translateZ(0px)" }}>
@@ -107,12 +109,12 @@ const Account = () => {
                 <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
                   <div className="relative">
                     <Avatar
-                      className="shadow-xl rounded-full h-auto align-middle border-none absolute -mt-32 max-w-[150px]"
+                      className="shadow-xl rounded-full h-auto align-middle border-none absolute -mt-20"
                       url={avatar_url}
-                      size={150}
+                      size={200}
                       onUpload={(url) => {
                         setAvatarUrl(url)
-                        updateProfile({ username, website, avatar_url: url, full_name, biography })
+                        updateProfile({ username, website, avatar_url: url, fullname, biography })
                       }}
                     />
                     {/* <StatCard /> */}
@@ -123,7 +125,7 @@ const Account = () => {
                   <div className="py-6 px-3 mt-32 sm:mt-0">
                     <button
                       className="bg-blue-500 active:bg-blue-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
-                      onClick={() => updateProfile({ username, website, avatar_url, full_name, biography })}
+                      onClick={() => updateProfile({ username, website, avatar_url, fullname, biography })}
                       disabled={loading}
                     >
                       {loading ? 'Loading ...' : 'Update'}
@@ -162,7 +164,7 @@ const Account = () => {
                     id="fullname"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     type="text"
-                    value={full_name}
+                    value={fullname}
                     onChange={(e) => setFullname(e.target.value)}
                   />
                 </h3>
@@ -210,7 +212,7 @@ const Account = () => {
           </div>
         </div>
       </section>
-    </main>
+    </main >
   )
 
 }

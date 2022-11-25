@@ -65,11 +65,6 @@ const TribesList = ({ tribes }: FindTribes) => {
           {tribes.map((tribe) => (
             <tr key={tribe.id}>
               <td className="p-2 whitespace-nowrap">
-                {/* <div className="flex items-center">
-                <div className="w-10 h-10 flex-shrink-0 mr-2 sm:mr-3">
-                  <img className="rounded-full" src="https://raw.githubusercontent.com/cruip/vuejs-admin-dashboard-template/main/src/images/user-36-05.jpg" width="40" height="40" alt="Alex Shatov" />
-                </div>
-              </div> */}
                 <div className="text-left">{truncate(tribe.name)}</div>
               </td>
               <td className="p-2 whitespace-nowrap">
@@ -82,6 +77,11 @@ const TribesList = ({ tribes }: FindTribes) => {
               <div className="text-left">{timeTag(tribe.updatedAt)}</div>
             </td> */}
               <td className="p-2 whitespace-nowrap">
+                {/* <div className="flex items-center">
+                <div className="w-10 h-10 flex-shrink-0 mr-2 sm:mr-3">
+                  <img className="rounded-full" src="https://raw.githubusercontent.com/cruip/vuejs-admin-dashboard-template/main/src/images/user-36-05.jpg" width="40" height="40" alt="Alex Shatov" />
+                </div>
+              </div> */}
                 <div className="text-left">{truncate(tribe.createdBy)}</div>
               </td>
               <td className="p-2 whitespace-nowrap">
