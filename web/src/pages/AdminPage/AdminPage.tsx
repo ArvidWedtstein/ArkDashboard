@@ -13,91 +13,16 @@ const AdminPage = () => {
             <a href="#">See More</a>
           </div>
           <div className="card-wrapper main-card">
-            <a className="card cardItemjs">
-              <div className="card-image-wrapper">
-                <img src="https://source.unsplash.com/featured/1200x900/?hotel-room,interior" />
+            <a className="border-2 border-red-700 overflow-hidden block transition-all">
+              <div className="max-h-[40%] rounded-sm overflow-hidden border-2 border-red-600 h-0 pt-[calc(591.44 / 1127.34 * 100%)] bg-slate-400 bg-gradient-to-tr">
+                <img className="w-full object object-cover relative -mt-[60.25%]" src="https://source.unsplash.com/featured/1200x900/?hotel-room,interior" />
               </div>
-              <div className="card-info">
-                <div className="card-text big cardText-js">Hotel Conrad</div>
-                <div className="card-text small">Stockton Street</div>
-                <div className="card-text small">
+              <div className="card-info py-2 px-4 bg-slate-500">
+                <div className="leading-6 text-base font-semibold">Hotel Conrad</div>
+                <div className="leading-6 text-xs font-semibold">Stockton Street</div>
+                <div className="leading-6 text-xs font-semibold">
                   Starts from:
-                  <span className="card-price"> $1000</span>
-                </div>
-              </div>
-            </a>
-          </div>
-          <div className="card-wrapper main-card">
-            <a className="card cardItemjs">
-              <div className="card-image-wrapper">
-                <img src="https://source.unsplash.com/featured/1200x900/?interior,hotel" />
-              </div>
-              <div className="card-info">
-                <div className="card-text big cardText-js">The Hotel Riviera</div>
-                <div className="card-text small">Stockton Street</div>
-                <div className="card-text small">
-                  Starts from:
-                  <span className="card-price"> $300</span>
-                </div>
-              </div>
-            </a>
-          </div>
-          <div className="card-wrapper main-card">
-            <a className="card cardItemjs">
-              <div className="card-image-wrapper">
-                <img src="https://source.unsplash.com/featured/1200x900/?architecture,modern" />
-              </div>
-              <div className="card-info">
-                <div className="card-text big cardText-js">The Hotel Star Pasific</div>
-                <div className="card-text small">Stockton Street</div>
-                <div className="card-text small">
-                  Starts from:
-                  <span className="card-price"> $1400</span>
-                </div>
-              </div>
-            </a>
-          </div>
-          <div className="card-wrapper main-card">
-            <a className="card cardItemjs">
-              <div className="card-image-wrapper">
-                <img src="https://source.unsplash.com/featured/1200x900/?hotel,modern" />
-              </div>
-              <div className="card-info">
-                <div className="card-text big cardText-js">Hotel Instant Destiny </div>
-                <div className="card-text small">Stockton Street</div>
-                <div className="card-text small">
-                  Starts from:
-                  <span className="card-price"> $1800</span>
-                </div>
-              </div>
-            </a>
-          </div>
-          <div className="card-wrapper main-card">
-            <a className="card cardItemjs">
-              <div className="card-image-wrapper">
-                <img src="https://source.unsplash.com/featured/1200x900/?architecture,modern" alt="Hotel" />
-              </div>
-              <div className="card-info">
-                <div className="card-text big cardText-js">The White Roses Hotel</div>
-                <div className="card-text small">Stockton Street</div>
-                <div className="card-text small">
-                  Starts from:
-                  <span className="card-price"> $700</span>
-                </div>
-              </div>
-            </a>
-          </div>
-          <div className="card-wrapper main-card">
-            <a className="card cardItemjs">
-              <div className="card-image-wrapper">
-                <img src="https://source.unsplash.com/featured/1200x900/?hotel,modern" alt="Hotel" />
-              </div>
-              <div className="card-info">
-                <div className="card-text big cardText-js">Hotel Tom's Dinner</div>
-                <div className="card-text small">Stockton Street</div>
-                <div className="card-text small">
-                  Starts from:
-                  <span className="card-price"> $1500</span>
+                  <span className="text-xs font-semibold inline-block ml-2"> $1000</span>
                 </div>
               </div>
             </a>

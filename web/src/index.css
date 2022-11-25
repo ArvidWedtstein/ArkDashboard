@@ -36,66 +36,7 @@
 .app-main-right .card-image-wrapper img {
   margin: 0;
 }
-.card-wrapper {
-  width: 33.3%;
-  height: auto;
-  padding: 8px;
-}
-.card {
-  background-color: #00ff00;
-  border: 3px solid #00ff00;
-  border-radius: 10px;
-  overflow: hidden;
-  display: block;
-  transition: transform 0.2s;
-}
-.card:hover {
-  transform: scale(1.02);
-}
-.card-image-wrapper {
-  max-height: 40%;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 3px solid #0000ff;
-  overflow: hidden;
-  height: 0;
-  padding-top: calc(591.44 / 1127.34 * 100%);
-  background-color: #faaca8;
-  background-image: linear-gradient(19deg, #faaca8 0%, #ddd6f3 100%);
-}
-.card-image-wrapper img {
-  width: 100%;
-  object-fit: cover;
-  z-index: 1;
-  position: relative;
-  z-index: 1;
-  position: relative;
-  margin-top: -60.25%;
-}
-.card-info {
-  background-color: #0000ff;
-  padding: 8px 16px;
-}
-.card-text {
-  line-height: 24px;
-}
-.card-text.big {
-  font-size: 16px;
-  font-weight: 600;
-  color: #00ff00;
-}
-.card-text.small {
-  font-size: 12px;
-  color: #0f0f0f;
-  font-weight: 600;
-}
-.card-text.small span {
-  font-size: 12px;
-  color: #ff0000;
-  font-weight: 600;
-  display: inline-block;
-  margin-left: 8px;
-}
+
 .app-main-right-header {
   display: flex;
   justify-content: space-between;
@@ -132,9 +73,7 @@
 .app-main-right .card-image-wrapper img {
   height: 100%;
 }
-body {
-  /* background-color: #555555; */
-}
+
 /* input[type="radio"]:checked + label {
   color: "blue";
 }
