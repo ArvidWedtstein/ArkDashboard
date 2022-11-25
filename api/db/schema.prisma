@@ -51,3 +51,13 @@ model tribe {
   updatedAt   DateTime @updatedAt
   createdBy   String?
 }
+
+model tribe_view {
+  id Int @id @default(autoincrement())
+  name String
+  description String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+  full_name String?
+}

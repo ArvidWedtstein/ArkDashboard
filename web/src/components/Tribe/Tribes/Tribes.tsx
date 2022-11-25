@@ -148,10 +148,9 @@ const TribesList = ({ tribes }: FindTribes) => {
           ))}
         </tbody>
       </table>
-      <table className="table-auto">
+      {/* <table className="table-auto">
         <thead>
           <tr>
-            {/* <th>Id</th> */}
             <th>Name</th>
             <th>Description</th>
             <th>Created at</th>
@@ -163,7 +162,6 @@ const TribesList = ({ tribes }: FindTribes) => {
         <tbody>
           {tribes.map((tribe) => (
             <tr key={tribe.id}>
-              {/* <td>{truncate(tribe.id)}</td> */}
               <td>{truncate(tribe.name)}</td>
               <td>{truncate(tribe.description)}</td>
               <td>{timeTag(tribe.createdAt)}</td>
@@ -198,7 +196,7 @@ const TribesList = ({ tribes }: FindTribes) => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table> */}
     </div>
   )
 }
