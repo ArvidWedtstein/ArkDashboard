@@ -38,10 +38,10 @@ const TribesList = ({ tribes }: FindTribes) => {
 
   return (
     <div className="rw-segment rw-table-wrapper-responsive">
-      <table className="rw-table">
+      <table className="table-auto">
         <thead>
           <tr>
-            <th>Id</th>
+            {/* <th>Id</th> */}
             <th>Name</th>
             <th>Description</th>
             <th>Created at</th>
@@ -53,7 +53,7 @@ const TribesList = ({ tribes }: FindTribes) => {
         <tbody>
           {tribes.map((tribe) => (
             <tr key={tribe.id}>
-              <td>{truncate(tribe.id)}</td>
+              {/* <td>{truncate(tribe.id)}</td> */}
               <td>{truncate(tribe.name)}</td>
               <td>{truncate(tribe.description)}</td>
               <td>{timeTag(tribe.createdAt)}</td>
