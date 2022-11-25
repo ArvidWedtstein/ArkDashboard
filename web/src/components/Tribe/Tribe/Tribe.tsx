@@ -15,6 +15,7 @@ const DELETE_TRIBE_MUTATION = gql`
   }
 `
 
+
 interface Props {
   tribe: NonNullable<FindTribeById['tribe']>
 }
