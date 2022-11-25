@@ -15,7 +15,7 @@ const DELETE_BASESPOT_MUTATION = gql`
     }
   }
 `
-
+//https://ark.fandom.com/wiki/HUD
 const BasespotsList = ({ basespots }: FindBasespots) => {
   const [deleteBasespot] = useMutation(DELETE_BASESPOT_MUTATION, {
     onCompleted: () => {
@@ -46,7 +46,7 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
             title={basespot.name}
             subtitle={basespot.Map}
             content={basespot.description}
-            ring={`${basespot.estimatedForPlayers}`}
+            ring={`${basespot.estimatedForPlayers} players`}
             image={basespot.image}
             button={{
               text: 'Learn Moar',
