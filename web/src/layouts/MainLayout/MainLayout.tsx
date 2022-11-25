@@ -11,10 +11,10 @@ const MainLayout = ({
   children,
 }: LayoutProps) => {
   return (
-    <div className=" overflow-hidden">
+    <div className="overflow-hidden">
       <Navbar />
       <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
-      <main className="container-xl   mx-3">{children}</main>
+      <main className="container-xl mx-3">{children}</main>
     </div>
   )
 }
