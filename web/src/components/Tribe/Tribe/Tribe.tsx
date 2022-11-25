@@ -65,9 +65,6 @@ const Tribe = ({ tribe }: Props) => {
             </tr><tr>
               <th>Created by</th>
               <td>{tribe.createdBy}</td>
-            </tr><tr>
-              <th>Updated by</th>
-              <td>{tribe.updatedBy}</td>
             </tr>
           </tbody>
         </table>
