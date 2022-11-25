@@ -12,10 +12,10 @@ const StatCard = () => {
               <path className="fill-none stroke-1 stroke-[#00cfde]" d="M18 2.0845
           a 15.9155 15.9155 0 0 1 0 31.831
           a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-              <path className="fill-none stroke-2 stroke-[#557b88] animate-circle-progress" stroke-dasharray="60, 100" d="M18 2.0845
+              <path className="fill-none stroke-2 stroke-[#557b88] animate-circle-progress" strokeDasharray="60, 100" d="M18 2.0845
           a 15.9155 15.9155 0 0 1 0 31.831
           a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-              <text text-anchor="middle" x="18" y="20.35" className="fill-white text-xs font-normal">60%</text>
+              <text textAnchor="middle" x="18" y="20.35" className="fill-white text-xs font-normal">60%</text>
             </svg>
           </div>
         </div>

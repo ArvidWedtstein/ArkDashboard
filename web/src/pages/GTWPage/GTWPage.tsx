@@ -3,6 +3,7 @@ import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 import { useCallback, useMemo, useState } from 'react'
 import debounce from 'lodash.debounce';
+import { toast } from '@redwoodjs/web/dist/toast';
 
 const ArkDinos = [
   "Ankylosaurus", "Argentavis", "Arthropluera", "Baryonyx", "Beelzebufo", "Brontosaurus", "Carbonemys", "Castoroides",
@@ -59,6 +60,7 @@ const GtwPage = (props: BasespotFormProps) => {
   const [word, setWord] = useState('')
   const handlechange = (e) => {
     setWord(e.target.value)
+    toast.success('Copied to clipboard')
     navigator.clipboard.writeText(getWord(e.target.value)[0]);
   }
 

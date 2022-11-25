@@ -15,7 +15,7 @@ const Account = () => {
   const [biography, setBiography] = useState(null)
   const [website, setWebsite] = useState(null)
   const [avatar_url, setAvatarUrl] = useState(null)
-
+  const [tribescreated, setTribescreated] = useState(null)
 
   const email = currentUser?.email ? currentUser.email.toString() : "unknown"
 
@@ -27,12 +27,11 @@ const Account = () => {
   async function getProfile() {
     try {
       setLoading(true)
-
       const user = supabase.auth.user()
       // console.log(user)
       let { data, error, status } = await supabase
-        .from('profiles')
-        .select(`username, website, avatar_url, full_name, biography, role_id`)
+        .from('user_view')
+        .select(`email, username, website, avatar_url, full_name, biography, role_name, tribescreated`)
         .eq('id', user.id)
         .single()
 
@@ -41,17 +40,14 @@ const Account = () => {
         throw error
       }
 
-      // let { data: role, error: roleError, status: roleStatus } = await supabase
-      //   .from('roles')
-      //   .select(`id, name`)
 
-      // console.log(role)
       if (data) {
         setUsername(data.username)
         setWebsite(data.website)
         setAvatarUrl(data.avatar_url)
         setFullname(data.full_name)
         setBiography(data.biography)
+        setTribescreated(data.tribescreated)
       }
     } catch (error) {
       toast.error(error.message)
@@ -93,17 +89,17 @@ const Account = () => {
 
   return (
     <main className="">
-      <section className="relative h-500-px">
-        <div className="absolute top-0 w-full h-full bg-center bg-cover" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1499336315816-097655dcfbda?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2710&q=80');" }}>
-          <span id="blackOverlay" className="w-full h-full absolute opacity-50 bg-black"></span>
+      <section className="relative h-[200px]">
+        <div className="absolute top-0 w-full h-full bg-center bg-cover" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1499336315816-097655dcfbda?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2710&q=80')" }}>
+          <span id="blackOverlay" className="left-0 w-full h-full absolute opacity-50 bg-black"></span>
         </div>
-        <div className="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden h-70-px" style={{ transform: "translateZ(0px)" }}>
+        {/* <div className="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden h-[70px]" style={{ transform: "translateZ(0px)" }}>
           <svg className="absolute bottom-0 overflow-hidden" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" version="1.1" viewBox="0 0 2560 100" x="0" y="0">
             <polygon className="text-blueGray-200 fill-current" points="2560 0 2560 100 0 100"></polygon>
           </svg>
-        </div>
+        </div> */}
       </section>
-      <section className="relative py-16 bg-blueGray-200">
+      <section className="relative py-16 bg-blueGray-200 -mt-32">
         <div className="container-fluid mx-auto px-4">
           <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg">
             <div className="px-6">
@@ -111,7 +107,7 @@ const Account = () => {
                 <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
                   <div className="relative">
                     <Avatar
-                      className="shadow-xl rounded-full h-auto align-middle border-none absolute -mt-16 max-w-150-px"
+                      className="shadow-xl rounded-full h-auto align-middle border-none absolute -mt-32 max-w-[150px]"
                       url={avatar_url}
                       size={150}
                       onUpload={(url) => {
@@ -119,7 +115,7 @@ const Account = () => {
                         updateProfile({ username, website, avatar_url: url, full_name, biography })
                       }}
                     />
-                    <StatCard />
+                    {/* <StatCard /> */}
 
                   </div>
                 </div>
@@ -137,23 +133,28 @@ const Account = () => {
                 <div className="w-full lg:w-4/12 px-4 lg:order-1">
                   <div className="flex justify-center py-4 lg:pt-4 pt-8">
                     <div className="mr-4 p-3 text-center">
-                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">0</span><span className="text-sm text-blueGray-400">Friends</span>
+                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">0</span>
+                      <span className="text-sm text-blueGray-400">Friends</span>
                     </div>
                     <div className="mr-4 p-3 text-center">
-                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">0</span><span className="text-sm text-blueGray-400">Basespots</span>
+                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">0</span>
+                      <span className="text-sm text-blueGray-400">Basespots</span>
                     </div>
                     <div className="lg:mr-4 p-3 text-center">
-                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">0</span><span className="text-sm text-blueGray-400">Test</span>
+                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">{tribescreated}</span>
+                      <span className="text-sm text-blueGray-400">Tribes</span>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="text-center mt-12">
                 <h3 className="text-4xl font-semibold leading-normal mb-2 text-blueGray-700">
+                  <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900">Full Name</label>
                   <input
                     id="username"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     type="text"
-                    value={username || ''}
+                    value={username}
                     onChange={(e) => setUsername(e.target.value)}
                   />
                   <label htmlFor="fullname" className="block mb-2 text-sm font-medium text-gray-900">Full Name</label>

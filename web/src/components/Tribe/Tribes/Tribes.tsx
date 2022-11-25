@@ -76,10 +76,10 @@ const TribesList = ({ tribes }: FindTribes) => {
                 <div className="text-left">{truncate(tribe.description)}</div>
               </td>
               <td className="p-2 whitespace-nowrap">
-                <div className="text-left">{truncate(tribe.createdAt)}</div>
+                <div className="text-left">{timeTag(tribe.createdAt)}</div>
               </td>
               {/* <td className="p-2 whitespace-nowrap">
-              <div className="text-left">{truncate(tribe.updatedAt)}</div>
+              <div className="text-left">{timeTag(tribe.updatedAt)}</div>
             </td> */}
               <td className="p-2 whitespace-nowrap">
                 <div className="text-left">{truncate(tribe.createdBy)}</div>
