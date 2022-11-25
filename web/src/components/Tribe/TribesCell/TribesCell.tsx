@@ -7,7 +7,7 @@ import Tribes from 'src/components/Tribe/Tribes'
 
 export const QUERY = gql`
   query FindTribes {
-    tribe_view {
+    tribes {
       id
       name
       description
