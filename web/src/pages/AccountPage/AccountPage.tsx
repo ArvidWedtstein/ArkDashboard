@@ -1,6 +1,6 @@
 import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
-import Account from 'src/components/Account/Account'
+import Account from 'src/components/Account';
 
 const AccountPage = () => {
   return (

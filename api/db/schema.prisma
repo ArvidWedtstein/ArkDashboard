@@ -1,63 +1,64 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-generator client {
-  provider      = "prisma-client-js"
-  binaryTargets   = "native"
-}
 
 model basespot {
-  id          Int      @id @default(autoincrement())
-  name        String
-  description String
-  latitude    Float
-  longitude   Float
-  image       String?
-  createdAt   DateTime @default(now())
-  Map         String?
-  estimatedForPlayers String? @default("0")
-}
-
-
-
-model user {
-  id                  Int              @id @default(autoincrement())
-  email               String           @unique
-  hashedPassword      String
-  salt                String
-  resetToken          String?
-  resetTokenExpiresAt DateTime?
-  webAuthnChallenge   String?          @unique
-  credentials         userCredential[]
-  role_id               String           @default("PEASANT")
-}
-
-
-model userCredential {
-  id         Int  @id
-  userId     Int
-  user       user    @relation(fields: [userId], references: [id])
-  publicKey  Bytes
-  transports String?
-  counter    BigInt
+  id                  Int      @id @default(autoincrement())
+  name                String
+  description         String
+  latitude            Float
+  longitude           Float
+  image               String?
+  createdAt           DateTime @default(now())
+  Map                 String?
+  estimatedForPlayers String?  @default("0")
 }
 
 model tribe {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
   description String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  createdBy   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  createdBy   String?   @db.Uuid
+  profiles    profiles? @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model tribe_view {
-  id Int @id @default(autoincrement())
-  name String
-  description String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  createdBy String?
-  full_name String?
+model profiles {
+  id         String      @id @db.Uuid
+  updated_at DateTime?   @db.Timestamptz(6)
+  username   String?     @unique
+  full_name  String?
+  avatar_url String?
+  website    String?
+  biography  String?
+  status     user_status @default(OFFLINE)
+  role_id    String      @default(dbgenerated("'b707c929-ce07-4561-871a-39414ec59299'::uuid")) @db.Uuid
+  roles      roles       @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tribe      tribe[]
+}
+
+model roles {
+  id                String              @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  name              String
+  profiles          profiles[]
+  roles_permissions roles_permissions[]
+}
+
+model roles_permissions {
+  id      String @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  name    String
+  role_id String @db.Uuid
+  roles   roles  @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+enum user_status {
+  ONLINE
+  OFFLINE
 }
