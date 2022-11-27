@@ -23,7 +23,7 @@ model basespot {
 model tribe {
   id          Int       @id @default(autoincrement())
   name        String
-  description String
+  description String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   createdBy   String?   @db.Uuid

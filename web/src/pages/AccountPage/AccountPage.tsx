@@ -1,6 +1,6 @@
-import { Link, routes } from '@redwoodjs/router'
-import { MetaTags } from '@redwoodjs/web'
-import Account from 'src/components/Account';
+import { Link, routes } from "@redwoodjs/router";
+import { MetaTags } from "@redwoodjs/web";
+import Account from "src/components/Account";
 
 const AccountPage = () => {
   return (
@@ -11,7 +11,7 @@ const AccountPage = () => {
         <Account />
       </div>
     </>
-  )
-}
+  );
+};
 
-export default AccountPage
+export default AccountPage;

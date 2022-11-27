@@ -1,11 +1,17 @@
 import { parseJWT, Decoded } from "@redwoodjs/api";
 import { AuthenticationError, ForbiddenError } from "@redwoodjs/graphql-server";
-
+import { Context } from "@redwoodjs/graphql-server/dist/functions/types";
+import { db } from "./db";
 /**
  * Represents the user attributes returned by the decoding the
  * Authentication provider's JWT together with an optional list of roles.
  */
-type RedwoodUser = Record<string, unknown> & { roles?: string[] };
+type RedwoodUser = Record<string, any> & {
+  roles?: string[];
+  email?: string;
+  role_id?: string;
+  avatar_url?: string;
+};
 
 /**
  * getCurrentUser returns the user information together with
@@ -37,9 +43,15 @@ export const getCurrentUser = async (
   }
 
   const { roles } = parseJWT({ decoded });
+  const { sub, role } = decoded;
+  if (sub.toString()) {
+    // return { ...decoded, roles };
 
-  if (roles) {
-    return { ...decoded, roles };
+    let user = await db.profiles.findUnique({
+      where: { id: sub.toString() },
+    });
+    let role_id = user.role_id;
+    return await { ...user, role, roles: [role_id], ...decoded };
   }
 
   return { ...decoded };
@@ -63,37 +75,38 @@ type AllowedRoles = string | string[] | undefined;
 /**
  * Checks if the currentUser is authenticated (and assigned one of the given roles)
  *
- * @param roles: {@link AllowedRoles} - Checks if the currentUser is assigned one of these roles
+ * @param role_id: {@link AllowedRoles} - Checks if the currentUser is assigned one of these roles
  *
  * @returns {boolean} - Returns true if the currentUser is logged in and assigned one of the given roles,
  * or when no roles are provided to check against. Otherwise returns false.
  */
-export const hasRole = (roles: AllowedRoles): boolean => {
+export const hasRole = (role_id: AllowedRoles): boolean => {
   if (!isAuthenticated()) {
     return false;
   }
 
-  const currentUserRoles = context.currentUser?.roles;
+  const currentUserRoles = context.currentUser?.role_id;
 
-  if (typeof roles === "string") {
+  if (typeof role_id === "string") {
     if (typeof currentUserRoles === "string") {
       // roles to check is a string, currentUser.roles is a string
-      return currentUserRoles === roles;
-    } else if (Array.isArray(currentUserRoles)) {
-      // roles to check is a string, currentUser.roles is an array
-      return currentUserRoles?.some((allowedRole) => roles === allowedRole);
+      return currentUserRoles === role_id;
     }
+    //  else if (Array.isArray(currentUserRoles)) {
+    //   // roles to check is a string, currentUser.roles is an array
+    //   return currentUserRoles?.some((allowedRole) => roles === allowedRole);
+    // }
   }
 
-  if (Array.isArray(roles)) {
+  if (Array.isArray(role_id)) {
     if (Array.isArray(currentUserRoles)) {
       // roles to check is an array, currentUser.roles is an array
       return currentUserRoles?.some((allowedRole) =>
-        roles.includes(allowedRole)
+        role_id.includes(allowedRole)
       );
     } else if (typeof currentUserRoles === "string") {
       // roles to check is an array, currentUser.roles is a string
-      return roles.some((allowedRole) => currentUserRoles === allowedRole);
+      return role_id.some((allowedRole) => currentUserRoles === allowedRole);
     }
   }
 

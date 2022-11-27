@@ -69,7 +69,10 @@ const Routes = () => {
           </Private>
           <Route path="/tribes" page={TribeTribesPage} name="tribes" />
         </Set>
-        <Private unauthenticated="login">
+        <Private
+          unauthenticated="home"
+          roles="caa1f3b3-cebe-4170-82d3-ba18af52d50d"
+        >
           <Route path="/account" page={AccountPage} name="account" />
           <Route path="/admin" page={AdminPage} name="admin" />
         </Private>
