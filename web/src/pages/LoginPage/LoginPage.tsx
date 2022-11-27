@@ -15,7 +15,7 @@ import { Link, navigate, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { toast, Toaster } from "@redwoodjs/web/toast";
 import { supabaseClient } from "src/App";
-import FibonacciSphere from "src/components/FibonacciSphere/FibonacciSphere";
+import FibonacciSphere from "src/components/Util/FibonacciSphere/FibonacciSphere";
 import BoxIndent from "src/components/Util/BoxIndent/BoxIndent";
 
 const WELCOME_MESSAGE = "Welcome back!";
