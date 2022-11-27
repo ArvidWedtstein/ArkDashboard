@@ -103,7 +103,6 @@ const LoginPage = ({ type }) => {
       <div className="rw-button-group">
         <Submit className="rw-button rw-button-blue">Login</Submit>
       </div>
-      |
     </Form>
   );
 
@@ -113,35 +112,23 @@ const LoginPage = ({ type }) => {
 
       <main className="rw-main">
         <Toaster toastOptions={{ className: "rw-toast", duration: 6000 }} />
-        <div className="rw-scaffold rw-login-container">
-          <div className="rw-segment">
-            <header className="rw-segment-header">
-              <h2 className="rw-heading rw-heading-secondary">Login</h2>
-            </header>
+        <div className="rw-scaffold my-4 mx-auto max-w-lg">
+          <BoxIndent className="m-4 p-6">
+            <div className="w-full">
+              <header className="w-100 p-2">
+                <h2 className="">Login</h2>
+              </header>
 
-            <div className="rw-segment-main">
-              <div className="rw-form-wrapper">{PasswordForm()}</div>
+              <div className="p-2">
+                <div className="rw-form-wrapper">{PasswordForm()}</div>
+              </div>
             </div>
-          </div>
-          <div className="rw-login-link">
-            <span>Don&apos;t have an account?</span>{" "}
-            <Link to={routes.signup()} className="rw-link">
-              Sign up!
-            </Link>
-          </div>
-          <BoxIndent>
-            <FibonacciSphere
-              text={[
-                "Vue",
-                "React",
-                "Angular",
-                "Svelte",
-                "Ember",
-                "Nuxt",
-                "Solid",
-                "Redwood",
-              ]}
-            />
+            <div className="rw-login-link">
+              <span>Don&apos;t have an account?</span>{" "}
+              <Link to={routes.signup()} className="rw-link">
+                Sign up!
+              </Link>
+            </div>
           </BoxIndent>
         </div>
       </main>
