@@ -1,5 +1,5 @@
-import { AuthProvider } from '@redwoodjs/auth'
-import { createClient } from '@supabase/supabase-js'
+import { AuthProvider } from "@redwoodjs/auth";
+import { createClient } from "@supabase/supabase-js";
 
 // import WebAuthnClient from "@redwoodjs/auth/webAuthn";
 
@@ -11,9 +11,9 @@ import Routes from "src/Routes";
 
 import "./scaffold.css";
 import "./index.css";
-import { supabase } from '@redwoodjs/auth/dist/authClients/supabase';
+import { supabase } from "@redwoodjs/auth/dist/authClients/supabase";
 
-const supabaseClient = createClient(
+export const supabaseClient = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY
 );

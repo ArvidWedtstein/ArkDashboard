@@ -26,5 +26,8 @@
   "prisma": {
     "seed": "yarn rw exec seed"
   },
-  "packageManager": "yarn@3.2.4"
+  "packageManager": "yarn@3.2.4",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.1.1"
+  }
 }
