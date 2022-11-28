@@ -12,6 +12,8 @@ const Account = () => {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState(null);
   const [fullname, setFullname] = useState(null);
+  const [firstname, setFirstname] = useState(null);
+  const [lastname, setLastname] = useState(null);
   const [biography, setBiography] = useState(null);
   const [website, setWebsite] = useState(null);
   const [avatar_url, setAvatarUrl] = useState(null);
@@ -45,6 +47,8 @@ const Account = () => {
         setFullname(data.fullname);
         setBiography(data.biography);
         setTribescreated(data.tribescreated);
+        setFirstname(data.fullname.split(" ")[0]);
+        setLastname(data.fullname.split(" ")[1]);
       }
     } catch (error) {
       toast.error(error.message);
@@ -57,7 +61,8 @@ const Account = () => {
     username,
     website,
     avatar_url,
-    fullname,
+    firstname,
+    lastname,
     biography,
   }) {
     try {
@@ -68,7 +73,7 @@ const Account = () => {
         username,
         website,
         avatar_url,
-        full_name: fullname,
+        full_name: `${firstname} ${lastname}`,
         biography,
         updated_at: new Date(),
       };
@@ -131,7 +136,8 @@ const Account = () => {
                           username,
                           website,
                           avatar_url: url,
-                          fullname,
+                          firstname,
+                          lastname,
                           biography,
                         });
                       }}
@@ -139,7 +145,7 @@ const Account = () => {
                     {/* <StatCard /> */}
                   </div>
                 </div>
-                {/* <span class="nowrap" title="Simulated button" style="padding:.2em 1em; font-weight:bold; border:1px solid; border-color:#70CDDF; border-width:1px; background:linear-gradient(to bottom, #3c90a8 0%, #105c76 100%); text-shadow: 1px 1px #004d62; color:#70CDDF">UI ITEM SLOT SCALE</span> */}
+                {/* <span className="nowrap" title="Simulated button" style="padding:.2em 1em; font-weight:bold; border:1px solid; border-color:#70CDDF; border-width:1px; background:linear-gradient(to bottom, #3c90a8 0%, #105c76 100%); text-shadow: 1px 1px #004d62; color:#70CDDF">UI ITEM SLOT SCALE</span> */}
                 <div className="w-full px-4 lg:order-3 lg:w-4/12 lg:self-center lg:text-right">
                   <div className="mt-32 py-6 px-3 sm:mt-0">
                     <button
@@ -149,7 +155,8 @@ const Account = () => {
                           username,
                           website,
                           avatar_url,
-                          fullname,
+                          firstname,
+                          lastname,
                           biography,
                         })
                       }
@@ -185,93 +192,45 @@ const Account = () => {
                 </div>
               </div>
               <div className="mt-12 text-center">
-                <h3 className="text-blueGray-700 mb-2 text-4xl font-semibold leading-normal">
-                  <label
-                    htmlFor="fullname"
-                    className="mb-2 block text-sm font-medium text-gray-900"
-                  >
-                    Username
-                  </label>
-                  <input
-                    id="username"
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                    type="text"
-                    value={username || ""}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                  <label
-                    htmlFor="fullname"
-                    className="mb-2 block text-sm font-medium text-gray-900"
-                  >
-                    Full Name
-                  </label>
-                  <input
-                    id="fullname"
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                    type="text"
-                    value={fullname || ""}
-                    onChange={(e) => setFullname(e.target.value)}
-                  />
-                </h3>
-                <div className="text-blueGray-400 mt-0 mb-2 text-sm font-bold uppercase leading-normal">
-                  <label
-                    htmlFor="website"
-                    className="mb-2 block text-sm font-medium text-gray-900"
-                  >
-                    Website
-                  </label>
-                  <input
-                    id="website"
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                    type="text"
-                    value={website || ""}
-                    onChange={(e) => setWebsite(e.target.value)}
-                  />
-                </div>
-                <div className="text-blueGray-600 mb-2 mt-10">
-                  <label
-                    htmlFor="email"
-                    className="mb-2 block text-sm font-medium text-gray-900"
-                  >
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                    type="text"
-                    value={email || ""}
-                    disabled
-                  />
-                </div>
-                <div className="text-blueGray-600 mb-2">
-                  <label
-                    htmlFor="biography"
-                    className="mb-2 block text-sm font-medium text-gray-900"
-                  >
-                    Biography
-                  </label>
-                  <input
-                    id="biography"
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                    type="text"
-                    value={biography}
-                    onChange={(e) => setBiography(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="border-blueGray-200 mt-10 border-t py-10 text-center">
-                <div className="flex flex-wrap justify-center">
-                  <div className="w-full px-4 lg:w-9/12">
-                    <p className="text-blueGray-700 mb-4 text-lg leading-relaxed">
-                      When other websites give you text, they’re not sending the
-                      best. They’re not sending you, they’re sending words that
-                      have lots of problems and they’re bringing those problems
-                      with us. They’re bringing mistakes. They’re bringing
-                      misspellings. They’re typists… And some, I assume, are
-                      good words. I know words. I have the best words.
-                    </p>
+                <form className="w-full max-w-lg">
+                  <div className="flex flex-wrap -mx-3 mb-6">
+                    <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
+                        First Name
+                      </label>
+                      <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Ola" value={firstname || ""} onChange={(e) => setFirstname(e.target.value)} />
+                    </div>
+                    <div className="w-full md:w-1/2 px-3">
+                      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-last-name">
+                        Last Name
+                      </label>
+                      <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="text" placeholder="Nordmann" value={lastname || ""} onChange={(e) => setLastname(e.target.value)} />
+                    </div>
                   </div>
-                </div>
+                  <div className="flex flex-wrap -mx-3 mb-6">
+                    <div className="w-full px-3">
+                      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-bio">
+                        Biography
+                      </label>
+                      <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-bio" type="text" value={biography || ""} onChange={(e) => setBiography(e.target.value)} />
+                      <p className="text-gray-600 text-xs italic">Write whatever nonsense you'd like</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap -mx-3 mb-2">
+                    <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-website">
+                        Website
+                      </label>
+                      <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" value={website || ""} onChange={(e) => setWebsite(e.target.value)} />
+                    </div>
+                    <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-username">
+                        Username
+                      </label>
+                      <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="text" value={username || ""} onChange={(e) => setUsername(e.target.value)} />
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>

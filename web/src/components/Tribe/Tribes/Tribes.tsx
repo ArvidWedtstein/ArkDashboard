@@ -111,40 +111,6 @@ const TribesList = ({ tribes }: FindTribes) => {
                 </nav>
               </td>
             </tr>
-            // <tr key={tribe.id}>
-            //   {/* <td>{truncate(tribe.id)}</td> */}
-            //   <td>{truncate(tribe.name)}</td>
-            //   <td>{truncate(tribe.description)}</td>
-            //   <td>{timeTag(tribe.createdAt)}</td>
-            //   <td>{timeTag(tribe.updatedAt)}</td>
-            //   <td>{truncate(tribe.createdBy)}</td>
-            //   <td>
-            //     <nav className="rw-table-actions">
-            //       <Link
-            //         to={routes.tribe({ id: tribe.id })}
-            //         title={'Show tribe ' + tribe.id + ' detail'}
-            //         className="rw-button rw-button-small"
-            //       >
-            //         Show
-            //       </Link>
-            //       <Link
-            //         to={routes.editTribe({ id: tribe.id })}
-            //         title={'Edit tribe ' + tribe.id}
-            //         className="rw-button rw-button-small rw-button-blue"
-            //       >
-            //         Edit
-            //       </Link>
-            //       <button
-            //         type="button"
-            //         title={'Delete tribe ' + tribe.id}
-            //         className="rw-button rw-button-small rw-button-red"
-            //         onClick={() => onDeleteClick(tribe.id)}
-            //       >
-            //         Delete
-            //       </button>
-            //     </nav>
-            //   </td>
-            // </tr>
           ))}
         </tbody>
       </table>
