@@ -1,6 +1,7 @@
-import { FieldError, Form, FormError, ImageField, Label, RWGqlError, TextField } from "@redwoodjs/forms";
+import { FieldError, Form, FormError, ImageField, Label, RWGqlError, SelectField, TextField } from "@redwoodjs/forms";
 import { useReducer } from "react";
 import { useForm } from 'react-hook-form'
+import Lookup from "src/components/Lookup/Lookup";
 interface MaterialGridProps {
   items: any;
   error?: RWGqlError;
@@ -41,6 +42,7 @@ export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
   let [item, setItem] = useReducer(reducer, [])
 
   const onAdd = (data) => {
+    data.fo
     let item = items.find((item) => item.name.toLowerCase() === data.itemName.toLowerCase())
     formMethods.reset()
     setItem({ type: "ADD", item: item });
@@ -81,13 +83,25 @@ export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
             </div>
-            <TextField
+            <Lookup items={items} search={true} name="itemName" onChange={(e) => onAdd({ itemName: e })} />
+            {/* <SelectField
+              name="itemName"
+
+              className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              validation={{ required: false }}
+              errorClassName="rw-input rw-input-error"
+            >
+              {items.map((item) => {
+                return <option key={item.id + `${Math.random()}`} value={item.name}>{item.name}</option>
+              })}
+            </SelectField> */}
+            {/* <TextField
               name="itemName"
               defaultValue={""}
               className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               errorClassName="rw-input rw-input-error"
               validation={{ required: false }}
-            />
+            /> */}
             <button type="submit" className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">+</button>
           </div>
           <FieldError name="itemName" className="rw-field-error" />

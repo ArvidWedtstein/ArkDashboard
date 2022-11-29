@@ -1,31 +1,78 @@
-import { useState } from "react"
+import { SearchField, SelectField, TextField } from "@redwoodjs/forms";
+import { useEffect, useRef, useState } from "react"
+import useComponentVisible from "../useComponentVisible";
 
 type LookupType = 'user' | 'post' | 'default'
-const Lookup = ({ items, type = "default", value = "", children, className }: { items: any[], type?: LookupType, value?: string | number, children?: any, className?: string }) => {
-  const [isOpen, setOpen] = useState(false)
-  console.log(children)
-  const handleOpen = () => {
-    setOpen(!isOpen);
-  };
-  return (
-    <div className="relative flex items-center">
-      <button id="dropdownButton" onClick={handleOpen} type="button" className={className ? `mr-6 flex items-center text-center ${className}` : "flex items-center text-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"}>
-        {children ? children : null}
-        <svg className="ml-2 w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-        </svg>
-      </button>
+interface ILookup {
+  items: any[]
+  type?: LookupType
+  value?: string
+  children?: any
+  className?: string
+  onChange?: (value: string) => void
+  search?: boolean
+  name?: string
+}
+const Lookup = ({ items, type = "default", value, children, className, onChange, search = false, name }: ILookup) => {
+  const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
+  const [searchValue, setSearch] = useState<string>("")
 
-      {isOpen ? (
-        <div className="fixed top-16 right-6 z-10 w-60 bg-white rounded shadow dark:bg-gray-700">
+  const handleOpen = () => {
+    setIsComponentVisible(!isComponentVisible);
+
+  };
+  const handleSelect = (e) => {
+
+    setSearch(e)
+    onChange ? onChange(e) : null
+    setIsComponentVisible(false)
+  }
+  const debounce = (func, wait = 300) => {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        func.apply(this, args);
+      }, wait);
+    };
+  };
+  const handleSearch = debounce((e) => setSearch(e.target.value))
+  useEffect(() => {
+    items.filter((item) => item.name.toLowerCase().includes(searchValue.toLowerCase()))
+  }, [items])
+
+
+  return (
+    <div className="relative flex items-center" ref={ref}>
+      <div className={className ? `flex items-center text-center ${className}` : "flex items-center text-center text-white bg-gray-600 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2"}>
+        {search ? (
+          <SearchField
+            name={name}
+            id={name}
+            autoComplete="off"
+            className="flex items-center w-full py-2 px-4 bg-gray-600 dark:hover:bg-gray-600 dark:hover:text-white"
+            onChange={handleSearch}
+            onFocus={handleOpen}
+            placeholder="Search..."
+          />
+        ) : (
+          <>{children ? children : null}</>
+        )}
+        <label htmlFor={name} onClick={handleOpen} >
+          <svg className="ml-2 w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </label>
+      </div>
+
+      {isComponentVisible ? (
+        <div className="absolute top-14 z-10 w-60 bg-white rounded shadow dark:bg-gray-700">
           <ul className="overflow-y-auto py-1 max-h-48 text-gray-700 dark:text-gray-200" aria-labelledby="dropdownButton">
             {items.map((item) => {
               return (
-                <li>
-                  <a href="#" className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                    {"image" in item ?? <img className="mr-2 w-6 h-6 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Jese image" />}
-                    {item.name}
-                  </a>
+                <li key={Math.random()} onClick={() => handleSelect(item.name)} className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                  {"image" in item ?? <img className="mr-2 w-6 h-6 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Jese image" />}
+                  {item.name}
                 </li>
               )
             })}
