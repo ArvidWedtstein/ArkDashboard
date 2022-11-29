@@ -1,3 +1,4 @@
+import { useAuth } from '@redwoodjs/auth'
 import { Link, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
@@ -17,6 +18,7 @@ const DELETE_TRIBE_MUTATION = gql`
 `
 // TODO: Create random tribe name generator
 const TribesList = ({ tribes }: FindTribes) => {
+
   const [deleteTribe] = useMutation(DELETE_TRIBE_MUTATION, {
     onCompleted: () => {
       toast.success('Tribe deleted')
@@ -36,6 +38,7 @@ const TribesList = ({ tribes }: FindTribes) => {
       deleteTribe({ variables: { id } })
     }
   }
+
 
   function filterDatesByCurrentWeek(dates: FindTribes['tribes']) {
     let [start, end] = getWeekDates();
@@ -57,6 +60,7 @@ const TribesList = ({ tribes }: FindTribes) => {
           </div>
         </div>
       </div>
+      {/* TODO: Replace user uuid with user name and profile picture */}
       <Table data={tribes} cols={["name", "description", "createdAt", "createdBy", "actions"]} />
 
     </div>

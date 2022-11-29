@@ -4,6 +4,7 @@ import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import Tribes from 'src/components/Tribe/Tribes'
+import { useAuth } from '@redwoodjs/auth'
 
 export const QUERY = gql`
   query FindTribes {
