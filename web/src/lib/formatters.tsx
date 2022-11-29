@@ -60,11 +60,45 @@ export const combineBySummingKeys = (...objects) => {
     Object.keys(obj).forEach((key) => {
       mergedObj[key] = (mergedObj[key] || 0) + obj[key];
     });
+
   });
 
   return mergedObj;
 };
+export const mergeRecipe = (...objects) => {
+  const mergedObj = {};
+  objects.forEach((obj) => {
+    obj.recipe.forEach((res) => {
+      mergedObj[res.itemId] = (mergedObj[res.itemId] || 0) + res["count"];
+    })
+  });
 
+  return mergedObj;
+};
+export const isObject = (value) => {
+  return (
+    !!value &&
+    typeof value === "object" &&
+    typeof value.getMonth !== "function" &&
+    !Array.isArray(value)
+  );
+};
+export const merge = (...sources) => {
+  const [target, ...rest] = sources;
+
+  for (const object of rest) {
+    for (const key in object) {
+      const targetValue = target[key];
+      const sourceValue = object[key];
+      const isMergable = isObject(targetValue) && isObject(sourceValue);
+      target[key] = isMergable
+        ? merge({}, targetValue, sourceValue)
+        : sourceValue;
+    }
+  }
+
+  return target;
+};
 export const capitalize = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }

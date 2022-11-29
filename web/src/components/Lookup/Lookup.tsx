@@ -46,7 +46,7 @@ const Lookup = ({ items, type = "default", value, children, className, onChange,
     <div className="relative flex items-center" ref={ref}>
       <div className={className ? `flex items-center text-center ${className}` : "flex items-center text-center text-white bg-gray-600 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2"}>
         {search ? (
-          <SearchField
+          <TextField
             name={name}
             id={name}
             autoComplete="off"

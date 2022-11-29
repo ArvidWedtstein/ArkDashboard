@@ -2,6 +2,7 @@ import { FieldError, Form, FormError, ImageField, Label, RWGqlError, SelectField
 import { useReducer } from "react";
 import { useForm } from 'react-hook-form'
 import Lookup from "src/components/Lookup/Lookup";
+import { combineBySummingKeys, merge, mergeRecipe } from 'src/lib/formatters'
 interface MaterialGridProps {
   items: any;
   error?: RWGqlError;
@@ -42,10 +43,9 @@ export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
   let [item, setItem] = useReducer(reducer, [])
 
   const onAdd = (data) => {
-    data.fo
-    let item = items.find((item) => item.name.toLowerCase() === data.itemName.toLowerCase())
+    let itemfound = items.find((item) => item.name.toLowerCase() === data.itemName.toLowerCase())
     formMethods.reset()
-    setItem({ type: "ADD", item: item });
+    setItem({ type: "ADD", item: itemfound });
   }
 
   const onRemove = (index) => {
@@ -95,13 +95,6 @@ export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
                 return <option key={item.id + `${Math.random()}`} value={item.name}>{item.name}</option>
               })}
             </SelectField> */}
-            {/* <TextField
-              name="itemName"
-              defaultValue={""}
-              className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              errorClassName="rw-input rw-input-error"
-              validation={{ required: false }}
-            /> */}
             <button type="submit" className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">+</button>
           </div>
           <FieldError name="itemName" className="rw-field-error" />
@@ -110,6 +103,25 @@ export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
             <li className="border-0 border-b-2 py-4 text-white">
               <div className=" flex flex-row items-center w-fit pl-4">
                 Total
+                <button type="button" className="bg-slate-200 relative text-black mx-2 rounded-full w-8 h-8">
+
+                </button>
+                <p
+                  className="rw-input w-10 text-white"
+                ></p>
+                <button type="button" className="bg-slate-200 relative text-black mx-2 rounded-full w-8 h-8" >
+
+                </button>
+                {Object.entries(mergeRecipe(...item)).map((k) => {
+                  return (
+                    <div key={k[0]} className="flex flex-col justify-center items-center ml-2">
+                      <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${items.find((item) => item.itemId === Number(k[0])).image}`} className="w-6 h-6" title={items.find((item) => item.itemId === Number(k[0])).name} />
+                      {/* <p className="rw-input w-10 text-white">{items.find((item) => item.itemId === k[0]) ? items.find((item) => item.itemId === k[0]).name : k[1]}</p> */}
+                      <span className="text-sm text-white">{k[1]}</span>
+                    </div>
+                  )
+                })}
+
               </div>
             </li>
             {item.map((item, i) => (
