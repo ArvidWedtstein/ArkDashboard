@@ -5,6 +5,12 @@ import { useEffect, useState } from "react";
 
 const HomePage = () => {
   const { isAuthenticated } = useAuth();
+  if (document.addEventListener) {
+    document.addEventListener('contextmenu', function (e) {
+      alert("You've tried to open context menu"); //here you draw your own menu
+      e.preventDefault();
+    }, false);
+  }
   return (
     <>
       <MetaTags title="Home" description="Home page" />

@@ -64,3 +64,31 @@ export const combineBySummingKeys = (...objects) => {
 
   return mergedObj;
 };
+
+export const capitalize = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export const getWeekDates = () => {
+
+  let now = new Date();
+  let dayOfWeek = now.getDay(); //0-6
+  let numDay = now.getDate();
+
+  let start = new Date(now); //copy
+  start.setDate(numDay - dayOfWeek);
+  start.setHours(0, 0, 0, 0);
+
+
+  let end = new Date(now); //copy
+  end.setDate(numDay + (7 - dayOfWeek));
+  end.setHours(0, 0, 0, 0);
+
+  return [start, end];
+}
+
+export const isDate = (date: any): boolean => {
+  // regex test for  2022-11-28T14:17:14.899Z format
+  const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/
+  return regex.test(date)
+}

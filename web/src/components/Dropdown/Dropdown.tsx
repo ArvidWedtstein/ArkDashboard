@@ -66,44 +66,65 @@ const Dropdown = ({
       </div>
 
       {isComponentVisible ? (
-        <div
-          className="absolute right-0 top-16 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-          role="menu"
-          aria-orientation="vertical"
-          aria-labelledby="menu-button"
-          tabIndex={-1}
-        >
-          <div className="py-1" role="none">
+        <div className="absolute right-0 top-16 z-10 mt-2 w-56 bg-[#333333] transition-color shadow rounded-lg">
+
+          <div className="p-4">
+            <h2 className="text-sm font-medium mb-1">Theme</h2>
+            <div className="theme-switcher bg-gray-500 rounded flex items-center overflow-hidden relative px-1">
+              <input type="radio" id="light-theme" name="themes" className="hidden" checked />
+              <label htmlFor="light-theme" className="relative z-[2] w-[calc(100%/3)] text-[#dddddd]">
+                <span className="py-2 rounded-md flex justify-center items-center font-medium">
+                  <svg className="inline-block mr-2 w-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>Light
+                </span>
+              </label>
+              <input type="radio" id="dark-theme" name="themes" className="hidden" />
+              <label htmlFor="dark-theme" className="relative z-[2] w-[calc(100%/3)] text-[#dddddd]">
+                <span className="py-2 rounded-md flex justify-center items-center font-medium">
+                  <svg className="inline-block mr-2 w-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>Dark
+                </span>
+              </label>
+              <input type="radio" id="black-theme" name="themes" className="hidden" />
+              <label htmlFor="black-theme" className="relative z-[2] w-[calc(100%/3)] text-[#dddddd]">
+                <span className="py-2 rounded-md flex justify-center items-center font-medium">
+                  <svg className="inline-block mr-2 w-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>Black
+                </span>
+              </label>
+              <span className="block absolute z-[2] w-[calc((100%-6px)/3)] top-1 -translate-x-[110%] bottom-1 rounded-md transition-transform border-[#ff0000] border-2 slider"></span>
+            </div>
+          </div>
+          <div className="flex flex-col p-2 border-t-2 border-[#dddddd] transition-colors">
             {isAuthenticated ? (
-              <Link
-                to={routes.account()}
-                className="block px-4 py-2 text-sm text-gray-700"
-                role="menuitem"
-                tabIndex={-1}
-                id="menu-item-0"
-              >
-                Account
-              </Link>
-            ) : null}
-            {isAuthenticated ? (
-              <button
-                onClick={logOut}
-                className="block w-full px-4 py-2 text-left text-sm text-gray-700"
-                role="menuitem"
-                tabIndex={-1}
-                id="menu-item-3"
-              >
-                Sign out
-              </button>
+              <>
+                <Link
+                  to={routes.account()}
+                  className="text-inherit flex items-center p-2 font-medium transition-all rounded hover:bg-neutral-600"
+                  role="menuitem"
+                  tabIndex={-1}
+                  id="menu-item-0"
+                >
+                  <svg className="mr-4 text-neutral-500 transition-colors" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                  Account
+                </Link>
+                <button
+                  onClick={logOut}
+                  className="text-inherit flex items-center p-2 font-medium transition-all rounded hover:bg-neutral-600"
+                  role="menuitem"
+                  tabIndex={-1}
+                  id="menu-item-3"
+                >
+                  Sign out
+                </button>
+              </>
             ) : (
               <Link
-                className="block w-full px-4 py-2 text-left text-sm text-gray-700"
+                className="text-inherit flex items-center p-2 font-medium transition-all rounded hover:bg-neutral-600"
                 to={routes.login()}
               >
                 Login
               </Link>
             )}
           </div>
+
         </div>
       ) : null}
     </div>
