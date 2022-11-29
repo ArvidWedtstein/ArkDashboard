@@ -42,7 +42,7 @@ const TribesList = ({ tribes }: FindTribes) => {
     return dates.filter(d => +new Date(d.createdAt) >= +start && +new Date(d.createdAt) < +end);
   }
   return (
-    <div className="rw-segment rw-table-wrapper-responsive">
+    <div className="rw-segment relative">
       <div className="m-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <div className="flex items-start rounded-xl bg-white p-4 shadow-lg"> {/* TODO: Create component for this  */}
           <div className="flex h-12 w-12 items-center justify-center rounded-full border border-blue-100 bg-blue-50">
