@@ -21,29 +21,3 @@
 .theme-switcher input:nth-of-type(3):checked ~ .slider {
   transform: translateX(200%);
 }
-
-.name-cell {
-  width: 40%;
-  word-break: break-all;
-}
-.name-cell.pdf:before {
-  content: "PDF";
-  background-color: #e2e9f8;
-  color: #5a8ff7;
-}
-.name-cell.jpg:before {
-  content: "JPG";
-  background-color: #e4e2f1;
-  color: #302d7d;
-}
-.name-cell:before {
-  border-radius: 4px;
-  font-size: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 4px;
-}

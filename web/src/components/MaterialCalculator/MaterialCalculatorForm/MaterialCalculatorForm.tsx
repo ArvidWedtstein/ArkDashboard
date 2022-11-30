@@ -29,9 +29,10 @@ const MaterialCalculatorForm = (props: MaterialCalculatorFormProps) => {
 
 
   return (
-    <div className="rw-form-wrapper container mx-auto">
+    <div className="rw-form-wrapper container-xl mx-auto">
 
       <MaterialGrid items={items} error={props.error} />
+
     </div >
   )
 }
