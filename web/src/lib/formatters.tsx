@@ -65,13 +65,16 @@ export const combineBySummingKeys = (...objects) => {
 
   return mergedObj;
 };
-export const mergeRecipe = (...objects) => {
+export const mergeRecipe = (...objects): Object => {
   const mergedObj = {};
+
   objects.forEach((obj) => {
+
     obj.recipe.forEach((res) => {
-      mergedObj[res.itemId] = (mergedObj[res.itemId] || 0) + res["count"];
+      mergedObj[res.itemId] = (mergedObj[res.itemId] || 0) + (res["count"] * obj.amount);
     })
   });
+
 
   return mergedObj;
 };

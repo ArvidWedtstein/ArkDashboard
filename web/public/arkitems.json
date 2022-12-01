@@ -8326,7 +8326,7 @@
     {
       "name": "Heavy Auto Turret",
       "itemId": 686,
-      "image": "256px-Heavy_Auto_Turret.png",
+      "image": "Heavy_Auto_Turret.png",
       "recipe": [
         { "itemId": 197, "count": 1 },
         { "itemId": 146, "count": 150 },

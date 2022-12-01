@@ -4,16 +4,18 @@ import { useForm } from 'react-hook-form'
 import Lookup from "src/components/Lookup/Lookup";
 import { combineBySummingKeys, merge, mergeRecipe } from 'src/lib/formatters'
 import { items } from 'public/arkitems.json'
+import Table from "src/components/Util/Table/Table";
 interface MaterialGridProps {
   items: any;
   error?: RWGqlError;
 }
 export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
   const formMethods = useForm()
+
   const reducer = (state, action) => {
     switch (action.type) {
       case 'ADD_AMOUNT_BY_NUM':
-        action.item.amount = action.amount
+        action.item.amount = action.index
         return [
           ...state,
           action.item
@@ -115,14 +117,16 @@ export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
     }
 
     for (const [key, value] of Object.entries(towerItems)) {
-      let itemfound = items.find((item) => item.itemId === parseInt(key))
-      setItem({ type: "ADD_AMOUNT_BY_NUM", item: itemfound, amount: value });
+
+      let itemfound = items.find((item) => parseInt(item.itemId) === parseInt(key))
+      if (itemfound) setItem({ type: "ADD_AMOUNT_BY_NUM", item: itemfound, index: value });
+
     }
 
   });
   return (
     <>
-      <div className="container-xl mx-auto bg-white p-3 ">
+      <div className="container-xl bg-white p-3 ">
         <Form onSubmit={onAdd} error={error}>
           <FormError
             error={error}
@@ -155,37 +159,37 @@ export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
                 Cliff Platform Turret Tower
               </button>
             </div>
-            <button type="submit" className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">+</button>
+            {/* <button type="submit" className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">+</button> */}
           </div>
           <FieldError name="itemName" className="rw-field-error" />
 
+          <Table data={[mergeRecipe(...item)]} tableOptions={{
+            header: false
+          }}
+            renderCell={({ id, amount }) =>
+              <div className="flex flex-col justify-center items-center ml-2">
+                <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${items.find((itm) => parseInt(itm.itemId) === parseInt(id)).image}`} className="w-6 h-6" />
+                <span className="text-sm">{amount}</span>
+              </div>
+            } />
           <ul className="py-4">
-            <li className="border-0 border-b-2 py-4">
-              <div className=" flex flex-row items-center w-fit pl-4">
+            {/* <li className="bg-gray-400 rounded-md border-0 border-b-2 py-4">
+              <div className="flex flex-row items-center w-fit pl-4">
                 Total
-                <button type="button" className="bg-slate-200 relative text-black mx-2 rounded-full w-8 h-8">
-
-                </button>
-                <p
-                  className="rw-input w-10 "
-                ></p>
-                <button type="button" className="bg-slate-200 relative text-black mx-2 rounded-full w-8 h-8" >
-
-                </button>
+                <div className="ml-36" />
                 {Object.entries(mergeRecipe(...item)).map((k) => {
                   return (
-                    <div key={k[0]} className="flex flex-col justify-center items-center ml-2">
-                      <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${items.find((item) => item.itemId === Number(k[0])).image}`} className="w-6 h-6" title={items.find((item) => item.itemId === Number(k[0])).name} />
-                      {/* <p className="rw-input w-10 text-white">{items.find((item) => item.itemId === k[0]) ? items.find((item) => item.itemId === k[0]).name : k[1]}</p> */}
+                    <div key={Math.random()} className="flex flex-col justify-center items-center ml-2">
+                      <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${items.find((itm) => parseInt(itm.itemId) === parseInt(k[0])).image}`} className="w-6 h-6" title={items.find((itm) => parseInt(itm.itemId) === parseInt(k[0])).name} />
                       <span className="text-sm">{k[1]}</span>
                     </div>
                   )
                 })}
 
               </div>
-            </li>
+            </li> */}
             {item.map((item, i) => (
-              <li className="" key={`${item.id}+${i}`}>
+              <li className="" key={`${item.itemId}+${i * Math.random()}`}>
                 <div className="flex flex-row items-center w-fit pl-4">
                   <button type="button" onClick={() => onRemove(i)} className="hover:bg-red-500 relative rounded-full w-10 h-10 flex items-center justify-center">
                     <ImageField className="w-8 h-8" name="itemimage" src={"https://www.arkresourcecalculator.com/assets/images/80px-" + item.image} />
@@ -201,8 +205,8 @@ export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
                     +
                   </button>
                   {item.recipe.map((recipe, t) => (
-                    <div className="flex flex-col justify-center items-center ml-2" key={`${recipe}-${i}${t}`}>
-                      <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${items.find((item) => item.itemId === recipe.itemId).image}`} className="w-6 h-6" title={items.find((item) => item.itemId === recipe.itemId).name} alt={items.find((item) => item.itemId === recipe.itemId).name} />
+                    <div className="flex flex-col justify-center items-center ml-2" id={`${recipe.itemId}-${i * Math.random()}${t}`} key={`${recipe.itemId}-${t * Math.random()}${i}`}>
+                      <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${items.find((itm) => parseInt(itm.itemId) === parseInt(recipe.itemId)).image}`} className="w-6 h-6" title={items.find((itm) => parseInt(itm.itemId) === parseInt(recipe.itemId)).name} alt={items.find((itm) => parseInt(itm.itemId) === parseInt(recipe.itemId)).name} />
                       <span className="text-sm">{recipe.count * item.amount}</span>
                     </div>
                   ))}
