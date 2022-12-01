@@ -1,7 +1,7 @@
 import React from 'react'
 
 import humanize from 'humanize-string'
-
+import prices from '../../public/arkitems.json'
 const MAX_STRING_LENGTH = 150
 
 export const formatEnum = (values: string | string[] | null | undefined) => {
@@ -126,3 +126,33 @@ export const isDate = (date: any): boolean => {
   const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/
   return regex.test(date)
 }
+/**
+ *
+ * @param {Number} amount
+ * @param {String} item_type
+ * @returns Object with prices
+ */
+export const calcItemCost = (amount, item_type) => {
+  if (Number.isNaN(amount)) return console.error("Amount is NaN");
+  if (!(item_type in prices))
+    return console.error(
+      "\x1b[31m%s\x1b[0m",
+      `[ArkMatCalc Error]: ${item_type} not found in prices`
+    );
+  let price = {};
+  Object.entries(prices[item_type]).forEach((i) => {
+    const [key, val]: any = i;
+    if (prices.hasOwnProperty(key)) {
+      price = combineBySummingKeys(calcItemCost(val, key), price);
+    } else {
+      price[`${key}`] = val * Number(amount);
+    }
+  });
+  return price;
+};
+
+// const calcItemPrice = (itemId: number, amount: number) => {
+    //   if (items.some((i) => i.itemId === parseInt(key))) {
+
+    //   }
+    // }

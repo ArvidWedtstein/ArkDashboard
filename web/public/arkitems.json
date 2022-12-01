@@ -2551,6 +2551,23 @@
       ]
     },
     {
+      "name": "Metal Double Doorframe",
+      "maxStack": 400,
+      "decomposes": 120,
+      "itemId": 770,
+      "description": "A metal-plated concrete wall that provides entrance to a structure.",
+      "image": "metal_double_doorframe.png",
+      "weight": 4.0,
+      "recipe": [
+        { "itemId": 74, "count": 20 },
+        { "itemId": 146, "count": 6 }
+      ],
+      "stats": [
+        { "id": 1, "value": "Structure" },
+        { "id": 5, "value": 10000 }
+      ]
+    },
+    {
       "name": "Metal Windowframe",
       "maxStack": 100,
       "decomposes": 120,
@@ -5602,8 +5619,8 @@
         { "itemId": 233, "count": 2 },
         { "itemId": 232, "count": 2 },
         { "itemId": 99, "count": 2 },
-        { "itemId": "Woolly Rhino Horn", "count": 5 },
-        { "itemId": "Black Pearl", "count": 1 }
+        { "itemId": 455, "count": 5 },
+        { "itemId": 456, "count": 1 }
       ],
       "stats": [{ "id": 1, "value": "Other" }]
     },
@@ -5611,12 +5628,12 @@
       "name": "Absorbent Substrate",
       "maxStack": 100,
       "decomposes": 120,
-      "itemId": "454",
+      "itemId": 454,
       "description": "A single sip of this incredible broth will expand your mind and broaden your horizons, granting greatly increased experience gain for a brief time.",
       "image": "absorbent_substrate.png",
       "weight": 0.25,
       "recipe": [
-        { "itemId": "Black Pearl", "count": 8 },
+        { "itemId": 456, "count": 8 },
         { "itemId": 457, "count": 8 },
         { "itemId": 162, "count": 8 }
       ],
@@ -5626,7 +5643,7 @@
       "name": "Woolly Rhino Horn",
       "maxStack": 100,
       "decomposes": 120,
-      "itemId": "Woolly Rhino Horn",
+      "itemId": 455,
       "description": "Used in very specialized Recipes.",
       "image": "woolly_rhino_horn.png",
       "weight": 8.0,
@@ -5637,7 +5654,7 @@
       "name": "Black Pearl",
       "maxStack": 100,
       "decomposes": 120,
-      "itemId": "Black Pearl",
+      "itemId": 456,
       "description": "A rare resource from the bottom of the sea...",
       "image": "black_pearl.png",
       "weight": 2.0,
@@ -5725,7 +5742,7 @@
       "name": "Arthropluera Saddle",
       "maxStack": 1,
       "decomposes": 120,
-      "itemId": "463",
+      "itemId": 463,
       "description": "Equip an Arthropluera with this to ride it.",
       "image": "arthropluera_saddle.png",
       "weight": 20.0,
@@ -5927,7 +5944,7 @@
         { "itemId": 7, "count": 80 },
         { "itemId": 10, "count": 30 },
         { "itemId": 78, "count": 240 },
-        { "itemId": "Black Pearl", "count": 80 },
+        { "itemId": 456, "count": 80 },
         { "itemId": 457, "count": 100 },
         { "itemId": 142, "count": 150 },
         { "itemId": 74, "count": 140 }
@@ -6027,7 +6044,7 @@
         { "itemId": 74, "count": 450 },
         { "itemId": 78, "count": 120 },
         { "itemId": 472, "count": 20 },
-        { "itemId": "Black Pearl", "count": 55 }
+        { "itemId": 456, "count": 55 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -6040,7 +6057,7 @@
         { "itemId": 74, "count": 450 },
         { "itemId": 78, "count": 120 },
         { "itemId": 472, "count": 20 },
-        { "itemId": "Black Pearl", "count": 55 }
+        { "itemId": 456, "count": 55 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -6053,7 +6070,7 @@
         { "itemId": 74, "count": 450 },
         { "itemId": 78, "count": 120 },
         { "itemId": 472, "count": 20 },
-        { "itemId": "Black Pearl", "count": 55 }
+        { "itemId": 456, "count": 55 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -6066,7 +6083,7 @@
         { "itemId": 74, "count": 450 },
         { "itemId": 78, "count": 120 },
         { "itemId": 472, "count": 20 },
-        { "itemId": "Black Pearl", "count": 55 }
+        { "itemId": 456, "count": 55 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -6079,7 +6096,7 @@
         { "itemId": 74, "count": 450 },
         { "itemId": 78, "count": 120 },
         { "itemId": 472, "count": 20 },
-        { "itemId": "Black Pearl", "count": 55 }
+        { "itemId": 456, "count": 55 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -6126,7 +6143,7 @@
         { "itemId": 74, "count": 900 },
         { "itemId": 78, "count": 240 },
         { "itemId": 472, "count": 70 },
-        { "itemId": "Black Pearl", "count": 100 }
+        { "itemId": 456, "count": 100 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -6611,7 +6628,7 @@
         { "itemId": 74, "count": 2500 },
         { "itemId": 78, "count": 370 },
         { "itemId": 472, "count": 55 },
-        { "itemId": "Black Pearl", "count": 140 }
+        { "itemId": 456, "count": 140 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -6673,7 +6690,7 @@
         { "itemId": 74, "count": 2500 },
         { "itemId": 78, "count": 370 },
         { "itemId": 472, "count": 55 },
-        { "itemId": "Black Pearl", "count": 140 }
+        { "itemId": 456, "count": 140 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -6809,7 +6826,7 @@
         { "itemId": 74, "count": 1800 },
         { "itemId": 78, "count": 250 },
         { "itemId": 472, "count": 40 },
-        { "itemId": "Black Pearl", "count": 100 }
+        { "itemId": 456, "count": 100 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -6835,7 +6852,7 @@
         { "itemId": 74, "count": 2350 },
         { "itemId": 78, "count": 325 },
         { "itemId": 472, "count": 75 },
-        { "itemId": "Black Pearl", "count": 185 }
+        { "itemId": 456, "count": 185 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -6929,7 +6946,7 @@
         { "itemId": 74, "count": 2500 },
         { "itemId": 78, "count": 370 },
         { "itemId": 472, "count": 55 },
-        { "itemId": "Black Pearl", "count": 140 }
+        { "itemId": 456, "count": 140 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -7527,7 +7544,7 @@
     },
     {
       "name": "Giant Metal Hatchframe",
-      "itemId": "621",
+      "itemId": 621,
       "image": "Giant_Metal_Hatchframe.png",
       "recipe": [
         { "itemId": 74, "count": 240 },
@@ -7537,7 +7554,7 @@
     },
     {
       "name": "Giant Metal Trapdoor",
-      "itemId": "622",
+      "itemId": 622,
       "image": "Giant_Metal_Trapdoor.png",
       "recipe": [
         { "itemId": 74, "count": 360 },
@@ -7901,7 +7918,7 @@
         { "itemId": 472, "count": 100 },
         { "itemId": 74, "count": 5000 },
         { "itemId": 78, "count": 600 },
-        { "itemId": "Black Pearl", "count": 150 },
+        { "itemId": 456, "count": 150 },
         { "itemId": 166, "count": 800 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
@@ -8039,7 +8056,7 @@
       "recipe": [
         { "itemId": 74, "count": 5000 },
         { "itemId": 78, "count": 600 },
-        { "itemId": "Black Pearl", "count": 150 },
+        { "itemId": 456, "count": 150 },
         { "itemId": 166, "count": 800 },
         { "itemId": 472, "count": 75 }
       ],
@@ -8163,7 +8180,7 @@
     },
     {
       "name": "Tek Windowframe",
-      "itemId": "675",
+      "itemId": 675,
       "image": "Tek_Windowframe.png",
       "recipe": [
         { "itemId": 78, "count": 30 },
@@ -8175,13 +8192,13 @@
     },
     {
       "name": "Tek Generator",
-      "itemId": "676",
+      "itemId": 676,
       "image": "Tek_Generator.png",
       "recipe": [
         { "itemId": 472, "count": 30 },
         { "itemId": 74, "count": 2400 },
         { "itemId": 78, "count": 250 },
-        { "itemId": "Black Pearl", "count": 120 },
+        { "itemId": 456, "count": 120 },
         { "itemId": 166, "count": 500 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
@@ -8194,7 +8211,7 @@
         { "itemId": 472, "count": 85 },
         { "itemId": 74, "count": 2500 },
         { "itemId": 78, "count": 600 },
-        { "itemId": "Black Pearl", "count": 150 },
+        { "itemId": 456, "count": 150 },
         { "itemId": 166, "count": 1200 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
@@ -8208,7 +8225,7 @@
         { "itemId": 166, "count": 136 },
         { "itemId": 78, "count": 180 },
         { "itemId": 472, "count": 2 },
-        { "itemId": "Black Pearl", "count": 32 }
+        { "itemId": 456, "count": 32 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -8221,7 +8238,7 @@
         { "itemId": 166, "count": 136 },
         { "itemId": 78, "count": 180 },
         { "itemId": 472, "count": 2 },
-        { "itemId": "Black Pearl", "count": 32 }
+        { "itemId": 456, "count": 32 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -8234,13 +8251,13 @@
         { "itemId": 166, "count": 800 },
         { "itemId": 78, "count": 550 },
         { "itemId": 472, "count": 2 },
-        { "itemId": "Black Pearl", "count": 32 }
+        { "itemId": 456, "count": 32 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
       "name": "Tek Turret",
-      "itemId": "681",
+      "itemId": 681,
       "image": "Tek_Turret.png",
       "recipe": [
         { "itemId": 165, "count": 100 },
@@ -8262,7 +8279,7 @@
         { "itemId": 76, "count": 180 },
         { "itemId": 142, "count": 150 },
         { "itemId": 166, "count": 400 },
-        { "itemId": "Black Pearl", "count": 60 }
+        { "itemId": 456, "count": 60 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -8284,7 +8301,7 @@
       "itemId": "684",
       "image": "Tek_Trough.png",
       "recipe": [
-        { "itemId": "Black Pearl", "count": 45 },
+        { "itemId": 456, "count": 45 },
         { "itemId": 78, "count": 100 },
         { "itemId": 165, "count": 50 },
         { "itemId": 472, "count": 18 },
@@ -8301,14 +8318,14 @@
         { "itemId": 472, "count": 2 },
         { "itemId": 74, "count": 90 },
         { "itemId": 78, "count": 20 },
-        { "itemId": "Black Pearl", "count": 1 },
+        { "itemId": 456, "count": 1 },
         { "itemId": 166, "count": 40 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
       "name": "Heavy Auto Turret",
-      "itemId": "686",
+      "itemId": 686,
       "image": "256px-Heavy_Auto_Turret.png",
       "recipe": [
         { "itemId": 197, "count": 1 },
@@ -8901,7 +8918,7 @@
         { "itemId": 74, "count": 120 },
         { "itemId": 465, "count": 525 },
         { "itemId": 472, "count": 20 },
-        { "itemId": "Black Pearl", "count": 55 },
+        { "itemId": 456, "count": 55 },
         { "itemId": 483, "count": 120 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
@@ -8915,7 +8932,7 @@
         { "itemId": 74, "count": 450 },
         { "itemId": 78, "count": 120 },
         { "itemId": 472, "count": 20 },
-        { "itemId": "Black Pearl", "count": 55 }
+        { "itemId": 456, "count": 55 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -8928,7 +8945,7 @@
         { "itemId": 74, "count": 675 },
         { "itemId": 78, "count": 180 },
         { "itemId": 472, "count": 40 },
-        { "itemId": "Black Pearl", "count": 80 }
+        { "itemId": 456, "count": 80 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -9209,7 +9226,7 @@
     {
       "name": "Chitin/Keratin",
       "itemId": "765",
-      "image": "Chitin_or_Keratin.png",
+      "image": "Chitin.png",
       "recipe": [],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
