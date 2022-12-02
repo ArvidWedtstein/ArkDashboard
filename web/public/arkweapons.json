@@ -1,0 +1,1094 @@
+{
+  "Longneck Rifle": {
+    "name": "Tranquilizer Dart",
+    "img": "Tranquilizer Dart",
+    "torpor": 221,
+    "damage": 26,
+    "durationDevKit": 5,
+    "duration": 6,
+    "hasMultipler": true,
+    "mult": ["DmgType_Projectile", "DamageType"],
+    "id": "Longneck Rifle",
+    "type": "Longneck Rifle",
+    "userDamage": 100,
+    "data": {
+      "hits": 9,
+      "hitsRaw": 8.095927601809954,
+      "hitsUntilFlee": 7,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 2.6986425339366513,
+          "hitsUntilFlee": 3,
+          "hits": 3,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Shocking Tranquilizer Dart": {
+    "name": "Shocking Tranquilizer Dart",
+    "img": "Shocking Tranquilizer Dart",
+    "torpor": 442,
+    "damage": 26,
+    "durationDevKit": 5,
+    "duration": 6,
+    "hasMultipler": true,
+    "mult": ["DmgType_Projectile", "DamageType"],
+    "id": "Shocking Tranquilizer Dart",
+    "type": "Shocking Tranquilizer Dart",
+    "userDamage": 100,
+    "data": {
+      "hits": 5,
+      "hitsRaw": 4.047963800904977,
+      "hitsUntilFlee": 4,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 1.3493212669683257,
+          "hitsUntilFlee": 2,
+          "hits": 2,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Bow": {
+    "name": "Bow",
+    "img": "Tranq Arrow Bow",
+    "torpor": 90,
+    "damage": 20,
+    "duration": 6,
+    "hasMultipler": true,
+    "mult": ["DmgType_Projectile", "DamageType"],
+    "id": "Bow",
+    "type": "Bow",
+    "userDamage": 100,
+    "data": {
+      "hits": 20,
+      "hitsRaw": 19.88,
+      "hitsUntilFlee": 15,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 6.626666666666666,
+          "hitsUntilFlee": 5,
+          "hits": 7,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Crossbow": {
+    "name": "Crossbow",
+    "img": "Tranq Arrow Crossbow",
+    "torpor": 157.5,
+    "damage": 35,
+    "duration": 6,
+    "hasMultipler": true,
+    "mult": ["DmgType_Projectile", "DamageType"],
+    "id": "Crossbow",
+    "type": "Crossbow",
+    "userDamage": 100,
+    "data": {
+      "hits": 12,
+      "hitsRaw": 11.36,
+      "hitsUntilFlee": 9,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 3.7866666666666666,
+          "hitsUntilFlee": 3,
+          "hits": 4,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Tek Bow": {
+    "name": "Tek Bow",
+    "img": "Tek Bow",
+    "torpor": 336,
+    "damage": 24,
+    "duration": 6,
+    "hasMultipler": true,
+    "mult": ["DmgType_Projectile", "DamageType"],
+    "id": "Tek Bow",
+    "type": "Tek Bow",
+    "userDamage": 100,
+    "data": {
+      "hits": 6,
+      "hitsRaw": 5.325,
+      "hitsUntilFlee": 4,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 1.7750000000000001,
+          "hitsUntilFlee": 2,
+          "hits": 2,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Compound Bow": {
+    "name": "Compound Bow",
+    "img": "Tranq Arrow Compound",
+    "torpor": 121.5,
+    "damage": 27,
+    "duration": 6,
+    "hasMultipler": true,
+    "mult": ["DmgType_Projectile", "DamageType"],
+    "id": "Compound Bow",
+    "type": "Compound Bow",
+    "userDamage": 100,
+    "data": {
+      "hits": 15,
+      "hitsRaw": 14.725925925925926,
+      "hitsUntilFlee": 12,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 4.908641975308642,
+          "hitsUntilFlee": 4,
+          "hits": 5,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Harpoon Launcher": {
+    "name": "Harpoon Launcher",
+    "img": "Harpoon Launcher",
+    "torpor": 300,
+    "damage": 36,
+    "duration": 5,
+    "hasMultipler": true,
+    "mult": ["DmgType_Projectile", "DamageType"],
+    "id": "Harpoon Launcher",
+    "type": "Harpoon Launcher",
+    "userDamage": 100,
+    "data": {
+      "hits": 6,
+      "hitsRaw": 5.964,
+      "hitsUntilFlee": 5,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 1.9880000000000002,
+          "hitsUntilFlee": 2,
+          "hits": 2,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Fists": {
+    "name": "Fists",
+    "img": "Fists",
+    "torpor": 14,
+    "damage": 8,
+    "hasMultipler": false,
+    "usesMeleeDamage": true,
+    "mult": [
+      "DmgType_Melee_Torpidity_StoneWeapon",
+      "DmgType_Melee_Torpidity",
+      "DmgType_Melee_Human",
+      "DmgType_Melee",
+      "DamageType"
+    ],
+    "id": "Fists",
+    "type": "Fists",
+    "userDamage": 100,
+    "data": {
+      "hits": 287,
+      "hitsRaw": 286.530580531377,
+      "hitsUntilFlee": 215,
+      "chanceOfDeath": 100,
+      "chanceOfDeathHigh": true,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": false,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 95.51019351045899,
+          "hitsUntilFlee": 72,
+          "hits": 96,
+          "chanceOfDeath": 100,
+          "isPossible": true,
+          "chanceOfDeathHigh": true
+        }
+      ]
+    }
+  },
+  "Slingshot": {
+    "name": "Slingshot",
+    "img": "Slingshot",
+    "torpor": 23.8,
+    "damage": 14,
+    "hasMultipler": true,
+    "mult": ["DmgType_StoneWeapon", "DamageType"],
+    "id": "Slingshot",
+    "type": "Slingshot",
+    "userDamage": 100,
+    "data": {
+      "hits": 102,
+      "hitsRaw": 101.6276234060548,
+      "hitsUntilFlee": 77,
+      "chanceOfDeath": 98,
+      "chanceOfDeathHigh": true,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": false,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 33.875874468684934,
+          "hitsUntilFlee": 26,
+          "hits": 34,
+          "chanceOfDeath": 98,
+          "isPossible": true,
+          "chanceOfDeathHigh": true
+        }
+      ]
+    }
+  },
+  "Wooden Club": {
+    "name": "Wooden Club",
+    "img": "Wooden Club",
+    "torpor": 20,
+    "damage": 5,
+    "hasMultipler": true,
+    "usesMeleeDamage": true,
+    "mult": [
+      "DmgType_Melee_HighTorpidity_StoneWeapon",
+      "DmgType_Melee_Human",
+      "DmgType_StoneWeapon",
+      "DamageType"
+    ],
+    "id": "Wooden Club",
+    "type": "Wooden Club",
+    "userDamage": 100,
+    "data": {
+      "hits": 246,
+      "hitsRaw": 245.4564296180447,
+      "hitsUntilFlee": 185,
+      "chanceOfDeath": 0.7,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 81.81880987268157,
+          "hitsUntilFlee": 62,
+          "hits": 82,
+          "chanceOfDeath": 0.7,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Boomerang Melee": {
+    "name": "Boomerang (Melee)",
+    "img": "Boomerang Melee",
+    "group": "Boomerang",
+    "append": "(Melee)",
+    "damage": 30,
+    "torpor": 42,
+    "usesMeleeDamage": true,
+    "hide": true,
+    "mult": [
+      "DmgType_Melee_Torpidity_StoneWeapon",
+      "DmgType_Melee_Human",
+      "DmgType_StoneWeapon",
+      "DamageType"
+    ],
+    "id": "Boomerang Melee",
+    "type": "Boomerang Melee",
+    "userDamage": 100,
+    "data": {
+      "hits": 63,
+      "hitsRaw": 62.46255880369664,
+      "hitsUntilFlee": 47,
+      "chanceOfDeath": 99.4,
+      "chanceOfDeathHigh": true,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": false,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 20.820852934565547,
+          "hitsUntilFlee": 16,
+          "hits": 21,
+          "chanceOfDeath": 99.4,
+          "isPossible": true,
+          "chanceOfDeathHigh": true
+        }
+      ]
+    }
+  },
+  "Boomerang": {
+    "name": "Boomerang",
+    "img": "Boomerang",
+    "group": "Boomerang",
+    "damage": 30,
+    "torpor": 70.5,
+    "mult": [
+      "DmgType_Melee_Torpidity_StoneWeapon",
+      "DmgType_StoneWeapon",
+      "DamageType"
+    ],
+    "id": "Boomerang",
+    "type": "Boomerang",
+    "userDamage": 100,
+    "data": {
+      "hits": 28,
+      "hitsRaw": 27.82345837925057,
+      "hitsUntilFlee": 21,
+      "chanceOfDeath": 8,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 9.274486126416857,
+          "hitsUntilFlee": 7,
+          "hits": 10,
+          "chanceOfDeath": 19,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Electric Prod": {
+    "name": "Electric Prod",
+    "img": "Electric Prod",
+    "torpor": 266,
+    "damage": 1,
+    "hasMultipler": true,
+    "mult": ["DmgType_Melee_Human", "DamageType"],
+    "id": "Electric Prod",
+    "type": "Electric Prod",
+    "userDamage": 100,
+    "data": {
+      "hits": 9,
+      "hitsRaw": 8.608364465023591,
+      "hitsUntilFlee": 7,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 2.8694548216745304,
+          "hitsUntilFlee": 3,
+          "hits": 3,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Tripwire Narcotic Trap": {
+    "name": "Tripwire Narcotic Trap",
+    "img": "Tripwire Narcotic Trap",
+    "torpor": 240,
+    "damage": 0,
+    "duration": 10,
+    "mult": ["DamageType"],
+    "id": "Tripwire Narcotic Trap",
+    "type": "Tripwire Narcotic Trap",
+    "userDamage": 100,
+    "data": {
+      "hits": 8,
+      "hitsRaw": 7.455,
+      "hitsUntilFlee": 6,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 2.485,
+          "hitsUntilFlee": 2,
+          "hits": 3,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "S+ Tranq Turret": {
+    "name": "S+ Tranq Turret",
+    "img": "Tranq Turret",
+    "torpor": 250,
+    "damage": 0,
+    "duration": 0,
+    "mult": ["DamageType"],
+    "id": "S+ Tranq Turret",
+    "type": "S+ Tranq Turret",
+    "userDamage": 100,
+    "data": {
+      "hits": 8,
+      "hitsRaw": 7.3386382587778325,
+      "hitsUntilFlee": 6,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 2.4462127529259443,
+          "hitsUntilFlee": 2,
+          "hits": 3,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "EquusBuckKick": {
+    "name": "Equus (Buck Kick)",
+    "img": "Equus Buck Kick",
+    "damage": 11,
+    "torpor": 38.5,
+    "hasMultipler": true,
+    "isDino": true,
+    "mult": ["DmgType_Melee_Dino_Herbivore", "DamageType"],
+    "id": "EquusBuckKick",
+    "type": "EquusBuckKick",
+    "userDamage": 100,
+    "data": {
+      "hits": 93,
+      "hitsRaw": 92.30640769890516,
+      "hitsUntilFlee": 70,
+      "chanceOfDeath": 0.3,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 30.76880256630172,
+          "hitsUntilFlee": 24,
+          "hits": 31,
+          "chanceOfDeath": 0.3,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "BeelzebufoSecondary": {
+    "name": "Beelzebufo (Sweep)",
+    "img": "Beelzebufo Secondary",
+    "group": "Beelzebufo",
+    "append": "(Sweep)",
+    "damage": 20,
+    "torpor": 60,
+    "duration": 10,
+    "hasMultipler": true,
+    "isDino": true,
+    "hide": true,
+    "mult": ["DamageType"],
+    "id": "BeelzebufoSecondary",
+    "type": "BeelzebufoSecondary",
+    "userDamage": 100,
+    "data": {
+      "hits": 30,
+      "hitsRaw": 29.82,
+      "hitsUntilFlee": 23,
+      "chanceOfDeath": 0.1,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 9.94,
+          "hitsUntilFlee": 8,
+          "hits": 10,
+          "chanceOfDeath": 0.1,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "BeelzebufoPrimary": {
+    "name": "Beelzebufo (Stab)",
+    "img": "Beelzebufo Primary",
+    "group": "Beelzebufo",
+    "append": "(Stab)",
+    "damage": 12,
+    "torpor": 36,
+    "duration": 10,
+    "hasMultipler": true,
+    "isDino": true,
+    "mult": ["DamageType"],
+    "id": "BeelzebufoPrimary",
+    "type": "BeelzebufoPrimary",
+    "userDamage": 100,
+    "data": {
+      "hits": 50,
+      "hitsRaw": 49.7,
+      "hitsUntilFlee": 38,
+      "chanceOfDeath": 0.1,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 16.566666666666666,
+          "hitsUntilFlee": 13,
+          "hits": 17,
+          "chanceOfDeath": 0.3,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Basilisk": {
+    "name": "Basilisk",
+    "img": "Basilisk",
+    "damage": 55,
+    "torpor": 165,
+    "duration": 10,
+    "hasMultipler": true,
+    "isDino": true,
+    "mult": ["DamageType"],
+    "id": "Basilisk",
+    "type": "Basilisk",
+    "userDamage": 100,
+    "data": {
+      "hits": 11,
+      "hitsRaw": 10.843636363636364,
+      "hitsUntilFlee": 9,
+      "chanceOfDeath": 0.3,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 3.6145454545454547,
+          "hitsUntilFlee": 3,
+          "hits": 4,
+          "chanceOfDeath": 0.7,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Pulmonoscorpius": {
+    "name": "Pulmonoscorpius",
+    "img": "Pulmonoscorpius",
+    "damage": 15,
+    "torpor": 45,
+    "duration": 10,
+    "hasMultipler": true,
+    "isDino": true,
+    "mult": ["DamageType"],
+    "id": "Pulmonoscorpius",
+    "type": "Pulmonoscorpius",
+    "userDamage": 100,
+    "data": {
+      "hits": 40,
+      "hitsRaw": 39.76,
+      "hitsUntilFlee": 30,
+      "chanceOfDeath": 0.1,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 13.253333333333332,
+          "hitsUntilFlee": 10,
+          "hits": 14,
+          "chanceOfDeath": 0.3,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "PachySecondary": {
+    "name": "Pachy (Charge)",
+    "img": "Pachy Secondary",
+    "group": "Pachy",
+    "append": "(Charge)",
+    "damage": 17,
+    "torpor": 59.5,
+    "duration": 10,
+    "hasMultipler": true,
+    "isDino": true,
+    "hide": true,
+    "mult": ["DmgType_Melee_Dino_Herbivore", "DamageType"],
+    "id": "PachySecondary",
+    "type": "PachySecondary",
+    "userDamage": 100,
+    "data": {
+      "hits": 51,
+      "hitsRaw": 50.11764705882353,
+      "hitsUntilFlee": 38,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 16.705882352941178,
+          "hitsUntilFlee": 13,
+          "hits": 17,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "PachyPrimary": {
+    "name": "Pachy (Primary Attack)",
+    "img": "Pachy Primary",
+    "group": "Pachy",
+    "append": "(Primary Attack)",
+    "damage": 11,
+    "torpor": 10,
+    "duration": 10,
+    "hasMultipler": true,
+    "isDino": true,
+    "mult": ["DmgType_Melee_Dino_Herbivore", "DamageType"],
+    "id": "PachyPrimary",
+    "type": "PachyPrimary",
+    "userDamage": 100,
+    "data": {
+      "hits": 299,
+      "hitsRaw": 298.20000000000005,
+      "hitsUntilFlee": 224,
+      "chanceOfDeath": 100,
+      "chanceOfDeathHigh": true,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": false,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 99.40000000000002,
+          "hitsUntilFlee": 75,
+          "hits": 100,
+          "chanceOfDeath": 100,
+          "isPossible": true,
+          "chanceOfDeathHigh": true
+        }
+      ]
+    }
+  },
+  "ThornyDragon": {
+    "name": "Thorny Dragon (Tail Needles)",
+    "img": "Thorny Dragon Tail Needles",
+    "damage": 1,
+    "torpor": 4,
+    "duration": 5,
+    "hasMultipler": true,
+    "isDino": true,
+    "mult": ["DmgType_Melee_Dino_Herbivore", "DamageType"],
+    "id": "ThornyDragon",
+    "type": "ThornyDragon",
+    "userDamage": 100,
+    "data": {
+      "hits": 746,
+      "hitsRaw": 745.5,
+      "hitsUntilFlee": 560,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 248.5,
+          "hitsUntilFlee": 187,
+          "hits": 249,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Tusoteuthis": {
+    "name": "Tusoteuthis (In Seconds)",
+    "img": "Tusoteuthis",
+    "damage": 0,
+    "torpor": 10,
+    "duration": 999,
+    "hasMultipler": false,
+    "isDino": true,
+    "mult": ["DamageType"],
+    "id": "Tusoteuthis",
+    "type": "Tusoteuthis",
+    "userDamage": 100,
+    "data": {
+      "hits": 179,
+      "hitsRaw": 178.92000000000002,
+      "hitsUntilFlee": 135,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 59.64000000000001,
+          "hitsUntilFlee": 45,
+          "hits": 60,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Bow Toxicant": {
+    "name": "Bow (Toxicant Arrow)",
+    "img": "Toxicant Arrow Bow",
+    "torpor": 180,
+    "damage": 20,
+    "duration": 6,
+    "hasMultipler": true,
+    "mult": ["DmgType_Projectile", "DamageType"],
+    "id": "Bow Toxicant",
+    "type": "Bow Toxicant",
+    "userDamage": 100,
+    "data": {
+      "hits": 10,
+      "hitsRaw": 9.94,
+      "hitsUntilFlee": 8,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 3.313333333333333,
+          "hitsUntilFlee": 3,
+          "hits": 4,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Compound Bow Toxicant": {
+    "name": "Compound Bow (Toxicant Arrow)",
+    "img": "Toxicant Arrow Compound",
+    "torpor": 245,
+    "damage": 27,
+    "duration": 6,
+    "hasMultipler": true,
+    "mult": ["DmgType_Projectile", "DamageType"],
+    "id": "Compound Bow Toxicant",
+    "type": "Compound Bow Toxicant",
+    "userDamage": 100,
+    "data": {
+      "hits": 8,
+      "hitsRaw": 7.302857142857143,
+      "hitsUntilFlee": 6,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 2.4342857142857146,
+          "hitsUntilFlee": 2,
+          "hits": 3,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Crossbow Toxicant": {
+    "name": "Crossbow (Toxicant Arrow)",
+    "img": "Toxicant Arrow Crossbow",
+    "torpor": 180,
+    "damage": 20,
+    "duration": 6,
+    "hasMultipler": true,
+    "mult": ["DmgType_Projectile", "DamageType"],
+    "id": "Crossbow Toxicant",
+    "type": "Crossbow Toxicant",
+    "userDamage": 100,
+    "data": {
+      "hits": 10,
+      "hitsRaw": 9.94,
+      "hitsUntilFlee": 8,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 3.313333333333333,
+          "hitsUntilFlee": 3,
+          "hits": 4,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Longbow": {
+    "name": "Longbow",
+    "img": "Longbow",
+    "torpor": 75,
+    "damage": 30,
+    "duration": 5,
+    "hasMultipler": true,
+    "mult": ["DmgType_Projectile", "DamageType"],
+    "id": "Longbow",
+    "type": "Longbow",
+    "userDamage": 100,
+    "data": {
+      "hits": 24,
+      "hitsRaw": 23.856,
+      "hitsUntilFlee": 18,
+      "chanceOfDeath": 1,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 7.952000000000001,
+          "hitsUntilFlee": 6,
+          "hits": 8,
+          "chanceOfDeath": 1,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "Recurve Bow": {
+    "name": "Recurve Bow",
+    "img": "Recurve Bow",
+    "torpor": 180,
+    "damage": 40,
+    "duration": 4,
+    "hasMultipler": true,
+    "mult": ["DmgType_Projectile", "DamageType"],
+    "id": "Recurve Bow",
+    "type": "Recurve Bow",
+    "userDamage": 100,
+    "data": {
+      "hits": 11,
+      "hitsRaw": 10.008889523089252,
+      "hitsUntilFlee": 8,
+      "chanceOfDeath": 0,
+      "chanceOfDeathHigh": false,
+      "minChanceOfDeath": 0,
+      "isPossible": true,
+      "isRecommended": true,
+      "hitboxes": [
+        {
+          "name": "",
+          "multiplier": 3,
+          "hitsRaw": 3.3362965076964173,
+          "hitsUntilFlee": 3,
+          "hits": 4,
+          "chanceOfDeath": 0,
+          "isPossible": true,
+          "chanceOfDeathHigh": false
+        }
+      ]
+    }
+  },
+  "CannonBall": {
+    "name": "Cannon Ball",
+    "img": "Cannon Ball",
+    "torpor": 1800,
+    "damage": 1800,
+    "duration": 1,
+    "hide": true,
+    "disable": true,
+    "hasMultipler": false,
+    "usesMeleeDamage": false,
+    "mult": ["Special_Raid_CannonBall"]
+  },
+  "Boulder": {
+    "name": "Boulder",
+    "img": "Boulder",
+    "torpor": 6,
+    "damage": 6,
+    "duration": 1,
+    "hide": true,
+    "disable": true,
+    "hasMultipler": false,
+    "usesMeleeDamage": false,
+    "mult": ["Special_Raid_Boulder"]
+  },
+  "BoulderKarkinos": {
+    "name": "Boulder",
+    "img": "Boulder",
+    "torpor": 437,
+    "damage": 250,
+    "duration": 1,
+    "hide": true,
+    "disable": true,
+    "hasMultipler": false,
+    "usesMeleeDamage": false,
+    "mult": ["Special_Raid_Boulder"]
+  },
+  "CannonBallKarkinos": {
+    "name": "Cannon Ball",
+    "img": "Cannon Ball",
+    "torpor": 11200,
+    "damage": 2250,
+    "duration": 1,
+    "hide": true,
+    "disable": true,
+    "hasMultipler": false,
+    "usesMeleeDamage": false,
+    "mult": ["Special_Raid_CannonBall"]
+  },
+  "Rocket Propelled Grenade": {
+    "name": "Rocket Propelled Grenade",
+    "img": "Rocket Propelled Grenade",
+    "torpor": 403,
+    "damage": 403,
+    "hide": true,
+    "disable": true,
+    "hasMultipler": false,
+    "usesMeleeDamage": false,
+    "mult": ["Special_Raid_Rocket"]
+  },
+  "MSCM": {
+    "name": "M.S.C.M.",
+    "img": "MSCM",
+    "torpor": 7200,
+    "damage": 1500,
+    "hide": true,
+    "disable": true,
+    "hasMultipler": false,
+    "usesMeleeDamage": false
+  }
+}

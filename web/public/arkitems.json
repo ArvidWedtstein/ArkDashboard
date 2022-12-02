@@ -1084,7 +1084,7 @@
         { "itemId": 165, "count": 20 }
       ],
       "stats": [
-        { "id": 1, "value": "Saddle" },
+        { "id": 1, "value": "Tool" },
         { "id": 2, "value": 25 }
       ]
     },
@@ -1673,6 +1673,8 @@
       "maxStack": 100,
       "decomposes": -1,
       "itemId": 108,
+      "color": "#e8830e",
+      "craftedIn": ["Mortar And Pestle", "Chemistry Bench"],
       "description": "Created by grinding flint with stone in a Mortar and Pestle.",
       "image": "sparkpowder.png",
       "weight": 1.0,
@@ -1687,6 +1689,8 @@
       "maxStack": 100,
       "decomposes": -1,
       "itemId": 109,
+      "color": "#534c55",
+      "craftedIn": ["Mortar And Pestle", "Chemistry Bench"],
       "description": "An explosive propellant. Necessary for any firearm or explosive.",
       "image": "gunpowder.png",
       "weight": 0.1,
@@ -1884,6 +1888,8 @@
       "itemId": 123,
       "description": "Increases your health, but puts you to sleep.",
       "image": "narcotic.png",
+      "craftedIn": ["Mortar and Pestle"],
+      "color": "#bdac88",
       "weight": 0.3,
       "recipe": [
         { "itemId": 121, "count": 5 },
@@ -2294,6 +2300,8 @@
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 165,
+      "color": "#bbb463",
+      "craftedIn": "Fabricator",
       "description": "This multipurpose computer chip can be used to create electronic devices.",
       "image": "electronics.png",
       "weight": 0.01,
@@ -2540,23 +2548,6 @@
       "itemId": 180,
       "description": "A metal-plated concrete wall that provides entrance to a structure.",
       "image": "metal_doorframe.png",
-      "weight": 4.0,
-      "recipe": [
-        { "itemId": 74, "count": 20 },
-        { "itemId": 146, "count": 6 }
-      ],
-      "stats": [
-        { "id": 1, "value": "Structure" },
-        { "id": 5, "value": 10000 }
-      ]
-    },
-    {
-      "name": "Metal Double Doorframe",
-      "maxStack": 400,
-      "decomposes": 120,
-      "itemId": 770,
-      "description": "A metal-plated concrete wall that provides entrance to a structure.",
-      "image": "metal_double_doorframe.png",
       "weight": 4.0,
       "recipe": [
         { "itemId": 74, "count": 20 },
@@ -3049,6 +3040,7 @@
       "itemId": 210,
       "description": "Equip a Mammoth with this to ride it.",
       "image": "mammoth_saddle.png",
+      "craftedIn": "Smithy",
       "weight": 20.0,
       "recipe": [
         { "itemId": 10, "count": 260 },
@@ -3739,6 +3731,8 @@
       "itemId": 255,
       "description": "This dish grants you clarity of the night. Consume it to see more light, ignore most weather, and strady your aim. Can be dangerous to use in daylight.",
       "image": "shadow_steak_saute.png",
+      "craftedIn": ["Cooking Pot"],
+      "color": "#8d3234",
       "weight": 0.1,
       "recipe": [
         { "itemId": 253, "count": 3 },
@@ -5059,8 +5053,10 @@
       "name": "Mind Wipe Tonic",
       "maxStack": 100,
       "decomposes": 120,
+      "color": "#62157e",
+      "craftedIn": "Cooking Pot",
       "itemId": 413,
-      "description": "Drink this tonic to forget everything you have learned (resets your Engram Points).",
+      "description": "Drink this tonic to forget everything you have learned (resets your Engram Points and Stats).",
       "image": "mindwipe_tonic.png",
       "weight": 0.1,
       "recipe": [
@@ -5676,7 +5672,7 @@
       "name": "Giant Bee Honey",
       "maxStack": 100,
       "decomposes": 120,
-      "itemId": "Giant Bee Honey",
+      "itemId": 458,
       "description": "A delicious and nutritious snack, useful for luring creatures to a trap or for fishing.",
       "image": "giant_bee_honey.png",
       "weight": 0.5,
@@ -5858,7 +5854,7 @@
     },
     {
       "name": "Unstable Element",
-      "itemId": "475",
+      "itemId": 475,
       "image": "Element.png",
       "recipe": [{ "itemId": 474, "count": 1000 }],
       "stats": [{ "id": 1, "value": "Resource" }]
@@ -8589,7 +8585,7 @@
     },
     {
       "name": "Cooked Meat Jerky",
-      "itemId": "709",
+      "itemId": 709,
       "image": "Cooked_Meat_Jerky.png",
       "recipe": [
         { "itemId": 14, "count": 1 },
@@ -8655,6 +8651,8 @@
       "name": "Beer Liquid",
       "itemId": "716",
       "image": "Beer_Liquid.png",
+      "color": "#d6cd5b",
+      "craftedIn": "Beer Barrel",
       "recipe": [
         { "itemId": 75, "count": 40 },
         { "itemId": 717, "count": 50 }
@@ -8672,6 +8670,7 @@
       "name": "Beer Jar",
       "itemId": "718",
       "image": "Beer_Jar.png",
+      "color": "#e1b24c",
       "recipe": [
         { "itemId": 716, "count": 1 },
         { "itemId": 15, "count": 1 }
@@ -8733,7 +8732,7 @@
       "itemId": "724",
       "image": "Sweet_Vegetable_Cake.png",
       "recipe": [
-        { "itemId": "Giant Bee Honey", "count": 2 },
+        { "itemId": 458, "count": 2 },
         { "itemId": 457, "count": 4 },
         { "itemId": 234, "count": 2 },
         { "itemId": 233, "count": 2 },
@@ -8748,7 +8747,7 @@
       "itemId": "725",
       "image": "Chain_Bola.png",
       "recipe": [
-        { "itemId": "Giant Bee Honey", "count": 2 },
+        { "itemId": 458, "count": 2 },
         { "itemId": 74, "count": 65 },
         { "itemId": 146, "count": 10 },
         { "itemId": 142, "count": 2 }
@@ -9279,6 +9278,252 @@
         { "itemId": 7, "count": 20 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
+    },
+    {
+      "name": "Metal Double Doorframe",
+      "maxStack": 400,
+      "decomposes": 120,
+      "itemId": 770,
+      "description": "A metal-plated concrete wall that provides entrance to a structure.",
+      "image": "metal_double_doorframe.png",
+      "weight": 4.0,
+      "recipe": [
+        { "itemId": 74, "count": 20 },
+        { "itemId": 146, "count": 6 }
+      ],
+      "stats": [
+        { "id": 1, "value": "Structure" },
+        { "id": 5, "value": 10000 }
+      ]
+    },
+    {
+      "name": "Astrodelphis Saddle",
+      "maxStack": 1,
+      "decomposes": 120,
+      "itemId": 771,
+      "craftedIn": "Tek Replicator",
+      "description": "Saddle",
+      "image": "astrodelphis_saddle.png",
+      "weight": 4.0,
+      "recipe": [
+        { "itemId": 456, "count": 140 },
+        { "itemId": 78, "count": 370 },
+        { "itemId": 475, "count": 55 },
+        { "itemId": 74, "count": 2500 },
+        { "itemId": 166, "count": 500 }
+      ],
+      "stats": [{ "id": 1, "value": "Tool" }]
+    },
+    {
+      "name": "Maewing Saddle",
+      "maxStack": 1,
+      "decomposes": 120,
+      "itemId": 772,
+      "craftedIn": "Smithy",
+      "description": "Saddle",
+      "image": "maewing_saddle.png",
+      "weight": 4.0,
+      "recipe": [
+        { "itemId": 76, "count": 170 },
+        { "itemId": 10, "count": 320 },
+        { "itemId": 74, "count": 30 }
+      ],
+      "stats": [{ "id": 1, "value": "Tool" }]
+    },
+    {
+      "name": "Regular Kibble",
+      "itemId": 773,
+      "color": "#3459af",
+      "image": "regular_kibble.png",
+      "recipe": [
+        {
+          "itemId": "Medium Egg",
+          "count": 1
+        },
+        {
+          "itemId": "Cooked Meat Jerky",
+          "count": 1
+        },
+        {
+          "itemId": "Longrass",
+          "count": 2
+        },
+        {
+          "itemId": "Savoroot",
+          "count": 2
+        },
+        {
+          "itemId": 76,
+          "count": 5
+        }
+      ],
+      "craftedIn": "Cooking Pot"
+    },
+    {
+      "name": "Superior Kibble",
+      "itemId": 774,
+      "color": "#904e81",
+      "image": "superior_kibble.png",
+      "recipe": [
+        {
+          "itemId": "Large Egg",
+          "count": 1
+        },
+        {
+          "itemId": "Prime Meat Jerky",
+          "count": 1
+        },
+        {
+          "itemId": "Citronal",
+          "count": 2
+        },
+        {
+          "itemId": "Sap",
+          "count": 1
+        },
+        {
+          "itemId": "Rare Mushroom",
+          "count": 2
+        },
+        {
+          "itemId": 76,
+          "count": 5
+        }
+      ],
+      "craftedIn": "Cooking Pot"
+    },
+    {
+      "name": "Exceptional Kibble",
+      "itemId": 775,
+      "color": "#d6ca24",
+      "image": "exceptional_kibble.png",
+      "recipe": [
+        {
+          "itemId": "Extra Large Egg",
+          "count": 1
+        },
+        {
+          "itemId": "Focal Chili",
+          "count": 1
+        },
+        {
+          "itemId": 250,
+          "count": 1
+        },
+        {
+          "itemId": 120,
+          "count": 10
+        },
+        {
+          "itemId": 76,
+          "count": 5
+        }
+      ],
+      "craftedIn": "Cooking Pot"
+    },
+    {
+      "name": "Extraordinary Kibble",
+      "itemId": 776,
+      "color": "#64d4e0",
+      "image": "extraordinary_kibble.png",
+      "recipe": [
+        {
+          "itemId": "Special Egg",
+          "count": 1
+        },
+        {
+          "itemId": 458,
+          "count": 1
+        },
+        {
+          "itemId": "Lazarus Chowder",
+          "count": 1
+        },
+        {
+          "itemId": 120,
+          "count": 10
+        },
+        {
+          "itemId": 76,
+          "count": 5
+        }
+      ],
+      "craftedIn": "Cooking Pot"
+    },
+    {
+      "name": "Simple Kibble",
+      "itemId": 777,
+      "color": "#22905d",
+      "image": "simple_kibble.png",
+      "recipe": [
+        {
+          "itemId": "Small Egg",
+          "count": 1
+        },
+        {
+          "itemId": "Cooked Fish Meat",
+          "count": 1
+        },
+        {
+          "itemId": "Rockarrot",
+          "count": 2
+        },
+        {
+          "itemId": 120,
+          "count": 5
+        },
+        {
+          "itemId": 76,
+          "count": 5
+        }
+      ],
+      "craftedIn": "Cooking Pot"
+    },
+    {
+      "name": "Basic Kibble",
+      "itemId": 778,
+      "color": "#cccccc",
+      "image": "basic_kibble.png",
+      "recipe": [
+        {
+          "itemId": "Extra Small Egg",
+          "count": 1
+        },
+        {
+          "itemId": 14,
+          "count": 1
+        },
+        {
+          "itemId": 117,
+          "count": 10
+        },
+        {
+          "itemId": 120,
+          "count": 5
+        },
+        {
+          "itemId": 119,
+          "count": 10
+        },
+        {
+          "itemId": 76,
+          "count": 5
+        }
+      ],
+      "craftedIn": "Cooking Pot"
+    },
+    {
+      "name": "Mutagen",
+      "itemId": 779,
+      "color": "#84cecc",
+      "image": "mutagen.png",
+      "recipe": [
+        {
+          "itemId": "Mutagel",
+          "count": 800
+        }
+      ],
+      "craftedIn": "Chemistry Bench"
     }
   ]
 }
