@@ -56,7 +56,7 @@ const DinoStatsPage = () => {
         <div className="rw-segment-main">
           <Form onSubmit={onSubmit}>
 
-
+            {/* TODO: Insert dino lookup here */}
             <Label
               name="name"
               className="rw-label"
@@ -99,6 +99,7 @@ const DinoStatsPage = () => {
               </Submit>
             </div>
           </Form>
+          {/* TODO: Add pretame simulator. Assign available points to random stats */}
           <Table data={dino} cols={["stat", "base", "increaseperlevel", `dino`, "actions"]} renderActions={
             (row) => {
               return (
