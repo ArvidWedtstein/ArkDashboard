@@ -8,12 +8,14 @@ const Avatar = ({
   onUpload,
   className = "",
   storage = "avatars",
+  editable = false,
 }: {
   url: string;
   size: number;
   onUpload?: any;
   className?: string;
   storage?: string;
+  editable?: boolean;
 }) => {
   const { client: supabase } = useAuth();
 
@@ -74,8 +76,8 @@ const Avatar = ({
         className={"relative" + `max-w-[${size}px] max-h-[${size}px]`}
         style={{ height: size, width: size }}
       >
-        {onUpload ? (
-          <div className="absolute right-3 top-2 z-[1]">
+        {editable || onUpload ? (
+          <div className="relative right-3 top-2 z-[1]">
             <input
               className="hidden"
               type="file"
@@ -84,8 +86,9 @@ const Avatar = ({
               onChange={uploadAvatar}
               disabled={uploading}
             />
+            {/* TODO: Fix new edit button */}
             <label
-              className="mb-0 inline-block h-[34px] w-[34px] cursor-pointer rounded-full border-2 border-transparent bg-white font-normal shadow-sm transition-all after:absolute after:right-0 after:left-0 after:top-3 after:m-auto after:text-center after:text-[#757575] hover:border-[#d6d6d6] hover:bg-[#f1f1f1]"
+              className="mb-0 inline-block h-[16px] w-[16px] cursor-pointer rounded-full border-2 border-transparent bg-white font-normal shadow-sm transition-all after:absolute after:right-0 after:left-0 after:top-3 after:m-auto after:text-center after:text-[#757575] hover:border-[#d6d6d6] hover:bg-[#f1f1f1]"
               htmlFor="imageUpload"
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">

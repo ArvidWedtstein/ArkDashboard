@@ -23,9 +23,9 @@ interface BasespotFormProps {
 }
 
 const BasespotForm = (props: BasespotFormProps) => {
-  const [thumbnailUrl, setThumbnailUrl] = useState(null)
+  const [thumbnailUrl, setThumbnailUrl] = useState(null);
   const onSubmit = (data: FormBasespot) => {
-    data.image = thumbnailUrl
+    data.image = thumbnailUrl;
     props.onSave(data, props?.basespot?.id);
   };
   return (
@@ -119,13 +119,15 @@ const BasespotForm = (props: BasespotFormProps) => {
         </Label>
 
         <Avatar
-          className="shadow-xl rounded-full h-auto align-middle border-none absolute -mt-16 max-w-150-px"
+          className="max-w-150-px absolute -mt-16 h-auto rounded-full border-none align-middle shadow-xl"
           url={props.basespot?.image}
           size={150}
           storage="basespotimages/thumbnails"
+          editable={true}
           onUpload={(url) => {
-            setThumbnailUrl(url)
-          }} />
+            setThumbnailUrl(url);
+          }}
+        />
 
         {/* <TextField
           name="image"
