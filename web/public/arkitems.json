@@ -13,7 +13,8 @@
     { "id": 11, "name": "Water" },
     { "id": 12, "name": "Stamina" },
     { "id": 13, "name": "Cooldown" },
-    { "id": 14, "name": "Fertilizer Points" }
+    { "id": 14, "name": "Fertilizer Points" },
+    { "id": 15, "name": "Affinity" }
   ],
   "items": [
     {

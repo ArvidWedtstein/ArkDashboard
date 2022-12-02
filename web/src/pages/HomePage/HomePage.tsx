@@ -3,8 +3,7 @@ import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "@redwoodjs/auth";
 import { useEffect, useState } from "react";
 
-import arkitems from "../../../public/arkitems2.json";
-import items from "../../../public/arkitems.json";
+
 const HomePage = () => {
   const { isAuthenticated } = useAuth();
   if (document.addEventListener) {
@@ -14,32 +13,6 @@ const HomePage = () => {
     }, false);
   }
 
-  let currentId = 772
-  let itnames = items.items.map((item) => {
-    return item.name.toLowerCase()
-  })
-  let darkitems = Object.entries(arkitems).filter((g) => !itnames.includes(g[1].name.toLowerCase()))
-  darkitems.forEach((item, i) => {
-    let it = item[1]
-    currentId += 1
-    if ("color" in it) {
-      console.log({
-        name: it.name,
-        itemId: currentId,
-        color: it.color,
-        image: `${it.name.toLowerCase().replaceAll(" ", "_")}.png`,
-        // recipe: it.ingredients.map((ing) => {
-        //   return {
-        //     itemId: ing.item, // items.items.find((g) => g.name.toLowerCase() === ing.item.toLowerCase()).itemId,
-        //     count: ing.quantity,
-        //   };
-        // }),
-
-        // craftedIn: it.craftedIn,
-      });
-    }
-
-  });
   return (
     <>
       <MetaTags title="Home" description="Home page" />
