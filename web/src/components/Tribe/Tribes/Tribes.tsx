@@ -77,7 +77,21 @@ const TribesList = ({ tribes }: FindTribes) => {
         </div>
       </div>
       {/* TODO: Replace user uuid with user name and profile picture */}
-      <Table data={tribes} cols={["name", "description", "createdAt", "createdBy", "actions"]} />
+      <Table data={tribes} cols={["name", "description", "createdAt", "createdBy", "actions"]} renderActions={
+        (row) => (
+          <>
+            <nav className="flex flex-row">
+              <Link
+                to={routes.tribe({ id: row["id"] })}
+                title={"Show detail"}
+                className="rw-button rw-button-small"
+              >
+                Show
+              </Link>
+            </nav>
+          </>
+        )
+      } />
 
     </div>
   )

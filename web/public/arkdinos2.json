@@ -96,32 +96,32 @@
     "baseStats": {
       "health": {
         "b": 630,
-        "w": 126,
+        "increasePerLevel": 126,
         "t": 5.4
       },
       "stamina": {
         "b": 250,
-        "w": 25,
+        "increasePerLevel": 25,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 3000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": 10
       },
       "weight": {
         "b": 380,
-        "w": 7.6,
+        "increasePerLevel": 7.6,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -134,10 +134,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 650,
             "sw": 1404,
             "st": 1579.5
@@ -149,7 +149,7 @@
       },
       "torpor": {
         "b": 1000,
-        "w": 60,
+        "increasePerLevel": 60,
         "t": null
       }
     }
@@ -178,32 +178,32 @@
     "baseStats": {
       "health": {
         "b": 1250,
-        "w": 250,
+        "increasePerLevel": 250,
         "t": 5.4
       },
       "stamina": {
         "b": 425,
-        "w": 42.5,
+        "increasePerLevel": 42.5,
         "t": 10
       },
       "oxygen": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "food": {
         "b": 6300,
-        "w": 630,
+        "increasePerLevel": 630,
         "t": 10
       },
       "weight": {
         "b": 475,
-        "w": 9.5,
+        "increasePerLevel": 9.5,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 4,
         "a": [
           {
@@ -213,12 +213,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1
       },
       "torpor": {
         "b": 2250,
-        "w": 135,
+        "increasePerLevel": 135,
         "t": null
       }
     }
@@ -239,32 +239,32 @@
     "baseStats": {
       "health": {
         "b": 800,
-        "w": 160,
+        "increasePerLevel": 160,
         "t": null
       },
       "stamina": {
         "b": 400,
-        "w": 40,
+        "increasePerLevel": 40,
         "t": null
       },
       "oxygen": {
         "b": 650,
-        "w": 65,
+        "increasePerLevel": 65,
         "t": null
       },
       "food": {
         "b": 2174,
-        "w": 217.4,
+        "increasePerLevel": 217.4,
         "t": null
       },
       "weight": {
         "b": 500,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": null,
         "a": [
           {
@@ -274,12 +274,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1
       },
       "torpor": {
         "b": 800,
-        "w": 48,
+        "increasePerLevel": 48,
         "t": null
       }
     }
@@ -300,32 +300,32 @@
     "baseStats": {
       "health": {
         "b": 180,
-        "w": 36,
+        "increasePerLevel": 36,
         "t": null
       },
       "stamina": {
         "b": 120,
-        "w": 12,
+        "increasePerLevel": 12,
         "t": null
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": null
       },
       "weight": {
         "b": 25,
-        "w": 0.5,
+        "increasePerLevel": 0.5,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": null,
         "a": [
           {
@@ -335,10 +335,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 250
           },
           "s": {
@@ -348,7 +348,7 @@
       },
       "torpor": {
         "b": 250,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       }
     }
@@ -382,32 +382,32 @@
     "baseStats": {
       "health": {
         "b": 450,
-        "w": 90,
+        "increasePerLevel": 90,
         "t": 5.4
       },
       "stamina": {
         "b": 240,
-        "w": 24,
+        "increasePerLevel": 24,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 350,
-        "w": 7,
+        "increasePerLevel": 7,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -417,7 +417,7 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
           "s": {
@@ -429,7 +429,7 @@
       },
       "torpor": {
         "b": 900,
-        "w": 54,
+        "increasePerLevel": 54,
         "t": null
       }
     }
@@ -459,32 +459,32 @@
     "baseStats": {
       "health": {
         "b": 700,
-        "w": 140,
+        "increasePerLevel": 140,
         "t": 5.4
       },
       "stamina": {
         "b": 175,
-        "w": 17.5,
+        "increasePerLevel": 17.5,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 3000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": 10
       },
       "weight": {
         "b": 250,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -494,10 +494,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 120,
             "sw": 264,
             "st": 264
@@ -509,7 +509,7 @@
       },
       "torpor": {
         "b": 420,
-        "w": 25.2,
+        "increasePerLevel": 25.2,
         "t": null
       }
     }
@@ -530,32 +530,32 @@
     "baseStats": {
       "health": {
         "b": 150,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 13.5
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 900,
-        "w": 90,
+        "increasePerLevel": 90,
         "t": 10
       },
       "weight": {
         "b": 100,
-        "w": 2,
+        "increasePerLevel": 2,
         "t": 8
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -565,10 +565,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 4.175,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 200,
             "sw": 400,
             "st": 320
@@ -580,7 +580,7 @@
       },
       "torpor": {
         "b": 80,
-        "w": 4.8,
+        "increasePerLevel": 4.8,
         "t": null
       }
     }
@@ -610,32 +610,32 @@
     "baseStats": {
       "health": {
         "b": 125,
-        "w": 25,
+        "increasePerLevel": 25,
         "t": null
       },
       "stamina": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "food": {
         "b": 900,
-        "w": 90,
+        "increasePerLevel": 90,
         "t": null
       },
       "weight": {
         "b": 30,
-        "w": 0.6,
+        "increasePerLevel": 0.6,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": null,
         "a": [
           {
@@ -645,12 +645,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "torpor": {
         "b": 100,
-        "w": 6,
+        "increasePerLevel": 6,
         "t": null
       }
     }
@@ -684,32 +684,32 @@
     "baseStats": {
       "health": {
         "b": 365,
-        "w": 73,
+        "increasePerLevel": 73,
         "t": 6.75
       },
       "stamina": {
         "b": 400,
-        "w": 20,
+        "increasePerLevel": 20,
         "t": 7.5
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 2000,
-        "w": 200,
+        "increasePerLevel": 200,
         "t": 10
       },
       "weight": {
         "b": 400,
-        "w": 8,
+        "increasePerLevel": 8,
         "t": 5.5
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2.55,
         "a": [
           {
@@ -719,10 +719,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 0,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 260
           },
           "f": {
@@ -734,7 +734,7 @@
       },
       "torpor": {
         "b": 600,
-        "w": 36,
+        "increasePerLevel": 36,
         "t": null
       }
     }
@@ -759,32 +759,32 @@
     "baseStats": {
       "health": {
         "b": 500,
-        "w": 100,
+        "increasePerLevel": 100,
         "t": 5.4
       },
       "stamina": {
         "b": 200,
-        "w": 20,
+        "increasePerLevel": 20,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 10
       },
       "weight": {
         "b": 100,
-        "w": 2,
+        "increasePerLevel": 2,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2.1,
         "a": [
           {
@@ -797,12 +797,12 @@
       },
       "movementSpeed": {
         "b": 120,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5
       },
       "torpor": {
         "b": 175.5,
-        "w": 10.53,
+        "increasePerLevel": 10.53,
         "t": null
       }
     }
@@ -835,32 +835,32 @@
     "baseStats": {
       "health": {
         "b": 2800,
-        "w": 392,
+        "increasePerLevel": 392,
         "t": 2.16
       },
       "stamina": {
         "b": 600,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 5
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 6000,
-        "w": 600,
+        "increasePerLevel": 600,
         "t": 10
       },
       "weight": {
         "b": 2000,
-        "w": 40,
+        "increasePerLevel": 40,
         "t": 5
       },
       "meleeDamage": {
         "b": 100,
-        "w": 4,
+        "increasePerLevel": 4,
         "t": null,
         "a": [
           {
@@ -870,7 +870,7 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1,
         "a": {
           "s": {
@@ -883,7 +883,7 @@
       },
       "torpor": {
         "b": 4200,
-        "w": 210,
+        "increasePerLevel": 210,
         "t": null
       }
     }
@@ -904,42 +904,42 @@
     "baseStats": {
       "health": {
         "b": 325,
-        "w": 65,
+        "increasePerLevel": 65,
         "t": null
       },
       "stamina": {
         "b": 250,
-        "w": 12.5,
+        "increasePerLevel": 12.5,
         "t": null
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "food": {
         "b": 1600,
-        "w": 160,
+        "increasePerLevel": 160,
         "t": null
       },
       "weight": {
         "b": 280,
-        "w": 5.6,
+        "increasePerLevel": 5.6,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": null
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "torpor": {
         "b": 450,
-        "w": 27,
+        "increasePerLevel": 27,
         "t": null
       }
     }
@@ -982,32 +982,32 @@
     "baseStats": {
       "health": {
         "b": 440,
-        "w": 88,
+        "increasePerLevel": 88,
         "t": 5.4
       },
       "stamina": {
         "b": 325,
-        "w": 32.5,
+        "increasePerLevel": 32.5,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 2250,
-        "w": 225,
+        "increasePerLevel": 225,
         "t": 10
       },
       "weight": {
         "b": 325,
-        "w": 6.5,
+        "increasePerLevel": 6.5,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -1017,10 +1017,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 400,
             "sw": 1470,
             "st": 1323
@@ -1032,7 +1032,7 @@
       },
       "torpor": {
         "b": 400,
-        "w": 24,
+        "increasePerLevel": 24,
         "t": null
       }
     }
@@ -1057,32 +1057,32 @@
     "baseStats": {
       "health": {
         "b": 2750,
-        "w": 550,
+        "increasePerLevel": 550,
         "t": 5.4
       },
       "stamina": {
         "b": 650,
-        "w": 65,
+        "increasePerLevel": 65,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 2500,
-        "w": 250,
+        "increasePerLevel": 250,
         "t": 10
       },
       "weight": {
         "b": 2200,
-        "w": 44,
+        "increasePerLevel": 44,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -1092,10 +1092,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 600,
             "sw": 1008.0001,
             "st": 1680
@@ -1107,7 +1107,7 @@
       },
       "torpor": {
         "b": 175,
-        "w": 10.5,
+        "increasePerLevel": 10.5,
         "t": null
       }
     }
@@ -1141,32 +1141,32 @@
     "baseStats": {
       "health": {
         "b": 2400,
-        "w": 480,
+        "increasePerLevel": 480,
         "t": 4.86
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 8000,
-        "w": 800,
+        "increasePerLevel": 800,
         "t": 10
       },
       "weight": {
         "b": 700,
-        "w": 14,
+        "increasePerLevel": 14,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -1176,7 +1176,7 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 5,
         "a": {
           "s": {
@@ -1186,7 +1186,7 @@
       },
       "torpor": {
         "b": 2000,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": null
       }
     }
@@ -1220,32 +1220,32 @@
     "baseStats": {
       "health": {
         "b": 220,
-        "w": 44,
+        "increasePerLevel": 44,
         "t": 5.4
       },
       "stamina": {
         "b": 190,
-        "w": 19,
+        "increasePerLevel": 19,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 160,
-        "w": 3.2,
+        "increasePerLevel": 3.2,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -1258,10 +1258,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 400,
             "sw": 800,
             "st": 680
@@ -1273,7 +1273,7 @@
       },
       "torpor": {
         "b": 200,
-        "w": 12,
+        "increasePerLevel": 12,
         "t": null
       }
     }
@@ -1344,32 +1344,32 @@
     "baseStats": {
       "health": {
         "b": 450,
-        "w": 90,
+        "increasePerLevel": 90,
         "t": 5.4
       },
       "stamina": {
         "b": 600,
-        "w": 60,
+        "increasePerLevel": 60,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 10
       },
       "weight": {
         "b": 350,
-        "w": 7,
+        "increasePerLevel": 7,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -1382,10 +1382,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 400,
             "sw": 800,
             "st": 680
@@ -1397,7 +1397,7 @@
       },
       "torpor": {
         "b": 180,
-        "w": 10.8,
+        "increasePerLevel": 10.8,
         "t": null
       }
     }
@@ -1426,32 +1426,32 @@
     "baseStats": {
       "health": {
         "b": 2070,
-        "w": 414,
+        "increasePerLevel": 414,
         "t": 3.8
       },
       "stamina": {
         "b": 240,
-        "w": 24,
+        "increasePerLevel": 24,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 10000,
-        "w": 1000,
+        "increasePerLevel": 1000,
         "t": 10
       },
       "weight": {
         "b": 1600,
-        "w": 32,
+        "increasePerLevel": 32,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -1461,10 +1461,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 150,
             "sw": 607.5,
             "st": 405
@@ -1476,7 +1476,7 @@
       },
       "torpor": {
         "b": 2000,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": null
       }
     }
@@ -1535,32 +1535,32 @@
     "baseStats": {
       "health": {
         "b": 145,
-        "w": 29,
+        "increasePerLevel": 29,
         "t": 5.4
       },
       "stamina": {
         "b": 200,
-        "w": 24,
+        "increasePerLevel": 24,
         "t": 12
       },
       "oxygen": {
         "b": 165,
-        "w": 18.15,
+        "increasePerLevel": 18.15,
         "t": 11
       },
       "food": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 10
       },
       "weight": {
         "b": 120,
-        "w": 2.4,
+        "increasePerLevel": 2.4,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -1570,10 +1570,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 50,
             "sw": 400,
             "st": 200
@@ -1585,7 +1585,7 @@
       },
       "torpor": {
         "b": 60,
-        "w": 3.6,
+        "increasePerLevel": 3.6,
         "t": null
       }
     }
@@ -1615,32 +1615,32 @@
     "baseStats": {
       "health": {
         "b": 700,
-        "w": 140,
+        "increasePerLevel": 140,
         "t": 5.4
       },
       "stamina": {
         "b": 200,
-        "w": 20,
+        "increasePerLevel": 20,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 3000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": 10
       },
       "weight": {
         "b": 270,
-        "w": 5.4,
+        "increasePerLevel": 5.4,
         "t": 10.8
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -1650,10 +1650,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 4.25,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 100,
             "sw": 220,
             "st": 220
@@ -1665,7 +1665,7 @@
       },
       "torpor": {
         "b": 275,
-        "w": 16.5,
+        "increasePerLevel": 16.5,
         "t": null
       }
     }
@@ -1686,42 +1686,42 @@
     "baseStats": {
       "health": {
         "b": 70000,
-        "w": 56,
+        "increasePerLevel": 56,
         "t": 5.4
       },
       "stamina": {
         "b": 480,
-        "w": 2.88,
+        "increasePerLevel": 2.88,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 0.375,
+        "increasePerLevel": 0.375,
         "t": null
       },
       "food": {
         "b": 4000,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 100
       },
       "weight": {
         "b": 650,
-        "w": 13,
+        "increasePerLevel": 13,
         "t": 6.5
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 5
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 0.31
       },
       "torpor": {
         "b": 6000,
-        "w": 360,
+        "increasePerLevel": 360,
         "t": null
       }
     }
@@ -1755,32 +1755,32 @@
     "baseStats": {
       "health": {
         "b": 420,
-        "w": 84,
+        "increasePerLevel": 84,
         "t": 5.4
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 2000,
-        "w": 200,
+        "increasePerLevel": 200,
         "t": 10
       },
       "weight": {
         "b": 300,
-        "w": 6,
+        "increasePerLevel": 6,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -1793,10 +1793,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1.25,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 425,
             "sw": 892.5,
             "st": 1190
@@ -1808,7 +1808,7 @@
       },
       "torpor": {
         "b": 350,
-        "w": 21,
+        "increasePerLevel": 21,
         "t": null
       }
     }
@@ -1837,32 +1837,32 @@
     "baseStats": {
       "health": {
         "b": 450,
-        "w": 90,
+        "increasePerLevel": 90,
         "t": 5.4
       },
       "stamina": {
         "b": 180,
-        "w": 18,
+        "increasePerLevel": 18,
         "t": 10
       },
       "oxygen": {
         "b": 750,
-        "w": 75,
+        "increasePerLevel": 75,
         "t": 10
       },
       "food": {
         "b": 2000,
-        "w": 200,
+        "increasePerLevel": 200,
         "t": 10
       },
       "weight": {
         "b": 300,
-        "w": 6,
+        "increasePerLevel": 6,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 4,
+        "increasePerLevel": 4,
         "t": 1.7,
         "a": [
           {
@@ -1872,10 +1872,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 4.25,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 160,
             "sw": 561.6,
             "st": 432
@@ -1887,7 +1887,7 @@
       },
       "torpor": {
         "b": 350,
-        "w": 21,
+        "increasePerLevel": 21,
         "t": null
       }
     }
@@ -1908,32 +1908,32 @@
     "baseStats": {
       "health": {
         "b": 600,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 5.4
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 4000,
-        "w": 400,
+        "increasePerLevel": 400,
         "t": 10
       },
       "weight": {
         "b": 400,
-        "w": 8,
+        "increasePerLevel": 8,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -1946,10 +1946,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 210,
             "sw": 850.5,
             "st": 850.5
@@ -1961,7 +1961,7 @@
       },
       "torpor": {
         "b": 500,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": null
       }
     }
@@ -1982,32 +1982,32 @@
     "baseStats": {
       "health": {
         "b": 180,
-        "w": 36,
+        "increasePerLevel": 36,
         "t": null
       },
       "stamina": {
         "b": 120,
-        "w": 12,
+        "increasePerLevel": 12,
         "t": null
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": null
       },
       "weight": {
         "b": 25,
-        "w": 0.5,
+        "increasePerLevel": 0.5,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": null,
         "a": [
           {
@@ -2017,10 +2017,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 250
           },
           "s": {
@@ -2030,7 +2030,7 @@
       },
       "torpor": {
         "b": 250,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       }
     }
@@ -2079,32 +2079,32 @@
     "baseStats": {
       "health": {
         "b": 50,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 6.4
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 10
       },
       "weight": {
         "b": 25,
-        "w": 0.5,
+        "increasePerLevel": 0.5,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -2114,10 +2114,10 @@
       },
       "movementSpeed": {
         "b": 200,
-        "w": null,
+        "increasePerLevel": null,
         "t": 5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 120,
             "sw": 336,
             "st": 336
@@ -2129,7 +2129,7 @@
       },
       "torpor": {
         "b": 25,
-        "w": 1.5,
+        "increasePerLevel": 1.5,
         "t": null
       }
     }
@@ -2165,32 +2165,32 @@
     "baseStats": {
       "health": {
         "b": 1295,
-        "w": 194.25,
+        "increasePerLevel": 194.25,
         "t": 4.05
       },
       "stamina": {
         "b": 325,
-        "w": 16.25,
+        "increasePerLevel": 16.25,
         "t": 5
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 300,
-        "w": 6,
+        "increasePerLevel": 6,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -2200,10 +2200,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 690,
             "sw": 796.95,
             "st": 796.95
@@ -2220,7 +2220,7 @@
       },
       "torpor": {
         "b": 545,
-        "w": 32.7,
+        "increasePerLevel": 32.7,
         "t": null
       }
     }
@@ -2268,32 +2268,32 @@
     "baseStats": {
       "health": {
         "b": 900,
-        "w": 180,
+        "increasePerLevel": 180,
         "t": 5.4
       },
       "stamina": {
         "b": 250,
-        "w": 25,
+        "increasePerLevel": 25,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 2500,
-        "w": 250,
+        "increasePerLevel": 250,
         "t": 10
       },
       "weight": {
         "b": 400,
-        "w": 8,
+        "increasePerLevel": 8,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -2303,12 +2303,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1
       },
       "torpor": {
         "b": 800,
-        "w": 48,
+        "increasePerLevel": 48,
         "t": null
       }
     }
@@ -2329,32 +2329,32 @@
     "baseStats": {
       "health": {
         "b": 20000,
-        "w": 0,
+        "increasePerLevel": 0,
         "t": 0
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 0
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 0
       },
       "weight": {
         "b": 100,
-        "w": 2,
+        "increasePerLevel": 2,
         "t": 0
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 0,
         "a": [
           {
@@ -2364,12 +2364,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 0
       },
       "torpor": {
         "b": 0,
-        "w": 0,
+        "increasePerLevel": 0,
         "t": null
       }
     }
@@ -2405,32 +2405,32 @@
     "baseStats": {
       "health": {
         "b": 200,
-        "w": 40,
+        "increasePerLevel": 40,
         "t": 5.4
       },
       "stamina": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 10
       },
       "weight": {
         "b": 140,
-        "w": 2.8,
+        "increasePerLevel": 2.8,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -2440,10 +2440,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 580,
             "sw": 1296,
             "st": 1440
@@ -2455,7 +2455,7 @@
       },
       "torpor": {
         "b": 180,
-        "w": 10.8,
+        "increasePerLevel": 10.8,
         "t": null
       }
     }
@@ -2491,42 +2491,42 @@
     "baseStats": {
       "health": {
         "b": 325,
-        "w": 65,
+        "increasePerLevel": 65,
         "t": null
       },
       "stamina": {
         "b": 500,
-        "w": 50,
+        "increasePerLevel": 50,
         "t": null
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "food": {
         "b": 1600,
-        "w": 160,
+        "increasePerLevel": 160,
         "t": null
       },
       "weight": {
         "b": 350,
-        "w": 28,
+        "increasePerLevel": 28,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": null
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "torpor": {
         "b": 450,
-        "w": 27,
+        "increasePerLevel": 27,
         "t": null
       }
     }
@@ -2568,32 +2568,32 @@
     "baseStats": {
       "health": {
         "b": 130,
-        "w": 26,
+        "increasePerLevel": 26,
         "t": 5.4
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 10
       },
       "weight": {
         "b": 45,
-        "w": 0.9,
+        "increasePerLevel": 0.9,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -2606,10 +2606,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 7.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 120,
             "sw": 360,
             "st": 198
@@ -2621,7 +2621,7 @@
       },
       "torpor": {
         "b": 75,
-        "w": 4.5,
+        "increasePerLevel": 4.5,
         "t": null
       }
     }
@@ -2655,32 +2655,32 @@
     "baseStats": {
       "health": {
         "b": 350,
-        "w": 70,
+        "increasePerLevel": 70,
         "t": 5.4
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 250,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 2,
+        "increasePerLevel": 2,
         "t": 0.8,
         "a": [
           {
@@ -2690,10 +2690,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 110,
             "sw": 253,
             "st": 253
@@ -2705,7 +2705,7 @@
       },
       "torpor": {
         "b": 750,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": null
       }
     }
@@ -2737,32 +2737,32 @@
     "baseStats": {
       "health": {
         "b": 125,
-        "w": 25,
+        "increasePerLevel": 25,
         "t": 5.4
       },
       "stamina": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 900,
-        "w": 90,
+        "increasePerLevel": 90,
         "t": 10
       },
       "weight": {
         "b": 50,
-        "w": 1,
+        "increasePerLevel": 1,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -2772,10 +2772,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 80,
             "sw": 144,
             "st": 144
@@ -2789,7 +2789,7 @@
       },
       "torpor": {
         "b": 100,
-        "w": 6,
+        "increasePerLevel": 6,
         "t": null
       }
     }
@@ -2827,42 +2827,42 @@
     "baseStats": {
       "health": {
         "b": 775,
-        "w": 155,
+        "increasePerLevel": 155,
         "t": 5.4
       },
       "stamina": {
         "b": 800,
-        "w": 80,
+        "increasePerLevel": 80,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 10
       },
       "weight": {
         "b": 350,
-        "w": 7,
+        "increasePerLevel": 7,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5
       },
       "torpor": {
         "b": 600,
-        "w": 36,
+        "increasePerLevel": 36,
         "t": null
       }
     }
@@ -2905,32 +2905,32 @@
     "baseStats": {
       "health": {
         "b": 250,
-        "w": 50,
+        "increasePerLevel": 50,
         "t": 5.4
       },
       "stamina": {
         "b": 165,
-        "w": 16.5,
+        "increasePerLevel": 16.5,
         "t": 10
       },
       "oxygen": {
         "b": 1000,
-        "w": 100,
+        "increasePerLevel": 100,
         "t": null
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 150,
-        "w": 3,
+        "increasePerLevel": 3,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -2940,10 +2940,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 70,
             "sw": 357,
             "st": 357
@@ -2955,7 +2955,7 @@
       },
       "torpor": {
         "b": 220,
-        "w": 13.2,
+        "increasePerLevel": 13.2,
         "t": null
       }
     }
@@ -2982,40 +2982,40 @@
     "baseStats": {
       "health": {
         "b": 1700,
-        "w": 340,
+        "increasePerLevel": 340,
         "t": 5.4
       },
       "stamina": {
         "b": 550,
-        "w": 55,
+        "increasePerLevel": 55,
         "t": 10
       },
       "oxygen": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "food": {
         "b": 10000,
-        "w": 1000,
+        "increasePerLevel": 1000,
         "t": 10
       },
       "weight": {
         "b": 800,
-        "w": 16,
+        "increasePerLevel": 16,
         "t": 4
       },
       "meleeDamage": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": 4
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 300,
             "sw": 1350,
             "st": 1350
@@ -3027,7 +3027,7 @@
       },
       "torpor": {
         "b": 3000,
-        "w": 180,
+        "increasePerLevel": 180,
         "t": null
       }
     }
@@ -3064,32 +3064,32 @@
     "baseStats": {
       "health": {
         "b": 400,
-        "w": 80,
+        "increasePerLevel": 80,
         "t": 5.4
       },
       "stamina": {
         "b": 500,
-        "w": 50,
+        "increasePerLevel": 50,
         "t": 10
       },
       "oxygen": {
         "b": 270,
-        "w": 27,
+        "increasePerLevel": 27,
         "t": 10
       },
       "food": {
         "b": 3000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": 10
       },
       "weight": {
         "b": 650,
-        "w": 13,
+        "increasePerLevel": 13,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -3102,10 +3102,10 @@
       },
       "movementSpeed": {
         "b": 222.6,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 190,
             "sw": 961.9,
             "st": 1149.5
@@ -3117,7 +3117,7 @@
       },
       "torpor": {
         "b": 1000,
-        "w": 60,
+        "increasePerLevel": 60,
         "t": null
       }
     }
@@ -3151,32 +3151,32 @@
     "baseStats": {
       "health": {
         "b": 330,
-        "w": 66,
+        "increasePerLevel": 66,
         "t": 5.4
       },
       "stamina": {
         "b": 260,
-        "w": 26,
+        "increasePerLevel": 26,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 10
       },
       "weight": {
         "b": 170,
-        "w": 3.4,
+        "increasePerLevel": 3.4,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -3186,10 +3186,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 3,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 287.5,
             "sw": 1048.8,
             "st": 1048.8
@@ -3201,7 +3201,7 @@
       },
       "torpor": {
         "b": 450,
-        "w": 27,
+        "increasePerLevel": 27,
         "t": null
       }
     }
@@ -3238,32 +3238,32 @@
     "baseStats": {
       "health": {
         "b": 40,
-        "w": 8,
+        "increasePerLevel": 8,
         "t": 5.4
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 10
       },
       "weight": {
         "b": 50,
-        "w": 1,
+        "increasePerLevel": 1,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -3273,10 +3273,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 7.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 65,
             "sw": 136.5,
             "st": 136.5
@@ -3288,7 +3288,7 @@
       },
       "torpor": {
         "b": 30,
-        "w": 1.8,
+        "increasePerLevel": 1.8,
         "t": null
       }
     }
@@ -3317,32 +3317,32 @@
     "baseStats": {
       "health": {
         "b": 850,
-        "w": 170,
+        "increasePerLevel": 170,
         "t": 5.4
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 3000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": 10
       },
       "weight": {
         "b": 250,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -3355,10 +3355,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 5.625,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 86,
             "sw": 258,
             "st": 258
@@ -3370,7 +3370,7 @@
       },
       "torpor": {
         "b": 800,
-        "w": 48,
+        "increasePerLevel": 48,
         "t": null
       }
     }
@@ -3413,32 +3413,32 @@
     "baseStats": {
       "health": {
         "b": 200,
-        "w": 40,
+        "increasePerLevel": 40,
         "t": 3.01
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 900,
-        "w": 90,
+        "increasePerLevel": 90,
         "t": 10
       },
       "weight": {
         "b": 5,
-        "w": 0.1,
+        "increasePerLevel": 0.1,
         "t": 0.5
       },
       "meleeDamage": {
         "b": 100,
-        "w": 4,
+        "increasePerLevel": 4,
         "t": 2,
         "a": [
           {
@@ -3448,10 +3448,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 52,
             "sw": 260,
             "st": 260
@@ -3463,7 +3463,7 @@
       },
       "torpor": {
         "b": 200,
-        "w": 12,
+        "increasePerLevel": 12,
         "t": null
       }
     }
@@ -3497,32 +3497,32 @@
     "baseStats": {
       "health": {
         "b": 710,
-        "w": 142,
+        "increasePerLevel": 142,
         "t": 5.4
       },
       "stamina": {
         "b": 200,
-        "w": 20,
+        "increasePerLevel": 20,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 2000,
-        "w": 200,
+        "increasePerLevel": 200,
         "t": 10
       },
       "weight": {
         "b": 910,
-        "w": 18.2,
+        "increasePerLevel": 18.2,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5.8,
+        "increasePerLevel": 5.8,
         "t": 2.5,
         "a": [
           {
@@ -3532,7 +3532,7 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
           "s": {
@@ -3542,7 +3542,7 @@
       },
       "torpor": {
         "b": 1150,
-        "w": 69,
+        "increasePerLevel": 69,
         "t": null
       }
     }
@@ -3575,32 +3575,32 @@
     "baseStats": {
       "health": {
         "b": 180,
-        "w": 36,
+        "increasePerLevel": 36,
         "t": 5.4
       },
       "stamina": {
         "b": 165,
-        "w": 16.5,
+        "increasePerLevel": 16.5,
         "t": 10
       },
       "oxygen": {
         "b": 1050,
-        "w": 105,
+        "increasePerLevel": 105,
         "t": 10
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 150,
-        "w": 3,
+        "increasePerLevel": 3,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -3613,12 +3613,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5
       },
       "torpor": {
         "b": 175,
-        "w": 10.5,
+        "increasePerLevel": 10.5,
         "t": null
       }
     }
@@ -3648,32 +3648,32 @@
     "baseStats": {
       "health": {
         "b": 375,
-        "w": 75,
+        "increasePerLevel": 75,
         "t": 5.4
       },
       "stamina": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 800,
-        "w": 16,
+        "increasePerLevel": 16,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -3683,12 +3683,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5
       },
       "torpor": {
         "b": 5000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": null
       }
     }
@@ -3717,32 +3717,32 @@
     "baseStats": {
       "health": {
         "b": 240,
-        "w": 48,
+        "increasePerLevel": 48,
         "t": 5.4
       },
       "stamina": {
         "b": 560,
-        "w": 56,
+        "increasePerLevel": 56,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 350,
-        "w": 7,
+        "increasePerLevel": 7,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -3755,10 +3755,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1.75,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 450,
             "sw": 1158.3,
             "st": 965.2499
@@ -3770,7 +3770,7 @@
       },
       "torpor": {
         "b": 420,
-        "w": 25.2,
+        "increasePerLevel": 25.2,
         "t": null
       }
     }
@@ -3791,32 +3791,32 @@
     "baseStats": {
       "health": {
         "b": 160,
-        "w": 32,
+        "increasePerLevel": 32,
         "t": 0
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 0
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 0
       },
       "weight": {
         "b": 150,
-        "w": 3,
+        "increasePerLevel": 3,
         "t": 0
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 0,
         "a": [
           {
@@ -3826,12 +3826,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 0
       },
       "torpor": {
         "b": 0,
-        "w": 0,
+        "increasePerLevel": 0,
         "t": null
       }
     }
@@ -3852,32 +3852,32 @@
     "baseStats": {
       "health": {
         "b": 115,
-        "w": 23,
+        "increasePerLevel": 23,
         "t": 5.4
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 10
       },
       "oxygen": {
         "b": 180,
-        "w": 19.8,
+        "increasePerLevel": 19.8,
         "t": 11
       },
       "food": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 10
       },
       "weight": {
         "b": 70,
-        "w": 1.4,
+        "increasePerLevel": 1.4,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 6.5,
+        "increasePerLevel": 6.5,
         "t": 2.04,
         "a": [
           {
@@ -3887,10 +3887,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 5.75,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 60,
             "sw": 165,
             "st": 165
@@ -3907,7 +3907,7 @@
       },
       "torpor": {
         "b": 60,
-        "w": 3.6,
+        "increasePerLevel": 3.6,
         "t": null
       }
     }
@@ -3928,42 +3928,42 @@
     "baseStats": {
       "health": {
         "b": 750,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": null
       },
       "stamina": {
         "b": 330,
-        "w": 33,
+        "increasePerLevel": 33,
         "t": null
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 2000,
-        "w": 200,
+        "increasePerLevel": 200,
         "t": 10
       },
       "weight": {
         "b": 600,
-        "w": 12,
+        "increasePerLevel": 12,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": null
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "torpor": {
         "b": 1225,
-        "w": 73.5,
+        "increasePerLevel": 73.5,
         "t": null
       }
     }
@@ -4008,32 +4008,32 @@
     "baseStats": {
       "health": {
         "b": 55,
-        "w": 11,
+        "increasePerLevel": 11,
         "t": null
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": null
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "food": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": null
       },
       "weight": {
         "b": 55,
-        "w": 1.1,
+        "increasePerLevel": 1.1,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -4043,10 +4043,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 156,
             "sw": 366.599976,
             "st": 549.899963
@@ -4058,7 +4058,7 @@
       },
       "torpor": {
         "b": 30,
-        "w": 1.8,
+        "increasePerLevel": 1.8,
         "t": null
       }
     }
@@ -4079,42 +4079,42 @@
     "baseStats": {
       "health": {
         "b": 150,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": null
       },
       "stamina": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "oxygen": {
         "b": 120,
-        "w": 12,
+        "increasePerLevel": 12,
         "t": null
       },
       "food": {
         "b": 1000,
-        "w": 100,
+        "increasePerLevel": 100,
         "t": null
       },
       "weight": {
         "b": 65,
-        "w": 1.3,
+        "increasePerLevel": 1.3,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": null
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "torpor": {
         "b": 120,
-        "w": 7.2,
+        "increasePerLevel": 7.2,
         "t": null
       }
     }
@@ -4164,32 +4164,32 @@
     "baseStats": {
       "health": {
         "b": 750,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 5.4
       },
       "stamina": {
         "b": 325,
-        "w": 32.5,
+        "increasePerLevel": 32.5,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 3000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": 10
       },
       "weight": {
         "b": 550,
-        "w": 22,
+        "increasePerLevel": 22,
         "t": 4
       },
       "meleeDamage": {
         "b": 32,
-        "w": 1.6,
+        "increasePerLevel": 1.6,
         "t": 1.7,
         "a": [
           {
@@ -4199,10 +4199,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 300,
             "sw": 750,
             "st": 750
@@ -4214,7 +4214,7 @@
       },
       "torpor": {
         "b": 600,
-        "w": 36,
+        "increasePerLevel": 36,
         "t": null
       }
     }
@@ -4244,32 +4244,32 @@
     "baseStats": {
       "health": {
         "b": 150,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 6.19
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1000,
-        "w": 100,
+        "increasePerLevel": 100,
         "t": 10
       },
       "weight": {
         "b": 270,
-        "w": 5.4,
+        "increasePerLevel": 5.4,
         "t": 3.9
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -4279,10 +4279,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 825,
             "sw": 2305.05,
             "st": 2305.05
@@ -4294,7 +4294,7 @@
       },
       "torpor": {
         "b": 420,
-        "w": 25.2,
+        "increasePerLevel": 25.2,
         "t": null
       }
     }
@@ -4322,42 +4322,42 @@
     "baseStats": {
       "health": {
         "b": 650,
-        "w": 130,
+        "increasePerLevel": 130,
         "t": 5.4
       },
       "stamina": {
         "b": 600,
-        "w": 60,
+        "increasePerLevel": 60,
         "t": 10
       },
       "oxygen": {
         "b": 1000,
-        "w": 110,
+        "increasePerLevel": 110,
         "t": 10
       },
       "food": {
         "b": 3500,
-        "w": 350,
+        "increasePerLevel": 350,
         "t": 10
       },
       "weight": {
         "b": 3000,
-        "w": 60,
+        "increasePerLevel": 60,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 4.91
       },
       "torpor": {
         "b": 450,
-        "w": 27,
+        "increasePerLevel": 27,
         "t": null
       }
     }
@@ -4391,42 +4391,42 @@
     "baseStats": {
       "health": {
         "b": 80,
-        "w": 16,
+        "increasePerLevel": 16,
         "t": 5.4
       },
       "stamina": {
         "b": 200,
-        "w": 20,
+        "increasePerLevel": 20,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 10
       },
       "weight": {
         "b": 150,
-        "w": 3,
+        "increasePerLevel": 3,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1
       },
       "torpor": {
         "b": 400,
-        "w": 24,
+        "increasePerLevel": 24,
         "t": null
       }
     }
@@ -4460,32 +4460,32 @@
     "baseStats": {
       "health": {
         "b": 80000,
-        "w": 40,
+        "increasePerLevel": 40,
         "t": 0.04
       },
       "stamina": {
         "b": 400,
-        "w": 0.2,
+        "increasePerLevel": 0.2,
         "t": 1
       },
       "oxygen": {
         "b": 150,
-        "w": 0.375,
+        "increasePerLevel": 0.375,
         "t": 2.5
       },
       "food": {
         "b": 4000,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 2.5
       },
       "weight": {
         "b": 700,
-        "w": 7,
+        "increasePerLevel": 7,
         "t": 1
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 0.85,
         "a": [
           {
@@ -4495,10 +4495,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 0.31,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 1500,
             "sw": 1681.6799,
             "st": 1681.6799
@@ -4510,7 +4510,7 @@
       },
       "torpor": {
         "b": 10000,
-        "w": 600,
+        "increasePerLevel": 600,
         "t": null
       }
     }
@@ -4536,32 +4536,32 @@
     "baseStats": {
       "health": {
         "b": 640,
-        "w": 64,
+        "increasePerLevel": 64,
         "t": 5.4
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 220,
-        "w": 4.4,
+        "increasePerLevel": 4.4,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 4,
+        "increasePerLevel": 4,
         "t": 2,
         "a": [
           {
@@ -4571,10 +4571,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.65,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 195,
             "sw": 682.5,
             "st": 1023.8
@@ -4586,7 +4586,7 @@
       },
       "torpor": {
         "b": 1100,
-        "w": 66,
+        "increasePerLevel": 66,
         "t": null
       }
     }
@@ -4629,32 +4629,32 @@
     "baseStats": {
       "health": {
         "b": 115,
-        "w": 23,
+        "increasePerLevel": 23,
         "t": 5.4
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 12
       },
       "oxygen": {
         "b": 200,
-        "w": 24,
+        "increasePerLevel": 24,
         "t": 11
       },
       "food": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 10
       },
       "weight": {
         "b": 70,
-        "w": 1.4,
+        "increasePerLevel": 1.4,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5.5,
+        "increasePerLevel": 5.5,
         "t": 1.87,
         "a": [
           {
@@ -4664,10 +4664,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 60,
             "sw": 504,
             "st": 240
@@ -4679,7 +4679,7 @@
       },
       "torpor": {
         "b": 60,
-        "w": 3.6,
+        "increasePerLevel": 3.6,
         "t": null
       }
     }
@@ -4712,32 +4712,32 @@
     "baseStats": {
       "health": {
         "b": 950,
-        "w": 142.5,
+        "increasePerLevel": 142.5,
         "t": 4.32
       },
       "stamina": {
         "b": 225,
-        "w": 11.25,
+        "increasePerLevel": 11.25,
         "t": 6
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1600,
-        "w": 160,
+        "increasePerLevel": 160,
         "t": 10
       },
       "weight": {
         "b": 280,
-        "w": 5.6,
+        "increasePerLevel": 5.6,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -4750,10 +4750,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1.7,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 300,
             "sw": 750,
             "st": 750
@@ -4770,7 +4770,7 @@
       },
       "torpor": {
         "b": 1500,
-        "w": 90,
+        "increasePerLevel": 90,
         "t": null
       }
     }
@@ -4806,32 +4806,32 @@
     "baseStats": {
       "health": {
         "b": 95,
-        "w": 19,
+        "increasePerLevel": 19,
         "t": 5.4
       },
       "stamina": {
         "b": 200,
-        "w": 20,
+        "increasePerLevel": 20,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 900,
-        "w": 90,
+        "increasePerLevel": 90,
         "t": 10
       },
       "weight": {
         "b": 70,
-        "w": 1.4,
+        "increasePerLevel": 1.4,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -4841,12 +4841,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5
       },
       "torpor": {
         "b": 300,
-        "w": 18,
+        "increasePerLevel": 18,
         "t": null
       }
     }
@@ -4874,32 +4874,32 @@
     "baseStats": {
       "health": {
         "b": 175,
-        "w": 35,
+        "increasePerLevel": 35,
         "t": 5.4
       },
       "stamina": {
         "b": 260,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 10
       },
       "weight": {
         "b": 170,
-        "w": 3.4,
+        "increasePerLevel": 3.4,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -4912,10 +4912,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 140,
             "sw": 924.0001,
             "st": 924.0001
@@ -4927,7 +4927,7 @@
       },
       "torpor": {
         "b": 450,
-        "w": 27,
+        "increasePerLevel": 27,
         "t": null
       }
     }
@@ -4969,32 +4969,32 @@
     "baseStats": {
       "health": {
         "b": 50,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 5.4
       },
       "stamina": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1000,
-        "w": 100,
+        "increasePerLevel": 100,
         "t": 10
       },
       "weight": {
         "b": 55,
-        "w": 1.1,
+        "increasePerLevel": 1.1,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -5004,10 +5004,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 75,
             "sw": 97.5,
             "st": 97.2
@@ -5024,7 +5024,7 @@
       },
       "torpor": {
         "b": 120,
-        "w": 7.2,
+        "increasePerLevel": 7.2,
         "t": null
       }
     }
@@ -5058,32 +5058,32 @@
     "baseStats": {
       "health": {
         "b": 275,
-        "w": 13.75,
+        "increasePerLevel": 13.75,
         "t": 6.75
       },
       "stamina": {
         "b": 300,
-        "w": 60,
+        "increasePerLevel": 60,
         "t": 20
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 1000,
-        "w": 100,
+        "increasePerLevel": 100,
         "t": 10
       },
       "weight": {
         "b": 250,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 5,
         "a": [
           {
@@ -5093,7 +5093,7 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1.5,
         "a": {
           "s": {
@@ -5105,7 +5105,7 @@
       },
       "torpor": {
         "b": 300,
-        "w": 18,
+        "increasePerLevel": 18,
         "t": null
       }
     }
@@ -5136,32 +5136,32 @@
     "baseStats": {
       "health": {
         "b": 250,
-        "w": 50,
+        "increasePerLevel": 50,
         "t": 5.4
       },
       "stamina": {
         "b": 200,
-        "w": 20,
+        "increasePerLevel": 20,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1800,
-        "w": 180,
+        "increasePerLevel": 180,
         "t": 10
       },
       "weight": {
         "b": 375,
-        "w": 7.5,
+        "increasePerLevel": 7.5,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -5171,10 +5171,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 250,
             "sw": 1062.5,
             "st": 1437.5
@@ -5186,7 +5186,7 @@
       },
       "torpor": {
         "b": 210,
-        "w": 12.6,
+        "increasePerLevel": 12.6,
         "t": null
       }
     }
@@ -5223,32 +5223,32 @@
     "baseStats": {
       "health": {
         "b": 55,
-        "w": 11,
+        "increasePerLevel": 11,
         "t": null
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": null
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "food": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": null
       },
       "weight": {
         "b": 120,
-        "w": 2.4,
+        "increasePerLevel": 2.4,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -5258,10 +5258,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 156,
             "sw": 366.599976,
             "st": 549.899963
@@ -5273,7 +5273,7 @@
       },
       "torpor": {
         "b": 30,
-        "w": 1.8,
+        "increasePerLevel": 1.8,
         "t": null
       }
     }
@@ -5330,32 +5330,32 @@
     "baseStats": {
       "health": {
         "b": 95,
-        "w": 19,
+        "increasePerLevel": 19,
         "t": 5.4
       },
       "stamina": {
         "b": 200,
-        "w": 20,
+        "increasePerLevel": 20,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 900,
-        "w": 90,
+        "increasePerLevel": 90,
         "t": 10
       },
       "weight": {
         "b": 70,
-        "w": 1.4,
+        "increasePerLevel": 1.4,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -5365,10 +5365,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 70,
             "sw": 147,
             "st": 80.9
@@ -5380,7 +5380,7 @@
       },
       "torpor": {
         "b": 300,
-        "w": 18,
+        "increasePerLevel": 18,
         "t": null
       }
     }
@@ -5414,32 +5414,32 @@
     "baseStats": {
       "health": {
         "b": 200,
-        "w": 40,
+        "increasePerLevel": 40,
         "t": null
       },
       "stamina": {
         "b": 350,
-        "w": 35,
+        "increasePerLevel": 35,
         "t": null
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": null
       },
       "weight": {
         "b": 140,
-        "w": 2.8,
+        "increasePerLevel": 2.8,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -5449,10 +5449,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 180,
             "sw": 675,
             "st": 675
@@ -5464,7 +5464,7 @@
       },
       "torpor": {
         "b": 200,
-        "w": 12,
+        "increasePerLevel": 12,
         "t": null
       }
     }
@@ -5490,32 +5490,32 @@
     "baseStats": {
       "health": {
         "b": 1200,
-        "w": 240,
+        "increasePerLevel": 240,
         "t": 5.4
       },
       "stamina": {
         "b": 600,
-        "w": 60,
+        "increasePerLevel": 60,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 5000,
-        "w": 500,
+        "increasePerLevel": 500,
         "t": 10
       },
       "weight": {
         "b": 800,
-        "w": 16,
+        "increasePerLevel": 16,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -5528,10 +5528,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 300,
             "sw": 525,
             "st": 735
@@ -5543,7 +5543,7 @@
       },
       "torpor": {
         "b": 800,
-        "w": 40,
+        "increasePerLevel": 40,
         "t": null
       }
     }
@@ -5571,32 +5571,32 @@
     "baseStats": {
       "health": {
         "b": 650,
-        "w": 130,
+        "increasePerLevel": 130,
         "t": 2
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 6000,
-        "w": 600,
+        "increasePerLevel": 600,
         "t": 10
       },
       "weight": {
         "b": 500,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -5606,12 +5606,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 4.91
       },
       "torpor": {
         "b": 500,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": null
       }
     }
@@ -5677,32 +5677,32 @@
     "baseStats": {
       "health": {
         "b": 4400,
-        "w": 528,
+        "increasePerLevel": 528,
         "t": null
       },
       "stamina": {
         "b": 500,
-        "w": 50,
+        "increasePerLevel": 50,
         "t": null
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 8000,
-        "w": 800,
+        "increasePerLevel": 800,
         "t": null
       },
       "weight": {
         "b": 1800,
-        "w": 36,
+        "increasePerLevel": 36,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null,
         "a": [
           {
@@ -5712,12 +5712,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "torpor": {
         "b": 4500,
-        "w": 270,
+        "increasePerLevel": 270,
         "t": null
       }
     }
@@ -5738,42 +5738,42 @@
     "baseStats": {
       "health": {
         "b": 600,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 5.4
       },
       "stamina": {
         "b": 320,
-        "w": 32,
+        "increasePerLevel": 32,
         "t": 10
       },
       "oxygen": {
         "b": 800,
-        "w": 80,
+        "increasePerLevel": 80,
         "t": 10
       },
       "food": {
         "b": 2000,
-        "w": 200,
+        "increasePerLevel": 200,
         "t": 10
       },
       "weight": {
         "b": 250,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5
       },
       "torpor": {
         "b": 800,
-        "w": 48,
+        "increasePerLevel": 48,
         "t": null
       }
     }
@@ -5801,32 +5801,32 @@
     "baseStats": {
       "health": {
         "b": 260,
-        "w": 52,
+        "increasePerLevel": 52,
         "t": null
       },
       "stamina": {
         "b": 150,
-        "w": 7.5,
+        "increasePerLevel": 7.5,
         "t": null
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "food": {
         "b": 2000,
-        "w": 200,
+        "increasePerLevel": 200,
         "t": null
       },
       "weight": {
         "b": 175,
-        "w": 3.5,
+        "increasePerLevel": 3.5,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -5836,10 +5836,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 3,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 110
           },
           "s": {
@@ -5854,7 +5854,7 @@
       },
       "torpor": {
         "b": 550,
-        "w": 33,
+        "increasePerLevel": 33,
         "t": null
       }
     }
@@ -5884,32 +5884,32 @@
     "baseStats": {
       "health": {
         "b": 90,
-        "w": 18,
+        "increasePerLevel": 18,
         "t": 5.4
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 10
       },
       "oxygen": {
         "b": 215,
-        "w": 21.5,
+        "increasePerLevel": 21.5,
         "t": 10
       },
       "food": {
         "b": 500,
-        "w": 50,
+        "increasePerLevel": 50,
         "t": 10
       },
       "weight": {
         "b": 90,
-        "w": 1.8,
+        "increasePerLevel": 1.8,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -5919,10 +5919,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 7.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 60,
             "sw": 126,
             "st": 88.2
@@ -5934,7 +5934,7 @@
       },
       "torpor": {
         "b": 100,
-        "w": 6,
+        "increasePerLevel": 6,
         "t": null
       }
     }
@@ -5972,32 +5972,32 @@
     "baseStats": {
       "health": {
         "b": 700,
-        "w": 59.5,
+        "increasePerLevel": 59.5,
         "t": 4.05
       },
       "stamina": {
         "b": 450,
-        "w": 22.5,
+        "increasePerLevel": 22.5,
         "t": 5
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 2000,
-        "w": 200,
+        "increasePerLevel": 200,
         "t": 10
       },
       "weight": {
         "b": 400,
-        "w": 8,
+        "increasePerLevel": 8,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -6007,12 +6007,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1
       },
       "torpor": {
         "b": 100,
-        "w": 6,
+        "increasePerLevel": 6,
         "t": null
       }
     }
@@ -6033,32 +6033,32 @@
     "baseStats": {
       "health": {
         "b": 3000,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 2.7
       },
       "stamina": {
         "b": 500,
-        "w": 25,
+        "increasePerLevel": 25,
         "t": 5
       },
       "oxygen": {
         "b": 100,
-        "w": 20,
+        "increasePerLevel": 20,
         "t": 10
       },
       "food": {
         "b": 2000,
-        "w": 200,
+        "increasePerLevel": 200,
         "t": 10
       },
       "weight": {
         "b": 550,
-        "w": 11,
+        "increasePerLevel": 11,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 3,
+        "increasePerLevel": 3,
         "t": 0.51,
         "a": [
           {
@@ -6068,12 +6068,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 0.5
       },
       "torpor": {
         "b": 725,
-        "w": 43.5,
+        "increasePerLevel": 43.5,
         "t": null
       }
     }
@@ -6104,32 +6104,32 @@
     "baseStats": {
       "health": {
         "b": 850,
-        "w": 170,
+        "increasePerLevel": 170,
         "t": 5.4
       },
       "stamina": {
         "b": 330,
-        "w": 33,
+        "increasePerLevel": 33,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 5000,
-        "w": 500,
+        "increasePerLevel": 500,
         "t": 10
       },
       "weight": {
         "b": 500,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -6142,10 +6142,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 3.065,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 150,
             "sw": 360,
             "st": 360
@@ -6157,7 +6157,7 @@
       },
       "torpor": {
         "b": 550,
-        "w": 33,
+        "increasePerLevel": 33,
         "t": null
       }
     }
@@ -6190,32 +6190,32 @@
     "baseStats": {
       "health": {
         "b": 825,
-        "w": 165,
+        "increasePerLevel": 165,
         "t": 5.4
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 2000,
-        "w": 200,
+        "increasePerLevel": 200,
         "t": 10
       },
       "weight": {
         "b": 300,
-        "w": 6,
+        "increasePerLevel": 6,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -6228,12 +6228,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 4.91
       },
       "torpor": {
         "b": 800,
-        "w": 48,
+        "increasePerLevel": 48,
         "t": null
       }
     }
@@ -6254,32 +6254,32 @@
     "baseStats": {
       "health": {
         "b": 320,
-        "w": 16,
+        "increasePerLevel": 16,
         "t": 1.35
       },
       "stamina": {
         "b": 270,
-        "w": 54,
+        "increasePerLevel": 54,
         "t": 20
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 1150,
-        "w": 500,
+        "increasePerLevel": 500,
         "t": 10
       },
       "weight": {
         "b": 200,
-        "w": 4,
+        "increasePerLevel": 4,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 0.85,
         "a": [
           {
@@ -6289,7 +6289,7 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 5,
         "a": {
           "s": {
@@ -6301,7 +6301,7 @@
       },
       "torpor": {
         "b": 700,
-        "w": 42,
+        "increasePerLevel": 42,
         "t": null
       }
     }
@@ -6337,32 +6337,32 @@
     "baseStats": {
       "health": {
         "b": 275,
-        "w": 55,
+        "increasePerLevel": 55,
         "t": 2.8
       },
       "stamina": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 900,
-        "w": 90,
+        "increasePerLevel": 90,
         "t": 10
       },
       "weight": {
         "b": 220,
-        "w": 4.4,
+        "increasePerLevel": 4.4,
         "t": 8
       },
       "meleeDamage": {
         "b": 100,
-        "w": 2.5,
+        "increasePerLevel": 2.5,
         "t": 1.7,
         "a": [
           {
@@ -6375,10 +6375,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 3,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 200,
             "sw": 650,
             "st": 500
@@ -6390,7 +6390,7 @@
       },
       "torpor": {
         "b": 350,
-        "w": 21,
+        "increasePerLevel": 21,
         "t": null
       }
     }
@@ -6411,32 +6411,32 @@
     "baseStats": {
       "health": {
         "b": 1920,
-        "w": 384,
+        "increasePerLevel": 384,
         "t": 4.59
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 8800,
-        "w": 880,
+        "increasePerLevel": 880,
         "t": 10
       },
       "weight": {
         "b": 2500,
-        "w": 50,
+        "increasePerLevel": 50,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -6446,12 +6446,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "torpor": {
         "b": 10000,
-        "w": 600,
+        "increasePerLevel": 600,
         "t": null
       }
     }
@@ -6493,32 +6493,32 @@
     "baseStats": {
       "health": {
         "b": 480,
-        "w": 96,
+        "increasePerLevel": 96,
         "t": null
       },
       "stamina": {
         "b": 400,
-        "w": 40,
+        "increasePerLevel": 40,
         "t": 5
       },
       "oxygen": {
         "b": 200,
-        "w": 20,
+        "increasePerLevel": 20,
         "t": 10
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 400,
-        "w": 8,
+        "increasePerLevel": 8,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": null,
         "a": [
           {
@@ -6531,12 +6531,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "torpor": {
         "b": 700,
-        "w": 42,
+        "increasePerLevel": 42,
         "t": null
       }
     }
@@ -6565,32 +6565,32 @@
     "baseStats": {
       "health": {
         "b": 300,
-        "w": 60,
+        "increasePerLevel": 60,
         "t": 5.4
       },
       "stamina": {
         "b": 280,
-        "w": 28,
+        "increasePerLevel": 28,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 10
       },
       "weight": {
         "b": 220,
-        "w": 4.4,
+        "increasePerLevel": 4.4,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -6600,10 +6600,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 3,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 200,
             "sw": 900,
             "st": 1020
@@ -6615,7 +6615,7 @@
       },
       "torpor": {
         "b": 175,
-        "w": 10.5,
+        "increasePerLevel": 10.5,
         "t": null
       }
     }
@@ -6649,32 +6649,32 @@
     "baseStats": {
       "health": {
         "b": 600,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 5.4
       },
       "stamina": {
         "b": 320,
-        "w": 32,
+        "increasePerLevel": 32,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 2000,
-        "w": 200,
+        "increasePerLevel": 200,
         "t": 10
       },
       "weight": {
         "b": 250,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -6684,7 +6684,7 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
           "s": {
@@ -6696,7 +6696,7 @@
       },
       "torpor": {
         "b": 800,
-        "w": 48,
+        "increasePerLevel": 48,
         "t": null
       }
     }
@@ -6730,32 +6730,32 @@
     "baseStats": {
       "health": {
         "b": 1025,
-        "w": 205,
+        "increasePerLevel": 205,
         "t": 5.4
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 2000,
-        "w": 200,
+        "increasePerLevel": 200,
         "t": 10
       },
       "weight": {
         "b": 300,
-        "w": 6,
+        "increasePerLevel": 6,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -6765,10 +6765,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 600,
             "sw": 1092,
             "st": 1260
@@ -6780,7 +6780,7 @@
       },
       "torpor": {
         "b": 775,
-        "w": 46.5,
+        "increasePerLevel": 46.5,
         "t": null
       }
     }
@@ -6801,42 +6801,42 @@
     "baseStats": {
       "health": {
         "b": 9000,
-        "w": 1800,
+        "increasePerLevel": 1800,
         "t": 5.4
       },
       "stamina": {
         "b": 1000,
-        "w": 100,
+        "increasePerLevel": 100,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "weight": {
         "b": 9001,
-        "w": 180.02,
+        "increasePerLevel": 180.02,
         "t": 4
       },
       "meleeDamage": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "movementSpeed": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "torpor": {
         "b": 100,
-        "w": 6,
+        "increasePerLevel": 6,
         "t": null
       }
     }
@@ -6903,32 +6903,32 @@
     "baseStats": {
       "health": {
         "b": 740,
-        "w": 148,
+        "increasePerLevel": 148,
         "t": 5.4
       },
       "stamina": {
         "b": 400,
-        "w": 40,
+        "increasePerLevel": 40,
         "t": 10
       },
       "oxygen": {
         "b": 270,
-        "w": 27,
+        "increasePerLevel": 27,
         "t": 10
       },
       "food": {
         "b": 3000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": 10
       },
       "weight": {
         "b": 725,
-        "w": 14.5,
+        "increasePerLevel": 14.5,
         "t": 4.5
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -6941,12 +6941,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5
       },
       "torpor": {
         "b": 1000,
-        "w": 60,
+        "increasePerLevel": 60,
         "t": null
       }
     }
@@ -6967,42 +6967,42 @@
     "baseStats": {
       "health": {
         "b": 5500,
-        "w": 880,
+        "increasePerLevel": 880,
         "t": 5.4
       },
       "stamina": {
         "b": 1000,
-        "w": 100,
+        "increasePerLevel": 100,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "weight": {
         "b": 1250,
-        "w": 110.625,
+        "increasePerLevel": 110.625,
         "t": 4
       },
       "meleeDamage": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "movementSpeed": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "torpor": {
         "b": 100,
-        "w": 6,
+        "increasePerLevel": 6,
         "t": null
       }
     }
@@ -7032,32 +7032,32 @@
     "baseStats": {
       "health": {
         "b": 115,
-        "w": 23,
+        "increasePerLevel": 23,
         "t": 5.4
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 10
       },
       "weight": {
         "b": 70,
-        "w": 1.4,
+        "increasePerLevel": 1.4,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -7067,10 +7067,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 5.75,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 60,
             "sw": 504,
             "st": 240
@@ -7082,7 +7082,7 @@
       },
       "torpor": {
         "b": 60,
-        "w": 3.6,
+        "increasePerLevel": 3.6,
         "t": null
       }
     }
@@ -7116,32 +7116,32 @@
     "baseStats": {
       "health": {
         "b": 130,
-        "w": 26,
+        "increasePerLevel": 26,
         "t": 5.4
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 10
       },
       "weight": {
         "b": 45,
-        "w": 0.9,
+        "increasePerLevel": 0.9,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -7151,10 +7151,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 150,
             "sw": 1125,
             "st": 900
@@ -7171,7 +7171,7 @@
       },
       "torpor": {
         "b": 75,
-        "w": 4.5,
+        "increasePerLevel": 4.5,
         "t": null
       }
     }
@@ -7214,32 +7214,32 @@
     "baseStats": {
       "health": {
         "b": 400,
-        "w": 80,
+        "increasePerLevel": 80,
         "t": null
       },
       "stamina": {
         "b": 220,
-        "w": 22,
+        "increasePerLevel": 22,
         "t": null
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "food": {
         "b": 6000,
-        "w": 600,
+        "increasePerLevel": 600,
         "t": null
       },
       "weight": {
         "b": 440,
-        "w": 8.8,
+        "increasePerLevel": 8.8,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -7249,10 +7249,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 250,
             "sw": 1250,
             "st": 567
@@ -7264,7 +7264,7 @@
       },
       "torpor": {
         "b": 315,
-        "w": 18.9,
+        "increasePerLevel": 18.9,
         "t": null
       }
     }
@@ -7298,32 +7298,32 @@
     "baseStats": {
       "health": {
         "b": 3600,
-        "w": 432,
+        "increasePerLevel": 432,
         "t": 5.6
       },
       "stamina": {
         "b": 400,
-        "w": 40,
+        "increasePerLevel": 40,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 8000,
-        "w": 800,
+        "increasePerLevel": 800,
         "t": 10
       },
       "weight": {
         "b": 1300,
-        "w": 26,
+        "increasePerLevel": 26,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -7333,7 +7333,7 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
           "s": {
@@ -7345,7 +7345,7 @@
       },
       "torpor": {
         "b": 3000,
-        "w": 180,
+        "increasePerLevel": 180,
         "t": null
       }
     }
@@ -7366,32 +7366,32 @@
     "baseStats": {
       "health": {
         "b": 375,
-        "w": 75,
+        "increasePerLevel": 75,
         "t": 5.4
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "weight": {
         "b": 200,
-        "w": 4,
+        "increasePerLevel": 4,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -7401,10 +7401,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 115,
             "sw": 517.5,
             "st": 517.5
@@ -7416,7 +7416,7 @@
       },
       "torpor": {
         "b": 300,
-        "w": 18,
+        "increasePerLevel": 18,
         "t": null
       }
     }
@@ -7461,32 +7461,32 @@
     "baseStats": {
       "health": {
         "b": 50,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 6.4
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 10
       },
       "weight": {
         "b": 80,
-        "w": 1.6,
+        "increasePerLevel": 1.6,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -7496,10 +7496,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 140,
             "sw": 672,
             "st": 672
@@ -7511,7 +7511,7 @@
       },
       "torpor": {
         "b": 25,
-        "w": 1.5,
+        "increasePerLevel": 1.5,
         "t": null
       }
     }
@@ -7543,32 +7543,32 @@
     "baseStats": {
       "health": {
         "b": 250,
-        "w": 50,
+        "increasePerLevel": 50,
         "t": 5.4
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 50,
-        "w": 1,
+        "increasePerLevel": 1,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -7578,7 +7578,7 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
           "f": {
@@ -7590,7 +7590,7 @@
       },
       "torpor": {
         "b": 200,
-        "w": 12,
+        "increasePerLevel": 12,
         "t": null
       }
     }
@@ -7632,32 +7632,32 @@
     "baseStats": {
       "health": {
         "b": 40,
-        "w": 8,
+        "increasePerLevel": 8,
         "t": 5.4
       },
       "stamina": {
         "b": 180,
-        "w": 18,
+        "increasePerLevel": 18,
         "t": 10
       },
       "oxygen": {
         "b": 600,
-        "w": 60,
+        "increasePerLevel": 60,
         "t": 10
       },
       "food": {
         "b": 400,
-        "w": 40,
+        "increasePerLevel": 40,
         "t": 10
       },
       "weight": {
         "b": 30,
-        "w": 0.6,
+        "increasePerLevel": 0.6,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -7667,10 +7667,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 7.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 65,
             "sw": 136.5,
             "st": 136.5
@@ -7682,7 +7682,7 @@
       },
       "torpor": {
         "b": 350,
-        "w": 21,
+        "increasePerLevel": 21,
         "t": null
       }
     }
@@ -7733,32 +7733,32 @@
     "baseStats": {
       "health": {
         "b": 140,
-        "w": 28,
+        "increasePerLevel": 28,
         "t": 5.4
       },
       "stamina": {
         "b": 120,
-        "w": 12,
+        "increasePerLevel": 12,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 900,
-        "w": 90,
+        "increasePerLevel": 90,
         "t": 10
       },
       "weight": {
         "b": 100,
-        "w": 2,
+        "increasePerLevel": 2,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -7768,10 +7768,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 5.375,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 320,
             "sw": 902.4,
             "st": 674.5
@@ -7783,7 +7783,7 @@
       },
       "torpor": {
         "b": 125,
-        "w": 7.5,
+        "increasePerLevel": 7.5,
         "t": null
       }
     }
@@ -7804,32 +7804,32 @@
     "baseStats": {
       "health": {
         "b": 100,
-        "w": 20,
+        "increasePerLevel": 20,
         "t": 5.4
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 10
       },
       "weight": {
         "b": 90,
-        "w": 1.8,
+        "increasePerLevel": 1.8,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -7839,10 +7839,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 100,
             "sw": 520,
             "st": 468
@@ -7854,7 +7854,7 @@
       },
       "torpor": {
         "b": 85,
-        "w": 5.1,
+        "increasePerLevel": 5.1,
         "t": null
       }
     }
@@ -7883,32 +7883,32 @@
     "baseStats": {
       "health": {
         "b": 175,
-        "w": 35,
+        "increasePerLevel": 35,
         "t": 5.4
       },
       "stamina": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 10
       },
       "weight": {
         "b": 150,
-        "w": 3,
+        "increasePerLevel": 3,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -7921,10 +7921,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 3,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 200,
             "sw": 546,
             "st": 519
@@ -7936,7 +7936,7 @@
       },
       "torpor": {
         "b": 160,
-        "w": 9.6,
+        "increasePerLevel": 9.6,
         "t": null
       }
     }
@@ -7964,32 +7964,32 @@
     "baseStats": {
       "health": {
         "b": 375,
-        "w": 75,
+        "increasePerLevel": 75,
         "t": 5.4
       },
       "stamina": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 3000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": 10
       },
       "weight": {
         "b": 365,
-        "w": 7.3,
+        "increasePerLevel": 7.3,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -8002,10 +8002,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 3,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 230,
             "sw": 535.5,
             "st": 632.5
@@ -8017,7 +8017,7 @@
       },
       "torpor": {
         "b": 250,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       }
     }
@@ -8046,32 +8046,32 @@
     "baseStats": {
       "health": {
         "b": 1026,
-        "w": 205.2,
+        "increasePerLevel": 205.2,
         "t": 3.4425
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 6500,
-        "w": 650,
+        "increasePerLevel": 650,
         "t": 10
       },
       "weight": {
         "b": 850,
-        "w": 17,
+        "increasePerLevel": 17,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -8081,10 +8081,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 260,
             "sw": 715,
             "st": 715
@@ -8096,7 +8096,7 @@
       },
       "torpor": {
         "b": 1300,
-        "w": 78,
+        "increasePerLevel": 78,
         "t": null
       }
     }
@@ -8139,32 +8139,32 @@
     "baseStats": {
       "health": {
         "b": 200,
-        "w": 40,
+        "increasePerLevel": 40,
         "t": 5.4
       },
       "stamina": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 480,
-        "w": 9.6,
+        "increasePerLevel": 9.6,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -8174,10 +8174,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 4.175,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 200,
             "sw": 916.5,
             "st": 458.3
@@ -8189,7 +8189,7 @@
       },
       "torpor": {
         "b": 150,
-        "w": 9,
+        "increasePerLevel": 9,
         "t": null
       }
     }
@@ -8219,32 +8219,32 @@
     "baseStats": {
       "health": {
         "b": 120,
-        "w": 24,
+        "increasePerLevel": 24,
         "t": 5.4
       },
       "stamina": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 10
       },
       "weight": {
         "b": 55,
-        "w": 1.1,
+        "increasePerLevel": 1.1,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -8254,10 +8254,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 110,
             "sw": 473,
             "st": 473
@@ -8269,7 +8269,7 @@
       },
       "torpor": {
         "b": 30,
-        "w": 1.8,
+        "increasePerLevel": 1.8,
         "t": null
       }
     }
@@ -8296,32 +8296,32 @@
     "baseStats": {
       "health": {
         "b": 240,
-        "w": 48,
+        "increasePerLevel": 48,
         "t": 5.4
       },
       "stamina": {
         "b": 180,
-        "w": 9,
+        "increasePerLevel": 9,
         "t": 4
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 10
       },
       "weight": {
         "b": 150,
-        "w": 3,
+        "increasePerLevel": 3,
         "t": 3
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.275,
         "a": [
           {
@@ -8331,10 +8331,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 132,
             "sw": 229.565155,
             "st": 264
@@ -8351,7 +8351,7 @@
       },
       "torpor": {
         "b": 120,
-        "w": 7.2,
+        "increasePerLevel": 7.2,
         "t": null
       }
     }
@@ -8379,32 +8379,32 @@
     "baseStats": {
       "health": {
         "b": 300,
-        "w": 60,
+        "increasePerLevel": 60,
         "t": 5.4
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 3000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": 10
       },
       "weight": {
         "b": 200,
-        "w": 4,
+        "increasePerLevel": 4,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -8414,10 +8414,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 3.375,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 150,
             "sw": 915.8,
             "st": 555
@@ -8429,7 +8429,7 @@
       },
       "torpor": {
         "b": 240,
-        "w": 14.4,
+        "increasePerLevel": 14.4,
         "t": null
       }
     }
@@ -8454,32 +8454,32 @@
     "baseStats": {
       "health": {
         "b": 640,
-        "w": 128,
+        "increasePerLevel": 128,
         "t": 5.4
       },
       "stamina": {
         "b": 352,
-        "w": 35.2,
+        "increasePerLevel": 35.2,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 324,
-        "w": 6.48,
+        "increasePerLevel": 6.48,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -8492,12 +8492,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.65
       },
       "torpor": {
         "b": 200,
-        "w": 12,
+        "increasePerLevel": 12,
         "t": null
       }
     }
@@ -8546,32 +8546,32 @@
     "baseStats": {
       "health": {
         "b": 2400,
-        "w": 288,
+        "increasePerLevel": 288,
         "t": 3.2
       },
       "stamina": {
         "b": 800,
-        "w": 80,
+        "increasePerLevel": 80,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 5000,
-        "w": 500,
+        "increasePerLevel": 500,
         "t": 10
       },
       "weight": {
         "b": 800,
-        "w": 16,
+        "increasePerLevel": 16,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -8581,7 +8581,7 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
           "s": {
@@ -8593,7 +8593,7 @@
       },
       "torpor": {
         "b": 1600,
-        "w": 96,
+        "increasePerLevel": 96,
         "t": null
       }
     }
@@ -8614,32 +8614,32 @@
     "baseStats": {
       "health": {
         "b": 400,
-        "w": 80,
+        "increasePerLevel": 80,
         "t": 5.4
       },
       "stamina": {
         "b": 350,
-        "w": 35,
+        "increasePerLevel": 35,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 550,
-        "w": 11,
+        "increasePerLevel": 11,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -8649,10 +8649,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 850,
             "sw": 1785,
             "st": 1785
@@ -8664,7 +8664,7 @@
       },
       "torpor": {
         "b": 350,
-        "w": 21,
+        "increasePerLevel": 21,
         "t": null
       }
     }
@@ -8698,32 +8698,32 @@
     "baseStats": {
       "health": {
         "b": 210,
-        "w": 42,
+        "increasePerLevel": 42,
         "t": 3
       },
       "stamina": {
         "b": 150,
-        "w": 7.5,
+        "increasePerLevel": 7.5,
         "t": 4
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 10
       },
       "weight": {
         "b": 120,
-        "w": 2.4,
+        "increasePerLevel": 2.4,
         "t": 3
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.275,
         "a": [
           {
@@ -8736,10 +8736,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 0,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 260
           },
           "f": {
@@ -8751,7 +8751,7 @@
       },
       "torpor": {
         "b": 120,
-        "w": 7.2,
+        "increasePerLevel": 7.2,
         "t": null
       }
     }
@@ -8772,32 +8772,32 @@
     "baseStats": {
       "health": {
         "b": 280,
-        "w": 60.0012,
+        "increasePerLevel": 60.0012,
         "t": 5.4
       },
       "stamina": {
         "b": 200,
-        "w": 20,
+        "increasePerLevel": 20,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 200,
-        "w": 4,
+        "increasePerLevel": 4,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -8807,10 +8807,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 300,
             "sw": 420,
             "st": 420
@@ -8822,7 +8822,7 @@
       },
       "torpor": {
         "b": 150,
-        "w": 9,
+        "increasePerLevel": 9,
         "t": null
       }
     }
@@ -8856,32 +8856,32 @@
     "baseStats": {
       "health": {
         "b": 275,
-        "w": 55,
+        "increasePerLevel": 55,
         "t": 5.4
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 4000,
-        "w": 400,
+        "increasePerLevel": 400,
         "t": 10
       },
       "weight": {
         "b": 400,
-        "w": 8,
+        "increasePerLevel": 8,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -8894,10 +8894,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 230,
             "sw": 1035,
             "st": 1035
@@ -8909,7 +8909,7 @@
       },
       "torpor": {
         "b": 500,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": null
       }
     }
@@ -8943,32 +8943,32 @@
     "baseStats": {
       "health": {
         "b": 1200,
-        "w": 240,
+        "increasePerLevel": 240,
         "t": 2.16
       },
       "stamina": {
         "b": 800,
-        "w": 40,
+        "increasePerLevel": 40,
         "t": 5
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 10
       },
       "weight": {
         "b": 800,
-        "w": 16,
+        "increasePerLevel": 16,
         "t": 5
       },
       "meleeDamage": {
         "b": 100,
-        "w": 4,
+        "increasePerLevel": 4,
         "t": 1.7,
         "a": [
           {
@@ -8978,10 +8978,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 0,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 360
           },
           "f": {
@@ -8993,7 +8993,7 @@
       },
       "torpor": {
         "b": 1850,
-        "w": 111,
+        "increasePerLevel": 111,
         "t": null
       }
     }
@@ -9027,32 +9027,32 @@
     "baseStats": {
       "health": {
         "b": 200,
-        "w": 40,
+        "increasePerLevel": 40,
         "t": 5.4
       },
       "stamina": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 10
       },
       "weight": {
         "b": 140,
-        "w": 2.8,
+        "increasePerLevel": 2.8,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -9062,10 +9062,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 3,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 480,
             "sw": 993.6,
             "st": 1104
@@ -9077,7 +9077,7 @@
       },
       "torpor": {
         "b": 180,
-        "w": 10.8,
+        "increasePerLevel": 10.8,
         "t": null
       }
     }
@@ -9105,32 +9105,32 @@
     "baseStats": {
       "health": {
         "b": 400,
-        "w": 80,
+        "increasePerLevel": 80,
         "t": 5.4
       },
       "stamina": {
         "b": 350,
-        "w": 35,
+        "increasePerLevel": 35,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 10
       },
       "weight": {
         "b": 500,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 4,
+        "increasePerLevel": 4,
         "t": 2,
         "a": [
           {
@@ -9140,10 +9140,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 300,
             "sw": 924,
             "st": 924
@@ -9155,7 +9155,7 @@
       },
       "torpor": {
         "b": 500,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": null
       }
     }
@@ -9176,32 +9176,32 @@
     "baseStats": {
       "health": {
         "b": 4500,
-        "w": 234,
+        "increasePerLevel": 234,
         "t": 2.7
       },
       "stamina": {
         "b": 480,
-        "w": 48,
+        "increasePerLevel": 48,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 3000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": 10
       },
       "weight": {
         "b": 415,
-        "w": 8.3,
+        "increasePerLevel": 8.3,
         "t": 4
       },
       "meleeDamage": {
         "b": 75,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.75,
         "a": [
           {
@@ -9211,12 +9211,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1
       },
       "torpor": {
         "b": 925,
-        "w": 55.5,
+        "increasePerLevel": 55.5,
         "t": null
       }
     }
@@ -9250,32 +9250,32 @@
     "baseStats": {
       "health": {
         "b": 1100,
-        "w": 220,
+        "increasePerLevel": 220,
         "t": 5.4
       },
       "stamina": {
         "b": 420,
-        "w": 42,
+        "increasePerLevel": 42,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 3000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": 10
       },
       "weight": {
         "b": 500,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -9285,10 +9285,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 515,
             "sw": 736.5,
             "st": 1472.9
@@ -9300,7 +9300,7 @@
       },
       "torpor": {
         "b": 1550,
-        "w": 93,
+        "increasePerLevel": 93,
         "t": null
       }
     }
@@ -9321,32 +9321,32 @@
     "baseStats": {
       "health": {
         "b": 1950,
-        "w": 165.75,
+        "increasePerLevel": 165.75,
         "t": 4.05
       },
       "stamina": {
         "b": 450,
-        "w": 22.5,
+        "increasePerLevel": 22.5,
         "t": 5
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 2000,
-        "w": 200,
+        "increasePerLevel": 200,
         "t": 10
       },
       "weight": {
         "b": 400,
-        "w": 8,
+        "increasePerLevel": 8,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -9356,10 +9356,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 650,
             "sw": 1820,
             "st": 2047.5
@@ -9371,7 +9371,7 @@
       },
       "torpor": {
         "b": 725,
-        "w": 43.5,
+        "increasePerLevel": 43.5,
         "t": null
       }
     }
@@ -9397,32 +9397,32 @@
     "baseStats": {
       "health": {
         "b": 25000,
-        "w": 312.5,
+        "increasePerLevel": 312.5,
         "t": null
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": null
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 6000,
-        "w": 600,
+        "increasePerLevel": 600,
         "t": null
       },
       "weight": {
         "b": 660,
-        "w": 13.2,
+        "increasePerLevel": 13.2,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -9435,10 +9435,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 400,
             "sw": 960,
             "st": 960
@@ -9450,7 +9450,7 @@
       },
       "torpor": {
         "b": 5000,
-        "w": 100,
+        "increasePerLevel": 100,
         "t": null
       }
     }
@@ -9486,32 +9486,32 @@
     "baseStats": {
       "health": {
         "b": 850,
-        "w": 170,
+        "increasePerLevel": 170,
         "t": 5.4
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 3000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": 10
       },
       "weight": {
         "b": 400,
-        "w": 8,
+        "increasePerLevel": 8,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -9521,10 +9521,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 515,
             "sw": 736.5,
             "st": 1472.9
@@ -9536,7 +9536,7 @@
       },
       "torpor": {
         "b": 800,
-        "w": 48,
+        "increasePerLevel": 48,
         "t": null
       }
     }
@@ -9565,32 +9565,32 @@
     "baseStats": {
       "health": {
         "b": 750,
-        "w": 112.5,
+        "increasePerLevel": 112.5,
         "t": 4.32
       },
       "stamina": {
         "b": 225,
-        "w": 11.25,
+        "increasePerLevel": 11.25,
         "t": 6
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1600,
-        "w": 160,
+        "increasePerLevel": 160,
         "t": 10
       },
       "weight": {
         "b": 280,
-        "w": 5.6,
+        "increasePerLevel": 5.6,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -9603,10 +9603,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1.7,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 300,
             "sw": 750,
             "st": 750
@@ -9623,7 +9623,7 @@
       },
       "torpor": {
         "b": 1500,
-        "w": 90,
+        "increasePerLevel": 90,
         "t": null
       }
     }
@@ -9672,32 +9672,32 @@
     "baseStats": {
       "health": {
         "b": 250,
-        "w": 50,
+        "increasePerLevel": 50,
         "t": 5.4
       },
       "stamina": {
         "b": 200,
-        "w": 20,
+        "increasePerLevel": 20,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": 10
       },
       "weight": {
         "b": 200,
-        "w": 4,
+        "increasePerLevel": 4,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -9707,10 +9707,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 3.25,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 230,
             "sw": 690,
             "st": 1150
@@ -9722,7 +9722,7 @@
       },
       "torpor": {
         "b": 500,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": null
       }
     }
@@ -9771,32 +9771,32 @@
     "baseStats": {
       "health": {
         "b": 400,
-        "w": 80,
+        "increasePerLevel": 80,
         "t": 5.4
       },
       "stamina": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 300,
-        "w": 6,
+        "increasePerLevel": 6,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -9809,10 +9809,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 4,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 150,
             "sw": 437.4,
             "st": 601.48
@@ -9824,7 +9824,7 @@
       },
       "torpor": {
         "b": 400,
-        "w": 24,
+        "increasePerLevel": 24,
         "t": null
       }
     }
@@ -9879,32 +9879,32 @@
     "baseStats": {
       "health": {
         "b": 825,
-        "w": 165,
+        "increasePerLevel": 165,
         "t": 5.4
       },
       "stamina": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 425,
-        "w": 8.5,
+        "increasePerLevel": 8.5,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -9914,12 +9914,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1
       },
       "torpor": {
         "b": 700,
-        "w": 42,
+        "increasePerLevel": 42,
         "t": null
       }
     }
@@ -9954,32 +9954,32 @@
     "baseStats": {
       "health": {
         "b": 115,
-        "w": 23,
+        "increasePerLevel": 23,
         "t": 5.4
       },
       "stamina": {
         "b": 180,
-        "w": 19.8,
+        "increasePerLevel": 19.8,
         "t": 10
       },
       "oxygen": {
         "b": 180,
-        "w": 19.8,
+        "increasePerLevel": 19.8,
         "t": 11
       },
       "food": {
         "b": 450,
-        "w": 45,
+        "increasePerLevel": 45,
         "t": 10
       },
       "weight": {
         "b": 100,
-        "w": 2,
+        "increasePerLevel": 2,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2.04,
         "a": [
           {
@@ -9989,10 +9989,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 5.75,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 133,
             "sw": 418.95,
             "st": 199.5
@@ -10004,7 +10004,7 @@
       },
       "torpor": {
         "b": 60,
-        "w": 3.6,
+        "increasePerLevel": 3.6,
         "t": null
       }
     }
@@ -10025,42 +10025,42 @@
     "baseStats": {
       "health": {
         "b": 110,
-        "w": 22,
+        "increasePerLevel": 22,
         "t": null
       },
       "stamina": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "food": {
         "b": 900,
-        "w": 90,
+        "increasePerLevel": 90,
         "t": null
       },
       "weight": {
         "b": 80,
-        "w": 1.6,
+        "increasePerLevel": 1.6,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": null
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "torpor": {
         "b": 100,
-        "w": 6,
+        "increasePerLevel": 6,
         "t": null
       }
     }
@@ -10093,32 +10093,32 @@
     "baseStats": {
       "health": {
         "b": 325,
-        "w": 65,
+        "increasePerLevel": 65,
         "t": 5.4
       },
       "stamina": {
         "b": 350,
-        "w": 35,
+        "increasePerLevel": 35,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 2000,
-        "w": 200,
+        "increasePerLevel": 200,
         "t": 10
       },
       "weight": {
         "b": 375,
-        "w": 7.5,
+        "increasePerLevel": 7.5,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -10128,12 +10128,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 4.91
       },
       "torpor": {
         "b": 500,
-        "w": 36,
+        "increasePerLevel": 36,
         "t": null
       }
     }
@@ -10167,32 +10167,32 @@
     "baseStats": {
       "health": {
         "b": 700,
-        "w": 140,
+        "increasePerLevel": 140,
         "t": 5.4
       },
       "stamina": {
         "b": 350,
-        "w": 35,
+        "increasePerLevel": 35,
         "t": 10
       },
       "oxygen": {
         "b": 650,
-        "w": 65,
+        "increasePerLevel": 65,
         "t": 10
       },
       "food": {
         "b": 2600,
-        "w": 260,
+        "increasePerLevel": 260,
         "t": 10
       },
       "weight": {
         "b": 350,
-        "w": 7,
+        "increasePerLevel": 7,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -10205,10 +10205,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 452,
             "sw": 1717.5,
             "st": 1717.5
@@ -10220,7 +10220,7 @@
       },
       "torpor": {
         "b": 850,
-        "w": 51,
+        "increasePerLevel": 51,
         "t": null
       }
     }
@@ -10249,32 +10249,32 @@
     "baseStats": {
       "health": {
         "b": 650,
-        "w": 130,
+        "increasePerLevel": 130,
         "t": 5.4
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 6000,
-        "w": 600,
+        "increasePerLevel": 600,
         "t": 10
       },
       "weight": {
         "b": 500,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -10284,10 +10284,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 4.91,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 170,
             "sw": 598.4,
             "st": 210.4
@@ -10299,7 +10299,7 @@
       },
       "torpor": {
         "b": 500,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": null
       }
     }
@@ -10378,32 +10378,32 @@
     "baseStats": {
       "health": {
         "b": 325,
-        "w": 65,
+        "increasePerLevel": 65,
         "t": 5.4
       },
       "stamina": {
         "b": 250,
-        "w": 12.5,
+        "increasePerLevel": 12.5,
         "t": 6
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1600,
-        "w": 160,
+        "increasePerLevel": 160,
         "t": 10
       },
       "weight": {
         "b": 280,
-        "w": 5.6,
+        "increasePerLevel": 5.6,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -10416,10 +10416,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 245
           },
           "s": {
@@ -10434,7 +10434,7 @@
       },
       "torpor": {
         "b": 450,
-        "w": 27,
+        "increasePerLevel": 27,
         "t": null
       }
     }
@@ -10468,32 +10468,32 @@
     "baseStats": {
       "health": {
         "b": 270,
-        "w": 54,
+        "increasePerLevel": 54,
         "t": 5.4
       },
       "stamina": {
         "b": 160,
-        "w": 16,
+        "increasePerLevel": 16,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 120,
-        "w": 2.4,
+        "increasePerLevel": 2.4,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -10503,10 +10503,10 @@
       },
       "movementSpeed": {
         "b": 120,
-        "w": null,
+        "increasePerLevel": null,
         "t": 3,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 255.4,
             "sw": 1078.7,
             "st": 1198.5
@@ -10518,7 +10518,7 @@
       },
       "torpor": {
         "b": 300,
-        "w": 18,
+        "increasePerLevel": 18,
         "t": null
       }
     }
@@ -10547,32 +10547,32 @@
     "baseStats": {
       "health": {
         "b": 870,
-        "w": 174,
+        "increasePerLevel": 174,
         "t": 5.4
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 3000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": 10
       },
       "weight": {
         "b": 365,
-        "w": 7.3,
+        "increasePerLevel": 7.3,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -10585,10 +10585,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 466,
             "sw": 978.6,
             "st": 1304.7999
@@ -10600,7 +10600,7 @@
       },
       "torpor": {
         "b": 925,
-        "w": 55.5,
+        "increasePerLevel": 55.5,
         "t": null
       }
     }
@@ -10633,32 +10633,32 @@
     "baseStats": {
       "health": {
         "b": 260,
-        "w": 52,
+        "increasePerLevel": 52,
         "t": null
       },
       "stamina": {
         "b": 350,
-        "w": 35,
+        "increasePerLevel": 35,
         "t": null
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "food": {
         "b": 1200,
-        "w": 120,
+        "increasePerLevel": 120,
         "t": null
       },
       "weight": {
         "b": 300,
-        "w": 6,
+        "increasePerLevel": 6,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -10671,10 +10671,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 245,
             "sw": 693.840027,
             "st": 588
@@ -10686,7 +10686,7 @@
       },
       "torpor": {
         "b": 450,
-        "w": 27,
+        "increasePerLevel": 27,
         "t": null
       }
     }
@@ -10719,32 +10719,32 @@
     "baseStats": {
       "health": {
         "b": 700,
-        "w": 140,
+        "increasePerLevel": 140,
         "t": 5
       },
       "stamina": {
         "b": 400,
-        "w": 40,
+        "increasePerLevel": 40,
         "t": 10
       },
       "oxygen": {
         "b": 200,
-        "w": 20,
+        "increasePerLevel": 20,
         "t": 10
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 400,
-        "w": 8,
+        "increasePerLevel": 8,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2.89,
         "a": [
           {
@@ -10754,12 +10754,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 3.25
       },
       "torpor": {
         "b": 700,
-        "w": 42,
+        "increasePerLevel": 42,
         "t": null
       }
     }
@@ -10832,32 +10832,32 @@
     "baseStats": {
       "health": {
         "b": 300,
-        "w": 60,
+        "increasePerLevel": 60,
         "t": null
       },
       "stamina": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "food": {
         "b": 1200,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "weight": {
         "b": 150,
-        "w": 3,
+        "increasePerLevel": 3,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": null,
         "a": [
           {
@@ -10867,10 +10867,10 @@
       },
       "movementSpeed": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 225,
             "sw": 378
           },
@@ -10881,7 +10881,7 @@
       },
       "torpor": {
         "b": 175,
-        "w": 10.5,
+        "increasePerLevel": 10.5,
         "t": null
       }
     }
@@ -10926,32 +10926,32 @@
     "baseStats": {
       "health": {
         "b": 230000,
-        "w": 0,
+        "increasePerLevel": 0,
         "t": null
       },
       "stamina": {
         "b": 2000,
-        "w": 0,
+        "increasePerLevel": 0,
         "t": null
       },
       "oxygen": {
         "b": 600,
-        "w": 0,
+        "increasePerLevel": 0,
         "t": null
       },
       "food": {
         "b": 8640,
-        "w": 0,
+        "increasePerLevel": 0,
         "t": null
       },
       "weight": {
         "b": 50000,
-        "w": 0,
+        "increasePerLevel": 0,
         "t": null
       },
       "meleeDamage": {
         "b": 500,
-        "w": 0,
+        "increasePerLevel": 0,
         "t": null,
         "a": [
           {
@@ -10961,10 +10961,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 800,
             "sw": 1094.8,
             "st": 952
@@ -10976,7 +10976,7 @@
       },
       "torpor": {
         "b": 25000,
-        "w": 1500,
+        "increasePerLevel": 1500,
         "t": null
       }
     }
@@ -11005,32 +11005,32 @@
     "baseStats": {
       "health": {
         "b": 375,
-        "w": 75,
+        "increasePerLevel": 75,
         "t": 5.4
       },
       "stamina": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 3000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": 10
       },
       "weight": {
         "b": 365,
-        "w": 7.3,
+        "increasePerLevel": 7.3,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -11040,10 +11040,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 5.565,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 150,
             "sw": 607.5,
             "st": 283.5
@@ -11055,7 +11055,7 @@
       },
       "torpor": {
         "b": 250,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       }
     }
@@ -11109,32 +11109,32 @@
     "baseStats": {
       "health": {
         "b": 200,
-        "w": 40,
+        "increasePerLevel": 40,
         "t": 5.4
       },
       "stamina": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 10
       },
       "weight": {
         "b": 100,
-        "w": 2.8,
+        "increasePerLevel": 2.8,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -11147,10 +11147,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 480,
             "sw": 960,
             "st": 960
@@ -11162,7 +11162,7 @@
       },
       "torpor": {
         "b": 250,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       }
     }
@@ -11195,32 +11195,32 @@
     "baseStats": {
       "health": {
         "b": 360,
-        "w": 72,
+        "increasePerLevel": 72,
         "t": 4.86
       },
       "stamina": {
         "b": 250,
-        "w": 12.5,
+        "increasePerLevel": 12.5,
         "t": 5
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1600,
-        "w": 160,
+        "increasePerLevel": 160,
         "t": 10
       },
       "weight": {
         "b": 340,
-        "w": 6.8,
+        "increasePerLevel": 6.8,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -11230,12 +11230,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 0
       },
       "torpor": {
         "b": 450,
-        "w": 27,
+        "increasePerLevel": 27,
         "t": null
       }
     }
@@ -11264,32 +11264,32 @@
     "baseStats": {
       "health": {
         "b": 2700,
-        "w": 540,
+        "increasePerLevel": 540,
         "t": 4.05
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": 10
       },
       "oxygen": {
         "b": null,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "food": {
         "b": 3200,
-        "w": 320,
+        "increasePerLevel": 320,
         "t": 10
       },
       "weight": {
         "b": 800,
-        "w": 16,
+        "increasePerLevel": 16,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -11302,7 +11302,7 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 2.5,
         "a": {
           "s": {
@@ -11314,7 +11314,7 @@
       },
       "torpor": {
         "b": 1800,
-        "w": 108,
+        "increasePerLevel": 108,
         "t": null
       }
     }
@@ -11343,32 +11343,32 @@
     "baseStats": {
       "health": {
         "b": 240,
-        "w": 48,
+        "increasePerLevel": 48,
         "t": 5.4
       },
       "stamina": {
         "b": 560,
-        "w": 56,
+        "increasePerLevel": 56,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": 10
       },
       "weight": {
         "b": 350,
-        "w": 7,
+        "increasePerLevel": 7,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -11381,10 +11381,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 1.75,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 450,
             "sw": 1158.3,
             "st": 965.2499
@@ -11396,7 +11396,7 @@
       },
       "torpor": {
         "b": 420,
-        "w": 25.2,
+        "increasePerLevel": 25.2,
         "t": null
       }
     }
@@ -11429,32 +11429,32 @@
     "baseStats": {
       "health": {
         "b": 440,
-        "w": 88,
+        "increasePerLevel": 88,
         "t": 5.4
       },
       "stamina": {
         "b": 325,
-        "w": 32.5,
+        "increasePerLevel": 32.5,
         "t": 10
       },
       "oxygen": {
         "b": 225,
-        "w": 22.5,
+        "increasePerLevel": 22.5,
         "t": 10
       },
       "food": {
         "b": 2250,
-        "w": 225,
+        "increasePerLevel": 225,
         "t": 10
       },
       "weight": {
         "b": 325,
-        "w": 6.5,
+        "increasePerLevel": 6.5,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 2,
         "a": [
           {
@@ -11467,12 +11467,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 4.91
       },
       "torpor": {
         "b": 400,
-        "w": 24,
+        "increasePerLevel": 24,
         "t": null
       }
     }
@@ -11493,32 +11493,32 @@
     "baseStats": {
       "health": {
         "b": 1295,
-        "w": 194.25,
+        "increasePerLevel": 194.25,
         "t": 4.05
       },
       "stamina": {
         "b": 315,
-        "w": 15.75,
+        "increasePerLevel": 15.75,
         "t": 5
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1800,
-        "w": 180,
+        "increasePerLevel": 180,
         "t": 10
       },
       "weight": {
         "b": 400,
-        "w": 8,
+        "increasePerLevel": 8,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -11531,10 +11531,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 690,
             "sw": 796.95,
             "st": 796.95
@@ -11551,7 +11551,7 @@
       },
       "torpor": {
         "b": 725,
-        "w": 43.5,
+        "increasePerLevel": 43.5,
         "t": null
       }
     }
@@ -11576,32 +11576,32 @@
     "baseStats": {
       "health": {
         "b": 125,
-        "w": 25,
+        "increasePerLevel": 25,
         "t": 5.4
       },
       "stamina": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 900,
-        "w": 90,
+        "increasePerLevel": 90,
         "t": 10
       },
       "weight": {
         "b": 50,
-        "w": 1,
+        "increasePerLevel": 1,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -11611,10 +11611,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 3,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 70,
             "sw": 108.5,
             "st": 108.5
@@ -11631,7 +11631,7 @@
       },
       "torpor": {
         "b": 100,
-        "w": 6,
+        "increasePerLevel": 6,
         "t": null
       }
     }
@@ -11660,32 +11660,32 @@
     "baseStats": {
       "health": {
         "b": 500,
-        "w": 100,
+        "increasePerLevel": 100,
         "t": 5.4
       },
       "stamina": {
         "b": 120,
-        "w": 12,
+        "increasePerLevel": 12,
         "t": 10
       },
       "oxygen": {
         "b": 100,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 10
       },
       "food": {
         "b": 3000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": 10
       },
       "weight": {
         "b": 750,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 2.5
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -11698,10 +11698,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": 6,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 185,
             "sw": 936.6,
             "st": 1119.3
@@ -11713,7 +11713,7 @@
       },
       "torpor": {
         "b": 600,
-        "w": 36,
+        "increasePerLevel": 36,
         "t": null
       }
     }
@@ -11734,32 +11734,32 @@
     "baseStats": {
       "health": {
         "b": 1295,
-        "w": 194.25,
+        "increasePerLevel": 194.25,
         "t": 4.05
       },
       "stamina": {
         "b": 315,
-        "w": 15.75,
+        "increasePerLevel": 15.75,
         "t": 5
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 1800,
-        "w": 180,
+        "increasePerLevel": 180,
         "t": 10
       },
       "weight": {
         "b": 400,
-        "w": 8,
+        "increasePerLevel": 8,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": 1.7,
         "a": [
           {
@@ -11772,10 +11772,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 690,
             "sw": 796.95,
             "st": 796.95
@@ -11792,7 +11792,7 @@
       },
       "torpor": {
         "b": 725,
-        "w": 43.5,
+        "increasePerLevel": 43.5,
         "t": null
       }
     }
@@ -11813,32 +11813,32 @@
     "baseStats": {
       "health": {
         "b": 2000,
-        "w": 200,
+        "increasePerLevel": 200,
         "t": null
       },
       "stamina": {
         "b": 300,
-        "w": 30,
+        "increasePerLevel": 30,
         "t": null
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": null
       },
       "food": {
         "b": 1500,
-        "w": 150,
+        "increasePerLevel": 150,
         "t": null
       },
       "weight": {
         "b": 220,
-        "w": 4.4,
+        "increasePerLevel": 4.4,
         "t": null
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": null,
         "a": [
           {
@@ -11851,12 +11851,12 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null
       },
       "torpor": {
         "b": 1100,
-        "w": 66,
+        "increasePerLevel": 66,
         "t": null
       }
     }
@@ -11889,32 +11889,32 @@
     "baseStats": {
       "health": {
         "b": 1100,
-        "w": 220,
+        "increasePerLevel": 220,
         "t": null
       },
       "stamina": {
         "b": 420,
-        "w": 42,
+        "increasePerLevel": 42,
         "t": 5
       },
       "oxygen": {
         "b": 150,
-        "w": 15,
+        "increasePerLevel": 15,
         "t": 10
       },
       "food": {
         "b": 3000,
-        "w": 300,
+        "increasePerLevel": 300,
         "t": 10
       },
       "weight": {
         "b": 500,
-        "w": 10,
+        "increasePerLevel": 10,
         "t": 4
       },
       "meleeDamage": {
         "b": 100,
-        "w": 5,
+        "increasePerLevel": 5,
         "t": null,
         "a": [
           {
@@ -11924,10 +11924,10 @@
       },
       "movementSpeed": {
         "b": 100,
-        "w": null,
+        "increasePerLevel": null,
         "t": null,
         "a": {
-          "w": {
+          "increasePerLevel": {
             "b": 700,
             "sw": 1610,
             "st": 1610
@@ -11939,7 +11939,7 @@
       },
       "torpor": {
         "b": 1550,
-        "w": 93,
+        "increasePerLevel": 93,
         "t": null
       }
     }

@@ -96,6 +96,7 @@ const Routes = () => {
           page={MaterialCalculatorPage}
           name="materialCalculator"
         />
+        <Route path="/dinostats" page={DinoStatsPage} name="dinoStats" />
         <Route notfound page={NotFoundPage} />
       </Set>
     </Router>

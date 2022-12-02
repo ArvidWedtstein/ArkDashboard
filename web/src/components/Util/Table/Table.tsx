@@ -6,6 +6,7 @@ interface ITableProps<P = {}> {
   data: Object[];
   cols?: any[];
   renderCell?: (params: any) => React.ReactNode;
+  renderActions?: (params: any) => React.ReactNode;
   tableOptions?: {
     header: boolean;
   };
@@ -14,25 +15,27 @@ const Table = ({
   data,
   cols,
   renderCell,
+  renderActions,
   tableOptions = { header: true },
 }: ITableProps) => {
+  if (!data || data.length < 1) return null;
   let keys = cols || Object.keys(data[0]);
 
   // TODO: Create filtering and sorting options for table
   return (
     <div className="flex">
-      <div className="relative my-4 table w-full table-auto rounded-xl bg-gray-500 p-3 shadow">
-        {(tableOptions && tableOptions.header) ?? (
+      <div className="relative my-4 table w-full table-auto rounded-xl bg-white border border-black p-3 shadow">
+        {(tableOptions && tableOptions.header) && (
           <div className="table-header-group">
             {keys.map((key) => (
-              <div key={key} className="table-cell p-2 text-xs text-[#888da9]">
+              <div key={`${key}${Math.random()}`} className="table-cell p-2 text-xs text-[#888da9]">
                 {truncate(capitalize(key))}
               </div>
             ))}
           </div>
         )}
         {data.map((row) => (
-          <div key={Math.random()} className="table-row-group">
+          <div key={Math.random() * Math.random()} className="table-row-group">
             {keys.map((value) => (
               <>
                 {value == "actions" ? (
@@ -40,15 +43,7 @@ const Table = ({
                     key={value}
                     className="table-cell p-2 text-xs text-black"
                   >
-                    <nav className="flex flex-row">
-                      <Link
-                        to={routes.tribe({ id: row["id"] })}
-                        title={"Show detail"}
-                        className="rw-button rw-button-small"
-                      >
-                        Show
-                      </Link>
-                    </nav>
+                    {renderActions && renderActions(row)}
                   </div>
                 ) : (
                   <>
