@@ -11,7 +11,19 @@ import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useState } from "react";
 import Table from "src/components/Util/Table/Table";
+import { combineBySummingKeys } from "src/lib/formatters";
 import arkdinos from "../../../public/arkdinos2.json";
+
+interface stats {
+  health: number;
+  stamina: number;
+  oxygen: number;
+  food: number;
+  weight: number;
+  meleeDamage: number;
+  movementSpeed: number;
+  torpor: number;
+}
 const DinoStatsPage = () => {
   const {
     formState: { isDirty, isValid, isSubmitting, dirtyFields },
@@ -20,7 +32,7 @@ const DinoStatsPage = () => {
   } = useForm({ defaultValues: { name: "Dodo", level: 1 } });
   let [dino, setDino] = useState(null);
   let [points, setPoints] = useState(null);
-  let [level, setLevel] = useState({
+  let [level, setLevel] = useState<stats>({
     health: 0,
     stamina: 0,
     oxygen: 0,
@@ -65,22 +77,17 @@ const DinoStatsPage = () => {
   };
 
   const genRandomStats = () => {
-    let pointsleft = points;
     // scramble level
     let newlevel = {};
-
-    while (points > 0) {
+    let i = points;
+    while (i > 0) {
       let stat = dino[Math.floor(Math.random() * dino.length)];
-
-      if (level[stat.stat] < points) {
-        setLevel({ ...level, [stat.stat]: level[stat.stat] + 1 });
-        // newlevel[stat.stat] = newlevel[stat.stat] + 1;
-        console.log(level);
-        setPoints(points - 1);
-        return;
-      }
+      newlevel[stat.stat] = (newlevel[stat.stat] || 0) + 1;
+      i--;
     }
-
+    let newlvl: any = combineBySummingKeys(level, newlevel);
+    setLevel(newlvl);
+    setPoints(i);
     // Object.entries(level).forEach(([key, value]) => {
     //   setLevel({ ...level, [key]: 0 });
     // });

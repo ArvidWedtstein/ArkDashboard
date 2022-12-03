@@ -31,7 +31,6 @@ const Avatar = ({
 
   async function downloadImage(path) {
     try {
-      console.log(path);
       const { data, error } = await supabase.storage
         .from(storage)
         .download(path);
