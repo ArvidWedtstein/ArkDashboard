@@ -1,6 +1,8 @@
+import { useAuth } from "@redwoodjs/auth";
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
+import { useState } from "react";
 import { Maps } from "src/components/Maps";
 
 import { timeTag } from "src/lib/formatters";
@@ -23,6 +25,24 @@ interface Props {
 }
 
 const Basespot = ({ basespot }: Props) => {
+  const [baseUrl, setBaseUrl] = useState(null);
+  const { client: supabase } = useAuth();
+
+  const getImage = async () => {
+    if (basespot.image && !baseUrl && !basespot.image.startsWith("http")) {
+      const { data, error } = await supabase.storage
+        .from("basespotimages")
+        .download(`thumbnails/${basespot.image}`);
+      if (error) {
+        throw error;
+      }
+      if (data) {
+        const url = URL.createObjectURL(data);
+        setBaseUrl(url);
+      }
+    }
+  };
+  getImage();
   const [deleteBasespot] = useMutation(DELETE_BASESPOT_MUTATION, {
     onCompleted: () => {
       toast.success("Basespot deleted");
@@ -41,15 +61,16 @@ const Basespot = ({ basespot }: Props) => {
 
   return (
     <>
+      {/* TODO: Maek better layout */}
       <div className="grid auto-cols-auto grid-cols-2">
-        <div>
+        <div className="">
           <img
             src={
-              basespot.image ??
+              baseUrl ||
               "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s"
             }
             alt={basespot.name}
-            className="max-w-none"
+            className="max-h-[300px] max-w-none"
           />
         </div>
         <div className="font-heading bg-slate-600 p-4 text-white ">

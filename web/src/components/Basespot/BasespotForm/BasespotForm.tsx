@@ -123,6 +123,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           url={props.basespot?.image}
           size={150}
           storage="basespotimages/thumbnails"
+          type="other"
           editable={true}
           onUpload={(url) => {
             setThumbnailUrl(url);

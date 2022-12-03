@@ -27,7 +27,7 @@ export const Maps = ({ map, size, pos }: Props) => {
     Fjordur:
       "https://ark.gamepedia.com/media/thumb/3/3e/Fjordur_Map.jpg/600px-Fjordur_Map.jpg",
     LostIsland:
-      "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/4/45/Lost_Island_map.jpg/revision/latest/scale-to-width-down/600",
+      "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/4/45/Lost_Island_map.jpg",
   };
 
   return (
