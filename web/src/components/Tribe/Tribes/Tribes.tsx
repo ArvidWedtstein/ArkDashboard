@@ -82,7 +82,6 @@ const TribesList = ({ tribes }: FindTribes) => {
           </div>
         </div>
         <div className="flex items-start rounded-xl bg-white p-4 shadow-lg">
-          {" "}
           {/* TODO: Create component for this  */}
           <div className="flex h-12 w-12 items-center justify-center rounded-full border border-blue-100 bg-blue-50">
             <svg

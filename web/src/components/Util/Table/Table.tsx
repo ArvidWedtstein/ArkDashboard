@@ -1,5 +1,5 @@
 import { Link, routes } from "@redwoodjs/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { capitalize, dynamicSort, isDate, timeTag, truncate } from "src/lib/formatters";
 
 interface ITableProps<P = {}> {
@@ -20,13 +20,14 @@ const Table = ({
   tableOptions = { header: true },
 }: ITableProps) => {
   if (!data || data.length < 1) return null;
+  let tableData = useState(data);
   let keys = cols || Object.keys(data[0]);
 
   useEffect(() => {
-
-  }, [data]);
+    console.log(tableData)
+  }, [tableData]);
   const sort = (key: string) => {
-    data = data.sort(dynamicSort(key));
+    tableData = tableData.sort(dynamicSort(key));
   }
   // TODO: Create filtering and sorting options for table
   return (
@@ -41,7 +42,7 @@ const Table = ({
             ))}
           </div>
         )}
-        {data.map((row) => (
+        {tableData.map((row) => (
           <div key={Math.random() * Math.random()} className="table-row-group">
             {keys.map((value) => (
               <>
