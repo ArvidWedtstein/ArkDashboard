@@ -23,9 +23,9 @@ const Table = ({
   let tableData = useState(data);
   let keys = cols || Object.keys(data[0]);
 
-  useEffect(() => {
-    console.log(tableData)
-  }, [tableData]);
+  // useEffect(() => {
+  //   console.log(tableData)
+  // }, [tableData]);
   const sort = (key: string) => {
     tableData = tableData.sort(dynamicSort(key));
   }
