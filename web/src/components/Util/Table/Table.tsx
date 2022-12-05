@@ -1,5 +1,6 @@
 import { Link, routes } from "@redwoodjs/router";
-import { capitalize, isDate, timeTag, truncate } from "src/lib/formatters";
+import { useEffect } from "react";
+import { capitalize, dynamicSort, isDate, timeTag, truncate } from "src/lib/formatters";
 
 interface ITableProps<P = {}> {
   children?: React.ReactNode;
@@ -21,14 +22,18 @@ const Table = ({
   if (!data || data.length < 1) return null;
   let keys = cols || Object.keys(data[0]);
 
+  useEffect(() => {
 
+  }, [data]);
 
   const sort = (key: string) => {
     console.log(key)
     let i = 9
     let dir = 'asc'
     let s = data.sort((a, b) => (a[key] > b[key]) ? 1 : ((b[key] > a[key]) ? -1 : 0))
+    console.log(key)
     console.log(s)
+    console.log(data.sort(dynamicSort(key)))
     // for (i = 1; i < (data.length - 1); i++) {
 
     // }

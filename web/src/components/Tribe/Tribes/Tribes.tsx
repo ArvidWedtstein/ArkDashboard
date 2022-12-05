@@ -2,6 +2,7 @@ import { useAuth } from "@redwoodjs/auth";
 import { Link, routes } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
+import { useEffect } from "react";
 
 import { QUERY } from "src/components/Tribe/TribesCell/TribesCell";
 import Table from "src/components/Util/Table/Table";
@@ -38,6 +39,8 @@ const TribesList = ({ tribes }: FindTribes) => {
     }
   };
 
+
+
   function filterDatesByCurrentWeek(dates: FindTribes["tribes"]) {
     let [start, end] = getWeekDates();
     return dates.filter(
@@ -47,7 +50,6 @@ const TribesList = ({ tribes }: FindTribes) => {
   const pickRandomTribe = () => {
     let randomTribe = tribes[Math.floor(Math.random() * tribes.length)];
     let tempTribe = tribes.filter((t) => t.id === randomTribe.id);
-    console.log(tempTribe)
     toast.success(`You've been assigned to ${tempTribe[0].name}!`);
   };
   return (
