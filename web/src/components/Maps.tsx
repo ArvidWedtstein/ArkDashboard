@@ -43,7 +43,7 @@ export const Maps = ({ map, size, pos, className }: Props) => {
         <image href={maps[map]} height={size.height} width={size.width} />
         <circle
           fill="red"
-          cx={(size.width / 100) * pos.lat + size.width / 100}
+          cx={(size.width / 100) * pos.lon + size.width / 100}
           cy={(size.height / 100) * pos.lat}
           r="5"
         />
