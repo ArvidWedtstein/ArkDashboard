@@ -22,10 +22,9 @@ const Table = ({
   if (!data || data.length < 1) return null;
   let keys = cols || Object.keys(data[0]);
 
-  // useEffect(() => {
+  useEffect(() => {
 
-  // }, [data]);
-
+  }, [data]);
   const sort = (key: string) => {
     data = data.sort(dynamicSort(key));
   }
@@ -67,7 +66,6 @@ const Table = ({
                         key={Math.random()}
                         className="table-cell p-2 text-xs text-black"
                       >
-                        {" "}
                         {isDate(row[value])
                           ? timeTag(row[value])
                           : truncate(row[value])}
