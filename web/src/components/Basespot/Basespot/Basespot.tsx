@@ -78,8 +78,8 @@ const Basespot = ({ basespot }: Props) => {
             </h1>
             <p className="mb-8 leading-relaxed">{basespot.description}</p>
             <div className="flex justify-center">
-              <Link to={routes.editBasespot({ id: basespot.id })} className="inline-flex text-white bg-gray-200 border-0 py-2 px-6 focus:outline-none hover:bg-gray-300 rounded text-lg">Edit</Link>
-              <button onClick={() => onDeleteClick(basespot.id)} className="ml-4 inline-flex text-gray-700 bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded text-lg">Delete</button>
+              <Link to={routes.editBasespot({ id: basespot.id })} className="inline-flex text-gray-700 bg-gray-200 border-0 py-2 px-6 focus:outline-none hover:bg-gray-300 rounded text-lg">Edit</Link>
+              <button onClick={() => onDeleteClick(basespot.id)} className="ml-4 inline-flex text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded text-lg">Delete</button>
             </div>
           </div>
           <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6">
@@ -128,21 +128,6 @@ const Basespot = ({ basespot }: Props) => {
           </div>
         </div>
       </section>
-      <nav className="rw-button-group">
-        <Link
-          to={routes.editBasespot({ id: basespot.id })}
-          className="rw-button rw-button-blue"
-        >
-          Edit
-        </Link>
-        <button
-          type="button"
-          className="rw-button rw-button-red"
-          onClick={() => onDeleteClick(basespot.id)}
-        >
-          Delete
-        </button>
-      </nav>
     </>
   );
 };
