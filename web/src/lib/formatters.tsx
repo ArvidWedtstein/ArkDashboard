@@ -52,6 +52,15 @@ export const checkboxInputTag = (checked: boolean) => {
   return <input type="checkbox" checked={checked} disabled />
 }
 
+export const compare = (a: any, b: any) => {
+  if (a < b) {
+    return -1
+  }
+  if (a > b) {
+    return 1
+  }
+  return 0
+}
 
 export const combineBySummingKeys = (...objects) => {
   const mergedObj = {};

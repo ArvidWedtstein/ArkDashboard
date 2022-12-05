@@ -1,5 +1,5 @@
 import { Link, routes } from "@redwoodjs/router";
-import { capitalize, isDate, timeTag, truncate } from "src/lib/formatters";
+import { capitalize, compare, isDate, timeTag, truncate } from "src/lib/formatters";
 
 interface ITableProps<P = {}> {
   children?: React.ReactNode;
@@ -21,6 +21,18 @@ const Table = ({
   if (!data || data.length < 1) return null;
   let keys = cols || Object.keys(data[0]);
 
+
+
+  const sort = (key: string) => {
+    console.log(key)
+    let i = 9
+    let dir = 'asc'
+    let s = data.sort((a, b) => (a[key] > b[key]) ? 1 : ((b[key] > a[key]) ? -1 : 0))
+    console.log(s)
+    // for (i = 1; i < (data.length - 1); i++) {
+
+    // }
+  }
   // TODO: Create filtering and sorting options for table
   return (
     <div className="flex">
@@ -28,7 +40,7 @@ const Table = ({
         {(tableOptions && tableOptions.header) && (
           <div className="table-header-group">
             {keys.map((key) => (
-              <div key={`${key}${Math.random()}`} className="table-cell p-2 text-xs text-[#888da9]">
+              <div key={`${key}${Math.random()}`} onClick={() => sort(key)} className="table-cell p-2 text-xs text-[#888da9]">
                 {truncate(capitalize(key))}
               </div>
             ))}
