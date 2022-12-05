@@ -22,21 +22,12 @@ const Table = ({
   if (!data || data.length < 1) return null;
   let keys = cols || Object.keys(data[0]);
 
-  useEffect(() => {
+  // useEffect(() => {
 
-  }, [data]);
+  // }, [data]);
 
   const sort = (key: string) => {
-    console.log(key)
-    let i = 9
-    let dir = 'asc'
-    let s = data.sort((a, b) => (a[key] > b[key]) ? 1 : ((b[key] > a[key]) ? -1 : 0))
-    console.log(key)
-    console.log(s)
-    console.log(data.sort(dynamicSort(key)))
-    // for (i = 1; i < (data.length - 1); i++) {
-
-    // }
+    data = data.sort(dynamicSort(key));
   }
   // TODO: Create filtering and sorting options for table
   return (
