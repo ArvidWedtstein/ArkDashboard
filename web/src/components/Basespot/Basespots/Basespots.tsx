@@ -48,7 +48,7 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
             subtitle={basespot.Map}
             content={basespot.description}
             ring={`${basespot.estimatedForPlayers} players`}
-            image={basespot.image}
+            // image={basespot.image}
             button={{
               text: 'Learn Moar',
               link: routes.basespot({ id: basespot.id }),
