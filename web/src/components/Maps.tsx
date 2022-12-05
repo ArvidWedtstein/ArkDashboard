@@ -2,9 +2,10 @@ interface Props {
   map: string;
   size: { width: number; height: number };
   pos?: { lat: number; lon: number };
+  className?: string;
 }
 
-export const Maps = ({ map, size, pos }: Props) => {
+export const Maps = ({ map, size, pos, className }: Props) => {
   const maps = {
     TheIsland:
       "https://ark.gamepedia.com/media/thumb/3/3e/The_Island_Map.jpg/600px-The_Island_Map.jpg",
@@ -33,6 +34,7 @@ export const Maps = ({ map, size, pos }: Props) => {
   return (
     <>
       <svg
+        className={className}
         width={size.width}
         height={size.height}
         viewBox={`0 0 ${size.width} ${size.height}`}
