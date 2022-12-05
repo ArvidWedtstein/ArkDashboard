@@ -45,6 +45,7 @@ const Tribe = ({ tribe }: Props) => {
             Tribe {tribe.id} Detail
           </h2>
         </header>
+        {/* TODO: Fix createdBy */}
         <table className="rw-table">
           <tbody>
             <tr>

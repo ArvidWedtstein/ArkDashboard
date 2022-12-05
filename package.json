@@ -28,6 +28,6 @@
   },
   "packageManager": "yarn@3.2.4",
   "dependencies": {
-    "@supabase/supabase-js": "^2.1.1"
+    "@supabase/supabase-js": "latest"
   }
 }

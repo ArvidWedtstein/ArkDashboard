@@ -5669,7 +5669,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@supabase/supabase-js@npm:^2.1.1":
+"@supabase/supabase-js@npm:latest":
   version: 2.1.1
   resolution: "@supabase/supabase-js@npm:2.1.1"
   dependencies:
@@ -21909,7 +21909,7 @@ __metadata:
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
     "@redwoodjs/core": 3.4.0
-    "@supabase/supabase-js": ^2.1.1
+    "@supabase/supabase-js": latest
     "@vercel/nft": ^0.22.1
     archiver: ^5.3.1
     fs-extra: ^10.1.0
