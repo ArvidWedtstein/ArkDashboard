@@ -20,14 +20,15 @@ const Table = ({
   tableOptions = { header: true },
 }: ITableProps) => {
   if (!data || data.length < 1) return null;
-  let tableData = useState(data);
+  // let tableData = useState(data);
   let keys = cols || Object.keys(data[0]);
 
   // useEffect(() => {
   //   console.log(tableData)
   // }, [tableData]);
   const sort = (key: string) => {
-    tableData = tableData.sort(dynamicSort(key));
+    data = data.sort(dynamicSort(key));
+    // tableData = tableData.sort(dynamicSort(key));
   }
   // TODO: Create filtering and sorting options for table
   return (
@@ -42,7 +43,7 @@ const Table = ({
             ))}
           </div>
         )}
-        {tableData.map((row) => (
+        {data.map((row) => (
           <div key={Math.random() * Math.random()} className="table-row-group">
             {keys.map((value) => (
               <>
