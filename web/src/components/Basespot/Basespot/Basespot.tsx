@@ -69,13 +69,13 @@ const Basespot = ({ basespot }: Props) => {
   return (
     <>
       {/* TODO: Maek better layout */}
-      <div className='flex items-center justify-center mb-3 bg-center py-8 w-full bg-clip-text text-transparent' style={{ imageRendering: "-webkit-optimize-contrast", background: `url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s')`, backgroundRepeat: "no-repeat", backgroundSize: "cover", backgroundClip: "padding-box" }}>
-        <div className='w-full max-w-lg px-10 py-8 mx-auto bg-current rounded-lg shadow-xl'>
+      <div className='flex items-center justify-center mb-3'>
+        <div className='w-full max-w-lg px-10 py-8 mx-auto bg-white rounded-lg shadow-xl'>
           <div className='max-w-md mx-auto space-y-6'>
 
             <h2 className="flex flex-row flex-nowrap items-center my-8">
               <span className="flex-grow block border-t border-black" aria-hidden="true" role="presentation"></span>
-              <span className="flex-none block mx-4   px-4 py-2.5 text-xs leading-none font-medium uppercase bg-black text-current">
+              <span className="flex-none block mx-4   px-4 py-2.5 text-xs leading-none font-medium uppercase bg-black text-white">
                 {basespot.name}
               </span>
               <span className="flex-grow block border-t border-black" aria-hidden="true" role="presentation"></span>
@@ -84,6 +84,27 @@ const Basespot = ({ basespot }: Props) => {
           </div>
         </div>
       </div>
+      <section className="text-gray-700 body-font">
+        <div className="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
+          <div className="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
+            <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">Before they sold out
+              <br className="hidden lg:inline-block" />readymade gluten
+            </h1>
+            <p className="mb-8 leading-relaxed">Copper mug try-hard pitchfork pour-over freegan heirloom neutra air plant cold-pressed tacos poke beard tote bag. Heirloom echo park mlkshk tote bag selvage hot chicken authentic tumeric truffaut hexagon try-hard chambray.</p>
+            <div className="flex justify-center">
+              <button className="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">Button</button>
+              <button className="ml-4 inline-flex text-gray-700 bg-gray-200 border-0 py-2 px-6 focus:outline-none hover:bg-gray-300 rounded text-lg">Button</button>
+            </div>
+          </div>
+          <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6">
+            <img className="object-cover object-center rounded" src={
+              baseUrl ||
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s"
+            }
+              alt={basespot.name} />
+          </div>
+        </div>
+      </section>
       <div className="grid auto-cols-auto grid-cols-2">
         <div className="">
           <img
