@@ -68,7 +68,6 @@ const Basespot = ({ basespot }: Props) => {
   // };
   return (
     <>
-      {/* TODO: Maek better layout */}
       {/* TODO: Make map required not optional */}
       <section className="text-gray-700 body-font">
         <div className="container mx-auto flex px-5 py-12 md:flex-row flex-col items-center">
@@ -123,6 +122,79 @@ const Basespot = ({ basespot }: Props) => {
               <div className="flex-grow">
                 <h2 className="text-gray-900 text-lg title-font font-medium mb-3">Players</h2>
                 <p className="leading-relaxed text-base">We think that this basespot does fit about {basespot.estimatedForPlayers} players</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="text-gray-700 body-font border-t border-gray-200">
+        <div className="container px-5 py-24 mx-auto">
+          <div className="flex flex-col text-center w-full mb-20">
+            <h2 className="text-xs text-indigo-500 tracking-widest font-medium title-font mb-1">Basespot Defense Setup</h2>
+            <h1 className="sm:text-3xl text-2xl font-medium title-font text-gray-900">Basespot Setup</h1>
+          </div>
+          <div className="flex flex-wrap -m-4">
+            <div className="p-4 md:w-1/3">
+              <div className="flex rounded-lg h-full bg-gray-100 p-8 flex-col">
+                <div className="flex items-center mb-3">
+                  <div className="w-8 h-8 mr-3 inline-flex items-center justify-center rounded-full bg-indigo-500 text-white flex-shrink-0">
+                    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" className="w-5 h-5" viewBox="0 0 24 24">
+                      <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                    </svg>
+                  </div>
+                  <h2 className="text-gray-900 text-lg title-font font-medium">Defense Nr.1</h2>
+                </div>
+                <div className="flex-grow">
+                  <p className="leading-relaxed text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nulla, voluptatum?</p>
+                  <img className="object-cover object-center rounded" src={
+                    baseUrl ||
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s"
+                  }
+                    alt={basespot.name} />
+                </div>
+              </div>
+            </div>
+            <div className="p-4 md:w-1/3">
+              <div className="flex rounded-lg h-full bg-gray-100 p-8 flex-col">
+                <div className="flex items-center mb-3">
+                  <div className="w-8 h-8 mr-3 inline-flex items-center justify-center rounded-full bg-indigo-500 text-white flex-shrink-0">
+                    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" className="w-5 h-5" viewBox="0 0 24 24">
+                      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </div>
+                  <h2 className="text-gray-900 text-lg title-font font-medium">Defense Nr.2</h2>
+                </div>
+                <div className="flex-grow">
+                  <p className="leading-relaxed text-base">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ducimus, laborum.</p>
+                  <img className="object-cover object-center rounded" src={
+                    baseUrl ||
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s"
+                  }
+                    alt={basespot.name} />
+                </div>
+              </div>
+            </div>
+            <div className="p-4 md:w-1/3">
+              <div className="flex rounded-lg h-full bg-gray-100 p-8 flex-col">
+                <div className="flex items-center mb-3">
+                  <div className="w-8 h-8 mr-3 inline-flex items-center justify-center rounded-full bg-indigo-500 text-white flex-shrink-0">
+                    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" className="w-5 h-5" viewBox="0 0 24 24">
+                      <circle cx="6" cy="6" r="3"></circle>
+                      <circle cx="6" cy="18" r="3"></circle>
+                      <path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12"></path>
+                    </svg>
+                  </div>
+                  <h2 className="text-gray-900 text-lg title-font font-medium">Defense Nr.3</h2>
+                </div>
+                <div className="flex-grow">
+                  <p className="leading-relaxed text-base">Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit, vel.</p>
+                  <img className="object-cover object-center rounded" src={
+                    baseUrl ||
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s"
+                  }
+                    alt={basespot.name} />
+                </div>
               </div>
             </div>
           </div>
