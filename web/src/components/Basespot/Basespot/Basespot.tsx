@@ -69,7 +69,7 @@ const Basespot = ({ basespot }: Props) => {
   return (
     <>
       {/* TODO: Maek better layout */}
-      <div className='flex items-center justify-center min-h-screen' style={{ background: `url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s')`, backgroundSize: "35% auto", backgroundRepeat: "no-repeat", backgroundPosition: "center" }}>
+      <div className='flex items-center justify-center mb-3' style={{ background: `url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s')`, backgroundSize: "35% auto", backgroundRepeat: "no-repeat", backgroundPosition: "center" }}>
         <div className='w-full max-w-lg px-10 py-8 mx-auto bg-white rounded-lg shadow-xl'>
           <div className='max-w-md mx-auto space-y-6'>
 
