@@ -1,5 +1,5 @@
 import { Link, routes } from "@redwoodjs/router";
-import { capitalize, compare, isDate, timeTag, truncate } from "src/lib/formatters";
+import { capitalize, isDate, timeTag, truncate } from "src/lib/formatters";
 
 interface ITableProps<P = {}> {
   children?: React.ReactNode;

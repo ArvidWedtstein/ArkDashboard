@@ -46,11 +46,9 @@ const TribesList = ({ tribes }: FindTribes) => {
   }
   const pickRandomTribe = () => {
     let randomTribe = tribes[Math.floor(Math.random() * tribes.length)];
-    tribes = tribes.filter((t) => t.id !== randomTribe.id);
-    console.log(tribes)
-    setTimeout(() => {
-      tribes = tribes.filter((t) => t.id === randomTribe.id);
-    }, 10000);
+    let tempTribe = tribes.filter((t) => t.id === randomTribe.id);
+    console.log(tempTribe)
+    toast.success(`You've been assigned to ${tempTribe[0].name}!`);
   };
   return (
     <div className="rw-segment relative">

@@ -52,15 +52,25 @@ export const checkboxInputTag = (checked: boolean) => {
   return <input type="checkbox" checked={checked} disabled />
 }
 
-export const compare = (a: any, b: any) => {
-  if (a < b) {
-    return -1
+/**
+ * Sorts an array of T by the specified properties of property
+
+ */
+export const dynamicSort = (property: string) => {
+  var sortOrder = 1;
+  if (property[0] === "-") {
+    sortOrder = -1;
+    property = property.substr(1);
   }
-  if (a > b) {
-    return 1
+  return function (a, b) {
+    /* next line works with strings and numbers,
+     * and you may want to customize it to your needs
+     */
+    var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+    return result * sortOrder;
   }
-  return 0
 }
+
 
 export const combineBySummingKeys = (...objects) => {
   const mergedObj = {};
