@@ -46,9 +46,9 @@ const TribesList = ({ tribes }: FindTribes) => {
   }
   const pickRandomTribe = () => {
     let randomTribe = tribes[Math.floor(Math.random() * tribes.length)];
-    tribes.filter((t) => t.id !== randomTribe.id);
+    tribes = tribes.filter((t) => t.id !== randomTribe.id);
     setTimeout(() => {
-      tribes.filter((t) => t.id === randomTribe.id);
+      tribes = tribes.filter((t) => t.id === randomTribe.id);
     }, 10000);
   };
   return (
