@@ -76,7 +76,7 @@ const TribesList = ({ tribes }: FindTribes) => {
           </div>
           <div className="ml-4">
             <h2 className="font-semibold">
-              {filterDatesByCurrentWeek(tribes).length} {tribes.length > 1 ? "Tribes" : "Tribe"}
+              {filterDatesByCurrentWeek(tribes).length} {filterDatesByCurrentWeek(tribes).length > 1 ? "Tribes" : "Tribe"}
             </h2>
             <p className="mt-2 text-sm text-gray-500">Created this week</p>
           </div>
