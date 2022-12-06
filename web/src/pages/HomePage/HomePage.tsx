@@ -2,6 +2,7 @@ import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "@redwoodjs/auth";
 import { useEffect, useState } from "react";
+import FileUpload from "src/components/Util/FileUpload/FileUpload";
 
 
 const HomePage = () => {
@@ -47,6 +48,7 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+      <FileUpload />
     </>
   );
 };
