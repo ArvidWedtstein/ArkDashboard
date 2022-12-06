@@ -21904,20 +21904,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"root-workspace-0b6124@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "root-workspace-0b6124@workspace:."
-  dependencies:
-    "@redwoodjs/core": 3.4.0
-    "@supabase/supabase-js": latest
-    "@vercel/nft": ^0.22.1
-    archiver: ^5.3.1
-    fs-extra: ^10.1.0
-    prettier-plugin-tailwindcss: ^0.1.13
-    serverless: ^3.24.1
-  languageName: unknown
-  linkType: soft
-
 "rsvp@npm:^4.8.4":
   version: 4.8.5
   resolution: "rsvp@npm:4.8.5"
