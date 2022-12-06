@@ -1,9 +1,8 @@
 
 
 const FileUpload = () => {
-  window.addEventListener("DOMContentLoaded", () => {
-    const upload = new UploadModal("#upload");
-  });
+  const upload = new UploadModal("#upload");
+  console.log(upload)
 
   class UploadModal {
     filename = "";
