@@ -1,12 +1,10 @@
 {
   "private": true,
-  "workspaces": {
-    "packages": [
-      "api",
-      "web",
-      "packages/*"
-    ]
-  },
+  "workspaces": [
+    "api",
+    "web",
+    "packages/*"
+  ],
   "devDependencies": {
     "@redwoodjs/core": "3.4.0",
     "@vercel/nft": "^0.22.1",
