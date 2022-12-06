@@ -1,9 +1,6 @@
 
 
 const FileUpload = () => {
-  const upload = new UploadModal("#upload");
-  console.log(upload)
-
   class UploadModal {
     filename = "";
     isCopying = false;
@@ -150,6 +147,9 @@ const FileUpload = () => {
       return Math.round(min + relativeValue);
     }
   }
+
+  const upload = new UploadModal("#upload");
+  console.log(upload)
   return (
     <div id="upload" className="bg-[#f1f2f4] rounded-2xl max-w-xl w-[calc(100%-3rem)] overflow-hidden relative transition-colors shadow" data-state="0" data-ready="false"> {/* <!-- modal --> */}
       <div className="relative z-[1] flex justify-end items-center h-10 p-2"> {/* <!-- modal header --> */}
