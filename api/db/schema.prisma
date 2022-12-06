@@ -18,7 +18,9 @@ model basespot {
   createdAt           DateTime @default(now())
   Map                 String?
   estimatedForPlayers String?  @default("0")
-  turretsetup_image   String?
+  defenseImages   String[]?
+  createdBy   String?   @db.Uuid
+  profiles    profiles? @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model tribe {
