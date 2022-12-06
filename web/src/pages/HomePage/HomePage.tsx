@@ -18,6 +18,7 @@ const HomePage = () => {
     <>
       <MetaTags title="Home" description="Home page" />
       <div className="container-xl p-3 text-center">
+        <FileUpload />
         <div
           className="relative overflow-hidden bg-cover bg-no-repeat"
           style={{
@@ -48,7 +49,6 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      <FileUpload />
     </>
   );
 };
