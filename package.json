@@ -1,5 +1,5 @@
 {
-  "name": "redwood-app",
+  "name": "ArkDashboard",
   "private": true,
   "workspaces": {
     "packages": [
