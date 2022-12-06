@@ -1,5 +1,5 @@
 [build]
-command = "yarn rw deploy netlify" #  --no-build
+command = "yarn rw deploy netlify --prisma=false" #  --no-build
 publish = "web/dist"
 functions = "api/dist/functions"
 
