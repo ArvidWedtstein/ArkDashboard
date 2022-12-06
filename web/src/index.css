@@ -22,19 +22,13 @@
   transform: translateX(200%);
 }
 
-* {
-  border: 0;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-:root {
+/* :root {
   --hue: 223;
   --bg: hsl(var(--hue), 10%, 85%);
   --fg: hsl(var(--hue), 10%, 5%);
   --trans-dur: 0.3s;
   font-size: calc(16px + (20 - 16) * (100vw - 320px) / (2560 - 320));
-}
+} */
 
 /* .modal {
   background-color: hsl(var(--hue), 10%, 95%);
