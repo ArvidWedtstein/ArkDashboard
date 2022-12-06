@@ -1,5 +1,4 @@
 {
-  "private": false,
   "workspaces": {
     "packages": [
       "api",

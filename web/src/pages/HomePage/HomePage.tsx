@@ -13,7 +13,6 @@ const HomePage = () => {
   //     e.preventDefault();
   //   }, false);
   // }
-
   return (
     <>
       <MetaTags title="Home" description="Home page" />
