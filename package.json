@@ -1,5 +1,4 @@
 {
-  "name": "ArkDashboard",
   "private": true,
   "workspaces": {
     "packages": [
@@ -21,6 +20,7 @@
     "root": true
   },
   "engines": {
+    "node": ">=14.19 <=16.x",
     "yarn": ">=1.15"
   },
   "prisma": {
