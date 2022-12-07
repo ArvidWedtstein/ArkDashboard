@@ -69,6 +69,67 @@ const FileUpload = () => {
     let t: any = el?.querySelector("#file");
     t.click();
   }
+  function upload() {
+    if (!isUploading) {
+      isUploading = true;
+      progress = 0;
+      state = 1;
+      progressLoop();
+    }
+  }
+  async function progressLoop() {
+    progressDisplay();
+
+    if (isUploading) {
+      if (progress === 0) {
+        await new Promise(res => setTimeout(res, 1000));
+        // fail randomly
+        if (!isUploading) {
+          return;
+        } else if (Utils.randomInt(0, 2) === 0) {
+          fail();
+          return;
+        }
+      }
+      // …or continue with progress
+      if (progress < 1) {
+        progress += 0.01;
+        progressTimeout = setTimeout(progressLoop.bind(this), 50);
+      } else if (progress >= 1) {
+        progressTimeout = setTimeout(() => {
+          if (isUploading) {
+            success();
+            stateDisplay();
+            progressTimeout = null;
+          }
+        }, 250);
+      }
+    }
+  }
+  function success() {
+    isUploading = false;
+    state = 3;
+    stateDisplay();
+  }
+
+  async function copy() {
+    const copyButton: any = el?.querySelector("[data-action='copy']");
+
+    if (!isCopying && copyButton) {
+      // disable
+      this.isCopying = true;
+      copyButton.style.width = `${copyButton.offsetWidth}px`;
+      copyButton.disabled = true;
+      copyButton.textContent = "Copied!";
+      navigator.clipboard.writeText(filename);
+      await new Promise(res => setTimeout(res, 1000));
+      // reenable
+      isCopying = false;
+      copyButton.removeAttribute("style");
+      copyButton.disabled = false;
+      copyButton.textContent = "Copy Link";
+    }
+  }
   class UploadModal {
     filename = "";
     isCopying = false;
@@ -280,7 +341,7 @@ const FileUpload = () => {
                 </svg>
                 <span className="overflow-hidden absolute w-[1px] h-[1px]">Remove</span>
               </button>
-              <button className="bg-[#737a8c] hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50" type="button" data-action="upload">Upload</button> {/* <!-- modal button --> */}
+              <button className="bg-[#737a8c] hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50" type="button" onClick={upload}>Upload</button> {/* <!-- modal button --> */}
             </div>
           </div>
           <div className="modal__content" hidden> {/* <!-- modal content --> */}
@@ -300,7 +361,7 @@ const FileUpload = () => {
             <h2 className="text-xl leading-5 font-medium mb-6 text-center">Oops!</h2>
             <p className="min-h-[3rem] mb-6 text-base">Your file could not be uploaded due to an error. Try uploading it again?</p>
             <div className="flex items-center flex-wrap delay-200 modal__actions--center">
-              <button className="bg-[#737a8c] hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50" type="button" data-action="upload">Retry</button> {/* <!-- modal button --> */}
+              <button className="bg-[#737a8c] hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50" type="button" onClick={upload}>Retry</button> {/* <!-- modal button --> */}
               <button className="bg-[#737a8c] hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50 mt-3" type="button" onClick={cancel}>Cancel</button> {/* <!-- modal button --> */}
             </div>
           </div>
@@ -308,8 +369,8 @@ const FileUpload = () => {
             <h2 className="text-xl leading-5 font-medium mb-6 text-center">Upload Successful!</h2>
             <p className="min-h-[3rem] mb-6 text-base">Your file has been uploaded. You can copy the link to your clipboard.</p>
             <div className="flex items-center flex-wrap delay-200 modal__actions--center">
-              <button className="bg-[#737a8c] hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50" type="button" data-action="copy">Copy Link</button> {/* <!-- modal button --> */}
-              <button className="bg-[#737a8c] hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50 mt-3" type="button" data-action="cancel">Done</button> {/* <!-- modal button --> */}
+              <button className="bg-[#737a8c] hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50" type="button" onClick={copy}>Copy Link</button> {/* <!-- modal button --> */}
+              <button className="bg-[#737a8c] hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50 mt-3" type="button" onClick={cancel}>Done</button> {/* <!-- modal button --> */}
             </div>
           </div>
         </div>
