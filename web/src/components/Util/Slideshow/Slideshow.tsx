@@ -33,10 +33,10 @@ const Slideshow = ({ slides }: ISlideshowProps) => {
 
   return (
     <div className="my-0 mx-auto overflow-hidden max-w-[500px]">
-      <div className="whitespace-nowrap transition ease-in-out duration-1000"
-        style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
+      <div className="transition ease-in-out duration-1000"
+      > {/* whitespace-nowrap  style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }} */}
         {slides.map((slide, indegs) => (
-          <div className="w-full h-[400px] rounded inline-block" key={indegs} style={{ opacity: `${indegs === index ? '100' : '50'}` }}>
+          <div className={`absolute left-0 ${indegs === index ? 'opacity-100' : 'opacity-0'}`} key={indegs} style={{ opacity: `${indegs === index ? '100' : '0'}` }}> {/* w-full h-[400px] rounded inline-block */}
             {slide && <img src={slide.url} className="w-full h-full object-cover" />}
           </div>
         ))}
