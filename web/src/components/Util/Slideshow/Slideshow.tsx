@@ -2,7 +2,7 @@ const Slideshow = () => {
   const colors = ["#0088FE", "#00C49F", "#FFBB28"];
   const [index, setIndex] = React.useState(0);
   const timeoutRef = React.useRef(null);
-  const delay = 2500;
+  const delay = 5000;
 
 
   function resetTimeout() {
@@ -28,7 +28,7 @@ const Slideshow = () => {
 
   return (
     <div className="my-0 mx-auto overflow-hidden max-w-[500px]">
-      <div className="whitespace-nowrap transition-all"
+      <div className="whitespace-nowrap transition ease-linear"
         style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
         {colors.map((backgroundColor, index) => (
           <div className="w-full h-[400px] rounded inline-block" key={index} style={{ backgroundColor: backgroundColor }} />
