@@ -37,7 +37,7 @@ const Slideshow = ({ slides }: ISlideshowProps) => {
         style={{ opacity: `${index * 100}` }}
       > {/* whitespace-nowrap  style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }} */}
         {slides.map((slide, indegs) => (
-          <div className={`absolute left-0 ${indegs === index ? 'opacity-100' : 'opacity-0'}`} key={indegs} style={{ opacity: `${indegs === index ? '100' : '0'}` }}> {/* w-full h-[400px] rounded inline-block */}
+          <div className={`h-[400px] absolute left-0 ${indegs === index ? 'opacity-100' : 'opacity-0'}`} key={indegs} style={{ opacity: `${indegs === index ? '100' : '0'}` }}> {/* w-full h-[400px] rounded inline-block */}
             {slide && <img src={slide.url} className="w-full h-full object-cover" />}
           </div>
         ))}
