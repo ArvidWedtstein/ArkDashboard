@@ -31,7 +31,7 @@ const Slideshow = () => {
       <div className="whitespace-nowrap transition-all"
         style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
         {colors.map((backgroundColor, index) => (
-          <div className="w-full h-[400px] rounded inline-block" key={index} style={{ backgroundColor }} />
+          <div className="w-full h-[400px] rounded inline-block" key={index} style={{ backgroundColor: backgroundColor }} />
         ))}
       </div>
       <div className="text-center">

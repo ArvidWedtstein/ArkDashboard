@@ -19,7 +19,7 @@ const HomePage = () => {
       <MetaTags title="Home" description="Home page" />
       <div className="container-xl p-3 text-center">
         <Slideshow />
-        <FileUpload />
+        {/* <FileUpload /> */}
         <div
           className="relative overflow-hidden bg-cover bg-no-repeat"
           style={{

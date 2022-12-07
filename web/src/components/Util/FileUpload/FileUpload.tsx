@@ -321,7 +321,7 @@ const FileUpload = () => {
             <p className="min-h-[3rem] mb-6 text-base">Select a file to upload from your computer or device.</p>
             <div className="flex items-center flex-wrap delay-200">
               <button className="hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50 bg-transparent border border-[#737a8c] flex-1" type="button" onClick={file}>Choose File</button> {/* <!-- modal button upload --> */}
-              <input id="file" type="file" hidden />
+              <input id="file" onChange={fileHandle} type="file" hidden />
             </div>
             <div className="flex items-center flex-wrap delay-200" hidden>
               <svg className="text-[#737a8c] block mr-3 w-6 h-6 transition-colors" viewBox="0 0 24 24" width="24px" height="24px" aria-hidden="true">
