@@ -41,7 +41,7 @@ const Slideshow = ({ slides }: ISlideshowProps) => {
           </div>
         ))}
       </div>
-      <div className="text-center">
+      <div className="text-center bg-gray-700">
         {slides.map((_, idx) => (
           <div
             key={idx}
