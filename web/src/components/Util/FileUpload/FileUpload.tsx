@@ -23,14 +23,24 @@ const FileUpload = () => {
       if (target?.files.length) {
         let reader = new FileReader();
         reader.onload = e2 => {
-          this.fileDisplay(target.files[0].name);
+          fileDisplay(target.files[0].name);
         };
         reader.readAsDataURL(target.files[0]);
       }
     });
   }
   function stateDisplay() {
-    this.el.setAttribute("data-state", `${this.state}`);
+    el.setAttribute("data-state", `${state}`);
+  }
+  function fileDisplay(name = "") {
+    // update the name
+    filename = name;
+
+    const fileValue = el?.querySelector("[data-file]");
+    if (fileValue) fileValue.textContent = filename;
+
+    // show the file
+    el?.setAttribute("data-ready", filename ? "true" : "false");
   }
   class UploadModal {
     filename = "";
