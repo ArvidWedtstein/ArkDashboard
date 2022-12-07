@@ -275,7 +275,7 @@ Will come later
 [issues-url]: https://github.com/ArvidWedtstein/ArkDashboard/issues
 [license-shield]: https://img.shields.io/github/license/ArvidWedtstein/ArkDashboard.svg?style=for-the-badge
 [license-url]: https://github.com/ArvidWedtstein/ArkDashboard/blob/prod/LICENSE.txt
-[version-shield]: https://img.shields.io/github/package-json/v/ArvidWedtstein/ArkDashboard/prod?style=for-the-badge
+[version-shield]: https://img.shields.io/github/package-json/v/ArvidWedtstein/ArkDashboard/dev?style=for-the-badge
 [version-url]: https://github.com/ArvidWedtstein/ArkDashboard
 
 
