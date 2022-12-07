@@ -3,6 +3,7 @@ import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "@redwoodjs/auth";
 import { useEffect, useState } from "react";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
+import Slideshow from "src/components/Util/Slideshow/Slideshow";
 
 
 const HomePage = () => {
@@ -17,6 +18,7 @@ const HomePage = () => {
     <>
       <MetaTags title="Home" description="Home page" />
       <div className="container-xl p-3 text-center">
+        <Slideshow />
         <FileUpload />
         <div
           className="relative overflow-hidden bg-cover bg-no-repeat"

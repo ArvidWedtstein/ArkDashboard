@@ -1,10 +1,18 @@
 const Slideshow = () => {
   const colors = ["#0088FE", "#00C49F", "#FFBB28"];
   const [index, setIndex] = React.useState(0);
+  const timeoutRef = React.useRef(null);
   const delay = 2500;
 
+
+  function resetTimeout() {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  }
   React.useEffect(() => {
-    setTimeout(
+    resetTimeout();
+    timeoutRef.current = setTimeout(
       () =>
         setIndex((prevIndex) =>
           prevIndex === colors.length - 1 ? 0 : prevIndex + 1
@@ -12,7 +20,9 @@ const Slideshow = () => {
       delay
     );
 
-    return () => { };
+    return () => {
+      resetTimeout();
+    };
   }, [index]);
 
 
@@ -26,7 +36,13 @@ const Slideshow = () => {
       </div>
       <div className="text-center">
         {colors.map((_, idx) => (
-          <div key={idx} className="inline-block h-5 w-5 rounded-full cursor-pointer mt-4 px-2 bg-[#c4c4c4]"></div>
+          <div
+            key={idx}
+            className={`inline-block h-5 w-5 rounded-full cursor-pointer mt-4 px-2 ${index === idx ? "bg-green-700" : "bg-[#c4c4c4]"}`}
+            onClick={() => {
+              setIndex(idx);
+            }}
+          ></div>
         ))}
       </div>
     </div>

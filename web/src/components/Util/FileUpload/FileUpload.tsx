@@ -1,155 +1,184 @@
 
 
 const FileUpload = () => {
-  // class UploadModal {
-  //   filename = "";
-  //   isCopying = false;
-  //   isUploading = false;
-  //   progress = 0;
-  //   progressTimeout = null;
-  //   state = 0;
-  //   el = null;
+  let filename = "";
+  let isCopying,
+    isUploading = false;
+  let progress = 0;
+  let progressTimeout = null;
+  let state = 0;
+  let el = document.querySelector("#upload");
 
-  //   constructor(el2) {
-  //     this.el = document.querySelector(el2);
-  //     this.el.addEventListener("click", this.action.bind(this));
-  //     this.el.querySelector("#file")?.addEventListener("change", this.fileHandle.bind(this));
-  //   }
-  //   action(e) {
-  //     this[e.target?.getAttribute("data-action")]?.();
-  //     this.stateDisplay();
-  //   }
-  //   cancel() {
-  //     this.isUploading = false;
-  //     this.progress = 0;
-  //     this.progressTimeout = null;
-  //     this.state = 0;
-  //     this.stateDisplay();
-  //     this.progressDisplay();
-  //     this.fileReset();
-  //   }
-  //   async copy() {
-  //     const copyButton = this.el?.querySelector("[data-action='copy']");
+  el.addEventListener("click", action.bind(this));
+  el.querySelector("#file")?.addEventListener("change", fileHandle.bind(this));
 
-  //     if (!this.isCopying && copyButton) {
-  //       // disable
-  //       this.isCopying = true;
-  //       copyButton.style.width = `${copyButton.offsetWidth}px`;
-  //       copyButton.disabled = true;
-  //       copyButton.textContent = "Copied!";
-  //       navigator.clipboard.writeText(this.filename);
-  //       await new Promise(res => setTimeout(res, 1000));
-  //       // reenable
-  //       this.isCopying = false;
-  //       copyButton.removeAttribute("style");
-  //       copyButton.disabled = false;
-  //       copyButton.textContent = "Copy Link";
-  //     }
-  //   }
-  //   fail() {
-  //     this.isUploading = false;
-  //     this.progress = 0;
-  //     this.progressTimeout = null;
-  //     this.state = 2;
-  //     this.stateDisplay();
-  //   }
-  //   file() {
-  //     this.el?.querySelector("#file").click();
-  //   }
-  //   fileDisplay(name = "") {
-  //     // update the name
-  //     this.filename = name;
+  function action(e) {
+    this[e.target?.getAttribute("data-action")]?.();
+    stateDisplay();
+  }
 
-  //     const fileValue = this.el?.querySelector("[data-file]");
-  //     if (fileValue) fileValue.textContent = this.filename;
+  function fileHandle(e) {
+    return new Promise(() => {
+      const { target } = e;
+      if (target?.files.length) {
+        let reader = new FileReader();
+        reader.onload = e2 => {
+          this.fileDisplay(target.files[0].name);
+        };
+        reader.readAsDataURL(target.files[0]);
+      }
+    });
+  }
+  function stateDisplay() {
+    this.el.setAttribute("data-state", `${this.state}`);
+  }
+  class UploadModal {
+    filename = "";
+    isCopying = false;
+    isUploading = false;
+    progress = 0;
+    progressTimeout = null;
+    state = 0;
+    el = null;
 
-  //     // show the file
-  //     this.el?.setAttribute("data-ready", this.filename ? "true" : "false");
-  //   }
-  //   fileHandle(e) {
-  //     return new Promise(() => {
-  //       const { target } = e;
-  //       if (target?.files.length) {
-  //         let reader = new FileReader();
-  //         reader.onload = e2 => {
-  //           this.fileDisplay(target.files[0].name);
-  //         };
-  //         reader.readAsDataURL(target.files[0]);
-  //       }
-  //     });
-  //   }
-  //   fileReset() {
-  //     const fileField = this.el?.querySelector("#file");
-  //     if (fileField) fileField.value = null;
+    constructor(el2) {
+      this.el = document.querySelector(el2);
+      this.el.addEventListener("click", this.action.bind(this));
+      this.el.querySelector("#file")?.addEventListener("change", this.fileHandle.bind(this));
+    }
+    action(e) {
+      this[e.target?.getAttribute("data-action")]?.();
+      this.stateDisplay();
+    }
+    cancel() {
+      this.isUploading = false;
+      this.progress = 0;
+      this.progressTimeout = null;
+      this.state = 0;
+      this.stateDisplay();
+      this.progressDisplay();
+      this.fileReset();
+    }
+    async copy() {
+      const copyButton = this.el?.querySelector("[data-action='copy']");
 
-  //     this.fileDisplay();
-  //   }
-  //   progressDisplay() {
-  //     const progressValue = this.el?.querySelector("[data-progress-value]");
-  //     const progressFill = this.el?.querySelector("[data-progress-fill]");
-  //     const progressTimes100 = Math.floor(this.progress * 100);
+      if (!this.isCopying && copyButton) {
+        // disable
+        this.isCopying = true;
+        copyButton.style.width = `${copyButton.offsetWidth}px`;
+        copyButton.disabled = true;
+        copyButton.textContent = "Copied!";
+        navigator.clipboard.writeText(this.filename);
+        await new Promise(res => setTimeout(res, 1000));
+        // reenable
+        this.isCopying = false;
+        copyButton.removeAttribute("style");
+        copyButton.disabled = false;
+        copyButton.textContent = "Copy Link";
+      }
+    }
+    fail() {
+      this.isUploading = false;
+      this.progress = 0;
+      this.progressTimeout = null;
+      this.state = 2;
+      this.stateDisplay();
+    }
+    file() {
+      this.el?.querySelector("#file").click();
+    }
+    fileDisplay(name = "") {
+      // update the name
+      this.filename = name;
 
-  //     if (progressValue) progressValue.textContent = `${progressTimes100}%`;
-  //     if (progressFill) progressFill.style.transform = `translateX(${progressTimes100}%)`;
-  //   }
-  //   async progressLoop() {
-  //     this.progressDisplay();
+      const fileValue = this.el?.querySelector("[data-file]");
+      if (fileValue) fileValue.textContent = this.filename;
 
-  //     if (this.isUploading) {
-  //       if (this.progress === 0) {
-  //         await new Promise(res => setTimeout(res, 1000));
-  //         // fail randomly
-  //         if (!this.isUploading) {
-  //           return;
-  //         } else if (Utils.randomInt(0, 2) === 0) {
-  //           this.fail();
-  //           return;
-  //         }
-  //       }
-  //       // …or continue with progress
-  //       if (this.progress < 1) {
-  //         this.progress += 0.01;
-  //         this.progressTimeout = setTimeout(this.progressLoop.bind(this), 50);
-  //       } else if (this.progress >= 1) {
-  //         this.progressTimeout = setTimeout(() => {
-  //           if (this.isUploading) {
-  //             this.success();
-  //             this.stateDisplay();
-  //             this.progressTimeout = null;
-  //           }
-  //         }, 250);
-  //       }
-  //     }
-  //   }
-  //   stateDisplay() {
-  //     this.el.setAttribute("data-state", `${this.state}`);
-  //   }
-  //   success() {
-  //     this.isUploading = false;
-  //     this.state = 3;
-  //     this.stateDisplay();
-  //   }
-  //   upload() {
-  //     if (!this.isUploading) {
-  //       this.isUploading = true;
-  //       this.progress = 0;
-  //       this.state = 1;
-  //       this.progressLoop();
-  //     }
-  //   }
-  // }
+      // show the file
+      this.el?.setAttribute("data-ready", this.filename ? "true" : "false");
+    }
+    fileHandle(e) {
+      return new Promise(() => {
+        const { target } = e;
+        if (target?.files.length) {
+          let reader = new FileReader();
+          reader.onload = e2 => {
+            this.fileDisplay(target.files[0].name);
+          };
+          reader.readAsDataURL(target.files[0]);
+        }
+      });
+    }
+    fileReset() {
+      const fileField = this.el?.querySelector("#file");
+      if (fileField) fileField.value = null;
 
-  // class Utils {
-  //   static randomInt(min = 0, max = 2 ** 32) {
-  //     const percent = crypto.getRandomValues(new Uint32Array(1))[0] / 2 ** 32;
-  //     const relativeValue = (max - min) * percent;
+      this.fileDisplay();
+    }
+    progressDisplay() {
+      const progressValue = this.el?.querySelector("[data-progress-value]");
+      const progressFill = this.el?.querySelector("[data-progress-fill]");
+      const progressTimes100 = Math.floor(this.progress * 100);
 
-  //     return Math.round(min + relativeValue);
-  //   }
-  // }
+      if (progressValue) progressValue.textContent = `${progressTimes100}%`;
+      if (progressFill) progressFill.style.transform = `translateX(${progressTimes100}%)`;
+    }
+    async progressLoop() {
+      this.progressDisplay();
 
-  // const upload = new UploadModal("#upload");
-  // console.log(upload)
+      if (this.isUploading) {
+        if (this.progress === 0) {
+          await new Promise(res => setTimeout(res, 1000));
+          // fail randomly
+          if (!this.isUploading) {
+            return;
+          } else if (Utils.randomInt(0, 2) === 0) {
+            this.fail();
+            return;
+          }
+        }
+        // …or continue with progress
+        if (this.progress < 1) {
+          this.progress += 0.01;
+          this.progressTimeout = setTimeout(this.progressLoop.bind(this), 50);
+        } else if (this.progress >= 1) {
+          this.progressTimeout = setTimeout(() => {
+            if (this.isUploading) {
+              this.success();
+              this.stateDisplay();
+              this.progressTimeout = null;
+            }
+          }, 250);
+        }
+      }
+    }
+    stateDisplay() {
+      this.el.setAttribute("data-state", `${this.state}`);
+    }
+    success() {
+      this.isUploading = false;
+      this.state = 3;
+      this.stateDisplay();
+    }
+    upload() {
+      if (!this.isUploading) {
+        this.isUploading = true;
+        this.progress = 0;
+        this.state = 1;
+        this.progressLoop();
+      }
+    }
+  }
+
+  class Utils {
+    static randomInt(min = 0, max = 2 ** 32) {
+      const percent = crypto.getRandomValues(new Uint32Array(1))[0] / 2 ** 32;
+      const relativeValue = (max - min) * percent;
+
+      return Math.round(min + relativeValue);
+    }
+  }
+
   return (
     <div id="upload" className="bg-[#f1f2f4] rounded-2xl max-w-xl w-[calc(100%-3rem)] overflow-hidden relative transition-colors shadow" data-state="0" data-ready="false"> {/* <!-- modal --> */}
       <div className="relative z-[1] flex justify-end items-center h-10 p-2"> {/* <!-- modal header --> */}
@@ -199,7 +228,7 @@ const FileUpload = () => {
             </div>
             <div className="flex items-center flex-wrap delay-200" hidden>
               <svg className="text-[#737a8c] block mr-3 w-6 h-6 transition-colors" viewBox="0 0 24 24" width="24px" height="24px" aria-hidden="true">
-                <g fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round">
+                <g fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polygon points="4 1 12 1 20 8 20 23 4 23" />
                   <polyline points="12 1 12 8 20 8" />
                 </g>
@@ -207,7 +236,7 @@ const FileUpload = () => {
               <div className="flex-1 text-xs overflow-hidden text-ellipsis whitespace-nowrap" data-file></div> {/* <!-- modal file --> */}
               <button className="text-current cursor-pointer pt-6" type="button" data-action="fileReset">
                 <svg className="block m-auto pointer-events-none w-1/2 h-auto" viewBox="0 0 16 16" width="16px" height="16px" aria-hidden="true">
-                  <g fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round">
+                  <g fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                     <polyline points="4,4 12,12" />
                     <polyline points="12,4 4,12" />
                   </g>
