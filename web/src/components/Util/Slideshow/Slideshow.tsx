@@ -26,10 +26,12 @@ const Slideshow = () => {
   }, [index]);
 
 
+  const random = Math.floor(Math.random() * 3);
+
   return (
     <div className="my-0 mx-auto overflow-hidden max-w-[500px]">
       <div className="whitespace-nowrap transition ease-in-out duration-500"
-        style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
+        style={{ transform: `translate3d(0, ${-index * 100}%, 0)` }}>
         {colors.map((backgroundColor, index) => (
           <div className="w-full h-[400px] rounded inline-block" key={index} style={{ backgroundColor: backgroundColor }} />
         ))}
