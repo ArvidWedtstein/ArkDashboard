@@ -42,6 +42,33 @@ const FileUpload = () => {
     // show the file
     el?.setAttribute("data-ready", filename ? "true" : "false");
   }
+  function cancel() {
+    isUploading = false;
+    progress = 0;
+    progressTimeout = null;
+    state = 0;
+    stateDisplay();
+    progressDisplay();
+    fileReset();
+  }
+  function fileReset() {
+    const fileField: any = el?.querySelector("#file");
+    if (fileField) fileField.value = null;
+
+    this.fileDisplay();
+  }
+  function progressDisplay() {
+    const progressValue = el?.querySelector("[data-progress-value]");
+    const progressFill: any = el?.querySelector("[data-progress-fill]");
+    const progressTimes100 = Math.floor(progress * 100);
+
+    if (progressValue) progressValue.textContent = `${progressTimes100}%`;
+    if (progressFill) progressFill.style.transform = `translateX(${progressTimes100}%)`;
+  }
+  function file() {
+    let t: any = el?.querySelector("#file");
+    t.click();
+  }
   class UploadModal {
     filename = "";
     isCopying = false;
@@ -233,7 +260,7 @@ const FileUpload = () => {
             <h2 className="text-xl leading-5 font-medium mb-6 text-center">Upload a File</h2>
             <p className="min-h-[3rem] mb-6 text-base">Select a file to upload from your computer or device.</p>
             <div className="flex items-center flex-wrap delay-200">
-              <button className="hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50 bg-transparent border border-[#737a8c] flex-1" type="button" data-action="file">Choose File</button> {/* <!-- modal button upload --> */}
+              <button className="hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50 bg-transparent border border-[#737a8c] flex-1" type="button" onClick={file}>Choose File</button> {/* <!-- modal button upload --> */}
               <input id="file" type="file" hidden />
             </div>
             <div className="flex items-center flex-wrap delay-200" hidden>
@@ -266,7 +293,7 @@ const FileUpload = () => {
                   <div className="bg-[#e3e4e8] w-full h-full transition-transform" data-progress-fill></div>
                 </div>
               </div>
-              <button className="bg-[#737a8c] hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50" type="button" data-action="cancel">Cancel</button> {/* <!-- modal button --> */}
+              <button className="bg-[#737a8c] hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50" type="button" onClick={cancel}>Cancel</button> {/* <!-- modal button --> */}
             </div>
           </div>
           <div className="modal__content" hidden> {/* <!-- modal content --> */}
@@ -274,7 +301,7 @@ const FileUpload = () => {
             <p className="min-h-[3rem] mb-6 text-base">Your file could not be uploaded due to an error. Try uploading it again?</p>
             <div className="flex items-center flex-wrap delay-200 modal__actions--center">
               <button className="bg-[#737a8c] hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50" type="button" data-action="upload">Retry</button> {/* <!-- modal button --> */}
-              <button className="bg-[#737a8c] hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50 mt-3" type="button" data-action="cancel">Cancel</button> {/* <!-- modal button --> */}
+              <button className="bg-[#737a8c] hover:bg-[#8f95a3] rounded text-xs py-2 px-8 transition-colors w-full text-current focus:outline-none disabled:opacity-50 mt-3" type="button" onClick={cancel}>Cancel</button> {/* <!-- modal button --> */}
             </div>
           </div>
           <div className="modal__content" hidden> {/* <!-- modal content --> */}
