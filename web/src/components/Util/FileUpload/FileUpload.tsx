@@ -9,13 +9,12 @@ const FileUpload = () => {
   let state = 0;
   let el = document.querySelector("#upload");
 
-  el.addEventListener("click", action.bind(this));
   el.querySelector("#file")?.addEventListener("change", fileHandle.bind(this));
 
-  function action(e) {
-    this[e.target?.getAttribute("data-action")]?.();
-    stateDisplay();
-  }
+  // function action(e) {
+  //   this[e.target?.getAttribute("data-action")]?.();
+  //   stateDisplay();
+  // }
 
   function fileHandle(e) {
     return new Promise(() => {
