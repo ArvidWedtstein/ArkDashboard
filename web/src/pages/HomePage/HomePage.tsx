@@ -18,7 +18,7 @@ const HomePage = () => {
     <>
       <MetaTags title="Home" description="Home page" />
       <div className="container-xl p-3 text-center">
-        <Slideshow />
+        <Slideshow slides={[{ url: "https://wallpaper.dog/large/5509169.jpg" }, { url: "https://mdbootstrap.com/img/Photos/Slides/img%20(23).jpg" }, { url: "https://wallpaper.dog/large/5509169.jpg" }]} />
         {/* <FileUpload /> */}
         <div
           className="relative overflow-hidden bg-cover bg-no-repeat"

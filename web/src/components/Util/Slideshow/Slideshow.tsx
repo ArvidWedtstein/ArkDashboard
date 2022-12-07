@@ -1,8 +1,8 @@
 interface ISlideshowProps {
-  slides?: {
+  slides: {
     url: string;
-    title: string;
-    subtitle: string;
+    title?: string;
+    subtitle?: string;
   }[];
 }
 const Slideshow = ({ slides }: ISlideshowProps) => {
