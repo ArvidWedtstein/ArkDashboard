@@ -35,8 +35,8 @@ const Slideshow = ({ slides }: ISlideshowProps) => {
     <div className="my-0 mx-auto overflow-hidden max-w-[500px]">
       <div className="whitespace-nowrap transition ease-in-out duration-1000"
         style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
-        {slides.map((slide, index) => (
-          <div className="w-full h-[400px] rounded inline-block" key={index}>
+        {slides.map((slide, indegs) => (
+          <div className="w-full h-[400px] rounded inline-block" key={indegs} style={{ display: `${indegs === index ? 'inline-block' : 'none'}` }}>
             {slide && <img src={slide.url} className="w-full h-full object-cover" />}
           </div>
         ))}
