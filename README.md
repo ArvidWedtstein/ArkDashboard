@@ -275,10 +275,8 @@ Will come later
 [issues-url]: https://github.com/ArvidWedtstein/ArkDashboard/issues
 [license-shield]: https://img.shields.io/github/license/ArvidWedtstein/ArkDashboard.svg?style=for-the-badge
 [license-url]: https://github.com/ArvidWedtstein/ArkDashboard/blob/prod/LICENSE.txt
-[version-shield]: https://img.shields.io/github/package-json/v/ArvidWedtstein/ArkDashboard?style=for-the-badge
+[version-shield]: https://img.shields.io/github/package-json/v/ArvidWedtstein/ArkDashboard/Prod?style=for-the-badge
 [version-url]: https://github.com/ArvidWedtstein/ArkDashboard
-[discordjs]: https://img.shields.io/badge/discord.js-000000?style=for-the-badge&logo=discord&logoColor=white
-[discordjs-url]: https://discord.com/developers/docs/intro
 
 
 <!-- https://supabase.com/docs/guides/auth/auth-discord -->
