@@ -34,7 +34,6 @@ const Slideshow = ({ slides }: ISlideshowProps) => {
   return (
     <div className="my-0 mx-auto overflow-hidden max-w-[500px]">
       <div className="transition ease-in-out duration-1000 relative"
-        style={{ opacity: `${index * 100}` }}
       > {/* whitespace-nowrap  style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }} */}
         {slides.map((slide, indegs) => (
           <div className={`h-[400px] absolute left-0 ${indegs === index ? 'opacity-100' : 'opacity-0'}`} key={indegs} style={{ opacity: `${indegs === index ? '100' : '0'}` }}> {/* w-full h-[400px] rounded inline-block */}
