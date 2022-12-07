@@ -66,9 +66,6 @@ Description will come later
 
 This project is mainly written in React, together with these frameworks and libraries:
 
-<!-- * [![DiscordJS][DiscordJS]][Discordjs-url]
-* [![MongoDB][MongoDB]][MongoDB-url] -->
-
 <div align="left">
 
 ![Stuff used in this project](https://arvidgithubembed.herokuapp.com/skills?languages=typescript,redwood,prisma,sql,react&backgroundcolor=0D1117&title=-&titlecolor=ffffff&textcolor=ffffff&boxcolor=CFCDFF&bordercolor=0D1117)
@@ -274,13 +271,9 @@ Will come later
 [issues-shield]: https://img.shields.io/github/issues/ArvidWedtstein/ArkDashboard.svg?style=for-the-badge
 [issues-url]: https://github.com/ArvidWedtstein/ArkDashboard/issues
 [license-shield]: https://img.shields.io/github/license/ArvidWedtstein/ArkDashboard.svg?style=for-the-badge
-[license-url]: https://github.com/ArvidWedtstein/ArkDashboard/blob/master/LICENSE.txt
-[version-shield]: https://img.shields.io/github/package-json/v/arvidwedtstein/ArkDashboard?style=for-the-badge
+[license-url]: https://github.com/ArvidWedtstein/ArkDashboard/blob/prod/LICENSE.txt
+[version-shield]: https://img.shields.io/github/package-json/v/arvidwedtstein/ArkDashboard/dev?style=for-the-badge
 [version-url]: https://github.com/ArvidWedtstein/ArkDashboard
-[discordjs]: https://img.shields.io/badge/discord.js-000000?style=for-the-badge&logo=discord&logoColor=white
-[discordjs-url]: https://discord.com/developers/docs/intro
-[mongodb]: https://img.shields.io/badge/MongoDB-000000?style=for-the-badge&logo=mongodb&logoColor=white
-[mongodb-url]: https://www.mongodb.com/
 
 <!-- https://supabase.com/docs/guides/auth/auth-discord -->
 <!--https://api.kanye.rest-->
