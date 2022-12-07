@@ -36,7 +36,7 @@ const Slideshow = ({ slides }: ISlideshowProps) => {
       <div className="whitespace-nowrap transition ease-in-out duration-1000"
         style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
         {slides.map((slide, indegs) => (
-          <div className="w-full h-[400px] rounded inline-block" key={indegs} style={{ opacity: `${indegs === index ? '100' : '0'}` }}>
+          <div className="w-full h-[400px] rounded inline-block" key={indegs} style={{ opacity: `${indegs === index ? '100' : '50'}` }}>
             {slide && <img src={slide.url} className="w-full h-full object-cover" />}
           </div>
         ))}
@@ -45,7 +45,7 @@ const Slideshow = ({ slides }: ISlideshowProps) => {
         {slides.map((_, idx) => (
           <div
             key={idx}
-            className={`inline-block w-[30px] h-[3px] p-0 flex-initial ml-[3px] mr-[3px] cursor-pointer bg-white bg-clip-padding transition-opacity ${index === idx ? "opacity-100" : "opacity-50"}`}
+            className={`inline-block w-[30px] h-[3px] p-0 flex-initial mx-1 cursor-pointer bg-white bg-clip-padding transition-opacity ${index === idx ? "opacity-100" : "opacity-50"}`}
             onClick={() => {
               setIndex(idx);
             }}
