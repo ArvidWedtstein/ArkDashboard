@@ -33,7 +33,7 @@ const Slideshow = ({ slides }: ISlideshowProps) => {
 
   return (
     <div className="my-0 mx-auto overflow-hidden max-w-[500px]">
-      <div className="whitespace-nowrap transition ease-in-out duration-500"
+      <div className="whitespace-nowrap transition ease-in-out duration-1000"
         style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}>
         {slides.map((slide, index) => (
           <div className="w-full h-[400px] rounded inline-block" key={index}>
@@ -45,7 +45,7 @@ const Slideshow = ({ slides }: ISlideshowProps) => {
         {slides.map((_, idx) => (
           <div
             key={idx}
-            className={`inline-block h-5 w-5 rounded-full cursor-pointer mt-4 px-2 ${index === idx ? "bg-green-700" : "bg-[#c4c4c4]"}`}
+            className={`inline-block w-[30px] h-[3px] p-0 flex-initial ml-[3px] mr-[3px] cursor-pointer bg-white bg-clip-padding transition-opacity ${index === idx ? "opacity-100" : "opacity-50"}`}
             onClick={() => {
               setIndex(idx);
             }}
