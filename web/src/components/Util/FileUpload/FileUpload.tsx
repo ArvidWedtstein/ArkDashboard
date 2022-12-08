@@ -80,7 +80,6 @@ const FileUpload = ({ }) => {
       progress = 0;
       state = 1;
 
-      console.log(files);
       try {
         files.forEach(async file => {
           const fileExt = file.name.split(".").pop();
@@ -99,7 +98,7 @@ const FileUpload = ({ }) => {
       } catch (error) {
         fail();
       } finally {
-        isUploading = false;
+        success();
       }
     }
     stateDisplay();

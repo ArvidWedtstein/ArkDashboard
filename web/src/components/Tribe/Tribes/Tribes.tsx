@@ -102,7 +102,7 @@ const TribesList = ({ tribes }: FindTribes) => {
       {/* TODO: Replace user uuid with user name and profile picture */}
       <Table
         data={tribes}
-        cols={["name", "description", "createdAt", "createdBy", "actions"]}
+        cols={["name", "description", "createdAt", "full_name", "actions"]}
         renderActions={(row) => (
           <>
             <nav className="flex flex-row">
