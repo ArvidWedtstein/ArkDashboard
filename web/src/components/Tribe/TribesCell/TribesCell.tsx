@@ -46,6 +46,13 @@ export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>
 )
 
-export const Success = ({ tribes }: CellSuccessProps<FindTribes>) => {
-  return <Tribes tribes={tribes} />
+export const Success = async ({ tribes }: CellSuccessProps<FindTribes>) => {
+  const { client } = useAuth();
+  let { data, error, status } = await client
+    .from("tribe_view")
+    .select(
+      `id, name, description, createdAt, updatedAt, createdBy, full_name`
+    )
+
+  return <Tribes tribes={data} />
 }
