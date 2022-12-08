@@ -18,7 +18,6 @@ model basespot {
   createdAt           DateTime @default(now())
   Map                 String?
   estimatedForPlayers String?  @default("0")
-  turretsetup_images  String?
 }
 
 model tribe {
