@@ -1,5 +1,7 @@
 /** @type {require('tailwindcss').Config} */
+const plugin = require("tailwindcss/plugin");
 module.exports = {
+  variants: {},
   content: ["src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
@@ -23,5 +25,9 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(({ addVariant }) => {
+      addVariant("dataready", '&[data-ready="true"]');
+    }),
+  ],
 };

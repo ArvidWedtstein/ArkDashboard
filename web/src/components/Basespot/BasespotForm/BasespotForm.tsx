@@ -12,6 +12,7 @@ import type { EditBasespotById, UpdateBasespotInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import Avatar from "src/components/Avatar/Avatar";
 import { useState } from "react";
+import FileUpload from "src/components/Util/FileUpload/FileUpload";
 
 type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
 
@@ -118,6 +119,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           Image
         </Label>
 
+        <FileUpload />
         <Avatar
           className="max-w-150-px absolute -mt-16 h-auto rounded-full border-none align-middle shadow-xl"
           url={props.basespot?.image}
