@@ -23,6 +23,7 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
     },
     onError: (error) => {
       toast.error(error.message)
+      console.log(error)
     },
     // This refetches the query on the list page. Read more about other ways to
     // update the cache over here:
@@ -48,7 +49,7 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
             subtitle={basespot.Map}
             content={basespot.description}
             ring={`${basespot.estimatedForPlayers} players`}
-            // image={basespot.image}
+            image={basespot.image}
             button={{
               text: 'Learn Moar',
               link: routes.basespot({ id: basespot.id }),
