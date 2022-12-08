@@ -2,12 +2,11 @@ import { useAuth } from "@redwoodjs/auth";
 import { useRef } from "react";
 
 interface IFileUploadProps {
-  onUpload?: (file: File) => void;
-  storage?: string;
+  onUpload?: (url) => void;
   className?: string;
   multiple?: boolean;
 }
-const FileUpload = ({ }) => {
+const FileUpload = ({ onUpload }: IFileUploadProps) => {
   let filename = "";
   let files = [];
   let isCopying,
@@ -93,6 +92,7 @@ const FileUpload = ({ }) => {
           if (uploadError) {
             fail();
           }
+          onUpload && onUpload(filePath);
         });
         progressLoop();
       } catch (error) {
