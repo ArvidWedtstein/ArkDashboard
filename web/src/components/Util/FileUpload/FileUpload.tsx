@@ -1,9 +1,15 @@
 import { useAuth } from "@redwoodjs/auth";
 import { useRef } from "react";
 
-
-const FileUpload = () => {
+interface IFileUploadProps {
+  onUpload?: (file: File) => void;
+  storage?: string;
+  className?: string;
+  multiple?: boolean;
+}
+const FileUpload = ({ }) => {
   let filename = "";
+  let files = [];
   let isCopying,
     isUploading = false;
   let progress = 0;
@@ -19,7 +25,8 @@ const FileUpload = () => {
       if (target?.files.length) {
         let reader = new FileReader();
         reader.onload = e2 => {
-          fileDisplay(target.files[0].name);
+          files = Array.from(target.files);
+          fileDisplay(files.length > 1 ? `${files.length} files` : target.files[0].name);
         };
         reader.readAsDataURL(target.files[0]);
       }
@@ -73,6 +80,26 @@ const FileUpload = () => {
       progress = 0;
       state = 1;
       progressLoop();
+
+      try {
+        files.forEach(async file => {
+          const fileExt = file.name.split(".").pop();
+          const fileName = `${Math.random()}.${fileExt}`;
+          const filePath = `${fileName}`;
+
+          let { error: uploadError } = await supabase.storage
+            .from("basespotimages/thumbnails")
+            .upload(filePath, file);
+
+          if (uploadError) {
+            fail();
+          }
+        });
+      } catch (error) {
+        fail();
+      } finally {
+        isUploading = false;
+      }
     }
     stateDisplay();
   }
@@ -86,30 +113,31 @@ const FileUpload = () => {
   async function progressLoop() {
     progressDisplay();
 
-    if (isUploading) {
-      if (progress === 0) {
-        await new Promise(res => setTimeout(res, 1000));
-        // fail randomly
-        if (!isUploading) {
-          return;
-        } else if (Utils.randomInt(0, 2) === 0) {
-          fail();
-          return;
+    try {
+      if (isUploading) {
+        if (progress === 0) {
+          await new Promise(res => setTimeout(res, 1000));
+
+          if (!isUploading) {
+            return;
+          }
+        }
+
+        if (progress < 1) {
+          progress += 0.01;
+          progressTimeout = setTimeout(progressLoop.bind(this), 50);
+        } else if (progress >= 1) {
+          progressTimeout = setTimeout(() => {
+            if (isUploading) {
+              success();
+              stateDisplay();
+              progressTimeout = null;
+            }
+          }, 250);
         }
       }
-      // …or continue with progress
-      if (progress < 1) {
-        progress += 0.01;
-        progressTimeout = setTimeout(progressLoop.bind(this), 50);
-      } else if (progress >= 1) {
-        progressTimeout = setTimeout(() => {
-          if (isUploading) {
-            success();
-            stateDisplay();
-            progressTimeout = null;
-          }
-        }, 250);
-      }
+    } catch (error) {
+      fail();
     }
   }
   function success() {
@@ -128,21 +156,12 @@ const FileUpload = () => {
       copyButton.disabled = true;
       copyButton.textContent = "Copied!";
       navigator.clipboard.writeText(filename);
-      await new Promise(res => setTimeout(res, 2000));
+      await new Promise(res => setTimeout(res, 1000));
       // reenable
       isCopying = false;
       copyButton.removeAttribute("style");
       copyButton.disabled = false;
       copyButton.textContent = "Copy Link";
-    }
-  }
-
-  class Utils {
-    static randomInt(min = 0, max = 2 ** 32) {
-      const percent = crypto.getRandomValues(new Uint32Array(1))[0] / 2 ** 32;
-      const relativeValue = (max - min) * percent;
-
-      return Math.round(min + relativeValue);
     }
   }
 
