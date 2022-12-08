@@ -47,12 +47,12 @@ export const Failure = ({ error }: CellFailureProps) => (
 )
 
 export const Success = async ({ tribes }: CellSuccessProps<FindTribes>) => {
-  const { client } = useAuth();
-  let { data, error, status } = await client
-    .from("tribe_view")
-    .select(
-      `id, name, description, createdAt, updatedAt, createdBy, full_name`
-    )
-  console.log(data)
+  // const { client } = useAuth();
+  // let { data, error, status } = await client
+  //   .from("tribe_view")
+  //   .select(
+  //     `id, name, description, createdAt, updatedAt, createdBy, full_name`
+  //   )
+  // console.log(data)
   return <Tribes tribes={tribes} />
 }

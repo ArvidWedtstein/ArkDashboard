@@ -2,7 +2,7 @@ import { useAuth } from "@redwoodjs/auth";
 import { useRef } from "react";
 
 interface IFileUploadProps {
-  onUpload?: (url) => void;
+  onUpload?: (url: any) => void;
   className?: string;
   multiple?: boolean;
 }
