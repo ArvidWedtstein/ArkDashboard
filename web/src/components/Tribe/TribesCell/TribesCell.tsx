@@ -53,6 +53,6 @@ export const Success = async ({ tribes }: CellSuccessProps<FindTribes>) => {
     .select(
       `id, name, description, createdAt, updatedAt, createdBy, full_name`
     )
-
-  return <Tribes tribes={data} />
+  console.log(data)
+  return <Tribes tribes={tribes} />
 }

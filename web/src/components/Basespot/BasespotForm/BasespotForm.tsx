@@ -119,7 +119,10 @@ const BasespotForm = (props: BasespotFormProps) => {
           Image
         </Label>
 
-        <FileUpload />
+        <FileUpload
+          onUpload={(url) => {
+            setThumbnailUrl(URL.createObjectURL(url));
+          }} />
         <Avatar
           className="max-w-150-px absolute -mt-16 h-auto rounded-full border-none align-middle shadow-xl"
           url={props.basespot?.image}
