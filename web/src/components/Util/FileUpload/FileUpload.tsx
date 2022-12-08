@@ -79,8 +79,8 @@ const FileUpload = ({ }) => {
       isUploading = true;
       progress = 0;
       state = 1;
-      progressLoop();
 
+      console.log(files);
       try {
         files.forEach(async file => {
           const fileExt = file.name.split(".").pop();
@@ -95,6 +95,7 @@ const FileUpload = ({ }) => {
             fail();
           }
         });
+        progressLoop();
       } catch (error) {
         fail();
       } finally {
@@ -223,7 +224,7 @@ const FileUpload = ({ }) => {
           </div>
           <div className="modal__content" hidden> {/* <!-- modal content --> */}
             <h2 className="text-xl leading-5 font-medium mb-6 text-center">Uploading…</h2>
-            <p className="min-h-[3rem] mb-6 text-base">Just give us a moment to process your file.</p>
+            <p className="min-h-[3rem] mb-6 text-base text-center">Just give us a moment to process your file.</p>
             <div className="flex items-center flex-wrap delay-200">
               <div className="flex-1">
                 <div className="text-xs font-bold leading-5 text-right" data-progress-value>0%</div>
