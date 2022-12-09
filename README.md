@@ -45,7 +45,15 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li>
+      <a href="#usage">Usage</a>
+      <ul>
+        <li><a href="#pages">Pages</a></li>
+        <li><a href="#sdl">SDL</a></li>
+        <li><a href="#cell">Cell</a></li>
+        <li><a href="#database">Database</a></li>
+      </ul>
+    </li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -274,7 +282,6 @@ Will come later
 [license-url]: https://github.com/ArvidWedtstein/ArkDashboard/blob/prod/LICENSE.txt
 [version-shield]: https://img.shields.io/github/package-json/v/ArvidWedtstein/ArkDashboard/dev?style=for-the-badge
 [version-url]: https://github.com/ArvidWedtstein/ArkDashboard
-
 
 <!-- https://supabase.com/docs/guides/auth/auth-discord -->
 <!--https://api.kanye.rest-->
