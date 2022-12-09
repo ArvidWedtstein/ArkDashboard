@@ -56,7 +56,7 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
   return (
     <div className="">
 
-      <div className='grid mt-8 gap-8 grid-cols-1 md:grid-cols-2 xl:grid-cols-2 mb-5'>
+      <div className='grid mt-8 gap-8 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 mb-5'>
         {basespots.map((basespot, i) => (
           <ArkCard
             key={i}
