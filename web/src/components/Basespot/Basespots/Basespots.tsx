@@ -1,9 +1,11 @@
 import { Link, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
+import { useState } from 'react'
 import ArkCard from 'src/components/ArkCard/ArkCard'
 
 import { QUERY } from 'src/components/Basespot/BasespotsCell'
+import Lookup from 'src/components/Lookup/Lookup'
 import { timeTag, truncate } from 'src/lib/formatters'
 
 import type { DeleteBasespotMutationVariables, FindBasespots } from 'types/graphql'
@@ -51,13 +53,16 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
     Fjordur: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1887560/ss_331869adb5f0c98e3f13b48189e280f8a0ba1616.1920x1080.jpg?t=1655054447',
     LostIsland: 'https://dicendpads.com/wp-content/uploads/2021/12/Ark-Lost-Island.png',
     Gen2: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444',
-
   }
+  let [currentMap, setCurrentMap] = useState('')
   return (
     <div className="">
-
+      <div className="flex justify-between items-center">
+        <Lookup items={Object.keys(mapImages)} onChange={(e) => setCurrentMap(e)} />
+        <button className="bg-gray-800 text-white px-4 py-2 rounded-md" onClick={() => setCurrentMap('')}>Clear</button>
+      </div>
       <div className='grid mt-8 gap-8 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 mb-5'>
-        {basespots.map((basespot, i) => (
+        {basespots.filter((spot) => spot.Map.includes(currentMap)).map((basespot, i) => (
           <ArkCard
             key={i}
             title={basespot.name}
