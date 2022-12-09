@@ -121,6 +121,8 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <FileUpload
           onUpload={(url) => {
+            console.log("Fileupload")
+            console.log(url)
             setThumbnailUrl(URL.createObjectURL(url));
           }} />
         <Avatar
@@ -130,6 +132,8 @@ const BasespotForm = (props: BasespotFormProps) => {
           storage="basespotimages/thumbnails"
           editable={true}
           onUpload={(url) => {
+            console.log("Avatarupload")
+            console.log(url)
             setThumbnailUrl(URL.createObjectURL(url));
           }}
         />

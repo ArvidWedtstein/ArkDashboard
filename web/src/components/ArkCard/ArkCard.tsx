@@ -14,7 +14,7 @@ interface IArkCard {
 
 const ArkCard = ({ title, subtitle, content, ring, button, image }: IArkCard) => {
   return (
-    <div className="relative bg-gray-600 shadow-md rounded-3xl" style={{ background: `url('${image ?? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s"}')`, backgroundSize: "cover", backgroundPosition: "center" }}>
+    <div className="relative bg-gray-600 shadow-md rounded-3xl" style={{ background: `${`url('${image}')` ?? "#333333"}`, backgroundSize: "cover", backgroundPosition: "center" }}>
       <div className="bg-[#121317] bg-opacity-60 shadow-md h-full rounded-3xl p-4">
         <div className="flex-none lg:flex">
           <div className=" h-full w-full lg:h-48 lg:w-48   lg:mb-0 mb-3">
