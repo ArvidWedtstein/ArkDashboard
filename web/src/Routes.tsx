@@ -20,7 +20,7 @@ const Routes = () => {
           wrap={ScaffoldLayout}
           title="Basespots"
           titleTo="basespots"
-          buttonLabel="New Basespot"
+          buttonLabel="New Spot"
           buttonTo="newBasespot"
         >
           <Private unauthenticated="login">
