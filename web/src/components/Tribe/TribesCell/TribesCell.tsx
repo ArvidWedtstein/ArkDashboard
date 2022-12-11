@@ -1,10 +1,10 @@
-import type { FindTribes } from 'types/graphql'
+import type { FindTribes } from "types/graphql";
 
-import { Link, routes } from '@redwoodjs/router'
-import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
+import { Link, routes } from "@redwoodjs/router";
+import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
-import Tribes from 'src/components/Tribe/Tribes'
-import { useAuth } from '@redwoodjs/auth'
+import Tribes from "src/components/Tribe/Tribes";
+import { useAuth } from "@redwoodjs/auth";
 
 export const QUERY = gql`
   query FindTribes {
@@ -17,7 +17,7 @@ export const QUERY = gql`
       createdBy
     }
   }
-`
+`;
 
 export const Loading = () => (
   <div className="text-center">
@@ -25,28 +25,24 @@ export const Loading = () => (
       <span className="sr-only">Loading...</span>
     </div>
   </div>
-
-)
+);
 
 export const Empty = () => {
   return (
     <div className="rw-text-center">
-      {'No tribes yet. '}
-      <Link
-        to={routes.newTribe()}
-        className="rw-link"
-      >
-        {'Create one?'}
+      {"No tribes yet. "}
+      <Link to={routes.newTribe()} className="rw-link">
+        {"Create one?"}
       </Link>
     </div>
-  )
-}
+  );
+};
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>
-)
+);
 
-export const Success = async ({ tribes }: CellSuccessProps<FindTribes>) => {
+export const Success = ({ tribes }: CellSuccessProps<FindTribes>) => {
   // const { client } = useAuth();
   // let { data, error, status } = await client
   //   .from("tribe_view")
@@ -54,5 +50,5 @@ export const Success = async ({ tribes }: CellSuccessProps<FindTribes>) => {
   //     `id, name, description, createdAt, updatedAt, createdBy, full_name`
   //   )
   // console.log(data)
-  return <Tribes tribes={tribes} />
-}
+  return <Tribes tribes={tribes} />;
+};
