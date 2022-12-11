@@ -71,9 +71,9 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
     <div className="">
       <div className="flex items-center justify-between">
         <Lookup
-          items={Object.keys(mapImages).map((k) => {
-            name: k;
-          })}
+          items={Object.keys(mapImages).map((k) => ({
+            name: k,
+          }))}
           onChange={(e) => setCurrentMap(e)}
         />
         <button
