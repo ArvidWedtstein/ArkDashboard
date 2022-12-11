@@ -51,7 +51,7 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
     ScorchedEarth: "https://wallpapercave.com/wp/wp10504822.jpg",
     Ragnarok:
       "https://cdn.survivetheark.com/uploads/monthly_2016_10/large.580b5a9c3b586_Ragnarok02.jpg.6cfa8b30a81187caace6fecc1e9f0c31.jpg",
-    Aberration:
+    Abberation:
       "https://cdn.images.express.co.uk/img/dynamic/143/590x/ARK-Survival-Evolved-849382.jpg",
     Extinction:
       "https://cdn.cloudflare.steamstatic.com/steam/apps/887380/ss_3c2c1d7c027c8beb54d2065afe3200e457c2867c.1920x1080.jpg?t=1594677636",
@@ -85,7 +85,9 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
       </div>
       <div className="mt-8 mb-5 grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
         {basespots
-          .filter((spot) => spot.Map.includes(currentMap))
+          .filter((spot) =>
+            spot.Map.toLowerCase().includes(currentMap.toLowerCase())
+          )
           .map((basespot, i) => (
             <ArkCard
               key={i}
