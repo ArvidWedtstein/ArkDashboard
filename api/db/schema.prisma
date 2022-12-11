@@ -16,7 +16,7 @@ model basespot {
   longitude           Float
   image               String?
   createdAt           DateTime  @default(now())
-  Map                 String?   @default("TheIsland")
+  Map                 String    @default("TheIsland")
   estimatedForPlayers String?   @default("0")
   defenseImages       String[]
   createdBy           String?   @db.Uuid

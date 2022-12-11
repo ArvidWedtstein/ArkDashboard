@@ -45,7 +45,15 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li>
+      <a href="#usage">Usage</a>
+      <ul>
+        <li><a href="#pages">Pages</a></li>
+        <li><a href="#sdl">SDL</a></li>
+        <li><a href="#cell">Cell</a></li>
+        <li><a href="#database">Database</a></li>
+      </ul>
+    </li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -86,8 +94,14 @@ To run this project you'll need to have nodejs installed on your computer. You c
 Get latest npm version
 
 - npm
+
   ```sh
   npm install npm@latest -g
+  ```
+
+- yarn
+  ```sh
+  npm install -g yarn
   ```
 
 ### Installation
@@ -100,13 +114,13 @@ Get latest npm version
    ```sh
    npm install
    ```
-3. Create a .env file in the root directory and add your environment variables
-   ```JS
-   TOKEN=YOUR_TOKEN
-   ```
-4. Run the bot
+3. Create a .env file in the root directory and add your environment variables. I used supabase postgres for this project, so you'll need to create a supabase account and add the url and key to your .env file. You can also use a different database, but you'll need to change the database url in the api/prisma/schema.prisma file.
    ```sh
-   npm run dev
+    DATABASE_URL=postgresql://<user>:<pass>@db.<project>.supabase.co:<port>/postgres
+   ```
+4. Check if everything is fine.
+   ```sh
+   yarn redwood check
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -274,7 +288,6 @@ Will come later
 [license-url]: https://github.com/ArvidWedtstein/ArkDashboard/blob/prod/LICENSE.txt
 [version-shield]: https://img.shields.io/github/package-json/v/ArvidWedtstein/ArkDashboard/dev?style=for-the-badge
 [version-url]: https://github.com/ArvidWedtstein/ArkDashboard
-
 
 <!-- https://supabase.com/docs/guides/auth/auth-discord -->
 <!--https://api.kanye.rest-->
