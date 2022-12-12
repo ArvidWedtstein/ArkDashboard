@@ -39,8 +39,6 @@ const TribesList = ({ tribes }: FindTribes) => {
     }
   };
 
-
-
   function filterDatesByCurrentWeek(dates: FindTribes["tribes"]) {
     let [start, end] = getWeekDates();
     return dates.filter(
@@ -76,12 +74,16 @@ const TribesList = ({ tribes }: FindTribes) => {
           </div>
           <div className="ml-4">
             <h2 className="font-semibold">
-              {filterDatesByCurrentWeek(tribes).length} {filterDatesByCurrentWeek(tribes).length > 1 ? "Tribes" : "Tribe"}
+              {filterDatesByCurrentWeek(tribes).length}{" "}
+              {filterDatesByCurrentWeek(tribes).length > 1 ? "Tribes" : "Tribe"}
             </h2>
             <p className="mt-2 text-sm text-gray-500">Created this week</p>
           </div>
         </div>
-        <div className="flex items-start rounded-xl bg-white p-4 shadow-lg">
+        <div
+          className="flex items-start rounded-xl bg-white p-4 shadow-lg"
+          onClick={pickRandomTribe}
+        >
           <div className="flex h-12 w-12 items-center justify-center rounded-full border border-blue-100 bg-blue-50">
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -6,7 +6,7 @@ import ArkCard from "src/components/ArkCard/ArkCard";
 
 import { QUERY } from "src/components/Basespot/BasespotsCell";
 import Lookup from "src/components/Lookup/Lookup";
-import { timeTag, truncate } from "src/lib/formatters";
+import { random, timeTag, truncate } from "src/lib/formatters";
 
 import type {
   DeleteBasespotMutationVariables,
@@ -43,6 +43,10 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
     }
   };
 
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage] = useState(3);
+
   const mapImages = {
     TheIsland:
       "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
@@ -51,7 +55,7 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
     ScorchedEarth: "https://wallpapercave.com/wp/wp10504822.jpg",
     Ragnarok:
       "https://cdn.survivetheark.com/uploads/monthly_2016_10/large.580b5a9c3b586_Ragnarok02.jpg.6cfa8b30a81187caace6fecc1e9f0c31.jpg",
-    Aberration:
+    Abberation:
       "https://cdn.images.express.co.uk/img/dynamic/143/590x/ARK-Survival-Evolved-849382.jpg",
     Extinction:
       "https://cdn.cloudflare.steamstatic.com/steam/apps/887380/ss_3c2c1d7c027c8beb54d2065afe3200e457c2867c.1920x1080.jpg?t=1594677636",
@@ -67,15 +71,18 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
     Gen2: "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
   };
   let [currentMap, setCurrentMap] = useState("");
+  // https://hygraph.com/blog/react-pagination
   return (
     <div className="">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center">
         <Lookup
           items={Object.keys(mapImages).map((k) => ({
             name: k,
           }))}
           onChange={(e) => setCurrentMap(e)}
-        />
+        >
+          {!!currentMap ? currentMap : "Choose map"}
+        </Lookup>
         <button
           className="rounded-md bg-gray-800 px-4 py-2 text-white"
           onClick={() => setCurrentMap("")}
@@ -83,17 +90,23 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
           Clear
         </button>
       </div>
-      <div className="mt-8 mb-5 grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {basespots
-          .filter((spot) => spot.Map.includes(currentMap))
+          .filter((spot) =>
+            spot.Map.toLowerCase().includes(currentMap.toLowerCase())
+          )
           .map((basespot, i) => (
             <ArkCard
               key={i}
               title={basespot.name}
-              subtitle={basespot.Map}
+              subtitle={basespot.Map.split(/(?=[A-Z])/).join(" ")}
               content={basespot.description}
               ring={`${basespot.estimatedForPlayers} players`}
-              image={mapImages[basespot.Map]}
+              image={{
+                src: mapImages[basespot.Map],
+                alt: basespot.Map,
+                position: `${random(0, 100)}% ${random(25, 75)}%`,
+              }}
               button={{
                 text: "Learn Moar",
                 link: routes.basespot({ id: basespot.id }),

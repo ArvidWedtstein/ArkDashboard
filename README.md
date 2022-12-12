@@ -11,13 +11,13 @@
 <br />
 <div align="center">
   <a href="https://github.com/ArvidWedtstein/ArkDashboard">
-    <img src="img/logo.png" alt="Logo" width="80" height="80">
+    <img src="web/public/favicon.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">ArkDashboard</h3>
 
   <p align="center">
-    Website for ark Basespots and more
+    Website for ARK: Survival Evolved Basespots and more
     <br />
     <a href="https://github.com/ArvidWedtstein/ArkDashboard"><strong>Explore the docs »</strong></a>
     <br />

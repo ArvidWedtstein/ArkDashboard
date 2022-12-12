@@ -1,56 +1,60 @@
-import React from 'react'
+import React from "react";
 
-import humanize from 'humanize-string'
-import prices from '../../public/arkitems.json'
-const MAX_STRING_LENGTH = 150
+import humanize from "humanize-string";
+import prices from "../../public/arkitems.json";
+const MAX_STRING_LENGTH = 150;
 
 export const formatEnum = (values: string | string[] | null | undefined) => {
-  let output = ''
+  let output = "";
 
   if (Array.isArray(values)) {
-    const humanizedValues = values.map((value) => humanize(value))
-    output = humanizedValues.join(', ')
-  } else if (typeof values === 'string') {
-    output = humanize(values)
+    const humanizedValues = values.map((value) => humanize(value));
+    output = humanizedValues.join(", ");
+  } else if (typeof values === "string") {
+    output = humanize(values);
   }
 
-  return output
-}
+  return output;
+};
 
 export const truncate = (value: string | number) => {
-  let output = value?.toString() ?? ''
+  let output = value?.toString() ?? "";
 
   if (output.length > MAX_STRING_LENGTH) {
-    output = output.substring(0, MAX_STRING_LENGTH) + '...'
+    output = output.substring(0, MAX_STRING_LENGTH) + "...";
   }
 
-  return output
-}
+  return output;
+};
 
 export const jsonTruncate = (obj: unknown) => {
-  return truncate(JSON.stringify(obj, null, 2))
-}
+  return truncate(JSON.stringify(obj, null, 2));
+};
 
 export const timeTag = (dateTime?: string) => {
-  let output: string | JSX.Element = ''
+  let output: string | JSX.Element = "";
 
   if (dateTime) {
     let options: Intl.DateTimeFormatOptions = {
-      weekday: "long", year: "numeric", month: "short",
-      day: "numeric", hour: "2-digit", minute: "2-digit"
+      weekday: "long",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     };
     output = (
       <time dateTime={dateTime} title={dateTime}>
-        {new Date(dateTime).toLocaleString('no-NO', options)}
+        {new Date(dateTime).toLocaleString("no-NO", options)}
       </time>
-    )
+    );
   }
-  return output
-}
+  return output;
+};
 
 export const checkboxInputTag = (checked: boolean) => {
-  return <input type="checkbox" checked={checked} disabled />
-}
+  return <input type="checkbox" checked={checked} disabled />;
+};
 
 /**
  * Sorts an array of T by the specified properties of property
@@ -66,11 +70,11 @@ export const dynamicSort = (property: string) => {
     /* next line works with strings and numbers,
      * and you may want to customize it to your needs
      */
-    var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+    var result =
+      a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
     return result * sortOrder;
-  }
-}
-
+  };
+};
 
 export const combineBySummingKeys = (...objects) => {
   const mergedObj = {};
@@ -79,7 +83,6 @@ export const combineBySummingKeys = (...objects) => {
     Object.keys(obj).forEach((key) => {
       mergedObj[key] = (mergedObj[key] || 0) + obj[key];
     });
-
   });
 
   return mergedObj;
@@ -88,12 +91,11 @@ export const mergeRecipe = (...objects): Object => {
   const mergedObj = {};
 
   objects.forEach((obj) => {
-
     obj.recipe.forEach((res) => {
-      mergedObj[res.itemId] = (mergedObj[res.itemId] || 0) + (res["count"] * obj.amount);
-    })
+      mergedObj[res.itemId] =
+        (mergedObj[res.itemId] || 0) + res["count"] * obj.amount;
+    });
   });
-
 
   return mergedObj;
 };
@@ -123,10 +125,9 @@ export const merge = (...sources) => {
 };
 export const capitalize = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
-}
+};
 
 export const getWeekDates = () => {
-
   let now = new Date();
   let dayOfWeek = now.getDay(); //0-6
   let numDay = now.getDate();
@@ -135,19 +136,18 @@ export const getWeekDates = () => {
   start.setDate(numDay - dayOfWeek);
   start.setHours(0, 0, 0, 0);
 
-
   let end = new Date(now); //copy
   end.setDate(numDay + (7 - dayOfWeek));
   end.setHours(0, 0, 0, 0);
 
   return [start, end];
-}
+};
 
 export const isDate = (date: any): boolean => {
   // regex test for  2022-11-28T14:17:14.899Z format
-  const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/
-  return regex.test(date)
-}
+  const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
+  return regex.test(date);
+};
 /**
  *
  * @param {Number} amount
@@ -174,7 +174,16 @@ export const calcItemCost = (amount, item_type) => {
 };
 
 // const calcItemPrice = (itemId: number, amount: number) => {
-    //   if (items.some((i) => i.itemId === parseInt(key))) {
+//   if (items.some((i) => i.itemId === parseInt(key))) {
 
-    //   }
-    // }
+//   }
+// }
+
+/**
+ *
+ * @param min minimum number
+ * @param max maximum number
+ * @returns a random number between min and max
+ */
+export const random = (min: number, max: number) =>
+  Math.floor(Math.random() * (max - min + 1) + min);
