@@ -108,7 +108,7 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
                 position: `${random(0, 100)}% ${random(25, 75)}%`,
               }}
               button={{
-                text: "Learn Moar",
+                text: "Learn More",
                 link: routes.basespot({ id: basespot.id }),
               }}
             />
