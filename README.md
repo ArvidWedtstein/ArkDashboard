@@ -11,7 +11,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/ArvidWedtstein/ArkDashboard">
-    <img src="img/logo.png" alt="Logo" width="80" height="80">
+    <img src="web/public/favicon.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">ArkDashboard</h3>
