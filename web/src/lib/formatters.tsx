@@ -187,3 +187,5 @@ export const calcItemCost = (amount, item_type) => {
  */
 export const random = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1) + min);
+
+export const wordNumberRegex = /(?:f(?:ive|our)|s(?:even|ix)|t(?:hree|wo)|(?:ni|o)ne|eight)/gi;
