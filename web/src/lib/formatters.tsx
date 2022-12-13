@@ -99,6 +99,14 @@ export const mergeRecipe = (...objects): Object => {
 
   return mergedObj;
 };
+
+
+/**
+ * @name isObject
+ * @param {any} value determines if value is an object
+ * @returns {boolean} true if value is an object
+ * @kind function
+ */
 export const isObject = (value) => {
   return (
     !!value &&
@@ -107,6 +115,18 @@ export const isObject = (value) => {
     !Array.isArray(value)
   );
 };
+
+/**
+ *
+ * @param {Array} sources
+ * @example merge({a: 1}, {b: 2}, {b: 2}) // {a: 1, b: 4}
+ * @returns merged object
+ * @mixes all input objects into one object
+ * @since 0.1.0
+ * @summary Merges all input objects into one object
+ * @static true
+ * @requires isObject function
+ */
 export const merge = (...sources) => {
   const [target, ...rest] = sources;
 
@@ -123,7 +143,7 @@ export const merge = (...sources) => {
 
   return target;
 };
-export const capitalize = (string) => {
+export const capitalize = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
@@ -181,18 +201,21 @@ export const calcItemCost = (amount, item_type) => {
 
 /**
  *
- * @param min minimum number
- * @param max maximum number
+ * @param {number} min - minimum number
+ * @param {number} max - maximum number
  * @returns a random number between min and max
  */
 export const random = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1) + min);
 
 /**
- * 
- * @param str string to match
- * @returns the matched numbers as words in the string
+ *
+ * @param {string} str string to match
+ * @returns the matched numbers as words in the string¨
+ * @example wordNumberRegex("I have two apples and 3 bananas") // ["two"]
+ * @exports wordNumberRegex
  */
+
 export const wordNumberRegex = (str: string) => {
-/(?:f(?:ive|our)|s(?:even|ix)|t(?:hree|wo)|(?:ni|o)ne|eight)/gi;
+  return str.match(/(?:f(?:ive|our)|s(?:even|ix)|t(?:hree|wo)|(?:ni|o)ne|eight)/gi);
 }
