@@ -143,6 +143,8 @@ export const merge = (...sources) => {
 
   return target;
 };
+
+
 export const capitalize = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
@@ -163,7 +165,26 @@ export const getWeekDates = () => {
   return [start, end];
 };
 
-export const isDate = (date: any): boolean => {
+// autogenerate JSdoc comment for isDate function
+/**
+ * @name isDate
+ * @param {string} date
+ * @returns {boolean} true if date is in 2022-11-28T14:17:14.899Z format
+ * @kind function
+ * @since 0.1.0
+ * @summary Checks if date is in 2022-11-28T14:17:14.899Z format
+ * @static true
+ * @requires regex test for  2022-11-28T14:17:14.899Z format
+ * @example isDate("2022-11-28T14:17:14.899Z") // true
+ * @example isDate("2022-11-28T14:17:14.899") // false
+ * @example isDate("2022-11-28T14:17:14") // false
+ * @example isDate("2022-11-28T14:17") // false
+ * @example isDate("2022-11-28T14") // false
+ * @example isDate("2022-11-28") // false
+ * @example isDate("2022-11") // false
+ * @example isDate("2022") // false
+*/
+export const isDate = (date: string): boolean => {
   // regex test for  2022-11-28T14:17:14.899Z format
   const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
   return regex.test(date);
