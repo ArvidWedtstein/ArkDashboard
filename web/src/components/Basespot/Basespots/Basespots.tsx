@@ -6,6 +6,7 @@ import ArkCard from "src/components/ArkCard/ArkCard";
 
 import { QUERY } from "src/components/Basespot/BasespotsCell";
 import Lookup from "src/components/Lookup/Lookup";
+import Paginate from "src/components/Util/Paginate/Paginate";
 import { random, timeTag, truncate } from "src/lib/formatters";
 
 import type {
@@ -43,10 +44,19 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
     }
   };
 
-  const [blogPosts, setBlogPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(3);
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  const previousPage = () => {
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
+  const nextPage = () => {
+    if (currentPage !== Math.ceil(basespots.length / 6)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
   const mapImages = {
     TheIsland:
       "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
@@ -71,7 +81,6 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
     Gen2: "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
   };
   let [currentMap, setCurrentMap] = useState("");
-  // https://hygraph.com/blog/react-pagination
   return (
     <div className="">
       <div className="flex items-center">
@@ -96,22 +105,31 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
             spot.Map.toLowerCase().includes(currentMap.toLowerCase())
           )
           .map((basespot, i) => (
-            <ArkCard
-              key={i}
-              title={basespot.name}
-              subtitle={basespot.Map.split(/(?=[A-Z])/).join(" ")}
-              content={basespot.description}
-              ring={`${basespot.estimatedForPlayers} players`}
-              image={{
-                src: mapImages[basespot.Map],
-                alt: basespot.Map,
-                position: `${random(0, 100)}% ${random(25, 75)}%`,
-              }}
-              button={{
-                text: "Learn More",
-                link: routes.basespot({ id: basespot.id }),
-              }}
-            />
+            <>
+              <ArkCard
+                key={i}
+                title={basespot.name}
+                subtitle={basespot.Map.split(/(?=[A-Z])/).join(" ")}
+                content={basespot.description}
+                ring={`${basespot.estimatedForPlayers} players`}
+                image={{
+                  src: mapImages[basespot.Map],
+                  alt: basespot.Map,
+                  position: `${random(0, 100)}% ${random(25, 75)}%`,
+                }}
+                button={{
+                  text: "Learn More",
+                  link: routes.basespot({ id: basespot.id }),
+                }}
+              />
+              <Paginate
+                postsPerPage={6}
+                totalPosts={basespots.length}
+                paginate={paginate}
+                previousPage={previousPage}
+                nextPage={nextPage}
+              />
+            </>
           ))}
       </div>
     </div>
