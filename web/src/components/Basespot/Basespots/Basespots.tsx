@@ -57,6 +57,10 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
       setCurrentPage(currentPage + 1);
     }
   };
+  
+  const indexOfLastPost = currentPage * 6;
+  const indexOfFirstPost = indexOfLastPost - 6;
+  const currentPages = basespots.slice(indexOfFirstPost, indexOfLastPost);
   const mapImages = {
     TheIsland:
       "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
@@ -105,7 +109,7 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
         {basespots
           .filter((spot) =>
             spot.Map.toLowerCase().includes(currentMap.toLowerCase())
-          )
+          ).slice(indexOfFirstPost, indexOfLastPost)
           .map((basespot, i) => (
             <>
               <ArkCard
