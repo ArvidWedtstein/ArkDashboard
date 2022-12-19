@@ -46,7 +46,7 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const paginate = (pageNumber: number) => {
-    if (currentPage !== 1 && currentPage !== Math.ceil(basespots.length / 6)) {
+    if ((currentPage !== 1 && pageNumber < currentPage) || (currentPage !== Math.ceil(basespots.length / 6) && pageNumber > currentPage)) {
       setCurrentPage(pageNumber)
     }
   };
