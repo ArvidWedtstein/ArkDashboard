@@ -19,24 +19,27 @@ const Paginate = ({
     pageNumbers.push(i);
   }
   return (
-    <div className="pagination-container">
-      <ul className="pagination">
-        <li onClick={previousPage} className="page-number">
-          Prev
-        </li>
-        {pageNumbers.map((number) => (
-          <li
-            key={number}
-            onClick={() => paginate(number)}
-            className="page-number"
-          >
-            {number}
-          </li>
-        ))}
-        <li onClick={nextPage} className="page-number">
-          Next
-        </li>
-      </ul>
+    <div className="flex justify-center">
+      <nav aria-label="Page navigation">
+        <ul className="flex list-style-none">
+          <li className="page-item" ><a
+              className="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 focus:shadow-none"
+              href="#" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a></li>
+          {pageNumbers.map((number) => (
+          <li key={number} className="page-item" onClick={() => paginate(number)}><a
+              className="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
+              href="#">{number}</a></li>
+          ))}
+  
+          <li className="page-item" onClick={nextPage}><a
+              className="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
+              href="#" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a></li>
+        </ul>
+      </nav>
     </div>
   );
 };
