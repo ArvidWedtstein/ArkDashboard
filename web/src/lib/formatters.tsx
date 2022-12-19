@@ -99,6 +99,14 @@ export const mergeRecipe = (...objects): Object => {
 
   return mergedObj;
 };
+
+
+/**
+ * @name isObject
+ * @param {any} value determines if value is an object
+ * @returns {boolean} true if value is an object
+ * @kind function
+ */
 export const isObject = (value) => {
   return (
     !!value &&
@@ -107,6 +115,18 @@ export const isObject = (value) => {
     !Array.isArray(value)
   );
 };
+
+/**
+ *
+ * @param {Array} sources
+ * @example merge({a: 1}, {b: 2}, {b: 2}) // {a: 1, b: 4}
+ * @returns merged object
+ * @mixes all input objects into one object
+ * @since 0.1.0
+ * @summary Merges all input objects into one object
+ * @static true
+ * @requires isObject function
+ */
 export const merge = (...sources) => {
   const [target, ...rest] = sources;
 
@@ -123,7 +143,9 @@ export const merge = (...sources) => {
 
   return target;
 };
-export const capitalize = (string) => {
+
+
+export const capitalize = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
@@ -143,7 +165,26 @@ export const getWeekDates = () => {
   return [start, end];
 };
 
-export const isDate = (date: any): boolean => {
+// autogenerate JSdoc comment for isDate function
+/**
+ * @name isDate
+ * @param {string} date
+ * @returns {boolean} true if date is in 2022-11-28T14:17:14.899Z format
+ * @kind function
+ * @since 0.1.0
+ * @summary Checks if date is in 2022-11-28T14:17:14.899Z format
+ * @static true
+ * @requires regex test for  2022-11-28T14:17:14.899Z format
+ * @example isDate("2022-11-28T14:17:14.899Z") // true
+ * @example isDate("2022-11-28T14:17:14.899") // false
+ * @example isDate("2022-11-28T14:17:14") // false
+ * @example isDate("2022-11-28T14:17") // false
+ * @example isDate("2022-11-28T14") // false
+ * @example isDate("2022-11-28") // false
+ * @example isDate("2022-11") // false
+ * @example isDate("2022") // false
+*/
+export const isDate = (date: string): boolean => {
   // regex test for  2022-11-28T14:17:14.899Z format
   const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
   return regex.test(date);
@@ -181,9 +222,21 @@ export const calcItemCost = (amount, item_type) => {
 
 /**
  *
- * @param min minimum number
- * @param max maximum number
+ * @param {number} min - minimum number
+ * @param {number} max - maximum number
  * @returns a random number between min and max
  */
 export const random = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1) + min);
+
+/**
+ *
+ * @param {string} str string to match
+ * @returns the matched numbers as words in the string¨
+ * @example wordNumberRegex("I have two apples and 3 bananas") // ["two"]
+ * @exports wordNumberRegex
+ */
+
+export const wordNumberRegex = (str: string) => {
+  return str.match(/(?:f(?:ive|our)|s(?:even|ix)|t(?:hree|wo)|(?:ni|o)ne|eight)/gi);
+}
