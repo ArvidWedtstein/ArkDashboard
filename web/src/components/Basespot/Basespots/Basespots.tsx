@@ -130,14 +130,14 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
               />
             </>
           ))}
+        <Paginate
+          postsPerPage={6}
+          totalPosts={basespots.length}
+          paginate={paginate}
+          previousPage={previousPage}
+          nextPage={nextPage}
+        />
       </div>
-      <Paginate
-                postsPerPage={6}
-                totalPosts={basespots.length}
-                paginate={paginate}
-                previousPage={previousPage}
-                nextPage={nextPage}
-              />
     </div>
   );
 };
