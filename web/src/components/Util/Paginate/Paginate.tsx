@@ -1,4 +1,5 @@
 interface IPaginate {
+  currentPage?: number;
   postsPerPage: number;
   totalPosts: number;
   paginate: (pageNumber: number) => void;
@@ -6,6 +7,7 @@ interface IPaginate {
   nextPage: () => void;
 }
 const Paginate = ({
+  currentPage,
   postsPerPage,
   totalPosts,
   paginate,
