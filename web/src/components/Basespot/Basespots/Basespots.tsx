@@ -122,13 +122,13 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
                   link: routes.basespot({ id: basespot.id }),
                 }}
               />
-              <Paginate
+            {/*<Paginate
                 postsPerPage={6}
                 totalPosts={basespots.length}
                 paginate={paginate}
                 previousPage={previousPage}
                 nextPage={nextPage}
-              />
+              />*/}
             </>
           ))}
       </div>
