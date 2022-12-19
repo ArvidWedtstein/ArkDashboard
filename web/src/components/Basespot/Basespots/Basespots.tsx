@@ -124,16 +124,16 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
                   link: routes.basespot({ id: basespot.id }),
                 }}
               />
-            {/*<Paginate
+            </>
+          ))}
+      </div>
+      <Paginate
                 postsPerPage={6}
                 totalPosts={basespots.length}
                 paginate={paginate}
                 previousPage={previousPage}
                 nextPage={nextPage}
-              />*/}
-            </>
-          ))}
-      </div>
+              />
     </div>
   );
 };
