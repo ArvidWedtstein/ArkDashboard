@@ -81,6 +81,8 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
     Gen2: "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
   };
   let [currentMap, setCurrentMap] = useState("");
+  
+  // https://www.freecodecamp.org/news/build-a-custom-pagination-component-in-react/
   return (
     <div className="">
       <div className="flex items-center">
