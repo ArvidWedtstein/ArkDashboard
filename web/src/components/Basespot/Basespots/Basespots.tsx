@@ -45,16 +45,9 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-  const previousPage = () => {
-    if (currentPage !== 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const nextPage = () => {
-    if (currentPage !== Math.ceil(basespots.length / 6)) {
-      setCurrentPage(currentPage + 1);
+  const paginate = (pageNumber: number) => {
+    if (currentPage !== 1 && currentPage !== Math.ceil(basespots.length / 6)) {
+      setCurrentPage(pageNumber)
     }
   };
   
@@ -134,9 +127,7 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
           currentPage={currentPage}
           postsPerPage={6}
           totalPosts={basespots.length}
-          paginate={paginate}
-          previousPage={previousPage}
-          nextPage={nextPage}
+          onPageChange={paginate}
         />
       </div>
     </div>
