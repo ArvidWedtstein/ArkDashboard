@@ -2,20 +2,23 @@ interface IPaginate {
   currentPage: number;
   postsPerPage: number;
   totalPosts: number;
-  paginate: (pageNumber: number) => void;
-  previousPage: () => void;
-  nextPage: () => void;
+  onPageChange: (page: number) => void;
+  prevLabel?: string;
+  nextLabel?: string;
 }
 const Paginate = ({
   currentPage,
   postsPerPage,
   totalPosts,
-  paginate,
-  previousPage,
-  nextPage,
+  onPageChange,
+  prevLabel,
+  nextLabel
 }: IPaginate) => {
   const pageNumbers = [];
 
+  const paginate = (page: number) => {
+   onPageChange(page) 
+  }
   // https://stackoverflow.com/questions/44182132/unique-url-for-pagination-pages-in-react
   for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++) {
     pageNumbers.push(i);
@@ -24,7 +27,7 @@ const Paginate = ({
     <div className="flex justify-center">
       <nav aria-label="Page navigation">
         <ul className="flex list-style-none">
-          <li className="page-item" onClick={previousPage}><a
+          <li className="page-item" onClick={() => paginate(currentPage - 1)}><a
               className="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 focus:shadow-none"
               href="#" aria-label="Previous">
               <span aria-hidden="true">&laquo;</span>
@@ -35,7 +38,7 @@ const Paginate = ({
               href="#">{number}</a></li>
           ))}
   
-          <li className="page-item" onClick={nextPage}><a
+          <li className="page-item" onClick={() => paginate(currentPage + 1)}><a
               className="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
               href="#" aria-label="Next">
               <span aria-hidden="true">&raquo;</span>
