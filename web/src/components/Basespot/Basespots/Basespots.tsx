@@ -131,6 +131,7 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
             </>
           ))}
         <Paginate
+          currentPage={currentPage}
           postsPerPage={6}
           totalPosts={basespots.length}
           paginate={paginate}
