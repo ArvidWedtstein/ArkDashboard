@@ -22,7 +22,7 @@ const Paginate = ({
     <div className="flex justify-center">
       <nav aria-label="Page navigation">
         <ul className="flex list-style-none">
-          <li className="page-item" ><a
+          <li className="page-item" onClick={prevPage}><a
               className="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 focus:shadow-none"
               href="#" aria-label="Previous">
               <span aria-hidden="true">&laquo;</span>
