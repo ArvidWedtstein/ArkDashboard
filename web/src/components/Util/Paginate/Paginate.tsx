@@ -12,13 +12,13 @@ const Paginate = ({
   totalPosts,
   onPageChange,
   prevLabel,
-  nextLabel
+  nextLabel,
 }: IPaginate) => {
   const pageNumbers = [];
 
   const paginate = (page: number) => {
-   onPageChange(page) 
-  }
+    onPageChange(page);
+  };
   // https://stackoverflow.com/questions/44182132/unique-url-for-pagination-pages-in-react
   for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++) {
     pageNumbers.push(i);
@@ -26,23 +26,42 @@ const Paginate = ({
   return (
     <div className="flex justify-center">
       <nav aria-label="Page navigation">
-        <ul className="flex list-style-none">
-          <li className="page-item" onClick={() => paginate(currentPage - 1)}><a
-              className="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 focus:shadow-none"
-              href="#" aria-label="Previous">
+        <ul className="list-style-none flex">
+          <li className="page-item" onClick={() => paginate(currentPage - 1)}>
+            <a
+              className="page-link relative block rounded border-0 bg-transparent py-1.5 px-3 text-gray-800 outline-none transition-all duration-300 hover:text-gray-800 focus:shadow-none"
+              href="#"
+              aria-label="Previous"
+            >
               <span aria-hidden="true">&laquo;</span>
-            </a></li>
+            </a>
+          </li>
           {pageNumbers.map((number) => (
-          <li key={number} className={`page-item ${currentPage === number ? 'bg-red-700' : ''}`} onClick={() => paginate(number)}><a
-              className="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
-              href="#">{number}</a></li>
+            <li
+              key={number}
+              className={`page-item ${
+                currentPage === number ? "bg-red-700" : ""
+              }`}
+              onClick={() => paginate(number)}
+            >
+              <a
+                className="page-link relative block rounded border-0 bg-transparent py-1.5 px-3 text-gray-800 outline-none transition-all duration-300 hover:bg-gray-200 hover:text-gray-800 focus:shadow-none"
+                href="#"
+              >
+                {number}
+              </a>
+            </li>
           ))}
-  
-          <li className="page-item" onClick={() => paginate(currentPage + 1)}><a
-              className="page-link relative block py-1.5 px-3 rounded border-0 bg-transparent outline-none transition-all duration-300 rounded text-gray-800 hover:text-gray-800 hover:bg-gray-200 focus:shadow-none"
-              href="#" aria-label="Next">
+
+          <li className="page-item" onClick={() => paginate(currentPage + 1)}>
+            <a
+              className="page-link relative block rounded border-0 bg-transparent py-1.5 px-3 text-gray-800 outline-none transition-all duration-300 hover:bg-gray-200 hover:text-gray-800 focus:shadow-none"
+              href="#"
+              aria-label="Next"
+            >
               <span aria-hidden="true">&raquo;</span>
-            </a></li>
+            </a>
+          </li>
         </ul>
       </nav>
     </div>
