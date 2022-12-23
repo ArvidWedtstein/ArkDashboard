@@ -2,8 +2,9 @@
   "tribename": "DinkleDonk",
   "players": ["SussyBaka", "Sevul", "Ravioli", "Bass_Gamer"],
   "server": "Bloody Ark",
-  "region": "",
-  "season": "",
+  "region": "NA",
+  "season": "13",
+  "cluster": "PVP",
   "date": "2021-07-02",
   "location": {
     "lat": 44,

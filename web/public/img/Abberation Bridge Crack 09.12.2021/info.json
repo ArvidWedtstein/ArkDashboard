@@ -1,0 +1,14 @@
+{
+  "tribename": "SussyMen",
+  "players": ["SussyMan", "DrunkGerman", "Big Shaq"],
+  "server": "Elite Ark",
+  "region": "EU",
+  "season": "7",
+  "cluster": "3man",
+  "date": "2021-12-09",
+  "location": {
+    "lat": 34,
+    "lon": 46
+  },
+  "map": "Abberation"
+}

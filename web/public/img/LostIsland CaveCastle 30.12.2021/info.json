@@ -1,0 +1,14 @@
+{
+  "tribename": "DinkleDonk",
+  "players": ["LunaTone", "DrunkGerman"],
+  "server": "Elite Ark",
+  "region": "EU",
+  "season": "13",
+  "cluster": "7man",
+  "date": "2021-12-23",
+  "location": {
+    "lat": 23.44,
+    "lon": 76.98
+  },
+  "map": "LostIsland"
+}

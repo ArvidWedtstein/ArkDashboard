@@ -1,10 +1,11 @@
 {
   "tribename": "DinkleDonk",
   "players": ["SussyBaka", "Sevul", "Ravioli", "Bass_Gamer"],
-  "server": "",
-  "region": "",
-  "season": "",
-  "date": "2021-08-03",
+  "server": "Bloody Ark",
+  "region": "NA",
+  "season": "13",
+  "cluster": "PVP",
+  "date": "2021-08-02",
   "location": {
     "lat": 44,
     "lon": 65

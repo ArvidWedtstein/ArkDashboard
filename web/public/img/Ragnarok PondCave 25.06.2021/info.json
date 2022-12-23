@@ -1,9 +1,10 @@
 {
   "tribename": "DinkleDonk",
   "players": ["Sevul", "Bass_Gamer", "Vantage", "SussyBaka"],
-  "server": "Bloody ARK",
-  "region": "",
-  "season": "",
+  "server": "Bloody Ark",
+  "region": "EU",
+  "season": "27",
+  "cluster": "PVPVE",
   "date": "2021-06-26",
   "location": {
     "lat": 0,

@@ -4,7 +4,8 @@
   "server": "Arkosik",
   "region": "",
   "season": "",
-  "date": "2021-06-06",
+  "cluster": "",
+  "date": "2021-06-01",
   "location": {
     "lat": 50,
     "lon": 70

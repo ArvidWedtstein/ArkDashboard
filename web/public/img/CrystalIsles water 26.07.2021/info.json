@@ -2,8 +2,9 @@
   "tribename": "Stamm von Dinkledonk",
   "players": ["Bass_Gamer"],
   "server": "Bloody Ark",
-  "region": "",
-  "season": "",
+  "region": "EU",
+  "season": "28",
+  "cluster": "PVPVE",
   "date": "2021-07-25",
   "location": {
     "lat": 58.89,

@@ -1,0 +1,14 @@
+{
+  "tribename": "DinkleDonk",
+  "players": ["DrunkGerman"],
+  "server": "Bloody Ark",
+  "region": "EU",
+  "season": "14",
+  "cluster": "PVP",
+  "date": "2021-08-06",
+  "location": {
+    "lat": 58.5,
+    "lon": 26.76
+  },
+  "map": "CrystalIsles"
+}

@@ -1,9 +1,10 @@
 {
   "tribename": "Teenage mutant virgin tu",
-  "players": ["DrunkGerman", "LunaTone"],
-  "server": "",
-  "region": "",
-  "season": "",
+  "players": ["DrunkGerman", "Lunatone"],
+  "server": "Bloody Ark",
+  "region": "NA",
+  "season": "3",
+  "cluster": "5man",
   "date": "2022-12-04",
   "location": {
     "lat": 0,

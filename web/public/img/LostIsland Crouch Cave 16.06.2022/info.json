@@ -1,5 +1,14 @@
 {
   "tribename": "Potentially Invading",
   "players": ["P3do", "Lunatone", "Chestnut", "DrunkGerman", "SNAWSNAW"],
-  "server": "Bloody Ark 5man"
+  "server": "Bloody Ark",
+  "region": "EU",
+  "season": "7",
+  "cluster": "PVP",
+  "date": "2022-06-16",
+  "location": {
+    "lat": 64.5,
+    "lon": 43.99
+  },
+  "map": "LostIsland"
 }

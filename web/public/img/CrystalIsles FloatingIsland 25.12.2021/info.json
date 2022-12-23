@@ -1,8 +1,11 @@
 {
   "tribename": "DinkleDonk",
   "players": ["Lunatone", "DrunkGerman"],
-  "server": "EliteArk 3man",
-  "date": "2022-12-13",
+  "server": "Elite Ark",
+  "region": "EU",
+  "season": "13",
+  "cluster": "7man",
+  "date": "2021-12-25",
   "location": {
     "lat": 47.69,
     "lon": 70.68
