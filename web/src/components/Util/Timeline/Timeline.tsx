@@ -26,10 +26,9 @@ const Timeline = () => {
             </a>
           </li>
         </ul>
-
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Timeline
+export default Timeline;
