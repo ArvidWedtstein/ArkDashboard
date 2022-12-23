@@ -1,0 +1,11 @@
+{
+  "tribename": "DinkleDonk",
+  "players": ["Lunatone", "DrunkGerman"],
+  "server": "EliteArk 3man",
+  "date": "2022-12-13",
+  "location": {
+    "lat": 47.69,
+    "lon": 70.68
+  },
+  "map": "CrystalIsles"
+}

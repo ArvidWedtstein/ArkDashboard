@@ -1,0 +1,13 @@
+{
+  "tribename": "SussyMen",
+  "players": ["SussyMan", "DrunkGerman", "Big Shaq"],
+  "server": "EliteArk Trio",
+  "region": "EU",
+  "season": "7",
+  "date": "2021-12-25",
+  "location": {
+    "lat": 34,
+    "lon": 46
+  },
+  "map": "Abberation"
+}
