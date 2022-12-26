@@ -46,11 +46,15 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const paginate = (pageNumber: number) => {
-    if ((currentPage !== 1 && pageNumber < currentPage) || (currentPage !== Math.ceil(basespots.length / 6) && pageNumber > currentPage)) {
-      setCurrentPage(pageNumber)
+    if (
+      (currentPage !== 1 && pageNumber < currentPage) ||
+      (currentPage !== Math.ceil(basespots.length / 6) &&
+        pageNumber > currentPage)
+    ) {
+      setCurrentPage(pageNumber);
     }
   };
-  
+
   const indexOfLastPost = currentPage * 6;
   const indexOfFirstPost = indexOfLastPost - 6;
   const currentPages = basespots.slice(indexOfFirstPost, indexOfLastPost);
@@ -78,7 +82,7 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
     Gen2: "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
   };
   let [currentMap, setCurrentMap] = useState("");
-  
+
   // https://www.freecodecamp.org/news/build-a-custom-pagination-component-in-react/
   return (
     <div className="">
@@ -102,7 +106,8 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
         {basespots
           .filter((spot) =>
             spot.Map.toLowerCase().includes(currentMap.toLowerCase())
-          ).slice(indexOfFirstPost, indexOfLastPost)
+          )
+          .slice(indexOfFirstPost, indexOfLastPost)
           .map((basespot, i) => (
             <>
               <ArkCard
@@ -123,13 +128,13 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
               />
             </>
           ))}
-        <Paginate
-          currentPage={currentPage}
-          postsPerPage={6}
-          totalPosts={basespots.length}
-          onPageChange={paginate}
-        />
       </div>
+      <Paginate
+        currentPage={currentPage}
+        postsPerPage={6}
+        totalPosts={basespots.length}
+        onPageChange={paginate}
+      />
     </div>
   );
 };
