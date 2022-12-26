@@ -4,7 +4,7 @@ import { useAuth } from "@redwoodjs/auth";
 import { useEffect, useState } from "react";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import Slideshow from "src/components/Util/Slideshow/Slideshow";
-
+import Timeline from "src/components/Util/Timeline/Timeline";
 
 const HomePage = () => {
   const { isAuthenticated } = useAuth();
@@ -47,6 +47,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
+        <Timeline />
       </div>
     </>
   );
