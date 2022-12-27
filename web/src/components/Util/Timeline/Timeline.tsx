@@ -100,7 +100,7 @@ const Timeline = () => {
         </div>
         <div className="w-full bg-gray-600 p-1">
           <div
-            className="m-2 hidden rounded-md bg-slate-200 text-black dark:bg-neutral-800 dark:text-white"
+            className="m-2 block rounded-md bg-slate-200 text-black dark:bg-neutral-800 dark:text-white"
             data-tab-id="0"
           >
             test<br></br>test test test1
