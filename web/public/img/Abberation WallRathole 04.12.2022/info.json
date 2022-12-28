@@ -4,11 +4,11 @@
   "server": "Bloody Ark",
   "region": "NA",
   "season": "3",
-  "cluster": "5man",
+  "cluster": "PVP",
   "date": "2022-12-04",
   "location": {
-    "lat": 0,
-    "lon": 0
+    "lat": 38.44,
+    "lon": 29.01
   },
   "map": "Abberation"
 }

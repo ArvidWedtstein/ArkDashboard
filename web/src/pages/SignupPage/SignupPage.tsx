@@ -42,7 +42,7 @@ const SignupPage = () => {
       })
 
       if (response?.error) {
-        toast.error(response.error)
+        toast.error(JSON.stringify(response.error))
       } else {
         toast.success('Check your email for the login link!')
         // navigate(routes.home())

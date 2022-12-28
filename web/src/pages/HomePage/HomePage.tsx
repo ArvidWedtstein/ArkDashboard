@@ -47,7 +47,6 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        <Timeline />
       </div>
     </>
   );

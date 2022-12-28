@@ -7,7 +7,6 @@
 [![Version][version-shield]][version-url]
 [![Netlify Status](https://api.netlify.com/api/v1/badges/6eca3877-cf13-47fa-9f48-2f722ba00ea4/deploy-status)](https://app.netlify.com/sites/arkdashboard/deploys)
 
-
 <br />
 <div align="center">
   <a href="https://github.com/ArvidWedtstein/ArkDashboard">
@@ -27,7 +26,6 @@
     <a href="https://github.com/ArvidWedtstein/ArkDashboard/issues">Request Feature</a>
   </p>
 </div>
-
 
 <details>
   <summary>Table of Contents</summary>
@@ -225,7 +223,7 @@ yarn redwood check
 ## Roadmap
 
 - [ ] Get to know Redwood and React
-- [ ] Add a base spot system
+- [x] Add a base spot system
 - [x] Add a map system
 
 See the [open issues](https://github.com/ArvidWedtstein/ArkDashboard/issues) for a full list of proposed features (and known issues).

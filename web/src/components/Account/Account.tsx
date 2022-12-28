@@ -32,7 +32,7 @@ const Account = () => {
       let { data, error, status } = await supabase
         .from("user_view")
         .select(
-          `email, username, website, avatar_url, fullname, biography, role_name, tribescreated`
+          `id, email, username, website, avatar_url, fullname, biography, role_name, tribescreated`
         )
         .eq("id", user.id)
         .single();
@@ -77,11 +77,11 @@ const Account = () => {
         biography,
         updated_at: new Date(),
       };
-      // const { data: authorized, errors } = await supabase.rpc("authorize", {
-      //   requested_permission: "role:update",
-      //   user_id: `${user.id}`,
+      // const { data: authorized, error: errors } = await supabase.rpc("authorize", {
+      //   requested_permission: "basespot:delete"
       // });
-      // console.log("auth", authorized);
+      // if (errors) console.error(errors)
+      // else console.log(authorized)
       let { error } = await supabase.from("profiles").upsert(updates, {
         returning: "minimal", // Don't return the value after inserting
       });
