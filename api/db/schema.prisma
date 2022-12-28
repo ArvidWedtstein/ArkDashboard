@@ -19,7 +19,7 @@ model basespot {
   Map                 String               @default("TheIsland")
   estimatedForPlayers String?              @default("0")
   defenseImages       String[]
-  createdBy           String?              @default(dbgenerated("auth.uid()")) @db.Uuid
+  createdBy           String?              @db.Uuid
   turretsetup_image   String?
   updatedAt           DateTime?            @db.Timestamptz(6)
   profiles            profiles?            @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -39,26 +39,27 @@ model tribe {
 }
 
 model profiles {
-  id                              String      @id @db.Uuid
-  updated_at                      DateTime?   @db.Timestamptz(6)
-  username                        String?     @unique
+  id                              String               @id @db.Uuid
+  updated_at                      DateTime?            @db.Timestamptz(6)
+  username                        String?              @unique
   full_name                       String?
   avatar_url                      String?
   website                         String?
   biography                       String?
-  status                          user_status @default(OFFLINE)
-  role_id                         String      @default(dbgenerated("'697b7d70-bab3-4ff9-9c3e-f30b058b621c'::uuid")) @db.Uuid
-  created_at                      DateTime?   @db.Timestamptz(6)
-  roles                           roles       @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  status                          user_status          @default(OFFLINE)
+  role_id                         String               @default(dbgenerated("'697b7d70-bab3-4ff9-9c3e-f30b058b621c'::uuid")) @db.Uuid
+  created_at                      DateTime?            @default(now()) @db.Timestamptz(6)
+  roles                           roles                @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   basespot                        basespot[]
-  roles_profilesToroles_createdBy roles[]     @relation("profilesToroles_createdBy")
+  roles_profilesToroles_createdBy roles[]              @relation("profilesToroles_createdBy")
   timeline                        timeline[]
+  timeline_basespots              timeline_basespots[]
   tribe                           tribe[]
-  tribe_profilesTotribe_updatedBy tribe[]     @relation("profilesTotribe_updatedBy")
+  tribe_profilesTotribe_updatedBy tribe[]              @relation("profilesTotribe_updatedBy")
 }
 
 model roles {
-  id                                 String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                                 String       @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   name                               String
   createdBy                          String?      @default(dbgenerated("auth.uid()")) @db.Uuid
   permissions                        permission[]
@@ -67,7 +68,7 @@ model roles {
 }
 
 model timeline {
-  id                 String               @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                 String               @id @unique @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   createdAt          DateTime?            @default(now()) @db.Timestamptz(6)
   updatedAt          DateTime?            @db.Timestamptz(6)
   createdBy          String?              @db.Uuid
@@ -78,7 +79,7 @@ model timeline {
 model timeline_basespots {
   id          BigInt    @id @default(autoincrement())
   createdAt   DateTime? @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime? @db.Timestamptz(6)
+  updated_at  DateTime? @db.Timestamptz(6)
   timeline_id String    @db.Uuid
   startDate   DateTime  @default(now()) @db.Date
   endDate     DateTime? @default(now()) @db.Timestamptz(6)
@@ -91,7 +92,9 @@ model timeline_basespots {
   cluster     String?
   location    Json?     @db.Json
   players     String[]
+  created_by  String?   @db.Uuid
   basespot    basespot? @relation(fields: [basespotID], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  profiles    profiles? @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   timeline    timeline  @relation(fields: [timeline_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
