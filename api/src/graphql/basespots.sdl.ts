@@ -12,7 +12,7 @@ export const schema = gql`
   }
 
   type BasespotPage {
-    basespots: [Basespot!]! @requireAuth
+    basespots: [Basespot!]!
     count: Int!
   }
 

@@ -218,6 +218,20 @@ Check for stuff:
 yarn redwood check
 ```
 
+Local supabase postgresql setup:
+
+```sh
+supabase login
+```
+
+```sh
+supabase init
+```
+
+```sh
+supabase start
+```
+
 <!-- ROADMAP -->
 
 ## Roadmap
@@ -227,6 +241,7 @@ yarn redwood check
 - [x] Add a map system
 - [ ] Testing
 - [ ] Github CI Testing
+- [ ] Fix readme
 
 <!--https://redwoodjs.com/docs/how-to/test-in-github-actions-->
 

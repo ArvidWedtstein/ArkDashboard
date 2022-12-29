@@ -2,20 +2,26 @@ export const schema = gql`
   type Tribe {
     id: Int!
     name: String!
-    description: String!
+    description: String
     createdAt: DateTime!
     updatedAt: DateTime!
     createdBy: String
   }
 
+  type TribePage {
+    tribes: [Tribe!]!
+    count: Int!
+  }
+
   type Query {
     tribes: [Tribe!]! @skipAuth
     tribe(id: Int!): Tribe @requireAuth
+    tribePage(page: Int): TribePage @skipAuth
   }
 
   input CreateTribeInput {
     name: String!
-    description: String!
+    description: String
     createdBy: String
   }
 

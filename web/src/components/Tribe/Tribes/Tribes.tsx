@@ -17,7 +17,6 @@ const DELETE_TRIBE_MUTATION = gql`
     }
   }
 `;
-// TODO: Create random tribe name generator
 const TribesList = ({ tribes }: FindTribes) => {
   const [deleteTribe] = useMutation(DELETE_TRIBE_MUTATION, {
     onCompleted: () => {

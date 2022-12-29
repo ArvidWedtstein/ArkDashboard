@@ -14,9 +14,9 @@ const HomePage = () => {
   //     e.preventDefault();
   //   }, false);
   // }
-  supabase.auth.onAuthStateChange((event, session) => {
-    console.log(event, session)
-  })
+  // supabase.auth.onAuthStateChange((event, session) => {
+  //   console.log(event, session)
+  // })
   return (
     <>
       <MetaTags title="Home" description="Home page" />
