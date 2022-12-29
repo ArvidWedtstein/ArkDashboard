@@ -46,19 +46,19 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
 
   let basespots = basespotPage.basespots
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const paginate = (pageNumber: number) => {
-    if (
-      (currentPage !== 1 && pageNumber < currentPage) ||
-      (currentPage !== Math.ceil(basespots.length / 6) &&
-        pageNumber > currentPage)
-    ) {
-      setCurrentPage(pageNumber);
-    }
-  };
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const paginate = (pageNumber: number) => {
+  //   if (
+  //     (currentPage !== 1 && pageNumber < currentPage) ||
+  //     (currentPage !== Math.ceil(basespots.length / 6) &&
+  //       pageNumber > currentPage)
+  //   ) {
+  //     setCurrentPage(pageNumber);
+  //   }
+  // };
 
-  const indexOfLastPost = currentPage * 6;
-  const indexOfFirstPost = indexOfLastPost - 6;
+  // const indexOfLastPost = currentPage * 6;
+  // const indexOfFirstPost = indexOfLastPost - 6;
 
   const mapImages = {
     TheIsland:
@@ -131,12 +131,12 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
             </>
           ))}
       </div>
-      <Paginate
+      {/* <Paginate
         currentPage={currentPage}
         postsPerPage={6}
         totalPosts={basespots.length}
         onPageChange={paginate}
-      />
+      /> */}
     </div>
   );
 };

@@ -18,6 +18,17 @@ const Pagination = ({ count, route, itemsPerPage = 6 }: { count: number, route: 
     )
   }
 
+  type direction = 'next' | 'prev';
+  const changePage = (dir: direction): number => {
+    if (!!query.page || isNaN(parseInt(query.page))) return 1
+    if (dir === 'prev') {
+      return parseInt(query.page) - (parseInt(query.page) > 1 ? 1 : 0)
+    } else {
+      console.log(parseInt(query.page) + (parseInt(query.page) < Math.ceil(count / itemsPerPage) ? 1 : 0))
+      return parseInt(query.page) + (parseInt(query.page) < Math.ceil(count / itemsPerPage) ? 1 : 0)
+    }
+  }
+
   return (
     <>
       <div className="flex justify-center">
@@ -26,7 +37,7 @@ const Pagination = ({ count, route, itemsPerPage = 6 }: { count: number, route: 
             <li className="page-item">
               <Link
                 className="page-link relative block rounded border-0 bg-transparent py-1.5 px-3 text-gray-800 outline-none transition-all duration-300 hover:text-gray-800 focus:shadow-none"
-                to={routes[route]({ page: parseInt(query.page) - (parseInt(query.page) > 1 ? 1 : 0) })}
+                to={routes[route]({ page: changePage('prev') })}
                 aria-label="Previous"
               >
                 <span aria-hidden="true">&laquo;</span>
@@ -36,7 +47,7 @@ const Pagination = ({ count, route, itemsPerPage = 6 }: { count: number, route: 
             <li className="page-item">
               <Link
                 className="page-link relative block rounded border-0 bg-transparent py-1.5 px-3 text-gray-800 outline-none transition-all duration-300 hover:bg-gray-200 hover:text-gray-800 focus:shadow-none"
-                to={routes[route]({ page: parseInt(query.page) + (parseInt(query.page) < Math.ceil(count / itemsPerPage) ? 1 : 0) })}
+                to={routes[route]({ page: changePage('next') })}
                 aria-label="Next"
               >
                 <span aria-hidden="true">&raquo;</span>

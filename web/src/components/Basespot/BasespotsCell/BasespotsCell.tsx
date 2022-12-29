@@ -55,6 +55,8 @@ export const Loading = () => {
     </div>
   );
 };
+
+
 export const Empty = () => {
   return (
     <div className="rw-text-center">
@@ -75,9 +77,11 @@ export const Failure = ({ error }: CellFailureProps) => (
 export const Success = ({ basespotPage }: CellSuccessProps<FindBasespots>) => {
   return (
     <>
-      <Basespots basespotPage={basespotPage} />
-
-      <Pagination count={basespotPage.count} route={"basespots"} />
+      {basespotPage.count > 0 ? (
+        <>
+          <Basespots basespotPage={basespotPage} />
+          <Pagination count={basespotPage.count} route={"basespots"} />
+        </>) : (Empty())}
     </>
   )
 };
