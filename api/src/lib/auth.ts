@@ -44,14 +44,19 @@ export const getCurrentUser = async (
 
   const { roles } = parseJWT({ decoded });
   const { sub, role } = decoded;
-  if (sub.toString()) {
+
+  if (!!!sub.toString()) {
     // return { ...decoded, roles };
 
     let user = await db.profiles.findUnique({
       where: { id: sub.toString() },
     });
-    let role_id = user.role_id;
-    return await { ...user, role, roles: [role_id], ...decoded };
+
+    if (user.role_id) {
+      let role_id = user.role_id;
+      return await { ...user, role, roles: [role_id], ...decoded };
+    }
+    return await { ...user, role, ...decoded };
   }
 
   return { ...decoded };
