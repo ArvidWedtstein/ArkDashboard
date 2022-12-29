@@ -7,13 +7,16 @@ import Slideshow from "src/components/Util/Slideshow/Slideshow";
 import Timeline from "src/components/Util/Timeline/Timeline";
 
 const HomePage = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, client: supabase } = useAuth();
   // if (document.addEventListener) {
   //   document.addEventListener('contextmenu', function (e) {
   //     alert("You've tried to open context menu"); //here you draw your own menu
   //     e.preventDefault();
   //   }, false);
   // }
+  supabase.auth.onAuthStateChange((event, session) => {
+    console.log(event, session)
+  })
   return (
     <>
       <MetaTags title="Home" description="Home page" />

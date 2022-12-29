@@ -225,6 +225,10 @@ yarn redwood check
 - [ ] Get to know Redwood and React
 - [x] Add a base spot system
 - [x] Add a map system
+- [ ] Testing
+- [ ] Github CI Testing
+
+<!--https://redwoodjs.com/docs/how-to/test-in-github-actions-->
 
 See the [open issues](https://github.com/ArvidWedtstein/ArkDashboard/issues) for a full list of proposed features (and known issues).
 

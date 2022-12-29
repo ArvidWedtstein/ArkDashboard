@@ -6,9 +6,10 @@
   "season": "7",
   "cluster": "3man",
   "date": "2021-12-09",
+  "raidDate": "2021-12-15 - 04:55PM",
   "location": {
-    "lat": 34,
-    "lon": 46
+    "lat": 34.03,
+    "lon": 46.38
   },
   "map": "Abberation"
 }
