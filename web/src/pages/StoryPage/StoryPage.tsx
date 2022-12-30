@@ -15,9 +15,12 @@ const StoryPage = () => {
     try {
       let { data, error, status } = await supabase
         .from("timeline_basespots")
-        .select(
-          `*`
-        )
+        .select(`
+          *,
+          storage.objects (
+            id
+          )
+        `)
         .eq("created_by", '7a2878d1-4f61-456d-bcb6-edc707383ea8')
         .order("startDate", { ascending: true })
 
