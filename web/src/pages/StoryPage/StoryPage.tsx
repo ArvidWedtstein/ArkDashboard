@@ -18,6 +18,7 @@ const StoryPage = () => {
           `*`
         )
         .eq("created_by", '7a2878d1-4f61-456d-bcb6-edc707383ea8')
+        .order("startDate", { ascending: true })
 
       setBasespots(data)
     } catch (error) {
