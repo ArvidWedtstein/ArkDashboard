@@ -1,35 +1,45 @@
+import { useAuth } from "@redwoodjs/auth";
 import { useCallback, useEffect, useState } from "react";
 
 type TimelineSettings = {
   snap?: boolean
 }
 const Timeline = ({ events, options = { snap: false } }: { events: any[], options?: TimelineSettings }) => {
-
+  const { client: supabase, currentUser, logOut } = useAuth();
   const [currentEvent, setCurrentEvent] = useState(null);
+  const [currentEventImages, setCurrentEventImages] = useState(null);
   const [currentPage, setCurrentPage] = useState(0)
 
   const onChange = useCallback((page: number) => {
     setCurrentPage(page)
     setCurrentEvent(events[page])
+
+    setCurrentEventImages(getImages(events[page].id))
+    // console.log(getImages(events[page].id))
   }, [currentPage]);
 
   useEffect(() => {
     setCurrentEvent(events[currentPage])
   }, []);
 
-  // const { data, error } = await supabase
-  // .storage
-  // .from('avatars')
-  // .list('folder', {
-  //   limit: 100,
-  //   offset: 0,
-  //   sortBy: { column: 'name', order: 'asc' },
-  // })
+  const getImages = async (id) => {
+    let { data, error } = await supabase
+      .storage
+      .from(`timelineimages`)
+      .list(`${id}`, {
+        limit: 20,
+        offset: 0,
+      })
+    if (error) {
+      console.error(error)
+      return []
+    }
+    data = data.map((img) => {
+      return `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${id}/${img.name}`;
+    });
 
-  // const { data, error } = await supabase
-  // .storage
-  // .from('avatars')
-  // .createSignedUrls(['folder/avatar1.png', 'folder/avatar2.png'], 60)
+    return data
+  }
 
 
   return (
@@ -120,9 +130,9 @@ const Timeline = ({ events, options = { snap: false } }: { events: any[], option
                     <img
                       className="rounded object-cover object-center"
                       src={
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s"
+                        `${currentEventImages[Math.floor(Math.random() * currentEventImages.length)]}`//"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s"
                       }
-                      alt="gf"
+                      alt={currentEvent.tribeName}
                     />
                   </div>
                 </div>

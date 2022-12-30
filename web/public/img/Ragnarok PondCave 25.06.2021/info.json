@@ -1,14 +1,14 @@
 {
   "tribename": "DinkleDonk",
-  "players": ["Sevul", "Bass_Gamer", "Vantage", "SussyBaka"],
+  "players": ["Sevul", "Bass_Gamer", "Vantage", "SussyBaka", "Ravvioli"],
   "server": "Bloody Ark",
   "region": "EU",
   "season": "27",
   "cluster": "PVPVE",
   "date": "2021-06-26",
   "location": {
-    "lat": 0,
-    "lon": 0
+    "lat": 42.19,
+    "lon": 42.6
   },
   "map": "Ragnarok"
 }

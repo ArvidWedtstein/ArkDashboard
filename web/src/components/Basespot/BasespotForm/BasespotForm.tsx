@@ -129,7 +129,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           className="max-w-150-px absolute -mt-16 h-auto rounded-full border-none align-middle shadow-xl"
           url={props.basespot?.image}
           size={150}
-          storage="basespotimages/thumbnails"
+          storage="basespotimages/thumbnails" // TODO: find solution. foldername needs to be basespot id
           editable={true}
           onUpload={(url) => {
             console.log("Avatarupload")

@@ -10,6 +10,7 @@ const StoryPage = () => {
   const { client: supabase, currentUser, logOut } = useAuth();
   const [basespots, setBasespots] = useState([]);
 
+
   async function getStory() {
     try {
       let { data, error, status } = await supabase
@@ -25,12 +26,14 @@ const StoryPage = () => {
       toast.error(error.message);
     }
   }
-  getStory()
+  useEffect(() => {
+    getStory();
+  }, []);
   return (
     <>
       <MetaTags title="Story" description="Story page" />
 
-      <Timeline events={basespots} />
+      {basespots && <Timeline events={basespots} />}
     </>
   )
 }
