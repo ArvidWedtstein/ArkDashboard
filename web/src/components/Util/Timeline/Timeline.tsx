@@ -6,20 +6,23 @@ type TimelineSettings = {
 }
 const Timeline = ({ events, options = { snap: false } }: { events: any[], options?: TimelineSettings }) => {
   const { client: supabase, currentUser, logOut } = useAuth();
-  const [currentEvent, setCurrentEvent] = useState(null);
+  const [currentEvents, setEvents] = useState(events);
   const [currentEventImages, setCurrentEventImages] = useState(null);
   const [currentPage, setCurrentPage] = useState(0)
 
   const onChange = useCallback((page: number) => {
     setCurrentPage(page)
-    setCurrentEvent(events[page])
 
-    setCurrentEventImages(getImages(events[page].id))
-    // console.log(getImages(events[page].id))
+    console.log(page)
+    setCurrentEventImages(getImages(currentEvents[page].id))
+
+    console.log(getImages(currentEvents[page].id))
   }, [currentPage]);
 
   useEffect(() => {
-    setCurrentEvent(events[currentPage])
+    setEvents(events)
+    // setCurrentEvent(events[currentPage])
+    // setCurrentEventImages(getImages(events[currentPage].id))
   }, []);
 
   const getImages = async (id) => {
@@ -94,7 +97,7 @@ const Timeline = ({ events, options = { snap: false } }: { events: any[], option
           </div>
         </div>
         <div className="w-full bg-slate-200 p-1 dark:bg-gray-600">
-          {currentEvent && (
+          {currentEvents[currentPage] && (
             <div
               className="m-2 block rounded-md bg-slate-200  text-black dark:bg-neutral-800 dark:text-white"
             >
@@ -102,14 +105,14 @@ const Timeline = ({ events, options = { snap: false } }: { events: any[], option
                 <div className="container mx-auto flex flex-col items-center px-5 py-12 md:flex-row">
                   <div className="mb-16 flex flex-col items-center text-center md:mb-0 md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24">
                     <h1 className="title-font mb-4 text-3xl font-medium text-gray-900 dark:text-zinc-200 sm:text-4xl">
-                      {currentEvent.tribeName}
+                      {currentEvents[currentPage].tribeName}
                       <br className="hidden lg:inline-block" />
-                      {currentEvent.map &&
-                        currentEvent.map.split(/(?=[A-Z])/).join(" ")}
+                      {currentEvents[currentPage].map &&
+                        currentEvents[currentPage].map.split(/(?=[A-Z])/).join(" ")}
                     </h1>
                     <p className="mb-8 leading-relaxed">
                       This time we played on{" "}
-                      {currentEvent.server && currentEvent.server}
+                      {currentEvents[currentPage].server && currentEvents[currentPage].server}
                     </p>
                     <div className="flex justify-center">
                       {/* <Link
@@ -132,7 +135,7 @@ const Timeline = ({ events, options = { snap: false } }: { events: any[], option
                       src={
                         `${currentEventImages[Math.floor(Math.random() * currentEventImages.length)]}`//"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s"
                       }
-                      alt={currentEvent.tribeName}
+                      alt={currentEvents[currentPage].tribeName}
                     />
                   </div>
                 </div>
