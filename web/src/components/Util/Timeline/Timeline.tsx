@@ -2,6 +2,7 @@ import { useAuth } from "@redwoodjs/auth";
 import { useCallback, useEffect, useState } from "react";
 import { Maps } from "src/components/Maps";
 import { getDateDiff, timeDiffCalc } from "src/lib/formatters";
+import ImagePreview from "../ImagePreview/ImagePreview";
 
 type TimelineSettings = {
   snap?: boolean;
@@ -88,6 +89,7 @@ const Timeline = ({
             </div>
           </div>
         </div>
+        {/* <ImagePreview /> */}
         <div className="w-full bg-slate-200 p-1 dark:bg-gray-600">
           {events[currentPage] && (
             <div className="m-2 block rounded-md bg-slate-200  text-black dark:bg-neutral-800 dark:text-white">
@@ -128,6 +130,7 @@ const Timeline = ({
                   </div>
                 </div>
               </section>
+
               <section className="body-font mx-4 border-t border-gray-200 text-gray-700 dark:text-neutral-200">
                 <div className="container mx-auto flex flex-wrap px-5 py-12">
                   <div className="mb-10 w-full overflow-hidden lg:mb-0 lg:w-1/2">
