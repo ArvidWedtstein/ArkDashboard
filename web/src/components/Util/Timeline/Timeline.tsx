@@ -196,16 +196,8 @@ const Timeline = ({
                         </h2>
                         <p className="text-base leading-relaxed">
                           Our base was located at:{" "}
-                          {events[currentPage].location.lat === 0 &&
-                          events[currentPage].basespot.latitude
-                            ? events[currentPage].basespot.latitude
-                            : events[currentPage].location.lat}{" "}
-                          Lat,{" "}
-                          {events[currentPage].location.lon === 0 &&
-                          events[currentPage].basespot.longitude
-                            ? events[currentPage].basespot.longitude
-                            : events[currentPage].location.lon}{" "}
-                          Lon
+                          {events[currentPage].location.lat} Lat,{" "}
+                          {events[currentPage].location.lon} Lon
                         </p>
                       </div>
                     </div>
