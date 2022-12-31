@@ -1,62 +1,54 @@
 import { useAuth } from "@redwoodjs/auth";
 import { useCallback, useEffect, useState } from "react";
+import { Maps } from "src/components/Maps";
+import { getDateDiff, timeDiffCalc } from "src/lib/formatters";
 
 type TimelineSettings = {
-  snap?: boolean
-}
-const Timeline = ({ events, options = { snap: false } }: { events: any[], options?: TimelineSettings }) => {
-  const { client: supabase, currentUser, logOut } = useAuth();
-  const [currentEvents, setEvents] = useState(events);
-  const [currentEventImages, setCurrentEventImages] = useState(null);
-  const [currentPage, setCurrentPage] = useState(0)
+  snap?: boolean;
+};
+const Timeline = ({
+  events,
+  options = { snap: false },
+}: {
+  events: any[];
+  options?: TimelineSettings;
+}) => {
+  const { client: supabase, currentUser } = useAuth();
+  const [currentEvents, setEvents] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
 
-  const onChange = useCallback((page: number) => {
-    setCurrentPage(page)
+  const onChange = useCallback(
+    (page: number) => {
+      setCurrentPage(page);
 
-    console.log(page)
-    setCurrentEventImages(getImages(currentEvents[page].id))
-
-    console.log(getImages(currentEvents[page].id))
-  }, [currentPage]);
+      if (!events[page]) return;
+      // console.log("events[page]", events[page]);
+      // setCurrentEventImages(getImages(events[page].id));
+    },
+    [currentPage]
+  );
 
   useEffect(() => {
-    setEvents(events)
-    // setCurrentEvent(events[currentPage])
-    // setCurrentEventImages(getImages(events[currentPage].id))
-  }, []);
-
-  const getImages = async (id) => {
-    let { data, error } = await supabase
-      .storage
-      .from(`timelineimages`)
-      .list(`${id}`, {
-        limit: 20,
-        offset: 0,
-      })
-    if (error) {
-      console.error(error)
-      return []
-    }
-    data = data.map((img) => {
-      return `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${id}/${img.name}`;
-    });
-
-    return data
-  }
-
+    setEvents(events);
+  }, [events]);
 
   return (
     <section className="-mx-3">
       <div className="h-full w-full">
         <div className="events-wrapper bg-slate-600">
           <div className="events">
-            <div className={`flex flex-row items-stretch justify-start space-x-3 overflow-x-auto p-3 touch-pan-x select-none will-change-scroll ${options.snap && 'snap-x snap-mandatory'}`}>
+            <div
+              className={`flex touch-pan-x select-none flex-row items-stretch justify-start space-x-3 overflow-x-auto p-3 will-change-scroll ${
+                options.snap && "snap-x snap-mandatory"
+              }`}
+            >
               {events.map((event, i) => (
                 <div
                   key={i}
-                  className={`w-full min-w-fit flex-1 rounded-md bg-slate-200 text-black dark:bg-neutral-800 border-2 border-transparent dark:text-white ${currentPage === i && 'border-red-500'} ${options.snap && 'snap-always snap-center'}`}
+                  className={`w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white ${
+                    currentPage === i && "border-red-500"
+                  } ${options.snap && "snap-center snap-always"}`}
                   data-tab={i}
-
                   onClick={() => onChange(i)}
                   aria-controls="tabs-0"
                 >
@@ -97,22 +89,20 @@ const Timeline = ({ events, options = { snap: false } }: { events: any[], option
           </div>
         </div>
         <div className="w-full bg-slate-200 p-1 dark:bg-gray-600">
-          {currentEvents[currentPage] && (
-            <div
-              className="m-2 block rounded-md bg-slate-200  text-black dark:bg-neutral-800 dark:text-white"
-            >
+          {events[currentPage] && (
+            <div className="m-2 block rounded-md bg-slate-200  text-black dark:bg-neutral-800 dark:text-white">
               <section className="body-font">
                 <div className="container mx-auto flex flex-col items-center px-5 py-12 md:flex-row">
                   <div className="mb-16 flex flex-col items-center text-center md:mb-0 md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24">
                     <h1 className="title-font mb-4 text-3xl font-medium text-gray-900 dark:text-zinc-200 sm:text-4xl">
-                      {currentEvents[currentPage].tribeName}
+                      {events[currentPage].tribeName}
                       <br className="hidden lg:inline-block" />
-                      {currentEvents[currentPage].map &&
-                        currentEvents[currentPage].map.split(/(?=[A-Z])/).join(" ")}
+                      {events[currentPage].map &&
+                        events[currentPage].map.split(/(?=[A-Z])/).join(" ")}
                     </h1>
-                    <p className="mb-8 leading-relaxed">
+                    <p className="leading-relaxed">
                       This time we played on{" "}
-                      {currentEvents[currentPage].server && currentEvents[currentPage].server}
+                      {events[currentPage].server && events[currentPage].server}
                     </p>
                     <div className="flex justify-center">
                       {/* <Link
@@ -132,23 +122,58 @@ const Timeline = ({ events, options = { snap: false } }: { events: any[], option
                   <div className="w-5/6 md:w-1/2 lg:w-full lg:max-w-lg">
                     <img
                       className="rounded object-cover object-center"
-                      src={
-                        `${currentEventImages[Math.floor(Math.random() * currentEventImages.length)]}`//"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s"
-                      }
-                      alt={currentEvents[currentPage].tribeName}
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${events[currentPage].images[0]}`}
+                      alt={events[currentPage].tribeName}
                     />
                   </div>
                 </div>
               </section>
               <section className="body-font mx-4 border-t border-gray-200 text-gray-700 dark:text-neutral-200">
                 <div className="container mx-auto flex flex-wrap px-5 py-12">
+                  <div className="mb-10 w-full overflow-hidden lg:mb-0 lg:w-1/2">
+                    <p>
+                      We started playing on{" "}
+                      {new Date(events[currentPage].startDate).toLocaleString()}
+                      .
+                    </p>
+                    <p>
+                      {!events[currentPage].endDate &&
+                      !events[currentPage].raided_by
+                        ? ""
+                        : `Got raided `}
+                      {events[currentPage].endDate &&
+                        `on
+                        ${new Date(
+                          events[currentPage].endDate
+                        ).toLocaleString()}
+                        `}
+                      {events[currentPage].raided_by &&
+                        `by ${events[currentPage].raided_by}.`}
+                    </p>
+                    {events[currentPage].startDate &&
+                      events[currentPage].endDate && (
+                        <p>
+                          Base lasted{" "}
+                          {
+                            getDateDiff(
+                              events[currentPage].startDate,
+                              events[currentPage].endDate
+                            ).dateString
+                          }
+                        </p>
+                      )}
+                  </div>
+                </div>
+              </section>
+              <section className="body-font mx-4 border-t border-gray-200 text-gray-700 dark:text-neutral-200">
+                <div className="container mx-auto flex flex-wrap px-5 py-12">
                   <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
-                    {/* <Maps
-                    className="h-full w-full object-cover object-center"
-                    map={basespot.Map}
-                    size={{ width: 500, height: 500 }}
-                    pos={{ lat: 0, lon: 0 }}
-                  /> */}
+                    <Maps
+                      className="h-full w-full object-cover object-center"
+                      map={events[currentPage].map}
+                      size={{ width: 500, height: 500 }}
+                      pos={events[currentPage].location}
+                    />
                   </div>
                   <div className="-mb-10 flex flex-col flex-wrap text-center lg:w-1/2 lg:py-6 lg:pl-12 lg:text-left">
                     <div className="mb-10 flex flex-col items-center lg:items-start">
@@ -170,10 +195,45 @@ const Timeline = ({ events, options = { snap: false } }: { events: any[], option
                           Coordinates
                         </h2>
                         <p className="text-base leading-relaxed">
-                          This spot is located at 69 Lat, 45 Lon
+                          Our base was located at:{" "}
+                          {events[currentPage].location.lat === 0 &&
+                          events[currentPage].basespot.latitude
+                            ? events[currentPage].basespot.latitude
+                            : events[currentPage].location.lat}{" "}
+                          Lat,{" "}
+                          {events[currentPage].location.lon === 0 &&
+                          events[currentPage].basespot.longitude
+                            ? events[currentPage].basespot.longitude
+                            : events[currentPage].location.lon}{" "}
+                          Lon
                         </p>
                       </div>
                     </div>
+                    {events[currentPage].basespot && (
+                      <div className="mb-10 flex flex-col items-center lg:items-start">
+                        <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-indigo-500">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 576 512"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            className="h-6 w-6 fill-indigo-500"
+                          >
+                            <path d="M560.02 32c-1.96 0-3.98.37-5.96 1.16L384.01 96H384L212 35.28A64.252 64.252 0 0 0 191.76 32c-6.69 0-13.37 1.05-19.81 3.14L20.12 87.95A32.006 32.006 0 0 0 0 117.66v346.32C0 473.17 7.53 480 15.99 480c1.96 0 3.97-.37 5.96-1.16L192 416l172 60.71a63.98 63.98 0 0 0 40.05.15l151.83-52.81A31.996 31.996 0 0 0 576 394.34V48.02c0-9.19-7.53-16.02-15.98-16.02zM224 90.42l128 45.19v285.97l-128-45.19V90.42zM48 418.05V129.07l128-44.53v286.2l-.64.23L48 418.05zm480-35.13l-128 44.53V141.26l.64-.24L528 93.95v288.97z" />
+                          </svg>
+                        </div>
+                        <div className="flex-grow">
+                          <h2 className="title-font mb-3 text-lg font-medium text-gray-900 dark:text-neutral-200">
+                            Base
+                          </h2>
+                          <p className="text-base leading-relaxed">
+                            Our basespot was {events[currentPage].basespot.name}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                     <div className="mb-10 flex flex-col items-center lg:items-start">
                       <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-indigo-500">
                         <svg
@@ -194,7 +254,11 @@ const Timeline = ({ events, options = { snap: false } }: { events: any[], option
                           Players
                         </h2>
                         <p className="text-base leading-relaxed">
-                          We think that this basespot does fit about none players
+                          This time{" "}
+                          {events[currentPage].players.length < 3
+                            ? events[currentPage].players.join(" and ")
+                            : events[currentPage].players.join(", ")}{" "}
+                          played
                         </p>
                       </div>
                     </div>
@@ -204,49 +268,46 @@ const Timeline = ({ events, options = { snap: false } }: { events: any[], option
               <section className="body-font mx-4 border-t border-gray-200 text-gray-700 dark:text-neutral-200">
                 <div className="container mx-auto px-5 py-24">
                   <div className="mb-20 flex w-full flex-col text-center">
-                    <h2 className="title-font mb-1 text-xs font-medium tracking-widest text-indigo-500">
-                      Basespot Defense Setup
-                    </h2>
+                    {/* <h2 className="title-font mb-1 text-xs font-medium tracking-widest text-indigo-500">
+                      Images
+                    </h2> */}
                     <h1 className="title-font text-2xl font-medium text-gray-900 dark:text-neutral-200 sm:text-3xl">
-                      Basespot Setup
+                      Images
                     </h1>
                   </div>
                   <div className="-m-4 flex flex-wrap">
-                    <div className="p-4 md:w-1/3">
-                      <div className="flex h-full flex-col rounded-lg bg-gray-100 p-8 dark:bg-gray-600">
-                        <div className="mb-3 flex items-center">
-                          <div className="mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-indigo-500 text-white">
-                            <svg
-                              fill="none"
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              className="h-5 w-5"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-                            </svg>
+                    {events[currentPage].images.map((img, i) => (
+                      <div key={`img${i}`} className="p-4 md:w-1/3">
+                        <div className="flex h-full flex-col rounded-lg bg-gray-100 p-8 dark:bg-gray-600">
+                          <div className="mb-3 flex items-center">
+                            {/* <div className="mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-indigo-500 text-white">
+                              <svg
+                                fill="none"
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                className="h-5 w-5"
+                                viewBox="0 0 24 24"
+                              >
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                              </svg>
+                            </div> */}
+                            <h2 className="title-font text-lg font-medium text-gray-900 dark:text-neutral-200">
+                              {/* Defense Nr.1 */}
+                            </h2>
                           </div>
-                          <h2 className="title-font text-lg font-medium text-gray-900 dark:text-neutral-200">
-                            Defense Nr.1
-                          </h2>
-                        </div>
-                        <div className="flex-grow">
-                          <p className="text-base leading-relaxed">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Nulla, voluptatum?
-                          </p>
-                          <img
-                            className="rounded object-cover object-center"
-                            src={
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s"
-                            }
-                            alt="test"
-                          />
+                          <div className="flex-grow">
+                            <p className="text-base leading-relaxed"></p>
+                            <img
+                              className="rounded object-cover object-center"
+                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${img}`}
+                              alt={events[currentPage].map}
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </section>

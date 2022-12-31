@@ -100,7 +100,6 @@ export const mergeRecipe = (...objects): Object => {
   return mergedObj;
 };
 
-
 /**
  * @name isObject
  * @param {any} value determines if value is an object
@@ -144,7 +143,6 @@ export const merge = (...sources) => {
   return target;
 };
 
-
 export const capitalize = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
@@ -183,7 +181,7 @@ export const getWeekDates = () => {
  * @example isDate("2022-11-28") // false
  * @example isDate("2022-11") // false
  * @example isDate("2022") // false
-*/
+ */
 export const isDate = (date: string): boolean => {
   // regex test for  2022-11-28T14:17:14.899Z format
   const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
@@ -238,5 +236,33 @@ export const random = (min: number, max: number) =>
  */
 
 export const wordNumberRegex = (str: string) => {
-  return str.match(/(?:f(?:ive|our)|s(?:even|ix)|t(?:hree|wo)|(?:ni|o)ne|eight)/gi);
+  return str.match(
+    /(?:f(?:ive|our)|s(?:even|ix)|t(?:hree|wo)|(?:ni|o)ne|eight)/gi
+  );
+};
+
+// get date difference in days, hours and minutes
+
+export const getDateDiff = (date1: Date, date2: Date) => {
+  const diff = Math.abs(new Date(date1).getTime() - new Date(date2).getTime());
+  console.log(Math.floor(diff / (1000 * 3600 * 24)) + " days");
+  console.log(Math.floor((diff / (1000 * 3600)) % 24) + " hours");
+  console.log(Math.floor((diff / 1000 / 60) % 60) + " minutes");
+  return {
+    days: Math.floor(diff / (1000 * 3600 * 24)),
+    hours: Math.floor((diff / (1000 * 3600)) % 24),
+    minutes: Math.floor((diff / 1000 / 60) % 60),
+    dateString: `${Math.floor(diff / (1000 * 3600 * 24))} days, ${Math.floor(
+      (diff / (1000 * 3600)) % 24
+    )} hours, ${Math.floor((diff / 1000 / 60) % 60)} minutes`,
+  };
+};
+
+export function timeDiffCalc(dateNow, dateFuture) {
+  let newYear1 = new Date(dateNow);
+  let newYear2 = new Date(dateFuture);
+  let diff2 =
+    Math.round(((newYear2 as any) - (newYear1 as any)) / 1000 / 60) / 60;
+
+  console.log(diff2 + " hours");
 }

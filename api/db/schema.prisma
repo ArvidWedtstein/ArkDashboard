@@ -9,7 +9,7 @@ datasource db {
 }
 
 model basespot {
-  id                  BigInt               @id
+  id                  BigInt               @id @unique @default(autoincrement())
   name                String
   description         String
   latitude            Float
@@ -59,7 +59,7 @@ model profiles {
 }
 
 model roles {
-  id                                 String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                                 String       @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   name                               String
   createdBy                          String?      @default(dbgenerated("auth.uid()")) @db.Uuid
   permissions                        permission[]
@@ -68,7 +68,7 @@ model roles {
 }
 
 model timeline {
-  id                 String               @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                 String               @id @unique @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   createdAt          DateTime?            @default(now()) @db.Timestamptz(6)
   updatedAt          DateTime?            @db.Timestamptz(6)
   createdBy          String?              @db.Uuid
@@ -78,12 +78,12 @@ model timeline {
 
 model timeline_basespots {
   id          BigInt    @id @default(autoincrement())
-  createdAt   DateTime? @default(now()) @db.Timestamptz(6)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
   updated_at  DateTime? @db.Timestamptz(6)
   timeline_id String    @db.Uuid
   startDate   DateTime  @default(now()) @db.Date
   endDate     DateTime? @db.Timestamptz(6)
-  basespotID  BigInt?
+  basespot_id BigInt?
   tribeName   String
   map         String?
   server      String?
@@ -95,7 +95,7 @@ model timeline_basespots {
   created_by  String?   @db.Uuid
   raided_by   String?
   raidcomment String?
-  basespot    basespot? @relation(fields: [basespotID], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  basespot    basespot? @relation(fields: [basespot_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   profiles    profiles? @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   timeline    timeline  @relation(fields: [timeline_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
@@ -119,4 +119,7 @@ enum permission {
   tribe_create    @map("tribe:create")
   tribe_update    @map("tribe:update")
   tribe_delete    @map("tribe:delete")
+  timeline_create @map("timeline:create")
+  timeline_update @map("timeline:update")
+  timeline_delete @map("timeline:delete")
 }
