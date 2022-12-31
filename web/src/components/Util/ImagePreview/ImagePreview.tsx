@@ -3,9 +3,15 @@ import { useState } from "react";
 const ImagePreview = ({
   isOpen,
   setIsOpen,
+  image,
+  title,
+  content,
 }: {
   isOpen: boolean;
   setIsOpen?: (open: boolean) => void;
+  image?: string;
+  title?: string;
+  content?: string;
 }) => {
   return (
     <div
@@ -16,12 +22,14 @@ const ImagePreview = ({
         isOpen ? "false" : "hidden"
       }`}
     >
-      <div className="relative top-1/2 left-1/2 h-full w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 transform md:h-auto">
+      <div className="relative top-1/2 left-1/2 h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2">
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-              Terms of Service
-            </h3>
+            {title && (
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                {title}
+              </h3>
+            )}
             <button
               type="button"
               className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -44,18 +52,12 @@ const ImagePreview = ({
             </button>
           </div>
           <div className="space-y-6 p-6">
-            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-              With less than a month to go before the European Union enacts new
-              consumer privacy laws for its citizens, companies around the world
-              are updating their terms of service agreements to comply.
-            </p>
-            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-              The European Union’s General Data Protection Regulation (G.D.P.R.)
-              goes into effect on May 25 and is meant to ensure a common set of
-              data rights in the European Union. It requires organizations to
-              notify users as soon as possible of high-risk data breaches that
-              could personally affect them.
-            </p>
+            {image && <img src={image} className="w-full rounded" />}
+            {content && (
+              <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                {content}
+              </p>
+            )}
           </div>
           {/* <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
             <button
