@@ -70,7 +70,7 @@ const TribeForm = (props: TribeFormProps) => {
           defaultValue={props.tribe?.description}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
+          validation={{ required: false }}
         />
 
 

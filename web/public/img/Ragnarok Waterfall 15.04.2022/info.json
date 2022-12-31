@@ -1,0 +1,14 @@
+{
+  "tribename": "DrinkleDonk",
+  "players": ["Lunatone", "DrunkGerman", "Ravvioli"],
+  "server": "Elite Ark",
+  "region": "EU",
+  "season": "8",
+  "cluster": "3man",
+  "date": "2022-04-15",
+  "location": {
+    "lat": 32.33,
+    "lon": 44.5
+  },
+  "map": "Ragnarok"
+}

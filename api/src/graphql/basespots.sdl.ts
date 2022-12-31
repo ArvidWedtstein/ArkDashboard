@@ -11,9 +11,15 @@ export const schema = gql`
     estimatedForPlayers: String
   }
 
+  type BasespotPage {
+    basespots: [Basespot!]!
+    count: Int!
+  }
+
   type Query {
-    basespots: [Basespot!]! @requireAuth
+    basespots: [Basespot!]! @skipAuth
     basespot(id: Int!): Basespot @requireAuth
+    basespotPage(page: Int): BasespotPage @skipAuth
   }
 
   input CreateBasespotInput {
@@ -42,4 +48,4 @@ export const schema = gql`
       @requireAuth
     deleteBasespot(id: Int!): Basespot! @requireAuth
   }
-`
+`;

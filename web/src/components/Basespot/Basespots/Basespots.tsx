@@ -22,7 +22,7 @@ const DELETE_BASESPOT_MUTATION = gql`
   }
 `;
 //https://ark.fandom.com/wiki/HUD
-const BasespotsList = ({ basespots }: FindBasespots) => {
+const BasespotsList = ({ basespotPage }: FindBasespots) => {
   const [deleteBasespot] = useMutation(DELETE_BASESPOT_MUTATION, {
     onCompleted: () => {
       toast.success("Basespot deleted");
@@ -44,23 +44,22 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
     }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-  const previousPage = () => {
-    if (currentPage !== 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+  let basespots = basespotPage.basespots
 
-  const nextPage = () => {
-    if (currentPage !== Math.ceil(basespots.length / 6)) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-  
-  const indexOfLastPost = currentPage * 6;
-  const indexOfFirstPost = indexOfLastPost - 6;
-  const currentPages = basespots.slice(indexOfFirstPost, indexOfLastPost);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const paginate = (pageNumber: number) => {
+  //   if (
+  //     (currentPage !== 1 && pageNumber < currentPage) ||
+  //     (currentPage !== Math.ceil(basespots.length / 6) &&
+  //       pageNumber > currentPage)
+  //   ) {
+  //     setCurrentPage(pageNumber);
+  //   }
+  // };
+
+  // const indexOfLastPost = currentPage * 6;
+  // const indexOfFirstPost = indexOfLastPost - 6;
+
   const mapImages = {
     TheIsland:
       "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
@@ -85,7 +84,7 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
     Gen2: "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
   };
   let [currentMap, setCurrentMap] = useState("");
-  
+
   // https://www.freecodecamp.org/news/build-a-custom-pagination-component-in-react/
   return (
     <div className="">
@@ -109,7 +108,8 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
         {basespots
           .filter((spot) =>
             spot.Map.toLowerCase().includes(currentMap.toLowerCase())
-          ).slice(indexOfFirstPost, indexOfLastPost)
+          )
+          // .slice(indexOfFirstPost, indexOfLastPost)
           .map((basespot, i) => (
             <>
               <ArkCard
@@ -130,14 +130,13 @@ const BasespotsList = ({ basespots }: FindBasespots) => {
               />
             </>
           ))}
-        <Paginate
-          postsPerPage={6}
-          totalPosts={basespots.length}
-          paginate={paginate}
-          previousPage={previousPage}
-          nextPage={nextPage}
-        />
       </div>
+      {/* <Paginate
+        currentPage={currentPage}
+        postsPerPage={6}
+        totalPosts={basespots.length}
+        onPageChange={paginate}
+      /> */}
     </div>
   );
 };

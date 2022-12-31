@@ -16,6 +16,7 @@ const Routes = () => {
   return (
     <Router>
       <Set wrap={MainLayout}>
+
         <Set
           wrap={ScaffoldLayout}
           title="Basespots"
@@ -71,11 +72,11 @@ const Routes = () => {
         </Set>
         <Private
           unauthenticated="home"
-          roles="caa1f3b3-cebe-4170-82d3-ba18af52d50d"
+          roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
         >
-          <Route path="/account" page={AccountPage} name="account" />
           <Route path="/admin" page={AdminPage} name="admin" />
         </Private>
+        <Route path="/account" page={AccountPage} name="account" />
         <Route path="/login" page={LoginPage} name="login" />
         <Route path="/signup" page={SignupPage} name="signup" />
         <Route
@@ -91,6 +92,7 @@ const Routes = () => {
 
         <Route path="/" page={HomePage} name="home" />
         <Route path="/gtw" page={GTWPage} name="gtw" />
+        <Route path="/story" page={StoryPage} name="story" />
         <Route
           path="/material-calculator"
           page={MaterialCalculatorPage}

@@ -7,7 +7,6 @@
 [![Version][version-shield]][version-url]
 [![Netlify Status](https://api.netlify.com/api/v1/badges/6eca3877-cf13-47fa-9f48-2f722ba00ea4/deploy-status)](https://app.netlify.com/sites/arkdashboard/deploys)
 
-
 <br />
 <div align="center">
   <a href="https://github.com/ArvidWedtstein/ArkDashboard">
@@ -28,7 +27,6 @@
   </p>
 </div>
 
-<!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
   <ol>
@@ -220,13 +218,32 @@ Check for stuff:
 yarn redwood check
 ```
 
+Local supabase postgresql setup:
+
+```sh
+supabase login
+```
+
+```sh
+supabase init
+```
+
+```sh
+supabase start
+```
+
 <!-- ROADMAP -->
 
 ## Roadmap
 
 - [ ] Get to know Redwood and React
-- [ ] Add a base spot system
+- [x] Add a base spot system
 - [x] Add a map system
+- [ ] Testing
+- [ ] Github CI Testing
+- [ ] Fix readme
+
+<!--https://redwoodjs.com/docs/how-to/test-in-github-actions-->
 
 See the [open issues](https://github.com/ArvidWedtstein/ArkDashboard/issues) for a full list of proposed features (and known issues).
 

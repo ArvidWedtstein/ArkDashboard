@@ -1,0 +1,14 @@
+{
+  "tribename": "DinkleDonk",
+  "players": ["BonkBrain", "German", "RavioChad", "LunaTone"],
+  "server": "Arkosik",
+  "region": "",
+  "season": "",
+  "cluster": "",
+  "date": "2021-06-01",
+  "location": {
+    "lat": 50,
+    "lon": 70
+  },
+  "map": "Abberation"
+}

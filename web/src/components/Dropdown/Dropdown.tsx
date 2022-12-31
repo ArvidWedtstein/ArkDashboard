@@ -75,7 +75,7 @@ const Dropdown = ({
                 id="light-theme"
                 name="themes"
                 className="hidden"
-                checked
+              // checked
               />
               <label
                 htmlFor="light-theme"

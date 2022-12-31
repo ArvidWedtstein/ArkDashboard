@@ -1,0 +1,14 @@
+{
+  "tribename": "Dinkle Donk",
+  "players": ["DrunkGerman", "LunaTone"],
+  "server": "Elite Ark",
+  "region": "NA",
+  "season": "7",
+  "cluster": "3man",
+  "date": "2021-12-29",
+  "location": {
+    "lat": 34.92,
+    "lon": 90.3
+  },
+  "map": "Valguero"
+}

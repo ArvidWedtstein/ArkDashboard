@@ -1,0 +1,14 @@
+{
+  "tribename": "Omeggah 365",
+  "players": ["Lunatone", "DrunkGerman"],
+  "server": "Elite Ark",
+  "region": "NA",
+  "season": "1",
+  "cluster": "5man",
+  "date": "2022-11-11",
+  "location": {
+    "lat": 0,
+    "lon": 0
+  },
+  "map": "TheIsland"
+}

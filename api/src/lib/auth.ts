@@ -44,14 +44,17 @@ export const getCurrentUser = async (
 
   const { roles } = parseJWT({ decoded });
   const { sub, role } = decoded;
-  if (sub.toString()) {
-    // return { ...decoded, roles };
 
+  if (!!sub.toString()) {
     let user = await db.profiles.findUnique({
       where: { id: sub.toString() },
     });
-    let role_id = user.role_id;
-    return await { ...user, role, roles: [role_id], ...decoded };
+
+    if (user && user.role_id) {
+      let role_id = user.role_id;
+      return await { ...user, role, roles: [role_id], ...decoded };
+    }
+    return await { ...user, role, ...decoded };
   }
 
   return { ...decoded };
@@ -80,17 +83,26 @@ type AllowedRoles = string | string[] | undefined;
  * @returns {boolean} - Returns true if the currentUser is logged in and assigned one of the given roles,
  * or when no roles are provided to check against. Otherwise returns false.
  */
-export const hasRole = (role_id: AllowedRoles): boolean => {
+export const hasRole = async (role_id: AllowedRoles): Promise<boolean> => {
   if (!isAuthenticated()) {
     return false;
   }
+  // Regular expression to check if string is a valid UUID
+  const uuidCheck =
+    /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
 
   const currentUserRoles = context.currentUser?.role_id;
 
   if (typeof role_id === "string") {
     if (typeof currentUserRoles === "string") {
-      // roles to check is a string, currentUser.roles is a string
-      return currentUserRoles === role_id;
+      if (uuidCheck.test(role_id)) {
+        return currentUserRoles === role_id;
+      }
+      let userRole = await db.roles.findUnique({
+        where: { id: currentUserRoles },
+      });
+      console.log(userRole);
+      return role_id === userRole.name;
     }
     //  else if (Array.isArray(currentUserRoles)) {
     //   // roles to check is a string, currentUser.roles is an array

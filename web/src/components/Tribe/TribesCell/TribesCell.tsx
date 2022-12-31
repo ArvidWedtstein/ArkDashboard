@@ -5,6 +5,7 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Tribes from "src/components/Tribe/Tribes";
 import { useAuth } from "@redwoodjs/auth";
+import Pagination from "src/components/Pagination/Pagination";
 
 export const QUERY = gql`
   query FindTribes {
@@ -19,6 +20,26 @@ export const QUERY = gql`
   }
 `;
 
+// export const QUERY = gql`
+//   query FindTribes($page: Int) {
+//     tribePage(page: $page) {
+//       tribes {
+//         id
+//         name
+//         description
+//         createdAt
+//         updatedAt
+//         createdBy
+//       }
+//       count
+//     }
+//   }
+// `;
+// export const beforeQuery = ({ page }) => {
+//   page = page ? parseInt(page, 10) : 1
+
+//   return { variables: { page } }
+// }
 export const Loading = () => (
   <div className="text-center">
     <div className="spinner-border" role="status">
@@ -29,7 +50,7 @@ export const Loading = () => (
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">
+    <div className="text-center h-full">
       {"No tribes yet. "}
       <Link to={routes.newTribe()} className="rw-link">
         {"Create one?"}
@@ -42,13 +63,16 @@ export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>
 );
 
+// export const Success = ({ tribePage }: CellSuccessProps<FindTribes>) => {
+//   console.log(tribePage)
+//   return (
+//     <>
+//       <Tribes tribePage={tribePage} />;
+
+//       <Pagination count={tribePage.count} route={"tribes"} />
+//     </>
+//   )
+// };
 export const Success = ({ tribes }: CellSuccessProps<FindTribes>) => {
-  // const { client } = useAuth();
-  // let { data, error, status } = await client
-  //   .from("tribe_view")
-  //   .select(
-  //     `id, name, description, createdAt, updatedAt, createdBy, full_name`
-  //   )
-  // console.log(data)
   return <Tribes tribes={tribes} />;
 };
