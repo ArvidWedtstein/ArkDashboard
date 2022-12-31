@@ -14,7 +14,6 @@ const Timeline = ({
   events: any[];
   options?: TimelineSettings;
 }) => {
-  const { client: supabase, currentUser } = useAuth();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
@@ -24,15 +23,9 @@ const Timeline = ({
       setCurrentPage(page);
 
       if (!events[page]) return;
-      // console.log("events[page]", events[page]);
-      // setCurrentEventImages(getImages(events[page].id));
     },
     [currentPage]
   );
-
-  // useEffect(() => {
-  //   setEvents(events);
-  // }, [events]);
 
   return (
     <section className="-mx-3">
