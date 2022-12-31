@@ -81,7 +81,7 @@ model timeline_basespots {
   created_at  DateTime? @default(now()) @db.Timestamptz(6)
   updated_at  DateTime? @db.Timestamptz(6)
   timeline_id String    @db.Uuid
-  startDate   DateTime  @default(now()) @db.Date
+  startDate   DateTime? @db.Timestamptz(6)
   endDate     DateTime? @db.Timestamptz(6)
   basespot_id BigInt?
   tribeName   String
