@@ -2,6 +2,7 @@ import { useAuth } from "@redwoodjs/auth";
 import { useCallback, useEffect, useState } from "react";
 import { Maps } from "src/components/Maps";
 import { getDateDiff, timeDiffCalc } from "src/lib/formatters";
+import ImagePreview from "../ImagePreview/ImagePreview";
 
 type TimelineSettings = {
   snap?: boolean;
@@ -14,7 +15,8 @@ const Timeline = ({
   options?: TimelineSettings;
 }) => {
   const { client: supabase, currentUser } = useAuth();
-  const [currentEvents, setEvents] = useState(null);
+  const [isOpenModal, setIsOpenModal] = useState(true);
+  const [currentModalImage, setCurrentModalImage] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
 
   const onChange = useCallback(
@@ -28,9 +30,9 @@ const Timeline = ({
     [currentPage]
   );
 
-  useEffect(() => {
-    setEvents(events);
-  }, [events]);
+  // useEffect(() => {
+  //   setEvents(events);
+  // }, [events]);
 
   return (
     <section className="-mx-3">
@@ -88,6 +90,11 @@ const Timeline = ({
             </div>
           </div>
         </div>
+        <ImagePreview
+          isOpen={isOpenModal}
+          setIsOpen={setIsOpenModal}
+          image={currentModalImage}
+        />
         <div className="w-full bg-slate-200 p-1 dark:bg-gray-600">
           {events[currentPage] && (
             <div className="m-2 block rounded-md bg-slate-200  text-black dark:bg-neutral-800 dark:text-white">
@@ -128,6 +135,7 @@ const Timeline = ({
                   </div>
                 </div>
               </section>
+
               <section className="body-font mx-4 border-t border-gray-200 text-gray-700 dark:text-neutral-200">
                 <div className="container mx-auto flex flex-wrap px-5 py-12">
                   <div className="mb-10 w-full overflow-hidden lg:mb-0 lg:w-1/2">
@@ -292,7 +300,13 @@ const Timeline = ({
                           <div className="flex-grow">
                             <p className="text-base leading-relaxed"></p>
                             <img
-                              className="rounded object-cover object-center"
+                              onClick={() => {
+                                setCurrentModalImage(
+                                  `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${img}`
+                                );
+                                setIsOpenModal(true);
+                              }}
+                              className="cursor-pointer rounded object-cover object-center"
                               src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${img}`}
                               alt={events[currentPage].map}
                             />
