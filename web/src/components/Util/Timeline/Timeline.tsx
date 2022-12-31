@@ -306,7 +306,7 @@ const Timeline = ({
                                 );
                                 setIsOpenModal(true);
                               }}
-                              className="rounded object-cover object-center"
+                              className="cursor-pointer rounded object-cover object-center"
                               src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${img}`}
                               alt={events[currentPage].map}
                             />
