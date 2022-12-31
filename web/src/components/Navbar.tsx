@@ -58,6 +58,11 @@ const Navbar = () => {
                     Tribe
                   </Link>
                 </li>
+                <li>
+                  <Link className="hover:text-gray-200" to={routes.story()}>
+                    Story
+                  </Link>
+                </li>
               </ul>
             </div>
             {/* <a className="flex mr-6 items-center" href="#">
