@@ -15,7 +15,7 @@ const Timeline = ({
   options?: TimelineSettings;
 }) => {
   const { client: supabase, currentUser } = useAuth();
-  const [isOpenModal, setIsOpenModal] = useState(true);
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
 
