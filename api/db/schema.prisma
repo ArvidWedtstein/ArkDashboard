@@ -22,7 +22,6 @@ model basespot {
   created_by          String?              @db.Uuid
   turretsetup_image   String?
   updated_at          DateTime?            @db.Timestamptz(6)
-  profiles            profiles?            @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   timeline_basespots  timeline_basespots[]
 }
 
@@ -50,7 +49,6 @@ model profiles {
   role_id                         String               @default(dbgenerated("'697b7d70-bab3-4ff9-9c3e-f30b058b621c'::uuid")) @db.Uuid
   created_at                      DateTime?            @default(now()) @db.Timestamptz(6)
   roles                           roles                @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  basespot                        basespot[]
   roles_profilesToroles_createdBy roles[]              @relation("profilesToroles_createdBy")
   timeline                        timeline[]
   timeline_basespots              timeline_basespots[]

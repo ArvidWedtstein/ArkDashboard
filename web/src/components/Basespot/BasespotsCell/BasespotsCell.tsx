@@ -42,7 +42,7 @@ export const QUERY = gql`
   }
 `;
 export const beforeQuery = ({ page }) => {
-  page = page ? parseInt(page, 10) : 1;
+  page = parseInt(page) ? parseInt(page, 10) : 1;
 
   return { variables: { page } };
 };
