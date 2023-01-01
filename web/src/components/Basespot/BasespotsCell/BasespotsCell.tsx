@@ -33,6 +33,7 @@ export const QUERY = gql`
         longitude
         image
         created_at
+        updated_at
         Map
         estimatedForPlayers
       }

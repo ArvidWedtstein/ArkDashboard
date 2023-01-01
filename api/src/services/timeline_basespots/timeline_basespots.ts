@@ -9,42 +9,12 @@ export const timelineBasespotsPage = ({ page = 1 }: any) => {
     basespots: db.timeline_basespots.findMany({
       take: POSTS_PER_PAGE,
       skip: offset,
-      orderBy: { createdAt: "desc" },
+      orderBy: { created_at: "desc" },
     }),
     count: db.basespot.count(),
   };
 };
 
-export const basespots: QueryResolvers["basespots"] = () => {
-  return db.basespot.findMany();
-};
-
-export const basespot: QueryResolvers["basespot"] = ({ id }) => {
-  return db.basespot.findUnique({
-    where: { id },
-  });
-};
-
-export const createBasespot: MutationResolvers["createBasespot"] = ({
-  input,
-}) => {
-  return db.basespot.create({
-    data: input,
-  });
-};
-
-export const updateBasespot: MutationResolvers["updateBasespot"] = ({
-  id,
-  input,
-}) => {
-  return db.basespot.update({
-    data: input,
-    where: { id },
-  });
-};
-
-export const deleteBasespot: MutationResolvers["deleteBasespot"] = ({ id }) => {
-  return db.basespot.delete({
-    where: { id },
-  });
+export const timeline_basespots = () => {
+  return db.timeline_basespots.findMany();
 };
