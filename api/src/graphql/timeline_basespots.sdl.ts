@@ -1,9 +1,9 @@
 export const schema = gql`
   type Timeline_Basespot {
     id: Int!
-    createdAt: DateTime!
-    updatedAt: DateTime
-    createdBy: String
+    created_at: DateTime!
+    updated_at: DateTime
+    created_by: String
     timeline_id: String
     startDate: Date
     endDate: DateTime

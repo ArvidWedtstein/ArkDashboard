@@ -9,7 +9,7 @@ export const basespotPage = ({ page = 1 }: any) => {
     basespots: db.basespot.findMany({
       take: POSTS_PER_PAGE,
       skip: offset,
-      orderBy: { createdAt: "desc" },
+      orderBy: { created_at: "desc" },
     }),
     count: db.basespot.count(),
   };

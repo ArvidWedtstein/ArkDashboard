@@ -6,7 +6,7 @@ export const schema = gql`
     latitude: Float!
     longitude: Float!
     image: String
-    createdAt: DateTime!
+    created_at: DateTime!
     Map: String
     estimatedForPlayers: String
   }
