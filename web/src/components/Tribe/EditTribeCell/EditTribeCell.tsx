@@ -25,7 +25,7 @@ const UPDATE_TRIBE_MUTATION = gql`
       name
       description
       created_at
-      updatedAt
+      updated_at
     }
   }
 `;

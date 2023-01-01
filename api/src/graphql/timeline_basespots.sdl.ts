@@ -3,7 +3,6 @@ export const schema = gql`
     id: Int!
     created_at: DateTime!
     updated_at: DateTime
-    created_by: String
     timeline_id: String
     startDate: Date
     endDate: DateTime
