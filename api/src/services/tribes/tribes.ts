@@ -12,7 +12,7 @@ export const tribes: QueryResolvers["tribes"] = () => {
 //     tribes: db.tribe.findMany({
 //       take: POSTS_PER_PAGE,
 //       skip: offset,
-//       orderBy: { createdAt: "desc" },
+//       orderBy: { created_at: "desc" },
 //     }),
 //     count: db.tribe.count(),
 //   };

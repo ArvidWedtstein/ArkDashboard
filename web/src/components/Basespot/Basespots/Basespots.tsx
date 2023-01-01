@@ -22,14 +22,13 @@ const DELETE_BASESPOT_MUTATION = gql`
   }
 `;
 //https://ark.fandom.com/wiki/HUD
-const BasespotsList = ({ basespotPage }: FindBasespots) => {
+const BasespotsList = ({ basespotPage }: FindBasespots | any) => {
   const [deleteBasespot] = useMutation(DELETE_BASESPOT_MUTATION, {
     onCompleted: () => {
       toast.success("Basespot deleted");
     },
     onError: (error) => {
       toast.error(error.message);
-      console.log(error);
     },
     // This refetches the query on the list page. Read more about other ways to
     // update the cache over here:
@@ -44,21 +43,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
     }
   };
 
-  let basespots = basespotPage.basespots
-
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const paginate = (pageNumber: number) => {
-  //   if (
-  //     (currentPage !== 1 && pageNumber < currentPage) ||
-  //     (currentPage !== Math.ceil(basespots.length / 6) &&
-  //       pageNumber > currentPage)
-  //   ) {
-  //     setCurrentPage(pageNumber);
-  //   }
-  // };
-
-  // const indexOfLastPost = currentPage * 6;
-  // const indexOfFirstPost = indexOfLastPost - 6;
+  let basespots = basespotPage.basespots;
 
   const mapImages = {
     TheIsland:
@@ -85,7 +70,6 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
   };
   let [currentMap, setCurrentMap] = useState("");
 
-  // https://www.freecodecamp.org/news/build-a-custom-pagination-component-in-react/
   return (
     <div className="">
       <div className="flex items-center">
@@ -109,26 +93,23 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
           .filter((spot) =>
             spot.Map.toLowerCase().includes(currentMap.toLowerCase())
           )
-          // .slice(indexOfFirstPost, indexOfLastPost)
           .map((basespot, i) => (
-            <>
-              <ArkCard
-                key={i}
-                title={basespot.name}
-                subtitle={basespot.Map.split(/(?=[A-Z])/).join(" ")}
-                content={basespot.description}
-                ring={`${basespot.estimatedForPlayers} players`}
-                image={{
-                  src: mapImages[basespot.Map],
-                  alt: basespot.Map,
-                  position: `${random(0, 100)}% ${random(25, 75)}%`,
-                }}
-                button={{
-                  text: "Learn More",
-                  link: routes.basespot({ id: basespot.id }),
-                }}
-              />
-            </>
+            <ArkCard
+              key={`${basespot.id}-${i}`}
+              title={basespot.name}
+              subtitle={basespot.Map.split(/(?=[A-Z])/).join(" ")}
+              content={basespot.description}
+              ring={`${basespot.estimatedForPlayers} players`}
+              image={{
+                src: mapImages[basespot.Map],
+                alt: basespot.Map,
+                position: `${random(0, 100)}% ${random(25, 75)}%`,
+              }}
+              button={{
+                text: "Learn More",
+                link: routes.basespot({ id: basespot.id }),
+              }}
+            />
           ))}
       </div>
       {/* <Paginate

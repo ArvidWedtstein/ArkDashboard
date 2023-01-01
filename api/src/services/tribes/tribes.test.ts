@@ -27,13 +27,13 @@ describe("tribes", () => {
       input: {
         name: "String",
         description: "String",
-        updatedAt: "2022-11-17T07:21:19.858Z",
+        updated_at: "2022-11-17T07:21:19.858Z",
       },
     });
 
     expect(result.name).toEqual("String");
     expect(result.description).toEqual("String");
-    expect(result.updatedAt).toEqual(new Date("2022-11-17T07:21:19.858Z"));
+    expect(result.updated_at).toEqual(new Date("2022-11-17T07:21:19.858Z"));
   });
 
   scenario("updates a tribe", async (scenario: StandardScenario) => {

@@ -1,7 +1,7 @@
 import { useAuth } from "@redwoodjs/auth";
 import { useCallback, useEffect, useState } from "react";
 import { Maps } from "src/components/Maps";
-import { getDateDiff, timeDiffCalc } from "src/lib/formatters";
+import { getDateDiff } from "src/lib/formatters";
 import ImagePreview from "../ImagePreview/ImagePreview";
 
 type TimelineSettings = {
@@ -26,7 +26,29 @@ const Timeline = ({
     },
     [currentPage]
   );
-
+  const mapImages = {
+    TheIsland:
+      "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
+    TheCenter:
+      "https://cdn.akamai.steamstatic.com/steam/apps/473850/ss_f13c4990d4609d3fc89174f71858835a9f09aaa3.1920x1080.jpg?t=1508277712",
+    ScorchedEarth: "https://wallpapercave.com/wp/wp10504822.jpg",
+    Ragnarok:
+      "https://cdn.survivetheark.com/uploads/monthly_2016_10/large.580b5a9c3b586_Ragnarok02.jpg.6cfa8b30a81187caace6fecc1e9f0c31.jpg",
+    Abberation:
+      "https://cdn.images.express.co.uk/img/dynamic/143/590x/ARK-Survival-Evolved-849382.jpg",
+    Extinction:
+      "https://cdn.cloudflare.steamstatic.com/steam/apps/887380/ss_3c2c1d7c027c8beb54d2065afe3200e457c2867c.1920x1080.jpg?t=1594677636",
+    Valguero:
+      "https://i.pinimg.com/originals/0b/95/09/0b9509ddce658e3209ece1957053b27e.jpg",
+    Gen1: "https://cdn.akamai.steamstatic.com/steam/apps/1646700/ss_c939dd546237cba9352807d4deebd79c4e29e547.1920x1080.jpg?t=1622514386",
+    CrystalIsles:
+      "https://cdn2.unrealengine.com/egs-crystalislesarkexpansionmap-studiowildcard-dlc-g1a-05-1920x1080-119682147.jpg?h=720&resize=1&w=1280",
+    Fjordur:
+      "https://cdn.cloudflare.steamstatic.com/steam/apps/1887560/ss_331869adb5f0c98e3f13b48189e280f8a0ba1616.1920x1080.jpg?t=1655054447",
+    LostIsland:
+      "https://dicendpads.com/wp-content/uploads/2021/12/Ark-Lost-Island.png",
+    Gen2: "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
+  };
   return (
     <section className="-mx-3">
       <div className="h-full w-full">
@@ -47,7 +69,12 @@ const Timeline = ({
                   onClick={() => onChange(i)}
                   aria-controls="tabs-0"
                 >
-                  <div className="flex h-16 w-full rounded-t-md bg-[url(https://mosscm.com/wp-content/uploads/2017/11/news-dallas-skyline.jpg)] bg-cover bg-center"></div>
+                  {/* <div className="flex h-16 w-full rounded-t-md bg-[url(https://mosscm.com/wp-content/uploads/2017/11/news-dallas-skyline.jpg)] bg-cover bg-center"></div> */}
+                  <div
+                    className={`flex h-16 w-full rounded-t-md bg-[url(${
+                      mapImages[event.map]
+                    })] bg-cover bg-center`}
+                  ></div>
                   <div className="flex min-h-[150px] flex-col items-start py-3 px-6">
                     <p className="text-xs">{event.map}</p>
                     <p className="text-sm font-bold uppercase">
@@ -103,6 +130,11 @@ const Timeline = ({
                     <p className="leading-relaxed">
                       This time we played on{" "}
                       {events[currentPage].server && events[currentPage].server}
+                      ,{" "}
+                      {events[currentPage].cluster &&
+                        events[currentPage].cluster}{" "}
+                      Season{" "}
+                      {events[currentPage].season && events[currentPage].season}
                     </p>
                     <div className="flex justify-center">
                       {/* <Link
@@ -134,7 +166,15 @@ const Timeline = ({
                   <div className="mb-10 w-full overflow-hidden lg:mb-0 lg:w-1/2">
                     <p>
                       We started playing on{" "}
-                      {new Date(events[currentPage].startDate).toLocaleString()}
+                      {new Intl.DateTimeFormat("en-GB", {
+                        timeZone: "UTC",
+                        // dateStyle: "medium",
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                        era: "long",
+                        weekday: "long",
+                      }).format(new Date(events[currentPage].startDate))}
                       .
                     </p>
                     <p>
@@ -166,6 +206,30 @@ const Timeline = ({
                   </div>
                 </div>
               </section>
+              {/* <section className="body-font mx-4 border-t border-gray-200 text-stone-300">
+                <div className="container mx-auto px-5 py-24">
+                  <div className="mx-auto w-full text-center lg:w-3/4 xl:w-1/2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      className="mb-8 inline-block h-8 w-8 text-white"
+                      viewBox="0 0 975.036 975.036"
+                    >
+                      <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
+                    </svg>
+                    <p className="text-lg leading-relaxed">
+                      {events[currentPage].raidcomment}
+                    </p>
+                    <span className="mt-8 mb-6 inline-block h-1 w-10 rounded bg-indigo-500"></span>
+                    <h2 className="title-font text-sm font-medium tracking-wider text-stone-400">
+                      {events[currentPage].raided_by}
+                    </h2>
+                    <p className="text-gray-500">
+                      {events[currentPage].cluster}
+                    </p>
+                  </div>
+                </div>
+              </section> */}
               <section className="body-font mx-4 border-t border-gray-200 text-gray-700 dark:text-neutral-200">
                 <div className="container mx-auto flex flex-wrap px-5 py-12">
                   <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
@@ -271,9 +335,9 @@ const Timeline = ({
                   <div className="-m-4 flex flex-wrap">
                     {events[currentPage].images.map((img, i) => (
                       <div key={`img${i}`} className="p-4 md:w-1/3">
-                        <div className="flex h-full flex-col rounded-lg bg-gray-100 p-8 dark:bg-gray-600">
-                          <div className="mb-3 flex items-center">
-                            {/* <div className="mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-indigo-500 text-white">
+                        <div className="flex h-full flex-col rounded-lg bg-gray-100 p-0 dark:bg-gray-600">
+                          {/* <div className="mb-3 flex items-center">
+                            <div className="mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-indigo-500 text-white">
                               <svg
                                 fill="none"
                                 stroke="currentColor"
@@ -285,11 +349,11 @@ const Timeline = ({
                               >
                                 <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                               </svg>
-                            </div> */}
+                            </div>
                             <h2 className="title-font text-lg font-medium text-gray-900 dark:text-neutral-200">
-                              {/* Defense Nr.1 */}
+                              Defense Nr.1
                             </h2>
-                          </div>
+                          </div> */}
                           <div className="flex-grow">
                             <p className="text-base leading-relaxed"></p>
                             <img

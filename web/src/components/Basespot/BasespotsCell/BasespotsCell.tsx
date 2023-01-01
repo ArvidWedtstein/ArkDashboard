@@ -16,7 +16,7 @@ import Pagination from "src/components/Pagination/Pagination";
 //       latitude
 //       longitude
 //       image
-//       createdAt
+//       created_at
 //       Map
 //       estimatedForPlayers
 //     }
@@ -32,7 +32,8 @@ export const QUERY = gql`
         latitude
         longitude
         image
-        createdAt
+        created_at
+        updated_at
         Map
         estimatedForPlayers
       }
@@ -41,10 +42,10 @@ export const QUERY = gql`
   }
 `;
 export const beforeQuery = ({ page }) => {
-  page = page ? parseInt(page, 10) : 1
+  page = parseInt(page) ? parseInt(page, 10) : 1;
 
-  return { variables: { page } }
-}
+  return { variables: { page } };
+};
 export const Loading = () => {
   return (
     <div className="mb-5 grid grid-cols-2 gap-5">
@@ -55,7 +56,6 @@ export const Loading = () => {
     </div>
   );
 };
-
 
 export const Empty = () => {
   return (
@@ -74,14 +74,18 @@ export const Failure = ({ error }: CellFailureProps) => (
   </>
 );
 
-export const Success = ({ basespotPage }: CellSuccessProps<FindBasespots>) => {
+export const Success = ({ basespotPage }) => {
+  // : CellSuccessProps<FindBasespots>
   return (
     <>
       {basespotPage.count > 0 ? (
         <>
           <Basespots basespotPage={basespotPage} />
           <Pagination count={basespotPage.count} route={"basespots"} />
-        </>) : (Empty())}
+        </>
+      ) : (
+        Empty()
+      )}
     </>
-  )
+  );
 };

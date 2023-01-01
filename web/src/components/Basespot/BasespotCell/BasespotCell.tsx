@@ -1,8 +1,8 @@
-import type { FindBasespotById } from 'types/graphql'
+import type { FindBasespotById } from "types/graphql";
 
-import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
+import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
-import Basespot from 'src/components/Basespot/Basespot'
+import Basespot from "src/components/Basespot/Basespot";
 
 export const QUERY = gql`
   query FindBasespotById($id: Int!) {
@@ -13,21 +13,21 @@ export const QUERY = gql`
       latitude
       longitude
       image
-      createdAt
+      created_at
       Map
       estimatedForPlayers
     }
   }
-`
+`;
 
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => <div>Loading...</div>;
 
-export const Empty = () => <div>Basespot not found</div>
+export const Empty = () => <div>Basespot not found</div>;
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>
-)
+);
 
 export const Success = ({ basespot }: CellSuccessProps<FindBasespotById>) => {
-  return <Basespot basespot={basespot} />
-}
+  return <Basespot basespot={basespot} />;
+};

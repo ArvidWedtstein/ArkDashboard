@@ -13,8 +13,8 @@ export const QUERY = gql`
       id
       name
       description
-      createdAt
-      updatedAt
+      created_at
+      updated_at
       createdBy
     }
   }
@@ -27,8 +27,8 @@ export const QUERY = gql`
 //         id
 //         name
 //         description
-//         createdAt
-//         updatedAt
+//         created_at
+//         updated_at
 //         createdBy
 //       }
 //       count
@@ -50,7 +50,7 @@ export const Loading = () => (
 
 export const Empty = () => {
   return (
-    <div className="text-center h-full">
+    <div className="h-full text-center">
       {"No tribes yet. "}
       <Link to={routes.newTribe()} className="rw-link">
         {"Create one?"}

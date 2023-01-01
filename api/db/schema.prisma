@@ -9,20 +9,19 @@ datasource db {
 }
 
 model basespot {
-  id                  BigInt               @id @unique @default(autoincrement())
+  id                  BigInt               @id @default(autoincrement())
   name                String
   description         String
   latitude            Float
   longitude           Float
   image               String?
-  createdAt           DateTime             @default(now()) @db.Timestamptz(6)
+  created_at          DateTime             @default(now()) @db.Timestamptz(6)
   Map                 String               @default("TheIsland")
   estimatedForPlayers String?              @default("0")
   defenseImages       String[]
-  createdBy           String?              @db.Uuid
+  created_by          String?              @db.Uuid
   turretsetup_image   String?
-  updatedAt           DateTime?            @db.Timestamptz(6)
-  profiles            profiles?            @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  updated_at          DateTime?            @db.Timestamptz(6)
   timeline_basespots  timeline_basespots[]
 }
 
@@ -30,8 +29,8 @@ model tribe {
   id                                 Int       @id @default(autoincrement())
   name                               String
   description                        String?
-  createdAt                          DateTime  @default(now())
-  updatedAt                          DateTime? @updatedAt
+  created_at                         DateTime  @default(now())
+  updated_at                         DateTime?
   createdBy                          String?   @db.Uuid
   updatedBy                          String?   @default(dbgenerated("auth.uid()")) @db.Uuid
   profiles                           profiles? @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -50,7 +49,6 @@ model profiles {
   role_id                         String               @default(dbgenerated("'697b7d70-bab3-4ff9-9c3e-f30b058b621c'::uuid")) @db.Uuid
   created_at                      DateTime?            @default(now()) @db.Timestamptz(6)
   roles                           roles                @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  basespot                        basespot[]
   roles_profilesToroles_createdBy roles[]              @relation("profilesToroles_createdBy")
   timeline                        timeline[]
   timeline_basespots              timeline_basespots[]

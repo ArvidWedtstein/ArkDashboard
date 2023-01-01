@@ -1,14 +1,18 @@
 export const schema = gql`
   type Basespot {
-    id: Int!
+    id: BigInt!
     name: String!
     description: String!
     latitude: Float!
     longitude: Float!
     image: String
-    createdAt: DateTime!
-    Map: String
+    created_at: DateTime!
+    Map: String!
     estimatedForPlayers: String
+    defenseImages: [String]!
+    created_by: String
+    turretsetup_image: String
+    updated_at: DateTime
   }
 
   type BasespotPage {
@@ -17,8 +21,8 @@ export const schema = gql`
   }
 
   type Query {
-    basespots: [Basespot!]! @skipAuth
-    basespot(id: Int!): Basespot @requireAuth
+    basespots: [Basespot!]! @requireAuth
+    basespot(id: BigInt!): Basespot @requireAuth
     basespotPage(page: Int): BasespotPage @skipAuth
   }
 
@@ -28,8 +32,13 @@ export const schema = gql`
     latitude: Float!
     longitude: Float!
     image: String
-    Map: String
+    created_at: DateTime!
+    Map: String!
     estimatedForPlayers: String
+    defenseImages: [String]!
+    created_by: String
+    turretsetup_image: String
+    updated_at: DateTime
   }
 
   input UpdateBasespotInput {
@@ -38,14 +47,19 @@ export const schema = gql`
     latitude: Float
     longitude: Float
     image: String
+    created_at: DateTime
     Map: String
     estimatedForPlayers: String
+    defenseImages: [String]!
+    created_by: String
+    turretsetup_image: String
+    updated_at: DateTime
   }
 
   type Mutation {
     createBasespot(input: CreateBasespotInput!): Basespot! @requireAuth
-    updateBasespot(id: Int!, input: UpdateBasespotInput!): Basespot!
+    updateBasespot(id: BigInt!, input: UpdateBasespotInput!): Basespot!
       @requireAuth
-    deleteBasespot(id: Int!): Basespot! @requireAuth
+    deleteBasespot(id: BigInt!): Basespot! @requireAuth
   }
 `;
