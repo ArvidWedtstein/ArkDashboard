@@ -65,7 +65,7 @@ const ArkCard = ({
               </div>
             </div>
             <div className="flex border-t border-gray-300 p-4 pb-2"></div>
-            <div className="flex space-x-2 text-sm font-medium">
+            <div className="flex space-x-2 text-sm font-light">
               <div className="flex flex-auto space-x-3">
                 <button className="mb-2 inline-flex items-center space-x-2 rounded-full bg-gray-600 px-4 py-2 text-gray-100 shadow-sm ring-1 ring-green-500 md:mb-0 ">
                   <div className="flex">
