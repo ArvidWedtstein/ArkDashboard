@@ -2,7 +2,7 @@ import { useAuth } from "@redwoodjs/auth";
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Maps } from "src/components/Maps";
 
 import { timeTag } from "src/lib/formatters";
@@ -31,20 +31,24 @@ const Basespot = ({ basespot }: Props) => {
   const getImage = async () => {
     if (basespot.image && !baseUrl && !basespot.image.startsWith("http")) {
       const { data, error } = await supabase.storage
-        .from("basespotimages")
-        .download(`${basespot.name.replace(" ", "")}/${basespot.image}`);
+        .from(`basespotimages`)
+        .download(`${basespot.name.replaceAll(" ", "")}/${basespot.image}`);
       // .download(`thumbnails/${basespot.image}`);
       if (error) {
+        console.log(error);
         throw error;
       }
       if (data) {
         const url = URL.createObjectURL(data);
-        console.log(url);
         setBaseUrl(url);
       }
     }
   };
-  getImage();
+
+  useEffect(() => {
+    getImage();
+  }, [basespot.image]);
+
   const [deleteBasespot] = useMutation(DELETE_BASESPOT_MUTATION, {
     onCompleted: () => {
       toast.success("Basespot deleted");
@@ -61,16 +65,8 @@ const Basespot = ({ basespot }: Props) => {
     }
   };
 
-  // const scrollFunction = () => {
-  //   let scrolled = window.scrollY;
-  //   console.log(scrolled)
-  // }
-  // window.onscroll = function () {
-  //   scrollFunction();
-  // };
   return (
     <>
-      {/* TODO: Make map required not optional */}
       <section className="body-font text-gray-700">
         <div className="container mx-auto flex flex-col items-center px-5 py-12 md:flex-row">
           <div className="mb-16 flex flex-col items-center text-center md:mb-0 md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24">

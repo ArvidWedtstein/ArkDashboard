@@ -1,7 +1,7 @@
 import { useAuth } from "@redwoodjs/auth";
 import { useCallback, useEffect, useState } from "react";
 import { Maps } from "src/components/Maps";
-import { getDateDiff, timeDiffCalc } from "src/lib/formatters";
+import { getDateDiff } from "src/lib/formatters";
 import ImagePreview from "../ImagePreview/ImagePreview";
 
 type TimelineSettings = {

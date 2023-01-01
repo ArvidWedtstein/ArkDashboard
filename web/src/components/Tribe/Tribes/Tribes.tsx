@@ -41,7 +41,7 @@ const TribesList = ({ tribes }: FindTribes) => {
   function filterDatesByCurrentWeek(dates: FindTribes["tribes"]) {
     let [start, end] = getWeekDates();
     return dates.filter(
-      (d) => +new Date(d.createdAt) >= +start && +new Date(d.createdAt) < +end
+      (d) => +new Date(d.created_at) >= +start && +new Date(d.created_at) < +end
     );
   }
   const pickRandomTribe = () => {
@@ -102,7 +102,7 @@ const TribesList = ({ tribes }: FindTribes) => {
       {/* TODO: Replace user uuid with user name and profile picture */}
       <Table
         data={tribes}
-        cols={["name", "description", "createdAt", "createdBy", "actions"]}
+        cols={["name", "description", "created_at", "createdBy", "actions"]}
         renderActions={(row) => (
           <>
             <nav className="flex flex-row">

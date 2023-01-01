@@ -11,7 +11,7 @@ import {
 import type { EditBasespotById, UpdateBasespotInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import Avatar from "src/components/Avatar/Avatar";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 
 type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
@@ -25,6 +25,7 @@ interface BasespotFormProps {
 
 const BasespotForm = (props: BasespotFormProps) => {
   const [thumbnailUrl, setThumbnailUrl] = useState(null);
+  const basename = useRef(null);
   const onSubmit = (data: FormBasespot) => {
     data.image = thumbnailUrl;
     props.onSave(data, props?.basespot?.id);
@@ -49,6 +50,7 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <TextField
           name="name"
+          ref={basename}
           defaultValue={props.basespot?.name}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
@@ -120,20 +122,24 @@ const BasespotForm = (props: BasespotFormProps) => {
         </Label>
 
         <FileUpload
+          storagePath={`basespotimages/${
+            basename.current?.value.replaceAll(" ", "") ||
+            props.basespot?.name.replaceAll(" ", "")
+          }`}
           onUpload={(url) => {
-            console.log("Fileupload")
-            console.log(url)
-            setThumbnailUrl(URL.createObjectURL(url));
-          }} />
+            setThumbnailUrl(url);
+            // setThumbnailUrl(URL.createObjectURL(url));
+          }}
+        />
         <Avatar
           className="max-w-150-px absolute -mt-16 h-auto rounded-full border-none align-middle shadow-xl"
           url={props.basespot?.image}
           size={150}
-          storage="basespotimages/thumbnails" // TODO: find solution. foldername needs to be basespot id
+          storage={`basespotimages/${props.basespot?.name}`} // TODO: find solution. foldername needs to be basespot id
           editable={true}
           onUpload={(url) => {
-            console.log("Avatarupload")
-            console.log(url)
+            console.log("Avatarupload");
+            console.log(url);
             setThumbnailUrl(URL.createObjectURL(url));
           }}
         />

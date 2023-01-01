@@ -245,9 +245,6 @@ export const wordNumberRegex = (str: string) => {
 
 export const getDateDiff = (date1: Date, date2: Date) => {
   const diff = Math.abs(new Date(date1).getTime() - new Date(date2).getTime());
-  console.log(Math.floor(diff / (1000 * 3600 * 24)) + " days");
-  console.log(Math.floor((diff / (1000 * 3600)) % 24) + " hours");
-  console.log(Math.floor((diff / 1000 / 60) % 60) + " minutes");
   return {
     days: Math.floor(diff / (1000 * 3600 * 24)),
     hours: Math.floor((diff / (1000 * 3600)) % 24),
@@ -257,12 +254,3 @@ export const getDateDiff = (date1: Date, date2: Date) => {
     )} hours, ${Math.floor((diff / 1000 / 60) % 60)} minutes`,
   };
 };
-
-export function timeDiffCalc(dateNow, dateFuture) {
-  let newYear1 = new Date(dateNow);
-  let newYear2 = new Date(dateFuture);
-  let diff2 =
-    Math.round(((newYear2 as any) - (newYear1 as any)) / 1000 / 60) / 60;
-
-  console.log(diff2 + " hours");
-}
