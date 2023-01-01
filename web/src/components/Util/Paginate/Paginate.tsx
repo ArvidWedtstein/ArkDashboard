@@ -36,6 +36,7 @@ const Paginate = ({
               <span aria-hidden="true">&laquo;</span>
             </a>
           </li>
+
           {pageNumbers.map((number) => (
             <li
               key={number}

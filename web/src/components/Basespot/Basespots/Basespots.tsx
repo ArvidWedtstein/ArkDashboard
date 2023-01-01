@@ -22,7 +22,7 @@ const DELETE_BASESPOT_MUTATION = gql`
   }
 `;
 //https://ark.fandom.com/wiki/HUD
-const BasespotsList = ({ basespotPage }: FindBasespots) => {
+const BasespotsList = ({ basespotPage }: FindBasespots | any) => {
   const [deleteBasespot] = useMutation(DELETE_BASESPOT_MUTATION, {
     onCompleted: () => {
       toast.success("Basespot deleted");
