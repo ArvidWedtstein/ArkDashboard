@@ -1,21 +1,22 @@
-import { useState } from "react";
+import { forwardRef, useState } from "react";
+import useComponentVisible from "src/components/useComponentVisible";
 
+type iImagePreview = {
+  isOpen: boolean;
+  setIsOpen?: (open: boolean) => void;
+  image?: string;
+  title?: string;
+  content?: string;
+};
 const ImagePreview = ({
   isOpen,
   setIsOpen,
   image,
   title,
   content,
-}: {
-  isOpen: boolean;
-  setIsOpen?: (open: boolean) => void;
-  image?: string;
-  title?: string;
-  content?: string;
-}) => {
+}: iImagePreview) => {
   return (
     <div
-      id="defaultModal"
       tabIndex={-1}
       aria-hidden={isOpen ? "false" : "true"}
       className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full ${

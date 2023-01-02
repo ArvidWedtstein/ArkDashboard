@@ -1,6 +1,7 @@
 import { useAuth } from "@redwoodjs/auth";
 import { useCallback, useEffect, useState } from "react";
 import { Maps } from "src/components/Maps";
+import useComponentVisible from "src/components/useComponentVisible";
 import { getDateDiff } from "src/lib/formatters";
 import ImagePreview from "../ImagePreview/ImagePreview";
 
@@ -69,11 +70,12 @@ const Timeline = ({
                   onClick={() => onChange(i)}
                   aria-controls="tabs-0"
                 >
-                  {/* <div className="flex h-16 w-full rounded-t-md bg-[url(https://mosscm.com/wp-content/uploads/2017/11/news-dallas-skyline.jpg)] bg-cover bg-center"></div> */}
                   <div
-                    className={`flex h-16 w-full rounded-t-md bg-[url(${
-                      mapImages[event.map]
-                    })] bg-cover bg-center`}
+                    className={`flex h-16 w-full rounded-t-md  bg-cover bg-center`}
+                    style={{
+                      backgroundImage: `url(${mapImages[event.map]})`,
+                      backgroundPosition: "center",
+                    }}
                   ></div>
                   <div className="flex min-h-[150px] flex-col items-start py-3 px-6">
                     <p className="text-xs">{event.map}</p>
@@ -160,7 +162,6 @@ const Timeline = ({
                   </div>
                 </div>
               </section>
-
               <section className="body-font mx-4 border-t border-gray-200 text-gray-700 dark:text-neutral-200">
                 <div className="container mx-auto flex flex-wrap px-5 py-12">
                   <div className="mb-10 w-full overflow-hidden lg:mb-0 lg:w-1/2">
