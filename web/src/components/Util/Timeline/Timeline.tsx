@@ -64,7 +64,7 @@ const Timeline = ({
   return (
     <section className="-mx-3">
       <div className="h-full w-full">
-        <div className="events-wrapper bg-slate-600">
+        <div className="events-wrapper bg-white dark:bg-slate-600">
           <div className="events">
             <div
               className={`flex touch-pan-x select-none flex-row items-stretch justify-start space-x-1 overflow-x-auto p-3 will-change-scroll ${options.snap && "snap-x snap-mandatory"}`}
