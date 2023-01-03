@@ -6,8 +6,9 @@ interface IFileUploadProps {
   className?: string;
   multiple?: boolean;
   storagePath: string;
+  sizeLimit?: number;
 }
-const FileUpload = ({ onUpload, storagePath }: IFileUploadProps) => {
+const FileUpload = ({ onUpload, storagePath, sizeLimit }: IFileUploadProps) => {
   let filename = "";
   let files = [];
   let isCopying,
@@ -84,6 +85,12 @@ const FileUpload = ({ onUpload, storagePath }: IFileUploadProps) => {
 
       try {
         files.forEach(async (file) => {
+
+          if (sizeLimit && file.size > sizeLimit) {
+            fail();
+            return;
+          }
+
           const fileExt = file.name.split(".").pop();
           const fileName = `${Math.random()}.${fileExt}`;
           const filePath = `${fileName}`;
@@ -171,9 +178,8 @@ const FileUpload = ({ onUpload, storagePath }: IFileUploadProps) => {
   return (
     <div
       ref={el}
-      className={`group relative w-[calc(100%-3rem)] max-w-xl overflow-hidden rounded-2xl bg-[#f1f2f4] shadow transition-colors ${
-        state === 2 ? "before:bg-[#f5463d]" : ""
-      } ${state === 3 ? "before:bg-[#3df574]" : ""}`}
+      className={`group relative w-[calc(100%-3rem)] max-w-xl overflow-hidden rounded-2xl bg-[#f1f2f4] shadow transition-colors ${state === 2 ? "before:bg-[#f5463d]" : ""
+        } ${state === 3 ? "before:bg-[#3df574]" : ""}`}
       data-state="0"
       data-ready="false"
     >

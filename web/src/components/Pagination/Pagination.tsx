@@ -10,7 +10,7 @@ const Pagination = ({
   itemsPerPage?: number;
 }) => {
   const items = [];
-  let query = useParams();
+  let { page } = useParams();
 
   for (let i = 0; i < Math.ceil(count / itemsPerPage); i++) {
     items.push(
@@ -18,11 +18,10 @@ const Pagination = ({
         <Link
           to={routes[route]({ page: i + 1 })}
           // className="page-link relative block rounded border-0 bg-transparent py-1.5 px-3 text-gray-800 outline-none transition-all duration-300 hover:bg-gray-200 hover:text-gray-800 focus:shadow-none"
-          className={`inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 ${
-            parseInt(query.page) === i + 1
+          className={`inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 ${parseInt(page) === i + 1
               ? "border-2 bg-gray-500 dark:border-gray-800 dark:bg-gray-900"
               : "border-gray-200 dark:border-gray-500"
-          }`}
+            }`}
         >
           {i + 1}
         </Link>
@@ -32,13 +31,13 @@ const Pagination = ({
 
   type direction = "next" | "prev";
   const changePage = (dir: direction): number => {
-    if (!!!query.page || isNaN(parseInt(query.page))) return 1;
+    if (!!!page || isNaN(parseInt(page))) return 1;
     if (dir === "prev") {
-      return parseInt(query.page) - (parseInt(query.page) > 1 ? 1 : 0);
+      return parseInt(page) - (parseInt(page) > 1 ? 1 : 0);
     } else {
       return (
-        parseInt(query.page) +
-        (parseInt(query.page) < Math.ceil(count / itemsPerPage) ? 1 : 0)
+        parseInt(page) +
+        (parseInt(page) < Math.ceil(count / itemsPerPage) ? 1 : 0)
       );
     }
   };

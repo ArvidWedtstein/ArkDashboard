@@ -4,6 +4,7 @@ import { Maps } from "src/components/Maps";
 import useComponentVisible from "src/components/useComponentVisible";
 import { getDateDiff } from "src/lib/formatters";
 import ImagePreview from "../ImagePreview/ImagePreview";
+import { useParams } from "@redwoodjs/router";
 
 type TimelineSettings = {
   snap?: boolean;
@@ -18,6 +19,14 @@ const Timeline = ({
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
+
+  let { page } = useParams();
+
+  useEffect(() => {
+    if (!page || isNaN(parseInt(page))) return;
+    setCurrentPage(parseInt(page) - 1);
+  }, [page]);
+
 
   const onChange = useCallback(
     (page: number) => {
@@ -56,16 +65,14 @@ const Timeline = ({
         <div className="events-wrapper bg-slate-600">
           <div className="events">
             <div
-              className={`flex touch-pan-x select-none flex-row items-stretch justify-start space-x-3 overflow-x-auto p-3 will-change-scroll ${
-                options.snap && "snap-x snap-mandatory"
-              }`}
+              className={`flex touch-pan-x select-none flex-row items-stretch justify-start space-x-3 overflow-x-auto p-3 will-change-scroll ${options.snap && "snap-x snap-mandatory"
+                }`}
             >
               {events.map((event, i) => (
                 <div
                   key={i}
-                  className={`w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white ${
-                    currentPage === i && "border-red-500"
-                  } ${options.snap && "snap-center snap-always"}`}
+                  className={`w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white ${currentPage === i && "border-red-500"
+                    } ${options.snap && "snap-center snap-always"}`}
                   data-tab={i}
                   onClick={() => onChange(i)}
                   aria-controls="tabs-0"
@@ -180,7 +187,7 @@ const Timeline = ({
                     </p>
                     <p>
                       {!events[currentPage].endDate &&
-                      !events[currentPage].raided_by
+                        !events[currentPage].raided_by
                         ? ""
                         : `Got raided `}
                       {events[currentPage].endDate &&
