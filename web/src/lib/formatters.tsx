@@ -254,3 +254,30 @@ export const getDateDiff = (date1: Date, date2: Date) => {
     )} hours, ${Math.floor((diff / 1000 / 60) % 60)} minutes`,
   };
 };
+
+
+/**
+ *
+ * @param xs
+ * @param key
+ * @returns grouped object
+ */
+export const groupBy = (xs: Array<any>, key: string) => {
+  return xs.reduce(function (rv, x) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+};
+export const groupBy2 = (list, keyGetter) => {
+  const map = new Map();
+  list.forEach((item) => {
+    const key = keyGetter(item);
+    const collection = map.get(key);
+    if (!collection) {
+      map.set(key, [item]);
+    } else {
+      collection.push(item);
+    }
+  });
+  return map;
+}

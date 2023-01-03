@@ -2,7 +2,7 @@ import { useAuth } from "@redwoodjs/auth";
 import { useCallback, useEffect, useState } from "react";
 import { Maps } from "src/components/Maps";
 import useComponentVisible from "src/components/useComponentVisible";
-import { getDateDiff } from "src/lib/formatters";
+import { getDateDiff, groupBy } from "src/lib/formatters";
 import ImagePreview from "../ImagePreview/ImagePreview";
 import { useParams } from "@redwoodjs/router";
 
@@ -23,6 +23,8 @@ const Timeline = ({
   let { page } = useParams();
 
   useEffect(() => {
+
+    console.log();
     if (!page || isNaN(parseInt(page))) return;
     setCurrentPage(parseInt(page) - 1);
   }, [page]);
@@ -65,56 +67,61 @@ const Timeline = ({
         <div className="events-wrapper bg-slate-600">
           <div className="events">
             <div
-              className={`flex touch-pan-x select-none flex-row items-stretch justify-start space-x-3 overflow-x-auto p-3 will-change-scroll ${options.snap && "snap-x snap-mandatory"
-                }`}
+              className={`flex touch-pan-x select-none flex-row items-stretch justify-start space-x-1 overflow-x-auto p-3 will-change-scroll ${options.snap && "snap-x snap-mandatory"}`}
             >
               {events.map((event, i) => (
-                <div
-                  key={i}
-                  className={`w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white ${currentPage === i && "border-red-500"
-                    } ${options.snap && "snap-center snap-always"}`}
-                  data-tab={i}
-                  onClick={() => onChange(i)}
-                  aria-controls="tabs-0"
-                >
+                <>
                   <div
-                    className={`flex h-16 w-full rounded-t-md  bg-cover bg-center`}
-                    style={{
-                      backgroundImage: `url(${mapImages[event.map]})`,
-                      backgroundPosition: "center",
-                    }}
-                  ></div>
-                  <div className="flex min-h-[150px] flex-col items-start py-3 px-6">
-                    <p className="text-xs">{event.map}</p>
-                    <p className="text-sm font-bold uppercase">
-                      {event.tribeName}
-                    </p>
-                    <hr className="bg-gray-150 mb-2 h-[1px] w-full rounded border-0 dark:bg-stone-200"></hr>
-                    <div className="relative flex flex-row space-y-1">
-                      <div className="mt-3 flex flex-row items-center space-x-6">
-                        <div className="flex flex-col items-start">
-                          <p className="text-xs font-light">
-                            {new Date(event.startDate).toLocaleDateString(
-                              "no-NO",
-                              {
-                                month: "short",
-                                day: "numeric",
-                                year: "numeric",
-                              }
-                            )}
-                          </p>
-                          <p className="text-sm font-normal">Started</p>
-                        </div>
-                        <div className="flex flex-col items-start">
-                          <p className="text-xs font-light">
-                            {event.season ? `Season ${event.season}` : "ㅤ"}
-                          </p>
-                          <p className="text-sm font-normal">{event.server}</p>
+                    key={i}
+                    className={`w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white ${currentPage === i && "border-red-500"
+                      } ${options.snap && "snap-center snap-always"}`}
+                    data-tab={i}
+                    onClick={() => onChange(i)}
+                    aria-controls="tabs-0"
+                  >
+                    <div
+                      className={`flex h-16 w-full rounded-t-md  bg-cover bg-center`}
+                      style={{
+                        backgroundImage: `url(${mapImages[event.map]})`,
+                        backgroundPosition: "center",
+                      }}
+                    ></div>
+                    <div className="flex min-h-[150px] flex-col items-start py-3 px-6">
+                      <p className="text-xs">{event.map}</p>
+                      <p className="text-sm font-bold uppercase">
+                        {event.tribeName}
+                      </p>
+                      <hr className="bg-gray-150 mb-2 h-[1px] w-full rounded border-0 dark:bg-stone-200"></hr>
+                      <div className="relative flex flex-row space-y-1">
+                        <div className="mt-3 flex flex-row items-center space-x-6">
+                          <div className="flex flex-col items-start">
+                            <p className="text-xs font-light">
+                              {new Date(event.startDate).toLocaleDateString(
+                                "no-NO",
+                                {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                }
+                              )}
+                            </p>
+                            <p className="text-sm font-normal">Started</p>
+                          </div>
+                          <div className="flex flex-col items-start">
+                            <p className="text-xs font-light">
+                              {event.season ? `Season ${event.season}` : "ㅤ"}
+                            </p>
+                            <p className="text-sm font-normal">
+                              {event.server}
+                              {event.cluster && <span className="bg-gray-100 text-gray-800 text-sm font-medium ml-2 px-2.5 rounded dark:bg-gray-700 dark:text-gray-300">{event.cluster}</span>}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                  {(event.season && event.season) !== (i + 1 < events.length && events[i + 1].season ? events[i + 1].season : 0) && <div className="w-full min-w-fit flex-1 rounded-md border-2 border-transparent"></div>}
+                </>
               ))}
             </div>
           </div>
@@ -139,11 +146,9 @@ const Timeline = ({
                     <p className="leading-relaxed">
                       This time we played on{" "}
                       {events[currentPage].server && events[currentPage].server}
-                      ,{" "}
                       {events[currentPage].cluster &&
-                        events[currentPage].cluster}{" "}
-                      Season{" "}
-                      {events[currentPage].season && events[currentPage].season}
+                        `, ${events[currentPage].cluster}`}{" "}
+                      {events[currentPage].season && `, Season ${events[currentPage].season}`}
                     </p>
                     <div className="flex justify-center">
                       {/* <Link
