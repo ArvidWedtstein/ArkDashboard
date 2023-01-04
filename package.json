@@ -33,6 +33,9 @@
   },
   "packageManager": "yarn@3.2.4",
   "dependencies": {
-    "@supabase/supabase-js": "latest"
+    "@redwoodjs/auth": "^3.8.0",
+    "@redwoodjs/router": "^3.8.0",
+    "@supabase/supabase-js": "latest",
+    "react": "^18.2.0"
   }
 }

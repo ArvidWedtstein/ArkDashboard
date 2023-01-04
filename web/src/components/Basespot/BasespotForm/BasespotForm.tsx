@@ -30,7 +30,7 @@ const BasespotForm = (props: BasespotFormProps) => {
   const basename = useRef(null);
   const onSubmit = (data: FormBasespot) => {
     data.image = thumbnailUrl;
-    data.defenseImages = defenseImages
+    // data.defenseImages = defenseImages
     props.onSave(data, props?.basespot?.id);
   };
   return (
@@ -195,7 +195,7 @@ const BasespotForm = (props: BasespotFormProps) => {
         <FieldError name="estimatedForPlayers" className="rw-field-error" />
 
 
-        <Label
+        {/* <Label
           name="defenseImages"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
@@ -213,7 +213,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           }}
         />
 
-        <FieldError name="defenseImages" className="rw-field-error" />
+        <FieldError name="defenseImages" className="rw-field-error" /> */}
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">

@@ -4,30 +4,32 @@ export const schema = gql`
     name: String!
     description: String
     created_at: DateTime!
-    updated_at: DateTime!
+    updated_at: DateTime
     createdBy: String
-  }
-
-  type TribePage {
-    tribes: [Tribe!]!
-    count: Int!
+    updatedBy: String
   }
 
   type Query {
-    tribes: [Tribe!]! @skipAuth
+    tribes: [Tribe!]! @requireAuth
     tribe(id: Int!): Tribe @requireAuth
-    tribePage(page: Int): TribePage @skipAuth
   }
 
   input CreateTribeInput {
     name: String!
     description: String
+    created_at: DateTime!
+    updated_at: DateTime
     createdBy: String
+    updatedBy: String
   }
 
   input UpdateTribeInput {
     name: String
     description: String
+    created_at: DateTime
+    updated_at: DateTime
+    createdBy: String
+    updatedBy: String
   }
 
   type Mutation {
