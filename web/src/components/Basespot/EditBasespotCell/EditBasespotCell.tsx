@@ -8,7 +8,7 @@ import { toast } from "@redwoodjs/web/toast";
 import BasespotForm from "src/components/Basespot/BasespotForm";
 
 export const QUERY = gql`
-  query EditBasespotById($id: Int!) {
+  query EditBasespotById($id: BigInt!) {
     basespot: basespot(id: $id) {
       id
       name
@@ -23,7 +23,7 @@ export const QUERY = gql`
   }
 `;
 const UPDATE_BASESPOT_MUTATION = gql`
-  mutation UpdateBasespotMutation($id: Int!, $input: UpdateBasespotInput!) {
+  mutation UpdateBasespotMutation($id: BigInt!, $input: UpdateBasespotInput!) {
     updateBasespot(id: $id, input: $input) {
       id
       name
