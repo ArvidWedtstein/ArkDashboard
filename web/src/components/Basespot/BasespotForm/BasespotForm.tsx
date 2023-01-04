@@ -133,6 +133,7 @@ const BasespotForm = (props: BasespotFormProps) => {
             // setThumbnailUrl(URL.createObjectURL(url));
           }}
         />
+        <FieldError name="image" className="rw-field-error" />
         {/* <Avatar
           className="max-w-150-px absolute -mt-16 h-auto rounded-full border-none align-middle shadow-xl"
           url={props.basespot?.image}
@@ -146,7 +147,6 @@ const BasespotForm = (props: BasespotFormProps) => {
           }}
         /> */}
 
-        <FieldError name="image" className="rw-field-error" />
 
         <Label
           name="Map"

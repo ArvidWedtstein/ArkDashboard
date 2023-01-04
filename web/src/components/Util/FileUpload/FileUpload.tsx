@@ -325,7 +325,7 @@ const FileUpload = ({ onUpload, storagePath, sizeLimit, name }: IFileUploadProps
                 Choose File
               </button>{" "}
               {/* <!-- modal button upload --> */}
-              <input name={name || "fileupload"} onChange={fileHandle} type="file" hidden />
+              <input id="file" name={name || "fileupload"} onChange={fileHandle} type="file" hidden />
             </div>
             <div
               className={`flex-wrap items-center delay-200 group-data-[ready=true]:flex group-data-[ready=false]:hidden`}
