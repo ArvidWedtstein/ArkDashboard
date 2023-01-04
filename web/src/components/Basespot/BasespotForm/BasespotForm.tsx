@@ -30,7 +30,7 @@ const BasespotForm = (props: BasespotFormProps) => {
   const basename = useRef(null);
   const onSubmit = (data: FormBasespot) => {
     data.image = thumbnailUrl;
-    // data.defenseImages = defenseImages
+    data.defenseImages = defenseImages
     props.onSave(data, props?.basespot?.id);
   };
   return (
