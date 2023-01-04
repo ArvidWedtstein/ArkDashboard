@@ -41,7 +41,7 @@ const TribesList = ({ tribes }: FindTribes) => {
   function filterDatesByCurrentWeek(dates: FindTribes["tribes"]) {
     let [start, end] = getWeekDates();
     return dates.filter(
-      (d) => +new Date(d.created_at) >= +start && +new Date(d.created_at) < +end
+      (d) => +new Date(d.createdAt) >= +start && +new Date(d.createdAt) < +end
     );
   }
   const pickRandomTribe = () => {
