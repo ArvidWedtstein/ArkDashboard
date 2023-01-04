@@ -23,12 +23,9 @@ const Timeline = ({
   let { page } = useParams();
 
   useEffect(() => {
-
-    console.log();
     if (!page || isNaN(parseInt(page))) return;
     setCurrentPage(parseInt(page) - 1);
   }, [page]);
-
 
   const onChange = useCallback(
     (page: number) => {
@@ -67,14 +64,17 @@ const Timeline = ({
         <div className="events-wrapper bg-white dark:bg-slate-600">
           <div className="events">
             <div
-              className={`flex touch-pan-x select-none flex-row items-stretch justify-start space-x-1 overflow-x-auto p-3 will-change-scroll ${options.snap && "snap-x snap-mandatory"}`}
+              className={`flex touch-pan-x select-none flex-row items-stretch justify-start space-x-1 overflow-x-auto p-3 will-change-scroll ${
+                options.snap && "snap-x snap-mandatory"
+              }`}
             >
               {events.map((event, i) => (
                 <>
                   <div
                     key={i}
-                    className={`w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white ${currentPage === i && "border-red-500"
-                      } ${options.snap && "snap-center snap-always"}`}
+                    className={`w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white ${
+                      currentPage === i && "border-red-500"
+                    } ${options.snap && "snap-center snap-always"}`}
                     data-tab={i}
                     onClick={() => onChange(i)}
                     aria-controls="tabs-0"
@@ -113,14 +113,23 @@ const Timeline = ({
                             </p>
                             <p className="text-sm font-normal">
                               {event.server}
-                              {event.cluster && <span className="bg-gray-100 text-gray-800 text-sm font-medium ml-2 px-2.5 rounded dark:bg-gray-700 dark:text-gray-300">{event.cluster}</span>}
+                              {event.cluster && (
+                                <span className="ml-2 rounded bg-gray-100 px-2.5 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                  {event.cluster}
+                                </span>
+                              )}
                             </p>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  {(event.season && event.season) !== (i + 1 < events.length && events[i + 1].season ? events[i + 1].season : 0) && <div className="w-full min-w-fit flex-1 rounded-md border-2 border-transparent"></div>}
+                  {(event.season && event.season) !==
+                    (i + 1 < events.length && events[i + 1].season
+                      ? events[i + 1].season
+                      : 0) && (
+                    <div className="w-full min-w-fit flex-1 rounded-md border-2 border-transparent"></div>
+                  )}
                 </>
               ))}
             </div>
@@ -148,7 +157,8 @@ const Timeline = ({
                       {events[currentPage].server && events[currentPage].server}
                       {events[currentPage].cluster &&
                         `, ${events[currentPage].cluster}`}{" "}
-                      {events[currentPage].season && `, Season ${events[currentPage].season}`}
+                      {events[currentPage].season &&
+                        `, Season ${events[currentPage].season}`}
                     </p>
                     <div className="flex justify-center">
                       {/* <Link
@@ -192,7 +202,7 @@ const Timeline = ({
                     </p>
                     <p>
                       {!events[currentPage].endDate &&
-                        !events[currentPage].raided_by
+                      !events[currentPage].raided_by
                         ? ""
                         : `Got raided `}
                       {events[currentPage].endDate &&
