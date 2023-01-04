@@ -18,7 +18,7 @@ model basespot {
   created_at          DateTime             @default(now()) @db.Timestamptz(6)
   Map                 String               @default("TheIsland")
   estimatedForPlayers String?              @default("0")
-  defenseImages       String[]
+  defenseImages       String[]?
   created_by          String?              @db.Uuid
   turretsetup_image   String?
   updated_at          DateTime?            @db.Timestamptz(6)
