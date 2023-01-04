@@ -25,7 +25,7 @@ interface BasespotFormProps {
 
 const BasespotForm = (props: BasespotFormProps) => {
   const [thumbnailUrl, setThumbnailUrl] = useState(null);
-  const [defenseImages, setDefenseImages] = useState(null);
+  const [defenseImages, setDefenseImages] = useState([]);
 
   const basename = useRef(null);
   const onSubmit = (data: FormBasespot) => {
