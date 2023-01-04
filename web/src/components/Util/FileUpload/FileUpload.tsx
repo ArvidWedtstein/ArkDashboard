@@ -11,6 +11,7 @@ interface IFileUploadProps {
 }
 const FileUpload = ({ onUpload, storagePath, sizeLimit, name }: IFileUploadProps) => {
   let filename = "";
+  let id = Math.random().toString()
   let files = [];
   let isCopying,
     isUploading = false;
@@ -59,7 +60,7 @@ const FileUpload = ({ onUpload, storagePath, sizeLimit, name }: IFileUploadProps
     fileReset();
   }
   function fileReset() {
-    const fileField: any = el?.current.querySelector("#file");
+    const fileField: any = el?.current.querySelector(`#${id}`);
     if (fileField) fileField.value = null;
 
     fileDisplay();
@@ -74,7 +75,7 @@ const FileUpload = ({ onUpload, storagePath, sizeLimit, name }: IFileUploadProps
       progressFill.style.transform = `translateX(${progressTimes100}%)`;
   }
   function file() {
-    let t: any = el?.current.querySelector("#file");
+    let t: any = el?.current.querySelector(`#${id}`);
     t.click();
     stateDisplay();
   }
@@ -325,7 +326,7 @@ const FileUpload = ({ onUpload, storagePath, sizeLimit, name }: IFileUploadProps
                 Choose File
               </button>{" "}
               {/* <!-- modal button upload --> */}
-              <input id="file" name={name || "fileupload"} onChange={fileHandle} type="file" hidden />
+              <input id={id} name={name || "fileupload"} onChange={fileHandle} type="file" hidden />
             </div>
             <div
               className={`flex-wrap items-center delay-200 group-data-[ready=true]:flex group-data-[ready=false]:hidden`}
