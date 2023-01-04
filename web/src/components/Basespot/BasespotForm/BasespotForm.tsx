@@ -25,9 +25,12 @@ interface BasespotFormProps {
 
 const BasespotForm = (props: BasespotFormProps) => {
   const [thumbnailUrl, setThumbnailUrl] = useState(null);
+  const [defenseImages, setDefenseImages] = useState(null);
+
   const basename = useRef(null);
   const onSubmit = (data: FormBasespot) => {
     data.image = thumbnailUrl;
+    data.defenseImages = defenseImages
     props.onSave(data, props?.basespot?.id);
   };
   return (
@@ -122,16 +125,15 @@ const BasespotForm = (props: BasespotFormProps) => {
         </Label>
 
         <FileUpload
-          storagePath={`basespotimages/${
-            basename.current?.value.replaceAll(" ", "") ||
+          storagePath={`basespotimages/${basename.current?.value.replaceAll(" ", "") ||
             props.basespot?.name.replaceAll(" ", "")
-          }`}
+            }`}
           onUpload={(url) => {
             setThumbnailUrl(url);
             // setThumbnailUrl(URL.createObjectURL(url));
           }}
         />
-        <Avatar
+        {/* <Avatar
           className="max-w-150-px absolute -mt-16 h-auto rounded-full border-none align-middle shadow-xl"
           url={props.basespot?.image}
           size={150}
@@ -142,13 +144,6 @@ const BasespotForm = (props: BasespotFormProps) => {
             console.log(url);
             setThumbnailUrl(URL.createObjectURL(url));
           }}
-        />
-
-        {/* <TextField
-          name="image"
-          defaultValue={props.basespot?.image}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
         /> */}
 
         <FieldError name="image" className="rw-field-error" />
@@ -198,6 +193,27 @@ const BasespotForm = (props: BasespotFormProps) => {
         />
 
         <FieldError name="estimatedForPlayers" className="rw-field-error" />
+
+
+        <Label
+          name="defenseImages"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Defense Images
+        </Label>
+        <FileUpload
+          name="defenseImages"
+          multiple
+          storagePath={`basespotimages/${basename.current?.value.replaceAll(" ", "") ||
+            props.basespot?.name.replaceAll(" ", "")
+            }`}
+          onUpload={(url) => {
+            setDefenseImages(oldArray => [...oldArray, url]);
+          }}
+        />
+
+        <FieldError name="defenseImages" className="rw-field-error" />
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">

@@ -2,23 +2,23 @@
 CREATE TYPE "user_status" AS ENUM ('ONLINE', 'OFFLINE');
 
 -- CreateEnum
-CREATE TYPE "permission" AS ENUM ('basespot:delete', 'basespot:create', 'basespot:update', 'basespot:view', 'role:create', 'role:update', 'role:delete', 'user:create', 'user:update', 'user:delete', 'tribe:create', 'tribe:update', 'tribe:delete');
+CREATE TYPE "permission" AS ENUM ('basespot:delete', 'basespot:create', 'basespot:update', 'basespot:view', 'role:create', 'role:update', 'role:delete', 'user:create', 'user:update', 'user:delete', 'tribe:create', 'tribe:update', 'tribe:delete', 'timeline:create', 'timeline:update', 'timeline:delete');
 
 -- CreateTable
 CREATE TABLE "basespot" (
-    "id" SERIAL NOT NULL,
+    "id" BIGSERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "latitude" DOUBLE PRECISION NOT NULL,
     "longitude" DOUBLE PRECISION NOT NULL,
     "image" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "Map" TEXT NOT NULL DEFAULT 'TheIsland',
     "estimatedForPlayers" TEXT DEFAULT '0',
     "defenseImages" TEXT[],
-    "createdBy" UUID,
+    "created_by" UUID,
     "turretsetup_image" TEXT,
-    "updatedAt" TIMESTAMPTZ(6),
+    "updated_at" TIMESTAMPTZ(6),
 
     CONSTRAINT "basespot_pkey" PRIMARY KEY ("id")
 );
@@ -28,8 +28,8 @@ CREATE TABLE "tribe" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
     "createdBy" UUID,
     "updatedBy" UUID DEFAULT auth.uid(),
 
@@ -75,12 +75,12 @@ CREATE TABLE "timeline" (
 -- CreateTable
 CREATE TABLE "timeline_basespots" (
     "id" BIGSERIAL NOT NULL,
-    "createdAt" TIMESTAMPTZ(6) DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(6) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6),
     "timeline_id" UUID NOT NULL,
-    "startDate" DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "endDate" TIMESTAMPTZ(6) DEFAULT CURRENT_TIMESTAMP,
-    "basespotID" INTEGER,
+    "startDate" TIMESTAMPTZ(6),
+    "endDate" TIMESTAMPTZ(6),
+    "basespot_id" BIGINT,
     "tribeName" TEXT NOT NULL,
     "map" TEXT,
     "server" TEXT,
@@ -90,6 +90,8 @@ CREATE TABLE "timeline_basespots" (
     "location" JSON,
     "players" TEXT[],
     "created_by" UUID,
+    "raided_by" TEXT,
+    "raidcomment" TEXT,
 
     CONSTRAINT "timeline_basespots_pkey" PRIMARY KEY ("id")
 );
@@ -99,9 +101,6 @@ CREATE UNIQUE INDEX "profiles_username_key" ON "profiles"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "timeline_id_key" ON "timeline"("id");
-
--- AddForeignKey
-ALTER TABLE "basespot" ADD CONSTRAINT "basespot_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "profiles"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "tribe" ADD CONSTRAINT "tribe_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "profiles"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -119,7 +118,7 @@ ALTER TABLE "roles" ADD CONSTRAINT "roles_createdBy_fkey" FOREIGN KEY ("createdB
 ALTER TABLE "timeline" ADD CONSTRAINT "timeline_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "profiles"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "timeline_basespots" ADD CONSTRAINT "timeline_basespots_basespotID_fkey" FOREIGN KEY ("basespotID") REFERENCES "basespot"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "timeline_basespots" ADD CONSTRAINT "timeline_basespots_basespot_id_fkey" FOREIGN KEY ("basespot_id") REFERENCES "basespot"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "timeline_basespots" ADD CONSTRAINT "timeline_basespots_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "profiles"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
