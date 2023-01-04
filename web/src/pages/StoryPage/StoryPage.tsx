@@ -13,7 +13,7 @@ const StoryPage = ({ page = 1 }) => {
   async function getStory() {
     try {
       let { data, error, status } = await supabase
-        .from("timeline_basespots_view")
+        .from("timelinebasespot_view")
         .select(
           `
           id,
