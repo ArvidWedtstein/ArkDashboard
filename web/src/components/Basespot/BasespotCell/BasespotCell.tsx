@@ -5,7 +5,7 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import Basespot from "src/components/Basespot/Basespot";
 
 export const QUERY = gql`
-  query FindBasespotById($id: Int!) {
+  query FindBasespotById($id: BigInt!) {
     basespot: basespot(id: $id) {
       id
       name
