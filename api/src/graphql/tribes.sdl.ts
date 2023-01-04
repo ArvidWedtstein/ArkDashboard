@@ -7,8 +7,6 @@ export const schema = gql`
     updated_at: DateTime
     createdBy: String
     updatedBy: String
-    profiles: profile
-    profiles_profilesTotribe_updatedBy: profile
   }
 
   type Query {
@@ -39,4 +37,4 @@ export const schema = gql`
     updateTribe(id: Int!, input: UpdateTribeInput!): Tribe! @requireAuth
     deleteTribe(id: Int!): Tribe! @requireAuth
   }
-`
+`;
