@@ -9,7 +9,7 @@ export const schema = gql`
     created_at: DateTime
     Map: String!
     estimatedForPlayers: String
-    defenseImages: [String]!
+    defenseImages: [String]
     created_by: String
     turretsetup_image: String
     updated_at: DateTime

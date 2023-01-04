@@ -6,8 +6,10 @@ interface IFileUploadProps {
   className?: string;
   multiple?: boolean;
   storagePath: string;
+  sizeLimit?: number;
+  name?: string;
 }
-const FileUpload = ({ onUpload, storagePath }: IFileUploadProps) => {
+const FileUpload = ({ onUpload, storagePath, sizeLimit, name }: IFileUploadProps) => {
   let filename = "";
   let files = [];
   let isCopying,
@@ -84,6 +86,11 @@ const FileUpload = ({ onUpload, storagePath }: IFileUploadProps) => {
 
       try {
         files.forEach(async (file) => {
+
+          if (sizeLimit && file.size > sizeLimit) {
+            fail();
+          }
+
           const fileExt = file.name.split(".").pop();
           const fileName = `${Math.random()}.${fileExt}`;
           const filePath = `${fileName}`;
@@ -171,9 +178,8 @@ const FileUpload = ({ onUpload, storagePath }: IFileUploadProps) => {
   return (
     <div
       ref={el}
-      className={`group relative w-[calc(100%-3rem)] max-w-xl overflow-hidden rounded-2xl bg-[#f1f2f4] shadow transition-colors ${
-        state === 2 ? "before:bg-[#f5463d]" : ""
-      } ${state === 3 ? "before:bg-[#3df574]" : ""}`}
+      className={`group relative w-[calc(100%-3rem)] max-w-xl overflow-hidden rounded-2xl bg-[#f1f2f4] shadow transition-colors ${state === 2 ? "before:bg-[#f5463d]" : ""
+        } ${state === 3 ? "before:bg-[#3df574]" : ""}`}
       data-state="0"
       data-ready="false"
     >
@@ -213,7 +219,6 @@ const FileUpload = ({ onUpload, storagePath }: IFileUploadProps) => {
                 points="7 12 12 7 17 12"
                 strokeDasharray="14.2 14.2"
               />{" "}
-              {/* <!-- modal__icon-sdo14 --> */}
               <line
                 style={{ strokeDashoffset: "10" }}
                 x1="12"
@@ -222,7 +227,6 @@ const FileUpload = ({ onUpload, storagePath }: IFileUploadProps) => {
                 y2="17"
                 strokeDasharray="10 10"
               />{" "}
-              {/* <!-- modal__icon-sdo10 --> */}
             </g>
           </svg>
           {/* <!-- error --> */}
@@ -256,7 +260,6 @@ const FileUpload = ({ onUpload, storagePath }: IFileUploadProps) => {
                 y2="17"
                 strokeDasharray="14.2 14.2"
               />{" "}
-              {/* <!-- modal__icon-sdo14 --> */}
               <line
                 style={{ strokeDashoffset: "14.2" }}
                 x1="17"
@@ -265,10 +268,8 @@ const FileUpload = ({ onUpload, storagePath }: IFileUploadProps) => {
                 y2="17"
                 strokeDasharray="14.2 14.2"
               />{" "}
-              {/* <!-- modal__icon-sdo14 --> */}
             </g>
           </svg>
-          {/* <!-- check --> */}
           <svg
             className="modal__icon m-auto block h-9 w-9 stroke-[#0ac241]"
             viewBox="0 0 24 24"
@@ -324,7 +325,7 @@ const FileUpload = ({ onUpload, storagePath }: IFileUploadProps) => {
                 Choose File
               </button>{" "}
               {/* <!-- modal button upload --> */}
-              <input id="file" onChange={fileHandle} type="file" hidden />
+              <input name={name || "fileupload"} onChange={fileHandle} type="file" hidden />
             </div>
             <div
               className={`flex-wrap items-center delay-200 group-data-[ready=true]:flex group-data-[ready=false]:hidden`}

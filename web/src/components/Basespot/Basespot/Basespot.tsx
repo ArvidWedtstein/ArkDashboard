@@ -13,7 +13,7 @@ import type {
 } from "types/graphql";
 
 const DELETE_BASESPOT_MUTATION = gql`
-  mutation DeleteBasespotMutation($id: Int!) {
+  mutation DeleteBasespotMutation($id: BigInt!) {
     deleteBasespot(id: $id) {
       id
     }
