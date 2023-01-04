@@ -59,9 +59,10 @@ export const Empty = () => {
   );
 };
 
-export const Failure = ({ error }: CellFailureProps) => (
-  <div className="rw-cell-error">{error?.message}</div>
-);
+export const Failure = ({ error }: CellFailureProps) => {
+  console.log(error)
+  return (<div className="rw-cell-error" > {error?.message}</div>)
+};
 
 // export const Success = ({ tribePage }: CellSuccessProps<FindTribes>) => {
 //   console.log(tribePage)

@@ -15,7 +15,7 @@ import type {
 } from "types/graphql";
 
 const DELETE_BASESPOT_MUTATION = gql`
-  mutation DeleteBasespotMutation($id: Int!) {
+  mutation DeleteBasespotMutation($id: BigInt!) {
     deleteBasespot(id: $id) {
       id
     }
@@ -112,12 +112,6 @@ const BasespotsList = ({ basespotPage }: FindBasespots | any) => {
             />
           ))}
       </div>
-      {/* <Paginate
-        currentPage={currentPage}
-        postsPerPage={6}
-        totalPosts={basespots.length}
-        onPageChange={paginate}
-      /> */}
     </div>
   );
 };
