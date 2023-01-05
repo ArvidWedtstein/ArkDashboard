@@ -2,7 +2,7 @@ import { useAuth } from "@redwoodjs/auth";
 import { useCallback, useEffect, useState } from "react";
 import { Maps } from "src/components/Maps";
 import useComponentVisible from "src/components/useComponentVisible";
-import { getDateDiff, groupBy } from "src/lib/formatters";
+import { getDateDiff } from "src/lib/formatters";
 import ImagePreview from "../ImagePreview/ImagePreview";
 import { useParams } from "@redwoodjs/router";
 
@@ -64,17 +64,15 @@ const Timeline = ({
         <div className="events-wrapper bg-white dark:bg-slate-600">
           <div className="events">
             <div
-              className={`flex touch-pan-x select-none flex-row items-stretch justify-start space-x-1 overflow-x-auto p-3 will-change-scroll ${
-                options.snap && "snap-x snap-mandatory"
-              }`}
+              className={`flex touch-pan-x select-none flex-row items-stretch justify-start space-x-1 overflow-x-auto p-3 will-change-scroll ${options.snap && "snap-x snap-mandatory"
+                }`}
             >
               {events.map((event, i) => (
                 <>
                   <div
                     key={i}
-                    className={`w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white ${
-                      currentPage === i && "border-red-500"
-                    } ${options.snap && "snap-center snap-always"}`}
+                    className={`w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white ${currentPage === i && "border-red-500"
+                      } ${options.snap && "snap-center snap-always"}`}
                     data-tab={i}
                     onClick={() => onChange(i)}
                     aria-controls="tabs-0"
@@ -128,8 +126,8 @@ const Timeline = ({
                     (i + 1 < events.length && events[i + 1].season
                       ? events[i + 1].season
                       : 0) && (
-                    <div className="w-full min-w-fit flex-1 rounded-md border-2 border-transparent"></div>
-                  )}
+                      <div className="w-full min-w-fit flex-1 rounded-md border-2 border-transparent"></div>
+                    )}
                 </>
               ))}
             </div>
@@ -202,7 +200,7 @@ const Timeline = ({
                     </p>
                     <p>
                       {!events[currentPage].endDate &&
-                      !events[currentPage].raided_by
+                        !events[currentPage].raided_by
                         ? ""
                         : `Got raided `}
                       {events[currentPage].endDate &&
