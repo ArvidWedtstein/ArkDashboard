@@ -18,34 +18,6 @@ const Routes = () => {
       <Set wrap={MainLayout}>
         <Set
           wrap={ScaffoldLayout}
-          title="TimelineBasespots"
-          titleTo="timelineBasespots"
-          buttonLabel="New TimelineBasespot"
-          buttonTo="newTimelineBasespot"
-        >
-          <Route
-            path="/timeline-basespots/new"
-            page={TimelineBasespotNewTimelineBasespotPage}
-            name="newTimelineBasespot"
-          />
-          <Route
-            path="/timeline-basespots/{id}/edit"
-            page={TimelineBasespotEditTimelineBasespotPage}
-            name="editTimelineBasespot"
-          />
-          <Route
-            path="/timeline-basespots/{id}"
-            page={TimelineBasespotTimelineBasespotPage}
-            name="timelineBasespot"
-          />
-          <Route
-            path="/timeline-basespots"
-            page={TimelineBasespotTimelineBasespotsPage}
-            name="timelineBasespots"
-          />
-        </Set>
-        <Set
-          wrap={ScaffoldLayout}
           title="Basespots"
           titleTo="basespots"
           buttonLabel="New Spot"

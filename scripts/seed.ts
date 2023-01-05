@@ -63,4 +63,3 @@ export default async () => {
     console.error(error);
   }
 };
-// TODO: Generate SDL for all tables

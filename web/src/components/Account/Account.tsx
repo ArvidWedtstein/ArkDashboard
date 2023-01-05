@@ -6,6 +6,7 @@ import { toast } from "@redwoodjs/web/dist/toast";
 import StatCard from "../StatCard/StatCard";
 import PingAlert from "../PingAlert/PingAlert";
 import ArkCard from "../ArkCard/ArkCard";
+import { Form } from "@redwoodjs/forms";
 
 const Account = () => {
   const { client: supabase, currentUser, logOut } = useAuth();
@@ -98,6 +99,10 @@ const Account = () => {
     }
   }
 
+  const onSubmit = (data) => {
+    console.log(data)
+  }
+
   return (
     <main className="">
       <section className="relative h-[200px]">
@@ -119,122 +124,124 @@ const Account = () => {
           </svg>
         </div> */}
       </section>
-      <section className="bg-blueGray-200 relative -mt-32 py-16">
-        <div className="container-fluid mx-auto px-4">
-          <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded-lg bg-white shadow-xl">
-            <div className="px-6">
-              <div className="flex flex-wrap justify-center">
-                <div className="flex w-full justify-center px-4 lg:order-2 lg:w-3/12">
-                  <div className="relative">
-                    <Avatar
-                      className="absolute -mt-20 h-auto rounded-full border-none align-middle shadow-xl"
-                      url={avatar_url}
-                      size={200}
-                      onUpload={(url) => {
-                        setAvatarUrl(url);
-                        updateProfile({
-                          username,
-                          website,
-                          avatar_url: url,
-                          firstname,
-                          lastname,
-                          biography,
-                        });
-                      }}
-                    />
-                    {/* <StatCard /> */}
+      <section className="bg-blueGray-200 relative -mt-32 py-16">¨
+        <Form onSubmit={updateProfile}>
+          <div className="container-fluid mx-auto px-4">
+            <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded-lg bg-white shadow-xl">
+              <div className="px-6">
+                <div className="flex flex-wrap justify-center">
+                  <div className="flex w-full justify-center px-4 lg:order-2 lg:w-3/12">
+                    <div className="relative">
+                      <Avatar
+                        className="absolute -mt-20 h-auto rounded-full border-none align-middle shadow-xl"
+                        url={avatar_url}
+                        size={200}
+                        onUpload={(url) => {
+                          setAvatarUrl(url);
+                          updateProfile({
+                            username,
+                            website,
+                            avatar_url: url,
+                            firstname,
+                            lastname,
+                            biography,
+                          });
+                        }}
+                      />
+                      {/* <StatCard /> */}
+                    </div>
+                  </div>
+                  {/* <span className="nowrap" title="Simulated button" style="padding:.2em 1em; font-weight:bold; border:1px solid; border-color:#70CDDF; border-width:1px; background:linear-gradient(to bottom, #3c90a8 0%, #105c76 100%); text-shadow: 1px 1px #004d62; color:#70CDDF">UI ITEM SLOT SCALE</span> */}
+                  <div className="w-full px-4 lg:order-3 lg:w-4/12 lg:self-center lg:text-right">
+                    <div className="mt-32 py-6 px-3 sm:mt-0">
+                      <button
+                        className="mb-1 rounded bg-blue-500 px-4 py-2 text-xs font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-md focus:outline-none active:bg-blue-600 sm:mr-2"
+                        onClick={() =>
+                          updateProfile({
+                            username,
+                            website,
+                            avatar_url,
+                            firstname,
+                            lastname,
+                            biography,
+                          })
+                        }
+                        disabled={loading}
+                      >
+                        {loading ? "Loading ..." : "Update"}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="w-full px-4 lg:order-1 lg:w-4/12">
+                    <div className="flex justify-center py-4 pt-8 lg:pt-4">
+                      <div className="mr-4 p-3 text-center">
+                        <span className="text-blueGray-600 block text-xl font-bold uppercase tracking-wide">
+                          0
+                        </span>
+                        <span className="text-blueGray-400 text-sm">Friends</span>
+                      </div>
+                      <div className="mr-4 p-3 text-center">
+                        <span className="text-blueGray-600 block text-xl font-bold uppercase tracking-wide">
+                          0
+                        </span>
+                        <span className="text-blueGray-400 text-sm">
+                          Basespots
+                        </span>
+                      </div>
+                      <div className="p-3 text-center lg:mr-4">
+                        <span className="text-blueGray-600 block text-xl font-bold uppercase tracking-wide">
+                          {tribescreated}
+                        </span>
+                        <span className="text-blueGray-400 text-sm">Tribes</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                {/* <span className="nowrap" title="Simulated button" style="padding:.2em 1em; font-weight:bold; border:1px solid; border-color:#70CDDF; border-width:1px; background:linear-gradient(to bottom, #3c90a8 0%, #105c76 100%); text-shadow: 1px 1px #004d62; color:#70CDDF">UI ITEM SLOT SCALE</span> */}
-                <div className="w-full px-4 lg:order-3 lg:w-4/12 lg:self-center lg:text-right">
-                  <div className="mt-32 py-6 px-3 sm:mt-0">
-                    <button
-                      className="mb-1 rounded bg-blue-500 px-4 py-2 text-xs font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-md focus:outline-none active:bg-blue-600 sm:mr-2"
-                      onClick={() =>
-                        updateProfile({
-                          username,
-                          website,
-                          avatar_url,
-                          firstname,
-                          lastname,
-                          biography,
-                        })
-                      }
-                      disabled={loading}
-                    >
-                      {loading ? "Loading ..." : "Update"}
-                    </button>
-                  </div>
+                <div className="mt-12 text-center">
+                  <form className="w-full max-w-lg">
+                    <div className="flex flex-wrap -mx-3 mb-6">
+                      <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
+                          First Name
+                        </label>
+                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Ola" value={firstname || ""} onChange={(e) => setFirstname(e.target.value)} />
+                      </div>
+                      <div className="w-full md:w-1/2 px-3">
+                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-last-name">
+                          Last Name
+                        </label>
+                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="text" placeholder="Nordmann" value={lastname || ""} onChange={(e) => setLastname(e.target.value)} />
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap -mx-3 mb-6">
+                      <div className="w-full px-3">
+                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-bio">
+                          Biography
+                        </label>
+                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-bio" type="text" value={biography || ""} onChange={(e) => setBiography(e.target.value)} />
+                        <p className="text-gray-600 text-xs italic">Write whatever nonsense you'd like</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap -mx-3 mb-2">
+                      <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-website">
+                          Website
+                        </label>
+                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" value={website || ""} onChange={(e) => setWebsite(e.target.value)} />
+                      </div>
+                      <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-username">
+                          Username
+                        </label>
+                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="text" value={username || ""} onChange={(e) => setUsername(e.target.value)} />
+                      </div>
+                    </div>
+                  </form>
                 </div>
-                <div className="w-full px-4 lg:order-1 lg:w-4/12">
-                  <div className="flex justify-center py-4 pt-8 lg:pt-4">
-                    <div className="mr-4 p-3 text-center">
-                      <span className="text-blueGray-600 block text-xl font-bold uppercase tracking-wide">
-                        0
-                      </span>
-                      <span className="text-blueGray-400 text-sm">Friends</span>
-                    </div>
-                    <div className="mr-4 p-3 text-center">
-                      <span className="text-blueGray-600 block text-xl font-bold uppercase tracking-wide">
-                        0
-                      </span>
-                      <span className="text-blueGray-400 text-sm">
-                        Basespots
-                      </span>
-                    </div>
-                    <div className="p-3 text-center lg:mr-4">
-                      <span className="text-blueGray-600 block text-xl font-bold uppercase tracking-wide">
-                        {tribescreated}
-                      </span>
-                      <span className="text-blueGray-400 text-sm">Tribes</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-12 text-center">
-                <form className="w-full max-w-lg">
-                  <div className="flex flex-wrap -mx-3 mb-6">
-                    <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
-                        First Name
-                      </label>
-                      <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Ola" value={firstname || ""} onChange={(e) => setFirstname(e.target.value)} />
-                    </div>
-                    <div className="w-full md:w-1/2 px-3">
-                      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-last-name">
-                        Last Name
-                      </label>
-                      <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="text" placeholder="Nordmann" value={lastname || ""} onChange={(e) => setLastname(e.target.value)} />
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap -mx-3 mb-6">
-                    <div className="w-full px-3">
-                      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-bio">
-                        Biography
-                      </label>
-                      <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-bio" type="text" value={biography || ""} onChange={(e) => setBiography(e.target.value)} />
-                      <p className="text-gray-600 text-xs italic">Write whatever nonsense you'd like</p>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap -mx-3 mb-2">
-                    <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-website">
-                        Website
-                      </label>
-                      <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" value={website || ""} onChange={(e) => setWebsite(e.target.value)} />
-                    </div>
-                    <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                      <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-username">
-                        Username
-                      </label>
-                      <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="text" value={username || ""} onChange={(e) => setUsername(e.target.value)} />
-                    </div>
-                  </div>
-                </form>
               </div>
             </div>
           </div>
-        </div>
+        </Form>
       </section>
     </main>
   );

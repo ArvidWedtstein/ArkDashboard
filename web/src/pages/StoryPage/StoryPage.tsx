@@ -6,7 +6,7 @@ import { toast } from "@redwoodjs/web/dist/toast";
 import { useEffect, useState } from "react";
 import Timeline from "src/components/Util/Timeline/Timeline";
 
-const StoryPage = ({ page = 1 }) => {
+const StoryPage = () => {
   const { client: supabase, currentUser, logOut } = useAuth();
   const [basespots, setBasespots] = useState([]);
 

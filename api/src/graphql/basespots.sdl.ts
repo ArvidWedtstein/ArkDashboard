@@ -13,7 +13,6 @@ export const schema = gql`
     created_by: String
     turretsetup_image: String
     updated_at: DateTime
-    TimelineBasespot: [TimelineBasespot]!
   }
 
   type Query {
@@ -57,4 +56,4 @@ export const schema = gql`
       @requireAuth
     deleteBasespot(id: BigInt!): Basespot! @requireAuth
   }
-`
+`;
