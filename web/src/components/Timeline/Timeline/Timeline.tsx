@@ -92,17 +92,7 @@ const Timeline = ({ timeline }: Props) => {
 
   return (
     <>
-    <div className="-mx-3 bg-white dark:bg-slate-600 h-full w-full">
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold leading-tight text-gray-900">
-          {timeline.createdBy}'s Timeline
-          </h1>
-        </div>
-      </header>
-
       {basespots && <TimelineList events={basespots} />}
-      </div>
     </>
   );
 
