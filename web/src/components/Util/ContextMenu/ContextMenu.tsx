@@ -7,7 +7,7 @@ type IContextMenuProps = {
 }
 type IContextMenuItem = {
   label: string
-  icon?: HTMLElement
+  icon?: React.ReactNode
   onClick?: (e) => void
 }
 
