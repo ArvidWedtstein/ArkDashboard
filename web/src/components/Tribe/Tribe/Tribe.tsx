@@ -1,13 +1,11 @@
-import { Link, routes, navigate } from "@redwoodjs/router";
-import { useMutation } from "@redwoodjs/web";
-import { toast } from "@redwoodjs/web/toast";
 
-import { timeTag } from "src/lib/formatters";
+import { Link, routes, navigate } from '@redwoodjs/router'
+import { useMutation } from '@redwoodjs/web'
+import { toast } from '@redwoodjs/web/toast'
 
-import type {
-  DeleteTribeMutationVariables,
-  FindTribeById,
-} from "types/graphql";
+import { timeTag,  } from 'src/lib/formatters'
+
+import type { DeleteTribeMutationVariables, FindTribeById } from 'types/graphql'
 
 const DELETE_TRIBE_MUTATION = gql`
   mutation DeleteTribeMutation($id: Int!) {
@@ -15,28 +13,28 @@ const DELETE_TRIBE_MUTATION = gql`
       id
     }
   }
-`;
+`
 
 interface Props {
-  tribe: NonNullable<FindTribeById["tribe"]>;
+  tribe: NonNullable<FindTribeById['tribe']>
 }
 
 const Tribe = ({ tribe }: Props) => {
   const [deleteTribe] = useMutation(DELETE_TRIBE_MUTATION, {
     onCompleted: () => {
-      toast.success("Tribe deleted");
-      navigate(routes.tribes());
+      toast.success('Tribe deleted')
+      navigate(routes.tribes())
     },
     onError: (error) => {
-      toast.error(error.message);
+      toast.error(error.message)
     },
-  });
+  })
 
-  const onDeleteClick = (id: DeleteTribeMutationVariables["id"]) => {
-    if (confirm("Are you sure you want to delete tribe " + id + "?")) {
-      deleteTribe({ variables: { id } });
+  const onDeleteClick = (id: DeleteTribeMutationVariables['id']) => {
+    if (confirm('Are you sure you want to delete tribe ' + id + '?')) {
+      deleteTribe({ variables: { id } })
     }
-  };
+  }
 
   return (
     <>
@@ -46,32 +44,29 @@ const Tribe = ({ tribe }: Props) => {
             Tribe {tribe.id} Detail
           </h2>
         </header>
-        {/* TODO: Fix createdBy */}
         <table className="rw-table">
           <tbody>
             <tr>
               <th>Id</th>
               <td>{tribe.id}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Name</th>
               <td>{tribe.name}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Description</th>
               <td>{tribe.description}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Created at</th>
               <td>{timeTag(tribe.created_at)}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Updated at</th>
               <td>{timeTag(tribe.updated_at)}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Created by</th>
               <td>{tribe.createdBy}</td>
+            </tr><tr>
+              <th>Updated by</th>
+              <td>{tribe.updatedBy}</td>
             </tr>
           </tbody>
         </table>
@@ -92,7 +87,7 @@ const Tribe = ({ tribe }: Props) => {
         </button>
       </nav>
     </>
-  );
-};
+  )
+}
 
-export default Tribe;
+export default Tribe

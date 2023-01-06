@@ -46,7 +46,7 @@ export const Timeline: TimelineRelationResolvers = {
       .findUnique({ where: { id: root?.id } })
       .TimelineBasespot()
   },
-  profiles: (_obj, { root }) => {
-    return db.timeline.findUnique({ where: { id: root?.id } }).profiles()
+  profile: (_obj, { root }) => {
+    return db.timeline.findUnique({ where: { id: root?.id } }).profile()
   },
 }

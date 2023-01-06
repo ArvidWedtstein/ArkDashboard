@@ -18,10 +18,11 @@ export const schema = gql`
     created_by: String
     raided_by: String
     raidcomment: String
-    basespot: basespot
-    profile: profile
-    timeline: timeline!
+    basespot: Basespot
+    profile: Profile
+    timeline: Timeline!
   }
+
 
   type Query {
     timelineBasespots: [TimelineBasespot!]! @requireAuth

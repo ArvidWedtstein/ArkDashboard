@@ -40,18 +40,3 @@ export const deleteTimelineBasespot: MutationResolvers['deleteTimelineBasespot']
     })
   }
 
-export const TimelineBasespot: TimelineBasespotRelationResolvers = {
-  basespot: (_obj, { root }) => {
-    return db.timelineBasespot
-      .findUnique({ where: { id: root?.id } })
-      .basespot()
-  },
-  profile: (_obj, { root }) => {
-    return db.timelineBasespot.findUnique({ where: { id: root?.id } }).profile()
-  },
-  timeline: (_obj, { root }) => {
-    return db.timelineBasespot
-      .findUnique({ where: { id: root?.id } })
-      .timeline()
-  },
-}

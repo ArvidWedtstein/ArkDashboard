@@ -1,13 +1,11 @@
-import { Link, routes, navigate } from "@redwoodjs/router";
-import { useMutation } from "@redwoodjs/web";
-import { toast } from "@redwoodjs/web/toast";
 
-import { timeTag } from "src/lib/formatters";
+import { Link, routes, navigate } from '@redwoodjs/router'
+import { useMutation } from '@redwoodjs/web'
+import { toast } from '@redwoodjs/web/toast'
 
-import type {
-  DeleteTimelineBasespotMutationVariables,
-  FindTimelineBasespotById,
-} from "types/graphql";
+import { jsonDisplay, timeTag,  } from 'src/lib/formatters'
+
+import type { DeleteTimelineBasespotMutationVariables, FindTimelineBasespotById } from 'types/graphql'
 
 const DELETE_TIMELINE_BASESPOT_MUTATION = gql`
   mutation DeleteTimelineBasespotMutation($id: BigInt!) {
@@ -15,33 +13,28 @@ const DELETE_TIMELINE_BASESPOT_MUTATION = gql`
       id
     }
   }
-`;
+`
 
 interface Props {
-  timelineBasespot: NonNullable<FindTimelineBasespotById["timelineBasespot"]>;
+  timelineBasespot: NonNullable<FindTimelineBasespotById['timelineBasespot']>
 }
 
 const TimelineBasespot = ({ timelineBasespot }: Props) => {
-  const [deleteTimelineBasespot] = useMutation(
-    DELETE_TIMELINE_BASESPOT_MUTATION,
-    {
-      onCompleted: () => {
-        toast.success("TimelineBasespot deleted");
-        navigate(routes.timelineBasespots());
-      },
-      onError: (error) => {
-        toast.error(error.message);
-      },
-    }
-  );
+  const [deleteTimelineBasespot] = useMutation(DELETE_TIMELINE_BASESPOT_MUTATION, {
+    onCompleted: () => {
+      toast.success('TimelineBasespot deleted')
+      navigate(routes.timelineBasespots())
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+  })
 
-  const onDeleteClick = (id: DeleteTimelineBasespotMutationVariables["id"]) => {
-    if (
-      confirm("Are you sure you want to delete timelineBasespot " + id + "?")
-    ) {
-      deleteTimelineBasespot({ variables: { id } });
+  const onDeleteClick = (id: DeleteTimelineBasespotMutationVariables['id']) => {
+    if (confirm('Are you sure you want to delete timelineBasespot ' + id + '?')) {
+      deleteTimelineBasespot({ variables: { id } })
     }
-  };
+  }
 
   return (
     <>
@@ -56,75 +49,55 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
             <tr>
               <th>Id</th>
               <td>{timelineBasespot.id}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Created at</th>
               <td>{timeTag(timelineBasespot.created_at)}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Updated at</th>
               <td>{timeTag(timelineBasespot.updated_at)}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Timeline id</th>
               <td>{timelineBasespot.timeline_id}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Start date</th>
               <td>{timeTag(timelineBasespot.startDate)}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>End date</th>
               <td>{timeTag(timelineBasespot.endDate)}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Basespot id</th>
               <td>{timelineBasespot.basespot_id}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Tribe name</th>
               <td>{timelineBasespot.tribeName}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Map</th>
               <td>{timelineBasespot.map}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Server</th>
               <td>{timelineBasespot.server}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Region</th>
               <td>{timelineBasespot.region}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Season</th>
               <td>{timelineBasespot.season}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Cluster</th>
               <td>{timelineBasespot.cluster}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Location</th>
-              <td>
-                {timelineBasespot.location.lat}
-                {timelineBasespot.location.lon}
-              </td>
-            </tr>
-            <tr>
+              <td>{jsonDisplay(timelineBasespot.location)}</td>
+            </tr><tr>
               <th>Players</th>
               <td>{timelineBasespot.players}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Created by</th>
               <td>{timelineBasespot.created_by}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Raided by</th>
               <td>{timelineBasespot.raided_by}</td>
-            </tr>
-            <tr>
+            </tr><tr>
               <th>Raidcomment</th>
               <td>{timelineBasespot.raidcomment}</td>
             </tr>
@@ -133,7 +106,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
       </div>
       <nav className="rw-button-group">
         <Link
-          to={routes.editTimelineBasespot({ id: timelineBasespot.id })}
+          to={routes.editTimelineBasespot({ id: timelineBasespot.id.toString() })}
           className="rw-button rw-button-blue"
         >
           Edit
@@ -147,7 +120,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
         </button>
       </nav>
     </>
-  );
-};
+  )
+}
 
-export default TimelineBasespot;
+export default TimelineBasespot

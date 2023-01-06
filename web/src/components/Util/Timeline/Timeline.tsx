@@ -1,15 +1,13 @@
-import { useAuth } from "@redwoodjs/auth";
 import { useCallback, useEffect, useState } from "react";
-import { Maps } from "src/components/Maps";
-import useComponentVisible from "src/components/useComponentVisible";
-import { getDateDiff, groupBy } from "src/lib/formatters";
-import ImagePreview from "../ImagePreview/ImagePreview";
+import { getDateDiff } from "src/lib/formatters";
+import Modal from "../Modal/Modal";
 import { useParams } from "@redwoodjs/router";
+import { Map } from "../Map/Map";
 
 type TimelineSettings = {
   snap?: boolean;
 };
-const Timeline = ({
+export const TimelineList = ({
   events,
   options = { snap: false },
 }: {
@@ -135,7 +133,7 @@ const Timeline = ({
             </div>
           </div>
         </div>
-        <ImagePreview
+        <Modal
           isOpen={isOpenModal}
           setIsOpen={setIsOpenModal}
           image={currentModalImage}
@@ -256,7 +254,7 @@ const Timeline = ({
               <section className="body-font mx-4 border-t border-gray-200 text-gray-700 dark:text-neutral-200">
                 <div className="container mx-auto flex flex-wrap px-5 py-12">
                   <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
-                    <Maps
+                    <Map
                       className="h-full w-full object-cover object-center"
                       map={events[currentPage].map}
                       size={{ width: 500, height: 500 }}
@@ -404,5 +402,3 @@ const Timeline = ({
     </section>
   );
 };
-
-export default Timeline;

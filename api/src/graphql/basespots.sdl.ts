@@ -13,12 +13,17 @@ export const schema = gql`
     created_by: String
     turretsetup_image: String
     updated_at: DateTime
-    TimelineBasespot: [TimelineBasespot]!
+  }
+
+  type BasespotPage {
+    basespots: [Basespot!]!
+    count: Int!
   }
 
   type Query {
-    basespots: [Basespot!]! @requireAuth
-    basespot(id: BigInt!): Basespot @requireAuth
+    basespots: [Basespot!]! @skipAuth
+    basespot(id: BigInt!): Basespot @skipAuth
+    basespotPage(page: Int): BasespotPage @skipAuth
   }
 
   input CreateBasespotInput {

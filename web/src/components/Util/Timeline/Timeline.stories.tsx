@@ -13,10 +13,10 @@
 
 import type { ComponentMeta } from '@storybook/react'
 
-import Timeline from './Timeline'
+import Timeline from '../../Timeline/Timeline'
 
 export const generated = () => {
-  return <Timeline />
+  return <Timeline timeline={{id: "test"}}/>
 }
 
 export default {

@@ -6,6 +6,19 @@ import type {
 
 import { db } from 'src/lib/db'
 
+const POSTS_PER_PAGE = 6;
+export const basespotPage = ({ page = 1 }: { page: number }) => {
+  const offset = (page - 1) * POSTS_PER_PAGE;
+  return {
+    basespots: db.Basespot.findMany({
+      take: POSTS_PER_PAGE,
+      skip: offset,
+      orderBy: { created_at: "desc" },
+    }),
+    count: db.basespot.count(),
+  };
+};
+
 export const basespots: QueryResolvers['basespots'] = () => {
   return db.basespot.findMany()
 }
@@ -15,6 +28,7 @@ export const basespot: QueryResolvers['basespot'] = ({ id }) => {
     where: { id },
   })
 }
+
 
 export const createBasespot: MutationResolvers['createBasespot'] = ({
   input,
@@ -40,10 +54,3 @@ export const deleteBasespot: MutationResolvers['deleteBasespot'] = ({ id }) => {
   })
 }
 
-export const Basespot: BasespotRelationResolvers = {
-  TimelineBasespot: (_obj, { root }) => {
-    return db.basespot
-      .findUnique({ where: { id: root?.id } })
-      .TimelineBasespot()
-  },
-}

@@ -5,12 +5,12 @@ export const schema = gql`
     updatedAt: DateTime
     createdBy: String
     TimelineBasespot: [TimelineBasespot]!
-    profiles: profile
+    profile: Profile
   }
 
   type Query {
     timelines: [Timeline!]! @requireAuth
-    timeline(id: String!): Timeline @requireAuth
+    timeline(id: String!): Timeline @skipAuth
   }
 
   input CreateTimelineInput {

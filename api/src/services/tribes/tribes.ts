@@ -1,8 +1,4 @@
-import type {
-  QueryResolvers,
-  MutationResolvers,
-  TribeRelationResolvers,
-} from 'types/graphql'
+import type { QueryResolvers, MutationResolvers } from 'types/graphql'
 
 import { db } from 'src/lib/db'
 
@@ -36,15 +32,4 @@ export const deleteTribe: MutationResolvers['deleteTribe'] = ({ id }) => {
   return db.tribe.delete({
     where: { id },
   })
-}
-
-export const Tribe: TribeRelationResolvers = {
-  profiles: (_obj, { root }) => {
-    return db.tribe.findUnique({ where: { id: root?.id } }).profiles()
-  },
-  profiles_profilesTotribe_updatedBy: (_obj, { root }) => {
-    return db.tribe
-      .findUnique({ where: { id: root?.id } })
-      .profiles_profilesTotribe_updatedBy()
-  },
 }

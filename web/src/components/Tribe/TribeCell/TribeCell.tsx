@@ -1,8 +1,8 @@
-import type { FindTribeById } from "types/graphql";
+import type { FindTribeById } from 'types/graphql'
 
-import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
+import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
-import Tribe from "src/components/Tribe/Tribe";
+import Tribe from 'src/components/Tribe/Tribe'
 
 export const QUERY = gql`
   query FindTribeById($id: Int!) {
@@ -12,18 +12,20 @@ export const QUERY = gql`
       description
       created_at
       updated_at
+      createdBy
+      updatedBy
     }
   }
-`;
+`
 
-export const Loading = () => <div>Loading...</div>;
+export const Loading = () => <div>Loading...</div>
 
-export const Empty = () => <div>Tribe not found</div>;
+export const Empty = () => <div>Tribe not found</div>
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>
-);
+)
 
 export const Success = ({ tribe }: CellSuccessProps<FindTribeById>) => {
-  return <Tribe tribe={tribe} />;
-};
+  return <Tribe tribe={tribe} />
+}

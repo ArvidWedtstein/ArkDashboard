@@ -3,7 +3,7 @@
 .env
 .netlify
 .redwood
-# dev.db*
+dev.db*
 dist
 dist-babel
 node_modules
@@ -19,10 +19,3 @@ api/src/lib/generateGraphiQLHeader.*
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
-
-
-# Deployment
-.serverless
-
-# Deployment
-.serverless

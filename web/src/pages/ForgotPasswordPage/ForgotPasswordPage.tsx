@@ -32,7 +32,7 @@ const ForgotPasswordPage = () => {
       toast.success(
         'A link to reset your password was sent to ' + response.email
       )
-      navigate(routes.login())
+      navigate(routes.signin())
     }
   }
 
@@ -59,7 +59,7 @@ const ForgotPasswordPage = () => {
                       className="rw-label"
                       errorClassName="rw-label rw-label-error"
                     >
-                      Username
+                      Email
                     </Label>
                     <TextField
                       name="username"

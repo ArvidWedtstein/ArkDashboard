@@ -1,10 +1,6 @@
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "@redwoodjs/auth";
-import { useEffect, useState } from "react";
-import FileUpload from "src/components/Util/FileUpload/FileUpload";
-import Slideshow from "src/components/Util/Slideshow/Slideshow";
-import Timeline from "src/components/Util/Timeline/Timeline";
 
 const HomePage = () => {
   const { isAuthenticated, client: supabase } = useAuth();
@@ -42,7 +38,7 @@ const HomePage = () => {
                 </h3>
                 <Link
                   className="inline-block rounded border-2 border-white px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0"
-                  to={routes.login()}
+                  to={routes.signin()}
                 >
                   Get started
                 </Link>
