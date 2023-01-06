@@ -1,12 +1,13 @@
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "@redwoodjs/auth";
+import { ContextMenu } from "src/components/Util/ContextMenu/ContextMenu";
 
 const HomePage = () => {
   const { isAuthenticated, client: supabase } = useAuth();
   // if (document.addEventListener) {
   //   document.addEventListener('contextmenu', function (e) {
-  //     alert("You've tried to open context menu"); //here you draw your own menu
+  //     alert("You've tried to open context menu");
   //     e.preventDefault();
   //   }, false);
   // }
@@ -16,6 +17,8 @@ const HomePage = () => {
   return (
     <>
       <MetaTags title="Home" description="Home page" />
+
+
       <div className="container-xl p-3 text-center">
         <div
           className="relative overflow-hidden bg-cover bg-no-repeat"
@@ -31,7 +34,22 @@ const HomePage = () => {
           >
             <div className="flex h-full items-center justify-center">
               <div className="px-6 text-center text-white md:px-12">
-                <h1 className="mt-0 mb-6 text-5xl font-bold">Welcome Home</h1>
+                <ContextMenu items={[
+                  {
+                    label: "Sign in",
+                    onClick: () => {
+                      supabase.auth.signIn({ provider: "github" })
+                    }
+                  },
+                  {
+                    label: "Sign out",
+                    onClick: () => {
+                      alert('Sign out')
+                    }
+                  }
+                ]}>
+                  <h1 className="mt-0 mb-6 text-5xl font-bold">Welcome Home</h1>
+                </ContextMenu>
                 <h3 className="mb-8 text-3xl font-bold">
                   Here you can find base locations, material calculators and
                   much more
