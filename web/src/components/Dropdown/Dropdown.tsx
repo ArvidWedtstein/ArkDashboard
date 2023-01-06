@@ -31,7 +31,7 @@ const Dropdown = ({
           aria-haspopup="true"
         >
           {currentUser ? (
-            <Avatar url={currentUser.avatar_url} size={30} />
+            <Avatar url={String(currentUser.avatar_url ?  currentUser.avatar_url : "")} size={30} />
           ) : (
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -169,7 +169,7 @@ const Dropdown = ({
           <div className="flex flex-col border-t-2 border-[#dddddd] p-2 transition-colors">
             {isAuthenticated ? (
               <>
-                <Link
+                {/* <Link
                   to={routes.account()}
                   className="flex items-center rounded p-2 font-medium text-inherit transition-all hover:bg-neutral-600"
                   role="menuitem"
@@ -192,7 +192,7 @@ const Dropdown = ({
                     <circle cx="12" cy="7" r="4"></circle>
                   </svg>
                   Account
-                </Link>
+                </Link> */}
                 <button
                   onClick={logOut}
                   className="flex items-center rounded p-2 font-medium text-inherit transition-all hover:bg-neutral-600"
@@ -206,7 +206,7 @@ const Dropdown = ({
             ) : (
               <Link
                 className="flex items-center rounded p-2 font-medium text-inherit transition-all hover:bg-neutral-600"
-                to={routes.login()}
+                to={routes.signin()}
               >
                 Login
               </Link>

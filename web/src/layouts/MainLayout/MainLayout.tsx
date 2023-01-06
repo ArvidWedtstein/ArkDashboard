@@ -1,6 +1,7 @@
 import { Link, routes } from '@redwoodjs/router'
 import { Toaster } from '@redwoodjs/web/toast'
-import Navbar from 'src/components/Navbar'
+import Navbar from 'src/components/Navbar/Navbar'
+
 
 type LayoutProps = {
   children: React.ReactNode
@@ -20,5 +21,3 @@ const MainLayout = ({
 }
 
 export default MainLayout
-
-// TODO: add shopping system

@@ -15,9 +15,15 @@ export const schema = gql`
     updated_at: DateTime
   }
 
+  type BasespotPage {
+    basespots: [Basespot!]!
+    count: Int!
+  }
+
   type Query {
-    basespots: [Basespot!]! @requireAuth
-    basespot(id: BigInt!): Basespot @requireAuth
+    basespots: [Basespot!]! @skipAuth
+    basespot(id: BigInt!): Basespot @skipAuth
+    basespotPage(page: Int): BasespotPage @skipAuth
   }
 
   input CreateBasespotInput {
@@ -56,4 +62,4 @@ export const schema = gql`
       @requireAuth
     deleteBasespot(id: BigInt!): Basespot! @requireAuth
   }
-`;
+`

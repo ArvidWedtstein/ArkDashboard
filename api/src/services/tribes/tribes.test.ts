@@ -1,4 +1,4 @@
-import type { tribe } from '@prisma/client'
+import type { Tribe } from '@prisma/client'
 
 import { tribes, tribe, createTribe, updateTribe, deleteTribe } from './tribes'
 import type { StandardScenario } from './tribes.scenarios'
@@ -31,7 +31,7 @@ describe('tribes', () => {
   })
 
   scenario('updates a tribe', async (scenario: StandardScenario) => {
-    const original = (await tribe({ id: scenario.tribe.one.id })) as tribe
+    const original = (await tribe({ id: scenario.tribe.one.id })) as Tribe
     const result = await updateTribe({
       id: original.id,
       input: { name: 'String2' },
@@ -41,7 +41,7 @@ describe('tribes', () => {
   })
 
   scenario('deletes a tribe', async (scenario: StandardScenario) => {
-    const original = (await deleteTribe({ id: scenario.tribe.one.id })) as tribe
+    const original = (await deleteTribe({ id: scenario.tribe.one.id })) as Tribe
     const result = await tribe({ id: original.id })
 
     expect(result).toEqual(null)

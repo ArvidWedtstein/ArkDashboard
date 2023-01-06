@@ -12,7 +12,7 @@ import { MetaTags } from "@redwoodjs/web";
 import { useState } from "react";
 import Table from "src/components/Util/Table/Table";
 import { combineBySummingKeys } from "src/lib/formatters";
-import arkdinos from "../../../public/arkdinos2.json";
+import arkdinos from "../../../public/arkdinos.json";
 
 interface stats {
   health: number;

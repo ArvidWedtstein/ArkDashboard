@@ -10,7 +10,7 @@ export const schema = gql`
   }
 
   type Query {
-    tribes: [Tribe!]! @requireAuth
+    tribes: [Tribe!]! @skipAuth
     tribe(id: Int!): Tribe @requireAuth
   }
 
@@ -37,4 +37,4 @@ export const schema = gql`
     updateTribe(id: Int!, input: UpdateTribeInput!): Tribe! @requireAuth
     deleteTribe(id: Int!): Tribe! @requireAuth
   }
-`;
+`

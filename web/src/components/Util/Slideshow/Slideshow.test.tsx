@@ -8,7 +8,7 @@ import Slideshow from './Slideshow'
 describe('Slideshow', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<Slideshow />)
+      render(<Slideshow slides={[{url: '', title: "test", subtitle: "test2"}]}/>)
     }).not.toThrow()
   })
 })

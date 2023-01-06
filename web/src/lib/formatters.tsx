@@ -1,64 +1,66 @@
-import React from "react";
+import React from 'react'
 
-import humanize from "humanize-string";
+import humanize from 'humanize-string'
 import prices from "../../public/arkitems.json";
 const MAX_STRING_LENGTH = 150;
 
 export const formatEnum = (values: string | string[] | null | undefined) => {
-  let output = "";
+  let output = ''
 
   if (Array.isArray(values)) {
-    const humanizedValues = values.map((value) => humanize(value));
-    output = humanizedValues.join(", ");
-  } else if (typeof values === "string") {
-    output = humanize(values);
+    const humanizedValues = values.map((value) => humanize(value))
+    output = humanizedValues.join(', ')
+  } else if (typeof values === 'string') {
+    output = humanize(values)
   }
 
-  return output;
-};
+  return output
+}
+
+export const jsonDisplay = (obj: unknown) => {
+  return (
+    <pre>
+      <code>{JSON.stringify(obj, null, 2)}</code>
+    </pre>
+  )
+}
 
 export const truncate = (value: string | number) => {
-  let output = value?.toString() ?? "";
+  let output = value?.toString() ?? ''
 
   if (output.length > MAX_STRING_LENGTH) {
-    output = output.substring(0, MAX_STRING_LENGTH) + "...";
+    output = output.substring(0, MAX_STRING_LENGTH) + '...'
   }
 
-  return output;
-};
+  return output
+}
 
 export const jsonTruncate = (obj: unknown) => {
-  return truncate(JSON.stringify(obj, null, 2));
-};
+  return truncate(JSON.stringify(obj, null, 2))
+}
 
 export const timeTag = (dateTime?: string) => {
-  let output: string | JSX.Element = "";
+  let output: string | JSX.Element = ''
 
   if (dateTime) {
-    let options: Intl.DateTimeFormatOptions = {
-      weekday: "long",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    };
     output = (
       <time dateTime={dateTime} title={dateTime}>
-        {new Date(dateTime).toLocaleString("no-NO", options)}
+        {new Date(dateTime).toUTCString()}
       </time>
-    );
+    )
   }
-  return output;
-};
+
+  return output
+}
 
 export const checkboxInputTag = (checked: boolean) => {
-  return <input type="checkbox" checked={checked} disabled />;
-};
+  return <input type="checkbox" checked={checked} disabled />
+}
 
 /**
- * Sorts an array of T by the specified properties of property
-
+ *
+ * @param property string to sort by
+ * @returns
  */
 export const dynamicSort = (property: string) => {
   var sortOrder = 1;
@@ -76,17 +78,27 @@ export const dynamicSort = (property: string) => {
   };
 };
 
+
+/**
+ *
+ * @param objects
+ * @returns combined object where numberic values are summed
+ */
 export const combineBySummingKeys = (...objects) => {
   const mergedObj = {};
-
   objects.forEach((obj) => {
     Object.keys(obj).forEach((key) => {
       mergedObj[key] = (mergedObj[key] || 0) + obj[key];
     });
   });
-
   return mergedObj;
 };
+
+/**
+ * @description For ark item objects only. Combines the recipe arrays of multiple objects into one object
+ * @param objects
+ * @returns
+ */
 export const mergeRecipe = (...objects): Object => {
   const mergedObj = {};
 
@@ -147,6 +159,10 @@ export const capitalize = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
+/**
+ * @description Returns the start and end date of the current week
+ * @returns {Array} array of start and end dates of the current week
+ */
 export const getWeekDates = () => {
   let now = new Date();
   let dayOfWeek = now.getDay(); //0-6
@@ -188,12 +204,12 @@ export const isDate = (date: string): boolean => {
   return regex.test(date);
 };
 /**
- *
+ * @description Calculates the cost of an ark item
  * @param {Number} amount
  * @param {String} item_type
  * @returns Object with prices
  */
-export const calcItemCost = (amount, item_type) => {
+export const calcItemCost = (amount: number, item_type) => {
   if (Number.isNaN(amount)) return console.error("Amount is NaN");
   if (!(item_type in prices))
     return console.error(
@@ -212,11 +228,6 @@ export const calcItemCost = (amount, item_type) => {
   return price;
 };
 
-// const calcItemPrice = (itemId: number, amount: number) => {
-//   if (items.some((i) => i.itemId === parseInt(key))) {
-
-//   }
-// }
 
 /**
  *

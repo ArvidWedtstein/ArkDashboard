@@ -1,16 +1,14 @@
-import { useAuth } from "@redwoodjs/auth";
-import { Link, routes, navigate } from "@redwoodjs/router";
-import { useMutation } from "@redwoodjs/web";
-import { toast } from "@redwoodjs/web/toast";
-import { useEffect, useState } from "react";
-import { Maps } from "src/components/Maps";
 
-import { timeTag } from "src/lib/formatters";
+import { useAuth } from '@redwoodjs/auth'
+import { Link, routes, navigate } from '@redwoodjs/router'
+import { useMutation } from '@redwoodjs/web'
+import { toast } from '@redwoodjs/web/toast'
+import { useEffect, useState } from 'react'
+import { Map } from 'src/components/Util/Map/Map'
 
-import type {
-  DeleteBasespotMutationVariables,
-  FindBasespotById,
-} from "types/graphql";
+import { timeTag,  } from 'src/lib/formatters'
+
+import type { DeleteBasespotMutationVariables, FindBasespotById } from 'types/graphql'
 
 const DELETE_BASESPOT_MUTATION = gql`
   mutation DeleteBasespotMutation($id: BigInt!) {
@@ -18,10 +16,10 @@ const DELETE_BASESPOT_MUTATION = gql`
       id
     }
   }
-`;
+`
 
 interface Props {
-  basespot: NonNullable<FindBasespotById["basespot"]>;
+  basespot: NonNullable<FindBasespotById['basespot']>
 }
 
 const Basespot = ({ basespot }: Props) => {
@@ -51,19 +49,19 @@ const Basespot = ({ basespot }: Props) => {
 
   const [deleteBasespot] = useMutation(DELETE_BASESPOT_MUTATION, {
     onCompleted: () => {
-      toast.success("Basespot deleted");
-      navigate(routes.basespots());
+      toast.success('Basespot deleted')
+      navigate(routes.basespots())
     },
     onError: (error) => {
-      toast.error(error.message);
+      toast.error(error.message)
     },
-  });
+  })
 
-  const onDeleteClick = (id: DeleteBasespotMutationVariables["id"]) => {
-    if (confirm("Are you sure you want to delete basespot " + id + "?")) {
-      deleteBasespot({ variables: { id } });
+  const onDeleteClick = (id: DeleteBasespotMutationVariables['id']) => {
+    if (confirm('Are you sure you want to delete basespot ' + id + '?')) {
+      deleteBasespot({ variables: { id } })
     }
-  };
+  }
 
   return (
     <>
@@ -78,7 +76,7 @@ const Basespot = ({ basespot }: Props) => {
             <p className="mb-8 leading-relaxed">{basespot.description}</p>
             <div className="flex justify-center">
               <Link
-                to={routes.editBasespot({ id: basespot.id })}
+                to={routes.editBasespot({ id: basespot.id.toString() })}
                 className="inline-flex rounded border-0 bg-gray-200 py-2 px-6 text-lg text-gray-700 hover:bg-gray-300 focus:outline-none"
               >
                 Edit
@@ -106,7 +104,7 @@ const Basespot = ({ basespot }: Props) => {
       <section className="body-font border-t border-gray-200 text-gray-700">
         <div className="container mx-auto flex flex-wrap px-5 py-12">
           <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
-            <Maps
+            <Map
               className="h-full w-full object-cover object-center"
               map={basespot.Map}
               size={{ width: 500, height: 500 }}
@@ -292,7 +290,7 @@ const Basespot = ({ basespot }: Props) => {
         </div>
       </section>
     </>
-  );
-};
+  )
+}
 
-export default Basespot;
+export default Basespot

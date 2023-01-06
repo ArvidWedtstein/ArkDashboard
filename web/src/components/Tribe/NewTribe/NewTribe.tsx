@@ -1,4 +1,3 @@
-import { useAuth } from '@redwoodjs/auth'
 import { navigate, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
@@ -16,7 +15,6 @@ const CREATE_TRIBE_MUTATION = gql`
 `
 
 const NewTribe = () => {
-  const { client: supabase, currentUser } = useAuth()
   const [createTribe, { loading, error }] = useMutation(
     CREATE_TRIBE_MUTATION,
     {
@@ -30,9 +28,7 @@ const NewTribe = () => {
     }
   )
 
-  const onSave = (input: any) => { // CreateTribeInput
-    // console.log(supabase.auth.user())
-    input['createdBy'] = supabase.auth.user().id;
+  const onSave = (input: CreateTribeInput) => {
     createTribe({ variables: { input } })
   }
 

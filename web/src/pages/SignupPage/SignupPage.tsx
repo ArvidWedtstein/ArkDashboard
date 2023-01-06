@@ -1,6 +1,5 @@
 import { useRef } from 'react'
 import { useEffect } from 'react'
-
 import { useAuth } from '@redwoodjs/auth'
 import {
   Form,
@@ -18,11 +17,6 @@ import { toast, Toaster } from '@redwoodjs/web/toast'
 const SignupPage = () => {
   const { isAuthenticated, signUp, client } = useAuth()
 
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     navigate(routes.home())
-  //   }
-  // }, [isAuthenticated])
 
   // focus on email box on page load
   const emailRef = useRef<HTMLInputElement>(null)
@@ -32,10 +26,6 @@ const SignupPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      // const response = await client.auth.signUp({
-      //   email: data.email,
-      //   password: data.password,
-      // })
       const response = await signUp({
         email: data.email,
         password: data.password,

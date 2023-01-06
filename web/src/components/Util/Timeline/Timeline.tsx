@@ -1,15 +1,13 @@
-import { useAuth } from "@redwoodjs/auth";
 import { useCallback, useEffect, useState } from "react";
-import { Maps } from "src/components/Maps";
-import useComponentVisible from "src/components/useComponentVisible";
 import { getDateDiff } from "src/lib/formatters";
-import ImagePreview from "../ImagePreview/ImagePreview";
+import Modal from "../Modal/Modal";
 import { useParams } from "@redwoodjs/router";
+import { Map } from "../Map/Map";
 
 type TimelineSettings = {
   snap?: boolean;
 };
-const Timeline = ({
+export const TimelineList = ({
   events,
   options = { snap: false },
 }: {
@@ -64,15 +62,17 @@ const Timeline = ({
         <div className="events-wrapper bg-white dark:bg-slate-600">
           <div className="events">
             <div
-              className={`flex touch-pan-x select-none flex-row items-stretch justify-start space-x-1 overflow-x-auto p-3 will-change-scroll ${options.snap && "snap-x snap-mandatory"
-                }`}
+              className={`flex touch-pan-x select-none flex-row items-stretch justify-start space-x-1 overflow-x-auto p-3 will-change-scroll ${
+                options.snap && "snap-x snap-mandatory"
+              }`}
             >
               {events.map((event, i) => (
                 <>
                   <div
                     key={i}
-                    className={`w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white ${currentPage === i && "border-red-500"
-                      } ${options.snap && "snap-center snap-always"}`}
+                    className={`w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white ${
+                      currentPage === i && "border-red-500"
+                    } ${options.snap && "snap-center snap-always"}`}
                     data-tab={i}
                     onClick={() => onChange(i)}
                     aria-controls="tabs-0"
@@ -126,14 +126,14 @@ const Timeline = ({
                     (i + 1 < events.length && events[i + 1].season
                       ? events[i + 1].season
                       : 0) && (
-                      <div className="w-full min-w-fit flex-1 rounded-md border-2 border-transparent"></div>
-                    )}
+                    <div className="w-full min-w-fit flex-1 rounded-md border-2 border-transparent"></div>
+                  )}
                 </>
               ))}
             </div>
           </div>
         </div>
-        <ImagePreview
+        <Modal
           isOpen={isOpenModal}
           setIsOpen={setIsOpenModal}
           image={currentModalImage}
@@ -200,7 +200,7 @@ const Timeline = ({
                     </p>
                     <p>
                       {!events[currentPage].endDate &&
-                        !events[currentPage].raided_by
+                      !events[currentPage].raided_by
                         ? ""
                         : `Got raided `}
                       {events[currentPage].endDate &&
@@ -254,7 +254,7 @@ const Timeline = ({
               <section className="body-font mx-4 border-t border-gray-200 text-gray-700 dark:text-neutral-200">
                 <div className="container mx-auto flex flex-wrap px-5 py-12">
                   <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
-                    <Maps
+                    <Map
                       className="h-full w-full object-cover object-center"
                       map={events[currentPage].map}
                       size={{ width: 500, height: 500 }}
@@ -402,5 +402,3 @@ const Timeline = ({
     </section>
   );
 };
-
-export default Timeline;

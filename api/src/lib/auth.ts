@@ -1,6 +1,5 @@
-import { parseJWT, Decoded } from "@redwoodjs/api";
-import { AuthenticationError, ForbiddenError } from "@redwoodjs/graphql-server";
-import { Context } from "@redwoodjs/graphql-server/dist/functions/types";
+import { parseJWT, Decoded } from '@redwoodjs/api'
+import { AuthenticationError, ForbiddenError } from '@redwoodjs/graphql-server'
 import { db } from "./db";
 /**
  * Represents the user attributes returned by the decoding the
@@ -46,7 +45,7 @@ export const getCurrentUser = async (
   const { sub, role } = decoded;
 
   if (!!sub.toString()) {
-    let user = await db.profiles.findUnique({
+    let user = await db.Profile.findUnique({
       where: { id: sub.toString() },
     });
 
@@ -60,21 +59,30 @@ export const getCurrentUser = async (
   return { ...decoded };
 };
 
+
 /**
  * The user is authenticated if there is a currentUser in the context
  *
  * @returns {boolean} - If the currentUser is authenticated
  */
 export const isAuthenticated = (): boolean => {
-  return !!context.currentUser;
-};
+  return !!context.currentUser
+}
 
 /**
  * When checking role membership, roles can be a single value, a list, or none.
  * You can use Prisma enums too (if you're using them for roles), just import your enum type from `@prisma/client`
  */
-type AllowedRoles = string | string[] | undefined;
+type AllowedRoles = string | string[] | undefined
 
+/**
+ * Checks if the currentUser is authenticated (and assigned one of the given roles)
+ *
+ * @param roles: {@link AllowedRoles} - Checks if the currentUser is assigned one of these roles
+ *
+ * @returns {boolean} - Returns true if the currentUser is logged in and assigned one of the given roles,
+ * or when no roles are provided to check against. Otherwise returns false.
+ */
 /**
  * Checks if the currentUser is authenticated (and assigned one of the given roles)
  *
@@ -142,10 +150,10 @@ export const hasRole = async (role_id: AllowedRoles): Promise<boolean> => {
  */
 export const requireAuth = ({ roles }: { roles?: AllowedRoles } = {}) => {
   if (!isAuthenticated()) {
-    throw new AuthenticationError("You don't have permission to do that.");
+    throw new AuthenticationError("You don't have permission to do that.")
   }
 
   if (roles && !hasRole(roles)) {
-    throw new ForbiddenError("You don't have access to do that.");
+    throw new ForbiddenError("You don't have access to do that.")
   }
-};
+}
