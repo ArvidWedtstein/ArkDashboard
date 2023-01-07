@@ -5,7 +5,7 @@ import { useState } from 'react'
 import ArkCard from 'src/components/ArkCard/ArkCard'
 
 import { QUERY } from 'src/components/Basespot/BasespotsCell'
-import Lookup from 'src/components/Lookup/Lookup'
+import Lookup from 'src/components/Util/Lookup/Lookup'
 import { random } from 'src/lib/formatters'
 
 import type { DeleteBasespotMutationVariables, FindBasespots } from 'types/graphql'

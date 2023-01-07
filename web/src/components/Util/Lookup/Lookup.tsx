@@ -1,6 +1,6 @@
 import { SearchField, SelectField, TextField } from "@redwoodjs/forms";
 import { useEffect, useRef, useState } from "react"
-import useComponentVisible from "../useComponentVisible";
+import useComponentVisible from "../../useComponentVisible";
 
 type LookupType = 'user' | 'post' | 'default'
 interface ILookup {
@@ -22,7 +22,6 @@ const Lookup = ({ items, type = "default", value, children, className, onChange,
 
   };
   const handleSelect = (e) => {
-
     setSearch(e)
     onChange ? onChange(e) : null
     setIsComponentVisible(false)
@@ -44,13 +43,13 @@ const Lookup = ({ items, type = "default", value, children, className, onChange,
 
   return (
     <div className="relative flex items-center" ref={ref}>
-      <div className={className ? `flex items-center text-center ${className}` : "flex items-center text-center text-white bg-gray-600 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2"}>
+      <div className={className ? `flex items-center text-center ${className}` : "flex items-center text-center text-black dark:text-white bg-gray-600 dark:bg-gray-800 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2"}>
         {search ? (
           <TextField
             name={name}
             id={name}
             autoComplete="off"
-            className="flex items-center w-full py-2 px-4 bg-gray-600 dark:hover:bg-gray-600 dark:hover:text-white"
+            className="flex items-center w-full py-2 px-4 bg-gray-600 dark:bg-gray-800 dark:hover:bg-gray-600 dark:hover:text-white"
             onChange={handleSearch}
             onFocus={handleOpen}
             placeholder="Search..."
@@ -66,7 +65,7 @@ const Lookup = ({ items, type = "default", value, children, className, onChange,
       </div>
 
       {isComponentVisible ? (
-        <div className="absolute top-14 z-10 w-60 bg-white rounded shadow dark:bg-gray-700">
+        <div className="absolute top-10 z-10 w-60 bg-white rounded shadow dark:bg-gray-800">
           <ul className="overflow-y-auto py-1 max-h-48 text-gray-700 dark:text-gray-200" aria-labelledby="dropdownButton">
             {items.map((item) => {
               return (

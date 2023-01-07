@@ -18,9 +18,9 @@ const Pagination = ({
         <Link
           to={routes[route]({ page: i + 1 })}
           // className="page-link relative block rounded border-0 bg-transparent py-1.5 px-3 text-gray-800 outline-none transition-all duration-300 hover:bg-gray-200 hover:text-gray-800 focus:shadow-none"
-          className={`inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 ${parseInt(page) === i + 1
-              ? "border-2 bg-gray-500 dark:border-gray-800 dark:bg-gray-900"
-              : "border-gray-200 dark:border-gray-500"
+          className={`inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 dark:text-stone-200 hover:border-2 ${parseInt(page) === i + 1
+              ? "border-2 border-gray-800 dark:border-stone-200 bg-gray-900 dark:bg-stone-200"
+              : "dark:border-gray-200 border-gray-500"
             }`}
         >
           {i + 1}
@@ -49,7 +49,7 @@ const Pagination = ({
           <ul className="list-style-none mt-5 flex w-full justify-end space-x-2">
             <li className="">
               <Link
-                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-200 leading-none text-gray-800 hover:border-2 dark:border-gray-500"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 dark:text-stone-200 hover:border-2"
                 to={routes[route]({ page: changePage("prev") })}
                 aria-label="Previous"
               >
@@ -70,7 +70,7 @@ const Pagination = ({
             {items}
             <li className="">
               <Link
-                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-gray-200 leading-none text-gray-800 hover:border-2 dark:border-gray-500"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 dark:text-stone-200 hover:border-2"
                 to={routes[route]({ page: changePage("next") })}
                 aria-label="Next"
               >

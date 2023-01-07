@@ -1,7 +1,7 @@
 import { FieldError, Form, FormError, ImageField, Label, RWGqlError, SelectField, TextField } from "@redwoodjs/forms";
 import { useReducer } from "react";
 import { useForm } from 'react-hook-form'
-import Lookup from "src/components/Lookup/Lookup";
+import Lookup from "src/components/Util/Lookup/Lookup";
 import { combineBySummingKeys, merge, mergeRecipe } from 'src/lib/formatters'
 import { items } from 'public/arkitems.json'
 import Table from "src/components/Util/Table/Table";

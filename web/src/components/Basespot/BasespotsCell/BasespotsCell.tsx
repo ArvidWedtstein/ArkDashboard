@@ -50,18 +50,39 @@ export const beforeQuery = ({ page }) => {
   return { variables: { page } };
 };
 
-export const Loading = () => <div>Loading...</div>
-
 // export const Loading = () => {
 //   return (
-//     <div className="mb-5 grid grid-cols-2 gap-5">
-//       <SkeletonCard />
-//       <SkeletonCard />
-//       <SkeletonCard />
-//       <SkeletonCard />
+//     <div className='w-full h-full flex items-center justify-center '>
+//       {/* <span className='w-16 h-16 inline-block rounded-full border-t-4 border-white border-r-2 border-transparent animate-spin'></span> */}
 //     </div>
-//   );
-// };
+//   )
+// }
+
+export const Loading = () => {
+  let items = 6
+  return (
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 mt-8 mb-5">
+      {Array.from(Array(items).keys()).map((item) => (
+        <div className="border border-blue-300 shadow rounded-md p-4 w-full mx-auto">
+          <div className="animate-pulse flex space-x-4">
+            <div className="rounded-full bg-slate-700 h-10 w-10"></div>
+            <div className="flex-1 space-y-6 py-1">
+              <div className="h-2 bg-slate-700 rounded"></div>
+              <div className="space-y-3">
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="h-2 bg-slate-700 rounded col-span-2"></div>
+                  <div className="h-2 bg-slate-700 rounded col-span-1"></div>
+                </div>
+                <div className="h-2 bg-slate-700 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))
+      }
+    </div>
+  );
+};
 
 export const Empty = () => {
   return (
