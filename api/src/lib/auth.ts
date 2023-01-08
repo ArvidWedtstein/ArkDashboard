@@ -6,6 +6,7 @@ import { db } from "./db";
  * Authentication provider's JWT together with an optional list of roles.
  */
 type RedwoodUser = Record<string, any> & {
+  id? : string;
   roles?: string[];
   email?: string;
   role_id?: string;
@@ -45,15 +46,15 @@ export const getCurrentUser = async (
   const { sub, role } = decoded;
 
   if (!!sub.toString()) {
-    let user = await db.Profile.findUnique({
+    let user = await db.profile.findUnique({
       where: { id: sub.toString() },
     });
 
     if (user && user.role_id) {
       let role_id = user.role_id;
-      return await { ...user, role, roles: [role_id], ...decoded };
+      return await { sub, ...user, role, roles: [role_id], ...decoded };
     }
-    return await { ...user, role, ...decoded };
+    return await { sub, ...user, role, ...decoded };
   }
 
   return { ...decoded };
@@ -106,7 +107,7 @@ export const hasRole = async (role_id: AllowedRoles): Promise<boolean> => {
       if (uuidCheck.test(role_id)) {
         return currentUserRoles === role_id;
       }
-      let userRole = await db.roles.findUnique({
+      let userRole = await db.role.findUnique({
         where: { id: currentUserRoles },
       });
       console.log(userRole);
