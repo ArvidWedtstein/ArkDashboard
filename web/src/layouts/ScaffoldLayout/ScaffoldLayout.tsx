@@ -1,3 +1,4 @@
+import { useAuth } from '@redwoodjs/auth'
 import { Link, routes } from '@redwoodjs/router'
 import { Toaster } from '@redwoodjs/web/toast'
 
@@ -16,6 +17,9 @@ const ScaffoldLayout = ({
   buttonTo,
   children,
 }: LayoutProps) => {
+  const {
+    isAuthenticated
+  } = useAuth();
   return ( // dark:bg-[#131417]
     <div className="dark:bg-slate-600 bg-white rw-scaffold h-full">
       <Toaster containerClassName='mx-3' toastOptions={{ className: 'rw-toast', duration: 6000 }} />
@@ -25,9 +29,9 @@ const ScaffoldLayout = ({
             {title}
           </Link>
         </h1>
-        <Link to={routes[buttonTo]()} className="rw-button rw-button-green test">
+        {isAuthenticated && <Link to={routes[buttonTo]()} className="rw-button rw-button-green test">
           <div className="rw-button-icon">+</div> {buttonLabel}
-        </Link>
+        </Link>}
       </header>
       <main className="rw-main">{children}</main>
     </div>
