@@ -17,7 +17,7 @@ export const schema = gql`
   input CreateTribeInput {
     name: String!
     description: String
-    created_at: DateTime!
+    created_at: DateTime
     updated_at: DateTime
     createdBy: String
     updatedBy: String

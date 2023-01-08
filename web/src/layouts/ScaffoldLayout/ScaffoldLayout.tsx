@@ -16,16 +16,16 @@ const ScaffoldLayout = ({
   buttonTo,
   children,
 }: LayoutProps) => {
-  return (
-    <div className="rw-scaffold">
-      <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
+  return ( // dark:bg-[#131417]
+    <div className="dark:bg-slate-600 bg-white rw-scaffold h-full">
+      <Toaster containerClassName='mx-3' toastOptions={{ className: 'rw-toast', duration: 6000 }} />
       <header className="rw-header">
         <h1 className="rw-heading rw-heading-primary">
-          <Link to={routes[titleTo]()} className="rw-link">
+          <Link to={routes[titleTo]()} className="text-blue-400 underline dark:text-gray-300">
             {title}
           </Link>
         </h1>
-        <Link to={routes[buttonTo]()} className="rw-button rw-button-green">
+        <Link to={routes[buttonTo]()} className="rw-button rw-button-green test">
           <div className="rw-button-icon">+</div> {buttonLabel}
         </Link>
       </header>

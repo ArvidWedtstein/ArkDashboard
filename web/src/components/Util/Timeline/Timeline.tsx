@@ -57,7 +57,7 @@ export const TimelineList = ({
     Gen2: "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
   };
   return (
-    <section className="-mx-3">
+    <section className="">
       <div className="h-full w-full">
         <div className="events-wrapper bg-white dark:bg-slate-600">
           <div className="events">
@@ -75,7 +75,7 @@ export const TimelineList = ({
                     } ${options.snap && "snap-center snap-always"}`}
                     data-tab={i}
                     onClick={() => onChange(i)}
-                    aria-controls="tabs-0"
+                    aria-controls={`tab-${i}`}
                   >
                     <div
                       className={`flex h-16 w-full rounded-t-md  bg-cover bg-center`}

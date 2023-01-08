@@ -11,6 +11,7 @@ interface ITableProps<P = {}> {
   tableOptions?: {
     header: boolean;
   };
+  className?: string;
 }
 const Table = ({
   data,
@@ -18,6 +19,7 @@ const Table = ({
   renderCell,
   renderActions,
   tableOptions = { header: true },
+  className,
 }: ITableProps) => {
   if (!data || data.length < 1) return null;
   // let tableData = useState(data);
@@ -30,7 +32,7 @@ const Table = ({
   }
   // TODO: Create filtering and sorting options for table
   return (
-    <div className="flex">
+    <div className={`flex ${className}`}>
       <div className="relative my-4 table w-full table-auto rounded-xl bg-white border border-black p-3 shadow">
         {(tableOptions && tableOptions.header) && (
           <div className="table-header-group">
