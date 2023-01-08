@@ -52,11 +52,10 @@ export const ContextMenu = ({ items, children, type = 'context' }: IContextMenuP
       {children}
       {isComponentVisible && (
         <div style={{
-          position: 'fixed',
           top: points.y + 5,
           left: points.x,
           zIndex: 1000,
-        }} className="bg-white w-60 border border-gray-300 rounded-lg flex flex-col text-sm py-4 px-2 text-gray-500 shadow-lg">
+        }} className="bg-white w-60 border border-gray-300 rounded-lg flex flex-col text-sm py-4 px-2 text-gray-500 shadow-lg fixed">
           {items.map((item, i) => (
             <div key={i} onClick={item.onClick} className="flex hover:bg-gray-100 py-1 px-2 rounded items-center">
               {item.icon && (<div className="w-4 text-gray-900 mr-2">{item.icon}</div>)}
