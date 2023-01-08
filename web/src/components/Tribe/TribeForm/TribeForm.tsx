@@ -18,8 +18,6 @@ const formatDatetime = (value) => {
     return value.replace(/:\d{2}\.\d{3}\w/, '')
   }
 }
-
-
 type FormTribe = NonNullable<EditTribeById['tribe']>
 
 interface TribeFormProps {
@@ -31,22 +29,7 @@ interface TribeFormProps {
 
 const TribeForm = (props: TribeFormProps) => {
   const onSubmit = (data: FormTribe) => {
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
+
     props.onSave(data, props?.tribe?.id)
   }
 
@@ -59,7 +42,7 @@ const TribeForm = (props: TribeFormProps) => {
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
-      
+
         <Label
           name="name"
           className="rw-label"
@@ -67,7 +50,7 @@ const TribeForm = (props: TribeFormProps) => {
         >
           Name
         </Label>
-        
+
           <TextField
             name="name"
             defaultValue={props.tribe?.name}
@@ -75,7 +58,7 @@ const TribeForm = (props: TribeFormProps) => {
             errorClassName="rw-input rw-input-error"
             validation={{ required: true }}
           />
-        
+
 
         <FieldError name="name" className="rw-field-error" />
 
@@ -86,70 +69,70 @@ const TribeForm = (props: TribeFormProps) => {
         >
           Description
         </Label>
-        
+
           <TextField
             name="description"
             defaultValue={props.tribe?.description}
             className="rw-input"
             errorClassName="rw-input rw-input-error"
           />
-        
+
 
         <FieldError name="description" className="rw-field-error" />
 
-        <Label
+        {/* <Label
           name="updated_at"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
           Updated at
         </Label>
-        
+
           <DatetimeLocalField
             name="updated_at"
             defaultValue={formatDatetime(props.tribe?.updated_at)}
             className="rw-input"
             errorClassName="rw-input rw-input-error"
           />
-        
 
-        <FieldError name="updated_at" className="rw-field-error" />
 
-        <Label
+        <FieldError name="updated_at" className="rw-field-error" /> */}
+
+        {/* <Label
           name="createdBy"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
           Created by
         </Label>
-        
+
           <TextField
             name="createdBy"
             defaultValue={props.tribe?.createdBy}
             className="rw-input"
             errorClassName="rw-input rw-input-error"
           />
-        
 
-        <FieldError name="createdBy" className="rw-field-error" />
 
-        <Label
+        <FieldError name="createdBy" className="rw-field-error" /> */}
+
+        {/* <Label
           name="updatedBy"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
           Updated by
         </Label>
-        
+
           <TextField
             name="updatedBy"
             defaultValue={props.tribe?.updatedBy}
             className="rw-input"
             errorClassName="rw-input rw-input-error"
           />
-        
 
-        <FieldError name="updatedBy" className="rw-field-error" />
+
+        <FieldError name="updatedBy" className="rw-field-error" /> */}
 
         <div className="rw-button-group">
           <Submit
