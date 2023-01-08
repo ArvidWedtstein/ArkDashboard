@@ -60,17 +60,18 @@ const GtwPage = (props: BasespotFormProps) => {
   const [word, setWord] = useState('')
   const handlechange = (e) => {
     setWord(e.target.value)
+    if (getWord(e.target.value)[0] === undefined) return;
     toast.success('Copied to clipboard')
     navigator.clipboard.writeText(getWord(e.target.value)[0]);
   }
 
 
-  const debouncedChangeHandler = useMemo(() => debounce(handlechange, 300), [])
+  const debouncedChangeHandler = useMemo(() => debounce(handlechange, 500), [])
   return (
     <>
       <MetaTags title="Gtw" description="Gtw page" />
 
-      <div className="container text-center p-4">
+      <div className="container text-center p-4 dark:text-white text-gray-600">
         <Form error={props.error}>
           <FormError
             error={props.error}
