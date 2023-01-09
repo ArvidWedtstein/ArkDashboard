@@ -1,10 +1,7 @@
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
-import { useAuth } from "@redwoodjs/auth";
-import { ContextMenu } from "src/components/Util/ContextMenu/ContextMenu";
-
 const HomePage = () => {
-  const { isAuthenticated, client: supabase } = useAuth();
+  // const { isAuthenticated, client: supabase } = useAuth();
   // if (document.addEventListener) {
   //   document.addEventListener('contextmenu', function (e) {
   //     alert("You've tried to open context menu");
