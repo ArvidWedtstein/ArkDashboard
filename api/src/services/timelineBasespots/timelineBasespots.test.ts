@@ -31,7 +31,7 @@ describe('timelineBasespots', () => {
     'returns a single timelineBasespot',
     async (scenario: StandardScenario) => {
       const result = await timelineBasespot({
-        id: scenario.timelineBasespot.one.id,
+        id: Number(scenario.timelineBasespot.one.id),
       })
 
       expect(result).toEqual(scenario.timelineBasespot.one)
@@ -43,7 +43,7 @@ describe('timelineBasespots', () => {
       input: {
         timeline_id: scenario.timelineBasespot.two.timeline_id,
         tribeName: 'String',
-        players: 'String',
+        players: ['String'],
       },
     })
 
@@ -51,26 +51,27 @@ describe('timelineBasespots', () => {
       scenario.timelineBasespot.two.timeline_id
     )
     expect(result.tribeName).toEqual('String')
-    expect(result.players).toEqual('String')
+    expect(result.players).toEqual(['String'])
   })
 
   scenario('updates a timelineBasespot', async (scenario: StandardScenario) => {
     const original = (await timelineBasespot({
-      id: scenario.timelineBasespot.one.id,
+      id: Number(scenario.timelineBasespot.one.id),
     })) as TimelineBasespot
     const result = await updateTimelineBasespot({
-      id: original.id,
-      input: { tribeName: 'String2' },
+      id: Number(original.id),
+      input: { tribeName: 'String2', players: [] },
     })
 
     expect(result.tribeName).toEqual('String2')
+    expect(result.players).toEqual([])
   })
 
   scenario('deletes a timelineBasespot', async (scenario: StandardScenario) => {
     const original = (await deleteTimelineBasespot({
-      id: scenario.timelineBasespot.one.id,
+      id: Number(scenario.timelineBasespot.one.id),
     })) as TimelineBasespot
-    const result = await timelineBasespot({ id: original.id })
+    const result = await timelineBasespot({ id: Number(original.id) })
 
     expect(result).toEqual(null)
   })

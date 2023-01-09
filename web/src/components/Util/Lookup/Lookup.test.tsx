@@ -7,8 +7,22 @@ import Lookup from './Lookup'
 
 describe('Lookup', () => {
   it('renders successfully', () => {
+    const items = [
+      {
+        name: "item1"
+      },
+      {
+        name: "item2"
+      },
+      {
+        name: "item3"
+      },
+      {
+        name: "item4"
+      },
+    ]
     expect(() => {
-      render(<Lookup />)
+      render(<Lookup items={items} />)
     }).not.toThrow()
   })
 })

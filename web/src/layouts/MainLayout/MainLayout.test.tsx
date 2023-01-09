@@ -8,7 +8,7 @@ import MainLayout from './MainLayout'
 describe('MainLayout', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<MainLayout />)
+      render(<MainLayout><p></p></MainLayout>)
     }).not.toThrow()
   })
 })

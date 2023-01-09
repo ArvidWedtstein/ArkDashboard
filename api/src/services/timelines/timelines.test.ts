@@ -1,4 +1,4 @@
-import type { timeline } from '@prisma/client'
+import type { Timeline as timeline2 } from '@prisma/client'
 
 import {
   timelines,
@@ -31,7 +31,7 @@ describe('timelines', () => {
   scenario('deletes a timeline', async (scenario: StandardScenario) => {
     const original = (await deleteTimeline({
       id: scenario.timeline.one.id,
-    })) as timeline
+    })) as timeline2
     const result = await timeline({ id: original.id })
 
     expect(result).toEqual(null)
