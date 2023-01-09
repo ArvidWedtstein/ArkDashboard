@@ -4,12 +4,12 @@ import useComponentVisible from "../../useComponentVisible";
 
 type LookupType = 'user' | 'post' | 'default'
 interface ILookup {
-  items: any[]
+  items: { name: string }[]
   type?: LookupType
   value?: string
   children?: any
   className?: string
-  onChange?: (value: string) => void
+  onChange?: (value: any) => void
   search?: boolean
   name?: string
 }
@@ -22,10 +22,14 @@ const Lookup = ({ items, type = "default", value, children, className, onChange,
 
   };
   const handleSelect = (e) => {
-    setSearch(e)
+    setSearch(e.name)
     onChange ? onChange(e) : null
     setIsComponentVisible(false)
   }
+  useEffect(() => {
+    setSearch(value)
+  }, [value])
+
   const debounce = (func, wait = 300) => {
     let timeout;
     return (...args) => {
@@ -69,7 +73,7 @@ const Lookup = ({ items, type = "default", value, children, className, onChange,
           <ul className="overflow-y-auto py-1 max-h-48 text-gray-700 dark:text-gray-200" aria-labelledby="dropdownButton">
             {items.map((item) => {
               return (
-                <li key={Math.random()} onClick={() => handleSelect(item.name)} className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                <li key={Math.random()} onClick={() => handleSelect(item)} className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
                   {"image" in item ?? <img className="mr-2 w-6 h-6 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Jese image" />}
                   {item.name}
                 </li>

@@ -7,10 +7,14 @@ import {
   TextField,
   TextAreaField,
   Submit,
+  SelectField,
 } from '@redwoodjs/forms'
 
 import type { EditTimelineBasespotById, UpdateTimelineBasespotInput } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
+import Lookup from 'src/components/Util/Lookup/Lookup'
+import { useAuth } from '@redwoodjs/auth'
+import { useEffect, useState } from 'react'
 
 
 
@@ -31,10 +35,34 @@ interface TimelineBasespotFormProps {
 }
 
 const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
+  let { isAuthenticated, client: supabase } = useAuth();
+  let [basespots, setBasespots] = useState([])
+  let [selectedBasespot, setSelectedBasespot] = useState(null)
   const onSubmit = (data: FormTimelineBasespot) => {
-
+    if (selectedBasespot) {
+      data.map = selectedBasespot?.map
+      data.location = { lat: selectedBasespot?.latitude, lon: selectedBasespot?.longitude }
+    }
     props.onSave(data, props?.timelineBasespot?.id)
   }
+  const getBasespots = async () => {
+    let { data, error, status } = await supabase
+        .from("basespot")
+        .select(
+          `id, name, map, latitude, longitude`
+        )
+
+      if (error && status !== 406) {
+        throw error;
+      }
+      if (data) {
+        setBasespots(data)
+      }
+  }
+  useEffect(() => {
+    getBasespots()
+    props?.timelineBasespot?.basespot_id ? setSelectedBasespot(basespots.find((b) => b.id === props?.timelineBasespot?.basespot_id)) : null
+  }, [])
 
   return (
     <div className="rw-form-wrapper">
@@ -108,15 +136,21 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
-          Basespot id
+          Basespot
         </Label>
-
-          <TextField
-            name="basespot_id"
-            defaultValue={props.timelineBasespot?.basespot_id}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
+        <Lookup
+          value={props.timelineBasespot?.basespot_id ? basespots.find((b) => b.id === props.timelineBasespot?.basespot_id).name : null}
+          items={basespots}
+          onChange={(e) => setSelectedBasespot(e)}
+        >
+          {!!selectedBasespot ? selectedBasespot.name : "Choose Basespot"}
+        </Lookup>
+        <TextField
+          name="basespot_id"
+          defaultValue={props.timelineBasespot?.basespot_id}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
 
 
         <FieldError name="basespot_id" className="rw-field-error" />
@@ -148,13 +182,32 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           Map
         </Label>
 
-          <TextField
-            name="map"
-            defaultValue={props.timelineBasespot?.map}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-
+        <SelectField
+          className="rw-input"
+          name="map"
+          defaultValue={props.timelineBasespot?.map}
+          validation={{ required: true }}
+          errorClassName="rw-input rw-input-error"
+        >
+          <option value="TheIsland">The Island</option>
+          <option value="TheCenter">The Center</option>
+          <option value="ScorchedEarth">Scorched Earth</option>
+          <option value="Ragnarok">Ragnarok</option>
+          <option value="Abberation">Abberation</option>
+          <option value="Extinction">Extinction</option>
+          <option value="Gen1">Genesis</option>
+          <option value="Gen2">Genesis 2</option>
+          <option value="Valguero">Valguero</option>
+          <option value="CrystalIsles">Crystal Isles</option>
+          <option value="Fjordur">Fjordur</option>
+          <option value="LostIsland">Lost Island</option>
+        </SelectField>
+        {/* <TextField
+          name="map"
+          defaultValue={props.timelineBasespot?.map}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        /> */}
 
         <FieldError name="map" className="rw-field-error" />
 
@@ -269,24 +322,6 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         <FieldError name="players" className="rw-field-error" />
 
         <Label
-          name="created_by"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Created by
-        </Label>
-
-          <TextField
-            name="created_by"
-            defaultValue={props.timelineBasespot?.created_by}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-
-
-        <FieldError name="created_by" className="rw-field-error" />
-
-        <Label
           name="raided_by"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
@@ -312,7 +347,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           Raidcomment
         </Label>
 
-          <TextField
+          <TextAreaField
             name="raidcomment"
             defaultValue={props.timelineBasespot?.raidcomment}
             className="rw-input"

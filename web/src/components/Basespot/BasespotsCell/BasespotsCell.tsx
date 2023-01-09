@@ -106,7 +106,7 @@ export const Failure = ({ error }: CellFailureProps) => (
 //   return <Basespots basespots={basespots} />
 // }
 
-export const Success = ({ basespotPage }) => { // : CellSuccessProps<FindBasespots>
+export const Success = ({ basespotPage }: CellSuccessProps<FindBasespots>) => {
   return (
     <>
       {basespotPage.count > 0 ? (
