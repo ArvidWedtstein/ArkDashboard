@@ -70,13 +70,14 @@ export const TimelineList = ({
                 <>
                   <div
                     key={i}
-                    className={`w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white ${
+                    className={`group w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white before:content-none before:absolute before:-top-1 before:-bottom-1 before:p-1 before:bg-red-600 ${
                       currentPage === i && "border-red-500"
                     } ${options.snap && "snap-center snap-always"}`}
                     data-tab={i}
                     onClick={() => onChange(i)}
                     aria-controls={`tab-${i}`}
                   >
+                    <div className="group-hover:animate-spin-slow invisible absolute -top-40 -bottom-40 left-10 right-10 bg-gradient-to-r from-transparent via-white/90 to-transparent group-hover:visible"></div>
                     <div
                       className={`flex h-16 w-full rounded-t-md  bg-cover bg-center`}
                       style={{
