@@ -10,6 +10,7 @@ type PieChartProps = React.HTMLAttributes<HTMLDivElement> & {
   hollowPercentage?: number
   items?: ItemProps[]
   backgroundColor?: string
+  // text?: string
 }
 export const PieChart = ({ items, backgroundColor, hollowPercentage = 0, ...props }: PieChartProps) => {
   useEffect(() => {
@@ -36,6 +37,12 @@ export const PieChart = ({ items, backgroundColor, hollowPercentage = 0, ...prop
             <circle key={index} id={`pie${index}`} className="transition-all ease-out duration-1000 fill-transparent" cx="10" cy="10" r={((hollowPercentage / 100) * (20 - (fill / 2)))} strokeLinecap="butt" strokeWidth={fill} transform="rotate(-90) translate(-20)" />
           ))
         )}
+        {/* {text && (
+          <text className="text-center" x="50%" y="50%" dominantBaseline="middle" fontSize="4" textAnchor="middle">
+            {text}
+          </text>
+        )} */}
+        {props.children}
       </svg>
     </div>
   )
