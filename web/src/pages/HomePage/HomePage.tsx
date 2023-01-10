@@ -1,5 +1,6 @@
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
+import { PieChart } from "src/components/Util/PieChart/PieChart";
 const HomePage = () => {
   // const { isAuthenticated, client: supabase } = useAuth();
   // if (document.addEventListener) {
@@ -46,6 +47,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
+        <PieChart className="w-32" hollowPercentage={80} backgroundColor="#232323" items={[{ percent: 5, color: 'green' }, { percent: 25, color: '#ff0000' }, { percent: 25, color: 'blue' }, { percent: 10, color: 'yellow' }]} />
       </div>
     </>
   );

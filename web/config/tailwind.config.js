@@ -1,5 +1,5 @@
-/** @type {require('tailwindcss').Config} */
 const plugin = require("tailwindcss/plugin");
+/** @type {require('tailwindcss').Config} */
 module.exports = {
   variants: {},
   content: ["src/**/*.{js,jsx,ts,tsx}"],
@@ -10,7 +10,7 @@ module.exports = {
         boxShadowGrad: "linear-gradient(rgba(0,0,0,0.075), transparent)",
       },
       backgroundImage: (theme) => ({
-        'gradient-box': `linear-gradient(169.44deg, rgba(58, 129, 191, 0.08) 1.85%, rgba(65, 48, 90, 0.08) 98.72%)`,
+        "gradient-box": `linear-gradient(169.44deg, rgba(58, 129, 191, 0.08) 1.85%, rgba(65, 48, 90, 0.08) 98.72%)`,
       }),
       animation: {
         "circle-progress": "progress 1s ease-out forwards",
