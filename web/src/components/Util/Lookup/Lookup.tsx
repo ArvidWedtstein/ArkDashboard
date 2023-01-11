@@ -41,6 +41,7 @@ const Lookup = ({ items, type = "default", value, children, className, onChange,
   };
   const handleSearch = debounce((e) => setSearch(e.target.value))
   useEffect(() => {
+    if (!!!searchValue || searchValue === "") return
     items.filter((item) => item.name.toLowerCase().includes(searchValue.toLowerCase()))
   }, [items])
 
