@@ -45,12 +45,12 @@ const Table = ({
         )}
         {data.map((row) => (
           <div key={Math.random() * Math.random()} className="table-row-group">
-            {keys.map((value) => (
-              <>
+            {keys.map((value, i) => (
+              <div key={`table-item-${i}`} className="table-cell">
                 {value == "actions" ? (
                   <div
                     key={value}
-                    className="table-cell p-2 text-xs text-black"
+                    className="p-2 text-xs text-black"
                   >
                     {renderActions && renderActions(row)}
                   </div>
@@ -59,14 +59,14 @@ const Table = ({
                     {renderCell ? (
                       <div
                         key={Math.random()}
-                        className="table-cell p-2 text-xs text-black"
+                        className="p-2 text-xs text-black"
                       >
                         {renderCell({ id: value, amount: row[value] })}
                       </div>
                     ) : (
                       <div
                         key={Math.random()}
-                        className="table-cell p-2 text-xs text-black"
+                        className="p-2 text-xs text-black"
                       >
                         {isDate(row[value])
                           ? timeTag(row[value])
@@ -75,7 +75,7 @@ const Table = ({
                     )}
                   </>
                 )}
-              </>
+              </div>
             ))}
           </div>
         ))}

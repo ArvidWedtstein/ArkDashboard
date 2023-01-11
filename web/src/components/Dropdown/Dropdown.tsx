@@ -31,7 +31,7 @@ const Dropdown = ({
           aria-haspopup="true"
         >
           {currentUser ? (
-            <Avatar url={String(currentUser.avatar_url ?  currentUser.avatar_url : "")} size={30} />
+            <Avatar url={String(currentUser.avatar_url ? currentUser.avatar_url : "")} size={30} />
           ) : (
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -67,7 +67,7 @@ const Dropdown = ({
 
       {isComponentVisible ? (
         <div className="transition-color absolute right-0 top-16 z-10 mt-2 w-56 rounded-lg bg-[#333333] shadow">
-          <div className="p-4">
+          {/* <div className="p-4">
             <h2 className="mb-1 text-sm font-medium">Theme</h2>
             <div className="theme-switcher relative flex items-center overflow-hidden rounded bg-gray-500 px-1">
               <input
@@ -165,12 +165,12 @@ const Dropdown = ({
               </label>
               <span className="slider absolute top-1 bottom-1 z-[2] block w-[calc((100%-6px)/3)] -translate-x-[110%] rounded-md border-2 border-[#ff0000] transition-transform"></span>
             </div>
-          </div>
-          <div className="flex flex-col border-t-2 border-[#dddddd] p-2 transition-colors">
+          </div> */}
+          <div className="flex flex-col p-2 transition-colors">
             {isAuthenticated ? (
               <>
-                {/* <Link
-                  to={routes.account()}
+                <Link
+                  to={routes.profile({ id: currentUser.id })}
                   className="flex items-center rounded p-2 font-medium text-inherit transition-all hover:bg-neutral-600"
                   role="menuitem"
                   tabIndex={-1}
@@ -191,8 +191,8 @@ const Dropdown = ({
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                   </svg>
-                  Account
-                </Link> */}
+                  Profile
+                </Link>
                 <button
                   onClick={logOut}
                   className="flex items-center rounded p-2 font-medium text-inherit transition-all hover:bg-neutral-600"
@@ -204,12 +204,20 @@ const Dropdown = ({
                 </button>
               </>
             ) : (
-              <Link
-                className="flex items-center rounded p-2 font-medium text-inherit transition-all hover:bg-neutral-600"
-                to={routes.signin()}
-              >
-                Login
-              </Link>
+              <>
+                <Link
+                  className="flex items-center rounded p-2 font-medium text-inherit transition-all hover:bg-neutral-600"
+                  to={routes.signup()}
+                >
+                  Signup
+                </Link>
+                <Link
+                  className="flex items-center rounded p-2 font-medium text-inherit transition-all hover:bg-neutral-600"
+                  to={routes.signin()}
+                >
+                  Login
+                </Link>
+              </>
             )}
           </div>
         </div>

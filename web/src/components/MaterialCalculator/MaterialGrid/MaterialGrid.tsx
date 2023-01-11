@@ -199,7 +199,7 @@ export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
                   </button>
                   <p
                     defaultValue={item.amount}
-                    className="rw-input w-10"
+                    className="rw-input w-auto p-3 text-center"
                   >{item.amount}</p>
                   <button type="button" className="bg-slate-200 relative text-black mx-2 rounded-full w-8 h-8" onClick={() => onAddAmount(i)}>
                     +

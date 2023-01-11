@@ -399,7 +399,7 @@ export const TimelineList = ({
                                 // setIsOpenModal(true);
                                 setIsComponentVisible(true);
                               }}
-                              className="cursor-pointer rounded object-cover object-center"
+                              className="cursor-pointer rounded object-cover object-center w-full h-full"
                               src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${img}`}
                               alt={events[currentPage].map}
                             />

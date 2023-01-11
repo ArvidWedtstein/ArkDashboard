@@ -37,10 +37,6 @@ export const Empty = () => {
 }
 
 export const Failure = ({ error }: CellFailureProps) => {
-  console.log(error.stack)
-  // console.log(error.cause)
-  console.log(error.name)
-  console.log(error.message)
   return (
     <section className="dark:bg-[#252636] bg-white text-center">
       <div className="bg-[#0D2836] text-[#97FBFF] p-8 border max-w-3xl mx-auto border-[#60728F]">

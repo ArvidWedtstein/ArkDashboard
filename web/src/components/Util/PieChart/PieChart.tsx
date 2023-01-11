@@ -3,7 +3,8 @@ import { BgColor } from "src/lib/formatters"
 
 type ItemProps = {
   color: string | undefined;
-  percent: number
+  percent: number;
+
 }
 type PieChartProps = React.HTMLAttributes<HTMLDivElement> & {
   // size?: number
