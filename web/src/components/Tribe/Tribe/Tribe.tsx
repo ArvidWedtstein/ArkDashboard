@@ -3,7 +3,7 @@ import { Link, routes, navigate } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
-import { timeTag,  } from 'src/lib/formatters'
+import { timeTag, } from 'src/lib/formatters'
 
 import type { DeleteTribeMutationVariables, FindTribeById } from 'types/graphql'
 
