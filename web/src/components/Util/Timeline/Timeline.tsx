@@ -7,15 +7,16 @@ import useComponentVisible from "src/components/useComponentVisible";
 
 type TimelineSettings = {
   snap?: boolean;
+  arrowkeys?: boolean;
 };
 export const TimelineList = ({
   events,
-  options = { snap: false },
+  options = { snap: false, arrowkeys: false },
 }: {
   events: any[];
   options?: TimelineSettings;
 }) => {
-  // const [isOpenModal, setIsOpenModal] = useState(false);
+
   const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
   const [currentModalImage, setCurrentModalImage] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
@@ -25,7 +26,21 @@ export const TimelineList = ({
   useEffect(() => {
     if (!page || isNaN(parseInt(page))) return;
     setCurrentPage(parseInt(page) - 1);
+
+
   }, [page]);
+
+  useEffect(() => {
+    if (options.arrowkeys) {
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") {
+          setCurrentPage((prev) => prev - 1);
+        } else if (e.key === "ArrowRight") {
+          setCurrentPage((prev) => prev + 1);
+        }
+      });
+    }
+  }, [])
 
   const onChange = useCallback(
     (page: number) => {
@@ -61,86 +76,83 @@ export const TimelineList = ({
   return (
     <section className="">
       <div className="h-full w-full">
-        <div className="events-wrapper bg-white dark:bg-slate-600">
-          <div className="events">
-            <div
-              className={`flex touch-pan-x select-none flex-row items-stretch justify-start space-x-1 overflow-x-auto p-3 will-change-scroll ${
-                options.snap && "snap-x snap-mandatory"
-              }`}
-            >
-              {events.map((event, i) => (
-                <>
-                  <div
-                    key={i}
-                    className={`group w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white before:content-none before:absolute before:-top-1 before:-bottom-1 before:p-1 before:bg-red-600 ${
-                      currentPage === i && "border-red-500"
+        <div
+          className={`flex touch-pan-x select-none flex-row items-stretch justify-start space-x-1 overflow-x-auto p-3 will-change-scroll ${options.snap && "snap-x snap-mandatory"
+            }`}
+        >
+          {events.map((event, i) => (
+            <>
+              <div className="flex flex-col">
+                <div
+                  key={i}
+                  className={`group w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white before:content-none before:absolute before:-top-1 before:-bottom-1 before:p-1 before:bg-red-600 ${currentPage === i && "border-red-500"
                     } ${options.snap && "snap-center snap-always"}`}
-                    data-tab={i}
-                    onClick={() => onChange(i)}
-                    aria-controls={`tab-${i}`}
-                  >
-                    <div className="group-hover:animate-spin-slow invisible absolute -top-40 -bottom-40 left-10 right-10 bg-gradient-to-r from-transparent via-white/90 to-transparent group-hover:visible"></div>
-                    <div
-                      className={`flex h-16 w-full rounded-t-md  bg-cover bg-center`}
-                      style={{
-                        backgroundImage: `url(${mapImages[event.map]})`,
-                        backgroundPosition: "center",
-                      }}
-                    ></div>
-                    <div className="flex min-h-[150px] flex-col items-start py-3 px-6">
-                      <p className="text-xs">{event.map}</p>
-                      <p className="text-sm font-bold uppercase">
-                        {event.tribeName}
-                      </p>
-                      <hr className="bg-gray-150 mb-2 h-[1px] w-full rounded border-0 dark:bg-stone-200"></hr>
-                      <div className="relative flex flex-row space-y-1">
-                        <div className="mt-3 flex flex-row items-center space-x-6">
-                          <div className="flex flex-col items-start">
-                            <p className="text-xs font-light">
-                              {new Date(event.startDate).toLocaleDateString(
-                                "no-NO",
-                                {
-                                  month: "short",
-                                  day: "numeric",
-                                  year: "numeric",
-                                }
-                              )}
-                            </p>
-                            <p className="text-sm font-normal">Started</p>
-                          </div>
-                          <div className="flex flex-col items-start">
-                            <p className="text-xs font-light">
-                              {event.season ? `Season ${event.season}` : "ㅤ"}
-                            </p>
-                            <p className="text-sm font-normal">
-                              {event.server}
-                              {event.cluster && (
-                                <span className="ml-2 rounded bg-gray-100 px-2.5 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
-                                  {event.cluster}
-                                </span>
-                              )}
-                            </p>
-                          </div>
+                  data-tab={i}
+                  onClick={() => onChange(i)}
+                  aria-controls={`tab-${i}`}
+                >
+                  <div
+                    className={`flex h-16 w-full rounded-t-md  bg-cover bg-center`}
+                    style={{
+                      backgroundImage: `url(${mapImages[event.map]})`,
+                      backgroundPosition: "center",
+                    }}
+                  ></div>
+                  <div className="flex min-h-[150px] flex-col items-start py-3 px-6">
+                    <p className="text-xs">{event.map}</p>
+                    <p className="text-sm font-bold uppercase">
+                      {event.tribeName}
+                    </p>
+                    <hr className="bg-gray-150 mb-2 h-[1px] w-full rounded border-0 dark:bg-stone-200"></hr>
+                    <div className="relative flex flex-row space-y-1">
+                      <div className="mt-3 flex flex-row items-center space-x-6">
+                        <div className="flex flex-col items-start">
+                          <p className="text-xs font-light">
+                            {new Date(event.startDate).toLocaleDateString(
+                              "no-NO",
+                              {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              }
+                            )}
+                          </p>
+                          <p className="text-sm font-normal">Started</p>
+                        </div>
+                        <div className="flex flex-col items-start">
+                          <p className="text-xs font-light">
+                            {event.season ? `Season ${event.season}` : "ㅤ"}
+                          </p>
+                          <p className="text-sm font-normal">
+                            {event.server}
+                            {event.cluster && (
+                              <span className="ml-2 rounded bg-gray-100 px-2.5 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                {event.cluster}
+                              </span>
+                            )}
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
-                  {(event.season && event.season) !==
-                    (i + 1 < events.length && events[i + 1].season
-                      ? events[i + 1].season
-                      : 0) && (
-                    <div className="w-full min-w-fit flex-1 rounded-md border-2 border-transparent"></div>
-                  )}
-                </>
-              ))}
-            </div>
-          </div>
+                </div>
+                <p className="italic text-center my-2 ">{event.startDate}</p>
+                <div className="flex items-center">
+                  <div className="z-10 flex items-center justify-center w-6 h-6 bg-blue-200 rounded-full ring-0 ring-white dark:bg-blue-900 sm:ring-8 dark:ring-gray-900 shrink-0">
+                    <svg aria-hidden="true" className="w-3 h-3 text-blue-600 dark:text-blue-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>
+                  </div>
+                  <div className="hidden sm:flex w-full bg-gray-200 h-0.5 dark:bg-gray-700"></div>
+                </div>
+              </div>
+              {(event.season && event.season) !==
+                (i + 1 < events.length && events[i + 1].season
+                  ? events[i + 1].season
+                  : 0) && (
+                  <div className="w-full min-w-fit flex-1 rounded-md border-2 border-transparent"></div>
+                )}
+            </>
+          ))}
         </div>
-        {/* <Modal
-          isOpen={isOpenModal}
-          setIsOpen={setIsOpenModal}
-          image={currentModalImage}
-        /> */}
         <RefModal isOpen={isComponentVisible} setIsOpen={setIsComponentVisible} ref={ref} image={currentModalImage} />
         <div className="w-full bg-slate-200 p-1 dark:bg-gray-600">
           {events[currentPage] && (
@@ -204,7 +216,7 @@ export const TimelineList = ({
                     </p>
                     <p>
                       {!events[currentPage].endDate &&
-                      !events[currentPage].raided_by
+                        !events[currentPage].raided_by
                         ? ""
                         : `Got raided `}
                       {events[currentPage].endDate &&
