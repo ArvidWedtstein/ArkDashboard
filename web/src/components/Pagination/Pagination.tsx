@@ -13,11 +13,11 @@ const Pagination = ({
   const items = [];
   let { page } = useParams();
 
-  useEffect(() => {
-    if (!!!page || isNaN(parseInt(page))) {
-      page = "1";
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (!!!page || isNaN(parseInt(page))) {
+  //     page = "1";
+  //   }
+  // }, [])
 
   for (let i = 0; i < Math.ceil(count / itemsPerPage); i++) {
     items.push(
