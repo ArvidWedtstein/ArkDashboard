@@ -1,4 +1,4 @@
-import type { role } from '@prisma/client'
+import type { Role } from '@prisma/client'
 
 import { roles, role, createRole, updateRole, deleteRole } from './roles'
 import type { StandardScenario } from './roles.scenarios'
@@ -24,7 +24,7 @@ describe('roles', () => {
 
   scenario('creates a role', async () => {
     const result = await createRole({
-      input: { name: 'String', permissions: 'basespot:delete' },
+      input: { name: 'String', permissions: ['basespot_delete'] },
     })
 
     expect(result.name).toEqual('String')
@@ -32,17 +32,17 @@ describe('roles', () => {
   })
 
   scenario('updates a role', async (scenario: StandardScenario) => {
-    const original = (await role({ id: scenario.role.one.id })) as role
+    const original = (await role({ id: scenario.role.one.id })) as Role
     const result = await updateRole({
       id: original.id,
-      input: { name: 'String2' },
+      input: { name: 'String2', permissions: [] },
     })
 
     expect(result.name).toEqual('String2')
   })
 
   scenario('deletes a role', async (scenario: StandardScenario) => {
-    const original = (await deleteRole({ id: scenario.role.one.id })) as role
+    const original = (await deleteRole({ id: scenario.role.one.id })) as Role
     const result = await role({ id: original.id })
 
     expect(result).toEqual(null)

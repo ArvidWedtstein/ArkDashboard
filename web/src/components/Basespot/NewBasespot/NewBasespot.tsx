@@ -33,7 +33,7 @@ const NewBasespot = () => {
   }
 
   return (
-    <div className="rw-segment">
+    <div className="dark:bg-neutral-800 bg-slate-200 dark:text-white text-black">
       <header className="rw-segment-header">
         <h2 className="rw-heading rw-heading-secondary">New Basespot</h2>
       </header>

@@ -60,18 +60,19 @@ const GtwPage = (props: BasespotFormProps) => {
   const [word, setWord] = useState('')
   const handlechange = (e) => {
     setWord(e.target.value)
+    if (getWord(e.target.value)[0] === undefined) return;
     toast.success('Copied to clipboard')
     navigator.clipboard.writeText(getWord(e.target.value)[0]);
   }
 
 
-  const debouncedChangeHandler = useMemo(() => debounce(handlechange, 300), [])
+  const debouncedChangeHandler = useMemo(() => debounce(handlechange, 500), [])
   return (
     <>
       <MetaTags title="Gtw" description="Gtw page" />
 
-      <div className="container text-center p-4">
-        <Form error={props.error}>
+      <div className="container-xl text-center m-3 rounded-lg dark:bg-neutral-800 bg-stone-200 border border-black">
+        <Form error={props.error} className="bg-gradient-box rounded-lg m-6 p-3 border border-black">
           <FormError
             error={props.error}
             wrapperClassName="rw-form-error-wrapper"
@@ -102,7 +103,7 @@ const GtwPage = (props: BasespotFormProps) => {
 
         </Form>
         <div className="text-center">
-          <h1 className="p-3 text-2xl">{getWord(word)}</h1>
+          <h1 className="p-3 text-2xl rw-label rw-text-center">{getWord(word)}</h1>
         </div>
       </div>
     </>

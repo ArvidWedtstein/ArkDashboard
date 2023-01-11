@@ -7,10 +7,15 @@ import {
   TextField,
   TextAreaField,
   Submit,
+  SelectField,
+  useForm,
 } from '@redwoodjs/forms'
 
 import type { EditTimelineBasespotById, UpdateTimelineBasespotInput } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
+import Lookup from 'src/components/Util/Lookup/Lookup'
+import { useAuth } from '@redwoodjs/auth'
+import { useEffect, useState } from 'react'
 
 
 
@@ -31,59 +36,48 @@ interface TimelineBasespotFormProps {
 }
 
 const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
+  let { isAuthenticated, client: supabase } = useAuth();
+  let [basespots, setBasespots] = useState([])
+  let [selectedBasespot, setSelectedBasespot] = useState(null)
   const onSubmit = (data: FormTimelineBasespot) => {
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
+    if (selectedBasespot) {
+      data.map = selectedBasespot?.map
+      data.location = { lat: selectedBasespot?.latitude, lon: selectedBasespot?.longitude }
+    }
     props.onSave(data, props?.timelineBasespot?.id)
   }
+  const getBasespots = async () => {
+    let { data, error, status } = await supabase
+      .from("basespot")
+      .select(
+        `id, name, map, latitude, longitude`
+      )
 
+    if (error && status !== 406) {
+      throw error;
+    }
+    if (data) {
+      setBasespots(data)
+    }
+  }
+  useEffect(() => {
+    getBasespots()
+    props?.timelineBasespot?.basespot_id ? setSelectedBasespot(basespots.find((b) => b.id === props?.timelineBasespot?.basespot_id)) : null
+  }, [])
+
+
+  // let { handleSubmit, control } = useForm<FormTimelineBasespot>({
+  //   defaultValues: {
+  //     timeline_id: props?.timelineBasespot?.timeline_id,
+  //     startDate: formatDatetime(props?.timelineBasespot?.startDate),
+  //     endDate: formatDatetime(props?.timelineBasespot?.endDate),
+  //     basespot_id: props?.timelineBasespot?.basespot_id,
+  //     location: props?.timelineBasespot?.location,
+  //     map: props?.timelineBasespot?.map,
+
+
+  //   },
+  // })
   return (
     <div className="rw-form-wrapper">
       <Form<FormTimelineBasespot> onSubmit={onSubmit} error={props.error}>
@@ -93,24 +87,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
-      
-        <Label
-          name="updated_at"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Updated at
-        </Label>
-        
-          <DatetimeLocalField
-            name="updated_at"
-            defaultValue={formatDatetime(props.timelineBasespot?.updated_at)}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-        
 
-        <FieldError name="updated_at" className="rw-field-error" />
 
         <Label
           name="timeline_id"
@@ -119,69 +96,82 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         >
           Timeline id
         </Label>
-        
-          <TextField
-            name="timeline_id"
-            defaultValue={props.timelineBasespot?.timeline_id}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ required: true }}
-          />
-        
+
+        <TextField
+          name="timeline_id"
+          defaultValue={props.timelineBasespot?.timeline_id}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ required: true }}
+        />
+
 
         <FieldError name="timeline_id" className="rw-field-error" />
 
-        <Label
-          name="startDate"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Start date
-        </Label>
-        
-          <DatetimeLocalField
-            name="startDate"
-            defaultValue={formatDatetime(props.timelineBasespot?.startDate)}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-        
+        <div className="flex flex-row justify-between">
+          <div className="w-1/2">
 
-        <FieldError name="startDate" className="rw-field-error" />
+            <Label
+              name="startDate"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Start date
+            </Label>
 
-        <Label
-          name="endDate"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          End date
-        </Label>
-        
-          <DatetimeLocalField
-            name="endDate"
-            defaultValue={formatDatetime(props.timelineBasespot?.endDate)}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-        
+            <DatetimeLocalField
+              name="startDate"
+              defaultValue={formatDatetime(props.timelineBasespot?.startDate)}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              emptyAs={null}
+              validation={{ required: true }}
+            />
 
-        <FieldError name="endDate" className="rw-field-error" />
+            <FieldError name="startDate" className="rw-field-error" />
+          </div>
+          <div className="w-1/2">
+            <Label
+              name="endDate"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              End date
+            </Label>
+
+            <DatetimeLocalField
+              name="endDate"
+              defaultValue={formatDatetime(props.timelineBasespot?.endDate)}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+            />
+
+
+            <FieldError name="endDate" className="rw-field-error" />
+          </div>
+        </div>
 
         <Label
           name="basespot_id"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
-          Basespot id
+          Basespot
         </Label>
-        
-          <TextField
-            name="basespot_id"
-            defaultValue={props.timelineBasespot?.basespot_id}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-        
+        <Lookup
+          value={props.timelineBasespot?.basespot_id ? basespots.find((b) => b.id === props.timelineBasespot?.basespot_id).name : null}
+          items={basespots}
+          onChange={(e) => setSelectedBasespot(e)}
+        >
+          {!!selectedBasespot ? selectedBasespot.name : "Choose Basespot"}
+        </Lookup>
+        <TextField
+          name="basespot_id"
+          defaultValue={props.timelineBasespot?.basespot_id}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+
 
         <FieldError name="basespot_id" className="rw-field-error" />
 
@@ -192,15 +182,15 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         >
           Tribe name
         </Label>
-        
-          <TextField
-            name="tribeName"
-            defaultValue={props.timelineBasespot?.tribeName}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ required: true }}
-          />
-        
+
+        <TextField
+          name="tribeName"
+          defaultValue={props.timelineBasespot?.tribeName}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ required: true }}
+        />
+
 
         <FieldError name="tribeName" className="rw-field-error" />
 
@@ -211,14 +201,34 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         >
           Map
         </Label>
-        
-          <TextField
-            name="map"
-            defaultValue={props.timelineBasespot?.map}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-        
+
+        <SelectField
+          className="rw-input"
+          name="map"
+          defaultValue={props.timelineBasespot?.map || selectedBasespot?.map}
+          validation={{ required: true }}
+          errorClassName="rw-input rw-input-error"
+          disabled={!(!!props.timelineBasespot?.basespot_id)}
+        >
+          <option value="TheIsland">The Island</option>
+          <option value="TheCenter">The Center</option>
+          <option value="ScorchedEarth">Scorched Earth</option>
+          <option value="Ragnarok">Ragnarok</option>
+          <option value="Abberation">Abberation</option>
+          <option value="Extinction">Extinction</option>
+          <option value="Gen1">Genesis</option>
+          <option value="Gen2">Genesis 2</option>
+          <option value="Valguero">Valguero</option>
+          <option value="CrystalIsles">Crystal Isles</option>
+          <option value="Fjordur">Fjordur</option>
+          <option value="LostIsland">Lost Island</option>
+        </SelectField>
+        {/* <TextField
+          name="map"
+          defaultValue={props.timelineBasespot?.map}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        /> */}
 
         <FieldError name="map" className="rw-field-error" />
 
@@ -229,14 +239,14 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         >
           Server
         </Label>
-        
-          <TextField
-            name="server"
-            defaultValue={props.timelineBasespot?.server}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-        
+
+        <TextField
+          name="server"
+          defaultValue={props.timelineBasespot?.server}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+
 
         <FieldError name="server" className="rw-field-error" />
 
@@ -247,14 +257,14 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         >
           Region
         </Label>
-        
-          <TextField
-            name="region"
-            defaultValue={props.timelineBasespot?.region}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-        
+
+        <TextField
+          name="region"
+          defaultValue={props.timelineBasespot?.region}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+
 
         <FieldError name="region" className="rw-field-error" />
 
@@ -265,14 +275,14 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         >
           Season
         </Label>
-        
-          <TextField
-            name="season"
-            defaultValue={props.timelineBasespot?.season}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-        
+
+        <TextField
+          name="season"
+          defaultValue={props.timelineBasespot?.season}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+
 
         <FieldError name="season" className="rw-field-error" />
 
@@ -283,14 +293,14 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         >
           Cluster
         </Label>
-        
-          <TextField
-            name="cluster"
-            defaultValue={props.timelineBasespot?.cluster}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-        
+
+        <TextField
+          name="cluster"
+          defaultValue={props.timelineBasespot?.cluster}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+
 
         <FieldError name="cluster" className="rw-field-error" />
 
@@ -301,15 +311,15 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         >
           Location
         </Label>
-        
-          <TextAreaField
-            name="location"
-            defaultValue={JSON.stringify(props.timelineBasespot?.location)}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ valueAsJSON: true }}
-          />
-        
+
+        <TextAreaField
+          name="location"
+          defaultValue={JSON.stringify(props.timelineBasespot?.location)}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ valueAsJSON: true }}
+        />
+
 
         <FieldError name="location" className="rw-field-error" />
 
@@ -320,35 +330,18 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         >
           Players
         </Label>
-        
-          <TextField
-            name="players"
-            defaultValue={props.timelineBasespot?.players}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ required: true }}
-          />
-        
+
+        <TextField
+          name="players"
+          defaultValue={props.timelineBasespot?.players}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          emptyAs={""}
+          validation={{ required: true }}
+        />
+
 
         <FieldError name="players" className="rw-field-error" />
-
-        <Label
-          name="created_by"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Created by
-        </Label>
-        
-          <TextField
-            name="created_by"
-            defaultValue={props.timelineBasespot?.created_by}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-        
-
-        <FieldError name="created_by" className="rw-field-error" />
 
         <Label
           name="raided_by"
@@ -357,14 +350,14 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         >
           Raided by
         </Label>
-        
-          <TextField
-            name="raided_by"
-            defaultValue={props.timelineBasespot?.raided_by}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-        
+
+        <TextField
+          name="raided_by"
+          defaultValue={props.timelineBasespot?.raided_by}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+
 
         <FieldError name="raided_by" className="rw-field-error" />
 
@@ -375,14 +368,14 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         >
           Raidcomment
         </Label>
-        
-          <TextField
-            name="raidcomment"
-            defaultValue={props.timelineBasespot?.raidcomment}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-        
+
+        <TextAreaField
+          name="raidcomment"
+          defaultValue={props.timelineBasespot?.raidcomment}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+
 
         <FieldError name="raidcomment" className="rw-field-error" />
 

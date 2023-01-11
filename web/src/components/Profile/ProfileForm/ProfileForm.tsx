@@ -61,7 +61,7 @@ const ProfileForm = (props: ProfileFormProps) => {
             ></span>
           </div>
         </section>
-        <section className="bg-blueGray-200 relative -mt-32 py-16">
+        <section className="bg-gray-200 relative -mt-32 py-16">
           <div className="container-fluid mx-auto px-4">
             <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded-lg bg-white shadow-xl">
               <div className="px-6">
@@ -93,7 +93,7 @@ const ProfileForm = (props: ProfileFormProps) => {
                         className="mb-1 rounded bg-blue-500 px-4 py-2 text-xs font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-md focus:outline-none active:bg-blue-600 sm:mr-2"
                         disabled={props.loading}
                       >
-                        {true ? "Loading ..." : "Save"}
+                        {props.loading ? "Loading ..." : "Save"}
                       </Submit>
                     </div>
                   </div>

@@ -128,13 +128,14 @@
   @apply mt-8;
 }
 .rw-label {
-  @apply block mt-6 text-gray-600 font-semibold text-left;
+  @apply block mt-6 dark:text-white text-gray-600 font-semibold text-left;
 }
 .rw-label.rw-label-error {
   @apply text-red-600;
 }
 .rw-input {
-  @apply block mt-2 w-full p-2 bg-white border border-gray-200 rounded outline-none;
+  /* @apply block mt-2 w-full p-2 bg-white border border-gray-200 rounded outline-none; */
+  @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 appearance-none focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
 }
 .rw-check-radio-items {
   @apply flex justify-items-center;

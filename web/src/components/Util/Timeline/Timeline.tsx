@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { getDateDiff } from "src/lib/formatters";
-import Modal from "../Modal/Modal";
+import { RefModal, Modal } from "../Modal/Modal";
 import { useParams } from "@redwoodjs/router";
 import { Map } from "../Map/Map";
+import useComponentVisible from "src/components/useComponentVisible";
 
 type TimelineSettings = {
   snap?: boolean;
@@ -14,7 +15,8 @@ export const TimelineList = ({
   events: any[];
   options?: TimelineSettings;
 }) => {
-  const [isOpenModal, setIsOpenModal] = useState(false);
+  // const [isOpenModal, setIsOpenModal] = useState(false);
+  const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
   const [currentModalImage, setCurrentModalImage] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -70,13 +72,14 @@ export const TimelineList = ({
                 <>
                   <div
                     key={i}
-                    className={`w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white ${
+                    className={`group w-full min-w-fit flex-1 rounded-md border-2 border-transparent bg-slate-200 text-black dark:bg-neutral-800 dark:text-white before:content-none before:absolute before:-top-1 before:-bottom-1 before:p-1 before:bg-red-600 ${
                       currentPage === i && "border-red-500"
                     } ${options.snap && "snap-center snap-always"}`}
                     data-tab={i}
                     onClick={() => onChange(i)}
                     aria-controls={`tab-${i}`}
                   >
+                    <div className="group-hover:animate-spin-slow invisible absolute -top-40 -bottom-40 left-10 right-10 bg-gradient-to-r from-transparent via-white/90 to-transparent group-hover:visible"></div>
                     <div
                       className={`flex h-16 w-full rounded-t-md  bg-cover bg-center`}
                       style={{
@@ -133,11 +136,12 @@ export const TimelineList = ({
             </div>
           </div>
         </div>
-        <Modal
+        {/* <Modal
           isOpen={isOpenModal}
           setIsOpen={setIsOpenModal}
           image={currentModalImage}
-        />
+        /> */}
+        <RefModal isOpen={isComponentVisible} setIsOpen={setIsComponentVisible} ref={ref} image={currentModalImage} />
         <div className="w-full bg-slate-200 p-1 dark:bg-gray-600">
           {events[currentPage] && (
             <div className="m-2 block rounded-md bg-slate-200  text-black dark:bg-neutral-800 dark:text-white">
@@ -382,7 +386,8 @@ export const TimelineList = ({
                                 setCurrentModalImage(
                                   `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${img}`
                                 );
-                                setIsOpenModal(true);
+                                // setIsOpenModal(true);
+                                setIsComponentVisible(true);
                               }}
                               className="cursor-pointer rounded object-cover object-center"
                               src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${img}`}

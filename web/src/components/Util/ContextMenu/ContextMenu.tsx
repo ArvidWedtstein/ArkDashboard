@@ -29,7 +29,6 @@ export const ContextMenu = ({ items, children, type = 'context' }: IContextMenuP
       onClick={
         (e) => {
           if (type !== 'click') return
-          console.log(e.target)
           e.preventDefault();
           setIsComponentVisible(!isComponentVisible)
           setPoints({

@@ -1,14 +1,14 @@
 import { render } from '@redwoodjs/testing/web'
 
-import MainLayout from './MainLayout'
+import PieChart from './PieChart'
 
 //   Improve this test with help from the Redwood Testing Doc:
-//   https://redwoodjs.com/docs/testing#testing-pages-layouts
+//    https://redwoodjs.com/docs/testing#testing-components
 
-describe('MainLayout', () => {
+describe('PieChart', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<MainLayout><p></p></MainLayout>)
+      render(<PieChart />)
     }).not.toThrow()
   })
 })

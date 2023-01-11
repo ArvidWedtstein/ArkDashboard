@@ -10,6 +10,7 @@ import {
 
 import type { EditTribeById, UpdateTribeInput } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
+import { useAuth } from '@redwoodjs/auth'
 
 
 
@@ -28,8 +29,9 @@ interface TribeFormProps {
 }
 
 const TribeForm = (props: TribeFormProps) => {
+  const { currentUser } = useAuth()
   const onSubmit = (data: FormTribe) => {
-
+    data.createdBy = props.tribe?.createdBy || currentUser.
     props.onSave(data, props?.tribe?.id)
   }
 

@@ -132,7 +132,7 @@ const Profile = ({ profile }: Props) => {
                         <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-full-name">
                           Full Name
                         </label>
-                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-full-name" type="text" placeholder="Ola Nordmann" value={profile.full_name} disabled />
+                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-full-name" type="text" placeholder="Ola Nordmann" value={profile.full_name} />
                       </div>
                     </div>
                     <div className="flex flex-wrap -mx-3 mb-6">
@@ -140,7 +140,7 @@ const Profile = ({ profile }: Props) => {
                         <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-bio">
                           Biography
                         </label>
-                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-bio" type="text" value={profile.biography} disabled />
+                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-bio" type="text" value={profile.biography} />
                         <p className="text-gray-600 text-xs italic">Write whatever nonsense you'd like</p>
                       </div>
                     </div>
@@ -149,13 +149,13 @@ const Profile = ({ profile }: Props) => {
                         <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-website">
                           Website
                         </label>
-                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" value={profile.website} disabled />
+                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" value={profile.website} />
                       </div>
                       <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                         <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-username">
                           Username
                         </label>
-                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="text" value={profile.username} disabled />
+                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="text" value={profile.username} />
                       </div>
                     </div>
                   </form>
@@ -165,48 +165,6 @@ const Profile = ({ profile }: Props) => {
           </div>
       </section>
     </main>
-      <div className="rw-segment">
-        <header className="rw-segment-header">
-          <h2 className="rw-heading rw-heading-secondary">
-            Profile {profile.id} Detail
-          </h2>
-        </header>
-        <table className="rw-table">
-          <tbody>
-            <tr>
-              <th>Id</th>
-              <td>{profile.id}</td>
-            </tr><tr>
-              <th>Updated at</th>
-              <td>{timeTag(profile.updated_at)}</td>
-            </tr><tr>
-              <th>Username</th>
-              <td>{profile.username}</td>
-            </tr><tr>
-              <th>Full name</th>
-              <td>{profile.full_name}</td>
-            </tr><tr>
-              <th>Avatar url</th>
-              <td>{profile.avatar_url}</td>
-            </tr><tr>
-              <th>Website</th>
-              <td>{profile.website}</td>
-            </tr><tr>
-              <th>Biography</th>
-              <td>{profile.biography}</td>
-            </tr><tr>
-              <th>Status</th>
-              <td>{formatEnum(profile.status)}</td>
-            </tr><tr>
-              <th>Role id</th>
-              <td>{profile.role_id}</td>
-            </tr><tr>
-              <th>Created at</th>
-              <td>{timeTag(profile.created_at)}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
       <nav className="rw-button-group">
         <Link
           to={routes.editProfile({ id: profile.id })}

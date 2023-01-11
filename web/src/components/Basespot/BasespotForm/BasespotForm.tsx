@@ -7,6 +7,8 @@ import {
   DatetimeLocalField,
   Submit,
   SelectField,
+  NumberField,
+  TextAreaField,
 } from '@redwoodjs/forms'
 
 import type { EditBasespotById, UpdateBasespotInput } from 'types/graphql'
@@ -61,14 +63,14 @@ const BasespotForm = (props: BasespotFormProps) => {
           Name
         </Label>
 
-          <TextField
-            name="name"
-            ref={basename}
-            defaultValue={props.basespot?.name}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ required: true }}
-          />
+        <TextField
+          name="name"
+          ref={basename}
+          defaultValue={props.basespot?.name}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ required: true }}
+        />
 
 
         <FieldError name="name" className="rw-field-error" />
@@ -81,54 +83,58 @@ const BasespotForm = (props: BasespotFormProps) => {
           Description
         </Label>
 
-          <TextField
-            name="description"
-            defaultValue={props.basespot?.description}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ required: true }}
-          />
+        <TextAreaField
+          name="description"
+          defaultValue={props.basespot?.description}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          emptyAs={""}
+          validation={{ required: true }}
+        />
 
 
         <FieldError name="description" className="rw-field-error" />
 
-        <Label
-          name="latitude"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Latitude
-        </Label>
+        <div className="grid md:grid-cols-2 md:gap-6">
+          <div className="relative z-0 w-full mb-6 group">
+            <Label
+              name="latitude"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Latitude
+            </Label>
 
-          <TextField
-            name="latitude"
-            defaultValue={props.basespot?.latitude}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ valueAsNumber: true, required: true }}
-          />
+            <NumberField
+              name="latitude"
+              defaultValue={props.basespot?.latitude}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              emptyAs={null}
+              validation={{ valueAsNumber: true, required: true }}
+            />
+            <FieldError name="latitude" className="rw-field-error" />
+          </div>
+          <div className="relative z-0 w-full mb-6 group">
+            <Label
+              name="longitude"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Longitude
+            </Label>
 
-
-        <FieldError name="latitude" className="rw-field-error" />
-
-        <Label
-          name="longitude"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Longitude
-        </Label>
-
-          <TextField
-            name="longitude"
-            defaultValue={props.basespot?.longitude}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ valueAsNumber: true, required: true }}
-          />
-
-
-        <FieldError name="longitude" className="rw-field-error" />
+            <NumberField
+              name="longitude"
+              defaultValue={props.basespot?.longitude}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              emptyAs={null}
+              validation={{ valueAsNumber: true, required: true }}
+            />
+            <FieldError name="longitude" className="rw-field-error" />
+          </div>
+        </div>
 
         <Label
           name="image"
@@ -188,12 +194,12 @@ const BasespotForm = (props: BasespotFormProps) => {
           Estimated for players
         </Label>
 
-          <TextField
-            name="estimatedForPlayers"
-            defaultValue={props.basespot?.estimatedForPlayers}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
+        <TextField
+          name="estimatedForPlayers"
+          defaultValue={props.basespot?.estimatedForPlayers}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
 
 
         <FieldError name="estimatedForPlayers" className="rw-field-error" />
@@ -206,13 +212,14 @@ const BasespotForm = (props: BasespotFormProps) => {
           Defense images
         </Label>
 
-          <TextField
-            name="defenseImages"
-            defaultValue={props.basespot?.defenseImages}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ required: true }}
-          />
+        <TextField
+          name="defenseImages"
+          defaultValue={props.basespot?.defenseImages}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ required: false }}
+          emptyAs={"undefined"}
+        />
 
 
         <FieldError name="defenseImages" className="rw-field-error" />
@@ -225,12 +232,12 @@ const BasespotForm = (props: BasespotFormProps) => {
           Turretsetup image
         </Label>
 
-          <TextField
-            name="turretsetup_image"
-            defaultValue={props.basespot?.turretsetup_image}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
+        <TextField
+          name="turretsetup_image"
+          defaultValue={props.basespot?.turretsetup_image}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
 
 
         <FieldError name="turretsetup_image" className="rw-field-error" />

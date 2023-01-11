@@ -4,7 +4,7 @@ import { toast } from '@redwoodjs/web/toast'
 import { useState } from 'react'
 import ArkCard from 'src/components/ArkCard/ArkCard'
 
-import { QUERY } from 'src/components/Basespot/BasespotsCell'
+import { QUERY } from 'src/components/Basespot/BasespotsCell/BasespotsCell'
 import Lookup from 'src/components/Util/Lookup/Lookup'
 import { random } from 'src/lib/formatters'
 
@@ -73,7 +73,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
         items={Object.keys(mapImages).map((k) => ({
           name: k,
         }))}
-        onChange={(e) => setCurrentMap(e)}
+        onChange={(e) => setCurrentMap(e.name)}
       >
         {!!currentMap ? currentMap : "Choose map"}
       </Lookup>
