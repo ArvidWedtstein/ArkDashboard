@@ -33,7 +33,7 @@ const Table = ({
   // TODO: Create filtering and sorting options for table
   return (
     <div className={`flex ${className}`}>
-      <div className="relative my-4 table w-full table-auto rounded-xl bg-white border border-black p-3 shadow">
+      <div className="relative my-4 table w-full table-auto rounded-xl bg-white dark:bg-neutral-800 border border-black dark:border-white p-3 shadow">
         {(tableOptions && tableOptions.header) && (
           <div className="table-header-group">
             {keys.map((key) => (
@@ -50,7 +50,7 @@ const Table = ({
                 {value == "actions" ? (
                   <div
                     key={value}
-                    className="p-2 text-xs text-black"
+                    className="p-2 text-xs text-black dark:text-stone-200"
                   >
                     {renderActions && renderActions(row)}
                   </div>
@@ -59,14 +59,14 @@ const Table = ({
                     {renderCell ? (
                       <div
                         key={Math.random()}
-                        className="p-2 text-xs text-black"
+                        className="p-2 text-xs text-black dark:text-stone-200"
                       >
                         {renderCell({ id: value, amount: row[value] })}
                       </div>
                     ) : (
                       <div
                         key={Math.random()}
-                        className="p-2 text-xs text-black"
+                        className="p-2 text-xs text-black dark:text-stone-200"
                       >
                         {isDate(row[value])
                           ? timeTag(row[value])

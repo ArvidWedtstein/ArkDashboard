@@ -122,11 +122,11 @@ export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
       if (itemfound) setItem({ type: "ADD_AMOUNT_BY_NUM", item: itemfound, index: value });
 
     }
-
   });
+
   return (
     <>
-      <div className="container-xl bg-white p-3 ">
+      <div className="  ">
         <Form onSubmit={onAdd} error={error}>
           <FormError
             error={error}
@@ -136,13 +136,13 @@ export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
           />
           <Label
             name="itemName"
-            className="rw-label text-white"
+            className="rw-label my-3"
             errorClassName="rw-label rw-label-error"
           >
             Name
           </Label>
 
-          <div className="relative flex flex-row space-x-3">
+          <div className="relative flex flex-row -ml-3 space-x-3">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
               <svg aria-hidden="true" className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -150,20 +150,20 @@ export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
             </div>
             <Lookup items={items} search={true} name="itemName" onChange={(e) => onAdd({ itemName: e.name })} />
             <div className="inline-flex rounded-md shadow-sm" role="group">
-              <button type="button" onClick={addTurretTower} className="inline-flex items-center py-2 px-4 text-sm font-medium text-gray-900 bg-white rounded-l-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
+              <button type="button" onClick={addTurretTower} className="first:rounded-l-lg last:rounded-r-lg inline-flex items-center py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
                 <svg aria-hidden="true" className="mr-2 w-4 h-4 fill-current" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z"></path></svg>
                 Turret Tower
               </button>
-              <button type="button" className="inline-flex items-center py-2 px-4 text-sm font-medium text-gray-900 bg-white rounded-r-md border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white">
-                <svg aria-hidden="true" className="mr-2 w-4 h-4 fill-current" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z"></path></svg>
-                Cliff Platform Turret Tower
+              <button type="button" onClick={addTurretTower} className="first:rounded-l-lg last:rounded-r-lg inline-flex items-center py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-red-500 transition-colors dark:focus:ring-blue-500 dark:focus:text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="mr-2 w-4 h-4 fill-current" fill="currentColor" viewBox="0 0 352 512"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" /></svg>
+                Clear
               </button>
             </div>
             {/* <button type="submit" className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">+</button> */}
           </div>
           <FieldError name="itemName" className="rw-field-error" />
 
-          <Table data={[mergeRecipe(...item)]} tableOptions={{
+          {item.length > 0 && <Table data={[mergeRecipe(...item)]} tableOptions={{
             header: false
           }}
             renderCell={({ id, amount }) =>
@@ -171,43 +171,28 @@ export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
                 <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${items.find((itm) => parseInt(itm.itemId) === parseInt(id)).image}`} className="w-6 h-6" />
                 <span className="text-sm">{amount}</span>
               </div>
-            } />
-          <ul className="py-4">
-            {/* <li className="bg-gray-400 rounded-md border-0 border-b-2 py-4">
-              <div className="flex flex-row items-center w-fit pl-4">
-                Total
-                <div className="ml-36" />
-                {Object.entries(mergeRecipe(...item)).map((k) => {
-                  return (
-                    <div key={Math.random()} className="flex flex-col justify-center items-center ml-2">
-                      <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${items.find((itm) => parseInt(itm.itemId) === parseInt(k[0])).image}`} className="w-6 h-6" title={items.find((itm) => parseInt(itm.itemId) === parseInt(k[0])).name} />
-                      <span className="text-sm">{k[1]}</span>
-                    </div>
-                  )
-                })}
-
-              </div>
-            </li> */}
+            } />}
+          <ul className="py-4 space-y-2">
             {item.map((item, i) => (
               <li className="" key={`${item.itemId}+${i * Math.random()}`}>
                 <div className="flex flex-row items-center w-fit pl-4">
                   <button type="button" onClick={() => onRemove(i)} className="hover:bg-red-500 relative rounded-full w-10 h-10 flex items-center justify-center">
                     <ImageField className="w-8 h-8" name="itemimage" src={"https://www.arkresourcecalculator.com/assets/images/80px-" + item.image} />
                   </button>
-                  <button type="button" className="bg-slate-200 relative text-black mx-2 rounded-full w-8 h-8" onClick={() => onRemoveAmount(i)}>
+                  <button type="button" className="border border-black dark:border-white relative dark:text-white text-black hover:bg-white hover:text-black mx-2 rounded-full w-8 h-8 text-lg font-semibold" onClick={() => onRemoveAmount(i)}>
                     -
                   </button>
                   <p
                     defaultValue={item.amount}
-                    className="rw-input w-auto p-3 text-center"
+                    className="rw-input w-16 p-3 text-center"
                   >{item.amount}</p>
-                  <button type="button" className="bg-slate-200 relative text-black mx-2 rounded-full w-8 h-8" onClick={() => onAddAmount(i)}>
+                  <button type="button" className="border border-black dark:border-white relative dark:text-white text-black hover:bg-white hover:text-black mx-2 rounded-full w-8 h-8 text-lg font-semibold" onClick={() => onAddAmount(i)}>
                     +
                   </button>
-                  {item.recipe.map((recipe, t) => (
-                    <div className="flex flex-col justify-center items-center ml-2" id={`${recipe.itemId}-${i * Math.random()}${t}`} key={`${recipe.itemId}-${t * Math.random()}${i}`}>
+                  {item.recipe.sort((a, b) => a.itemId - b.itemId).map((recipe, t) => (
+                    <div className="flex flex-col justify-center items-center ml-2 min-w-16 w-10" id={`${recipe.itemId}-${i * Math.random()}${t}`} key={`${recipe.itemId}-${t * Math.random()}${i}`}>
                       <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${items.find((itm) => parseInt(itm.itemId) === parseInt(recipe.itemId)).image}`} className="w-6 h-6" title={items.find((itm) => parseInt(itm.itemId) === parseInt(recipe.itemId)).name} alt={items.find((itm) => parseInt(itm.itemId) === parseInt(recipe.itemId)).name} />
-                      <span className="text-sm">{recipe.count * item.amount}</span>
+                      <span className="text-sm text-black dark:text-white">{recipe.count * item.amount}</span>
                     </div>
                   ))}
                 </div>

@@ -48,13 +48,14 @@ const Lookup = ({ items, type = "default", value, children, className, onChange,
 
   return (
     <div className="relative flex items-center" ref={ref}>
-      <div className={className ? `flex items-center text-center ${className}` : "flex items-center text-center text-black dark:text-white bg-gray-600 dark:bg-gray-800 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2"}>
+      <div className={className ? `flex items-center text-center ${className}` : "flex items-center text-center text-black dark:text-white bg-gray-200 dark:bg-gray-600 focus:outline-none font-medium rounded-lg text-sm px-2 py-2"}>
         {search ? (
           <TextField
             name={name}
             id={name}
             autoComplete="off"
-            className="flex items-center w-full py-2 px-4 bg-gray-600 dark:bg-gray-800 dark:hover:bg-gray-600 dark:hover:text-white"
+            // className="flex items-center w-full py-2 px-4 bg-gray-600 dark:bg-gray-800 dark:hover:bg-gray-600 dark:hover:text-white"
+            className="flex items-center w-full rw-input"
             onChange={handleSearch}
             onFocus={handleOpen}
             placeholder="Search..."

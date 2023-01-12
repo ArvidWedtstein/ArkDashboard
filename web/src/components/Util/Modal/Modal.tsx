@@ -1,7 +1,7 @@
 import { forwardRef, useState } from "react";
 import useComponentVisible from "src/components/useComponentVisible";
 
-type iModal= {
+type iModal = {
   isOpen: boolean;
   setIsOpen?: (open: boolean) => void;
   image?: string;
@@ -14,9 +14,8 @@ export const RefModal = forwardRef<HTMLDivElement, iModal>((props, ref) => {
     <div
       tabIndex={-1}
       aria-hidden={isOpen ? "false" : "true"}
-      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full ${
-        isOpen ? "block" : "hidden"
-      }`}
+      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full backdrop:bg-gray-50 ${isOpen ? "block" : "hidden"
+        }`}
     >
       <div ref={ref} className="relative top-1/2 left-1/2 h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2">
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
@@ -73,9 +72,8 @@ export const Modal = ({
     <div
       tabIndex={-1}
       aria-hidden={isOpen ? "false" : "true"}
-      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full ${
-        isOpen ? "block" : "hidden"
-      }`}
+      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full ${isOpen ? "block" : "hidden"
+        }`}
     >
       <div className="relative top-1/2 left-1/2 h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2">
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">

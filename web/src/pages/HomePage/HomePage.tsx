@@ -2,6 +2,7 @@ import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import LineChart from "src/components/Util/LineChart/LineChart";
 import { PieChart } from "src/components/Util/PieChart/PieChart";
+import StatCard from "src/components/Util/StatCard/StatCard";
 const HomePage = () => {
   // const { isAuthenticated, client: supabase } = useAuth();
   // if (document.addEventListener) {
@@ -51,12 +52,6 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        {/* <LineChart className="w-64" items={[
-          { name: "Test", percent: 30, colorHEX: "#ff0000" },
-          { name: "Test", percent: 15, colorHEX: "#00ff00" },
-          { name: "Test", percent: 20, colorHEX: "#ff00ff" },
-          { name: "Test", percent: 35, colorHEX: "#0000ff" },
-        ]} /> */}
         {/* <PieChart className="w-32" hollowPercentage={80} backgroundColor="#232323" items={[{ percent: 5, color: 'green' }]}><text x="50%" y="50%" textAnchor="middle" fontSize="5" fill="white" dominantBaseline="middle">test</text></PieChart> */}
       </div >
     </>
