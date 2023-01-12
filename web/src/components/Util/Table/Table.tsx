@@ -33,11 +33,16 @@ const Table = ({
   // TODO: Create filtering and sorting options for table
   return (
     <div className={`flex ${className}`}>
-      <div className="relative my-4 table w-full table-auto rounded-xl bg-white border border-black p-3 shadow">
+      <div className="relative my-4 table w-full table-auto rounded-xl bg-white dark:bg-neutral-800 border border-black dark:border-white p-3 shadow">
         {(tableOptions && tableOptions.header) && (
           <div className="table-header-group">
             {keys.map((key) => (
-              <div key={`${key}${Math.random()}`} onClick={() => sort(key)} className="table-cell p-2 text-xs text-[#888da9]">
+              <div
+                key={`${key}${Math.random()}`}
+                onClick={() => sort(key)}
+                className="table-cell p-2 text-xs text-[#888da9]"
+              // /*aria-[sort=ascending]:bg-red-500 aria-[sort=descending]:bg-red-400*/
+              >
                 {truncate(capitalize(key))}
               </div>
             ))}
@@ -45,12 +50,12 @@ const Table = ({
         )}
         {data.map((row) => (
           <div key={Math.random() * Math.random()} className="table-row-group">
-            {keys.map((value) => (
-              <>
+            {keys.map((value, i) => (
+              <div key={`table-item-${i}`} className="table-cell">
                 {value == "actions" ? (
                   <div
                     key={value}
-                    className="table-cell p-2 text-xs text-black"
+                    className="p-2 text-xs text-black dark:text-stone-200"
                   >
                     {renderActions && renderActions(row)}
                   </div>
@@ -59,14 +64,14 @@ const Table = ({
                     {renderCell ? (
                       <div
                         key={Math.random()}
-                        className="table-cell p-2 text-xs text-black"
+                        className="p-2 text-xs text-black dark:text-stone-200"
                       >
                         {renderCell({ id: value, amount: row[value] })}
                       </div>
                     ) : (
                       <div
                         key={Math.random()}
-                        className="table-cell p-2 text-xs text-black"
+                        className="p-2 text-xs text-black dark:text-stone-200"
                       >
                         {isDate(row[value])
                           ? timeTag(row[value])
@@ -75,7 +80,7 @@ const Table = ({
                     )}
                   </>
                 )}
-              </>
+              </div>
             ))}
           </div>
         ))}

@@ -7,6 +7,8 @@
 // still render a generic error page, but your users will prefer something a bit more
 // thoughtful. =)
 
+import { Link, routes } from "@redwoodjs/router"
+
 // Ensures that production builds do not include the error page
 let RedwoodDevFatalErrorPage = undefined
 if (process.env.NODE_ENV === 'development') {
@@ -16,47 +18,18 @@ if (process.env.NODE_ENV === 'development') {
 
 export default RedwoodDevFatalErrorPage ||
   (() => (
-    <main>
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-              html, body {
-                margin: 0;
-              }
-              html * {
-                box-sizing: border-box;
-              }
-              main {
-                display: flex;
-                align-items: center;
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-                text-align: center;
-                background-color: #E2E8F0;
-                height: 100vh;
-              }
-              section {
-                background-color: white;
-                border-radius: 0.25rem;
-                width: 32rem;
-                padding: 1rem;
-                margin: 0 auto;
-                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-              }
-              h1 {
-                font-size: 2rem;
-                margin: 0;
-                font-weight: 500;
-                line-height: 1;
-                color: #2D3748;
-              }
-            `,
-        }}
-      />
-      <section>
-        <h1>
-          <span>Something went terribly wrong.</span>
-        </h1>
-        <h6>Or maybe you fucked up?</h6>
+    <main className="flex items-center h-[100vh] text-center">
+      <section className="dark:bg-[#252636] bg-white mx-auto">
+        <div className="bg-[#0D2836] text-[#97FBFF] p-8 border border-[#60728F]">
+          <h1 className="font-bold uppercase mb-3 text-2xl">Error</h1>
+          <h1 className="my-8">
+            <span>Outgoing reliable buffer overflow</span>
+          </h1>
+          <div className="flex flex-row mt-3 items-center text-center space-x-8">
+            <Link to={routes.home()} className="uppercase w-full duration-150 bg-[#11667B] px-6 py-1 outline outline-1 transition-colors outline-[#11667B] outline-offset-1 hover:outline-offset-0 hover:outline-2">Accept</Link>
+            <Link to={routes.home()} className="uppercase w-full duration-150 bg-[#11667B] px-6 py-1 outline outline-1 transition-colors outline-[#11667B] outline-offset-1 hover:outline-offset-0 hover:outline-2">Cancel</Link>
+          </div>
+        </div>
       </section>
     </main>
   ))

@@ -21,11 +21,11 @@ const Navbar = () => {
       <div className="flex flex-wrap place-items-start">
         <section className="relative mx-auto">
           <nav className="flex w-screen justify-between bg-gray-900 text-white">
-            <div className="flex w-full items-center px-5 py-6 xl:px-12">
-              <a className="font-heading mr-5 text-3xl font-bold" href="#">
+            <div className="flex w-full items-center px-5 py-6 xl:px-12 overflow-x-auto md:overflow-hidden">
+              {/* <Link to={routes.home()} className="font-heading mr-5 text-3xl font-bold" href="#">
                 <img className="h-9" src="/favicon.png" alt="logo" />
-              </a>
-              <ul className="font-heading hidden space-x-12 px-4 font-semibold md:flex">
+              </Link> */}
+              <ul className="font-heading flex space-x-12 px-4 font-semibold">
                 <li>
                   <Link className="hover:text-gray-200" to={routes.home()}>
                     Home

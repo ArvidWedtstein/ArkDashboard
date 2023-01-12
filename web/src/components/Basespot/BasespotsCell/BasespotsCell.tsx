@@ -62,8 +62,8 @@ export const Loading = () => {
   let items = 6
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 mt-8 mb-5">
-      {Array.from(Array(items).keys()).map((item) => (
-        <div className="border border-blue-300 shadow rounded-md p-4 w-full mx-auto">
+      {Array.from(Array(items).keys()).map((item, i) => (
+        <div key={i} className="border border-blue-300 shadow rounded-md p-4 w-full mx-auto">
           <div className="animate-pulse flex space-x-4">
             <div className="rounded-full bg-slate-700 h-10 w-10"></div>
             <div className="flex-1 space-y-6 py-1">

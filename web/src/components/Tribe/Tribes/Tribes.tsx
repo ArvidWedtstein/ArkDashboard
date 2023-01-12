@@ -104,7 +104,7 @@ const TribesList = ({ tribes }: FindTribes) => {
         renderActions={(row) => (
           <>
             <ContextMenu
-            type="click"
+              type="click"
               items={[
                 {
                   label: 'View',

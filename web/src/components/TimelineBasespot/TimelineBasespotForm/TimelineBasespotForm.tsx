@@ -146,7 +146,6 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
               errorClassName="rw-input rw-input-error"
             />
 
-
             <FieldError name="endDate" className="rw-field-error" />
           </div>
         </div>

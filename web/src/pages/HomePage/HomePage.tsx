@@ -1,6 +1,9 @@
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
+import LineChart from "src/components/Util/LineChart/LineChart";
 import { PieChart } from "src/components/Util/PieChart/PieChart";
+import StatCard from "src/components/Util/StatCard/StatCard";
+import UserCard from "src/components/Util/UserCard/UserCard";
 const HomePage = () => {
   // const { isAuthenticated, client: supabase } = useAuth();
   // if (document.addEventListener) {
@@ -12,6 +15,7 @@ const HomePage = () => {
   // supabase.auth.onAuthStateChange((event, session) => {
   //   console.log(event, session)
   // })
+
   return (
     <>
       <MetaTags title="Home" description="Home page" />
@@ -21,8 +25,10 @@ const HomePage = () => {
         <div
           className="relative overflow-hidden bg-cover bg-no-repeat border border-white rounded-md"
           style={{
+            imageResolution: "10dpi",
+            imageRendering: "auto",
             backgroundPosition: "50%",
-            backgroundImage: "url('https://wallpaper.dog/large/5509169.jpg')",
+            backgroundImage: "url('https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj')",
             height: "350px",
           }}
         >
@@ -47,8 +53,9 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        {/* <PieChart className="w-32" hollowPercentage={80} backgroundColor="#232323" items={[{ percent: 5, color: 'green' }]}><text x="50%" y="50%" textAnchor="middle" fontSize="5" fill="white" dominantBaseline="middle">test</text></PieChart> */}
 
+
+        {/* <PieChart className="w-32" hollowPercentage={80} backgroundColor="#232323" items={[{ percent: 5, color: 'green' }]}><text x="50%" y="50%" textAnchor="middle" fontSize="5" fill="white" dominantBaseline="middle">test</text></PieChart> */}
       </div >
     </>
   );
