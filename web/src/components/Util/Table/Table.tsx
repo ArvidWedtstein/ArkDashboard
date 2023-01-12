@@ -37,7 +37,12 @@ const Table = ({
         {(tableOptions && tableOptions.header) && (
           <div className="table-header-group">
             {keys.map((key) => (
-              <div key={`${key}${Math.random()}`} onClick={() => sort(key)} className="table-cell p-2 text-xs text-[#888da9]">
+              <div
+                key={`${key}${Math.random()}`}
+                onClick={() => sort(key)}
+                className="table-cell p-2 text-xs text-[#888da9]"
+              // /*aria-[sort=ascending]:bg-red-500 aria-[sort=descending]:bg-red-400*/
+              >
                 {truncate(capitalize(key))}
               </div>
             ))}
