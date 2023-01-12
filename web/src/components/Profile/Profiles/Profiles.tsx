@@ -39,13 +39,15 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
 
   return (
     <div>
-      <UserCard user={
-        {
-          name: "Ola",
-          subtext: "Jøde",
-          img: 'https://randomuser.me/portraits/men/4.jpg'
-        }
-      } />
+      {profiles.map((profile, i) => {
+        <UserCard user={
+          {
+            name: profile.full_name,
+            subtext: "Jøde",
+            img: 'https://randomuser.me/portraits/men/4.jpg'
+          }
+        } />
+      })}
       <div className="rw-segment rw-table-wrapper-responsive">
         <table className="rw-table">
           <thead>
