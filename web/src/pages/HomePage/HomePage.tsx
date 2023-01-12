@@ -53,7 +53,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        <UserCard />
+
 
         {/* <PieChart className="w-32" hollowPercentage={80} backgroundColor="#232323" items={[{ percent: 5, color: 'green' }]}><text x="50%" y="50%" textAnchor="middle" fontSize="5" fill="white" dominantBaseline="middle">test</text></PieChart> */}
       </div >
