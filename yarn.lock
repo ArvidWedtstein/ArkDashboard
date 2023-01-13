@@ -7601,6 +7601,7 @@ __metadata:
   dependencies:
     "@redwoodjs/api": 3.8.0
     "@redwoodjs/graphql-server": 3.8.0
+    jsonwebtoken: ^9.0.0
   languageName: unknown
   linkType: soft
 
