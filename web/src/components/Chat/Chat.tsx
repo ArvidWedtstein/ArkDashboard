@@ -1,7 +1,7 @@
 
 import { useAuth } from "@redwoodjs/auth";
 import { Form, TextField, useForm } from "@redwoodjs/forms";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "src/App";
 import { timeTag } from "src/lib/formatters";
 
@@ -13,15 +13,19 @@ type Message = {
 }
 const Chat = () => {
   const { isAuthenticated, currentUser } = useAuth();
-  const [messages, setMessages] = useState<Message[]>([]);
-  const formMethods = useForm()
-
+  const [messages, setMessages] = useState([]); //<Message[]>
+  const messagesRef = useRef<HTMLDivElement>(null)
+  const formMethods = useForm();
+  // https://github.com/dijonmusters/happy-chat/blob/main/components/messages.tsx
   useEffect(() => {
     const getData = async () => {
-      const { data } = await supabase.from("message").select("*");
+      const { data } = await supabase
+        .from("Message")
+        .select("*")
+        .order('created_at');
 
       if (!data) {
-        alert('no data');
+        // alert('no data');
         return
       }
       setMessages(data);
@@ -39,8 +43,9 @@ const Chat = () => {
 
   useEffect(() => {
     const subscription = supabase
-      .from('message')
+      .from('Message')
       .on('INSERT', (payload) => {
+        console.log('Change received!', payload)
         setMessages((prev) => ([...prev, payload.new]))
       })
       .subscribe()
@@ -55,29 +60,34 @@ const Chat = () => {
     if (typeof message === 'string' && message.trim().length !== 0) {
       formMethods.reset();
 
-      setMessages([
-        ...messages,
-        {
-          id: (Math.random() * 100).toString(),
-          content: message,
-          profile_id: "1",
-          created_at: "2021-08-01T12:00:00.000Z",
-        },
-      ])
-      // const { error } = await supabase
-      //   .from('message')
-      //   .insert({
+      // setMessages([
+      //   ...messages,
+      //   {
+      //     id: (Math.random() * 100).toString(),
       //     content: message,
-      //   });
+      //     profile_id: "1",
+      //     created_at: "2021-08-01T12:00:00.000Z",
+      //   },
+      // ])
+      const { error } = await supabase
+        .from('Message')
+        .insert({
+          profile_id: currentUser.id,
+          content: message,
+        });
 
-      // if (error) {
-      //   alert(error.message);
-      // }
+      if (error) {
+        alert(error.message);
+      }
+
+      if (messagesRef.current) {
+        messagesRef.current.scrollTop = messagesRef.current.scrollHeight
+      }
     }
   }
   return (
     <>
-      <div className="flex-grow chat-area-main">
+      <div ref={messagesRef} className="flex-grow chat-area-main">
         {messages.map((message, i) => (
           <div key={message.id} aria-owns="owner" className="flex pt-0 px-5 pb-11 aria-[owns=owner]:flex-row-reverse group chat-msg owner">
             <div className="flex-shrink-0 mt-auto -mb-5 relative chat-msg-profile">

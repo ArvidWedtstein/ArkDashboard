@@ -4,6 +4,7 @@ import { MetaTags } from '@redwoodjs/web'
 import { useCallback, useMemo, useState } from 'react'
 import debounce from 'lodash.debounce';
 import { toast } from '@redwoodjs/web/dist/toast';
+import Chat from 'src/components/Chat/Chat';
 
 const ArkDinos = [
   "Ankylosaurus", "Argentavis", "Arthropluera", "Baryonyx", "Beelzebufo", "Brontosaurus", "Carbonemys", "Castoroides",
@@ -70,7 +71,7 @@ const GtwPage = (props: BasespotFormProps) => {
   return (
     <>
       <MetaTags title="Gtw" description="Gtw page" />
-
+      <Chat />
       <div className="container-xl text-center m-3 rounded-lg dark:bg-neutral-800 bg-stone-200 border dark:border-stone-200 border-black">
         <Form error={props.error} className="m-6 p-3">
           <FormError
