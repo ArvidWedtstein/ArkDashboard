@@ -1,51 +1,123 @@
 
 import { useAuth } from "@redwoodjs/auth";
 import { Form, TextField, useForm } from "@redwoodjs/forms";
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { supabase } from "src/App";
 import { timeTag } from "src/lib/formatters";
 
-type Message = {
+type IMessage = {
   id: string,
   content: string,
   profile_id: string,
   created_at: string,
 }
+type Profile = {
+  id: string,
+  username: string,
+  full_name?: string,
+  avatar_url?: string,
+}
+type ProfileCache = {
+  [profile_id: string]: Profile
+}
+const Message = ({ message, profile, setProfileCache }: { message: IMessage, profile: Profile, setProfileCache: Dispatch<SetStateAction<ProfileCache>> }) => {
+  const { id: userId } = useAuth().currentUser;
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const { data, error } = await supabase
+        .from('Profile')
+        .select('id, username, full_name, avatar_url')
+        .match({ id: message.profile_id })
+        .single()
+      //   const { data, error } = await supabase.storage
+      //   .from(storage)
+      //   .download(path);
+      // if (error) {
+      //   throw error;
+      // }
+      // if (data) {
+      //   const url = URL.createObjectURL(data);
+      //   setAvatarUrl(url);
+      // }
+      if (data) {
+        setProfileCache((current) => ({
+          ...current,
+          [data.id]: data,
+        }))
+      }
+    }
+
+    if (!profile) {
+      fetchProfile();
+    }
+  }, [profile, message.profile_id])
+  return (
+    <div key={message.id} aria-owns={message.profile_id === userId ? 'owner' : ''} className="flex pt-0 px-5 pb-11 aria-[owns=owner]:flex-row-reverse group chat-msg owner">
+      <div className="flex-shrink-0 mt-auto -mb-5 relative chat-msg-profile">
+        <img className="h-10 w-10 rounded-full object-cover" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt={profile.username} />
+        <div className="absolute bottom-0 text-xs font-semibold whitespace-nowrap left-[calc(100%+12px)] text-[#626466] group-aria-[owns=owner]:left-auto group-aria-[owns=owner]:right-[calc(100%+12px)] chat-msg-date">{timeTag(message.created_at)}</div>
+      </div>
+      <div className="ml-3 max-w-[70%] flex flex-col items-start group-aria-[owns=owner]:ml-0 group-aria-[owns=owner]:items-end group-aria-[owns=owner]:mr-3 chat-msg-content">
+        <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">{message.content}</div>
+        {/* <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">Cras mollis nec arcu malesuada tincidunt.</div> */}
+        {/* <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">
+                <img className="max-w-xs w-full" src="https://media0.giphy.com/media/yYSSBtDgbbRzq/giphy.gif?cid=ecf05e47344fb5d835f832a976d1007c241548cc4eea4e7e&rid=giphy.gif" />
+              </div> */}
+      </div>
+    </div>
+  )
+}
 const Chat = () => {
   const { isAuthenticated, currentUser } = useAuth();
+  const [profileCache, setProfileCache] = useState({})
   const [messages, setMessages] = useState([]); //<Message[]>
   const messagesRef = useRef<HTMLDivElement>(null)
   const formMethods = useForm();
   // https://github.com/dijonmusters/happy-chat/blob/main/components/messages.tsx
-  useEffect(() => {
-    const getData = async () => {
-      const { data } = await supabase
-        .from("Message")
-        .select("*")
-        .order('created_at');
 
-      if (!data) {
-        // alert('no data');
-        return
-      }
-      setMessages(data);
+
+  const getData = async () => {
+    const { data } = await supabase
+      .from("Message")
+      .select("*, profile: Profile(id, username, full_name, avatar_url)")
+      .order('created_at');
+
+    if (!data) {
+      // alert('no data');
+      return
     }
-    getData();
-    // setMessages([
-    //   {
-    //     id: "1",
-    //     content: "Hello",
-    //     profile_id: "1",
-    //     created_at: "2021-08-01T12:00:00.000Z",
-    //   },
-    // ])
-  }, []);
+    console.log(data)
+
+    const newProfiles = Object.fromEntries(
+      data
+        .map((message) => message.profile)
+        .filter(Boolean) // is truthy
+        .map((profile) => [profile!.id, profile!])
+    )
+
+    setProfileCache((current) => ({
+      ...current,
+      ...newProfiles,
+    }))
+
+
+    setMessages(data);
+  }
+
+  useEffect(() => {
+    if (!isAuthenticated) return
+    getData()
+  }, [])
 
   useEffect(() => {
     const subscription = supabase
       .from('Message')
       .on('INSERT', (payload) => {
         console.log('Change received!', payload)
+        if (messagesRef.current) {
+          messagesRef.current.scrollTop = messagesRef.current.scrollHeight
+        }
         setMessages((prev) => ([...prev, payload.new]))
       })
       .subscribe()
@@ -60,15 +132,6 @@ const Chat = () => {
     if (typeof message === 'string' && message.trim().length !== 0) {
       formMethods.reset();
 
-      // setMessages([
-      //   ...messages,
-      //   {
-      //     id: (Math.random() * 100).toString(),
-      //     content: message,
-      //     profile_id: "1",
-      //     created_at: "2021-08-01T12:00:00.000Z",
-      //   },
-      // ])
       const { error } = await supabase
         .from('Message')
         .insert({
@@ -89,30 +152,8 @@ const Chat = () => {
     <>
       <div ref={messagesRef} className="flex-grow chat-area-main">
         {messages.map((message, i) => (
-          <div key={message.id} aria-owns="owner" className="flex pt-0 px-5 pb-11 aria-[owns=owner]:flex-row-reverse group chat-msg owner">
-            <div className="flex-shrink-0 mt-auto -mb-5 relative chat-msg-profile">
-              <img className="h-10 w-10 rounded-full object-cover" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt="" />
-              <div className="absolute bottom-0 text-xs font-semibold whitespace-nowrap left-[calc(100%+12px)] text-[#626466] group-aria-[owns=owner]:left-auto group-aria-[owns=owner]:right-[calc(100%+12px)] chat-msg-date">{timeTag(message.created_at)}</div>
-            </div>
-            <div className="ml-3 max-w-[70%] flex flex-col items-start group-aria-[owns=owner]:ml-0 group-aria-[owns=owner]:items-end group-aria-[owns=owner]:mr-3 chat-msg-content">
-              <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">{message.content}</div>
-              {/* <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">Cras mollis nec arcu malesuada tincidunt.</div> */}
-              {/* <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">
-                <img className="max-w-xs w-full" src="https://media0.giphy.com/media/yYSSBtDgbbRzq/giphy.gif?cid=ecf05e47344fb5d835f832a976d1007c241548cc4eea4e7e&rid=giphy.gif" />
-              </div> */}
-            </div>
-          </div>
+          <Message key={i} message={message} profile={profileCache[message.profile_id]} setProfileCache={setProfileCache} />
         ))}
-        <div aria-owns="none" className="flex pt-0 px-5 pb-11 aria-[owns=owner]:flex-row-reverse group chat-msg owner">
-          <div className="flex-shrink-0 mt-auto -mb-5 relative chat-msg-profile">
-            <img className="h-10 w-10 rounded-full object-cover" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt="" />
-            <div className="absolute bottom-0 text-xs font-semibold whitespace-nowrap left-[calc(100%+12px)] text-[#626466] group-aria-[owns=owner]:left-auto group-aria-[owns=owner]:right-[calc(100%+12px)] chat-msg-date">Message seen 1.22pm</div>
-          </div>
-          <div className="ml-3 max-w-[70%] flex flex-col items-start group-aria-[owns=owner]:ml-0 group-aria-[owns=owner]:items-end group-aria-[owns=owner]:mr-3 chat-msg-content">
-            <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">LØk😂😂😂</div>
-            <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">Cras mollis nec arcu malesuada tincidunt.</div>
-          </div>
-        </div>
       </div>
       <div className="flex border-t border-[#323336] w-full py-3 px-5 items-center bg-[#27292d] sticky bottom-0 left-0 chat-area-footer">
         <svg className="text-[#7c7e80] pointer w-5 flex-shrink-0 hover:text-[#9fa7ac] [&+svg]:ml-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
