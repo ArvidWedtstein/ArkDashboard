@@ -25,7 +25,7 @@ const Message = ({ message, profile, setProfileCache }: { message: IMessage, pro
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('Profile')
         .select('id, username, full_name, avatar_url')
         .match({ id: message.profile_id })
