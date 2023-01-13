@@ -1,6 +1,7 @@
 import { Link, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
+import Avatar from 'src/components/Avatar/Avatar'
 
 import { QUERY } from 'src/components/Profile/ProfilesCell'
 import UserCard from 'src/components/Util/UserCard/UserCard'
@@ -72,7 +73,8 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
                 <td>{timeTag(profile.updated_at)}</td>
                 <td>{truncate(profile.username)}</td>
                 <td>{truncate(profile.full_name)}</td>
-                <td>{truncate(profile.avatar_url)}</td>
+                {/* <td>{truncate(profile.avatar_url)}</td> */}
+                <td><Avatar url={profile.avatar_url} size={30} /></td>
                 <td>{truncate(profile.website)}</td>
                 <td>{truncate(profile.biography)}</td>
                 <td>{formatEnum(profile.status)}</td>
@@ -109,7 +111,7 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
           </tbody>
         </table>
       </div>
-    </div>
+    </div >
   )
 }
 

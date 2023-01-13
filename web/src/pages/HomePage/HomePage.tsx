@@ -1,5 +1,6 @@
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
+import Chat from "src/components/Chat/Chat";
 import LineChart from "src/components/Util/LineChart/LineChart";
 import { PieChart } from "src/components/Util/PieChart/PieChart";
 import StatCard from "src/components/Util/StatCard/StatCard";
@@ -53,8 +54,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-
-
+        <Chat />
         {/* <PieChart className="w-32" hollowPercentage={80} backgroundColor="#232323" items={[{ percent: 5, color: 'green' }]}><text x="50%" y="50%" textAnchor="middle" fontSize="5" fill="white" dominantBaseline="middle">test</text></PieChart> */}
       </div >
     </>
