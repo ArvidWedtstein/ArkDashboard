@@ -45,6 +45,7 @@ const Chat = () => {
     const subscription = supabase
       .from('Message')
       .on('INSERT', (payload) => {
+        console.log('Change received!', payload)
         setMessages((prev) => ([...prev, payload.new]))
       })
       .subscribe()
@@ -71,6 +72,7 @@ const Chat = () => {
       const { error } = await supabase
         .from('Message')
         .insert({
+          profile_id: currentUser.id,
           content: message,
         });
 
