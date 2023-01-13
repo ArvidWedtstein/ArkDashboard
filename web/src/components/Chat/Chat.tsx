@@ -13,12 +13,12 @@ type Message = {
 }
 const Chat = () => {
   const { isAuthenticated, currentUser } = useAuth();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState([]); //<Message[]>
   const formMethods = useForm()
-
+  // https://github.com/dijonmusters/happy-chat/blob/main/components/messages.tsx
   useEffect(() => {
     const getData = async () => {
-      const { data } = await supabase.from("message").select("*");
+      const { data } = await supabase.from("Message").select("*");
 
       if (!data) {
         alert('no data');
@@ -39,7 +39,7 @@ const Chat = () => {
 
   useEffect(() => {
     const subscription = supabase
-      .from('message')
+      .from('Message')
       .on('INSERT', (payload) => {
         setMessages((prev) => ([...prev, payload.new]))
       })
@@ -55,24 +55,24 @@ const Chat = () => {
     if (typeof message === 'string' && message.trim().length !== 0) {
       formMethods.reset();
 
-      setMessages([
-        ...messages,
-        {
-          id: (Math.random() * 100).toString(),
-          content: message,
-          profile_id: "1",
-          created_at: "2021-08-01T12:00:00.000Z",
-        },
-      ])
-      // const { error } = await supabase
-      //   .from('message')
-      //   .insert({
+      // setMessages([
+      //   ...messages,
+      //   {
+      //     id: (Math.random() * 100).toString(),
       //     content: message,
-      //   });
+      //     profile_id: "1",
+      //     created_at: "2021-08-01T12:00:00.000Z",
+      //   },
+      // ])
+      const { error } = await supabase
+        .from('message')
+        .insert({
+          content: message,
+        });
 
-      // if (error) {
-      //   alert(error.message);
-      // }
+      if (error) {
+        alert(error.message);
+      }
     }
   }
   return (

@@ -63,7 +63,7 @@ const SigninPage = () => {
         </div>
         <TextField
           name="email"
-          className="rw-input"
+          className="rw-input pl-10"
           errorClassName="rw-input rw-input-error"
           placeholder="ola@nordmann.com"
           autoFocus
@@ -78,7 +78,7 @@ const SigninPage = () => {
             }
           }}
         />
-      <FieldError name="email" className="rw-field-error" />
+        <FieldError name="email" className="rw-field-error" />
       </div>
 
 
