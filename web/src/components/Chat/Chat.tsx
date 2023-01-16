@@ -25,22 +25,21 @@ const Message = ({ message, profile, setProfileCache }: { message: IMessage, pro
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('Profile')
         .select('id, username, full_name, avatar_url')
         .match({ id: message.profile_id })
         .single()
-      //   const { data, error } = await supabase.storage
-      //   .from(storage)
-      //   .download(path);
-      // if (error) {
-      //   throw error;
-      // }
-      // if (data) {
-      //   const url = URL.createObjectURL(data);
-      //   setAvatarUrl(url);
-      // }
+
       if (data) {
+        const { data: imgdata } = await supabase.storage
+          .from('avatars')
+          .download(data.avatar_url);
+
+        if (imgdata) {
+          const url = URL.createObjectURL(imgdata);
+          data.avatar_url = url;
+        }
         setProfileCache((current) => ({
           ...current,
           [data.id]: data,
@@ -55,7 +54,8 @@ const Message = ({ message, profile, setProfileCache }: { message: IMessage, pro
   return (
     <div key={message.id} aria-owns={message.profile_id === userId ? 'owner' : ''} className="flex pt-0 px-5 pb-11 aria-[owns=owner]:flex-row-reverse group chat-msg owner">
       <div className="flex-shrink-0 mt-auto -mb-5 relative chat-msg-profile">
-        <img className="h-10 w-10 rounded-full object-cover" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png" alt={profile.username} />
+        {/* TODO: Replace with avatar component later */}
+        <img className="h-10 w-10 rounded-full object-cover" src={profile.avatar_url || "https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png"} alt={profile.username} title={profile.username} />
         <div className="absolute bottom-0 text-xs font-semibold whitespace-nowrap left-[calc(100%+12px)] text-[#626466] group-aria-[owns=owner]:left-auto group-aria-[owns=owner]:right-[calc(100%+12px)] chat-msg-date">{timeTag(message.created_at)}</div>
       </div>
       <div className="ml-3 max-w-[70%] flex flex-col items-start group-aria-[owns=owner]:ml-0 group-aria-[owns=owner]:items-end group-aria-[owns=owner]:mr-3 chat-msg-content">
