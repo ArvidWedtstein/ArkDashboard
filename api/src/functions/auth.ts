@@ -134,11 +134,11 @@ export const handler = async (
       return true;
     },
     handler: ({ username, hashedPassword, salt, userAttributes }) => {
-      return db.user.create({
+      return db.users.create({
         data: {
           email: username,
           hashedPassword: hashedPassword,
-          salt: salt,
+          // salt: salt,
           // name: userAttributes.name
         },
       });
@@ -157,7 +157,7 @@ export const handler = async (
 
     // The name of the property you'd call on `db` to access your user table.
     // ie. if your Prisma model is named `User` this value would be `user`, as in `db.user`
-    authModelAccessor: "profiles",
+    authModelAccessor: "profile",
 
     // The name of the property you'd call on `db` to access your user credentials table.
     // ie. if your Prisma model is named `UserCredential` this value would be `userCredential`, as in `db.userCredential`
