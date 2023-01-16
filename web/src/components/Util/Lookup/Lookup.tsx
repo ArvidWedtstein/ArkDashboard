@@ -71,7 +71,7 @@ const Lookup = ({ items, type = "default", value, children, className, onChange,
       </div>
 
       {isComponentVisible ? (
-        <div className="absolute top-10 z-10 w-60 bg-white rounded shadow dark:bg-gray-800">
+        <div className="absolute top-12 z-10 w-60 bg-white rounded shadow dark:bg-gray-800 border dark:border-white border-gray-800">
           <ul className="overflow-y-auto py-1 max-h-48 text-gray-700 dark:text-gray-200" aria-labelledby="dropdownButton">
             {items.map((item) => {
               return (
