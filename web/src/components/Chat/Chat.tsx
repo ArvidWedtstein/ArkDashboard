@@ -10,7 +10,7 @@ type IMessage = {
   content: string,
   profile_id: string,
   created_at: string,
-}[] // remove []
+}
 type Profile = {
   id: string,
   username: string,
@@ -28,7 +28,7 @@ const Message = ({ message, profile, setProfileCache }: { message: IMessage, pro
       const { data } = await supabase
         .from('Profile')
         .select('id, username, full_name, avatar_url')
-        .match({ id: message[0].profile_id })
+        .match({ id: message.profile_id })
         .single()
 
       if (data) {
@@ -50,19 +50,17 @@ const Message = ({ message, profile, setProfileCache }: { message: IMessage, pro
     if (!profile) {
       fetchProfile();
     }
-  }, [profile, message[0].profile_id])
+  }, [profile, message.profile_id])
   return (
-    <div key={message[0].id} aria-owns={message[0].profile_id === userId ? 'owner' : ''} className="flex pt-0 px-5 pb-11 aria-[owns=owner]:flex-row-reverse group chat-msg owner">
+    <div key={message.id} aria-owns={message.profile_id === userId ? 'owner' : ''} className="flex pt-0 px-5 pb-11 aria-[owns=owner]:flex-row-reverse group chat-msg owner">
       <div className="flex-shrink-0 mt-auto -mb-5 relative chat-msg-profile">
         {/* TODO: Replace with avatar component later */}
         <img className="h-10 w-10 rounded-full object-cover" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}` || "https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png"} alt={profile.username} title={profile.username} />
-        <div className="absolute bottom-0 text-xs font-semibold whitespace-nowrap left-[calc(100%+12px)] text-[#626466] group-aria-[owns=owner]:left-auto group-aria-[owns=owner]:right-[calc(100%+12px)] chat-msg-date">{timeTag(message[message.length - 1].created_at)}</div>
+        <div className="absolute bottom-0 text-xs font-semibold whitespace-nowrap left-[calc(100%+12px)] text-[#626466] group-aria-[owns=owner]:left-auto group-aria-[owns=owner]:right-[calc(100%+12px)] chat-msg-date">{timeTag(message.created_at)}</div>
       </div>
       <div className="ml-3 max-w-[70%] flex flex-col items-start group-aria-[owns=owner]:ml-0 group-aria-[owns=owner]:items-end group-aria-[owns=owner]:mr-3 chat-msg-content">
-        {message.map((msg) => (
-          <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">{msg.content}</div>
-        ))}
-        {/* <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">{message.content}</div> */}
+        <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">{message.content}</div>
+        {/* <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">Cras mollis nec arcu malesuada tincidunt.</div> */}
         {/* <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">
                 <img className="max-w-xs w-full" src="https://media0.giphy.com/media/yYSSBtDgbbRzq/giphy.gif?cid=ecf05e47344fb5d835f832a976d1007c241548cc4eea4e7e&rid=giphy.gif" />
               </div> */}
@@ -107,10 +105,20 @@ const Chat = () => {
       return [new Date(item.created_at).setSeconds(0, 0), item.profile_id];
     });
 
+    let d = []
+    let groupData = data.forEach((item, i) => {
+      var previous = data[i == 0 ? i : i - 1];
+      var current = data[i];
+
+      if (previous.profile_id === current.profile_id && new Date(previous.created_at).setSeconds(0, 0) === new Date(current.created_at).setSeconds(0, 0) && previous !== current) {
+        d[new Date(current.created_at).setSeconds(0, 0)] = d[new Date(current.created_at).setSeconds(0, 0)] || [];
+        d[new Date(current.created_at).setSeconds(0, 0)].push(current);
+      }
+    })
     console.log(groupedData)
 
     // setMessages(data);
-    setMessages(groupedData);
+    setMessages(data);
   }
 
   useEffect(() => {

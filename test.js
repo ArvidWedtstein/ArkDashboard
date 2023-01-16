@@ -61,4 +61,23 @@ let t = groupBy2(data, function (item) {
   return [new Date(item.created_at).setSeconds(0, 0), item.profile_id];
 });
 
-console.log(t);
+// console.log(t);
+
+let d = {};
+data.forEach((item, i) => {
+  var previous = data[i == 0 ? i : i - 1];
+  var current = data[i];
+
+  if (
+    previous.profile_id === current.profile_id &&
+    previous.id !== current.id &&
+    new Date(current.created_at).setSeconds(0, 0) ==
+      new Date(previous.created_at).setSeconds(0, 0)
+  ) {
+    d[new Date(current.created_at).setSeconds(0, 0)] =
+      d[new Date(current.created_at).setSeconds(0, 0)] || [];
+    d[new Date(previous.created_at).setSeconds(0, 0)].push(previous);
+    d[new Date(current.created_at).setSeconds(0, 0)].push(current);
+  }
+});
+console.log(d);
