@@ -26,6 +26,7 @@ const SignupPage = () => {
 
   const onSubmit = async (data) => {
     try {
+      console.log(data)
       const response = await signUp({
         email: data.email,
         password: data.password,
@@ -70,7 +71,7 @@ const SignupPage = () => {
                     </div>
                     <TextField
                       name="email"
-                      className="rw-input"
+                      className="rw-input pl-10"
                       errorClassName="rw-input rw-input-error"
                       placeholder="ola@nordmann.com"
                       autoFocus

@@ -45,6 +45,8 @@ export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
         ];
       case "REMOVE":
         return state.filter((_, i) => i !== action.index)
+      case "RESET":
+        return []
       default:
         return state;
     }
@@ -124,6 +126,10 @@ export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
     }
   });
 
+  const clear = (() => {
+    setItem({ type: "RESET" });
+  })
+
   return (
     <>
       <div className="  ">
@@ -154,7 +160,7 @@ export const MaterialGrid = ({ items, error }: MaterialGridProps) => {
                 <svg aria-hidden="true" className="mr-2 w-4 h-4 fill-current" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z"></path></svg>
                 Turret Tower
               </button>
-              <button type="button" onClick={addTurretTower} className="first:rounded-l-lg last:rounded-r-lg inline-flex items-center py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-red-500 transition-colors dark:focus:ring-blue-500 dark:focus:text-white">
+              <button type="button" onClick={clear} className="first:rounded-l-lg last:rounded-r-lg inline-flex items-center py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-red-500 transition-colors dark:focus:ring-blue-500 dark:focus:text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="mr-2 w-4 h-4 fill-current" fill="currentColor" viewBox="0 0 352 512"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" /></svg>
                 Clear
               </button>

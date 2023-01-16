@@ -9,7 +9,7 @@ const MaterialCalculatorPage = () => {
       <MetaTags title="MaterialCalculator" description="MaterialCalculator page" />
       <div className="rounded-lg m-3">
         <header className="p-4 dark:text-white text-black">
-          <h2 className="rw-heading text-xl">Material Calculator</h2>
+          <h2 className="rw-heading text-xl dark:text-white text-black">Material Calculator</h2>
         </header>
         <div className="p-4 rounded-b-lg">
           <MaterialCalculatorForm />
