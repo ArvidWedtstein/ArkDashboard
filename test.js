@@ -23,7 +23,6 @@ let data = [
     created_at: "2023-01-16T10:00:30.000Z",
     profile_id: 1,
   },
-
   {
     id: 5,
     content: "test123254346",
@@ -63,21 +62,34 @@ let t = groupBy2(data, function (item) {
 
 // console.log(t);
 
-let d = {};
-data.forEach((item, i) => {
-  var previous = data[i == 0 ? i : i - 1];
-  var current = data[i];
-
+var final = [];
+function groupValues(t, v, i, a) {
   if (
-    previous.profile_id === current.profile_id &&
-    previous.id !== current.id &&
-    new Date(current.created_at).setSeconds(0, 0) ==
-      new Date(previous.created_at).setSeconds(0, 0)
+    t.hasOwnProperty("profile_id") &&
+    new Date(t.created_at).setSeconds(0, 0) ===
+      new Date(v.created_at).setSeconds(0, 0) &&
+    t.profile_id === v.profile_id
   ) {
-    d[new Date(current.created_at).setSeconds(0, 0)] =
-      d[new Date(current.created_at).setSeconds(0, 0)] || [];
-    d[new Date(previous.created_at).setSeconds(0, 0)].push(previous);
-    d[new Date(current.created_at).setSeconds(0, 0)].push(current);
+    t.id.push(v.id);
+    t.content.push(v.content);
+    t.profile_id = v.profile_id;
+    t.created_at = v.created_at;
+  } else {
+    if (t.hasOwnProperty("profile_id")) final.push(t);
+    t = {
+      id: [v.id],
+      content: [v.content],
+      profile_id: v.profile_id,
+      created_at: v.created_at,
+    };
   }
-});
-console.log(d);
+  if (i == a.length - 1) final.push(t);
+  return t;
+}
+data.reduce(groupValues, {});
+console.log(final);
+// console.log(d);
+
+/**
+ * Current
+ */
