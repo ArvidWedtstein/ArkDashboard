@@ -5,10 +5,18 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { supabase } from "src/App";
 import { groupByMultiple, timeTag } from "src/lib/formatters";
 
+// type IMessage = {
+//   id: string,
+//   content: string,
+//   profile_id: string,
+//   created_at: string,
+// }
+
+// Grouped message type
 type IMessage = {
-  id: string,
-  content: string,
-  profile_id: string,
+  id: string[],
+  content: string[],
+  profile_id: number,
   created_at: string,
 }
 type Profile = {
@@ -52,15 +60,18 @@ const Message = ({ message, profile, setProfileCache }: { message: IMessage, pro
     }
   }, [profile, message.profile_id])
   return (
-    <div key={message.id} aria-owns={message.profile_id === userId ? 'owner' : ''} className="flex pt-0 px-5 pb-11 aria-[owns=owner]:flex-row-reverse group chat-msg owner">
+    // <div key={message.id} aria-owns={message.profile_id === userId ? 'owner' : ''} className="flex pt-0 px-5 pb-11 aria-[owns=owner]:flex-row-reverse group chat-msg owner">
+    <div key={message.id[0]} aria-owns={message.profile_id.toString() === userId ? 'owner' : ''} className="flex pt-0 px-5 pb-11 aria-[owns=owner]:flex-row-reverse group chat-msg owner">
       <div className="flex-shrink-0 mt-auto -mb-5 relative chat-msg-profile">
         {/* TODO: Replace with avatar component later */}
         <img className="h-10 w-10 rounded-full object-cover" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}` || "https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png"} alt={profile.username} title={profile.username} />
         <div className="absolute bottom-0 text-xs font-semibold whitespace-nowrap left-[calc(100%+12px)] text-[#626466] group-aria-[owns=owner]:left-auto group-aria-[owns=owner]:right-[calc(100%+12px)] chat-msg-date">{timeTag(message.created_at)}</div>
       </div>
       <div className="ml-3 max-w-[70%] flex flex-col items-start group-aria-[owns=owner]:ml-0 group-aria-[owns=owner]:items-end group-aria-[owns=owner]:mr-3 chat-msg-content">
-        <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">{message.content}</div>
-        {/* <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">Cras mollis nec arcu malesuada tincidunt.</div> */}
+        {message.content.map((content, index) => (
+          <div key={`${message.id[0]}-${index}`} className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">{content}</div>
+        ))}
+        {/* <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">{message.content}</div> */}
         {/* <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">
                 <img className="max-w-xs w-full" src="https://media0.giphy.com/media/yYSSBtDgbbRzq/giphy.gif?cid=ecf05e47344fb5d835f832a976d1007c241548cc4eea4e7e&rid=giphy.gif" />
               </div> */}
@@ -71,7 +82,7 @@ const Message = ({ message, profile, setProfileCache }: { message: IMessage, pro
 const Chat = () => {
   const { isAuthenticated, currentUser } = useAuth();
   const [profileCache, setProfileCache] = useState({})
-  const [messages, setMessages] = useState([]); //<Message[]>
+  const [messages, setMessages] = useState<any[]>([]); //<Message[]>
   const messagesRef = useRef<HTMLDivElement>(null)
   const formMethods = useForm();
   // https://github.com/dijonmusters/happy-chat/blob/main/components/messages.tsx
@@ -101,26 +112,36 @@ const Chat = () => {
     }))
     console.log(data)
 
-    let groupedData = groupByMultiple(data, (item) => {
-      return [new Date(item.created_at).setSeconds(0, 0), item.profile_id];
-    });
 
-    let d = []
-    let groupData = data.forEach((item, i) => {
-      var previous = data[i == 0 ? i : i - 1];
-      var current = data[i];
-
-      d[new Date(current.created_at).setSeconds(0, 0)] = d[new Date(current.created_at).setSeconds(0, 0)] || [];
-      if (previous.profile_id === current.profile_id && new Date(previous.created_at).setSeconds(0, 0) === new Date(current.created_at).setSeconds(0, 0) && previous !== current) {
-
-        d[new Date(current.created_at).setSeconds(0, 0)].push(previous);
+    let groupedMessages = [];
+    const groupValues = ((t, v, i, a) => {
+      if (
+        t.hasOwnProperty("profile_id") &&
+        new Date(t.created_at).setSeconds(0, 0) ===
+        new Date(v.created_at).setSeconds(0, 0) &&
+        t.profile_id === v.profile_id
+      ) {
+        t.id.push(v.id);
+        t.content.push(v.content);
+        t.profile_id = v.profile_id;
+        t.created_at = v.created_at;
+      } else {
+        if (t.hasOwnProperty("profile_id")) groupedMessages.push(t);
+        t = {
+          id: [v.id],
+          content: [v.content],
+          profile_id: v.profile_id,
+          created_at: v.created_at,
+        };
       }
-      d[new Date(current.created_at).setSeconds(0, 0)].push(current);
-    })
-    console.log(groupedData)
+      if (i == a.length - 1) groupedMessages.push(t);
+      return t;
+    });
+    data.reduce(groupValues, {});
+    console.log(groupedMessages);
 
     // setMessages(data);
-    setMessages(data);
+    setMessages(groupedMessages);
   }
 
   useEffect(() => {

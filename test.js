@@ -36,34 +36,9 @@ let data = [
     profile_id: 2,
   },
 ];
-
-function groupBy2(array, f) {
-  let groups = {};
-  array
-    .sort((a, b) => {
-      const diff =
-        new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-      if (diff) return diff;
-      return b.profile_id.toString().localeCompare(a.profile_id.toString());
-    })
-    .forEach(function (o) {
-      var group = JSON.stringify(f(o));
-      groups[group] = groups[group] || [];
-      groups[group].push(o);
-    });
-  return Object.keys(groups).map(function (group) {
-    return groups[group];
-  });
-}
-
-let t = groupBy2(data, function (item) {
-  return [new Date(item.created_at).setSeconds(0, 0), item.profile_id];
-});
-
-// console.log(t);
-
-var final = [];
-function groupValues(t, v, i, a) {
+console.time("test");
+let final = [];
+const groupValues = (t, v, i, a) => {
   if (
     t.hasOwnProperty("profile_id") &&
     new Date(t.created_at).setSeconds(0, 0) ===
@@ -85,9 +60,10 @@ function groupValues(t, v, i, a) {
   }
   if (i == a.length - 1) final.push(t);
   return t;
-}
+};
 data.reduce(groupValues, {});
 console.log(final);
+console.timeEnd("test");
 // console.log(d);
 
 /**
