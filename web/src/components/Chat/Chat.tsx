@@ -16,7 +16,7 @@ import { groupByMultiple, timeTag } from "src/lib/formatters";
 type IMessage = {
   id: string[],
   content: string[],
-  profile_id: number,
+  profile_id: string,
   created_at: string,
 }
 type Profile = {
@@ -61,7 +61,7 @@ const Message = ({ message, profile, setProfileCache }: { message: IMessage, pro
   }, [profile, message.profile_id])
   return (
     // <div key={message.id} aria-owns={message.profile_id === userId ? 'owner' : ''} className="flex pt-0 px-5 pb-11 aria-[owns=owner]:flex-row-reverse group chat-msg owner">
-    <div key={message.id[0]} aria-owns={message.profile_id.toString() === userId ? 'owner' : ''} className="flex pt-0 px-5 pb-11 aria-[owns=owner]:flex-row-reverse group chat-msg owner">
+    <div key={message.id[0]} aria-owns={message.profile_id === userId ? 'owner' : ''} className="flex pt-0 px-5 pb-11 aria-[owns=owner]:flex-row-reverse group chat-msg owner">
       <div className="flex-shrink-0 mt-auto -mb-5 relative chat-msg-profile">
         {/* TODO: Replace with avatar component later */}
         <img className="h-10 w-10 rounded-full object-cover" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}` || "https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png"} alt={profile.username} title={profile.username} />
@@ -157,7 +157,13 @@ const Chat = () => {
         if (messagesRef.current) {
           messagesRef.current.scrollTop = messagesRef.current.scrollHeight
         }
-        setMessages((prev) => ([...prev, payload.new]))
+        setMessages((prev) => ([...prev, payload.new.map((message) => ({
+          id: [message.id],
+          content: [message.content],
+          profile_id: message.profile_id,
+          created_at: message.created_at,
+        }))]))
+        // setMessages((prev) => ([...prev, payload.new]))
       })
       .subscribe()
 
