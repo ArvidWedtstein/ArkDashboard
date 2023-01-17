@@ -282,18 +282,32 @@ export const groupBy = (xs: Array<any>, key: string) => {
     return rv;
   }, {});
 };
-export const groupBy2 = (list, keyGetter) => {
-  const map = new Map();
-  list.forEach((item) => {
-    const key = keyGetter(item);
-    const collection = map.get(key);
-    if (!collection) {
-      map.set(key, [item]);
-    } else {
-      collection.push(item);
-    }
+/**
+ *
+ * @param array
+ * @param callback
+ * @returns grouped array of objects
+ * @example
+ * data = [
+ * { created_at: '2021-09-01T14:17:14.899Z', profile_id: 1 },
+ * { created_at: '2021-09-01T14:17:14.899Z', profile_id: 2 },
+ * { created_at: '2021-09-01T14:17:14.899Z', profile_id: 3 }
+ * ]
+ * groupByMultiple(data, function (item) {
+    item.created_at = new Date(item.created_at).setSeconds(0, 0);
+    return [item.created_at, item.profile_id];
+  })
+ */
+export const groupByMultiple = (array: Array<any>, callback: (item) => void) => {
+  let groups = {};
+  array.forEach(function (o) {
+    var group = JSON.stringify(callback(o));
+    groups[group] = groups[group] || [];
+    groups[group].push(o);
   });
-  return map;
+  return Object.keys(groups).map(function (group) {
+    return groups[group];
+  });
 }
 
 type Colors = 'red' | 'purple' | 'blue' | 'green' | 'slate' | 'stone' | 'gray';
