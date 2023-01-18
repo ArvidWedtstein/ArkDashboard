@@ -88,6 +88,7 @@
 .rw-form-error-list {
   @apply mt-2 list-inside list-disc;
 }
+
 .rw-button {
   @apply flex cursor-pointer justify-center rounded border-0 bg-gray-200 py-1 px-4 text-xs font-semibold uppercase leading-loose tracking-wide text-gray-500 no-underline transition duration-100;
 }
@@ -119,7 +120,7 @@
   @apply mr-1 text-xl leading-5;
 }
 .rw-button-group {
-  @apply my-3 mx-2 flex justify-center;
+  @apply my-3 mx-2 flex justify-center rounded-md shadow-sm;
 }
 .rw-button-group .rw-button {
   @apply mx-1;
@@ -135,7 +136,7 @@
 }
 .rw-input {
   /* @apply block mt-2 w-full p-2 bg-white border border-gray-200 rounded outline-none; */
-  @apply block w-full appearance-none rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 invalid:border-red-500 focus:border-stone-500 focus:ring-stone-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-stone-200 dark:focus:ring-stone-200;
+  @apply block w-full appearance-none rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-900 invalid:border-red-500 focus:border-stone-500 focus:ring-stone-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-stone-200 dark:focus:ring-stone-200;
 }
 .rw-check-radio-items {
   @apply flex justify-items-center;

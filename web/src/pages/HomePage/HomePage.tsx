@@ -2,6 +2,7 @@ import { useAuth } from "@redwoodjs/auth";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import Chat from "src/components/Chat/Chat";
+import Lookup from "src/components/Util/Lookup/Lookup";
 const HomePage = () => {
   const { isAuthenticated, client: supabase } = useAuth();
   // if (document.addEventListener) {
@@ -19,7 +20,7 @@ const HomePage = () => {
       <MetaTags title="Home" description="Home page" />
 
 
-      <div className="container-xl p-3 mt-3 text-center">
+      <div className="container-xl p-3 mt-3 text-center h-[100vh]">
         <div
           className="relative overflow-hidden bg-cover bg-no-repeat border border-white rounded-md"
           style={{
@@ -52,6 +53,8 @@ const HomePage = () => {
           </div>
         </div>
         {isAuthenticated && <Chat />}
+
+
         {/* <PieChart className="w-32" hollowPercentage={80} backgroundColor="#232323" items={[{ percent: 5, color: 'green' }]}><text x="50%" y="50%" textAnchor="middle" fontSize="5" fill="white" dominantBaseline="middle">test</text></PieChart> */}
       </div >
     </>

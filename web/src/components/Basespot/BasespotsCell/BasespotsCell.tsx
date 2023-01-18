@@ -5,6 +5,7 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import Basespots from 'src/components/Basespot/Basespots'
 import Pagination from 'src/components/Pagination/Pagination';
+import Lookup from 'src/components/Util/Lookup/Lookup';
 
 // export const QUERY = gql`
 //   query FindBasespots {
@@ -98,9 +99,12 @@ export const Empty = () => {
   )
 }
 
-export const Failure = ({ error }: CellFailureProps) => (
-  <div className="rw-cell-error">{error?.message}</div>
-)
+export const Failure = ({ error }: CellFailureProps) => {
+
+  return (
+    <div className="rw-cell-error">{error?.message}</div>
+  )
+}
 
 // export const Success = ({ basespots }: CellSuccessProps<FindBasespots>) => {
 //   return <Basespots basespots={basespots} />
