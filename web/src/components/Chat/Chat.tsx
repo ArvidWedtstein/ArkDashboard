@@ -1,7 +1,7 @@
 
 import { useAuth } from "@redwoodjs/auth";
 import { Form, TextField, useForm } from "@redwoodjs/forms";
-import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "src/App";
 import { groupByMultiple, timeTag } from "src/lib/formatters";
 
@@ -113,7 +113,9 @@ const Chat = () => {
     }, {});
     return groupedMessages;
   }
-  const groupedMessages = useMemo(() => groupMessages(messages), [messages])
+  const groupMessage = useCallback(() => {
+    setMessages(groupMessages(messages));
+  }, [messages])
 
   const getData = async () => {
     const { data } = await supabase
@@ -139,11 +141,8 @@ const Chat = () => {
     }))
     console.log(data)
 
-
-
-
     setMessages(data);
-    setMessages(groupedMessages);
+    groupMessage();
   }
 
   useEffect(() => {
@@ -165,6 +164,7 @@ const Chat = () => {
           profile_id: message.profile_id,
           created_at: message.created_at,
         }))]))
+        groupMessage();
         // setMessages((prev) => ([...prev, payload.new]))
       })
       .subscribe()
