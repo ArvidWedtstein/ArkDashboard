@@ -1,7 +1,7 @@
 
 import { useAuth } from "@redwoodjs/auth";
 import { Form, TextField, useForm } from "@redwoodjs/forms";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "src/App";
 import { groupByMultiple, timeTag } from "src/lib/formatters";
 
@@ -86,7 +86,34 @@ const Chat = () => {
   const messagesRef = useRef<HTMLDivElement>(null)
   const formMethods = useForm();
   // https://github.com/dijonmusters/happy-chat/blob/main/components/messages.tsx
-
+  const groupMessages = (msgs: any[]) => {
+    let groupedMessages = [];
+    msgs.reduce((t, v, i, a) => {
+      if (
+        t.hasOwnProperty("profile_id") &&
+        new Date(t.created_at).setSeconds(0, 0) ===
+        new Date(v.created_at).setSeconds(0, 0) &&
+        t.profile_id === v.profile_id
+      ) {
+        t.id.push(v.id);
+        t.content.push(v.content);
+        t.profile_id = v.profile_id;
+        t.created_at = v.created_at;
+      } else {
+        if (t.hasOwnProperty("profile_id")) groupedMessages.push(t);
+        t = {
+          id: [v.id],
+          content: [v.content],
+          profile_id: v.profile_id,
+          created_at: v.created_at,
+        };
+      }
+      if (i == a.length - 1) groupedMessages.push(t);
+      return t;
+    }, {});
+    return groupedMessages;
+  }
+  const groupedMessages = useMemo(() => groupMessages(messages), [messages])
 
   const getData = async () => {
     const { data } = await supabase
@@ -113,34 +140,9 @@ const Chat = () => {
     console.log(data)
 
 
-    let groupedMessages = [];
-    const groupValues = ((t, v, i, a) => {
-      if (
-        t.hasOwnProperty("profile_id") &&
-        new Date(t.created_at).setSeconds(0, 0) ===
-        new Date(v.created_at).setSeconds(0, 0) &&
-        t.profile_id === v.profile_id
-      ) {
-        t.id.push(v.id);
-        t.content.push(v.content);
-        t.profile_id = v.profile_id;
-        t.created_at = v.created_at;
-      } else {
-        if (t.hasOwnProperty("profile_id")) groupedMessages.push(t);
-        t = {
-          id: [v.id],
-          content: [v.content],
-          profile_id: v.profile_id,
-          created_at: v.created_at,
-        };
-      }
-      if (i == a.length - 1) groupedMessages.push(t);
-      return t;
-    });
-    data.reduce(groupValues, {});
-    console.log(groupedMessages);
 
-    // setMessages(data);
+
+    setMessages(data);
     setMessages(groupedMessages);
   }
 
