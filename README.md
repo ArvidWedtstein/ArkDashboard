@@ -278,16 +278,13 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 ## Contact
 
-Invite the bot to your server [here](https://discord.com/oauth2/authorize?client_id=787324889634963486&scope=bot&permissions=10200548352)
+No contact :)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->
 
 ## Acknowledgments
-
-https://rapidapi.com/arkbuddy-arkbuddy-default/api/ark-survival-evolved-tame-data/
-Will come later
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -305,9 +302,6 @@ Will come later
 [license-url]: https://github.com/ArvidWedtstein/ArkDashboard/blob/prod/LICENSE.txt
 [version-shield]: https://img.shields.io/github/package-json/v/ArvidWedtstein/ArkDashboard/dev?style=for-the-badge
 [version-url]: https://github.com/ArvidWedtstein/ArkDashboard
-
-<!-- https://supabase.com/docs/guides/auth/auth-discord -->
-<!--https://api.kanye.rest-->
 
 # README
 
