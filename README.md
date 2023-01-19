@@ -71,6 +71,8 @@ Description in progress
 ### Built With
 
 This project is mainly written in React, together with these frameworks and libraries:
+[![Redwood][Redwood.js]][Redwood-url]
+[![Dart][Dart.com]][Dart-url]
 
 <div align="left">
 
@@ -302,6 +304,8 @@ No contact :)
 [license-url]: https://github.com/ArvidWedtstein/ArkDashboard/blob/prod/LICENSE.txt
 [version-shield]: https://img.shields.io/github/package-json/v/ArvidWedtstein/ArkDashboard/dev?style=for-the-badge
 [version-url]: https://github.com/ArvidWedtstein/ArkDashboard
+[Redwood.js]: https://img.shields.io/badge/Redwood-454545?style=for-the-badge&logo=redwoodjs&logoColor=BF4722
+[Redwood-url]: https://redwoodjs.com/
 
 # README
 
