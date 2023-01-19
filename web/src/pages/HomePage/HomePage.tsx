@@ -19,15 +19,15 @@ const HomePage = () => {
     <>
       <MetaTags title="Home" description="Home page" />
 
-
-      <div className="container-xl p-3 mt-3 text-center h-[100vh]">
+      <div className="container-xl mt-3 p-3 text-center">
         <div
-          className="relative overflow-hidden bg-cover bg-no-repeat border border-white rounded-md"
+          className="relative overflow-hidden rounded-md border border-white bg-cover bg-no-repeat"
           style={{
             imageResolution: "10dpi",
             imageRendering: "auto",
             backgroundPosition: "50%",
-            backgroundImage: "url('https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj')",
+            backgroundImage:
+              "url('https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj')",
             height: "350px",
           }}
         >
@@ -54,9 +54,8 @@ const HomePage = () => {
         </div>
         {isAuthenticated && <Chat />}
 
-
         {/* <PieChart className="w-32" hollowPercentage={80} backgroundColor="#232323" items={[{ percent: 5, color: 'green' }]}><text x="50%" y="50%" textAnchor="middle" fontSize="5" fill="white" dominantBaseline="middle">test</text></PieChart> */}
-      </div >
+      </div>
     </>
   );
 };
