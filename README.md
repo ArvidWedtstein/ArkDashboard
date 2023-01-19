@@ -72,7 +72,7 @@ Description in progress
 
 This project is mainly written in React, together with these frameworks and libraries:
 
-[![Redwood][redwood.js]][redwood-url]
+[![Redwood][Redwood.js]][Redwood-url]
 
 <!-- GETTING STARTED -->
 
@@ -297,8 +297,8 @@ No contact :)
 [license-url]: https://github.com/ArvidWedtstein/ArkDashboard/blob/prod/LICENSE.txt
 [version-shield]: https://img.shields.io/github/package-json/v/ArvidWedtstein/ArkDashboard/dev?style=for-the-badge
 [version-url]: https://github.com/ArvidWedtstein/ArkDashboard
-[redwood.js]: https://img.shields.io/badge/Redwood-454545?style=for-the-badge&logo=redwoodjs&logoColor=BF4722
-[redwood-url]: https://redwoodjs.com/
+[Redwood.js]: https://img.shields.io/badge/Redwood-454545?style=for-the-badge&logo=redwoodjs&logoColor=BF4722
+[Redwood-url]: https://redwoodjs.com/
 
 # README
 
