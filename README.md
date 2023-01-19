@@ -278,7 +278,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 ## Contact
 
-Invite the bot to your server [here](https://discord.com/oauth2/authorize?client_id=787324889634963486&scope=bot&permissions=10200548352)
+No contact :)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -286,8 +286,6 @@ Invite the bot to your server [here](https://discord.com/oauth2/authorize?client
 
 ## Acknowledgments
 
-https://rapidapi.com/arkbuddy-arkbuddy-default/api/ark-survival-evolved-tame-data/
-Will come later
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
