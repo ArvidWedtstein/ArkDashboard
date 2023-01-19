@@ -61,11 +61,48 @@ const groupValues = (t, v, i, a) => {
   if (i == a.length - 1) final.push(t);
   return t;
 };
+let final2 = [];
+const groupValues2 = (t, v, i, a) => {
+  if (
+    t.hasOwnProperty("profile_id") &&
+    new Date(t.created_at).setSeconds(0, 0) ===
+      new Date(v.created_at).setSeconds(0, 0) &&
+    t.profile_id === v.profile_id
+  ) {
+    t.id.push(v.id);
+    t.content.push(v.content);
+    t.profile_id = v.profile_id;
+    t.created_at = v.created_at;
+  } else {
+    if (t.hasOwnProperty("profile_id")) final2.push(t);
+    t = {
+      id: [v.id],
+      content: [v.content],
+      profile_id: v.profile_id,
+      created_at: v.created_at,
+    };
+  }
+  if (i == a.length - 1) final2.push(t);
+  return t;
+};
 data.reduce(groupValues, {});
 console.log(final);
+
+final.reduce(groupValues, {});
+console.log(final2);
 console.timeEnd("test");
 // console.log(d);
 
 /**
  * Current
  */
+
+let t = {
+  id: [1],
+  content: ["aaaa"],
+  profile_id: 1,
+  created_at: "2023-01-16T00:00:00.000Z",
+};
+t.map((v, i, a) => {
+  console.log(v, i, a);
+});
