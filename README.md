@@ -72,12 +72,7 @@ Description in progress
 
 This project is mainly written in React, together with these frameworks and libraries:
 
-<div align="left">
-
-![Stuff used in this project](https://arvidgithubembed.herokuapp.com/skills?languages=typescript,redwood,prisma,sql,react&backgroundcolor=0D1117&title=-&titlecolor=ffffff&textcolor=ffffff&boxcolor=CFCDFF&bordercolor=0D1117)
-
-</div>
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+[![Redwood][redwood.js]][redwood-url]
 
 <!-- GETTING STARTED -->
 
@@ -302,6 +297,8 @@ No contact :)
 [license-url]: https://github.com/ArvidWedtstein/ArkDashboard/blob/prod/LICENSE.txt
 [version-shield]: https://img.shields.io/github/package-json/v/ArvidWedtstein/ArkDashboard/dev?style=for-the-badge
 [version-url]: https://github.com/ArvidWedtstein/ArkDashboard
+[redwood.js]: https://img.shields.io/badge/Redwood-454545?style=for-the-badge&logo=redwoodjs&logoColor=BF4722
+[redwood-url]: https://redwoodjs.com/
 
 # README
 
