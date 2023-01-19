@@ -74,9 +74,6 @@ This project is mainly written in React, together with these frameworks and libr
 
 [![Redwood][Redwood.js]][Redwood-url]
 
-
-
-
 <!-- GETTING STARTED -->
 
 ## Getting Started
