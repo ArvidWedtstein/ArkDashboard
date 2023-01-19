@@ -67,48 +67,48 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
   let [currentMap, setCurrentMap] = useState("");
 
   return (
-    <div className="">
-    <div className="flex items-center">
-      <Lookup
-        items={Object.keys(mapImages).map((k) => ({
-          name: k,
-        }))}
-        onChange={(e) => setCurrentMap(e.name)}
-      >
-        {!!currentMap ? currentMap : "Choose map"}
-      </Lookup>
-      <button
-        className="rounded-md bg-gray-800 px-4 py-2 text-white"
-        onClick={() => setCurrentMap("")}
-      >
-        Clear
-      </button>
+    <div className="h-[100vh]">
+      <div className="flex items-center">
+        <Lookup
+          items={Object.keys(mapImages).map((k) => ({
+            name: k,
+          }))}
+          onChange={(e) => setCurrentMap(e.name)}
+        >
+          {!!currentMap ? currentMap : "Choose map"}
+        </Lookup>
+        <button
+          className="rw-button rounded-md bg-gray-800 px-4 py-2 text-white"
+          onClick={() => setCurrentMap("")}
+        >
+          Clear
+        </button>
+      </div>
+      <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {basespots
+          .filter((spot) =>
+            spot.Map.toLowerCase().includes(currentMap.toLowerCase())
+          )
+          .map((basespot, i) => (
+            <ArkCard
+              key={`${basespot.id}-${i}`}
+              title={basespot.name}
+              subtitle={basespot.Map.split(/(?=[A-Z])/).join(" ")}
+              content={basespot.description}
+              ring={`${basespot.estimatedForPlayers} players`}
+              image={{
+                src: mapImages[basespot.Map],
+                alt: basespot.Map,
+                position: `${random(0, 100)}% ${random(25, 75)}%`,
+              }}
+              button={{
+                text: "Learn More",
+                link: routes.basespot({ id: basespot.id.toString() }),
+              }}
+            />
+          ))}
+      </div>
     </div>
-    <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {basespots
-        .filter((spot) =>
-          spot.Map.toLowerCase().includes(currentMap.toLowerCase())
-        )
-        .map((basespot, i) => (
-          <ArkCard
-            key={`${basespot.id}-${i}`}
-            title={basespot.name}
-            subtitle={basespot.Map.split(/(?=[A-Z])/).join(" ")}
-            content={basespot.description}
-            ring={`${basespot.estimatedForPlayers} players`}
-            image={{
-              src: mapImages[basespot.Map],
-              alt: basespot.Map,
-              position: `${random(0, 100)}% ${random(25, 75)}%`,
-            }}
-            button={{
-              text: "Learn More",
-              link: routes.basespot({ id: basespot.id.toString() }),
-            }}
-          />
-        ))}
-    </div>
-  </div>
   )
 }
 

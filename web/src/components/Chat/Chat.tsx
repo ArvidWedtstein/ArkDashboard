@@ -1,7 +1,7 @@
 
 import { useAuth } from "@redwoodjs/auth";
 import { Form, TextField, useForm } from "@redwoodjs/forms";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "src/App";
 import { groupByMultiple, timeTag } from "src/lib/formatters";
 
@@ -16,7 +16,7 @@ import { groupByMultiple, timeTag } from "src/lib/formatters";
 type IMessage = {
   id: string[],
   content: string[],
-  profile_id: number,
+  profile_id: string,
   created_at: string,
 }
 type Profile = {
@@ -61,7 +61,7 @@ const Message = ({ message, profile, setProfileCache }: { message: IMessage, pro
   }, [profile, message.profile_id])
   return (
     // <div key={message.id} aria-owns={message.profile_id === userId ? 'owner' : ''} className="flex pt-0 px-5 pb-11 aria-[owns=owner]:flex-row-reverse group chat-msg owner">
-    <div key={message.id[0]} aria-owns={message.profile_id.toString() === userId ? 'owner' : ''} className="flex pt-0 px-5 pb-11 aria-[owns=owner]:flex-row-reverse group chat-msg owner">
+    <div key={message.id[0]} aria-owns={message.profile_id === userId ? 'owner' : ''} className="flex pt-0 px-5 pb-11 aria-[owns=owner]:flex-row-reverse group chat-msg owner">
       <div className="flex-shrink-0 mt-auto -mb-5 relative chat-msg-profile">
         {/* TODO: Replace with avatar component later */}
         <img className="h-10 w-10 rounded-full object-cover" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}` || "https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png"} alt={profile.username} title={profile.username} />
@@ -86,7 +86,36 @@ const Chat = () => {
   const messagesRef = useRef<HTMLDivElement>(null)
   const formMethods = useForm();
   // https://github.com/dijonmusters/happy-chat/blob/main/components/messages.tsx
-
+  const groupMessages = (msgs: any[]) => {
+    let groupedMessages = [];
+    msgs.reduce((t, v, i, a) => {
+      if (
+        t.hasOwnProperty("profile_id") &&
+        new Date(t.created_at).setSeconds(0, 0) ===
+        new Date(v.created_at).setSeconds(0, 0) &&
+        t.profile_id === v.profile_id
+      ) {
+        t.id.push(v.id);
+        t.content.push(v.content);
+        t.profile_id = v.profile_id;
+        t.created_at = v.created_at;
+      } else {
+        if (t.hasOwnProperty("profile_id")) groupedMessages.push(t);
+        t = {
+          id: [v.id],
+          content: [v.content],
+          profile_id: v.profile_id,
+          created_at: v.created_at,
+        };
+      }
+      if (i == a.length - 1) groupedMessages.push(t);
+      return t;
+    }, {});
+    return groupedMessages;
+  }
+  const groupMessage = useCallback(() => {
+    setMessages(groupMessages(messages));
+  }, [messages])
 
   const getData = async () => {
     const { data } = await supabase
@@ -112,36 +141,8 @@ const Chat = () => {
     }))
     console.log(data)
 
-
-    let groupedMessages = [];
-    const groupValues = ((t, v, i, a) => {
-      if (
-        t.hasOwnProperty("profile_id") &&
-        new Date(t.created_at).setSeconds(0, 0) ===
-        new Date(v.created_at).setSeconds(0, 0) &&
-        t.profile_id === v.profile_id
-      ) {
-        t.id.push(v.id);
-        t.content.push(v.content);
-        t.profile_id = v.profile_id;
-        t.created_at = v.created_at;
-      } else {
-        if (t.hasOwnProperty("profile_id")) groupedMessages.push(t);
-        t = {
-          id: [v.id],
-          content: [v.content],
-          profile_id: v.profile_id,
-          created_at: v.created_at,
-        };
-      }
-      if (i == a.length - 1) groupedMessages.push(t);
-      return t;
-    });
-    data.reduce(groupValues, {});
-    console.log(groupedMessages);
-
-    // setMessages(data);
-    setMessages(groupedMessages);
+    setMessages(data);
+    groupMessage();
   }
 
   useEffect(() => {
@@ -157,7 +158,14 @@ const Chat = () => {
         if (messagesRef.current) {
           messagesRef.current.scrollTop = messagesRef.current.scrollHeight
         }
-        setMessages((prev) => ([...prev, payload.new]))
+        setMessages((prev) => ([...prev, payload.new.map((message) => ({
+          id: [message.id],
+          content: [message.content],
+          profile_id: message.profile_id,
+          created_at: message.created_at,
+        }))]))
+        groupMessage();
+        // setMessages((prev) => ([...prev, payload.new]))
       })
       .subscribe()
 

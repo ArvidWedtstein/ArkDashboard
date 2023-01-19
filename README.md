@@ -64,7 +64,7 @@
 
 ## About The Project
 
-Description will come later
+Description in progress
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -148,7 +148,7 @@ Deploying image to scaleway:
 
 ## Usage
 
-This bot is still in development. I will add more features in the future.
+Project can be used to browse through some of the best Ark: Survival Evolved spots out there, and much more.
 
 Apply changes to database:
 
