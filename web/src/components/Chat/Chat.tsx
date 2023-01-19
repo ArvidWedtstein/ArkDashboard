@@ -113,9 +113,9 @@ const Chat = () => {
     }, {});
     return groupedMessages;
   }
-  const groupMessage = useCallback(() => {
-    setMessages(groupMessages(messages));
-  }, [messages])
+  // const groupMessage = useCallback(() => {
+
+  // }, [messages])
 
   const getData = async () => {
     const { data } = await supabase
@@ -141,8 +141,9 @@ const Chat = () => {
     }))
     console.log(data)
 
-    setMessages(data);
-    groupMessage();
+    // setMessages(data);
+    setMessages(groupMessages(data));
+    // groupMessage();
   }
 
   useEffect(() => {
@@ -158,13 +159,13 @@ const Chat = () => {
         if (messagesRef.current) {
           messagesRef.current.scrollTop = messagesRef.current.scrollHeight
         }
-        setMessages((prev) => ([...prev, payload.new.map((message) => ({
-          id: [message.id],
-          content: [message.content],
-          profile_id: message.profile_id,
-          created_at: message.created_at,
-        }))]))
-        groupMessage();
+        setMessages((prev) => ([...prev, {
+          id: [payload.new.id],
+          content: [payload.new.content],
+          profile_id: payload.new.profile_id,
+          created_at: payload.new.created_at,
+        }]))
+        // groupMessage();
         // setMessages((prev) => ([...prev, payload.new]))
       })
       .subscribe()

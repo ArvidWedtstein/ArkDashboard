@@ -286,7 +286,6 @@ No contact :)
 
 ## Acknowledgments
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
@@ -303,9 +302,6 @@ No contact :)
 [license-url]: https://github.com/ArvidWedtstein/ArkDashboard/blob/prod/LICENSE.txt
 [version-shield]: https://img.shields.io/github/package-json/v/ArvidWedtstein/ArkDashboard/dev?style=for-the-badge
 [version-url]: https://github.com/ArvidWedtstein/ArkDashboard
-
-<!-- https://supabase.com/docs/guides/auth/auth-discord -->
-<!--https://api.kanye.rest-->
 
 # README
 
