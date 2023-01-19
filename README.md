@@ -71,15 +71,11 @@ Description in progress
 ### Built With
 
 This project is mainly written in React, together with these frameworks and libraries:
+
 [![Redwood][Redwood.js]][Redwood-url]
-[![Dart][Dart.com]][Dart-url]
 
-<div align="left">
 
-![Stuff used in this project](https://arvidgithubembed.herokuapp.com/skills?languages=typescript,redwood,prisma,sql,react&backgroundcolor=0D1117&title=-&titlecolor=ffffff&textcolor=ffffff&boxcolor=CFCDFF&bordercolor=0D1117)
 
-</div>
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
 
