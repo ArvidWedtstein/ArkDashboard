@@ -49,7 +49,7 @@ const TribesList = ({ tribes }: FindTribes) => {
     toast.success(`You've been assigned to ${tempTribe[0].name}!`);
   };
   return (
-    <div className="rw-segment relative">
+    <div className="relative">
       <div className="m-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <div className="flex items-start rounded-xl bg-white p-4 shadow-lg">
           <div className="flex h-12 w-12 items-center justify-center rounded-full border border-blue-100 bg-blue-50">
@@ -128,7 +128,7 @@ const TribesList = ({ tribes }: FindTribes) => {
                   }
                 }
               ]}>
-              <svg className="w-4 dark:stroke-white stroke-black dark:text-white text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <svg className="w-4 dark:fill-stone-200 fill-black dark:text-white text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                 <path d="M120 256c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm160 0c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm104 56c-30.9 0-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56s-25.1 56-56 56z" />
               </svg>
             </ContextMenu>
