@@ -3,6 +3,7 @@ import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import Chat from "src/components/Chat/Chat";
 import Lookup from "src/components/Util/Lookup/Lookup";
+import { Taybul } from "src/components/Util/Table/Table";
 const HomePage = () => {
   const { isAuthenticated, client: supabase } = useAuth();
   // if (document.addEventListener) {
@@ -14,6 +15,8 @@ const HomePage = () => {
   // supabase.auth.onAuthStateChange((event, session) => {
   //   console.log(event, session)
   // })
+
+
 
   return (
     <>

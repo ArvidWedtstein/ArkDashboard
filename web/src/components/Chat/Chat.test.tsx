@@ -11,4 +11,10 @@ describe('Chat', () => {
       render(<Chat />)
     }).not.toThrow()
   })
+
+  it('renders the Chat component', () => {
+    const { getByText } = render(<Chat />)
+    expect(getByText('Chat')).toBeInTheDocument()
+  })
+
 })

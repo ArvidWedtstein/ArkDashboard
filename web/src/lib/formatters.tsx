@@ -17,6 +17,15 @@ export const formatEnum = (values: string | string[] | null | undefined) => {
   return output
 }
 
+/**
+ * @description Capitalize the first letter of each word in a string
+ * @param sentence
+ * @returns Capitalized string
+ */
+export const capitalizeSentence = (sentence: string) => {
+  return sentence.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
+}
+
 export const jsonDisplay = (obj: unknown) => {
   return (
     <pre>
