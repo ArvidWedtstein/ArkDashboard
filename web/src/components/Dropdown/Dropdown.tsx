@@ -31,7 +31,10 @@ const Dropdown = ({
           aria-haspopup="true"
         >
           {currentUser ? (
-            <Avatar url={String(currentUser.avatar_url ? currentUser.avatar_url : "")} size={30} />
+            <Avatar
+              url={String(currentUser.avatar_url ? currentUser.avatar_url : "")}
+              size={30}
+            />
           ) : (
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -170,7 +173,9 @@ const Dropdown = ({
             {isAuthenticated ? (
               <>
                 <Link
-                  to={routes.profile({ id: currentUser.id })}
+                  to={routes.profile({
+                    id: currentUser?.id || currentUser.sub,
+                  })}
                   className="flex items-center rounded p-2 font-medium text-inherit transition-all hover:bg-neutral-600"
                   role="menuitem"
                   tabIndex={-1}

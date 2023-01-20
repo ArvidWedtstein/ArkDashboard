@@ -38,7 +38,7 @@ const SigninPage = () => {
       });
 
       if (response?.error) {
-        toast.error(response.error);
+        toast.error(response);
       } else {
         toast.success(WELCOME_MESSAGE);
         navigate(REDIRECT);
@@ -58,8 +58,17 @@ const SigninPage = () => {
         Email
       </Label>
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-          <svg aria-hidden="true" className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex h-full items-center pl-3">
+          <svg
+            aria-hidden="true"
+            className="h-5 w-5 text-gray-500 dark:text-gray-400"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+          </svg>
         </div>
         <TextField
           name="email"
@@ -75,12 +84,11 @@ const SigninPage = () => {
             pattern: {
               message: "Email must be valid",
               value: /[^@]+@[^\.]+\..+/,
-            }
+            },
           }}
         />
         <FieldError name="email" className="rw-field-error" />
       </div>
-
 
       <Label
         name="password"
@@ -103,7 +111,7 @@ const SigninPage = () => {
       />
       <div className="rw-forgot-link">
         <Link to={routes.forgotPassword()} className="rw-forgot-link">
-          Forgot Password?
+          Forgot da Password?
         </Link>
       </div>
       <FieldError name="password" className="rw-field-error" />
@@ -119,7 +127,7 @@ const SigninPage = () => {
 
       <main className="rw-main">
         <Toaster toastOptions={{ className: "rw-toast", duration: 6000 }} />
-        <div className="dark:text-white text-gray-600 my-4 mx-auto max-w-lg">
+        <div className="my-4 mx-auto max-w-lg text-gray-600 dark:text-white">
           <div className="w-full">
             <header className="w-100 p-2 text-center">
               <h2 className="text-lg font-semibold">Login</h2>
