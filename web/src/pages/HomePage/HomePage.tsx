@@ -56,7 +56,7 @@ const HomePage = () => {
           </div>
         </div>
         {isAuthenticated && <Chat />}
-
+        <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe>
         {/* <PieChart className="w-32" hollowPercentage={80} backgroundColor="#232323" items={[{ percent: 5, color: 'green' }]}><text x="50%" y="50%" textAnchor="middle" fontSize="5" fill="white" dominantBaseline="middle">test</text></PieChart> */}
       </div>
     </>
