@@ -16,8 +16,22 @@ const HomePage = () => {
   //   console.log(event, session)
   // })
 
-
-
+  let row = [
+    {
+      id: 1,
+      name: "CTribes",
+      pain: 5
+    },
+    {
+      id: 2,
+      name: "ATribes2",
+      pain: 50
+    }
+  ]
+  let rows = [
+    [1, "Tribes", 5],
+    [2, "Tribes2", 50]
+  ]
   return (
     <>
       <MetaTags title="Home" description="Home page" />
@@ -55,7 +69,34 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        {isAuthenticated && <Chat />}
+        {/* {isAuthenticated && <Chat />} */}
+        <Taybul
+          rowCount={2}
+          headersVertical={false}
+          filter={true}
+          rows={row}
+          summary={true}
+          rowGetter={({ index }) => row[index]}
+          select={true}
+          // caption={{
+          //   title: "Test",
+          //   text: "Test",
+          // }}
+          columns={[
+            {
+              width: 200,
+              label: 'Name',
+              dataKey: 'name',
+              sortable: true,
+            },
+            {
+              width: 120,
+              label: "Pain",
+              dataKey: "pain",
+              numeric: true,
+            },
+          ]}
+        ></Taybul>
         <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe>
         {/* <PieChart className="w-32" hollowPercentage={80} backgroundColor="#232323" items={[{ percent: 5, color: 'green' }]}><text x="50%" y="50%" textAnchor="middle" fontSize="5" fill="white" dominantBaseline="middle">test</text></PieChart> */}
       </div>

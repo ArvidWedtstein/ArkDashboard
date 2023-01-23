@@ -278,6 +278,14 @@ export const getDateDiff = (date1: Date, date2: Date) => {
   };
 };
 
+/**
+ * @description removes duplicates from an array
+ * @param arr
+ * @returns
+ */
+export const remDupicates = (arr: Array<any>): Array<any> => {
+  return arr.filter((item, index) => arr.indexOf(item) === index);
+}
 
 /**
  *
