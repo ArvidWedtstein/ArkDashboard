@@ -67,7 +67,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
   let [currentMap, setCurrentMap] = useState("");
 
   return (
-    <div className="h-[100vh]">
+    <div className="h-[80vh]">
       <div className="flex items-center">
         <Lookup
           items={Object.keys(mapImages).map((k) => ({

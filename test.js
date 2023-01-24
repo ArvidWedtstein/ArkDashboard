@@ -85,24 +85,14 @@ const groupValues2 = (t, v, i, a) => {
   if (i == a.length - 1) final2.push(t);
   return t;
 };
-data.reduce(groupValues, {});
-console.log(final);
+// data.reduce(groupValues, {});
+// console.log(final);
 
-final.reduce(groupValues, {});
-console.log(final2);
-console.timeEnd("test");
+// final.reduce(groupValues, {});
+// console.log(final2);
+// console.timeEnd("test");
 // console.log(d);
 
 /**
  * Current
  */
-
-let t = {
-  id: [1],
-  content: ["aaaa"],
-  profile_id: 1,
-  created_at: "2023-01-16T00:00:00.000Z",
-};
-t.map((v, i, a) => {
-  console.log(v, i, a);
-});

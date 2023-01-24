@@ -28,17 +28,13 @@ const HomePage = () => {
       pain: 50
     }
   ]
-  let rows = [
-    [1, "Tribes", 5],
-    [2, "Tribes2", 50]
-  ]
   return (
     <>
       <MetaTags title="Home" description="Home page" />
 
       <div className="container-xl mt-3 p-3 text-center">
         <div
-          className="relative overflow-hidden rounded-md border border-white bg-cover bg-no-repeat"
+          className="relative overflow-hidden rounded-md bg-cover bg-no-repeat"
           style={{
             imageResolution: "10dpi",
             imageRendering: "auto",
@@ -53,14 +49,15 @@ const HomePage = () => {
             style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}
           >
             <div className="flex h-full items-center justify-center">
-              <div className="px-6 text-center text-white md:px-12">
-                <h1 className="mt-0 mb-6 text-5xl font-bold">Welcome Home</h1>
-                <h3 className="mb-8 text-3xl font-bold">
+              <div className="px-6 text-center text-white md:px-12 font-extralight">
+                <h1 className="mt-0 mb-6 text-5xl">Welcome Home</h1>
+                <h3 className="mb-8 text-3xl">
                   Here you can find base locations, material calculators and
                   much more
                 </h3>
                 <Link
-                  className="inline-block rounded border-2 border-white px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0"
+                  // className="rounded border-2 bg-pea-500 border-pea-500 px-6 py-2.5 text-sm font-normal uppercase leading-tight text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0"
+                  className="rw-button rw-button-green-outline"
                   to={routes.signin()}
                 >
                   Get started
@@ -70,35 +67,8 @@ const HomePage = () => {
           </div>
         </div>
         {/* {isAuthenticated && <Chat />} */}
-        <Taybul
-          rowCount={2}
-          headersVertical={false}
-          filter={true}
-          rows={row}
-          summary={true}
-          rowGetter={({ index }) => row[index]}
-          select={true}
-          // caption={{
-          //   title: "Test",
-          //   text: "Test",
-          // }}
-          columns={[
-            {
-              width: 200,
-              label: 'Name',
-              dataKey: 'name',
-              sortable: true,
-            },
-            {
-              width: 120,
-              label: "Pain",
-              dataKey: "pain",
-              numeric: true,
-            },
-          ]}
-        ></Taybul>
-        <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe>
-        {/* <PieChart className="w-32" hollowPercentage={80} backgroundColor="#232323" items={[{ percent: 5, color: 'green' }]}><text x="50%" y="50%" textAnchor="middle" fontSize="5" fill="white" dominantBaseline="middle">test</text></PieChart> */}
+
+        {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
       </div>
     </>
   );

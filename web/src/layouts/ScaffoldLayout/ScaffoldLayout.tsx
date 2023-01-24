@@ -21,7 +21,7 @@ const ScaffoldLayout = ({
     isAuthenticated
   } = useAuth();
   return ( // dark:bg-[#131417] dark:bg-slate-600
-    <div className="dark:bg-[#252636] bg-white rw-scaffold h-full">
+    <div className="h-full">
       <Toaster containerClassName='mx-3' toastOptions={{ className: 'rw-toast', duration: 6000 }} />
       <header className="rw-header">
         <h1 className="rw-heading rw-heading-primary">

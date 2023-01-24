@@ -72,7 +72,7 @@ const GtwPage = (props: BasespotFormProps) => {
     <>
       <MetaTags title="Gtw" description="Gtw page" />
 
-      <div className="container-xl text-center m-3 rounded-lg dark:bg-neutral-800 bg-stone-200 border dark:border-stone-200 border-black">
+      <div className="container-xl text-center m-3">
         <Form error={props.error} className="m-6 p-3">
           <FormError
             error={props.error}

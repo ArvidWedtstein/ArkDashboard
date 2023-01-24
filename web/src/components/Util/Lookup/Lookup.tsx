@@ -1,6 +1,7 @@
 import { TextField } from "@redwoodjs/forms";
 import { useEffect, useState } from "react"
 import useComponentVisible from "../../useComponentVisible";
+import { debounce } from "src/lib/formatters";
 
 type LookupType = 'user' | 'post' | 'default'
 interface ILookup {
@@ -31,15 +32,7 @@ const Lookup = ({ items, type = "default", value, children, className, onChange,
     setItems(items)
   }, [value])
 
-  const debounce = (func, wait = 300) => {
-    let timeout;
-    return (...args) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        func.apply(this, args);
-      }, wait);
-    };
-  };
+
   const handleSearch = debounce((e) => setSearch(e.target.value))
 
   useEffect(() => {

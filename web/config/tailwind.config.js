@@ -26,6 +26,29 @@ module.exports = {
           },
         },
       },
+      //https://uicolors.app/create
+      colors: {
+        dark: "#000000",
+        primary: "#1D2026", //"#14213d",
+        secondary: "#EF4135",
+        accent: "#fca311", // EF4135
+        text: "ffffff",
+        pea: {
+          50: "#f1fcf5",
+          100: "#e0f8e8",
+          200: "#c2f0d2",
+          300: "#92e3b0",
+          400: "#5bcd85",
+          500: "#34b364",
+          600: "#26934f",
+          700: "#1f6d3d",
+          800: "#1f5c37",
+          900: "#1b4c2f",
+        },
+      },
+      fontFamily: {
+        poppins: ["Poppins", "sans-serif"],
+      },
     },
   },
   plugins: [

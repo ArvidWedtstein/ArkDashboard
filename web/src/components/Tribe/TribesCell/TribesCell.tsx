@@ -38,7 +38,7 @@ export const Empty = () => {
 
 export const Failure = ({ error }: CellFailureProps) => {
   return (
-    <section className="dark:bg-[#252636] bg-white text-center">
+    <section className="text-center">
       <div className="bg-[#0D2836] text-[#97FBFF] p-8 border max-w-3xl mx-auto border-[#60728F]">
         <h1 className="font-bold uppercase mb-3 text-2xl">{error.name}</h1>
         <h1 className="my-8">
