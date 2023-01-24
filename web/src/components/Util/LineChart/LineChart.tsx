@@ -19,7 +19,7 @@ const LineChart = ({ items, ...props }: LineChartProps) => {
   })
   return (
     <div {...props}>
-      <div className="my-2 rounded-lg p-4 bg-slate-200 dark:bg-neutral-800 border border-white">
+      <div className="my-2 rounded-lg p-4 border border-pea-500">
         <div className="flex w-full min-h-1 h-1 rounded-full">
           {items.sort((a, b) => b.percent - a.percent).map((item, index) => (
             <span key={index} style={{

@@ -184,14 +184,16 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
             {/* <button type="submit" className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">+</button> */}
           </div>
           <FieldError name="itemName" className="rw-field-error" />
-
-          <LineChart items={[
-            {
-              name: "Turret Tower",
-              percent: 40,
-              colorHEX: "#0000ff",
-            }
-          ]} />
+          {/* TODO: Fix heavy turret cost calculation */}
+          {item.length > 0 &&
+            <LineChart items={Object.entries(mergeItemRecipe(...item)).map(([key, value], i) => {
+              return {
+                name: items.find((itm) => parseInt(itm.itemId.toString()) === parseInt(key)).name,
+                percent: Math.round(((100 * value) / Object.values(mergeItemRecipe(...item)).reduce((a, b) => a + b, 0) + Number.EPSILON) * 100) / 100,
+                colorHEX: items.find((itm) => parseInt(itm.itemId.toString()) === parseInt(key)).color
+              }
+            })} />
+          }
           {item.length > 0 &&
             <Table
               data={[mergeItemRecipe(...item)]}
