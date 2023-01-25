@@ -43,7 +43,7 @@ const ScaffoldLayout = ({
       {/* <main className="container-xl">{children}</main> */}
       <div className="flex w-full h-full">
         <Sidebar />
-        <main className="w-full">{children}</main>
+        <main className="w-full bg-white dark:bg-neutral-800 rounded-2xl p-3 mr-4">{children}</main>
       </div>
     </div>
   )
