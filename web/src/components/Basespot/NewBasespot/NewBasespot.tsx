@@ -33,11 +33,11 @@ const NewBasespot = () => {
   }
 
   return (
-    <div className="dark:bg-neutral-800 bg-slate-200 dark:text-white text-black">
+    <div className="dark:text-white text-black">
       <header className="rw-segment-header">
         <h2 className="rw-heading rw-heading-secondary">New Basespot</h2>
       </header>
-      <div className="rw-segment-main">
+      <div className="p-4">
         <BasespotForm onSave={onSave} loading={loading} error={error} />
       </div>
     </div>

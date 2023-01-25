@@ -34,6 +34,7 @@ const Dropdown = ({
             <Avatar
               url={String(currentUser.avatar_url ? currentUser.avatar_url : "")}
               size={30}
+              className="rounded-full border-none border-[#f8f8f8]"
             />
           ) : (
             <svg
@@ -70,105 +71,6 @@ const Dropdown = ({
 
       {isComponentVisible ? (
         <div className="transition-color absolute right-0 top-16 z-10 mt-2 w-56 rounded-lg bg-[#333333] shadow">
-          {/* <div className="p-4">
-            <h2 className="mb-1 text-sm font-medium">Theme</h2>
-            <div className="theme-switcher relative flex items-center overflow-hidden rounded bg-gray-500 px-1">
-              <input
-                type="radio"
-                id="light-theme"
-                name="themes"
-                className="hidden"
-              // checked
-              />
-              <label
-                htmlFor="light-theme"
-                className="relative z-[2] w-[calc(100%/3)] text-[#dddddd]"
-              >
-                <span className="flex items-center justify-center rounded-md py-2 font-medium">
-                  <svg
-                    className="mr-2 inline-block w-5"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                  </svg>
-                  Light
-                </span>
-              </label>
-              <input
-                type="radio"
-                id="dark-theme"
-                name="themes"
-                className="hidden"
-              />
-              <label
-                htmlFor="dark-theme"
-                className="relative z-[2] w-[calc(100%/3)] text-[#dddddd]"
-              >
-                <span className="flex items-center justify-center rounded-md py-2 font-medium">
-                  <svg
-                    className="mr-2 inline-block w-5"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                  </svg>
-                  Dark
-                </span>
-              </label>
-              <input
-                type="radio"
-                id="black-theme"
-                name="themes"
-                className="hidden"
-              />
-              <label
-                htmlFor="black-theme"
-                className="relative z-[2] w-[calc(100%/3)] text-[#dddddd]"
-              >
-                <span className="flex items-center justify-center rounded-md py-2 font-medium">
-                  <svg
-                    className="mr-2 inline-block w-5"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                  </svg>
-                  Black
-                </span>
-              </label>
-              <span className="slider absolute top-1 bottom-1 z-[2] block w-[calc((100%-6px)/3)] -translate-x-[110%] rounded-md border-2 border-[#ff0000] transition-transform"></span>
-            </div>
-          </div> */}
           <div className="flex flex-col p-2 transition-colors">
             {isAuthenticated ? (
               <>

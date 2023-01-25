@@ -24,7 +24,8 @@
   @apply flex justify-between py-4 px-8;
 }
 .rw-main {
-  @apply mx-4 pb-4;
+  /* @apply mx-4 pb-4; */
+  @apply pb-4;
 }
 .rw-segment {
   @apply w-full overflow-hidden rounded-lg border border-gray-200;

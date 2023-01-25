@@ -8,7 +8,7 @@ type LineChartProps = React.HTMLAttributes<HTMLDivElement> & {
 const LineChart = ({ items, ...props }: LineChartProps) => {
   let labels = items.sort((a, b) => b.percent - a.percent).map((item, index) => {
     return (
-      <div key={index} className="flex items-center text-gray-300">
+      <div key={index} className="flex items-center dark:text-gray-300 text-[#1f1c2e]">
         <span style={{
           background: item.colorHEX,
         }} className="my-2 h-3 w-3 rounded-full mr-2"></span>
