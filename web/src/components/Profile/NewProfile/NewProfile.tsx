@@ -37,7 +37,7 @@ const NewProfile = () => {
       <header className="rw-segment-header">
         <h2 className="rw-heading rw-heading-secondary">New Profile</h2>
       </header>
-      <div className="rw-segment-main">
+      <div className="p-4">
         <ProfileForm onSave={onSave} loading={loading} error={error} />
       </div>
     </div>

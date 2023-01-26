@@ -61,9 +61,9 @@ const ProfileForm = (props: ProfileFormProps) => {
             ></span>
           </div>
         </section>
-        <section className="bg-gray-200 relative -mt-32 py-16">
+        <section className="relative -mt-32 py-16">
           <div className="container-fluid mx-auto px-4">
-            <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded-lg bg-white shadow-xl">
+            <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded-lg bg-white dark:bg-gray-800 dark:text-white shadow-xl">
               <div className="px-6">
                 <div className="flex flex-wrap justify-center">
                   <div className="flex w-full justify-center px-4 lg:order-2 lg:w-3/12">
@@ -100,29 +100,29 @@ const ProfileForm = (props: ProfileFormProps) => {
                   <div className="w-full px-4 lg:order-1 lg:w-4/12">
                     <div className="flex justify-center py-4 pt-8 lg:pt-4">
                       <div className="mr-4 p-3 text-center">
-                        <span className="text-blueGray-600 block text-xl font-bold uppercase tracking-wide">
+                        <span className="text-gray-600 dark:text-white block text-xl font-bold uppercase tracking-wide">
                           0
                         </span>
-                        <span className="text-blueGray-400 text-sm">Friends</span>
+                        <span className="text-gray-400 text-sm">Friends</span>
                       </div>
                       <div className="mr-4 p-3 text-center">
-                        <span className="text-blueGray-600 block text-xl font-bold uppercase tracking-wide">
+                        <span className="text-gray-600 dark:text-white  block text-xl font-bold uppercase tracking-wide">
                           0
                         </span>
-                        <span className="text-blueGray-400 text-sm">
+                        <span className="text-gray-400 text-sm">
                           Basespots
                         </span>
                       </div>
                       <div className="p-3 text-center lg:mr-4">
-                        <span className="text-blueGray-600 block text-xl font-bold uppercase tracking-wide">
+                        <span className="text-gray-600 dark:text-white block text-xl font-bold uppercase tracking-wide">
                           {/* {tribescreated} */}0
                         </span>
-                        <span className="text-blueGray-400 text-sm">Tribes</span>
+                        <span className="text-gray-400 text-sm">Tribes</span>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="mt-12 text-center">
+                <div className="mt-4 text-center">
                   <form className="w-full max-w-lg">
                     <div className="flex flex-wrap -mx-3 mb-6">
                       <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -138,7 +138,7 @@ const ProfileForm = (props: ProfileFormProps) => {
                         <TextField
                           name="full_name"
                           defaultValue={props.profile?.full_name}
-                          className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                          className="rw-input w-full"
                           errorClassName="rw-input rw-input-error"
                           id="grid-full-name"
                         />
@@ -178,7 +178,8 @@ const ProfileForm = (props: ProfileFormProps) => {
                         <TextField
                           name="biography"
                           defaultValue={props.profile?.biography}
-                          className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                          // className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                          className='rw-input w-full'
                           id="grid-bio"
                           errorClassName="rw-input rw-input-error"
                         />

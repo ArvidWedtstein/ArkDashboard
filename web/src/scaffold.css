@@ -28,7 +28,7 @@
   @apply pb-4;
 }
 .rw-segment {
-  @apply w-full overflow-hidden rounded-lg border border-gray-200;
+  @apply w-full overflow-hidden; /*  rounded-lg border border-gray-200  */
   scrollbar-color: theme("colors.zinc.400") transparent;
 }
 .rw-segment::-webkit-scrollbar {
@@ -41,7 +41,7 @@
   @apply rounded-full border-[3px] border-solid border-transparent bg-zinc-400 bg-clip-content;
 }
 .rw-segment-header {
-  @apply bg-gray-200 py-3 px-4 text-gray-700;
+  @apply py-3 px-4 text-gray-700 dark:text-stone-200;
 }
 .rw-segment-main {
   @apply bg-gray-100 p-4;

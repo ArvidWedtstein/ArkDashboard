@@ -84,21 +84,23 @@ const Navbar = ({ title, titleTo, buttonLabel, buttonTo }: NavbarProps) => {
                 {isAuthenticated && (
                   <>
                     <li>
-                      <a
-                        href="#"
+                      <Link
+                        to={routes.profile({
+                          id: currentUser?.id || currentUser.sub,
+                        })}
                         className={'block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200'}
                       >
                         Your Profile
-                      </a>
+                      </Link>
                     </li>
-                    <li>
+                    {/* <li>
                       <a
                         href="#"
                         className={'block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200'}
                       >
                         Settings
                       </a>
-                    </li>
+                    </li> */}
                     <li>
                       <a
                         href="#"
