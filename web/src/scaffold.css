@@ -142,7 +142,7 @@
 }
 .rw-input {
   /* @apply block mt-2 w-full p-2 bg-white border border-gray-200 rounded outline-none; */
-  @apply dark:focus:border-pea-500 block rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-900 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-stone-200;
+  @apply mt-1 block rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-900 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-300 dark:focus:ring-stone-200;
 }
 .rw-check-radio-items {
   @apply flex justify-items-center;

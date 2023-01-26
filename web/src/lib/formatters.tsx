@@ -139,6 +139,20 @@ export const isObject = (value) => {
 };
 
 /**
+ * Checks if a value is a valid UUID
+ * @param {string} value
+ * @returns {boolean}
+ */
+export const isUUID = (value: string): boolean => {
+  return (
+    /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/.test(
+      value
+    )
+  );
+};
+
+
+/**
  *
  * @param {Array} sources
  * @example merge({a: 1}, {b: 2}, {b: 2}) // {a: 1, b: 4}

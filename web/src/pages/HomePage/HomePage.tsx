@@ -2,8 +2,6 @@ import { useAuth } from "@redwoodjs/auth";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import Chat from "src/components/Chat/Chat";
-import Lookup from "src/components/Util/Lookup/Lookup";
-import { Taybul } from "src/components/Util/Table/Table";
 const HomePage = () => {
   const { isAuthenticated, client: supabase } = useAuth();
   // if (document.addEventListener) {
@@ -16,18 +14,6 @@ const HomePage = () => {
   //   console.log(event, session)
   // })
 
-  let row = [
-    {
-      id: 1,
-      name: "CTribes",
-      pain: 5
-    },
-    {
-      id: 2,
-      name: "ATribes2",
-      pain: 50
-    }
-  ]
   return (
     <>
       <MetaTags title="Home" description="Home page" />

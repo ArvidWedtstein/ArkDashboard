@@ -76,7 +76,7 @@ const Avatar = ({
   return (
     <>
       <div
-        className={"relative" + ` max-w-[${size}px] max-h-[${size}px]`}
+        className={"relative flex items-center justify-center" + ` max-w-[${size}px] max-h-[${size}px]`}
         style={{ height: size, width: size }}
       >
         {onUpload ? (
@@ -100,7 +100,7 @@ const Avatar = ({
             </label>
           </div>
         ) : null}
-        <div className={`relative h-full w-full rounded-full border-none border-[#f8f8f8] shadow ${className}`}>
+        <div className={`relative h-full w-full rounded-full border-none border-[#f8f8f8] shadow ${className} flex items-center`}>
           {avatarUrl ? (
             <div
               className="h-full w-full rounded-full bg-cover bg-center bg-no-repeat"
@@ -113,26 +113,11 @@ const Avatar = ({
               stroke="currentColor"
               className="h-6 w-6"
               fill="currentColor"
-              style={{ height: size, width: size }}
+              // style={{ height: size, width: size }}
               viewBox="0 0 448 512"
             >
-              <path d="M328.2 312.6c-1.496-.4863-3.018-.7168-4.521-.7168c-6.17 0-12.04 3.869-14.62 9.787l-35.34 80.94L246.2 320H256c8.844 0 16-7.156 16-16S264.8 288 256 288H192C183.2 288 176 295.2 176 304S183.2 320 192 320h9.791l-27.54 82.64l-35.34-80.94C136.3 315.8 130.5 311.9 124.3 311.9c-1.504 0-3.023 .2285-4.521 .7148c-69.96 22.72-120.5 88.59-119.8 166.3C.1758 497.4 16.16 512 34.66 512H413.3c18.5 0 34.49-14.57 34.65-33.08C448.7 401.2 398.2 335.3 328.2 312.6zM34.66 480c-1.512 0-2.545-1.064-2.656-1.365c-.5117-56.9 32.56-107.5 83.65-130.2L173.1 480H34.66zM240 479.1h-32l-14.62-33.48L224 354.6l30.62 91.88L240 479.1zM413.3 480h-138.4l57.44-131.6c51.1 22.7 84.17 73.3 83.66 130.2C415.9 478.9 414.8 480 413.3 480zM224 256c70.75 0 128-57.25 128-128s-57.25-128-128-128S96 57.25 96 128S153.3 256 224 256zM224 32c52.94 0 96 43.06 96 96c0 52.93-43.06 96-96 96S128 180.9 128 128C128 75.06 171.1 32 224 32z" />
+              <path d="M224 256c70.7 0 128-57.31 128-128s-57.3-128-128-128C153.3 0 96 57.31 96 128S153.3 256 224 256zM224 32c52.94 0 96 43.06 96 96c0 52.93-43.06 96-96 96S128 180.9 128 128C128 75.06 171.1 32 224 32zM274.7 304H173.3C77.61 304 0 381.6 0 477.3c0 19.14 15.52 34.67 34.66 34.67h378.7C432.5 512 448 496.5 448 477.3C448 381.6 370.4 304 274.7 304zM413.3 480H34.66C33.2 480 32 478.8 32 477.3C32 399.4 95.4 336 173.3 336h101.3C352.6 336 416 399.4 416 477.3C416 478.8 414.8 480 413.3 480z" />
             </svg>
-            // <svg
-            //   xmlns="http://www.w3.org/2000/svg"
-            //   className="h-6 w-6"
-            //   fill="none"
-            //   viewBox="0 0 24 24"
-            //   stroke="currentColor"
-            //   style={{ height: size, width: size }}
-            // >
-            //   <path
-            //     strokeLinecap="round"
-            //     strokeLinejoin="round"
-            //     strokeWidth="2"
-            //     d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            //   />
-            // </svg>
           )}
         </div>
       </div>

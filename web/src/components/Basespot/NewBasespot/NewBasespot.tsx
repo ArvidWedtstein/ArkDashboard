@@ -34,7 +34,7 @@ const NewBasespot = () => {
 
   return (
     <div className="dark:text-white text-black">
-      <header className="rw-segment-header">
+      <header className="py-3 px-4">
         <h2 className="rw-heading rw-heading-secondary">New Basespot</h2>
       </header>
       <div className="p-4">

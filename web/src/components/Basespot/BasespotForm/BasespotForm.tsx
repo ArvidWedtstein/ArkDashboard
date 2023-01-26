@@ -54,24 +54,28 @@ const BasespotForm = (props: BasespotFormProps) => {
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
+        {/* <div  className="relative">
+    <input type="text" id="floating_outlined"  className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+    <label htmlFor="floating_outlined"  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Floating outlined</label>
+</div> */}
+        <div className="relative">
+          <Label
+            name="name"
+            className="rw-label"
+            errorClassName="rw-label rw-label-error"
+          >
+            Name
+          </Label>
 
-        <Label
-          name="name"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Name
-        </Label>
-
-        <TextField
-          name="name"
-          ref={basename}
-          defaultValue={props.basespot?.name}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
-
+          <TextField
+            name="name"
+            ref={basename}
+            defaultValue={props.basespot?.name}
+            className="rw-input"
+            errorClassName="rw-input rw-input-error"
+            validation={{ required: true }}
+          />
+        </div>
 
         <FieldError name="name" className="rw-field-error" />
 
@@ -95,8 +99,8 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <FieldError name="description" className="rw-field-error" />
 
-        <div className="grid md:grid-cols-2 md:gap-6">
-          <div className="relative z-0 w-full mb-6 group">
+        <div className="flex flex-row items-start">
+          <div className="relative z-0 mb-6 group">
             <Label
               name="latitude"
               className="rw-label"
@@ -115,7 +119,7 @@ const BasespotForm = (props: BasespotFormProps) => {
             />
             <FieldError name="latitude" className="rw-field-error" />
           </div>
-          <div className="relative z-0 w-full mb-6 group">
+          <div className="relative z-0 mb-6 mx-6">
             <Label
               name="longitude"
               className="rw-label"

@@ -96,3 +96,18 @@ const groupValues2 = (t, v, i, a) => {
 /**
  * Current
  */
+console.time("test2");
+const isUUID = (value) => {
+  return (
+    // !!value &&
+    // typeof value === "string" &&
+    // value.length === 36 &&
+    // value.split("-").length === 5
+    /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/.test(
+      value
+    )
+  );
+};
+
+console.log(isUUID("7a2878d1-4f61-456d-bcb6-edc707383ea8"));
+console.timeEnd("test2");

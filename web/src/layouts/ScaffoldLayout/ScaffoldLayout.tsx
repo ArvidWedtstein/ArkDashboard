@@ -37,13 +37,13 @@ const ScaffoldLayout = ({
     //   </header>
     //   <main className="rw-main">{children}</main>
     // </div>
-    <div className="overflow-hidden w-full flex flex-col h-full ">
+    <div className="w-full flex flex-col h-[100vh] overflow-hidden">
       <Navbar title={title} titleTo={titleTo} buttonLabel={buttonLabel} buttonTo={buttonTo} />
       <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
       {/* <main className="container-xl">{children}</main> */}
-      <div className="flex w-full h-full">
+      <div className="flex sm:flex-row flex-col w-full overflow-hidden">
         <Sidebar />
-        <main className="w-full bg-white dark:bg-neutral-800 rounded-2xl p-3 mr-4">{children}</main>
+        <main className="overflow-y-auto sm:w-full rounded-2xl p-3 m-3">{children}</main> {/* bg-white dark:bg-[#3b424f] */}
       </div>
     </div>
   )
