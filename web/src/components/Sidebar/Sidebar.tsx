@@ -38,7 +38,7 @@ const Sidebar = () => {
   const { pathname } = useLocation()
   const navigation = [
     { name: 'Home', href: routes.home(), color: 'bg-pea-500' },
-    { name: 'Basespot', href: routes.basespots(), color: 'bg-blue-500' },
+    { name: 'Basespot', href: routes.basespots({ page: 1 }), color: 'bg-blue-500' },
     { name: 'Calculator', href: routes.materialCalculator(), color: 'bg-red-600' },
     { name: 'GuessTheWord', href: routes.gtw(), color: 'bg-red-500' },
     { name: 'Tribes', href: routes.tribes(), color: 'bg-emerald-500' },

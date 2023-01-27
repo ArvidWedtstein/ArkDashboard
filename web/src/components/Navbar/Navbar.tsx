@@ -1,33 +1,48 @@
 import { useAuth } from "@redwoodjs/auth";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Dropdown from "../Dropdown/Dropdown";
 import useComponentVisible from "../useComponentVisible";
 import Avatar from "../Avatar/Avatar";
 import { Link, routes, useLocation, AvailableRoutes } from "@redwoodjs/router";
-type NavbarProps = {
-  title?: string
-  titleTo?: string
-  buttonLabel?: string
-  buttonTo?: string
-}
+import { useRouterState } from "@redwoodjs/router/dist/router-context";
+import { capitalize } from "src/lib/formatters";
 
-const Navbar = ({ title, titleTo, buttonLabel, buttonTo }: NavbarProps) => {
+
+const Navbar = () => {
   const {
     currentUser,
     getCurrentUser,
     isAuthenticated,
   } = useAuth();
   const { pathname } = useLocation()
+  const [title, setTitle] = useState(pathname.split('/')[1])
+  const singularize = (word: string) => {
+    const endings = {
+      ves: 'fe',
+      ies: 'y',
+      i: 'us',
+      zes: 'ze',
+      ses: 's',
+      es: 'e',
+      s: ''
+    };
+    return word.replace(
+      new RegExp(`(${Object.keys(endings).join('|')})$`),
+      r => endings[r]
+    );
+  }
 
   useEffect(() => {
+    setTitle(capitalize(pathname.split('/')[1]))
     getCurrentUser();
-  }, [currentUser]);
-  // const [route, setRoute] = useState(pathname.split('/')[1])
+  }, [pathname]);
+
   const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
 
   const handleOpen = () => {
     setIsComponentVisible(!isComponentVisible);
   };
+
   return (
     <>
       <div className="flex justify-between items-center w-full py-4 px-6 relative">
@@ -47,8 +62,8 @@ const Navbar = ({ title, titleTo, buttonLabel, buttonTo }: NavbarProps) => {
           </div>
         </div>
         <div className="flex items-center">
-          {buttonTo && buttonLabel && (
-            <Link to={routes[buttonTo]()} className="bg-[#1f1c24] dark:bg-[#1f2937] text-[#ffffffcc] rounded-full w-5 h-5 md:w-8 md:h-8 flex items-center justify-center border-none p-0 dark:text-white ml-2" title={buttonLabel}>
+          {isAuthenticated && routes[`new${singularize(title)}`] !== undefined && (
+            <Link to={routes[`new${singularize(title)}`]()} title={`New ${singularize(title)}`} className="bg-[#1f1c24] dark:bg-[#1f2937] text-[#ffffffcc] rounded-full w-5 h-5 md:w-8 md:h-8 flex items-center justify-center border-none p-0 dark:text-white ml-2">
               <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" /></svg>

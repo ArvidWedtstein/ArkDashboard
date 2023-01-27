@@ -92,7 +92,7 @@
 
 .rw-button {
   /* @apply flex cursor-pointer justify-center rounded border-0 bg-gray-200 py-1 px-4 text-xs font-semibold uppercase leading-loose tracking-wide text-gray-500 no-underline transition duration-100; */
-  @apply rounded-lg py-2.5 px-6 text-sm font-medium text-white;
+  @apply rounded-lg bg-blue-500 py-2.5 px-6 text-sm font-medium text-white focus:outline-none;
 }
 .rw-button:hover {
   @apply bg-gray-500 text-white;
@@ -101,7 +101,7 @@
   @apply rounded-sm py-1 px-2 text-xs;
 }
 .rw-button.rw-button-green-outline {
-  @apply border-pea-500 rounded border-2 px-4 py-2.5 text-sm font-normal uppercase leading-tight text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0;
+  @apply border-pea-500 rounded border-2 text-sm font-normal uppercase leading-tight text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5;
 }
 .rw-button.rw-button-green {
   /* @apply bg-green-500 text-white; */
