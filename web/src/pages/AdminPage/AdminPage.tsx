@@ -1,12 +1,19 @@
 import { useAuth } from "@redwoodjs/auth";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
+import UserCard from "src/components/Util/UserCard/UserCard";
 
 const AdminPage = () => {
   return (
     <>
       <MetaTags title="Admin" description="Admin page" />
-      {/* https://api.yomomma.info/ */}
+      <UserCard user={
+        {
+          name: 'test',
+          subtext: "Jøde",
+          img: 'https://randomuser.me/portraits/men/4.jpg'
+        }
+      } />
       <div className="container-xl overflow-hidden p-3 text-center">
         <div className="flex-[2 0 0] relative ml-6 h-full max-h-[300px] max-w-[400px] overflow-y-auto rounded bg-slate-700 p-6">
           <div className="flex items-center justify-between py-4 text-gray-500">

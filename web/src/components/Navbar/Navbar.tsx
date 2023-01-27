@@ -1,11 +1,11 @@
 import { useAuth } from "@redwoodjs/auth";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Dropdown from "../Dropdown/Dropdown";
 import useComponentVisible from "../useComponentVisible";
 import Avatar from "../Avatar/Avatar";
 import { Link, routes, useLocation, AvailableRoutes } from "@redwoodjs/router";
 import { useRouterState } from "@redwoodjs/router/dist/router-context";
-import { capitalize } from "src/lib/formatters";
+import { capitalize, singularize } from "src/lib/formatters";
 
 
 const Navbar = () => {
@@ -16,32 +16,19 @@ const Navbar = () => {
   } = useAuth();
   const { pathname } = useLocation()
   const [title, setTitle] = useState(pathname.split('/')[1])
-  const singularize = (word: string) => {
-    const endings = {
-      ves: 'fe',
-      ies: 'y',
-      i: 'us',
-      zes: 'ze',
-      ses: 's',
-      es: 'e',
-      s: ''
-    };
-    return word.replace(
-      new RegExp(`(${Object.keys(endings).join('|')})$`),
-      r => endings[r]
-    );
-  }
 
   useEffect(() => {
     setTitle(capitalize(pathname.split('/')[1]))
-    getCurrentUser();
   }, [pathname]);
 
   const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
 
-  const handleOpen = () => {
+  const handleOpen = useCallback(() => {
     setIsComponentVisible(!isComponentVisible);
-  };
+  }, [isComponentVisible]);
+  // const handleOpen = () => {
+  //   setIsComponentVisible(!isComponentVisible);
+  // };
 
   return (
     <>
@@ -69,13 +56,13 @@ const Navbar = () => {
                 <line x1="5" y1="12" x2="19" y2="12" /></svg>
             </Link>
           )}
-          <button className="text-[#1f1c2e] dark:text-white p-0 m-0 w-4 h-4 md:w-8 md:h-8 bg-transparent flex items-center justify-center ml-2">
+          <button className="text-[#1f1c2e] dark:text-white p-0 m-0 w-4 h-4 md:w-8 md:h-8 bg-transparent flex items-center justify-center ml-2 outline-none">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
               <path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>
           </button>
           <div ref={ref} className="relative ml-3">
-            <button onClick={handleOpen} className="p-0 bg-transparent flex items-center pl-3 border-l-2 border-l-[#c4c4c4]">
+            <button onClick={handleOpen} className="p-0 bg-transparent flex items-center pl-3 border-l-2 border-l-[#c4c4c4]  outline-none">
               <span className="sr-only">Open user menu</span>
               <Avatar
                 url={String(currentUser ? currentUser.avatar_url : "")}

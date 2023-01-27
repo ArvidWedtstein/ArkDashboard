@@ -277,7 +277,30 @@ export const wordNumberRegex = (str: string) => {
   );
 };
 
-// get date difference in days, hours and minutes
+/**
+ * singularizes a word.
+ * @param word
+ * @returns
+ * @example singularize("apples") // "apple"
+ */
+export const singularize = (word: string) => {
+  const endings = {
+    ves: 'fe',
+    ies: 'y',
+    i: 'us',
+    zes: 'ze',
+    ses: 's',
+    es: 'e',
+    s: ''
+  };
+  return word.replace(
+    new RegExp(`(${Object.keys(endings).join('|')})$`),
+    r => endings[r]
+  );
+}
+
+
+
 
 export const getDateDiff = (date1: Date, date2: Date) => {
   const diff = Math.abs(new Date(date1).getTime() - new Date(date2).getTime());

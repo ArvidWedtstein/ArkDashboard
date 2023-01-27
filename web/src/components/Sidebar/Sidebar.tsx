@@ -1,4 +1,5 @@
 import { Link, routes, useLocation, useParams } from "@redwoodjs/router";
+import { singularize } from "src/lib/formatters";
 const Icon = (icon: string) => {
   const icons = {
     home: (
@@ -39,11 +40,12 @@ const Sidebar = () => {
   const navigation = [
     { name: 'Home', href: routes.home(), color: 'bg-pea-500' },
     { name: 'Basespot', href: routes.basespots({ page: 1 }), color: 'bg-blue-500' },
-    { name: 'Calculator', href: routes.materialCalculator(), color: 'bg-red-600' },
-    { name: 'GuessTheWord', href: routes.gtw(), color: 'bg-red-500' },
+    { name: 'Calculator', href: routes.materialCalculator(), color: 'bg-red-500' },
+    { name: 'GuessTheWord', href: routes.gtw(), color: 'bg-lime-500' },
     { name: 'Tribes', href: routes.tribes(), color: 'bg-emerald-500' },
     { name: 'Story', href: routes.timelines(), color: 'bg-sky-400' },
   ]
+
 
   return (
     <div className="">
@@ -52,7 +54,7 @@ const Sidebar = () => {
           <Link
             key={item.name}
             to={item.href}
-            className={`${item.href === pathname ? `text-white ${item.color}` : 'dark:hover:bg-[#c3cff41a] hover:bg-[#c3cff4] bg-[#1f1c2ecc] dark:bg-[#c3cff433] dark:text-[#ffffffcc] text-[#dddddd]'} mx-2 sm:my-4 duration-200 rounded-xl hover:rounded-full flex-shrink-0 w-10 h-10 flex justify-center items-center hover:text-white`}
+            className={`${singularize(item.href.split('?')[0]) === singularize(pathname) ? `text-white ${item.color}` : 'dark:hover:bg-[#c3cff41a] hover:bg-[#c3cff4] bg-[#1f1c2ecc] dark:bg-[#c3cff433] dark:text-[#ffffffcc] text-[#dddddd]'} mx-2 sm:my-4 duration-200 rounded-xl hover:rounded-full flex-shrink-0 w-10 h-10 flex justify-center items-center hover:text-white outline-none`}
           >
             {Icon(item.name)}
           </Link>
