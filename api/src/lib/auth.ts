@@ -46,15 +46,19 @@ export const getCurrentUser = async (
   const { sub, role } = decoded;
 
   if (!!!sub.toString()) {
-    let user = await db.profile.findUnique({
-      where: { id: sub.toString() },
-    });
+    try {
+      let user = await db.profile.findUnique({
+        where: { id: sub.toString() },
+      });
 
-    if (user && user.role_id) {
-      let role_id = user.role_id;
-      return await { id: sub, ...user, role, roles: [role_id], ...decoded };
+      if (user) {
+        let role_id = user.role_id;
+        return await { id: sub, ...user, role, roles: [role_id], ...decoded };
+      }
+    } catch (error) {
+      console.log("GetCurrentUserError: ", error);
+      return { sub, role, ...decoded };
     }
-    return await { id: sub, ...user, role, ...decoded };
   }
 
   return { ...decoded };

@@ -4245,6 +4245,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@redwoodjs/record@npm:^3.8.0":
+  version: 3.8.0
+  resolution: "@redwoodjs/record@npm:3.8.0"
+  dependencies:
+    "@babel/runtime-corejs3": 7.20.6
+    "@prisma/client": 4.7.1
+    core-js: 3.26.1
+  checksum: a308b1e389767e4d13e4f85bc76211958734d77295b53546b0af98d7fb6a89e0c2e09faadb56dba0679f708c9edf8aea33f5e3316de718b496714775aa42b027
+  languageName: node
+  linkType: hard
+
 "@redwoodjs/router@npm:3.8.0":
   version: 3.8.0
   resolution: "@redwoodjs/router@npm:3.8.0"
@@ -7601,6 +7612,7 @@ __metadata:
   dependencies:
     "@redwoodjs/api": 3.8.0
     "@redwoodjs/graphql-server": 3.8.0
+    "@redwoodjs/record": ^3.8.0
     jsonwebtoken: ^9.0.0
   languageName: unknown
   linkType: soft

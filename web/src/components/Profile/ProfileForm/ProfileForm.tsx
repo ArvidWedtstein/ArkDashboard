@@ -128,7 +128,7 @@ const ProfileForm = (props: ProfileFormProps) => {
                       <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                         <Label
                           name="full_name"
-                          className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                          className="rw-label"
                           errorClassName="rw-label rw-label-error"
                           htmlFor="grid-full-name"
                         >
@@ -168,8 +168,8 @@ const ProfileForm = (props: ProfileFormProps) => {
                       <div className="w-full px-3">
                         <Label
                           name="biography"
-                          className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                          htmlFor="grid-bio"
+                          className="rw-label"
+                          aria-describedby="biography-helper-text"
                           errorClassName="rw-label rw-label-error"
                         >
                           Biography
@@ -180,20 +180,19 @@ const ProfileForm = (props: ProfileFormProps) => {
                           defaultValue={props.profile?.biography}
                           // className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                           className='rw-input w-full'
-                          id="grid-bio"
                           errorClassName="rw-input rw-input-error"
                         />
 
                         <FieldError name="biography" className="rw-field-error" />
-                        <p className="text-gray-600 text-xs italic">Write whatever nonsense you'd like</p>
+                        <p id="biography-helper-text" className="rw-helper-text">Write whatever nonsense you'd like</p>
                       </div>
                     </div>
                     <div className="flex flex-wrap -mx-3 mb-2">
-                      <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                      <div className="w-full ">
                         <Label
                           name="website"
                           htmlFor="grid-website"
-                          className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                          className="rw-label"
                           errorClassName="rw-label rw-label-error"
                         >
                           Website
@@ -202,18 +201,18 @@ const ProfileForm = (props: ProfileFormProps) => {
                         <TextField
                           name="website"
                           defaultValue={props.profile?.website}
-                          className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                          // className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                          className='rw-input'
                           id="grid-website"
                           errorClassName="rw-input rw-input-error"
                         />
 
                         <FieldError name="website" className="rw-field-error" />
                       </div>
-                      <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                      <div className="w-full"> { /* md:w-1/2 px-3 mb-6 md:mb-3*/}
                         <Label
                           name="username"
-                          htmlFor="grid-username"
-                          className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                          className="rw-label"
                           errorClassName="rw-label rw-label-error"
                         >
                           Username
@@ -221,13 +220,18 @@ const ProfileForm = (props: ProfileFormProps) => {
                         <TextField
                           name="username"
                           defaultValue={props.profile?.username}
-                          className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                          id="grid-username"
+                          className="rw-input"
                           errorClassName="rw-input rw-input-error"
                         />
 
                         <FieldError name="username" className="rw-field-error" />
                       </div>
+                      {/* <div className="relative z-0 mt-3">
+                        <input type="text" id="floating_standard" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-pea-500 focus:outline-none focus:ring-0 focus:border-pea-600 peer" placeholder="" />
+                        <label htmlFor="floating_standard" className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-pea-500 peer-focus:dark:text-pea-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Username</label>
+                      </div> */}
+
+
                     </div>
                   </form>
                 </div>

@@ -25,7 +25,8 @@ const Avatar = ({
 
   useEffect(() => {
     if (url) downloadImage(url);
-  }, [url]);
+    console.log(url)
+  }, []);
 
   async function downloadImage(path) {
     try {

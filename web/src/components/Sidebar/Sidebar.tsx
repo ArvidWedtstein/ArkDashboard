@@ -52,7 +52,7 @@ const Sidebar = () => {
           <Link
             key={item.name}
             to={item.href}
-            className={`${item.href === pathname ? `text-white ${item.color}` : 'dark:hover:bg-[#c3cff41a] hover:bg-[#c3cff4] bg-[#1f1c2e] dark:bg-[#c3cff433] dark:text-[#ffffffcc] text-[#1f1c2e]'} mx-2 sm:my-4 duration-200 rounded-xl hover:rounded-full flex-shrink-0 w-10 h-10 flex justify-center items-center hover:text-white`}
+            className={`${item.href === pathname ? `text-white ${item.color}` : 'dark:hover:bg-[#c3cff41a] hover:bg-[#c3cff4] bg-[#1f1c2ecc] dark:bg-[#c3cff433] dark:text-[#ffffffcc] text-[#dddddd]'} mx-2 sm:my-4 duration-200 rounded-xl hover:rounded-full flex-shrink-0 w-10 h-10 flex justify-center items-center hover:text-white`}
           >
             {Icon(item.name)}
           </Link>

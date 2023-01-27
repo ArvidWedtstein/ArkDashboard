@@ -16,7 +16,7 @@ const Routes = () => {
   return (
     <Router>
       <Route path="/dino-stats" page={DinoStatsPage} name="dinoStats" />
-      <Set wrap={MainLayout}>
+      <Set wrap={MainLayout}> {/*whileLoadingPage*/}
         <Route path="/material-calculator" page={MaterialCalculatorPage} name="materialCalculator" />
         <Route path="/reset-password" page={ResetPasswordPage} name="resetPassword" />
         <Route path="/gtw" page={GTWPage} name="gtw" />

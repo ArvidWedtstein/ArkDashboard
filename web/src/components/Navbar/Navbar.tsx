@@ -1,9 +1,9 @@
 import { useAuth } from "@redwoodjs/auth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Dropdown from "../Dropdown/Dropdown";
 import useComponentVisible from "../useComponentVisible";
 import Avatar from "../Avatar/Avatar";
-import { Link, routes } from "@redwoodjs/router";
+import { Link, routes, useLocation, AvailableRoutes } from "@redwoodjs/router";
 type NavbarProps = {
   title?: string
   titleTo?: string
@@ -16,20 +16,18 @@ const Navbar = ({ title, titleTo, buttonLabel, buttonTo }: NavbarProps) => {
     currentUser,
     getCurrentUser,
     isAuthenticated,
-    logIn,
-    logOut,
-    hasRole,
   } = useAuth();
+  const { pathname } = useLocation()
+
   useEffect(() => {
     getCurrentUser();
   }, [currentUser]);
-
+  // const [route, setRoute] = useState(pathname.split('/')[1])
   const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
 
   const handleOpen = () => {
     setIsComponentVisible(!isComponentVisible);
   };
-
   return (
     <>
       <div className="flex justify-between items-center w-full py-4 px-6 relative">
@@ -50,7 +48,7 @@ const Navbar = ({ title, titleTo, buttonLabel, buttonTo }: NavbarProps) => {
         </div>
         <div className="flex items-center">
           {buttonTo && buttonLabel && (
-            <Link to={routes[buttonTo]()} className="bg-[#1f1c24] dark:bg-[#1f2937] text-[#1f1c2e] rounded-full w-5 h-5 md:w-8 md:h-8 flex items-center justify-center border-none p-0 dark:text-white ml-2" title={buttonLabel}>
+            <Link to={routes[buttonTo]()} className="bg-[#1f1c24] dark:bg-[#1f2937] text-[#ffffffcc] rounded-full w-5 h-5 md:w-8 md:h-8 flex items-center justify-center border-none p-0 dark:text-white ml-2" title={buttonLabel}>
               <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" /></svg>
@@ -61,23 +59,15 @@ const Navbar = ({ title, titleTo, buttonLabel, buttonTo }: NavbarProps) => {
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
               <path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>
           </button>
-          {/* <button className="p-0 bg-transparent flex items-center pl-3 ml-2 border-l-2 border-l-[#dddddd]">
-            <Avatar
-              url={String(currentUser ? currentUser.avatar_url : "")}
-              size={30}
-              className="w-8 h-8 object-cover rounded-full mr-1 text-[#1f1c2e] dark:text-white"
-            />
-            <span className="ml-1 text-[#1f1c2e] dark:text-white text-base font-bold">Aybüke C.</span>
-          </button> */}
           <div ref={ref} className="relative ml-3">
-            <button onClick={handleOpen} className="p-0 bg-transparent flex items-center pl-3 border-l-2 border-l-[#dddddd]">
+            <button onClick={handleOpen} className="p-0 bg-transparent flex items-center pl-3 border-l-2 border-l-[#c4c4c4]">
               <span className="sr-only">Open user menu</span>
               <Avatar
                 url={String(currentUser ? currentUser.avatar_url : "")}
                 size={30}
                 className="w-4 h-4 md:w-8 md:h-8 rounded-full text-[#1f1c2e] dark:text-white"
               />
-              <span className="ml-1 text-[#1f1c2e] dark:text-white text-base font-bold">{currentUser ? currentUser.email : 'test'}</span>
+              <span className="ml-1 text-[#1f1c2e] dark:text-white text-base font-bold">{currentUser ? currentUser.email.split('@')[0] : 'test'}</span>
             </button>
             {isComponentVisible && (
               <ul className="absolute right-0 z-40 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
