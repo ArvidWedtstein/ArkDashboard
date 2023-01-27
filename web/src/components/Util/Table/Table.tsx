@@ -23,7 +23,6 @@ interface ColumnData {
   dataKey: string;
   label: string;
   numeric?: boolean;
-  width?: number;
   bold?: boolean;
   sortable?: boolean;
 }
@@ -46,34 +45,6 @@ interface TaybulProps {
   renderActions?: (row: any) => React.ReactNode;
 }
 
-{/* <Taybul
-          className="mt-3"
-          headersVertical={false}
-          filter={true}
-          search={true}
-          rows={row}
-          summary={true}
-          // rowsPerPage={10}
-          select={true}
-          // caption={{
-          //   title: "Test",
-          //   text: "Test",
-          // }}
-          columns={[
-            {
-              width: 200,
-              label: 'Name',
-              dataKey: 'name',
-              sortable: true,
-            },
-            {
-              width: 120,
-              label: "Pain",
-              dataKey: "pain",
-              numeric: true,
-            },
-          ]}
-        ></Taybul> */}
 /**
  * @todo add functionality for row click
  * @borrows dynamicSort and debounce from formatters.ts

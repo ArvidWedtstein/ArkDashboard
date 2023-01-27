@@ -16,3 +16,7 @@ body {
   /* @apply bg-white dark:bg-[#252636]; */
   @apply dark:bg-primary font-poppins bg-white;
 }
+/* @font-face {
+  font-family: "Unifraktur Cook";
+  src: url("https://res.cloudinary.com/azametzin/raw/upload/v1673488767/Middle-Ages%20CodePen%20Challenge/UnifrakturCook-Bold.ttf");
+} */

@@ -13,6 +13,7 @@ const HomePage = () => {
   // supabase.auth.onAuthStateChange((event, session) => {
   //   console.log(event, session)
   // })
+  let gender = 'female'
 
   return (
     <>
@@ -41,10 +42,13 @@ const HomePage = () => {
                   Here you can find <span className="underline decoration-pea-500 decoration-4 underline-offset-8">base</span> locations, material calculators and
                   much more
                 </h3>
+                {/* <h3 className="mb-8 text-3xl">
+                  H're thee can findeth <span className="underline decoration-pea-500 decoration-4 underline-offset-8">base</span> locations, mat'rial calculat'rs and much m're
+                </h3> */}
                 <Link
                   // className="rounded border-2 bg-pea-500 border-pea-500 px-6 py-2.5 text-sm font-normal uppercase leading-tight text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0"
                   className="rw-button rw-button-green-outline"
-                  to={routes.signin()}
+                  to={isAuthenticated ? routes.basespots() : routes.signin()}
                 >
                   Get started
                 </Link>

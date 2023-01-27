@@ -4,7 +4,7 @@ import { toast } from '@redwoodjs/web/toast'
 
 import { QUERY } from 'src/components/Timeline/TimelinesCell'
 import { ContextMenu } from 'src/components/Util/ContextMenu/ContextMenu'
-import Table from 'src/components/Util/Table/Table'
+import Table, { Taybul } from 'src/components/Util/Table/Table'
 import { timeTag, truncate } from 'src/lib/formatters'
 
 import type { DeleteTimelineMutationVariables, FindTimelines } from 'types/graphql'
@@ -40,7 +40,7 @@ const TimelinesList = ({ timelines }: FindTimelines) => {
 
   return (
     <div className="rw-segment rw-table-wrapper-responsive">
-      <Table
+      {/* <Table
         className='m-4'
         data={timelines}
         cols={["id", "createdAt", "updatedAt", "createdBy", "actions"]}
@@ -77,7 +77,7 @@ const TimelinesList = ({ timelines }: FindTimelines) => {
             </ContextMenu>
           </>
         )}
-      />
+      /> */}
 
       <table className="rw-table">
         <thead>
@@ -130,23 +130,25 @@ const TimelinesList = ({ timelines }: FindTimelines) => {
       <div className="w-full mt-10">
         <div className="bg-transparent flex">
           {timelines.map(({ id, createdAt, updatedAt, createdBy }) => (
-            <div className="relative flex p-6 w-[40%] h-64 mr-[1px]" style={{ background: '#D24D57' }}>
+            <div className="relative flex p-6 min-w-fit w-fit max-w-[100px] h-64 mr-[1px]" style={{ background: '#D24D57' }}>
               <div className="flex-shrink-0">
                 <img className="w-[160px] flex-shrink-0 -bottom-8 left-8 rounded shadow h-full transition-all ease-in-out object-cover hover:transform hover:scale-105" src="https://pbs.twimg.com/media/E0AsojmVgAIKg-_?format=jpg&name=4096x4096" alt="" />
               </div>
               <div className="px-5 text-white overflow-hidden book-content text-left">
-                <div className="text-ellipsis text-white font-semibold whitespace-nowrap overflow-hidden">{createdBy}'s Timeline</div>
+                <div className="text-ellipsis text-white font-semibold whitespace-nowrap overflow-hidden">My Timeline 1</div>
                 <div className="mt-1 text-xs text-ellipsis whitespace-nowrap overflow-hidden">by {createdBy}</div>
                 <div className="rate">
                   👍
-                  <span className="text-white align-sub text-xs ml-2 mt-2 whitespace-nowrap">1.987 basespots</span>
+                  <span className="text-white align-sub text-xs ml-2 mt-2 whitespace-nowrap">10 basespots</span>
                 </div>
                 <div className="mt-5 text-sm overflow-hidden" style={{
                   display: '-webkit-box',
                   WebkitLineClamp: 3,
                   WebkitBoxOrient: 'vertical',
-                }}> Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo, perspiciatis. </div>
-                <div className="mt-5 w-40 text-sm rounded-2xl font-semibold p-2 text-center bg-white text-black hover:text-slate-700">See The spot</div>
+                }}> Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Illo, perspiciatis.
+                </div>
+                <div className="mt-5 w-40 text-sm rounded-2xl font-semibold p-2 text-center bg-white text-black hover:text-slate-700">View Timeline</div>
               </div>
             </div>
           ))}

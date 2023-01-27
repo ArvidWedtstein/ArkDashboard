@@ -48,6 +48,7 @@ module.exports = {
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
+        // poppins2: ["Unifraktur Cook", "Poppins", "sans-serif"],
       },
     },
   },
