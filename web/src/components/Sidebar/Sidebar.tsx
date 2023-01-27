@@ -49,6 +49,19 @@ const Sidebar = () => {
 
   return (
     <div className="">
+      {/* <div className="bg-[#0D2836] text-[#97FBFF] p-3 border border-[#60728F]">
+        <div className="sm:py-10 px-10 sm:px-2 py-2 flex sm:flex-col flex-row items-center rounded-2xl justify-between sm:justify-center">
+          {navigation.map((item) => (
+            <Link
+              key={item.name}
+              to={item.href}
+              className={`${singularize(item.href.split('?')[0]) === singularize(pathname) ? `text-white ${item.color}` : ''} flex-shrink-0 sm:my-4 mx-2 uppercase duration-150 bg-[#11667B] outline outline-1 transition-colors outline-[#11667B] outline-offset-1 hover:outline-offset-0 hover:outline-2 w-10 h-10 dark:text-[#ffffffcc] text-[#dddddd] flex justify-center items-center`}
+            >
+              {Icon(item.name)}
+            </Link>
+          ))}
+        </div>
+      </div> */}
       <div className="sm:py-10 px-10 sm:px-2 py-2 sm:border-r max-sm:border-b flex sm:flex-col flex-row items-center rounded-2xl justify-between sm:justify-center">
         {navigation.map((item) => (
           <Link

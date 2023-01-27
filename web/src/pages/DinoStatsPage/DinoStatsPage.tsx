@@ -10,9 +10,9 @@ import {
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useState } from "react";
-import Table from "src/components/Util/Table/Table";
+import Table, { Taybul } from "src/components/Util/Table/Table";
 import { combineBySummingKeys } from "src/lib/formatters";
-import arkdinos from "../../../public/arkdinos.json";
+import arkdinos from "../../../public/arkdinos2.json";
 
 interface stats {
   health: number;
@@ -60,6 +60,8 @@ const DinoStatsPage = () => {
     dyno.dino = (level[id] - 1) * dyno.increaseperlevel + dyno.base;
   };
   const onSubmit = (data) => {
+    // let dino = arkdinos[data.name.toLowerCase()]
+
     let dino = arkdinos.find(
       (d) => d.name.toLowerCase() === data.name.toLowerCase()
     );
@@ -68,7 +70,7 @@ const DinoStatsPage = () => {
         stat: key,
         base: value.b,
         increaseperlevel: value.increasePerLevel || 0,
-        dino: value.b + value.increasePerLevel * level[key],
+        dino: value?.b + value.increasePerLevel * level[key],
       };
     });
     setValue("level", data.level);
@@ -96,11 +98,11 @@ const DinoStatsPage = () => {
     <>
       <MetaTags title="DinoStats" description="DinoStats page" />
 
-      <div className="rw-segment">
+      <div className="p-4">
         <header className="rw-segment-header">
           <h2 className="rw-heading rw-heading-secondary">Dino Calculator</h2>
         </header>
-        <div className="rw-segment-main">
+        <div className="p-4">
           <Form onSubmit={onSubmit}>
             {/* TODO: Insert dino lookup here */}
             <Label
@@ -149,7 +151,60 @@ const DinoStatsPage = () => {
             </div>
           </Form>
           {/* TODO: Add pretame simulator. Assign available points to random stats */}
-          <Table
+          <Taybul
+            rows={dino}
+            columns={[
+              {
+                dataKey: "stat",
+                label: "Stat",
+                bold: true,
+                sortable: true,
+              },
+              {
+                dataKey: "base",
+                label: "Base",
+                numeric: true,
+                sortable: true,
+              },
+              {
+                dataKey: "increaseperlevel",
+                label: "Increase per level",
+                numeric: true,
+              },
+              {
+                dataKey: "dino",
+                label: "Total",
+              }
+            ]}
+            renderActions={(row) => {
+              return (
+                <nav className="flex flex-row content-center items-center align-middle">
+                  <button
+                    id={`rem${row.stat}`}
+                    disabled={level[row.stat] <= 0}
+                    className="rw-button rw-button-small rw-button-red rounded-full disabled:bg-slate-500 disabled:text-white"
+                    onClick={onRemove}
+                  >
+                    -
+                  </button>
+                  <input
+                    disabled={true}
+                    className="rw-input max-w-[50px]"
+                    value={level[row.stat]}
+                  />
+                  <button
+                    id={`add${row.stat}`}
+                    disabled={points <= 0}
+                    className="rw-button rw-button-small rw-button-green disabled:bg-slate-500 disabled:text-white"
+                    onClick={onAdd}
+                  >
+                    +
+                  </button>
+                </nav>
+              )
+            }}
+          />
+          {/* <Table
             data={dino}
             cols={["stat", "base", "increaseperlevel", `dino`, "actions"]}
             renderActions={(row) => {
@@ -179,7 +234,7 @@ const DinoStatsPage = () => {
                 </nav>
               );
             }}
-          />
+          /> */}
         </div>
       </div>
     </>
