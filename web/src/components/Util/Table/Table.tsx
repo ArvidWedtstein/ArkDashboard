@@ -105,7 +105,7 @@ export const Taybul = ({
     });
 
     return sortData(filteredData);
-  }, [sort, searchTerm]);
+  }, [sort, searchTerm, dataRows]);
 
   useEffect(() => {
     if (select) {

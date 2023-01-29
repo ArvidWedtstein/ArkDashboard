@@ -12,20 +12,21 @@ export const QUERY = gql`
       createdAt
       updatedAt
       createdBy
-      # profile {
-      #   id
-      #   full_name
-      # }
+      Profile {
+        id
+        full_name
+      }
     }
   }
 `;
+
 export const Loading = () => {
   return (
-    <div className='w-full h-full flex items-center justify-center '>
-      <span className='w-16 h-16 inline-block rounded-full border-t-4 border-black dark:border-white border-r-2 border-transparent animate-spin'></span>
+    <div className="flex h-full w-full items-center justify-center ">
+      <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>
     </div>
-  )
-}
+  );
+};
 
 export const Empty = () => {
   return (

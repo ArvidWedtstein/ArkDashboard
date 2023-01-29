@@ -53,11 +53,11 @@ const TribesList = ({ tribes }: FindTribes) => {
   return (
     <div className="relative">
       <div className="m-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <div className="flex items-start rounded-xl bg-white p-4 shadow-lg">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-blue-100 bg-blue-50">
+        <div className="dark: flex items-start rounded-xl bg-white p-4 shadow-lg dark:bg-[#3b424f]">
+          <div className="border-pea-100 bg-pea-50 dark:border-pea-900 flex h-12 w-12 items-center justify-center rounded-full border dark:bg-[#2d323b]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-blue-400"
+              className="text-pea-500 h-6 w-6"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -71,27 +71,29 @@ const TribesList = ({ tribes }: FindTribes) => {
             </svg>
           </div>
           <div className="ml-4">
-            <h2 className="font-semibold">
+            <h2 className="font-semibold text-black dark:text-white">
               {filterDatesByCurrentWeek(tribes).length}{" "}
               {filterDatesByCurrentWeek(tribes).length > 1 ? "Tribes" : "Tribe"}
             </h2>
-            <p className="mt-2 text-sm text-gray-500">Created this week</p>
+            <p className="mt-2 text-sm text-gray-500 dark:text-stone-200">
+              Created this week
+            </p>
           </div>
         </div>
         <div
-          className="flex items-start rounded-xl bg-white p-4 shadow-lg"
+          className="flex items-start rounded-xl bg-white p-4 shadow-lg dark:bg-[#3b424f]"
           onClick={pickRandomTribe}
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-blue-100 bg-blue-50">
+          <div className="dark:border-pea-900 flex h-12 w-12 items-center justify-center rounded-full border border-blue-100 bg-blue-50 dark:bg-[#2d323b]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 fill-blue-400 text-blue-400"
+              className="text-pea-500 fill-pea-500 h-6 w-6"
               viewBox="0 0 512 512"
             >
               <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM256 464c-114.7 0-208-93.31-208-208S141.3 48 256 48s208 93.31 208 208S370.7 464 256 464zM256 336c-18 0-32 14-32 32s13.1 32 32 32c17.1 0 32-14 32-32S273.1 336 256 336zM289.1 128h-51.1C199 128 168 159 168 198c0 13 11 24 24 24s24-11 24-24C216 186 225.1 176 237.1 176h51.1C301.1 176 312 186 312 198c0 8-4 14.1-11 18.1L244 251C236 256 232 264 232 272V288c0 13 11 24 24 24S280 301 280 288V286l45.1-28c21-13 34-36 34-60C360 159 329 128 289.1 128z" />
             </svg>
           </div>
-          <div className="ml-4">
+          <div className="ml-4 text-black dark:text-white">
             <button className="">Pick random tribe name</button>
           </div>
         </div>

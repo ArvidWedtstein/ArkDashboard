@@ -49,7 +49,7 @@ const ArkCard = ({
               />
             </div>
           )}
-          <div className="ml-3 flex-auto justify-evenly py-2">
+          <div className="flex-auto justify-evenly py-2">
             <div className="flex flex-wrap ">
               <h2 className="flex-auto text-lg font-medium text-gray-50">
                 {title}
@@ -58,13 +58,10 @@ const ArkCard = ({
                 {subtitle}
               </div>
             </div>
-            <p className="mt-3"></p>
-            <div className="flex py-4  text-sm text-gray-200">
-              <div className="inline-flex flex-1 items-center">
-                <p>{content}</p>
-              </div>
+            <div className="mt-6 inline-flex flex-1 items-center text-sm text-gray-200">
+              <p>{content}</p>
             </div>
-            <div className="flex border-t border-gray-300 p-4 pb-2"></div>
+            <div className="border-t border-gray-300 p-4 pb-2"></div>
             <div className="flex items-center justify-between text-sm font-light">
               <button className="relative inline-flex items-center justify-center space-x-2 rounded-full bg-gray-600 px-4 py-2.5 text-gray-100 shadow-sm ring-1 ring-green-500">
                 <div className="flex">

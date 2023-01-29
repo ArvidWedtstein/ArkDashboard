@@ -1,13 +1,16 @@
-import { Link, navigate, routes } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
+import { Link, navigate, routes } from "@redwoodjs/router";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
 
-import { QUERY } from 'src/components/Timeline/TimelinesCell'
-import { ContextMenu } from 'src/components/Util/ContextMenu/ContextMenu'
-import Table, { Taybul } from 'src/components/Util/Table/Table'
-import { timeTag, truncate } from 'src/lib/formatters'
+import { QUERY } from "src/components/Timeline/TimelinesCell";
+import { ContextMenu } from "src/components/Util/ContextMenu/ContextMenu";
+import Table, { Taybul } from "src/components/Util/Table/Table";
+import { timeTag, truncate } from "src/lib/formatters";
 
-import type { DeleteTimelineMutationVariables, FindTimelines } from 'types/graphql'
+import type {
+  DeleteTimelineMutationVariables,
+  FindTimelines,
+} from "types/graphql";
 
 const DELETE_TIMELINE_MUTATION = gql`
   mutation DeleteTimelineMutation($id: String!) {
@@ -15,31 +18,80 @@ const DELETE_TIMELINE_MUTATION = gql`
       id
     }
   }
-`
+`;
 
 const TimelinesList = ({ timelines }: FindTimelines) => {
   const [deleteTimeline] = useMutation(DELETE_TIMELINE_MUTATION, {
     onCompleted: () => {
-      toast.success('Timeline deleted')
+      toast.success("Timeline deleted");
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error(error.message);
     },
     // This refetches the query on the list page. Read more about other ways to
     // update the cache over here:
     // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
     refetchQueries: [{ query: QUERY }],
     awaitRefetchQueries: true,
-  })
+  });
 
-  const onDeleteClick = (id: DeleteTimelineMutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete timeline ' + id + '?')) {
-      deleteTimeline({ variables: { id } })
+  const onDeleteClick = (id: DeleteTimelineMutationVariables["id"]) => {
+    if (confirm("Are you sure you want to delete timeline " + id + "?")) {
+      deleteTimeline({ variables: { id } });
     }
-  }
+  };
 
   return (
     <div className="rw-segment rw-table-wrapper-responsive">
+      <div className="mt-10 w-full">
+        <div className="flex bg-transparent">
+          {timelines.map(({ id, createdAt, updatedAt, createdBy, Profile }) => (
+            <div
+              key={id}
+              className="border-pea-500 relative mr-[1px] flex h-64 w-fit min-w-fit max-w-[100px] border p-6"
+            >
+              <div className="flex-shrink-0">
+                <img
+                  className="-bottom-8 left-8 h-full w-[160px] flex-shrink-0 rounded object-cover shadow transition-all ease-in-out hover:scale-105 hover:transform"
+                  src="https://pbs.twimg.com/media/E0AsojmVgAIKg-_?format=jpg&name=4096x4096"
+                  alt=""
+                />
+              </div>
+              <div className="book-content overflow-hidden px-5 text-left text-white">
+                <div className="overflow-hidden text-ellipsis whitespace-nowrap font-semibold text-white">
+                  My Timeline 1
+                </div>
+                <div className="mt-1 overflow-hidden text-ellipsis whitespace-nowrap text-xs">
+                  by {Profile.full_name}
+                </div>
+                <div className="rate">
+                  <span
+                    className="mt-2 whitespace-nowrap align-sub text-xs text-white" /*ml-2*/
+                  >
+                    0 basespots
+                  </span>
+                </div>
+                <div
+                  className="mt-5 overflow-hidden text-sm"
+                  style={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: "vertical",
+                  }}
+                >
+                  {" "}
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo,
+                  perspiciatis.
+                </div>
+                <div className="mt-5 w-40 rounded-2xl bg-white p-2 text-center text-sm font-semibold text-black hover:text-slate-700">
+                  View Timeline
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* <Table
         className='m-4'
         data={timelines}
@@ -78,84 +130,8 @@ const TimelinesList = ({ timelines }: FindTimelines) => {
           </>
         )}
       /> */}
-
-      <table className="rw-table">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Created at</th>
-            <th>Updated at</th>
-            <th>Created by</th>
-            <th>&nbsp;</th>
-          </tr>
-        </thead>
-        <tbody>
-          {timelines.map((timeline) => (
-            <tr key={timeline.id}>
-              <td>{truncate(timeline.id)}</td>
-              <td>{timeTag(timeline.createdAt)}</td>
-              <td>{timeTag(timeline.updatedAt)}</td>
-              <td>{truncate(timeline.createdBy)}</td>
-              <td>
-                <nav className="rw-table-actions">
-                  <Link
-                    to={routes.timeline({ id: timeline.id })}
-                    title={'Show timeline ' + timeline.id + ' detail'}
-                    className="rw-button rw-button-small"
-                  >
-                    Show
-                  </Link>
-                  <Link
-                    to={routes.timeline({ id: timeline.id })}
-                    title={'Edit timeline ' + timeline.id}
-                    className="rw-button rw-button-small rw-button-blue"
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    type="button"
-                    title={'Delete timeline ' + timeline.id}
-                    className="rw-button rw-button-small rw-button-red"
-                    onClick={() => onDeleteClick(timeline.id)}
-                  >
-                    Delete
-                  </button>
-                </nav>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div className="w-full mt-10">
-        <div className="bg-transparent flex">
-          {timelines.map(({ id, createdAt, updatedAt, createdBy }) => (
-            <div className="relative flex p-6 min-w-fit w-fit max-w-[100px] h-64 mr-[1px]" style={{ background: '#D24D57' }}>
-              <div className="flex-shrink-0">
-                <img className="w-[160px] flex-shrink-0 -bottom-8 left-8 rounded shadow h-full transition-all ease-in-out object-cover hover:transform hover:scale-105" src="https://pbs.twimg.com/media/E0AsojmVgAIKg-_?format=jpg&name=4096x4096" alt="" />
-              </div>
-              <div className="px-5 text-white overflow-hidden book-content text-left">
-                <div className="text-ellipsis text-white font-semibold whitespace-nowrap overflow-hidden">My Timeline 1</div>
-                <div className="mt-1 text-xs text-ellipsis whitespace-nowrap overflow-hidden">by {createdBy}</div>
-                <div className="rate">
-                  👍
-                  <span className="text-white align-sub text-xs ml-2 mt-2 whitespace-nowrap">10 basespots</span>
-                </div>
-                <div className="mt-5 text-sm overflow-hidden" style={{
-                  display: '-webkit-box',
-                  WebkitLineClamp: 3,
-                  WebkitBoxOrient: 'vertical',
-                }}> Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Illo, perspiciatis.
-                </div>
-                <div className="mt-5 w-40 text-sm rounded-2xl font-semibold p-2 text-center bg-white text-black hover:text-slate-700">View Timeline</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
-  )
-}
+  );
+};
 
-export default TimelinesList
+export default TimelinesList;

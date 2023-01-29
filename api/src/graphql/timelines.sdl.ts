@@ -27,4 +27,4 @@ export const schema = gql`
       @requireAuth
     deleteTimeline(id: String!): Timeline! @requireAuth
   }
-`
+`;
