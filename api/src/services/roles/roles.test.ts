@@ -24,7 +24,7 @@ describe('roles', () => {
 
   scenario('creates a role', async () => {
     const result = await createRole({
-      input: { name: 'String', permissions: ['basespot_delete'] },
+      input: { name: 'String', permissions: 'basespot:delete' },
     })
 
     expect(result.name).toEqual('String')
@@ -35,7 +35,7 @@ describe('roles', () => {
     const original = (await role({ id: scenario.role.one.id })) as Role
     const result = await updateRole({
       id: original.id,
-      input: { name: 'String2', permissions: [] },
+      input: { name: 'String2' },
     })
 
     expect(result.name).toEqual('String2')

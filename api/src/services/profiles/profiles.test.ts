@@ -30,7 +30,7 @@ describe('profiles', () => {
 
   scenario('creates a profile', async () => {
     const result = await createProfile({
-      input: { role_id: 'String', status: 'ONLINE' },
+      input: { id: 'String' },
     })
 
     expect(result.id).toEqual('String')

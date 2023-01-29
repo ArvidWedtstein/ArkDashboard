@@ -3,14 +3,15 @@ export const schema = gql`
     id: Int!
     name: String!
     description: String
-    created_at: DateTime!
+    created_at: DateTime
     updated_at: DateTime
     createdBy: String
     updatedBy: String
+    Profile: Profile
   }
 
   type Query {
-    tribes: [Tribe!]! @skipAuth
+    tribes: [Tribe!]! @requireAuth
     tribe(id: Int!): Tribe @requireAuth
   }
 

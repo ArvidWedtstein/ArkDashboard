@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@redwoodjs/auth";
 import { ImageField } from "@redwoodjs/forms";
 
-
 const Avatar = ({
   url,
   size,
@@ -24,10 +23,9 @@ const Avatar = ({
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    if (!!!url) {
+    if (!!url) {
       downloadImage(url);
     }
-
   }, [url]);
 
   async function downloadImage(path) {
@@ -78,7 +76,10 @@ const Avatar = ({
 
   return (
     <div
-      className={"relative flex items-center justify-center" + ` max-w-[${size}px] max-h-[${size}px]`}
+      className={
+        "relative flex items-center justify-center" +
+        ` max-w-[${size}px] max-h-[${size}px]`
+      }
       style={{ height: size, width: size }}
     >
       {onUpload ? (
@@ -102,7 +103,9 @@ const Avatar = ({
           </label>
         </div>
       ) : null}
-      <div className={`relative h-full w-full rounded-full border-none border-[#f8f8f8] shadow ${className} flex items-center`}>
+      <div
+        className={`relative h-full w-full rounded-full border-none border-[#f8f8f8] shadow ${className} flex items-center`}
+      >
         {avatarUrl ? (
           <div
             className="h-full w-full rounded-full bg-cover bg-center bg-no-repeat"

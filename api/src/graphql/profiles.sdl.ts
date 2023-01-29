@@ -10,12 +10,10 @@ export const schema = gql`
     status: user_status!
     role_id: String!
     created_at: DateTime
-    TimelineBasespot: [TimelineBasespot]!
+    Message: [Message]!
     role_profile_role_idTorole: Role!
-    role_role_createdByToprofile: [Role]!
-    timeline: [Timeline]!
-    tribe_tribe_createdByToprofile: [Tribe]!
-    tribe_tribe_updatedByToprofile: [Tribe]!
+    Timeline: [Timeline]!
+    Tribe: [Tribe]!
   }
 
   enum user_status {

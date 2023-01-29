@@ -2,8 +2,15 @@ import { TextField } from "@redwoodjs/forms";
 import { Link, routes } from "@redwoodjs/router";
 import { bool } from "prop-types";
 import { memo, useEffect, useMemo, useState } from "react";
-import { capitalize, debounce, dynamicSort, isDate, isUUID, timeTag, truncate } from "src/lib/formatters";
-
+import {
+  capitalize,
+  debounce,
+  dynamicSort,
+  isDate,
+  isUUID,
+  timeTag,
+  truncate,
+} from "src/lib/formatters";
 
 interface Row {
   index: number;
@@ -67,15 +74,15 @@ export const Taybul = ({
   renderActions,
 }: TaybulProps) => {
   const [rows, setRows] = useState<any[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [sort, setSort] = useState({
-    column: '',
-    direction: 'asc',
+    column: "",
+    direction: "asc",
   });
 
   const sortRows = (e) => {
     let column = e.target.id;
-    let direction = sort.direction === 'asc' ? 'desc' : 'asc';
+    let direction = sort.direction === "asc" ? "desc" : "asc";
     setSort({ column, direction });
   };
 
@@ -83,7 +90,7 @@ export const Taybul = ({
     let { column, direction } = sort;
     if (column) {
       data.sort(dynamicSort(column));
-      if (direction === 'desc') {
+      if (direction === "desc") {
         data.reverse();
       }
     }
@@ -93,34 +100,35 @@ export const Taybul = ({
   const SortedFilteredData = useMemo(() => {
     let filteredData = dataRows.filter((row) => {
       let rowValues = Object.values(row);
-      let rowString = rowValues.join(' ');
+      let rowString = rowValues.join(" ");
       return rowString.toLowerCase().includes(searchTerm.toLowerCase());
     });
 
     return sortData(filteredData);
   }, [sort, searchTerm]);
 
-
   useEffect(() => {
     if (select) {
-      let daRows = document.querySelectorAll('input[type="checkbox"][id^="checkbox-row"]');
+      let daRows = document.querySelectorAll(
+        'input[type="checkbox"][id^="checkbox-row"]'
+      );
       setRows([...daRows]);
     }
   }, []);
 
-  const handleSearch = debounce((e) => setSearchTerm(e.target.value))
+  const handleSearch = debounce((e) => setSearchTerm(e.target.value));
 
   const selectRow = (e) => {
-    if (e.target.id === 'checkbox-all-select') {
+    if (e.target.id === "checkbox-all-select") {
       rows.map((row) => {
         if (row.checked !== e.target.checked) {
           row.checked = e.target.checked;
         }
       });
-      return
+      return;
     }
 
-    let check: any = document.getElementById('checkbox-all-select');
+    let check: any = document.getElementById("checkbox-all-select");
     if (!e.target.checked) {
       check.checked = e.target.checked;
     } else {
@@ -128,18 +136,26 @@ export const Taybul = ({
         check.checked = true;
       }
     }
-  }
-
+  };
 
   const headerRenderer = ({ label, columnIndex, ...other }) => {
     return (
       <th key={`${columnIndex}-${label}`} className="px-6 py-3" scope="col">
         {other.sortable ? (
-          <div className="flex items-center select-none" id={other.dataKey} onClick={sortRows}>
+          <div
+            className="flex select-none items-center"
+            id={other.dataKey}
+            onClick={sortRows}
+          >
             {truncate(label, 30)}
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 ml-1" fill="currentColor" viewBox="0 0 320 512">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="ml-1 h-3 w-3"
+              fill="currentColor"
+              viewBox="0 0 320 512"
+            >
               {sort.column === other.dataKey ? (
-                sort.direction === 'asc' ? (
+                sort.direction === "asc" ? (
                   <path d="M182.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8H288c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z" />
                 ) : (
                   <path d="M182.6 470.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-9.2-9.2-11.9-22.9-6.9-34.9s16.6-19.8 29.6-19.8H288c12.9 0 24.6 7.8 29.6 19.8s2.2 25.7-6.9 34.9l-128 128z" />
@@ -148,61 +164,101 @@ export const Taybul = ({
                 <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
               )}
             </svg>
-          </div>) : truncate(label, 30)}
+          </div>
+        ) : (
+          truncate(label, 30)
+        )}
       </th>
-    )
-  }
+    );
+  };
 
-  const cellRenderer = ({ cellData, columnIndex, ...other }) => {
-    {/* textAlign: `${other.numeric || false ? 'right' : 'left'}`*/ }
+  const cellRenderer = ({ rowData, cellData, columnIndex, ...other }) => {
+    {
+      /* textAlign: `${other.numeric || false ? 'right' : 'left'}`*/
+    }
     return (
-      <td key={`${columnIndex}-${cellData}`} className={`px-6 py-4 ${other.bold ? 'font-bold text-gray-900 whitespace-nowrap dark:text-white' : ''}`}>
-        {isDate(cellData) ? timeTag(cellData) : truncate(cellData, 30)}
-        {/* {isUUID(cellData) ? (
+      <td
+        key={`${columnIndex}-${cellData}`}
+        className={`px-6 py-4 ${
+          other.bold
+            ? "whitespace-nowrap font-bold text-gray-900 dark:text-white"
+            : ""
+        }`}
+      >
+        {/* {isDate(cellData) ? timeTag(cellData) : truncate(cellData, 30)} */}
+        {isUUID(cellData) && other.label.toLowerCase() === "created by" ? (
           <div className="flex flex-row">
-            <img className="w-10 h-10 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-1.jpg" alt="Jese image" />
-            <div className="pl-3">
-              <div className="text-base font-semibold">Neil Sims</div>
-              <div className="font-normal text-gray-500">neil.sims@flowbite.com</div>
+            {rowData.Profile.avatar_url && (
+              <img
+                className="h-10 w-10 rounded-full"
+                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${rowData.Profile.avatar_url}`}
+                alt={rowData.Profile.full_name || "Profile Image"}
+              />
+            )}
+            <div className="flex items-center pl-3">
+              <div className="text-base font-semibold">
+                {rowData.Profile.full_name}
+              </div>
+              {/* <div className="font-normal text-gray-500">
+                {rowData.Profile.role_id}
+              </div> */}
             </div>
           </div>
-        ) : isDate(cellData) ? timeTag(cellData) : truncate(cellData, 30)} */}
-
+        ) : isDate(cellData) ? (
+          timeTag(cellData)
+        ) : (
+          truncate(cellData, 30)
+        )}
       </td>
-    )
-  }
-  const tableSelect = ({ header = false, row }: { header?: boolean, row: number }) => {
+    );
+  };
+  const tableSelect = ({
+    header = false,
+    row,
+  }: {
+    header?: boolean;
+    row: number;
+  }) => {
     return (
-      <td className="p-4 w-4" scope="col">
+      <td className="w-4 p-4" scope="col">
         <div className="flex items-center">
-          <input id={header ? "checkbox-all-select" : `checkbox-row-${row}`} onChange={selectRow} type="checkbox" className="w-4 h-4 rw-input" />
-          <label htmlFor={header ? "checkbox-all-select" : `checkbox-row-${row}`} className="sr-only">checkbox</label>
+          <input
+            id={header ? "checkbox-all-select" : `checkbox-row-${row}`}
+            onChange={selectRow}
+            type="checkbox"
+            className="rw-input h-4 w-4"
+          />
+          <label
+            htmlFor={header ? "checkbox-all-select" : `checkbox-row-${row}`}
+            className="sr-only"
+          >
+            checkbox
+          </label>
         </div>
       </td>
-    )
-  }
+    );
+  };
   const tableFooter = () => {
     return (
       <tfoot>
         <tr className="font-semibold text-gray-900 dark:text-white">
-          {select && (
-            <td className="p-4">
-            </td>
-          )}
+          {select && <td className="p-4"></td>}
           {columns.map(({ dataKey, ...other }, index) => {
             return (
-              <th key={`${index}-${dataKey}`} className={`px-6 py-3 ${other.numeric ? 'text-base' : ''}`}>
-                {
-                  other.numeric ? SortedFilteredData.reduce((a, b) => a + b[dataKey], 0) : 'Total'
-                }
+              <th
+                key={`${index}-${dataKey}`}
+                className={`px-6 py-3 ${other.numeric ? "text-base" : ""}`}
+              >
+                {other.numeric
+                  ? SortedFilteredData.reduce((a, b) => a + b[dataKey], 0)
+                  : "Total"}
               </th>
-            )
+            );
           })}
         </tr>
       </tfoot>
-    )
-  }
-
+    );
+  };
 
   // const tablePagination = () => {
   //   return (
@@ -242,88 +298,127 @@ export const Taybul = ({
   // }
 
   return (
-    <div className={`relative overflow-x-auto shadow-md sm:rounded-lg ${className}`}>
+    <div
+      className={`relative overflow-x-auto shadow-md sm:rounded-lg ${className}`}
+    >
       {search && (
         <div className="flex items-center justify-between pb-4">
-
-          <label htmlFor="table-search" className="sr-only">Search</label>
+          <label htmlFor="table-search" className="sr-only">
+            Search
+          </label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"></path>
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <svg
+                className="h-5 w-5 text-gray-500 dark:text-gray-400"
+                aria-hidden="true"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                  clipRule="evenodd"
+                ></path>
               </svg>
             </div>
-            <input id="table-search" onChange={handleSearch} className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items" />
+            <input
+              id="table-search"
+              onChange={handleSearch}
+              className="block w-80 rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+              placeholder="Search for items"
+            />
           </div>
         </div>
       )}
-      <table
-        className="w-full text-sm text-left text-gray-500 dark:text-gray-400"
-      >
+      <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
         {!!caption && (
-          <caption className="p-5 text-lg font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-800">
+          <caption className="bg-white p-5 text-left text-lg font-semibold text-gray-900 dark:bg-gray-800 dark:text-white">
             {caption.title}
-            <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">{caption.text}</p>
+            <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+              {caption.text}
+            </p>
           </caption>
         )}
         {!headersVertical && (
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
             <tr className="table-row">
               {select && tableSelect({ header: true, row: 0 })}
               {columns.map(({ ...other }, index) => {
-                return (
-                  headerRenderer({ label: other.label, columnIndex: index, ...other })
-                )
+                return headerRenderer({
+                  label: other.label,
+                  columnIndex: index,
+                  ...other,
+                });
               })}
-              {renderActions && (<th></th>)}
+              {renderActions && <th></th>}
             </tr>
           </thead>
         )}
         <tbody>
           {headersVertical ? (
-            <>{
-              columns.map(({ dataKey, ...other }, index) => {
+            <>
+              {columns.map(({ dataKey, ...other }, index) => {
                 return (
                   <tr
                     key={index}
-                    className={`bg-white border-b dark:bg-gray-800 dark:border-gray-700 ${hover ? 'dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600' : ''}`}
+                    className={`border-b bg-white dark:border-gray-700 dark:bg-gray-800 ${
+                      hover
+                        ? "hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-600"
+                        : ""
+                    }`}
                     onClick={() => onRowClick && onRowClick({ index: index })}
                   >
-                    {headerRenderer({ label: other.label, columnIndex: index, ...other })}
+                    {headerRenderer({
+                      label: other.label,
+                      columnIndex: index,
+                      ...other,
+                    })}
                     {SortedFilteredData.map((datarow) => {
-                      return (
-                        cellRenderer({ cellData: datarow[dataKey], columnIndex: index, ...other })
-                      )
+                      return cellRenderer({
+                        rowData: datarow,
+                        cellData: datarow[dataKey],
+                        columnIndex: index,
+                        ...other,
+                      });
                     })}
                   </tr>
-                )
-              })}</>
+                );
+              })}
+            </>
           ) : (
             SortedFilteredData.map((datarow, i) => {
               return (
                 <tr
                   key={i}
-                  className={`bg-white dark:bg-slate-800 border-b dark:border-gray-700 ${hover ? 'dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600' : ''}`}
+                  className={`border-b bg-white dark:border-gray-700 dark:bg-slate-800 ${
+                    hover
+                      ? "hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-600"
+                      : ""
+                  }`}
                   onClick={() => onRowClick && onRowClick({ index: i })}
                 >
                   {select && tableSelect({ row: i })}
                   {columns.map(({ dataKey, ...other }, index) => {
-                    return (
-                      cellRenderer({ cellData: datarow[dataKey], columnIndex: index, ...other })
-                    )
+                    return cellRenderer({
+                      rowData: datarow,
+                      cellData: datarow[dataKey],
+                      columnIndex: index,
+                      ...other,
+                    });
                   })}
-                  {renderActions && (<td>{renderActions(datarow)}</td>)}
+                  {renderActions && <td>{renderActions(datarow)}</td>}
                 </tr>
-              )
+              );
             })
           )}
         </tbody>
         {summary && tableFooter()}
       </table>
       {/* {rowsPerPage && tablePagination()} */}
-    </div >
-  )
-}
+    </div>
+  );
+};
 
 const Table = ({
   data,
@@ -331,10 +426,9 @@ const Table = ({
   renderCell,
   renderActions,
   tableOptions = { header: true },
-  className
+  className,
 }: ITableProps) => {
   if (!data || data.length < 1) return null;
-
 
   let keys = cols || Object.keys(data[0]);
 
@@ -342,19 +436,19 @@ const Table = ({
   const sort = (key: string) => {
     data = data.sort(dynamicSort(key));
     // tableData = tableData.sort(dynamicSort(key));
-  }
+  };
   // TODO: Create filtering and sorting options for table
   return (
     <div className={`flex ${className && className}`}>
-      <div className="relative my-4 table w-full table-auto rounded-xl border dark:border-pea-400 p-3 shadow">
-        {(tableOptions && tableOptions.header) && (
+      <div className="dark:border-pea-400 relative my-4 table w-full table-auto rounded-xl border p-3 shadow">
+        {tableOptions && tableOptions.header && (
           <div className="table-header-group">
             {keys.map((key) => (
               <div
                 key={`${key}${Math.random()}`}
                 onClick={() => sort(key)}
                 className="table-cell p-2 text-xs text-[#888da9]"
-              // /*aria-[sort=ascending]:bg-red-500 aria-[sort=descending]:bg-red-400*/
+                // /*aria-[sort=ascending]:bg-red-500 aria-[sort=descending]:bg-red-400*/
               >
                 {truncate(capitalize(key))}
               </div>

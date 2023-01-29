@@ -38,30 +38,28 @@ type RedwoodUser = Record<string, any> & {
 export const getCurrentUser = async (
   decoded: Decoded
 ): Promise<RedwoodUser | null> => {
-  if (!decoded) {
-    return null;
-  }
-
-  const { roles } = parseJWT({ decoded });
-  const { sub, role } = decoded;
-
-  if (!!!sub.toString()) {
-    try {
-      let user = await db.profile.findUnique({
-        where: { id: sub.toString() },
-      });
-
-      if (user) {
-        let role_id = user.role_id;
-        return await { id: sub, ...user, role, roles: [role_id], ...decoded };
-      }
-    } catch (error) {
-      console.log("GetCurrentUserError: ", error);
-      return { sub, role, ...decoded };
+  try {
+    if (!decoded) {
+      return null;
     }
-  }
 
-  return { ...decoded };
+    const { roles, appMetaData } = parseJWT({ decoded });
+    const { sub, role } = decoded;
+
+    let user = await db.profile.findUnique({
+      where: { id: sub.toString() },
+    });
+
+    if (user) {
+      let role_id = user.role_id;
+      return await { id: sub, ...user, role, roles: [role_id], ...decoded };
+    }
+
+    return { ...decoded };
+  } catch (error) {
+    console.log("GetCurrentUserError: ", error);
+    return { ...decoded };
+  }
 };
 
 /**

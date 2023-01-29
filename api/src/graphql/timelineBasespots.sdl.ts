@@ -19,10 +19,9 @@ export const schema = gql`
     raided_by: String
     raidcomment: String
     basespot: Basespot
-    profile: Profile
+    Profile: Profile
     timeline: Timeline!
   }
-
 
   type Query {
     timelineBasespots: [TimelineBasespot!]! @requireAuth

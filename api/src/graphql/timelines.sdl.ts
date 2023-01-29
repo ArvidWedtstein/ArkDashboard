@@ -3,7 +3,8 @@ export const schema = gql`
     id: String!
     createdAt: DateTime
     updatedAt: DateTime
-    createdBy: String
+    createdBy: String!
+    Profile: Profile!
     TimelineBasespot: [TimelineBasespot]!
   }
 
@@ -13,7 +14,7 @@ export const schema = gql`
   }
 
   input CreateTimelineInput {
-    createdBy: String
+    createdBy: String!
   }
 
   input UpdateTimelineInput {
