@@ -13,7 +13,7 @@ const HomePage = () => {
   // supabase.auth.onAuthStateChange((event, session) => {
   //   console.log(event, session)
   // })
-  let gender = 'female'
+  let gender = "female";
 
   return (
     <>
@@ -36,18 +36,21 @@ const HomePage = () => {
             style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}
           >
             <div className="flex h-full items-center justify-center">
-              <div className="px-6 text-center text-white md:px-12 font-extralight">
+              <div className="px-6 text-center font-extralight text-white md:px-12">
                 <h1 className="mt-0 mb-6 text-5xl">Welcome Home</h1>
                 <h3 className="mb-8 text-3xl">
-                  Here you can find <span className="underline decoration-pea-500 decoration-4 underline-offset-8">base</span> locations, material calculators and
-                  much more
+                  Here you can find{" "}
+                  <span className="decoration-pea-500 underline decoration-4 underline-offset-8">
+                    base
+                  </span>{" "}
+                  locations, material calculators and much more
                 </h3>
                 {/* <h3 className="mb-8 text-3xl">
                   H're thee can findeth <span className="underline decoration-pea-500 decoration-4 underline-offset-8">base</span> locations, mat'rial calculat'rs and much m're
                 </h3> */}
                 <Link
                   // className="rounded border-2 bg-pea-500 border-pea-500 px-6 py-2.5 text-sm font-normal uppercase leading-tight text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0"
-                  className="rw-button rw-button-green-outline"
+                  className="rw-button rw-button-green-outline uppercase"
                   to={isAuthenticated ? routes.basespots() : routes.signin()}
                 >
                   Get started

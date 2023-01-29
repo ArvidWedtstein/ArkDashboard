@@ -64,8 +64,8 @@ const Lookup = ({
         onClick={handleOpen}
         className={
           className
-            ? `flex items-center text-center ${className}`
-            : "rw-input flex items-center"
+            ? `flex h-full items-center text-center ${className}`
+            : "rw-input flex h-full items-center"
         }
       >
         {search ? (
@@ -82,7 +82,7 @@ const Lookup = ({
         ) : (
           <>{children ? children : null}</>
         )}
-        <label htmlFor={search && name} className="flex flex-row">
+        <label htmlFor={name} className="flex flex-row">
           <svg
             className="ml-2 h-4 w-4"
             aria-hidden="true"
@@ -98,7 +98,7 @@ const Lookup = ({
               d="M19 9l-7 7-7-7"
             ></path>
           </svg>
-          {!!!value && isComponentVisible && (
+          {!!!value && !search && isComponentVisible && (
             <svg
               onClick={handleReset}
               fill="currentColor"

@@ -1,11 +1,11 @@
-import type { FindBasespots } from 'types/graphql'
+import type { FindBasespots } from "types/graphql";
 
-import { Link, routes } from '@redwoodjs/router'
-import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
+import { Link, routes } from "@redwoodjs/router";
+import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
-import Basespots from 'src/components/Basespot/Basespots'
-import Pagination from 'src/components/Pagination/Pagination';
-import Lookup from 'src/components/Util/Lookup/Lookup';
+import Basespots from "src/components/Basespot/Basespots";
+import Pagination from "src/components/Pagination/Pagination";
+import Lookup from "src/components/Util/Lookup/Lookup";
 
 // export const QUERY = gql`
 //   query FindBasespots {
@@ -60,51 +60,47 @@ export const beforeQuery = ({ page }) => {
 // }
 
 export const Loading = () => {
-  let items = 6
+  let items = 6;
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 mt-8 mb-5">
+    <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
       {Array.from(Array(items).keys()).map((item, i) => (
-        <div key={i} className="border border-blue-300 shadow rounded-md p-4 w-full mx-auto">
-          <div className="animate-pulse flex space-x-4">
-            <div className="rounded-full bg-slate-800 h-10 w-10"></div>
+        <div
+          key={i}
+          className="mx-auto w-full rounded-md border border-blue-300 p-4 shadow"
+        >
+          <div className="flex animate-pulse space-x-4">
+            <div className="h-10 w-10 rounded-full bg-slate-800"></div>
             <div className="flex-1 space-y-6 py-1">
-              <div className="h-2 bg-slate-800 rounded"></div>
+              <div className="h-2 rounded bg-slate-800"></div>
               <div className="space-y-3">
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="h-2 bg-slate-800 rounded col-span-2"></div>
-                  <div className="h-2 bg-slate-800 rounded col-span-1"></div>
+                  <div className="col-span-2 h-2 rounded bg-slate-800"></div>
+                  <div className="col-span-1 h-2 rounded bg-slate-800"></div>
                 </div>
-                <div className="h-2 bg-slate-800 rounded"></div>
+                <div className="h-2 rounded bg-slate-800"></div>
               </div>
             </div>
           </div>
         </div>
-      ))
-      }
+      ))}
     </div>
   );
 };
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">
-      {'No basespots yet. '}
-      <Link
-        to={routes.newBasespot()}
-        className="rw-link"
-      >
-        {'Create one?'}
+    <div className="rw-text-center text-black dark:text-white">
+      {"No basespots yet. "}
+      <Link to={routes.newBasespot()} className="rw-link">
+        {"Create one?"}
       </Link>
     </div>
-  )
-}
+  );
+};
 
 export const Failure = ({ error }: CellFailureProps) => {
-
-  return (
-    <div className="rw-cell-error">{error?.message}</div>
-  )
-}
+  return <div className="rw-cell-error">{error?.message}</div>;
+};
 
 // export const Success = ({ basespots }: CellSuccessProps<FindBasespots>) => {
 //   return <Basespots basespots={basespots} />

@@ -101,7 +101,7 @@
   @apply rounded-sm py-1 px-2 text-xs;
 }
 .rw-button.rw-button-green-outline {
-  @apply border-pea-500 rounded border-2 text-sm font-normal uppercase leading-tight text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5;
+  @apply border-pea-500 rounded border-2 font-normal leading-tight text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5;
 }
 .rw-button.rw-button-green {
   /* @apply bg-green-500 text-white; */

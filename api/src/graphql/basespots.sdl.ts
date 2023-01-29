@@ -9,10 +9,11 @@ export const schema = gql`
     created_at: DateTime
     Map: String!
     estimatedForPlayers: String
-    defenseImages: [String]!
+    defenseImages: String
     created_by: String
     turretsetup_image: String
     updated_at: DateTime
+    TimelineBasespot: [TimelineBasespot]!
   }
 
   type BasespotPage {
@@ -21,8 +22,8 @@ export const schema = gql`
   }
 
   type Query {
-    basespots: [Basespot!]! @skipAuth
-    basespot(id: BigInt!): Basespot @skipAuth
+    basespots: [Basespot!]! @requireAuth
+    basespot(id: BigInt!): Basespot @requireAuth
     basespotPage(page: Int): BasespotPage @skipAuth
   }
 
@@ -35,7 +36,7 @@ export const schema = gql`
     created_at: DateTime
     Map: String!
     estimatedForPlayers: String
-    defenseImages: [String]!
+    defenseImages: String
     created_by: String
     turretsetup_image: String
     updated_at: DateTime
@@ -50,7 +51,7 @@ export const schema = gql`
     created_at: DateTime
     Map: String
     estimatedForPlayers: String
-    defenseImages: [String]!
+    defenseImages: String
     created_by: String
     turretsetup_image: String
     updated_at: DateTime
@@ -62,4 +63,4 @@ export const schema = gql`
       @requireAuth
     deleteBasespot(id: BigInt!): Basespot! @requireAuth
   }
-`
+`;
