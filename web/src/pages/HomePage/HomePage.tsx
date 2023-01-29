@@ -2,7 +2,6 @@ import { useAuth } from "@redwoodjs/auth";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import Chat from "src/components/Chat/Chat";
-import Lookup from "src/components/Util/Lookup/Lookup";
 const HomePage = () => {
   const { isAuthenticated, client: supabase } = useAuth();
   // if (document.addEventListener) {
@@ -14,20 +13,21 @@ const HomePage = () => {
   // supabase.auth.onAuthStateChange((event, session) => {
   //   console.log(event, session)
   // })
+  let gender = "female";
 
   return (
     <>
       <MetaTags title="Home" description="Home page" />
 
-
-      <div className="container-xl p-3 mt-3 text-center h-[100vh]">
+      <div className="container-xl mt-3 p-3 text-center">
         <div
-          className="relative overflow-hidden bg-cover bg-no-repeat border border-white rounded-md"
+          className="relative overflow-hidden rounded-md bg-cover bg-no-repeat"
           style={{
             imageResolution: "10dpi",
             imageRendering: "auto",
             backgroundPosition: "50%",
-            backgroundImage: "url('https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj')",
+            backgroundImage:
+              "url('https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj')",
             height: "350px",
           }}
         >
@@ -36,15 +36,22 @@ const HomePage = () => {
             style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}
           >
             <div className="flex h-full items-center justify-center">
-              <div className="px-6 text-center text-white md:px-12">
-                <h1 className="mt-0 mb-6 text-5xl font-bold">Welcome Home</h1>
-                <h3 className="mb-8 text-3xl font-bold">
-                  Here you can find base locations, material calculators and
-                  much more
+              <div className="px-6 text-center font-extralight text-white md:px-12">
+                <h1 className="mt-0 mb-6 text-5xl">Welcome Home</h1>
+                <h3 className="mb-8 text-3xl">
+                  Here you can find{" "}
+                  <span className="decoration-pea-500 underline decoration-4 underline-offset-8">
+                    base
+                  </span>{" "}
+                  locations, material calculators and much more
                 </h3>
+                {/* <h3 className="mb-8 text-3xl">
+                  H're thee can findeth <span className="underline decoration-pea-500 decoration-4 underline-offset-8">base</span> locations, mat'rial calculat'rs and much m're
+                </h3> */}
                 <Link
-                  className="inline-block rounded border-2 border-white px-6 py-2.5 text-xs font-medium uppercase leading-tight text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0"
-                  to={routes.signin()}
+                  // className="rounded border-2 bg-pea-500 border-pea-500 px-6 py-2.5 text-sm font-normal uppercase leading-tight text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0"
+                  className="rw-button rw-button-green-outline uppercase"
+                  to={isAuthenticated ? routes.basespots() : routes.signin()}
                 >
                   Get started
                 </Link>
@@ -52,11 +59,10 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        {isAuthenticated && <Chat />}
+        {/* {isAuthenticated && <Chat />} */}
 
-
-        {/* <PieChart className="w-32" hollowPercentage={80} backgroundColor="#232323" items={[{ percent: 5, color: 'green' }]}><text x="50%" y="50%" textAnchor="middle" fontSize="5" fill="white" dominantBaseline="middle">test</text></PieChart> */}
-      </div >
+        {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
+      </div>
     </>
   );
 };

@@ -5,7 +5,7 @@ import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 import Avatar from 'src/components/Avatar/Avatar'
 
-import { formatEnum, timeTag,  } from 'src/lib/formatters'
+import { formatEnum, timeTag, } from 'src/lib/formatters'
 
 import type { DeleteProfileMutationVariables, FindProfileById } from 'types/graphql'
 
@@ -40,22 +40,22 @@ const Profile = ({ profile }: Props) => {
 
   return (
     <>
-    <main className="">
-       <section className="relative h-[200px]">
-      <div
-          className="absolute top-0 h-full w-full bg-cover bg-center"
-          style={{
-            backgroundImage:
-              "url('https://c4.wallpaperflare.com/wallpaper/506/22/433/ark-ark-survival-evolved-cherry-blossom-video-games-wallpaper-preview.jpg')",
-          }}
-        >
-          <span
-            id="blackOverlay"
-            className="absolute left-0 h-full w-full bg-black opacity-50"
-          ></span>
-        </div>
-      </section>
-      <section className="bg-blueGray-200 relative -mt-32 py-16">¨
+      <main className="">
+        <section className="relative h-[200px]">
+          <div
+            className="absolute top-0 h-full w-full bg-cover bg-center"
+            style={{
+              backgroundImage:
+                "url('https://c4.wallpaperflare.com/wallpaper/506/22/433/ark-ark-survival-evolved-cherry-blossom-video-games-wallpaper-preview.jpg')",
+            }}
+          >
+            <span
+              id="blackOverlay"
+              className="absolute left-0 h-full w-full bg-black opacity-50"
+            ></span>
+          </div>
+        </section>
+        <section className="bg-blueGray-200 relative -mt-32 py-16">¨
           <div className="container-fluid mx-auto px-4">
             <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded-lg bg-white shadow-xl">
               <div className="px-6">
@@ -163,8 +163,8 @@ const Profile = ({ profile }: Props) => {
               </div>
             </div>
           </div>
-      </section>
-    </main>
+        </section>
+      </main>
       <nav className="rw-button-group">
         <Link
           to={routes.editProfile({ id: profile.id })}

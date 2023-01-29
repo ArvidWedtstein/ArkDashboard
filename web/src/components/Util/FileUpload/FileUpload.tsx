@@ -11,7 +11,7 @@ interface IFileUploadProps {
 }
 const FileUpload = ({ onUpload, storagePath, sizeLimit, name }: IFileUploadProps) => {
   let filename = "";
-  let id = Math.random().toString()
+  let id = Math.round(Math.random() * 100).toString()
   let files = [];
   let isCopying,
     isUploading = false;
@@ -50,7 +50,7 @@ const FileUpload = ({ onUpload, storagePath, sizeLimit, name }: IFileUploadProps
     // show the file
     el?.current.setAttribute("data-ready", filename ? "true" : "false");
   }
-  function cancel() {
+  const cancel = () => {
     isUploading = false;
     progress = 0;
     progressTimeout = null;
@@ -60,7 +60,7 @@ const FileUpload = ({ onUpload, storagePath, sizeLimit, name }: IFileUploadProps
     fileReset();
   }
   function fileReset() {
-    const fileField: any = el?.current.querySelector(`#${id}`);
+    const fileField: any = el?.current.querySelector(`#fileupload-${id}`);
     if (fileField) fileField.value = null;
 
     fileDisplay();
@@ -75,7 +75,7 @@ const FileUpload = ({ onUpload, storagePath, sizeLimit, name }: IFileUploadProps
       progressFill.style.transform = `translateX(${progressTimes100}%)`;
   }
   function file() {
-    let t: any = el?.current.querySelector(`#${id}`);
+    let t: any = el?.current.querySelector(`#fileupload-${id}`);
     t.click();
     stateDisplay();
   }
@@ -179,60 +179,61 @@ const FileUpload = ({ onUpload, storagePath, sizeLimit, name }: IFileUploadProps
   return (
     <div
       ref={el}
-      className={`group relative w-[calc(100%-3rem)] max-w-xl overflow-hidden rounded-2xl bg-[#f1f2f4] shadow transition-colors ${state === 2 ? "before:bg-[#f5463d]" : ""
+      className={`group relative w-[calc(100%-3rem)] max-w-xl overflow-hidden rounded-2xl bg-[#f1f2f4] dark:bg-gray-700 shadow transition-colors ${state === 2 ? "before:bg-[#f5463d]" : ""
         } ${state === 3 ? "before:bg-[#3df574]" : ""}`}
       data-state="0"
       data-ready="false"
     >
-      {" "}
-      {/* <!-- modal --> */}
       <div className="relative z-[1] flex flex-col pt-0 pr-8 pb-7 pl-7">
-        {" "}
-        {/* <!-- modal body --> */}
         <div className="mt-7 flex-1">
-          {" "}
-          {/* <!-- modal col --> */}
-          {/* <!-- up --> */}
           <svg
-            className="modal__icon z-[1] m-auto block h-9 w-9 stroke-[#0d4ef2] text-black"
-            viewBox="0 0 24 24"
-            width="24px"
-            height="24px"
+            className="mx-auto h-12 w-12 text-gray-400"
+            stroke="currentColor"
+            fill="none"
+            viewBox="0 0 48 48"
             aria-hidden="true"
           >
-            <g
-              fill="none"
-              stroke="hsl(223,90%,50%)"
-              strokeWidth="2"
+            <path
+              d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+              strokeWidth={2}
               strokeLinecap="round"
               strokeLinejoin="round"
-            >
-              <circle
-                className="origin-[12px_12px] -rotate-[90deg]"
-                style={{ strokeDashoffset: "69.12" }}
-                cx="12"
-                cy="12"
-                r="11"
-                strokeDasharray="69.12 69.12"
-              />
-              <polyline
-                style={{ strokeDashoffset: "14.2" }}
-                points="7 12 12 7 17 12"
-                strokeDasharray="14.2 14.2"
-              />{" "}
-              <line
-                style={{ strokeDashoffset: "10" }}
-                x1="12"
-                y1="7"
-                x2="12"
-                y2="17"
-                strokeDasharray="10 10"
-              />{" "}
-            </g>
+            />
           </svg>
+          {/* <svg
+            className="z-[10] mx-auto block h-12 w-12 stroke-[#0d4ef2] fill-white text-black"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+
+            <circle
+              className="origin-[12px_12px] -rotate-[90deg]"
+              style={{ strokeDashoffset: "0" }}
+              // style={{ strokeDashoffset: "69.12" }}
+              cx="12"
+              cy="12"
+              r="11"
+              strokeDasharray="69.12 69.12"
+            />
+            <polyline
+              // style={{ strokeDashoffset: "14.2" }}
+              style={{ strokeDashoffset: "0" }}
+              points="7 12 12 7 17 12"
+              strokeDasharray="14.2 14.2"
+            />
+            <line
+              style={{ strokeDashoffset: "0" }}
+              // style={{ strokeDashoffset: "10" }}
+              x1="12"
+              y1="7"
+              x2="12"
+              y2="17"
+              strokeDasharray="10 10"
+            />
+          </svg> */}
           {/* <!-- error --> */}
           <svg
-            className="modal__icon m-auto block h-9 w-9 stroke-[#f2180d]"
+            className="m-auto block h-9 w-9 stroke-[#f2180d]"
             viewBox="0 0 24 24"
             width="24px"
             height="24px"
@@ -272,7 +273,7 @@ const FileUpload = ({ onUpload, storagePath, sizeLimit, name }: IFileUploadProps
             </g>
           </svg>
           <svg
-            className="modal__icon m-auto block h-9 w-9 stroke-[#0ac241]"
+            className="m-auto block h-9 w-9 stroke-[#0ac241]"
             viewBox="0 0 24 24"
             width="24px"
             height="24px"
@@ -298,41 +299,31 @@ const FileUpload = ({ onUpload, storagePath, sizeLimit, name }: IFileUploadProps
                 style={{ strokeDashoffset: "14.2" }}
                 points="7 12.5 10 15.5 17 8.5"
                 strokeDasharray="14.2 14.2"
-              />{" "}
-              {/* <!-- modal__icon-sdo14 --> */}
+              />
             </g>
           </svg>
         </div>
-        <div className="mt-7 flex-1">
-          {" "}
-          {/* <!-- modal col --> */}
+        <div className="mt-3 flex-1">
           <div className="modal__content">
-            {" "}
-            {/* <!-- modal content --> */}
             <h2 className="mb-6 text-center text-xl font-medium leading-5">
               Upload a File
             </h2>
-            <p className="mb-6 min-h-[3rem] text-base">
+            <p className="mb-6 min-h-[3rem] text-base text-center">
               Select a file to upload from your computer or device.
             </p>
             <div className="flex flex-wrap items-center delay-200 ">
-              {" "}
-              {/* <!-- modal actions --> */}
               <button
                 className="w-full flex-1 rounded border-2 border-dashed border-[#737a8c] bg-transparent py-2 px-8 text-xs text-current transition-colors hover:bg-[#8f95a3] focus:outline-none disabled:opacity-50 "
                 type="button"
                 onClick={file}
               >
                 Choose File
-              </button>{" "}
-              {/* <!-- modal button upload --> */}
-              <input id={id} name={name || "fileupload"} onChange={fileHandle} type="file" hidden />
+              </button>
+              <input id={`fileupload-${id}`} name={name || "fileupload"} onChange={fileHandle} type="file" hidden />
             </div>
             <div
               className={`flex-wrap items-center delay-200 group-data-[ready=true]:flex group-data-[ready=false]:hidden`}
             >
-              {" "}
-              {/* <!-- modal actions --> */}
               <svg
                 className="mr-3 block h-6 w-6 text-[#737a8c] transition-colors"
                 viewBox="0 0 24 24"
@@ -354,8 +345,7 @@ const FileUpload = ({ onUpload, storagePath, sizeLimit, name }: IFileUploadProps
               <div
                 className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-xs"
                 data-file
-              ></div>{" "}
-              {/* <!-- modal file --> */}
+              ></div>
               <button
                 className="block cursor-pointer py-6 text-current "
                 type="button"

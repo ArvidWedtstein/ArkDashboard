@@ -74,7 +74,7 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
                 <td>{truncate(profile.username)}</td>
                 <td>{truncate(profile.full_name)}</td>
                 {/* <td>{truncate(profile.avatar_url)}</td> */}
-                <td><Avatar url={profile.avatar_url} size={30} /></td>
+                <td><Avatar url={profile.avatar_url} size={30} className='rounded-full border-4 border-[#f8f8f8]' /></td>
                 <td>{truncate(profile.website)}</td>
                 <td>{truncate(profile.biography)}</td>
                 <td>{formatEnum(profile.status)}</td>

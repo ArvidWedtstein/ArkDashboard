@@ -2,7 +2,6 @@ import React from 'react'
 
 import humanize from 'humanize-string'
 import prices from "../../public/arkitems.json";
-const MAX_STRING_LENGTH = 150;
 
 export const formatEnum = (values: string | string[] | null | undefined) => {
   let output = ''
@@ -17,6 +16,15 @@ export const formatEnum = (values: string | string[] | null | undefined) => {
   return output
 }
 
+/**
+ * @description Capitalize the first letter of each word in a string
+ * @param sentence
+ * @returns Capitalized string
+ */
+export const capitalizeSentence = (sentence: string) => {
+  return sentence.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
+}
+
 export const jsonDisplay = (obj: unknown) => {
   return (
     <pre>
@@ -25,11 +33,11 @@ export const jsonDisplay = (obj: unknown) => {
   )
 }
 
-export const truncate = (value: string | number) => {
+export const truncate = (value: string | number, maxlength: number = 150) => {
   let output = value?.toString() ?? ''
 
-  if (output.length > MAX_STRING_LENGTH) {
-    output = output.substring(0, MAX_STRING_LENGTH) + '...'
+  if (output.length > maxlength) {
+    output = output.substring(0, maxlength) + '...'
   }
 
   return output
@@ -129,6 +137,20 @@ export const isObject = (value) => {
     !Array.isArray(value)
   );
 };
+
+/**
+ * Checks if a value is a valid UUID
+ * @param {string} value
+ * @returns {boolean}
+ */
+export const isUUID = (value: string): boolean => {
+  return (
+    /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/.test(
+      value
+    )
+  );
+};
+
 
 /**
  *
@@ -255,7 +277,30 @@ export const wordNumberRegex = (str: string) => {
   );
 };
 
-// get date difference in days, hours and minutes
+/**
+ * singularizes a word.
+ * @param word
+ * @returns
+ * @example singularize("apples") // "apple"
+ */
+export const singularize = (word: string) => {
+  const endings = {
+    ves: 'fe',
+    ies: 'y',
+    i: 'us',
+    zes: 'ze',
+    ses: 's',
+    es: 'e',
+    s: ''
+  };
+  return word.replace(
+    new RegExp(`(${Object.keys(endings).join('|')})$`),
+    r => endings[r]
+  );
+}
+
+
+
 
 export const getDateDiff = (date1: Date, date2: Date) => {
   const diff = Math.abs(new Date(date1).getTime() - new Date(date2).getTime());
@@ -269,6 +314,14 @@ export const getDateDiff = (date1: Date, date2: Date) => {
   };
 };
 
+/**
+ * @description removes duplicates from an array
+ * @param arr
+ * @returns
+ */
+export const remDupicates = (arr: Array<any>): Array<any> => {
+  return arr.filter((item, index) => arr.indexOf(item) === index);
+}
 
 /**
  *
@@ -309,6 +362,38 @@ export const groupByMultiple = (array: Array<any>, callback: (item) => void) => 
     return groups[group];
   });
 }
+
+/**
+ * @description debounce function for search fields
+ * @param func
+ * @param wait
+ * @returns
+ * @example
+ *  const handleSearch = debounce((e) => setSearch(e.target.value))
+ */
+export const debounce = (func, wait = 300) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(this, args);
+    }, wait);
+  };
+};
+
+/**
+ *
+ * @param {number} value
+ * @param {number} min
+ * @param {number} max
+ * @returns number between min and max
+ * @example
+ * clamp(10, 0, 5) // 5
+ */
+export const clamp = ((value: number, min: number | undefined, max: number | undefined) => {
+  return Math.min(Math.max(value, min ?? Number.MIN_VALUE), max ?? Number.MAX_VALUE);
+});
+
 
 type Colors = 'red' | 'purple' | 'blue' | 'green' | 'slate' | 'stone' | 'gray';
 type Luminance = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;

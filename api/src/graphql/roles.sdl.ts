@@ -5,7 +5,6 @@ export const schema = gql`
     createdBy: String
     permissions: [permission]!
     profile_profile_role_idTorole: [Profile]!
-    profile_role_createdByToprofile: Profile
   }
 
   enum permission {

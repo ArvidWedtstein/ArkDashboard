@@ -1,14 +1,17 @@
-import { Link, routes } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
-import { useState } from 'react'
-import ArkCard from 'src/components/ArkCard/ArkCard'
+import { Link, routes } from "@redwoodjs/router";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
+import { useState } from "react";
+import ArkCard from "src/components/ArkCard/ArkCard";
 
-import { QUERY } from 'src/components/Basespot/BasespotsCell/BasespotsCell'
-import Lookup from 'src/components/Util/Lookup/Lookup'
-import { random } from 'src/lib/formatters'
+import { QUERY } from "src/components/Basespot/BasespotsCell/BasespotsCell";
+import Lookup from "src/components/Util/Lookup/Lookup";
+import { random } from "src/lib/formatters";
 
-import type { DeleteBasespotMutationVariables, FindBasespots } from 'types/graphql'
+import type {
+  DeleteBasespotMutationVariables,
+  FindBasespots,
+} from "types/graphql";
 
 const DELETE_BASESPOT_MUTATION = gql`
   mutation DeleteBasespotMutation($id: BigInt!) {
@@ -16,30 +19,30 @@ const DELETE_BASESPOT_MUTATION = gql`
       id
     }
   }
-`
+`;
 
 const BasespotsList = ({ basespotPage }: FindBasespots) => {
   const [deleteBasespot] = useMutation(DELETE_BASESPOT_MUTATION, {
     onCompleted: () => {
-      toast.success('Basespot deleted')
+      toast.success("Basespot deleted");
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error(error.message);
     },
     // This refetches the query on the list page. Read more about other ways to
     // update the cache over here:
     // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
     refetchQueries: [{ query: QUERY }],
     awaitRefetchQueries: true,
-  })
+  });
 
-  const onDeleteClick = (id: DeleteBasespotMutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete basespot ' + id + '?')) {
-      deleteBasespot({ variables: { id } })
+  const onDeleteClick = (id: DeleteBasespotMutationVariables["id"]) => {
+    if (confirm("Are you sure you want to delete basespot " + id + "?")) {
+      deleteBasespot({ variables: { id } });
     }
-  }
+  };
 
-  let basespots = basespotPage.basespots
+  let basespots = basespotPage.basespots;
 
   const mapImages = {
     TheIsland:
@@ -67,7 +70,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
   let [currentMap, setCurrentMap] = useState("");
 
   return (
-    <div className="h-[100vh]">
+    <div className="h-[80vh]">
       <div className="flex items-center">
         <Lookup
           items={Object.keys(mapImages).map((k) => ({
@@ -77,12 +80,12 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
         >
           {!!currentMap ? currentMap : "Choose map"}
         </Lookup>
-        <button
+        {/* <button
           className="rw-button rounded-md bg-gray-800 px-4 py-2 text-white"
           onClick={() => setCurrentMap("")}
         >
           Clear
-        </button>
+        </button> */}
       </div>
       <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {basespots
@@ -109,7 +112,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
           ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default BasespotsList
+export default BasespotsList;

@@ -1,83 +1,183 @@
-import { Link, routes } from "@redwoodjs/router";
 import { useAuth } from "@redwoodjs/auth";
-import { useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Dropdown from "../Dropdown/Dropdown";
+import useComponentVisible from "../useComponentVisible";
+import Avatar from "../Avatar/Avatar";
+import { Link, routes, useLocation, AvailableRoutes } from "@redwoodjs/router";
+import { useRouterState } from "@redwoodjs/router/dist/router-context";
+import { capitalize, singularize } from "src/lib/formatters";
 
 const Navbar = () => {
-  const {
-    currentUser,
-    getCurrentUser,
-    isAuthenticated,
-    logIn,
-    logOut,
-    hasRole,
-  } = useAuth();
+  const { currentUser, getCurrentUser, isAuthenticated } = useAuth();
+  const { pathname } = useLocation();
+  const [title, setTitle] = useState(pathname.split("/")[1]);
+
   useEffect(() => {
-    getCurrentUser();
-  }, [currentUser]);
+    setTitle(capitalize(pathname.split("/")[1]));
+  }, [pathname]);
+
+  const { ref, isComponentVisible, setIsComponentVisible } =
+    useComponentVisible(false);
+
+  const handleOpen = useCallback(() => {
+    setIsComponentVisible(!isComponentVisible);
+  }, [isComponentVisible]);
+  // const handleOpen = () => {
+  //   setIsComponentVisible(!isComponentVisible);
+  // };
 
   return (
     <>
-      <div className="flex flex-wrap place-items-start">
-        <section className="relative mx-auto">
-          <nav className="flex w-screen justify-between bg-gray-900 text-white">
-            <div className="flex w-full items-center px-5 py-6 xl:px-12 overflow-x-auto md:overflow-hidden">
-              {/* <Link to={routes.home()} className="font-heading mr-5 text-3xl font-bold" href="#">
-                <img className="h-9" src="/favicon.png" alt="logo" />
-              </Link> */}
-              <ul className="font-heading flex space-x-12 px-4 font-semibold">
-                <li>
-                  <Link className="hover:text-gray-200" to={routes.home()}>
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link className="hover:text-gray-200" to={routes.basespots()}>
-                    Ark
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    className="hover:text-gray-200"
-                    to={routes.materialCalculator()}
-                  >
-                    Calculator
-                  </Link>
-                </li>
-                <li>
-                  <Link className="hover:text-gray-200" to={routes.gtw()}>
-                    GTW
-                  </Link>
-                </li>
-                <li>
-                  <Link className="hover:text-gray-200" to={routes.tribes()}>
-                    Tribe
-                  </Link>
-                </li>
-                <li>
-                  <Link className="hover:text-gray-200" to={routes.timelines()}>
-                    Story
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            {/* <a className="flex mr-6 items-center" href="#">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 hover:text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              <span className="flex absolute -mt-5 ml-4">
-                <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-pink-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-pink-500">
-                </span>
-              </span>
-            </a> */}
-            <Dropdown
-              isAuthenticated={isAuthenticated}
-              currentUser={currentUser}
-              logOut={logOut}
+      <div className="relative flex w-full items-center justify-between py-4 px-6">
+        <div className="flex flex-grow items-center">
+          <span className=" relative h-1 w-6 rounded bg-[#1f1c2e] dark:bg-white"></span>
+          <p className="mx-8 text-xl font-bold leading-6 dark:text-white">
+            <span className={`lg:inline-block ${!!title ? "hidden" : ""}`}>
+              ArkDashboard
+            </span>
+            {title && <span className="mx-2 hidden lg:inline-block"> - </span>}
+            {title ? `${title}` : ""}
+          </p>
+          <div className="hidden h-10 w-full max-w-md items-center justify-between overflow-hidden rounded-3xl bg-[#ffffff] pr-3 text-[#ffffffcc] shadow-md dark:bg-[#3B424F] dark:shadow-none md:flex">
+            <input
+              className="h-full flex-1 border-none bg-white px-5 text-base text-[#1f1c2e] outline-none placeholder:text-[#1f1c2e] placeholder:opacity-60 dark:bg-[#3B424F] dark:text-white dark:placeholder:text-[#ffffffcc]"
+              type="text"
+              placeholder="Search"
             />
-          </nav>
-        </section>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="M21 21l-4.35-4.35"></path>
+            </svg>
+          </div>
+        </div>
+        <div className="flex items-center">
+          {isAuthenticated &&
+            routes[`new${singularize(title)}`] !== undefined && (
+              <Link
+                to={routes[`new${singularize(title)}`]()}
+                title={`New ${singularize(title)}`}
+                className="ml-2 flex h-5 w-5 items-center justify-center rounded-full border-none bg-[#1f1c24] p-0 text-[#ffffffcc] dark:bg-[#1f2937] dark:text-white md:h-8 md:w-8"
+              >
+                <svg
+                  className="btn-icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </Link>
+            )}
+          <button className="m-0 ml-2 flex h-4 w-4 items-center justify-center bg-transparent p-0 text-[#1f1c2e] outline-none dark:text-white md:h-8 md:w-8">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+          </button>
+          <div ref={ref} className="relative ml-3">
+            <button
+              onClick={handleOpen}
+              className="flex items-center border-l-2 border-l-[#c4c4c4] bg-transparent p-0 pl-3  outline-none"
+            >
+              <span className="sr-only">Open user menu</span>
+              <Avatar
+                url={String(
+                  currentUser && currentUser.avatar_url
+                    ? currentUser.avatar_url
+                    : ""
+                )}
+                size={30}
+                className="h-4 w-4 rounded-full text-[#1f1c2e] dark:text-white md:h-8 md:w-8"
+              />
+              <span className="ml-1 text-base font-bold text-[#1f1c2e] dark:text-white">
+                {currentUser ? currentUser.email.split("@")[0] : "test"}
+              </span>
+            </button>
+            {isComponentVisible && (
+              <ul className="absolute right-0 z-40 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                {isAuthenticated && (
+                  <>
+                    <li>
+                      <Link
+                        to={routes.profile({
+                          id: currentUser?.id || currentUser.sub,
+                        })}
+                        className={
+                          "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                        }
+                      >
+                        Your Profile
+                      </Link>
+                    </li>
+                    {/* <li>
+                      <a
+                        href="#"
+                        className={'block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200'}
+                      >
+                        Settings
+                      </a>
+                    </li> */}
+                    <li>
+                      <a
+                        href="#"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                      >
+                        Sign out
+                      </a>
+                    </li>
+                  </>
+                )}
+                {!isAuthenticated && (
+                  <>
+                    <li>
+                      <Link
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                        to={routes.signin()}
+                      >
+                        Login
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                        to={routes.signup()}
+                      >
+                        Signup
+                      </Link>
+                    </li>
+                  </>
+                )}
+              </ul>
+            )}
+          </div>
+        </div>
       </div>
     </>
   );

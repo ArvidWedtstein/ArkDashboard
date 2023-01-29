@@ -1,4 +1,4 @@
-import type { Timeline as timeline2 } from '@prisma/client'
+import type { Timeline } from '@prisma/client'
 
 import {
   timelines,
@@ -28,10 +28,30 @@ describe('timelines', () => {
     expect(result).toEqual(scenario.timeline.one)
   })
 
+  scenario('creates a timeline', async (scenario: StandardScenario) => {
+    const result = await createTimeline({
+      input: { createdBy: scenario.timeline.two.createdBy },
+    })
+
+    expect(result.createdBy).toEqual(scenario.timeline.two.createdBy)
+  })
+
+  scenario('updates a timeline', async (scenario: StandardScenario) => {
+    const original = (await timeline({
+      id: scenario.timeline.one.id,
+    })) as Timeline
+    const result = await updateTimeline({
+      id: original.id,
+      input: { createdBy: scenario.timeline.two.createdBy },
+    })
+
+    expect(result.createdBy).toEqual(scenario.timeline.two.createdBy)
+  })
+
   scenario('deletes a timeline', async (scenario: StandardScenario) => {
     const original = (await deleteTimeline({
       id: scenario.timeline.one.id,
-    })) as timeline2
+    })) as Timeline
     const result = await timeline({ id: original.id })
 
     expect(result).toEqual(null)

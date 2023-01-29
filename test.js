@@ -85,24 +85,29 @@ const groupValues2 = (t, v, i, a) => {
   if (i == a.length - 1) final2.push(t);
   return t;
 };
-data.reduce(groupValues, {});
-console.log(final);
+// data.reduce(groupValues, {});
+// console.log(final);
 
-final.reduce(groupValues, {});
-console.log(final2);
-console.timeEnd("test");
+// final.reduce(groupValues, {});
+// console.log(final2);
+// console.timeEnd("test");
 // console.log(d);
 
 /**
  * Current
  */
-
-let t = {
-  id: [1],
-  content: ["aaaa"],
-  profile_id: 1,
-  created_at: "2023-01-16T00:00:00.000Z",
+console.time("test2");
+const isUUID = (value) => {
+  return (
+    // !!value &&
+    // typeof value === "string" &&
+    // value.length === 36 &&
+    // value.split("-").length === 5
+    /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/.test(
+      value
+    )
+  );
 };
-t.map((v, i, a) => {
-  console.log(v, i, a);
-});
+
+console.log(isUUID("7a2878d1-4f61-456d-bcb6-edc707383ea8"));
+console.timeEnd("test2");

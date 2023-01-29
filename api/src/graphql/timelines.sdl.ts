@@ -3,18 +3,18 @@ export const schema = gql`
     id: String!
     createdAt: DateTime
     updatedAt: DateTime
-    createdBy: String
+    createdBy: String!
+    Profile: Profile!
     TimelineBasespot: [TimelineBasespot]!
-    profile: Profile
   }
 
   type Query {
     timelines: [Timeline!]! @requireAuth
-    timeline(id: String!): Timeline @skipAuth
+    timeline(id: String!): Timeline @requireAuth
   }
 
   input CreateTimelineInput {
-    createdBy: String
+    createdBy: String!
   }
 
   input UpdateTimelineInput {
@@ -27,4 +27,4 @@ export const schema = gql`
       @requireAuth
     deleteTimeline(id: String!): Timeline! @requireAuth
   }
-`
+`;

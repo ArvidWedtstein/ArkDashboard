@@ -77,7 +77,7 @@ export const TimelineList = ({
     <section className="">
       <div className="h-full w-full">
         <div
-          className={`flex touch-pan-x select-none flex-row items-stretch justify-start space-x-1 overflow-x-auto p-3 will-change-scroll ${options.snap && "snap-x snap-mandatory"
+          className={`cursor-grab flex touch-pan-x select-none flex-row items-stretch justify-start space-x-1 overflow-x-auto p-3 will-change-scroll ${options.snap && "snap-x snap-mandatory"
             }`}
         >
           {events.map((event, i) => (

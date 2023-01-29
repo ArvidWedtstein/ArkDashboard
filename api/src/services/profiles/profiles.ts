@@ -41,30 +41,18 @@ export const deleteProfile: MutationResolvers['deleteProfile'] = ({ id }) => {
 }
 
 export const Profile: ProfileRelationResolvers = {
-  TimelineBasespot: (_obj, { root }) => {
-    return db.profile.findUnique({ where: { id: root?.id } }).TimelineBasespot()
+  Message: (_obj, { root }) => {
+    return db.profile.findUnique({ where: { id: root?.id } }).Message()
   },
   role_profile_role_idTorole: (_obj, { root }) => {
     return db.profile
       .findUnique({ where: { id: root?.id } })
       .role_profile_role_idTorole()
   },
-  role_role_createdByToprofile: (_obj, { root }) => {
-    return db.profile
-      .findUnique({ where: { id: root?.id } })
-      .role_role_createdByToprofile()
+  Timeline: (_obj, { root }) => {
+    return db.profile.findUnique({ where: { id: root?.id } }).Timeline()
   },
-  timeline: (_obj, { root }) => {
-    return db.profile.findUnique({ where: { id: root?.id } }).timeline()
-  },
-  tribe_tribe_createdByToprofile: (_obj, { root }) => {
-    return db.profile
-      .findUnique({ where: { id: root?.id } })
-      .tribe_tribe_createdByToprofile()
-  },
-  tribe_tribe_updatedByToprofile: (_obj, { root }) => {
-    return db.profile
-      .findUnique({ where: { id: root?.id } })
-      .tribe_tribe_updatedByToprofile()
+  Tribe: (_obj, { root }) => {
+    return db.profile.findUnique({ where: { id: root?.id } }).Tribe()
   },
 }

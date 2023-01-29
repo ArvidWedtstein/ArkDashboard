@@ -24,10 +24,11 @@
   @apply flex justify-between py-4 px-8;
 }
 .rw-main {
-  @apply mx-4 pb-4;
+  /* @apply mx-4 pb-4; */
+  @apply pb-4;
 }
 .rw-segment {
-  @apply w-full overflow-hidden rounded-lg border border-gray-200;
+  @apply w-full overflow-hidden; /*  rounded-lg border border-gray-200  */
   scrollbar-color: theme("colors.zinc.400") transparent;
 }
 .rw-segment::-webkit-scrollbar {
@@ -40,7 +41,7 @@
   @apply rounded-full border-[3px] border-solid border-transparent bg-zinc-400 bg-clip-content;
 }
 .rw-segment-header {
-  @apply bg-gray-200 py-3 px-4 text-gray-700;
+  @apply py-3 px-4 text-gray-700 dark:text-stone-200;
 }
 .rw-segment-main {
   @apply bg-gray-100 p-4;
@@ -90,7 +91,8 @@
 }
 
 .rw-button {
-  @apply flex cursor-pointer justify-center rounded border-0 bg-gray-200 py-1 px-4 text-xs font-semibold uppercase leading-loose tracking-wide text-gray-500 no-underline transition duration-100;
+  /* @apply flex cursor-pointer justify-center rounded border-0 bg-gray-200 py-1 px-4 text-xs font-semibold uppercase leading-loose tracking-wide text-gray-500 no-underline transition duration-100; */
+  @apply rounded-lg py-2.5 px-6 text-sm font-medium text-white focus:outline-none;
 }
 .rw-button:hover {
   @apply bg-gray-500 text-white;
@@ -98,11 +100,15 @@
 .rw-button.rw-button-small {
   @apply rounded-sm py-1 px-2 text-xs;
 }
+.rw-button.rw-button-green-outline {
+  @apply border-pea-500 rounded border-2 font-normal leading-tight text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5;
+}
 .rw-button.rw-button-green {
-  @apply bg-green-500 text-white;
+  /* @apply bg-green-500 text-white; */
+  @apply bg-pea-500 text-white;
 }
 .rw-button.rw-button-green:hover {
-  @apply bg-green-700;
+  @apply bg-pea-700;
 }
 .rw-button.rw-button-blue {
   @apply bg-blue-500 text-white;
@@ -129,15 +135,20 @@
   @apply mt-8;
 }
 .rw-label {
-  @apply mt-6 block text-left font-semibold text-gray-600 dark:text-white;
+  @apply mt-4 block text-left font-semibold uppercase tracking-wide text-gray-600 dark:text-stone-300;
 }
 .rw-label.rw-label-error {
   @apply text-red-600;
 }
+.rw-helper-text {
+  @apply mt-2 text-xs italic text-gray-600 dark:text-stone-300;
+}
 .rw-input {
   /* @apply block mt-2 w-full p-2 bg-white border border-gray-200 rounded outline-none; */
-  @apply block w-full appearance-none rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-900 invalid:border-red-500 focus:border-stone-500 focus:ring-stone-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-stone-200 dark:focus:ring-stone-200;
+  /* old color style dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-300 dark:focus:ring-stone-200 */
+  @apply mt-1 block rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-900 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 contrast-more:border-black contrast-more:placeholder-black dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white dark:contrast-more:placeholder-white;
 }
+
 .rw-check-radio-items {
   @apply flex justify-items-center;
 }
@@ -148,9 +159,9 @@
 .rw-input[type="radio"] {
   @apply ml-0 mr-1 mt-1 inline w-4;
 }
-.rw-input:focus {
+/* .rw-input:focus {
   @apply border-gray-400;
-}
+} */
 .rw-input-error {
   @apply border-red-600 text-red-600;
 }
