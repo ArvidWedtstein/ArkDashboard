@@ -179,14 +179,13 @@ export const Taybul = ({
     return (
       <td
         key={`${columnIndex}-${cellData}`}
-        className={`px-6 py-4 ${
-          other.bold
-            ? "whitespace-nowrap font-bold text-gray-900 dark:text-white"
-            : ""
-        }`}
+        className={`px-6 py-4 ${other.bold
+          ? "whitespace-nowrap font-bold text-gray-900 dark:text-white"
+          : ""
+          }`}
       >
         {/* {isDate(cellData) ? timeTag(cellData) : truncate(cellData, 30)} */}
-        {isUUID(cellData) && other.label.toLowerCase() === "created by" ? (
+        {isUUID(cellData) && other.label.toLowerCase() === "created by" && ('Profile' in rowData) ? (
           <div className="flex flex-row">
             {rowData.Profile.avatar_url && (
               <img
@@ -362,11 +361,10 @@ export const Taybul = ({
                 return (
                   <tr
                     key={index}
-                    className={`border-b bg-white dark:border-gray-700 dark:bg-gray-800 ${
-                      hover
-                        ? "hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-600"
-                        : ""
-                    }`}
+                    className={`border-b bg-white dark:border-gray-700 dark:bg-gray-800 ${hover
+                      ? "hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-600"
+                      : ""
+                      }`}
                     onClick={() => onRowClick && onRowClick({ index: index })}
                   >
                     {headerRenderer({
@@ -391,11 +389,10 @@ export const Taybul = ({
               return (
                 <tr
                   key={i}
-                  className={`border-b bg-white dark:border-gray-700 dark:bg-slate-800 ${
-                    hover
-                      ? "hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-600"
-                      : ""
-                  }`}
+                  className={`border-b bg-white dark:border-gray-700 dark:bg-slate-800 ${hover
+                    ? "hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-600"
+                    : ""
+                    }`}
                   onClick={() => onRowClick && onRowClick({ index: i })}
                 >
                   {select && tableSelect({ row: i })}
@@ -448,7 +445,7 @@ const Table = ({
                 key={`${key}${Math.random()}`}
                 onClick={() => sort(key)}
                 className="table-cell p-2 text-xs text-[#888da9]"
-                // /*aria-[sort=ascending]:bg-red-500 aria-[sort=descending]:bg-red-400*/
+              // /*aria-[sort=ascending]:bg-red-500 aria-[sort=descending]:bg-red-400*/
               >
                 {truncate(capitalize(key))}
               </div>

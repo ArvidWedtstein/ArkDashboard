@@ -53,8 +53,8 @@ const TribesList = ({ tribes }: FindTribes) => {
   return (
     <div className="relative">
       <div className="m-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <div className="dark: flex items-start rounded-xl bg-white p-4 shadow-lg dark:bg-[#3b424f]">
-          <div className="border-pea-100 bg-pea-50 dark:border-pea-900 flex h-12 w-12 items-center justify-center rounded-full border dark:bg-[#2d323b]">
+        <div className="dark: flex items-start rounded-xl bg-white p-4 shadow-lg dark:bg-gray-700">
+          <div className="border-pea-100 bg-pea-50 dark:border-pea-900 flex h-12 w-12 items-center justify-center rounded-full border dark:bg-gray-700">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="text-pea-500 h-6 w-6"
@@ -81,10 +81,10 @@ const TribesList = ({ tribes }: FindTribes) => {
           </div>
         </div>
         <div
-          className="flex items-start rounded-xl bg-white p-4 shadow-lg dark:bg-[#3b424f]"
+          className="flex items-start rounded-xl bg-white p-4 shadow-lg dark:bg-gray-700"
           onClick={pickRandomTribe}
         >
-          <div className="dark:border-pea-900 flex h-12 w-12 items-center justify-center rounded-full border border-blue-100 bg-blue-50 dark:bg-[#2d323b]">
+          <div className="dark:border-pea-900 flex h-12 w-12 items-center justify-center rounded-full border border-blue-100 bg-blue-50 dark:bg-gray-800">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="text-pea-500 fill-pea-500 h-6 w-6"
