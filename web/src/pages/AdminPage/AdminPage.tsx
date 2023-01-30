@@ -1,17 +1,24 @@
 import { useAuth } from "@redwoodjs/auth";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
+import StatCard from "src/components/Util/StatCard/StatCard";
 import UserCard from "src/components/Util/UserCard/UserCard";
 
 const AdminPage = () => {
-  new Date().toISOString()
+
   return (
     <>
       <MetaTags title="Admin" description="Admin page" />
 
       {/* TODO: Replace with taybul?*/}
-      <div className="container-xl overflow-hidden p-3 text-center">
-        <div className="flex-[2 0 0] relative ml-6 h-full max-h-[300px] max-w-[400px] overflow-y-auto rounded bg-slate-700 p-6">
+      <div className="container-xl overflow-hidden p-3 text-center m-4">
+        <div className="flex flex-col-reverse md:flex-row space-x-3 mb-3">
+          <StatCard stat={"Test"} value={10} />
+          <StatCard stat={"Test"} value={10} />
+          <StatCard stat={"Test"} value={10} />
+          <StatCard stat={"Test"} value={10} />
+        </div>
+        <div className="flex-[2 0 0] relative h-full max-h-[300px] max-w-[400px] overflow-y-auto rounded bg-gray-700 p-6">
           <div className="flex items-center justify-between py-4 text-gray-500">
             <span className="text-lg font-semibold">Users</span>
           </div>
