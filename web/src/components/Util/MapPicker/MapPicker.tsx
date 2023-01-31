@@ -50,7 +50,6 @@ const MapPicker = ({
     }
   }, [])
 
-
   return (
     <div>
       <svg
