@@ -155,24 +155,24 @@ const DinoStatsPage = () => {
             rows={dino}
             columns={[
               {
-                dataKey: "stat",
+                field: "stat",
                 label: "Stat",
                 bold: true,
                 sortable: true,
               },
               {
-                dataKey: "base",
+                field: "base",
                 label: "Base",
                 numeric: true,
                 sortable: true,
               },
               {
-                dataKey: "increaseperlevel",
+                field: "increaseperlevel",
                 label: "Increase per level",
                 numeric: true,
               },
               {
-                dataKey: "dino",
+                field: "dino",
                 label: "Total",
               }
             ]}

@@ -103,22 +103,23 @@ const TribesList = ({ tribes }: FindTribes) => {
         className="m-4"
         columns={[
           {
-            dataKey: "name",
+            field: "name",
             label: "Name",
             sortable: true,
+            // valueFormatter: (params) => params.value
           },
           {
-            dataKey: "description",
+            field: "description",
             label: "Description",
             sortable: true,
           },
           {
-            dataKey: "created_at",
+            field: "created_at",
             label: "Created At",
             sortable: true,
           },
           {
-            dataKey: "createdBy",
+            field: "createdBy",
             label: "Created By",
           },
         ]}

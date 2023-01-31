@@ -1,8 +1,32 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
+interface MapPickerProps {
+  fields?: {
+    latitude: string;
+    longitude: string;
+  }
+  map: string;
+  coords?: {
+    lat: number;
+    lon: number;
+  };
+  onChange?: (coords: {
+    lat: number;
+    lon: number;
+  }) => void;
+}
 const MapPicker = ({
   map,
-}) => {
+  fields = {
+    latitude: "latitude",
+    longitude: "longitude",
+  },
+  coords = {
+    lat: 0,
+    lon: 0,
+  },
+  onChange
+}: MapPickerProps) => {
   const maps = {
     theisland:
       "https://ark.gamepedia.com/media/thumb/3/3e/The_Island_Map.jpg/600px-The_Island_Map.jpg",
@@ -32,27 +56,59 @@ const MapPicker = ({
       "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/4/45/Lost_Island_map.jpg",
   };
 
-  const alert_coords = (evt, pt, svg) => {
+
+
+  const alert_coords = (evt, pt) => {
     pt.x = evt.clientX;
     pt.y = evt.clientY;
 
     // The cursor point, translated into svg coordinates
-    var cursorpt = pt.matrixTransform(svg.getScreenCTM().inverse());
-    console.log("(" + cursorpt.x + ", " + cursorpt.y + ")");
+    let cursorpt = pt.matrixTransform(document.querySelector<SVGSVGElement>('svg#mapSelector').getScreenCTM().inverse());
+    // let circle = document.querySelector('circle#marker')
+    let circle = document.querySelector('g#marker')
+
+    circle.setAttributeNS(null, 'transform', `translate(${cursorpt.x}, ${cursorpt.y})`);
+
+    // circle.setAttributeNS(null, 'cx', cursorpt.x);
+    // circle.setAttributeNS(null, 'cy', cursorpt.y);
+
+    onChange && onChange({ lat: Math.round((cursorpt.x - 5) / 5 * 100) / 100, lon: Math.round((cursorpt.y - 5) / 5 * 100) / 100 })
   }
   useEffect(() => {
-    let svg = document.querySelector('svg');
+    let svg = document.querySelector<SVGSVGElement>('svg#mapSelector');
     let pt = svg.createSVGPoint();
-    svg.addEventListener('mousedown', (evt) => alert_coords(evt, pt, svg));
+
+    if (coords.lat && coords.lon) {
+      let circle = document.querySelector('g#marker')
+
+      circle.setAttributeNS(null, 'transform', `translate(${5 * coords.lat + 500 / 100}, ${5 * coords.lon})`);
+      // circle.setAttributeNS(null, 'cx', (Math.round((coords.lat - 5) / 5 * 100) / 100).toString());
+      // circle.setAttributeNS(null, 'cy', (Math.round((coords.lon - 5) / 5 * 100) / 100).toString());
+    }
+
+    svg.addEventListener('mousedown', (evt) => alert_coords(evt, pt));
+    svg.addEventListener('mousemove', (evt) => updateCoords(evt, pt));
     return () => {
-      svg.removeEventListener('mousedown', (evt) => alert_coords(evt, pt, svg));
+      svg.removeEventListener('mousedown', (evt) => alert_coords(evt, pt));
+      svg.removeEventListener('mousemove', (evt) => updateCoords(evt, pt));
     }
   }, [])
 
+  let coordsRef = useRef<SVGTextElement>(null);
+  function updateCoords(evt, pt) {
+    pt.x = evt.clientX;
+    pt.y = evt.clientY;
+    let cursorpt = pt.matrixTransform(document.querySelector<SVGSVGElement>('svg#mapSelector').getScreenCTM().inverse())
+
+    // let coords = document.getElementById("coords");
+    coordsRef.current.innerHTML = `${Math.round((cursorpt.x - 5) / 5 * 100) / 100}, ${Math.round((cursorpt.y - 5) / 5 * 100) / 100}`;
+  }
+
   return (
-    <div>
+    <div className="">
       <svg
-        className=""
+        className="select-none cursor-pointer"
+        id="mapSelector"
         width={500}
         height={500}
         viewBox={`0 0 ${500} ${500}`}
@@ -73,12 +129,42 @@ const MapPicker = ({
             {map} map not found
           </text>
         )}
-        {/* <circle
-          fill="red"
-          cx={(500 / 100) * pos.lon + size.width / 100}
-          cy={(500 / 100) * pos.lat}
-          r="5"
-        /> */}
+        <g id="marker" transform="translate(0, 0)" width="20" height="20" fill="blue">
+          <circle
+            className="fill-red-400 animate-ping motion-reduce:animate-none"
+            // cy={(500 / 100) * 0 + 500 / 100}
+            // cx={(500 / 100) * 0 + 500 / 100}
+            cx="0"
+            cy="0"
+            r="10"
+          />
+          <circle
+            className="fill-red-500"
+            // cy={(500 / 100) * 0 + 500 / 100}
+            // cx={(500 / 100) * 0 + 500 / 100}
+            cx="0"
+            cy="0"
+            r="5"
+          />
+        </g>
+        <g>
+          <rect
+            x="400"
+            width="100"
+            height="30"
+            className="rounded-bl-md fill-[#0D2836] p-3 stroke-2 stroke-[#60728F] opacity-70"
+          />
+          <text
+            ref={coordsRef}
+            x="450"
+            y="15"
+            className="fill-[#97FBFF] rounded-bl-md"
+            textAnchor="middle"
+            dominantBaseline={"middle"}
+          >
+            0, 0
+          </text>
+        </g>
       </svg>
     </div>
   )

@@ -66,8 +66,8 @@ export const Map = ({
         )}
         <circle
           fill="red"
+          cy={(size.height / 100) * pos.lat + size.height / 100}
           cx={(size.width / 100) * pos.lon + size.width / 100}
-          cy={(size.height / 100) * pos.lat}
           r="5"
         />
       </svg>

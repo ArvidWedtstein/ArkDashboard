@@ -1,7 +1,7 @@
 interface IPingAlert {
   color?: String
 }
-const PingAlert = ({ color = "bg-pink-500", }: IPingAlert) => {
+export const PingAlert = ({ color = "bg-pink-500", }: IPingAlert) => {
   return (
     <span className="flex absolute -mt-5 ml-4">
       <span className={`animate-ping absolute inline-flex h-3 w-3 rounded-full ${color.replace(/^\d+$/, (Number(color.split("-")[2]) - 100).toString())} opacity-75`}></span>
@@ -11,4 +11,3 @@ const PingAlert = ({ color = "bg-pink-500", }: IPingAlert) => {
   )
 }
 
-export default PingAlert

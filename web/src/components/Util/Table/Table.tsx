@@ -26,12 +26,31 @@ interface ITableProps<P = {}> {
   };
   className?: string;
 }
-interface ColumnData {
-  dataKey: string;
+interface GridCell<V = any> {
+  id?: string;
+  field: string;
+  value: V;
+}
+interface ColumnData<V = any, F = V> {
+  field: string;
   label: string;
   numeric?: boolean;
   bold?: boolean;
   sortable?: boolean;
+  /**
+   * Function that allows to apply a formatter before rendering its value.
+   * @template V, F
+   * @param {GridValueFormatterParams<V>} params Object containing parameters for the formatter.
+   * @returns {F} The formatted value.
+   */
+  valueFormatter?: (params: GridCell<V>) => F; // add functionality for value formatting
+  /**
+ * Allows to override the component rendered as cell for this column.
+ * @template V
+ * @param {GridCell<V>} params Object containing parameters for the renderer.
+ * @returns {React.ReactNode} The element to be rendered.
+ */
+  renderCell?: (params: GridCell<V>) => React.ReactNode;
 }
 interface TaybulProps {
   columns: ColumnData[];
@@ -144,7 +163,7 @@ export const Taybul = ({
         {other.sortable ? (
           <div
             className="flex select-none items-center"
-            id={other.dataKey}
+            id={other.field}
             onClick={sortRows}
           >
             {truncate(label, 30)}
@@ -154,7 +173,7 @@ export const Taybul = ({
               fill="currentColor"
               viewBox="0 0 320 512"
             >
-              {sort.column === other.dataKey ? (
+              {sort.column === other.field ? (
                 sort.direction === "asc" ? (
                   <path d="M182.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8H288c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z" />
                 ) : (
@@ -242,14 +261,14 @@ export const Taybul = ({
       <tfoot>
         <tr className="font-semibold text-gray-900 dark:text-white">
           {select && <td className="p-4"></td>}
-          {columns.map(({ dataKey, ...other }, index) => {
+          {columns.map(({ field, ...other }, index) => {
             return (
               <th
-                key={`${index}-${dataKey}`}
+                key={`${index}-${field}`}
                 className={`px-6 py-3 ${other.numeric ? "text-base" : ""}`}
               >
                 {other.numeric
-                  ? SortedFilteredData.reduce((a, b) => a + b[dataKey], 0)
+                  ? SortedFilteredData.reduce((a, b) => a + b[field], 0)
                   : "Total"}
               </th>
             );
@@ -357,7 +376,7 @@ export const Taybul = ({
         <tbody>
           {headersVertical ? (
             <>
-              {columns.map(({ dataKey, ...other }, index) => {
+              {columns.map(({ field, ...other }, index) => {
                 return (
                   <tr
                     key={index}
@@ -375,7 +394,7 @@ export const Taybul = ({
                     {SortedFilteredData.map((datarow) => {
                       return cellRenderer({
                         rowData: datarow,
-                        cellData: datarow[dataKey],
+                        cellData: datarow[field],
                         columnIndex: index,
                         ...other,
                       });
@@ -396,10 +415,10 @@ export const Taybul = ({
                   onClick={() => onRowClick && onRowClick({ index: i })}
                 >
                   {select && tableSelect({ row: i })}
-                  {columns.map(({ dataKey, ...other }, index) => {
+                  {columns.map(({ field, ...other }, index) => {
                     return cellRenderer({
                       rowData: datarow,
-                      cellData: datarow[dataKey],
+                      cellData: datarow[field],
                       columnIndex: index,
                       ...other,
                     });
