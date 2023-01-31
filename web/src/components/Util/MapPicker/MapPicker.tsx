@@ -38,7 +38,7 @@ const MapPicker = ({
 
     // The cursor point, translated into svg coordinates
     var cursorpt = pt.matrixTransform(svg.getScreenCTM().inverse());
-    // console.log("(" + cursorpt.x + ", " + cursorpt.y + ")");
+    console.log("(" + cursorpt.x + ", " + cursorpt.y + ")");
   }
   useEffect(() => {
     let svg = document.querySelector('svg');
