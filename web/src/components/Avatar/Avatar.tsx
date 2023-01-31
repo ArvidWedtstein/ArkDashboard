@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@redwoodjs/auth";
-import { ImageField } from "@redwoodjs/forms";
 
 const Avatar = ({
   url,
@@ -39,6 +38,7 @@ const Avatar = ({
       if (data) {
         const url = URL.createObjectURL(data);
         setAvatarUrl(url);
+        console.log("Avatar URL: ", url)
       }
     } catch (error) {
       console.log("Error downloading image: ", error.message);
@@ -104,13 +104,13 @@ const Avatar = ({
         </div>
       ) : null}
       <div
-        className={`relative h-full w-full rounded-full border-none border-[#f8f8f8] shadow ${className} flex items-center`}
+        className={`relative h-full w-full rounded-full border-none border-[#f8f8f8] shadow ${className} flex items-center justify-center`}
       >
         {avatarUrl ? (
           <div
             className="h-full w-full rounded-full bg-cover bg-center bg-no-repeat"
             id="imagePreview"
-            style={{ backgroundImage: `url(${avatarUrl})` }}
+            style={{ backgroundImage: `url(${avatarUrl})`, height: size, width: size }}
           ></div>
         ) : (
           <svg

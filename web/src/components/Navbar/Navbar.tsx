@@ -38,9 +38,9 @@ const Navbar = () => {
             {title && <span className="mx-2 hidden lg:inline-block"> - </span>}
             {title ? `${title}` : ""}
           </p>
-          <div className="hidden h-10 w-full max-w-md items-center justify-between overflow-hidden rounded-3xl bg-[#ffffff] pr-3 text-[#ffffffcc] shadow-md dark:bg-[#3B424F] dark:shadow-none md:flex">
+          <div className="hidden h-10 w-full max-w-md items-center justify-between overflow-hidden rounded-3xl bg-[#ffffff] pr-3 text-[#ffffffcc] shadow-md dark:bg-gray-700 dark:shadow-none md:flex">
             <input
-              className="h-full flex-1 border-none bg-white px-5 text-base text-[#1f1c2e] outline-none placeholder:text-[#1f1c2e] placeholder:opacity-60 dark:bg-[#3B424F] dark:text-white dark:placeholder:text-[#ffffffcc]"
+              className="h-full flex-1 border-none bg-white px-5 text-base text-[#1f1c2e] outline-none placeholder:text-[#1f1c2e] placeholder:opacity-60 dark:bg-gray-700 dark:text-white dark:placeholder:text-[#ffffffcc]"
               type="text"
               placeholder="Search"
             />

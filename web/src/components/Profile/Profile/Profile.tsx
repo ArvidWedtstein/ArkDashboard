@@ -1,5 +1,5 @@
 
-import { Form } from '@redwoodjs/forms'
+import { Form, TextField } from '@redwoodjs/forms'
 import { Link, routes, navigate } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
@@ -66,17 +66,7 @@ const Profile = ({ profile }: Props) => {
                         className="absolute -mt-20 h-auto rounded-full border-none align-middle shadow-xl"
                         url={profile.avatar_url}
                         size={200}
-                        onUpload={(url) => {
-                          // setAvatarUrl(url);
-                          // updateProfile({
-                          //   username,
-                          //   website,
-                          //   avatar_url: url,
-                          //   firstname,
-                          //   lastname,
-                          //   biography,
-                          // });
-                        }}
+                        editable={false}
                       />
                     </div>
                   </div>
@@ -132,7 +122,7 @@ const Profile = ({ profile }: Props) => {
                         <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-full-name">
                           Full Name
                         </label>
-                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-full-name" type="text" placeholder="Ola Nordmann" value={profile.full_name} />
+                        <input disabled className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-full-name" type="text" placeholder="Ola Nordmann" value={profile.full_name} />
                       </div>
                     </div>
                     <div className="flex flex-wrap -mx-3 mb-6">
@@ -140,7 +130,7 @@ const Profile = ({ profile }: Props) => {
                         <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-bio">
                           Biography
                         </label>
-                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-bio" type="text" value={profile.biography} />
+                        <input disabled className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-bio" type="text" value={profile.biography} />
                         <p className="text-gray-600 text-xs italic">Write whatever nonsense you'd like</p>
                       </div>
                     </div>
@@ -149,13 +139,13 @@ const Profile = ({ profile }: Props) => {
                         <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-website">
                           Website
                         </label>
-                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" value={profile.website} />
+                        <input disabled value={profile.website} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" />
                       </div>
                       <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                         <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-username">
                           Username
                         </label>
-                        <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="text" value={profile.username} />
+                        <input disabled className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="text" value={profile.username} />
                       </div>
                     </div>
                   </form>
