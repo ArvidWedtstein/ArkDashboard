@@ -32,8 +32,7 @@ const MapPicker = ({
       "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/4/45/Lost_Island_map.jpg",
   };
 
-
-  function alert_coords(evt, pt, svg) {
+  const alert_coords = (evt, pt, svg) => {
     pt.x = evt.clientX;
     pt.y = evt.clientY;
 
