@@ -248,6 +248,7 @@ export const calcItemCost = (amount: number, item_id) => {
     if (founditem.recipe.length > 0) {
       console.log('find', calcItemCost(item.count, founditem.itemId))
       price = combineBySummingKeys(calcItemCost(item.count, founditem.itemId), price);
+
     } else {
       price[`${item.itemId}`] = item.count * Number(amount);
     }

@@ -142,7 +142,6 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
 
   const addTurretTower = useCallback(turretTower, [])
   const mergeItemRecipe = useCallback(mergeRecipe, [item])
-  console.log(calcItemCost(1, 1))
   const clear = (() => {
     setItem({ type: "RESET" });
   })
