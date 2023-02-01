@@ -192,20 +192,18 @@ export const Taybul = ({
   };
 
   const cellRenderer = ({ rowData, cellData, columnIndex, ...other }) => {
-    {
-      /* textAlign: `${other.numeric || false ? 'right' : 'left'}`*/
-    }
     return (
       <td
         key={`${columnIndex}-${cellData}`}
         className={`px-6 py-4 ${other.bold
-          ? "whitespace-nowrap font-bold text-gray-900 dark:text-white"
-          : ""
+          && "whitespace-nowrap font-bold text-gray-900 dark:text-white"
           }`}
       >
         {/* {isDate(cellData) ? timeTag(cellData) : truncate(cellData, 30)} */}
+        {/* {other.renderCell && other.renderCell(rowData, cellData, columnIndex)} */}
         {isUUID(cellData) && other.label.toLowerCase() === "created by" && ('Profile' in rowData) ? (
           <div className="flex flex-row">
+            {/* TODO: Add clickable link */}
             {rowData.Profile.avatar_url && (
               <img
                 className="h-10 w-10 rounded-full"
@@ -222,10 +220,10 @@ export const Taybul = ({
               </div> */}
             </div>
           </div>
-        ) : isDate(cellData) ? (
-          timeTag(cellData)
+          // ) : isDate(cellData) ? (
+          //   timeTag(cellData)
         ) : (
-          truncate(cellData, 30)
+          truncate(other.valueFormatter ? other.valueFormatter(cellData) : cellData, 30)
         )}
       </td>
     );

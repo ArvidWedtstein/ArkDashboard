@@ -5,7 +5,7 @@ import { toast } from "@redwoodjs/web/toast";
 import { QUERY } from "src/components/Tribe/TribesCell";
 import { ContextMenu } from "src/components/Util/ContextMenu/ContextMenu";
 import Table, { Taybul } from "src/components/Util/Table/Table";
-import { getWeekDates } from "src/lib/formatters";
+import { getWeekDates, timeTag } from "src/lib/formatters";
 
 import type { DeleteTribeMutationVariables, FindTribes } from "types/graphql";
 
@@ -117,6 +117,7 @@ const TribesList = ({ tribes }: FindTribes) => {
             field: "created_at",
             label: "Created At",
             sortable: true,
+            valueFormatter: (params) => timeTag(params.value),
           },
           {
             field: "createdBy",

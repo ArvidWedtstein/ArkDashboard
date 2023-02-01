@@ -50,14 +50,15 @@ const DinoStatsPage = () => {
     setLevel({ ...level, [id]: level[id] + 1 });
     setPoints(points - 1);
     let dyno = dino.find((d) => d.stat === id);
-    dyno.dino = (level[id] + 1) * dyno.increaseperlevel + dyno.base;
+    // dyno.dino = (level[id] + 1) * dyno.increaseperlevel + dyno.base;
+    dyno.dino = (level[id] + 1) * dyno.increasePerLevelWild + dyno.base;
   };
   const onRemove = (data) => {
     let id = data.target.id.replace("rem", "");
     setLevel({ ...level, [id]: level[id] - 1 });
     setPoints(points + 1);
     let dyno = dino.find((d) => d.stat === id);
-    dyno.dino = (level[id] - 1) * dyno.increaseperlevel + dyno.base;
+    dyno.dino = (level[id] - 1) * dyno.increasePerLevelWild + dyno.base;
   };
   const onSubmit = (data) => {
     // let dino = arkdinos[data.name.toLowerCase()]
@@ -68,9 +69,10 @@ const DinoStatsPage = () => {
     let t = Object.entries(dino.baseStats).map(([key, value]) => {
       return {
         stat: key,
-        base: value.b,
-        increaseperlevel: value.increasePerLevel || 0,
-        dino: value?.b + value.increasePerLevel * level[key],
+        base: value.base,
+        increasePerLevelWild: value.increasePerLevelWild || 0,
+        increasePerLevelTamed: value.increasePerLevelTamed || 0,
+        dino: value?.base + value.increasePerLevelWild * level[key],
       };
     });
     setValue("level", data.level);
@@ -167,7 +169,7 @@ const DinoStatsPage = () => {
                 sortable: true,
               },
               {
-                field: "increaseperlevel",
+                field: "increasePerLevelWild",
                 label: "Increase per level",
                 numeric: true,
               },

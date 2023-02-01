@@ -165,6 +165,15 @@ const MapPicker = ({
             0, 0
           </text>
         </g>
+        <map name="Map" id="Map">
+          <area href="#" shape="poly" className="brick 1" coords="669,0,405,268,931,265" />
+          <area href="#" shape="poly" className="brick 2" coords="399,269,681,268,673,468,227,455" />
+          <area href="#" shape="poly" className="brick 3" coords="685,267,934,267,1134,473,676,468" />
+          <area href="#" shape="poly" className="brick 4" coords="220,458,33,641,378,640,540,465,224,458" />
+          <area href="#" shape="poly" className="brick 5" coords="542,467,380,643,975,641,802,471,547,467" />
+          <area href="#" shape="poly" className="brick 6" coords="809,473,1137,476,1315,645,980,642,811,472" />
+
+        </map>
       </svg>
     </div>
   )
