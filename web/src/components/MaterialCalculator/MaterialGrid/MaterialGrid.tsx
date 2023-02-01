@@ -2,8 +2,8 @@ import { FieldError, Form, FormError, ImageField, Label, RWGqlError } from "@red
 import { useCallback, useMemo, useReducer } from "react";
 import { useForm } from 'react-hook-form'
 import Lookup from "src/components/Util/Lookup/Lookup";
-import { mergeRecipe } from 'src/lib/formatters'
-import Table from "src/components/Util/Table/Table";
+import { calcItemCost, mergeRecipe } from 'src/lib/formatters'
+import Table, { Taybul } from "src/components/Util/Table/Table";
 import arkitems from '../../../../public/arkitems.json'
 import LineChart from "src/components/Util/LineChart/LineChart";
 interface MaterialGridProps {
@@ -142,6 +142,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
 
   const addTurretTower = useCallback(turretTower, [])
   const mergeItemRecipe = useCallback(mergeRecipe, [item])
+  console.log(calcItemCost(1, 1))
   const clear = (() => {
     setItem({ type: "RESET" });
   })
@@ -181,7 +182,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
                 Clear
               </button>
             </div>
-            {/* <button type="submit" className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">+</button> */}
+
           </div>
           <FieldError name="itemName" className="rw-field-error" />
           {/* TODO: Fix heavy turret cost calculation */}
@@ -193,6 +194,17 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
                 colorHEX: items.find((itm) => parseInt(itm.itemId.toString()) === parseInt(key)).color
               }
             })} />
+          }
+          {item.length > 0 &&
+            <Taybul
+              rows={[mergeItemRecipe(...item)]}
+              columns={[
+                {
+                  field: 'name',
+                  label: 'Item',
+                }
+              ]}
+            />
           }
           {item.length > 0 &&
             <Table

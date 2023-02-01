@@ -231,23 +231,25 @@ export const isDate = (date: any): boolean => {
 /**
  * @description Calculates the cost of an ark item
  * @param {Number} amount
- * @param {String} item_type
+ * @param {String} item_id
  * @returns Object with prices
  */
-export const calcItemCost = (amount: number, item_type) => {
+export const calcItemCost = (amount: number, item_id) => {
   if (Number.isNaN(amount)) return console.error("Amount is NaN");
-  if (!(item_type in prices))
+  if (!prices.items.find((e) => e.itemId === item_id))
     return console.error(
       "\x1b[31m%s\x1b[0m",
-      `[ArkMatCalc Error]: ${item_type} not found in prices`
+      `[ArkMatCalc Error]: ${item_id} not found in prices`
     );
   let price = {};
-  Object.entries(prices[item_type]).forEach((i) => {
-    const [key, val]: any = i;
-    if (prices.hasOwnProperty(key)) {
-      price = combineBySummingKeys(calcItemCost(val, key), price);
+  prices.items.find((e) => e.itemId === item_id).recipe.forEach((item, i) => {
+    console.log("itemId", item.itemId)
+    let founditem = prices.items.find((e) => e.itemId === item.itemId)
+    if (founditem.recipe.length > 0) {
+      console.log('find', calcItemCost(item.count, founditem.itemId))
+      price = combineBySummingKeys(calcItemCost(item.count, founditem.itemId), price);
     } else {
-      price[`${key}`] = val * Number(amount);
+      price[`${item.itemId}`] = item.count * Number(amount);
     }
   });
   return price;
