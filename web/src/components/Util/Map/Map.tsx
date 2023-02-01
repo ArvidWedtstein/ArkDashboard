@@ -31,13 +31,13 @@ export const Map = ({
     genesis2:
       "https://ark.gamepedia.com/media/thumb/0/0d/Genesis_Part_2.jpg/600px-Genesis_Part_2.jpg",
     valguero:
-      "https://ark.gamepedia.com/media/thumb/d/de/Valguero_Topographic_Map.jpg/600px-Valguero_Topographic_Map.jpg",
+      "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/1/19/Valguero_Map.jpg",
     crystalisles:
       "https://ark.gamepedia.com/media/thumb/3/3e/Crystal_Isles_Map.jpg/600px-Crystal_Isles_Map.jpg",
     fjordur:
-      "https://ark.gamepedia.com/media/thumb/3/3e/Fjordur_Map.jpg/600px-Fjordur_Map.jpg",
+      "https://ark.wiki.gg/images/7/75/Fjordur_Map.jpg",
     lostisland:
-      "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/4/45/Lost_Island_map.jpg",
+      "https://ark.wiki.gg/images/1/1e/Lost_Island_Map.jpg",
   };
 
   return (

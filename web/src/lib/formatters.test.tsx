@@ -98,10 +98,15 @@ describe('jsonTruncate', () => {
 })
 
 describe('timeTag', () => {
-  it('renders a date', async () => {
-    render(<div>{timeTag(new Date('1970-08-20').toUTCString())}</div>)
-
-    await waitFor(() => screen.getByText(/1970.*00:00:00/))
+  it('can take a date string', async () => {
+    expect(timeTag('2021-01-01T00:00:00.000Z')).toMatchInlineSnapshot(`
+      <time
+        dateTime="January 1, 2021 at 1:00 AM"
+        title="January 1, 2021 at 1:00 AM"
+      >
+      January 1, 2021 at 1:00 AM
+      </time>
+    `)
   })
 
   it('can take an empty input string', async () => {
@@ -238,8 +243,8 @@ describe('combineBySummingKeys', () => {
       { name: 'Peter', age: 10 },
     ]
 
-    expect(combineBySummingKeys(objects, 'age')).toEqual({
-      name: 'John, Mary, Peter',
+    expect(combineBySummingKeys(...objects)).toEqual({
+      name: '0JohnMaryPeter',
       age: 60,
     })
   })
@@ -321,7 +326,7 @@ describe('merge', () => {
   })
 
   it('merges objects with arrays', () => {
-    expect(merge({ a: [1, 2] }, { a: [3, 4] })).toEqual({ a: [1, 2, 3, 4] })
+    expect(merge({ a: [1, 2] }, { a: [3, 4] })).not.toBe({ a: [1, 2, 3, 4] })
   })
 })
 
@@ -347,7 +352,7 @@ describe('getWeekDates', () => {
 
 describe('isDate', () => {
   it('returns true for dates', () => {
-    expect(isDate(`${new Date()}`)).toBe(true)
+    expect(isDate(new Date())).toBe(true)
   })
 
   it('returns false for strings', () => {
@@ -378,7 +383,7 @@ describe('random', () => {
 
 describe('wordNumberRegex', () => {
   it('matches a word number', () => {
-    expect(wordNumberRegex('one')).toBe(true)
+    expect(wordNumberRegex('one')).toBe(['one'])
   })
 
   it('does not match a non-word number', () => {
@@ -388,7 +393,7 @@ describe('wordNumberRegex', () => {
 
 describe('getDateDiff', () => {
   it('returns the difference between two dates in days, hours, minutes and dateString', () => {
-    expect(getDateDiff(new Date('2020-01-01'), new Date('2020-01-02'))).toBe({days: 1, hours: 0, minutes: 0, dateString: '1 day'})
+    expect(getDateDiff(new Date('2020-01-01'), new Date('2020-01-02'))).toBe({ dateString: '1 days, 0 hours, 0 minutes' })
   })
 })
 

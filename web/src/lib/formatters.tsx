@@ -223,7 +223,7 @@ export const getWeekDates = () => {
  * @example isDate("2022-11") // false
  * @example isDate("2022") // false
  */
-export const isDate = (date: string): boolean => {
+export const isDate = (date: any): boolean => {
   // regex test for  2022-11-28T14:17:14.899Z format
   const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
   return regex.test(date);

@@ -3,6 +3,7 @@ import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import Chat from "src/components/Chat/Chat";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
+import { merge } from "src/lib/formatters";
 const HomePage = () => {
   const { isAuthenticated, client: supabase } = useAuth();
   // if (document.addEventListener) {
@@ -14,7 +15,7 @@ const HomePage = () => {
   // supabase.auth.onAuthStateChange((event, session) => {
   //   console.log(event, session)
   // })
-  let gender = "female";
+
 
   return (
     <>
@@ -61,7 +62,7 @@ const HomePage = () => {
           </div>
         </div>
         {/* {isAuthenticated && <Chat />} */}
-        <MapPicker map={"Ragnarok"} coords={{ lat: 50, lon: 50 }} onChange={(d) => console.log(d)} />
+
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
       </div>
     </>

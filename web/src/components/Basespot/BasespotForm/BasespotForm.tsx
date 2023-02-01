@@ -9,12 +9,15 @@ import {
   SelectField,
   NumberField,
   TextAreaField,
+  MonthField,
+  useForm,
 } from "@redwoodjs/forms";
 
 import type { EditBasespotById, UpdateBasespotInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import { useRef, useState } from "react";
+import MapPicker from "src/components/Util/MapPicker/MapPicker";
 
 const formatDatetime = (value) => {
   if (value) {
@@ -32,19 +35,24 @@ interface BasespotFormProps {
 }
 
 const BasespotForm = (props: BasespotFormProps) => {
+  const formMethods = useForm<FormBasespot>(
+
+  )
   const [thumbnailUrl, setThumbnailUrl] = useState(null);
   const [defenseImages, setDefenseImages] = useState([]);
 
   const basename = useRef(null);
+  const [map, setMap] = useState(props.basespot?.Map);
   const onSubmit = (data: FormBasespot) => {
     data.image && (data.image = thumbnailUrl);
 
-    props.onSave(data, props?.basespot?.id);
+    console.log(data);
+    // props.onSave(data, props?.basespot?.id);
   };
 
   return (
     <div className="rw-form-wrapper">
-      <Form<FormBasespot> onSubmit={onSubmit} error={props.error}>
+      <Form<FormBasespot> onSubmit={onSubmit} formMethods={formMethods} error={props.error}>
         <FormError
           error={props.error}
           wrapperClassName="rw-form-error-wrapper"
@@ -72,9 +80,8 @@ const BasespotForm = (props: BasespotFormProps) => {
             errorClassName="rw-input rw-input-error"
             validation={{ required: true }}
           />
+          <FieldError name="name" className="rw-field-error" />
         </div>
-
-        <FieldError name="name" className="rw-field-error" />
 
         <Label
           name="description"
@@ -95,6 +102,46 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <FieldError name="description" className="rw-field-error" />
 
+
+        <Label
+          name="Map"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Map
+        </Label>
+
+        <SelectField
+          className="rw-input"
+          name="Map"
+          defaultValue={map}
+          onChange={(e) => {
+            setMap(e.target.value);
+          }}
+          validation={{ required: true }}
+          errorClassName="rw-input rw-input-error"
+        >
+          <option value="TheIsland">The Island</option>
+          <option value="TheCenter">The Center</option>
+          <option value="ScorchedEarth">Scorched Earth</option>
+          <option value="Ragnarok">Ragnarok</option>
+          <option value="Abberation">Abberation</option>
+          <option value="Extinction">Extinction</option>
+          <option value="Gen1">Genesis</option>
+          <option value="Gen2">Genesis 2</option>
+          <option value="Valguero">Valguero</option>
+          <option value="CrystalIsles">Crystal Isles</option>
+          <option value="Fjordur">Fjordur</option>
+          <option value="LostIsland">Lost Island</option>
+        </SelectField>
+
+        <FieldError name="Map" className="rw-field-error" />
+
+        <MapPicker map={map} valueProp={{ ...props.basespot }} onChanges={(e) => {
+          formMethods.setValue("latitude", e.latitude);
+          formMethods.setValue("longitude", e.longitude);
+        }} />
+
         <div className="flex flex-row items-start">
           <div className="group relative z-0 mb-6">
             <Label
@@ -105,13 +152,13 @@ const BasespotForm = (props: BasespotFormProps) => {
               Latitude
             </Label>
 
-            <NumberField
+            <TextField
               name="latitude"
               defaultValue={props.basespot?.latitude}
               className="rw-input"
               errorClassName="rw-input rw-input-error"
               emptyAs={null}
-              validation={{ valueAsNumber: true, required: true }}
+              validation={{ required: true, valueAsNumber: true }}
             />
             <FieldError name="latitude" className="rw-field-error" />
           </div>
@@ -124,7 +171,7 @@ const BasespotForm = (props: BasespotFormProps) => {
               Longitude
             </Label>
 
-            <NumberField
+            <TextField
               name="longitude"
               defaultValue={props.basespot?.longitude}
               className="rw-input"
@@ -145,47 +192,15 @@ const BasespotForm = (props: BasespotFormProps) => {
         </Label>
 
         <FileUpload
-          storagePath={`basespotimages/${
-            basename.current?.value.replaceAll(" ", "") ||
+          storagePath={`basespotimages/${basename.current?.value.replaceAll(" ", "") ||
             props.basespot?.name.replaceAll(" ", "")
-          }`}
+            }`}
           onUpload={(url) => {
             setThumbnailUrl(url);
           }}
         />
 
         <FieldError name="image" className="rw-field-error" />
-
-        <Label
-          name="Map"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Map
-        </Label>
-
-        <SelectField
-          className="rw-input"
-          name="Map"
-          defaultValue={props.basespot?.Map}
-          validation={{ required: true }}
-          errorClassName="rw-input rw-input-error"
-        >
-          <option value="TheIsland">The Island</option>
-          <option value="TheCenter">The Center</option>
-          <option value="ScorchedEarth">Scorched Earth</option>
-          <option value="Ragnarok">Ragnarok</option>
-          <option value="Abberation">Abberation</option>
-          <option value="Extinction">Extinction</option>
-          <option value="Gen1">Genesis</option>
-          <option value="Gen2">Genesis 2</option>
-          <option value="Valguero">Valguero</option>
-          <option value="CrystalIsles">Crystal Isles</option>
-          <option value="Fjordur">Fjordur</option>
-          <option value="LostIsland">Lost Island</option>
-        </SelectField>
-
-        <FieldError name="Map" className="rw-field-error" />
 
         <Label
           name="estimatedForPlayers"
