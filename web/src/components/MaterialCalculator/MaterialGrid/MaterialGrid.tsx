@@ -1,8 +1,8 @@
 import { FieldError, Form, FormError, ImageField, Label, RWGqlError } from "@redwoodjs/forms";
-import { useCallback, useMemo, useReducer } from "react";
+import { useCallback, useEffect, useMemo, useReducer } from "react";
 import { useForm } from 'react-hook-form'
 import Lookup from "src/components/Util/Lookup/Lookup";
-import { calcItemCost, mergeRecipe } from 'src/lib/formatters'
+import { calcItemCost, getBaseMaterials } from 'src/lib/formatters'
 import Table, { Taybul } from "src/components/Util/Table/Table";
 import arkitems from '../../../../public/arkitems.json'
 import LineChart from "src/components/Util/LineChart/LineChart";
@@ -86,52 +86,64 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
   }
 
   const turretTower = (() => {
-    let turretTower = {
-      size: 14 * 14,
-      cage_height: 22,
-      top_turret_height: 7,
-      total_height: 22 + 7,
-      heavy_turrets: 60,
-      tek_turrets: 65,
-      hatchframe_layers: 3,
-      turret_ring_levels: [
-        {
-          height: 10,
-          hasGenerator: false,
-        },
-        {
-          height: 14,
-          hasGenerator: true,
-        },
-        {
-          height: 18,
-          hasGenerator: false,
-        },
-        {
-          height: 29,
-          hasGenerator: true,
-        }
-      ] // 13, 16, 19, 22?
-    }
-    const amountCenterDoorframes = turretTower.total_height * 8
-    const amountOutsideDoorframes = (Math.sqrt(turretTower.size) * 4) * turretTower.cage_height
-    const amountGiantHatchframes = (turretTower.size / 4) * (turretTower.hatchframe_layers + 1) // +1 for the top of cage
-    const amountCenterHatchframes = 8 * turretTower.turret_ring_levels.length
-    const amountTekGen = turretTower.turret_ring_levels.filter((f) => f.hasGenerator === true).length
+    // let turretTower = {
+    //   size: 14 * 14,
+    //   cage_height: 22,
+    //   top_turret_height: 7,
+    //   total_height: 22 + 7,
+    //   heavy_turrets: 60,
+    //   tek_turrets: 65,
+    //   hatchframe_layers: 3,
+    //   turret_ring_levels: [
+    //     {
+    //       height: 10,
+    //       hasGenerator: false,
+    //     },
+    //     {
+    //       height: 14,
+    //       hasGenerator: true,
+    //     },
+    //     {
+    //       height: 18,
+    //       hasGenerator: false,
+    //     },
+    //     {
+    //       height: 29,
+    //       hasGenerator: true,
+    //     }
+    //   ] // 13, 16, 19, 22?
+    // }
+    // const amountCenterDoorframes = turretTower.total_height * 8
+    // const amountOutsideDoorframes = (Math.sqrt(turretTower.size) * 4) * turretTower.cage_height
+    // const amountGiantHatchframes = (turretTower.size / 4) * (turretTower.hatchframe_layers + 1) // +1 for the top of cage
+    // const amountCenterHatchframes = 8 * turretTower.turret_ring_levels.length
+    // const amountTekGen = turretTower.turret_ring_levels.filter((f) => f.hasGenerator === true).length
+    // let towerItems = {
+    //   172: turretTower.size, // Metal Foundation
+    //   621: amountGiantHatchframes + amountCenterHatchframes + amountTekGen, // Giant Metal Hatchframe
+    //   622: amountTekGen, // Giant Metal Hatchframe for Tek Generator
+    //   179: amountTekGen * 8, // Metal Walls to protect Tek Generator
+    //   168: amountTekGen * 3, // Metal Ceiling to protect Tek Generator
+    //   169: amountTekGen, // Metal Hatchframe to protect Tek Generator
+    //   178: amountTekGen, // Metal Trapdoor to protect Tek Generator
+    //   770: amountOutsideDoorframes + amountCenterDoorframes, // Metal Double Doorframe
+    //   686: turretTower.heavy_turrets, // Heavy Turret
+    //   681: turretTower.tek_turrets, // Tek Turret
+    //   676: amountTekGen, // Tek Generator
+    // }
     let towerItems = {
-      172: turretTower.size, // Metal Foundation
-      621: amountGiantHatchframes + amountCenterHatchframes + amountTekGen, // Giant Metal Hatchframe
-      622: amountTekGen, // Giant Metal Hatchframe for Tek Generator
-      179: amountTekGen * 8, // Metal Walls to protect Tek Generator
-      168: amountTekGen * 3, // Metal Ceiling to protect Tek Generator
-      169: amountTekGen, // Metal Hatchframe to protect Tek Generator
-      178: amountTekGen, // Metal Trapdoor to protect Tek Generator
-      770: amountOutsideDoorframes + amountCenterDoorframes, // Metal Double Doorframe
-      686: turretTower.heavy_turrets, // Heavy Turret
-      681: turretTower.tek_turrets, // Tek Turret
-      676: amountTekGen, // Tek Generator
+      168: 6,
+      169: 2,
+      172: 196,
+      178: 2,
+      179: 16,
+      621: 230,
+      622: 2,
+      676: 2,
+      681: 65,
+      686: 60,
+      770: 1464
     }
-
     for (const [key, value] of Object.entries(towerItems)) {
       let itemfound = items.find((item) => parseInt(item.itemId.toString()) === parseInt(key));
       if (itemfound) {
@@ -141,7 +153,8 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
   });
 
   const addTurretTower = useCallback(turretTower, [])
-  const mergeItemRecipe = useCallback(mergeRecipe, [item])
+  // const mergeItemRecipe = useCallback(mergeRecipe, [item])
+  const mergeItemRecipe = useCallback(getBaseMaterials, [item])
   const clear = (() => {
     setItem({ type: "RESET" });
   })
@@ -165,11 +178,6 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
           </Label>
 
           <div className="relative flex flex-row space-x-3">
-            {/* <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <svg aria-hidden="true" className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
-            </div> */}
             <Lookup items={items} search={true} name="itemName" onChange={(e) => onAdd({ itemName: e.name })} />
             <div className="inline-flex rounded-md shadow-sm" role="group">
               <button data-testid="turrettowerbtn" type="button" onClick={addTurretTower} className="first:rounded-l-lg last:rounded-r-lg rounded-none inline-flex items-center rw-button rw-button-green"> {/*py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-secondary dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white*/}
@@ -184,39 +192,41 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
 
           </div>
           <FieldError name="itemName" className="rw-field-error" />
-          {/* TODO: Fix heavy turret cost calculation */}
+          {/* TODO: Remove linechart and integrate percentage in table */}
           {item.length > 0 &&
-            <LineChart items={Object.entries(mergeItemRecipe(...item)).map(([key, value], i) => {
+            <LineChart items={mergeItemRecipe(...item).map(({ amount, name, color }) => {
               return {
-                name: items.find((itm) => parseInt(itm.itemId.toString()) === parseInt(key)).name,
-                percent: Math.round(((100 * value) / Object.values(mergeItemRecipe(...item)).reduce((a, b) => a + b, 0) + Number.EPSILON) * 100) / 100,
-                colorHEX: items.find((itm) => parseInt(itm.itemId.toString()) === parseInt(key)).color
+                name: name,
+                percent: Math.round(((100 * amount) / mergeItemRecipe(...item).reduce((a, b) => a + b.amount, 0) + Number.EPSILON) * 100) / 100,
+                colorHEX: color || '#00ff00'
               }
             })} />
           }
           {item.length > 0 &&
             <Taybul
-              rows={[mergeItemRecipe(...item)]}
+              vertical={true}
+              header={false}
+              rows={mergeItemRecipe(...item)}
               columns={[
                 {
                   field: 'name',
-                  label: 'Item',
+                  label: "Name",
+                  className: "text-center"
+                },
+                {
+                  field: 'amount',
+                  label: "Amount",
+                  renderCell: ({ value, row }) => {
+                    return (
+                      <div className="flex flex-col justify-center items-center" >
+                        <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${row.image}`} className="w-6 h-6" />
+                        <span className="text-sm">{value}</span>
+                        <span className="sr-only">{value} {value}</span>
+                      </div>
+                    )
+                  }
                 }
               ]}
-            />
-          }
-          {item.length > 0 &&
-            <Table
-              data={[mergeItemRecipe(...item)]}
-              tableOptions={{
-                header: false
-              }}
-              renderCell={({ id, amount }) =>
-                <div className="flex flex-col justify-center items-center ml-2">
-                  <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${items.find((itm) => parseInt(itm.itemId.toString()) === parseInt(id)).image}`} className="w-6 h-6" />
-                  <span className="text-sm">{amount}</span>
-                </div>
-              }
             />
           }
           <ul className="py-4 space-y-2">
@@ -236,12 +246,18 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
                   <button type="button" className="border border-black dark:border-white relative dark:text-white text-black hover:bg-white hover:text-black mx-2 rounded-full w-8 h-8 text-lg font-semibold" onClick={() => onAddAmount(i)}>
                     +
                   </button>
-                  {item.recipe.sort((a, b) => a.itemId - b.itemId).map((recipe, t) => (
+                  {mergeItemRecipe(item).sort((a, b) => a.itemId - b.itemId).map((recipe, t) => (
+                    <div className="flex flex-col justify-center items-center ml-2 min-w-16 w-10" id={`${recipe.itemId}-${i * Math.random()}${t}`} key={`${recipe.itemId}-${t * Math.random()}${i}`}>
+                      <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${recipe.image}`} className="w-6 h-6" title={recipe.name} alt={recipe.name} />
+                      <span className="text-sm text-black dark:text-white">{recipe.amount}</span>
+                    </div>
+                  ))}
+                  {/* {item.recipe.sort((a, b) => a.itemId - b.itemId).map((recipe, t) => (
                     <div className="flex flex-col justify-center items-center ml-2 min-w-16 w-10" id={`${recipe.itemId}-${i * Math.random()}${t}`} key={`${recipe.itemId}-${t * Math.random()}${i}`}>
                       <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${items.find((itm) => parseInt(itm.itemId.toString()) === parseInt(recipe.itemId)).image}`} className="w-6 h-6" title={items.find((itm) => parseInt(itm.itemId.toString()) === parseInt(recipe.itemId)).name} alt={items.find((itm) => parseInt(itm.itemId.toString()) === parseInt(recipe.itemId)).name} />
                       <span className="text-sm text-black dark:text-white">{recipe.count * item.amount}</span>
                     </div>
-                  ))}
+                  ))} */}
                 </div>
               </li >
             ))}

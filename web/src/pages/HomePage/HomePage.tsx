@@ -62,7 +62,50 @@ const HomePage = () => {
           </div>
         </div>
         {/* {isAuthenticated && <Chat />} */}
-
+        <Table data={[
+          {
+            name: 'Ola',
+            age: 20,
+            city: 'Oslo'
+          }, {
+            name: 'Kari',
+            age: 23,
+            city: 'Oslo'
+          }, {
+            name: 'Per',
+            age: 18,
+            city: 'Bergen'
+          }, {
+            name: 'Kari',
+            age: 23,
+            city: 'Oslo'
+          }, {
+            name: 'Peder',
+            age: 56,
+            city: 'Stavanger'
+          },
+          {
+            name: 'sfd',
+            age: 20,
+            city: 'Oslo'
+          }, {
+            name: 'Kari',
+            age: 23,
+            city: 'Oslo'
+          }, {
+            name: 'Per',
+            age: 18,
+            city: 'Bergen'
+          }, {
+            name: 'ttt',
+            age: 23,
+            city: 'Oslo'
+          }, {
+            name: 'ttt',
+            age: 56,
+            city: 'Stavanger'
+          }
+        ]} />
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
       </div>
     </>
@@ -70,3 +113,65 @@ const HomePage = () => {
 };
 
 export default HomePage;
+import React, { useState } from "react";
+
+const Table = ({ data }) => {
+  const [filteredData, setFilteredData] = useState(data);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [dataPerPage, setDataPerPage] = useState(5);
+
+  const handleFilter = (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    const filtered = data.filter((item) => {
+      return Object.values(item).join("").toLowerCase().includes(searchTerm);
+    });
+    setFilteredData(filtered);
+    setCurrentPage(1);
+  };
+
+  const indexOfLastData = currentPage * dataPerPage;
+  const indexOfFirstData = indexOfLastData - dataPerPage;
+  const currentData = filteredData.slice(indexOfFirstData, indexOfLastData);
+
+  const handlePagination = (pageNumber) => setCurrentPage(pageNumber);
+
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(filteredData.length / dataPerPage); i++) {
+    pageNumbers.push(i);
+  }
+
+  return (
+    <div>
+      <input type="text" placeholder="Filter..." onChange={handleFilter} />
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>City</th>
+          </tr>
+        </thead>
+        <tbody>
+          {currentData.map((item) => (
+            <tr key={item.id}>
+              <td>{item.name}</td>
+              <td>{item.age}</td>
+              <td>{item.city}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div>
+        {pageNumbers.map((number) => (
+          <span
+            key={number}
+            style={{ cursor: "pointer" }}
+            onClick={() => handlePagination(number)}
+          >
+            {number}{" "}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};

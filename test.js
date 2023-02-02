@@ -1,3 +1,4 @@
+const { items } = require("./web/public/arkitems.json");
 let data = [
   {
     id: 1,
@@ -96,18 +97,90 @@ const groupValues2 = (t, v, i, a) => {
 /**
  * Current
  */
-console.time("test2");
-const isUUID = (value) => {
-  return (
-    // !!value &&
-    // typeof value === "string" &&
-    // value.length === 36 &&
-    // value.split("-").length === 5
-    /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/.test(
-      value
-    )
-  );
-};
+// console.time("test2");
+// const isUUID = (value) => {
+//   return (
+//     // !!value &&
+//     // typeof value === "string" &&
+//     // value.length === 36 &&
+//     // value.split("-").length === 5
+//     /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/.test(
+//       value
+//     )
+//   );
+// };
 
-console.log(isUUID("7a2878d1-4f61-456d-bcb6-edc707383ea8"));
-console.timeEnd("test2");
+// console.log(isUUID("7a2878d1-4f61-456d-bcb6-edc707383ea8"));
+// console.timeEnd("test2");
+
+// console.log(
+//   `\x1b[31msome colorful text string\x1b[0m rest of string in normal color`
+// );
+console.time("normal");
+const getBayseMaterials = (items, ...objects) => {
+  let materials = [];
+
+  const getMaterials = (itemId, count) => {
+    let item = items.find((i) => i.itemId === itemId);
+    if (item.recipe.length === 0) {
+      if (materials.some((m) => m.itemId === item.itemId)) {
+        // if material already exists in array
+        let index = materials.findIndex((m) => m.itemId === item.itemId); // find index of material
+        materials[index].count += count; // add amount to material
+      } else {
+        // if material does not exist in array
+        materials.push({
+          name: item.name,
+          itemId: item.itemId,
+          amount: count,
+        }); // add material to array
+      }
+    } else {
+      for (let i of item.recipe) {
+        getMaterials(i.itemId, i.count * count);
+      }
+    }
+  };
+
+  objects.forEach(({ itemId, amount }) => {
+    getMaterials(itemId, amount);
+  });
+
+  return materials;
+};
+console.log(getBayseMaterials(items, { itemId: 4, amount: 2 }));
+console.timeEnd("normal");
+
+console.time("optimized");
+const getBaseMaterials = (items, ...objects) => {
+  let materials = new Map();
+
+  const getMaterials = (itemId, count) => {
+    let item = items.find((i) => i.itemId === itemId);
+    if (item.recipe.length === 0) {
+      let material = materials.get(item.itemId);
+      if (material) {
+        material.amount += count;
+      } else {
+        materials.set(item.itemId, {
+          name: item.name,
+          itemId: item.itemId,
+          image: item.image,
+          amount: count,
+        });
+      }
+    } else {
+      for (let i of item.recipe) {
+        getMaterials(i.itemId, i.count * count);
+      }
+    }
+  };
+
+  objects.forEach(({ itemId, amount }) => {
+    getMaterials(itemId, amount);
+  });
+
+  return Array.from(materials.values());
+};
+console.log(getBaseMaterials(items, { itemId: 4, amount: 2 }));
+console.timeEnd("optimized");

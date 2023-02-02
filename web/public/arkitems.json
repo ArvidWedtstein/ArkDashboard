@@ -25,6 +25,8 @@
       "description": "This simple revolver trades accuracy for flexibility.",
       "image": "simple_pistol.png",
       "weight": 5,
+      "craftingTime": 0,
+      "engramPoints": 15,
       "recipe": [
         { "itemId": 74, "count": 60 },
         { "itemId": 7, "count": 5 },
@@ -32,7 +34,7 @@
       ],
       "stats": [
         { "id": 1, "value": "Weapon" },
-        { "id": 5, "value": 40 },
+        { "id": 5, "value": 60 },
         { "id": 6, "value": 42.6 }
       ]
     },
@@ -155,6 +157,7 @@
       "maxStack": 100,
       "decomposes": -1,
       "itemId": 9,
+      "color": "#C7C1BB",
       "description": "Mined from certain rocks, usually found high on mountains, in caves, rivers, or deep water sources. Can be refined in a forge or used on machines like the lathe.",
       "image": "metal.png",
       "weight": 1.0,
@@ -1073,23 +1076,6 @@
       ]
     },
     {
-      "name": "GPS",
-      "maxStack": 1,
-      "decomposes": 120,
-      "itemId": 72,
-      "description": "Detects strange energy from the three Obelisks to triangulate your exact location on the island.",
-      "image": "gps.png",
-      "weight": 0.5,
-      "recipe": [
-        { "itemId": 166, "count": 5 },
-        { "itemId": 165, "count": 20 }
-      ],
-      "stats": [
-        { "id": 1, "value": "Tool" },
-        { "id": 2, "value": 25 }
-      ]
-    },
-    {
       "name": "Tranquilizer Arrow",
       "maxStack": 100,
       "decomposes": -1,
@@ -1104,6 +1090,23 @@
       "stats": [
         { "id": 1, "value": "Ammunition" },
         { "id": 10, "value": "+97 over time (3-5 seconds)" }
+      ]
+    },
+    {
+      "name": "GPS",
+      "maxStack": 1,
+      "decomposes": 120,
+      "itemId": 72,
+      "description": "Detects strange energy from the three Obelisks to triangulate your exact location on the island.",
+      "image": "gps.png",
+      "weight": 0.5,
+      "recipe": [
+        { "itemId": 166, "count": 5 },
+        { "itemId": 165, "count": 20 }
+      ],
+      "stats": [
+        { "id": 1, "value": "Tool" },
+        { "id": 2, "value": 25 }
       ]
     },
     {
@@ -2191,6 +2194,7 @@
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 142,
+      "color": "#56625E",
       "description": "A very rare resource, found underground. Can be broken down and used to make modern tech.",
       "image": "obsidian.png",
       "weight": 1.0,
@@ -5656,6 +5660,7 @@
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 456,
+      "color": "#333333",
       "description": "A rare resource from the bottom of the sea...",
       "image": "black_pearl.png",
       "weight": 2.0,

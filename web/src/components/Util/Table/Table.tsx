@@ -12,9 +12,7 @@ import {
   truncate,
 } from "src/lib/formatters";
 
-interface Row {
-  index: number;
-}
+
 interface ITableProps<P = {}> {
   children?: React.ReactNode;
   data: Object[];
@@ -26,15 +24,20 @@ interface ITableProps<P = {}> {
   };
   className?: string;
 }
+interface Row {
+  index: number;
+}
 interface GridCell<V = any> {
-  id?: string;
+  columnIndex: number;
   field: string;
   value: V;
+  row?: V;
 }
 interface ColumnData<V = any, F = V> {
   field: string;
   label: string;
   numeric?: boolean;
+  className?: string;
   bold?: boolean;
   sortable?: boolean;
   /**
@@ -46,8 +49,7 @@ interface ColumnData<V = any, F = V> {
   valueFormatter?: (params: GridCell<V>) => F; // add functionality for value formatting
   /**
  * Allows to override the component rendered as cell for this column.
- * @template V
- * @param {GridCell<V>} params Object containing parameters for the renderer.
+ * @param {GridCell} params Object containing parameters for the renderer.
  * @returns {React.ReactNode} The element to be rendered.
  */
   renderCell?: (params: GridCell<V>) => React.ReactNode;
@@ -57,7 +59,7 @@ interface TaybulProps {
   hover?: boolean;
   onRowClick?: (row: Row) => void;
   rows: any[];
-  headersVertical?: boolean;
+  vertical?: boolean;
   summary?: boolean;
   caption?: {
     title: string;
@@ -67,12 +69,21 @@ interface TaybulProps {
   select?: boolean;
   search?: boolean;
   filter?: boolean;
-  rowsPerPage?: number;
+  header?: boolean;
   renderActions?: (row: any) => React.ReactNode;
+  /**
+   * Number of rows per page
+   * @default 10
+   */
+  rowsPerPage?: number;
+  onPageChange?: (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => void;
+  page?: number;
 }
 
+export const Tabul = React.forwardRef<unknown, TaybulProps>(function Tabul(props, ref) {
+  return <></>
+});
 /**
- * @todo add functionality for row click
  * @borrows dynamicSort and debounce from formatters.ts
  * @param param
  * @returns
@@ -83,15 +94,33 @@ export const Taybul = ({
   onRowClick,
   className,
   caption,
-  headersVertical = false,
+  vertical = false,
   summary = false,
   hover = false,
   select = false,
   search = false,
+  header = true,
   filter = false,
-  rowsPerPage,
+  rowsPerPage = 10,
   renderActions,
 }: TaybulProps) => {
+  // const handleFirstPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   onPageChange(event, 0);
+  // };
+
+  // const handleBackButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   onPageChange(event, page - 1);
+  // };
+
+  // const handleNextButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   onPageChange(event, page + 1);
+  // };
+
+  // const handleLastPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+  // };
+
+  const [currentPage, setCurrentPage] = useState(1);
   const [rows, setRows] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sort, setSort] = useState({
@@ -122,8 +151,9 @@ export const Taybul = ({
       let rowString = rowValues.join(" ");
       return rowString.toLowerCase().includes(searchTerm.toLowerCase());
     });
-
-    return sortData(filteredData);
+    const indexOfLastData = currentPage * rowsPerPage;
+    const indexOfFirstData = indexOfLastData - rowsPerPage;
+    return sortData(filteredData).slice(indexOfFirstData, indexOfLastData);
   }, [sort, searchTerm, dataRows]);
 
   useEffect(() => {
@@ -191,40 +221,37 @@ export const Taybul = ({
     );
   };
 
-  const cellRenderer = ({ rowData, cellData, columnIndex, ...other }) => {
+  const cellRenderer = ({ rowData, cellData, columnIndex, renderCell, ...other }) => {
     return (
       <td
         key={`${columnIndex}-${cellData}`}
-        className={`px-6 py-4 ${other.bold
-          && "whitespace-nowrap font-bold text-gray-900 dark:text-white"
+        className={`px-6 py-4 ${other.className} ${other.bold ?
+          "whitespace-nowrap font-bold text-gray-900 dark:text-white" : ''
           }`}
       >
         {/* {isDate(cellData) ? timeTag(cellData) : truncate(cellData, 30)} */}
-        {/* {other.renderCell && other.renderCell(rowData, cellData, columnIndex)} */}
-        {isUUID(cellData) && other.label.toLowerCase() === "created by" && ('Profile' in rowData) ? (
-          <div className="flex flex-row">
-            {/* TODO: Add clickable link */}
-            {rowData.Profile.avatar_url && (
-              <img
-                className="h-10 w-10 rounded-full"
-                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${rowData.Profile.avatar_url}`}
-                alt={rowData.Profile.full_name || "Profile Image"}
-              />
-            )}
-            <div className="flex items-center pl-3">
-              <div className="text-base font-semibold">
-                {rowData.Profile.full_name}
+        {renderCell ? renderCell({ columnIndex: columnIndex, value: cellData, field: other.field, row: rowData })
+          : isUUID(cellData) && other.label.toLowerCase() === "created by" && ('Profile' in rowData) ? (
+            <div className="flex flex-row">
+              {/* TODO: Add clickable link */}
+              {rowData.Profile.avatar_url && (
+                <img
+                  className="h-10 w-10 rounded-full"
+                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${rowData.Profile.avatar_url}`}
+                  alt={rowData.Profile.full_name || "Profile Image"}
+                />
+              )}
+              <div className="flex items-center pl-3">
+                <div className="text-base font-semibold">
+                  {rowData.Profile.full_name}
+                </div>
               </div>
-              {/* <div className="font-normal text-gray-500">
-                {rowData.Profile.role_id}
-              </div> */}
             </div>
-          </div>
-          // ) : isDate(cellData) ? (
-          //   timeTag(cellData)
-        ) : (
-          truncate(other.valueFormatter ? other.valueFormatter(cellData) : cellData, 30)
-        )}
+            // ) : isDate(cellData) ? (
+            //   timeTag(cellData)
+          ) : (
+            truncate(other.valueFormatter ? other.valueFormatter(cellData) : cellData, 30)
+          )}
       </td>
     );
   };
@@ -347,7 +374,7 @@ export const Taybul = ({
           </div>
         </div>
       )}
-      <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+      <table className="w-full text-left text-sm text-gray-500 dark:text-stone-300">
         {!!caption && (
           <caption className="bg-white p-5 text-left text-lg font-semibold text-gray-900 dark:bg-gray-800 dark:text-white">
             {caption.title}
@@ -356,8 +383,8 @@ export const Taybul = ({
             </p>
           </caption>
         )}
-        {!headersVertical && (
-          <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+        {(!vertical && header) && (
+          <thead className="bg-gray-50 text-sm uppercase text-stone-400 dark:bg-gray-700 dark:text-gray-400">
             <tr className="table-row">
               {select && tableSelect({ header: true, row: 0 })}
               {columns.map(({ ...other }, index) => {
@@ -372,19 +399,19 @@ export const Taybul = ({
           </thead>
         )}
         <tbody>
-          {headersVertical ? (
+          {vertical ? (
             <>
               {columns.map(({ field, ...other }, index) => {
                 return (
                   <tr
                     key={index}
-                    className={`border-b bg-white dark:border-gray-700 dark:bg-gray-800 ${hover
-                      ? "hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-600"
+                    className={`border-b bg-white dark:border-gray-800 dark:bg-zinc-600 ${hover
+                      ? "hover:bg-gray-50 dark:hover:bg-gray-600"
                       : ""
                       }`}
                     onClick={() => onRowClick && onRowClick({ index: index })}
                   >
-                    {headerRenderer({
+                    {header && headerRenderer({
                       label: other.label,
                       columnIndex: index,
                       ...other,
@@ -394,6 +421,8 @@ export const Taybul = ({
                         rowData: datarow,
                         cellData: datarow[field],
                         columnIndex: index,
+                        renderCell: other.renderCell,
+                        field,
                         ...other,
                       });
                     })}
@@ -406,10 +435,8 @@ export const Taybul = ({
               return (
                 <tr
                   key={i}
-                  className={`border-b bg-white dark:border-gray-700 dark:bg-slate-800 ${hover
-                    ? "hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-600"
-                    : ""
-                    }`}
+                  className={`border-b bg-white dark:border-gray-800 dark:bg-zinc-600 ${hover
+                    && "hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-600"}`}
                   onClick={() => onRowClick && onRowClick({ index: i })}
                 >
                   {select && tableSelect({ row: i })}
@@ -418,6 +445,8 @@ export const Taybul = ({
                       rowData: datarow,
                       cellData: datarow[field],
                       columnIndex: index,
+                      renderCell: other.renderCell,
+                      field,
                       ...other,
                     });
                   })}

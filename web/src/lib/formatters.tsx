@@ -124,6 +124,96 @@ export const mergeRecipe = (...objects): Object => {
 };
 
 /**
+ * @description Calculates the cost of one specific ark item
+ * @param {Number} amount
+ * @param {String} item_id
+ * @returns Object with prices
+ */
+export const calcItemCost = (amount: number, item_id) => {
+  if (Number.isNaN(amount)) return console.error("Amount is NaN");
+  if (!prices.items.find((e) => e.itemId === item_id))
+    return console.log(
+      `%c[ArkDashboard Error]: ${item_id} not found in prices`,
+      'background: #ff0000; color #ffffff;'
+    );
+
+  let price = {};
+  prices.items.find((e) => e.itemId === item_id).recipe.forEach((item, i) => {
+    let founditem = prices.items.find((e) => e.itemId === item.itemId)
+    if (founditem.recipe.length > 0) {
+      price = combineBySummingKeys(calcItemCost(item.count, founditem.itemId), price);
+
+    } else {
+      price[`${item.itemId}`] = item.count * Number(amount);
+    }
+  });
+  return price;
+};
+
+/**
+ *
+ * @param objects {itemId: string, amount: number}, {itemId: string, amount: number}, ...
+ * @returns {Object} {itemId: string, amount: number, name: string, color: string}
+ * @example getBaseMaterials({itemId: 109, amount: 1}) => [{itemId: 8, amount: 0.5}, {itemId: 73, amount: 1}, {itemId: 7, amount: 3, name: wood}]
+ */
+export const getBaseMaterials = (base = false, ...objects): {
+  itemId: number;
+  amount: number;
+  name: string;
+  color: string;
+  image?: string;
+}[] => {
+  let materials = new Map();
+  // TODO: Check if item has itemId2. If so, add that to the item
+  const getMaterials = (itemId, count) => {
+    let item = prices.items.find((i) => i.itemId === itemId);
+    if (item.recipe.length === 0) {
+      let material = materials.get(item.itemId);
+      if (material) {
+        material.amount += count;
+      } else {
+        materials.set(item.itemId, {
+          name: item.name,
+          itemId: item.itemId,
+          image: item.image,
+          color: item.color,
+          amount: count,
+        });
+      }
+    } else {
+      for (let i of item.recipe) {
+        getMaterials(i.itemId, i.count * count);
+      }
+    }
+  };
+  if (!base) {
+    objects.forEach((obj) => {
+      obj.recipe.forEach((res) => {
+        let material = materials.get(res.itemId);
+        if (material) {
+          material.amount += obj.amount;
+        } else {
+          materials.set(res.itemId, {
+            name: res.name,
+            itemId: res.itemId,
+            image: res.image,
+            color: res.color,
+            amount: res.count
+          });
+        }
+      });
+    });
+  }
+  objects.forEach(({ itemId, amount }) => {
+    getMaterials(itemId, amount);
+  });
+
+  return Array.from(materials.values());
+};
+
+
+
+/**
  * @name isObject
  * @param {any} value determines if value is an object
  * @returns {boolean} true if value is an object
@@ -227,33 +317,6 @@ export const isDate = (date: any): boolean => {
   // regex test for  2022-11-28T14:17:14.899Z format
   const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
   return regex.test(date);
-};
-/**
- * @description Calculates the cost of an ark item
- * @param {Number} amount
- * @param {String} item_id
- * @returns Object with prices
- */
-export const calcItemCost = (amount: number, item_id) => {
-  if (Number.isNaN(amount)) return console.error("Amount is NaN");
-  if (!prices.items.find((e) => e.itemId === item_id))
-    return console.error(
-      "\x1b[31m%s\x1b[0m",
-      `[ArkMatCalc Error]: ${item_id} not found in prices`
-    );
-  let price = {};
-  prices.items.find((e) => e.itemId === item_id).recipe.forEach((item, i) => {
-    console.log("itemId", item.itemId)
-    let founditem = prices.items.find((e) => e.itemId === item.itemId)
-    if (founditem.recipe.length > 0) {
-      console.log('find', calcItemCost(item.count, founditem.itemId))
-      price = combineBySummingKeys(calcItemCost(item.count, founditem.itemId), price);
-
-    } else {
-      price[`${item.itemId}`] = item.count * Number(amount);
-    }
-  });
-  return price;
 };
 
 
