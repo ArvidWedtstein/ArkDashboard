@@ -672,7 +672,7 @@
         { "itemId": 7, "count": 2 }
       ],
       "stats": [
-        { "id": 1, "value": "Structure" },
+        { "id": 1, "value": "Crafting" },
         { "id": 5, "value": 100 }
       ]
     },
@@ -2824,6 +2824,9 @@
       "description": "Requires electricity to run. Consumes bullets while firing. Can be configured to automatically attack hostiles within range.",
       "image": "auto_turret.png",
       "weight": 4.0,
+      "engramPoints": 40,
+      "craftingTime": 5,
+      "craftedIn": ["Fabricator", "Tek Replicator"],
       "recipe": [
         { "itemId": 165, "count": 70 },
         { "itemId": 74, "count": 140 },
@@ -2832,7 +2835,7 @@
       ],
       "stats": [
         { "id": 1, "value": "Structure" },
-        { "id": 5, "value": 1000 }
+        { "id": 5, "value": 3000 }
       ]
     },
     {
@@ -5663,7 +5666,7 @@
       "color": "#333333",
       "description": "A rare resource from the bottom of the sea...",
       "image": "black_pearl.png",
-      "weight": 2.0,
+      "weight": 2,
       "recipe": [],
       "stats": [{ "id": 1, "value": "Resource" }]
     },
@@ -5814,10 +5817,22 @@
       "stats": [{ "id": 1, "value": "Resource" }]
     },
     {
+      "name": "Element Shard",
+      "itemId": 470,
+      "image": "Element_Shard.png",
+      "weight": 0.05,
+      "craftingTime": 5,
+      "engramPoints": 0,
+      "recipe": [{ "itemId": 473, "count": 1 }],
+      "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
       "name": "Element",
       "itemId": 472,
       "color": "#637274",
       "image": "Element.png",
+      "weight": 0.01,
+      "craftedIn": ["Tek Replicator", "Charge Node"],
       "recipe": [],
       "stats": [{ "id": 1, "value": "Resource" }]
     },
@@ -5825,13 +5840,6 @@
       "name": "Element Ore",
       "itemId": 473,
       "image": "Element_Ore_(Aberration).png",
-      "recipe": [],
-      "stats": [{ "id": 1, "value": "Resource" }]
-    },
-    {
-      "name": "Element Shard",
-      "itemId": 470,
-      "image": "Element_Shard.png",
       "recipe": [],
       "stats": [{ "id": 1, "value": "Resource" }]
     },
@@ -7900,6 +7908,8 @@
       "name": "Tek Replicator",
       "itemId": 652,
       "image": "Tek_Replicator.png",
+      "weight": 4,
+      "craftedIn": ["Obelisk"],
       "recipe": [
         { "itemId": 472, "count": 100 },
         { "itemId": 74, "count": 5000 },
@@ -7907,7 +7917,10 @@
         { "itemId": 456, "count": 150 },
         { "itemId": 166, "count": 800 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [
+        { "id": 1, "value": "Crafting" },
+        { "id": 5, "value": 25000 }
+      ]
     },
     {
       "name": "Behemoth Tek Gate",
@@ -8244,7 +8257,9 @@
     {
       "name": "Tek Turret",
       "itemId": 681,
+      "description": "Consume two element shards per shot.",
       "image": "Tek_Turret.png",
+      "weight": 4,
       "recipe": [
         { "itemId": 165, "count": 100 },
         { "itemId": 74, "count": 100 },
@@ -8252,7 +8267,12 @@
         { "itemId": 166, "count": 50 },
         { "itemId": 472, "count": 3 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "craftedIn": ["Tek Replicator", "EliteArk Crafting Station"],
+      "craftingTime": 5,
+      "stats": [
+        { "id": 1, "value": "Tek" },
+        { "id": 5, "value": 9000 }
+      ]
     },
     {
       "name": "Motorboat",
@@ -8313,6 +8333,10 @@
       "name": "Heavy Auto Turret",
       "itemId": 686,
       "image": "Heavy_Auto_Turret.png",
+      "weight": 16,
+      "engramPoints": 100,
+      "craftingTime": 5,
+      "craftedIn": ["Fabricator", "Tek Replicator"],
       "recipe": [
         { "itemId": 197, "count": 1 },
         { "itemId": 146, "count": 150 },
@@ -8320,7 +8344,10 @@
         { "itemId": 74, "count": 400 },
         { "itemId": 166, "count": 50 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [
+        { "id": 1, "value": "Structure" },
+        { "id": 5, "value": 20000 }
+      ]
     },
     {
       "name": "Fish Basket",

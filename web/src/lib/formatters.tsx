@@ -98,7 +98,6 @@ export const isUUID = (value: string): boolean => {
  * @since 0.1.0
  * @summary Checks if date is in 2022-11-28T14:17:14.899Z format
  * @static true
-
  */
 export const isDate = (dateString: any): boolean => {
   const date = new Date(dateString);
@@ -107,26 +106,18 @@ export const isDate = (dateString: any): boolean => {
 
 
 
-
-
-
 /**
+ * Sorts an array of objects based on the value of a property
  *
- * @param property string to sort by
- * @returns
+ * @param {string} property - The property name to sort the objects by
+ * @returns {(a: any, b: any) => number} A comparison function that can be passed to `Array.sort` method.
  */
 export const dynamicSort = (property: string) => {
-  var sortOrder = 1;
-  if (property[0] === "-") {
-    sortOrder = -1;
-    property = property.substr(1);
-  }
-  return function (a, b) {
-    /* next line works with strings and numbers,
-     * and you may want to customize it to your needs
-     */
-    var result =
-      a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
+  const sortOrder = property[0] === '-' ? -1 : 1;
+  const sortKey = property[0] === '-' ? property.substr(1) : property;
+
+  return (a: any, b: any) => {
+    const result = a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
     return result * sortOrder;
   };
 };
@@ -136,13 +127,13 @@ export const dynamicSort = (property: string) => {
  *
  * @param objects
  * @returns combined object where numberic values are summed
- * chatgpt
+ *
  */
-export const combineBySummingKeys = (...objects) => {
-  const mergedObj = {};
+export const combineBySummingKeys = (...objects: object[]) => {
+  const mergedObj: { [key: string]: number } = {};
   objects.forEach((obj) => {
     Object.keys(obj).forEach((key) => {
-      mergedObj[key] = (mergedObj[key] || 0) + obj[key];
+      mergedObj[key] = (mergedObj[key] || 0) + (obj[key]);
     });
   });
   return mergedObj;
@@ -155,8 +146,6 @@ export const combineBySummingKeys = (...objects) => {
  * @param {boolean} firstRecipeOnly - If set to true, only the first recipe will be considered and
  *                                     the function will return the direct materials.
  * @param {...Object} objects - The objects for which the base materials are to be calculated.
- * @param {string} objects.itemId - The unique identifier for the object.
- * @param {number} objects.amount - The number of objects required.
  *
  * @returns {Array<any>} An array of objects representing the base materials required.
  */
@@ -179,11 +168,13 @@ export const getBaseMaterials = (firstRecipeOnly: boolean = false, ...objects: A
     recipe.forEach(({ itemId, count: recipeCount }) => {
       let recipeItem = prices.items.find((r) => r.itemId === itemId);
       let count = recipeCount * amount;
+      let weight = recipeItem?.weight * count;
 
       if (!firstRecipeOnly || !recipeItem?.recipe.length) {
         let material = materials.find((m) => m.itemId === itemId);
         if (material) {
           material.amount += count;
+          material.weight += weight;
         } else {
           materials.push({ ...recipeItem, amount: count });
         }

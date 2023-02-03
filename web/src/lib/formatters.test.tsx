@@ -240,7 +240,7 @@ describe('combineBySummingKeys', () => {
     ]
 
     expect(combineBySummingKeys(...objects)).toEqual({
-      name: '0JohnMaryPeter',
+      name: 'JohnMaryPeter',
       age: 60,
     })
   })

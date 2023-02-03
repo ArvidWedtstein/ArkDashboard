@@ -40,86 +40,32 @@ let data = [
 
 console.time("normal");
 
-const getBaseMaterials2 = (firstRecipeOnly = false, ...objects) => {
-  let materials = [];
-  let processedItems = new Set();
-
-  function findBaseMaterials(itemId, amount) {
-    let recipe = items.find((r) => r.itemId === itemId)?.recipe;
-
-    if (!recipe) {
-      return;
-    }
-
-    recipe.forEach(({ itemId: recipeItemId, count: recipeCount }) => {
-      let recipeItem = items.find((r) => r.itemId === recipeItemId);
-      let count = recipeCount * amount;
-
-      if (!firstRecipeOnly || !recipeItem?.recipe.length) {
-        let materialIndex = materials.findIndex(
-          (m) => m.itemId === recipeItemId
-        );
-        if (materialIndex !== -1) {
-          materials[materialIndex].count += count;
-        } else {
-          materials.push({ ...recipeItem, amount: count });
-        }
-      } else if (!processedItems.has(recipeItem.itemId)) {
-        processedItems.add(recipeItem.itemId);
-        findBaseMaterials(recipeItem.itemId, count);
-      }
-    });
+const dynamicSort = (property) => {
+  var sortOrder = 1;
+  if (property[0] === "-") {
+    sortOrder = -1;
+    property = property.substr(1);
   }
-
-  objects.forEach(({ itemId, amount }) => {
-    findBaseMaterials(itemId, amount);
-  });
-
-  return materials;
+  return function (a, b) {
+    var result =
+      a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
+    return result * sortOrder;
+  };
 };
-console.log(getBaseMaterials2(false, { itemId: 4, amount: 2 }));
+console.log(data.sort(dynamicSort("content")));
 console.timeEnd("normal");
 
 console.time("optimized");
-const getBaseMaterials = (firstRecipeOnly = false, ...objects) => {
-  let materials = [];
+const dynamicSort2 = (property) => {
+  const sortOrder = property[0] === "-" ? -1 : 1;
+  const sortKey = property[0] === "-" ? property.substr(1) : property;
 
-  /**
-   * Recursive function to find the base materials required to produce an object.
-   *
-   * @param {number} itemId - The unique identifier for the object.
-   * @param {number} amount - The number of objects required.
-   */
-  function findBaseMaterials(itemId, amount) {
-    let recipe = items.find((r) => r.itemId === itemId)?.recipe;
-
-    if (!recipe) {
-      return;
-    }
-
-    for (let i = 0; i < recipe.length; i++) {
-      let recipeItem = items.find((r) => r.itemId === recipe[i].itemId);
-      let count = recipe[i].count * amount;
-
-      if (!firstRecipeOnly || !recipeItem?.recipe.length) {
-        let material = materials.find((m) => m.itemId === recipe[i].itemId);
-        if (material) {
-          material.amount += count;
-        } else {
-          materials.push({ ...recipeItem, amount: count });
-        }
-      } else {
-        findBaseMaterials(recipeItem.itemId, count);
-      }
-    }
-  }
-
-  objects.forEach(({ itemId, amount }) => {
-    findBaseMaterials(itemId, amount);
-  });
-
-  return materials;
+  return (a, b) => {
+    const result =
+      a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
+    return result * sortOrder;
+  };
 };
 
-console.log(getBaseMaterials(true, { itemId: 4, amount: 2 }));
+console.log(data.sort(dynamicSort2("content")));
 console.timeEnd("optimized");

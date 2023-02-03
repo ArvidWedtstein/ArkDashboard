@@ -63,7 +63,7 @@ interface TaybulProps {
   summary?: boolean;
   caption?: {
     title: string;
-    text: string;
+    content?: React.ReactNode;
   };
   className?: string;
   select?: boolean;
@@ -154,7 +154,8 @@ export const Taybul = ({
     const indexOfLastData = currentPage * rowsPerPage;
     const indexOfFirstData = indexOfLastData - rowsPerPage;
     return sortData(filteredData).slice(indexOfFirstData, indexOfLastData);
-  }, [sort, searchTerm, dataRows]);
+  }, [sort, searchTerm, dataRows, currentPage]);
+
 
   useEffect(() => {
     if (select) {
@@ -222,39 +223,35 @@ export const Taybul = ({
   };
 
   const cellRenderer = ({ rowData, cellData, columnIndex, renderCell, ...other }) => {
-    return (
-      <td
-        key={`${columnIndex}-${cellData}`}
-        className={`px-6 py-4 ${other.className} ${other.bold ?
-          "whitespace-nowrap font-bold text-gray-900 dark:text-white" : ''
-          }`}
-      >
-        {/* {isDate(cellData) ? timeTag(cellData) : truncate(cellData, 30)} */}
-        {renderCell ? renderCell({ columnIndex: columnIndex, value: cellData, field: other.field, row: rowData })
-          : isUUID(cellData) && other.label.toLowerCase() === "created by" && ('Profile' in rowData) ? (
-            <div className="flex flex-row">
-              {/* TODO: Add clickable link */}
-              {rowData.Profile.avatar_url && (
-                <img
-                  className="h-10 w-10 rounded-full"
-                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${rowData.Profile.avatar_url}`}
-                  alt={rowData.Profile.full_name || "Profile Image"}
-                />
-              )}
-              <div className="flex items-center pl-3">
-                <div className="text-base font-semibold">
-                  {rowData.Profile.full_name}
-                </div>
-              </div>
-            </div>
-            // ) : isDate(cellData) ? (
-            //   timeTag(cellData)
-          ) : (
-            truncate(other.valueFormatter ? other.valueFormatter(cellData) : cellData, 30)
+    const className = `px-6 py-4 ${other.className} ${other.bold ? "whitespace-nowrap font-bold text-gray-900 dark:text-white" : ""}`;
+    const key = `${columnIndex}-${cellData}`;
+
+    let content = renderCell ? renderCell({ columnIndex, value: cellData, field: other.field, row: rowData }) : "";
+
+    if (!content && isUUID(cellData) && other.label.toLowerCase() === "created by" && "Profile" in rowData) {
+      const profile = rowData.Profile;
+      content = (
+        <div className="flex flex-row">
+          {profile.avatar_url && (
+            <img
+              className="h-10 w-10 rounded-full"
+              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}`}
+              alt={profile.full_name || "Profile Image"}
+            />
           )}
-      </td>
-    );
+          <div className="flex items-center pl-3">
+            <div className="text-base font-semibold">{profile.full_name}</div>
+          </div>
+        </div>
+      );
+    } else if (!content) {
+      content = truncate(other.valueFormatter ? other.valueFormatter(cellData) : cellData, 30);
+    }
+
+    return <td key={key} className={className}>{content}</td>;
   };
+
+
   const tableSelect = ({
     header = false,
     row,
@@ -281,6 +278,7 @@ export const Taybul = ({
       </td>
     );
   };
+
   const tableFooter = () => {
     return (
       <tfoot>
@@ -376,11 +374,11 @@ export const Taybul = ({
       )}
       <table className="w-full text-left text-sm text-gray-500 dark:text-stone-300">
         {!!caption && (
-          <caption className="bg-white p-5 text-left text-lg font-semibold text-gray-900 dark:bg-gray-800 dark:text-white">
+          <caption className="bg-white p-5 text-left text-lg font-semibold text-gray-900 dark:bg-zinc-800 dark:text-white">
             {caption.title}
-            <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-              {caption.text}
-            </p>
+            {caption.content && <div className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+              {caption.content}
+            </div>}
           </caption>
         )}
         {(!vertical && header) && (

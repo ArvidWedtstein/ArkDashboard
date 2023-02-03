@@ -1,8 +1,8 @@
-import { FieldError, Form, FormError, ImageField, Label, RWGqlError } from "@redwoodjs/forms";
+import { CheckboxField, FieldError, Form, FormError, ImageField, Label, RWGqlError } from "@redwoodjs/forms";
 import { useCallback, useMemo, useReducer } from "react";
 import { useForm } from 'react-hook-form'
 import Lookup from "src/components/Util/Lookup/Lookup";
-import { getBaseMaterials } from 'src/lib/formatters'
+import { getBaseMaterials, jsonDisplay } from 'src/lib/formatters'
 import Table, { Taybul } from "src/components/Util/Table/Table";
 import arkitems from '../../../../public/arkitems.json'
 import LineChart from "src/components/Util/LineChart/LineChart";
@@ -17,58 +17,116 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
   }, [])
   const formMethods = useForm()
 
+
   const reducer = (state, action) => {
     switch (action.type) {
-      case 'ADD_AMOUNT_BY_NUM':
-        action.item.amount = action.index
-        if (state.find((item) => item.itemId === action.item.itemId)) {
+      case 'ADD_AMOUNT_BY_NUM': {
+        const itemIndex = state.findIndex(item => item.itemId === action.item.itemId);
+        if (itemIndex !== -1) {
           return state.map((item, i) => {
-            if (item.itemId === action.item.itemId) {
+            if (i === itemIndex) {
               return { ...item, amount: item.amount + action.index };
-            } else {
-              return item;
             }
+            return item;
+          });
+        }
+        return [
+          ...state,
+          { ...action.item, amount: action.index }
+        ];
+      }
+      case "ADD_AMOUNT": {
+        return state.map((item, i) => {
+          if (i === action.index) {
+            return { ...item, amount: item.amount + 1 };
+          }
+          return item;
+        });
+      }
+      case "REMOVE_AMOUNT": {
+        return state.map((item, i) => {
+          if (i === action.index) {
+            return { ...item, amount: item.amount - 1 };
+          }
+          return item;
+        });
+      }
+      case "ADD": {
+        const itemIndex = state.findIndex(item => item.name.toLowerCase() === action.item.name.toLowerCase());
+        if (itemIndex !== -1) {
+          return state.map((item, i) => {
+            if (i === itemIndex) {
+              return { ...item, amount: item.amount + 1 };
+            }
+            return item;
           });
         }
         return [
           ...state,
           action.item
         ];
-      case "ADD_AMOUNT":
-
-        return state.map((item, i) => {
-          if (i === action.index) {
-            return { ...item, amount: item.amount + 1 };
-          } else {
-            return item;
-          }
-        });
-      case "REMOVE_AMOUNT":
-        return state.map((item, i) => {
-          if (i === action.index) {
-            return { ...item, amount: item.amount - 1 };
-          } else {
-            return item;
-          }
-        });
-      case "ADD":
-        // TODO: Check if item already exists in state, if it does add to amount
-        return [
-          ...state,
-          action.item
-        ];
-      case "REMOVE":
-        return state.filter((_, i) => i !== action.index)
-      case "RESET":
-        return []
-      default:
+      }
+      case "REMOVE": {
+        return state.filter((_, i) => i !== action.index);
+      }
+      case "RESET": {
+        return [];
+      }
+      default: {
         return state;
+      }
+      // case 'ADD_AMOUNT_BY_NUM':
+      //   action.item.amount = action.index
+      //   if (state.find((item) => item.itemId === action.item.itemId)) {
+      //     return state.map((item, i) => {
+      //       if (item.itemId === action.item.itemId) {
+      //         return { ...item, amount: item.amount + action.index };
+      //       } else {
+      //         return item;
+      //       }
+      //     });
+      //   }
+      //   return [
+      //     ...state,
+      //     action.item
+      //   ];
+      // case "ADD_AMOUNT":
+
+      //   return state.map((item, i) => {
+      //     if (i === action.index) {
+      //       return { ...item, amount: item.amount + 1 };
+      //     } else {
+      //       return item;
+      //     }
+      //   });
+      // case "REMOVE_AMOUNT":
+      //   return state.map((item, i) => {
+      //     if (i === action.index) {
+      //       return { ...item, amount: item.amount - 1 };
+      //     } else {
+      //       return item;
+      //     }
+      //   });
+      // case "ADD":
+      //   // TODO: Check if item already exists in state, if it does add to amount
+      //   return [
+      //     ...state,
+      //     action.item
+      //   ];
+      // case "REMOVE":
+      //   return state.filter((_, i) => i !== action.index)
+      // case "RESET":
+      //   return []
+      // default:
+      //   return state;
     }
   };
 
   let [item, setItem] = useReducer(reducer, [])
 
   const onAdd = (data) => {
+
+    // TODO: optimize this. items gets looped through twice
     let itemfound = items.find((item) => item.name.toLowerCase() === data.itemName.toLowerCase())
     formMethods.reset()
     setItem({ type: "ADD", item: itemfound });
@@ -85,7 +143,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
     setItem({ type: "REMOVE_AMOUNT", index: index });
   }
 
-  const turretTower = (() => {
+  const addTurretTower = useCallback(() => {
     // let turretTower = {
     //   size: 14 * 14,
     //   cage_height: 22,
@@ -150,9 +208,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
         setItem({ type: "ADD_AMOUNT_BY_NUM", item: itemfound, index: value });
       }
     }
-  });
-
-  const addTurretTower = useCallback(turretTower, [])
+  }, []);
 
   const mergeItemRecipe = useCallback(getBaseMaterials, [item])
   const clear = (() => {
@@ -207,12 +263,29 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
               vertical={true}
               header={false}
               rows={mergeItemRecipe(...item)}
+              caption={{
+                title: "Item",
+                content: (
+                  <div className="flex items-center">
+                    <CheckboxField name="flexCheckDefault" className="rw-checkbox" />
+                    <label className="inline-block" htmlFor="flexCheckDefault">
+                      Base materials
+                    </label>
+                  </div>
+
+
+                )
+              }}
               columns={[
                 {
                   field: 'name',
                   label: "Name",
                   className: "text-center"
                 },
+                // {
+                //   field: 'weight',
+                //   label: "Weight",
+                // },
                 {
                   field: 'amount',
                   label: "Amount",
@@ -229,24 +302,26 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
               ]}
             />
           }
+
           <ul className="py-4 space-y-2">
-            {item.map((item, i) => (
-              <li className="" key={`${item.itemId}+${i * Math.random()}`}>
+            {item.map((itm, i) => (
+              <li className="" key={`${itm.itemId}+${i * Math.random()}`}>
                 <div className="flex flex-row items-center w-fit pl-4">
                   <button type="button" onClick={() => onRemove(i)} className="hover:bg-red-500 relative rounded-full w-10 h-10 flex items-center justify-center">
-                    <ImageField className="w-8 h-8" name="itemimage" src={"https://www.arkresourcecalculator.com/assets/images/80px-" + item.image} />
+                    <ImageField className="w-8 h-8" name="itemimage" src={"https://www.arkresourcecalculator.com/assets/images/80px-" + itm.image} />
                   </button>
                   <button type="button" className="border border-black dark:border-white relative dark:text-white text-black hover:bg-white hover:text-black mx-2 rounded-full w-8 h-8 text-lg font-semibold" onClick={() => onRemoveAmount(i)}>
                     -
                   </button>
                   <p
-                    defaultValue={item.amount}
+                    defaultValue={itm.amount}
                     className="rw-input w-16 p-3 text-center"
-                  >{item.amount}</p>
+                  >{itm.amount}</p>
                   <button type="button" className="border border-black dark:border-white relative dark:text-white text-black hover:bg-white hover:text-black mx-2 rounded-full w-8 h-8 text-lg font-semibold" onClick={() => onAddAmount(i)}>
                     +
                   </button>
-                  {mergeItemRecipe(item).sort((a, b) => a.itemId - b.itemId).map((recipe, t) => (
+                  {/* <p className="text-white text-2xl">{jsonDisplay(itm)}</p> */}
+                  {mergeItemRecipe(true, { itemId: itm.itemId, amount: itm.amount }).sort((a, b) => a.itemId - b.itemId).map((recipe, t) => (
                     <div className="flex flex-col justify-center items-center ml-2 min-w-16 w-10" id={`${recipe.itemId}-${i * Math.random()}${t}`} key={`${recipe.itemId}-${t * Math.random()}${i}`}>
                       <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${recipe.image}`} className="w-6 h-6" title={recipe.name} alt={recipe.name} />
                       <span className="text-sm text-black dark:text-white">{recipe.amount}</span>

@@ -3,10 +3,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 interface MapPickerProps extends Omit<InputFieldProps, 'name'> {
   validation?: RegisterOptions
-  fields?: {
-    latitude: string;
-    longitude: string;
-  }
   map: string;
   valueProp?: {
     latitude: number;
@@ -23,10 +19,6 @@ const MapPicker = (props: MapPickerProps) => {
     className,
     style,
     map = "theisland",
-    fields = {
-      latitude: "latitude",
-      longitude: "longitude",
-    },
     valueProp = {
       latitude: 0,
       longitude: 0,
