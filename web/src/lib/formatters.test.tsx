@@ -14,7 +14,6 @@ import {
   getWeekDates,
   isDate,
   random,
-  wordNumberRegex,
   getDateDiff,
   groupBy,
 } from './formatters'
@@ -318,15 +317,6 @@ describe('random', () => {
   })
 })
 
-describe('wordNumberRegex', () => {
-  it('matches a word number', () => {
-    expect(wordNumberRegex('one')).toBe(['one'])
-  })
-
-  it('does not match a non-word number', () => {
-    expect(wordNumberRegex('1')).toBe(false)
-  })
-})
 
 describe('getDateDiff', () => {
   it('returns the difference between two dates in days, hours, minutes and dateString', () => {
@@ -334,18 +324,19 @@ describe('getDateDiff', () => {
   })
 })
 
-// describe('groupBy', () => {
-//   it('groups an array by a key', () => {
-//     const objects = [
-//       { name: 'John', age: 30 },
-//       { name: 'Mary', age: 20 },
-//       { name: 'Peter', age: 10 },
-//     ]
+describe('groupBy', () => {
+  it('groups an array by a key', () => {
+    const objects = [
+      { name: 'John', age: 30 },
+      { name: 'Mary', age: 20 },
+      { name: 'Peter', age: 10 },
+      { name: 'Caitlin', age: 20 }
+    ]
 
-//     expect(groupBy(objects, 'age')).toEqual({
-//       10: [{ name: 'Peter', age: 10 }],
-//       20: [{ name: 'Mary', age: 20 }],
-//       30: [{ name: 'John', age: 30 }],
-//     })
-//   })
-// })
+    expect(groupBy(objects, 'age')).toEqual({
+      10: [{ name: 'Peter', age: 10 }],
+      20: [{ name: 'Mary', age: 20 }, { name: 'Caitlin', age: 20 }],
+      30: [{ name: 'John', age: 30 }],
+    })
+  })
+})

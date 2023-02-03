@@ -68,6 +68,48 @@ export const checkboxInputTag = (checked: boolean) => {
   return <input type="checkbox" checked={checked} disabled />
 }
 
+
+/**
+ * Check if a value is an object (not a function, array, or date).
+ * @param value - The value to check.
+ * @returns A boolean indicating whether the value is an object.
+ */
+export const isObject = (value) => {
+  return typeof value === "object" && !Array.isArray(value) && !(value instanceof Date);
+};
+
+
+/**
+ * Check if a given string is a valid UUID (Universally Unique Identifier)
+ *
+ * @param {string} value - The string to check
+ * @returns {boolean} - true if the string is a valid UUID, false otherwise
+ */
+export const isUUID = (value: string): boolean => {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+};
+
+
+/**
+ * @name isDate
+ * @param {string} date
+ * @returns {boolean} true if date is in 2022-11-28T14:17:14.899Z format
+ * @kind function
+ * @since 0.1.0
+ * @summary Checks if date is in 2022-11-28T14:17:14.899Z format
+ * @static true
+
+ */
+export const isDate = (dateString: any): boolean => {
+  const date = new Date(dateString);
+  return !isNaN(date.getTime());
+};
+
+
+
+
+
+
 /**
  *
  * @param property string to sort by
@@ -159,25 +201,6 @@ export const getBaseMaterials = (firstRecipeOnly: boolean = false, ...objects: A
 };
 
 
-/**
- * Check if a value is an object (not a function, array, or date).
- * @param value - The value to check.
- * @returns A boolean indicating whether the value is an object.
- */
-export const isObject = (value) => {
-  return typeof value === "object" && !Array.isArray(value) && !(value instanceof Date);
-};
-
-
-/**
- * Check if a given string is a valid UUID (Universally Unique Identifier)
- *
- * @param {string} value - The string to check
- * @returns {boolean} - true if the string is a valid UUID, false otherwise
- */
-export const isUUID = (value: string): boolean => {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
-};
 
 
 
@@ -209,29 +232,6 @@ export const getWeekDates = (): [Date, Date] => {
 };
 
 
-/**
- * @name isDate
- * @param {string} date
- * @returns {boolean} true if date is in 2022-11-28T14:17:14.899Z format
- * @kind function
- * @since 0.1.0
- * @summary Checks if date is in 2022-11-28T14:17:14.899Z format
- * @static true
- * @requires regex test for  2022-11-28T14:17:14.899Z format
- * @example isDate("2022-11-28T14:17:14.899Z") // true
- * @example isDate("2022-11-28T14:17:14.899") // false
- * @example isDate("2022-11-28T14:17:14") // false
- * @example isDate("2022-11-28T14:17") // false
- * @example isDate("2022-11-28T14") // false
- * @example isDate("2022-11-28") // false
- * @example isDate("2022-11") // false
- * @example isDate("2022") // false
- */
-export const isDate = (dateString: any): boolean => {
-  const date = new Date(dateString);
-  return !isNaN(date.getTime());
-};
-
 
 /**
  *
@@ -241,20 +241,6 @@ export const isDate = (dateString: any): boolean => {
  */
 export const random = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1) + min);
-
-/**
- *
- * @param {string} str string to match
- * @returns the matched numbers as words in the string¨
- * @example wordNumberRegex("I have two apples and 3 bananas") // ["two"]
- * @exports wordNumberRegex
- * @deprecated not used
- */
-export const wordNumberRegex = (str: string) => {
-  return str.match(
-    /(?:f(?:ive|our)|s(?:even|ix)|t(?:hree|wo)|(?:ni|o)ne|eight)/gi
-  );
-};
 
 /**
  * singularizes a word.
@@ -311,7 +297,9 @@ export const remDupicates = (arr: Array<any>): Array<any> => {
  * @param xs
  * @param key
  * @returns grouped object
- * @deprecated not used
+ * @example
+ * const grouped = groupBy([{a: 1, b: 2}, {a: 1, b: 3}, {a: 2, b: 4}], 'a')
+ * // grouped = {1: [{a: 1, b: 2}, {a: 1, b: 3}], 2: [{a: 2, b: 4}]}
  */
 export const groupBy = (xs: Array<any>, key: string) => {
   return xs.reduce(function (rv, x) {
