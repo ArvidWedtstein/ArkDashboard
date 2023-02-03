@@ -2,8 +2,7 @@ import { useAuth } from "@redwoodjs/auth";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import Chat from "src/components/Chat/Chat";
-import MapPicker from "src/components/Util/MapPicker/MapPicker";
-import { merge } from "src/lib/formatters";
+
 const HomePage = () => {
   const { isAuthenticated, client: supabase } = useAuth();
   // if (document.addEventListener) {

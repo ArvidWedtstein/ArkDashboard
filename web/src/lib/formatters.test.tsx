@@ -9,13 +9,10 @@ import {
   checkboxInputTag,
   dynamicSort,
   combineBySummingKeys,
-  mergeRecipe,
   isObject,
-  merge,
   capitalize,
   getWeekDates,
   isDate,
-  calcItemCost,
   random,
   wordNumberRegex,
   getDateDiff,
@@ -250,49 +247,6 @@ describe('combineBySummingKeys', () => {
   })
 })
 
-// describe('mergeRecipe', () => {
-//   it('merges ark recipies', () => {
-//     const recipe = {
-//       name: 'Test Recipe',
-//       description: 'Test Description',
-//       ingredients: [
-//         {
-//           name: 'Test Ingredient',
-//           amount: 1,
-//           unit: 'Test Unit',
-//         },
-//       ],
-//       steps: [
-//         {
-//           name: 'Test Step',
-//           description: 'Test Description',
-//         },
-//       ],
-//     }
-
-//     expect(mergeRecipe(recipe, recipe)).toEqual({
-//       name: 'Test Recipe',
-//       description: 'Test Description',
-//       ingredients: [
-//         {
-//           name: 'Test Ingredient',
-//           amount: 2,
-//           unit: 'Test Unit',
-//         },
-//       ],
-//       steps: [
-//         {
-//           name: 'Test Step',
-//           description: 'Test Description',
-//         },
-//         {
-//           name: 'Test Step',
-//           description: 'Test Description',
-//         },
-//       ],
-//     })
-//   })
-// })
 
 describe('isObject', () => {
   it('returns true for objects', () => {
@@ -316,19 +270,6 @@ describe('isObject', () => {
   })
 })
 
-describe('merge', () => {
-  it('merges objects', () => {
-    expect(merge({ a: 1 }, { b: 2 })).toEqual({ a: 1, b: 2 })
-  })
-
-  it('merges objects recursively', () => {
-    expect(merge({ a: { b: 1 } }, { a: { c: 2 } })).toEqual({ a: { b: 1, c: 2 } })
-  })
-
-  it('merges objects with arrays', () => {
-    expect(merge({ a: [1, 2] }, { a: [3, 4] })).not.toBe({ a: [1, 2, 3, 4] })
-  })
-})
 
 describe('capitalize', () => {
   it('capitalizes the first letter of a string', () => {
@@ -368,11 +309,7 @@ describe('isDate', () => {
   })
 })
 
-describe('calcItemCost', () => {
-  it('calculates the cost of an item', () => {
-    expect(calcItemCost(10, 2)).toBe(20)
-  })
-})
+
 
 describe('random', () => {
   it('returns a random number', () => {

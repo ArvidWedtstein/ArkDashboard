@@ -37,17 +37,16 @@ const TribesList = ({ tribes }: FindTribes) => {
       deleteTribe({ variables: { id } });
     }
   };
+
   function filterDatesByCurrentWeek(dates: FindTribes["tribes"]) {
     let [start, end] = getWeekDates();
-    return dates.filter(
-      (d) => +new Date(d.created_at) >= +start && +new Date(d.created_at) < +end
-    );
+    return dates.filter((d) => +new Date(d.created_at) >= +start && +new Date(d.created_at) < +end);
   }
 
   const pickRandomTribe = () => {
-    let randomTribe = tribes[Math.floor(Math.random() * tribes.length)];
-    let tempTribe = tribes.filter((t) => t.id === randomTribe.id);
-    toast.success(`You've been assigned to ${tempTribe[0].name}!`);
+    const randomIndex = Math.floor(Math.random() * tribes.length);
+    const randomTribe = tribes[randomIndex];
+    toast.success(`You've been assigned to ${randomTribe.name}!`);
   };
 
   return (

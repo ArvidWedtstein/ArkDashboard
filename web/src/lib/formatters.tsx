@@ -94,6 +94,7 @@ export const dynamicSort = (property: string) => {
  *
  * @param objects
  * @returns combined object where numberic values are summed
+ * chatgpt
  */
 export const combineBySummingKeys = (...objects) => {
   const mergedObj = {};
@@ -105,171 +106,86 @@ export const combineBySummingKeys = (...objects) => {
   return mergedObj;
 };
 
-/**
- * @description For ark item objects only. Combines the recipe arrays of multiple objects into one object
- * @param objects
- * @returns
- */
-export const mergeRecipe = (...objects): Object => {
-  const mergedObj = {};
-
-  objects.forEach((obj) => {
-    obj.recipe.forEach((res) => {
-      mergedObj[res.itemId] =
-        (mergedObj[res.itemId] || 0) + res["count"] * obj.amount;
-    });
-  });
-
-  return mergedObj;
-};
 
 /**
- * @description Calculates the cost of one specific ark item
- * @param {Number} amount
- * @param {String} item_id
- * @returns Object with prices
- */
-export const calcItemCost = (amount: number, item_id) => {
-  if (Number.isNaN(amount)) return console.error("Amount is NaN");
-  if (!prices.items.find((e) => e.itemId === item_id))
-    return console.log(
-      `%c[ArkDashboard Error]: ${item_id} not found in prices`,
-      'background: #ff0000; color #ffffff;'
-    );
-
-  let price = {};
-  prices.items.find((e) => e.itemId === item_id).recipe.forEach((item, i) => {
-    let founditem = prices.items.find((e) => e.itemId === item.itemId)
-    if (founditem.recipe.length > 0) {
-      price = combineBySummingKeys(calcItemCost(item.count, founditem.itemId), price);
-
-    } else {
-      price[`${item.itemId}`] = item.count * Number(amount);
-    }
-  });
-  return price;
-};
-
-/**
+ * Calculates the base materials required to produce the specified objects.
  *
- * @param objects {itemId: string, amount: number}, {itemId: string, amount: number}, ...
- * @returns {Object} {itemId: string, amount: number, name: string, color: string}
- * @example getBaseMaterials({itemId: 109, amount: 1}) => [{itemId: 8, amount: 0.5}, {itemId: 73, amount: 1}, {itemId: 7, amount: 3, name: wood}]
+ * @param {boolean} firstRecipeOnly - If set to true, only the first recipe will be considered and
+ *                                     the function will return the direct materials.
+ * @param {...Object} objects - The objects for which the base materials are to be calculated.
+ * @param {string} objects.itemId - The unique identifier for the object.
+ * @param {number} objects.amount - The number of objects required.
+ *
+ * @returns {Array<any>} An array of objects representing the base materials required.
  */
-export const getBaseMaterials = (base = false, ...objects): {
-  itemId: number;
-  amount: number;
-  name: string;
-  color: string;
-  image?: string;
-}[] => {
-  let materials = new Map();
-  // TODO: Check if item has itemId2. If so, add that to the item
-  const getMaterials = (itemId, count) => {
-    let item = prices.items.find((i) => i.itemId === itemId);
-    if (item.recipe.length === 0) {
-      let material = materials.get(item.itemId);
-      if (material) {
-        material.amount += count;
-      } else {
-        materials.set(item.itemId, {
-          name: item.name,
-          itemId: item.itemId,
-          image: item.image,
-          color: item.color,
-          amount: count,
-        });
-      }
-    } else {
-      for (let i of item.recipe) {
-        getMaterials(i.itemId, i.count * count);
-      }
+export const getBaseMaterials = (firstRecipeOnly: boolean = false, ...objects: Array<any>) => {
+  let materials = [];
+
+  /**
+   * Recursive function to find the base materials required to produce an object.
+   *
+   * @param {number} itemId - The unique identifier for the object.
+   * @param {number} amount - The number of objects required.
+   */
+  const findBaseMaterials = (itemId: number, amount: number) => {
+    let recipe = prices.items.find((r) => r.itemId === itemId)?.recipe;
+
+    if (!recipe) {
+      return;
     }
-  };
-  if (!base) {
-    objects.forEach((obj) => {
-      obj.recipe.forEach((res) => {
-        let material = materials.get(res.itemId);
+
+    recipe.forEach(({ itemId, count: recipeCount }) => {
+      let recipeItem = prices.items.find((r) => r.itemId === itemId);
+      let count = recipeCount * amount;
+
+      if (!firstRecipeOnly || !recipeItem?.recipe.length) {
+        let material = materials.find((m) => m.itemId === itemId);
         if (material) {
-          material.amount += obj.amount;
+          material.amount += count;
         } else {
-          materials.set(res.itemId, {
-            name: res.name,
-            itemId: res.itemId,
-            image: res.image,
-            color: res.color,
-            amount: res.count
-          });
+          materials.push({ ...recipeItem, amount: count });
         }
-      });
+      } else {
+        findBaseMaterials(recipeItem.itemId, count);
+      }
     });
   }
+
   objects.forEach(({ itemId, amount }) => {
-    getMaterials(itemId, amount);
+    findBaseMaterials(itemId, amount);
   });
 
-  return Array.from(materials.values());
+  return materials;
 };
 
 
-
 /**
- * @name isObject
- * @param {any} value determines if value is an object
- * @returns {boolean} true if value is an object
- * @kind function
+ * Check if a value is an object (not a function, array, or date).
+ * @param value - The value to check.
+ * @returns A boolean indicating whether the value is an object.
  */
 export const isObject = (value) => {
-  return (
-    !!value &&
-    typeof value === "object" &&
-    typeof value.getMonth !== "function" &&
-    !Array.isArray(value)
-  );
+  return typeof value === "object" && !Array.isArray(value) && !(value instanceof Date);
 };
 
+
 /**
- * Checks if a value is a valid UUID
- * @param {string} value
- * @returns {boolean}
+ * Check if a given string is a valid UUID (Universally Unique Identifier)
+ *
+ * @param {string} value - The string to check
+ * @returns {boolean} - true if the string is a valid UUID, false otherwise
  */
 export const isUUID = (value: string): boolean => {
-  return (
-    /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/.test(
-      value
-    )
-  );
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 };
+
 
 
 /**
- *
- * @param {Array} sources
- * @example merge({a: 1}, {b: 2}, {b: 2}) // {a: 1, b: 4}
- * @returns merged object
- * @mixes all input objects into one object
- * @since 0.1.0
- * @summary Merges all input objects into one object
- * @static true
- * @requires isObject function
+ * Capitalizes the first letter of a given string.
+ * @param {string} string - The input string to be capitalized.
+ * @returns {string} - The capitalized string.
  */
-export const merge = (...sources) => {
-  const [target, ...rest] = sources;
-
-  for (const object of rest) {
-    for (const key in object) {
-      const targetValue = target[key];
-      const sourceValue = object[key];
-      const isMergable = isObject(targetValue) && isObject(sourceValue);
-      target[key] = isMergable
-        ? merge({}, targetValue, sourceValue)
-        : sourceValue;
-    }
-  }
-
-  return target;
-};
-
 export const capitalize = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
@@ -278,23 +194,21 @@ export const capitalize = (string: string) => {
  * @description Returns the start and end date of the current week
  * @returns {Array} array of start and end dates of the current week
  */
-export const getWeekDates = () => {
+export const getWeekDates = (): [Date, Date] => {
   let now = new Date();
-  let dayOfWeek = now.getDay(); //0-6
-  let numDay = now.getDate();
+  let dayOfWeek = now.getUTCDay();
+  let numDay = now.getUTCDate();
 
-  let start = new Date(now); //copy
-  start.setDate(numDay - dayOfWeek);
-  start.setHours(0, 0, 0, 0);
+  let start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), numDay - dayOfWeek));
+  start.setUTCHours(0, 0, 0, 0);
 
-  let end = new Date(now); //copy
-  end.setDate(numDay + (7 - dayOfWeek));
-  end.setHours(0, 0, 0, 0);
+  let end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), numDay + (7 - dayOfWeek)));
+  end.setUTCHours(0, 0, 0, 0);
 
   return [start, end];
 };
 
-// autogenerate JSdoc comment for isDate function
+
 /**
  * @name isDate
  * @param {string} date
@@ -313,10 +227,9 @@ export const getWeekDates = () => {
  * @example isDate("2022-11") // false
  * @example isDate("2022") // false
  */
-export const isDate = (date: any): boolean => {
-  // regex test for  2022-11-28T14:17:14.899Z format
-  const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
-  return regex.test(date);
+export const isDate = (dateString: any): boolean => {
+  const date = new Date(dateString);
+  return !isNaN(date.getTime());
 };
 
 
@@ -335,8 +248,8 @@ export const random = (min: number, max: number) =>
  * @returns the matched numbers as words in the string¨
  * @example wordNumberRegex("I have two apples and 3 bananas") // ["two"]
  * @exports wordNumberRegex
+ * @deprecated not used
  */
-
 export const wordNumberRegex = (str: string) => {
   return str.match(
     /(?:f(?:ive|our)|s(?:even|ix)|t(?:hree|wo)|(?:ni|o)ne|eight)/gi
@@ -351,32 +264,36 @@ export const wordNumberRegex = (str: string) => {
  */
 export const singularize = (word: string) => {
   const endings = {
-    ves: 'fe',
-    ies: 'y',
-    i: 'us',
-    zes: 'ze',
-    ses: 's',
-    es: 'e',
-    s: ''
+    ves: "fe",
+    ies: "y",
+    i: "us",
+    zes: "ze",
+    ses: "s",
+    es: "e",
+    s: "",
   };
-  return word.replace(
-    new RegExp(`(${Object.keys(endings).join('|')})$`),
-    r => endings[r]
-  );
+  const pattern = new RegExp(`(${Object.keys(endings).join("|")})$`);
+  return word.replace(pattern, (_, match) => endings[match]);
 }
 
 
 
-
+/**
+ * @description Returns the difference between two dates
+ * @param date1
+ * @param date2
+ * @returns
+ */
 export const getDateDiff = (date1: Date, date2: Date) => {
-  const diff = Math.abs(new Date(date1).getTime() - new Date(date2).getTime());
+  const diff = Math.abs(date1.getTime() - date2.getTime());
+  const days = Math.floor(diff / (1000 * 3600 * 24));
+  const hours = Math.floor((diff / (1000 * 3600)) % 24);
+  const minutes = Math.floor((diff / 1000 / 60) % 60);
   return {
-    days: Math.floor(diff / (1000 * 3600 * 24)),
-    hours: Math.floor((diff / (1000 * 3600)) % 24),
-    minutes: Math.floor((diff / 1000 / 60) % 60),
-    dateString: `${Math.floor(diff / (1000 * 3600 * 24))} days, ${Math.floor(
-      (diff / (1000 * 3600)) % 24
-    )} hours, ${Math.floor((diff / 1000 / 60) % 60)} minutes`,
+    days,
+    hours,
+    minutes,
+    dateString: `${days} days, ${hours} hours, ${minutes} minutes`,
   };
 };
 
@@ -394,6 +311,7 @@ export const remDupicates = (arr: Array<any>): Array<any> => {
  * @param xs
  * @param key
  * @returns grouped object
+ * @deprecated not used
  */
 export const groupBy = (xs: Array<any>, key: string) => {
   return xs.reduce(function (rv, x) {
@@ -401,33 +319,8 @@ export const groupBy = (xs: Array<any>, key: string) => {
     return rv;
   }, {});
 };
-/**
- *
- * @param array
- * @param callback
- * @returns grouped array of objects
- * @example
- * data = [
- * { created_at: '2021-09-01T14:17:14.899Z', profile_id: 1 },
- * { created_at: '2021-09-01T14:17:14.899Z', profile_id: 2 },
- * { created_at: '2021-09-01T14:17:14.899Z', profile_id: 3 }
- * ]
- * groupByMultiple(data, function (item) {
-    item.created_at = new Date(item.created_at).setSeconds(0, 0);
-    return [item.created_at, item.profile_id];
-  })
- */
-export const groupByMultiple = (array: Array<any>, callback: (item) => void) => {
-  let groups = {};
-  array.forEach(function (o) {
-    var group = JSON.stringify(callback(o));
-    groups[group] = groups[group] || [];
-    groups[group].push(o);
-  });
-  return Object.keys(groups).map(function (group) {
-    return groups[group];
-  });
-}
+
+
 
 /**
  * @description debounce function for search fields
@@ -439,13 +332,12 @@ export const groupByMultiple = (array: Array<any>, callback: (item) => void) => 
  */
 export const debounce = (func, wait = 300) => {
   let timeout;
-  return (...args) => {
+  return function (...args) {
     clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      func.apply(this, args);
-    }, wait);
+    timeout = setTimeout(() => func.apply(this, args), wait);
   };
 };
+
 
 /**
  *

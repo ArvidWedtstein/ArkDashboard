@@ -1,8 +1,8 @@
 import { FieldError, Form, FormError, ImageField, Label, RWGqlError } from "@redwoodjs/forms";
-import { useCallback, useEffect, useMemo, useReducer } from "react";
+import { useCallback, useMemo, useReducer } from "react";
 import { useForm } from 'react-hook-form'
 import Lookup from "src/components/Util/Lookup/Lookup";
-import { calcItemCost, getBaseMaterials } from 'src/lib/formatters'
+import { getBaseMaterials } from 'src/lib/formatters'
 import Table, { Taybul } from "src/components/Util/Table/Table";
 import arkitems from '../../../../public/arkitems.json'
 import LineChart from "src/components/Util/LineChart/LineChart";
@@ -153,7 +153,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
   });
 
   const addTurretTower = useCallback(turretTower, [])
-  // const mergeItemRecipe = useCallback(mergeRecipe, [item])
+
   const mergeItemRecipe = useCallback(getBaseMaterials, [item])
   const clear = (() => {
     setItem({ type: "RESET" });
@@ -194,7 +194,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
           <FieldError name="itemName" className="rw-field-error" />
           {/* TODO: Remove linechart and integrate percentage in table */}
           {item.length > 0 &&
-            <LineChart items={mergeItemRecipe(...item).map(({ amount, name, color }) => {
+            <LineChart items={mergeItemRecipe(false, ...item).map(({ amount, name, color }) => {
               return {
                 name: name,
                 percent: Math.round(((100 * amount) / mergeItemRecipe(...item).reduce((a, b) => a + b.amount, 0) + Number.EPSILON) * 100) / 100,

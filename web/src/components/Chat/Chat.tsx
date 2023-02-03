@@ -10,7 +10,7 @@ import {
   useState,
 } from "react";
 import { supabase } from "src/App";
-import { groupByMultiple, timeTag } from "src/lib/formatters";
+import { timeTag } from "src/lib/formatters";
 
 // type IMessage = {
 //   id: string,
@@ -111,22 +111,19 @@ const Chat = () => {
   const [messages, setMessages] = useState<any[]>([]); //<Message[]>
   const messagesRef = useRef<HTMLDivElement>(null);
   const formMethods = useForm();
-  // https://github.com/dijonmusters/happy-chat/blob/main/components/messages.tsx
+
   const groupMessages = (msgs: any[]) => {
     let groupedMessages = [];
-    msgs.reduce((t, v, i, a) => {
-      if (
-        t.hasOwnProperty("profile_id") &&
+    let t = msgs.reduce((t, v) => {
+      const sameTime =
         new Date(t.created_at).setSeconds(0, 0) ===
-        new Date(v.created_at).setSeconds(0, 0) &&
-        t.profile_id === v.profile_id
-      ) {
+        new Date(v.created_at).setSeconds(0, 0);
+      const sameProfile = t.profile_id === v.profile_id;
+      if (sameTime && sameProfile) {
         t.id.push(v.id);
         t.content.push(v.content);
-        t.profile_id = v.profile_id;
-        t.created_at = v.created_at;
       } else {
-        if (t.hasOwnProperty("profile_id")) groupedMessages.push(t);
+        groupedMessages.push(t);
         t = {
           id: [v.id],
           content: [v.content],
@@ -134,9 +131,9 @@ const Chat = () => {
           created_at: v.created_at,
         };
       }
-      if (i == a.length - 1) groupedMessages.push(t);
       return t;
     }, {});
+    groupedMessages.push(t);
     return groupedMessages;
   };
   // const groupMessage = useCallback(() => {
