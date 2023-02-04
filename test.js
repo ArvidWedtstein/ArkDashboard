@@ -37,35 +37,18 @@ let data = [
     profile_id: 2,
   },
 ];
-
+let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
 console.time("normal");
-
-const dynamicSort = (property) => {
-  var sortOrder = 1;
-  if (property[0] === "-") {
-    sortOrder = -1;
-    property = property.substr(1);
-  }
-  return function (a, b) {
-    var result =
-      a[property] < b[property] ? -1 : a[property] > b[property] ? 1 : 0;
-    return result * sortOrder;
-  };
+const remDupicates = (arr) => {
+  return arr.filter((item, index) => arr.indexOf(item) === index);
 };
-console.log(data.sort(dynamicSort("content")));
+
+console.log(remDupicates(d));
 console.timeEnd("normal");
 
 console.time("optimized");
-const dynamicSort2 = (property) => {
-  const sortOrder = property[0] === "-" ? -1 : 1;
-  const sortKey = property[0] === "-" ? property.substr(1) : property;
-
-  return (a, b) => {
-    const result =
-      a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
-    return result * sortOrder;
-  };
+const removeDuplicates = (arr) => {
+  return [...new Set(arr)];
 };
-
-console.log(data.sort(dynamicSort2("content")));
+console.log(removeDuplicates(d));
 console.timeEnd("optimized");

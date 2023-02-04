@@ -12,7 +12,6 @@ import {
   truncate,
 } from "src/lib/formatters";
 
-
 interface ITableProps<P = {}> {
   children?: React.ReactNode;
   data: Object[];
@@ -48,10 +47,10 @@ interface ColumnData<V = any, F = V> {
    */
   valueFormatter?: (params: GridCell<V>) => F; // add functionality for value formatting
   /**
- * Allows to override the component rendered as cell for this column.
- * @param {GridCell} params Object containing parameters for the renderer.
- * @returns {React.ReactNode} The element to be rendered.
- */
+   * Allows to override the component rendered as cell for this column.
+   * @param {GridCell} params Object containing parameters for the renderer.
+   * @returns {React.ReactNode} The element to be rendered.
+   */
   renderCell?: (params: GridCell<V>) => React.ReactNode;
 }
 interface TaybulProps {
@@ -76,13 +75,13 @@ interface TaybulProps {
    * @default 10
    */
   rowsPerPage?: number;
-  onPageChange?: (event: React.MouseEvent<HTMLButtonElement> | null, page: number) => void;
+  onPageChange?: (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    page: number
+  ) => void;
   page?: number;
 }
 
-export const Tabul = React.forwardRef<unknown, TaybulProps>(function Tabul(props, ref) {
-  return <></>
-});
 /**
  * @borrows dynamicSort and debounce from formatters.ts
  * @param param
@@ -156,7 +155,6 @@ export const Taybul = ({
     return sortData(filteredData).slice(indexOfFirstData, indexOfLastData);
   }, [sort, searchTerm, dataRows, currentPage]);
 
-
   useEffect(() => {
     if (select) {
       let daRows = document.querySelectorAll(
@@ -222,13 +220,36 @@ export const Taybul = ({
     );
   };
 
-  const cellRenderer = ({ rowData, cellData, columnIndex, renderCell, ...other }) => {
-    const className = `px-6 py-4 ${other.className} ${other.bold ? "whitespace-nowrap font-bold text-gray-900 dark:text-white" : ""}`;
+  const cellRenderer = ({
+    rowData,
+    cellData,
+    columnIndex,
+    renderCell,
+    ...other
+  }) => {
+    const className = `px-3 py-2 ${!!other.className ? other.className : ""} ${
+      // px-6 py-4
+      other.bold
+        ? "whitespace-nowrap font-bold text-gray-900 dark:text-white"
+        : ""
+    }`;
     const key = `${columnIndex}-${cellData}`;
 
-    let content = renderCell ? renderCell({ columnIndex, value: cellData, field: other.field, row: rowData }) : "";
+    let content = renderCell
+      ? renderCell({
+          columnIndex,
+          value: cellData,
+          field: other.field,
+          row: rowData,
+        })
+      : "";
 
-    if (!content && isUUID(cellData) && other.label.toLowerCase() === "created by" && "Profile" in rowData) {
+    if (
+      !content &&
+      isUUID(cellData) &&
+      other.label.toLowerCase() === "created by" &&
+      "Profile" in rowData
+    ) {
       const profile = rowData.Profile;
       content = (
         <div className="flex flex-row">
@@ -240,17 +261,26 @@ export const Taybul = ({
             />
           )}
           <div className="flex items-center pl-3">
-            <div className="text-base font-semibold">{profile.full_name}</div>
+            <div className="text-base">{profile.full_name}</div>
           </div>
         </div>
       );
     } else if (!content) {
-      content = truncate(other.valueFormatter ? other.valueFormatter(cellData) : cellData, 30);
+      content = other.valueFormatter
+        ? other.valueFormatter({ value: cellData, row: rowData, columnIndex })
+        : truncate(cellData, 30);
+      console.log(
+        columnIndex,
+        other.valueFormatter ? other.valueFormatter(cellData) : "no formatter"
+      );
     }
 
-    return <td key={key} className={className}>{content}</td>;
+    return (
+      <td key={key} className={className}>
+        {content}
+      </td>
+    );
   };
-
 
   const tableSelect = ({
     header = false,
@@ -376,12 +406,14 @@ export const Taybul = ({
         {!!caption && (
           <caption className="bg-white p-5 text-left text-lg font-semibold text-gray-900 dark:bg-zinc-800 dark:text-white">
             {caption.title}
-            {caption.content && <div className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-              {caption.content}
-            </div>}
+            {caption.content && (
+              <div className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+                {caption.content}
+              </div>
+            )}
           </caption>
         )}
-        {(!vertical && header) && (
+        {!vertical && header && (
           <thead className="bg-gray-50 text-sm uppercase text-stone-400 dark:bg-gray-700 dark:text-gray-400">
             <tr className="table-row">
               {select && tableSelect({ header: true, row: 0 })}
@@ -403,17 +435,17 @@ export const Taybul = ({
                 return (
                   <tr
                     key={index}
-                    className={`border-b bg-white dark:border-gray-800 dark:bg-zinc-600 ${hover
-                      ? "hover:bg-gray-50 dark:hover:bg-gray-600"
-                      : ""
-                      }`}
+                    className={`border-b bg-white dark:border-gray-800 dark:bg-zinc-600 ${
+                      hover ? "hover:bg-gray-50 dark:hover:bg-gray-600" : ""
+                    }`}
                     onClick={() => onRowClick && onRowClick({ index: index })}
                   >
-                    {header && headerRenderer({
-                      label: other.label,
-                      columnIndex: index,
-                      ...other,
-                    })}
+                    {header &&
+                      headerRenderer({
+                        label: other.label,
+                        columnIndex: index,
+                        ...other,
+                      })}
                     {SortedFilteredData.map((datarow) => {
                       return cellRenderer({
                         rowData: datarow,
@@ -433,8 +465,10 @@ export const Taybul = ({
               return (
                 <tr
                   key={i}
-                  className={`border-b bg-white dark:border-gray-800 dark:bg-zinc-600 ${hover
-                    && "hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-600"}`}
+                  className={`border-b bg-white dark:border-gray-800 dark:bg-zinc-600 ${
+                    hover &&
+                    "hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-600"
+                  }`}
                   onClick={() => onRowClick && onRowClick({ index: i })}
                 >
                   {select && tableSelect({ row: i })}
@@ -489,7 +523,7 @@ const Table = ({
                 key={`${key}${Math.random()}`}
                 onClick={() => sort(key)}
                 className="table-cell p-2 text-xs text-[#888da9]"
-              // /*aria-[sort=ascending]:bg-red-500 aria-[sort=descending]:bg-red-400*/
+                // /*aria-[sort=ascending]:bg-red-500 aria-[sort=descending]:bg-red-400*/
               >
                 {truncate(capitalize(key))}
               </div>

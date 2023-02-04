@@ -1,13 +1,15 @@
+import { useAuth } from "@redwoodjs/auth";
+import { Link, routes, navigate } from "@redwoodjs/router";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
+import { useEffect, useState } from "react";
+import { TimelineList } from "src/components/Util/Timeline";
+import { timeTag } from "src/lib/formatters";
 
-import { useAuth } from '@redwoodjs/auth'
-import { Link, routes, navigate } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
-import { useEffect, useState } from 'react'
-import { TimelineList } from 'src/components/Util/Timeline'
-import { timeTag } from 'src/lib/formatters'
-
-import type { DeleteTimelineMutationVariables, FindTimelineById } from 'types/graphql'
+import type {
+  DeleteTimelineMutationVariables,
+  FindTimelineById,
+} from "types/graphql";
 
 const DELETE_TIMELINE_MUTATION = gql`
   mutation DeleteTimelineMutation($id: String!) {
@@ -15,14 +17,14 @@ const DELETE_TIMELINE_MUTATION = gql`
       id
     }
   }
-`
+`;
 
 interface Props {
-  timeline: NonNullable<FindTimelineById['timeline']>
+  timeline: NonNullable<FindTimelineById["timeline"]>;
 }
 
 const Timeline = ({ timeline }: Props) => {
-  const { client: supabase, currentUser, logOut } = useAuth();
+  const { client: supabase } = useAuth();
   const [basespots, setBasespots] = useState([]);
 
   const getStory = async () => {
@@ -60,42 +62,32 @@ const Timeline = ({ timeline }: Props) => {
         throw error;
       }
       setBasespots(data);
-      return (
-        <>
-
-          {basespots && <TimelineList events={basespots} />}
-        </>
-      );
+      // return <>{basespots && <TimelineList events={basespots} />}</>;
     } catch (error) {
       toast.error(error.message);
     }
-  }
+  };
 
   useEffect(() => {
     getStory();
   }, []);
   const [deleteTimeline] = useMutation(DELETE_TIMELINE_MUTATION, {
     onCompleted: () => {
-      toast.success('Timeline deleted')
-      navigate(routes.timelines())
+      toast.success("Timeline deleted");
+      navigate(routes.timelines());
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error(error.message);
     },
-  })
+  });
 
-  const onDeleteClick = (id: DeleteTimelineMutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete timeline ' + id + '?')) {
-      deleteTimeline({ variables: { id } })
+  const onDeleteClick = (id: DeleteTimelineMutationVariables["id"]) => {
+    if (confirm("Are you sure you want to delete timeline " + id + "?")) {
+      deleteTimeline({ variables: { id } });
     }
-  }
+  };
 
-  return (
-    <>
-      {basespots && <TimelineList events={basespots} />}
-    </>
-  );
+  return <>{basespots && <TimelineList events={basespots} />}</>;
+};
 
-}
-
-export default Timeline
+export default Timeline;

@@ -1,20 +1,20 @@
-import React from 'react'
+import React from "react";
 
-import humanize from 'humanize-string'
+import humanize from "humanize-string";
 import prices from "../../public/arkitems.json";
 
 export const formatEnum = (values: string | string[] | null | undefined) => {
-  let output = ''
+  let output = "";
 
   if (Array.isArray(values)) {
-    const humanizedValues = values.map((value) => humanize(value))
-    output = humanizedValues.join(', ')
-  } else if (typeof values === 'string') {
-    output = humanize(values)
+    const humanizedValues = values.map((value) => humanize(value));
+    output = humanizedValues.join(", ");
+  } else if (typeof values === "string") {
+    output = humanize(values);
   }
 
-  return output
-}
+  return output;
+};
 
 /**
  * @description Capitalize the first letter of each word in a string
@@ -22,52 +22,53 @@ export const formatEnum = (values: string | string[] | null | undefined) => {
  * @returns Capitalized string
  */
 export const capitalizeSentence = (sentence: string) => {
-  return sentence.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
-}
+  return sentence.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
+    letter.toUpperCase()
+  );
+};
 
 export const jsonDisplay = (obj: unknown) => {
   return (
     <pre>
       <code>{JSON.stringify(obj, null, 2)}</code>
     </pre>
-  )
-}
+  );
+};
 
 export const truncate = (value: string | number, maxlength: number = 150) => {
-  let output = value?.toString() ?? ''
+  let output = value?.toString() ?? "";
 
   if (output.length > maxlength) {
-    output = output.substring(0, maxlength) + '...'
+    output = output.substring(0, maxlength) + "...";
   }
 
-  return output
-}
+  return output;
+};
 
 export const jsonTruncate = (obj: unknown) => {
-  return truncate(JSON.stringify(obj, null, 2))
-}
+  return truncate(JSON.stringify(obj, null, 2));
+};
 
 export const timeTag = (dateTime?: string) => {
-  let output: string | JSX.Element = ''
+  let output: string | JSX.Element = "";
 
   if (dateTime) {
     output = (
       <time dateTime={dateTime} title={dateTime}>
-        {new Date(dateTime).toLocaleString('en-US', {
-          timeStyle: 'short',
-          dateStyle: 'long',
+        {new Date(dateTime).toLocaleString("en-US", {
+          timeStyle: "short",
+          dateStyle: "long",
         })}
       </time>
-    )
+    );
   }
 
-  return output
-}
+  return output;
+};
 
 export const checkboxInputTag = (checked: boolean) => {
-  return <input type="checkbox" checked={checked} disabled />
-}
-
+  return <input type="checkbox" checked={checked} disabled />;
+};
 
 /**
  * Check if a value is an object (not a function, array, or date).
@@ -75,9 +76,12 @@ export const checkboxInputTag = (checked: boolean) => {
  * @returns A boolean indicating whether the value is an object.
  */
 export const isObject = (value) => {
-  return typeof value === "object" && !Array.isArray(value) && !(value instanceof Date);
+  return (
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    !(value instanceof Date)
+  );
 };
-
 
 /**
  * Check if a given string is a valid UUID (Universally Unique Identifier)
@@ -86,9 +90,10 @@ export const isObject = (value) => {
  * @returns {boolean} - true if the string is a valid UUID, false otherwise
  */
 export const isUUID = (value: string): boolean => {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    value
+  );
 };
-
 
 /**
  * @name isDate
@@ -104,8 +109,6 @@ export const isDate = (dateString: any): boolean => {
   return !isNaN(date.getTime());
 };
 
-
-
 /**
  * Sorts an array of objects based on the value of a property
  *
@@ -113,15 +116,15 @@ export const isDate = (dateString: any): boolean => {
  * @returns {(a: any, b: any) => number} A comparison function that can be passed to `Array.sort` method.
  */
 export const dynamicSort = (property: string) => {
-  const sortOrder = property[0] === '-' ? -1 : 1;
-  const sortKey = property[0] === '-' ? property.substr(1) : property;
+  const sortOrder = property[0] === "-" ? -1 : 1;
+  const sortKey = property[0] === "-" ? property.substr(1) : property;
 
   return (a: any, b: any) => {
-    const result = a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
+    const result =
+      a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
     return result * sortOrder;
   };
 };
-
 
 /**
  *
@@ -133,12 +136,11 @@ export const combineBySummingKeys = (...objects: object[]) => {
   const mergedObj: { [key: string]: number } = {};
   objects.forEach((obj) => {
     Object.keys(obj).forEach((key) => {
-      mergedObj[key] = (mergedObj[key] || 0) + (obj[key]);
+      mergedObj[key] = (mergedObj[key] || 0) + obj[key];
     });
   });
   return mergedObj;
 };
-
 
 /**
  * Calculates the base materials required to produce the specified objects.
@@ -149,7 +151,10 @@ export const combineBySummingKeys = (...objects: object[]) => {
  *
  * @returns {Array<any>} An array of objects representing the base materials required.
  */
-export const getBaseMaterials = (firstRecipeOnly: boolean = false, ...objects: Array<any>) => {
+export const getBaseMaterials = (
+  firstRecipeOnly: boolean = false,
+  ...objects: Array<any>
+) => {
   let materials = [];
 
   /**
@@ -182,7 +187,7 @@ export const getBaseMaterials = (firstRecipeOnly: boolean = false, ...objects: A
         findBaseMaterials(recipeItem.itemId, count);
       }
     });
-  }
+  };
 
   objects.forEach(({ itemId, amount }) => {
     findBaseMaterials(itemId, amount);
@@ -190,10 +195,6 @@ export const getBaseMaterials = (firstRecipeOnly: boolean = false, ...objects: A
 
   return materials;
 };
-
-
-
-
 
 /**
  * Capitalizes the first letter of a given string.
@@ -213,16 +214,18 @@ export const getWeekDates = (): [Date, Date] => {
   let dayOfWeek = now.getUTCDay();
   let numDay = now.getUTCDate();
 
-  let start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), numDay - dayOfWeek));
+  let start = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), numDay - dayOfWeek)
+  );
   start.setUTCHours(0, 0, 0, 0);
 
-  let end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), numDay + (7 - dayOfWeek)));
+  let end = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), numDay + (7 - dayOfWeek))
+  );
   end.setUTCHours(0, 0, 0, 0);
 
   return [start, end];
 };
-
-
 
 /**
  *
@@ -251,9 +254,18 @@ export const singularize = (word: string) => {
   };
   const pattern = new RegExp(`(${Object.keys(endings).join("|")})$`);
   return word.replace(pattern, (_, match) => endings[match]);
-}
+};
 
-
+/**
+ * Returns a pluralized string based on the count and noun provided.
+ *
+ * @param {number} count - The number of items.
+ * @param {string} noun - The noun to be pluralized.
+ * @param {string} [suffix='s'] - The suffix to be added to the noun.
+ * @return {string} - The pluralized string.
+ */
+export const pluralize = (count: number, noun: string, suffix = "s"): string =>
+  `${count} ${noun}${count !== 1 ? suffix : ""}`;
 
 /**
  * @description Returns the difference between two dates
@@ -275,31 +287,29 @@ export const getDateDiff = (date1: Date, date2: Date) => {
 };
 
 /**
- * @description removes duplicates from an array
- * @param arr
- * @returns
+ * Removes duplicates from an array and returns a new array.
+ * @note  function only works on arrays containing primitive data types
+ * @param {Array} arr - The input array.
+ * @return {Array} - The array with duplicates removed.
  */
-export const remDupicates = (arr: Array<any>): Array<any> => {
-  return arr.filter((item, index) => arr.indexOf(item) === index);
-}
-
-/**
- *
- * @param xs
- * @param key
- * @returns grouped object
- * @example
- * const grouped = groupBy([{a: 1, b: 2}, {a: 1, b: 3}, {a: 2, b: 4}], 'a')
- * // grouped = {1: [{a: 1, b: 2}, {a: 1, b: 3}], 2: [{a: 2, b: 4}]}
- */
-export const groupBy = (xs: Array<any>, key: string) => {
-  return xs.reduce(function (rv, x) {
-    (rv[x[key]] = rv[x[key]] || []).push(x);
-    return rv;
-  }, {});
+export const removeDuplicates = (arr: Array<any>): Array<any> => {
+  return [...new Set(arr)];
 };
 
-
+/**
+ * Groups the elements of an array based on the provided key.
+ *
+ * @param {Array} xs - The input array.
+ * @param {string} key - The key to group by.
+ * @return {Object} - An object where each key is a unique value of the provided key and the value is an array of elements that have that key value.
+ */
+export const groupBy = (xs: Array<any>, key: string) => {
+  return xs.reduce((acc, x) => {
+    const keyValue = x[key];
+    acc[keyValue] = acc[keyValue] ? [...acc[keyValue], x] : [x];
+    return acc;
+  }, {});
+};
 
 /**
  * @description debounce function for search fields
@@ -317,7 +327,6 @@ export const debounce = (func, wait = 300) => {
   };
 };
 
-
 /**
  *
  * @param {number} value
@@ -327,12 +336,18 @@ export const debounce = (func, wait = 300) => {
  * @example
  * clamp(10, 0, 5) // 5
  */
-export const clamp = ((value: number, min: number | undefined, max: number | undefined) => {
-  return Math.min(Math.max(value, min ?? Number.MIN_VALUE), max ?? Number.MAX_VALUE);
-});
+export const clamp = (
+  value: number,
+  min: number | undefined,
+  max: number | undefined
+) => {
+  return Math.min(
+    Math.max(value, min ?? Number.MIN_VALUE),
+    max ?? Number.MAX_VALUE
+  );
+};
 
-
-type Colors = 'red' | 'purple' | 'blue' | 'green' | 'slate' | 'stone' | 'gray';
+type Colors = "red" | "purple" | "blue" | "green" | "slate" | "stone" | "gray";
 type Luminance = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 export type BgColor = `bg-${Colors}-${Luminance}`;
 export type TextColor = `text-${Colors}-${Luminance}`;
@@ -341,6 +356,6 @@ export type StrokeColor = `stroke-${Colors}-${Luminance}`;
 export type Color = `${Colors}-${Luminance}`;
 
 type Distance = 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
-type Breakpoints = 'xs:' | 'sm:' | 'md:' | 'lg:' | 'xl:' | '';
-type Space = `${Breakpoints}space-${'x' | 'y'}-${Distance}`;
+type Breakpoints = "xs:" | "sm:" | "md:" | "lg:" | "xl:" | "";
+type Space = `${Breakpoints}space-${"x" | "y"}-${Distance}`;
 type Padding = `${Breakpoints}p-${Distance}`;

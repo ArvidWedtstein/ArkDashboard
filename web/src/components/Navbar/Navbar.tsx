@@ -8,9 +8,11 @@ import { useRouterState } from "@redwoodjs/router/dist/router-context";
 import { capitalize, singularize } from "src/lib/formatters";
 
 const Navbar = () => {
-  const { currentUser, getCurrentUser, isAuthenticated } = useAuth();
+  const { currentUser, isAuthenticated } = useAuth();
   const { pathname } = useLocation();
   const [title, setTitle] = useState(pathname.split("/")[1]);
+
+  useRouterState();
 
   useEffect(() => {
     setTitle(capitalize(pathname.split("/")[1]));
@@ -22,9 +24,6 @@ const Navbar = () => {
   const handleOpen = useCallback(() => {
     setIsComponentVisible(!isComponentVisible);
   }, [isComponentVisible]);
-  // const handleOpen = () => {
-  //   setIsComponentVisible(!isComponentVisible);
-  // };
 
   return (
     <>
@@ -136,14 +135,6 @@ const Navbar = () => {
                         Your Profile
                       </Link>
                     </li>
-                    {/* <li>
-                      <a
-                        href="#"
-                        className={'block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200'}
-                      >
-                        Settings
-                      </a>
-                    </li> */}
                     <li>
                       <a
                         href="#"

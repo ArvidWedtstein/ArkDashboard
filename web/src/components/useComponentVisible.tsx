@@ -12,9 +12,9 @@ export default function useComponentVisible(initialIsVisible: boolean) {
   };
 
   useEffect(() => {
-    document.addEventListener("click", handleClickOutside, true);
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener("click", handleClickOutside, true);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
 

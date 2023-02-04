@@ -16,8 +16,8 @@ export const TimelineList = ({
   events: any[];
   options?: TimelineSettings;
 }) => {
-
-  const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
+  const { ref, isComponentVisible, setIsComponentVisible } =
+    useComponentVisible(false);
   const [currentModalImage, setCurrentModalImage] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -26,8 +26,6 @@ export const TimelineList = ({
   useEffect(() => {
     if (!page || isNaN(parseInt(page))) return;
     setCurrentPage(parseInt(page) - 1);
-
-
   }, [page]);
 
   useEffect(() => {
@@ -40,7 +38,7 @@ export const TimelineList = ({
         }
       });
     }
-  }, [])
+  }, []);
 
   const onChange = useCallback(
     (page: number) => {
@@ -77,20 +75,23 @@ export const TimelineList = ({
     <section className="">
       <div className="h-full w-full">
         <div
-          className={`cursor-grab flex touch-pan-x select-none flex-row items-stretch justify-start space-x-1 overflow-x-auto p-3 will-change-scroll ${options.snap && "snap-x snap-mandatory"
-            }`}
+          className={`flex cursor-grab touch-pan-x select-none flex-row items-stretch justify-start space-x-1 overflow-x-auto p-3 will-change-scroll ${
+            options.snap && "snap-x snap-mandatory"
+          }`}
         >
           {events.map((event, i) => (
             <>
               <div className="flex flex-col">
                 <div
                   key={i}
-                  className={`group w-full min-w-fit flex-1 rounded-md border border-gray-200 bg-slate-200 text-black dark:bg-neutral-800 dark:text-white before:content-none before:absolute before:-top-1 before:-bottom-1 before:p-1 before:bg-red-600 ${currentPage === i && "border-red-500"
-                    } ${options.snap && "snap-center snap-always"}`}
+                  className={`group w-full min-w-fit flex-1 rounded-md border border-gray-200 bg-slate-200 text-black before:absolute before:-top-1 before:-bottom-1 before:bg-red-600 before:p-1 before:content-none dark:bg-neutral-800 dark:text-white ${
+                    currentPage === i && "border-pea-500"
+                  } ${options.snap && "snap-center snap-always"}`}
                   data-tab={i}
                   onClick={() => onChange(i)}
                   aria-controls={`tab-${i}`}
                 >
+                  {/* Replace with map */}
                   <div
                     className={`flex h-16 w-full rounded-t-md  bg-cover bg-center`}
                     style={{
@@ -146,12 +147,17 @@ export const TimelineList = ({
                 (i + 1 < events.length && events[i + 1].season
                   ? events[i + 1].season
                   : 0) && (
-                  <div className="w-full min-w-fit flex-1 rounded-md border-2 border-transparent"></div>
-                )}
+                <div className="w-full min-w-fit flex-1 rounded-md border-2 border-transparent"></div>
+              )}
             </>
           ))}
         </div>
-        <RefModal isOpen={isComponentVisible} setIsOpen={setIsComponentVisible} ref={ref} image={currentModalImage} />
+        <RefModal
+          isOpen={isComponentVisible}
+          setIsOpen={setIsComponentVisible}
+          ref={ref}
+          image={currentModalImage}
+        />
         <div className="w-full p-1">
           {events[currentPage] && (
             <div className="m-2 block rounded-md bg-slate-200  text-black dark:bg-neutral-800 dark:text-white">
@@ -214,7 +220,7 @@ export const TimelineList = ({
                     </p>
                     <p>
                       {!events[currentPage].endDate &&
-                        !events[currentPage].raided_by
+                      !events[currentPage].raided_by
                         ? ""
                         : `Got raided `}
                       {events[currentPage].endDate &&
@@ -399,7 +405,7 @@ export const TimelineList = ({
                                 // setIsOpenModal(true);
                                 setIsComponentVisible(true);
                               }}
-                              className="cursor-pointer rounded object-cover object-center w-full h-full"
+                              className="h-full w-full cursor-pointer rounded object-cover object-center"
                               src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${img}`}
                               alt={events[currentPage].map}
                             />
