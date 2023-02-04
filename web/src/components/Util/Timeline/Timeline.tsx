@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getDateDiff } from "src/lib/formatters";
+import { getDateDiff, timeTag } from "src/lib/formatters";
 import { RefModal, Modal } from "../Modal/Modal";
 import { useParams } from "@redwoodjs/router";
 import { Map } from "../Map/Map";
@@ -91,7 +91,6 @@ export const TimelineList = ({
                   onClick={() => onChange(i)}
                   aria-controls={`tab-${i}`}
                 >
-                  {/* Replace with map */}
                   <div
                     className={`flex h-16 w-full rounded-t-md  bg-cover bg-center`}
                     style={{
@@ -154,11 +153,11 @@ export const TimelineList = ({
         </div>
         <RefModal
           isOpen={isComponentVisible}
-          setIsOpen={setIsComponentVisible}
+          setIsOpen={(open) => setIsComponentVisible(open)}
           ref={ref}
           image={currentModalImage}
         />
-        <div className="w-full p-1">
+        <article className="w-full p-1">
           {events[currentPage] && (
             <div className="m-2 block rounded-md bg-slate-200  text-black dark:bg-neutral-800 dark:text-white">
               <section className="body-font">
@@ -204,31 +203,18 @@ export const TimelineList = ({
               </section>
               <section className="body-font mx-4 border-t border-gray-200 text-gray-700 dark:text-neutral-200">
                 <div className="container mx-auto flex flex-wrap px-5 py-12">
-                  <div className="mb-10 w-full overflow-hidden lg:mb-0 lg:w-1/2">
+                  <div className="mb-10 w-full overflow-hidden text-sm lg:mb-0 lg:w-1/2">
                     <p>
                       We started playing on{" "}
-                      {new Intl.DateTimeFormat("en-GB", {
-                        timeZone: "UTC",
-                        // dateStyle: "medium",
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                        era: "long",
-                        weekday: "long",
-                      }).format(new Date(events[currentPage].startDate))}
-                      .
+                      {timeTag(events[currentPage].startDate)}.
                     </p>
                     <p>
                       {!events[currentPage].endDate &&
                       !events[currentPage].raided_by
                         ? ""
                         : `Got raided `}
-                      {events[currentPage].endDate &&
-                        `on
-                        ${new Date(
-                          events[currentPage].endDate
-                        ).toLocaleString()}
-                        `}
+                      {events[currentPage].endDate && `on `}
+                      {timeTag(events[currentPage].endDate)}
                       {events[currentPage].raided_by &&
                         `by ${events[currentPage].raided_by}.`}
                     </p>
@@ -238,8 +224,8 @@ export const TimelineList = ({
                           Base lasted{" "}
                           {
                             getDateDiff(
-                              events[currentPage].startDate,
-                              events[currentPage].endDate
+                              new Date(events[currentPage].startDate),
+                              new Date(events[currentPage].endDate)
                             ).dateString
                           }
                         </p>
@@ -302,8 +288,10 @@ export const TimelineList = ({
                         </h2>
                         <p className="text-base leading-relaxed">
                           Our base was located at:{" "}
-                          {events[currentPage].location.lat} Lat,{" "}
-                          {events[currentPage].location.lon} Lon
+                          {events[currentPage].location.lat}{" "}
+                          <abbr title="Latitude">Lat</abbr>,{" "}
+                          {events[currentPage].location.lon}{" "}
+                          <abbr title="Longitude">Lon</abbr>
                         </p>
                       </div>
                     </div>
@@ -402,7 +390,6 @@ export const TimelineList = ({
                                 setCurrentModalImage(
                                   `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${img}`
                                 );
-                                // setIsOpenModal(true);
                                 setIsComponentVisible(true);
                               }}
                               className="h-full w-full cursor-pointer rounded object-cover object-center"
@@ -418,7 +405,7 @@ export const TimelineList = ({
               </section>
             </div>
           )}
-        </div>
+        </article>
       </div>
     </section>
   );

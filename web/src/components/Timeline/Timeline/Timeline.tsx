@@ -87,7 +87,18 @@ const Timeline = ({ timeline }: Props) => {
     }
   };
 
-  return <>{basespots && <TimelineList events={basespots} />}</>;
+  return (
+    <>
+      {basespots && (
+        <TimelineList
+          options={{
+            arrowkeys: true,
+          }}
+          events={basespots}
+        />
+      )}
+    </>
+  );
 };
 
 export default Timeline;

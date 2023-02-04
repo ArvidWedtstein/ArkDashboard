@@ -49,12 +49,12 @@ export const jsonTruncate = (obj: unknown) => {
   return truncate(JSON.stringify(obj, null, 2));
 };
 
-export const timeTag = (dateTime?: string) => {
+export const timeTag = (dateTime?: string | Date) => {
   let output: string | JSX.Element = "";
 
   if (dateTime) {
     output = (
-      <time dateTime={dateTime} title={dateTime}>
+      <time dateTime={dateTime.toString()} title={dateTime.toString()}>
         {new Date(dateTime).toLocaleString("en-US", {
           timeStyle: "short",
           dateStyle: "long",
@@ -62,7 +62,6 @@ export const timeTag = (dateTime?: string) => {
       </time>
     );
   }
-
   return output;
 };
 

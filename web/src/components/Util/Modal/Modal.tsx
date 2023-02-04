@@ -10,14 +10,19 @@ type iModal = {
 };
 export const RefModal = forwardRef<HTMLDivElement, iModal>((props, ref) => {
   const { isOpen, setIsOpen, image, title, content } = props;
+
   return (
     <div
       tabIndex={-1}
       aria-hidden={isOpen ? "false" : "true"}
-      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full backdrop:bg-gray-50 ${isOpen ? "block" : "hidden"
-        }`}
+      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 backdrop:bg-gray-50 md:inset-0 md:h-full ${
+        isOpen ? "block" : "hidden"
+      }`}
     >
-      <div ref={ref} className="relative top-1/2 left-1/2 h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2">
+      <div
+        ref={ref}
+        className="relative top-1/2 left-1/2 h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2"
+      >
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
             {title && (
@@ -29,7 +34,7 @@ export const RefModal = forwardRef<HTMLDivElement, iModal>((props, ref) => {
               type="button"
               className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
               onClick={() => {
-                setIsOpen(false)
+                setIsOpen(false);
               }}
             >
               <svg
@@ -61,19 +66,14 @@ export const RefModal = forwardRef<HTMLDivElement, iModal>((props, ref) => {
     </div>
   );
 });
-export const Modal = ({
-  isOpen,
-  setIsOpen,
-  image,
-  title,
-  content,
-}: iModal) => {
+export const Modal = ({ isOpen, setIsOpen, image, title, content }: iModal) => {
   return (
     <div
       tabIndex={-1}
       aria-hidden={isOpen ? "false" : "true"}
-      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full ${isOpen ? "block" : "hidden"
-        }`}
+      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full ${
+        isOpen ? "block" : "hidden"
+      }`}
     >
       <div className="relative top-1/2 left-1/2 h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2">
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
@@ -87,7 +87,7 @@ export const Modal = ({
               type="button"
               className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
               onClick={() => {
-                setIsOpen(false)
+                setIsOpen(false);
               }}
             >
               <svg
