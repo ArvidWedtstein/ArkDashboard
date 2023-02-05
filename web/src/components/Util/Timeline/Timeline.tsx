@@ -136,11 +136,6 @@ export const TimelineList = ({
                     </div>
                   </div>
                 </div>
-                {/* <p className="italic text-center my-2 ">{new Date(event.startDate).getMonth()}</p>
-                <div className="flex items-center">
-                  <div className="hidden sm:flex w-0.5 bg-gray-200 h-6 dark:bg-gray-200"></div>
-                  <div className="hidden sm:flex w-full bg-gray-200 h-0.5 dark:bg-gray-200"></div>
-                </div> */}
               </div>
               {(event.season && event.season) !==
                 (i + 1 < events.length && events[i + 1].season
