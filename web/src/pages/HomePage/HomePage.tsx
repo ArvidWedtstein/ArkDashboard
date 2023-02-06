@@ -15,7 +15,6 @@ const HomePage = () => {
   //   console.log(event, session)
   // })
 
-
   return (
     <>
       <MetaTags title="Home" description="Home page" />

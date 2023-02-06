@@ -4,7 +4,6 @@ import { toast } from "@redwoodjs/web/toast";
 
 import { QUERY } from "src/components/Timeline/TimelinesCell";
 import { ContextMenu } from "src/components/Util/ContextMenu/ContextMenu";
-import Table, { Taybul } from "src/components/Util/Table/Table";
 import { pluralize, timeTag, truncate } from "src/lib/formatters";
 
 import type {

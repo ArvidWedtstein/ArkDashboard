@@ -1,10 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  debounce,
-  dynamicSort,
-  isUUID,
-  truncate,
-} from "src/lib/formatters";
+import { debounce, dynamicSort, isUUID, truncate } from "src/lib/formatters";
 import clsx from "clsx";
 interface Row {
   index: number;
@@ -37,7 +32,7 @@ interface ColumnData<V = any, F = V> {
    */
   renderCell?: (params: GridCell<V>) => React.ReactNode;
 }
-interface TaybulProps {
+interface TableProps {
   columns: ColumnData[];
   hover?: boolean;
   onRowClick?: (row: Row) => void;
@@ -88,8 +83,7 @@ const Table = ({
   pagination = false,
   rowsPerPage = 10,
   renderActions,
-}: TaybulProps) => {
-
+}: TableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rows, setRows] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -98,11 +92,14 @@ const Table = ({
     direction: "asc",
   });
 
-  const sortRows = useCallback((e) => {
-    let column = e.target.id;
-    let direction = sort.direction === "asc" ? "desc" : "asc";
-    setSort({ column, direction });
-  }, [sort])
+  const sortRows = useCallback(
+    (e) => {
+      let column = e.target.id;
+      let direction = sort.direction === "asc" ? "desc" : "asc";
+      setSort({ column, direction });
+    },
+    [sort]
+  );
 
   const sortData = (data: any[]) => {
     let { column, direction } = sort;
@@ -162,14 +159,20 @@ const Table = ({
       return setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);
     } else {
       return setCurrentPage(
-        currentPage < Math.ceil(dataRows.length / rowsPerPage) ? currentPage + 1 : currentPage
+        currentPage < Math.ceil(dataRows.length / rowsPerPage)
+          ? currentPage + 1
+          : currentPage
       );
     }
   };
 
   const headerRenderer = ({ label, columnIndex, ...other }) => {
     return (
-      <th key={`headcell-${columnIndex}-${label}`} className={clsx(other.className, "px-6 py-3")} scope="col">
+      <th
+        key={`headcell-${columnIndex}-${label}`}
+        className={clsx(other.className, "px-6 py-3")}
+        scope="col"
+      >
         {other.sortable ? (
           <div
             className="flex select-none items-center"
@@ -217,12 +220,12 @@ const Table = ({
 
     let content = renderCell
       ? renderCell({
-        columnIndex,
-        rowIndex,
-        value: cellData,
-        field: other.field,
-        row: rowData,
-      })
+          columnIndex,
+          rowIndex,
+          value: cellData,
+          field: other.field,
+          row: rowData,
+        })
       : "";
 
     if (
@@ -292,18 +295,23 @@ const Table = ({
       <tfoot>
         <tr className="font-semibold text-gray-900 dark:text-white">
           {select && !vertical && <td className="p-4"></td>}
-          {!vertical && columns.map(({ field, ...other }, index) => {
-            return (
-              <th
-                key={`${index}-${field}`}
-                className={clsx("px-6 py-3", other.className, { "test-base": other.numeric })}
-              >
-                {other.numeric
-                  ? SortedFilteredData.reduce((a, b) => a + b[field], 0)
-                  : index === 0 ? "Total" : ""}
-              </th>
-            );
-          })}
+          {!vertical &&
+            columns.map(({ field, ...other }, index) => {
+              return (
+                <th
+                  key={`${index}-${field}`}
+                  className={clsx("px-6 py-3", other.className, {
+                    "test-base": other.numeric,
+                  })}
+                >
+                  {other.numeric
+                    ? SortedFilteredData.reduce((a, b) => a + b[field], 0)
+                    : index === 0
+                    ? "Total"
+                    : ""}
+                </th>
+              );
+            })}
         </tr>
       </tfoot>
     );
@@ -311,14 +319,39 @@ const Table = ({
 
   const tablePagination = () => {
     return (
-      <nav className="flex items-center justify-between pt-4" aria-label="Table navigation">
-        <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">Showing <span className="font-semibold text-gray-900 dark:text-white">{currentPage}-{rowsPerPage * 1}</span> of <span className="font-semibold text-gray-900 dark:text-white">{rows.length || dataRows.length}</span></span>
+      <nav
+        className="flex items-center justify-between pt-4"
+        aria-label="Table navigation"
+      >
+        <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+          Showing{" "}
+          <span className="font-semibold text-gray-900 dark:text-white">
+            {currentPage}-{rowsPerPage * 1}
+          </span>{" "}
+          of{" "}
+          <span className="font-semibold text-gray-900 dark:text-white">
+            {rows.length || dataRows.length}
+          </span>
+        </span>
         <ul className="inline-flex items-center -space-x-px text-gray-500 dark:text-gray-400">
-          <li onClick={() => changePage('prev')}>
-            <a href="#" className="block px-3 py-2 ml-0 leading-tight bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white">
+          <li onClick={() => changePage("prev")}>
+            <a
+              href="#"
+              className="ml-0 block rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
               <span className="sr-only">Previous</span>
-              <svg className="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd"></path>
+              <svg
+                className="h-5 w-5"
+                aria-hidden="true"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                ></path>
               </svg>
             </a>
           </li>
@@ -334,46 +367,56 @@ const Table = ({
             )
           })} */}
           {currentPage > 1 && (
-            <li onClick={() => changePage('prev')}>
-              <a
-                className='px-3 py-2 leading-tight bg-white hover:bg-gray-100 border-gray-300 hover:text-gray-700 border dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white'
-              >
+            <li onClick={() => changePage("prev")}>
+              <a className="border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
                 {currentPage - 1}
               </a>
             </li>
           )}
           <li>
-            <a
-              className='px-3 py-2 leading-tight bg-blue-50 hover:bg-blue-100 hover:text-blue-700 border-blue-300 border dark:hover:bg-gray-700 dark:hover:text-white'
-            >
+            <a className="border border-blue-300 bg-blue-50 px-3 py-2 leading-tight hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-white">
               {currentPage}
             </a>
           </li>
           {currentPage < Math.ceil(dataRows.length / rowsPerPage) && (
-            <li onClick={() => changePage('next')}>
-              <a
-                className='px-3 py-2 leading-tight bg-white hover:bg-gray-100 border-gray-300 hover:text-gray-700 border dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white'
-              >
+            <li onClick={() => changePage("next")}>
+              <a className="border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
                 {currentPage + 1}
               </a>
             </li>
           )}
-          <li onClick={() => changePage('next')}>
-            <a href="#" className="block px-3 py-2 leading-tight bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700  dark:hover:bg-gray-700 dark:hover:text-white">
+          <li onClick={() => changePage("next")}>
+            <a
+              href="#"
+              className="block rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800  dark:hover:bg-gray-700 dark:hover:text-white"
+            >
               <span className="sr-only">Next</span>
-              <svg className="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
+              <svg
+                className="h-5 w-5"
+                aria-hidden="true"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clipRule="evenodd"
+                ></path>
               </svg>
             </a>
           </li>
         </ul>
       </nav>
-    )
-  }
+    );
+  };
 
   return (
     <div
-      className={clsx('relative overflow-x-auto shadow-md sm:rounded-lg', className)}
+      className={clsx(
+        "relative overflow-x-auto shadow-md sm:rounded-lg",
+        className
+      )}
     >
       {search && (
         <div className="flex items-center justify-between pb-4">
@@ -405,7 +448,7 @@ const Table = ({
           </div>
         </div>
       )}
-      <table className="w-full text-left mr-auto text-sm text-gray-500 dark:text-stone-300 table-auto">
+      <table className="mr-auto w-full table-auto text-left text-sm text-gray-500 dark:text-stone-300">
         {!!caption && (
           <caption className="bg-white p-5 text-left text-lg font-semibold text-gray-900 dark:bg-zinc-800 dark:text-white">
             {caption.title}
@@ -431,28 +474,25 @@ const Table = ({
             </tr>
           </thead>
         )}
-        <tbody className="divide-y dark:divide-gray-800 divide-gray-400">
-          {vertical ? (
-            columns.map(({ field, ...other }, index) => {
-              return (
-                <tr
-                  key={`row-${index}`}
-                  className={
-                    clsx('bg-white dark:bg-zinc-600', {
+        <tbody className="divide-y divide-gray-400 dark:divide-gray-800">
+          {vertical
+            ? columns.map(({ field, ...other }, index) => {
+                return (
+                  <tr
+                    key={`row-${index}`}
+                    className={clsx("bg-white dark:bg-zinc-600", {
                       "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
-                    })
-                  }
-                  onClick={() => onRowClick && onRowClick({ index: index })}
-                >
-                  {header &&
-                    headerRenderer({
-                      label: other.label,
-                      columnIndex: index,
-                      ...other,
                     })}
-                  {SortedFilteredData.map((datarow, rowIndex) => {
-                    return (
-                      cellRenderer({
+                    onClick={() => onRowClick && onRowClick({ index: index })}
+                  >
+                    {header &&
+                      headerRenderer({
+                        label: other.label,
+                        columnIndex: index,
+                        ...other,
+                      })}
+                    {SortedFilteredData.map((datarow, rowIndex) => {
+                      return cellRenderer({
                         rowData: datarow,
                         cellData: datarow[field],
                         columnIndex: index,
@@ -460,43 +500,43 @@ const Table = ({
                         renderCell: other.renderCell,
                         field,
                         ...other,
-                      })
-                    );
-                  })}
-                </tr>
-              );
-            })
-          ) : (
-            SortedFilteredData.map((datarow, i) => {
-              return (
-                <tr
-                  key={`row-${i}`}
-                  className={clsx('bg-gray-200 dark:bg-zinc-600', {
-                    "hover:bg-gray-50 dark:hover:bg-gray-600": hover
-                  })}
-                  onClick={() => onRowClick && onRowClick({ index: i })}
-                >
-                  {select && tableSelect({ row: i })}
-                  {columns.map(({ field, ...other }, index) => {
-                    return cellRenderer({
-                      rowData: datarow,
-                      cellData: datarow[field],
-                      columnIndex: index,
-                      rowIndex: i,
-                      renderCell: other.renderCell,
-                      field,
-                      ...other,
-                    });
-                  })}
-                  {renderActions && <td>{renderActions(datarow)}</td>}
-                </tr>
-              );
-            })
-          )}
+                      });
+                    })}
+                  </tr>
+                );
+              })
+            : SortedFilteredData.map((datarow, i) => {
+                return (
+                  <tr
+                    key={`row-${i}`}
+                    className={clsx("bg-gray-200 dark:bg-zinc-600", {
+                      "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
+                    })}
+                    onClick={() => onRowClick && onRowClick({ index: i })}
+                  >
+                    {select && tableSelect({ row: i })}
+                    {columns.map(({ field, ...other }, index) => {
+                      return cellRenderer({
+                        rowData: datarow,
+                        cellData: datarow[field],
+                        columnIndex: index,
+                        rowIndex: i,
+                        renderCell: other.renderCell,
+                        field,
+                        ...other,
+                      });
+                    })}
+                    {renderActions && <td>{renderActions(datarow)}</td>}
+                  </tr>
+                );
+              })}
           {dataRows.length === 0 && (
             <tr>
-              <td colSpan={vertical ? dataRows.length : columns.length} className="text-center bg-gray-200 dark:bg-zinc-600">
-                <span className="text-gray-500 dark:text-gray-400 px-3 py-2 ">
+              <td
+                colSpan={vertical ? dataRows.length : columns.length}
+                className="bg-gray-200 text-center dark:bg-zinc-600"
+              >
+                <span className="px-3 py-2 text-gray-500 dark:text-gray-400 ">
                   No data found
                 </span>
               </td>

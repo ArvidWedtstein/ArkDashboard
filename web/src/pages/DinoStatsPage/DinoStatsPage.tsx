@@ -10,7 +10,7 @@ import {
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useState } from "react";
-import Table, { Taybul } from "src/components/Util/Table/Table";
+import Table from "src/components/Util/Table/Table";
 import { combineBySummingKeys } from "src/lib/formatters";
 import arkdinos from "../../../public/arkdinos2.json";
 
@@ -176,7 +176,7 @@ const DinoStatsPage = () => {
               {
                 field: "dino",
                 label: "Total",
-              }
+              },
             ]}
             renderActions={(row) => {
               return (
@@ -203,7 +203,7 @@ const DinoStatsPage = () => {
                     +
                   </button>
                 </nav>
-              )
+              );
             }}
           />
         </div>
