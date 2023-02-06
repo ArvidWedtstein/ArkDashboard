@@ -14,6 +14,7 @@ module.exports = {
       }),
       animation: {
         "circle-progress": "progress 1s ease-out forwards",
+        "fade-in": "fade 0.5s ease-in forwards",
       },
       boxShadow: {
         boxContent:
@@ -23,6 +24,14 @@ module.exports = {
         progress: {
           "0%": {
             "stroke-dasharray": "0 100",
+          },
+        },
+        fade: {
+          "0%": {
+            opacity: "0",
+          },
+          "100%": {
+            opacity: "1",
           },
         },
       },

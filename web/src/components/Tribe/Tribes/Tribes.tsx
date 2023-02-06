@@ -100,7 +100,7 @@ const TribesList = ({ tribes }: FindTribes) => {
           </div>
         </div>
       </div>
-      <Taybul
+      <Table
         className="m-4"
         columns={[
           {

@@ -153,7 +153,7 @@ const DinoStatsPage = () => {
             </div>
           </Form>
           {/* TODO: Add pretame simulator. Assign available points to random stats */}
-          <Taybul
+          <Table
             rows={dino}
             columns={[
               {
@@ -206,37 +206,6 @@ const DinoStatsPage = () => {
               )
             }}
           />
-          {/* <Table
-            data={dino}
-            cols={["stat", "base", "increaseperlevel", `dino`, "actions"]}
-            renderActions={(row) => {
-              return (
-                <nav className="flex flex-row content-center items-center align-middle">
-                  <button
-                    id={`rem${row.stat}`}
-                    disabled={level[row.stat] <= 0}
-                    className="rw-button rw-button-small disabled:bg-slate-500 disabled:text-white"
-                    onClick={onRemove}
-                  >
-                    -
-                  </button>
-                  <input
-                    disabled={true}
-                    className="rw-input rw-input-small max-w-[50px]"
-                    value={level[row.stat]}
-                  />
-                  <button
-                    id={`add${row.stat}`}
-                    disabled={points <= 0}
-                    className="rw-button rw-button-small disabled:bg-slate-500 disabled:text-white"
-                    onClick={onAdd}
-                  >
-                    +
-                  </button>
-                </nav>
-              );
-            }}
-          /> */}
         </div>
       </div>
     </>

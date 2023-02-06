@@ -1,7 +1,7 @@
 import { TextField } from "@redwoodjs/forms";
 import { Link, routes } from "@redwoodjs/router";
 import { bool } from "prop-types";
-import { memo, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   capitalize,
   debounce,
@@ -12,22 +12,12 @@ import {
   truncate,
 } from "src/lib/formatters";
 
-interface ITableProps<P = {}> {
-  children?: React.ReactNode;
-  data: Object[];
-  cols?: any[];
-  renderCell?: (params: any) => React.ReactNode;
-  renderActions?: (params: any) => React.ReactNode;
-  tableOptions?: {
-    header: boolean;
-  };
-  className?: string;
-}
 interface Row {
   index: number;
 }
 interface GridCell<V = any> {
   columnIndex: number;
+  rowIndex: number;
   field: string;
   value: V;
   row?: V;
@@ -69,6 +59,7 @@ interface TaybulProps {
   search?: boolean;
   filter?: boolean;
   header?: boolean;
+  pagination?: boolean;
   renderActions?: (row: any) => React.ReactNode;
   /**
    * Number of rows per page
@@ -87,7 +78,7 @@ interface TaybulProps {
  * @param param
  * @returns
  */
-export const Taybul = ({
+const Table = ({
   columns,
   rows: dataRows,
   onRowClick,
@@ -100,24 +91,10 @@ export const Taybul = ({
   search = false,
   header = true,
   filter = false,
+  pagination = false,
   rowsPerPage = 10,
   renderActions,
 }: TaybulProps) => {
-  // const handleFirstPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //   onPageChange(event, 0);
-  // };
-
-  // const handleBackButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //   onPageChange(event, page - 1);
-  // };
-
-  // const handleNextButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //   onPageChange(event, page + 1);
-  // };
-
-  // const handleLastPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //   onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-  // };
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rows, setRows] = useState<any[]>([]);
@@ -127,11 +104,11 @@ export const Taybul = ({
     direction: "asc",
   });
 
-  const sortRows = (e) => {
+  const sortRows = useCallback((e) => {
     let column = e.target.id;
     let direction = sort.direction === "asc" ? "desc" : "asc";
     setSort({ column, direction });
-  };
+  }, [sort])
 
   const sortData = (data: any[]) => {
     let { column, direction } = sort;
@@ -186,9 +163,19 @@ export const Taybul = ({
     }
   };
 
+  const changePage = (dir: "next" | "prev") => {
+    if (dir === "prev") {
+      return setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);
+    } else {
+      return setCurrentPage(
+        currentPage < Math.ceil(dataRows.length / rowsPerPage) ? currentPage + 1 : currentPage
+      );
+    }
+  };
+
   const headerRenderer = ({ label, columnIndex, ...other }) => {
     return (
-      <th key={`${columnIndex}-${label}`} className="px-6 py-3" scope="col">
+      <th key={`headcell-${columnIndex}-${label}`} className={`px-6 py-3 ${!!other.className ? other.className : ""}`} scope="col">
         {other.sortable ? (
           <div
             className="flex select-none items-center"
@@ -224,24 +211,26 @@ export const Taybul = ({
     rowData,
     cellData,
     columnIndex,
+    rowIndex,
     renderCell,
     ...other
   }) => {
     const className = `px-3 py-2 ${!!other.className ? other.className : ""} ${
       // px-6 py-4
       other.bold
-        ? "whitespace-nowrap font-bold text-gray-900 dark:text-white"
+        ? "font-bold text-gray-900 dark:text-white"
         : ""
-    }`;
-    const key = `${columnIndex}-${cellData}`;
+      }`;
+    const key = `${Math.random()}-${columnIndex}-${cellData}`;
 
     let content = renderCell
       ? renderCell({
-          columnIndex,
-          value: cellData,
-          field: other.field,
-          row: rowData,
-        })
+        columnIndex,
+        rowIndex,
+        value: cellData,
+        field: other.field,
+        row: rowData,
+      })
       : "";
 
     if (
@@ -269,10 +258,6 @@ export const Taybul = ({
       content = other.valueFormatter
         ? other.valueFormatter({ value: cellData, row: rowData, columnIndex })
         : truncate(cellData, 30);
-      console.log(
-        columnIndex,
-        other.valueFormatter ? other.valueFormatter(cellData) : "no formatter"
-      );
     }
 
     return (
@@ -309,20 +294,21 @@ export const Taybul = ({
     );
   };
 
+  // TODO: Fix summary for vertical table
   const tableFooter = () => {
     return (
       <tfoot>
         <tr className="font-semibold text-gray-900 dark:text-white">
-          {select && <td className="p-4"></td>}
-          {columns.map(({ field, ...other }, index) => {
+          {select && !vertical && <td className="p-4"></td>}
+          {!vertical && columns.map(({ field, ...other }, index) => {
             return (
               <th
                 key={`${index}-${field}`}
-                className={`px-6 py-3 ${other.numeric ? "text-base" : ""}`}
+                className={`px-6 py-3 ${other.numeric ? "text-base" : ""} ${other.className ? other.className : ""}`}
               >
                 {other.numeric
                   ? SortedFilteredData.reduce((a, b) => a + b[field], 0)
-                  : "Total"}
+                  : index === 0 ? "Total" : ""}
               </th>
             );
           })}
@@ -331,42 +317,67 @@ export const Taybul = ({
     );
   };
 
-  // const tablePagination = () => {
-  //   return (
-  //     <nav className="flex items-center justify-between pt-4" aria-label="Table navigation">
-  //       <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">Showing <span className="font-semibold text-gray-900 dark:text-white">1-{rowsPerPage * 1}</span> of <span className="font-semibold text-gray-900 dark:text-white">{rows.length}</span></span>
-  //       <ul className="inline-flex items-center -space-x-px">
-  //         <li>
-  //           <a href="#" className="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-  //             <span className="sr-only">Previous</span>
-  //             <svg className="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-  //           </a>
-  //         </li>
-  //         <li>
-  //           <a href="#" className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
-  //         </li>
-  //         <li>
-  //           <a href="#" className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
-  //         </li>
-  //         <li>
-  //           <a href="#" aria-current="page" className="z-10 px-3 py-2 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">3</a>
-  //         </li>
-  //         <li>
-  //           <a href="#" className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">...</a>
-  //         </li>
-  //         <li>
-  //           <a href="#" className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">100</a>
-  //         </li>
-  //         <li>
-  //           <a href="#" className="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-  //             <span className="sr-only">Next</span>
-  //             <svg className="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-  //           </a>
-  //         </li>
-  //       </ul>
-  //     </nav>
-  //   )
-  // }
+  const tablePagination = () => {
+    return (
+      <nav className="flex items-center justify-between pt-4" aria-label="Table navigation">
+        <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">Showing <span className="font-semibold text-gray-900 dark:text-white">{currentPage}-{rowsPerPage * 1}</span> of <span className="font-semibold text-gray-900 dark:text-white">{rows.length || dataRows.length}</span></span>
+        <ul className="inline-flex items-center -space-x-px text-gray-500 dark:text-gray-400">
+          <li onClick={() => changePage('prev')}>
+            <a href="#" className="block px-3 py-2 ml-0 leading-tight bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white">
+              <span className="sr-only">Previous</span>
+              <svg className="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd"></path>
+              </svg>
+            </a>
+          </li>
+          {/* {Array(Math.ceil(dataRows.length / rowsPerPage)).fill('').map((page, index) => {
+            return (
+              <li key={index}>
+                <a
+                  className={`px-3 py-2 leading-tight ${currentPage === index + 1 ? "bg-blue-50 hover:bg-blue-100 hover:text-blue-700 border-blue-300" : "bg-white hover:bg-gray-100 border-gray-300 hover:text-gray-700"} border dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white`}
+                >
+                  {index + 1}
+                </a>
+              </li>
+            )
+          })} */}
+          {currentPage > 1 && (
+            <li onClick={() => changePage('prev')}>
+              <a
+                className={`px-3 py-2 leading-tight bg-white hover:bg-gray-100 border-gray-300 hover:text-gray-700 border dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white`}
+              >
+                {currentPage - 1}
+              </a>
+            </li>
+          )}
+          <li>
+            <a
+              className={`px-3 py-2 leading-tight bg-blue-50 hover:bg-blue-100 hover:text-blue-700 border-blue-300 border dark:hover:bg-gray-700 dark:hover:text-white`}
+            >
+              {currentPage}
+            </a>
+          </li>
+          {currentPage < Math.ceil(dataRows.length / rowsPerPage) && (
+            <li onClick={() => changePage('next')}>
+              <a
+                className={`px-3 py-2 leading-tight bg-white hover:bg-gray-100 border-gray-300 hover:text-gray-700 border dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white`}
+              >
+                {currentPage + 1}
+              </a>
+            </li>
+          )}
+          <li onClick={() => changePage('next')}>
+            <a href="#" className="block px-3 py-2 leading-tight bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700  dark:hover:bg-gray-700 dark:hover:text-white">
+              <span className="sr-only">Next</span>
+              <svg className="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    )
+  }
 
   return (
     <div
@@ -402,7 +413,7 @@ export const Taybul = ({
           </div>
         </div>
       )}
-      <table className="w-full text-left text-sm text-gray-500 dark:text-stone-300">
+      <table className="w-full text-left mr-auto text-sm text-gray-500 dark:text-stone-300 table-auto">
         {!!caption && (
           <caption className="bg-white p-5 text-left text-lg font-semibold text-gray-900 dark:bg-zinc-800 dark:text-white">
             {caption.title}
@@ -414,7 +425,7 @@ export const Taybul = ({
           </caption>
         )}
         {!vertical && header && (
-          <thead className="bg-gray-50 text-sm uppercase text-stone-400 dark:bg-gray-700 dark:text-gray-400">
+          <thead className="bg-gray-400 text-sm uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-400">
             <tr className="table-row">
               {select && tableSelect({ header: true, row: 0 })}
               {columns.map(({ ...other }, index) => {
@@ -428,47 +439,46 @@ export const Taybul = ({
             </tr>
           </thead>
         )}
-        <tbody>
+        <tbody className="divide-y dark:divide-gray-800 divide-gray-400">
           {vertical ? (
-            <>
-              {columns.map(({ field, ...other }, index) => {
-                return (
-                  <tr
-                    key={index}
-                    className={`border-b bg-white dark:border-gray-800 dark:bg-zinc-600 ${
-                      hover ? "hover:bg-gray-50 dark:hover:bg-gray-600" : ""
+            columns.map(({ field, ...other }, index) => {
+              return (
+                <tr
+                  key={`row-${index}`}
+                  className={`bg-white dark:bg-zinc-600 ${hover ? "hover:bg-gray-50 dark:hover:bg-gray-600" : ""
                     }`}
-                    onClick={() => onRowClick && onRowClick({ index: index })}
-                  >
-                    {header &&
-                      headerRenderer({
-                        label: other.label,
-                        columnIndex: index,
-                        ...other,
-                      })}
-                    {SortedFilteredData.map((datarow) => {
-                      return cellRenderer({
+                  onClick={() => onRowClick && onRowClick({ index: index })}
+                >
+                  {header &&
+                    headerRenderer({
+                      label: other.label,
+                      columnIndex: index,
+                      ...other,
+                    })}
+                  {SortedFilteredData.map((datarow, rowIndex) => {
+                    return (
+                      cellRenderer({
                         rowData: datarow,
                         cellData: datarow[field],
                         columnIndex: index,
+                        rowIndex,
                         renderCell: other.renderCell,
                         field,
                         ...other,
-                      });
-                    })}
-                  </tr>
-                );
-              })}
-            </>
+                      })
+                    );
+                  })}
+                </tr>
+              );
+            })
           ) : (
             SortedFilteredData.map((datarow, i) => {
               return (
                 <tr
-                  key={i}
-                  className={`border-b bg-white dark:border-gray-800 dark:bg-zinc-600 ${
-                    hover &&
-                    "hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-600"
-                  }`}
+                  key={`row-${i}`}
+                  className={`bg-gray-200 dark:bg-zinc-600 ${hover ?
+                    "hover:bg-gray-50 dark:hover:bg-gray-600" : ""
+                    }`}
                   onClick={() => onRowClick && onRowClick({ index: i })}
                 >
                   {select && tableSelect({ row: i })}
@@ -477,6 +487,7 @@ export const Taybul = ({
                       rowData: datarow,
                       cellData: datarow[field],
                       columnIndex: index,
+                      rowIndex: i,
                       renderCell: other.renderCell,
                       field,
                       ...other,
@@ -487,86 +498,19 @@ export const Taybul = ({
               );
             })
           )}
+          {dataRows.length === 0 && (
+            <tr>
+              <td colSpan={vertical ? dataRows.length : columns.length} className="text-center bg-gray-200 dark:bg-zinc-600">
+                <span className="text-gray-500 dark:text-gray-400 px-3 py-2 ">
+                  No data found
+                </span>
+              </td>
+            </tr>
+          )}
         </tbody>
         {summary && tableFooter()}
       </table>
-      {/* {rowsPerPage && tablePagination()} */}
-    </div>
-  );
-};
-
-const Table = ({
-  data,
-  cols,
-  renderCell,
-  renderActions,
-  tableOptions = { header: true },
-  className,
-}: ITableProps) => {
-  if (!data || data.length < 1) return null;
-
-  let keys = cols || Object.keys(data[0]);
-
-  // https://codesandbox.io/s/3rso2u
-  const sort = (key: string) => {
-    data = data.sort(dynamicSort(key));
-    // tableData = tableData.sort(dynamicSort(key));
-  };
-  // TODO: Create filtering and sorting options for table
-  return (
-    <div className={`flex ${className && className}`}>
-      <div className="dark:border-pea-400 relative my-4 table w-full table-auto rounded-xl border p-3 shadow">
-        {tableOptions && tableOptions.header && (
-          <div className="table-header-group">
-            {keys.map((key) => (
-              <div
-                key={`${key}${Math.random()}`}
-                onClick={() => sort(key)}
-                className="table-cell p-2 text-xs text-[#888da9]"
-                // /*aria-[sort=ascending]:bg-red-500 aria-[sort=descending]:bg-red-400*/
-              >
-                {truncate(capitalize(key))}
-              </div>
-            ))}
-          </div>
-        )}
-        {data.map((row) => (
-          <div key={Math.random() * Math.random()} className="table-row-group">
-            {keys.map((value, i) => (
-              <div key={`table-item-${i}`} className="table-cell">
-                {value == "actions" ? (
-                  <div
-                    key={value}
-                    className="p-2 text-xs text-black dark:text-stone-200"
-                  >
-                    {renderActions && renderActions(row)}
-                  </div>
-                ) : (
-                  <>
-                    {renderCell ? (
-                      <div
-                        key={Math.random()}
-                        className="p-2 text-xs text-black dark:text-stone-200"
-                      >
-                        {renderCell({ id: value, amount: row[value] })}
-                      </div>
-                    ) : (
-                      <div
-                        key={Math.random()}
-                        className="p-2 text-xs text-black dark:text-stone-200"
-                      >
-                        {isDate(row[value])
-                          ? timeTag(row[value])
-                          : truncate(row[value])}
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
+      {pagination && tablePagination()}
     </div>
   );
 };

@@ -17,25 +17,25 @@ const Pagination = ({
     if (!!!page || isNaN(parseInt(page))) {
       page = "1";
     }
+    for (let i = 0; i < Math.ceil(count / itemsPerPage); i++) {
+      items.push(
+        <li key={i}>
+          <Link
+            to={routes[route]({ page: i + 1 })}
+            // className="page-link relative block rounded border-0 bg-transparent py-1.5 px-3 text-gray-800 outline-none transition-all duration-300 hover:bg-gray-200 hover:text-gray-800 focus:shadow-none"
+            className={`inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200 ${parseInt(page) === i + 1
+                ? "border-2 border-gray-800 outline dark:border-stone-200"
+                : "border-gray-500 dark:border-gray-200"
+              }`}
+          >
+            {i + 1}
+          </Link>
+        </li>
+      );
+    }
   }, []);
 
-  for (let i = 0; i < Math.ceil(count / itemsPerPage); i++) {
-    items.push(
-      <li key={i}>
-        <Link
-          to={routes[route]({ page: i + 1 })}
-          // className="page-link relative block rounded border-0 bg-transparent py-1.5 px-3 text-gray-800 outline-none transition-all duration-300 hover:bg-gray-200 hover:text-gray-800 focus:shadow-none"
-          className={`inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200 ${
-            parseInt(page) === i + 1
-              ? "border-2 border-gray-800 outline dark:border-stone-200"
-              : "border-gray-500 dark:border-gray-200"
-          }`}
-        >
-          {i + 1}
-        </Link>
-      </li>
-    );
-  }
+
 
   type direction = "next" | "prev";
   const changePage = (dir: direction): number => {
