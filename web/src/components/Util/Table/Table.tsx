@@ -445,8 +445,7 @@ const Table = ({
               return (
                 <tr
                   key={`row-${index}`}
-                  className={`bg-white dark:bg-zinc-600 ${hover ? "hover:bg-gray-50 dark:hover:bg-gray-600" : ""
-                    }`}
+                  className={`bg-white dark:bg-zinc-600 ${hover ? "hover:bg-gray-50 dark:hover:bg-gray-600" : ""}`}
                   onClick={() => onRowClick && onRowClick({ index: index })}
                 >
                   {header &&
@@ -476,8 +475,8 @@ const Table = ({
               return (
                 <tr
                   key={`row-${i}`}
-                  className={`bg-gray-200 dark:bg-zinc-600 ${hover ?
-                    "hover:bg-gray-50 dark:hover:bg-gray-600" : ""
+                  className={`bg-gray-200 dark:bg-zinc-600 ${hover ??
+                    "hover:bg-gray-50 dark:hover:bg-gray-600"
                     }`}
                   onClick={() => onRowClick && onRowClick({ index: i })}
                 >

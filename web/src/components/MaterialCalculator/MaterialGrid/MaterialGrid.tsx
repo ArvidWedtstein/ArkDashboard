@@ -304,7 +304,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
             rows={item}
             className="my-4 whitespace-nowrap animate-fade-in"
             summary={true}
-            hover={false}
+            hover={true}
             columns={[
               {
                 field: 'name',
