@@ -169,7 +169,7 @@ const Table = ({
 
   const headerRenderer = ({ label, columnIndex, ...other }) => {
     return (
-      <th key={`headcell-${columnIndex}-${label}`} className={`px-6 py-3 ${clsx(other.className)}`} scope="col">
+      <th key={`headcell-${columnIndex}-${label}`} className={clsx(other.className, "px-6 py-3")} scope="col">
         {other.sortable ? (
           <div
             className="flex select-none items-center"
@@ -296,7 +296,7 @@ const Table = ({
             return (
               <th
                 key={`${index}-${field}`}
-                className={`${clsx("px-6 py-3", { "test-base": other.numeric })} ${other.className ? other.className : ""}`}
+                className={clsx("px-6 py-3", other.className, { "test-base": other.numeric })}
               >
                 {other.numeric
                   ? SortedFilteredData.reduce((a, b) => a + b[field], 0)
@@ -336,7 +336,7 @@ const Table = ({
           {currentPage > 1 && (
             <li onClick={() => changePage('prev')}>
               <a
-                className={`px-3 py-2 leading-tight bg-white hover:bg-gray-100 border-gray-300 hover:text-gray-700 border dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white`}
+                className='px-3 py-2 leading-tight bg-white hover:bg-gray-100 border-gray-300 hover:text-gray-700 border dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white'
               >
                 {currentPage - 1}
               </a>
@@ -344,7 +344,7 @@ const Table = ({
           )}
           <li>
             <a
-              className={`px-3 py-2 leading-tight bg-blue-50 hover:bg-blue-100 hover:text-blue-700 border-blue-300 border dark:hover:bg-gray-700 dark:hover:text-white`}
+              className='px-3 py-2 leading-tight bg-blue-50 hover:bg-blue-100 hover:text-blue-700 border-blue-300 border dark:hover:bg-gray-700 dark:hover:text-white'
             >
               {currentPage}
             </a>
@@ -352,7 +352,7 @@ const Table = ({
           {currentPage < Math.ceil(dataRows.length / rowsPerPage) && (
             <li onClick={() => changePage('next')}>
               <a
-                className={`px-3 py-2 leading-tight bg-white hover:bg-gray-100 border-gray-300 hover:text-gray-700 border dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white`}
+                className='px-3 py-2 leading-tight bg-white hover:bg-gray-100 border-gray-300 hover:text-gray-700 border dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white'
               >
                 {currentPage + 1}
               </a>
@@ -373,7 +373,7 @@ const Table = ({
 
   return (
     <div
-      className={`relative overflow-x-auto shadow-md sm:rounded-lg ${className}`}
+      className={clsx('relative overflow-x-auto shadow-md sm:rounded-lg', className)}
     >
       {search && (
         <div className="flex items-center justify-between pb-4">
@@ -437,7 +437,11 @@ const Table = ({
               return (
                 <tr
                   key={`row-${index}`}
-                  className={`bg-white dark:bg-zinc-600 ${hover ? "hover:bg-gray-50 dark:hover:bg-gray-600" : ""}`}
+                  className={
+                    clsx('bg-white dark:bg-zinc-600', {
+                      "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
+                    })
+                  }
                   onClick={() => onRowClick && onRowClick({ index: index })}
                 >
                   {header &&
@@ -467,9 +471,9 @@ const Table = ({
               return (
                 <tr
                   key={`row-${i}`}
-                  className={`bg-gray-200 dark:bg-zinc-600 ${hover ??
-                    "hover:bg-gray-50 dark:hover:bg-gray-600"
-                    }`}
+                  className={clsx('bg-gray-200 dark:bg-zinc-600', {
+                    "hover:bg-gray-50 dark:hover:bg-gray-600": hover
+                  })}
                   onClick={() => onRowClick && onRowClick({ index: i })}
                 >
                   {select && tableSelect({ row: i })}
