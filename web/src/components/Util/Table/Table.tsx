@@ -1,17 +1,11 @@
-import { TextField } from "@redwoodjs/forms";
-import { Link, routes } from "@redwoodjs/router";
-import { bool } from "prop-types";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  capitalize,
   debounce,
   dynamicSort,
-  isDate,
   isUUID,
-  timeTag,
   truncate,
 } from "src/lib/formatters";
-
+import clsx from "clsx";
 interface Row {
   index: number;
 }
@@ -175,7 +169,7 @@ const Table = ({
 
   const headerRenderer = ({ label, columnIndex, ...other }) => {
     return (
-      <th key={`headcell-${columnIndex}-${label}`} className={`px-6 py-3 ${!!other.className ? other.className : ""}`} scope="col">
+      <th key={`headcell-${columnIndex}-${label}`} className={`px-6 py-3 ${clsx(other.className)}`} scope="col">
         {other.sortable ? (
           <div
             className="flex select-none items-center"
@@ -215,12 +209,10 @@ const Table = ({
     renderCell,
     ...other
   }) => {
-    const className = `px-3 py-2 ${!!other.className ? other.className : ""} ${
-      // px-6 py-4
-      other.bold
-        ? "font-bold text-gray-900 dark:text-white"
-        : ""
-      }`;
+    const className = clsx(other.className, "px-3 py-2", {
+      "font-bold text-gray-900 dark:text-white": other.bold,
+    });
+    // px-6 py-4
     const key = `${Math.random()}-${columnIndex}-${cellData}`;
 
     let content = renderCell
@@ -304,7 +296,7 @@ const Table = ({
             return (
               <th
                 key={`${index}-${field}`}
-                className={`px-6 py-3 ${other.numeric ? "text-base" : ""} ${other.className ? other.className : ""}`}
+                className={`${clsx("px-6 py-3", { "test-base": other.numeric })} ${other.className ? other.className : ""}`}
               >
                 {other.numeric
                   ? SortedFilteredData.reduce((a, b) => a + b[field], 0)
