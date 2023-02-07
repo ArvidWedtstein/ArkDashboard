@@ -163,13 +163,13 @@ export const getBaseMaterials = (
    * @param {number} amount - The number of objects required.
    */
   const findBaseMaterials = (itemId: number, amount: number) => {
-    let recipe = prices.items.find((r) => r.itemId === itemId)?.recipe;
+    let recipe = prices.items.find((r) => r.itemId === itemId);
 
-    if (!recipe) {
+    if (!recipe?.recipe || (recipe.stats.length && recipe.stats.find((s) => s.id === 1)?.value === "Resource")) {
       return;
     }
 
-    recipe.forEach(({ itemId, count: recipeCount }) => {
+    recipe.recipe.forEach(({ itemId, count: recipeCount }) => {
       let recipeItem = prices.items.find((r) => r.itemId === itemId);
       let count = recipeCount * amount;
       let weight = recipeItem?.weight * count;

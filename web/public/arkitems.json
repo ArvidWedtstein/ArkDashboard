@@ -14,7 +14,8 @@
     { "id": 12, "name": "Stamina" },
     { "id": 13, "name": "Cooldown" },
     { "id": 14, "name": "Fertilizer Points" },
-    { "id": 15, "name": "Affinity" }
+    { "id": 15, "name": "Affinity" },
+    { "id": 16, "name": "Ammo" }
   ],
   "items": [
     {
@@ -137,6 +138,7 @@
       "itemId": 7,
       "description": "Cut from trees.",
       "image": "wood.png",
+      "color": "#866950",
       "weight": 0.5,
       "recipe": [],
       "stats": []
@@ -148,6 +150,7 @@
       "itemId": 8,
       "description": "Mined from rocks.",
       "image": "stone.png",
+      "color": "#bbbbbb",
       "weight": 0.5,
       "recipe": [],
       "stats": []
@@ -157,10 +160,10 @@
       "maxStack": 100,
       "decomposes": -1,
       "itemId": 9,
-      "color": "#C7C1BB",
+      "color": "#75756f",
       "description": "Mined from certain rocks, usually found high on mountains, in caves, rivers, or deep water sources. Can be refined in a forge or used on machines like the lathe.",
       "image": "metal.png",
-      "weight": 1.0,
+      "weight": 1,
       "recipe": [],
       "stats": []
     },
@@ -171,6 +174,7 @@
       "itemId": 10,
       "description": "Thick skin, hacked from most dead animals.",
       "image": "hide.png",
+      "color": "#b99e7b",
       "weight": 0.01,
       "recipe": [],
       "stats": []
@@ -180,6 +184,7 @@
       "maxStack": 100,
       "decomposes": -1,
       "itemId": 11,
+      "color": "#7b6856",
       "description": "This firm, flexible material makes up exoskeletons. Hacked primarily from dead insects.",
       "image": "Chitin.png",
       "weight": 0.01,
@@ -193,6 +198,7 @@
       "itemId": 12,
       "description": "Eating raw food will sate hunger, but is unhealthy for humans. Most wild carnivores prefer raw meat to Cooked Meat.",
       "image": "raw_meat.png",
+      "color": "#8d3234",
       "weight": 0.1,
       "recipe": [],
       "stats": [
@@ -770,7 +776,7 @@
       "stats": [
         { "id": 1, "value": "Consumable" },
         { "id": 7, "value": "15 over 2 seconds" },
-        { "id": 13, "value": "40 seconds" }
+        { "id": 13, "value": 40 }
       ]
     },
     {
@@ -829,14 +835,16 @@
       "itemId": 52,
       "description": "This brew doesn't have any nutritional value, but it promotes healing.",
       "image": "medical_brew.png",
+      "color": "#9a4640",
       "weight": 0.1,
+      "effects": ["+40 Health"],
       "recipe": [
         { "itemId": 119, "count": 20 },
         { "itemId": 123, "count": 2 }
       ],
       "stats": [
         { "id": 1, "value": "Consumable" },
-        { "id": 7, "value": "+40" },
+        { "id": 7, "value": 120 },
         { "id": 9, "value": "60:00" }
       ]
     },
@@ -927,7 +935,7 @@
       ]
     },
     {
-      "name": "Red Coloring",
+      "name": "Red Dye",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 58,
@@ -941,7 +949,7 @@
       "stats": [{ "id": 1, "value": "Dye" }]
     },
     {
-      "name": "Green Coloring",
+      "name": "Green Dye",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 59,
@@ -956,7 +964,7 @@
       "stats": [{ "id": 1, "value": "Dye" }]
     },
     {
-      "name": "Blue Coloring",
+      "name": "Blue Dye",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 60,
@@ -970,7 +978,7 @@
       "stats": [{ "id": 1, "value": "Dye" }]
     },
     {
-      "name": "Yellow Coloring",
+      "name": "Yellow Dye",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 61,
@@ -984,7 +992,7 @@
       "stats": [{ "id": 1, "value": "Dye" }]
     },
     {
-      "name": "Purple Coloring",
+      "name": "Purple Dye",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 62,
@@ -999,7 +1007,7 @@
       "stats": [{ "id": 1, "value": "Dye" }]
     },
     {
-      "name": "Orange Coloring",
+      "name": "Orange Dye",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 63,
@@ -1014,12 +1022,14 @@
       "stats": [{ "id": 1, "value": "Dye" }]
     },
     {
-      "name": "Black Coloring",
+      "name": "Black Dye",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 64,
       "description": "This substance can be used to color certain items and structures.",
       "image": "black_coloring.png",
+      "color": "#1c1c1c",
+      "craftedIn": ["Cooking Pot"],
       "weight": 0.1,
       "recipe": [
         { "itemId": 121, "count": 3 },
@@ -1028,7 +1038,7 @@
       "stats": [{ "id": 1, "value": "Dye" }]
     },
     {
-      "name": "White Coloring",
+      "name": "White Dye",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 65,
@@ -1042,7 +1052,7 @@
       "stats": [{ "id": 1, "value": "Dye" }]
     },
     {
-      "name": "Brown Coloring",
+      "name": "Brown Dye",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 66,
@@ -1116,6 +1126,7 @@
       "itemId": 73,
       "description": "Ferroceric flint that holds an edge better than regular stone.",
       "image": "flint.png",
+      "color": "#b9752d",
       "weight": 0.05,
       "recipe": [],
       "stats": []
@@ -1139,6 +1150,7 @@
       "itemId": 75,
       "description": "Sticks torn from trees. Useful for primitive buildings.",
       "image": "thatch.png",
+      "color": "#d0c485",
       "weight": -1,
       "recipe": [],
       "stats": []
@@ -1150,6 +1162,7 @@
       "itemId": 76,
       "description": "Delicately collected strands of plant. Perfect for making thread, cloth or rope.",
       "image": "fiber.png",
+      "color": "#866950",
       "weight": 0.001,
       "recipe": [],
       "stats": []
@@ -1170,7 +1183,7 @@
       "maxStack": 100,
       "decomposes": -1,
       "itemId": 78,
-      "color": "#C7CBCD",
+      "color": "#dddddd",
       "description": "This strange crystalline material can be shaped into lenses, used as an electronics component, or mixed into powerful explosives.",
       "image": "crystal.png",
       "weight": 1.0,
@@ -2196,9 +2209,9 @@
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 142,
-      "color": "#56625E",
       "description": "A very rare resource, found underground. Can be broken down and used to make modern tech.",
       "image": "obsidian.png",
+      "color": "#516361",
       "weight": 1.0,
       "recipe": [],
       "stats": [{ "id": 1, "value": "Resource" }]
@@ -2244,13 +2257,15 @@
       "color": "#85827E",
       "description": "Paste created at Mortar and Pestle.",
       "image": "cementing_paste.png",
+      "engramPoints": 3,
+      "craftingTime": 1,
       "craftedIn": ["Chemistry Bench", "Equus Saddle", "Mortar and Pestle"],
       "weight": 0.01,
       "recipe": [
         { "itemId": 8, "count": 8 },
         { "itemId": 11, "count": 4 }
       ],
-      "stats": []
+      "stats": [{ "id": 1, "value": "Resource" }]
     },
     {
       "name": "Dinosaur Gate",
@@ -2277,6 +2292,7 @@
       "itemId": 162,
       "description": "A thicc blob of unrefined oil. Can be refined with hide to make gasoline.",
       "image": "oil.png",
+      "color": "#2e3a48",
       "weight": 1.0,
       "recipe": [],
       "stats": [{ "id": 1, "value": "Resource" }]
@@ -2299,6 +2315,7 @@
       "itemId": 164,
       "description": "An advanced fuel. Can only be used in machines designed to consume it.",
       "image": "gasoline.png",
+      "craftedIn": ["Forge"],
       "weight": 0.1,
       "recipe": [
         { "itemId": 10, "count": 5 },
@@ -2312,7 +2329,7 @@
       "decomposes": 120,
       "itemId": 165,
       "color": "#bbb463",
-      "craftedIn": "Fabricator",
+      "craftedIn": ["Fabricator"],
       "description": "This multipurpose computer chip can be used to create electronic devices.",
       "image": "electronics.png",
       "weight": 0.01,
@@ -3055,7 +3072,7 @@
       "itemId": 210,
       "description": "Equip a Mammoth with this to ride it.",
       "image": "mammoth_saddle.png",
-      "craftedIn": "Smithy",
+      "craftedIn": ["Smithy"],
       "weight": 20.0,
       "recipe": [
         { "itemId": 10, "count": 260 },
@@ -3165,6 +3182,7 @@
       "itemId": 217,
       "description": "A firm, flexible material. Can be found in some animal horns, plates, shells, and ridges.",
       "image": "keratin.png",
+      "color": "#c2a789",
       "weight": 0.01,
       "recipe": [],
       "stats": []
@@ -3347,6 +3365,7 @@
       "itemId": 229,
       "description": "This simple vegetarian dish refreshes your body like an oasis. Consume it to gain increased hyperthermic insulation, and slow your rate of water consumption.",
       "image": "calien_soup.png",
+      "color": "#43934a",
       "weight": 0.1,
       "recipe": [
         { "itemId": 99, "count": 5 },
@@ -3357,7 +3376,7 @@
       ],
       "stats": [
         { "id": 1, "value": "Consumable" },
-        { "id": 9, "value": "5:00:00" }
+        { "id": 9, "value": 300 }
       ]
     },
     {
@@ -3671,6 +3690,7 @@
       "itemId": 250,
       "description": "Even the smell of this flower makes you slightly angry.",
       "image": "rare_flower.png",
+      "color": "#6288b8",
       "weight": 0.01,
       "recipe": [],
       "stats": [{ "id": 1, "value": "Resource" }]
@@ -3682,6 +3702,7 @@
       "itemId": 251,
       "description": "You feel lightheaded after just touching this. Ingesting it would be dangerous.",
       "image": "rare_mushroom.png",
+      "color": "#893810",
       "weight": 0.01,
       "recipe": [],
       "stats": [{ "id": 1, "value": "Resource" }]
@@ -3693,6 +3714,7 @@
       "itemId": 252,
       "description": "Eating raw food will sate hunger, but is unhealthy for humans. This excellent cut spoils very quickly. Most wild carnivores love this meat.",
       "image": "raw_prime_meat.png",
+      "color": "#8d3234",
       "weight": 0.1,
       "recipe": [],
       "stats": [
@@ -3726,6 +3748,16 @@
       "description": "Only eat this dish when you intend to go into a brawl. It causes pain and stress to your body, but grants you almost supernatural strength, speed, and resilience. Warning: This concoction can be habit forming.",
       "image": "battle_tartare.png",
       "weight": 0.1,
+      "color": "#7c2c2a",
+      "craftedIn": ["Cooking Pot"],
+      "effects": [
+        "+65% Melee Damage",
+        "+15% Damage resistance",
+        "+50% Movement Speed",
+        "+50% Food and Water consumption",
+        "Increased Stamina regen",
+        "-90 Health (0.45 per second)"
+      ],
       "recipe": [
         { "itemId": 253, "count": 3 },
         { "itemId": 120, "count": 20 },
@@ -3736,7 +3768,7 @@
       ],
       "stats": [
         { "id": 1, "value": "Consumable" },
-        { "id": 9, "value": "5:00:00" }
+        { "id": 9, "value": 300 }
       ]
     },
     {
@@ -3748,6 +3780,11 @@
       "image": "shadow_steak_saute.png",
       "craftedIn": ["Cooking Pot"],
       "color": "#8d3234",
+      "effects": [
+        "+50% Hypothermic Insulation",
+        "+50% Hyperthermic Insulation",
+        "-80% Weapon recoil"
+      ],
       "weight": 0.1,
       "recipe": [
         { "itemId": 253, "count": 3 },
@@ -4684,6 +4721,7 @@
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 386,
+      "color": "#fcb0a4",
       "description": "Spread these seeds of concentrated nutrients around and what was once harvested may yet regrow, even nearby a structure!",
       "image": "refertilizer.png",
       "weight": 0.3,
@@ -4957,13 +4995,15 @@
       "stats": [{ "id": 1, "value": "Building" }]
     },
     {
-      "name": "Magenta Coloring",
+      "name": "Magenta Dye",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 406,
+      "color": "#e71cd9",
       "description": "This substance can be used to color certain items and structures.",
       "image": "magenta_coloring.png",
       "weight": 0.1,
+      "craftedIn": ["Cooking Pot"],
       "recipe": [
         { "itemId": 118, "count": 9 },
         { "itemId": 119, "count": 9 },
@@ -4972,12 +5012,14 @@
       "stats": [{ "id": 1, "value": "Dye" }]
     },
     {
-      "name": "Brick Coloring",
+      "name": "Brick Dye",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 407,
+      "color": "#94321c",
       "description": "This substance can be used to color certain items and structures.",
       "image": "brick_coloring.png",
+      "craftedIn": ["Cooking Pot"],
       "weight": 0.1,
       "recipe": [
         { "itemId": 119, "count": 12 },
@@ -4987,10 +5029,12 @@
       "stats": [{ "id": 1, "value": "Dye" }]
     },
     {
-      "name": "Cantaloupe Coloring",
+      "name": "Cantaloupe Dye",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 408,
+      "color": "#ff9a00",
+      "craftedIn": ["Cooking Pot"],
       "description": "This substance can be used to color certain items and structures.",
       "image": "cantaloupe_coloring.png",
       "weight": 0.1,
@@ -5003,10 +5047,12 @@
       "stats": [{ "id": 1, "value": "Dye" }]
     },
     {
-      "name": "Mud Coloring",
+      "name": "Mud Dye",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 409,
+      "color": "#463b2b",
+      "craftedIn": ["Cooking Pot"],
       "description": "This substance can be used to color certain items and structures.",
       "image": "mud_coloring.png",
       "weight": 0.1,
@@ -5020,10 +5066,12 @@
       "stats": [{ "id": 1, "value": "Dye" }]
     },
     {
-      "name": "Navy Coloring",
+      "name": "Navy Dye",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 410,
+      "color": "#32326b",
+      "craftedIn": ["Cooking Pot"],
       "description": "This substance can be used to color certain items and structures.",
       "image": "navy_coloring.png",
       "weight": 0.1,
@@ -5035,10 +5083,12 @@
       "stats": [{ "id": 1, "value": "Dye" }]
     },
     {
-      "name": "Olive Coloring",
+      "name": "Olive Dye",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 411,
+      "color": "#baba59",
+      "craftedIn": ["Cooking Pot"],
       "description": "This substance can be used to color certain items and structures.",
       "image": "navy_coloring.png",
       "weight": 0.1,
@@ -5050,7 +5100,7 @@
       "stats": [{ "id": 1, "value": "Dye" }]
     },
     {
-      "name": "Slate Coloring",
+      "name": "Slate Dye",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 412,
@@ -5065,11 +5115,11 @@
       "stats": [{ "id": 1, "value": "Dye" }]
     },
     {
-      "name": "Mind Wipe Tonic",
+      "name": "Mindwipe Tonic",
       "maxStack": 100,
       "decomposes": 120,
       "color": "#62157e",
-      "craftedIn": "Cooking Pot",
+      "craftedIn": ["Cooking Pot"],
       "itemId": 413,
       "description": "Drink this tonic to forget everything you have learned (resets your Engram Points and Stats).",
       "image": "mindwipe_tonic.png",
@@ -5082,7 +5132,13 @@
         { "itemId": 151, "count": 20 },
         { "itemId": 150, "count": 20 }
       ],
-      "stats": [{ "id": 1, "value": "Consumables" }]
+      "stats": [
+        { "id": 1, "value": "Consumable" },
+        {
+          "id": 9,
+          "value": 300
+        }
+      ]
     },
     {
       "name": "Wooden Raft",
@@ -5124,6 +5180,7 @@
       "description": "Equip a Pachy with this to ride it.",
       "image": "pachy_saddle.png",
       "weight": 20.0,
+      "engramPoints": 18,
       "recipe": [
         { "itemId": 10, "count": 110 },
         { "itemId": 76, "count": 65 },
@@ -5155,16 +5212,18 @@
         { "itemId": 7, "count": 2 },
         { "itemId": 10, "count": 1 }
       ],
-      "stats": [{ "id": 1, "value": "Painting" }]
+      "stats": [{ "id": 1, "value": "Structure" }]
     },
     {
-      "name": "Paracer Saddle",
+      "name": "Paraceratherium Saddle",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 422,
       "description": "Equip a Paracer with this to ride it.",
       "image": "Paracer_Saddle.png",
       "weight": 20.0,
+      "engramPoints": 18,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 200 },
         { "itemId": 76, "count": 110 },
@@ -5173,13 +5232,15 @@
       "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
-      "name": "Paracer Platform Saddle",
+      "name": "Paraceratherium Platform Saddle",
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 423,
       "description": "Equip a Paracer with this to ride it.",
       "image": "Paracer_Platform_Saddle.png",
       "weight": 20.0,
+      "engramPoints": 24,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 320 },
         { "itemId": 76, "count": 200 },
@@ -5196,6 +5257,7 @@
       "itemId": 424,
       "description": "Equip a Paracer with this to ride it.",
       "image": "pelt.png",
+      "color": "#988b7c",
       "weight": 0.5,
       "recipe": [],
       "stats": [{ "id": 1, "value": "Resource" }]
@@ -5334,7 +5396,10 @@
         { "itemId": 7, "count": 4 },
         { "itemId": 76, "count": 15 }
       ],
-      "stats": [{ "id": 1, "value": "Melee" }]
+      "stats": [
+        { "id": 1, "value": "Weapon" },
+        { "id": 6, "value": 5 }
+      ]
     },
     {
       "name": "Poison Grenade",
@@ -5621,9 +5686,11 @@
       "maxStack": 100,
       "decomposes": 120,
       "itemId": 453,
+      "color": "#333157",
       "description": "This sticky compound excels at absorbing other chemicals.",
       "image": "broth_of_enlightenment.png",
       "weight": 0.1,
+      "craftedIn": ["Cooking Pot"],
       "recipe": [
         { "itemId": 120, "count": 10 },
         { "itemId": 234, "count": 2 },
@@ -5809,6 +5876,7 @@
       "name": "Sand",
       "itemId": 468,
       "image": "Sand_(Scorched_Earth).png",
+      "color": "#ecd4a2",
       "recipe": [],
       "stats": [{ "id": 1, "value": "Resource" }]
     },
@@ -5816,6 +5884,7 @@
       "name": "Cactus Sap",
       "itemId": 469,
       "image": "Cactus_Sap_(Scorched_Earth).png",
+      "color": "#a0cc93",
       "recipe": [],
       "stats": [{ "id": 1, "value": "Resource" }]
     },
@@ -5823,10 +5892,11 @@
       "name": "Element Shard",
       "itemId": 470,
       "image": "Element_Shard.png",
+      "craftedIn": ["Tek Replicator"],
       "weight": 0.05,
       "craftingTime": 5,
       "engramPoints": 0,
-      "recipe": [{ "itemId": 473, "count": 1 }],
+      "recipe": [{ "itemId": 472, "count": 1, "yields": 100 }],
       "stats": [{ "id": 1, "value": "Resource" }]
     },
     {
@@ -5836,7 +5906,7 @@
       "image": "Element.png",
       "weight": 0.01,
       "craftedIn": ["Tek Replicator", "Charge Node"],
-      "recipe": [],
+      "recipe": [{ "itemId": 470, "count": 100 }],
       "stats": [{ "id": 1, "value": "Resource" }]
     },
     {
@@ -5871,6 +5941,7 @@
       "name": "Fertilizer",
       "itemId": 477,
       "image": "Fertilizer.png",
+      "color": "#776453",
       "recipe": [
         { "itemId": 75, "count": 50 },
         { "itemId": 55, "count": 3 }
@@ -5898,6 +5969,7 @@
       "name": "Raw Salt",
       "itemId": 480,
       "image": "Raw_Salt_(Scorched_Earth).png",
+      "color": "#dddddd",
       "recipe": [],
       "stats": [{ "id": 1, "value": "Resource" }]
     },
@@ -5905,6 +5977,7 @@
       "name": "Sulfur",
       "itemId": 481,
       "image": "Sulfur_(Scorched_Earth).png",
+      "color": "#ffdd1b",
       "recipe": [],
       "stats": [{ "id": 1, "value": "Resource" }]
     },
@@ -5930,6 +6003,7 @@
       "name": "Silk",
       "itemId": 484,
       "image": "Silk_(Scorched_Earth).png",
+      "color": "#eeeeee",
       "recipe": [],
       "stats": [{ "id": 1, "value": "Resource" }]
     },
@@ -6148,8 +6222,9 @@
       "name": "Organic Polymer",
       "itemId": 502,
       "image": "Organic_Polymer.png",
+      "color": "#80b89d",
       "recipe": [],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Resource" }]
     },
     {
       "name": "Ghillie Boots",
@@ -6357,7 +6432,7 @@
         { "itemId": 78, "count": 50 },
         { "itemId": 465, "count": 45 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Heavy Miner's Helmet",
@@ -6378,12 +6453,14 @@
       "name": "Baryonyx Saddle",
       "itemId": 522,
       "image": "Baryonyx_Saddle.png",
+      "engramPoints": 24,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 255 },
         { "itemId": 74, "count": 25 },
         { "itemId": 76, "count": 350 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Basilisk Saddle",
@@ -6396,18 +6473,20 @@
         { "itemId": 10, "count": 270 },
         { "itemId": 74, "count": 425 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Basilosaurus Saddle",
       "itemId": 524,
       "image": "Basilosaurus_Saddle.png",
+      "engramPoints": 30,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 200 },
         { "itemId": 76, "count": 250 },
         { "itemId": 74, "count": 55 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Castoroides Saddle",
@@ -6420,7 +6499,7 @@
         { "itemId": 75, "count": 180 },
         { "itemId": 146, "count": 140 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Chalicotherium Saddle",
@@ -6431,18 +6510,20 @@
         { "itemId": 76, "count": 180 },
         { "itemId": 74, "count": 45 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Daeodon Saddle",
       "itemId": 527,
       "image": "Daeodon_Saddle.png",
+      "engramPoints": 24,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 290 },
         { "itemId": 76, "count": 155 },
         { "itemId": 74, "count": 20 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Diplodocus Saddle",
@@ -6454,18 +6535,19 @@
         { "itemId": 7, "count": 250 },
         { "itemId": 74, "count": 200 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
-      "name": "Dire Bear Saddle",
+      "name": "Direbear Saddle",
       "itemId": 529,
       "image": "Dire_Bear_Saddle.png",
+      "engramPoints": 24,
       "recipe": [
         { "itemId": 10, "count": 300 },
         { "itemId": 76, "count": 130 },
         { "itemId": 146, "count": 100 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Dunkleosteus Saddle",
@@ -6477,19 +6559,21 @@
         { "itemId": 146, "count": 120 },
         { "itemId": 74, "count": 80 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Equus Saddle",
       "itemId": 531,
       "image": "Equus_Saddle.png",
+      "engramPoints": 22,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 240 },
         { "itemId": 76, "count": 160 },
         { "itemId": 7, "count": 85 },
         { "itemId": 8, "count": 80 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Gallimimus Saddle",
@@ -6518,6 +6602,7 @@
       "name": "Hyaenodon Meatpack",
       "itemId": 534,
       "image": "Hyaenodon_Meatpack.png",
+      "engramPoints": 14,
       "recipe": [
         { "itemId": 10, "count": 290 },
         { "itemId": 76, "count": 155 },
@@ -6529,12 +6614,13 @@
       "name": "Iguanodon Saddle",
       "itemId": 535,
       "image": "Iguanodon_Saddle.png",
+      "engramPoints": 12,
       "recipe": [
         { "itemId": 10, "count": 80 },
         { "itemId": 76, "count": 50 },
         { "itemId": 7, "count": 15 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Kaprosuchus Saddle",
@@ -6551,6 +6637,8 @@
       "name": "Karkinos Saddle",
       "itemId": 537,
       "image": "Karkinos_Saddle_(Aberration).png",
+      "engramPoints": 28,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 170 },
         { "itemId": 76, "count": 225 },
@@ -6587,6 +6675,7 @@
       "name": "Mantis Saddle",
       "itemId": 540,
       "image": "Mantis_Saddle_(Scorched_Earth).png",
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 120 },
         { "itemId": 76, "count": 75 },
@@ -6598,23 +6687,27 @@
       "name": "Megalosaurus Saddle",
       "itemId": 541,
       "image": "Megalosaurus_Saddle.png",
+      "engramPoints": 50,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 320 },
         { "itemId": 76, "count": 170 },
         { "itemId": 74, "count": 30 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Megalania Saddle",
       "itemId": 542,
       "image": "Megalania_Saddle.png",
+      "engramPoints": 65,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 315 },
         { "itemId": 76, "count": 215 },
         { "itemId": 74, "count": 45 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Megalodon Tek Saddle",
@@ -6627,12 +6720,14 @@
         { "itemId": 472, "count": 55 },
         { "itemId": 456, "count": 140 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Megatherium Saddle",
       "itemId": 544,
       "image": "Megatherium_Saddle.png",
+      "engramPoints": 24,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 325 },
         { "itemId": 76, "count": 130 },
@@ -6653,9 +6748,10 @@
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
-      "name": "Mosasaur Saddle",
+      "name": "Mosasaurus Saddle",
       "itemId": 546,
       "image": "Mosasaur_Saddle.png",
+      "engramPoints": 60,
       "recipe": [
         { "itemId": 10, "count": 800 },
         { "itemId": 76, "count": 600 },
@@ -6666,9 +6762,11 @@
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
-      "name": "Mosasaur Platform Saddle",
+      "name": "Mosasaurus Platform Saddle",
       "itemId": 547,
       "image": "Mosasaur_Platform_Saddle.png",
+      "craftedIn": ["Smithy"],
+      "engramPoints": 80,
       "recipe": [
         { "itemId": 10, "count": 960 },
         { "itemId": 76, "count": 720 },
@@ -6682,6 +6780,8 @@
       "name": "Mosasaur Tek Saddle",
       "itemId": 548,
       "image": "Mosasaur_Tek_Saddle.png",
+      "engramPoints": 80,
+      "craftedIn": ["Tek Replicator"],
       "recipe": [
         { "itemId": 166, "count": 500 },
         { "itemId": 74, "count": 2500 },
@@ -6689,7 +6789,7 @@
         { "itemId": 472, "count": 55 },
         { "itemId": 456, "count": 140 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Pachyrhinosaurus Saddle",
@@ -6700,18 +6800,7 @@
         { "itemId": 76, "count": 80 },
         { "itemId": 7, "count": 25 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
-    },
-    {
-      "name": "Pachyrhinosaurus Saddle",
-      "itemId": 550,
-      "image": "Pachyrhinosaurus_Saddle.png",
-      "recipe": [
-        { "itemId": 10, "count": 140 },
-        { "itemId": 76, "count": 80 },
-        { "itemId": 7, "count": 25 }
-      ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Pelagornis Saddle",
@@ -6722,7 +6811,7 @@
         { "itemId": 76, "count": 125 },
         { "itemId": 11, "count": 75 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Phiomia Saddle",
@@ -6733,7 +6822,7 @@
         { "itemId": 76, "count": 15 },
         { "itemId": 7, "count": 5 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Phiomia Saddle",
@@ -6744,7 +6833,7 @@
         { "itemId": 76, "count": 15 },
         { "itemId": 7, "count": 5 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Plesiosaur Platform Saddle",
@@ -6757,7 +6846,7 @@
         { "itemId": 163, "count": 155 },
         { "itemId": 146, "count": 55 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Procoptodon Saddle",
@@ -6769,7 +6858,7 @@
         { "itemId": 76, "count": 200 },
         { "itemId": 74, "count": 70 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Quetz Saddle",
@@ -6781,7 +6870,7 @@
         { "itemId": 146, "count": 200 },
         { "itemId": 163, "count": 85 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Quetz Platform Saddle",
@@ -6794,18 +6883,20 @@
         { "itemId": 163, "count": 220 },
         { "itemId": 146, "count": 120 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Ravager Saddle",
       "itemId": 557,
       "image": "Ravager_Saddle_(Aberration).png",
+      "engramPoints": 20,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 285 },
         { "itemId": 76, "count": 125 },
         { "itemId": 558, "count": 110 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Fungal Wood",
@@ -6818,6 +6909,7 @@
       "name": "Rex Tek Saddle",
       "itemId": 559,
       "image": "Rex_Tek_Saddle.png",
+      "craftedIn": ["Tek Replicator"],
       "recipe": [
         { "itemId": 166, "count": 350 },
         { "itemId": 74, "count": 1800 },
@@ -6831,6 +6923,8 @@
       "name": "Rock Drake Saddle",
       "itemId": 560,
       "image": "Rock_Drake_Saddle_(Aberration).png",
+      "engramPoints": 26,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 350 },
         { "itemId": 76, "count": 225 },
@@ -6844,6 +6938,7 @@
       "name": "Rock Drake Tek Saddle",
       "itemId": 561,
       "image": "Rock_Drake_Tek_Saddle_(Aberration).png",
+      "craftedIn": ["Tek Replicator"],
       "recipe": [
         { "itemId": 166, "count": 455 },
         { "itemId": 74, "count": 2350 },
@@ -6854,9 +6949,11 @@
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
-      "name": "Rock Golem Saddle",
+      "name": "Rock Elemental Saddle",
       "itemId": 562,
       "image": "Rock_Golem_Saddle_(Scorched_Earth).png",
+      "engramPoints": 40,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 270 },
         { "itemId": 76, "count": 150 },
@@ -6868,6 +6965,8 @@
       "name": "Roll Rat Saddle",
       "itemId": 563,
       "image": "Roll_Rat_Saddle_(Aberration).png",
+      "engramPoints": 26,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 270 },
         { "itemId": 76, "count": 150 },
@@ -6911,17 +7010,7 @@
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
-    {
-      "name": "Stego Saddle",
-      "itemId": 567,
-      "image": "Stego_Saddle.png",
-      "recipe": [
-        { "itemId": 10, "count": 200 },
-        { "itemId": 76, "count": 110 },
-        { "itemId": 7, "count": 35 }
-      ],
-      "stats": [{ "id": 1, "value": "Tool" }]
-    },
+
     {
       "name": "Tapejara Saddle",
       "itemId": 568,
@@ -6932,12 +7021,13 @@
         { "itemId": 7, "count": 120 },
         { "itemId": 74, "count": 45 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Tapejara Tek Saddle",
       "itemId": 569,
       "image": "Tapejara_Tek_Saddle.png",
+      "craftedIn": ["Tek Replicator"],
       "recipe": [
         { "itemId": 166, "count": 500 },
         { "itemId": 74, "count": 2500 },
@@ -6945,7 +7035,7 @@
         { "itemId": 472, "count": 55 },
         { "itemId": 456, "count": 140 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Terror Bird Saddle",
@@ -6987,12 +7077,14 @@
       "name": "Thylacoleo Saddle",
       "itemId": 573,
       "image": "Thylacoleo_Saddle.png",
+      "engramPoints": 18,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 290 },
         { "itemId": 76, "count": 155 },
         { "itemId": 74, "count": 20 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Titanosaur Platform Saddle",
@@ -7033,6 +7125,8 @@
       "name": "Yutyrannus Saddle",
       "itemId": 577,
       "image": "Yutyrannus_Saddle.png",
+      "engramPoints": 50,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 10, "count": 425 },
         { "itemId": 76, "count": 350 },
@@ -8489,9 +8583,9 @@
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
-      "name": "Cyan Coloring",
+      "name": "Cyan Dye",
       "itemId": 699,
-      "image": "Cyan_Coloring.png",
+      "image": "Cyan_Dye.png",
       "recipe": [
         { "itemId": 117, "count": 80 },
         { "itemId": 118, "count": 45 },
@@ -8500,9 +8594,9 @@
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
-      "name": "Forest Coloring",
+      "name": "Forest Dye",
       "itemId": 700,
-      "image": "Forest_Coloring.png",
+      "image": "Forest_Dye.png",
       "recipe": [
         { "itemId": 117, "count": 6 },
         { "itemId": 118, "count": 12 },
@@ -8512,9 +8606,9 @@
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
-      "name": "Parchment Coloring",
+      "name": "Parchment Dye",
       "itemId": 701,
-      "image": "Parchement_Coloring.png",
+      "image": "Parchement_Dye.png",
       "recipe": [
         { "itemId": 117, "count": 12 },
         { "itemId": 122, "count": 6 },
@@ -8523,9 +8617,9 @@
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
-      "name": "Pink Coloring",
+      "name": "Pink Dye",
       "itemId": 702,
-      "image": "Pink_Coloring.png",
+      "image": "Pink_Dye.png",
       "recipe": [
         { "itemId": 119, "count": 12 },
         { "itemId": 122, "count": 6 },
@@ -8534,9 +8628,9 @@
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
-      "name": "Royalty Coloring",
+      "name": "Royalty Dye",
       "itemId": 703,
-      "image": "Royalty_Coloring.png",
+      "image": "Royalty_Dye.png",
       "recipe": [
         { "itemId": 118, "count": 7 },
         { "itemId": 119, "count": 7 },
@@ -8546,9 +8640,9 @@
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
-      "name": "Silver Coloring",
+      "name": "Silver Dye",
       "itemId": 704,
-      "image": "Silver_Coloring.png",
+      "image": "Silver_Dye.png",
       "recipe": [
         { "itemId": 121, "count": 6 },
         { "itemId": 122, "count": 12 },
@@ -8557,9 +8651,9 @@
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
-      "name": "Sky Coloring",
+      "name": "Sky Dye",
       "itemId": 705,
-      "image": "Sky_Coloring.png",
+      "image": "Sky_Dye.png",
       "recipe": [
         { "itemId": 118, "count": 12 },
         { "itemId": 122, "count": 6 },
@@ -8568,9 +8662,9 @@
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
-      "name": "Sky Coloring",
+      "name": "Sky Dye",
       "itemId": 706,
-      "image": "Sky_Coloring.png",
+      "image": "Sky_Dye.png",
       "recipe": [
         { "itemId": 118, "count": 12 },
         { "itemId": 122, "count": 6 },
@@ -8579,9 +8673,9 @@
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
-      "name": "Tan Coloring",
+      "name": "Tan Dye",
       "itemId": 707,
-      "image": "Tan_Coloring.png",
+      "image": "Tan_Dye.png",
       "recipe": [
         { "itemId": 117, "count": 4 },
         { "itemId": 118, "count": 1 },
@@ -8592,9 +8686,9 @@
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
-      "name": "Tangerine Coloring",
+      "name": "Tangerine Dye",
       "itemId": 708,
-      "image": "Tangerine_Coloring.png",
+      "image": "Tangerine_Dye.png",
       "recipe": [
         { "itemId": 117, "count": 7 },
         { "itemId": 119, "count": 7 },
@@ -8672,7 +8766,7 @@
       "itemId": 716,
       "image": "Beer_Liquid.png",
       "color": "#d6cd5b",
-      "craftedIn": "Beer Barrel",
+      "craftedIn": ["Beer Barrel"],
       "recipe": [
         { "itemId": 75, "count": 40 },
         { "itemId": 717, "count": 50 }
@@ -8691,9 +8785,17 @@
       "itemId": 718,
       "image": "Beer_Jar.png",
       "color": "#e1b24c",
+      "craftedIn": ["Beer Barrel"],
       "recipe": [
         { "itemId": 716, "count": 1 },
         { "itemId": 15, "count": 1 }
+      ],
+      "effects": [
+        "Increases damage resistance",
+        "Increases insulation",
+        "Reduces water consumption",
+        "Rapidly reduces Stamina",
+        "Applies hangover for 1 minute after consumption, keeping stamina at 0 and preventing effects of stew"
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -8708,6 +8810,7 @@
       "name": "Bug Repellant",
       "itemId": 720,
       "image": "Bug_Repellant.png",
+      "color": "#768443",
       "recipe": [
         { "itemId": 424, "count": 6 },
         { "itemId": 123, "count": 2 },
@@ -8751,6 +8854,8 @@
       "name": "Sweet Vegetable Cake",
       "itemId": 724,
       "image": "Sweet_Vegetable_Cake.png",
+      "color": "#f0d2be",
+      "effects": ["+500 Health to Tamed Herbivores"],
       "recipe": [
         { "itemId": 458, "count": 2 },
         { "itemId": 457, "count": 4 },
@@ -8760,7 +8865,10 @@
         { "itemId": 124, "count": 4 },
         { "itemId": 76, "count": 25 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [
+        { "id": 1, "value": "Consumable" },
+        { "id": 7, "value": 80 }
+      ]
     },
     {
       "name": "Chain Bola",
@@ -8812,7 +8920,7 @@
         { "itemId": 166, "count": 15 },
         { "itemId": 482, "count": 25 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Weapon" }]
     },
     {
       "name": "Flamethrower",
@@ -8825,7 +8933,10 @@
         { "itemId": 481, "count": 10 },
         { "itemId": 165, "count": 15 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [
+        { "id": 1, "value": "Weapon" },
+        { "id": 16, "value": [743] }
+      ]
     },
     {
       "name": "Glowstick",
@@ -8841,6 +8952,15 @@
       "name": "Harpoon Launcher",
       "itemId": 731,
       "image": "Harpoon_Launcher.png",
+      "weight": 10,
+      "engramPoints": 38,
+      "craftedIn": [
+        "Smithy",
+        "Argentavis Saddle",
+        "Castoroides Saddle",
+        "Thorny Dragon Saddle",
+        "Tek Replicator"
+      ],
       "recipe": [
         { "itemId": 7, "count": 40 },
         { "itemId": 76, "count": 60 },
@@ -8850,7 +8970,15 @@
         { "itemId": 142, "count": 50 },
         { "itemId": 166, "count": 30 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [
+        { "id": 1, "value": "Weapon" },
+        { "id": 5, "value": 100 },
+        { "id": 13, "value": 2 },
+        {
+          "id": 16,
+          "value": [584, 749, 785]
+        }
+      ]
     },
     {
       "name": "Lance",
@@ -8864,7 +8992,7 @@
         { "itemId": 142, "count": 100 },
         { "itemId": 74, "count": 260 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Weapon" }]
     },
     {
       "name": "Lasso",
@@ -8901,7 +9029,7 @@
         { "itemId": 75, "count": 5 },
         { "itemId": 108, "count": 5 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Weapon" }]
     },
     {
       "name": "Sword",
@@ -8912,7 +9040,7 @@
         { "itemId": 7, "count": 1 },
         { "itemId": 10, "count": 15 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Weapon" }]
     },
     {
       "name": "Tek Grenade",
@@ -8926,7 +9054,7 @@
         { "itemId": 166, "count": 30 },
         { "itemId": 109, "count": 60 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Weapon" }]
     },
     {
       "name": "Tek Railgun",
@@ -8940,7 +9068,7 @@
         { "itemId": 456, "count": 55 },
         { "itemId": 483, "count": 120 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Weapon" }]
     },
     {
       "name": "Tek Rifle",
@@ -8953,7 +9081,7 @@
         { "itemId": 472, "count": 20 },
         { "itemId": 456, "count": 55 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Weapon" }]
     },
     {
       "name": "Tek Sword",
@@ -8966,7 +9094,7 @@
         { "itemId": 472, "count": 40 },
         { "itemId": 456, "count": 80 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Weapon" }]
     },
     {
       "name": "Cannon Ball",
@@ -8978,7 +9106,7 @@
         { "itemId": 146, "count": 20 },
         { "itemId": 142, "count": 4 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Ammunition" }]
     },
     {
       "name": "Flame Arrow",
@@ -8988,7 +9116,7 @@
         { "itemId": 32, "count": 1 },
         { "itemId": 482, "count": 1 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Ammunition" }]
     },
     {
       "name": "Flamethrower Ammo",
@@ -8998,7 +9126,7 @@
         { "itemId": 482, "count": 10 },
         { "itemId": 164, "count": 1 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Ammunition" }]
     },
     {
       "name": "Grappling Hook",
@@ -9011,7 +9139,7 @@
         { "itemId": 75, "count": 2 },
         { "itemId": 76, "count": 35 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Ammunition" }]
     },
     {
       "name": "Tranquilizer Dart",
@@ -9022,7 +9150,7 @@
         { "itemId": 74, "count": 2 },
         { "itemId": 144, "count": 1 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Ammunition" }]
     },
     {
       "name": "Pheromone Dart",
@@ -9033,7 +9161,7 @@
         { "itemId": 74, "count": 2 },
         { "itemId": 745, "count": 1 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Ammunition" }]
     },
     {
       "name": "Rocket Homing Missile",
@@ -9047,7 +9175,7 @@
         { "itemId": 74, "count": 20 },
         { "itemId": 165, "count": 5 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Ammunition" }]
     },
     {
       "name": "Shocking Tranquilizer Dart",
@@ -9058,7 +9186,11 @@
         { "itemId": 74, "count": 2 },
         { "itemId": 745, "count": 1 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [
+        { "id": 1, "value": "Ammunition" },
+        { "id": 6, "value": 26 },
+        { "id": 10, "value": 442 }
+      ]
     },
     {
       "name": "Tranq Spear Bolt",
@@ -9068,7 +9200,7 @@
         { "itemId": 584, "count": 1 },
         { "itemId": 745, "count": 1 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Ammunition" }]
     },
     {
       "name": "Zip-Line Anchor",
@@ -9109,34 +9241,40 @@
       "name": "Managarmr Saddle",
       "itemId": 753,
       "image": "Managarmr_Saddle_(Extinction).png",
+      "engramPoints": 8,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 11, "count": 150 },
         { "itemId": 76, "count": 185 },
         { "itemId": 10, "count": 350 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Snow Owl Saddle",
       "itemId": 754,
       "image": "Snow_Owl_Saddle_(Extinction).png",
+      "craftedIn": ["Smithy"],
+      "engramPoints": 6,
       "recipe": [
         { "itemId": 11, "count": 150 },
         { "itemId": 76, "count": 185 },
         { "itemId": 10, "count": 350 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Velonasaur Saddle",
       "itemId": 755,
       "image": "Velonasaur_Saddle_(Extinction).png",
+      "engramPoints": 8,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 11, "count": 150 },
         { "itemId": 76, "count": 185 },
         { "itemId": 10, "count": 350 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Dino Leash",
@@ -9153,12 +9291,13 @@
       "name": "Gacha Saddle",
       "itemId": 757,
       "image": "Gacha_Saddle_(Extinction).png",
+      "engramPoints": 6,
       "recipe": [
         { "itemId": 10, "count": 350 },
         { "itemId": 76, "count": 185 },
         { "itemId": 11, "count": 150 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Scout Remote",
@@ -9246,8 +9385,9 @@
       "name": "Chitin/Keratin",
       "itemId": 765,
       "image": "Chitin.png",
+      "color": "#7b6856",
       "recipe": [],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Resource" }]
     },
     {
       "name": "Woolly Rhino Saddle",
@@ -9259,7 +9399,7 @@
         { "itemId": 146, "count": 100 },
         { "itemId": 74, "count": 60 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Cryofridge",
@@ -9271,7 +9411,7 @@
         { "itemId": 74, "count": 225 },
         { "itemId": 166, "count": 60 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Structure" }]
     },
     {
       "name": "Cryopod",
@@ -9297,7 +9437,7 @@
         { "itemId": 75, "count": 10 },
         { "itemId": 7, "count": 20 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Structure" }]
     },
     {
       "name": "Metal Double Doorframe",
@@ -9307,6 +9447,7 @@
       "description": "A metal-plated concrete wall that provides entrance to a structure.",
       "image": "metal_double_doorframe.png",
       "weight": 4.0,
+      "craftedIn": ["Smithy"],
       "recipe": [
         { "itemId": 74, "count": 20 },
         { "itemId": 146, "count": 6 }
@@ -9321,7 +9462,7 @@
       "maxStack": 1,
       "decomposes": 120,
       "itemId": 771,
-      "craftedIn": "Tek Replicator",
+      "craftedIn": ["Tek Replicator"],
       "description": "Saddle",
       "image": "astrodelphis_saddle.png",
       "weight": 4.0,
@@ -9332,14 +9473,14 @@
         { "itemId": 74, "count": 2500 },
         { "itemId": 166, "count": 500 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Maewing Saddle",
       "maxStack": 1,
       "decomposes": 120,
       "itemId": 772,
-      "craftedIn": "Smithy",
+      "craftedIn": ["Smithy"],
       "description": "Saddle",
       "image": "maewing_saddle.png",
       "weight": 4.0,
@@ -9348,7 +9489,7 @@
         { "itemId": 10, "count": 320 },
         { "itemId": 74, "count": 30 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
       "name": "Regular Kibble",
@@ -9377,7 +9518,7 @@
           "count": 5
         }
       ],
-      "craftedIn": "Cooking Pot"
+      "craftedIn": ["Cooking Pot"]
     },
     {
       "name": "Superior Kibble",
@@ -9410,7 +9551,7 @@
           "count": 5
         }
       ],
-      "craftedIn": "Cooking Pot"
+      "craftedIn": ["Cooking Pot"]
     },
     {
       "name": "Exceptional Kibble",
@@ -9439,7 +9580,7 @@
           "count": 5
         }
       ],
-      "craftedIn": "Cooking Pot"
+      "craftedIn": ["Cooking Pot"]
     },
     {
       "name": "Extraordinary Kibble",
@@ -9468,7 +9609,7 @@
           "count": 5
         }
       ],
-      "craftedIn": "Cooking Pot"
+      "craftedIn": ["Cooking Pot"]
     },
     {
       "name": "Simple Kibble",
@@ -9497,7 +9638,7 @@
           "count": 5
         }
       ],
-      "craftedIn": "Cooking Pot"
+      "craftedIn": ["Cooking Pot"]
     },
     {
       "name": "Basic Kibble",
@@ -9530,7 +9671,7 @@
           "count": 5
         }
       ],
-      "craftedIn": "Cooking Pot"
+      "craftedIn": ["Cooking Pot"]
     },
     {
       "name": "Mutagen",
@@ -9543,7 +9684,7 @@
           "count": 800
         }
       ],
-      "craftedIn": "Chemistry Bench"
+      "craftedIn": ["Chemistry Bench"]
     },
     {
       "name": "Achatina Paste",
@@ -9572,6 +9713,387 @@
       "image": "mutagel.png",
       "recipe": [],
       "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
+      "name": "Tek Bow",
+      "maxStack": 1,
+      "decomposes": -1,
+      "itemId": 784,
+      "image": "tek_bow.png",
+      "weight": 12,
+      "craftingTime": 10,
+      "engramPoints": 53,
+      "craftedIn": ["Tek Replicator"],
+      "recipe": [
+        { "itemId": 166, "count": 255 },
+        { "itemId": 74, "count": 200 },
+        { "itemId": 146, "count": 75 },
+        { "itemId": 472, "count": 60 },
+        { "itemId": 78, "count": 100 }
+      ],
+      "stats": [
+        { "id": 1, "value": "Weapon" },
+        { "id": 5, "value": 55 }
+      ]
+    },
+    {
+      "name": "Net Projectile",
+      "itemId": 785,
+      "image": "net_projectile.png",
+      "weight": 2,
+      "engramPoints": 12,
+      "craftedIn": ["Inventory"],
+      "recipe": [
+        { "itemId": 76, "count": 180 },
+        { "itemId": 74, "count": 12 },
+        { "itemId": 166, "count": 4 }
+      ],
+      "stats": [{ "id": 1, "value": "Ammunition" }]
+    },
+    {
+      "itemId": 786,
+      "name": "Raw Prime Fish Meat",
+      "recipe": [],
+      "stats": []
+    },
+    {
+      "itemId": 787,
+      "name": "Raw Fish Meat",
+      "color": "#fc5853",
+      "recipe": [],
+      "stats": [{ "id": 1, "value": "Consumable" }]
+    },
+    {
+      "itemId": 788,
+      "name": "Gasbags Saddle",
+      "craftedIn": ["Inventory"],
+      "craftingTime": 10,
+      "recipe": [
+        {
+          "itemId": 11,
+          "count": 150
+        },
+        {
+          "itemId": 76,
+          "count": 185
+        },
+        {
+          "itemId": 10,
+          "count": 350
+        }
+      ],
+      "stats": [{ "id": 1, "value": "Saddle" }],
+      "engramPoints": 6
+    },
+    {
+      "itemId": 789,
+      "name": "Enforcer (Level 1)",
+      "color": "#b4d7ff",
+      "craftedIn": ["Tek Replicator"],
+      "recipe": [
+        {
+          "itemId": 78,
+          "count": 50
+        },
+        {
+          "itemId": 474,
+          "count": 500
+        },
+        {
+          "itemId": 74,
+          "count": 60
+        },
+        {
+          "itemId": 162,
+          "count": 20
+        },
+        {
+          "itemId": 166,
+          "count": 30
+        }
+      ],
+      "stats": []
+    },
+    {
+      "itemId": 790,
+      "name": "Scout (Level 1)",
+      "color": "#b4d7ff",
+      "craftedIn": [],
+      "recipe": [
+        {
+          "itemId": 78,
+          "count": 30
+        },
+        {
+          "itemId": 165,
+          "count": 5
+        },
+        {
+          "itemId": 474,
+          "count": 20
+        },
+        {
+          "itemId": 74,
+          "count": 20
+        }
+      ],
+      "stats": []
+    },
+    {
+      "itemId": 791,
+      "name": "Deinonychus Saddle",
+      "craftedIn": [],
+      "recipe": [
+        {
+          "itemId": 11,
+          "count": 20
+        },
+        {
+          "itemId": 76,
+          "count": 65
+        },
+        {
+          "itemId": 10,
+          "count": 110
+        }
+      ],
+      "stats": [{ "id": 1, "value": "Saddle" }],
+      "engramPoints": 30
+    },
+    {
+      "itemId": 792,
+      "name": "Soap",
+      "color": "#f0d9a3",
+      "craftedIn": ["Cooking Pot"],
+      "recipe": [
+        {
+          "itemId": 166,
+          "count": 3
+        },
+        {
+          "itemId": 162,
+          "count": 2
+        }
+      ],
+      "stats": []
+    },
+    {
+      "itemId": 793,
+      "name": "Astrocetus Tek Saddle",
+      "craftedIn": ["Tek Replicator"],
+      "recipe": [
+        {
+          "itemId": 456,
+          "count": 210
+        },
+        {
+          "itemId": 78,
+          "count": 606
+        },
+        {
+          "itemId": 472,
+          "count": 82
+        },
+        {
+          "itemId": 74,
+          "count": 3250
+        },
+        {
+          "itemId": 166,
+          "count": 750
+        }
+      ],
+      "stats": [{ "id": 1, "value": "Saddle" }]
+    },
+    {
+      "itemId": 793,
+      "name": "Magmasaur Saddle",
+      "craftedIn": ["Smithy"],
+      "recipe": [
+        {
+          "itemId": 146,
+          "count": 125
+        },
+        {
+          "itemId": 76,
+          "count": 150
+        },
+        {
+          "itemId": 10,
+          "count": 230
+        },
+        {
+          "itemId": 74,
+          "count": 400
+        }
+      ],
+      "stats": [{ "id": 1, "value": "Saddle" }]
+    },
+    {
+      "itemId": 794,
+      "name": "Megachelon Platform Saddle",
+      "craftedIn": ["Smithy"],
+      "recipe": [
+        {
+          "itemId": 76,
+          "count": 260
+        },
+        {
+          "itemId": 146,
+          "count": 28
+        },
+        {
+          "itemId": 74,
+          "count": 76
+        },
+        {
+          "itemId": 11,
+          "count": 22
+        },
+        {
+          "itemId": 163,
+          "count": 42
+        },
+        {
+          "itemId": 10,
+          "count": 312
+        }
+      ],
+      "stats": [{ "id": 1, "value": "Saddle" }]
+    },
+    {
+      "itemId": 795,
+      "name": "Ambergris",
+      "description": "A rare and valuable substance that can be used to craft a variety of items. Can be found in Gen2",
+      "craftedIn": [],
+      "recipe": [],
+      "stats": []
+    },
+    {
+      "itemId": 796,
+      "name": "Tropeognathus Saddle",
+      "craftedIn": [],
+      "recipe": [
+        {
+          "itemId": 76,
+          "count": 450
+        },
+        {
+          "itemId": 78,
+          "count": 120
+        },
+        {
+          "itemId": 74,
+          "count": 1250
+        },
+        {
+          "itemId": 166,
+          "count": 250
+        },
+        {
+          "itemId": 10,
+          "count": 325
+        }
+      ],
+      "stats": [{ "id": 1, "value": "Saddle" }],
+      "engramPoints": 21
+    },
+    {
+      "itemId": 797,
+      "name": "Mining Drill",
+      "craftedIn": ["Fabricator"],
+      "recipe": [],
+      "stats": []
+    },
+    {
+      "itemId": 798,
+      "name": "Amargasaurus Saddle",
+      "craftedIn": ["Smithy"],
+      "recipe": [
+        {
+          "itemId": 0,
+          "count": 6
+        },
+        {
+          "itemId": 76,
+          "count": 140
+        },
+        {
+          "itemId": 10,
+          "count": 225
+        },
+        {
+          "itemId": 74,
+          "count": 30
+        }
+      ],
+      "stats": [{ "id": 1, "value": "Saddle" }],
+      "engramPoints": 18
+    },
+    {
+      "itemId": 799,
+      "name": "Andrewsarchus Saddle",
+      "craftedIn": ["Smithy"],
+      "recipe": [
+        {
+          "itemId": 10,
+          "count": 290
+        },
+        {
+          "itemId": 76,
+          "count": 155
+        },
+        {
+          "itemId": 74,
+          "count": 20
+        }
+      ],
+      "stats": [{ "id": 1, "value": "Saddle" }],
+      "engramPoints": 45
+    },
+    {
+      "itemId": 800,
+      "name": "Desmodus Saddle",
+      "craftedIn": ["Smithy"],
+      "recipe": [
+        {
+          "itemId": 10,
+          "count": 260
+        },
+        {
+          "itemId": 76,
+          "count": 180
+        },
+        {
+          "itemId": 74,
+          "count": 45
+        },
+        {
+          "itemId": 7,
+          "count": 120
+        }
+      ],
+      "stats": [],
+      "engramPoints": 45
+    },
+    {
+      "itemId": 801,
+      "name": "Sanguine Elixir",
+      "color": "#e13131",
+      "craftingTime": 5,
+      "craftedIn": ["Desmodus Saddle"],
+      "recipe": [
+        {
+          "itemId": 45,
+          "count": 200
+        }
+      ],
+      "stats": [
+        {
+          "id": 9,
+          "value": 240
+        }
+      ]
     }
   ]
 }
