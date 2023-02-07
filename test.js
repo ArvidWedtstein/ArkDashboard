@@ -69,6 +69,7 @@ Object.values(d).forEach((dino, i) => {
     torporDeplPerSecond:
       dino.tDPS0 +
       Math.pow(level - 1, 0.800403041) / (22.39671632 / dino.tDPS0),
+    x: parsePercision(theXpk * ((level - 1) / 10 + 1) * 4 * XPMultiplier),
   });
 
   let comsumptionMultiplier = 1;
