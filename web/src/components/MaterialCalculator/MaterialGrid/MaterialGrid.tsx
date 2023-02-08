@@ -265,7 +265,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
             vertical={true}
             header={false}
             rows={mergeItemRecipe(viewBaseMaterials, ...item)}
-            className="animate-fade-in"
+            className="animate-fade-in "
             caption={{
               title: "Item",
               content: (
@@ -347,7 +347,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
                 className: "text-center flex flex-row justify-start items-center",
                 renderCell: ({ row }) => {
                   return (
-                    mergeItemRecipe(true, { itemId: row.itemId, amount: row.amount }).sort((a, b) => a.itemId - b.itemId).map((itm, i) => (
+                    mergeItemRecipe(false, { itemId: row.itemId, amount: row.amount }).sort((a, b) => a.itemId - b.itemId).map((itm, i) => (
                       <div className="flex flex-col justify-center items-center ml-2 min-w-16 w-10" id={`${itm.itemId}-${i * Math.random()}${i}`} key={`${itm.itemId}-${i * Math.random()}${i}`}>
                         <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${itm.image}`} className="w-6 h-6" title={itm.name} alt={itm.name} />
                         <span className="text-sm text-black dark:text-white">{itm.amount}</span>

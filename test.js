@@ -69,45 +69,72 @@ Object.values(d).forEach((dino, i) => {
     torporDeplPerSecond:
       dino.tDPS0 +
       Math.pow(level - 1, 0.800403041) / (22.39671632 / dino.tDPS0),
-    x: parsePercision(theXpk * ((level - 1) / 10 + 1) * 4 * XPMultiplier),
+    experiencePerKill: parsePercision(
+      dino.xpk * ((level - 1) / 10 + 1) * 4 * XPMultiplier
+    ),
+    tamingInterval: dino.tI,
+    baseTamingTime: dino.t1,
+    tamingBonus: dino.tiba,
+    allowableFlyers: dino.af.map((t) => {
+      switch (t) {
+        case "d":
+          return "doorframe";
+        case "dd":
+          return "double doorframe";
+        case "dg":
+          return "dinosaur gateway";
+        case "bdg":
+          return "behemoth dinosaur gateway";
+        case "hf":
+          return "hatchframe";
+        case "ltd":
+          return "large trapdoor";
+        case "ghf":
+          return "giant hatchframe";
+        case "b":
+          return "bola";
+        case "bt":
+          return "bear trap";
+        case "n":
+          return "net projectile";
+        case "py":
+          return "plant species y";
+        case "h":
+          return "human";
+        case "lbt":
+          return "large bear trap";
+        case "tu":
+          return "tusoteuthis";
+        case "kr":
+          return "karkinos";
+        case "p":
+          return "procoptodon";
+        case "t":
+          return "thatch";
+        case "w":
+          return "wood";
+        default:
+          break;
+      }
+    }),
+    gatherEfficiency: dino.ge,
+    baseStats: dino.bs,
+    colorRegions: dino.c,
+    drops: dino.d.map((t) => {
+      return t.replace(13, 12).replace(11, 10);
+    }),
+    weightReduction: dino.wr,
   });
 
-  // xpk = exp per kill?
   let comsumptionMultiplier = 1;
   let affinityNeeded = item.a0 + item.aI * level;
   let foodConsumption = item.foodBase * item.foodMult * comsumptionMultiplier;
   // let foodMax = affinityNeeded / food[name].affinity';
 });
 // https://www.dododex.com/api/data.json
-
-// let gg = [];
-
-// items.forEach((item, i) => {
-//   gg.push(item);
-// });
-// let id = 786;
-// Object.values(f).forEach((item, i) => {
-//   if (gg.findIndex((x) => x.name === item.name) === -1) {
-//     gg.push({
-//       itemId: id,
-//       name: item.name,
-//       color: item.color,
-//       craftingTime: item.craftTime,
-//       craftedIn: item.craftedIn ? [item.craftedIn] : [],
-//       recipe: item.ingredients
-//         ? item.ingredients.map((x) => {
-//             return {
-//               itemId: gg[gg.findIndex((y) => y.name === x.item)]?.itemId || 0,
-//               count: x.quantity,
-//             };
-//           })
-//         : [],
-//       stats: item.spoils ? [{ id: 9, value: item.spoils }] : [],
-//       engramPoints: item.ep,
-//     });
-//     id++;
-//   }
-// });
+// https://github.com/arkutils/Purlovia
+// https://arkids.net/items
+// https://www.dododex.com/capabilities/affected-by
 
 let maps = {
   theisland: {

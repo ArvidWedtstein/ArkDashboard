@@ -261,3 +261,6 @@
 .rw-webauthn-wrapper h2 {
   @apply mb-4 text-xl font-bold;
 }
+.rw-img-disable img {
+  @apply opacity-40 brightness-[1.4] contrast-0 hue-rotate-[116deg] saturate-[.28] sepia;
+}

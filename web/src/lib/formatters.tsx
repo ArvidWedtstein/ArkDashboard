@@ -172,13 +172,11 @@ export const getBaseMaterials = (
     recipe.recipe.forEach(({ itemId, count: recipeCount }) => {
       let recipeItem = prices.items.find((r) => r.itemId === itemId);
       let count = recipeCount * amount;
-      let weight = recipeItem?.weight * count;
 
       if (!firstRecipeOnly || !recipeItem?.recipe.length) {
         let material = materials.find((m) => m.itemId === itemId);
         if (material) {
           material.amount += count;
-          material.weight += weight;
         } else {
           materials.push({ ...recipeItem, amount: count });
         }

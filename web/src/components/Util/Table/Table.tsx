@@ -113,6 +113,7 @@ const Table = ({
   };
 
   const SortedFilteredData = useMemo(() => {
+    if (!dataRows || dataRows.length < 1) return [];
     let filteredData = dataRows.filter((row) => {
       let rowValues = Object.values(row);
       let rowString = rowValues.join(" ");
@@ -131,6 +132,7 @@ const Table = ({
       setRows([...daRows]);
     }
   }, []);
+
 
   const handleSearch = debounce((e) => setSearchTerm(e.target.value));
 
@@ -220,12 +222,12 @@ const Table = ({
 
     let content = renderCell
       ? renderCell({
-          columnIndex,
-          rowIndex,
-          value: cellData,
-          field: other.field,
-          row: rowData,
-        })
+        columnIndex,
+        rowIndex,
+        value: cellData,
+        field: other.field,
+        row: rowData,
+      })
       : "";
 
     if (
@@ -307,8 +309,8 @@ const Table = ({
                   {other.numeric
                     ? SortedFilteredData.reduce((a, b) => a + b[field], 0)
                     : index === 0
-                    ? "Total"
-                    : ""}
+                      ? "Total"
+                      : ""}
                 </th>
               );
             })}
@@ -474,67 +476,67 @@ const Table = ({
             </tr>
           </thead>
         )}
-        <tbody className="divide-y divide-gray-400 dark:divide-gray-800">
+        <tbody className="divide-y divide-gray-400 dark:divide-gray-800 bg-gray-200 dark:bg-zinc-600">
           {vertical
             ? columns.map(({ field, ...other }, index) => {
-                return (
-                  <tr
-                    key={`row-${index}`}
-                    className={clsx("bg-white dark:bg-zinc-600", {
-                      "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
+              return (
+                <tr
+                  key={`row-${index}`}
+                  className={clsx("bg-white dark:bg-zinc-600", {
+                    "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
+                  })}
+                  onClick={() => onRowClick && onRowClick({ index: index })}
+                >
+                  {header &&
+                    headerRenderer({
+                      label: other.label,
+                      columnIndex: index,
+                      ...other,
                     })}
-                    onClick={() => onRowClick && onRowClick({ index: index })}
-                  >
-                    {header &&
-                      headerRenderer({
-                        label: other.label,
-                        columnIndex: index,
-                        ...other,
-                      })}
-                    {SortedFilteredData.map((datarow, rowIndex) => {
-                      return cellRenderer({
-                        rowData: datarow,
-                        cellData: datarow[field],
-                        columnIndex: index,
-                        rowIndex,
-                        renderCell: other.renderCell,
-                        field,
-                        ...other,
-                      });
-                    })}
-                  </tr>
-                );
-              })
-            : SortedFilteredData.map((datarow, i) => {
-                return (
-                  <tr
-                    key={`row-${i}`}
-                    className={clsx("bg-gray-200 dark:bg-zinc-600", {
-                      "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
-                    })}
-                    onClick={() => onRowClick && onRowClick({ index: i })}
-                  >
-                    {select && tableSelect({ row: i })}
-                    {columns.map(({ field, ...other }, index) => {
-                      return cellRenderer({
-                        rowData: datarow,
-                        cellData: datarow[field],
-                        columnIndex: index,
-                        rowIndex: i,
-                        renderCell: other.renderCell,
-                        field,
-                        ...other,
-                      });
-                    })}
-                    {renderActions && <td>{renderActions(datarow)}</td>}
-                  </tr>
-                );
-              })}
-          {dataRows.length === 0 && (
+                  {SortedFilteredData.map((datarow, rowIndex) => {
+                    return cellRenderer({
+                      rowData: datarow,
+                      cellData: datarow[field],
+                      columnIndex: index,
+                      rowIndex,
+                      renderCell: other.renderCell,
+                      field,
+                      ...other,
+                    });
+                  })}
+                </tr>
+              );
+            })
+            : dataRows && SortedFilteredData.map((datarow, i) => {
+              return (
+                <tr
+                  key={`row-${i}`}
+                  className={clsx({
+                    "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
+                  })}
+                  onClick={() => onRowClick && onRowClick({ index: i })}
+                >
+                  {select && tableSelect({ row: i })}
+                  {columns.map(({ field, ...other }, index) => {
+                    return cellRenderer({
+                      rowData: datarow,
+                      cellData: datarow[field],
+                      columnIndex: index,
+                      rowIndex: i,
+                      renderCell: other.renderCell,
+                      field,
+                      ...other,
+                    });
+                  })}
+                  {renderActions && <td>{renderActions(datarow)}</td>}
+                </tr>
+              );
+            })}
+          {dataRows === null || dataRows.length === 0 && (
             <tr>
               <td
                 colSpan={vertical ? dataRows.length : columns.length}
-                className="bg-gray-200 text-center dark:bg-zinc-600"
+                className="text-center"
               >
                 <span className="px-3 py-2 text-gray-500 dark:text-gray-400 ">
                   No data found

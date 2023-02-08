@@ -180,7 +180,7 @@
       "stats": []
     },
     {
-      "name": "Chitin/Keratin",
+      "name": "Chitin",
       "maxStack": 100,
       "decomposes": -1,
       "itemId": 11,
@@ -189,7 +189,7 @@
       "image": "Chitin.png",
       "weight": 0.01,
       "recipe": [],
-      "stats": []
+      "stats": [{ "id": 1, "value": "Resource" }]
     },
     {
       "name": "Raw Meat",
@@ -813,6 +813,17 @@
         { "id": 1, "value": "Consumable" },
         { "id": 11, "value": "100 or less" }
       ]
+    },
+    {
+      "name": "Fertilizer",
+      "itemId": 50,
+      "image": "Fertilizer.png",
+      "color": "#776453",
+      "recipe": [
+        { "itemId": 75, "count": 50 },
+        { "itemId": 55, "count": 3 }
+      ],
+      "stats": [{ "id": 1, "value": "Resource" }]
     },
     {
       "name": "Bingleberry Soup",
@@ -1791,20 +1802,6 @@
       "stats": [{ "id": 1, "value": "Structure" }]
     },
     {
-      "name": "Amarberry Seed",
-      "maxStack": 100,
-      "decomposes": 120,
-      "itemId": 116,
-      "description": "Eat it to gain a tiny amount of nourishment, or plant it to grow your own amarberry bush. Can be planted in Small, Medium, or Large crop plots.",
-      "image": "amarberry_seed.png",
-      "weight": 0.01,
-      "recipe": [],
-      "stats": [
-        { "id": 1, "value": "Consumable" },
-        { "id": 8, "value": "+1" }
-      ]
-    },
-    {
       "name": "Amarberry",
       "maxStack": 100,
       "decomposes": 120,
@@ -2088,20 +2085,6 @@
       ]
     },
     {
-      "name": "Citronal Seed",
-      "maxStack": 1,
-      "decomposes": 120,
-      "itemId": 133,
-      "description": "Eat it to gain a tiny amount of nourishment, or plant it to grow your own citronal crop. Can be planted in Medium or Large crop plots.",
-      "image": "citronal_seed.png",
-      "weight": 0.01,
-      "recipe": [],
-      "stats": [
-        { "id": 1, "value": "Consumable" },
-        { "id": 8, "value": "+1" }
-      ]
-    },
-    {
       "name": "Bronto Saddle",
       "maxStack": 1,
       "decomposes": 120,
@@ -2203,6 +2186,17 @@
         { "id": 5, "value": 40 },
         { "id": 6, "value": 57.9 }
       ]
+    },
+    {
+      "name": "Radio",
+      "itemId": 141,
+      "image": "radio.png",
+      "recipe": [
+        { "itemId": 74, "count": 40 },
+        { "itemId": 78, "count": 40 },
+        { "itemId": 108, "count": 40 }
+      ],
+      "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
       "name": "Obsidian",
@@ -3157,23 +3151,16 @@
       ]
     },
     {
-      "name": "Plesiosaur Saddle",
-      "maxStack": 1,
-      "decomposes": 120,
-      "itemId": 215,
-      "description": "Equip a Plesiosaur with this to ride it.",
-      "image": "plesiosaur_saddle.png",
-      "weight": 20.0,
-      "recipe": [
-        { "itemId": 10, "count": 400 },
-        { "itemId": 76, "count": 250 },
-        { "itemId": 146, "count": 65 },
-        { "itemId": 163, "count": 40 }
-      ],
-      "stats": [
-        { "id": 1, "value": "Saddle" },
-        { "id": 2, "value": 25 }
-      ]
+      "name": "Chitin/Keratin",
+      "maxStack": 100,
+      "decomposes": -1,
+      "itemId": 216,
+      "description": "A firm, flexible material. Can be found in some animal horns, plates, shells, and ridges.",
+      "image": "chitin_or_keratin.png",
+      "color": "#c2a789",
+      "weight": 0.01,
+      "recipe": [],
+      "stats": []
     },
     {
       "name": "Keratin",
@@ -3185,7 +3172,7 @@
       "color": "#c2a789",
       "weight": 0.01,
       "recipe": [],
-      "stats": []
+      "stats": [{ "id": 1, "value": "Resource" }]
     },
     {
       "name": "Holo-Scope Attachment",
@@ -3470,76 +3457,6 @@
       ]
     },
     {
-      "name": "Azulberry Seed",
-      "maxStack": 100,
-      "decomposes": 120,
-      "itemId": 235,
-      "description": "Eat it to gain a tiny amount of nourishment, or plant it to grow your own azulberry bush. Can be planted in Small, Medium, or Large crop plots.",
-      "image": "azulberry_seed.png",
-      "weight": 0.01,
-      "recipe": [],
-      "stats": [
-        { "id": 1, "value": "Consumable" },
-        { "id": 8, "value": "+1" }
-      ]
-    },
-    {
-      "name": "Tintoberry Seed",
-      "maxStack": 100,
-      "decomposes": 120,
-      "itemId": 236,
-      "description": "Eat it to gain a tiny amount of nourishment, or plant it to grow your own Tintoberry bush. Can be planted in Small, Medium, or Large Crop plots.",
-      "image": "tintoberry_seed.png",
-      "weight": 0.01,
-      "recipe": [],
-      "stats": [
-        { "id": 1, "value": "Consumable" },
-        { "id": 8, "value": "+1" }
-      ]
-    },
-    {
-      "name": "Mejoberry Seed",
-      "maxStack": 100,
-      "decomposes": 120,
-      "itemId": 237,
-      "description": "Eat it to gain a tiny amount of nourishment, or plant it to grow your own Mejoberry bush. Can be planted in Small, Medium, or Large Crop plots.",
-      "image": "mejoberry_seed.png",
-      "weight": 0.01,
-      "recipe": [],
-      "stats": [
-        { "id": 1, "value": "Consumable" },
-        { "id": 8, "value": "+1" }
-      ]
-    },
-    {
-      "name": "Narcoberry Seed",
-      "maxStack": 100,
-      "decomposes": 120,
-      "itemId": 238,
-      "description": "Eat it to gain a tiny amount of nourishment, or plant it to grow your own Nacroberry bush. Can be planted in Small, Medium, or Large Crop Plots.",
-      "image": "narcoberry_seed.png",
-      "weight": 0.01,
-      "recipe": [],
-      "stats": [
-        { "id": 1, "value": "Consumable" },
-        { "id": 8, "value": "+1" }
-      ]
-    },
-    {
-      "name": "Stimberry Seed",
-      "maxStack": 100,
-      "decomposes": 120,
-      "itemId": 239,
-      "description": "Eat it to gain a tiny amount of nourishment, or plant it to grow your own Stimberry bush. Can be planted in Small, Medium, or Large Crop plots.",
-      "image": "stimberry_seed.png",
-      "weight": 0.01,
-      "recipe": [],
-      "stats": [
-        { "id": 1, "value": "Consumable" },
-        { "id": 8, "value": "+1" }
-      ]
-    },
-    {
       "name": "Savoroot Seed",
       "maxStack": 100,
       "decomposes": 120,
@@ -3568,17 +3485,27 @@
       ]
     },
     {
-      "name": "Rockarrot Seed",
+      "name": "Metal Billboard",
       "maxStack": 100,
-      "decomposes": 120,
-      "itemId": 242,
-      "description": "Eat it to gain a tiny amount of nourishment, or plant it to grow your own rockarrot crop. Can be planted in Medium or Large crop plots.",
-      "image": "rockarrot_seed.png",
-      "weight": 0.01,
-      "recipe": [],
+      "itemId": 243,
+      "description": "A large metal billboard for landmark navigation or relaying messages.",
+      "image": "metal_billboard.png",
+      "weight": 8,
+      "engramPoints": 15,
+      "craftedIn": [
+        "Smithy",
+        "Argentavis Saddle",
+        "Castoroides Saddle",
+        "Thorny Dragon Saddle",
+        "Tek Replicator"
+      ],
+      "recipe": [
+        { "itemId": 74, "count": 35 },
+        { "itemId": 146, "count": 10 }
+      ],
       "stats": [
-        { "id": 1, "value": "Consumable" },
-        { "id": 8, "value": "+1" }
+        { "id": 1, "value": "Structure" },
+        { "id": 5, "value": "6000" }
       ]
     },
     {
@@ -3777,7 +3704,7 @@
       "decomposes": 120,
       "itemId": 255,
       "description": "This dish grants you clarity of the night. Consume it to see more light, ignore most weather, and strady your aim. Can be dangerous to use in daylight.",
-      "image": "shadow_steak_saute.png",
+      "image": "Shadow_Steak_Saute.png",
       "craftedIn": ["Cooking Pot"],
       "color": "#8d3234",
       "effects": [
@@ -3847,6 +3774,141 @@
         { "itemId": 109, "count": 3 }
       ],
       "stats": [{ "id": 1, "value": "Ammunition" }]
+    },
+    {
+      "name": "Metal Wall Sign",
+      "itemId": 269,
+      "description": "A simple metal wall sign for basic messages, requires attaching to a wall.",
+      "image": "metal_wall_sign.png",
+      "engramPoints": 6,
+      "weight": 4,
+      "craftedIn": [
+        "Smithy",
+        "Tek Replicator",
+        "Argentavis Saddle",
+        "Castoroides Saddle",
+        "Thorny Dragon Saddle"
+      ],
+      "recipe": [
+        { "itemId": 74, "count": 5 },
+        { "itemId": 146, "count": 3 }
+      ],
+      "stats": [
+        { "id": 1, "value": "Structure" },
+        { "id": 5, "value": 500 }
+      ]
+    },
+    {
+      "name": "Amarberry Seed",
+      "maxStack": 100,
+      "decomposes": 120,
+      "itemId": 270,
+      "description": "Eat it to gain a tiny amount of nourishment, or plant it to grow your own amarberry bush. Can be planted in Small, Medium, or Large crop plots.",
+      "image": "amarberry_seed.png",
+      "weight": 0.01,
+      "recipe": [],
+      "stats": [
+        { "id": 1, "value": "Consumable" },
+        { "id": 8, "value": "+1" }
+      ]
+    },
+    {
+      "name": "Azulberry Seed",
+      "maxStack": 100,
+      "decomposes": 120,
+      "itemId": 271,
+      "description": "Eat it to gain a tiny amount of nourishment, or plant it to grow your own azulberry bush. Can be planted in Small, Medium, or Large crop plots.",
+      "image": "azulberry_seed.png",
+      "weight": 0.01,
+      "recipe": [],
+      "stats": [
+        { "id": 1, "value": "Consumable" },
+        { "id": 8, "value": "+1" }
+      ]
+    },
+    {
+      "name": "Tintoberry Seed",
+      "maxStack": 100,
+      "decomposes": 120,
+      "itemId": 272,
+      "description": "Eat it to gain a tiny amount of nourishment, or plant it to grow your own Tintoberry bush. Can be planted in Small, Medium, or Large Crop plots.",
+      "image": "tintoberry_seed.png",
+      "weight": 0.01,
+      "recipe": [],
+      "stats": [
+        { "id": 1, "value": "Consumable" },
+        { "id": 8, "value": "+1" }
+      ]
+    },
+    {
+      "name": "Narcoberry Seed",
+      "maxStack": 100,
+      "decomposes": 120,
+      "itemId": 273,
+      "description": "Eat it to gain a tiny amount of nourishment, or plant it to grow your own Nacroberry bush. Can be planted in Small, Medium, or Large Crop Plots.",
+      "image": "narcoberry_seed.png",
+      "weight": 0.01,
+      "recipe": [],
+      "stats": [
+        { "id": 1, "value": "Consumable" },
+        { "id": 8, "value": "+1" }
+      ]
+    },
+    {
+      "name": "Stimberry Seed",
+      "maxStack": 100,
+      "decomposes": 120,
+      "itemId": 274,
+      "description": "Eat it to gain a tiny amount of nourishment, or plant it to grow your own Stimberry bush. Can be planted in Small, Medium, or Large Crop plots.",
+      "image": "stimberry_seed.png",
+      "weight": 0.01,
+      "recipe": [],
+      "stats": [
+        { "id": 1, "value": "Consumable" },
+        { "id": 8, "value": "+1" }
+      ]
+    },
+    {
+      "name": "Mejoberry Seed",
+      "maxStack": 100,
+      "decomposes": 120,
+      "itemId": 275,
+      "description": "Eat it to gain a tiny amount of nourishment, or plant it to grow your own Mejoberry bush. Can be planted in Small, Medium, or Large Crop plots.",
+      "image": "mejoberry_seed.png",
+      "weight": 0.01,
+      "recipe": [],
+      "stats": [
+        { "id": 1, "value": "Consumable" },
+        { "id": 8, "value": "+1" }
+      ]
+    },
+    {
+      "name": "Citronal Seed",
+      "maxStack": 1,
+      "decomposes": 120,
+      "itemId": 276,
+      "description": "Eat it to gain a tiny amount of nourishment, or plant it to grow your own citronal crop. Can be planted in Medium or Large crop plots.",
+      "image": "citronal_seed.png",
+      "weight": 0.01,
+      "recipe": [],
+      "stats": [
+        { "id": 1, "value": "Consumable" },
+        { "id": 8, "value": "+1" }
+      ]
+    },
+    {
+      "name": "Rockarrot Seed",
+      "maxStack": 100,
+      "decomposes": 120,
+      "itemId": 238,
+      "description": "Eat it to gain a tiny amount of nourishment, or plant it to grow your own rockarrot crop. Can be planted in Medium or Large crop plots.",
+      "image": "rockarrot_seed.png",
+      "weight": 0.01,
+      "recipe": [],
+      "stats": [
+        { "id": 1, "value": "Consumable" },
+        { "id": 8, "value": "+1" }
+      ]
     },
     {
       "name": "Spyglass",
@@ -4002,6 +4064,28 @@
       ]
     },
     {
+      "name": "Cooked Meat Jerky",
+      "itemId": 297,
+      "image": "Cooked_Meat_Jerky.png",
+      "recipe": [
+        { "itemId": 14, "count": 1 },
+        { "itemId": 162, "count": 1 },
+        { "itemId": 108, "count": 3 }
+      ],
+      "stats": [{ "id": 1, "value": "Consumable" }]
+    },
+    {
+      "name": "Prime Meat Jerky",
+      "itemId": 298,
+      "image": "Prime_Meat_Jerky.png",
+      "recipe": [
+        { "itemId": 253, "count": 1 },
+        { "itemId": 162, "count": 1 },
+        { "itemId": 108, "count": 3 }
+      ],
+      "stats": [{ "id": 1, "value": "Consumable" }]
+    },
+    {
       "name": "Spino Saddle",
       "maxStack": 1,
       "decomposes": 120,
@@ -4109,6 +4193,50 @@
       "stats": [
         { "id": 1, "value": "Structure" },
         { "id": 5, "value": 10000 }
+      ]
+    },
+    {
+      "name": "Metal Water Reservoir",
+      "maxStack": 100,
+      "decomposes": 120,
+      "itemId": 312,
+      "description": "Attach this to pipes to store rain, irrigation, or manually deposited water for later use. Will automatically irrigate nearby crops if attached to a tap. Stores a large amount of water!",
+      "image": "metal_water_reservoir.png",
+      "weight": 4,
+      "engramPoints": 20,
+      "craftedIn": [
+        "Smithy",
+        "Argentavis Saddle",
+        "Castoroides Saddle",
+        "Thorny Dragon Saddle",
+        "Tek Replicator"
+      ],
+      "recipe": [
+        { "itemId": 74, "count": 75 },
+        { "itemId": 146, "count": 25 }
+      ],
+      "stats": [
+        { "id": 1, "value": "Structure" },
+        { "id": 5, "value": 15000 }
+      ]
+    },
+    {
+      "name": "Plesiosaur Saddle",
+      "maxStack": 1,
+      "decomposes": 120,
+      "itemId": 313,
+      "description": "Equip a Plesiosaur with this to ride it.",
+      "image": "plesiosaur_saddle.png",
+      "weight": 20.0,
+      "recipe": [
+        { "itemId": 10, "count": 400 },
+        { "itemId": 76, "count": 250 },
+        { "itemId": 146, "count": 65 },
+        { "itemId": 163, "count": 40 }
+      ],
+      "stats": [
+        { "id": 1, "value": "Saddle" },
+        { "id": 2, "value": 25 }
       ]
     },
     {
@@ -5938,17 +6066,6 @@
       "stats": [{ "id": 1, "value": "Resource" }]
     },
     {
-      "name": "Fertilizer",
-      "itemId": 477,
-      "image": "Fertilizer.png",
-      "color": "#776453",
-      "recipe": [
-        { "itemId": 75, "count": 50 },
-        { "itemId": 55, "count": 3 }
-      ],
-      "stats": [{ "id": 1, "value": "Resource" }]
-    },
-    {
       "name": "Green Gem",
       "itemId": 478,
       "image": "Green_Gem_(Aberration).png",
@@ -6069,17 +6186,6 @@
         { "itemId": 782, "count": 15 },
         { "itemId": 74, "count": 15 },
         { "itemId": 465, "count": 12 }
-      ],
-      "stats": [{ "id": 1, "value": "Tool" }]
-    },
-    {
-      "name": "Radio",
-      "itemId": 490,
-      "image": "Pliers_(Aberration).png",
-      "recipe": [
-        { "itemId": 74, "count": 40 },
-        { "itemId": 78, "count": 40 },
-        { "itemId": 108, "count": 40 }
       ],
       "stats": [{ "id": 1, "value": "Tool" }]
     },
@@ -6447,7 +6553,7 @@
         { "itemId": 76, "count": 8 },
         { "itemId": 4501, "count": 5 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Armor" }]
     },
     {
       "name": "Baryonyx Saddle",
@@ -6825,17 +6931,6 @@
       "stats": [{ "id": 1, "value": "Saddle" }]
     },
     {
-      "name": "Phiomia Saddle",
-      "itemId": 552,
-      "image": "Phiomia_Saddle.png",
-      "recipe": [
-        { "itemId": 10, "count": 20 },
-        { "itemId": 76, "count": 15 },
-        { "itemId": 7, "count": 5 }
-      ],
-      "stats": [{ "id": 1, "value": "Saddle" }]
-    },
-    {
       "name": "Plesiosaur Platform Saddle",
       "itemId": 553,
       "image": "Plesiosaur_Platform_Saddle.png",
@@ -7145,7 +7240,7 @@
         { "itemId": 10, "count": 20 },
         { "itemId": 75, "count": 30 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Structure" }]
     },
     {
       "name": "Elevator Track",
@@ -8698,28 +8793,6 @@
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
-      "name": "Cooked Meat Jerky",
-      "itemId": 709,
-      "image": "Cooked_Meat_Jerky.png",
-      "recipe": [
-        { "itemId": 14, "count": 1 },
-        { "itemId": 162, "count": 1 },
-        { "itemId": 108, "count": 3 }
-      ],
-      "stats": [{ "id": 1, "value": "Tool" }]
-    },
-    {
-      "name": "Prime Meat Jerky",
-      "itemId": 710,
-      "image": "Prime_Meat_Jerky.png",
-      "recipe": [
-        { "itemId": 253, "count": 1 },
-        { "itemId": 162, "count": 1 },
-        { "itemId": 108, "count": 3 }
-      ],
-      "stats": [{ "id": 1, "value": "Tool" }]
-    },
-    {
       "name": "Aggeravic Mushroom",
       "itemId": 711,
       "image": "Aggeravic_Mushroom_(Aberration).png",
@@ -9382,14 +9455,6 @@
       "stats": [{ "id": 1, "value": "Tool" }]
     },
     {
-      "name": "Chitin/Keratin",
-      "itemId": 765,
-      "image": "Chitin.png",
-      "color": "#7b6856",
-      "recipe": [],
-      "stats": [{ "id": 1, "value": "Resource" }]
-    },
-    {
       "name": "Woolly Rhino Saddle",
       "itemId": 766,
       "image": "Woolly_Rhino_Saddle.png",
@@ -9502,7 +9567,7 @@
           "count": 1
         },
         {
-          "itemId": 709,
+          "itemId": 297,
           "count": 1
         },
         {
@@ -9531,7 +9596,7 @@
           "count": 1
         },
         {
-          "itemId": 710,
+          "itemId": 298,
           "count": 1
         },
         {
@@ -9677,7 +9742,7 @@
       "name": "Mutagen",
       "itemId": 779,
       "color": "#84cecc",
-      "image": "mutagen.png",
+      "image": "mutagen_(Genesis_Part_2).png",
       "recipe": [
         {
           "itemId": 783,
@@ -9710,7 +9775,7 @@
     {
       "name": "Mutagel",
       "itemId": 783,
-      "image": "mutagel.png",
+      "image": "mutagel_(Genesis_Part_2).png",
       "recipe": [],
       "stats": [{ "id": 1, "value": "Resource" }]
     },

@@ -92,9 +92,6 @@ const DinoStatsPage = () => {
     let newlvl: any = combineBySummingKeys(level, newlevel);
     setLevel(newlvl);
     setPoints(i);
-    // Object.entries(level).forEach(([key, value]) => {
-    //   setLevel({ ...level, [key]: 0 });
-    // });
   };
   return (
     <>
