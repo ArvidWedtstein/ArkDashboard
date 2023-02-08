@@ -72,6 +72,7 @@ Object.values(d).forEach((dino, i) => {
     x: parsePercision(theXpk * ((level - 1) / 10 + 1) * 4 * XPMultiplier),
   });
 
+  // xpk = exp per kill?
   let comsumptionMultiplier = 1;
   let affinityNeeded = item.a0 + item.aI * level;
   let foodConsumption = item.foodBase * item.foodMult * comsumptionMultiplier;
