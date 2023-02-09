@@ -193,6 +193,59 @@ export const getBaseMaterials = (
   return materials;
 };
 
+
+
+
+/**
+ * Formats the given number of seconds into a string representation
+ * with the format "d days h hours m minutes s seconds".
+ * If the `onlyLast` parameter is set to `true`, only the last non-zero unit is displayed.
+ * If the `useAbs` parameter is set to `true` and the number of days is greater than 30,
+ * the function returns the month and day of the corresponding date.
+ *
+ * @param {number} seconds - The number of seconds to format.
+ * @param {boolean} [onlyLast=false] - Whether to display only the last non-zero unit.
+ * @param {boolean} [useAbs=true] - Whether to use the absolute value of the input.
+ *
+ * @return {string} The formatted string representation.
+ */
+function timeFormatL(seconds, onlyLast = false) {
+  const secNum = seconds;
+  const days = Math.floor(secNum / 86400);
+
+  const hours = Math.floor((secNum - days * 86400) / 3600);
+  const minutes = Math.floor((secNum - days * 86400 - hours * 3600) / 60);
+  const sec = secNum - days * 86400 - hours * 3600 - minutes * 60;
+
+  let time = "";
+  if (days > 0) {
+    time += `${days}d`;
+    if (onlyLast) {
+      return time;
+    }
+  }
+  if (hours > 0) {
+    time += days > 0 ? " " : "";
+    time += `${hours}h`;
+    if (onlyLast) {
+      return time;
+    }
+  }
+  if (minutes > 0) {
+    time += (hours > 0 || days > 0) ? " " : "";
+    time += `${minutes}m`;
+    if (onlyLast) {
+      return time;
+    }
+  }
+  if (sec > 0 || time === "") {
+    time += (minutes > 0 || hours > 0 || days > 0) ? " " : "";
+    time += `${sec}s`;
+  }
+
+  return time;
+}
+
 /**
  * Capitalizes the first letter of a given string.
  * @param {string} string - The input string to be capitalized.

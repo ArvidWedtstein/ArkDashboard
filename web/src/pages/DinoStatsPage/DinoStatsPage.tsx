@@ -42,8 +42,7 @@ const DinoStatsPage = () => {
     movementSpeed: 0,
     torpor: 0,
   });
-  // var totalTorpor=cr.t1+cr.tI*(level-1);
-  // var affinityNeeded=cr.a0+(cr.aI*level)
+
 
   const onAdd = (data) => {
     let id = data.target.id.replace("add", "");
@@ -62,7 +61,7 @@ const DinoStatsPage = () => {
   };
   const onSubmit = (data) => {
     // let dino = arkdinos[data.name.toLowerCase()]
-
+    console.log(getEstimatedStat("food", data.name, data.level))
     let dino = arkdinos.find(
       (d) => d.name.toLowerCase() === data.name.toLowerCase()
     );
@@ -93,6 +92,53 @@ const DinoStatsPage = () => {
     setLevel(newlvl);
     setPoints(i);
   };
+
+  const getEstimatedStat = (stat, dino, level) => {
+    let d = arkdinos.find(
+      (d) => d.name.toLowerCase() === dino.toLowerCase()
+    );
+    if (!d) return null;
+
+    let numEligibleStats = 0;
+    if (d.baseStats[stat].increasePerLevelWild > 0 && d.baseStats[stat].base >= 0) {
+      if (typeof d.baseStats["oxygen"] === 'object' && d.baseStats["oxygen"].base == null) {
+        numEligibleStats = 5;
+      } else {
+        numEligibleStats = 6;
+      }
+
+      let numLevels = 0;
+      if (level > 0) {
+        numLevels = level - 1;
+      } else {
+        numLevels = 1;
+      }
+      let estFoodLevels = Math.round(numLevels / numEligibleStats);
+      return d.baseStats[stat].base + d.baseStats[stat].increasePerLevelWild * estFoodLevels;
+
+    } else {
+      return d.baseStats[stat].base;
+    }
+  }
+
+  const calcMaturation = () => {
+    let maturation = 0;
+    let maturationCalcCurrent = 0
+    let weightCurrent = 0;
+    let weightTotal = 30
+    let mutationTimeTotal = 15002;
+    if (weightCurrent > weightTotal) {
+      weightCurrent = weightTotal;
+    }
+
+    weightCurrent = Math.max(weightCurrent, 0);
+    let percentDone = weightCurrent / weightTotal;
+    let timeElapsed = percentDone * mutationTimeTotal;
+    let timeStarted = Date.now() - timeElapsed;
+    let timeRemaining = (1 - percentDone) * mutationTimeTotal;
+
+    console.log(timeRemaining)
+  }
   return (
     <>
       <MetaTags title="DinoStats" description="DinoStats page" />
@@ -117,6 +163,7 @@ const DinoStatsPage = () => {
               className="rw-input"
               errorClassName="rw-input rw-input-error"
               validation={{ required: true }}
+              defaultValue={"Dodo"}
             />
 
             <FieldError name="name" className="rw-field-error" />
@@ -203,6 +250,10 @@ const DinoStatsPage = () => {
               );
             }}
           />
+
+          <svg className="w-10 h-10">
+
+          </svg>
         </div>
       </div>
     </>

@@ -532,11 +532,11 @@ const Table = ({
                 </tr>
               );
             })}
-          {dataRows === null || dataRows.length === 0 && (
-            <tr>
+          {(dataRows === null || dataRows.length === 0) && (
+            <tr className="w-full">
               <td
-                colSpan={vertical ? dataRows.length : columns.length}
-                className="text-center"
+                className="text-center p-4"
+                colSpan={100}
               >
                 <span className="px-3 py-2 text-gray-500 dark:text-gray-400 ">
                   No data found

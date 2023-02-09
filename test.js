@@ -58,84 +58,131 @@ let itemss = [];
 Object.values(d).forEach((dino, i) => {
   const { name } = dino;
   let level = 100;
+
+  let v = ["t", "w", "a", "s", "m", "tk"];
+  let fits = ["d", "dd", "dg", "bdg", "hf", "ltd", "ghf"];
+
   itemss.push({
     id: i + 1,
     name,
     nameTranslations: dino.name_t,
+    description: dino.desc,
+    tamingNotice: dino.tamingNotice,
+    adminNote: dino.adminNote,
+    note: dino.note,
+    synonyms: dino.sy,
     img: dino.img,
     affinity: dino.a0,
     synonyms: dino.sy,
     fleeThreshold: dino.ft,
-    torporDeplPerSecond:
-      dino.tDPS0 +
-      Math.pow(level - 1, 0.800403041) / (22.39671632 / dino.tDPS0),
+    basePoints: dino.bp,
+    baseMelee: dino.bm,
+    baseExperience: dino.be,
+    method: dino.m,
+    eats: dino.eats,
+    torporDeplPerSecond: dino.tDPS0,
     experiencePerKill: parsePercision(
       dino.xpk * ((level - 1) / 10 + 1) * 4 * XPMultiplier
     ),
+    hitboxes: dino.hitboxes,
+    knockoutW: dino.forceW,
+    nonViolentFoodAffinityMultiplier: dino.nvfam,
+    nonViolentFoodRateMultiplier: dino.nvfrm,
     tamingInterval: dino.tI,
     baseTamingTime: dino.t1,
-    tamingBonus: dino.tiba,
-    allowableFlyers: dino.af.map((t) => {
-      switch (t) {
-        case "d":
-          return "doorframe";
-        case "dd":
-          return "double doorframe";
-        case "dg":
-          return "dinosaur gateway";
-        case "bdg":
-          return "behemoth dinosaur gateway";
-        case "hf":
-          return "hatchframe";
-        case "ltd":
-          return "large trapdoor";
-        case "ghf":
-          return "giant hatchframe";
-        case "b":
-          return "bola";
-        case "bt":
-          return "bear trap";
-        case "n":
-          return "net projectile";
-        case "py":
-          return "plant species y";
-        case "h":
-          return "human";
-        case "lbt":
-          return "large bear trap";
-        case "tu":
-          return "tusoteuthis";
-        case "kr":
-          return "karkinos";
-        case "p":
-          return "procoptodon";
-        case "t":
-          return "thatch";
-        case "w":
-          return "wood";
-        default:
-          break;
-      }
-    }),
+    tamingBonusAttribute: dino.tiba,
+    canDestroy: dino.af.filter((t) => v.includes(t)),
+    fitsThrough: dino.af
+      .filter((t) => fits.includes(t))
+      .map((t) => {
+        switch (t) {
+          case "d":
+            return "doorframe";
+          case "dd":
+            return "double doorframe";
+          case "dg":
+            return "dinosaur gateway";
+          case "bdg":
+            return "behemoth dinosaur gateway";
+          case "hf":
+            return "hatchframe";
+          case "ltd":
+            return "large trapdoor";
+          case "ghf":
+            return "giant hatchframe";
+          default:
+            break;
+        }
+      }),
+    allowableFlyers: dino.af
+      .filter((t) => !v.includes(t) && !fits.includes(t))
+      .map((t) => {
+        switch (t) {
+          case "b":
+            return "bola";
+          case "bt":
+            return "bear trap";
+          case "n":
+            return "net projectile";
+          case "py":
+            return "plant species y";
+          case "h":
+            return "human";
+          case "lbt":
+            return "large bear trap";
+          case "tu":
+            return "tusoteuthis";
+          case "kr":
+            return "karkinos";
+          case "p":
+            return "procoptodon";
+          case "l":
+            return "lasso";
+          case "cb":
+            return "chain bola";
+          case "me":
+            return "megalosaurus";
+          default:
+            break;
+        }
+      }),
     gatherEfficiency: dino.ge,
     baseStats: dino.bs,
-    colorRegions: dino.c,
+    capabilities: dino.c,
     drops: dino.d.map((t) => {
       return t.replace(13, 12).replace(11, 10);
     }),
     weightReduction: dino.wr,
+    imprintingTimeLower: dino.itl,
+    imprintingTheshold: dino.ith,
+    experiencePerKillAdjustment: dino.xpka,
+    xVariant: dino.xv ? true : false,
+    noWaterMovement: dino.noWM ? true : false,
+    disableFood: dino.dFood ? true : false,
+    disableKO: dino.disableKO ? true : false,
+    disableTame: dino.disableTame ? true : false,
+    disableMultiplier: dino.disableMult ? true : false,
+    violentTame: dino.nonViolentTame ? false : true,
+    foodBase: dino.foodBase,
+    foodMultilier: dino.foodMult,
   });
+  // parseInt(((this.metalperforge + 2) / 2 / 20) * 20 * 20 - 20) / fuelConsumptionRate
+  // this.metalperforge = Math.floor(this.metalamount / this.forgeamount);
 
   let comsumptionMultiplier = 1;
   let affinityNeeded = item.a0 + item.aI * level;
   let foodConsumption = item.foodBase * item.foodMult * comsumptionMultiplier;
   // let foodMax = affinityNeeded / food[name].affinity';
+  // var totalTorpor=cr.t1+cr.tI*(level-1);
+  // var affinityNeeded=cr.a0+(cr.aI*level)
+  // let torporDamagePerSecond = Math.pow(level - 1, 0.800403041) / (22.39671632 / dino.tDPS0),
 });
 // https://www.dododex.com/api/data.json
 // https://github.com/arkutils/Purlovia
 // https://arkids.net/items
 // https://www.dododex.com/capabilities/affected-by
 
+// tamed level = wild level + (50%wild level/taming efficiency) - 1
 let maps = {
   theisland: {
     name: "The Island",
@@ -258,29 +305,20 @@ let maps = {
     ue: "User:Danlev",
   },
 };
+let craftingStations = {
+  smithy: 126,
+  fabricator: 185,
+  compostBin: 127,
+  cookingPot: 128,
+  industrialCooker: 601,
+  industrialGrill: 360,
+  refiningForge: 125,
+  tekReplicator: 652,
+  beerBarrel: 606,
+  chemBench: 607,
+  industrialGrinder: 601,
+};
 
-var weekday = new Array(7);
-weekday[0] = "Sunday";
-weekday[1] = "Monday";
-weekday[2] = "Tuesday";
-weekday[3] = "Wednesday";
-weekday[4] = "Thursday";
-weekday[5] = "Friday";
-weekday[6] = "Saturday";
-var months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 var narcotics = {
   ascerbic: { torpor: 25, secs: 2 },
   bio: { torpor: 80, secs: 16 },
@@ -289,131 +327,8 @@ var narcotics = {
 };
 var searchable = [];
 var XPMultiplier = 1;
-function highlightArrows(dino) {
-  arrows = $(".ar, .kglh, .kglv");
-  for (i in arrows) {
-    var theData = $(arrows[i]).data().related;
-    if (typeof theData != "undefined") {
-      if (theData.indexOf(dino) > -1) {
-        $(arrows[i]).addClass("arh");
-      } else {
-        $(arrows[i]).removeClass("arh");
-      }
-    }
-  }
-}
-function slugify(name) {
-  return name
-    .replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "")
-    .replace(/(\s+|&)+/g, "-")
-    .toLowerCase();
-}
-function itemURL(item) {
-  if (typeof item["name"] == "string" && typeof item["id"] == "number") {
-    return "/item/" + item["id"] + "/" + slugify(item["name"]);
-  } else {
-    return null;
-  }
-}
-function creatureURL(creature) {
-  if (typeof creature["id"] == "string") {
-    return "/taming/" + creature["id"];
-  } else {
-    return null;
-  }
-}
-function rateSearchMatch(queryRaw, item) {
-  var query = queryRaw.toUpperCase();
-  if (item.name.toUpperCase().startsWith(query)) {
-    return 5;
-  }
-  var nameWords = item.name.split(" ");
-  if (nameWords.length > 1) {
-    for (var i in nameWords) {
-      if (strMatch(nameWords[i], query)) {
-        return 4;
-      }
-    }
-  }
-  if (strMatch(item.name, query)) {
-    return 3;
-  }
-  for (var i in item.sy) {
-    if (strMatch(item.sy[i], query)) {
-      return 2;
-    }
-  }
-  for (var i in item.name_t) {
-    if (strMatch(item.name_t[i], query)) {
-      return 1;
-    }
-  }
-  return 0;
-}
-function findItemSynonym(queryRaw, item) {
-  var query = queryRaw.toUpperCase();
-  for (var i in item.sy) {
-    if (strMatch(item.sy[i], query)) {
-      return item.sy[i];
-    }
-  }
-  for (var i in item.name_t) {
-    if (strMatch(item.name_t[i], query)) {
-      return item.name_t[i];
-    }
-  }
-}
-function strMatch(str1, str2) {
-  return str1.toUpperCase().includes(str2.toUpperCase());
-}
-function number_format(x) {
-  var parts = x.toString().split(".");
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return parts.join(".");
-}
-$(function () {
-  function log(message) {
-    $("<div>").text(message).prependTo("#log");
-    $("#log").scrollTop(0);
-  }
-  $("#levelSubmit").click(function (event) {
-    changeLevel();
-  });
-  $("#levelForm").submit(function (event) {
-    changeLevel();
-    event.preventDefault();
-  });
-  $(".kg .creatureIcon").hover(
-    function () {
-      theCreatureID = $(this).data().id;
-      highlightArrows(theCreatureID);
-    },
-    function () {
-      $(".ar, .kglh, .kglv").removeClass("arh");
-    }
-  );
-  $(".card.collapsable .cardHead").click(function () {
-    var cardEl = $(this).parent();
-    if ($(cardEl).hasClass("collapsed")) {
-      $(cardEl)
-        .find(".cardBody")
-        .slideDown(200, function () {
-          $(cardEl).removeClass("collapsed");
-        });
-    } else {
-      $(cardEl)
-        .find(".cardBody")
-        .slideUp(200, function () {
-          $(cardEl).addClass("collapsed");
-        });
-    }
-  });
-  $("[data-show-refs]").click(function () {
-    var theRef = $(this).data().showRefs;
-    var theElems = $("[data-ref=" + theRef + "]");
-    $(theElems).fadeIn(300);
-    $(this).hide();
-  });
+
+var getTimestamp = function () {
   $(".maturationCalc input").on("change keyup paste", function () {
     var calcEl = $(this).closest(".breeding");
     var weightCurrent = parseFloat(
@@ -456,74 +371,8 @@ $(function () {
       .html(timeFormatL(timeRemaining));
     $(calcEl).find(".maturationCalcOutputClock").html(clock(timeRemaining));
   });
-  $(".recipeStep").click(function () {
-    if ($(this).hasClass("disabled") == false) {
-      if ($(this).hasClass("recipeDown")) {
-        var change = -1;
-      } else {
-        var change = 1;
-      }
-      var recipeEl = $(this).closest(".card");
-      var quantityEl = $(recipeEl).find(".recipeQuantity");
-      var currentQuantity = parseInt($(quantityEl).text());
-      if (
-        typeof currentQuantity != "number" ||
-        currentQuantity == NaN ||
-        currentQuantity < 1
-      ) {
-        currentQuantity = 1;
-      }
-      var newQuantity = currentQuantity + change;
-      $(quantityEl).text(newQuantity);
-      if (newQuantity > 1) {
-        recipeEl.find(".recipeDown").removeClass("disabled");
-      } else {
-        recipeEl.find(".recipeDown").addClass("disabled");
-      }
-      $(recipeEl)
-        .find("[data-multipliable]")
-        .each(function (index, element) {
-          var aItemQ = parseInt($(element).data().multipliable);
-          var newItemQ = aItemQ * newQuantity;
-          $(element).html(newItemQ);
-        });
-      $(recipeEl)
-        .find("[data-multipliable-time]")
-        .each(function (index, element) {
-          var aItemQ = parseInt($(element).data().multipliableTime);
-          var newItemQ = aItemQ * newQuantity;
-          $(element).html(timeFormatL(newItemQ));
-        });
-      $(recipeEl)
-        .find(".item")
-        .each(function (index, element) {
-          var aItem = $(element).find(".recipeItemQuantity");
-          var aItemQ = parseInt($(aItem).data().quantity);
-          var newItemQ = aItemQ * newQuantity;
-          if (newItemQ > 1) {
-            var newHTML = "&times;" + newItemQ + " ";
-          } else {
-            var newHTML = "";
-          }
-          $(aItem).html(newHTML);
-        });
-    }
-  });
-});
-function URLToArray(url) {
-  var request = {};
-  var qIndex = url.indexOf("?");
-  if (qIndex == -1) {
-    return undefined;
-  }
-  var pairs = url.substring(qIndex + 1).split("&");
-  for (var i = 0; i < pairs.length; i++) {
-    if (!pairs[i]) continue;
-    var pair = pairs[i].split("=");
-    request[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
-  }
-  return request;
-}
+};
+
 function parsePercision(num, numDecimals = 1) {
   if (String(num).indexOf(".") == -1) {
     var num_digits = String(num).length;
@@ -532,24 +381,7 @@ function parsePercision(num, numDecimals = 1) {
   }
   return parseFloat(num.toPrecision(num_digits + numDecimals));
 }
-function checkSrolls() {
-  var scrolls = $(".scrollxw");
-  $.each(scrolls, function (index, value) {
-    var outer = $(value).find(".scrollx");
-    var inner = $(outer).children();
-    if ($(outer).width() < $(inner).width()) {
-      $(value).addClass("scrollc");
-    } else {
-      $(value).removeClass("scrollc");
-    }
-  });
-}
-$(document).ready(function () {
-  checkSrolls();
-});
-$(window).resize(function () {
-  checkSrolls();
-});
+
 function isNumericAndNotZero(n) {
   if (!isNaN(parseFloat(n)) && parseFloat(n) > 0) {
     return true;
@@ -930,6 +762,8 @@ function Creature(creatureID) {
   ) {
     this.isBreedable = true;
   }
+
+  // X Creatues gain 88 levels after taming, while others gain 73
   if (typeof this.c == "object" && this.c.indexOf(40) >= 0) {
     this.maxLevelsAfterTame = 88;
   } else {
@@ -3003,121 +2837,3 @@ function StarveTimer(totalFood, creature) {
     }
   };
 }
-function fetchData() {
-  return new Promise((resolve, reject) => {
-    if (typeof CREATURES != "object") {
-      $.getJSON(REQUEST_URL, function (data) {
-        CREATURES = data.CREATURES;
-        FOODS = data.FOODS;
-        IMAGES = data.IMAGES;
-        ITEMS = data.ITEMS;
-        WEAPONS = data.WEAPONS;
-        for (var i in CREATURES) {
-          var aItem = Array();
-          aItem["id"] = CREATURES[i].id;
-          aItem["name"] = CREATURES[i].name;
-          aItem["name_t"] = CREATURES[i].name_t;
-          aItem["sy"] = CREATURES[i].sy;
-          aItem["type"] = 0;
-          searchable.push(aItem);
-        }
-        for (var i in ITEMS) {
-          ITEMS[i]["id"] = parseInt(i);
-          var aItem = Array();
-          aItem["id"] = parseInt(i);
-          aItem["name"] = ITEMS[i].name;
-          aItem["sy"] = ITEMS[i].sy;
-          aItem["type"] = 1;
-          searchable.push(aItem);
-        }
-        resolve();
-      });
-    } else {
-      resolve();
-    }
-  });
-}
-var qs = "";
-var searchauto;
-$(document).ready(function () {
-  $(".search").autocomplete({
-    source: function (request, response) {
-      fetchData().then(() => {
-        var filter = $(this.element).data("filter");
-        var res = searchable;
-        for (var i in res) {
-          res[i].rating = rateSearchMatch(request.term, res[i]);
-        }
-        if (filter == "creature") {
-          res = res.filter(function (item) {
-            return typeof item.id == "string" && item.rating > 0;
-          });
-        } else {
-          res = res.filter(function (item) {
-            return item.rating > 0;
-          });
-        }
-        res.sort(function (a, b) {
-          return (
-            rateSearchMatch(request.term, b) - rateSearchMatch(request.term, a)
-          );
-        });
-        res = res.splice(0, 15);
-        return response(res);
-      });
-    },
-    minLength: 1,
-    autoFocus: true,
-    select: function (event, r) {
-      var urlPrefix = $(event.target).data("url-prefix");
-      if (typeof urlPrefix == "string") {
-        location.assign(urlPrefix + r.item.id);
-      } else {
-        if (typeof r.item.id == "number") {
-          location.assign(itemURL(r.item));
-        } else {
-          location.assign(creatureURL(r.item));
-        }
-      }
-    },
-  });
-  $(".search").each(function () {
-    $(this).data("ui-autocomplete")._renderItem = function (ul, item) {
-      if (item.rating > 2) {
-        var itemHTML = item.name;
-      } else {
-        var itemHTML =
-          item.name +
-          " <span>(" +
-          findItemSynonym(this.term, item).toLowerCase() +
-          ")</span>";
-      }
-      return $("<li>").append(itemHTML).appendTo(ul);
-    };
-  });
-  $(document).on("click", ".boolButton", function (e) {
-    $(e.target)
-      .closest(".boolButtons")
-      .find(".boolButton")
-      .removeClass("active");
-    $(e.target).addClass("active");
-  });
-  $(document).on("click", ".widgetH", function (e) {
-    var row = $(e.target).closest(".widget");
-    if ($(row).hasClass("collapsed")) {
-      $(row).find(".widgetB").slideDown(200);
-      $(this).find(".arrow").addClass("up").removeClass("down");
-      $(row).removeClass("collapsed");
-    } else {
-      $(row).find(".widgetB").slideUp(200);
-      $(row).addClass("collapsed");
-      $(this).find(".arrow").addClass("down").removeClass("up");
-    }
-  });
-  $(document).tooltip({
-    items: "[data-tooltip]",
-    hide: { duration: 100 },
-    show: { duration: 100 },
-    track: true,
-  });
-});
