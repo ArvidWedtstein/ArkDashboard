@@ -59,9 +59,10 @@ const DinoStatsPage = () => {
     let dyno = dino.find((d) => d.stat === id);
     dyno.dino = (level[id] - 1) * dyno.increasePerLevelWild + dyno.base;
   };
+
   const onSubmit = (data) => {
     // let dino = arkdinos[data.name.toLowerCase()]
-    console.log(getEstimatedStat("food", data.name, data.level))
+    // console.log(getEstimatedStat("food", data.name, data.level))
     let dino = arkdinos.find(
       (d) => d.name.toLowerCase() === data.name.toLowerCase()
     );
