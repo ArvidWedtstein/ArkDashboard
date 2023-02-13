@@ -2,173 +2,204 @@ const { items } = require("./web/public/arkitems.json");
 const d = require("./web/public/arkdinos.json");
 
 // let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
-console.time("normal");
+// console.time("normal");
 
-const arr = [
-  { name: 'John', age: 20 },
-  { name: 'Jane', age: 25 },
-  { name: 'Jim', age: 30 }
-];
+// const arr = [
+//   { name: 'John', age: 20 },
+//   { name: 'Jane', age: 25 },
+//   { name: 'Jim', age: 30 }
+// ];
 
-const result = arr.filter(obj => obj.age > 25);
+// const result = arr.filter(obj => obj.age > 25);
 
-console.log(result);
-console.timeEnd("normal");
+// console.log(result);
+// console.timeEnd("normal");
 
-console.time("optimized");
+// console.time("optimized");
 
-const result2 = arr.find((f) => f.age > 25)
+// const result2 = arr.find((f) => f.age > 25)
 
-console.log(result2);
+// console.log(result2);
 
-console.timeEnd("optimized");
+// console.timeEnd("optimized");
+let sql = "INSERT INTO public.Dino (name, synonyms, description, tamingNotice, canDestroy, immobilizedBy, baseStats, gatherEfficiency, expPerKill, fitsThrough, eggTempMin, eggTempMax, tdps, eats, maturationTime, weightReduction)"
+let itemss = [];
+Object.values(d).forEach((dino, i) => {
+  const { name } = dino;
+  let level = 100;
 
-// let itemss = [];
-// Object.values(d).forEach((dino, i) => {
-//   const { name } = dino;
-//   let level = 100;
+  // ta, r
+  let v = ["t", "w", "a", "s", "m", "tk"];
+  let fits = ["d", "dd", "dg", "bdg", "hf", "ltd", "ghf"];
+  let imm = ["cb", "b", "bt", "n", "py", "l", "lbt"];
+  let flyers = ["h", "tu", "kr", "me", "p"];
+  itemss.push({
+    id: i + 1,
+    name,
+    nameTranslations: dino.name_t,
+    synonyms: dino.sy,
+    bps: dino.bps,
+    description: dino.desc,
+    tamingNotice: dino.tamingNotice,
+    adminNote: dino.adminNote,
+    note: dino.note,
+    img: dino.img,
+    affinityNeeded: dino.a0,
+    affinityIncreasePerLevel: dino.aI,
+    fleeThreshold: dino.ft,
+    basePoints: dino.bp,
+    maturationTime: dino.bm,
+    incubationTime: dino.be,
+    method: dino.m,
+    eats: dino.eats,
+    torporDepletionPS: dino.tDPS0,
+    experiencePerKill: dino.xpk,
+    hitboxes: dino.hitboxes,
+    knockoutW: dino.forceW,
+    nonViolentFoodAffinityMultiplier: dino.nvfam,
+    nonViolentFoodRateMultiplier: dino.nvfrm,
+    tamingInterval: dino.tI,
+    baseTamingTime: dino.t1,
+    tamingBonusAttribute: dino.tiba,
+    canDestroy: dino.af ? dino.af.filter((t) => v.includes(t)) : [],
+    fitsThrough: dino.af ? dino.af
+      .filter((t) => fits.includes(t))
+      .map((t) => {
+        switch (t) {
+          case "d":
+            return "doorframe";
+          case "dd":
+            return "double doorframe";
+          case "dg":
+            return "dinosaur gateway";
+          case "bdg":
+            return "behemoth dinosaur gateway";
+          case "hf":
+            return "hatchframe";
+          case "ltd":
+            return "large trapdoor";
+          case "ghf":
+            return "giant hatchframe";
+          default:
+            return t;
+        }
+      }) : [],
+    immobilizedBy: dino.af ? dino.af
+      .filter((t) => imm.includes(t))
+      .map((t) => {
+        switch (t) {
+          case "b":
+            return "bola";
+          case "bt":
+            return "bear trap";
+          case "n":
+            return "net projectile";
+          case "py":
+            return "plant species y";
+          case "lbt":
+            return "large bear trap";
+          case "l":
+            return "lasso";
+          case "cb":
+            return "chain bola";
+          default:
+            return t;
+        }
+      }) : [],
+    allowableFlyers: dino.af ? dino.af
+      .filter((t) => !v.includes(t) && !fits.includes(t) && !imm.includes(t))
+      .map((t) => {
+        switch (t) {
+          case "h":
+            return "human";
+          case "tu":
+            return "tusoteuthis";
+          case "kr":
+            return "karkinos";
+          case "p":
+            return "procoptodon";
+          case "me":
+            return "megalosaurus";
+          default:
+            return t;
+        }
+      }) : [],
+    gatherEfficiency: dino.ge,
+    baseStats: dino.bs,
+    capabilities: dino.c,
+    drops: dino.d ? dino.d.map((t) => {
+      if (t === 13) {
+        t = 12
+      }
+      if (t === 11) {
+        t = 10
+      }
+      return t
+    }) : [],
+    weightReduction: dino.wr,
+    eggTempMin: dino.itl,
+    eggTempMax: dino.ith,
+    experiencePerKillAdjustment: dino.xpka,
+    xVariant: dino.xv ? true : false,
+    noWaterMovement: dino.noWM ? true : false,
+    disableFood: dino.dFood ? true : false,
+    disableKO: dino.disableKO ? true : false,
+    disableTame: dino.disableTame ? true : false,
+    disableMultiplier: dino.disableMult ? true : false,
+    violentTame: dino.nonViolentTame ? false : true,
+    foodConsumptionBase: dino.foodBase,
+    foodConsumptionMult: dino.foodMult,
+  });
 
-//   // ta, r
-//   let v = ["t", "w", "a", "s", "m", "tk"];
-//   let fits = ["d", "dd", "dg", "bdg", "hf", "ltd", "ghf"];
-//   let imm = ["cb", "b", "bt", "n", "py", "l", "lbt"];
-//   let flyers = ["h", "tu", "kr", "me", "p"];
-//   itemss.push({
-//     id: i + 1,
-//     name,
-//     nameTranslations: dino.name_t,
-//     synonyms: dino.sy,
-//     bps: dino.bps,
-//     description: dino.desc,
-//     tamingNotice: dino.tamingNotice,
-//     adminNote: dino.adminNote,
-//     note: dino.note,
-//     img: dino.img,
-//     affinityNeeded: dino.a0,
-//     affinityIncreasePerLevel: dino.aI,
-//     fleeThreshold: dino.ft,
-//     basePoints: dino.bp,
-//     maturationTime: dino.bm,
-//     incubationTime: dino.be,
-//     method: dino.m,
-//     eats: dino.eats,
-//     torporDepletionPS: dino.tDPS0,
-//     experiencePerKill: parsePercision(
-//       dino.xpk * ((level - 1) / 10 + 1) * 4 * XPMultiplier
-//     ),
-//     hitboxes: dino.hitboxes,
-//     knockoutW: dino.forceW,
-//     nonViolentFoodAffinityMultiplier: dino.nvfam,
-//     nonViolentFoodRateMultiplier: dino.nvfrm,
-//     tamingInterval: dino.tI,
-//     baseTamingTime: dino.t1,
-//     tamingBonusAttribute: dino.tiba,
-//     canDestroy: dino.af.filter((t) => v.includes(t)),
-//     fitsThrough: dino.af
-//       .filter((t) => fits.includes(t))
-//       .map((t) => {
-//         switch (t) {
-//           case "d":
-//             return "doorframe";
-//           case "dd":
-//             return "double doorframe";
-//           case "dg":
-//             return "dinosaur gateway";
-//           case "bdg":
-//             return "behemoth dinosaur gateway";
-//           case "hf":
-//             return "hatchframe";
-//           case "ltd":
-//             return "large trapdoor";
-//           case "ghf":
-//             return "giant hatchframe";
-//           default:
-//             return t;
-//         }
-//       }),
-//     immobilizedBy: dino.af
-//       .filter((t) => imm.includes(t))
-//       .map((t) => {
-//         switch (t) {
-//           case "b":
-//             return "bola";
-//           case "bt":
-//             return "bear trap";
-//           case "n":
-//             return "net projectile";
-//           case "py":
-//             return "plant species y";
-//           case "lbt":
-//             return "large bear trap";
-//           case "l":
-//             return "lasso";
-//           case "cb":
-//             return "chain bola";
-//           default:
-//             return t;
-//         }
-//       }),
-//     allowableFlyers: dino.af
-//       .filter((t) => !v.includes(t) && !fits.includes(t) && !imm.includes(t))
-//       .map((t) => {
-//         switch (t) {
-//           case "h":
-//             return "human";
-//           case "tu":
-//             return "tusoteuthis";
-//           case "kr":
-//             return "karkinos";
-//           case "p":
-//             return "procoptodon";
-//           case "me":
-//             return "megalosaurus";
-//           default:
-//             return t;
-//         }
-//       }),
-//     gatherEfficiency: dino.ge,
-//     baseStats: dino.bs,
-//     capabilities: dino.c,
-//     drops: dino.d.map((t) => {
-//       return t.replace(13, 12).replace(11, 10);
-//     }),
-//     weightReduction: dino.wr,
-//     eggTempMin: dino.itl,
-//     eggTempMax: dino.ith,
-//     experiencePerKillAdjustment: dino.xpka,
-//     xVariant: dino.xv ? true : false,
-//     noWaterMovement: dino.noWM ? true : false,
-//     disableFood: dino.dFood ? true : false,
-//     disableKO: dino.disableKO ? true : false,
-//     disableTame: dino.disableTame ? true : false,
-//     disableMultiplier: dino.disableMult ? true : false,
-//     violentTame: dino.nonViolentTame ? false : true,
-//     foodConsumptionBase: dino.foodBase,
-//     foodConsumptionMult: dino.foodMult,
-//   });
+  //let experiencePerKill = dino.xpk * ((level - 1) / 10 + 1) * 4 * XPMultiplier
+
+
   // parseInt(((this.metalperforge + 2) / 2 / 20) * 20 * 20 - 20) / fuelConsumptionRate
   // this.metalperforge = Math.floor(this.metalamount / this.forgeamount);
 
   // let comsumptionMultiplier = 1;
   // let affinityNeeded = item.a0 + item.aI * level;
   // let foodConsumption = item.foodBase * item.foodMult * comsumptionMultiplier;
-  // let foodMax = affinityNeeded / food[name].affinity';
+  // let foodMax = affinityNeeded / food[name].affinity;
   // var totalTorpor=cr.t1+cr.tI*(level-1);
   // var affinityNeeded=cr.a0+(cr.aI*level)
-  // let torporDamagePerSecond = Math.pow(level - 1, 0.800403041) / (22.39671632 / dino.tDPS0),
+  // let torporDamagePerSecond = Math.pow(level - 1, 0.800403041) / (22.39671632 / dino.tDPS0)
 
-  // The repair cost is calculated by taking the percentage of
-  // lost durability and multiplying it with the half of
-  // the initial building costs (Scales with increased costs
-  // caused by Item Quality).
-  // The repair costs are always rounded up.
+  /*The repair cost is calculated by taking the percentage of
+  lost durability and multiplying it with the half of
+  the initial building costs (Scales with increased costs
+  caused by Item Quality).
+  The repair costs are always rounded up.*/
 //   let craftingCostMetalIngot = 100;
 //   let lostDurability = 900;
 //   let durability = 1300;
 //   let itemRepairCost =
 //     (100 - Math.round((lostDurability / durability) * 100)) *
 //     (craftingCostMetalIngot / 2);
-// });
+});
+// let sql = "INSERT INTO public.Dino (name, synonyms, description, tamingNotice, canDestroy, immobilizedBy, baseStats, gatherEfficiency, expPerKill, fitsThrough, eggTempMin, eggTempMax, tdps, eats, maturationTime, weightReduction)"
+
+let t = itemss.map((g) => {
+  return `'${g.name}', ARRAY[${g.synonyms ? g.synonyms.join(",") : ''}], '${g.description}', '${g.tamingNotice}', ARRAY[${g.canDestroy.join(', ')}]
+  `
+})
+let cols = []
+itemss.forEach((g) => {
+  cols.push(Object.keys(g).length)
+})
+const sum = cols.reduce((a, b) => a + b, 0);
+const avg = (sum / cols.length) || 0;
+
+console.log(`The sum is: ${sum}. The average is: ${avg}.`);
+// require("fs").writeFile(
+//   "dinotest.json",
+//   JSON.stringify(itemss),
+//   (error) => {
+//     if (error) {
+//       throw error;
+//     }
+//   }
+// );
 // https://www.dododex.com/api/data.json
 // https://github.com/arkutils/Purlovia
 // https://arkids.net/items

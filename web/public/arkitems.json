@@ -10343,7 +10343,10 @@
         "Rapidly reduces Stamina",
         "Applies hangover for 1 minute after consumption, keeping stamina at 0 and preventing effects of stew"
       ],
-      "stats": [{ "id": 1, "value": "Consumable" }]
+      "stats": [
+        { "id": 1, "value": "Consumable" },
+        { "id": 15, "value": 400 }
+      ]
     },
     {
       "itemId": 719,
@@ -14238,7 +14241,7 @@
     },
     {
       "itemId": 986,
-      "name": "Plant Species X Seed",
+      "name": "Plant Species Y Seed",
       "description": "Plant this in a viable large crop plot to grow a frightening-looking defensive plant, which will shoot poisonous spores at any interlopers!",
       "maxStack": 100,
       "weight": 0.01,
