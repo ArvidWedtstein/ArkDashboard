@@ -46,7 +46,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile"],
+    "immobilizedBy": ["bola", 785],
     "allowableFlyers": [
       "ta",
       "r",
@@ -133,7 +133,7 @@
     "tamingInterval": 60,
     "baseTamingTime": 1000,
     "tamingBonusAttribute": 1.875,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "egg": "Allosaurus Egg",
     "fitsThrough": [
@@ -141,7 +141,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["net projectile", "large bear trap"],
+    "immobilizedBy": [785, "large bear trap"],
     "allowableFlyers": ["ta", "r", "tusoteuthis", "quetzal", "wyvern"],
     "gatherEfficiency": {
       "11": 3.62,
@@ -330,7 +330,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": ["k", "megalosaurus", "karkinos", "tusoteuthis"],
     "baseStats": {
       "h": { "b": 180, "w": 36, "t": null },
@@ -403,13 +403,13 @@
     "tamingInterval": 54,
     "baseTamingTime": 900,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
     "gatherEfficiency": {
       "11": 2.84,
@@ -487,7 +487,7 @@
     "tamingInterval": 25.2,
     "baseTamingTime": 420,
     "tamingBonusAttribute": 0.2,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "egg": "Ankylo Egg",
     "fitsThrough": [
@@ -495,7 +495,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", "net projectile"],
+    "immobilizedBy": ["large bear trap", 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -591,7 +591,7 @@
     "tamingInterval": 4.8,
     "baseTamingTime": 80,
     "tamingBonusAttribute": 4.166667,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "doorframe",
@@ -605,7 +605,7 @@
       "lasso",
       "bear trap",
       "bola",
-      "net projectile",
+      785,
       "bear trap",
       "plant species y"
     ],
@@ -697,7 +697,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile", "lasso"],
+    "immobilizedBy": ["bola", 785, "lasso"],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -781,19 +781,14 @@
     "tamingInterval": 36,
     "baseTamingTime": 600,
     "tamingBonusAttribute": 1.875,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "egg": "Argentavis Egg",
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "lasso",
-      "chain bola",
-      "large bear trap",
-      "net projectile"
-    ],
+    "immobilizedBy": ["lasso", "chain bola", "large bear trap", 785],
     "allowableFlyers": ["ta", "r", "megalosaurus", "procoptodon"],
     "gatherEfficiency": {
       "11": 3.52,
@@ -884,14 +879,14 @@
     "tamingInterval": 10.53,
     "baseTamingTime": 175.5,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t", "w", "s", "a", "m", "tk"],
+    "canDestroy": ["thatch", "wood", "stone", "adobe", "metal", "tek"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "net projectile"],
+    "immobilizedBy": ["lasso", 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -966,7 +961,7 @@
     "tamingInterval": 30,
     "baseTamingTime": 2500,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t", "w", "a", "s"],
+    "canDestroy": ["thatch", "wood", "adobe", "stone"],
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -1014,14 +1009,14 @@
     "nonViolentFoodAffinityMultiplier": 1,
     "nonViolentFoodRateMultiplier": 999,
     "tamingBonusAttribute": 3.125,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": [
       "chain bola",
       "bear trap",
       "large bear trap",
       "plant species y",
-      "net projectile"
+      785
     ],
     "allowableFlyers": [],
     "gatherEfficiency": { "11": 3.4, "13": 3.3 },
@@ -1061,7 +1056,7 @@
       "zh": "攻击无人机"
     },
     "bps": ["EndDrone_Character_BP"],
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -1109,7 +1104,7 @@
     "tamingInterval": 24,
     "baseTamingTime": 400,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "crystalwyvern", "wyvern"],
     "egg": "Baryonyx Egg",
     "fitsThrough": [
@@ -1122,7 +1117,7 @@
       "bear trap",
       "large bear trap",
       "plant species y",
-      "net projectile"
+      785
     ],
     "allowableFlyers": [
       "quetzal",
@@ -1211,14 +1206,9 @@
     "tamingInterval": 10.5,
     "baseTamingTime": 175,
     "tamingBonusAttribute": 3,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway", "dinosaur gateway"],
-    "immobilizedBy": [
-      "bear trap",
-      "large bear trap",
-      "plant species y",
-      "net projectile"
-    ],
+    "immobilizedBy": ["bear trap", "large bear trap", "plant species y", 785],
     "allowableFlyers": ["ab"],
     "gatherEfficiency": {
       "11": 3.55,
@@ -1309,7 +1299,7 @@
     "tamingInterval": 30,
     "baseTamingTime": 2500,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway", "giant hatchframe"],
     "immobilizedBy": [],
     "allowableFlyers": ["ta", "r"],
@@ -1388,7 +1378,7 @@
     "tamingInterval": 12,
     "baseTamingTime": 200,
     "tamingBonusAttribute": 0.4,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "double doorframe",
@@ -1396,7 +1386,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", "net projectile", "bear trap"],
+    "immobilizedBy": ["lasso", "bola", 785, "bear trap"],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -1545,7 +1535,7 @@
     "canDestroy": [],
     "canBeCarriedBy": ["wyvern"],
     "fitsThrough": ["behemoth dinosaur gateway", "dinosaur gateway"],
-    "immobilizedBy": ["large bear trap", "net projectile"],
+    "immobilizedBy": ["large bear trap", 785],
     "allowableFlyers": ["wyvern"],
     "gatherEfficiency": {
       "11": 2.68,
@@ -1618,7 +1608,7 @@
     "tamingInterval": 120,
     "baseTamingTime": 2000,
     "tamingBonusAttribute": 0.06,
-    "canDestroy": ["t", "a", "w"],
+    "canDestroy": ["thatch", "adobe", "wood"],
     "egg": "Brontosaurus Egg",
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": [],
@@ -1681,7 +1671,7 @@
     "bps": ["SpiderL_Character_BP"],
     "tamingNotice": "The Broodmother Lysrix is one of the bosses. Have a good strategy on how to battle Broodmother Lysrix? Share a tip!",
     "experiencePerKill": 8,
-    "canDestroy": ["t", "a", "w", "s", "m", "tk"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone", "metal", "tek"],
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -1737,7 +1727,7 @@
     "tamingInterval": 3.5999999999999996,
     "baseTamingTime": 60,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": [
       "tapejara",
       "tropeognathus",
@@ -1756,7 +1746,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["plant species y", "bear trap", "bola", "net projectile"],
+    "immobilizedBy": ["plant species y", "bear trap", "bola", 785],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -1835,7 +1825,7 @@
     "tamingInterval": 16.5,
     "baseTamingTime": 275,
     "tamingBonusAttribute": 0.2,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "egg": "Turtle Egg",
     "fitsThrough": [
@@ -1843,7 +1833,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": [
       "quetzal",
       "wyvern",
@@ -1893,7 +1883,7 @@
     "tamingNotice": "To tame a Carcharodontosaurus, you first need to trap it. Carry dinosaur corpses to the trapped Carcharodontosaurus and it will eat. A \"trust\" progress meter will appear above it.\n\nOnce the meter is filled, ride it and a taming bar will appear. Kill creatures while riding the Carcharodontosaurus to fill up its taming bar.\n\nCheck Dododex's Tips feature for taming strategies!",
     "maturationTime": 878349,
     "incubationTime": 179985.601,
-    "canDestroy": ["t", "a", "w", "s"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone"],
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": ["large bear trap"],
     "allowableFlyers": ["ta", "r"],
@@ -1975,7 +1965,7 @@
     "tamingInterval": 21,
     "baseTamingTime": 350,
     "tamingBonusAttribute": 1.875,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "egg": "Carno Egg",
     "fitsThrough": [
@@ -1983,7 +1973,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", "net projectile"],
+    "immobilizedBy": ["chain bola", "large bear trap", 785],
     "allowableFlyers": [
       "quetzal",
       "wyvern",
@@ -2073,7 +2063,7 @@
     "tamingInterval": 21,
     "baseTamingTime": 350,
     "tamingBonusAttribute": 0.3,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "double doorframe",
@@ -2081,7 +2071,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile", "large bear trap"],
+    "immobilizedBy": ["bola", 785, "large bear trap"],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -2163,14 +2153,14 @@
     "tamingInterval": 30,
     "baseTamingTime": 500,
     "tamingBonusAttribute": 0.16,
-    "canDestroy": ["t", "w", "s"],
+    "canDestroy": ["thatch", "wood", "stone"],
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", "chain bola", "net projectile"],
+    "immobilizedBy": ["large bear trap", "chain bola", 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "r", "tusoteuthis"],
     "gatherEfficiency": {
       "3": 3.38,
@@ -2240,7 +2230,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": ["k", "megalosaurus", "karkinos", "tusoteuthis"],
     "baseStats": {
       "h": { "b": 180, "w": 36, "t": null },
@@ -2339,7 +2329,7 @@
     "tamingInterval": 1.5,
     "baseTamingTime": 25,
     "tamingBonusAttribute": 8.333333,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": [
       "tapejara",
       "tropeognathus",
@@ -2359,7 +2349,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "bear trap", "net projectile"],
+    "immobilizedBy": ["bola", "bear trap", 785],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -2460,9 +2450,9 @@
     "tamingInterval": 32.7,
     "baseTamingTime": 545,
     "tamingBonusAttribute": 0.72072,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap", "net projectile"],
+    "immobilizedBy": ["chain bola", "large bear trap", 785],
     "allowableFlyers": [],
     "gatherEfficiency": {
       "3": 3.17,
@@ -2521,7 +2511,7 @@
       "ru": "Королева кристальных виверн",
       "zh": "水晶飞龙女王"
     },
-    "canDestroy": ["t", "a", "w", "s", "m", "tk"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone", "metal", "tek"],
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -2575,7 +2565,7 @@
     "tamingInterval": 48,
     "baseTamingTime": 800,
     "tamingBonusAttribute": 0.0625,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "double doorframe",
@@ -2583,7 +2573,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile", "bear trap"],
+    "immobilizedBy": ["bola", 785, "bear trap"],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -2654,7 +2644,7 @@
     "bps": ["DeathWorm_Character_BP"],
     "tamingNotice": "The Deathworm is not tamable. It can be found in the outer deserts of Scorched Earth. Have a good strategy on how to battle it? Share a tip!",
     "experiencePerKill": 3000,
-    "canDestroy": ["t", "a", "w", "s"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone"],
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -2702,7 +2692,7 @@
     "synonyms": ["Defender"],
     "bps": ["Defender_Character_BP"],
     "tamingNotice": "This creature's Dododex profile may contain spoilers. Have a good strategy on how to battle the Defense Unit? Share a tip!",
-    "canDestroy": ["t", "a", "w", "s", "m", "tk"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone", "metal", "tek"],
     "fitsThrough": [
       "dinosaur gateway",
       "behemoth dinosaur gateway",
@@ -2739,7 +2729,7 @@
     "maturationTime": 133333.33,
     "incubationTime": 18000,
     "experiencePerKill": 3,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "dinosaur gateway",
@@ -2748,7 +2738,7 @@
     ],
     "immobilizedBy": [
       "bola",
-      "net projectile",
+      785,
       "bear trap",
       "large bear trap",
       "plant species y"
@@ -2813,7 +2803,7 @@
     "description": "The Desert Titan is a massive, flying, tamable mini-boss in ARK: Extinction.",
     "tamingNotice": "To tame a Desert Titan, you must destroy the corruption on its body. Taming effectiveness will drop if you hurt the Titan, so try to focus on the corruption. Titans come pre-equipped with a Platform Saddle, however, they are piloted from a seperate cockpit. Titans are a 24 hour temporary tame.",
     "experiencePerKill": 4,
-    "canDestroy": ["t", "w", "a", "s", "m", "tk"],
+    "canDestroy": ["thatch", "wood", "a", "s", "metal", "tek"],
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -2851,7 +2841,7 @@
       "chain bola",
       "large bear trap",
       "plant species y",
-      "net projectile"
+      785
     ],
     "allowableFlyers": [],
     "gatherEfficiency": { "11": 3.1, "67": 4.8, "340": 5 },
@@ -2924,7 +2914,7 @@
     "tamingInterval": 4.5,
     "baseTamingTime": 75,
     "tamingBonusAttribute": 8.333333,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": [
       "tapejara",
       "tropeognathus",
@@ -2944,7 +2934,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile", "bear trap"],
+    "immobilizedBy": ["bola", 785, "bear trap"],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -3041,7 +3031,7 @@
     "tamingInterval": 45,
     "baseTamingTime": 750,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "egg": "Dimetrodon Egg",
     "fitsThrough": [
@@ -3050,7 +3040,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", "net projectile"],
+    "immobilizedBy": ["large bear trap", 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -3132,7 +3122,7 @@
     "tamingInterval": 6,
     "baseTamingTime": 100,
     "tamingBonusAttribute": 4.166666,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "egg": "Dimorph Egg",
     "fitsThrough": [
       "doorframe",
@@ -3142,7 +3132,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile", "lasso", "net projectile"],
+    "immobilizedBy": ["bola", 785, "lasso", 785],
     "allowableFlyers": ["ta", "human", "g", "procoptodon"],
     "gatherEfficiency": {
       "11": 2.74,
@@ -3224,10 +3214,10 @@
     "tamingInterval": 36,
     "baseTamingTime": 600,
     "tamingBonusAttribute": 3.125,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "fitsThrough": ["dinosaur gateway", "behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap", "net projectile"],
+    "immobilizedBy": ["chain bola", "large bear trap", 785],
     "allowableFlyers": ["quetzal", "wyvern", "procoptodon", "tusoteuthis"],
     "baseStats": {
       "h": { "b": 775, "w": 155, "t": 5.4 },
@@ -3289,7 +3279,7 @@
     "tamingInterval": 13.2,
     "baseTamingTime": 220,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": [
       "tapejara",
       "tropeognathus",
@@ -3308,7 +3298,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile"],
+    "immobilizedBy": ["bola", 785],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -3491,14 +3481,14 @@
     "tamingInterval": 60,
     "baseTamingTime": 1000,
     "tamingBonusAttribute": 1.25,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", "chain bola", "net projectile"],
+    "immobilizedBy": ["large bear trap", "chain bola", 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "r", "tusoteuthis"],
     "gatherEfficiency": {
       "4": 4.13,
@@ -3587,7 +3577,7 @@
     "tamingInterval": 27,
     "baseTamingTime": 450,
     "tamingBonusAttribute": 3.125,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "double doorframe",
@@ -3595,13 +3585,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "lasso",
-      "bola",
-      "net projectile",
-      "bear trap",
-      "large bear trap"
-    ],
+    "immobilizedBy": ["lasso", "bola", 785, "bear trap", "large bear trap"],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -3694,7 +3678,7 @@
     "tamingInterval": 1.8,
     "baseTamingTime": 30,
     "tamingBonusAttribute": 1.333333,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": [
       "tapejara",
       "tropeognathus",
@@ -3714,13 +3698,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "lasso",
-      "bola",
-      "net projectile",
-      "plant species y",
-      "bear trap"
-    ],
+    "immobilizedBy": ["lasso", "bola", 785, "plant species y", "bear trap"],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -3805,7 +3783,7 @@
     "tamingInterval": 48,
     "baseTamingTime": 800,
     "tamingBonusAttribute": 0.2,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "egg": "Doedicurus Egg",
     "fitsThrough": [
@@ -3813,7 +3791,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", "net projectile"],
+    "immobilizedBy": ["large bear trap", 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -3891,7 +3869,7 @@
       "zh": "喷火龙"
     },
     "bps": ["Dragon_Character_BP"],
-    "canDestroy": ["t", "a", "w", "s", "m", "tk"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone", "metal", "tek"],
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -3949,7 +3927,7 @@
     "tamingInterval": 12,
     "baseTamingTime": 200,
     "tamingBonusAttribute": 4.166667,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "doorframe",
@@ -3959,7 +3937,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile", "bear trap"],
+    "immobilizedBy": ["bola", 785, "bear trap"],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -4041,9 +4019,9 @@
     "tamingInterval": 69,
     "baseTamingTime": 1150,
     "tamingBonusAttribute": 3.275,
-    "canDestroy": ["t", "a", "w", "s"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone"],
     "fitsThrough": ["giant hatchframe", "behemoth dinosaur gateway"],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
     "gatherEfficiency": {
       "3": 2.57,
@@ -4134,7 +4112,7 @@
     "tamingInterval": 18,
     "baseTamingTime": 300,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": [
       "doorframe",
       "double doorframe",
@@ -4143,7 +4121,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": ["ta", "tusoteuthis"],
     "gatherEfficiency": {
       "11": 3.04,
@@ -4194,7 +4172,7 @@
     "description": "The Enforcer is a craftable and rideable synthetic creature in ARK: Extinction that can climb walls, strafe, and make short teleportation jumps.",
     "tamingNotice": "Enforcer Blueprints can be obtained by killing Enforcers in the wild. The higher the level Enforcer you kill, the higher quality the Blueprint. Have a good technique on battling Enforcers? Share it as a tip!",
     "experiencePerKill": 4,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": [
       "tapejara",
       "tropeognathus",
@@ -4210,7 +4188,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile", "large bear trap"],
+    "immobilizedBy": ["bola", 785, "large bear trap"],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -4292,7 +4270,7 @@
     "tamingInterval": 25.2,
     "baseTamingTime": 420,
     "tamingBonusAttribute": 0.4,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "double doorframe",
@@ -4303,7 +4281,7 @@
     "immobilizedBy": [
       "lasso",
       "bola",
-      "net projectile",
+      785,
       "bear trap",
       "large bear trap",
       "plant species y"
@@ -4381,7 +4359,7 @@
     "bps": ["Euryp_Character_BP"],
     "description": "The Eurypterid is not tamable. It can usually be found on the bottom of the ocean floor but sometimes travels to beaches as well.",
     "experiencePerKill": 1,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "fitsThrough": [
       "giant hatchframe",
       "double doorframe",
@@ -4447,7 +4425,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": [
       "ab",
       "megalosaurus",
@@ -4584,7 +4562,7 @@
     "tamingInterval": 1.8,
     "baseTamingTime": 30,
     "tamingBonusAttribute": 1.333333,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": [
       "tapejara",
       "tropeognathus",
@@ -4603,12 +4581,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "plant species y",
-      "bola",
-      "net projectile",
-      "large bear trap"
-    ],
+    "immobilizedBy": ["plant species y", "bola", 785, "large bear trap"],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -4713,7 +4686,7 @@
     "description": "The Forest Titan is a massive, tamable mini-boss in ARK: Extinction.",
     "tamingNotice": "To tame a Forest Titan, you must destroy the corruption on its body. Taming effectiveness will drop if you hurt the Titan, so try to focus on the corruption. Titans come pre-equipped with a Platform Saddle, however, they are piloted from a seperate cockpit. Titans are a 24 hour temporary tame.",
     "experiencePerKill": 4,
-    "canDestroy": ["t", "w", "a", "s", "m", "tk"],
+    "canDestroy": ["thatch", "wood", "a", "s", "metal", "tek"],
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -4768,10 +4741,10 @@
     "tamingInterval": 36,
     "baseTamingTime": 600,
     "tamingBonusAttribute": 11,
-    "canDestroy": ["t", "w", "a", "s"],
+    "canDestroy": ["thatch", "wood", "a", "s"],
     "canBeCarriedBy": ["quetzal"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap", "net projectile"],
+    "immobilizedBy": ["chain bola", "large bear trap", 785],
     "allowableFlyers": ["quetzal"],
     "gatherEfficiency": {
       "3": 4.15,
@@ -4868,7 +4841,7 @@
     "tamingInterval": 25.2,
     "baseTamingTime": 420,
     "tamingBonusAttribute": 0.4,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "egg": "Gallimimus Egg",
     "fitsThrough": [
       "giant hatchframe",
@@ -4880,7 +4853,7 @@
       "plant species y",
       "bear trap",
       "chain bola",
-      "net projectile"
+      785
     ],
     "allowableFlyers": [
       "ta",
@@ -4957,14 +4930,14 @@
     "tamingInterval": 27,
     "baseTamingTime": 450,
     "tamingBonusAttribute": 1.25,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", "net projectile"],
+    "immobilizedBy": ["large bear trap", 785],
     "allowableFlyers": ["quetzal", "wyvern"],
     "baseStats": {
       "h": { "b": 650, "w": 130, "t": 5.4 },
@@ -5044,13 +5017,13 @@
     "tamingInterval": 24,
     "baseTamingTime": 400,
     "tamingBonusAttribute": 1.333333,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": ["ta", "k", "megalosaurus", "karkinos"],
     "baseStats": {
       "h": { "b": 80, "w": 16, "t": 5.4 },
@@ -5118,7 +5091,7 @@
     "tamingInterval": 600,
     "baseTamingTime": 10000,
     "tamingBonusAttribute": 1.25,
-    "canDestroy": ["t", "a", "w", "s"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone"],
     "egg": "Giganotosaurus Egg",
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": ["large bear trap"],
@@ -5206,7 +5179,7 @@
     "tamingInterval": 66,
     "baseTamingTime": 1100,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "giant hatchframe",
@@ -5214,7 +5187,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", "net projectile"],
+    "immobilizedBy": ["large bear trap", 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -5287,14 +5260,14 @@
     "bps": ["Lightbug_Character_BaseBP"],
     "description": "The Glowbug is a firefly-like creature in Ark: Aberration. Creatures with charges can extract a charge from Glowbugs. They can be found in all biomes other than the surface.",
     "tamingNotice": "The Glowbug is a firefly-like creature in Ark: Aberration.",
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": [
       "double doorframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway",
       "giant hatchframe"
     ],
-    "immobilizedBy": ["bola", "net projectile", "bear trap", "plant species y"],
+    "immobilizedBy": ["bola", 785, "bear trap", "plant species y"],
     "allowableFlyers": ["ab"],
     "capabilities": [6, 8, 10, 19, 32, 39, 41, 43, 45, 50],
     "drops": [10, 12, 14, 211],
@@ -5333,7 +5306,7 @@
     "nonViolentFoodAffinityMultiplier": 1.65,
     "nonViolentFoodRateMultiplier": 2,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": [
       "tapejara",
       "tropeognathus",
@@ -5350,7 +5323,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile", "bear trap", "plant species y"],
+    "immobilizedBy": ["bola", 785, "bear trap", "plant species y"],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -5431,7 +5404,7 @@
     "tamingInterval": 90,
     "baseTamingTime": 1500,
     "tamingBonusAttribute": 3.125,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
@@ -5442,7 +5415,7 @@
       "large bear trap",
       "chain bola",
       "plant species y",
-      "net projectile"
+      785
     ],
     "allowableFlyers": ["ta", "r"],
     "gatherEfficiency": {
@@ -5531,7 +5504,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": ["ta", "human"],
     "baseStats": {
       "h": { "b": 95, "w": 19, "t": 5.4 },
@@ -5584,7 +5557,7 @@
     "tamingInterval": 27,
     "baseTamingTime": 450,
     "tamingBonusAttribute": 0.7,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": [
       "pteranodon",
       "argentavis",
@@ -5600,7 +5573,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile", "bear trap", "plant species y"],
+    "immobilizedBy": ["bola", 785, "bear trap", "plant species y"],
     "allowableFlyers": [
       "pteranodon",
       "argentavis",
@@ -5679,7 +5652,7 @@
     "description": "The Ice Titan is a massive, tamable mini-boss in ARK: Extinction.",
     "tamingNotice": "To tame a Ice Titan, you must destroy the corruption on its body. Taming effectiveness will drop if you hurt the Titan, so try to focus on the corruption. Titans come pre-equipped with a Platform Saddle, however, they are piloted from a seperate cockpit. Titans are a 24 hour temporary tame.",
     "experiencePerKill": 4,
-    "canDestroy": ["t", "w", "a", "s", "m", "tk"],
+    "canDestroy": ["thatch", "wood", "a", "s", "metal", "tek"],
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -5725,14 +5698,14 @@
     "tamingInterval": 7.2,
     "baseTamingTime": 120,
     "tamingBonusAttribute": 3.125,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "fitsThrough": [
       "double doorframe",
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["plant species y", "bola", "net projectile", "bear trap"],
+    "immobilizedBy": ["plant species y", "bola", 785, "bear trap"],
     "allowableFlyers": ["ta", "human"],
     "gatherEfficiency": { "11": 2.82, "12": 3.13, "62": 3.85, "68": 3.88 },
     "baseStats": {
@@ -5808,7 +5781,7 @@
     "tamingInterval": 18,
     "baseTamingTime": 300,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "fitsThrough": [
       "double doorframe",
       "giant hatchframe",
@@ -5892,7 +5865,7 @@
     "tamingInterval": 12.6,
     "baseTamingTime": 210,
     "tamingBonusAttribute": 0.4,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "giant hatchframe",
@@ -5901,7 +5874,7 @@
     ],
     "immobilizedBy": [
       "bola",
-      "net projectile",
+      785,
       "bear trap",
       "large bear trap",
       "plant species y"
@@ -5998,7 +5971,7 @@
     "tamingInterval": 1.8,
     "baseTamingTime": 30,
     "tamingBonusAttribute": 1.333333,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": [
       "tapejara",
       "tropeognathus",
@@ -6017,7 +5990,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["plant species y", "bola", "net projectile"],
+    "immobilizedBy": ["plant species y", "bola", 785],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -6091,9 +6064,9 @@
       "Jugbug_Water_Character_BP"
     ],
     "experiencePerKill": 2,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["double doorframe"],
-    "immobilizedBy": ["bola", "net projectile", "bear trap", "plant species y"],
+    "immobilizedBy": ["bola", 785, "bear trap", "plant species y"],
     "allowableFlyers": ["k", "megalosaurus", "tusoteuthis"],
     "capabilities": [4, 5, 7, 9, 19, 24, 32, 37, 41, 43, 45, 47],
     "drops": [14, 211, 10],
@@ -6142,7 +6115,7 @@
     "tamingInterval": 18,
     "baseTamingTime": 300,
     "tamingBonusAttribute": 4.166667,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": [
       "tapejara",
       "tropeognathus",
@@ -6162,7 +6135,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile"],
+    "immobilizedBy": ["bola", 785],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -6252,7 +6225,7 @@
     "tamingInterval": 12,
     "baseTamingTime": 200,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "egg": "Kaprosuchus Egg",
     "fitsThrough": [
       "double doorframe",
@@ -6260,12 +6233,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "chain bola",
-      "bear trap",
-      "large bear trap",
-      "net projectile"
-    ],
+    "immobilizedBy": ["chain bola", "bear trap", "large bear trap", 785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
     "gatherEfficiency": {
       "11": 3.16,
@@ -6336,9 +6304,9 @@
     "tamingInterval": 40,
     "baseTamingTime": 800,
     "tamingBonusAttribute": 0.56,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["large bear trap", "chain bola", "net projectile"],
+    "immobilizedBy": ["large bear trap", "chain bola", 785],
     "allowableFlyers": ["ab"],
     "gatherEfficiency": {
       "11": 3.39,
@@ -6415,7 +6383,7 @@
     "tamingInterval": 30,
     "baseTamingTime": 500,
     "tamingBonusAttribute": 0.1,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "egg": "Kentrosaurus Egg",
     "fitsThrough": [
@@ -6423,7 +6391,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", "net projectile"],
+    "immobilizedBy": ["chain bola", "large bear trap", 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "karkinos", "tusoteuthis"],
     "gatherEfficiency": { "3": 3.13, "17": 3.65 },
     "baseStats": {
@@ -6463,7 +6431,7 @@
       "zh": "君王泰坦"
     },
     "tamingNotice": "The King Titan is a boss in ARK: Extinction. Have a good strategy on how to battle the King Titan? Share a tip!",
-    "canDestroy": ["t", "a", "w", "s", "m", "tk"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone", "metal", "tek"],
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -6502,7 +6470,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": [],
     "capabilities": [6, 8, 11, 18, 23, 39, 41, 43, 45, 50],
     "drops": [14, 250, 10, 10, 210],
@@ -6553,7 +6521,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": [],
     "capabilities": [2, 3, 5, 11, 18, 33, 36, 39, 41, 43, 45, 47, 50],
     "drops": [10, 14, 10, 250],
@@ -6579,7 +6547,7 @@
     "bps": ["Leedsichthys_Character_BP"],
     "tamingNotice": "The Leedsichthys cannot be tamed, however, it can be trapped so that tribes can scrape off Raw Prime Meat from its body without killing it.",
     "experiencePerKill": 15,
-    "canDestroy": ["t", "w", "s", "m"],
+    "canDestroy": ["thatch", "wood", "stone", "metal"],
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -6699,7 +6667,7 @@
     "tamingInterval": 33,
     "baseTamingTime": 550,
     "tamingBonusAttribute": 1.875,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "egg": "Moth Egg",
     "fitsThrough": [
       "double doorframe",
@@ -6707,7 +6675,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile", "lasso"],
+    "immobilizedBy": ["bola", 785, "lasso"],
     "allowableFlyers": ["ta", "r", "megalosaurus", "karkinos"],
     "baseStats": {
       "h": { "b": 260, "w": 52, "t": null },
@@ -6769,7 +6737,7 @@
     "tamingInterval": 6,
     "baseTamingTime": 100,
     "tamingBonusAttribute": 0.5,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": [
       "tapejara",
       "tropeognathus",
@@ -6789,7 +6757,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile"],
+    "immobilizedBy": ["bola", 785],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -6869,10 +6837,10 @@
     "tamingInterval": 6,
     "baseTamingTime": 100,
     "tamingBonusAttribute": 0.2,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": ["wyvern", "quetzal"],
     "fitsThrough": ["behemoth dinosaur gateway", "dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap", "net projectile"],
+    "immobilizedBy": ["chain bola", "large bear trap", 785],
     "allowableFlyers": ["wyvern", "quetzal"],
     "gatherEfficiency": { "4": 3.9, "17": 3.9 },
     "baseStats": {
@@ -6916,7 +6884,7 @@
     "maturationTime": 666666,
     "incubationTime": 17999,
     "experiencePerKill": 120,
-    "canDestroy": ["t", "w", "a", "s", "m", "tk"],
+    "canDestroy": ["thatch", "wood", "adobe", "stone", "metal", "tek"],
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": ["chain bola", "large bear trap"],
     "allowableFlyers": [],
@@ -7013,10 +6981,10 @@
     "tamingInterval": 33,
     "baseTamingTime": 550,
     "tamingBonusAttribute": 0.12,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap", "net projectile"],
+    "immobilizedBy": ["chain bola", "large bear trap", 785],
     "allowableFlyers": ["quetzal", "ta", "r", "tusoteuthis"],
     "gatherEfficiency": {
       "3": 4.19,
@@ -7092,14 +7060,9 @@
     "tamingInterval": 48,
     "baseTamingTime": 800,
     "tamingBonusAttribute": 1.875,
-    "canDestroy": ["t", "w", "a", "s"],
+    "canDestroy": ["thatch", "wood", "adobe", "stone"],
     "fitsThrough": ["behemoth dinosaur gateway", "giant hatchframe"],
-    "immobilizedBy": [
-      "chain bola",
-      "large bear trap",
-      "plant species y",
-      "net projectile"
-    ],
+    "immobilizedBy": ["chain bola", "large bear trap", "plant species y", 785],
     "allowableFlyers": [],
     "gatherEfficiency": {
       "11": 4,
@@ -7161,7 +7124,7 @@
     "tamingInterval": 42,
     "baseTamingTime": 700,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": [
       "double doorframe",
       "giant hatchframe",
@@ -7226,7 +7189,7 @@
     },
     "tamingNotice": "The Manticore is a boss in Scorched Earth. Have a good strategy on how to battle Manticore? Share a tip!",
     "experiencePerKill": 3000,
-    "canDestroy": ["t", "a", "w", "s", "m", "tk"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone", "metal", "tek"],
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -7270,14 +7233,14 @@
     "tamingInterval": 21,
     "baseTamingTime": 350,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["plant species y", "bear trap", "net projectile"],
+    "immobilizedBy": ["plant species y", "bear trap", 785],
     "allowableFlyers": [
       "quetzal",
       "crystalwyvern",
@@ -7427,7 +7390,7 @@
     "tamingInterval": 42,
     "baseTamingTime": 700,
     "tamingBonusAttribute": 3.5,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": [
       "tapejara",
       "tropeognathus",
@@ -7444,7 +7407,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile", "bear trap", "plant species y"],
+    "immobilizedBy": ["bola", 785, "bear trap", "plant species y"],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -7520,20 +7483,14 @@
     "tamingInterval": 10.5,
     "baseTamingTime": 175,
     "tamingBonusAttribute": 0.5,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "lasso",
-      "bola",
-      "net projectile",
-      "bear trap",
-      "large bear trap"
-    ],
+    "immobilizedBy": ["lasso", "bola", 785, "bear trap", "large bear trap"],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -7616,9 +7573,9 @@
     "tamingInterval": 48,
     "baseTamingTime": 800,
     "tamingBonusAttribute": 1.875,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway", "giant hatchframe"],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
     "gatherEfficiency": {
       "11": 3.53,
@@ -7698,18 +7655,13 @@
     "tamingInterval": 46.5,
     "baseTamingTime": 775,
     "tamingBonusAttribute": 1.875,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "chain bola",
-      "large bear trap",
-      "plant species y",
-      "net projectile"
-    ],
+    "immobilizedBy": ["chain bola", "large bear trap", "plant species y", 785],
     "allowableFlyers": ["ta", "r", "tusoteuthis", "procoptodon"],
     "gatherEfficiency": {
       "3": 2.76,
@@ -7768,7 +7720,7 @@
     "description": "The Mek is a mechanical creature in ARK: Extinction.",
     "tamingNotice": "To create a Mega Mek, you must combine four Meks using a M.O.M.I., which is obtained after defeating the King Titan.",
     "experiencePerKill": 4,
-    "canDestroy": ["t", "w", "a", "s", "m", "tk"],
+    "canDestroy": ["thatch", "wood", "adobe", "stone", "metal", "tek"],
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -7806,9 +7758,9 @@
     "synonyms": ["Dragonfly"],
     "bps": ["Dragonfly_Character_BP"],
     "experiencePerKill": 6,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "fitsThrough": ["double doorframe"],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": ["k", "megalosaurus", "tusoteuthis"],
     "capabilities": [2, 3, 5, 6, 10, 19, 32, 36, 37, 39, 41, 43, 45, 47, 50],
     "drops": [14, 211, 10],
@@ -7835,7 +7787,7 @@
     },
     "bps": ["Gorilla_Character_BP"],
     "tamingNotice": "The Megapithecus is one of the bosses in Ark. Have a good strategy on how to battle Megapithecus? Share a tip!",
-    "canDestroy": ["t", "a", "w", "s", "m", "tk"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone", "metal", "tek"],
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -7892,14 +7844,14 @@
     "tamingInterval": 60,
     "baseTamingTime": 1000,
     "tamingBonusAttribute": 1.25,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", "net projectile"],
+    "immobilizedBy": ["chain bola", "large bear trap", 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "r", "tusoteuthis"],
     "gatherEfficiency": {
       "3": 3.85,
@@ -7950,7 +7902,7 @@
     "bps": ["Mek_Character_BP"],
     "description": "The Mek is a mechanical creature in ARK: Extinction.",
     "experiencePerKill": 4,
-    "canDestroy": ["t", "w", "a", "s", "m", "tk"],
+    "canDestroy": ["thatch", "wood", "a", "s", "metal", "tek"],
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -8019,7 +7971,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile"],
+    "immobilizedBy": ["bola", 785],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -8111,7 +8063,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile"],
+    "immobilizedBy": ["bola", 785],
     "allowableFlyers": ["ta", "human", "g", "procoptodon"],
     "baseStats": {
       "h": { "b": 130, "w": 26, "t": 5.4 },
@@ -8198,11 +8150,11 @@
     "tamingInterval": 18.9,
     "baseTamingTime": 315,
     "tamingBonusAttribute": 0.2,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "egg": "Morellatops Egg",
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap", "net projectile"],
+    "immobilizedBy": ["chain bola", "large bear trap", 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "r", "tusoteuthis"],
     "gatherEfficiency": {
       "3": 2.7,
@@ -8281,7 +8233,7 @@
     "tamingInterval": 180,
     "baseTamingTime": 3000,
     "tamingBonusAttribute": 0.06,
-    "canDestroy": ["t", "a", "w"],
+    "canDestroy": ["thatch", "adobe", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": [],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
@@ -8343,7 +8295,7 @@
     "experiencePerKill": 6,
     "tamingInterval": 18,
     "baseTamingTime": 300,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "egg": "Moschops Egg",
     "fitsThrough": [
@@ -8352,7 +8304,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile"],
+    "immobilizedBy": ["bola", 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -8433,7 +8385,7 @@
     "bps": ["ChupaCabra_Character_BP", "Xenomorph_Character_BP"],
     "description": "The Nameless is an untamable chupacabra-like creature in Ark: Aberration. The alpha Nameless will slowly spawn other Nameless over time.",
     "tamingNotice": "The Nameless is an untamable creature in ARK: Aberration.",
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": ["argentavis", "quetzal"],
     "fitsThrough": [
       "hatchframe",
@@ -8481,7 +8433,7 @@
       "large trapdoor",
       "giant hatchframe"
     ],
-    "immobilizedBy": ["bola", "net projectile", "bear trap", "plant species y"],
+    "immobilizedBy": ["bola", 785, "bear trap", "plant species y"],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -8556,14 +8508,14 @@
     "tamingInterval": 12,
     "baseTamingTime": 200,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "double doorframe",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": ["ta", "k", "megalosaurus", "karkinos", "tusoteuthis"],
     "baseStats": {
       "h": { "b": 250, "w": 50, "t": 5.4 },
@@ -8640,7 +8592,7 @@
     "tamingInterval": 21,
     "baseTamingTime": 350,
     "tamingBonusAttribute": 8.333333,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": [
       "tapejara",
       "tropeognathus",
@@ -8662,7 +8614,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile", "bear trap", "plant species y"],
+    "immobilizedBy": ["bola", 785, "bear trap", "plant species y"],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -8730,7 +8682,7 @@
     },
     "bps": ["EndBoss_Character_BP"],
     "tamingNotice": "The Overseer is the final boss in Ark: Survival Evolved. This creature's Dododex profile may contain spoilers. Have a good strategy on how to battle The Overseer? Share a tip!",
-    "canDestroy": ["t", "a", "w", "s", "m", "tk"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone", "metal", "tek"],
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -8791,7 +8743,7 @@
       "doorframe",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", "net projectile"],
+    "immobilizedBy": ["lasso", "bola", 785],
     "allowableFlyers": [
       "pteranodon",
       "argentavis",
@@ -8882,7 +8834,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", "net projectile"],
+    "immobilizedBy": ["lasso", "bola", 785],
     "allowableFlyers": [
       "griffin",
       "argentavis",
@@ -8963,7 +8915,7 @@
     "tamingInterval": 9.6,
     "baseTamingTime": 160,
     "tamingBonusAttribute": 0.5,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "egg": "Pachy Egg",
     "fitsThrough": [
@@ -8971,7 +8923,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", "net projectile", "bear trap"],
+    "immobilizedBy": ["lasso", "bola", 785, "bear trap"],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -9052,7 +9004,7 @@
     "tamingInterval": 15,
     "baseTamingTime": 250,
     "tamingBonusAttribute": 0.2,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "crystalwyvern", "wyvern"],
     "egg": "Pachyrhino Egg",
     "fitsThrough": [
@@ -9060,7 +9012,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", "net projectile"],
+    "immobilizedBy": ["chain bola", "large bear trap", 785],
     "allowableFlyers": [
       "quetzal",
       "crystalwyvern",
@@ -9141,7 +9093,7 @@
     "tamingInterval": 78,
     "baseTamingTime": 1300,
     "tamingBonusAttribute": 0.0925,
-    "canDestroy": ["t", "a", "w"],
+    "canDestroy": ["thatch", "adobe", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": ["chain bola", "large bear trap"],
     "allowableFlyers": ["ta", "r", "tusoteuthis", "procoptodon"],
@@ -9247,7 +9199,7 @@
     "tamingInterval": 9,
     "baseTamingTime": 150,
     "tamingBonusAttribute": 0.4,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "egg": "Parasaur Egg",
     "fitsThrough": [
@@ -9255,12 +9207,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "bola",
-      "net projectile",
-      "plant species y",
-      "large bear trap"
-    ],
+    "immobilizedBy": ["bola", 785, "plant species y", "large bear trap"],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -9352,13 +9299,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "lasso",
-      "bola",
-      "net projectile",
-      "bear trap",
-      "plant species y"
-    ],
+    "immobilizedBy": ["lasso", "bola", 785, "bear trap", "plant species y"],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -9439,7 +9380,7 @@
     "tamingInterval": 7.2,
     "baseTamingTime": 120,
     "tamingBonusAttribute": 3.125,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "egg": "Pelagornis Egg",
     "fitsThrough": [
       "doorframe",
@@ -9449,7 +9390,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", "net projectile"],
+    "immobilizedBy": ["lasso", "bola", 785],
     "allowableFlyers": ["ta", "r", "megalosaurus", "karkinos"],
     "gatherEfficiency": {
       "11": 2.62,
@@ -9538,13 +9479,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "lasso",
-      "bola",
-      "net projectile",
-      "bear trap",
-      "large bear trap"
-    ],
+    "immobilizedBy": ["lasso", "bola", 785, "bear trap", "large bear trap"],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -9621,13 +9556,13 @@
     "nonViolentFoodAffinityMultiplier": 1.6,
     "nonViolentFoodRateMultiplier": 2,
     "tamingBonusAttribute": 0.2,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bear trap", "net projectile"],
+    "immobilizedBy": ["bear trap", 785],
     "allowableFlyers": [],
     "gatherEfficiency": {
       "3": 3.27,
@@ -9693,7 +9628,7 @@
     "bps": ["Piranha_Character_BP"],
     "tamingNotice": "The Piranha can only be tamed using a Fish Basket in Aberration.",
     "experiencePerKill": 1,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "fitsThrough": [
       "double doorframe",
       "giant hatchframe",
@@ -9756,9 +9691,9 @@
     "tamingInterval": 96,
     "baseTamingTime": 1600,
     "tamingBonusAttribute": 0.75,
-    "canDestroy": ["t", "a", "w"],
+    "canDestroy": ["thatch", "adobe", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
     "gatherEfficiency": {
       "11": 3.77,
@@ -9822,13 +9757,13 @@
     "tamingInterval": 21,
     "baseTamingTime": 350,
     "tamingBonusAttribute": 0.2,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", "net projectile"],
+    "immobilizedBy": ["chain bola", "large bear trap", 785],
     "allowableFlyers": ["ta", "r", "tusoteuthis", "procoptodon"],
     "gatherEfficiency": { "3": 2.8, "5": 2.08, "17": 2.58, "18": 2.58 },
     "baseStats": {
@@ -9901,7 +9836,7 @@
     "tamingInterval": 7.2,
     "baseTamingTime": 120,
     "tamingBonusAttribute": 3.125,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "egg": "Pteranodon Egg",
     "fitsThrough": [
       "double doorframe",
@@ -9912,7 +9847,7 @@
     "immobilizedBy": [
       "lasso",
       "bola",
-      "net projectile",
+      785,
       "bear trap",
       "large bear trap",
       "plant species y"
@@ -9985,7 +9920,7 @@
     "tamingInterval": 9,
     "baseTamingTime": 150,
     "tamingBonusAttribute": 6.15,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "egg": "Pulmonoscorpius Egg",
     "fitsThrough": [
@@ -9993,13 +9928,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "lasso",
-      "bola",
-      "net projectile",
-      "bear trap",
-      "large bear trap"
-    ],
+    "immobilizedBy": ["lasso", "bola", 785, "bear trap", "large bear trap"],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -10087,7 +10016,7 @@
     "tamingInterval": 30,
     "baseTamingTime": 500,
     "tamingBonusAttribute": 3.125,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "fitsThrough": [
       "double doorframe",
@@ -10095,7 +10024,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", "net projectile"],
+    "immobilizedBy": ["chain bola", "large bear trap", 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "tusoteuthis"],
     "gatherEfficiency": { "11": 3.44, "12": 2.82, "13": 3.26, "68": 3.19 },
     "baseStats": {
@@ -10166,10 +10095,10 @@
     "tamingInterval": 111,
     "baseTamingTime": 1850,
     "tamingBonusAttribute": 0.9375,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "egg": "Quetzal Egg",
     "fitsThrough": ["giant hatchframe", "behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap", "net projectile"],
+    "immobilizedBy": ["chain bola", "large bear trap", 785],
     "allowableFlyers": ["ta", "r"],
     "gatherEfficiency": {
       "11": 3.2,
@@ -10255,7 +10184,7 @@
     "tamingInterval": 10.8,
     "baseTamingTime": 180,
     "tamingBonusAttribute": 3.125,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "egg": "Raptor Egg",
     "fitsThrough": [
@@ -10267,7 +10196,7 @@
     "immobilizedBy": [
       "lasso",
       "bola",
-      "net projectile",
+      785,
       "plant species y",
       "bear trap",
       "large bear trap"
@@ -10358,7 +10287,7 @@
     "tamingInterval": 30,
     "baseTamingTime": 500,
     "tamingBonusAttribute": 3.125,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["crystalwyvern", "quetzal"],
     "fitsThrough": [
       "double doorframe",
@@ -10368,7 +10297,7 @@
     ],
     "immobilizedBy": [
       "bola",
-      "net projectile",
+      785,
       "bear trap",
       "large bear trap",
       "plant species y"
@@ -10456,7 +10385,7 @@
     "torporDepletionPS": 0.3,
     "tamingInterval": 55.5,
     "baseTamingTime": 925,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": ["large bear trap"],
     "allowableFlyers": ["ab"],
@@ -10528,7 +10457,7 @@
     "tamingInterval": 93,
     "baseTamingTime": 1550,
     "tamingBonusAttribute": 1.25,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "egg": "Rex Egg",
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": ["chain bola", "large bear trap"],
@@ -10602,9 +10531,9 @@
     "maturationTime": 333000,
     "incubationTime": 22498,
     "experiencePerKill": 2,
-    "canDestroy": ["w", "t"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": ["ab"],
     "gatherEfficiency": {
       "11": 3.74,
@@ -10687,7 +10616,7 @@
     "tamingInterval": 100,
     "baseTamingTime": 5000,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t", "a", "w", "s"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone"],
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": [],
     "allowableFlyers": ["ta", "r"],
@@ -10752,7 +10681,7 @@
     },
     "tamingNotice": "Rockwell is a boss in ARK: Aberration. Have a good strategy on how to battle Rockwell? Share a tip!",
     "experiencePerKill": 3000,
-    "canDestroy": ["t", "a", "w", "s", "m", "tk"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone", "metal", "tek"],
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": [],
@@ -10799,10 +10728,10 @@
     "tamingInterval": 48,
     "baseTamingTime": 800,
     "tamingBonusAttribute": 0.2,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "fitsThrough": ["giant hatchframe", "behemoth dinosaur gateway"],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": ["quetzal", "wyvern", "ab", "karkinos"],
     "gatherEfficiency": {
       "3": 2.96,
@@ -10872,7 +10801,7 @@
     "tamingInterval": 90,
     "baseTamingTime": 1500,
     "tamingBonusAttribute": 3.125,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
@@ -10989,7 +10918,7 @@
     "tamingInterval": 30,
     "baseTamingTime": 500,
     "tamingBonusAttribute": 3.125,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "double doorframe",
@@ -10997,13 +10926,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "lasso",
-      "bola",
-      "net projectile",
-      "bear trap",
-      "large bear trap"
-    ],
+    "immobilizedBy": ["lasso", "bola", 785, "bear trap", "large bear trap"],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -11080,7 +11003,7 @@
     "bps": ["Salmon_Character_BP"],
     "tamingNotice": "The Sabertooth Salmon can only be tamed using a Fish Basket in Aberration.",
     "experiencePerKill": 1,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "fitsThrough": [
       "giant hatchframe",
       "double doorframe",
@@ -11139,7 +11062,7 @@
     "tamingInterval": 24,
     "baseTamingTime": 400,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "crystalwyvern", "wyvern"],
     "egg": "Sarco Egg",
     "fitsThrough": [
@@ -11147,7 +11070,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", "net projectile"],
+    "immobilizedBy": ["large bear trap", 785],
     "allowableFlyers": [
       "quetzal",
       "crystalwyvern",
@@ -11229,7 +11152,7 @@
       "behemoth dinosaur gateway",
       "double doorframe"
     ],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": [],
     "capabilities": [10, 37, 38, 45],
     "xVariant": false,
@@ -11259,7 +11182,7 @@
     "experiencePerKill": 3,
     "canDestroy": [],
     "fitsThrough": [],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": ["ab", "megalosaurus"],
     "capabilities": [6, 8, 9, 19, 23, 33, 39, 41, 43, 45, 47, 50],
     "drops": [10],
@@ -11291,7 +11214,7 @@
     "nonViolentFoodAffinityMultiplier": 1.6,
     "nonViolentFoodRateMultiplier": 2,
     "tamingBonusAttribute": 1.875,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal"],
     "fitsThrough": ["dinosaur gateway", "behemoth dinosaur gateway"],
     "immobilizedBy": [
@@ -11299,7 +11222,7 @@
       "bear trap",
       "large bear trap",
       "plant species y",
-      "net projectile"
+      785
     ],
     "allowableFlyers": ["quetzal"],
     "gatherEfficiency": {
@@ -11372,7 +11295,7 @@
     "tamingInterval": 3.6,
     "baseTamingTime": 60,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": [
       "tapejara",
       "tropeognathus",
@@ -11390,7 +11313,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "net projectile", "bear trap", "plant species y"],
+    "immobilizedBy": ["bola", 785, "bear trap", "plant species y"],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -11527,19 +11450,14 @@
     "tamingInterval": 36,
     "baseTamingTime": 600,
     "tamingBonusAttribute": 1.875,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway",
       "double doorframe"
     ],
-    "immobilizedBy": [
-      "chain bola",
-      "large bear trap",
-      "plant species y",
-      "net projectile"
-    ],
+    "immobilizedBy": ["chain bola", "large bear trap", "plant species y", 785],
     "allowableFlyers": [],
     "gatherEfficiency": {
       "11": 3.53,
@@ -11616,7 +11534,7 @@
     "tamingInterval": 51,
     "baseTamingTime": 850,
     "tamingBonusAttribute": 1.5,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "egg": "Spino Egg",
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": ["chain bola", "large bear trap"],
@@ -11708,7 +11626,7 @@
     "tamingInterval": 30,
     "baseTamingTime": 500,
     "tamingBonusAttribute": 0.1,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "egg": "Stego Egg",
     "fitsThrough": [
@@ -11716,7 +11634,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", "net projectile"],
+    "immobilizedBy": ["chain bola", "large bear trap", 785],
     "allowableFlyers": [
       "quetzal",
       "wyvern",
@@ -11791,7 +11709,7 @@
     "nonViolentFoodAffinityMultiplier": 1.6,
     "nonViolentFoodRateMultiplier": 2,
     "tamingBonusAttribute": 0.1,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": ["large bear trap"],
     "allowableFlyers": [],
@@ -11869,7 +11787,7 @@
     "tamingInterval": 27,
     "baseTamingTime": 450,
     "tamingBonusAttribute": 3.125,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "egg": "Tapejara Egg",
     "fitsThrough": [
       "giant hatchframe",
@@ -11878,7 +11796,7 @@
     ],
     "immobilizedBy": [
       "bola",
-      "net projectile",
+      785,
       "chain bola",
       "bear trap",
       "large bear trap",
@@ -11976,7 +11894,7 @@
     "tamingInterval": 18,
     "baseTamingTime": 300,
     "tamingBonusAttribute": 2.5,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "egg": "Terror Bird Egg",
     "fitsThrough": [
@@ -11987,7 +11905,7 @@
     ],
     "immobilizedBy": [
       "bola",
-      "net projectile",
+      785,
       "plant species y",
       "bear trap",
       "large bear trap"
@@ -12083,19 +12001,14 @@
     "tamingInterval": 55.5,
     "baseTamingTime": 925,
     "tamingBonusAttribute": 0.06,
-    "canDestroy": ["t", "a", "w", "s"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone"],
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "chain bola",
-      "plant species y",
-      "large bear trap",
-      "net projectile"
-    ],
+    "immobilizedBy": ["chain bola", "plant species y", "large bear trap", 785],
     "allowableFlyers": [
       "quetzal",
       "wyvern",
@@ -12203,7 +12116,7 @@
     "tamingInterval": 27,
     "baseTamingTime": 450,
     "tamingBonusAttribute": 1.5,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "egg": "Thorny Dragon Egg",
     "fitsThrough": [
@@ -12211,7 +12124,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "net projectile"],
+    "immobilizedBy": ["lasso", 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -12306,19 +12219,14 @@
     "tamingInterval": 42,
     "baseTamingTime": 700,
     "tamingBonusAttribute": 3.125,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "lasso",
-      "bear trap",
-      "large bear trap",
-      "net projectile"
-    ],
+    "immobilizedBy": ["lasso", "bear trap", "large bear trap", 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -12446,7 +12354,7 @@
     "tamingInterval": 10.5,
     "baseTamingTime": 175,
     "tamingBonusAttribute": 3,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "doorframe",
@@ -12456,7 +12364,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bear trap", "net projectile"],
+    "immobilizedBy": ["lasso", "bear trap", 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -12510,7 +12418,7 @@
     "synonyms": ["ant"],
     "bps": ["FlyingAnt_Character_BP", "Ant_Character_BP"],
     "experiencePerKill": 2,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": [
       "tapejara",
       "tropeognathus",
@@ -12529,7 +12437,7 @@
       "giant hatchframe",
       "hatchframe"
     ],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -12580,7 +12488,7 @@
     "knockoutW": ["CannonBall", "MSCM", "Rocket Propelled Grenade", "Boulder"],
     "tamingInterval": 1500,
     "baseTamingTime": 25000,
-    "canDestroy": ["t", "a", "w", "s", "m", "tk"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone", "metal", "tek"],
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": ["ta", "r"],
@@ -12643,7 +12551,7 @@
     "tamingInterval": 15,
     "baseTamingTime": 250,
     "tamingBonusAttribute": 0.2,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "egg": "Trike Egg",
     "fitsThrough": [
@@ -12651,7 +12559,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", "net projectile"],
+    "immobilizedBy": ["chain bola", "large bear trap", 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "r", "tusoteuthis"],
     "gatherEfficiency": {
       "3": 3.88,
@@ -12736,7 +12644,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["net projectile"],
+    "immobilizedBy": [785],
     "allowableFlyers": [
       "griffin",
       "tapejara",
@@ -12778,7 +12686,7 @@
     "maturationTime": 75762,
     "incubationTime": 4086,
     "experiencePerKill": 1,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": [
       "tapejara",
       "tropeognathus",
@@ -12798,7 +12706,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", "net projectile", "bear trap"],
+    "immobilizedBy": ["lasso", "bola", 785, "bear trap"],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -12878,7 +12786,7 @@
     "nonViolentFoodAffinityMultiplier": 1.65,
     "nonViolentFoodRateMultiplier": 0.5,
     "tamingBonusAttribute": 3.125,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": [
       "dinosaur gateway",
       "behemoth dinosaur gateway",
@@ -12886,7 +12794,7 @@
     ],
     "immobilizedBy": [
       "bola",
-      "net projectile",
+      785,
       "chain bola",
       "bear trap",
       "large bear trap",
@@ -12966,7 +12874,7 @@
     "tamingInterval": 108,
     "baseTamingTime": 1800,
     "tamingBonusAttribute": 0.75,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "fitsThrough": [
       "giant hatchframe",
       "behemoth dinosaur gateway",
@@ -13061,7 +12969,7 @@
     "tamingInterval": 25.2,
     "baseTamingTime": 420,
     "tamingBonusAttribute": 0.4,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": ["argentavis", "quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "giant hatchframe",
@@ -13071,11 +12979,11 @@
     "immobilizedBy": [
       "lasso",
       "bola",
-      "net projectile",
+      785,
       "bear trap",
       "large bear trap",
       "plant species y",
-      "net projectile"
+      785
     ],
     "allowableFlyers": [
       "argentavis",
@@ -13161,15 +13069,10 @@
     "tamingInterval": 24,
     "baseTamingTime": 400,
     "tamingBonusAttribute": 3.125,
-    "canDestroy": ["t"],
+    "canDestroy": ["thatch"],
     "canBeCarriedBy": ["crystalwyvern", "wyvern", "quetzal"],
     "fitsThrough": ["dinosaur gateway", "behemoth dinosaur gateway"],
-    "immobilizedBy": [
-      "chain bola",
-      "plant species y",
-      "large bear trap",
-      "net projectile"
-    ],
+    "immobilizedBy": ["chain bola", "plant species y", "large bear trap", 785],
     "allowableFlyers": ["crystalwyvern", "wyvern", "quetzal", "karkinos"],
     "gatherEfficiency": {
       "11": 3.83,
@@ -13221,9 +13124,9 @@
     "tamingInterval": 30,
     "baseTamingTime": 500,
     "tamingBonusAttribute": 0.4,
-    "canDestroy": ["t", "a", "w", "s", "tk", "m"],
+    "canDestroy": ["thatch", "adobe", "wood", "stone", "tek", "metal"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "net projectile"],
+    "immobilizedBy": ["chain bola", 785],
     "allowableFlyers": [],
     "gatherEfficiency": {
       "3": 3.17,
@@ -13325,10 +13228,10 @@
     "immobilizedBy": [
       "chain bola",
       "bola",
-      "net projectile",
+      785,
       "bear trap",
       "plant species y",
-      "net projectile"
+      785
     ],
     "allowableFlyers": ["ta", "human", "g", "procoptodon"],
     "gatherEfficiency": {
@@ -13412,15 +13315,10 @@
     "tamingInterval": 36,
     "baseTamingTime": 600,
     "tamingBonusAttribute": 1.25,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal"],
     "fitsThrough": ["behemoth dinosaur gateway", "dinosaur gateway"],
-    "immobilizedBy": [
-      "chain bola",
-      "large bear trap",
-      "net projectile",
-      "plant species y"
-    ],
+    "immobilizedBy": ["chain bola", "large bear trap", 785, "plant species y"],
     "allowableFlyers": ["quetzal", "ta", "r", "tusoteuthis", "procoptodon"],
     "gatherEfficiency": {
       "3": 3.75,
@@ -13490,7 +13388,7 @@
     "experiencePerKill": 120,
     "tamingInterval": 43.5,
     "baseTamingTime": 725,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "egg": "Wyvern Egg",
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": ["chain bola"],
@@ -13558,14 +13456,14 @@
     "bps": ["Yeti_Character_BP"],
     "description": "The Yeti is an Alpha creature found in the Snow Cave. It cannot be tamed.",
     "experiencePerKill": 40,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "crystalwyvern", "wyvern"],
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", "net projectile"],
+    "immobilizedBy": ["large bear trap", 785],
     "allowableFlyers": [
       "quetzal",
       "crystalwyvern",
@@ -13609,7 +13507,7 @@
       "ru": "Ютираннус",
       "zh": "羽暴龙"
     },
-    "synonyms": ["yuty"],
+    "synonyms": ["yuty", "u-turn radius"],
     "bps": ["Yutyrannus_Character_BP"],
     "affinityNeeded": 4250,
     "affinityIncreasePerLevel": 175,
@@ -13633,14 +13531,14 @@
     "tamingInterval": 93,
     "baseTamingTime": 1550,
     "tamingBonusAttribute": 1.25,
-    "canDestroy": ["t", "w"],
+    "canDestroy": ["thatch", "wood"],
     "egg": "Yutyrannus Egg",
     "fitsThrough": [
       "giant hatchframe",
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", "net projectile"],
+    "immobilizedBy": ["chain bola", "large bear trap", 785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
     "gatherEfficiency": {
       "11": 4.15,
