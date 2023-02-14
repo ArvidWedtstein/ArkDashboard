@@ -165,7 +165,11 @@ export const getBaseMaterials = (
   const findBaseMaterials = (itemId: number, amount: number) => {
     let recipe = prices.items.find((r) => r.itemId === itemId);
 
-    if (!recipe?.recipe || (recipe.stats.length && recipe.stats.find((s) => s.id === 1)?.value === "Resource")) {
+    if (!recipe?.recipe) {
+      return;
+    }
+
+    if (!firstRecipeOnly && recipe.stats && recipe.stats[0]?.value === 'Resource') {
       return;
     }
 
