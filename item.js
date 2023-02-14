@@ -1,4 +1,4 @@
-const items = require("./itemtest.json");
+const { items } = require("./web/public/arkitems.json");
 // const { items: newItm } = require("./web/public/test.json");
 console.log(items.length);
 
@@ -261,20 +261,79 @@ console.log(items.length);
 // });
 // ittms = ittms.sort((a, b) => (a.itemId > b.itemId ? 1 : -1));
 
-const seen = new Set();
+let cols = {};
+// for (let i = 0; i < items.length; i++) {
+//   const item = items[i];
+//   for (const key in item) {
+//     if (item.hasOwnProperty(key)) {
+//       const element = item[key];
+//       if (cols[key] == null) {
+//         cols[key] = typeof element;
+//       }
+//       cols[key] = typeof element;
+//     }
+//   }
+// }
 
-const filteredArr = items.filter((el) => {
-  const duplicate = seen.has(el.itemId);
-  seen.add(el.itemId);
-  return !duplicate;
+// console.log(cols);
+
+let j = items.map((g) => {
+  if (g.itemId <= 600 || g.itemId > 700) return;
+  console.log(`(${g.itemId}, '${g.name}', ${
+    g.description ? `'${g.description.replaceAll("'", '"')}'` : null
+  }, ${g.image ? `'${g.image}'` : null}, ${g.maxStack ? g.maxStack : null}, ${
+    g.weight ? g.weight : null
+  }, ${g.engramPoints ? g.engramPoints : 0}, ${
+    g.craftingTime ? g.craftingTime : null
+  }, ${g.requiredLevel ? g.requiredLevel : 0}, ${g.yields ? g.yields : 1}, ${
+    g.recipe && g.recipe.length > 0
+      ? `'[${g.recipe
+          .map((f) => `${JSON.stringify(f)}`)
+          .join()
+          .split(", ")}]'`
+      : null
+  }, ${
+    g.stats && g.stats.length > 0
+      ? `'[${g.stats
+          .map((f) => `${JSON.stringify(f)}`)
+          .join()
+          .split(", ")}]'`
+      : null
+  }, ${g.color ? `'${g.color}'` : null},
+  ${
+    g.craftedIn && g.craftedIn.length > 0
+      ? `ARRAY[${g.craftedIn
+          .map((f) => `'${f}'`)
+          .join()
+          .split(", ")}]`
+      : null
+  }, ${
+    g.effects && g.effects.length > 0
+      ? `ARRAY[${g.effects
+          .map((f) => `'${f}'`)
+          .join()
+          .split(", ")}]`
+      : null
+  }),`);
+  // console.log(g.itemId);
+  return g.itemId ? g.itemId : null;
 });
-console.log(filteredArr.length);
-require("fs").writeFile(
-  "itemtest.json",
-  JSON.stringify(filteredArr),
-  (error) => {
-    if (error) {
-      throw error;
-    }
-  }
-);
+// console.log(j.join(", "));
+// console.log(j.length);
+// const seen = new Set();
+
+// const filteredArr = items.filter((el) => {
+//   const duplicate = seen.has(el.itemId);
+//   seen.add(el.itemId);
+//   return !duplicate;
+// });
+// console.log(filteredArr.length);
+// require("fs").writeFile(
+//   "itemtest.json",
+//   JSON.stringify(filteredArr),
+//   (error) => {
+//     if (error) {
+//       throw error;
+//     }
+//   }
+// );

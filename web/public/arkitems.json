@@ -16,7 +16,8 @@
     { "id": 14, "name": "Fertilizer Points" },
     { "id": 15, "name": "Affinity" },
     { "id": 16, "name": "Ammo" },
-    { "id": 17, "name": "Weight Reduction" }
+    { "id": 17, "name": "Weight Reduction" },
+    { "id": 18, "name": "Fuel" }
   ],
   "items": [
     {
@@ -1687,7 +1688,7 @@
       "image": "sparkpowder.png",
       "maxStack": 100,
       "weight": 1,
-      "craftedIn": ["Mortar and Pestle", 607],
+      "craftedIn": [107, 607],
       "craftingTime": 1,
       "requiredLevel": 0,
       "yields": 2,
@@ -1706,7 +1707,7 @@
       "maxStack": 100,
       "weight": 0.1,
       "engramPoints": 3,
-      "craftedIn": ["Mortar and Pestle", 607, "Equus Saddle"],
+      "craftedIn": [107, 607, 531],
       "craftingTime": 1,
       "requiredLevel": 0,
       "yields": 1,
@@ -1909,7 +1910,7 @@
       "image": "narcotic.png",
       "maxStack": 100,
       "weight": 0.3,
-      "craftedIn": ["Mortar and Pestle"],
+      "craftedIn": [107],
       "craftingTime": 5,
       "requiredLevel": 0,
       "yields": 1,
@@ -1964,15 +1965,18 @@
       ],
       "stats": [
         { "id": 1, "value": "Crafting" },
-        { "id": 5, "value": 2500 }
+        { "id": 5, "value": 2500 },
+        {
+          "id": 18,
+          "value": [
+            { "itemId": 75, "burnTime": 7.5 },
+            { "itemId": 7, "burnTime": 30 },
+            { "itemId": 108, "burnTime": 60 },
+            { "itemid": 471, "burnTime": 240 }
+          ]
+        }
       ],
-      "decomposes": 120,
-      "fuel": [
-        { "itemId": 75, "burnTime": 7.5 },
-        { "itemId": 7, "burnTime": 30 },
-        { "itemId": 108, "burnTime": 60 },
-        { "itemid": 471, "burnTime": 240 }
-      ]
+      "decomposes": 120
     },
     {
       "itemId": 126,
@@ -2322,7 +2326,7 @@
       "maxStack": 100,
       "weight": 0.01,
       "engramPoints": 3,
-      "craftedIn": [607, "Equus Saddle", "Mortar and Pestle"],
+      "craftedIn": [607, 531, 107],
       "craftingTime": 1,
       "requiredLevel": 0,
       "yields": 1,
@@ -2387,7 +2391,7 @@
       "image": "gasoline.png",
       "maxStack": 100,
       "weight": 0.1,
-      "craftedIn": ["Refining Forge"],
+      "craftedIn": [125],
       "craftingTime": 6,
       "requiredLevel": 0,
       "yields": 5,
@@ -8454,8 +8458,10 @@
         { "itemId": 162, "count": 400 },
         { "itemId": 166, "count": 400 }
       ],
-      "stats": [{ "id": 1, "value": "Crafting" }],
-      "fuel": [{ "itemId": 164, "burnTime": 900 }]
+      "stats": [
+        { "id": 1, "value": "Crafting" },
+        { "id": 18, "value": [{ "itemId": 164, "burnTime": 900 }] }
+      ]
     },
     {
       "itemId": 601,
@@ -8756,9 +8762,9 @@
       ],
       "stats": [
         { "id": 1, "value": "Crafting" },
-        { "id": 5, "value": 2500 }
-      ],
-      "fuel": [{ "itemId": 164, "burnTime": 900 }]
+        { "id": 5, "value": 2500 },
+        { "id": 18, "value": [{ "itemId": 164, "burnTime": 900 }] }
+      ]
     },
     {
       "itemId": 619,
@@ -9808,11 +9814,14 @@
       ],
       "stats": [
         { "id": 1, "value": "Structure" },
-        { "id": 5, "value": 15000 }
-      ],
-      "fuel": [
-        { "itemId": 472, "burnTime": 64800 },
-        { "itemId": 470, "burnTime": 648 }
+        { "id": 5, "value": 15000 },
+        {
+          "id": 18,
+          "value": [
+            { "itemId": 472, "burnTime": 64800 },
+            { "itemId": 470, "burnTime": 648 }
+          ]
+        }
       ],
       "fuelNote": "0.33 element per radius unit. (2.0x = 1.13 element every 18 hours)",
       "radius": { "1": 3, "5": 19, "10": 39 }
@@ -9904,7 +9913,7 @@
       "image": "Tek_Turret.png",
       "maxStack": 1,
       "weight": 4,
-      "craftedIn": [652, "EliteArk Crafting Station"],
+      "craftedIn": [652],
       "craftingTime": 5,
       "requiredLevel": 0,
       "yields": 1,
@@ -11066,7 +11075,7 @@
         { "itemId": 75, "count": 100 },
         { "itemId": 7, "count": 50 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Structure" }]
     },
     {
       "itemId": 760,
@@ -11083,7 +11092,7 @@
         { "itemId": 75, "count": 500 },
         { "itemId": 7, "count": 250 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Structure" }]
     },
     {
       "itemId": 761,
@@ -11101,7 +11110,7 @@
         { "itemId": 75, "count": 1250 },
         { "itemId": 7, "count": 1000 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Structure" }]
     },
     {
       "itemId": 762,
@@ -11118,7 +11127,7 @@
         { "itemId": 8, "count": 2 },
         { "itemId": 7, "count": 10 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Structure" }]
     },
     {
       "itemId": 763,
@@ -11136,7 +11145,7 @@
         { "itemId": 74, "count": 220 },
         { "itemId": 166, "count": 100 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Structure" }]
     },
     {
       "itemId": 764,
@@ -11396,7 +11405,10 @@
       "craftingTime": 5,
       "requiredLevel": 0,
       "yields": 1,
-      "recipe": [{ "itemId": 783, "count": 800 }]
+      "recipe": [
+        { "id": 1, "value": "Resource" },
+        { "itemId": 783, "count": 800 }
+      ]
     },
     {
       "itemId": 780,
@@ -11496,6 +11508,7 @@
       "weight": 0.1,
       "recipe": [],
       "stats": [
+        { "id": 1, "value": "Consumable" },
         { "id": 8, "value": 10, "duration": 2 },
         { "id": 7, "value": -1.5, "duration": 0.375 }
       ]
@@ -11610,6 +11623,7 @@
       "craftedIn": [],
       "recipe": [],
       "stats": [
+        { "id": 1, "value": "Resource" },
         { "id": 8, "value": 100, "duration": 5 },
         { "id": 7, "value": -10, "duration": 2.5 }
       ]
@@ -11722,7 +11736,7 @@
       "color": "#e13131",
       "maxStack": 1,
       "weight": 0.5,
-      "craftedIn": ["Desmodus Saddle"],
+      "craftedIn": [800],
       "craftingTime": 5,
       "requiredLevel": 0,
       "yields": 1,
@@ -11734,7 +11748,8 @@
       "name": "Scrap Metal",
       "description": "A small pile of Scrap Metal. Can be refined in a Forge.",
       "maxStack": 200,
-      "weight": 1
+      "weight": 1,
+      "stats": [{ "id": 1, "value": "Resource" }]
     },
     {
       "itemId": 803,
@@ -11749,11 +11764,7 @@
       "description": "A firm, flexible material from the shell of a Megachelon. Can be used as a replacement for Keratin.",
       "maxStack": 100,
       "weight": 0.01,
-      "bp": "/Game/Genesis/CoreBlueprints/Resources/TurtleShell.TurtleShell_C",
-      "parent": "/Game/PrimalEarth/CoreBlueprints/Resources/Keratin.Keratin_C",
-      "icon": "/Game/Genesis/UI/Icons/HUD_TurtleShellFragment_Icon.HUD_TurtleShellFragment_Icon",
-      "type": "Resource",
-      "stackSize": 100
+      "stats": [{ "id": 1, "value": "Resource" }]
     },
     {
       "itemId": 805,
@@ -11766,6 +11777,7 @@
       "yields": 1,
       "recipe": [{ "itemId": 787, "count": 1 }],
       "stats": [
+        { "id": 1, "value": "Consumable" },
         { "id": 9, "value": 1800 },
         { "id": 8, "value": 10, "duration": 1.666667 },
         { "id": 7, "value": 5, "duration": 1.25 }
@@ -11778,6 +11790,7 @@
       "maxStack": 1,
       "weight": 0.1,
       "stats": [
+        { "id": 1, "value": "Consumable" },
         { "id": 9, "value": 560 },
         { "id": 8, "value": 20, "duration": 6.666667 },
         { "id": 7, "value": -1, "duration": 0.25 }
@@ -11790,6 +11803,7 @@
       "maxStack": 100,
       "weight": 20,
       "stats": [
+        { "id": 1, "value": "Consumable" },
         { "id": 9, "value": 691200 },
         { "id": 8, "value": 100, "duration": 25 },
         { "id": 7, "value": 100, "duration": 25 },

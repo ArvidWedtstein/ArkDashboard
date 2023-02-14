@@ -35,33 +35,35 @@ Object.values(d).forEach((dino, i) => {
   let flyers = ["h", "tu", "kr", "me", "p"];
   itemss.push({
     id: i + 1,
-    name,
-    nameTranslations: dino.name_t,
-    synonyms: dino.sy,
-    bps: dino.bps,
-    description: dino.desc,
-    tamingNotice: dino.tamingNotice,
-    adminNote: dino.adminNote,
-    note: dino.note,
-    img: dino.img,
-    affinityNeeded: dino.a0,
-    affinityIncreasePerLevel: dino.aI,
-    fleeThreshold: dino.ft,
-    basePoints: dino.bp,
-    maturationTime: dino.bm,
-    incubationTime: dino.be,
-    method: dino.m,
-    eats: dino.eats,
-    torporDepletionPS: dino.tDPS0,
-    experiencePerKill: dino.xpk,
-    hitboxes: dino.hitboxes,
-    knockoutW: dino.forceW,
-    nonViolentFoodAffinityMultiplier: dino.nvfam,
-    nonViolentFoodRateMultiplier: dino.nvfrm,
-    tamingInterval: dino.tI,
-    baseTamingTime: dino.t1,
-    tamingBonusAttribute: dino.tiba,
-    canDestroy: dino.af ? dino.af.filter((t) => v.includes(t)) : [],
+    name : dino.name,
+    nameTranslations: dino.name_t ? dino.name_t : null,
+    synonyms: dino.sy ? dino.sy : null,
+    bps: dino.bps ? dino.bps : null,
+    description: dino.desc ? dino.desc : null,
+    tamingNotice: dino.tamingNotice ? dino.tamingNotice : null,
+    adminNote: dino.adminNote ? dino.adminNote : null,
+    note: dino.note ? dino.note : null,
+    affinityNeeded: dino.a0 ? dino.a0 : null,
+    affinityIncreasePerLevel: dino.aI ? dino.aI : null,
+    fleeThreshold: dino.ft ? dino.ft : null,
+    basePoints: dino.bp ? dino.bp : null,
+    maturationTime: dino.bm ? dino.bm : null,
+    incubationTime: dino.be ? dino.be : null,
+    method: dino.m ? dino.m : null,
+    eats: dino.eats ? dino.eats : null,
+    torporDepletionPS: dino.tDPS0 ? dino.tDPS0 : null,
+    experiencePerKill: dino.xpk ? dino.xpk : null,
+    hitboxes: dino.hitboxes ? dino.hitboxes : null,
+    knockoutW: dino.forceW ? dino.forceW : null,
+    nonViolentFoodAffinityMultiplier: dino.nvfam ? dino.nvfam : null,
+    nonViolentFoodRateMultiplier: dino.nvfrm ? dino.nvfrm : null,
+    tamingInterval: dino.tI ? dino.tI : null,
+    baseTamingTime: dino.t1 ? dino.t1 : null,
+    tamingBonusAttribute: dino.tiba ? dino.tiba : null,
+    canDestroy: dino.af ? dino.af.filter((t) => v.includes(t)) : null,
+    canBeCarriedBy: dino.carry ? dino.carry : null,
+    egg: dino.egg ? dino.egg : null,
+    method: dino.method ? dino.method : null,
     fitsThrough: dino.af ? dino.af
       .filter((t) => fits.includes(t))
       .map((t) => {
@@ -83,7 +85,7 @@ Object.values(d).forEach((dino, i) => {
           default:
             return t;
         }
-      }) : [],
+      }) : null,
     immobilizedBy: dino.af ? dino.af
       .filter((t) => imm.includes(t))
       .map((t) => {
@@ -105,7 +107,7 @@ Object.values(d).forEach((dino, i) => {
           default:
             return t;
         }
-      }) : [],
+      }) : null,
     allowableFlyers: dino.af ? dino.af
       .filter((t) => !v.includes(t) && !fits.includes(t) && !imm.includes(t))
       .map((t) => {
@@ -123,10 +125,10 @@ Object.values(d).forEach((dino, i) => {
           default:
             return t;
         }
-      }) : [],
-    gatherEfficiency: dino.ge,
-    baseStats: dino.bs,
-    capabilities: dino.c,
+      }) : null,
+    gatherEfficiency: dino.ge ? dino.ge : null,
+    baseStats: dino.bs ? dino.bs : null,
+    capabilities: dino.c ? dino.c : null,
     drops: dino.d ? dino.d.map((t) => {
       if (t === 13) {
         t = 12
@@ -135,11 +137,11 @@ Object.values(d).forEach((dino, i) => {
         t = 10
       }
       return t
-    }) : [],
-    weightReduction: dino.wr,
-    eggTempMin: dino.itl,
-    eggTempMax: dino.ith,
-    experiencePerKillAdjustment: dino.xpka,
+    }) : null,
+    weightReduction: dino.wr ? dino.wr : null,
+    eggTempMin: dino.itl ? dino.itl : null,
+    eggTempMax: dino.ith ? dino.ith : null,
+    experiencePerKillAdjustment: dino.xpka ? dino.xpka : null,
     xVariant: dino.xv ? true : false,
     noWaterMovement: dino.noWM ? true : false,
     disableFood: dino.dFood ? true : false,
@@ -147,8 +149,8 @@ Object.values(d).forEach((dino, i) => {
     disableTame: dino.disableTame ? true : false,
     disableMultiplier: dino.disableMult ? true : false,
     violentTame: dino.nonViolentTame ? false : true,
-    foodConsumptionBase: dino.foodBase,
-    foodConsumptionMult: dino.foodMult,
+    foodConsumptionBase: dino.foodBase ? dino.foodBase : null,
+    foodConsumptionMult: dino.foodMult ? dino.foodMult : null,
   });
 
   //let experiencePerKill = dino.xpk * ((level - 1) / 10 + 1) * 4 * XPMultiplier
@@ -179,27 +181,29 @@ Object.values(d).forEach((dino, i) => {
 });
 // let sql = "INSERT INTO public.Dino (name, synonyms, description, tamingNotice, canDestroy, immobilizedBy, baseStats, gatherEfficiency, expPerKill, fitsThrough, eggTempMin, eggTempMax, tdps, eats, maturationTime, weightReduction)"
 
-let t = itemss.map((g) => {
-  return `'${g.name}', ARRAY[${g.synonyms ? g.synonyms.join(",") : ''}], '${g.description}', '${g.tamingNotice}', ARRAY[${g.canDestroy.join(', ')}]
-  `
-})
-let cols = []
-itemss.forEach((g) => {
-  cols.push(Object.keys(g).length)
-})
-const sum = cols.reduce((a, b) => a + b, 0);
-const avg = (sum / cols.length) || 0;
-
-console.log(`The sum is: ${sum}. The average is: ${avg}.`);
+// let t = itemss.map((g) => {
+//   return `'${g.name}', ARRAY[${g.synonyms ? g.synonyms.join(",") : ''}], '${g.description}', '${g.tamingNotice}', ARRAY[${g.canDestroy.join(', ')}]
+//   `
+// })
+// const removeNullUndefined = obj => Object.entries(obj).reduce((a, [k, v]) => (v == null ? a : (a[k] = v, a)), {});
+// let i = itemss.map((f) => removeNullUndefined(f))
 // require("fs").writeFile(
 //   "dinotest.json",
-//   JSON.stringify(itemss),
+//   JSON.stringify(i),
 //   (error) => {
 //     if (error) {
 //       throw error;
 //     }
 //   }
 // );
+// let t = itemss.map((g) => {
+//   return `('${g.name}', ${g.synonyms ? `ARRAY[${g.synonyms.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.description ? `'${g.description.replaceAll("'", '"')}'` : null}, ${g.tamingNotice ? `'${g.tamingNotice.replaceAll("'", '"')}'` : null}, ${g.canDestroy !== null && g.canDestroy.length > 0 ? `ARRAY[${g.canDestroy.map((f) => `'${f}'`).join().split(', ')}]` : null }, ${g.immobilizedBy !== null && g.immobilizedBy.length > 0 ? `ARRAY[${g.immobilizedBy.map((f) => `'${f}'`).join().split(', ')}]` : null}, '${JSON.stringify(g.baseStats)}', '${JSON.stringify(g.gatherEfficiency)}', ${g.experiencePerKill}, ${g.experiencePerKillAdjustment}, ${g.fitsThrough !== null && g.fitsThrough.length > 0 ? `ARRAY[${g.fitsThrough.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.eggTempMin}, ${g.eggTempMax}, ${g.torporDepletionPS}, ${g.eats !== null ? `ARRAY[${g.eats.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.maturationTime}, '${JSON.stringify(g.weightReduction)}',
+//   ${g.incubationTime}, ${g.affinityNeeded}, ${g.affinityIncreasePerLevel}, ${g.fleeThreshold}, ${g.hitboxes ? `'${JSON.stringify(g.hitboxes)}'` : null}, ${g.drops !== null ? `ARRAY[${g.drops.join(', ')}]` : null}, ${g.foodConsumptionBase}, ${g.foodConsumptionMult}, ${g.violentTame}, ${g.tamingBonusAttribute}, ${!g.noWaterMovement}, ${g.adminNote ? `'${g.adminNote}'` : null}, ${g.basePoints}, ${g.method ? `ARRAY[${g.method.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.knockoutW !== null && g.knockoutW.length > 0 ? `ARRAY[${g.knockoutW.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.nonViolentFoodAffinityMultiplier}, ${g.nonViolentFoodRateMultiplier}, ${g.tamingInterval}, ${g.baseTamingTime},
+//   ${g.xVariant}, ${g.disableKO}, ${g.disableFood}, ${g.disableMultiplier}, ${g.disableTame}),`
+// })
+
+
+
 // https://www.dododex.com/api/data.json
 // https://github.com/arkutils/Purlovia
 // https://arkids.net/items
