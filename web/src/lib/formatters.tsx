@@ -177,6 +177,7 @@ export const getBaseMaterials = (
       let recipeItem = prices.items.find((r) => r.itemId === itemId);
       let count = recipeCount * amount;
 
+
       if (!firstRecipeOnly || !recipeItem?.recipe.length) {
         let material = materials.find((m) => m.itemId === itemId);
         if (material) {
@@ -194,11 +195,63 @@ export const getBaseMaterials = (
     findBaseMaterials(itemId, amount);
   });
 
+
+
   return materials;
 };
 
 
 
+function getResourcesForCrafting(itemId: number, amount: number) {
+  const itemToCraft = prices.items.find(item => item.itemId === itemId);
+  const resources = new Map<number, number>();
+
+  if (!itemToCraft) {
+    throw new Error(`Item with itemId ${itemId} not found.`);
+  }
+
+  for (const recipeItem of itemToCraft.recipe) {
+    const requiredAmount = recipeItem.count * amount;
+    let availableAmount = itemToCraft.maxStack * requiredAmount;
+
+    if (recipeItem.itemId === itemToCraft.itemId) {
+      availableAmount -= requiredAmount;
+    }
+
+    if (availableAmount < requiredAmount) {
+      const ingredientItem = prices.items.find(item => item.itemId === recipeItem.itemId);
+
+      if (!ingredientItem) {
+        throw new Error(`Item with itemId ${recipeItem.itemId} not found.`);
+      }
+
+      const remainingAmount = requiredAmount - availableAmount;
+      const additionalResources = getResourcesForCrafting(recipeItem.itemId, Math.ceil(remainingAmount / ingredientItem.yields));
+
+      for (const [itemId, amount] of additionalResources) {
+        if (resources.has(itemId)) {
+          resources.set(itemId, resources.get(itemId)! + amount);
+        } else {
+          resources.set(itemId, amount);
+        }
+      }
+
+      if (resources.has(recipeItem.itemId)) {
+        resources.set(recipeItem.itemId, resources.get(recipeItem.itemId)! + requiredAmount);
+      } else {
+        resources.set(recipeItem.itemId, requiredAmount);
+      }
+    } else {
+      if (resources.has(recipeItem.itemId)) {
+        resources.set(recipeItem.itemId, resources.get(recipeItem.itemId)! + requiredAmount);
+      } else {
+        resources.set(recipeItem.itemId, requiredAmount);
+      }
+    }
+  }
+
+  return Array.from(resources);
+}
 
 /**
  * Formats the given number of seconds into a string representation

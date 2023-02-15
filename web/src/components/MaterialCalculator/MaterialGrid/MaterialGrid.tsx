@@ -261,6 +261,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
               colorHEX: color || '#00ff00'
             }
           })} />
+          <p className="text-white">{JSON.stringify(mergeItemRecipe(viewBaseMaterials, ...item))}</p>
           <Table
             vertical={true}
             header={false}

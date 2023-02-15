@@ -2,7 +2,6 @@ import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 
-import { checkboxInputTag, jsonDisplay, timeTag } from "src/lib/formatters";
 
 import type { DeleteDinoMutationVariables, FindDinoById } from "types/graphql";
 

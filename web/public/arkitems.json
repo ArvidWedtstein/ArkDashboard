@@ -159,7 +159,8 @@
       "maxStack": 100,
       "weight": 0.5,
       "recipe": [],
-      "decomposes": -1
+      "decomposes": -1,
+      "stats": [{ "id": 1, "value": "Resource" }]
     },
     {
       "itemId": 8,
@@ -170,7 +171,8 @@
       "maxStack": 100,
       "weight": 0.5,
       "recipe": [],
-      "decomposes": -1
+      "decomposes": -1,
+      "stats": [{ "id": 1, "value": "Resource" }]
     },
     {
       "itemId": 9,
@@ -181,7 +183,8 @@
       "maxStack": 100,
       "weight": 1,
       "recipe": [],
-      "decomposes": -1
+      "decomposes": -1,
+      "stats": [{ "id": 1, "value": "Resource" }]
     },
     {
       "itemId": 10,
@@ -192,7 +195,8 @@
       "maxStack": 100,
       "weight": 0.01,
       "recipe": [],
-      "decomposes": -1
+      "decomposes": -1,
+      "stats": [{ "id": 1, "value": "Resource" }]
     },
     {
       "itemId": 11,
@@ -6407,7 +6411,7 @@
       "craftingTime": 5,
       "requiredLevel": 0,
       "yields": 100,
-      "recipe": [{ "itemId": -1, "count": 1 }],
+      "recipe": [],
       "stats": [{ "id": 1, "value": "Resource" }]
     },
     {

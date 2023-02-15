@@ -2,156 +2,176 @@ const { items } = require("./web/public/arkitems.json");
 const d = require("./web/public/arkdinos.json");
 
 // let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
-// console.time("normal");
+console.time("normal");
+let materials = [];
+const findBaseMaterials = (itemId, amount, firstRecipeOnly = false) => {
+  let recipe = items.find((r) => r.itemId === itemId);
 
-// const arr = [
-//   { name: 'John', age: 20 },
-//   { name: 'Jane', age: 25 },
-//   { name: 'Jim', age: 30 }
-// ];
+  if (!recipe?.recipe) {
+    return;
+  }
 
-// const result = arr.filter(obj => obj.age > 25);
+  if (!firstRecipeOnly && recipe.stats && recipe.stats[0]?.value === 'Resource') {
+    return;
+  }
 
-// console.log(result);
-// console.timeEnd("normal");
+  recipe.recipe.forEach(({ itemId, count: recipeCount }) => {
+    let recipeItem = items.find((r) => r.itemId === itemId);
+    let count = recipeCount * amount;
 
-// console.time("optimized");
 
-// const result2 = arr.find((f) => f.age > 25)
-
-// console.log(result2);
-
-// console.timeEnd("optimized");
-let sql = "INSERT INTO public.Dino (name, synonyms, description, tamingNotice, canDestroy, immobilizedBy, baseStats, gatherEfficiency, expPerKill, fitsThrough, eggTempMin, eggTempMax, tdps, eats, maturationTime, weightReduction)"
-let itemss = [];
-Object.values(d).forEach((dino, i) => {
-  const { name } = dino;
-  let level = 100;
-
-  // ta, r
-  let v = ["t", "w", "a", "s", "m", "tk"];
-  let fits = ["d", "dd", "dg", "bdg", "hf", "ltd", "ghf"];
-  let imm = ["cb", "b", "bt", "n", "py", "l", "lbt"];
-  let flyers = ["h", "tu", "kr", "me", "p"];
-  itemss.push({
-    id: i + 1,
-    name : dino.name,
-    nameTranslations: dino.name_t ? dino.name_t : null,
-    synonyms: dino.sy ? dino.sy : null,
-    bps: dino.bps ? dino.bps : null,
-    description: dino.desc ? dino.desc : null,
-    tamingNotice: dino.tamingNotice ? dino.tamingNotice : null,
-    adminNote: dino.adminNote ? dino.adminNote : null,
-    note: dino.note ? dino.note : null,
-    affinityNeeded: dino.a0 ? dino.a0 : null,
-    affinityIncreasePerLevel: dino.aI ? dino.aI : null,
-    fleeThreshold: dino.ft ? dino.ft : null,
-    basePoints: dino.bp ? dino.bp : null,
-    maturationTime: dino.bm ? dino.bm : null,
-    incubationTime: dino.be ? dino.be : null,
-    method: dino.m ? dino.m : null,
-    eats: dino.eats ? dino.eats : null,
-    torporDepletionPS: dino.tDPS0 ? dino.tDPS0 : null,
-    experiencePerKill: dino.xpk ? dino.xpk : null,
-    hitboxes: dino.hitboxes ? dino.hitboxes : null,
-    knockoutW: dino.forceW ? dino.forceW : null,
-    nonViolentFoodAffinityMultiplier: dino.nvfam ? dino.nvfam : null,
-    nonViolentFoodRateMultiplier: dino.nvfrm ? dino.nvfrm : null,
-    tamingInterval: dino.tI ? dino.tI : null,
-    baseTamingTime: dino.t1 ? dino.t1 : null,
-    tamingBonusAttribute: dino.tiba ? dino.tiba : null,
-    canDestroy: dino.af ? dino.af.filter((t) => v.includes(t)) : null,
-    canBeCarriedBy: dino.carry ? dino.carry : null,
-    egg: dino.egg ? dino.egg : null,
-    method: dino.method ? dino.method : null,
-    fitsThrough: dino.af ? dino.af
-      .filter((t) => fits.includes(t))
-      .map((t) => {
-        switch (t) {
-          case "d":
-            return "doorframe";
-          case "dd":
-            return "double doorframe";
-          case "dg":
-            return "dinosaur gateway";
-          case "bdg":
-            return "behemoth dinosaur gateway";
-          case "hf":
-            return "hatchframe";
-          case "ltd":
-            return "large trapdoor";
-          case "ghf":
-            return "giant hatchframe";
-          default:
-            return t;
-        }
-      }) : null,
-    immobilizedBy: dino.af ? dino.af
-      .filter((t) => imm.includes(t))
-      .map((t) => {
-        switch (t) {
-          case "b":
-            return "bola";
-          case "bt":
-            return "bear trap";
-          case "n":
-            return "net projectile";
-          case "py":
-            return "plant species y";
-          case "lbt":
-            return "large bear trap";
-          case "l":
-            return "lasso";
-          case "cb":
-            return "chain bola";
-          default:
-            return t;
-        }
-      }) : null,
-    allowableFlyers: dino.af ? dino.af
-      .filter((t) => !v.includes(t) && !fits.includes(t) && !imm.includes(t))
-      .map((t) => {
-        switch (t) {
-          case "h":
-            return "human";
-          case "tu":
-            return "tusoteuthis";
-          case "kr":
-            return "karkinos";
-          case "p":
-            return "procoptodon";
-          case "me":
-            return "megalosaurus";
-          default:
-            return t;
-        }
-      }) : null,
-    gatherEfficiency: dino.ge ? dino.ge : null,
-    baseStats: dino.bs ? dino.bs : null,
-    capabilities: dino.c ? dino.c : null,
-    drops: dino.d ? dino.d.map((t) => {
-      if (t === 13) {
-        t = 12
+    if (!firstRecipeOnly || !recipeItem?.recipe.length) {
+      let material = materials.find((m) => m.itemId === itemId);
+      if (material) {
+        material.amount += count;
+      } else {
+        materials.push({ ...recipeItem, amount: count });
       }
-      if (t === 11) {
-        t = 10
-      }
-      return t
-    }) : null,
-    weightReduction: dino.wr ? dino.wr : null,
-    eggTempMin: dino.itl ? dino.itl : null,
-    eggTempMax: dino.ith ? dino.ith : null,
-    experiencePerKillAdjustment: dino.xpka ? dino.xpka : null,
-    xVariant: dino.xv ? true : false,
-    noWaterMovement: dino.noWM ? true : false,
-    disableFood: dino.dFood ? true : false,
-    disableKO: dino.disableKO ? true : false,
-    disableTame: dino.disableTame ? true : false,
-    disableMultiplier: dino.disableMult ? true : false,
-    violentTame: dino.nonViolentTame ? false : true,
-    foodConsumptionBase: dino.foodBase ? dino.foodBase : null,
-    foodConsumptionMult: dino.foodMult ? dino.foodMult : null,
+    } else {
+      findBaseMaterials(recipeItem.itemId, count);
+    }
   });
+};
+findBaseMaterials(686, 1, false)
+console.log(materials)
+console.timeEnd("normal");
+
+console.time("optimized");
+
+
+console.log(getResourcesForCrafting(686, 1, false))
+
+console.timeEnd("optimized");
+// let sql = "INSERT INTO public.Dino (name, synonyms, description, tamingNotice, canDestroy, immobilizedBy, baseStats, gatherEfficiency, expPerKill, fitsThrough, eggTempMin, eggTempMax, tdps, eats, maturationTime, weightReduction)"
+// let itemss = [];
+// Object.values(d).forEach((dino, i) => {
+//   const { name } = dino;
+//   let level = 100;
+
+//   // ta, r
+//   let v = ["t", "w", "a", "s", "m", "tk"];
+//   let fits = ["d", "dd", "dg", "bdg", "hf", "ltd", "ghf"];
+//   let imm = ["cb", "b", "bt", "n", "py", "l", "lbt"];
+//   let flyers = ["h", "tu", "kr", "me", "p"];
+//   itemss.push({
+//     id: i + 1,
+//     name : dino.name,
+//     nameTranslations: dino.name_t ? dino.name_t : null,
+//     synonyms: dino.sy ? dino.sy : null,
+//     bps: dino.bps ? dino.bps : null,
+//     description: dino.desc ? dino.desc : null,
+//     tamingNotice: dino.tamingNotice ? dino.tamingNotice : null,
+//     adminNote: dino.adminNote ? dino.adminNote : null,
+//     note: dino.note ? dino.note : null,
+//     affinityNeeded: dino.a0 ? dino.a0 : null,
+//     affinityIncreasePerLevel: dino.aI ? dino.aI : null,
+//     fleeThreshold: dino.ft ? dino.ft : null,
+//     basePoints: dino.bp ? dino.bp : null,
+//     maturationTime: dino.bm ? dino.bm : null,
+//     incubationTime: dino.be ? dino.be : null,
+//     method: dino.m ? dino.m : null,
+//     eats: dino.eats ? dino.eats : null,
+//     torporDepletionPS: dino.tDPS0 ? dino.tDPS0 : null,
+//     experiencePerKill: dino.xpk ? dino.xpk : null,
+//     hitboxes: dino.hitboxes ? dino.hitboxes : null,
+//     knockoutW: dino.forceW ? dino.forceW : null,
+//     nonViolentFoodAffinityMultiplier: dino.nvfam ? dino.nvfam : null,
+//     nonViolentFoodRateMultiplier: dino.nvfrm ? dino.nvfrm : null,
+//     tamingInterval: dino.tI ? dino.tI : null,
+//     baseTamingTime: dino.t1 ? dino.t1 : null,
+//     tamingBonusAttribute: dino.tiba ? dino.tiba : null,
+//     canDestroy: dino.af ? dino.af.filter((t) => v.includes(t)) : null,
+//     canBeCarriedBy: dino.carry ? dino.carry : null,
+//     egg: dino.egg ? dino.egg : null,
+//     method: dino.method ? dino.method : null,
+//     fitsThrough: dino.af ? dino.af
+//       .filter((t) => fits.includes(t))
+//       .map((t) => {
+//         switch (t) {
+//           case "d":
+//             return "doorframe";
+//           case "dd":
+//             return "double doorframe";
+//           case "dg":
+//             return "dinosaur gateway";
+//           case "bdg":
+//             return "behemoth dinosaur gateway";
+//           case "hf":
+//             return "hatchframe";
+//           case "ltd":
+//             return "large trapdoor";
+//           case "ghf":
+//             return "giant hatchframe";
+//           default:
+//             return t;
+//         }
+//       }) : null,
+//     immobilizedBy: dino.af ? dino.af
+//       .filter((t) => imm.includes(t))
+//       .map((t) => {
+//         switch (t) {
+//           case "b":
+//             return "bola";
+//           case "bt":
+//             return "bear trap";
+//           case "n":
+//             return "net projectile";
+//           case "py":
+//             return "plant species y";
+//           case "lbt":
+//             return "large bear trap";
+//           case "l":
+//             return "lasso";
+//           case "cb":
+//             return "chain bola";
+//           default:
+//             return t;
+//         }
+//       }) : null,
+//     allowableFlyers: dino.af ? dino.af
+//       .filter((t) => !v.includes(t) && !fits.includes(t) && !imm.includes(t))
+//       .map((t) => {
+//         switch (t) {
+//           case "h":
+//             return "human";
+//           case "tu":
+//             return "tusoteuthis";
+//           case "kr":
+//             return "karkinos";
+//           case "p":
+//             return "procoptodon";
+//           case "me":
+//             return "megalosaurus";
+//           default:
+//             return t;
+//         }
+//       }) : null,
+//     gatherEfficiency: dino.ge ? dino.ge : null,
+//     baseStats: dino.bs ? dino.bs : null,
+//     capabilities: dino.c ? dino.c : null,
+//     drops: dino.d ? dino.d.map((t) => {
+//       if (t === 13) {
+//         t = 12
+//       }
+//       if (t === 11) {
+//         t = 10
+//       }
+//       return t
+//     }) : null,
+//     weightReduction: dino.wr ? dino.wr : null,
+//     eggTempMin: dino.itl ? dino.itl : null,
+//     eggTempMax: dino.ith ? dino.ith : null,
+//     experiencePerKillAdjustment: dino.xpka ? dino.xpka : null,
+//     xVariant: dino.xv ? true : false,
+//     noWaterMovement: dino.noWM ? true : false,
+//     disableFood: dino.dFood ? true : false,
+//     disableKO: dino.disableKO ? true : false,
+//     disableTame: dino.disableTame ? true : false,
+//     disableMultiplier: dino.disableMult ? true : false,
+//     violentTame: dino.nonViolentTame ? false : true,
+//     foodConsumptionBase: dino.foodBase ? dino.foodBase : null,
+//     foodConsumptionMult: dino.foodMult ? dino.foodMult : null,
+//   });
 
   //let experiencePerKill = dino.xpk * ((level - 1) / 10 + 1) * 4 * XPMultiplier
 
@@ -178,7 +198,7 @@ Object.values(d).forEach((dino, i) => {
 //   let itemRepairCost =
 //     (100 - Math.round((lostDurability / durability) * 100)) *
 //     (craftingCostMetalIngot / 2);
-});
+// });
 // let sql = "INSERT INTO public.Dino (name, synonyms, description, tamingNotice, canDestroy, immobilizedBy, baseStats, gatherEfficiency, expPerKill, fitsThrough, eggTempMin, eggTempMax, tdps, eats, maturationTime, weightReduction)"
 
 // let t = itemss.map((g) => {
