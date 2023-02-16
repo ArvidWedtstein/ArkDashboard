@@ -1,47 +1,20 @@
 const { items } = require("./web/public/arkitems.json");
 const d = require("./web/public/arkdinos.json");
+const d2 = require("./dinotest.json");
 
 // let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
 console.time("normal");
-let materials = [];
-const findBaseMaterials = (itemId, amount, firstRecipeOnly = false) => {
-  let recipe = items.find((r) => r.itemId === itemId);
 
-  if (!recipe?.recipe) {
-    return;
-  }
-
-  if (!firstRecipeOnly && recipe.stats && recipe.stats[0]?.value === 'Resource') {
-    return;
-  }
-
-  recipe.recipe.forEach(({ itemId, count: recipeCount }) => {
-    let recipeItem = items.find((r) => r.itemId === itemId);
-    let count = recipeCount * amount;
-
-
-    if (!firstRecipeOnly || !recipeItem?.recipe.length) {
-      let material = materials.find((m) => m.itemId === itemId);
-      if (material) {
-        material.amount += count;
-      } else {
-        materials.push({ ...recipeItem, amount: count });
-      }
-    } else {
-      findBaseMaterials(recipeItem.itemId, count);
-    }
-  });
-};
-findBaseMaterials(686, 1, false)
-console.log(materials)
 console.timeEnd("normal");
 
 console.time("optimized");
 
 
-console.log(getResourcesForCrafting(686, 1, false))
 
 console.timeEnd("optimized");
+
+
+
 // let sql = "INSERT INTO public.Dino (name, synonyms, description, tamingNotice, canDestroy, immobilizedBy, baseStats, gatherEfficiency, expPerKill, fitsThrough, eggTempMin, eggTempMax, tdps, eats, maturationTime, weightReduction)"
 // let itemss = [];
 // Object.values(d).forEach((dino, i) => {
@@ -199,7 +172,7 @@ console.timeEnd("optimized");
 //     (100 - Math.round((lostDurability / durability) * 100)) *
 //     (craftingCostMetalIngot / 2);
 // });
-// let sql = "INSERT INTO public.Dino (name, synonyms, description, tamingNotice, canDestroy, immobilizedBy, baseStats, gatherEfficiency, expPerKill, fitsThrough, eggTempMin, eggTempMax, tdps, eats, maturationTime, weightReduction)"
+let sql = "INSERT INTO public.Dino (name, synonyms, description, tamingNotice, canDestroy, immobilizedBy, baseStats, gatherEfficiency, expPerKill, fitsThrough, eggTempMin, eggTempMax, tdps, eats, maturationTime, weightReduction)"
 
 // let t = itemss.map((g) => {
 //   return `'${g.name}', ARRAY[${g.synonyms ? g.synonyms.join(",") : ''}], '${g.description}', '${g.tamingNotice}', ARRAY[${g.canDestroy.join(', ')}]
@@ -216,13 +189,24 @@ console.timeEnd("optimized");
 //     }
 //   }
 // );
-// let t = itemss.map((g) => {
-//   return `('${g.name}', ${g.synonyms ? `ARRAY[${g.synonyms.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.description ? `'${g.description.replaceAll("'", '"')}'` : null}, ${g.tamingNotice ? `'${g.tamingNotice.replaceAll("'", '"')}'` : null}, ${g.canDestroy !== null && g.canDestroy.length > 0 ? `ARRAY[${g.canDestroy.map((f) => `'${f}'`).join().split(', ')}]` : null }, ${g.immobilizedBy !== null && g.immobilizedBy.length > 0 ? `ARRAY[${g.immobilizedBy.map((f) => `'${f}'`).join().split(', ')}]` : null}, '${JSON.stringify(g.baseStats)}', '${JSON.stringify(g.gatherEfficiency)}', ${g.experiencePerKill}, ${g.experiencePerKillAdjustment}, ${g.fitsThrough !== null && g.fitsThrough.length > 0 ? `ARRAY[${g.fitsThrough.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.eggTempMin}, ${g.eggTempMax}, ${g.torporDepletionPS}, ${g.eats !== null ? `ARRAY[${g.eats.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.maturationTime}, '${JSON.stringify(g.weightReduction)}',
-//   ${g.incubationTime}, ${g.affinityNeeded}, ${g.affinityIncreasePerLevel}, ${g.fleeThreshold}, ${g.hitboxes ? `'${JSON.stringify(g.hitboxes)}'` : null}, ${g.drops !== null ? `ARRAY[${g.drops.join(', ')}]` : null}, ${g.foodConsumptionBase}, ${g.foodConsumptionMult}, ${g.violentTame}, ${g.tamingBonusAttribute}, ${!g.noWaterMovement}, ${g.adminNote ? `'${g.adminNote}'` : null}, ${g.basePoints}, ${g.method ? `ARRAY[${g.method.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.knockoutW !== null && g.knockoutW.length > 0 ? `ARRAY[${g.knockoutW.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.nonViolentFoodAffinityMultiplier}, ${g.nonViolentFoodRateMultiplier}, ${g.tamingInterval}, ${g.baseTamingTime},
-//   ${g.xVariant}, ${g.disableKO}, ${g.disableFood}, ${g.disableMultiplier}, ${g.disableTame}),`
-// })
-
-
+let t = d2.map((g) => {
+  // return `('${g.name}', ${"synonyms" in g ? `ARRAY[${g.synonyms.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.description ? `'${g.description.replaceAll("'", '"')}'` : null}, ${g.tamingNotice ? `'${g.tamingNotice.replaceAll("'", '"')}'` : null}, ${g.canDestroy !== null && g.canDestroy.length > 0 ? `ARRAY[${g.canDestroy.map((f) => `'${f}'`).join().split(', ')}]` : null }, ${g.immobilizedBy !== null && g.immobilizedBy.length > 0 ? `ARRAY[${g.immobilizedBy.map((f) => `'${f}'`).join().split(', ')}]` : null}, '${JSON.stringify(g.baseStats)}', '${JSON.stringify(g.gatherEfficiency)}', ${g.experiencePerKill}, ${g.experiencePerKillAdjustment}, ${"fitsThrough" in g && g.fitsThrough.length > 0 ? `ARRAY[${g.fitsThrough.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.eggTempMin}, ${g.eggTempMax}, ${g.torporDepletionPS}, ${"eats" in g ? `ARRAY[${g.eats.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.maturationTime}, '${JSON.stringify(g.weightReduction)}',
+  // ${g.incubationTime}, ${g.affinityNeeded}, ${g.affinityIncreasePerLevel}, ${g.fleeThreshold}, ${"hitboxes" in g ? `'${JSON.stringify(g.hitboxes)}'` : null}, ${g.drops !== null ? `ARRAY[${g.drops.join(', ')}]` : null}, ${g.foodConsumptionBase}, ${g.foodConsumptionMult}, ${g.violentTame}, ${g.tamingBonusAttribute}, ${!g.noWaterMovement}, ${g.adminNote ? `'${g.adminNote}'` : null}, ${g.basePoints}, ${g.method ? `ARRAY[${g.method.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${"knockoutW" in g ? `ARRAY[${g.knockoutW.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.nonViolentFoodAffinityMultiplier}, ${g.nonViolentFoodRateMultiplier}, ${g.tamingInterval}, ${g.baseTamingTime},
+  // ${g.xVariant}, ${g.disableKO}, ${g.disableFood}, ${g.disableMultiplier}, ${g.disableTame}),`
+  return `UPDATE public."Dino"
+  SET gather_eff = '${JSON.stringify(g.gatherEfficiency) ||  '[]'}'::jsonb
+  WHERE name = '${g.name}';`
+})
+console.log(t)
+// require("fs").writeFile(
+//   "s.txt",
+//   t.join('\n'),
+//   (error) => {
+//     if (error) {
+//       throw error;
+//     }
+//   }
+// );
 
 // https://www.dododex.com/api/data.json
 // https://github.com/arkutils/Purlovia
