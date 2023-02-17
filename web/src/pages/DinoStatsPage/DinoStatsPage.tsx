@@ -12,7 +12,7 @@ import { MetaTags } from "@redwoodjs/web";
 import { useState } from "react";
 import Table from "src/components/Util/Table/Table";
 import { combineBySummingKeys } from "src/lib/formatters";
-import arkdinos from "../../../public/arkdinos2.json";
+// import arkdinos from "../../../public/arkdinos2.json";
 
 interface stats {
   health: number;
@@ -63,21 +63,21 @@ const DinoStatsPage = () => {
   const onSubmit = (data) => {
     // let dino = arkdinos[data.name.toLowerCase()]
     // console.log(getEstimatedStat("food", data.name, data.level))
-    let dino = arkdinos.find(
-      (d) => d.name.toLowerCase() === data.name.toLowerCase()
-    );
-    let t = Object.entries(dino.baseStats).map(([key, value]) => {
-      return {
-        stat: key,
-        base: value.base,
-        increasePerLevelWild: value.increasePerLevelWild || 0,
-        increasePerLevelTamed: value.increasePerLevelTamed || 0,
-        dino: value?.base + value.increasePerLevelWild * level[key],
-      };
-    });
+    // let dino = arkdinos.find(
+    //   (d) => d.name.toLowerCase() === data.name.toLowerCase()
+    // );
+    // let t = Object.entries(dino.baseStats).map(([key, value]) => {
+    //   return {
+    //     stat: key,
+    //     base: value.base,
+    //     increasePerLevelWild: value.increasePerLevelWild || 0,
+    //     increasePerLevelTamed: value.increasePerLevelTamed || 0,
+    //     dino: value?.base + value.increasePerLevelWild * level[key],
+    //   };
+    // });
     setValue("level", data.level);
     setPoints(data.level - 1);
-    setDino(t);
+    // setDino(t);
   };
 
   const genRandomStats = () => {
@@ -94,33 +94,33 @@ const DinoStatsPage = () => {
     setPoints(i);
   };
 
-  const getEstimatedStat = (stat, dino, level) => {
-    let d = arkdinos.find(
-      (d) => d.name.toLowerCase() === dino.toLowerCase()
-    );
-    if (!d) return null;
+  // const getEstimatedStat = (stat, dino, level) => {
+  //   let d = arkdinos.find(
+  //     (d) => d.name.toLowerCase() === dino.toLowerCase()
+  //   );
+  //   if (!d) return null;
 
-    let numEligibleStats = 0;
-    if (d.baseStats[stat].increasePerLevelWild > 0 && d.baseStats[stat].base >= 0) {
-      if (typeof d.baseStats["oxygen"] === 'object' && d.baseStats["oxygen"].base == null) {
-        numEligibleStats = 5;
-      } else {
-        numEligibleStats = 6;
-      }
+  //   let numEligibleStats = 0;
+  //   if (d.baseStats[stat].increasePerLevelWild > 0 && d.baseStats[stat].base >= 0) {
+  //     if (typeof d.baseStats["oxygen"] === 'object' && d.baseStats["oxygen"].base == null) {
+  //       numEligibleStats = 5;
+  //     } else {
+  //       numEligibleStats = 6;
+  //     }
 
-      let numLevels = 0;
-      if (level > 0) {
-        numLevels = level - 1;
-      } else {
-        numLevels = 1;
-      }
-      let estFoodLevels = Math.round(numLevels / numEligibleStats);
-      return d.baseStats[stat].base + d.baseStats[stat].increasePerLevelWild * estFoodLevels;
+  //     let numLevels = 0;
+  //     if (level > 0) {
+  //       numLevels = level - 1;
+  //     } else {
+  //       numLevels = 1;
+  //     }
+  //     let estFoodLevels = Math.round(numLevels / numEligibleStats);
+  //     return d.baseStats[stat].base + d.baseStats[stat].increasePerLevelWild * estFoodLevels;
 
-    } else {
-      return d.baseStats[stat].base;
-    }
-  }
+  //   } else {
+  //     return d.baseStats[stat].base;
+  //   }
+  // }
 
   const calcMaturation = () => {
     let maturation = 0;

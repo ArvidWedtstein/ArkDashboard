@@ -46,7 +46,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785],
+    "immobilizedBy": [1040, 785],
     "allowableFlyers": [
       "ta",
       "r",
@@ -64,7 +64,10 @@
       "crystalwyvern",
       "wyvern"
     ],
-    "gatherEfficiency": { "58": 3.35, "211": 3.77 },
+    "gatherEfficiency": [
+      { "item": 58, "amount": 3.35 },
+      { "item": 211, "amount": 3.77 }
+    ],
     "baseStats": {
       "h": { "b": 75, "w": 15, "t": 5.4 },
       "s": { "b": 100, "w": 10, "t": 10 },
@@ -141,19 +144,19 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [785, "large bear trap"],
+    "immobilizedBy": [785, 384],
     "allowableFlyers": ["ta", "r", "tusoteuthis", "quetzal", "wyvern"],
-    "gatherEfficiency": {
-      "11": 3.62,
-      "12": 3.54,
-      "13": 3.68,
-      "14": 3.22,
-      "15": 3.08,
-      "16": 3.07,
-      "62": 2.97,
-      "68": 3.28,
-      "69": 4.5
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.62 },
+      { "item": 12, "amount": 3.54 },
+      { "item": 13, "amount": 3.68 },
+      { "item": 14, "amount": 3.22 },
+      { "item": 15, "amount": 3.08 },
+      { "item": 16, "amount": 3.07 },
+      { "item": 62, "amount": 2.97 },
+      { "item": 68, "amount": 3.28 },
+      { "item": 69, "amount": 4.5 }
+    ],
     "baseStats": {
       "h": { "b": 630, "w": 126, "t": 5.4 },
       "s": { "b": 250, "w": 25, "t": 10 },
@@ -215,9 +218,13 @@
     "canDestroy": [],
     "canBeCarriedBy": ["quetzal"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap"],
+    "immobilizedBy": [725, 384],
     "allowableFlyers": ["quetzal", "tusoteuthis"],
-    "gatherEfficiency": { "3": 4, "5": 3.7, "15": 3.81 },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 4 },
+      { "item": 5, "amount": 3.7 },
+      { "item": 15, "amount": 3.81 }
+    ],
     "baseStats": {
       "h": { "b": 1250, "w": 250, "t": 5.4 },
       "s": { "b": 425, "w": 42.5, "t": 10 },
@@ -264,19 +271,19 @@
     "canDestroy": [],
     "canBeCarriedBy": ["wyvern", "quetzal"],
     "fitsThrough": ["dinosaur gateway", "behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap"],
+    "immobilizedBy": [725, 384],
     "allowableFlyers": ["wyvern", "quetzal", "karkinos"],
-    "gatherEfficiency": {
-      "11": 3.81,
-      "12": 3.86,
-      "13": 4.22,
-      "14": 4.21,
-      "15": 3.8,
-      "16": 4.27,
-      "62": 3.44,
-      "68": 3.24,
-      "184": 4.05
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.81 },
+      { "item": 12, "amount": 3.86 },
+      { "item": 13, "amount": 4.22 },
+      { "item": 14, "amount": 4.21 },
+      { "item": 15, "amount": 3.8 },
+      { "item": 16, "amount": 4.27 },
+      { "item": 62, "amount": 3.44 },
+      { "item": 68, "amount": 3.24 },
+      { "item": 184, "amount": 4.05 }
+    ],
     "baseStats": {
       "h": { "b": 800, "w": 160, "t": null },
       "s": { "b": 400, "w": 40, "t": null },
@@ -355,7 +362,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 6,
@@ -411,14 +419,14 @@
     ],
     "immobilizedBy": [785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
-    "gatherEfficiency": {
-      "11": 2.84,
-      "12": 2.59,
-      "62": 2.73,
-      "68": 3.15,
-      "177": 3.22,
-      "210": 4.43
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 2.84 },
+      { "item": 12, "amount": 2.59 },
+      { "item": 62, "amount": 2.73 },
+      { "item": 68, "amount": 3.15 },
+      { "item": 177, "amount": 3.22 },
+      { "item": 210, "amount": 4.43 }
+    ],
     "baseStats": {
       "h": { "b": 450, "w": 90, "t": 5.4 },
       "s": { "b": 240, "w": 24, "t": 10 },
@@ -495,7 +503,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", 785],
+    "immobilizedBy": [384, 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -507,27 +515,27 @@
       "karkinos",
       "procoptodon"
     ],
-    "gatherEfficiency": {
-      "3": 3.14,
-      "6": 3.12,
-      "7": 2.33,
-      "9": 4.31,
-      "10": 3.84,
-      "17": 3.27,
-      "18": 3.05,
-      "19": 2.99,
-      "57": 4.02,
-      "71": 2.95,
-      "73": 4.13,
-      "170": 2.89,
-      "254": 4,
-      "270": 4.8,
-      "309": 4.8,
-      "324": 4.5,
-      "325": 3.5,
-      "327": 4.3,
-      "467": 4.09
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.14 },
+      { "item": 6, "amount": 3.12 },
+      { "item": 7, "amount": 2.33 },
+      { "item": 9, "amount": 4.31 },
+      { "item": 10, "amount": 3.84 },
+      { "item": 17, "amount": 3.27 },
+      { "item": 18, "amount": 3.05 },
+      { "item": 19, "amount": 2.99 },
+      { "item": 57, "amount": 4.02 },
+      { "item": 71, "amount": 2.95 },
+      { "item": 73, "amount": 4.13 },
+      { "item": 170, "amount": 2.89 },
+      { "item": 254, "amount": 4 },
+      { "item": 270, "amount": 4.8 },
+      { "item": 309, "amount": 4.8 },
+      { "item": 324, "amount": 4.5 },
+      { "item": 325, "amount": 3.5 },
+      { "item": 327, "amount": 4.3 },
+      { "item": 467, "amount": 4.09 }
+    ],
     "baseStats": {
       "h": { "b": 700, "w": 140, "t": 5.4 },
       "s": { "b": 175, "w": 17.5, "t": 10 },
@@ -601,14 +609,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "lasso",
-      "bear trap",
-      "bola",
-      785,
-      "bear trap",
-      "plant species y"
-    ],
+    "immobilizedBy": [733, 383, 1040, 785, 986],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -647,7 +648,8 @@
     "disableMultiplier": false,
     "violentTame": false,
     "foodConsumptionBase": 0.001736,
-    "foodConsumptionMult": 864.055298
+    "foodConsumptionMult": 864.055298,
+    "gatherEfficiency": null
   },
   {
     "id": 9,
@@ -697,7 +699,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785, "lasso"],
+    "immobilizedBy": [1040, 785, 733],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -717,7 +719,7 @@
       "procoptodon",
       "desmodus"
     ],
-    "gatherEfficiency": { "251": 3.9 },
+    "gatherEfficiency": [{ "item": 251, "amount": 3.9 }],
     "baseStats": {
       "h": { "b": 125, "w": 25, "t": null },
       "s": { "b": 150, "w": 15, "t": null },
@@ -788,19 +790,19 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "chain bola", "large bear trap", 785],
+    "immobilizedBy": [733, 725, 384, 785],
     "allowableFlyers": ["ta", "r", "megalosaurus", "procoptodon"],
-    "gatherEfficiency": {
-      "11": 3.52,
-      "12": 3.23,
-      "13": 3.21,
-      "14": 2.77,
-      "15": 2.74,
-      "16": 2.57,
-      "58": 2.58,
-      "62": 2.78,
-      "68": 3.11
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.52 },
+      { "item": 12, "amount": 3.23 },
+      { "item": 13, "amount": 3.21 },
+      { "item": 14, "amount": 2.77 },
+      { "item": 15, "amount": 2.74 },
+      { "item": 16, "amount": 2.57 },
+      { "item": 58, "amount": 2.58 },
+      { "item": 62, "amount": 2.78 },
+      { "item": 68, "amount": 3.11 }
+    ],
     "baseStats": {
       "h": { "b": 365, "w": 73, "t": 6.75 },
       "s": { "b": 400, "w": 20, "t": 7.5 },
@@ -886,7 +888,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", 785],
+    "immobilizedBy": [733, 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -898,13 +900,13 @@
       "karkinos",
       "tusoteuthis"
     ],
-    "gatherEfficiency": {
-      "11": 3,
-      "12": 2.82,
-      "13": 2.85,
-      "62": 3.03,
-      "68": 2.96
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3 },
+      { "item": 12, "amount": 2.82 },
+      { "item": 13, "amount": 2.85 },
+      { "item": 62, "amount": 3.03 },
+      { "item": 68, "amount": 2.96 }
+    ],
     "baseStats": {
       "h": { "b": 500, "w": 100, "t": 5.4 },
       "s": { "b": 200, "w": 20, "t": 10 },
@@ -965,7 +967,10 @@
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": [],
-    "gatherEfficiency": { "11": 2.14, "12": 2.12 },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 2.14 },
+      { "item": 12, "amount": 2.12 }
+    ],
     "baseStats": {
       "h": { "b": 2800, "w": 392, "t": 2.16 },
       "s": { "b": 600, "w": 30, "t": 5 },
@@ -1011,15 +1016,12 @@
     "tamingBonusAttribute": 3.125,
     "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": [
-      "chain bola",
-      "bear trap",
-      "large bear trap",
-      "plant species y",
-      785
-    ],
+    "immobilizedBy": [725, 383, 384, 986, 785],
     "allowableFlyers": [],
-    "gatherEfficiency": { "11": 3.4, "13": 3.3 },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.4 },
+      { "item": 13, "amount": 3.3 }
+    ],
     "baseStats": {
       "h": { "b": 325, "w": 65, "t": null },
       "s": { "b": 250, "w": 12.5, "t": null },
@@ -1068,7 +1070,8 @@
     "disableKO": false,
     "disableTame": false,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 15,
@@ -1112,13 +1115,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "chain bola",
-      "bear trap",
-      "large bear trap",
-      "plant species y",
-      785
-    ],
+    "immobilizedBy": [725, 383, 384, 986, 785],
     "allowableFlyers": [
       "quetzal",
       "crystalwyvern",
@@ -1130,16 +1127,16 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": {
-      "11": 3.31,
-      "12": 3.12,
-      "13": 3.38,
-      "14": 3.01,
-      "15": 3.04,
-      "16": 2.71,
-      "62": 3.69,
-      "68": 4.03
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.31 },
+      { "item": 12, "amount": 3.12 },
+      { "item": 13, "amount": 3.38 },
+      { "item": 14, "amount": 3.01 },
+      { "item": 15, "amount": 3.04 },
+      { "item": 16, "amount": 2.71 },
+      { "item": 62, "amount": 3.69 },
+      { "item": 68, "amount": 4.03 }
+    ],
     "baseStats": {
       "h": { "b": 440, "w": 88, "t": 5.4 },
       "s": { "b": 325, "w": 32.5, "t": 10 },
@@ -1208,18 +1205,18 @@
     "tamingBonusAttribute": 3,
     "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway", "dinosaur gateway"],
-    "immobilizedBy": ["bear trap", "large bear trap", "plant species y", 785],
+    "immobilizedBy": [383, 384, 986, 785],
     "allowableFlyers": ["ab"],
-    "gatherEfficiency": {
-      "11": 3.55,
-      "12": 3.26,
-      "13": 3.46,
-      "14": 3.18,
-      "15": 3.42,
-      "16": 3.11,
-      "62": 3.29,
-      "68": 3.33
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.55 },
+      { "item": 12, "amount": 3.26 },
+      { "item": 13, "amount": 3.46 },
+      { "item": 14, "amount": 3.18 },
+      { "item": 15, "amount": 3.42 },
+      { "item": 16, "amount": 3.11 },
+      { "item": 62, "amount": 3.29 },
+      { "item": 68, "amount": 3.33 }
+    ],
     "baseStats": {
       "h": { "b": 2750, "w": 550, "t": 5.4 },
       "s": { "b": 650, "w": 65, "t": 10 },
@@ -1303,16 +1300,16 @@
     "fitsThrough": ["behemoth dinosaur gateway", "giant hatchframe"],
     "immobilizedBy": [],
     "allowableFlyers": ["ta", "r"],
-    "gatherEfficiency": {
-      "10": 3.38,
-      "11": 3.06,
-      "12": 3.14,
-      "13": 3.1,
-      "14": 2.9,
-      "62": 3.46,
-      "68": 3.66,
-      "169": 4.21
-    },
+    "gatherEfficiency": [
+      { "item": 10, "amount": 3.38 },
+      { "item": 11, "amount": 3.06 },
+      { "item": 12, "amount": 3.14 },
+      { "item": 13, "amount": 3.1 },
+      { "item": 14, "amount": 2.9 },
+      { "item": 62, "amount": 3.46 },
+      { "item": 68, "amount": 3.66 },
+      { "item": 169, "amount": 4.21 }
+    ],
     "baseStats": {
       "h": { "b": 2400, "w": 480, "t": 4.86 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -1386,7 +1383,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", 785, "bear trap"],
+    "immobilizedBy": [733, 1040, 785, 383],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -1398,18 +1395,18 @@
       "karkinos",
       "tusoteuthis"
     ],
-    "gatherEfficiency": {
-      "11": 2.75,
-      "12": 2.38,
-      "13": 2.43,
-      "14": 3.82,
-      "15": 3.15,
-      "16": 1.97,
-      "58": 2.67,
-      "68": 2.58,
-      "169": 4.11,
-      "211": 3.89
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 2.75 },
+      { "item": 12, "amount": 2.38 },
+      { "item": 13, "amount": 2.43 },
+      { "item": 14, "amount": 3.82 },
+      { "item": 15, "amount": 3.15 },
+      { "item": 16, "amount": 1.97 },
+      { "item": 58, "amount": 2.67 },
+      { "item": 68, "amount": 2.58 },
+      { "item": 169, "amount": 4.11 },
+      { "item": 211, "amount": 3.89 }
+    ],
     "baseStats": {
       "h": { "b": 220, "w": 44, "t": 5.4 },
       "s": { "b": 190, "w": 19, "t": 10 },
@@ -1452,7 +1449,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 20,
@@ -1466,7 +1464,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 21,
@@ -1500,7 +1499,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 22,
@@ -1535,15 +1535,15 @@
     "canDestroy": [],
     "canBeCarriedBy": ["wyvern"],
     "fitsThrough": ["behemoth dinosaur gateway", "dinosaur gateway"],
-    "immobilizedBy": ["large bear trap", 785],
+    "immobilizedBy": [384, 785],
     "allowableFlyers": ["wyvern"],
-    "gatherEfficiency": {
-      "11": 2.68,
-      "12": 2.43,
-      "13": 3.47,
-      "62": 3.42,
-      "68": 3.14
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 2.68 },
+      { "item": 12, "amount": 2.43 },
+      { "item": 13, "amount": 3.47 },
+      { "item": 62, "amount": 3.42 },
+      { "item": 68, "amount": 3.14 }
+    ],
     "baseStats": {
       "h": { "b": 450, "w": 90, "t": 5.4 },
       "s": { "b": 600, "w": 60, "t": 10 },
@@ -1613,13 +1613,13 @@
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": [],
     "allowableFlyers": ["ta", "r"],
-    "gatherEfficiency": {
-      "3": 4.67,
-      "5": 2.85,
-      "17": 4.34,
-      "18": 4.71,
-      "19": 3.71
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 4.67 },
+      { "item": 5, "amount": 2.85 },
+      { "item": 17, "amount": 4.34 },
+      { "item": 18, "amount": 4.71 },
+      { "item": 19, "amount": 3.71 }
+    ],
     "baseStats": {
       "h": { "b": 2070, "w": 414, "t": 3.8 },
       "s": { "b": 240, "w": 24, "t": 10 },
@@ -1683,7 +1683,8 @@
     "disableKO": false,
     "disableTame": false,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 25,
@@ -1746,7 +1747,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["plant species y", "bear trap", "bola", 785],
+    "immobilizedBy": [986, 383, 1040, 785],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -1789,7 +1790,8 @@
     "disableMultiplier": false,
     "violentTame": false,
     "foodConsumptionBase": 0.000868,
-    "foodConsumptionMult": 2880.184326
+    "foodConsumptionMult": 2880.184326,
+    "gatherEfficiency": null
   },
   {
     "id": 26,
@@ -1843,7 +1845,11 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": { "3": 2.42, "5": 1.86, "17": 2.74 },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.42 },
+      { "item": 5, "amount": 1.86 },
+      { "item": 17, "amount": 2.74 }
+    ],
     "baseStats": {
       "h": { "b": 700, "w": 140, "t": 5.4 },
       "s": { "b": 200, "w": 20, "t": 10 },
@@ -1885,21 +1891,21 @@
     "incubationTime": 179985.601,
     "canDestroy": ["thatch", "adobe", "wood", "stone"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["large bear trap"],
+    "immobilizedBy": [384],
     "allowableFlyers": ["ta", "r"],
-    "gatherEfficiency": {
-      "11": 5,
-      "12": 4.66,
-      "13": 4.41,
-      "14": 3.69,
-      "15": 3.65,
-      "16": 3.43,
-      "58": 3.03,
-      "62": 3.72,
-      "68": 3.86,
-      "250": 4.02,
-      "256": 4.22
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 5 },
+      { "item": 12, "amount": 4.66 },
+      { "item": 13, "amount": 4.41 },
+      { "item": 14, "amount": 3.69 },
+      { "item": 15, "amount": 3.65 },
+      { "item": 16, "amount": 3.43 },
+      { "item": 58, "amount": 3.03 },
+      { "item": 62, "amount": 3.72 },
+      { "item": 68, "amount": 3.86 },
+      { "item": 250, "amount": 4.02 },
+      { "item": 256, "amount": 4.22 }
+    ],
     "baseStats": {
       "h": { "b": 70000, "w": 56, "t": 5.4 },
       "s": { "b": 480, "w": 2.88, "t": 10 },
@@ -1973,7 +1979,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", 785],
+    "immobilizedBy": [725, 384, 785],
     "allowableFlyers": [
       "quetzal",
       "wyvern",
@@ -1983,16 +1989,16 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": {
-      "11": 3.62,
-      "12": 3.96,
-      "13": 3.22,
-      "14": 2.75,
-      "15": 2.78,
-      "16": 2.58,
-      "62": 2.82,
-      "68": 3.13
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.62 },
+      { "item": 12, "amount": 3.96 },
+      { "item": 13, "amount": 3.22 },
+      { "item": 14, "amount": 2.75 },
+      { "item": 15, "amount": 2.78 },
+      { "item": 16, "amount": 2.58 },
+      { "item": 62, "amount": 2.82 },
+      { "item": 68, "amount": 3.13 }
+    ],
     "baseStats": {
       "h": { "b": 420, "w": 84, "t": 5.4 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -2071,7 +2077,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785, "large bear trap"],
+    "immobilizedBy": [1040, 785, 384],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -2084,14 +2090,14 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": {
-      "3": 2.96,
-      "4": 2.01,
-      "5": 4.71,
-      "17": 3.25,
-      "18": 2.3,
-      "19": 2.39
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.96 },
+      { "item": 4, "amount": 2.01 },
+      { "item": 5, "amount": 4.71 },
+      { "item": 17, "amount": 3.25 },
+      { "item": 18, "amount": 2.3 },
+      { "item": 19, "amount": 2.39 }
+    ],
     "baseStats": {
       "h": { "b": 450, "w": 90, "t": 5.4 },
       "s": { "b": 180, "w": 18, "t": 10 },
@@ -2160,16 +2166,16 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", "chain bola", 785],
+    "immobilizedBy": [384, 725, 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "r", "tusoteuthis"],
-    "gatherEfficiency": {
-      "3": 3.38,
-      "5": 2.72,
-      "17": 3.93,
-      "18": 2.88,
-      "19": 2.69,
-      "171": 3.01
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.38 },
+      { "item": 5, "amount": 2.72 },
+      { "item": 17, "amount": 3.93 },
+      { "item": 18, "amount": 2.88 },
+      { "item": 19, "amount": 2.69 },
+      { "item": 171, "amount": 3.01 }
+    ],
     "baseStats": {
       "h": { "b": 600, "w": 120, "t": 5.4 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -2255,7 +2261,8 @@
     "disableKO": false,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 32,
@@ -2297,7 +2304,8 @@
     "disableKO": false,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 33,
@@ -2349,7 +2357,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "bear trap", 785],
+    "immobilizedBy": [1040, 383, 785],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -2365,13 +2373,13 @@
       "procoptodon",
       "desmodus"
     ],
-    "gatherEfficiency": {
-      "11": 2.14,
-      "12": 2.12,
-      "13": 1.84,
-      "62": 3.01,
-      "68": 2.52
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 2.14 },
+      { "item": 12, "amount": 2.12 },
+      { "item": 13, "amount": 1.84 },
+      { "item": 62, "amount": 3.01 },
+      { "item": 68, "amount": 2.52 }
+    ],
     "baseStats": {
       "h": { "b": 50, "w": 10, "t": 6.4 },
       "s": { "b": 100, "w": 10, "t": 10 },
@@ -2423,7 +2431,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 35,
@@ -2452,21 +2461,21 @@
     "tamingBonusAttribute": 0.72072,
     "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap", 785],
+    "immobilizedBy": [725, 384, 785],
     "allowableFlyers": [],
-    "gatherEfficiency": {
-      "3": 3.17,
-      "11": 3.98,
-      "12": 3.95,
-      "13": 3.82,
-      "14": 3.61,
-      "15": 3.53,
-      "16": 3.39,
-      "58": 3.16,
-      "62": 3.22,
-      "68": 3.48,
-      "248": 4.6
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.17 },
+      { "item": 11, "amount": 3.98 },
+      { "item": 12, "amount": 3.95 },
+      { "item": 13, "amount": 3.82 },
+      { "item": 14, "amount": 3.61 },
+      { "item": 15, "amount": 3.53 },
+      { "item": 16, "amount": 3.39 },
+      { "item": 58, "amount": 3.16 },
+      { "item": 62, "amount": 3.22 },
+      { "item": 68, "amount": 3.48 },
+      { "item": 248, "amount": 4.6 }
+    ],
     "baseStats": {
       "h": { "b": 1295, "w": 194.25, "t": 4.05 },
       "s": { "b": 325, "w": 16.25, "t": 5 },
@@ -2523,7 +2532,8 @@
     "disableKO": false,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 37,
@@ -2573,7 +2583,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785, "bear trap"],
+    "immobilizedBy": [1040, 785, 383],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -2586,19 +2596,19 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": {
-      "3": 2.78,
-      "11": 3.38,
-      "12": 3.15,
-      "13": 2.91,
-      "14": 3.05,
-      "15": 2.89,
-      "16": 2.96,
-      "17": 2.56,
-      "58": 2.54,
-      "62": 2.61,
-      "68": 2.94
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.78 },
+      { "item": 11, "amount": 3.38 },
+      { "item": 12, "amount": 3.15 },
+      { "item": 13, "amount": 2.91 },
+      { "item": 14, "amount": 3.05 },
+      { "item": 15, "amount": 2.89 },
+      { "item": 16, "amount": 2.96 },
+      { "item": 17, "amount": 2.56 },
+      { "item": 58, "amount": 2.54 },
+      { "item": 62, "amount": 2.61 },
+      { "item": 68, "amount": 2.94 }
+    ],
     "baseStats": {
       "h": { "b": 900, "w": 180, "t": 5.4 },
       "s": { "b": 250, "w": 25, "t": 10 },
@@ -2667,7 +2677,8 @@
     "disableKO": false,
     "disableTame": false,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 39,
@@ -2708,7 +2719,8 @@
     "disableKO": false,
     "disableTame": false,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 40,
@@ -2736,13 +2748,7 @@
       "behemoth dinosaur gateway",
       "giant hatchframe"
     ],
-    "immobilizedBy": [
-      "bola",
-      785,
-      "bear trap",
-      "large bear trap",
-      "plant species y"
-    ],
+    "immobilizedBy": [1040, 785, 383, 384, 986],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -2753,7 +2759,12 @@
       "karkinos",
       "tusoteuthis"
     ],
-    "gatherEfficiency": { "11": 3.5, "12": 2.8, "13": 3, "68": 3 },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.5 },
+      { "item": 12, "amount": 2.8 },
+      { "item": 13, "amount": 3 },
+      { "item": 68, "amount": 3 }
+    ],
     "baseStats": {
       "h": { "b": 200, "w": 40, "t": 5.4 },
       "s": { "b": 150, "w": 15, "t": 10 },
@@ -2815,7 +2826,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 42,
@@ -2836,15 +2848,13 @@
     "tamingBonusAttribute": 0.00001,
     "canDestroy": [],
     "fitsThrough": ["dinosaur gateway", "behemoth dinosaur gateway"],
-    "immobilizedBy": [
-      "bola",
-      "chain bola",
-      "large bear trap",
-      "plant species y",
-      785
-    ],
+    "immobilizedBy": [1040, 725, 384, 986, 785],
     "allowableFlyers": [],
-    "gatherEfficiency": { "11": 3.1, "67": 4.8, "340": 5 },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.1 },
+      { "item": 67, "amount": 4.8 },
+      { "item": 340, "amount": 5 }
+    ],
     "baseStats": {
       "h": { "b": 325, "w": 65, "t": null },
       "s": { "b": 500, "w": 50, "t": null },
@@ -2934,7 +2944,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785, "bear trap"],
+    "immobilizedBy": [1040, 785, 383],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -2952,15 +2962,15 @@
       "procoptodon",
       "desmodus"
     ],
-    "gatherEfficiency": {
-      "11": 2.48,
-      "12": 2.06,
-      "13": 2.2,
-      "14": 1.85,
-      "15": 1.71,
-      "62": 2.49,
-      "68": 2.42
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 2.48 },
+      { "item": 12, "amount": 2.06 },
+      { "item": 13, "amount": 2.2 },
+      { "item": 14, "amount": 1.85 },
+      { "item": 15, "amount": 1.71 },
+      { "item": 62, "amount": 2.49 },
+      { "item": 68, "amount": 2.42 }
+    ],
     "baseStats": {
       "h": { "b": 130, "w": 26, "t": 5.4 },
       "s": { "b": 100, "w": 10, "t": 10 },
@@ -3040,7 +3050,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", 785],
+    "immobilizedBy": [384, 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -3051,7 +3061,7 @@
       "karkinos",
       "procoptodon"
     ],
-    "gatherEfficiency": { "11": 1.83 },
+    "gatherEfficiency": [{ "item": 11, "amount": 1.83 }],
     "baseStats": {
       "h": { "b": 350, "w": 70, "t": 5.4 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -3132,18 +3142,18 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785, "lasso", 785],
+    "immobilizedBy": [1040, 785, 733, 785],
     "allowableFlyers": ["ta", "human", "g", "procoptodon"],
-    "gatherEfficiency": {
-      "11": 2.74,
-      "12": 2.33,
-      "13": 2.05,
-      "14": 1.96,
-      "15": 1.87,
-      "16": 1.91,
-      "62": 2.35,
-      "68": 2.47
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 2.74 },
+      { "item": 12, "amount": 2.33 },
+      { "item": 13, "amount": 2.05 },
+      { "item": 14, "amount": 1.96 },
+      { "item": 15, "amount": 1.87 },
+      { "item": 16, "amount": 1.91 },
+      { "item": 62, "amount": 2.35 },
+      { "item": 68, "amount": 2.47 }
+    ],
     "baseStats": {
       "h": { "b": 125, "w": 25, "t": 5.4 },
       "s": { "b": 150, "w": 15, "t": 10 },
@@ -3217,7 +3227,7 @@
     "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "fitsThrough": ["dinosaur gateway", "behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap", 785],
+    "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["quetzal", "wyvern", "procoptodon", "tusoteuthis"],
     "baseStats": {
       "h": { "b": 775, "w": 155, "t": 5.4 },
@@ -3239,7 +3249,8 @@
     "disableMultiplier": false,
     "violentTame": false,
     "foodConsumptionBase": 0.001543,
-    "foodConsumptionMult": 648.0881
+    "foodConsumptionMult": 648.0881,
+    "gatherEfficiency": null
   },
   {
     "id": 47,
@@ -3298,7 +3309,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785],
+    "immobilizedBy": [1040, 785],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -3317,14 +3328,14 @@
       "procoptodon",
       "desmodus"
     ],
-    "gatherEfficiency": {
-      "11": 2.71,
-      "12": 3.03,
-      "13": 2.76,
-      "14": 4.01,
-      "68": 3.12,
-      "210": 3.04
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 2.71 },
+      { "item": 12, "amount": 3.03 },
+      { "item": 13, "amount": 2.76 },
+      { "item": 14, "amount": 4.01 },
+      { "item": 68, "amount": 3.12 },
+      { "item": 210, "amount": 3.04 }
+    ],
     "baseStats": {
       "h": { "b": 250, "w": 50, "t": 5.4 },
       "s": { "b": 165, "w": 16.5, "t": 10 },
@@ -3393,9 +3404,12 @@
     "canDestroy": [],
     "egg": "Diplo Egg",
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola"],
+    "immobilizedBy": [725],
     "allowableFlyers": ["lpt", "ta", "r", "tusoteuthis"],
-    "gatherEfficiency": { "3": 3.6, "17": 3.51 },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.6 },
+      { "item": 17, "amount": 3.51 }
+    ],
     "baseStats": {
       "h": { "b": 1700, "w": 340, "t": 5.4 },
       "s": { "b": 550, "w": 55, "t": 10 },
@@ -3488,22 +3502,22 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", "chain bola", 785],
+    "immobilizedBy": [384, 725, 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "r", "tusoteuthis"],
-    "gatherEfficiency": {
-      "4": 4.13,
-      "11": 3.65,
-      "12": 3.31,
-      "13": 3.36,
-      "14": 3.04,
-      "15": 3,
-      "16": 3.06,
-      "17": 3.65,
-      "58": 4.2,
-      "62": 3.27,
-      "68": 3.4,
-      "294": 5
-    },
+    "gatherEfficiency": [
+      { "item": 4, "amount": 4.13 },
+      { "item": 11, "amount": 3.65 },
+      { "item": 12, "amount": 3.31 },
+      { "item": 13, "amount": 3.36 },
+      { "item": 14, "amount": 3.04 },
+      { "item": 15, "amount": 3 },
+      { "item": 16, "amount": 3.06 },
+      { "item": 17, "amount": 3.65 },
+      { "item": 58, "amount": 4.2 },
+      { "item": 62, "amount": 3.27 },
+      { "item": 68, "amount": 3.4 },
+      { "item": 294, "amount": 5 }
+    ],
     "baseStats": {
       "h": { "b": 400, "w": 80, "t": 5.4 },
       "s": { "b": 500, "w": 50, "t": 10 },
@@ -3585,7 +3599,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", 785, "bear trap", "large bear trap"],
+    "immobilizedBy": [733, 1040, 785, 383, 384],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -3598,19 +3612,19 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": {
-      "11": 3.76,
-      "12": 3.52,
-      "13": 4.14,
-      "14": 3.97,
-      "15": 3.86,
-      "16": 4.09,
-      "58": 3.55,
-      "62": 3.27,
-      "68": 3.35,
-      "69": 3.84,
-      "184": 3.84
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.76 },
+      { "item": 12, "amount": 3.52 },
+      { "item": 13, "amount": 4.14 },
+      { "item": 14, "amount": 3.97 },
+      { "item": 15, "amount": 3.86 },
+      { "item": 16, "amount": 4.09 },
+      { "item": 58, "amount": 3.55 },
+      { "item": 62, "amount": 3.27 },
+      { "item": 68, "amount": 3.35 },
+      { "item": 69, "amount": 3.84 },
+      { "item": 184, "amount": 3.84 }
+    ],
     "baseStats": {
       "h": { "b": 330, "w": 66, "t": 5.4 },
       "s": { "b": 260, "w": 26, "t": 10 },
@@ -3698,7 +3712,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", 785, "plant species y", "bear trap"],
+    "immobilizedBy": [733, 1040, 785, 986, 383],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -3746,7 +3760,8 @@
     "disableMultiplier": false,
     "violentTame": true,
     "foodConsumptionBase": 0.000868,
-    "foodConsumptionMult": 2880.184326
+    "foodConsumptionMult": 2880.184326,
+    "gatherEfficiency": null
   },
   {
     "id": 52,
@@ -3791,7 +3806,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", 785],
+    "immobilizedBy": [384, 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -3802,16 +3817,16 @@
       "tusoteuthis",
       "karkinos"
     ],
-    "gatherEfficiency": {
-      "3": 2.77,
-      "5": 2.09,
-      "6": 4.86,
-      "9": 2.78,
-      "172": 3.08,
-      "249": 4.21,
-      "313": 4.5,
-      "328": 4.4
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.77 },
+      { "item": 5, "amount": 2.09 },
+      { "item": 6, "amount": 4.86 },
+      { "item": 9, "amount": 2.78 },
+      { "item": 172, "amount": 3.08 },
+      { "item": 249, "amount": 4.21 },
+      { "item": 313, "amount": 4.5 },
+      { "item": 328, "amount": 4.4 }
+    ],
     "baseStats": {
       "h": { "b": 850, "w": 170, "t": 5.4 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -3881,7 +3896,8 @@
     "disableKO": false,
     "disableTame": false,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 54,
@@ -3937,7 +3953,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785, "bear trap"],
+    "immobilizedBy": [1040, 785, 383],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -3952,7 +3968,10 @@
       "karkinos",
       "procoptodon"
     ],
-    "gatherEfficiency": { "10": 3.3, "188": 4 },
+    "gatherEfficiency": [
+      { "item": 10, "amount": 3.3 },
+      { "item": 188, "amount": 4 }
+    ],
     "baseStats": {
       "h": { "b": 200, "w": 40, "t": 3.01 },
       "s": { "b": 100, "w": 10, "t": 10 },
@@ -4023,20 +4042,20 @@
     "fitsThrough": ["giant hatchframe", "behemoth dinosaur gateway"],
     "immobilizedBy": [785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
-    "gatherEfficiency": {
-      "3": 2.57,
-      "5": 2.97,
-      "6": 3.25,
-      "8": 4.3,
-      "9": 4.6,
-      "10": 4.2,
-      "11": 2.94,
-      "12": 2.61,
-      "13": 2.52,
-      "14": 2.65,
-      "62": 3.1,
-      "68": 3.24
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.57 },
+      { "item": 5, "amount": 2.97 },
+      { "item": 6, "amount": 3.25 },
+      { "item": 8, "amount": 4.3 },
+      { "item": 9, "amount": 4.6 },
+      { "item": 10, "amount": 4.2 },
+      { "item": 11, "amount": 2.94 },
+      { "item": 12, "amount": 2.61 },
+      { "item": 13, "amount": 2.52 },
+      { "item": 14, "amount": 2.65 },
+      { "item": 62, "amount": 3.1 },
+      { "item": 68, "amount": 3.24 }
+    ],
     "baseStats": {
       "h": { "b": 710, "w": 142, "t": 5.4 },
       "s": { "b": 200, "w": 20, "t": 10 },
@@ -4123,13 +4142,13 @@
     ],
     "immobilizedBy": [785],
     "allowableFlyers": ["ta", "tusoteuthis"],
-    "gatherEfficiency": {
-      "11": 3.04,
-      "13": 2.87,
-      "14": 3.1,
-      "62": 2.54,
-      "68": 3.3
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.04 },
+      { "item": 13, "amount": 2.87 },
+      { "item": 14, "amount": 3.1 },
+      { "item": 62, "amount": 2.54 },
+      { "item": 68, "amount": 3.3 }
+    ],
     "baseStats": {
       "h": { "b": 180, "w": 36, "t": 5.4 },
       "s": { "b": 165, "w": 16.5, "t": 10 },
@@ -4188,7 +4207,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785, "large bear trap"],
+    "immobilizedBy": [1040, 785, 384],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -4200,18 +4219,18 @@
       "wyvern",
       "desmodus"
     ],
-    "gatherEfficiency": {
-      "11": 3.59,
-      "12": 3.65,
-      "13": 3.77,
-      "14": 3.79,
-      "15": 3.61,
-      "16": 3.87,
-      "62": 3.6,
-      "68": 3.63,
-      "184": 3.76,
-      "249": 3.65
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.59 },
+      { "item": 12, "amount": 3.65 },
+      { "item": 13, "amount": 3.77 },
+      { "item": 14, "amount": 3.79 },
+      { "item": 15, "amount": 3.61 },
+      { "item": 16, "amount": 3.87 },
+      { "item": 62, "amount": 3.6 },
+      { "item": 68, "amount": 3.63 },
+      { "item": 184, "amount": 3.76 },
+      { "item": 249, "amount": 3.65 }
+    ],
     "baseStats": {
       "h": { "b": 375, "w": 75, "t": 5.4 },
       "s": { "b": 450, "w": 45, "t": 10 },
@@ -4278,14 +4297,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "lasso",
-      "bola",
-      785,
-      "bear trap",
-      "large bear trap",
-      "plant species y"
-    ],
+    "immobilizedBy": [733, 1040, 785, 383, 384, 986],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -4298,7 +4310,11 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": { "3": 2.9, "5": 2.73, "17": 3.38 },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.9 },
+      { "item": 5, "amount": 2.73 },
+      { "item": 17, "amount": 3.38 }
+    ],
     "baseStats": {
       "h": { "b": 240, "w": 48, "t": 5.4 },
       "s": { "b": 560, "w": 56, "t": 10 },
@@ -4386,7 +4402,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 60,
@@ -4463,7 +4480,8 @@
     "disableMultiplier": false,
     "violentTame": false,
     "foodConsumptionBase": 0.000868,
-    "foodConsumptionMult": 2880.184326
+    "foodConsumptionMult": 2880.184326,
+    "gatherEfficiency": null
   },
   {
     "id": 61,
@@ -4484,24 +4502,19 @@
     "canDestroy": [],
     "canBeCarriedBy": ["argentavis", "crystalwyvern", "wyvern", "quetzal"],
     "fitsThrough": ["dinosaur gateway", "behemoth dinosaur gateway"],
-    "immobilizedBy": [
-      "chain bola",
-      "bear trap",
-      "large bear trap",
-      "plant species y"
-    ],
+    "immobilizedBy": [725, 383, 384, 986],
     "allowableFlyers": ["argentavis", "crystalwyvern", "wyvern", "quetzal"],
-    "gatherEfficiency": {
-      "11": 3.81,
-      "12": 3.86,
-      "13": 4.32,
-      "14": 4.11,
-      "15": 3.98,
-      "16": 4.27,
-      "62": 3.34,
-      "68": 3.34,
-      "184": 3.95
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.81 },
+      { "item": 12, "amount": 3.86 },
+      { "item": 13, "amount": 4.32 },
+      { "item": 14, "amount": 4.11 },
+      { "item": 15, "amount": 3.98 },
+      { "item": 16, "amount": 4.27 },
+      { "item": 62, "amount": 3.34 },
+      { "item": 68, "amount": 3.34 },
+      { "item": 184, "amount": 3.95 }
+    ],
     "baseStats": {
       "h": { "b": 750, "w": 150, "t": null },
       "s": { "b": 330, "w": 33, "t": null },
@@ -4536,7 +4549,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 63,
@@ -4581,7 +4595,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["plant species y", "bola", 785, "large bear trap"],
+    "immobilizedBy": [986, 1040, 785, 384],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -4598,7 +4612,11 @@
       "k",
       "desmodus"
     ],
-    "gatherEfficiency": { "11": 2.14, "12": 2.12, "249": 4.2 },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 2.14 },
+      { "item": 12, "amount": 2.12 },
+      { "item": 249, "amount": 4.2 }
+    ],
     "baseStats": {
       "h": { "b": 55, "w": 11, "t": null },
       "s": { "b": 100, "w": 10, "t": null },
@@ -4641,7 +4659,7 @@
     "hitboxes": { "Head": 3 },
     "canDestroy": [],
     "fitsThrough": ["dinosaur gateway", "behemoth dinosaur gateway"],
-    "immobilizedBy": ["bola", "bear trap", "plant species y"],
+    "immobilizedBy": [1040, 383, 986],
     "allowableFlyers": ["human"],
     "baseStats": {
       "h": { "b": 150, "w": 30, "t": null },
@@ -4663,7 +4681,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 65,
@@ -4698,7 +4717,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 66,
@@ -4744,37 +4764,37 @@
     "canDestroy": ["thatch", "wood", "a", "s"],
     "canBeCarriedBy": ["quetzal"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap", 785],
+    "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["quetzal"],
-    "gatherEfficiency": {
-      "3": 4.15,
-      "4": 3.62,
-      "5": 3.95,
-      "6": 3.28,
-      "7": 3.49,
-      "8": 3.43,
-      "9": 3.53,
-      "10": 4.28,
-      "11": 3.48,
-      "12": 3.55,
-      "13": 3.28,
-      "14": 3.82,
-      "15": 3.8,
-      "16": 3.89,
-      "17": 3.23,
-      "57": 3.97,
-      "58": 3.98,
-      "62": 3.79,
-      "63": 3.84,
-      "68": 3.47,
-      "71": 3.94,
-      "169": 3.62,
-      "170": 3.75,
-      "172": 3.67,
-      "177": 4.22,
-      "210": 4.03,
-      "249": 4.22
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 4.15 },
+      { "item": 4, "amount": 3.62 },
+      { "item": 5, "amount": 3.95 },
+      { "item": 6, "amount": 3.28 },
+      { "item": 7, "amount": 3.49 },
+      { "item": 8, "amount": 3.43 },
+      { "item": 9, "amount": 3.53 },
+      { "item": 10, "amount": 4.28 },
+      { "item": 11, "amount": 3.48 },
+      { "item": 12, "amount": 3.55 },
+      { "item": 13, "amount": 3.28 },
+      { "item": 14, "amount": 3.82 },
+      { "item": 15, "amount": 3.8 },
+      { "item": 16, "amount": 3.89 },
+      { "item": 17, "amount": 3.23 },
+      { "item": 57, "amount": 3.97 },
+      { "item": 58, "amount": 3.98 },
+      { "item": 62, "amount": 3.79 },
+      { "item": 63, "amount": 3.84 },
+      { "item": 68, "amount": 3.47 },
+      { "item": 71, "amount": 3.94 },
+      { "item": 169, "amount": 3.62 },
+      { "item": 170, "amount": 3.75 },
+      { "item": 172, "amount": 3.67 },
+      { "item": 177, "amount": 4.22 },
+      { "item": 210, "amount": 4.03 },
+      { "item": 249, "amount": 4.22 }
+    ],
     "baseStats": {
       "h": { "b": 750, "w": 150, "t": 5.4 },
       "s": { "b": 325, "w": 32.5, "t": 10 },
@@ -4848,13 +4868,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "large bear trap",
-      "plant species y",
-      "bear trap",
-      "chain bola",
-      785
-    ],
+    "immobilizedBy": [384, 986, 383, 725, 785],
     "allowableFlyers": [
       "ta",
       "r",
@@ -4862,7 +4876,10 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": { "3": 2.04, "17": 2.12 },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.04 },
+      { "item": 17, "amount": 2.12 }
+    ],
     "baseStats": {
       "h": { "b": 150, "w": 30, "t": 6.19 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -4937,7 +4954,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", 785],
+    "immobilizedBy": [384, 785],
     "allowableFlyers": ["quetzal", "wyvern"],
     "baseStats": {
       "h": { "b": 650, "w": 130, "t": 5.4 },
@@ -4959,7 +4976,8 @@
     "disableMultiplier": false,
     "violentTame": true,
     "foodConsumptionBase": 0.002066,
-    "foodConsumptionMult": 150
+    "foodConsumptionMult": 150,
+    "gatherEfficiency": null
   },
   {
     "id": 69,
@@ -5047,7 +5065,8 @@
     "disableMultiplier": false,
     "violentTame": false,
     "foodConsumptionBase": 0.001929,
-    "foodConsumptionMult": 420
+    "foodConsumptionMult": 420,
+    "gatherEfficiency": null
   },
   {
     "id": 70,
@@ -5094,21 +5113,21 @@
     "canDestroy": ["thatch", "adobe", "wood", "stone"],
     "egg": "Giganotosaurus Egg",
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["large bear trap"],
+    "immobilizedBy": [384],
     "allowableFlyers": ["ta", "r"],
-    "gatherEfficiency": {
-      "11": 5,
-      "12": 4.66,
-      "13": 4.41,
-      "14": 3.69,
-      "15": 3.65,
-      "16": 3.43,
-      "58": 3.03,
-      "62": 3.72,
-      "68": 3.86,
-      "250": 4.02,
-      "256": 4.22
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 5 },
+      { "item": 12, "amount": 4.66 },
+      { "item": 13, "amount": 4.41 },
+      { "item": 14, "amount": 3.69 },
+      { "item": 15, "amount": 3.65 },
+      { "item": 16, "amount": 3.43 },
+      { "item": 58, "amount": 3.03 },
+      { "item": 62, "amount": 3.72 },
+      { "item": 68, "amount": 3.86 },
+      { "item": 250, "amount": 4.02 },
+      { "item": 256, "amount": 4.22 }
+    ],
     "baseStats": {
       "h": { "b": 80000, "w": 40, "t": 0.04 },
       "s": { "b": 400, "w": 0.2, "t": 1 },
@@ -5187,7 +5206,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", 785],
+    "immobilizedBy": [384, 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -5200,14 +5219,14 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": {
-      "3": 3.01,
-      "4": 4.15,
-      "5": 2.22,
-      "17": 3.35,
-      "63": 3.11,
-      "171": 3.04
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.01 },
+      { "item": 4, "amount": 4.15 },
+      { "item": 5, "amount": 2.22 },
+      { "item": 17, "amount": 3.35 },
+      { "item": 63, "amount": 3.11 },
+      { "item": 171, "amount": 3.04 }
+    ],
     "baseStats": {
       "h": { "b": 640, "w": 64, "t": 5.4 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -5267,7 +5286,7 @@
       "behemoth dinosaur gateway",
       "giant hatchframe"
     ],
-    "immobilizedBy": ["bola", 785, "bear trap", "plant species y"],
+    "immobilizedBy": [1040, 785, 383, 986],
     "allowableFlyers": ["ab"],
     "capabilities": [6, 8, 10, 19, 32, 39, 41, 43, 45, 50],
     "drops": [10, 12, 14, 211],
@@ -5277,7 +5296,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 73,
@@ -5323,7 +5343,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785, "bear trap", "plant species y"],
+    "immobilizedBy": [1040, 785, 383, 986],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -5362,7 +5382,8 @@
     "disableMultiplier": false,
     "violentTame": false,
     "foodConsumptionBase": 0.000868,
-    "foodConsumptionMult": 2880.184326
+    "foodConsumptionMult": 2880.184326,
+    "gatherEfficiency": null
   },
   {
     "id": 74,
@@ -5410,25 +5431,19 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "bear trap",
-      "large bear trap",
-      "chain bola",
-      "plant species y",
-      785
-    ],
+    "immobilizedBy": [383, 384, 725, 986, 785],
     "allowableFlyers": ["ta", "r"],
-    "gatherEfficiency": {
-      "11": 3.52,
-      "12": 3.45,
-      "13": 3.66,
-      "14": 3.39,
-      "15": 3.48,
-      "16": 3.42,
-      "58": 3.14,
-      "62": 3.06,
-      "68": 3.25
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.52 },
+      { "item": 12, "amount": 3.45 },
+      { "item": 13, "amount": 3.66 },
+      { "item": 14, "amount": 3.39 },
+      { "item": 15, "amount": 3.48 },
+      { "item": 16, "amount": 3.42 },
+      { "item": 58, "amount": 3.14 },
+      { "item": 62, "amount": 3.06 },
+      { "item": 68, "amount": 3.25 }
+    ],
     "baseStats": {
       "h": { "b": 950, "w": 142.5, "t": 4.32 },
       "s": { "b": 225, "w": 11.25, "t": 6 },
@@ -5472,7 +5487,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 76,
@@ -5526,7 +5542,8 @@
     "disableKO": false,
     "disableTame": false,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 77,
@@ -5573,7 +5590,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785, "bear trap", "plant species y"],
+    "immobilizedBy": [1040, 785, 383, 986],
     "allowableFlyers": [
       "pteranodon",
       "argentavis",
@@ -5589,16 +5606,16 @@
       "procoptodon",
       "desmodus"
     ],
-    "gatherEfficiency": {
-      "11": 3.5,
-      "12": 3.37,
-      "13": 3.49,
-      "14": 2.91,
-      "15": 3.15,
-      "16": 3,
-      "62": 3.12,
-      "68": 3.27
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.5 },
+      { "item": 12, "amount": 3.37 },
+      { "item": 13, "amount": 3.49 },
+      { "item": 14, "amount": 2.91 },
+      { "item": 15, "amount": 3.15 },
+      { "item": 16, "amount": 3 },
+      { "item": 62, "amount": 3.12 },
+      { "item": 68, "amount": 3.27 }
+    ],
     "baseStats": {
       "h": { "b": 175, "w": 35, "t": 5.4 },
       "s": { "b": 260, "w": 15, "t": 10 },
@@ -5664,7 +5681,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 79,
@@ -5705,9 +5723,14 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["plant species y", "bola", 785, "bear trap"],
+    "immobilizedBy": [986, 1040, 785, 383],
     "allowableFlyers": ["ta", "human"],
-    "gatherEfficiency": { "11": 2.82, "12": 3.13, "62": 3.85, "68": 3.88 },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 2.82 },
+      { "item": 12, "amount": 3.13 },
+      { "item": 62, "amount": 3.85 },
+      { "item": 68, "amount": 3.88 }
+    ],
     "baseStats": {
       "h": { "b": 50, "w": 10, "t": 5.4 },
       "s": { "b": 150, "w": 15, "t": 10 },
@@ -5797,7 +5820,12 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": { "11": 2.46, "12": 1.97, "62": 2.6, "68": 2.65 },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 2.46 },
+      { "item": 12, "amount": 1.97 },
+      { "item": 62, "amount": 2.6 },
+      { "item": 68, "amount": 2.65 }
+    ],
     "baseStats": {
       "h": { "b": 275, "w": 13.75, "t": 6.75 },
       "s": { "b": 300, "w": 60, "t": 20 },
@@ -5872,13 +5900,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "bola",
-      785,
-      "bear trap",
-      "large bear trap",
-      "plant species y"
-    ],
+    "immobilizedBy": [1040, 785, 383, 384, 986],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -5891,14 +5913,14 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": {
-      "3": 3.15,
-      "5": 2.43,
-      "17": 3.43,
-      "18": 3.25,
-      "19": 3.04,
-      "169": 3.93
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.15 },
+      { "item": 5, "amount": 2.43 },
+      { "item": 17, "amount": 3.43 },
+      { "item": 18, "amount": 3.25 },
+      { "item": 19, "amount": 3.04 },
+      { "item": 169, "amount": 3.93 }
+    ],
     "baseStats": {
       "h": { "b": 250, "w": 50, "t": 5.4 },
       "s": { "b": 200, "w": 20, "t": 10 },
@@ -5990,7 +6012,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["plant species y", "bola", 785],
+    "immobilizedBy": [986, 1040, 785],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -6036,7 +6058,8 @@
     "disableMultiplier": false,
     "violentTame": true,
     "foodConsumptionBase": 0.000868,
-    "foodConsumptionMult": 2880.184326
+    "foodConsumptionMult": 2880.184326,
+    "gatherEfficiency": null
   },
   {
     "id": 83,
@@ -6066,7 +6089,7 @@
     "experiencePerKill": 2,
     "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["double doorframe"],
-    "immobilizedBy": ["bola", 785, "bear trap", "plant species y"],
+    "immobilizedBy": [1040, 785, 383, 986],
     "allowableFlyers": ["k", "megalosaurus", "tusoteuthis"],
     "capabilities": [4, 5, 7, 9, 19, 24, 32, 37, 41, 43, 45, 47],
     "drops": [14, 211, 10],
@@ -6076,7 +6099,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 84,
@@ -6135,7 +6159,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785],
+    "immobilizedBy": [1040, 785],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -6184,7 +6208,8 @@
     "disableMultiplier": false,
     "violentTame": true,
     "foodConsumptionBase": 0.001389,
-    "foodConsumptionMult": 1079.913574
+    "foodConsumptionMult": 1079.913574,
+    "gatherEfficiency": null
   },
   {
     "id": 85,
@@ -6233,18 +6258,18 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "bear trap", "large bear trap", 785],
+    "immobilizedBy": [725, 383, 384, 785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
-    "gatherEfficiency": {
-      "11": 3.16,
-      "12": 2.82,
-      "13": 2.98,
-      "14": 2.82,
-      "15": 2.74,
-      "16": 2.63,
-      "58": 2.51,
-      "68": 3.39
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.16 },
+      { "item": 12, "amount": 2.82 },
+      { "item": 13, "amount": 2.98 },
+      { "item": 14, "amount": 2.82 },
+      { "item": 15, "amount": 2.74 },
+      { "item": 16, "amount": 2.63 },
+      { "item": 58, "amount": 2.51 },
+      { "item": 68, "amount": 3.39 }
+    ],
     "baseStats": {
       "h": { "b": 200, "w": 40, "t": null },
       "s": { "b": 350, "w": 35, "t": null },
@@ -6306,18 +6331,18 @@
     "tamingBonusAttribute": 0.56,
     "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["large bear trap", "chain bola", 785],
+    "immobilizedBy": [384, 725, 785],
     "allowableFlyers": ["ab"],
-    "gatherEfficiency": {
-      "11": 3.39,
-      "12": 3.27,
-      "13": 3.55,
-      "14": 3.17,
-      "15": 3.39,
-      "16": 2.71,
-      "62": 3.44,
-      "68": 3.52
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.39 },
+      { "item": 12, "amount": 3.27 },
+      { "item": 13, "amount": 3.55 },
+      { "item": 14, "amount": 3.17 },
+      { "item": 15, "amount": 3.39 },
+      { "item": 16, "amount": 2.71 },
+      { "item": 62, "amount": 3.44 },
+      { "item": 68, "amount": 3.52 }
+    ],
     "baseStats": {
       "h": { "b": 1200, "w": 240, "t": 5.4 },
       "s": { "b": 600, "w": 60, "t": 10 },
@@ -6391,9 +6416,12 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", 785],
+    "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "karkinos", "tusoteuthis"],
-    "gatherEfficiency": { "3": 3.13, "17": 3.65 },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.13 },
+      { "item": 17, "amount": 3.65 }
+    ],
     "baseStats": {
       "h": { "b": 650, "w": 130, "t": 2 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -6442,7 +6470,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 89,
@@ -6480,7 +6509,8 @@
     "disableKO": false,
     "disableTame": false,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 90,
@@ -6531,7 +6561,8 @@
     "disableKO": false,
     "disableTame": false,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 91,
@@ -6551,7 +6582,11 @@
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": [],
     "allowableFlyers": [],
-    "gatherEfficiency": { "12": 3.42, "62": 3.68, "68": 3.51 },
+    "gatherEfficiency": [
+      { "item": 12, "amount": 3.42 },
+      { "item": 62, "amount": 3.68 },
+      { "item": 68, "amount": 3.51 }
+    ],
     "baseStats": {
       "h": { "b": 4400, "w": 528, "t": null },
       "s": { "b": 500, "w": 50, "t": null },
@@ -6603,15 +6638,15 @@
     "fitsThrough": [],
     "immobilizedBy": [],
     "allowableFlyers": ["ta", "r"],
-    "gatherEfficiency": {
-      "11": 3.21,
-      "12": 2.95,
-      "13": 3.37,
-      "14": 3.06,
-      "15": 3.26,
-      "62": 3.01,
-      "68": 3.45
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.21 },
+      { "item": 12, "amount": 2.95 },
+      { "item": 13, "amount": 3.37 },
+      { "item": 14, "amount": 3.06 },
+      { "item": 15, "amount": 3.26 },
+      { "item": 62, "amount": 3.01 },
+      { "item": 68, "amount": 3.45 }
+    ],
     "baseStats": {
       "h": { "b": 600, "w": 120, "t": 5.4 },
       "s": { "b": 320, "w": 32, "t": 10 },
@@ -6675,7 +6710,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785, "lasso"],
+    "immobilizedBy": [1040, 785, 733],
     "allowableFlyers": ["ta", "r", "megalosaurus", "karkinos"],
     "baseStats": {
       "h": { "b": 260, "w": 52, "t": null },
@@ -6706,7 +6741,8 @@
     "disableMultiplier": false,
     "violentTame": true,
     "foodConsumptionBase": 0.001852,
-    "foodConsumptionMult": 199.983994
+    "foodConsumptionMult": 199.983994,
+    "gatherEfficiency": null
   },
   {
     "id": 94,
@@ -6757,7 +6793,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785],
+    "immobilizedBy": [1040, 785],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -6804,7 +6840,8 @@
     "disableMultiplier": false,
     "violentTame": false,
     "foodConsumptionBase": 0.001929,
-    "foodConsumptionMult": 440
+    "foodConsumptionMult": 440,
+    "gatherEfficiency": null
   },
   {
     "id": 95,
@@ -6840,9 +6877,12 @@
     "canDestroy": ["thatch"],
     "canBeCarriedBy": ["wyvern", "quetzal"],
     "fitsThrough": ["behemoth dinosaur gateway", "dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap", 785],
+    "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["wyvern", "quetzal"],
-    "gatherEfficiency": { "4": 3.9, "17": 3.9 },
+    "gatherEfficiency": [
+      { "item": 4, "amount": 3.9 },
+      { "item": 17, "amount": 3.9 }
+    ],
     "baseStats": {
       "h": { "b": 700, "w": 59.5, "t": 4.05 },
       "s": { "b": 450, "w": 22.5, "t": 5 },
@@ -6886,33 +6926,33 @@
     "experiencePerKill": 120,
     "canDestroy": ["thatch", "wood", "adobe", "stone", "metal", "tek"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap"],
+    "immobilizedBy": [725, 384],
     "allowableFlyers": [],
-    "gatherEfficiency": {
-      "3": 3.31,
-      "5": 3.57,
-      "6": 4.13,
-      "8": 4.42,
-      "9": 4.4,
-      "10": 3.92,
-      "11": 3.74,
-      "12": 3.49,
-      "13": 3.55,
-      "14": 3.66,
-      "15": 3.62,
-      "16": 3.6,
-      "57": 3.98,
-      "58": 3.68,
-      "62": 3.62,
-      "68": 3.61,
-      "69": 3.62,
-      "71": 3.96,
-      "170": 3.63,
-      "184": 3.66,
-      "270": 3.93,
-      "309": 3.33,
-      "325": 3.97
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.31 },
+      { "item": 5, "amount": 3.57 },
+      { "item": 6, "amount": 4.13 },
+      { "item": 8, "amount": 4.42 },
+      { "item": 9, "amount": 4.4 },
+      { "item": 10, "amount": 3.92 },
+      { "item": 11, "amount": 3.74 },
+      { "item": 12, "amount": 3.49 },
+      { "item": 13, "amount": 3.55 },
+      { "item": 14, "amount": 3.66 },
+      { "item": 15, "amount": 3.62 },
+      { "item": 16, "amount": 3.6 },
+      { "item": 57, "amount": 3.98 },
+      { "item": 58, "amount": 3.68 },
+      { "item": 62, "amount": 3.62 },
+      { "item": 68, "amount": 3.61 },
+      { "item": 69, "amount": 3.62 },
+      { "item": 71, "amount": 3.96 },
+      { "item": 170, "amount": 3.63 },
+      { "item": 184, "amount": 3.66 },
+      { "item": 270, "amount": 3.93 },
+      { "item": 309, "amount": 3.33 },
+      { "item": 325, "amount": 3.97 }
+    ],
     "baseStats": {
       "h": { "b": 3000, "w": 150, "t": 2.7 },
       "s": { "b": 500, "w": 25, "t": 5 },
@@ -6984,15 +7024,15 @@
     "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap", 785],
+    "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["quetzal", "ta", "r", "tusoteuthis"],
-    "gatherEfficiency": {
-      "3": 4.19,
-      "5": 4.1,
-      "17": 3.82,
-      "18": 3.51,
-      "19": 3.26
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 4.19 },
+      { "item": 5, "amount": 4.1 },
+      { "item": 17, "amount": 3.82 },
+      { "item": 18, "amount": 3.51 },
+      { "item": 19, "amount": 3.26 }
+    ],
     "baseStats": {
       "h": { "b": 850, "w": 170, "t": 5.4 },
       "s": { "b": 330, "w": 33, "t": 10 },
@@ -7062,18 +7102,18 @@
     "tamingBonusAttribute": 1.875,
     "canDestroy": ["thatch", "wood", "adobe", "stone"],
     "fitsThrough": ["behemoth dinosaur gateway", "giant hatchframe"],
-    "immobilizedBy": ["chain bola", "large bear trap", "plant species y", 785],
+    "immobilizedBy": [725, 384, 986, 785],
     "allowableFlyers": [],
-    "gatherEfficiency": {
-      "11": 4,
-      "12": 3.65,
-      "13": 3.86,
-      "15": 3.55,
-      "16": 3.72,
-      "19": 3.63,
-      "62": 3.38,
-      "68": 3.68
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 4 },
+      { "item": 12, "amount": 3.65 },
+      { "item": 13, "amount": 3.86 },
+      { "item": 15, "amount": 3.55 },
+      { "item": 16, "amount": 3.72 },
+      { "item": 19, "amount": 3.63 },
+      { "item": 62, "amount": 3.38 },
+      { "item": 68, "amount": 3.68 }
+    ],
     "baseStats": {
       "h": { "b": 825, "w": 165, "t": 5.4 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -7140,7 +7180,12 @@
       "karkinos",
       "tusoteuthis"
     ],
-    "gatherEfficiency": { "11": 2.57, "12": 2.32, "62": 3.44, "68": 3.15 },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 2.57 },
+      { "item": 12, "amount": 2.32 },
+      { "item": 62, "amount": 3.44 },
+      { "item": 68, "amount": 3.15 }
+    ],
     "baseStats": {
       "h": { "b": 320, "w": 16, "t": 1.35 },
       "s": { "b": 270, "w": 54, "t": 20 },
@@ -7201,7 +7246,8 @@
     "disableKO": false,
     "disableTame": false,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 101,
@@ -7240,7 +7286,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["plant species y", "bear trap", 785],
+    "immobilizedBy": [986, 383, 785],
     "allowableFlyers": [
       "quetzal",
       "crystalwyvern",
@@ -7250,33 +7296,33 @@
       "tusoteuthis",
       "karkinos"
     ],
-    "gatherEfficiency": {
-      "3": 3.87,
-      "4": 3.73,
-      "5": 4.04,
-      "6": 3.98,
-      "7": 4.03,
-      "8": 4.05,
-      "9": 4.08,
-      "10": 3.88,
-      "11": 3.87,
-      "12": 3.78,
-      "13": 3.93,
-      "14": 3.97,
-      "15": 3.95,
-      "16": 3.74,
-      "57": 4.09,
-      "58": 3.65,
-      "62": 3.63,
-      "68": 3.56,
-      "71": 4.04,
-      "170": 4.33,
-      "172": 4.12,
-      "248": 3.9,
-      "249": 3.73,
-      "309": 2.99,
-      "325": 5
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.87 },
+      { "item": 4, "amount": 3.73 },
+      { "item": 5, "amount": 4.04 },
+      { "item": 6, "amount": 3.98 },
+      { "item": 7, "amount": 4.03 },
+      { "item": 8, "amount": 4.05 },
+      { "item": 9, "amount": 4.08 },
+      { "item": 10, "amount": 3.88 },
+      { "item": 11, "amount": 3.87 },
+      { "item": 12, "amount": 3.78 },
+      { "item": 13, "amount": 3.93 },
+      { "item": 14, "amount": 3.97 },
+      { "item": 15, "amount": 3.95 },
+      { "item": 16, "amount": 3.74 },
+      { "item": 57, "amount": 4.09 },
+      { "item": 58, "amount": 3.65 },
+      { "item": 62, "amount": 3.63 },
+      { "item": 68, "amount": 3.56 },
+      { "item": 71, "amount": 4.04 },
+      { "item": 170, "amount": 4.33 },
+      { "item": 172, "amount": 4.12 },
+      { "item": 248, "amount": 3.9 },
+      { "item": 249, "amount": 3.73 },
+      { "item": 309, "amount": 2.99 },
+      { "item": 325, "amount": 5 }
+    ],
     "baseStats": {
       "h": { "b": 275, "w": 55, "t": 2.8 },
       "s": { "b": 150, "w": 15, "t": 10 },
@@ -7322,18 +7368,18 @@
     "hitboxes": { "Shell": 0.5 },
     "canDestroy": [],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["large bear trap"],
+    "immobilizedBy": [384],
     "allowableFlyers": [],
-    "gatherEfficiency": {
-      "3": 3.6,
-      "4": 3.96,
-      "5": 2.91,
-      "17": 3.81,
-      "18": 4.86,
-      "19": 4.81,
-      "62": 4.02,
-      "68": 3.03
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.6 },
+      { "item": 4, "amount": 3.96 },
+      { "item": 5, "amount": 2.91 },
+      { "item": 17, "amount": 3.81 },
+      { "item": 18, "amount": 4.86 },
+      { "item": 19, "amount": 4.81 },
+      { "item": 62, "amount": 4.02 },
+      { "item": 68, "amount": 3.03 }
+    ],
     "baseStats": {
       "h": { "b": 1920, "w": 384, "t": 4.59 },
       "s": { "b": 100, "w": 10, "t": 10 },
@@ -7407,7 +7453,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785, "bear trap", "plant species y"],
+    "immobilizedBy": [1040, 785, 383, 986],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -7446,7 +7492,8 @@
     "disableMultiplier": false,
     "violentTame": true,
     "foodConsumptionBase": 0.001736,
-    "foodConsumptionMult": 199.983994
+    "foodConsumptionMult": 199.983994,
+    "gatherEfficiency": null
   },
   {
     "id": 104,
@@ -7490,7 +7537,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", 785, "bear trap", "large bear trap"],
+    "immobilizedBy": [733, 1040, 785, 383, 384],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -7502,7 +7549,10 @@
       "karkinos",
       "tusoteuthis"
     ],
-    "gatherEfficiency": { "3": 4.03, "5": 2.12 },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 4.03 },
+      { "item": 5, "amount": 2.12 }
+    ],
     "baseStats": {
       "h": { "b": 300, "w": 60, "t": 5.4 },
       "s": { "b": 280, "w": 28, "t": 10 },
@@ -7577,14 +7627,14 @@
     "fitsThrough": ["behemoth dinosaur gateway", "giant hatchframe"],
     "immobilizedBy": [785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
-    "gatherEfficiency": {
-      "11": 3.53,
-      "12": 3.29,
-      "13": 2.65,
-      "62": 3.43,
-      "68": 3.79,
-      "69": 3.64
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.53 },
+      { "item": 12, "amount": 3.29 },
+      { "item": 13, "amount": 2.65 },
+      { "item": 62, "amount": 3.43 },
+      { "item": 68, "amount": 3.79 },
+      { "item": 69, "amount": 3.64 }
+    ],
     "baseStats": {
       "h": { "b": 600, "w": 120, "t": 5.4 },
       "s": { "b": 320, "w": 32, "t": 10 },
@@ -7661,20 +7711,20 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", "plant species y", 785],
+    "immobilizedBy": [725, 384, 986, 785],
     "allowableFlyers": ["ta", "r", "tusoteuthis", "procoptodon"],
-    "gatherEfficiency": {
-      "3": 2.76,
-      "11": 3.75,
-      "12": 3.64,
-      "13": 3.61,
-      "14": 3.36,
-      "15": 3.55,
-      "16": 3.3,
-      "58": 2.71,
-      "62": 3.11,
-      "68": 3.45
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.76 },
+      { "item": 11, "amount": 3.75 },
+      { "item": 12, "amount": 3.64 },
+      { "item": 13, "amount": 3.61 },
+      { "item": 14, "amount": 3.36 },
+      { "item": 15, "amount": 3.55 },
+      { "item": 16, "amount": 3.3 },
+      { "item": 58, "amount": 2.71 },
+      { "item": 62, "amount": 3.11 },
+      { "item": 68, "amount": 3.45 }
+    ],
     "baseStats": {
       "h": { "b": 1025, "w": 205, "t": 5.4 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -7741,7 +7791,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 108,
@@ -7770,7 +7821,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 109,
@@ -7799,7 +7851,8 @@
     "disableKO": false,
     "disableTame": false,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 110,
@@ -7851,20 +7904,20 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", 785],
+    "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "r", "tusoteuthis"],
-    "gatherEfficiency": {
-      "3": 3.85,
-      "4": 3.57,
-      "5": 2.51,
-      "11": 2.93,
-      "12": 2.86,
-      "13": 3.35,
-      "14": 4.74,
-      "15": 3.39,
-      "17": 3.99,
-      "248": 4.2
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.85 },
+      { "item": 4, "amount": 3.57 },
+      { "item": 5, "amount": 2.51 },
+      { "item": 11, "amount": 2.93 },
+      { "item": 12, "amount": 2.86 },
+      { "item": 13, "amount": 3.35 },
+      { "item": 14, "amount": 4.74 },
+      { "item": 15, "amount": 3.39 },
+      { "item": 17, "amount": 3.99 },
+      { "item": 248, "amount": 4.2 }
+    ],
     "baseStats": {
       "h": { "b": 740, "w": 148, "t": 5.4 },
       "s": { "b": 400, "w": 40, "t": 10 },
@@ -7923,7 +7976,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 112,
@@ -7971,7 +8025,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785],
+    "immobilizedBy": [1040, 785],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -7987,7 +8041,7 @@
       "procoptodon",
       "desmodus"
     ],
-    "gatherEfficiency": { "17": 2.64 },
+    "gatherEfficiency": [{ "item": 17, "amount": 2.64 }],
     "baseStats": {
       "h": { "b": 115, "w": 23, "t": 5.4 },
       "s": { "b": 100, "w": 10, "t": 10 },
@@ -8063,7 +8117,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785],
+    "immobilizedBy": [1040, 785],
     "allowableFlyers": ["ta", "human", "g", "procoptodon"],
     "baseStats": {
       "h": { "b": 130, "w": 26, "t": 5.4 },
@@ -8098,7 +8152,8 @@
     "disableMultiplier": false,
     "violentTame": true,
     "foodConsumptionBase": 0.000868,
-    "foodConsumptionMult": 1728.110596
+    "foodConsumptionMult": 1728.110596,
+    "gatherEfficiency": null
   },
   {
     "id": 114,
@@ -8117,7 +8172,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 115,
@@ -8154,16 +8210,16 @@
     "canBeCarriedBy": ["quetzal", "wyvern"],
     "egg": "Morellatops Egg",
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap", 785],
+    "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "r", "tusoteuthis"],
-    "gatherEfficiency": {
-      "3": 2.7,
-      "5": 2.26,
-      "17": 3.93,
-      "18": 2.51,
-      "19": 2.45,
-      "171": 3.91
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.7 },
+      { "item": 5, "amount": 2.26 },
+      { "item": 17, "amount": 3.93 },
+      { "item": 18, "amount": 2.51 },
+      { "item": 19, "amount": 2.45 },
+      { "item": 171, "amount": 3.91 }
+    ],
     "baseStats": {
       "h": { "b": 400, "w": 80, "t": null },
       "s": { "b": 220, "w": 22, "t": null },
@@ -8237,14 +8293,14 @@
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": [],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
-    "gatherEfficiency": {
-      "11": 4.06,
-      "12": 4,
-      "13": 3.57,
-      "62": 4.38,
-      "68": 4.21,
-      "69": 4.43
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 4.06 },
+      { "item": 12, "amount": 4 },
+      { "item": 13, "amount": 3.57 },
+      { "item": 62, "amount": 4.38 },
+      { "item": 68, "amount": 4.21 },
+      { "item": 69, "amount": 4.43 }
+    ],
     "baseStats": {
       "h": { "b": 3600, "w": 432, "t": 5.6 },
       "s": { "b": 400, "w": 40, "t": 10 },
@@ -8304,7 +8360,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785],
+    "immobilizedBy": [1040, 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -8317,25 +8373,25 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": {
-      "3": 3.02,
-      "4": 4.29,
-      "5": 2.77,
-      "11": 3.24,
-      "12": 3.65,
-      "13": 3.24,
-      "14": 3.29,
-      "15": 3.06,
-      "16": 2.84,
-      "17": 3.61,
-      "18": 3.66,
-      "19": 3.8,
-      "58": 3.78,
-      "62": 3.48,
-      "68": 3.33,
-      "171": 3,
-      "250": 3.72
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.02 },
+      { "item": 4, "amount": 4.29 },
+      { "item": 5, "amount": 2.77 },
+      { "item": 11, "amount": 3.24 },
+      { "item": 12, "amount": 3.65 },
+      { "item": 13, "amount": 3.24 },
+      { "item": 14, "amount": 3.29 },
+      { "item": 15, "amount": 3.06 },
+      { "item": 16, "amount": 2.84 },
+      { "item": 17, "amount": 3.61 },
+      { "item": 18, "amount": 3.66 },
+      { "item": 19, "amount": 3.8 },
+      { "item": 58, "amount": 3.78 },
+      { "item": 62, "amount": 3.48 },
+      { "item": 68, "amount": 3.33 },
+      { "item": 171, "amount": 3 },
+      { "item": 250, "amount": 3.72 }
+    ],
     "baseStats": {
       "h": { "b": 375, "w": 75, "t": 5.4 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -8404,7 +8460,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 119,
@@ -8433,7 +8490,7 @@
       "large trapdoor",
       "giant hatchframe"
     ],
-    "immobilizedBy": ["bola", 785, "bear trap", "plant species y"],
+    "immobilizedBy": [1040, 785, 383, 986],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -8469,7 +8526,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 120,
@@ -8544,7 +8602,8 @@
     "disableMultiplier": false,
     "violentTame": false,
     "foodConsumptionBase": 0.002893,
-    "foodConsumptionMult": 192.034409
+    "foodConsumptionMult": 192.034409,
+    "gatherEfficiency": null
   },
   {
     "id": 121,
@@ -8614,7 +8673,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785, "bear trap", "plant species y"],
+    "immobilizedBy": [1040, 785, 383, 986],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -8633,7 +8692,12 @@
       "k",
       "desmodus"
     ],
-    "gatherEfficiency": { "62": 3.33, "68": 3.64, "177": 3.41, "210": 3.86 },
+    "gatherEfficiency": [
+      { "item": 62, "amount": 3.33 },
+      { "item": 68, "amount": 3.64 },
+      { "item": 177, "amount": 3.41 },
+      { "item": 210, "amount": 3.86 }
+    ],
     "baseStats": {
       "h": { "b": 40, "w": 8, "t": 5.4 },
       "s": { "b": 180, "w": 18, "t": 10 },
@@ -8694,7 +8758,8 @@
     "disableKO": false,
     "disableTame": false,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 123,
@@ -8743,7 +8808,7 @@
       "doorframe",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", 785],
+    "immobilizedBy": [733, 1040, 785],
     "allowableFlyers": [
       "pteranodon",
       "argentavis",
@@ -8788,7 +8853,8 @@
     "disableMultiplier": false,
     "violentTame": true,
     "foodConsumptionBase": 0.001302,
-    "foodConsumptionMult": 768.049133
+    "foodConsumptionMult": 768.049133,
+    "gatherEfficiency": null
   },
   {
     "id": 124,
@@ -8834,7 +8900,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", 785],
+    "immobilizedBy": [733, 1040, 785],
     "allowableFlyers": [
       "griffin",
       "argentavis",
@@ -8877,7 +8943,8 @@
     "disableMultiplier": false,
     "violentTame": false,
     "foodConsumptionBase": 99,
-    "foodConsumptionMult": 864.005554
+    "foodConsumptionMult": 864.005554,
+    "gatherEfficiency": null
   },
   {
     "id": 125,
@@ -8923,7 +8990,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", 785, "bear trap"],
+    "immobilizedBy": [733, 1040, 785, 383],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -8937,7 +9004,10 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": { "3": 2.6, "5": 2.15 },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.6 },
+      { "item": 5, "amount": 2.15 }
+    ],
     "baseStats": {
       "h": { "b": 175, "w": 35, "t": 5.4 },
       "s": { "b": 150, "w": 15, "t": 10 },
@@ -9012,7 +9082,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", 785],
+    "immobilizedBy": [725, 384, 785],
     "allowableFlyers": [
       "quetzal",
       "crystalwyvern",
@@ -9022,15 +9092,15 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": {
-      "3": 2.84,
-      "5": 2.82,
-      "17": 3.35,
-      "18": 3.12,
-      "19": 3.06,
-      "63": 3,
-      "171": 2.66
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.84 },
+      { "item": 5, "amount": 2.82 },
+      { "item": 17, "amount": 3.35 },
+      { "item": 18, "amount": 3.12 },
+      { "item": 19, "amount": 3.06 },
+      { "item": 63, "amount": 3 },
+      { "item": 171, "amount": 2.66 }
+    ],
     "baseStats": {
       "h": { "b": 375, "w": 75, "t": 5.4 },
       "s": { "b": 150, "w": 15, "t": 10 },
@@ -9095,15 +9165,15 @@
     "tamingBonusAttribute": 0.0925,
     "canDestroy": ["thatch", "adobe", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap"],
+    "immobilizedBy": [725, 384],
     "allowableFlyers": ["ta", "r", "tusoteuthis", "procoptodon"],
-    "gatherEfficiency": {
-      "3": 2.94,
-      "5": 2.28,
-      "17": 3.37,
-      "18": 2.45,
-      "19": 2.31
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.94 },
+      { "item": 5, "amount": 2.28 },
+      { "item": 17, "amount": 3.37 },
+      { "item": 18, "amount": 2.45 },
+      { "item": 19, "amount": 2.31 }
+    ],
     "baseStats": {
       "h": { "b": 1026, "w": 205.2, "t": 3.4425 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -9162,7 +9232,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 129,
@@ -9207,7 +9278,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785, "plant species y", "large bear trap"],
+    "immobilizedBy": [1040, 785, 986, 384],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -9220,7 +9291,11 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": { "3": 2.27, "5": 1.69, "17": 3.6 },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.27 },
+      { "item": 5, "amount": 1.69 },
+      { "item": 17, "amount": 3.6 }
+    ],
     "baseStats": {
       "h": { "b": 200, "w": 40, "t": 5.4 },
       "s": { "b": 450, "w": 45, "t": 10 },
@@ -9299,7 +9374,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", 785, "bear trap", "plant species y"],
+    "immobilizedBy": [733, 1040, 785, 383, 986],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -9346,7 +9421,8 @@
     "disableMultiplier": false,
     "violentTame": false,
     "foodConsumptionBase": 0.000868,
-    "foodConsumptionMult": 2880.184326
+    "foodConsumptionMult": 2880.184326,
+    "gatherEfficiency": null
   },
   {
     "id": 131,
@@ -9390,19 +9466,19 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", 785],
+    "immobilizedBy": [733, 1040, 785],
     "allowableFlyers": ["ta", "r", "megalosaurus", "karkinos"],
-    "gatherEfficiency": {
-      "11": 2.62,
-      "12": 2.4,
-      "13": 2.47,
-      "14": 2.21,
-      "15": 2.27,
-      "16": 2.09,
-      "58": 3.9,
-      "62": 3.58,
-      "68": 3.86
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 2.62 },
+      { "item": 12, "amount": 2.4 },
+      { "item": 13, "amount": 2.47 },
+      { "item": 14, "amount": 2.21 },
+      { "item": 15, "amount": 2.27 },
+      { "item": 16, "amount": 2.09 },
+      { "item": 58, "amount": 3.9 },
+      { "item": 62, "amount": 3.58 },
+      { "item": 68, "amount": 3.86 }
+    ],
     "baseStats": {
       "h": { "b": 240, "w": 48, "t": 5.4 },
       "s": { "b": 180, "w": 9, "t": 4 },
@@ -9479,7 +9555,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", 785, "bear trap", "large bear trap"],
+    "immobilizedBy": [733, 1040, 785, 383, 384],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -9492,7 +9568,10 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": { "3": 2.1, "5": 2.28 },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.1 },
+      { "item": 5, "amount": 2.28 }
+    ],
     "baseStats": {
       "h": { "b": 300, "w": 60, "t": 5.4 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -9562,30 +9641,30 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bear trap", 785],
+    "immobilizedBy": [383, 785],
     "allowableFlyers": [],
-    "gatherEfficiency": {
-      "3": 3.27,
-      "5": 3.25,
-      "6": 3.4,
-      "8": 3.68,
-      "9": 3.51,
-      "11": 3.7,
-      "12": 3.73,
-      "13": 3.72,
-      "14": 3.66,
-      "15": 3.57,
-      "16": 3.6,
-      "57": 3.67,
-      "62": 3.51,
-      "68": 3.54,
-      "71": 3.81,
-      "170": 3.46,
-      "171": 3.54,
-      "172": 3.29,
-      "177": 3.6,
-      "210": 3.79
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.27 },
+      { "item": 5, "amount": 3.25 },
+      { "item": 6, "amount": 3.4 },
+      { "item": 8, "amount": 3.68 },
+      { "item": 9, "amount": 3.51 },
+      { "item": 11, "amount": 3.7 },
+      { "item": 12, "amount": 3.73 },
+      { "item": 13, "amount": 3.72 },
+      { "item": 14, "amount": 3.66 },
+      { "item": 15, "amount": 3.57 },
+      { "item": 16, "amount": 3.6 },
+      { "item": 57, "amount": 3.67 },
+      { "item": 62, "amount": 3.51 },
+      { "item": 68, "amount": 3.54 },
+      { "item": 71, "amount": 3.81 },
+      { "item": 170, "amount": 3.46 },
+      { "item": 171, "amount": 3.54 },
+      { "item": 172, "amount": 3.29 },
+      { "item": 177, "amount": 3.6 },
+      { "item": 210, "amount": 3.79 }
+    ],
     "baseStats": {
       "h": { "b": 640, "w": 128, "t": 5.4 },
       "s": { "b": 352, "w": 35.2, "t": 10 },
@@ -9645,7 +9724,8 @@
     "disableKO": false,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 135,
@@ -9695,15 +9775,15 @@
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": [785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
-    "gatherEfficiency": {
-      "11": 3.77,
-      "12": 3.53,
-      "13": 3.25,
-      "14": 2.8,
-      "15": 2.54,
-      "62": 3.73,
-      "68": 3.7
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.77 },
+      { "item": 12, "amount": 3.53 },
+      { "item": 13, "amount": 3.25 },
+      { "item": 14, "amount": 2.8 },
+      { "item": 15, "amount": 2.54 },
+      { "item": 62, "amount": 3.73 },
+      { "item": 68, "amount": 3.7 }
+    ],
     "baseStats": {
       "h": { "b": 2400, "w": 288, "t": 3.2 },
       "s": { "b": 800, "w": 80, "t": 10 },
@@ -9763,9 +9843,14 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", 785],
+    "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["ta", "r", "tusoteuthis", "procoptodon"],
-    "gatherEfficiency": { "3": 2.8, "5": 2.08, "17": 2.58, "18": 2.58 },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.8 },
+      { "item": 5, "amount": 2.08 },
+      { "item": 17, "amount": 2.58 },
+      { "item": 18, "amount": 2.58 }
+    ],
     "baseStats": {
       "h": { "b": 400, "w": 80, "t": 5.4 },
       "s": { "b": 350, "w": 35, "t": 10 },
@@ -9844,26 +9929,19 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "lasso",
-      "bola",
-      785,
-      "bear trap",
-      "large bear trap",
-      "plant species y"
-    ],
+    "immobilizedBy": [733, 1040, 785, 383, 384, 986],
     "allowableFlyers": ["ta", "r", "megalosaurus", "karkinos", "procoptodon"],
-    "gatherEfficiency": {
-      "11": 3.22,
-      "12": 2.79,
-      "13": 2.83,
-      "14": 2.42,
-      "15": 2.35,
-      "16": 2.2,
-      "58": 2.44,
-      "62": 2.28,
-      "68": 2.46
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.22 },
+      { "item": 12, "amount": 2.79 },
+      { "item": 13, "amount": 2.83 },
+      { "item": 14, "amount": 2.42 },
+      { "item": 15, "amount": 2.35 },
+      { "item": 16, "amount": 2.2 },
+      { "item": 58, "amount": 2.44 },
+      { "item": 62, "amount": 2.28 },
+      { "item": 68, "amount": 2.46 }
+    ],
     "baseStats": {
       "h": { "b": 210, "w": 42, "t": 3 },
       "s": { "b": 150, "w": 7.5, "t": 4 },
@@ -9928,7 +10006,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", 785, "bear trap", "large bear trap"],
+    "immobilizedBy": [733, 1040, 785, 383, 384],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -9940,18 +10018,18 @@
       "karkinos",
       "tusoteuthis"
     ],
-    "gatherEfficiency": {
-      "11": 2.81,
-      "12": 2.29,
-      "13": 2.29,
-      "14": 2.27,
-      "15": 2.21,
-      "16": 2.05,
-      "58": 2.27,
-      "62": 2.64,
-      "68": 2.92,
-      "250": 3.4
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 2.81 },
+      { "item": 12, "amount": 2.29 },
+      { "item": 13, "amount": 2.29 },
+      { "item": 14, "amount": 2.27 },
+      { "item": 15, "amount": 2.21 },
+      { "item": 16, "amount": 2.05 },
+      { "item": 58, "amount": 2.27 },
+      { "item": 62, "amount": 2.64 },
+      { "item": 68, "amount": 2.92 },
+      { "item": 250, "amount": 3.4 }
+    ],
     "baseStats": {
       "h": { "b": 280, "w": 60.0012, "t": 5.4 },
       "s": { "b": 200, "w": 20, "t": 10 },
@@ -10024,9 +10102,14 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", 785],
+    "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "tusoteuthis"],
-    "gatherEfficiency": { "11": 3.44, "12": 2.82, "13": 3.26, "68": 3.19 },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.44 },
+      { "item": 12, "amount": 2.82 },
+      { "item": 13, "amount": 3.26 },
+      { "item": 68, "amount": 3.19 }
+    ],
     "baseStats": {
       "h": { "b": 275, "w": 55, "t": 5.4 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -10098,19 +10181,19 @@
     "canDestroy": ["thatch", "wood"],
     "egg": "Quetzal Egg",
     "fitsThrough": ["giant hatchframe", "behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap", 785],
+    "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["ta", "r"],
-    "gatherEfficiency": {
-      "11": 3.2,
-      "12": 2.92,
-      "13": 2.86,
-      "14": 2.7,
-      "15": 2.61,
-      "16": 2.49,
-      "58": 2.51,
-      "62": 2.8,
-      "68": 2.85
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.2 },
+      { "item": 12, "amount": 2.92 },
+      { "item": 13, "amount": 2.86 },
+      { "item": 14, "amount": 2.7 },
+      { "item": 15, "amount": 2.61 },
+      { "item": 16, "amount": 2.49 },
+      { "item": 58, "amount": 2.51 },
+      { "item": 62, "amount": 2.8 },
+      { "item": 68, "amount": 2.85 }
+    ],
     "baseStats": {
       "h": { "b": 1200, "w": 240, "t": 2.16 },
       "s": { "b": 800, "w": 40, "t": 5 },
@@ -10193,14 +10276,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "lasso",
-      "bola",
-      785,
-      "plant species y",
-      "bear trap",
-      "large bear trap"
-    ],
+    "immobilizedBy": [733, 1040, 785, 986, 383, 384],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -10213,16 +10289,16 @@
       "karkinos",
       "tusoteuthis"
     ],
-    "gatherEfficiency": {
-      "11": 3.33,
-      "12": 2.76,
-      "13": 2.93,
-      "14": 2.62,
-      "15": 2.52,
-      "16": 2.3,
-      "62": 2.73,
-      "68": 2.91
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.33 },
+      { "item": 12, "amount": 2.76 },
+      { "item": 13, "amount": 2.93 },
+      { "item": 14, "amount": 2.62 },
+      { "item": 15, "amount": 2.52 },
+      { "item": 16, "amount": 2.3 },
+      { "item": 62, "amount": 2.73 },
+      { "item": 68, "amount": 2.91 }
+    ],
     "baseStats": {
       "h": { "b": 200, "w": 40, "t": 5.4 },
       "s": { "b": 150, "w": 15, "t": 10 },
@@ -10295,13 +10371,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "bola",
-      785,
-      "bear trap",
-      "large bear trap",
-      "plant species y"
-    ],
+    "immobilizedBy": [1040, 785, 383, 384, 986],
     "allowableFlyers": [
       "crystalwyvern",
       "quetzal",
@@ -10309,17 +10379,17 @@
       "megalosaurus",
       "karkinos"
     ],
-    "gatherEfficiency": {
-      "11": 3.55,
-      "12": 3.03,
-      "13": 3.59,
-      "14": 3.28,
-      "15": 3.13,
-      "16": 3.31,
-      "58": 2.54,
-      "62": 2.73,
-      "68": 3.19
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.55 },
+      { "item": 12, "amount": 3.03 },
+      { "item": 13, "amount": 3.59 },
+      { "item": 14, "amount": 3.28 },
+      { "item": 15, "amount": 3.13 },
+      { "item": 16, "amount": 3.31 },
+      { "item": 58, "amount": 2.54 },
+      { "item": 62, "amount": 2.73 },
+      { "item": 68, "amount": 3.19 }
+    ],
     "baseStats": {
       "h": { "b": 400, "w": 80, "t": 5.4 },
       "s": { "b": 350, "w": 35, "t": 10 },
@@ -10387,19 +10457,19 @@
     "baseTamingTime": 925,
     "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["large bear trap"],
+    "immobilizedBy": [384],
     "allowableFlyers": ["ab"],
-    "gatherEfficiency": {
-      "11": 3.76,
-      "12": 4.09,
-      "13": 3.89,
-      "14": 3.63,
-      "15": 3.49,
-      "16": 3.17,
-      "58": 3.37,
-      "62": 3.55,
-      "68": 3.69
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.76 },
+      { "item": 12, "amount": 4.09 },
+      { "item": 13, "amount": 3.89 },
+      { "item": 14, "amount": 3.63 },
+      { "item": 15, "amount": 3.49 },
+      { "item": 16, "amount": 3.17 },
+      { "item": 58, "amount": 3.37 },
+      { "item": 62, "amount": 3.55 },
+      { "item": 68, "amount": 3.69 }
+    ],
     "baseStats": {
       "h": { "b": 4500, "w": 234, "t": 2.7 },
       "s": { "b": 480, "w": 48, "t": 10 },
@@ -10460,21 +10530,21 @@
     "canDestroy": ["thatch", "wood"],
     "egg": "Rex Egg",
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap"],
+    "immobilizedBy": [725, 384],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
-    "gatherEfficiency": {
-      "11": 4.65,
-      "12": 4.01,
-      "13": 3.95,
-      "14": 3.49,
-      "15": 3.47,
-      "16": 3.35,
-      "58": 3.17,
-      "62": 3.46,
-      "68": 3.69,
-      "184": 3.91,
-      "250": 3.24
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 4.65 },
+      { "item": 12, "amount": 4.01 },
+      { "item": 13, "amount": 3.95 },
+      { "item": 14, "amount": 3.49 },
+      { "item": 15, "amount": 3.47 },
+      { "item": 16, "amount": 3.35 },
+      { "item": 58, "amount": 3.17 },
+      { "item": 62, "amount": 3.46 },
+      { "item": 68, "amount": 3.69 },
+      { "item": 184, "amount": 3.91 },
+      { "item": 250, "amount": 3.24 }
+    ],
     "baseStats": {
       "h": { "b": 1100, "w": 220, "t": 5.4 },
       "s": { "b": 420, "w": 42, "t": 10 },
@@ -10535,18 +10605,18 @@
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": [785],
     "allowableFlyers": ["ab"],
-    "gatherEfficiency": {
-      "11": 3.74,
-      "12": 3.62,
-      "13": 3.75,
-      "14": 3.39,
-      "15": 3.28,
-      "16": 3.16,
-      "58": 3.06,
-      "62": 3.29,
-      "68": 3.53,
-      "184": 3.61
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.74 },
+      { "item": 12, "amount": 3.62 },
+      { "item": 13, "amount": 3.75 },
+      { "item": 14, "amount": 3.39 },
+      { "item": 15, "amount": 3.28 },
+      { "item": 16, "amount": 3.16 },
+      { "item": 58, "amount": 3.06 },
+      { "item": 62, "amount": 3.29 },
+      { "item": 68, "amount": 3.53 },
+      { "item": 184, "amount": 3.61 }
+    ],
     "baseStats": {
       "h": { "b": 1950, "w": 165.75, "t": 4.05 },
       "s": { "b": 450, "w": 22.5, "t": 5 },
@@ -10620,27 +10690,27 @@
     "fitsThrough": ["behemoth dinosaur gateway"],
     "immobilizedBy": [],
     "allowableFlyers": ["ta", "r"],
-    "gatherEfficiency": {
-      "3": 2.96,
-      "5": 3.25,
-      "6": 4.03,
-      "10": 3.12,
-      "11": 3.26,
-      "12": 3.17,
-      "13": 3.18,
-      "14": 3.21,
-      "15": 3.18,
-      "16": 3.1,
-      "58": 3.23,
-      "62": 3.12,
-      "68": 3.25,
-      "71": 3.42,
-      "170": 3.35,
-      "172": 3.72,
-      "248": 3.58,
-      "254": 3.57,
-      "325": 3.79
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.96 },
+      { "item": 5, "amount": 3.25 },
+      { "item": 6, "amount": 4.03 },
+      { "item": 10, "amount": 3.12 },
+      { "item": 11, "amount": 3.26 },
+      { "item": 12, "amount": 3.17 },
+      { "item": 13, "amount": 3.18 },
+      { "item": 14, "amount": 3.21 },
+      { "item": 15, "amount": 3.18 },
+      { "item": 16, "amount": 3.1 },
+      { "item": 58, "amount": 3.23 },
+      { "item": 62, "amount": 3.12 },
+      { "item": 68, "amount": 3.25 },
+      { "item": 71, "amount": 3.42 },
+      { "item": 170, "amount": 3.35 },
+      { "item": 172, "amount": 3.72 },
+      { "item": 248, "amount": 3.58 },
+      { "item": 254, "amount": 3.57 },
+      { "item": 325, "amount": 3.79 }
+    ],
     "baseStats": {
       "h": { "b": 25000, "w": 312.5, "t": null },
       "s": { "b": 300, "w": 30, "t": null },
@@ -10692,7 +10762,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 148,
@@ -10733,13 +10804,13 @@
     "fitsThrough": ["giant hatchframe", "behemoth dinosaur gateway"],
     "immobilizedBy": [785],
     "allowableFlyers": ["quetzal", "wyvern", "ab", "karkinos"],
-    "gatherEfficiency": {
-      "3": 2.96,
-      "5": 4.12,
-      "17": 3.56,
-      "18": 3.36,
-      "19": 3.14
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.96 },
+      { "item": 5, "amount": 4.12 },
+      { "item": 17, "amount": 3.56 },
+      { "item": 18, "amount": 3.36 },
+      { "item": 19, "amount": 3.14 }
+    ],
     "baseStats": {
       "h": { "b": 850, "w": 170, "t": 5.4 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -10807,24 +10878,19 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "bear trap",
-      "large bear trap",
-      "chain bola",
-      "plant species y"
-    ],
+    "immobilizedBy": [383, 384, 725, 986],
     "allowableFlyers": ["ta", "r"],
-    "gatherEfficiency": {
-      "11": 3.52,
-      "12": 3.45,
-      "13": 3.66,
-      "14": 3.39,
-      "15": 3.48,
-      "16": 3.42,
-      "58": 3.14,
-      "62": 3.06,
-      "68": 3.25
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.52 },
+      { "item": 12, "amount": 3.45 },
+      { "item": 13, "amount": 3.66 },
+      { "item": 14, "amount": 3.39 },
+      { "item": 15, "amount": 3.48 },
+      { "item": 16, "amount": 3.42 },
+      { "item": 58, "amount": 3.14 },
+      { "item": 62, "amount": 3.06 },
+      { "item": 68, "amount": 3.25 }
+    ],
     "baseStats": {
       "h": { "b": 750, "w": 112.5, "t": 4.32 },
       "s": { "b": 225, "w": 11.25, "t": 6 },
@@ -10870,7 +10936,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 151,
@@ -10926,7 +10993,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", 785, "bear trap", "large bear trap"],
+    "immobilizedBy": [733, 1040, 785, 383, 384],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -10939,17 +11006,17 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": {
-      "11": 3.42,
-      "12": 3.08,
-      "13": 3.96,
-      "14": 4.02,
-      "15": 3.92,
-      "16": 3.6,
-      "62": 2.88,
-      "68": 2.94,
-      "250": 4.02
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.42 },
+      { "item": 12, "amount": 3.08 },
+      { "item": 13, "amount": 3.96 },
+      { "item": 14, "amount": 4.02 },
+      { "item": 15, "amount": 3.92 },
+      { "item": 16, "amount": 3.6 },
+      { "item": 62, "amount": 2.88 },
+      { "item": 68, "amount": 2.94 },
+      { "item": 250, "amount": 4.02 }
+    ],
     "baseStats": {
       "h": { "b": 250, "w": 50, "t": 5.4 },
       "s": { "b": 200, "w": 20, "t": 10 },
@@ -11022,7 +11089,8 @@
     "disableKO": false,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 153,
@@ -11070,7 +11138,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", 785],
+    "immobilizedBy": [384, 785],
     "allowableFlyers": [
       "quetzal",
       "crystalwyvern",
@@ -11080,17 +11148,17 @@
       "karkinos",
       "tusoteuthis"
     ],
-    "gatherEfficiency": {
-      "11": 3.56,
-      "12": 3.25,
-      "13": 3.44,
-      "14": 3.04,
-      "15": 2.94,
-      "16": 2.77,
-      "62": 3.66,
-      "68": 3.88,
-      "184": 3.67
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.56 },
+      { "item": 12, "amount": 3.25 },
+      { "item": 13, "amount": 3.44 },
+      { "item": 14, "amount": 3.04 },
+      { "item": 15, "amount": 2.94 },
+      { "item": 16, "amount": 2.77 },
+      { "item": 62, "amount": 3.66 },
+      { "item": 68, "amount": 3.88 },
+      { "item": 184, "amount": 3.67 }
+    ],
     "baseStats": {
       "h": { "b": 400, "w": 80, "t": 5.4 },
       "s": { "b": 450, "w": 45, "t": 10 },
@@ -11161,7 +11229,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 155,
@@ -11192,7 +11261,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 156,
@@ -11217,25 +11287,19 @@
     "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal"],
     "fitsThrough": ["dinosaur gateway", "behemoth dinosaur gateway"],
-    "immobilizedBy": [
-      "chain bola",
-      "bear trap",
-      "large bear trap",
-      "plant species y",
-      785
-    ],
+    "immobilizedBy": [725, 383, 384, 986, 785],
     "allowableFlyers": ["quetzal"],
-    "gatherEfficiency": {
-      "11": 3.52,
-      "12": 3.28,
-      "13": 3.99,
-      "14": 4.09,
-      "15": 4.02,
-      "16": 3.7,
-      "62": 3.18,
-      "68": 3.24,
-      "250": 4.09
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.52 },
+      { "item": 12, "amount": 3.28 },
+      { "item": 13, "amount": 3.99 },
+      { "item": 14, "amount": 4.09 },
+      { "item": 15, "amount": 4.02 },
+      { "item": 16, "amount": 3.7 },
+      { "item": 62, "amount": 3.18 },
+      { "item": 68, "amount": 3.24 },
+      { "item": 250, "amount": 4.09 }
+    ],
     "baseStats": {
       "h": { "b": 825, "w": 165, "t": 5.4 },
       "s": { "b": 450, "w": 45, "t": 10 },
@@ -11313,7 +11377,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", 785, "bear trap", "plant species y"],
+    "immobilizedBy": [1040, 785, 383, 986],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -11352,7 +11416,8 @@
     "disableMultiplier": false,
     "violentTame": false,
     "foodConsumptionBase": 0.000868,
-    "foodConsumptionMult": 2880.184326
+    "foodConsumptionMult": 2880.184326,
+    "gatherEfficiency": null
   },
   {
     "id": 158,
@@ -11380,7 +11445,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["bola", "bear trap", "plant species y"],
+    "immobilizedBy": [1040, 383, 986],
     "allowableFlyers": [],
     "baseStats": {
       "h": { "b": 110, "w": 22, "t": null },
@@ -11404,7 +11469,8 @@
     "disableMultiplier": false,
     "violentTame": false,
     "foodConsumptionBase": 0.001302,
-    "foodConsumptionMult": 1152.07373
+    "foodConsumptionMult": 1152.07373,
+    "gatherEfficiency": null
   },
   {
     "id": 159,
@@ -11457,19 +11523,19 @@
       "behemoth dinosaur gateway",
       "double doorframe"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", "plant species y", 785],
+    "immobilizedBy": [725, 384, 986, 785],
     "allowableFlyers": [],
-    "gatherEfficiency": {
-      "11": 3.53,
-      "12": 2.73,
-      "13": 3.5,
-      "14": 2.72,
-      "15": 2.52,
-      "16": 2.63,
-      "58": 2.62,
-      "62": 2.38,
-      "68": 3.37
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.53 },
+      { "item": 12, "amount": 2.73 },
+      { "item": 13, "amount": 3.5 },
+      { "item": 14, "amount": 2.72 },
+      { "item": 15, "amount": 2.52 },
+      { "item": 16, "amount": 2.63 },
+      { "item": 58, "amount": 2.62 },
+      { "item": 62, "amount": 2.38 },
+      { "item": 68, "amount": 3.37 }
+    ],
     "baseStats": {
       "h": { "b": 325, "w": 65, "t": 5.4 },
       "s": { "b": 350, "w": 35, "t": 10 },
@@ -11537,21 +11603,21 @@
     "canDestroy": ["thatch", "wood"],
     "egg": "Spino Egg",
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap"],
+    "immobilizedBy": [725, 384],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
-    "gatherEfficiency": {
-      "11": 3.87,
-      "12": 3.83,
-      "13": 3.63,
-      "14": 3.15,
-      "15": 3.07,
-      "16": 2.93,
-      "58": 2.66,
-      "62": 3.97,
-      "68": 4.09,
-      "169": 3.75,
-      "250": 4.12
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.87 },
+      { "item": 12, "amount": 3.83 },
+      { "item": 13, "amount": 3.63 },
+      { "item": 14, "amount": 3.15 },
+      { "item": 15, "amount": 3.07 },
+      { "item": 16, "amount": 2.93 },
+      { "item": 58, "amount": 2.66 },
+      { "item": 62, "amount": 3.97 },
+      { "item": 68, "amount": 4.09 },
+      { "item": 169, "amount": 3.75 },
+      { "item": 250, "amount": 4.12 }
+    ],
     "baseStats": {
       "h": { "b": 700, "w": 140, "t": 5.4 },
       "s": { "b": 350, "w": 35, "t": 10 },
@@ -11634,7 +11700,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", 785],
+    "immobilizedBy": [725, 384, 785],
     "allowableFlyers": [
       "quetzal",
       "wyvern",
@@ -11643,13 +11709,13 @@
       "tusoteuthis",
       "karkinos"
     ],
-    "gatherEfficiency": {
-      "3": 4.18,
-      "5": 2.66,
-      "17": 3.9,
-      "18": 3.24,
-      "19": 3.19
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 4.18 },
+      { "item": 5, "amount": 2.66 },
+      { "item": 17, "amount": 3.9 },
+      { "item": 18, "amount": 3.24 },
+      { "item": 19, "amount": 3.19 }
+    ],
     "baseStats": {
       "h": { "b": 650, "w": 130, "t": 5.4 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -11694,7 +11760,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 163,
@@ -11711,19 +11778,19 @@
     "tamingBonusAttribute": 0.1,
     "canDestroy": ["thatch", "wood"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["large bear trap"],
+    "immobilizedBy": [384],
     "allowableFlyers": [],
-    "gatherEfficiency": {
-      "3": 3.92,
-      "4": 4.2,
-      "5": 4.2,
-      "6": 4.09,
-      "7": 4.03,
-      "8": 3.85,
-      "17": 4.07,
-      "57": 4.31,
-      "325": 4.5
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.92 },
+      { "item": 4, "amount": 4.2 },
+      { "item": 5, "amount": 4.2 },
+      { "item": 6, "amount": 4.09 },
+      { "item": 7, "amount": 4.03 },
+      { "item": 8, "amount": 3.85 },
+      { "item": 17, "amount": 4.07 },
+      { "item": 57, "amount": 4.31 },
+      { "item": 325, "amount": 4.5 }
+    ],
     "capabilities": [9, 12, 14, 18, 21, 27, 29, 34, 45, 46],
     "xVariant": false,
     "noWaterMovement": false,
@@ -11746,7 +11813,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 165,
@@ -11794,25 +11862,18 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "bola",
-      785,
-      "chain bola",
-      "bear trap",
-      "large bear trap",
-      "plant species y"
-    ],
+    "immobilizedBy": [1040, 785, 725, 383, 384, 986],
     "allowableFlyers": ["ta", "r", "megalosaurus", "karkinos", "procoptodon"],
-    "gatherEfficiency": {
-      "11": 3.08,
-      "12": 2.95,
-      "13": 3.13,
-      "14": 3.11,
-      "15": 3.02,
-      "16": 2.97,
-      "68": 2.96,
-      "184": 3.46
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.08 },
+      { "item": 12, "amount": 2.95 },
+      { "item": 13, "amount": 3.13 },
+      { "item": 14, "amount": 3.11 },
+      { "item": 15, "amount": 3.02 },
+      { "item": 16, "amount": 2.97 },
+      { "item": 68, "amount": 2.96 },
+      { "item": 184, "amount": 3.46 }
+    ],
     "baseStats": {
       "h": { "b": 325, "w": 65, "t": 5.4 },
       "s": { "b": 250, "w": 12.5, "t": 6 },
@@ -11903,13 +11964,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "bola",
-      785,
-      "plant species y",
-      "bear trap",
-      "large bear trap"
-    ],
+    "immobilizedBy": [1040, 785, 986, 383, 384],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -11922,15 +11977,15 @@
       "karkinos",
       "tusoteuthis"
     ],
-    "gatherEfficiency": {
-      "11": 3.06,
-      "12": 2.82,
-      "13": 2.82,
-      "14": 2.56,
-      "15": 2.37,
-      "62": 2.65,
-      "68": 3.08
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.06 },
+      { "item": 12, "amount": 2.82 },
+      { "item": 13, "amount": 2.82 },
+      { "item": 14, "amount": 2.56 },
+      { "item": 15, "amount": 2.37 },
+      { "item": 62, "amount": 2.65 },
+      { "item": 68, "amount": 3.08 }
+    ],
     "baseStats": {
       "h": { "b": 270, "w": 54, "t": 5.4 },
       "s": { "b": 160, "w": 16, "t": 10 },
@@ -12008,7 +12063,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "plant species y", "large bear trap", 785],
+    "immobilizedBy": [725, 986, 384, 785],
     "allowableFlyers": [
       "quetzal",
       "wyvern",
@@ -12018,23 +12073,23 @@
       "karkinos",
       "procoptodon"
     ],
-    "gatherEfficiency": {
-      "3": 3.33,
-      "4": 4.16,
-      "5": 4.21,
-      "11": 3.71,
-      "12": 3.68,
-      "13": 3.87,
-      "14": 3.69,
-      "15": 3.6,
-      "16": 3.54,
-      "17": 4,
-      "18": 3.99,
-      "19": 4.1,
-      "62": 3.34,
-      "68": 3.57,
-      "184": 3.66
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.33 },
+      { "item": 4, "amount": 4.16 },
+      { "item": 5, "amount": 4.21 },
+      { "item": 11, "amount": 3.71 },
+      { "item": 12, "amount": 3.68 },
+      { "item": 13, "amount": 3.87 },
+      { "item": 14, "amount": 3.69 },
+      { "item": 15, "amount": 3.6 },
+      { "item": 16, "amount": 3.54 },
+      { "item": 17, "amount": 4 },
+      { "item": 18, "amount": 3.99 },
+      { "item": 19, "amount": 4.1 },
+      { "item": 62, "amount": 3.34 },
+      { "item": 68, "amount": 3.57 },
+      { "item": 184, "amount": 3.66 }
+    ],
     "baseStats": {
       "h": { "b": 870, "w": 174, "t": 5.4 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -12124,7 +12179,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", 785],
+    "immobilizedBy": [733, 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -12136,18 +12191,18 @@
       "karkinos",
       "tusoteuthis"
     ],
-    "gatherEfficiency": {
-      "3": 2.8,
-      "5": 3.98,
-      "11": 3.16,
-      "12": 2.85,
-      "13": 2.99,
-      "14": 2.67,
-      "15": 2.67,
-      "16": 2.51,
-      "62": 2.82,
-      "68": 3.05
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.8 },
+      { "item": 5, "amount": 3.98 },
+      { "item": 11, "amount": 3.16 },
+      { "item": 12, "amount": 2.85 },
+      { "item": 13, "amount": 2.99 },
+      { "item": 14, "amount": 2.67 },
+      { "item": 15, "amount": 2.67 },
+      { "item": 16, "amount": 2.51 },
+      { "item": 62, "amount": 2.82 },
+      { "item": 68, "amount": 3.05 }
+    ],
     "baseStats": {
       "h": { "b": 260, "w": 52, "t": null },
       "s": { "b": 350, "w": 35, "t": null },
@@ -12226,7 +12281,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bear trap", "large bear trap", 785],
+    "immobilizedBy": [733, 383, 384, 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -12238,17 +12293,17 @@
       "karkinos",
       "procoptodon"
     ],
-    "gatherEfficiency": {
-      "11": 3.78,
-      "12": 3.63,
-      "13": 4.1,
-      "14": 3.75,
-      "15": 3.74,
-      "16": 3.82,
-      "62": 3.25,
-      "68": 3.33,
-      "184": 3.67
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.78 },
+      { "item": 12, "amount": 3.63 },
+      { "item": 13, "amount": 4.1 },
+      { "item": 14, "amount": 3.75 },
+      { "item": 15, "amount": 3.74 },
+      { "item": 16, "amount": 3.82 },
+      { "item": 62, "amount": 3.25 },
+      { "item": 68, "amount": 3.33 },
+      { "item": 184, "amount": 3.67 }
+    ],
     "baseStats": {
       "h": { "b": 700, "w": 140, "t": 5 },
       "s": { "b": 400, "w": 40, "t": 10 },
@@ -12364,7 +12419,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bear trap", 785],
+    "immobilizedBy": [733, 383, 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -12401,7 +12456,8 @@
     "disableMultiplier": false,
     "violentTame": false,
     "foodConsumptionBase": 0.001543,
-    "foodConsumptionMult": 648.088135
+    "foodConsumptionMult": 648.088135,
+    "gatherEfficiency": null
   },
   {
     "id": 171,
@@ -12460,7 +12516,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 172,
@@ -12515,7 +12572,8 @@
     "disableKO": true,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 173,
@@ -12559,16 +12617,16 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", 785],
+    "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "r", "tusoteuthis"],
-    "gatherEfficiency": {
-      "3": 3.88,
-      "5": 2.39,
-      "17": 3.7,
-      "18": 2.56,
-      "19": 2.57,
-      "171": 2.4
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.88 },
+      { "item": 5, "amount": 2.39 },
+      { "item": 17, "amount": 3.7 },
+      { "item": 18, "amount": 2.56 },
+      { "item": 19, "amount": 2.57 },
+      { "item": 171, "amount": 2.4 }
+    ],
     "baseStats": {
       "h": { "b": 375, "w": 75, "t": 5.4 },
       "s": { "b": 150, "w": 15, "t": 10 },
@@ -12668,7 +12726,8 @@
     "disableKO": false,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 175,
@@ -12706,7 +12765,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["lasso", "bola", 785, "bear trap"],
+    "immobilizedBy": [733, 1040, 785, 383],
     "allowableFlyers": [
       "tapejara",
       "tropeognathus",
@@ -12751,7 +12810,8 @@
     "disableKO": false,
     "disableTame": false,
     "disableMultiplier": true,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 176,
@@ -12792,27 +12852,20 @@
       "behemoth dinosaur gateway",
       "giant hatchframe"
     ],
-    "immobilizedBy": [
-      "bola",
-      785,
-      "chain bola",
-      "bear trap",
-      "large bear trap",
-      "plant species y"
-    ],
+    "immobilizedBy": [1040, 785, 725, 383, 384, 986],
     "allowableFlyers": [],
-    "gatherEfficiency": {
-      "3": 3.07,
-      "11": 3.79,
-      "12": 3.75,
-      "13": 3.64,
-      "14": 3.41,
-      "15": 3.53,
-      "16": 3.39,
-      "58": 2.66,
-      "62": 2.52,
-      "68": 2.48
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.07 },
+      { "item": 11, "amount": 3.79 },
+      { "item": 12, "amount": 3.75 },
+      { "item": 13, "amount": 3.64 },
+      { "item": 14, "amount": 3.41 },
+      { "item": 15, "amount": 3.53 },
+      { "item": 16, "amount": 3.39 },
+      { "item": 58, "amount": 2.66 },
+      { "item": 62, "amount": 2.52 },
+      { "item": 68, "amount": 2.48 }
+    ],
     "baseStats": {
       "h": { "b": 360, "w": 72, "t": 4.86 },
       "s": { "b": 250, "w": 12.5, "t": 5 },
@@ -12882,17 +12935,17 @@
     ],
     "immobilizedBy": [],
     "allowableFlyers": ["ta", "r"],
-    "gatherEfficiency": {
-      "10": 3.27,
-      "11": 3.55,
-      "12": 3.62,
-      "13": 3.25,
-      "14": 3.12,
-      "62": 3.76,
-      "68": 3.78,
-      "169": 4.7,
-      "177": 3.42
-    },
+    "gatherEfficiency": [
+      { "item": 10, "amount": 3.27 },
+      { "item": 11, "amount": 3.55 },
+      { "item": 12, "amount": 3.62 },
+      { "item": 13, "amount": 3.25 },
+      { "item": 14, "amount": 3.12 },
+      { "item": 62, "amount": 3.76 },
+      { "item": 68, "amount": 3.78 },
+      { "item": 169, "amount": 4.7 },
+      { "item": 177, "amount": 3.42 }
+    ],
     "baseStats": {
       "h": { "b": 2700, "w": 540, "t": 4.05 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -12976,15 +13029,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "lasso",
-      "bola",
-      785,
-      "bear trap",
-      "large bear trap",
-      "plant species y",
-      785
-    ],
+    "immobilizedBy": [733, 1040, 785, 383, 384, 986, 785],
     "allowableFlyers": [
       "argentavis",
       "quetzal",
@@ -12997,7 +13042,11 @@
       "tusoteuthis",
       "procoptodon"
     ],
-    "gatherEfficiency": { "3": 2.9, "5": 2.73, "17": 3.38 },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 2.9 },
+      { "item": 5, "amount": 2.73 },
+      { "item": 17, "amount": 3.38 }
+    ],
     "baseStats": {
       "h": { "b": 240, "w": 48, "t": 5.4 },
       "s": { "b": 560, "w": 56, "t": 10 },
@@ -13072,19 +13121,19 @@
     "canDestroy": ["thatch"],
     "canBeCarriedBy": ["crystalwyvern", "wyvern", "quetzal"],
     "fitsThrough": ["dinosaur gateway", "behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "plant species y", "large bear trap", 785],
+    "immobilizedBy": [725, 986, 384, 785],
     "allowableFlyers": ["crystalwyvern", "wyvern", "quetzal", "karkinos"],
-    "gatherEfficiency": {
-      "11": 3.83,
-      "12": 3.57,
-      "13": 4.03,
-      "14": 3.94,
-      "15": 3.82,
-      "16": 3.61,
-      "62": 3.78,
-      "68": 3.92,
-      "184": 3.96
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.83 },
+      { "item": 12, "amount": 3.57 },
+      { "item": 13, "amount": 4.03 },
+      { "item": 14, "amount": 3.94 },
+      { "item": 15, "amount": 3.82 },
+      { "item": 16, "amount": 3.61 },
+      { "item": 62, "amount": 3.78 },
+      { "item": 68, "amount": 3.92 },
+      { "item": 184, "amount": 3.96 }
+    ],
     "baseStats": {
       "h": { "b": 440, "w": 88, "t": 5.4 },
       "s": { "b": 325, "w": 32.5, "t": 10 },
@@ -13126,22 +13175,22 @@
     "tamingBonusAttribute": 0.4,
     "canDestroy": ["thatch", "adobe", "wood", "stone", "tek", "metal"],
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola", 785],
+    "immobilizedBy": [725, 785],
     "allowableFlyers": [],
-    "gatherEfficiency": {
-      "3": 3.17,
-      "11": 3.98,
-      "12": 3.95,
-      "13": 3.82,
-      "14": 3.61,
-      "15": 3.53,
-      "16": 3.39,
-      "58": 3.16,
-      "62": 3.22,
-      "68": 3.48,
-      "248": 4.3,
-      "249": 3.78
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.17 },
+      { "item": 11, "amount": 3.98 },
+      { "item": 12, "amount": 3.95 },
+      { "item": 13, "amount": 3.82 },
+      { "item": 14, "amount": 3.61 },
+      { "item": 15, "amount": 3.53 },
+      { "item": 16, "amount": 3.39 },
+      { "item": 58, "amount": 3.16 },
+      { "item": 62, "amount": 3.22 },
+      { "item": 68, "amount": 3.48 },
+      { "item": 248, "amount": 4.3 },
+      { "item": 249, "amount": 3.78 }
+    ],
     "baseStats": {
       "h": { "b": 1295, "w": 194.25, "t": 4.05 },
       "s": { "b": 315, "w": 15.75, "t": 5 },
@@ -13225,23 +13274,16 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": [
-      "chain bola",
-      "bola",
-      785,
-      "bear trap",
-      "plant species y",
-      785
-    ],
+    "immobilizedBy": [725, 1040, 785, 383, 986, 785],
     "allowableFlyers": ["ta", "human", "g", "procoptodon"],
-    "gatherEfficiency": {
-      "11": 3.15,
-      "12": 3.21,
-      "13": 2.86,
-      "14": 2.34,
-      "62": 3.02,
-      "68": 2.98
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 3.15 },
+      { "item": 12, "amount": 3.21 },
+      { "item": 13, "amount": 2.86 },
+      { "item": 14, "amount": 2.34 },
+      { "item": 62, "amount": 3.02 },
+      { "item": 68, "amount": 2.98 }
+    ],
     "baseStats": {
       "h": { "b": 125, "w": 25, "t": 5.4 },
       "s": { "b": 150, "w": 15, "t": 10 },
@@ -13318,15 +13360,15 @@
     "canDestroy": ["thatch", "wood"],
     "canBeCarriedBy": ["quetzal"],
     "fitsThrough": ["behemoth dinosaur gateway", "dinosaur gateway"],
-    "immobilizedBy": ["chain bola", "large bear trap", 785, "plant species y"],
+    "immobilizedBy": [725, 384, 785, 986],
     "allowableFlyers": ["quetzal", "ta", "r", "tusoteuthis", "procoptodon"],
-    "gatherEfficiency": {
-      "3": 3.75,
-      "5": 2.98,
-      "17": 3.82,
-      "18": 3.33,
-      "19": 3.33
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.75 },
+      { "item": 5, "amount": 2.98 },
+      { "item": 17, "amount": 3.82 },
+      { "item": 18, "amount": 3.33 },
+      { "item": 19, "amount": 3.33 }
+    ],
     "baseStats": {
       "h": { "b": 500, "w": 100, "t": 5.4 },
       "s": { "b": 120, "w": 12, "t": 10 },
@@ -13391,22 +13433,22 @@
     "canDestroy": ["thatch", "wood"],
     "egg": "Wyvern Egg",
     "fitsThrough": ["behemoth dinosaur gateway"],
-    "immobilizedBy": ["chain bola"],
+    "immobilizedBy": [725],
     "allowableFlyers": ["r"],
-    "gatherEfficiency": {
-      "3": 3.17,
-      "11": 3.98,
-      "12": 3.95,
-      "13": 3.82,
-      "14": 3.61,
-      "15": 3.53,
-      "16": 3.39,
-      "58": 3.16,
-      "62": 3.22,
-      "68": 3.48,
-      "248": 4.3,
-      "249": 3.78
-    },
+    "gatherEfficiency": [
+      { "item": 3, "amount": 3.17 },
+      { "item": 11, "amount": 3.98 },
+      { "item": 12, "amount": 3.95 },
+      { "item": 13, "amount": 3.82 },
+      { "item": 14, "amount": 3.61 },
+      { "item": 15, "amount": 3.53 },
+      { "item": 16, "amount": 3.39 },
+      { "item": 58, "amount": 3.16 },
+      { "item": 62, "amount": 3.22 },
+      { "item": 68, "amount": 3.48 },
+      { "item": 248, "amount": 4.3 },
+      { "item": 249, "amount": 3.78 }
+    ],
     "baseStats": {
       "h": { "b": 1295, "w": 194.25, "t": 4.05 },
       "s": { "b": 315, "w": 15.75, "t": 5 },
@@ -13463,7 +13505,7 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["large bear trap", 785],
+    "immobilizedBy": [384, 785],
     "allowableFlyers": [
       "quetzal",
       "crystalwyvern",
@@ -13493,7 +13535,8 @@
     "disableKO": false,
     "disableTame": true,
     "disableMultiplier": false,
-    "violentTame": true
+    "violentTame": true,
+    "gatherEfficiency": null
   },
   {
     "id": 185,
@@ -13538,20 +13581,20 @@
       "dinosaur gateway",
       "behemoth dinosaur gateway"
     ],
-    "immobilizedBy": ["chain bola", "large bear trap", 785],
+    "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
-    "gatherEfficiency": {
-      "11": 4.15,
-      "12": 3.89,
-      "13": 4.04,
-      "14": 3.9,
-      "15": 3.84,
-      "16": 3.88,
-      "58": 3.92,
-      "62": 3.8,
-      "68": 3.87,
-      "184": 4.08
-    },
+    "gatherEfficiency": [
+      { "item": 11, "amount": 4.15 },
+      { "item": 12, "amount": 3.89 },
+      { "item": 13, "amount": 4.04 },
+      { "item": 14, "amount": 3.9 },
+      { "item": 15, "amount": 3.84 },
+      { "item": 16, "amount": 3.88 },
+      { "item": 58, "amount": 3.92 },
+      { "item": 62, "amount": 3.8 },
+      { "item": 68, "amount": 3.87 },
+      { "item": 184, "amount": 4.08 }
+    ],
     "baseStats": {
       "h": { "b": 1100, "w": 220, "t": null },
       "s": { "b": 420, "w": 42, "t": 5 },

@@ -1,6 +1,18 @@
 const { items } = require("./web/public/arkitems.json");
-const d = require("./web/public/arkdinos.json");
-const d2 = require("./dinotest.json");
+// const d = require("./web/public/maps.json");
+const d2 = require("./web/public/dinotest.json");
+
+const valg = require("./valg.json");
+const island = require("./island.json");
+const center = require("./center.json");
+const rag =require("./rag.json");
+const ab =require("./abb.json");
+const ext =require("./ext.json");
+const scorched =require("./scorched.json");
+const la =require("./la.json");
+const fjordur =require("./fjordur.json");
+const crystal= require("./crystal.json");
+
 
 // let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
 console.time("normal");
@@ -9,13 +21,78 @@ console.timeEnd("normal");
 
 console.time("optimized");
 
+let maps = []
+
+maps.push({
+  name: "Valguero",
+  lootCrates: valg.lootCrates
+})
+
+maps.push({
+  name: "The Island",
+  lootCrates: island.lootCrates
+})
+
+maps.push({
+  name: "The Center",
+  lootCrates: center.lootCrates
+})
+
+maps.push({
+  name: "Ragnarok",
+  lootCrates: rag.lootCrates
+})
+
+maps.push({
+  name: "Aberration",
+  lootCrates: ab.lootCrates
+})
+
+maps.push({
+  name: "Extinction",
+  lootCrates: ext.lootCrates
+})
+
+maps.push({
+  name: "Scorched Earth",
+  lootCrates: scorched.lootCrates
+})
+
+maps.push({
+  name: "Genesis",
+  lootCrates: []
+})
+
+maps.push({
+  name: "Crystal Isles",
+  lootCrates: crystal.lootCrates
+})
+maps.push({
+  name: "Fjordur",
+  lootCrates: fjordur.lootCrates
+})
+maps.push({
+  name: "Lost Island",
+  lootCrates: la.lootCrates
+})
 
 
+require("fs").writeFile(
+  "./web/public/maps.json",
+  JSON.stringify(maps),
+  (error) => {
+    if (error) {
+      throw error;
+    }
+  }
+);
 console.timeEnd("optimized");
 
-
-
-// let sql = "INSERT INTO public.Dino (name, synonyms, description, tamingNotice, canDestroy, immobilizedBy, baseStats, gatherEfficiency, expPerKill, fitsThrough, eggTempMin, eggTempMax, tdps, eats, maturationTime, weightReduction)"
+// `INSERT INTO public."Dino" (name, exp_per_kill, attack, disable_tame, disable_ko, disable_food, flyer_dino, ridable, mounted_weaponry)
+//     SELECT '${dd.name}', ${dd.death && dd.death.baseXP ? dd.death.baseXP : 0}, '${JSON.stringify(dd.attack.attacks)}'::jsonb, ${!dd.flags.includes("isTamable")}, ${!dd.flags.includes("canBeTorpid")}, true, ${dd.flags.includes("isFlyerDino")}, ${dd.flags.includes('allowRiding')}, ${dd.flags.includes('allowMountedWeaponry')}
+//     WHERE NOT EXISTS (
+//       SELECT name require(public."Dino" WHERE name LIKE '%${dd.name}%'
+//     );`
 // let itemss = [];
 // Object.values(d).forEach((dino, i) => {
 //   const { name } = dino;
@@ -172,7 +249,7 @@ console.timeEnd("optimized");
 //     (100 - Math.round((lostDurability / durability) * 100)) *
 //     (craftingCostMetalIngot / 2);
 // });
-let sql = "INSERT INTO public.Dino (name, synonyms, description, tamingNotice, canDestroy, immobilizedBy, baseStats, gatherEfficiency, expPerKill, fitsThrough, eggTempMin, eggTempMax, tdps, eats, maturationTime, weightReduction)"
+// let sql = "INSERT INTO public.Dino (name, synonyms, description, tamingNotice, canDestroy, immobilizedBy, baseStats, gatherEfficiency, expPerKill, fitsThrough, eggTempMin, eggTempMax, tdps, eats, maturationTime, weightReduction)"
 
 // let t = itemss.map((g) => {
 //   return `'${g.name}', ARRAY[${g.synonyms ? g.synonyms.join(",") : ''}], '${g.description}', '${g.tamingNotice}', ARRAY[${g.canDestroy.join(', ')}]
@@ -189,18 +266,24 @@ let sql = "INSERT INTO public.Dino (name, synonyms, description, tamingNotice, c
 //     }
 //   }
 // );
-let t = d2.map((g) => {
-  // return `('${g.name}', ${"synonyms" in g ? `ARRAY[${g.synonyms.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.description ? `'${g.description.replaceAll("'", '"')}'` : null}, ${g.tamingNotice ? `'${g.tamingNotice.replaceAll("'", '"')}'` : null}, ${g.canDestroy !== null && g.canDestroy.length > 0 ? `ARRAY[${g.canDestroy.map((f) => `'${f}'`).join().split(', ')}]` : null }, ${g.immobilizedBy !== null && g.immobilizedBy.length > 0 ? `ARRAY[${g.immobilizedBy.map((f) => `'${f}'`).join().split(', ')}]` : null}, '${JSON.stringify(g.baseStats)}', '${JSON.stringify(g.gatherEfficiency)}', ${g.experiencePerKill}, ${g.experiencePerKillAdjustment}, ${"fitsThrough" in g && g.fitsThrough.length > 0 ? `ARRAY[${g.fitsThrough.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.eggTempMin}, ${g.eggTempMax}, ${g.torporDepletionPS}, ${"eats" in g ? `ARRAY[${g.eats.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.maturationTime}, '${JSON.stringify(g.weightReduction)}',
-  // ${g.incubationTime}, ${g.affinityNeeded}, ${g.affinityIncreasePerLevel}, ${g.fleeThreshold}, ${"hitboxes" in g ? `'${JSON.stringify(g.hitboxes)}'` : null}, ${g.drops !== null ? `ARRAY[${g.drops.join(', ')}]` : null}, ${g.foodConsumptionBase}, ${g.foodConsumptionMult}, ${g.violentTame}, ${g.tamingBonusAttribute}, ${!g.noWaterMovement}, ${g.adminNote ? `'${g.adminNote}'` : null}, ${g.basePoints}, ${g.method ? `ARRAY[${g.method.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${"knockoutW" in g ? `ARRAY[${g.knockoutW.map((f) => `'${f}'`).join().split(', ')}]` : null}, ${g.nonViolentFoodAffinityMultiplier}, ${g.nonViolentFoodRateMultiplier}, ${g.tamingInterval}, ${g.baseTamingTime},
-  // ${g.xVariant}, ${g.disableKO}, ${g.disableFood}, ${g.disableMultiplier}, ${g.disableTame}),`
-  return `UPDATE public."Dino"
-  SET gather_eff = '${JSON.stringify(g.gatherEfficiency) ||  '[]'}'::jsonb
-  WHERE name = '${g.name}';`
-})
-console.log(t)
+
+
+// let abc2 = d.items.filter((f) => (f.name && f.name.includes("Summon") && !f.name.includes('VR'))).map((b) => {
+//     return `INSERT INTO public."Item" (id, name, description, image, max_stack, weight, req_level, recipe) VALUES
+//     (${id++}, '${b.name}', '${b.description ? b.description : ""}', '${b.name ? b.name.split(' ').join('_') + ".png" : ""}', ${b.stackSize ? b.stackSize : 1}, ${b.weight ? b.weight : 0}, ${b.crafting && b.crafting.levelReq ? b.crafting.levelReq : 0}, ${
+//       b.crafting && b.crafting.recipe.length > 0
+//         ? `'[${b.crafting.recipe
+//             .map((f) => `${JSON.stringify({ itemId: f.type, count: f.qty })}`)
+//             .join()
+//             .split(", ")}]'`
+//         : null
+//     });`
+// })
+
+
 // require("fs").writeFile(
 //   "s.txt",
-//   t.join('\n'),
+//   bosses.join('\n'),
 //   (error) => {
 //     if (error) {
 //       throw error;
@@ -1335,7 +1418,7 @@ let craftingStations = {
 // if (typeof HOST != "string") {
 //   var HOST = "https://www.dododex.com";
 // }
-// const REQUEST_URL = HOST + "/api/data.json";
+// const REQUEST_URL = HOST + "/api/data.json");
 // const PATH_IMG_CREATURE = HOST + "/media/creature/";
 // const PATH_IMG = HOST + "/media/item/";
 // const PATH_IMG_UI = HOST + "/media/ui/";
