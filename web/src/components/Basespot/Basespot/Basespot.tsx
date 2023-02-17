@@ -6,7 +6,7 @@ import { toast } from '@redwoodjs/web/toast'
 import { useEffect, useState } from 'react'
 import { Map } from 'src/components/Util/Map/Map'
 
-import { timeTag,  } from 'src/lib/formatters'
+import { timeTag, } from 'src/lib/formatters'
 
 import type { DeleteBasespotMutationVariables, FindBasespotById } from 'types/graphql'
 
@@ -108,7 +108,7 @@ const Basespot = ({ basespot }: Props) => {
               className="h-full w-full object-cover object-center"
               map={basespot.Map}
               size={{ width: 500, height: 500 }}
-              pos={{ lat: basespot.latitude, lon: basespot.longitude }}
+              pos={[{ lat: basespot.latitude, lon: basespot.longitude }]}
             />
           </div>
           <div className="-mb-10 flex flex-col flex-wrap text-center lg:w-1/2 lg:py-6 lg:pl-12 lg:text-left">

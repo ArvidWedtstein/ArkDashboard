@@ -1,7 +1,7 @@
 interface Props {
   map: string;
   size: { width: number; height: number };
-  pos?: { lat: number; lon: number };
+  pos?: { lat: number; lon: number }[];
   className?: string;
 }
 
@@ -64,12 +64,13 @@ export const Map = ({
             {map} map not found
           </text>
         )}
-        <circle
-          fill="red"
-          cy={(size.height / 100) * pos.lat + size.height / 100}
-          cx={(size.width / 100) * pos.lon + size.width / 100}
-          r="5"
-        />
+        {pos?.map((p, i) => (
+          <circle
+            fill="red"
+            cy={(size.height / 100) * p.lat + size.height / 100}
+            cx={(size.width / 100) * p.lon + size.width / 100}
+            r="5"
+          />))}
       </svg>
     </>
   );

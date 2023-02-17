@@ -1,17 +1,8 @@
 const { items } = require("./web/public/arkitems.json");
-// const d = require("./web/public/maps.json");
+const d = require("./web/public/maps.json");
 const d2 = require("./web/public/dinotest.json");
 
-const valg = require("./valg.json");
-const island = require("./island.json");
-const center = require("./center.json");
-const rag =require("./rag.json");
-const ab =require("./abb.json");
-const ext =require("./ext.json");
-const scorched =require("./scorched.json");
-const la =require("./la.json");
-const fjordur =require("./fjordur.json");
-const crystal= require("./crystal.json");
+
 
 
 // let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
@@ -21,61 +12,24 @@ console.timeEnd("normal");
 
 console.time("optimized");
 
-let maps = []
-
-maps.push({
-  name: "Valguero",
-  lootCrates: valg.lootCrates
-})
-
-maps.push({
-  name: "The Island",
-  lootCrates: island.lootCrates
-})
-
-maps.push({
-  name: "The Center",
-  lootCrates: center.lootCrates
-})
-
-maps.push({
-  name: "Ragnarok",
-  lootCrates: rag.lootCrates
-})
-
-maps.push({
-  name: "Aberration",
-  lootCrates: ab.lootCrates
-})
-
-maps.push({
-  name: "Extinction",
-  lootCrates: ext.lootCrates
-})
-
-maps.push({
-  name: "Scorched Earth",
-  lootCrates: scorched.lootCrates
-})
-
-maps.push({
-  name: "Genesis",
-  lootCrates: []
-})
-
-maps.push({
-  name: "Crystal Isles",
-  lootCrates: crystal.lootCrates
-})
-maps.push({
-  name: "Fjordur",
-  lootCrates: fjordur.lootCrates
-})
-maps.push({
-  name: "Lost Island",
-  lootCrates: la.lootCrates
-})
-
+let maps = d.map((map) => {
+  return {
+    name: map.name,
+    image: map.image,
+    lootCrates: map.lootCrates.map((crate) => {
+      return {
+        maxCrateNumber: crate.maxCrateNumber,
+        crateClasses: crate.crateClasses,
+        crateLocations: crate.crateLocations.map((location) => {
+          return {
+            lat: location.lat,
+            lon: location.long,
+          };
+        })
+      }
+    })
+  }
+});
 
 require("fs").writeFile(
   "./web/public/maps.json",

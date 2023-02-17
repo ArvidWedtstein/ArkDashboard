@@ -75,18 +75,16 @@ export const TimelineList = ({
     <section className="">
       <div className="h-full w-full">
         <div
-          className={`flex cursor-grab touch-pan-x select-none flex-row items-stretch justify-start space-x-1 overflow-x-auto p-3 will-change-scroll ${
-            options.snap && "snap-x snap-mandatory"
-          }`}
+          className={`flex cursor-grab touch-pan-x select-none flex-row items-stretch justify-start space-x-1 overflow-x-auto p-3 will-change-scroll ${options.snap && "snap-x snap-mandatory"
+            }`}
         >
           {events.map((event, i) => (
             <>
               <div className="flex flex-col">
                 <div
                   key={i}
-                  className={`group w-full min-w-fit flex-1 rounded-md border border-gray-200 bg-slate-200 text-black before:absolute before:-top-1 before:-bottom-1 before:bg-red-600 before:p-1 before:content-none dark:bg-neutral-800 dark:text-white ${
-                    currentPage === i && "border-pea-500"
-                  } ${options.snap && "snap-center snap-always"}`}
+                  className={`group w-full min-w-fit flex-1 rounded-md border border-gray-200 bg-slate-200 text-black before:absolute before:-top-1 before:-bottom-1 before:bg-red-600 before:p-1 before:content-none dark:bg-neutral-800 dark:text-white ${currentPage === i && "border-pea-500"
+                    } ${options.snap && "snap-center snap-always"}`}
                   data-tab={i}
                   onClick={() => onChange(i)}
                   aria-controls={`tab-${i}`}
@@ -141,8 +139,8 @@ export const TimelineList = ({
                 (i + 1 < events.length && events[i + 1].season
                   ? events[i + 1].season
                   : 0) && (
-                <div className="w-full min-w-fit flex-1 rounded-md border-2 border-transparent"></div>
-              )}
+                  <div className="w-full min-w-fit flex-1 rounded-md border-2 border-transparent"></div>
+                )}
             </>
           ))}
         </div>
@@ -205,7 +203,7 @@ export const TimelineList = ({
                     </p>
                     <p>
                       {!events[currentPage].endDate &&
-                      !events[currentPage].raided_by
+                        !events[currentPage].raided_by
                         ? ""
                         : `Got raided `}
                       {events[currentPage].endDate && `on `}
@@ -259,7 +257,7 @@ export const TimelineList = ({
                       className="h-full w-full object-cover object-center"
                       map={events[currentPage].map}
                       size={{ width: 500, height: 500 }}
-                      pos={events[currentPage].location}
+                      pos={[events[currentPage].location]}
                     />
                   </div>
                   <div className="-mb-10 flex flex-col flex-wrap text-center lg:w-1/2 lg:py-6 lg:pl-12 lg:text-left">
