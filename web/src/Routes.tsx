@@ -16,6 +16,12 @@ import MainLayout from "./layouts/MainLayout/MainLayout";
 const Routes = () => {
   return (
     <Router>
+      <Set wrap={ScaffoldLayout} title="Maps" titleTo="maps" buttonLabel="New Map" buttonTo="newMap">
+        <Route path="/maps/new" page={MapNewMapPage} name="newMap" />
+        <Route path="/maps/{id}/edit" page={MapEditMapPage} name="editMap" />
+        <Route path="/maps/{id}" page={MapMapPage} name="map" />
+        <Route path="/maps" page={MapMapsPage} name="maps" />
+      </Set>
       <Set wrap={MainLayout}>
         {/*whileLoadingPage*/}
         <Route path="/dino-stats" page={DinoStatsPage} name="dinoStats" />
