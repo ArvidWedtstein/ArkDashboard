@@ -33,7 +33,7 @@ const ArkCard = ({
     <div
       className="relative rounded-3xl bg-gray-600 shadow-md"
       style={{
-        background: `${`url('${image.src}')` ?? "#333333"}`,
+        background: `${`url('${image ? image.src : ""}')` ?? "#333333"}`,
         backgroundSize: "cover",
         backgroundPosition: `${image?.position ?? "center"}`,
       }}
@@ -41,11 +41,11 @@ const ArkCard = ({
       <div className="h-full rounded-3xl bg-[#121317] bg-opacity-60 p-4 shadow-md">
         <div className="flex-none lg:flex">
           {icon && (
-            <div className=" mb-3 h-full w-full lg:mb-0   lg:h-48 lg:w-48">
+            <div className="mb-3 mr-3 h-full w-full lg:mb-0 lg:h-48 lg:w-48">
               <img
-                src="/favicon.png"
-                alt="sss"
-                className="lg:object-fit w-full rounded-2xl object-scale-down lg:h-48"
+                src={icon.src}
+                alt={icon.alt ?? "icon"}
+                className="lg:object-fit w-full rounded-2xl object-scale-down"
               />
             </div>
           )}
@@ -63,18 +63,22 @@ const ArkCard = ({
             </div>
             <div className="border-t border-gray-300 p-4 pb-2"></div>
             <div className="flex items-center justify-between text-sm font-light">
-              <button className="relative inline-flex items-center justify-center space-x-2 rounded-full bg-gray-600 px-4 py-2.5 text-gray-100 shadow-sm ring-1 ring-green-500">
-                <div className="flex">
-                  <span>{ring}</span>
-                  <i className="fa-solid fa-circle my-auto ml-2 animate-pulse text-green-500"></i>
-                </div>
-              </button>
-              <Link
-                to={button.link}
-                className="rw-button rw-button-green-outline !rounded-full"
-              >
-                {button.text}
-              </Link>
+              {ring && (
+                <button className="relative inline-flex items-center justify-center space-x-2 rounded-full bg-gray-600 px-4 py-2.5 text-gray-100 shadow-sm ring-1 ring-green-500">
+                  <div className="flex">
+                    <span>{ring}</span>
+                    <i className="fa-solid fa-circle my-auto ml-2 animate-pulse text-green-500"></i>
+                  </div>
+                </button>
+              )}
+              {button && (
+                <Link
+                  to={button.link}
+                  className="rw-button rw-button-green-outline !rounded-full"
+                >
+                  {button.text}
+                </Link>
+              )}
             </div>
           </div>
         </div>

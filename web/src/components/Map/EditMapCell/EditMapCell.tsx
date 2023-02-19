@@ -28,6 +28,8 @@ export const QUERY = gql`
       poison_trees
       mutagen_bulbs
       carniflora
+      notes
+      img
     }
   }
 `
@@ -52,6 +54,8 @@ const UPDATE_MAP_MUTATION = gql`
       poison_trees
       mutagen_bulbs
       carniflora
+      notes
+      img
     }
   }
 `

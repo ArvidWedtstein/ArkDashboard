@@ -18,6 +18,8 @@ export const schema = gql`
     poison_trees: JSON
     mutagen_bulbs: JSON
     carniflora: JSON
+    notes: JSON
+    img: String
   }
 
   type Query {
@@ -43,6 +45,8 @@ export const schema = gql`
     poison_trees: JSON
     mutagen_bulbs: JSON
     carniflora: JSON
+    notes: JSON
+    img: String
   }
 
   input UpdateMapInput {
@@ -63,6 +67,8 @@ export const schema = gql`
     poison_trees: JSON
     mutagen_bulbs: JSON
     carniflora: JSON
+    notes: JSON
+    img: String
   }
 
   type Mutation {

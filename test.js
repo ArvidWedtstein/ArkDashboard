@@ -2,100 +2,107 @@ const { items } = require("./web/public/arkitems.json");
 const d = require("./web/public/maps.json");
 const d2 = require("./web/public/dinotest.json");
 
-
 let notes = [
   {
-    "x": -170767.1,
-    "y": 74383.69,
-    "z": -137631.3,
-    "lat": 60.41643,
-    "long": 26.08639
+    x: -170767.1,
+    y: 74383.69,
+    z: -137631.3,
+    lat: 60.41643,
+    long: 26.08639,
   },
   {
-    "x": -109296.8,
-    "y": 314833.6,
-    "z": 8068.93,
-    "lat": 94.08817,
-    "long": 34.69447
+    x: -109296.8,
+    y: 314833.6,
+    z: 8068.93,
+    lat: 94.08817,
+    long: 34.69447,
   },
   {
-    "x": 47686.35,
-    "y": 243201.2,
-    "z": -136026.8,
-    "lat": 84.05703,
-    "long": 56.67783
+    x: 47686.35,
+    y: 243201.2,
+    z: -136026.8,
+    lat: 84.05703,
+    long: 56.67783,
   },
   {
-    "x": -237230.6,
-    "y": 270631.4,
-    "z": -2826.115,
-    "lat": 87.89825,
-    "long": 16.77908
+    x: -237230.6,
+    y: 270631.4,
+    z: -2826.115,
+    lat: 87.89825,
+    long: 16.77908,
   },
   {
-    "x": 372487.2,
-    "y": -379539.8,
-    "z": -130274.7,
-    "lat": -3.149391,
-    "long": 102.1618
+    x: 372487.2,
+    y: -379539.8,
+    z: -130274.7,
+    lat: -3.149391,
+    long: 102.1618,
   },
   {
-    "x": -301818.5,
-    "y": -18732.01,
-    "z": -10773.25,
-    "lat": 47.37684,
-    "long": 7.734421
+    x: -301818.5,
+    y: -18732.01,
+    z: -10773.25,
+    lat: 47.37684,
+    long: 7.734421,
   },
   {
-    "x": -77746.98,
-    "y": 215374.4,
-    "z": -110185.9,
-    "lat": 80.16026,
-    "long": 39.11259
+    x: -77746.98,
+    y: 215374.4,
+    z: -110185.9,
+    lat: 80.16026,
+    long: 39.11259,
   },
   {
-    "x": 6798.426,
-    "y": -177741.7,
-    "z": 21704.44,
-    "lat": 25.10969,
-    "long": 50.95203
+    x: 6798.426,
+    y: -177741.7,
+    z: 21704.44,
+    lat: 25.10969,
+    long: 50.95203,
   },
   {
-    "x": -22928,
-    "y": 243804.1,
-    "z": -139183.6,
-    "lat": 84.14145,
-    "long": 46.78925
+    x: -22928,
+    y: 243804.1,
+    z: -139183.6,
+    lat: 84.14145,
+    long: 46.78925,
   },
   {
-    "x": 293966.4,
-    "y": -227058.6,
-    "z": 27398.46,
-    "lat": 18.20353,
-    "long": 91.166
+    x: 293966.4,
+    y: -227058.6,
+    z: 27398.46,
+    lat: 18.20353,
+    long: 91.166,
   },
   {
-    "x": 354987,
-    "y": -376939.2,
-    "z": -152837.4,
-    "lat": -2.785212,
-    "long": 99.71111
-  }
-]
+    x: 354987,
+    y: -376939.2,
+    z: -152837.4,
+    lat: -2.785212,
+    long: 99.71111,
+  },
+];
 // let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
 console.time("normal");
-function findShortestPathWithAStar2(startX, startY, startZ, endX, endY, endZ, points) {
+function findShortestPathWithAStar2(
+  startX,
+  startY,
+  startZ,
+  endX,
+  endY,
+  endZ,
+  points
+) {
   const startNode = {
     x: startX,
     y: startY,
     z: startZ,
     gScore: 0,
-    fScore: calculateHeuristic(startX, startY, startZ, endX, endY, endZ)
+    fScore: calculateHeuristic(startX, startY, startZ, endX, endY, endZ),
   };
   const endNode = {
     x: endX,
     y: endY,
-    z: endZ
+    z: endZ,
   };
   const openSet = [startNode];
   const closedSet = new Set();
@@ -110,7 +117,11 @@ function findShortestPathWithAStar2(startX, startY, startZ, endX, endY, endZ, po
       }
     }
 
-    if (currentNode.x === endNode.x && currentNode.y === endNode.y && currentNode.z === endNode.z) {
+    if (
+      currentNode.x === endNode.x &&
+      currentNode.y === endNode.y &&
+      currentNode.z === endNode.z
+    ) {
       return reconstructPath(currentNode);
     }
 
@@ -122,7 +133,8 @@ function findShortestPathWithAStar2(startX, startY, startZ, endX, endY, endZ, po
       if (closedSet.has(neighbor)) {
         continue;
       }
-      const tentativeGScore = currentNode.gScore + calculateDistance(currentNode, neighbor);
+      const tentativeGScore =
+        currentNode.gScore + calculateDistance(currentNode, neighbor);
       if (!openSet.includes(neighbor)) {
         openSet.push(neighbor);
       } else if (tentativeGScore >= neighbor.gScore) {
@@ -131,7 +143,16 @@ function findShortestPathWithAStar2(startX, startY, startZ, endX, endY, endZ, po
 
       neighbor.parent = currentNode;
       neighbor.gScore = tentativeGScore;
-      neighbor.fScore = neighbor.gScore + calculateHeuristic(neighbor.x, neighbor.y, neighbor.z, endX, endY, endZ);
+      neighbor.fScore =
+        neighbor.gScore +
+        calculateHeuristic(
+          neighbor.x,
+          neighbor.y,
+          neighbor.z,
+          endX,
+          endY,
+          endZ
+        );
     }
   }
 
@@ -139,11 +160,20 @@ function findShortestPathWithAStar2(startX, startY, startZ, endX, endY, endZ, po
 }
 
 function calculateHeuristic(x1, y1, z1, x2, y2, z2) {
-  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2) + Math.pow(z2 - z1, 2));
+  return Math.sqrt(
+    Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2) + Math.pow(z2 - z1, 2)
+  );
 }
 
 function calculateDistance(node1, node2) {
-  return calculateHeuristic(node1.x, node1.y, node1.z, node2.x, node2.y, node2.z);
+  return calculateHeuristic(
+    node1.x,
+    node1.y,
+    node1.z,
+    node2.x,
+    node2.y,
+    node2.z
+  );
 }
 
 function reconstructPath(node) {
@@ -152,11 +182,11 @@ function reconstructPath(node) {
     node = node.parent;
     path.unshift(node);
   }
-  const result = path.map(node => ({ lat: node.lat, long: node.long }));
+  const result = path.map((node) => ({ lat: node.lat, long: node.long }));
   return result;
 }
 
-console.log()
+console.log();
 console.timeEnd("normal");
 
 console.time("optimized");
@@ -180,7 +210,7 @@ const findShortestPath = (coordinates) => {
     }
 
     path.push(nearestCoord);
-    coordinates = coordinates.filter(coord => coord !== nearestCoord);
+    coordinates = coordinates.filter((coord) => coord !== nearestCoord);
     currentCoord = nearestCoord;
   }
 
@@ -192,7 +222,6 @@ const distance = ({ lat: lat1, lon: lon1 }, { lat: lat2, lon: lon2 }) => {
   const lonDiff = lon1 - lon2;
   return (latDiff ** 2 + lonDiff ** 2) ** 0.5;
 };
-
 
 const shortestPath = findShortestPath(notes);
 console.log(shortestPath);
@@ -333,21 +362,20 @@ console.timeEnd("optimized");
 //     foodConsumptionMult: dino.foodMult ? dino.foodMult : null,
 //   });
 
-  //let experiencePerKill = dino.xpk * ((level - 1) / 10 + 1) * 4 * XPMultiplier
+//let experiencePerKill = dino.xpk * ((level - 1) / 10 + 1) * 4 * XPMultiplier
 
+// parseInt(((this.metalperforge + 2) / 2 / 20) * 20 * 20 - 20) / fuelConsumptionRate
+// this.metalperforge = Math.floor(this.metalamount / this.forgeamount);
 
-  // parseInt(((this.metalperforge + 2) / 2 / 20) * 20 * 20 - 20) / fuelConsumptionRate
-  // this.metalperforge = Math.floor(this.metalamount / this.forgeamount);
+// let comsumptionMultiplier = 1;
+// let affinityNeeded = item.a0 + item.aI * level;
+// let foodConsumption = item.foodBase * item.foodMult * comsumptionMultiplier;
+// let foodMax = affinityNeeded / food[name].affinity;
+// var totalTorpor=cr.t1+cr.tI*(level-1);
+// var affinityNeeded=cr.a0+(cr.aI*level)
+// let torporDamagePerSecond = Math.pow(level - 1, 0.800403041) / (22.39671632 / dino.tDPS0)
 
-  // let comsumptionMultiplier = 1;
-  // let affinityNeeded = item.a0 + item.aI * level;
-  // let foodConsumption = item.foodBase * item.foodMult * comsumptionMultiplier;
-  // let foodMax = affinityNeeded / food[name].affinity;
-  // var totalTorpor=cr.t1+cr.tI*(level-1);
-  // var affinityNeeded=cr.a0+(cr.aI*level)
-  // let torporDamagePerSecond = Math.pow(level - 1, 0.800403041) / (22.39671632 / dino.tDPS0)
-
-  /*The repair cost is calculated by taking the percentage of
+/*The repair cost is calculated by taking the percentage of
   lost durability and multiplying it with the half of
   the initial building costs (Scales with increased costs
   caused by Item Quality).
@@ -362,7 +390,7 @@ console.timeEnd("optimized");
 // let sql = "INSERT INTO public.Dino (name, synonyms, description, tamingNotice, canDestroy, immobilizedBy, baseStats, gatherEfficiency, expPerKill, fitsThrough, eggTempMin, eggTempMax, tdps, eats, maturationTime, weightReduction)"
 
 // let t = itemss.map((g) => {
-//   return `'${g.name}', ARRAY[${g.synonyms ? g.synonyms.join(",") : ''}], '${g.description}', '${g.tamingNotice}', ARRAY[${g.canDestroy.join(', ')}]
+//   return `'${g.name}', ARRAY[${g.synonyms ? g.synonyms.join(",") : null}], '${g.description}', '${g.tamingNotice}', ARRAY[${g.canDestroy.join(', ')}]
 //   `
 // })
 // const removeNullUndefined = obj => Object.entries(obj).reduce((a, [k, v]) => (v == null ? a : (a[k] = v, a)), {});
@@ -377,7 +405,6 @@ console.timeEnd("optimized");
 //   }
 // );
 
-
 // let abc2 = d.items.filter((f) => (f.name && f.name.includes("Summon") && !f.name.includes('VR'))).map((b) => {
 //     return `INSERT INTO public."Item" (id, name, description, image, max_stack, weight, req_level, recipe) VALUES
 //     (${id++}, '${b.name}', '${b.description ? b.description : ""}', '${b.name ? b.name.split(' ').join('_') + ".png" : ""}', ${b.stackSize ? b.stackSize : 1}, ${b.weight ? b.weight : 0}, ${b.crafting && b.crafting.levelReq ? b.crafting.levelReq : 0}, ${
@@ -389,7 +416,6 @@ console.timeEnd("optimized");
 //         : null
 //     });`
 // })
-
 
 // require("fs").writeFile(
 //   "s.txt",
@@ -740,7 +766,6 @@ let craftingStations = {
 //       <div class="ttexp noMob"></div>
 //     </div>
 
-
 //   <div class="item tameSetting ttRow">
 //     <div class="itemImage" style="">
 //       <a href="/item/341/sanguine-elixir"><img src="/media/item/Sanguine_Elixir.png" width="42" height="42" alt="Sanguine Elixir"></a>
@@ -795,7 +820,6 @@ let craftingStations = {
 //               </div>
 //             </div>
 
-
 //             <div class="row jcsb r">
 //               <div class="meterStatus actionColor right"></div>
 //               <div class="row starveMeter" style="padding-bottom:1.5em">
@@ -810,7 +834,6 @@ let craftingStations = {
 //                 </div>
 //               </div>
 //             </div>
-
 
 //             <div class="miniBarWrap marginBottomS"><div class="miniBar" style="width:100%"></div></div>
 //             <div class="row jcsb" style="align-items:flex-start">
@@ -843,12 +866,6 @@ let craftingStations = {
 //           </div>
 //         </div>
 //         <div class="starveNote light small marginTop">Starve taming reduces the risk of losing resources by feeding a creature only once it is hungry enough to eat everything at once (or, eat as much as it can). Once you've selected the food you'll be taming with, enter the creature's current and max food values, then start the timer. <a href="https://help.dododex.com/en/article/how-to-starve-tame-in-ark-survival-evolved" class="">Learn more</a></div>
-
-
-
-
-
-
 
 //       </div>
 //       <div class="flex1 row">
@@ -2529,3 +2546,26 @@ let craftingStations = {
 //     }
 //   };
 // }
+
+
+
+// Create map insert
+let m = d.map((x) => {
+  // return `INSERT INTO public."Map" ("name","loot_crates","oil_veins","water_veins","wyvern_nests","ice_wyvern_nests","gas_veins","deinonychus_nests","charge_nodes","plant_z_nodes","drake_nests","glitches","magmasaur_nests","poison_trees","mutagen_bulbs","carniflora") VALUES
+  return `UPDATE public."Map" SET "img" = '${x.image}' WHERE "name" = '${x.name}';`
+  // return `UPDATE public."Map" SET "loot_crates" = ${x.lootCrates ? `'${JSON.stringify(x.lootCrates.map((l) => l.crateLocations))}'` : null}, "oil_veins" = ${x.oilVeins ? `'${JSON.stringify(x.oilVeins)}'` : null}, "water_veins" = ${x.waterVeins ? `'${JSON.stringify(x.waterVeins)}'` : null}, "wyvern_nests" = ${x.wyvernNests ? `'${JSON.stringify(x.wyvernNests)}'` : null},
+  // "ice_wyvern_nests" = ${x.iceWyvernNests ? `'${JSON.stringify(x.iceWyvernNests)}'` : null}, "gas_veins" = ${x.gasVeins ? `'${JSON.stringify(x.gasVeins)}'` : null}, "deinonychus_nests" = ${x.deinonychusNests ? `'${JSON.stringify(x.deinonychusNests)}'` : null}, "charge_nodes" = ${x.chargeNodes ? `'${JSON.stringify(x.chargeNodes)}'` : null},
+  // "plant_z_nodes" = ${x.plantZNodes ? `'${JSON.stringify(x.plantZNodes)}'` : null}, "drake_nests" = ${x.drakeNests ? `'${JSON.stringify(x.drakeNests)}'` : null}, "glitches" = ${x.glitches ? `'${JSON.stringify(x.glitches)}'` : null}, "magmasaur_nests" = ${x.magmasaurNests ? `'${JSON.stringify(x.magmasaurNests)}'` : null},
+  // "poison_trees" = ${x.poisonTrees ? `'${JSON.stringify(x.poisonTrees)}'` : null}, "mutagen_bulbs" = ${x.mutagenBulbs ? `'${JSON.stringify(x.mutagenBulbs)}'` : null}, "carniflora" = ${x.carniflora ? `'${JSON.stringify(x.carniflora)}'` : null}, "notes" = ${x.notes ? `'${JSON.stringify(x.notes)}'` : null} WHERE "name" = '${x.name}';`
+
+});
+console.log(m.join('\n'))
+// require("fs").writeFile(
+//   "insert.txt",
+//   m.join('\n'),
+//   (error) => {
+//     if (error) {
+//       throw error;
+//     }
+//   }
+// );

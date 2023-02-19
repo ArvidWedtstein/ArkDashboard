@@ -100,6 +100,12 @@ const Map = ({ map }: Props) => {
             </tr><tr>
               <th>Carniflora</th>
               <td>{jsonDisplay(map.carniflora)}</td>
+            </tr><tr>
+              <th>Notes</th>
+              <td>{jsonDisplay(map.notes)}</td>
+            </tr><tr>
+              <th>Img</th>
+              <td>{map.img}</td>
             </tr>
           </tbody>
         </table>

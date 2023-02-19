@@ -25,6 +25,8 @@ export const QUERY = gql`
       poison_trees
       mutagen_bulbs
       carniflora
+      notes
+      img
     }
   }
 `

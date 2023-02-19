@@ -192,6 +192,8 @@ model Map {
   poison_trees      Json?
   mutagen_bulbs     Json?
   carniflora        Json?
+  notes             Json?
+  img               String?
 }
 
 enum permission {

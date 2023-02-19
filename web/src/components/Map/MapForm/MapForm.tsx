@@ -74,6 +74,12 @@ const MapForm = (props: MapFormProps) => {
     
     
   
+    
+    
+  
+    
+    
+  
     props.onSave(data, props?.map?.id)
   }
 
@@ -389,6 +395,43 @@ const MapForm = (props: MapFormProps) => {
         
 
         <FieldError name="carniflora" className="rw-field-error" />
+
+        <Label
+          name="notes"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Notes
+        </Label>
+        
+          <TextAreaField
+            name="notes"
+            defaultValue={JSON.stringify(props.map?.notes)}
+            className="rw-input"
+            errorClassName="rw-input rw-input-error"
+            validation={{ valueAsJSON: true }}
+          />
+        
+
+        <FieldError name="notes" className="rw-field-error" />
+
+        <Label
+          name="img"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Img
+        </Label>
+        
+          <TextField
+            name="img"
+            defaultValue={props.map?.img}
+            className="rw-input"
+            errorClassName="rw-input rw-input-error"
+          />
+        
+
+        <FieldError name="img" className="rw-field-error" />
 
         <div className="rw-button-group">
           <Submit

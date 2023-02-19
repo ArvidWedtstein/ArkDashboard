@@ -16,12 +16,6 @@ import MainLayout from "./layouts/MainLayout/MainLayout";
 const Routes = () => {
   return (
     <Router>
-      <Set wrap={ScaffoldLayout} title="Maps" titleTo="maps" buttonLabel="New Map" buttonTo="newMap">
-        <Route path="/maps/new" page={MapNewMapPage} name="newMap" />
-        <Route path="/maps/{id}/edit" page={MapEditMapPage} name="editMap" />
-        <Route path="/maps/{id}" page={MapMapPage} name="map" />
-        <Route path="/maps" page={MapMapsPage} name="maps" />
-      </Set>
       <Set wrap={MainLayout}>
         {/*whileLoadingPage*/}
         <Route path="/dino-stats" page={DinoStatsPage} name="dinoStats" />
@@ -46,9 +40,31 @@ const Routes = () => {
         <Route path="/signin" page={SigninPage} name="signin" />
         <Route path="/signup" page={SignupPage} name="signup" />
         <Route notfound page={NotFoundPage} />
-        <Set wrap={ScaffoldLayout} title="Items" titleTo="items" buttonLabel="New Item" buttonTo="newItem">
+        <Set
+          wrap={ScaffoldLayout}
+          title="Maps"
+          titleTo="maps"
+          buttonLabel="New Map"
+          buttonTo="newMap"
+        >
+          <Route path="/maps/new" page={MapNewMapPage} name="newMap" />
+          <Route path="/maps/{id}/edit" page={MapEditMapPage} name="editMap" />
+          <Route path="/maps/{id}" page={MapMapPage} name="map" />
+          <Route path="/maps" page={MapMapsPage} name="maps" />
+        </Set>
+        <Set
+          wrap={ScaffoldLayout}
+          title="Items"
+          titleTo="items"
+          buttonLabel="New Item"
+          buttonTo="newItem"
+        >
           <Route path="/items/new" page={ItemNewItemPage} name="newItem" />
-          <Route path="/items/{id}/edit" page={ItemEditItemPage} name="editItem" />
+          <Route
+            path="/items/{id}/edit"
+            page={ItemEditItemPage}
+            name="editItem"
+          />
           <Route path="/items/{id}" page={ItemItemPage} name="item" />
           <Route path="/items" page={ItemItemsPage} name="items" />
         </Set>
