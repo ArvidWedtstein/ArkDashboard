@@ -169,14 +169,17 @@ export const getBaseMaterials = (
       return;
     }
 
-    if (!firstRecipeOnly && recipe.stats && recipe.stats[0]?.value === 'Resource') {
+    if (
+      !firstRecipeOnly &&
+      recipe.stats &&
+      recipe.stats[0]?.value === "Resource"
+    ) {
       return;
     }
 
     recipe.recipe.forEach(({ itemId, count: recipeCount }) => {
       let recipeItem = prices.items.find((r) => r.itemId === itemId);
       let count = recipeCount * amount;
-
 
       if (!firstRecipeOnly || !recipeItem?.recipe.length) {
         let material = materials.find((m) => m.itemId === itemId);
@@ -195,15 +198,11 @@ export const getBaseMaterials = (
     findBaseMaterials(itemId, amount);
   });
 
-
-
   return materials;
 };
 
-
-
 function getResourcesForCrafting(itemId: number, amount: number) {
-  const itemToCraft = prices.items.find(item => item.itemId === itemId);
+  const itemToCraft = prices.items.find((item) => item.itemId === itemId);
   const resources = new Map<number, number>();
 
   if (!itemToCraft) {
@@ -219,14 +218,19 @@ function getResourcesForCrafting(itemId: number, amount: number) {
     }
 
     if (availableAmount < requiredAmount) {
-      const ingredientItem = prices.items.find(item => item.itemId === recipeItem.itemId);
+      const ingredientItem = prices.items.find(
+        (item) => item.itemId === recipeItem.itemId
+      );
 
       if (!ingredientItem) {
         throw new Error(`Item with itemId ${recipeItem.itemId} not found.`);
       }
 
       const remainingAmount = requiredAmount - availableAmount;
-      const additionalResources = getResourcesForCrafting(recipeItem.itemId, Math.ceil(remainingAmount / ingredientItem.yields));
+      const additionalResources = getResourcesForCrafting(
+        recipeItem.itemId,
+        Math.ceil(remainingAmount / ingredientItem.yields)
+      );
 
       for (const [itemId, amount] of additionalResources) {
         if (resources.has(itemId)) {
@@ -237,21 +241,70 @@ function getResourcesForCrafting(itemId: number, amount: number) {
       }
 
       if (resources.has(recipeItem.itemId)) {
-        resources.set(recipeItem.itemId, resources.get(recipeItem.itemId)! + requiredAmount);
+        resources.set(
+          recipeItem.itemId,
+          resources.get(recipeItem.itemId)! + requiredAmount
+        );
       } else {
         resources.set(recipeItem.itemId, requiredAmount);
       }
     } else {
       if (resources.has(recipeItem.itemId)) {
-        resources.set(recipeItem.itemId, resources.get(recipeItem.itemId)! + requiredAmount);
+        resources.set(
+          recipeItem.itemId,
+          resources.get(recipeItem.itemId)! + requiredAmount
+        );
       } else {
         resources.set(recipeItem.itemId, requiredAmount);
       }
     }
   }
-
   return Array.from(resources);
 }
+
+interface Coordinate {
+  lat: number;
+  lon: number;
+}
+
+export const findShortestPath = (coordinates: Coordinate[]): Coordinate[] => {
+  const path: Coordinate[] = [];
+
+  // Start with the first coordinate and remove it from the array
+  let currentCoord = coordinates.shift();
+  path.push(currentCoord);
+
+  // Continue adding the nearest coordinate to the path until there are no more coordinates
+  while (coordinates.length > 0) {
+    let nearestCoord = coordinates[0];
+    let shortestDistance = distance(currentCoord, nearestCoord);
+
+    // Find the nearest coordinate to the current coordinate
+    for (let i = 1; i < coordinates.length; i++) {
+      const candidateCoord = coordinates[i];
+      const candidateDistance = distance(currentCoord, candidateCoord);
+      if (candidateDistance < shortestDistance) {
+        nearestCoord = candidateCoord;
+        shortestDistance = candidateDistance;
+      }
+    }
+
+    // Add the nearest coordinate to the path and remove it from the array
+    path.push(nearestCoord);
+    coordinates = coordinates.filter((coord) => coord !== nearestCoord);
+
+    // Update the current coordinate to the nearest one
+    currentCoord = nearestCoord;
+  }
+
+  return path;
+};
+
+export const distance = ({ lat: lat1, lon: lon1 }: coordinate, { lat: lat2, lon: lon2 }: coordinate) => {
+  const latDiff = lat1 - lat2;
+  const lonDiff = lon1 - lon2;
+  return (latDiff ** 2 + lonDiff ** 2) ** 0.5;
+};
 
 /**
  * Formats the given number of seconds into a string representation
@@ -289,14 +342,14 @@ function timeFormatL(seconds, onlyLast = false) {
     }
   }
   if (minutes > 0) {
-    time += (hours > 0 || days > 0) ? " " : "";
+    time += hours > 0 || days > 0 ? " " : "";
     time += `${minutes}m`;
     if (onlyLast) {
       return time;
     }
   }
   if (sec > 0 || time === "") {
-    time += (minutes > 0 || hours > 0 || days > 0) ? " " : "";
+    time += minutes > 0 || hours > 0 || days > 0 ? " " : "";
     time += `${sec}s`;
   }
 

@@ -3,43 +3,199 @@ const d = require("./web/public/maps.json");
 const d2 = require("./web/public/dinotest.json");
 
 
-
-
+let notes = [
+  {
+    "x": -170767.1,
+    "y": 74383.69,
+    "z": -137631.3,
+    "lat": 60.41643,
+    "long": 26.08639
+  },
+  {
+    "x": -109296.8,
+    "y": 314833.6,
+    "z": 8068.93,
+    "lat": 94.08817,
+    "long": 34.69447
+  },
+  {
+    "x": 47686.35,
+    "y": 243201.2,
+    "z": -136026.8,
+    "lat": 84.05703,
+    "long": 56.67783
+  },
+  {
+    "x": -237230.6,
+    "y": 270631.4,
+    "z": -2826.115,
+    "lat": 87.89825,
+    "long": 16.77908
+  },
+  {
+    "x": 372487.2,
+    "y": -379539.8,
+    "z": -130274.7,
+    "lat": -3.149391,
+    "long": 102.1618
+  },
+  {
+    "x": -301818.5,
+    "y": -18732.01,
+    "z": -10773.25,
+    "lat": 47.37684,
+    "long": 7.734421
+  },
+  {
+    "x": -77746.98,
+    "y": 215374.4,
+    "z": -110185.9,
+    "lat": 80.16026,
+    "long": 39.11259
+  },
+  {
+    "x": 6798.426,
+    "y": -177741.7,
+    "z": 21704.44,
+    "lat": 25.10969,
+    "long": 50.95203
+  },
+  {
+    "x": -22928,
+    "y": 243804.1,
+    "z": -139183.6,
+    "lat": 84.14145,
+    "long": 46.78925
+  },
+  {
+    "x": 293966.4,
+    "y": -227058.6,
+    "z": 27398.46,
+    "lat": 18.20353,
+    "long": 91.166
+  },
+  {
+    "x": 354987,
+    "y": -376939.2,
+    "z": -152837.4,
+    "lat": -2.785212,
+    "long": 99.71111
+  }
+]
 // let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
 console.time("normal");
+function findShortestPathWithAStar2(startX, startY, startZ, endX, endY, endZ, points) {
+  const startNode = {
+    x: startX,
+    y: startY,
+    z: startZ,
+    gScore: 0,
+    fScore: calculateHeuristic(startX, startY, startZ, endX, endY, endZ)
+  };
+  const endNode = {
+    x: endX,
+    y: endY,
+    z: endZ
+  };
+  const openSet = [startNode];
+  const closedSet = new Set();
 
+  while (openSet.length > 0) {
+    let currentNode = openSet[0];
+    let currentIndex = 0;
+    for (let i = 0; i < openSet.length; i++) {
+      if (openSet[i].fScore < currentNode.fScore) {
+        currentNode = openSet[i];
+        currentIndex = i;
+      }
+    }
+
+    if (currentNode.x === endNode.x && currentNode.y === endNode.y && currentNode.z === endNode.z) {
+      return reconstructPath(currentNode);
+    }
+
+    openSet.splice(currentIndex, 1);
+    closedSet.add(currentNode);
+
+    for (let i = 0; i < points.length; i++) {
+      const neighbor = points[i];
+      if (closedSet.has(neighbor)) {
+        continue;
+      }
+      const tentativeGScore = currentNode.gScore + calculateDistance(currentNode, neighbor);
+      if (!openSet.includes(neighbor)) {
+        openSet.push(neighbor);
+      } else if (tentativeGScore >= neighbor.gScore) {
+        continue;
+      }
+
+      neighbor.parent = currentNode;
+      neighbor.gScore = tentativeGScore;
+      neighbor.fScore = neighbor.gScore + calculateHeuristic(neighbor.x, neighbor.y, neighbor.z, endX, endY, endZ);
+    }
+  }
+
+  return null;
+}
+
+function calculateHeuristic(x1, y1, z1, x2, y2, z2) {
+  return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2) + Math.pow(z2 - z1, 2));
+}
+
+function calculateDistance(node1, node2) {
+  return calculateHeuristic(node1.x, node1.y, node1.z, node2.x, node2.y, node2.z);
+}
+
+function reconstructPath(node) {
+  const path = [node];
+  while (node.parent) {
+    node = node.parent;
+    path.unshift(node);
+  }
+  const result = path.map(node => ({ lat: node.lat, long: node.long }));
+  return result;
+}
+
+console.log()
 console.timeEnd("normal");
 
 console.time("optimized");
 
-let maps = d.map((map) => {
-  return {
-    name: map.name,
-    image: map.image,
-    lootCrates: map.lootCrates.map((crate) => {
-      return {
-        maxCrateNumber: crate.maxCrateNumber,
-        crateClasses: crate.crateClasses,
-        crateLocations: crate.crateLocations.map((location) => {
-          return {
-            lat: location.lat,
-            lon: location.long,
-          };
-        })
-      }
-    })
-  }
-});
+const findShortestPath = (coordinates) => {
+  const path = [coordinates.shift()];
+  const { length } = coordinates;
 
-require("fs").writeFile(
-  "./web/public/maps.json",
-  JSON.stringify(maps),
-  (error) => {
-    if (error) {
-      throw error;
+  let currentCoord = path[0];
+
+  for (const _ of Array(length)) {
+    let nearestCoord = coordinates[0];
+    let shortestDistance = distance(currentCoord, nearestCoord);
+
+    for (const candidateCoord of coordinates) {
+      const candidateDistance = distance(currentCoord, candidateCoord);
+      if (candidateDistance < shortestDistance) {
+        nearestCoord = candidateCoord;
+        shortestDistance = candidateDistance;
+      }
     }
+
+    path.push(nearestCoord);
+    coordinates = coordinates.filter(coord => coord !== nearestCoord);
+    currentCoord = nearestCoord;
   }
-);
+
+  return path;
+};
+
+const distance = ({ lat: lat1, lon: lon1 }, { lat: lat2, lon: lon2 }) => {
+  const latDiff = lat1 - lat2;
+  const lonDiff = lon1 - lon2;
+  return (latDiff ** 2 + lonDiff ** 2) ** 0.5;
+};
+
+
+const shortestPath = findShortestPath(notes);
+console.log(shortestPath);
 console.timeEnd("optimized");
 
 // `INSERT INTO public."Dino" (name, exp_per_kill, attack, disable_tame, disable_ko, disable_food, flyer_dino, ridable, mounted_weaponry)
