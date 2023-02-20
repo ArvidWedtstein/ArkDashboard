@@ -1,6 +1,7 @@
 import {
   FieldError,
   Form,
+  ImageField,
   Label,
   Submit,
   TextField,
@@ -9,20 +10,23 @@ import {
 } from "@redwoodjs/forms";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Counter from "src/components/Util/Counter/Counter";
 import Table from "src/components/Util/Table/Table";
 import { combineBySummingKeys } from "src/lib/formatters";
-// import arkdinos from "../../../public/arkdinos2.json";
+import items from "../../../public/arkitems.json";
+import arkdinos from "../../../public/dinotest.json";
+
 
 interface stats {
-  health: number;
-  stamina: number;
-  oxygen: number;
-  food: number;
-  weight: number;
-  meleeDamage: number;
-  movementSpeed: number;
-  torpor: number;
+  h: number;
+  s: number;
+  o: number;
+  f: number;
+  w: number;
+  d: number;
+  m: number;
+  t: number;
 }
 const DinoStatsPage = () => {
   const {
@@ -31,17 +35,19 @@ const DinoStatsPage = () => {
     setValue,
   } = useForm({ defaultValues: { name: "Dodo", level: 1 } });
   let [dino, setDino] = useState(null);
+  let [select, setSelect] = useState(null);
   let [points, setPoints] = useState(null);
   let [level, setLevel] = useState<stats>({
-    health: 0,
-    stamina: 0,
-    oxygen: 0,
-    food: 0,
-    weight: 0,
-    meleeDamage: 0,
-    movementSpeed: 0,
-    torpor: 0,
+    h: 0,
+    s: 0,
+    o: 0,
+    f: 0,
+    w: 0,
+    d: 0,
+    m: 0,
+    t: 0,
   });
+
 
 
   const onAdd = (data) => {
@@ -49,6 +55,7 @@ const DinoStatsPage = () => {
     setLevel({ ...level, [id]: level[id] + 1 });
     setPoints(points - 1);
     let dyno = dino.find((d) => d.stat === id);
+    if (!dyno) return null;
     // dyno.dino = (level[id] + 1) * dyno.increaseperlevel + dyno.base;
     dyno.dino = (level[id] + 1) * dyno.increasePerLevelWild + dyno.base;
   };
@@ -61,23 +68,30 @@ const DinoStatsPage = () => {
   };
 
   const onSubmit = (data) => {
-    // let dino = arkdinos[data.name.toLowerCase()]
     // console.log(getEstimatedStat("food", data.name, data.level))
-    // let dino = arkdinos.find(
-    //   (d) => d.name.toLowerCase() === data.name.toLowerCase()
-    // );
-    // let t = Object.entries(dino.baseStats).map(([key, value]) => {
-    //   return {
-    //     stat: key,
-    //     base: value.base,
-    //     increasePerLevelWild: value.increasePerLevelWild || 0,
-    //     increasePerLevelTamed: value.increasePerLevelTamed || 0,
-    //     dino: value?.base + value.increasePerLevelWild * level[key],
-    //   };
-    // });
+    let dino = arkdinos.find(
+      (d) => d.name.toLowerCase() === data.name.toLowerCase()
+    );
+    if (!dino) return null;
+    let t = Object.entries(dino.baseStats).map(([key, value]) => {
+      return {
+        stat: key,
+        base: value.b,
+        increasePerLevelWild: value.w || null,
+        increasePerLevelTamed: value.t || null,
+        dino: (value.b && value.w && level[key] ? value.b + value.w * level[key] : null),
+      };
+    });
     setValue("level", data.level);
     setPoints(data.level - 1);
-    // setDino(t);
+    setDino(t);
+    let c = calcData({ creature: dino, level: data.level, method: "v" })
+    for (let i in c.food) {
+      c.food[i].results = calcTame({ cr: dino, level: data.level, foods: c.food, i })
+    }
+    setSelect(c);
+
+    // console.log(calcData({ creature: dino, level: data.level, method: "v" }));
   };
 
   const genRandomStats = () => {
@@ -121,6 +135,178 @@ const DinoStatsPage = () => {
   //     return d.baseStats[stat].base;
   //   }
   // }
+  let settings = {
+    consumptionMultiplier: 1,
+    tamingMultiplier: 1,
+  }
+
+
+  const calcData = ({ creature, level, method = "v", selectedFood }: any) => {
+    const affinityNeeded = creature.affinityNeeded + creature.affinityIncreasePerLevel * level;
+    const foodConsumption = creature.foodConsumptionBase * creature.foodConsumptionMult * settings.consumptionMultiplier * (method === "n" ? creature.nonViolentFoodRateMultiplier : 1);
+
+    const foods = creature.eats.map((foodName: any, index: number) => {
+      const food: any = items.items.find((item: any) => item.name.toLowerCase() === foodName.toLowerCase());
+      if (!food) return null;
+      const foodValue = food.stats.find((stat) => stat.id === 8)?.value || 0;
+      const affinityValue = food.stats.find((stat) => stat.id === 15)?.value || 0;
+      const foodMaxRaw = affinityNeeded / affinityValue / 4;
+      const foodMax = Math.ceil(foodMaxRaw);
+      const isFoodSelected = food.itemId === selectedFood;
+      let interval = null;
+      let interval1 = null;
+      let foodSecondsPer = 0;
+      let foodSeconds = 0;
+      if (method === "n") {
+        const baseStat = creature.baseStats?.f;
+        if (typeof baseStat?.b === "number" && typeof baseStat?.w === "number") {
+          const averagePerStat = Math.round(level / 7);
+          const estimatedFood = baseStat.b + baseStat.w * averagePerStat;
+          const requiredFood = Math.max(estimatedFood * 0.1, foodValue);
+          interval1 = requiredFood / foodConsumption;
+        }
+        interval = foodValue / foodConsumption;
+        if (foodMax > 1) {
+          foodSecondsPer = foodValue / foodConsumption;
+          foodSeconds = Math.ceil(Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) * foodSecondsPer + (interval1 || 0));
+        }
+      } else {
+        foodSecondsPer = foodValue / foodConsumption;
+        foodSeconds = Math.ceil(foodMax * foodSecondsPer);
+      }
+      return {
+        id: food.itemId,
+        stats: food.stats,
+        name: food.name,
+        icon: food.image,
+        max: foodMax,
+        food: foodValue,
+        seconds: foodSeconds,
+        secondsPer: foodSecondsPer,
+        percentPer: 100 / foodMaxRaw,
+        interval,
+        interval1,
+        use: isFoodSelected ? foodMax : 0,
+        key: index,
+      };
+    }).filter(food => !!food);
+    return { food: foods, affinityNeeded };
+  };
+
+
+
+  const calcTame = ({ cr, level, foods, useExclusive, method = "v" }: any) => {
+    let effectiveness = 100;
+    let affinityNeeded = cr.affinityNeeded + cr.affinityIncreasePerLevel * level;
+    // sanguineElixir = affinityNeeded *= 0.7
+
+    let affinityLeft = affinityNeeded;
+
+    let foodConsumption = cr.foodConsumptionBase * cr.foodConsumptionMult * settings.consumptionMultiplier;
+    let totalFood = 0;
+
+    let tamingMultiplier = cr.disableMultiplier ? 4 : settings.tamingMultiplier * 4;
+
+    if (method == "n") {
+      foodConsumption = foodConsumption * cr.nonViolentFoodRateMultiplier;
+    }
+    let tooMuchFood = false;
+    let enoughFood = false
+    let numUsedTotal = 0;
+    let numNeeded = 0;
+    let numToUse = 0;
+    let totalSecs = 0;
+    foods.forEach((food: any) => {
+      if (!food) return;
+      let foodVal = food.stats.find((f: any) => f.id === 8).value;
+      let affinityVal = food.stats.find((f: any) => f.id === 15).value;
+      if (affinityLeft > 0) {
+        if (useExclusive >= 0) {
+          if (food.key == useExclusive) {
+            food.use = food.max;
+          } else {
+            food.use = 0;
+          }
+        }
+        if (method == "n") {
+          numNeeded = Math.ceil(affinityLeft / affinityVal / tamingMultiplier / cr.nonViolentFoodRateMultiplier);
+        } else {
+          numNeeded = Math.ceil(affinityLeft / affinityVal / tamingMultiplier);
+        }
+
+        if (numNeeded >= food.use) {
+          numToUse = food.use;
+        } else {
+          tooMuchFood = true;
+          numToUse = numNeeded;
+        }
+
+        if (method == "n") {
+          affinityLeft -= numToUse * affinityVal * tamingMultiplier * cr.nonViolentFoodRateMultiplier;
+        } else {
+          affinityLeft -= numToUse * affinityVal * tamingMultiplier;
+        }
+        totalFood += numToUse * foodVal;
+        let i = 1;
+        while (i <= numToUse) {
+          if (method == "n") {
+            effectiveness -= (Math.pow(effectiveness, 2) * cr.tamingBonusAttribute) /
+              affinityVal / tamingMultiplier / cr.nonViolentFoodRateMultiplier;
+          } else {
+            effectiveness -= (Math.pow(effectiveness, 2) * cr.tamingBonusAttribute) /
+              affinityVal / 100;
+          }
+          numUsedTotal++;
+          i++;
+        }
+        if (effectiveness < 0) {
+          effectiveness = 0;
+        }
+      } else if (food.use > 0) {
+        tooMuchFood = true;
+      }
+    })
+
+    let neededValues = Array();
+
+    if (affinityLeft <= 0) {
+      enoughFood = true;
+    } else {
+      enoughFood = false;
+
+      foods.forEach((food: any) => {
+        numNeeded = Math.ceil(affinityLeft / food.stats.find((f: any) => f.id === 15).value / tamingMultiplier);
+        neededValues[food.id] = numNeeded;
+      })
+
+    }
+
+    let percentLeft = affinityLeft / affinityNeeded;
+    let percentTamed = 1 - percentLeft;
+    let totalTorpor = cr.baseTamingTime + cr.tamingInterval * (level - 1)
+    let torporDepletionPS = cr.torporDepletionPS + Math.pow(level - 1, 0.800403041) / (22.39671632 / cr.torporDepletionPS)
+    let levelsGained = Math.floor((level * 0.5 * effectiveness) / 100)
+
+    return {
+      effectiveness,
+      neededValues,
+      enoughFood,
+      tooMuchFood,
+      totalFood,
+      totalSecs,
+      levelsGained,
+      totalTorpor,
+      torporDepletionPS,
+      percentTamed
+    }
+  }
+
+  // const d = calcData({ creature: dodo, level: 100, method: 'v' });
+  // console.log(d)
+  // console.log(calcTame({
+  //   cr: dodo, level: 100, foods: d.food, useExclusive: 0
+  // }));
+
 
   const calcMaturation = () => {
     let maturation = 0;
@@ -140,8 +326,11 @@ const DinoStatsPage = () => {
 
     console.log(timeRemaining)
   }
+
+
   return (
     <>
+
       <MetaTags title="DinoStats" description="DinoStats page" />
 
       <div className="p-4">
@@ -198,7 +387,7 @@ const DinoStatsPage = () => {
             </div>
           </Form>
           {/* TODO: Add pretame simulator. Assign available points to random stats */}
-          <Table
+          {/* <Table
             rows={dino}
             columns={[
               {
@@ -250,11 +439,67 @@ const DinoStatsPage = () => {
                 </nav>
               );
             }}
-          />
+          /> */}
 
-          <svg className="w-10 h-10">
+          {select && <Table
+            rows={select.food}
+            columns={[
+              {
+                field: "name",
+                label: "Food",
+                bold: true,
+                sortable: true,
+                renderCell: ({ row, rowIndex }) => {
+                  return (
+                    <button type="button" className=" relative rounded-full w-10 h-10 flex items-center justify-center">
+                      <img className="w-8 h-8" src={"https://www.arkresourcecalculator.com/assets/images/80px-" + row.icon} />
+                    </button>
+                  )
+                },
+              },
+              {
+                field: "use",
+                label: "Use",
+                bold: true,
+                renderCell: ({ row, rowIndex }) => {
+                  return (
+                    <div className="flex flex-row items-center" key={`${row.use}+${Math.random()}`}>
+                      <button type="button" className="border border-black dark:border-white relative dark:text-white text-black hover:bg-white hover:text-black mx-2 rounded-full w-8 h-8 text-lg font-semibold" >
+                        -
+                      </button>
+                      <p
+                        defaultValue={row.use}
+                        className="rw-input w-16 p-3 text-center"
+                      >{row.use}/{row.max}</p>
+                      <button type="button" className="border border-black dark:border-white relative dark:text-white text-black hover:bg-white hover:text-black mx-2 rounded-full w-8 h-8 text-lg font-semibold">
+                        +
+                      </button>
+                    </div>
+                  )
+                }
+              },
+              {
+                field: "seconds",
+                label: "Time",
+                numeric: true,
+                className: "text-center",
+                valueFormatter: ({ value }) => {
 
-          </svg>
+                  let minutes = Math.floor(value / 60);
+                  let remainingSeconds = value % 60 < 10 ? `0${value % 60}` : value % 60;
+                  return `${minutes}:${remainingSeconds}`;
+                },
+              },
+              {
+                field: "results",
+                label: "Effectiveness",
+                valueFormatter: ({ value }) => {
+                  return value ? value.effectiveness : 0;
+                },
+              }
+            ]}
+          />}
+
         </div>
       </div>
     </>

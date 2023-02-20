@@ -300,7 +300,7 @@ export const findShortestPath = (coordinates: Coordinate[]): Coordinate[] => {
   return path;
 };
 
-export const distance = ({ lat: lat1, lon: lon1 }: coordinate, { lat: lat2, lon: lon2 }: coordinate) => {
+export const distance = ({ lat: lat1, lon: lon1 }: Coordinate, { lat: lat2, lon: lon2 }: Coordinate) => {
   const latDiff = lat1 - lat2;
   const lonDiff = lon1 - lon2;
   return (latDiff ** 2 + lonDiff ** 2) ** 0.5;

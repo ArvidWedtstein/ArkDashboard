@@ -29,7 +29,7 @@ export const Map = ({
       "https://ark.gamepedia.com/media/thumb/4/4e/Genesis_Part_1.jpg/600px-Genesis_Part_1.jpg",
     gen2: "https://ark.gamepedia.com/media/thumb/0/0d/Genesis_Part_2.jpg/600px-Genesis_Part_2.jpg",
     genesis2:
-      "https://ark.gamepedia.com/media/thumb/0/0d/Genesis_Part_2.jpg/600px-Genesis_Part_2.jpg",
+      "https://ark.wiki.gg/images/thumb/4/44/Genesis_Part_2_Map.jpg/600px-Genesis_Part_2_Map.jpg",
     valguero:
       "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/1/19/Valguero_Map.jpg",
     crystalisles:

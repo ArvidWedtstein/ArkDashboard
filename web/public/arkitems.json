@@ -1866,9 +1866,10 @@
       "recipe": [],
       "stats": [
         { "id": 1, "value": "Consumable" },
-        { "id": 8, "value": "+1.5" },
+        { "id": 8, "value": 30 },
         { "id": 11, "value": "+1" },
-        { "id": 9, "value": "10:00" }
+        { "id": 9, "value": "10:00" },
+        { "id": 15, "value": 30 }
       ],
       "decomposes": 120
     },
@@ -1882,7 +1883,7 @@
       "recipe": [],
       "stats": [
         { "id": 1, "value": "Consumable" },
-        { "id": 8, "value": "+4.0" },
+        { "id": 8, "value": 4 },
         { "id": 11, "value": 0 },
         { "id": 10, "value": "+7.5" },
         { "id": 9, "value": "10:00" }
@@ -11395,7 +11396,10 @@
         { "itemId": 119, "count": 10 },
         { "itemId": 76, "count": 5 }
       ],
-      "stats": [{ "id": 8, "value": 16, "duration": 3.2 }]
+      "stats": [
+        { "id": 8, "value": 79.98 },
+        { "id": 15, "value": 400 }
+      ]
     },
     {
       "itemId": 779,
