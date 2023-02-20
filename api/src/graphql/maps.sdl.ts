@@ -23,8 +23,8 @@ export const schema = gql`
   }
 
   type Query {
-    maps: [Map!]! @requireAuth
-    map(id: BigInt!): Map @requireAuth
+    maps: [Map!]! @skipAuth
+    map(id: BigInt!): Map @skipAuth
   }
 
   input CreateMapInput {
@@ -76,4 +76,4 @@ export const schema = gql`
     updateMap(id: BigInt!, input: UpdateMapInput!): Map! @requireAuth
     deleteMap(id: BigInt!): Map! @requireAuth
   }
-`
+`;

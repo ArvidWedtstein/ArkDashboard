@@ -4,8 +4,8 @@
 // ```tsx
 // import type { ComponentStory } from '@storybook/react'
 //
-// export const generated: ComponentStory<typeof Dropdown> = (args) => {
-//   return <Dropdown {...args} />
+// export const generated: ComponentStory<typeof Counter> = (args) => {
+//   return <Counter {...args} />
 // }
 // ```
 //
@@ -13,13 +13,13 @@
 
 import type { ComponentMeta } from '@storybook/react'
 
-import Dropdown from './Dropdown'
+import Counter from './Counter'
 
 export const generated = () => {
-  return <Dropdown />
+  return <Counter />
 }
 
 export default {
-  title: 'Components/Dropdown',
-  component: Dropdown,
-} as ComponentMeta<typeof Dropdown>
+  title: 'Components/Counter',
+  component: Counter,
+} as ComponentMeta<typeof Counter>

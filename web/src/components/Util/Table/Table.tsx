@@ -295,7 +295,7 @@ const Table = ({
   const tableFooter = () => {
     return (
       <tfoot>
-        <tr className="font-semibold text-gray-900 dark:text-white">
+        <tr className="font-semibold text-gray-900 dark:text-white dark:bg-gray-700 bg-gray-400">
           {select && !vertical && <td className="p-4"></td>}
           {!vertical &&
             columns.map(({ field, ...other }, index) => {

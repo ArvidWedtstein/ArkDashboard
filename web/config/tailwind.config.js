@@ -34,6 +34,16 @@ module.exports = {
             opacity: "1",
           },
         },
+        countup: {
+          from: {
+            opacity: "0",
+            transform: "translateY(50px)",
+          },
+          to: {
+            opacity: "1",
+            transform: "translateY(0)",
+          },
+        },
       },
       //https://uicolors.app/create
       colors: {
