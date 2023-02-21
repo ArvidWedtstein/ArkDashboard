@@ -17,7 +17,8 @@
     { "id": 15, "name": "Affinity" },
     { "id": 16, "name": "Ammo" },
     { "id": 17, "name": "Weight Reduction" },
-    { "id": 18, "name": "Fuel" }
+    { "id": 18, "name": "Fuel" },
+    { "id": 19, "name": "Duration" }
   ],
   "items": [
     {
@@ -1884,9 +1885,10 @@
       "stats": [
         { "id": 1, "value": "Consumable" },
         { "id": 8, "value": 4 },
+        { "id": 9, "value": "10:00" },
         { "id": 11, "value": 0 },
-        { "id": 10, "value": "+7.5" },
-        { "id": 9, "value": "10:00" }
+        { "id": 10, "value": 7.5 },
+        { "id": 19, "value": 3 }
       ],
       "decomposes": 120
     },
@@ -1925,7 +1927,8 @@
       ],
       "stats": [
         { "id": 1, "value": "Consumable" },
-        { "id": 10, "value": "+40" }
+        { "id": 10, "value": 40 },
+        { "id": 19, "value": 8 }
       ],
       "decomposes": 120
     },
@@ -10284,7 +10287,11 @@
       "maxStack": 100,
       "weight": 0.1,
       "recipe": [],
-      "stats": [{ "id": 1, "value": "Consumable" }]
+      "stats": [
+        { "id": 1, "value": "Consumable" },
+        { "id": 10, "value": 25 },
+        { "id": 19, "value": 2 }
+      ]
     },
     {
       "itemId": 714,
@@ -10373,7 +10380,11 @@
       "requiredLevel": 0,
       "yields": 1,
       "recipe": [],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [
+        { "id": 1, "value": "Consumable" },
+        { "id": 10, "value": 80 },
+        { "id": 19, "value": 16 }
+      ]
     },
     {
       "itemId": 720,

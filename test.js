@@ -958,7 +958,7 @@ function processTameInput() {
   if (tamingResults.enoughFood) {
     if ($("#tamingResults").is(":hidden")) {
       $("#tamingResults").show();
-      $("#tamingWarning")food.hide();
+      $("#tamingWarning").food.hide();
     }
     if (tamingResults.tooMuchFood) {
       $("#tamingExcess").show();

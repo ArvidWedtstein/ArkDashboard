@@ -74,6 +74,7 @@ module.exports = {
   plugins: [
     plugin(({ addVariant }) => {
       addVariant("dataready", '&[data-ready="true"]');
+      addVariant("not-last", "&:not(:last-child)");
     }),
   ],
 };

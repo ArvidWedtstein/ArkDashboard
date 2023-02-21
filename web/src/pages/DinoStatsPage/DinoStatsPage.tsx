@@ -10,7 +10,7 @@ import {
 } from "@redwoodjs/forms";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import Counter from "src/components/Util/Counter/Counter";
 import Table from "src/components/Util/Table/Table";
 import { combineBySummingKeys } from "src/lib/formatters";
@@ -35,8 +35,7 @@ const DinoStatsPage = () => {
   } = useForm({ defaultValues: { name: "Dodo", level: 1 } });
   let [dino, setDino] = useState(null);
   let [select, setSelect] = useState(null);
-  let [points, setPoints] = useState(null);
-  let [level, setLevel] = useState<stats>({
+  let [points, setPoints] = useState(null); let [level, setLevel] = useState<stats>({
     h: 0,
     s: 0,
     o: 0,
@@ -64,13 +63,32 @@ const DinoStatsPage = () => {
     dyno.dino = (level[id] - 1) * dyno.increasePerLevelWild + dyno.base;
   };
 
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case "COMPLETE":
+        return state.map((todo) => {
+          if (todo.id === action.id) {
+            return { ...todo, complete: !todo.complete };
+          } else {
+            return todo;
+          }
+        });
+      case "use_exclusive":
+
+      default:
+        return state;
+    }
+  };
+
+  const [taming, dispatch] = useReducer(reducer, []);
+
   const onSubmit = (data) => {
     // console.log(getEstimatedStat("food", data.name, data.level))
-    let dino = arkdinos.find(
+    let dinon = arkdinos.find(
       (d) => d.name.toLowerCase() === data.name.toLowerCase()
     );
-    if (!dino) return null;
-    let t = Object.entries(dino.baseStats).map(([key, value]) => {
+    if (!dinon) return null;
+    let t = Object.entries(dinon.baseStats).map(([key, value]) => {
       return {
         stat: key,
         base: value.b,
@@ -95,10 +113,12 @@ const DinoStatsPage = () => {
       });
     }
     setSelect(c);
-
-    // console.log(calcData({ creature: dino, level: data.level, method: "v" }));
   };
 
+
+  // const handleComplete = (todo) => {
+  //   dispatch({ type: "COMPLETE", id: todo.id });
+  // };
   const genRandomStats = () => {
     // scramble level
     let newlevel = {};
@@ -113,33 +133,6 @@ const DinoStatsPage = () => {
     setPoints(i);
   };
 
-  // const getEstimatedStat = (stat, dino, level) => {
-  //   let d = arkdinos.find(
-  //     (d) => d.name.toLowerCase() === dino.toLowerCase()
-  //   );
-  //   if (!d) return null;
-
-  //   let numEligibleStats = 0;
-  //   if (d.baseStats[stat].increasePerLevelWild > 0 && d.baseStats[stat].base >= 0) {
-  //     if (typeof d.baseStats["oxygen"] === 'object' && d.baseStats["oxygen"].base == null) {
-  //       numEligibleStats = 5;
-  //     } else {
-  //       numEligibleStats = 6;
-  //     }
-
-  //     let numLevels = 0;
-  //     if (level > 0) {
-  //       numLevels = level - 1;
-  //     } else {
-  //       numLevels = 1;
-  //     }
-  //     let estFoodLevels = Math.round(numLevels / numEligibleStats);
-  //     return d.baseStats[stat].base + d.baseStats[stat].increasePerLevelWild * estFoodLevels;
-
-  //   } else {
-  //     return d.baseStats[stat].base;
-  //   }
-  // }
   let settings = {
     consumptionMultiplier: 1,
     tamingMultiplier: 1,
@@ -186,8 +179,8 @@ const DinoStatsPage = () => {
             foodSecondsPer = foodValue / foodConsumption;
             foodSeconds = Math.ceil(
               Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
-                foodSecondsPer +
-                (interval1 || 0)
+              foodSecondsPer +
+              (interval1 || 0)
             );
           }
         } else {
@@ -219,9 +212,41 @@ const DinoStatsPage = () => {
       affinityNeeded,
     };
   };
+  const useExclusive = (usedFoodIndex: number) => {
+    // dispatch({ type: "use_exclusive", id: usedFoodIndex });
+    setSelect({
+      ...select,
+      food: select.food.map((f, index) => {
+        if (index == usedFoodIndex) {
+          return { ...f, use: f.max };
+        } else {
+          return { ...f, use: 0 };
+        }
+      }),
+    });
+  }
 
   const calcTame = ({ cr, level, foods, useExclusive, method = "v" }: any) => {
     let effectiveness = 100;
+    // Replace with item json
+    let narcotics = {
+      "ascerbic": {
+        "torpor": 25,
+        "secs": 2
+      },
+      "bio": {
+        "torpor": 80,
+        "secs": 16
+      },
+      "narcotics": {
+        "torpor": 40,
+        "secs": 8
+      },
+      "narcoberries": {
+        "torpor": 7.5,
+        "secs": 3
+      }
+    }
     let affinityNeeded =
       cr.affinityNeeded + cr.affinityIncreasePerLevel * level;
     // sanguineElixir = affinityNeeded *= 0.7
@@ -254,7 +279,6 @@ const DinoStatsPage = () => {
 
       if (affinityLeft > 0) {
         if (useExclusive >= 0) {
-          console.log("food", food);
           if (food.key == useExclusive) {
             food.use = food.max;
           } else {
@@ -264,9 +288,9 @@ const DinoStatsPage = () => {
         if (method == "n") {
           numNeeded = Math.ceil(
             affinityLeft /
-              affinityVal /
-              tamingMultiplier /
-              cr.nonViolentFoodRateMultiplier
+            affinityVal /
+            tamingMultiplier /
+            cr.nonViolentFoodRateMultiplier
           );
         } else {
           numNeeded = Math.ceil(affinityLeft / affinityVal / tamingMultiplier);
@@ -324,8 +348,8 @@ const DinoStatsPage = () => {
       foods.forEach((food: any) => {
         numNeeded = Math.ceil(
           affinityLeft /
-            food.stats.find((f: any) => f.id === 15).value /
-            tamingMultiplier
+          food.stats.find((f: any) => f.id === 15).value /
+          tamingMultiplier
         );
         neededValues[food.key] = numNeeded;
       });
@@ -338,7 +362,29 @@ const DinoStatsPage = () => {
       cr.torporDepletionPS +
       Math.pow(level - 1, 0.800403041) / (22.39671632 / cr.torporDepletionPS);
     let levelsGained = Math.floor((level * 0.5 * effectiveness) / 100);
-
+    let ascerbicMushroomsMin = Math.max(
+      Math.ceil(
+        (totalSecs * torporDepletionPS - totalTorpor) / (narcotics.ascerbic.torpor + torporDepletionPS * narcotics.ascerbic.secs)
+      ),
+      0
+    )
+    let biotoxinsMin = Math.max(
+      Math.ceil(
+        (totalSecs * torporDepletionPS - totalTorpor) / (narcotics.bio.torpor + torporDepletionPS * narcotics.bio.secs)
+      ), 0
+    )
+    let narcoticsMin = Math.max(
+      Math.ceil(
+        (totalSecs * torporDepletionPS - totalTorpor) / (narcotics.narcotics.torpor + torporDepletionPS * narcotics.narcotics.secs)
+      ),
+      0
+    )
+    let narcoberriesMin = Math.max(
+      Math.ceil(
+        (totalSecs * torporDepletionPS - totalTorpor) / (narcotics.narcoberries.torpor + torporDepletionPS * narcotics.narcoberries.secs)
+      ),
+      0
+    )
     return {
       effectiveness,
       neededValues,
@@ -351,14 +397,12 @@ const DinoStatsPage = () => {
       torporDepletionPS,
       percentTamed,
       numUsedTotal,
+      ascerbicMushroomsMin,
+      biotoxinsMin,
+      narcoticsMin,
+      narcoberriesMin
     };
   };
-
-  // const d = calcData({ creature: dodo, level: 100, method: 'v' });
-  // console.log(d)
-  // console.log(calcTame({
-  //   cr: dodo, level: 100, foods: d.food, useExclusive: 0
-  // }));
 
   const calcMaturation = () => {
     let maturation = 0;
@@ -492,95 +536,119 @@ const DinoStatsPage = () => {
           /> */}
 
           {select && (
-            <Table
-              rows={select.food}
-              columns={[
-                {
-                  field: "name",
-                  label: "Food",
-                  bold: true,
-                  sortable: true,
-                  renderCell: ({ row, rowIndex }) => {
-                    return (
-                      <div className="relative flex items-center justify-start rounded-full">
-                        <img
-                          className="mr-3 h-8 w-8"
-                          src={
-                            "https://www.arkresourcecalculator.com/assets/images/80px-" +
-                            row.icon
-                          }
-                        />
-                        <p>{row.name}</p>
-                      </div>
-                    );
-                  },
-                },
-                {
-                  field: "use",
-                  label: "Use",
-                  bold: true,
-                  renderCell: ({ row }) => {
-                    return (
-                      <div
-                        className="flex flex-row items-center"
-                        key={`${row.use}+${Math.random()}`}
-                      >
-                        <button
-                          type="button"
-                          className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
-                        >
-                          -
+            <>
+              <Table
+                rows={select.food}
+                columns={[
+                  {
+                    field: "name",
+                    label: "Food",
+                    bold: true,
+                    sortable: true,
+                    renderCell: ({ row, rowIndex }) => {
+                      return (
+                        <button className="relative flex items-center justify-start" onClick={() => useExclusive(rowIndex)}>
+                          <img
+                            className="mr-3 h-8 w-8"
+                            src={
+                              "https://www.arkresourcecalculator.com/assets/images/80px-" +
+                              row.icon
+                            }
+                          />
+                          <p>{row.name}</p>
                         </button>
-                        <p
-                          defaultValue={row.use}
-                          className="rw-input w-16 p-3 text-center"
+                      );
+                    },
+                  },
+                  {
+                    field: "use",
+                    label: "Use",
+                    bold: true,
+                    renderCell: ({ row }) => {
+                      return (
+                        <div
+                          className="flex flex-row items-center"
+                          key={`${row.use}+${Math.random()}`}
                         >
-                          {row.use}/{row.max}
-                        </p>
-                        <button
-                          type="button"
-                          className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
-                        >
-                          +
-                        </button>
-                      </div>
-                    );
-                  },
-                },
-                {
-                  field: "seconds",
-                  label: "Time",
-                  numeric: true,
-                  className: "text-center",
-                  valueFormatter: ({ value }) => {
-                    let minutes = Math.floor(value / 60);
-                    let remainingSeconds =
-                      value % 60 < 10 ? `0${value % 60}` : value % 60;
-                    return `${minutes}:${remainingSeconds}`;
-                  },
-                },
-                {
-                  field: "results",
-                  label: "Effectiveness",
-                  valueFormatter: ({ value }) => {
-                    return value ? value.effectiveness : 0;
-                  },
-                  renderCell: ({ value }) => {
-                    return (
-                      <div className="block">
-                        <div className="my-2 h-1 overflow-hidden rounded-md bg-white">
-                          <span
-                            className="bg-pea-500 block h-1 w-full rounded-md"
-                            style={{ width: `${value}%` }}
-                          ></span>
+                          <button
+                            type="button"
+                            disabled={row.use <= 0}
+                            className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white disabled:bg-slate-500 disabled:text-white"
+                          >
+                            -
+                          </button>
+                          <p
+                            defaultValue={row.use}
+                            className="rw-input w-16 p-3 text-center"
+                          >
+                            {row.use}/{row.max}
+                          </p>
+                          <button
+                            type="button"
+                            disabled={row.use >= row.max}
+                            className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white disabled:bg-slate-500 disabled:text-white"
+                          >
+                            +
+                          </button>
                         </div>
-                        <p className="text-xs">{value.toFixed(2)}%</p>
-                      </div>
-                    );
+                      );
+                    },
                   },
-                },
-              ]}
-            />
+                  {
+                    field: "seconds",
+                    label: "Time",
+                    numeric: true,
+                    className: "text-center",
+                    valueFormatter: ({ value }) => {
+                      let minutes = Math.floor(value / 60);
+                      let remainingSeconds =
+                        value % 60 < 10 ? `0${value % 60}` : value % 60;
+                      return `${minutes}:${remainingSeconds}`;
+                    },
+                  },
+                  {
+                    field: "results",
+                    label: "Effectiveness",
+                    renderCell: ({ value }) => {
+                      return (
+                        <div className="block">
+                          <div className="my-2 h-1 overflow-hidden rounded-md bg-white">
+                            <span
+                              className="bg-pea-500 block h-1 w-full rounded-md"
+                              style={{ width: `${value ? value.effectiveness : 0}%` }}
+                            ></span>
+                          </div>
+                          <p className="text-xs">{(value ? value.effectiveness : 0).toFixed(2)}%</p>
+                        </div>
+                      );
+                    },
+                  },
+                ]}
+              />
+              <p className="my-3 text-center text-sm dark:text-gray-200">With selected food:</p>
+              <section className="my-3 dark:bg-zinc-600 rounded-md p-4 dark:text-white">
+                <div className="grid grid-cols-4 gap-4 text-center my-3 relative">
+                  <div className="relative block not-last:before:content-['>'] before:absolute before:ml-auto before:w-full">
+                    <p className="text-sm text-thin">Lvl<span className="ml-1 text-lg font-semibold">100</span></p>
+                  </div>
+                  <div className="relative block not-last:before:content-['>'] before:absolute before:ml-auto before:w-full">
+                    <p className="text-sm text-thin">Lvl<span className="ml-1 text-lg font-semibold">100</span></p>
+                  </div>
+                  <div className="relative block not-last:before:content-['>'] before:absolute before:ml-auto before:w-full">
+                    <p className="text-sm text-thin">Lvl<span className="ml-1 text-lg font-semibold">{ }</span></p>
+                  </div>
+                  <div className="relative block last:before:content-[''] before:absolute before:ml-auto before:w-full">
+                    <p className="text-sm text-thin">Lvl<span className="ml-1 text-lg font-semibold">100</span></p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 gap-4 text-center my-3">
+                  <p className="text-thin text-xs">Current</p>
+                  <p className="text-xs text-thin">Taming Eff.</p>
+                  <p className="text-xs text-thin">With Bonus</p>
+                  <p className="text-xs text-thin">Max after taming</p>
+                </div>
+              </section>
+            </>
           )}
         </div>
       </div>
