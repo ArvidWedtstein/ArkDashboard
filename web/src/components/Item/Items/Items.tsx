@@ -1,11 +1,12 @@
-import { Link, routes } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
+import { Link, routes } from "@redwoodjs/router";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
 
-import { QUERY } from 'src/components/Item/ItemsCell'
-import { jsonTruncate, timeTag, truncate } from 'src/lib/formatters'
+import { QUERY } from "src/components/Item/ItemsCell";
+import StatCard from "src/components/Util/StatCard/StatCard";
+import { jsonTruncate, timeTag, truncate } from "src/lib/formatters";
 
-import type { DeleteItemMutationVariables, FindItems } from 'types/graphql'
+import type { DeleteItemMutationVariables, FindItems } from "types/graphql";
 
 const DELETE_ITEM_MUTATION = gql`
   mutation DeleteItemMutation($id: BigInt!) {
@@ -13,31 +14,32 @@ const DELETE_ITEM_MUTATION = gql`
       id
     }
   }
-`
+`;
 
 const ItemsList = ({ items }: FindItems) => {
   const [deleteItem] = useMutation(DELETE_ITEM_MUTATION, {
     onCompleted: () => {
-      toast.success('Item deleted')
+      toast.success("Item deleted");
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error(error.message);
     },
     // This refetches the query on the list page. Read more about other ways to
     // update the cache over here:
     // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
     refetchQueries: [{ query: QUERY }],
     awaitRefetchQueries: true,
-  })
+  });
 
-  const onDeleteClick = (id: DeleteItemMutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete item ' + id + '?')) {
-      deleteItem({ variables: { id } })
+  const onDeleteClick = (id: DeleteItemMutationVariables["id"]) => {
+    if (confirm("Are you sure you want to delete item " + id + "?")) {
+      deleteItem({ variables: { id } });
     }
-  }
+  };
 
   return (
     <div className="rw-segment rw-table-wrapper-responsive">
+      {/* <StatCard stat={"test"} value={10} /> */}
       <table className="rw-table">
         <thead>
           <tr>
@@ -77,27 +79,27 @@ const ItemsList = ({ items }: FindItems) => {
               <td>{jsonTruncate(item.recipe)}</td>
               <td>{jsonTruncate(item.stats)}</td>
               <td>{truncate(item.color)}</td>
-              <td>{truncate(item.crafted_in)}</td>
-              <td>{truncate(item.effects)}</td>
+              <td>{truncate(item.crafted_in.join(", "))}</td>
+              <td>{truncate(item.effects.join(", "))}</td>
               <td>
                 <nav className="rw-table-actions">
                   <Link
-                    to={routes.item({ id: item.id })}
-                    title={'Show item ' + item.id + ' detail'}
+                    to={routes.item({ id: item.id.toString() })}
+                    title={"Show item " + item.id + " detail"}
                     className="rw-button rw-button-small"
                   >
                     Show
                   </Link>
                   <Link
-                    to={routes.editItem({ id: item.id })}
-                    title={'Edit item ' + item.id}
+                    to={routes.editItem({ id: item.id.toString() })}
+                    title={"Edit item " + item.id}
                     className="rw-button rw-button-small rw-button-blue"
                   >
                     Edit
                   </Link>
                   <button
                     type="button"
-                    title={'Delete item ' + item.id}
+                    title={"Delete item " + item.id}
                     className="rw-button rw-button-small rw-button-red"
                     onClick={() => onDeleteClick(item.id)}
                   >
@@ -110,7 +112,7 @@ const ItemsList = ({ items }: FindItems) => {
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
-export default ItemsList
+export default ItemsList;

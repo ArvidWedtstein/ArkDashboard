@@ -2,7 +2,6 @@ import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 
-
 import type { DeleteDinoMutationVariables, FindDinoById } from "types/graphql";
 
 const DELETE_DINO_MUTATION = gql`
@@ -45,7 +44,9 @@ const Dino = ({ dino }: Props) => {
   return (
     <>
       <div className="container mx-auto flex flex-row items-center">
-        <img src="https://www.dododex.com/media/creature/shadowmane.png" />
+        <img
+          src={`https://www.dododex.com/media/creature/${dino.name.toLowerCase()}.png`}
+        />
         <div className="py-4 px-8 font-['lato'] text-sm font-light text-white">
           <div className="m-0 mb-4 text-2xl uppercase tracking-widest">
             <strong className="text-3xl font-light">{dino.name}</strong>

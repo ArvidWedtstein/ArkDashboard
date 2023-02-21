@@ -81,7 +81,7 @@ const DinoStatsPage = () => {
         return state;
     }
   };
-
+  let xVariant = false;
   const [taming, dispatch] = useReducer(reducer, []);
 
   const onSubmit = (data) => {
@@ -114,10 +114,10 @@ const DinoStatsPage = () => {
         useExclusive: i,
       });
     }
+    dinon["level"] = data.level;
     setTame(calcTame({ cr: dinon, level: data.level, foods: c.food }));
     setSelect(c);
   };
-
 
   // const handleComplete = (todo) => {
   //   dispatch({ type: "COMPLETE", id: todo.id });
@@ -182,8 +182,8 @@ const DinoStatsPage = () => {
             foodSecondsPer = foodValue / foodConsumption;
             foodSeconds = Math.ceil(
               Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
-              foodSecondsPer +
-              (interval1 || 0)
+                foodSecondsPer +
+                (interval1 || 0)
             );
           }
         } else {
@@ -228,29 +228,29 @@ const DinoStatsPage = () => {
       }),
     });
     // setTame(calcTame({ cr: dino, level: level, foods: select.food }));
-  }
+  };
 
   const calcTame = ({ cr, level, foods, useExclusive, method = "v" }: any) => {
     let effectiveness = 100;
     // Replace with item json
     let narcotics = {
-      "ascerbic": {
-        "torpor": 25,
-        "secs": 2
+      ascerbic: {
+        torpor: 25,
+        secs: 2,
       },
-      "bio": {
-        "torpor": 80,
-        "secs": 16
+      bio: {
+        torpor: 80,
+        secs: 16,
       },
-      "narcotics": {
-        "torpor": 40,
-        "secs": 8
+      narcotics: {
+        torpor: 40,
+        secs: 8,
       },
-      "narcoberries": {
-        "torpor": 7.5,
-        "secs": 3
-      }
-    }
+      narcoberries: {
+        torpor: 7.5,
+        secs: 3,
+      },
+    };
     let affinityNeeded =
       cr.affinityNeeded + cr.affinityIncreasePerLevel * level;
     // sanguineElixir = affinityNeeded *= 0.7
@@ -292,9 +292,9 @@ const DinoStatsPage = () => {
         if (method == "n") {
           numNeeded = Math.ceil(
             affinityLeft /
-            affinityVal /
-            tamingMultiplier /
-            cr.nonViolentFoodRateMultiplier
+              affinityVal /
+              tamingMultiplier /
+              cr.nonViolentFoodRateMultiplier
           );
         } else {
           numNeeded = Math.ceil(affinityLeft / affinityVal / tamingMultiplier);
@@ -352,8 +352,8 @@ const DinoStatsPage = () => {
       foods.forEach((food: any) => {
         numNeeded = Math.ceil(
           affinityLeft /
-          food.stats.find((f: any) => f.id === 15).value /
-          tamingMultiplier
+            food.stats.find((f: any) => f.id === 15).value /
+            tamingMultiplier
         );
         neededValues[food.key] = numNeeded;
       });
@@ -368,28 +368,37 @@ const DinoStatsPage = () => {
     let levelsGained = Math.floor((level * 0.5 * effectiveness) / 100);
     let ascerbicMushroomsMin = Math.max(
       Math.ceil(
-        (totalSecs * torporDepletionPS - totalTorpor) / (narcotics.ascerbic.torpor + torporDepletionPS * narcotics.ascerbic.secs)
+        (totalSecs * torporDepletionPS - totalTorpor) /
+          (narcotics.ascerbic.torpor +
+            torporDepletionPS * narcotics.ascerbic.secs)
       ),
       0
-    )
+    );
     let biotoxinsMin = Math.max(
       Math.ceil(
-        (totalSecs * torporDepletionPS - totalTorpor) / (narcotics.bio.torpor + torporDepletionPS * narcotics.bio.secs)
-      ), 0
-    )
+        (totalSecs * torporDepletionPS - totalTorpor) /
+          (narcotics.bio.torpor + torporDepletionPS * narcotics.bio.secs)
+      ),
+      0
+    );
     let narcoticsMin = Math.max(
       Math.ceil(
-        (totalSecs * torporDepletionPS - totalTorpor) / (narcotics.narcotics.torpor + torporDepletionPS * narcotics.narcotics.secs)
+        (totalSecs * torporDepletionPS - totalTorpor) /
+          (narcotics.narcotics.torpor +
+            torporDepletionPS * narcotics.narcotics.secs)
       ),
       0
-    )
+    );
     let narcoberriesMin = Math.max(
       Math.ceil(
-        (totalSecs * torporDepletionPS - totalTorpor) / (narcotics.narcoberries.torpor + torporDepletionPS * narcotics.narcoberries.secs)
+        (totalSecs * torporDepletionPS - totalTorpor) /
+          (narcotics.narcoberries.torpor +
+            torporDepletionPS * narcotics.narcoberries.secs)
       ),
       0
-    )
+    );
     return {
+      dino: cr,
       effectiveness,
       neededValues,
       enoughFood,
@@ -404,7 +413,7 @@ const DinoStatsPage = () => {
       ascerbicMushroomsMin,
       biotoxinsMin,
       narcoticsMin,
-      narcoberriesMin
+      narcoberriesMin,
     };
   };
 
@@ -551,7 +560,10 @@ const DinoStatsPage = () => {
                     sortable: true,
                     renderCell: ({ row, rowIndex }) => {
                       return (
-                        <button className="relative flex items-center justify-start" onClick={() => useExclusive(rowIndex)}>
+                        <button
+                          className="relative flex items-center justify-start"
+                          onClick={() => useExclusive(rowIndex)}
+                        >
                           <img
                             className="mr-3 h-8 w-8"
                             src={
@@ -577,7 +589,7 @@ const DinoStatsPage = () => {
                           <button
                             type="button"
                             disabled={row.use <= 0}
-                            className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white disabled:bg-slate-500 disabled:text-white"
+                            className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black disabled:bg-slate-500 disabled:text-white dark:border-white dark:text-white"
                           >
                             -
                           </button>
@@ -590,7 +602,7 @@ const DinoStatsPage = () => {
                           <button
                             type="button"
                             disabled={row.use >= row.max}
-                            className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white disabled:bg-slate-500 disabled:text-white"
+                            className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black disabled:bg-slate-500 disabled:text-white dark:border-white dark:text-white"
                           >
                             +
                           </button>
@@ -619,37 +631,60 @@ const DinoStatsPage = () => {
                           <div className="my-2 h-1 overflow-hidden rounded-md bg-white">
                             <span
                               className="bg-pea-500 block h-1 w-full rounded-md"
-                              style={{ width: `${value ? value.effectiveness : 0}%` }}
+                              style={{
+                                width: `${value ? value.effectiveness : 0}%`,
+                              }}
                             ></span>
                           </div>
-                          <p className="text-xs">{(value ? value.effectiveness : 0).toFixed(2)}%</p>
+                          <p className="text-xs">
+                            {(value ? value.effectiveness : 0).toFixed(2)}%
+                          </p>
                         </div>
                       );
                     },
                   },
                 ]}
               />
-              <p className="my-3 text-center text-sm dark:text-gray-200">With selected food:</p>
-              <section className="my-3 dark:bg-zinc-600 rounded-md p-4 dark:text-white">
-                <div className="grid grid-cols-4 gap-4 text-center my-3 relative">
-                  <div className="relative block not-last:before:content-['>'] before:absolute before:ml-auto before:w-full">
-                    <p className="text-sm text-thin">Lvl<span className="ml-1 text-lg font-semibold">100</span></p>
+              <p className="my-3 text-center text-sm dark:text-gray-200">
+                With selected food:
+              </p>
+              <section className="my-3 rounded-md p-4 dark:bg-zinc-600 dark:text-white">
+                <div className="relative my-3 grid grid-cols-4 gap-4 text-center">
+                  <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
+                    <p className="text-thin text-sm">
+                      Lvl<span className="ml-1 text-lg font-semibold">100</span>
+                    </p>
                   </div>
-                  <div className="relative block not-last:before:content-['>'] before:absolute before:ml-auto before:w-full">
-                    <p className="text-sm text-thin">Lvl<span className="ml-1 text-lg font-semibold">{tame.effectiveness}</span></p>
+                  <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
+                    <p className="text-thin text-sm">
+                      {(tame.effectiveness ? tame.effectiveness : 0).toFixed(2)}
+                      %
+                    </p>
                   </div>
-                  <div className="relative block not-last:before:content-['>'] before:absolute before:ml-auto before:w-full">
-                    <p className="text-sm text-thin">Lvl<span className="ml-1 text-lg font-semibold">{tame.levelsGained}</span></p>
+                  <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
+                    <p className="text-thin text-sm">
+                      Lvl
+                      <span className="ml-1 text-lg font-semibold">
+                        {parseInt(tame.dino.level) + tame.levelsGained}
+                      </span>
+                    </p>
                   </div>
-                  <div className="relative block last:before:content-[''] before:absolute before:ml-auto before:w-full">
-                    <p className="text-sm text-thin">Lvl<span className="ml-1 text-lg font-semibold">100</span></p>
+                  <div className="relative block before:absolute before:ml-auto before:w-full last:before:content-['']">
+                    <p className="text-thin text-sm">
+                      Lvl
+                      <span className="ml-1 text-lg font-semibold">
+                        {parseInt(tame.dino.level) +
+                          tame.levelsGained +
+                          (xVariant ? 88 : 77)}
+                      </span>
+                    </p>
                   </div>
                 </div>
-                <div className="grid grid-cols-4 gap-4 text-center my-3">
+                <div className="my-3 grid grid-cols-4 gap-4 text-center">
                   <p className="text-thin text-xs">Current</p>
-                  <p className="text-xs text-thin">Taming Eff.</p>
-                  <p className="text-xs text-thin">With Bonus</p>
-                  <p className="text-xs text-thin">Max after taming</p>
+                  <p className="text-thin text-xs">Taming Eff.</p>
+                  <p className="text-thin text-xs">With Bonus</p>
+                  <p className="text-thin text-xs">Max after taming</p>
                 </div>
               </section>
             </>

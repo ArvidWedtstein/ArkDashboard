@@ -19,7 +19,7 @@ const HomePage = () => {
     <>
       <MetaTags title="Home" description="Home page" />
 
-      <div className="container-xl mt-3 p-3 text-center">
+      <div className="container-xl p-3 pt-0 text-center">
         <div
           className="relative overflow-hidden rounded-md bg-cover bg-no-repeat"
           style={{

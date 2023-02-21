@@ -1,11 +1,10 @@
+import { Link, routes, navigate } from "@redwoodjs/router";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
 
-import { Link, routes, navigate } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
+import { jsonDisplay, timeTag } from "src/lib/formatters";
 
-import { jsonDisplay, timeTag,  } from 'src/lib/formatters'
-
-import type { DeleteItemMutationVariables, FindItemById } from 'types/graphql'
+import type { DeleteItemMutationVariables, FindItemById } from "types/graphql";
 
 const DELETE_ITEM_MUTATION = gql`
   mutation DeleteItemMutation($id: BigInt!) {
@@ -13,28 +12,28 @@ const DELETE_ITEM_MUTATION = gql`
       id
     }
   }
-`
+`;
 
 interface Props {
-  item: NonNullable<FindItemById['item']>
+  item: NonNullable<FindItemById["item"]>;
 }
 
 const Item = ({ item }: Props) => {
   const [deleteItem] = useMutation(DELETE_ITEM_MUTATION, {
     onCompleted: () => {
-      toast.success('Item deleted')
-      navigate(routes.items())
+      toast.success("Item deleted");
+      navigate(routes.items());
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error(error.message);
     },
-  })
+  });
 
-  const onDeleteClick = (id: DeleteItemMutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete item ' + id + '?')) {
-      deleteItem({ variables: { id } })
+  const onDeleteClick = (id: DeleteItemMutationVariables["id"]) => {
+    if (confirm("Are you sure you want to delete item " + id + "?")) {
+      deleteItem({ variables: { id } });
     }
-  }
+  };
 
   return (
     <>
@@ -49,49 +48,64 @@ const Item = ({ item }: Props) => {
             <tr>
               <th>Id</th>
               <td>{item.id}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Created at</th>
               <td>{timeTag(item.created_at)}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Name</th>
               <td>{item.name}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Description</th>
               <td>{item.description}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Image</th>
               <td>{item.image}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Max stack</th>
               <td>{item.max_stack}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Weight</th>
               <td>{item.weight}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Engram points</th>
               <td>{item.engram_points}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Crafting time</th>
               <td>{item.crafting_time}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Req level</th>
               <td>{item.req_level}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Yields</th>
               <td>{item.yields}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Recipe</th>
               <td>{jsonDisplay(item.recipe)}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Stats</th>
               <td>{jsonDisplay(item.stats)}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Color</th>
               <td>{item.color}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Crafted in</th>
               <td>{item.crafted_in}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Effects</th>
               <td>{item.effects}</td>
             </tr>
@@ -100,7 +114,7 @@ const Item = ({ item }: Props) => {
       </div>
       <nav className="rw-button-group">
         <Link
-          to={routes.editItem({ id: item.id })}
+          to={routes.editItem({ id: item.id.toString() })}
           className="rw-button rw-button-blue"
         >
           Edit
@@ -114,7 +128,7 @@ const Item = ({ item }: Props) => {
         </button>
       </nav>
     </>
-  )
-}
+  );
+};
 
-export default Item
+export default Item;

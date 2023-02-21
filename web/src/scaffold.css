@@ -44,7 +44,7 @@
   @apply py-3 px-4 text-gray-700 dark:text-stone-200;
 }
 .rw-segment-main {
-  @apply bg-gray-100 p-4;
+  @apply bg-gray-100 p-4 dark:bg-transparent;
 }
 .rw-link {
   @apply text-blue-400 underline;
