@@ -35,7 +35,9 @@ const DinoStatsPage = () => {
   } = useForm({ defaultValues: { name: "Dodo", level: 1 } });
   let [dino, setDino] = useState(null);
   let [select, setSelect] = useState(null);
-  let [points, setPoints] = useState(null); let [level, setLevel] = useState<stats>({
+  let [tame, setTame] = useState(null);
+  let [points, setPoints] = useState(null);
+  let [level, setLevel] = useState<stats>({
     h: 0,
     s: 0,
     o: 0,
@@ -103,15 +105,16 @@ const DinoStatsPage = () => {
     setValue("level", data.level);
     setPoints(data.level - 1);
     setDino(t);
-    let c = calcData({ creature: dino, level: data.level, method: "v" });
+    let c = calcData({ creature: dinon, level: data.level, method: "v" });
     for (let i in c.food) {
       c.food[i].results = calcTame({
-        cr: dino,
+        cr: dinon,
         level: data.level,
         foods: c.food,
         useExclusive: i,
       });
     }
+    setTame(calcTame({ cr: dinon, level: data.level, foods: c.food }));
     setSelect(c);
   };
 
@@ -224,6 +227,7 @@ const DinoStatsPage = () => {
         }
       }),
     });
+    // setTame(calcTame({ cr: dino, level: level, foods: select.food }));
   }
 
   const calcTame = ({ cr, level, foods, useExclusive, method = "v" }: any) => {
@@ -632,10 +636,10 @@ const DinoStatsPage = () => {
                     <p className="text-sm text-thin">Lvl<span className="ml-1 text-lg font-semibold">100</span></p>
                   </div>
                   <div className="relative block not-last:before:content-['>'] before:absolute before:ml-auto before:w-full">
-                    <p className="text-sm text-thin">Lvl<span className="ml-1 text-lg font-semibold">100</span></p>
+                    <p className="text-sm text-thin">Lvl<span className="ml-1 text-lg font-semibold">{tame.effectiveness}</span></p>
                   </div>
                   <div className="relative block not-last:before:content-['>'] before:absolute before:ml-auto before:w-full">
-                    <p className="text-sm text-thin">Lvl<span className="ml-1 text-lg font-semibold">{ }</span></p>
+                    <p className="text-sm text-thin">Lvl<span className="ml-1 text-lg font-semibold">{tame.levelsGained}</span></p>
                   </div>
                   <div className="relative block last:before:content-[''] before:absolute before:ml-auto before:w-full">
                     <p className="text-sm text-thin">Lvl<span className="ml-1 text-lg font-semibold">100</span></p>
