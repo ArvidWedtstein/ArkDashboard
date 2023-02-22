@@ -17,8 +17,7 @@
     { "id": 15, "name": "Affinity" },
     { "id": 16, "name": "Ammo" },
     { "id": 17, "name": "Weight Reduction" },
-    { "id": 18, "name": "Fuel" },
-    { "id": 19, "name": "Duration" }
+    { "id": 18, "name": "Fuel" }
   ],
   "items": [
     {
@@ -122,7 +121,8 @@
       "stats": [
         { "id": 1, "value": "Weapon" },
         { "id": 5, "value": 50 },
-        { "id": 6, "value": "60 (fully charged), 26 (minimum charge)" }
+        { "id": 6, "value": "60 (fully charged), 26 (minimum charge)" },
+        { "id": 16, "value": [32, 935, 1038] }
       ],
       "decomposes": -1
     },
@@ -1887,8 +1887,7 @@
         { "id": 8, "value": 4 },
         { "id": 9, "value": "10:00" },
         { "id": 11, "value": 0 },
-        { "id": 10, "value": 7.5 },
-        { "id": 19, "value": 3 }
+        { "id": 10, "value": 7.5, "duration": 3 }
       ],
       "decomposes": 120
     },
@@ -1927,8 +1926,7 @@
       ],
       "stats": [
         { "id": 1, "value": "Consumable" },
-        { "id": 10, "value": 40 },
-        { "id": 19, "value": 8 }
+        { "id": 10, "value": 40, "duration": 8 }
       ],
       "decomposes": 120
     },
@@ -1937,6 +1935,7 @@
       "name": "Stimulant",
       "description": "Keeps you awake, but dehydrates you.",
       "image": "stimulant.png",
+      "color": "#af861d",
       "maxStack": 100,
       "weight": 0.1,
       "craftingTime": 1,
@@ -5827,7 +5826,8 @@
       ],
       "stats": [
         { "id": 1, "value": "Weapon" },
-        { "id": 6, "value": 5 }
+        { "id": 6, "value": 5 },
+        { "id": 10, "value": 20 }
       ],
       "decomposes": 120
     },
@@ -10289,8 +10289,7 @@
       "recipe": [],
       "stats": [
         { "id": 1, "value": "Consumable" },
-        { "id": 10, "value": 25 },
-        { "id": 19, "value": 2 }
+        { "id": 10, "value": 25, "duration": 2 }
       ]
     },
     {
@@ -10382,8 +10381,7 @@
       "recipe": [],
       "stats": [
         { "id": 1, "value": "Consumable" },
-        { "id": 10, "value": 80 },
-        { "id": 19, "value": 16 }
+        { "id": 10, "value": 80, "duration": 16 }
       ]
     },
     {
@@ -17965,6 +17963,134 @@
         { "id": 7, "value": 35, "duration": 8.75 },
         { "id": 12, "value": 35, "duration": 8.75 }
       ]
+    },
+    {
+      "itemId": 1209,
+      "name": "Sarcosuchus Skin",
+      "description": "",
+      "maxStack": 100,
+      "weight": 0,
+      "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
+      "itemId": 1301,
+      "name": "Sauropod Vertebra",
+      "description": "",
+      "maxStack": 100,
+      "weight": 0,
+      "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
+      "itemId": 1325,
+      "name": "Crystal Talon",
+      "description": "",
+      "maxStack": 100,
+      "weight": 0,
+      "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
+      "itemId": 1326,
+      "name": "Basilosaurus Blubber",
+      "description": "",
+      "maxStack": 100,
+      "weight": 0,
+      "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
+      "itemId": 1327,
+      "name": "Argentavis Talon",
+      "description": "",
+      "maxStack": 100,
+      "weight": 0,
+      "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
+      "itemId": 1328,
+      "name": "Allosaurus Brain",
+      "description": "",
+      "maxStack": 100,
+      "weight": 0,
+      "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
+      "itemId": 1306,
+      "name": "Giganotosaurus Heart",
+      "description": "",
+      "maxStack": 100,
+      "weight": 0,
+      "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
+      "itemId": 1323,
+      "name": "Reaper Pheromone Gland",
+      "description": "",
+      "maxStack": 100,
+      "weight": 0,
+      "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
+      "itemId": 1324,
+      "name": "Megalodon Tooth",
+      "description": "",
+      "maxStack": 100,
+      "weight": 0,
+      "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
+      "itemId": 1300,
+      "name": "Tyrannosaurus Arm",
+      "description": "",
+      "maxStack": 100,
+      "weight": 0,
+      "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
+      "itemId": 1303,
+      "name": "Therizino Claws",
+      "description": "",
+      "maxStack": 100,
+      "weight": 0,
+      "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
+      "itemId": 1319,
+      "name": "Angler Gel",
+      "description": "",
+      "maxStack": 1,
+      "weight": 0,
+      "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
+      "itemId": 1320,
+      "name": "Yutyrannus Lungs",
+      "description": "",
+      "maxStack": 1,
+      "weight": 0,
+      "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
+      "itemId": 1321,
+      "name": "Leech Blood",
+      "description": "",
+      "maxStack": 1,
+      "weight": 0,
+      "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
+      "itemId": 1322,
+      "name": "Berries",
+      "description": "",
+      "maxStack": 1,
+      "weight": 0,
+      "stats": [{ "id": 1, "value": "Resource" }]
+    },
+    {
+      "itemId": 1322,
+      "name": "Berries",
+      "description": "",
+      "maxStack": 1,
+      "weight": 0,
+      "stats": [{ "id": 1, "value": "Resource" }]
     }
   ]
 }

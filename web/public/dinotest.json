@@ -65,8 +65,8 @@
       "wyvern"
     ],
     "gatherEfficiency": [
-      { "item": 58, "amount": 3.35 },
-      { "item": 211, "amount": 3.77 }
+      { "itemId": 58, "amount": 3.35 },
+      { "itemId": 211, "amount": 3.77 }
     ],
     "baseStats": {
       "h": { "b": 75, "w": 15, "t": 5.4 },
@@ -147,15 +147,15 @@
     "immobilizedBy": [785, 384],
     "allowableFlyers": ["ta", "r", "tusoteuthis", "quetzal", "wyvern"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.62 },
-      { "item": 12, "amount": 3.54 },
-      { "item": 13, "amount": 3.68 },
-      { "item": 14, "amount": 3.22 },
-      { "item": 15, "amount": 3.08 },
-      { "item": 16, "amount": 3.07 },
-      { "item": 62, "amount": 2.97 },
-      { "item": 68, "amount": 3.28 },
-      { "item": 69, "amount": 4.5 }
+      { "itemId": 11, "amount": 3.62 },
+      { "itemId": 12, "amount": 3.54 },
+      { "itemId": 13, "amount": 3.68 },
+      { "itemId": 14, "amount": 3.22 },
+      { "itemId": 15, "amount": 3.08 },
+      { "itemId": 16, "amount": 3.07 },
+      { "itemId": 62, "amount": 2.97 },
+      { "itemId": 68, "amount": 3.28 },
+      { "itemId": 69, "amount": 4.5 }
     ],
     "baseStats": {
       "h": { "b": 630, "w": 126, "t": 5.4 },
@@ -221,9 +221,9 @@
     "immobilizedBy": [725, 384],
     "allowableFlyers": ["quetzal", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 4 },
-      { "item": 5, "amount": 3.7 },
-      { "item": 15, "amount": 3.81 }
+      { "itemId": 3, "amount": 4 },
+      { "itemId": 5, "amount": 3.7 },
+      { "itemId": 15, "amount": 3.81 }
     ],
     "baseStats": {
       "h": { "b": 1250, "w": 250, "t": 5.4 },
@@ -274,15 +274,15 @@
     "immobilizedBy": [725, 384],
     "allowableFlyers": ["wyvern", "quetzal", "karkinos"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.81 },
-      { "item": 12, "amount": 3.86 },
-      { "item": 13, "amount": 4.22 },
-      { "item": 14, "amount": 4.21 },
-      { "item": 15, "amount": 3.8 },
-      { "item": 16, "amount": 4.27 },
-      { "item": 62, "amount": 3.44 },
-      { "item": 68, "amount": 3.24 },
-      { "item": 184, "amount": 4.05 }
+      { "itemId": 11, "amount": 3.81 },
+      { "itemId": 12, "amount": 3.86 },
+      { "itemId": 13, "amount": 4.22 },
+      { "itemId": 14, "amount": 4.21 },
+      { "itemId": 15, "amount": 3.8 },
+      { "itemId": 16, "amount": 4.27 },
+      { "itemId": 62, "amount": 3.44 },
+      { "itemId": 68, "amount": 3.24 },
+      { "itemId": 184, "amount": 4.05 }
     ],
     "baseStats": {
       "h": { "b": 800, "w": 160, "t": null },
@@ -420,12 +420,12 @@
     "immobilizedBy": [785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 2.84 },
-      { "item": 12, "amount": 2.59 },
-      { "item": 62, "amount": 2.73 },
-      { "item": 68, "amount": 3.15 },
-      { "item": 177, "amount": 3.22 },
-      { "item": 210, "amount": 4.43 }
+      { "itemId": 11, "amount": 2.84 },
+      { "itemId": 12, "amount": 2.59 },
+      { "itemId": 62, "amount": 2.73 },
+      { "itemId": 68, "amount": 3.15 },
+      { "itemId": 177, "amount": 3.22 },
+      { "itemId": 210, "amount": 4.43 }
     ],
     "baseStats": {
       "h": { "b": 450, "w": 90, "t": 5.4 },
@@ -516,25 +516,25 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.14 },
-      { "item": 6, "amount": 3.12 },
-      { "item": 7, "amount": 2.33 },
-      { "item": 9, "amount": 4.31 },
-      { "item": 10, "amount": 3.84 },
-      { "item": 17, "amount": 3.27 },
-      { "item": 18, "amount": 3.05 },
-      { "item": 19, "amount": 2.99 },
-      { "item": 57, "amount": 4.02 },
-      { "item": 71, "amount": 2.95 },
-      { "item": 73, "amount": 4.13 },
-      { "item": 170, "amount": 2.89 },
-      { "item": 254, "amount": 4 },
-      { "item": 270, "amount": 4.8 },
-      { "item": 309, "amount": 4.8 },
-      { "item": 324, "amount": 4.5 },
-      { "item": 325, "amount": 3.5 },
-      { "item": 327, "amount": 4.3 },
-      { "item": 467, "amount": 4.09 }
+      { "itemId": 3, "amount": 3.14 },
+      { "itemId": 6, "amount": 3.12 },
+      { "itemId": 7, "amount": 2.33 },
+      { "itemId": 9, "amount": 4.31 },
+      { "itemId": 10, "amount": 3.84 },
+      { "itemId": 17, "amount": 3.27 },
+      { "itemId": 18, "amount": 3.05 },
+      { "itemId": 19, "amount": 2.99 },
+      { "itemId": 57, "amount": 4.02 },
+      { "itemId": 71, "amount": 2.95 },
+      { "itemId": 73, "amount": 4.13 },
+      { "itemId": 170, "amount": 2.89 },
+      { "itemId": 254, "amount": 4 },
+      { "itemId": 270, "amount": 4.8 },
+      { "itemId": 309, "amount": 4.8 },
+      { "itemId": 324, "amount": 4.5 },
+      { "itemId": 325, "amount": 3.5 },
+      { "itemId": 327, "amount": 4.3 },
+      { "itemId": 467, "amount": 4.09 }
     ],
     "baseStats": {
       "h": { "b": 700, "w": 140, "t": 5.4 },
@@ -719,7 +719,7 @@
       "procoptodon",
       "desmodus"
     ],
-    "gatherEfficiency": [{ "item": 251, "amount": 3.9 }],
+    "gatherEfficiency": [{ "itemId": 251, "amount": 3.9 }],
     "baseStats": {
       "h": { "b": 125, "w": 25, "t": null },
       "s": { "b": 150, "w": 15, "t": null },
@@ -793,15 +793,15 @@
     "immobilizedBy": [733, 725, 384, 785],
     "allowableFlyers": ["ta", "r", "megalosaurus", "procoptodon"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.52 },
-      { "item": 12, "amount": 3.23 },
-      { "item": 13, "amount": 3.21 },
-      { "item": 14, "amount": 2.77 },
-      { "item": 15, "amount": 2.74 },
-      { "item": 16, "amount": 2.57 },
-      { "item": 58, "amount": 2.58 },
-      { "item": 62, "amount": 2.78 },
-      { "item": 68, "amount": 3.11 }
+      { "itemId": 11, "amount": 3.52 },
+      { "itemId": 12, "amount": 3.23 },
+      { "itemId": 13, "amount": 3.21 },
+      { "itemId": 14, "amount": 2.77 },
+      { "itemId": 15, "amount": 2.74 },
+      { "itemId": 16, "amount": 2.57 },
+      { "itemId": 58, "amount": 2.58 },
+      { "itemId": 62, "amount": 2.78 },
+      { "itemId": 68, "amount": 3.11 }
     ],
     "baseStats": {
       "h": { "b": 365, "w": 73, "t": 6.75 },
@@ -901,11 +901,11 @@
       "tusoteuthis"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3 },
-      { "item": 12, "amount": 2.82 },
-      { "item": 13, "amount": 2.85 },
-      { "item": 62, "amount": 3.03 },
-      { "item": 68, "amount": 2.96 }
+      { "itemId": 11, "amount": 3 },
+      { "itemId": 12, "amount": 2.82 },
+      { "itemId": 13, "amount": 2.85 },
+      { "itemId": 62, "amount": 3.03 },
+      { "itemId": 68, "amount": 2.96 }
     ],
     "baseStats": {
       "h": { "b": 500, "w": 100, "t": 5.4 },
@@ -968,8 +968,8 @@
     "immobilizedBy": [],
     "allowableFlyers": [],
     "gatherEfficiency": [
-      { "item": 11, "amount": 2.14 },
-      { "item": 12, "amount": 2.12 }
+      { "itemId": 11, "amount": 2.14 },
+      { "itemId": 12, "amount": 2.12 }
     ],
     "baseStats": {
       "h": { "b": 2800, "w": 392, "t": 2.16 },
@@ -1019,8 +1019,8 @@
     "immobilizedBy": [725, 383, 384, 986, 785],
     "allowableFlyers": [],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.4 },
-      { "item": 13, "amount": 3.3 }
+      { "itemId": 11, "amount": 3.4 },
+      { "itemId": 13, "amount": 3.3 }
     ],
     "baseStats": {
       "h": { "b": 325, "w": 65, "t": null },
@@ -1128,14 +1128,14 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.31 },
-      { "item": 12, "amount": 3.12 },
-      { "item": 13, "amount": 3.38 },
-      { "item": 14, "amount": 3.01 },
-      { "item": 15, "amount": 3.04 },
-      { "item": 16, "amount": 2.71 },
-      { "item": 62, "amount": 3.69 },
-      { "item": 68, "amount": 4.03 }
+      { "itemId": 11, "amount": 3.31 },
+      { "itemId": 12, "amount": 3.12 },
+      { "itemId": 13, "amount": 3.38 },
+      { "itemId": 14, "amount": 3.01 },
+      { "itemId": 15, "amount": 3.04 },
+      { "itemId": 16, "amount": 2.71 },
+      { "itemId": 62, "amount": 3.69 },
+      { "itemId": 68, "amount": 4.03 }
     ],
     "baseStats": {
       "h": { "b": 440, "w": 88, "t": 5.4 },
@@ -1208,14 +1208,14 @@
     "immobilizedBy": [383, 384, 986, 785],
     "allowableFlyers": ["ab"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.55 },
-      { "item": 12, "amount": 3.26 },
-      { "item": 13, "amount": 3.46 },
-      { "item": 14, "amount": 3.18 },
-      { "item": 15, "amount": 3.42 },
-      { "item": 16, "amount": 3.11 },
-      { "item": 62, "amount": 3.29 },
-      { "item": 68, "amount": 3.33 }
+      { "itemId": 11, "amount": 3.55 },
+      { "itemId": 12, "amount": 3.26 },
+      { "itemId": 13, "amount": 3.46 },
+      { "itemId": 14, "amount": 3.18 },
+      { "itemId": 15, "amount": 3.42 },
+      { "itemId": 16, "amount": 3.11 },
+      { "itemId": 62, "amount": 3.29 },
+      { "itemId": 68, "amount": 3.33 }
     ],
     "baseStats": {
       "h": { "b": 2750, "w": 550, "t": 5.4 },
@@ -1301,14 +1301,14 @@
     "immobilizedBy": [],
     "allowableFlyers": ["ta", "r"],
     "gatherEfficiency": [
-      { "item": 10, "amount": 3.38 },
-      { "item": 11, "amount": 3.06 },
-      { "item": 12, "amount": 3.14 },
-      { "item": 13, "amount": 3.1 },
-      { "item": 14, "amount": 2.9 },
-      { "item": 62, "amount": 3.46 },
-      { "item": 68, "amount": 3.66 },
-      { "item": 169, "amount": 4.21 }
+      { "itemId": 10, "amount": 3.38 },
+      { "itemId": 11, "amount": 3.06 },
+      { "itemId": 12, "amount": 3.14 },
+      { "itemId": 13, "amount": 3.1 },
+      { "itemId": 14, "amount": 2.9 },
+      { "itemId": 62, "amount": 3.46 },
+      { "itemId": 68, "amount": 3.66 },
+      { "itemId": 169, "amount": 4.21 }
     ],
     "baseStats": {
       "h": { "b": 2400, "w": 480, "t": 4.86 },
@@ -1396,16 +1396,16 @@
       "tusoteuthis"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 2.75 },
-      { "item": 12, "amount": 2.38 },
-      { "item": 13, "amount": 2.43 },
-      { "item": 14, "amount": 3.82 },
-      { "item": 15, "amount": 3.15 },
-      { "item": 16, "amount": 1.97 },
-      { "item": 58, "amount": 2.67 },
-      { "item": 68, "amount": 2.58 },
-      { "item": 169, "amount": 4.11 },
-      { "item": 211, "amount": 3.89 }
+      { "itemId": 11, "amount": 2.75 },
+      { "itemId": 12, "amount": 2.38 },
+      { "itemId": 13, "amount": 2.43 },
+      { "itemId": 14, "amount": 3.82 },
+      { "itemId": 15, "amount": 3.15 },
+      { "itemId": 16, "amount": 1.97 },
+      { "itemId": 58, "amount": 2.67 },
+      { "itemId": 68, "amount": 2.58 },
+      { "itemId": 169, "amount": 4.11 },
+      { "itemId": 211, "amount": 3.89 }
     ],
     "baseStats": {
       "h": { "b": 220, "w": 44, "t": 5.4 },
@@ -1538,11 +1538,11 @@
     "immobilizedBy": [384, 785],
     "allowableFlyers": ["wyvern"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 2.68 },
-      { "item": 12, "amount": 2.43 },
-      { "item": 13, "amount": 3.47 },
-      { "item": 62, "amount": 3.42 },
-      { "item": 68, "amount": 3.14 }
+      { "itemId": 11, "amount": 2.68 },
+      { "itemId": 12, "amount": 2.43 },
+      { "itemId": 13, "amount": 3.47 },
+      { "itemId": 62, "amount": 3.42 },
+      { "itemId": 68, "amount": 3.14 }
     ],
     "baseStats": {
       "h": { "b": 450, "w": 90, "t": 5.4 },
@@ -1614,11 +1614,11 @@
     "immobilizedBy": [],
     "allowableFlyers": ["ta", "r"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 4.67 },
-      { "item": 5, "amount": 2.85 },
-      { "item": 17, "amount": 4.34 },
-      { "item": 18, "amount": 4.71 },
-      { "item": 19, "amount": 3.71 }
+      { "itemId": 3, "amount": 4.67 },
+      { "itemId": 5, "amount": 2.85 },
+      { "itemId": 17, "amount": 4.34 },
+      { "itemId": 18, "amount": 4.71 },
+      { "itemId": 19, "amount": 3.71 }
     ],
     "baseStats": {
       "h": { "b": 2070, "w": 414, "t": 3.8 },
@@ -1846,9 +1846,9 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.42 },
-      { "item": 5, "amount": 1.86 },
-      { "item": 17, "amount": 2.74 }
+      { "itemId": 3, "amount": 2.42 },
+      { "itemId": 5, "amount": 1.86 },
+      { "itemId": 17, "amount": 2.74 }
     ],
     "baseStats": {
       "h": { "b": 700, "w": 140, "t": 5.4 },
@@ -1894,17 +1894,17 @@
     "immobilizedBy": [384],
     "allowableFlyers": ["ta", "r"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 5 },
-      { "item": 12, "amount": 4.66 },
-      { "item": 13, "amount": 4.41 },
-      { "item": 14, "amount": 3.69 },
-      { "item": 15, "amount": 3.65 },
-      { "item": 16, "amount": 3.43 },
-      { "item": 58, "amount": 3.03 },
-      { "item": 62, "amount": 3.72 },
-      { "item": 68, "amount": 3.86 },
-      { "item": 250, "amount": 4.02 },
-      { "item": 256, "amount": 4.22 }
+      { "itemId": 11, "amount": 5 },
+      { "itemId": 12, "amount": 4.66 },
+      { "itemId": 13, "amount": 4.41 },
+      { "itemId": 14, "amount": 3.69 },
+      { "itemId": 15, "amount": 3.65 },
+      { "itemId": 16, "amount": 3.43 },
+      { "itemId": 58, "amount": 3.03 },
+      { "itemId": 62, "amount": 3.72 },
+      { "itemId": 68, "amount": 3.86 },
+      { "itemId": 250, "amount": 4.02 },
+      { "itemId": 256, "amount": 4.22 }
     ],
     "baseStats": {
       "h": { "b": 70000, "w": 56, "t": 5.4 },
@@ -1990,14 +1990,14 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.62 },
-      { "item": 12, "amount": 3.96 },
-      { "item": 13, "amount": 3.22 },
-      { "item": 14, "amount": 2.75 },
-      { "item": 15, "amount": 2.78 },
-      { "item": 16, "amount": 2.58 },
-      { "item": 62, "amount": 2.82 },
-      { "item": 68, "amount": 3.13 }
+      { "itemId": 11, "amount": 3.62 },
+      { "itemId": 12, "amount": 3.96 },
+      { "itemId": 13, "amount": 3.22 },
+      { "itemId": 14, "amount": 2.75 },
+      { "itemId": 15, "amount": 2.78 },
+      { "itemId": 16, "amount": 2.58 },
+      { "itemId": 62, "amount": 2.82 },
+      { "itemId": 68, "amount": 3.13 }
     ],
     "baseStats": {
       "h": { "b": 420, "w": 84, "t": 5.4 },
@@ -2091,12 +2091,12 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.96 },
-      { "item": 4, "amount": 2.01 },
-      { "item": 5, "amount": 4.71 },
-      { "item": 17, "amount": 3.25 },
-      { "item": 18, "amount": 2.3 },
-      { "item": 19, "amount": 2.39 }
+      { "itemId": 4, "amount": 2.01 },
+      { "itemId": 3, "amount": 2.96 },
+      { "itemId": 18, "amount": 2.3 },
+      { "itemId": 19, "amount": 2.39 },
+      { "itemId": 17, "amount": 3.25 },
+      { "itemId": 5, "amount": 4.71 }
     ],
     "baseStats": {
       "h": { "b": 450, "w": 90, "t": 5.4 },
@@ -2169,12 +2169,12 @@
     "immobilizedBy": [384, 725, 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "r", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.38 },
-      { "item": 5, "amount": 2.72 },
-      { "item": 17, "amount": 3.93 },
-      { "item": 18, "amount": 2.88 },
-      { "item": 19, "amount": 2.69 },
-      { "item": 171, "amount": 3.01 }
+      { "itemId": 3, "amount": 3.38 },
+      { "itemId": 5, "amount": 2.72 },
+      { "itemId": 17, "amount": 3.93 },
+      { "itemId": 18, "amount": 2.88 },
+      { "itemId": 19, "amount": 2.69 },
+      { "itemId": 171, "amount": 3.01 }
     ],
     "baseStats": {
       "h": { "b": 600, "w": 120, "t": 5.4 },
@@ -2374,11 +2374,11 @@
       "desmodus"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 2.14 },
-      { "item": 12, "amount": 2.12 },
-      { "item": 13, "amount": 1.84 },
-      { "item": 62, "amount": 3.01 },
-      { "item": 68, "amount": 2.52 }
+      { "itemId": 11, "amount": 2.14 },
+      { "itemId": 12, "amount": 2.12 },
+      { "itemId": 13, "amount": 1.84 },
+      { "itemId": 62, "amount": 3.01 },
+      { "itemId": 68, "amount": 2.52 }
     ],
     "baseStats": {
       "h": { "b": 50, "w": 10, "t": 6.4 },
@@ -2464,17 +2464,17 @@
     "immobilizedBy": [725, 384, 785],
     "allowableFlyers": [],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.17 },
-      { "item": 11, "amount": 3.98 },
-      { "item": 12, "amount": 3.95 },
-      { "item": 13, "amount": 3.82 },
-      { "item": 14, "amount": 3.61 },
-      { "item": 15, "amount": 3.53 },
-      { "item": 16, "amount": 3.39 },
-      { "item": 58, "amount": 3.16 },
-      { "item": 62, "amount": 3.22 },
-      { "item": 68, "amount": 3.48 },
-      { "item": 248, "amount": 4.6 }
+      { "itemId": 3, "amount": 3.17 },
+      { "itemId": 11, "amount": 3.98 },
+      { "itemId": 12, "amount": 3.95 },
+      { "itemId": 13, "amount": 3.82 },
+      { "itemId": 14, "amount": 3.61 },
+      { "itemId": 15, "amount": 3.53 },
+      { "itemId": 16, "amount": 3.39 },
+      { "itemId": 58, "amount": 3.16 },
+      { "itemId": 62, "amount": 3.22 },
+      { "itemId": 68, "amount": 3.48 },
+      { "itemId": 248, "amount": 4.6 }
     ],
     "baseStats": {
       "h": { "b": 1295, "w": 194.25, "t": 4.05 },
@@ -2597,17 +2597,17 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.78 },
-      { "item": 11, "amount": 3.38 },
-      { "item": 12, "amount": 3.15 },
-      { "item": 13, "amount": 2.91 },
-      { "item": 14, "amount": 3.05 },
-      { "item": 15, "amount": 2.89 },
-      { "item": 16, "amount": 2.96 },
-      { "item": 17, "amount": 2.56 },
-      { "item": 58, "amount": 2.54 },
-      { "item": 62, "amount": 2.61 },
-      { "item": 68, "amount": 2.94 }
+      { "itemId": 3, "amount": 2.78 },
+      { "itemId": 11, "amount": 3.38 },
+      { "itemId": 12, "amount": 3.15 },
+      { "itemId": 13, "amount": 2.91 },
+      { "itemId": 14, "amount": 3.05 },
+      { "itemId": 15, "amount": 2.89 },
+      { "itemId": 16, "amount": 2.96 },
+      { "itemId": 17, "amount": 2.56 },
+      { "itemId": 58, "amount": 2.54 },
+      { "itemId": 62, "amount": 2.61 },
+      { "itemId": 68, "amount": 2.94 }
     ],
     "baseStats": {
       "h": { "b": 900, "w": 180, "t": 5.4 },
@@ -2760,10 +2760,10 @@
       "tusoteuthis"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.5 },
-      { "item": 12, "amount": 2.8 },
-      { "item": 13, "amount": 3 },
-      { "item": 68, "amount": 3 }
+      { "itemId": 11, "amount": 3.5 },
+      { "itemId": 12, "amount": 2.8 },
+      { "itemId": 13, "amount": 3 },
+      { "itemId": 68, "amount": 3 }
     ],
     "baseStats": {
       "h": { "b": 200, "w": 40, "t": 5.4 },
@@ -2851,9 +2851,9 @@
     "immobilizedBy": [1040, 725, 384, 986, 785],
     "allowableFlyers": [],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.1 },
-      { "item": 67, "amount": 4.8 },
-      { "item": 340, "amount": 5 }
+      { "itemId": 11, "amount": 3.1 },
+      { "itemId": 67, "amount": 4.8 },
+      { "itemId": 340, "amount": 5 }
     ],
     "baseStats": {
       "h": { "b": 325, "w": 65, "t": null },
@@ -2963,13 +2963,13 @@
       "desmodus"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 2.48 },
-      { "item": 12, "amount": 2.06 },
-      { "item": 13, "amount": 2.2 },
-      { "item": 14, "amount": 1.85 },
-      { "item": 15, "amount": 1.71 },
-      { "item": 62, "amount": 2.49 },
-      { "item": 68, "amount": 2.42 }
+      { "itemId": 11, "amount": 2.48 },
+      { "itemId": 12, "amount": 2.06 },
+      { "itemId": 13, "amount": 2.2 },
+      { "itemId": 14, "amount": 1.85 },
+      { "itemId": 15, "amount": 1.71 },
+      { "itemId": 62, "amount": 2.49 },
+      { "itemId": 68, "amount": 2.42 }
     ],
     "baseStats": {
       "h": { "b": 130, "w": 26, "t": 5.4 },
@@ -3061,7 +3061,7 @@
       "karkinos",
       "procoptodon"
     ],
-    "gatherEfficiency": [{ "item": 11, "amount": 1.83 }],
+    "gatherEfficiency": [{ "itemId": 11, "amount": 1.83 }],
     "baseStats": {
       "h": { "b": 350, "w": 70, "t": 5.4 },
       "s": { "b": 300, "w": 30, "t": 10 },
@@ -3145,14 +3145,14 @@
     "immobilizedBy": [1040, 785, 733, 785],
     "allowableFlyers": ["ta", "human", "g", "procoptodon"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 2.74 },
-      { "item": 12, "amount": 2.33 },
-      { "item": 13, "amount": 2.05 },
-      { "item": 14, "amount": 1.96 },
-      { "item": 15, "amount": 1.87 },
-      { "item": 16, "amount": 1.91 },
-      { "item": 62, "amount": 2.35 },
-      { "item": 68, "amount": 2.47 }
+      { "itemId": 11, "amount": 2.74 },
+      { "itemId": 12, "amount": 2.33 },
+      { "itemId": 13, "amount": 2.05 },
+      { "itemId": 14, "amount": 1.96 },
+      { "itemId": 15, "amount": 1.87 },
+      { "itemId": 16, "amount": 1.91 },
+      { "itemId": 62, "amount": 2.35 },
+      { "itemId": 68, "amount": 2.47 }
     ],
     "baseStats": {
       "h": { "b": 125, "w": 25, "t": 5.4 },
@@ -3329,12 +3329,12 @@
       "desmodus"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 2.71 },
-      { "item": 12, "amount": 3.03 },
-      { "item": 13, "amount": 2.76 },
-      { "item": 14, "amount": 4.01 },
-      { "item": 68, "amount": 3.12 },
-      { "item": 210, "amount": 3.04 }
+      { "itemId": 11, "amount": 2.71 },
+      { "itemId": 12, "amount": 3.03 },
+      { "itemId": 13, "amount": 2.76 },
+      { "itemId": 14, "amount": 4.01 },
+      { "itemId": 68, "amount": 3.12 },
+      { "itemId": 210, "amount": 3.04 }
     ],
     "baseStats": {
       "h": { "b": 250, "w": 50, "t": 5.4 },
@@ -3407,8 +3407,8 @@
     "immobilizedBy": [725],
     "allowableFlyers": ["lpt", "ta", "r", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.6 },
-      { "item": 17, "amount": 3.51 }
+      { "itemId": 3, "amount": 3.6 },
+      { "itemId": 17, "amount": 3.51 }
     ],
     "baseStats": {
       "h": { "b": 1700, "w": 340, "t": 5.4 },
@@ -3505,18 +3505,18 @@
     "immobilizedBy": [384, 725, 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "r", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 4, "amount": 4.13 },
-      { "item": 11, "amount": 3.65 },
-      { "item": 12, "amount": 3.31 },
-      { "item": 13, "amount": 3.36 },
-      { "item": 14, "amount": 3.04 },
-      { "item": 15, "amount": 3 },
-      { "item": 16, "amount": 3.06 },
-      { "item": 17, "amount": 3.65 },
-      { "item": 58, "amount": 4.2 },
-      { "item": 62, "amount": 3.27 },
-      { "item": 68, "amount": 3.4 },
-      { "item": 294, "amount": 5 }
+      { "itemId": 4, "amount": 4.13 },
+      { "itemId": 11, "amount": 3.65 },
+      { "itemId": 12, "amount": 3.31 },
+      { "itemId": 13, "amount": 3.36 },
+      { "itemId": 14, "amount": 3.04 },
+      { "itemId": 15, "amount": 3 },
+      { "itemId": 16, "amount": 3.06 },
+      { "itemId": 17, "amount": 3.65 },
+      { "itemId": 58, "amount": 4.2 },
+      { "itemId": 62, "amount": 3.27 },
+      { "itemId": 68, "amount": 3.4 },
+      { "itemId": 294, "amount": 5 }
     ],
     "baseStats": {
       "h": { "b": 400, "w": 80, "t": 5.4 },
@@ -3613,17 +3613,17 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.76 },
-      { "item": 12, "amount": 3.52 },
-      { "item": 13, "amount": 4.14 },
-      { "item": 14, "amount": 3.97 },
-      { "item": 15, "amount": 3.86 },
-      { "item": 16, "amount": 4.09 },
-      { "item": 58, "amount": 3.55 },
-      { "item": 62, "amount": 3.27 },
-      { "item": 68, "amount": 3.35 },
-      { "item": 69, "amount": 3.84 },
-      { "item": 184, "amount": 3.84 }
+      { "itemId": 11, "amount": 3.76 },
+      { "itemId": 12, "amount": 3.52 },
+      { "itemId": 13, "amount": 4.14 },
+      { "itemId": 14, "amount": 3.97 },
+      { "itemId": 15, "amount": 3.86 },
+      { "itemId": 16, "amount": 4.09 },
+      { "itemId": 58, "amount": 3.55 },
+      { "itemId": 62, "amount": 3.27 },
+      { "itemId": 68, "amount": 3.35 },
+      { "itemId": 69, "amount": 3.84 },
+      { "itemId": 184, "amount": 3.84 }
     ],
     "baseStats": {
       "h": { "b": 330, "w": 66, "t": 5.4 },
@@ -3818,14 +3818,14 @@
       "karkinos"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.77 },
-      { "item": 5, "amount": 2.09 },
-      { "item": 6, "amount": 4.86 },
-      { "item": 9, "amount": 2.78 },
-      { "item": 172, "amount": 3.08 },
-      { "item": 249, "amount": 4.21 },
-      { "item": 313, "amount": 4.5 },
-      { "item": 328, "amount": 4.4 }
+      { "itemId": 3, "amount": 2.77 },
+      { "itemId": 5, "amount": 2.09 },
+      { "itemId": 6, "amount": 4.86 },
+      { "itemId": 9, "amount": 2.78 },
+      { "itemId": 172, "amount": 3.08 },
+      { "itemId": 249, "amount": 4.21 },
+      { "itemId": 313, "amount": 4.5 },
+      { "itemId": 328, "amount": 4.4 }
     ],
     "baseStats": {
       "h": { "b": 850, "w": 170, "t": 5.4 },
@@ -3969,8 +3969,8 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 10, "amount": 3.3 },
-      { "item": 188, "amount": 4 }
+      { "itemId": 10, "amount": 3.3 },
+      { "itemId": 188, "amount": 4 }
     ],
     "baseStats": {
       "h": { "b": 200, "w": 40, "t": 3.01 },
@@ -4043,18 +4043,18 @@
     "immobilizedBy": [785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.57 },
-      { "item": 5, "amount": 2.97 },
-      { "item": 6, "amount": 3.25 },
-      { "item": 8, "amount": 4.3 },
-      { "item": 9, "amount": 4.6 },
-      { "item": 10, "amount": 4.2 },
-      { "item": 11, "amount": 2.94 },
-      { "item": 12, "amount": 2.61 },
-      { "item": 13, "amount": 2.52 },
-      { "item": 14, "amount": 2.65 },
-      { "item": 62, "amount": 3.1 },
-      { "item": 68, "amount": 3.24 }
+      { "itemId": 3, "amount": 2.57 },
+      { "itemId": 5, "amount": 2.97 },
+      { "itemId": 6, "amount": 3.25 },
+      { "itemId": 8, "amount": 4.3 },
+      { "itemId": 9, "amount": 4.6 },
+      { "itemId": 10, "amount": 4.2 },
+      { "itemId": 11, "amount": 2.94 },
+      { "itemId": 12, "amount": 2.61 },
+      { "itemId": 13, "amount": 2.52 },
+      { "itemId": 14, "amount": 2.65 },
+      { "itemId": 62, "amount": 3.1 },
+      { "itemId": 68, "amount": 3.24 }
     ],
     "baseStats": {
       "h": { "b": 710, "w": 142, "t": 5.4 },
@@ -4143,11 +4143,11 @@
     "immobilizedBy": [785],
     "allowableFlyers": ["ta", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.04 },
-      { "item": 13, "amount": 2.87 },
-      { "item": 14, "amount": 3.1 },
-      { "item": 62, "amount": 2.54 },
-      { "item": 68, "amount": 3.3 }
+      { "itemId": 11, "amount": 3.04 },
+      { "itemId": 13, "amount": 2.87 },
+      { "itemId": 14, "amount": 3.1 },
+      { "itemId": 62, "amount": 2.54 },
+      { "itemId": 68, "amount": 3.3 }
     ],
     "baseStats": {
       "h": { "b": 180, "w": 36, "t": 5.4 },
@@ -4220,16 +4220,16 @@
       "desmodus"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.59 },
-      { "item": 12, "amount": 3.65 },
-      { "item": 13, "amount": 3.77 },
-      { "item": 14, "amount": 3.79 },
-      { "item": 15, "amount": 3.61 },
-      { "item": 16, "amount": 3.87 },
-      { "item": 62, "amount": 3.6 },
-      { "item": 68, "amount": 3.63 },
-      { "item": 184, "amount": 3.76 },
-      { "item": 249, "amount": 3.65 }
+      { "itemId": 11, "amount": 3.59 },
+      { "itemId": 12, "amount": 3.65 },
+      { "itemId": 13, "amount": 3.77 },
+      { "itemId": 14, "amount": 3.79 },
+      { "itemId": 15, "amount": 3.61 },
+      { "itemId": 16, "amount": 3.87 },
+      { "itemId": 62, "amount": 3.6 },
+      { "itemId": 68, "amount": 3.63 },
+      { "itemId": 184, "amount": 3.76 },
+      { "itemId": 249, "amount": 3.65 }
     ],
     "baseStats": {
       "h": { "b": 375, "w": 75, "t": 5.4 },
@@ -4311,9 +4311,9 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.9 },
-      { "item": 5, "amount": 2.73 },
-      { "item": 17, "amount": 3.38 }
+      { "itemId": 3, "amount": 2.9 },
+      { "itemId": 5, "amount": 2.73 },
+      { "itemId": 17, "amount": 3.38 }
     ],
     "baseStats": {
       "h": { "b": 240, "w": 48, "t": 5.4 },
@@ -4505,15 +4505,15 @@
     "immobilizedBy": [725, 383, 384, 986],
     "allowableFlyers": ["argentavis", "crystalwyvern", "wyvern", "quetzal"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.81 },
-      { "item": 12, "amount": 3.86 },
-      { "item": 13, "amount": 4.32 },
-      { "item": 14, "amount": 4.11 },
-      { "item": 15, "amount": 3.98 },
-      { "item": 16, "amount": 4.27 },
-      { "item": 62, "amount": 3.34 },
-      { "item": 68, "amount": 3.34 },
-      { "item": 184, "amount": 3.95 }
+      { "itemId": 11, "amount": 3.81 },
+      { "itemId": 12, "amount": 3.86 },
+      { "itemId": 13, "amount": 4.32 },
+      { "itemId": 14, "amount": 4.11 },
+      { "itemId": 15, "amount": 3.98 },
+      { "itemId": 16, "amount": 4.27 },
+      { "itemId": 62, "amount": 3.34 },
+      { "itemId": 68, "amount": 3.34 },
+      { "itemId": 184, "amount": 3.95 }
     ],
     "baseStats": {
       "h": { "b": 750, "w": 150, "t": null },
@@ -4613,9 +4613,9 @@
       "desmodus"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 2.14 },
-      { "item": 12, "amount": 2.12 },
-      { "item": 249, "amount": 4.2 }
+      { "itemId": 11, "amount": 2.14 },
+      { "itemId": 12, "amount": 2.12 },
+      { "itemId": 249, "amount": 4.2 }
     ],
     "baseStats": {
       "h": { "b": 55, "w": 11, "t": null },
@@ -4653,8 +4653,12 @@
     "nameTranslations": {},
     "description": "The Fjordhawk is a scavenging bird in ARK: Survival Evolved that is included in the free DLC map, Fjordur, on June 12, 2022. It can fetch items and locate injured targets. After dying, the Fjordhawk can retrieve and return your items once you die.",
     "tamingNotice": "To tame a Fjordhawk, you must let it eat creatures you kill (wild or tamed). The taming increase varies depending on the creature it eats.\n\nBased on Dododex's testing of dozens of creatures, it generally prefers larger creatures such as the Brontosaurus, Diplodocus, or Parcer (all three were equal), however the size is not always correlated to how effective the creature is. The Ovis is the most effective creature to feed it. The Phiomia tames it very well in comparison to other easy-to-hunt dinos (even outperforming the Allosaurus and the Therizinosaurus).\n\nNote that the level of the creature it eats does not matter (a level 1 will increase the taming bar just as much as a level 150).\n\nShare which creatures worked best for you using the 'Tips' feature!",
+    "affinityNeeded": 1750,
+    "affinityIncreasePerLevel": 85,
     "maturationTime": 166666.667,
     "incubationTime": 5999.52004,
+    "matingCooldownMin": 64800,
+    "matingCooldownMax": 172800,
     "experiencePerKill": 6,
     "hitboxes": { "Head": 3 },
     "canDestroy": [],
@@ -4767,33 +4771,33 @@
     "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["quetzal"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 4.15 },
-      { "item": 4, "amount": 3.62 },
-      { "item": 5, "amount": 3.95 },
-      { "item": 6, "amount": 3.28 },
-      { "item": 7, "amount": 3.49 },
-      { "item": 8, "amount": 3.43 },
-      { "item": 9, "amount": 3.53 },
-      { "item": 10, "amount": 4.28 },
-      { "item": 11, "amount": 3.48 },
-      { "item": 12, "amount": 3.55 },
-      { "item": 13, "amount": 3.28 },
-      { "item": 14, "amount": 3.82 },
-      { "item": 15, "amount": 3.8 },
-      { "item": 16, "amount": 3.89 },
-      { "item": 17, "amount": 3.23 },
-      { "item": 57, "amount": 3.97 },
-      { "item": 58, "amount": 3.98 },
-      { "item": 62, "amount": 3.79 },
-      { "item": 63, "amount": 3.84 },
-      { "item": 68, "amount": 3.47 },
-      { "item": 71, "amount": 3.94 },
-      { "item": 169, "amount": 3.62 },
-      { "item": 170, "amount": 3.75 },
-      { "item": 172, "amount": 3.67 },
-      { "item": 177, "amount": 4.22 },
-      { "item": 210, "amount": 4.03 },
-      { "item": 249, "amount": 4.22 }
+      { "itemId": 3, "amount": 4.15 },
+      { "itemId": 4, "amount": 3.62 },
+      { "itemId": 5, "amount": 3.95 },
+      { "itemId": 6, "amount": 3.28 },
+      { "itemId": 7, "amount": 3.49 },
+      { "itemId": 8, "amount": 3.43 },
+      { "itemId": 9, "amount": 3.53 },
+      { "itemId": 10, "amount": 4.28 },
+      { "itemId": 11, "amount": 3.48 },
+      { "itemId": 12, "amount": 3.55 },
+      { "itemId": 13, "amount": 3.28 },
+      { "itemId": 14, "amount": 3.82 },
+      { "itemId": 15, "amount": 3.8 },
+      { "itemId": 16, "amount": 3.89 },
+      { "itemId": 17, "amount": 3.23 },
+      { "itemId": 57, "amount": 3.97 },
+      { "itemId": 58, "amount": 3.98 },
+      { "itemId": 62, "amount": 3.79 },
+      { "itemId": 63, "amount": 3.84 },
+      { "itemId": 68, "amount": 3.47 },
+      { "itemId": 71, "amount": 3.94 },
+      { "itemId": 169, "amount": 3.62 },
+      { "itemId": 170, "amount": 3.75 },
+      { "itemId": 172, "amount": 3.67 },
+      { "itemId": 177, "amount": 4.22 },
+      { "itemId": 210, "amount": 4.03 },
+      { "itemId": 249, "amount": 4.22 }
     ],
     "baseStats": {
       "h": { "b": 750, "w": 150, "t": 5.4 },
@@ -4877,8 +4881,8 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.04 },
-      { "item": 17, "amount": 2.12 }
+      { "itemId": 3, "amount": 2.04 },
+      { "itemId": 17, "amount": 2.12 }
     ],
     "baseStats": {
       "h": { "b": 150, "w": 30, "t": 6.19 },
@@ -5116,17 +5120,17 @@
     "immobilizedBy": [384],
     "allowableFlyers": ["ta", "r"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 5 },
-      { "item": 12, "amount": 4.66 },
-      { "item": 13, "amount": 4.41 },
-      { "item": 14, "amount": 3.69 },
-      { "item": 15, "amount": 3.65 },
-      { "item": 16, "amount": 3.43 },
-      { "item": 58, "amount": 3.03 },
-      { "item": 62, "amount": 3.72 },
-      { "item": 68, "amount": 3.86 },
-      { "item": 250, "amount": 4.02 },
-      { "item": 256, "amount": 4.22 }
+      { "itemId": 11, "amount": 5 },
+      { "itemId": 12, "amount": 4.66 },
+      { "itemId": 13, "amount": 4.41 },
+      { "itemId": 14, "amount": 3.69 },
+      { "itemId": 15, "amount": 3.65 },
+      { "itemId": 16, "amount": 3.43 },
+      { "itemId": 58, "amount": 3.03 },
+      { "itemId": 62, "amount": 3.72 },
+      { "itemId": 68, "amount": 3.86 },
+      { "itemId": 250, "amount": 4.02 },
+      { "itemId": 256, "amount": 4.22 }
     ],
     "baseStats": {
       "h": { "b": 80000, "w": 40, "t": 0.04 },
@@ -5220,12 +5224,12 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.01 },
-      { "item": 4, "amount": 4.15 },
-      { "item": 5, "amount": 2.22 },
-      { "item": 17, "amount": 3.35 },
-      { "item": 63, "amount": 3.11 },
-      { "item": 171, "amount": 3.04 }
+      { "itemId": 3, "amount": 3.01 },
+      { "itemId": 4, "amount": 4.15 },
+      { "itemId": 5, "amount": 2.22 },
+      { "itemId": 17, "amount": 3.35 },
+      { "itemId": 63, "amount": 3.11 },
+      { "itemId": 171, "amount": 3.04 }
     ],
     "baseStats": {
       "h": { "b": 640, "w": 64, "t": 5.4 },
@@ -5434,15 +5438,15 @@
     "immobilizedBy": [383, 384, 725, 986, 785],
     "allowableFlyers": ["ta", "r"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.52 },
-      { "item": 12, "amount": 3.45 },
-      { "item": 13, "amount": 3.66 },
-      { "item": 14, "amount": 3.39 },
-      { "item": 15, "amount": 3.48 },
-      { "item": 16, "amount": 3.42 },
-      { "item": 58, "amount": 3.14 },
-      { "item": 62, "amount": 3.06 },
-      { "item": 68, "amount": 3.25 }
+      { "itemId": 11, "amount": 3.52 },
+      { "itemId": 12, "amount": 3.45 },
+      { "itemId": 13, "amount": 3.66 },
+      { "itemId": 14, "amount": 3.39 },
+      { "itemId": 15, "amount": 3.48 },
+      { "itemId": 16, "amount": 3.42 },
+      { "itemId": 58, "amount": 3.14 },
+      { "itemId": 62, "amount": 3.06 },
+      { "itemId": 68, "amount": 3.25 }
     ],
     "baseStats": {
       "h": { "b": 950, "w": 142.5, "t": 4.32 },
@@ -5607,14 +5611,14 @@
       "desmodus"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.5 },
-      { "item": 12, "amount": 3.37 },
-      { "item": 13, "amount": 3.49 },
-      { "item": 14, "amount": 2.91 },
-      { "item": 15, "amount": 3.15 },
-      { "item": 16, "amount": 3 },
-      { "item": 62, "amount": 3.12 },
-      { "item": 68, "amount": 3.27 }
+      { "itemId": 11, "amount": 3.5 },
+      { "itemId": 12, "amount": 3.37 },
+      { "itemId": 13, "amount": 3.49 },
+      { "itemId": 14, "amount": 2.91 },
+      { "itemId": 15, "amount": 3.15 },
+      { "itemId": 16, "amount": 3 },
+      { "itemId": 62, "amount": 3.12 },
+      { "itemId": 68, "amount": 3.27 }
     ],
     "baseStats": {
       "h": { "b": 175, "w": 35, "t": 5.4 },
@@ -5726,10 +5730,10 @@
     "immobilizedBy": [986, 1040, 785, 383],
     "allowableFlyers": ["ta", "human"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 2.82 },
-      { "item": 12, "amount": 3.13 },
-      { "item": 62, "amount": 3.85 },
-      { "item": 68, "amount": 3.88 }
+      { "itemId": 11, "amount": 2.82 },
+      { "itemId": 12, "amount": 3.13 },
+      { "itemId": 62, "amount": 3.85 },
+      { "itemId": 68, "amount": 3.88 }
     ],
     "baseStats": {
       "h": { "b": 50, "w": 10, "t": 5.4 },
@@ -5821,10 +5825,10 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 2.46 },
-      { "item": 12, "amount": 1.97 },
-      { "item": 62, "amount": 2.6 },
-      { "item": 68, "amount": 2.65 }
+      { "itemId": 11, "amount": 2.46 },
+      { "itemId": 12, "amount": 1.97 },
+      { "itemId": 62, "amount": 2.6 },
+      { "itemId": 68, "amount": 2.65 }
     ],
     "baseStats": {
       "h": { "b": 275, "w": 13.75, "t": 6.75 },
@@ -5914,12 +5918,12 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.15 },
-      { "item": 5, "amount": 2.43 },
-      { "item": 17, "amount": 3.43 },
-      { "item": 18, "amount": 3.25 },
-      { "item": 19, "amount": 3.04 },
-      { "item": 169, "amount": 3.93 }
+      { "itemId": 3, "amount": 3.15 },
+      { "itemId": 5, "amount": 2.43 },
+      { "itemId": 17, "amount": 3.43 },
+      { "itemId": 18, "amount": 3.25 },
+      { "itemId": 19, "amount": 3.04 },
+      { "itemId": 169, "amount": 3.93 }
     ],
     "baseStats": {
       "h": { "b": 250, "w": 50, "t": 5.4 },
@@ -6261,14 +6265,14 @@
     "immobilizedBy": [725, 383, 384, 785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.16 },
-      { "item": 12, "amount": 2.82 },
-      { "item": 13, "amount": 2.98 },
-      { "item": 14, "amount": 2.82 },
-      { "item": 15, "amount": 2.74 },
-      { "item": 16, "amount": 2.63 },
-      { "item": 58, "amount": 2.51 },
-      { "item": 68, "amount": 3.39 }
+      { "itemId": 11, "amount": 3.16 },
+      { "itemId": 12, "amount": 2.82 },
+      { "itemId": 13, "amount": 2.98 },
+      { "itemId": 14, "amount": 2.82 },
+      { "itemId": 15, "amount": 2.74 },
+      { "itemId": 16, "amount": 2.63 },
+      { "itemId": 58, "amount": 2.51 },
+      { "itemId": 68, "amount": 3.39 }
     ],
     "baseStats": {
       "h": { "b": 200, "w": 40, "t": null },
@@ -6334,14 +6338,14 @@
     "immobilizedBy": [384, 725, 785],
     "allowableFlyers": ["ab"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.39 },
-      { "item": 12, "amount": 3.27 },
-      { "item": 13, "amount": 3.55 },
-      { "item": 14, "amount": 3.17 },
-      { "item": 15, "amount": 3.39 },
-      { "item": 16, "amount": 2.71 },
-      { "item": 62, "amount": 3.44 },
-      { "item": 68, "amount": 3.52 }
+      { "itemId": 11, "amount": 3.39 },
+      { "itemId": 12, "amount": 3.27 },
+      { "itemId": 13, "amount": 3.55 },
+      { "itemId": 14, "amount": 3.17 },
+      { "itemId": 15, "amount": 3.39 },
+      { "itemId": 16, "amount": 2.71 },
+      { "itemId": 62, "amount": 3.44 },
+      { "itemId": 68, "amount": 3.52 }
     ],
     "baseStats": {
       "h": { "b": 1200, "w": 240, "t": 5.4 },
@@ -6419,8 +6423,8 @@
     "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "karkinos", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.13 },
-      { "item": 17, "amount": 3.65 }
+      { "itemId": 3, "amount": 3.13 },
+      { "itemId": 17, "amount": 3.65 }
     ],
     "baseStats": {
       "h": { "b": 650, "w": 130, "t": 2 },
@@ -6583,9 +6587,9 @@
     "immobilizedBy": [],
     "allowableFlyers": [],
     "gatherEfficiency": [
-      { "item": 12, "amount": 3.42 },
-      { "item": 62, "amount": 3.68 },
-      { "item": 68, "amount": 3.51 }
+      { "itemId": 12, "amount": 3.42 },
+      { "itemId": 62, "amount": 3.68 },
+      { "itemId": 68, "amount": 3.51 }
     ],
     "baseStats": {
       "h": { "b": 4400, "w": 528, "t": null },
@@ -6639,13 +6643,13 @@
     "immobilizedBy": [],
     "allowableFlyers": ["ta", "r"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.21 },
-      { "item": 12, "amount": 2.95 },
-      { "item": 13, "amount": 3.37 },
-      { "item": 14, "amount": 3.06 },
-      { "item": 15, "amount": 3.26 },
-      { "item": 62, "amount": 3.01 },
-      { "item": 68, "amount": 3.45 }
+      { "itemId": 11, "amount": 3.21 },
+      { "itemId": 12, "amount": 2.95 },
+      { "itemId": 13, "amount": 3.37 },
+      { "itemId": 14, "amount": 3.06 },
+      { "itemId": 15, "amount": 3.26 },
+      { "itemId": 62, "amount": 3.01 },
+      { "itemId": 68, "amount": 3.45 }
     ],
     "baseStats": {
       "h": { "b": 600, "w": 120, "t": 5.4 },
@@ -6880,8 +6884,8 @@
     "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["wyvern", "quetzal"],
     "gatherEfficiency": [
-      { "item": 4, "amount": 3.9 },
-      { "item": 17, "amount": 3.9 }
+      { "itemId": 4, "amount": 3.9 },
+      { "itemId": 17, "amount": 3.9 }
     ],
     "baseStats": {
       "h": { "b": 700, "w": 59.5, "t": 4.05 },
@@ -6929,29 +6933,29 @@
     "immobilizedBy": [725, 384],
     "allowableFlyers": [],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.31 },
-      { "item": 5, "amount": 3.57 },
-      { "item": 6, "amount": 4.13 },
-      { "item": 8, "amount": 4.42 },
-      { "item": 9, "amount": 4.4 },
-      { "item": 10, "amount": 3.92 },
-      { "item": 11, "amount": 3.74 },
-      { "item": 12, "amount": 3.49 },
-      { "item": 13, "amount": 3.55 },
-      { "item": 14, "amount": 3.66 },
-      { "item": 15, "amount": 3.62 },
-      { "item": 16, "amount": 3.6 },
-      { "item": 57, "amount": 3.98 },
-      { "item": 58, "amount": 3.68 },
-      { "item": 62, "amount": 3.62 },
-      { "item": 68, "amount": 3.61 },
-      { "item": 69, "amount": 3.62 },
-      { "item": 71, "amount": 3.96 },
-      { "item": 170, "amount": 3.63 },
-      { "item": 184, "amount": 3.66 },
-      { "item": 270, "amount": 3.93 },
-      { "item": 309, "amount": 3.33 },
-      { "item": 325, "amount": 3.97 }
+      { "itemId": 3, "amount": 3.31 },
+      { "itemId": 5, "amount": 3.57 },
+      { "itemId": 6, "amount": 4.13 },
+      { "itemId": 8, "amount": 4.42 },
+      { "itemId": 9, "amount": 4.4 },
+      { "itemId": 10, "amount": 3.92 },
+      { "itemId": 11, "amount": 3.74 },
+      { "itemId": 12, "amount": 3.49 },
+      { "itemId": 13, "amount": 3.55 },
+      { "itemId": 14, "amount": 3.66 },
+      { "itemId": 15, "amount": 3.62 },
+      { "itemId": 16, "amount": 3.6 },
+      { "itemId": 57, "amount": 3.98 },
+      { "itemId": 58, "amount": 3.68 },
+      { "itemId": 62, "amount": 3.62 },
+      { "itemId": 68, "amount": 3.61 },
+      { "itemId": 69, "amount": 3.62 },
+      { "itemId": 71, "amount": 3.96 },
+      { "itemId": 170, "amount": 3.63 },
+      { "itemId": 184, "amount": 3.66 },
+      { "itemId": 270, "amount": 3.93 },
+      { "itemId": 309, "amount": 3.33 },
+      { "itemId": 325, "amount": 3.97 }
     ],
     "baseStats": {
       "h": { "b": 3000, "w": 150, "t": 2.7 },
@@ -7027,11 +7031,11 @@
     "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["quetzal", "ta", "r", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 4.19 },
-      { "item": 5, "amount": 4.1 },
-      { "item": 17, "amount": 3.82 },
-      { "item": 18, "amount": 3.51 },
-      { "item": 19, "amount": 3.26 }
+      { "itemId": 3, "amount": 4.19 },
+      { "itemId": 5, "amount": 4.1 },
+      { "itemId": 17, "amount": 3.82 },
+      { "itemId": 18, "amount": 3.51 },
+      { "itemId": 19, "amount": 3.26 }
     ],
     "baseStats": {
       "h": { "b": 850, "w": 170, "t": 5.4 },
@@ -7105,14 +7109,14 @@
     "immobilizedBy": [725, 384, 986, 785],
     "allowableFlyers": [],
     "gatherEfficiency": [
-      { "item": 11, "amount": 4 },
-      { "item": 12, "amount": 3.65 },
-      { "item": 13, "amount": 3.86 },
-      { "item": 15, "amount": 3.55 },
-      { "item": 16, "amount": 3.72 },
-      { "item": 19, "amount": 3.63 },
-      { "item": 62, "amount": 3.38 },
-      { "item": 68, "amount": 3.68 }
+      { "itemId": 11, "amount": 4 },
+      { "itemId": 12, "amount": 3.65 },
+      { "itemId": 13, "amount": 3.86 },
+      { "itemId": 15, "amount": 3.55 },
+      { "itemId": 16, "amount": 3.72 },
+      { "itemId": 19, "amount": 3.63 },
+      { "itemId": 62, "amount": 3.38 },
+      { "itemId": 68, "amount": 3.68 }
     ],
     "baseStats": {
       "h": { "b": 825, "w": 165, "t": 5.4 },
@@ -7181,10 +7185,10 @@
       "tusoteuthis"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 2.57 },
-      { "item": 12, "amount": 2.32 },
-      { "item": 62, "amount": 3.44 },
-      { "item": 68, "amount": 3.15 }
+      { "itemId": 11, "amount": 2.57 },
+      { "itemId": 12, "amount": 2.32 },
+      { "itemId": 62, "amount": 3.44 },
+      { "itemId": 68, "amount": 3.15 }
     ],
     "baseStats": {
       "h": { "b": 320, "w": 16, "t": 1.35 },
@@ -7297,31 +7301,31 @@
       "karkinos"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.87 },
-      { "item": 4, "amount": 3.73 },
-      { "item": 5, "amount": 4.04 },
-      { "item": 6, "amount": 3.98 },
-      { "item": 7, "amount": 4.03 },
-      { "item": 8, "amount": 4.05 },
-      { "item": 9, "amount": 4.08 },
-      { "item": 10, "amount": 3.88 },
-      { "item": 11, "amount": 3.87 },
-      { "item": 12, "amount": 3.78 },
-      { "item": 13, "amount": 3.93 },
-      { "item": 14, "amount": 3.97 },
-      { "item": 15, "amount": 3.95 },
-      { "item": 16, "amount": 3.74 },
-      { "item": 57, "amount": 4.09 },
-      { "item": 58, "amount": 3.65 },
-      { "item": 62, "amount": 3.63 },
-      { "item": 68, "amount": 3.56 },
-      { "item": 71, "amount": 4.04 },
-      { "item": 170, "amount": 4.33 },
-      { "item": 172, "amount": 4.12 },
-      { "item": 248, "amount": 3.9 },
-      { "item": 249, "amount": 3.73 },
-      { "item": 309, "amount": 2.99 },
-      { "item": 325, "amount": 5 }
+      { "itemId": 3, "amount": 3.87 },
+      { "itemId": 4, "amount": 3.73 },
+      { "itemId": 5, "amount": 4.04 },
+      { "itemId": 6, "amount": 3.98 },
+      { "itemId": 7, "amount": 4.03 },
+      { "itemId": 8, "amount": 4.05 },
+      { "itemId": 9, "amount": 4.08 },
+      { "itemId": 10, "amount": 3.88 },
+      { "itemId": 11, "amount": 3.87 },
+      { "itemId": 12, "amount": 3.78 },
+      { "itemId": 13, "amount": 3.93 },
+      { "itemId": 14, "amount": 3.97 },
+      { "itemId": 15, "amount": 3.95 },
+      { "itemId": 16, "amount": 3.74 },
+      { "itemId": 57, "amount": 4.09 },
+      { "itemId": 58, "amount": 3.65 },
+      { "itemId": 62, "amount": 3.63 },
+      { "itemId": 68, "amount": 3.56 },
+      { "itemId": 71, "amount": 4.04 },
+      { "itemId": 170, "amount": 4.33 },
+      { "itemId": 172, "amount": 4.12 },
+      { "itemId": 248, "amount": 3.9 },
+      { "itemId": 249, "amount": 3.73 },
+      { "itemId": 309, "amount": 2.99 },
+      { "itemId": 325, "amount": 5 }
     ],
     "baseStats": {
       "h": { "b": 275, "w": 55, "t": 2.8 },
@@ -7371,14 +7375,14 @@
     "immobilizedBy": [384],
     "allowableFlyers": [],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.6 },
-      { "item": 4, "amount": 3.96 },
-      { "item": 5, "amount": 2.91 },
-      { "item": 17, "amount": 3.81 },
-      { "item": 18, "amount": 4.86 },
-      { "item": 19, "amount": 4.81 },
-      { "item": 62, "amount": 4.02 },
-      { "item": 68, "amount": 3.03 }
+      { "itemId": 3, "amount": 3.6 },
+      { "itemId": 4, "amount": 3.96 },
+      { "itemId": 5, "amount": 2.91 },
+      { "itemId": 17, "amount": 3.81 },
+      { "itemId": 18, "amount": 4.86 },
+      { "itemId": 19, "amount": 4.81 },
+      { "itemId": 62, "amount": 4.02 },
+      { "itemId": 68, "amount": 3.03 }
     ],
     "baseStats": {
       "h": { "b": 1920, "w": 384, "t": 4.59 },
@@ -7550,8 +7554,8 @@
       "tusoteuthis"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 4.03 },
-      { "item": 5, "amount": 2.12 }
+      { "itemId": 3, "amount": 4.03 },
+      { "itemId": 5, "amount": 2.12 }
     ],
     "baseStats": {
       "h": { "b": 300, "w": 60, "t": 5.4 },
@@ -7628,12 +7632,12 @@
     "immobilizedBy": [785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.53 },
-      { "item": 12, "amount": 3.29 },
-      { "item": 13, "amount": 2.65 },
-      { "item": 62, "amount": 3.43 },
-      { "item": 68, "amount": 3.79 },
-      { "item": 69, "amount": 3.64 }
+      { "itemId": 11, "amount": 3.53 },
+      { "itemId": 12, "amount": 3.29 },
+      { "itemId": 13, "amount": 2.65 },
+      { "itemId": 62, "amount": 3.43 },
+      { "itemId": 68, "amount": 3.79 },
+      { "itemId": 69, "amount": 3.64 }
     ],
     "baseStats": {
       "h": { "b": 600, "w": 120, "t": 5.4 },
@@ -7714,16 +7718,16 @@
     "immobilizedBy": [725, 384, 986, 785],
     "allowableFlyers": ["ta", "r", "tusoteuthis", "procoptodon"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.76 },
-      { "item": 11, "amount": 3.75 },
-      { "item": 12, "amount": 3.64 },
-      { "item": 13, "amount": 3.61 },
-      { "item": 14, "amount": 3.36 },
-      { "item": 15, "amount": 3.55 },
-      { "item": 16, "amount": 3.3 },
-      { "item": 58, "amount": 2.71 },
-      { "item": 62, "amount": 3.11 },
-      { "item": 68, "amount": 3.45 }
+      { "itemId": 3, "amount": 2.76 },
+      { "itemId": 11, "amount": 3.75 },
+      { "itemId": 12, "amount": 3.64 },
+      { "itemId": 13, "amount": 3.61 },
+      { "itemId": 14, "amount": 3.36 },
+      { "itemId": 15, "amount": 3.55 },
+      { "itemId": 16, "amount": 3.3 },
+      { "itemId": 58, "amount": 2.71 },
+      { "itemId": 62, "amount": 3.11 },
+      { "itemId": 68, "amount": 3.45 }
     ],
     "baseStats": {
       "h": { "b": 1025, "w": 205, "t": 5.4 },
@@ -7907,16 +7911,16 @@
     "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "r", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.85 },
-      { "item": 4, "amount": 3.57 },
-      { "item": 5, "amount": 2.51 },
-      { "item": 11, "amount": 2.93 },
-      { "item": 12, "amount": 2.86 },
-      { "item": 13, "amount": 3.35 },
-      { "item": 14, "amount": 4.74 },
-      { "item": 15, "amount": 3.39 },
-      { "item": 17, "amount": 3.99 },
-      { "item": 248, "amount": 4.2 }
+      { "itemId": 3, "amount": 3.85 },
+      { "itemId": 4, "amount": 3.57 },
+      { "itemId": 5, "amount": 2.51 },
+      { "itemId": 11, "amount": 2.93 },
+      { "itemId": 12, "amount": 2.86 },
+      { "itemId": 13, "amount": 3.35 },
+      { "itemId": 14, "amount": 4.74 },
+      { "itemId": 15, "amount": 3.39 },
+      { "itemId": 17, "amount": 3.99 },
+      { "itemId": 248, "amount": 4.2 }
     ],
     "baseStats": {
       "h": { "b": 740, "w": 148, "t": 5.4 },
@@ -8041,7 +8045,7 @@
       "procoptodon",
       "desmodus"
     ],
-    "gatherEfficiency": [{ "item": 17, "amount": 2.64 }],
+    "gatherEfficiency": [{ "itemId": 17, "amount": 2.64 }],
     "baseStats": {
       "h": { "b": 115, "w": 23, "t": 5.4 },
       "s": { "b": 100, "w": 10, "t": 10 },
@@ -8213,12 +8217,12 @@
     "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "r", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.7 },
-      { "item": 5, "amount": 2.26 },
-      { "item": 17, "amount": 3.93 },
-      { "item": 18, "amount": 2.51 },
-      { "item": 19, "amount": 2.45 },
-      { "item": 171, "amount": 3.91 }
+      { "itemId": 3, "amount": 2.7 },
+      { "itemId": 5, "amount": 2.26 },
+      { "itemId": 17, "amount": 3.93 },
+      { "itemId": 18, "amount": 2.51 },
+      { "itemId": 19, "amount": 2.45 },
+      { "itemId": 171, "amount": 3.91 }
     ],
     "baseStats": {
       "h": { "b": 400, "w": 80, "t": null },
@@ -8294,12 +8298,12 @@
     "immobilizedBy": [],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 4.06 },
-      { "item": 12, "amount": 4 },
-      { "item": 13, "amount": 3.57 },
-      { "item": 62, "amount": 4.38 },
-      { "item": 68, "amount": 4.21 },
-      { "item": 69, "amount": 4.43 }
+      { "itemId": 11, "amount": 4.06 },
+      { "itemId": 12, "amount": 4 },
+      { "itemId": 13, "amount": 3.57 },
+      { "itemId": 62, "amount": 4.38 },
+      { "itemId": 68, "amount": 4.21 },
+      { "itemId": 69, "amount": 4.43 }
     ],
     "baseStats": {
       "h": { "b": 3600, "w": 432, "t": 5.6 },
@@ -8374,23 +8378,23 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.02 },
-      { "item": 4, "amount": 4.29 },
-      { "item": 5, "amount": 2.77 },
-      { "item": 11, "amount": 3.24 },
-      { "item": 12, "amount": 3.65 },
-      { "item": 13, "amount": 3.24 },
-      { "item": 14, "amount": 3.29 },
-      { "item": 15, "amount": 3.06 },
-      { "item": 16, "amount": 2.84 },
-      { "item": 17, "amount": 3.61 },
-      { "item": 18, "amount": 3.66 },
-      { "item": 19, "amount": 3.8 },
-      { "item": 58, "amount": 3.78 },
-      { "item": 62, "amount": 3.48 },
-      { "item": 68, "amount": 3.33 },
-      { "item": 171, "amount": 3 },
-      { "item": 250, "amount": 3.72 }
+      { "itemId": 3, "amount": 3.02 },
+      { "itemId": 4, "amount": 4.29 },
+      { "itemId": 5, "amount": 2.77 },
+      { "itemId": 11, "amount": 3.24 },
+      { "itemId": 12, "amount": 3.65 },
+      { "itemId": 13, "amount": 3.24 },
+      { "itemId": 14, "amount": 3.29 },
+      { "itemId": 15, "amount": 3.06 },
+      { "itemId": 16, "amount": 2.84 },
+      { "itemId": 17, "amount": 3.61 },
+      { "itemId": 18, "amount": 3.66 },
+      { "itemId": 19, "amount": 3.8 },
+      { "itemId": 58, "amount": 3.78 },
+      { "itemId": 62, "amount": 3.48 },
+      { "itemId": 68, "amount": 3.33 },
+      { "itemId": 171, "amount": 3 },
+      { "itemId": 250, "amount": 3.72 }
     ],
     "baseStats": {
       "h": { "b": 375, "w": 75, "t": 5.4 },
@@ -8693,10 +8697,10 @@
       "desmodus"
     ],
     "gatherEfficiency": [
-      { "item": 62, "amount": 3.33 },
-      { "item": 68, "amount": 3.64 },
-      { "item": 177, "amount": 3.41 },
-      { "item": 210, "amount": 3.86 }
+      { "itemId": 62, "amount": 3.33 },
+      { "itemId": 68, "amount": 3.64 },
+      { "itemId": 177, "amount": 3.41 },
+      { "itemId": 210, "amount": 3.86 }
     ],
     "baseStats": {
       "h": { "b": 40, "w": 8, "t": 5.4 },
@@ -9005,8 +9009,8 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.6 },
-      { "item": 5, "amount": 2.15 }
+      { "itemId": 3, "amount": 2.6 },
+      { "itemId": 5, "amount": 2.15 }
     ],
     "baseStats": {
       "h": { "b": 175, "w": 35, "t": 5.4 },
@@ -9093,13 +9097,13 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.84 },
-      { "item": 5, "amount": 2.82 },
-      { "item": 17, "amount": 3.35 },
-      { "item": 18, "amount": 3.12 },
-      { "item": 19, "amount": 3.06 },
-      { "item": 63, "amount": 3 },
-      { "item": 171, "amount": 2.66 }
+      { "itemId": 3, "amount": 2.84 },
+      { "itemId": 5, "amount": 2.82 },
+      { "itemId": 17, "amount": 3.35 },
+      { "itemId": 18, "amount": 3.12 },
+      { "itemId": 19, "amount": 3.06 },
+      { "itemId": 63, "amount": 3 },
+      { "itemId": 171, "amount": 2.66 }
     ],
     "baseStats": {
       "h": { "b": 375, "w": 75, "t": 5.4 },
@@ -9168,11 +9172,11 @@
     "immobilizedBy": [725, 384],
     "allowableFlyers": ["ta", "r", "tusoteuthis", "procoptodon"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.94 },
-      { "item": 5, "amount": 2.28 },
-      { "item": 17, "amount": 3.37 },
-      { "item": 18, "amount": 2.45 },
-      { "item": 19, "amount": 2.31 }
+      { "itemId": 3, "amount": 2.94 },
+      { "itemId": 5, "amount": 2.28 },
+      { "itemId": 17, "amount": 3.37 },
+      { "itemId": 18, "amount": 2.45 },
+      { "itemId": 19, "amount": 2.31 }
     ],
     "baseStats": {
       "h": { "b": 1026, "w": 205.2, "t": 3.4425 },
@@ -9292,9 +9296,9 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.27 },
-      { "item": 5, "amount": 1.69 },
-      { "item": 17, "amount": 3.6 }
+      { "itemId": 3, "amount": 2.27 },
+      { "itemId": 5, "amount": 1.69 },
+      { "itemId": 17, "amount": 3.6 }
     ],
     "baseStats": {
       "h": { "b": 200, "w": 40, "t": 5.4 },
@@ -9469,15 +9473,15 @@
     "immobilizedBy": [733, 1040, 785],
     "allowableFlyers": ["ta", "r", "megalosaurus", "karkinos"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 2.62 },
-      { "item": 12, "amount": 2.4 },
-      { "item": 13, "amount": 2.47 },
-      { "item": 14, "amount": 2.21 },
-      { "item": 15, "amount": 2.27 },
-      { "item": 16, "amount": 2.09 },
-      { "item": 58, "amount": 3.9 },
-      { "item": 62, "amount": 3.58 },
-      { "item": 68, "amount": 3.86 }
+      { "itemId": 11, "amount": 2.62 },
+      { "itemId": 12, "amount": 2.4 },
+      { "itemId": 13, "amount": 2.47 },
+      { "itemId": 14, "amount": 2.21 },
+      { "itemId": 15, "amount": 2.27 },
+      { "itemId": 16, "amount": 2.09 },
+      { "itemId": 58, "amount": 3.9 },
+      { "itemId": 62, "amount": 3.58 },
+      { "itemId": 68, "amount": 3.86 }
     ],
     "baseStats": {
       "h": { "b": 240, "w": 48, "t": 5.4 },
@@ -9569,8 +9573,8 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.1 },
-      { "item": 5, "amount": 2.28 }
+      { "itemId": 3, "amount": 2.1 },
+      { "itemId": 5, "amount": 2.28 }
     ],
     "baseStats": {
       "h": { "b": 300, "w": 60, "t": 5.4 },
@@ -9644,26 +9648,26 @@
     "immobilizedBy": [383, 785],
     "allowableFlyers": [],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.27 },
-      { "item": 5, "amount": 3.25 },
-      { "item": 6, "amount": 3.4 },
-      { "item": 8, "amount": 3.68 },
-      { "item": 9, "amount": 3.51 },
-      { "item": 11, "amount": 3.7 },
-      { "item": 12, "amount": 3.73 },
-      { "item": 13, "amount": 3.72 },
-      { "item": 14, "amount": 3.66 },
-      { "item": 15, "amount": 3.57 },
-      { "item": 16, "amount": 3.6 },
-      { "item": 57, "amount": 3.67 },
-      { "item": 62, "amount": 3.51 },
-      { "item": 68, "amount": 3.54 },
-      { "item": 71, "amount": 3.81 },
-      { "item": 170, "amount": 3.46 },
-      { "item": 171, "amount": 3.54 },
-      { "item": 172, "amount": 3.29 },
-      { "item": 177, "amount": 3.6 },
-      { "item": 210, "amount": 3.79 }
+      { "itemId": 3, "amount": 3.27 },
+      { "itemId": 5, "amount": 3.25 },
+      { "itemId": 6, "amount": 3.4 },
+      { "itemId": 8, "amount": 3.68 },
+      { "itemId": 9, "amount": 3.51 },
+      { "itemId": 11, "amount": 3.7 },
+      { "itemId": 12, "amount": 3.73 },
+      { "itemId": 13, "amount": 3.72 },
+      { "itemId": 14, "amount": 3.66 },
+      { "itemId": 15, "amount": 3.57 },
+      { "itemId": 16, "amount": 3.6 },
+      { "itemId": 57, "amount": 3.67 },
+      { "itemId": 62, "amount": 3.51 },
+      { "itemId": 68, "amount": 3.54 },
+      { "itemId": 71, "amount": 3.81 },
+      { "itemId": 170, "amount": 3.46 },
+      { "itemId": 171, "amount": 3.54 },
+      { "itemId": 172, "amount": 3.29 },
+      { "itemId": 177, "amount": 3.6 },
+      { "itemId": 210, "amount": 3.79 }
     ],
     "baseStats": {
       "h": { "b": 640, "w": 128, "t": 5.4 },
@@ -9776,13 +9780,13 @@
     "immobilizedBy": [785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.77 },
-      { "item": 12, "amount": 3.53 },
-      { "item": 13, "amount": 3.25 },
-      { "item": 14, "amount": 2.8 },
-      { "item": 15, "amount": 2.54 },
-      { "item": 62, "amount": 3.73 },
-      { "item": 68, "amount": 3.7 }
+      { "itemId": 11, "amount": 3.77 },
+      { "itemId": 12, "amount": 3.53 },
+      { "itemId": 13, "amount": 3.25 },
+      { "itemId": 14, "amount": 2.8 },
+      { "itemId": 15, "amount": 2.54 },
+      { "itemId": 62, "amount": 3.73 },
+      { "itemId": 68, "amount": 3.7 }
     ],
     "baseStats": {
       "h": { "b": 2400, "w": 288, "t": 3.2 },
@@ -9846,10 +9850,10 @@
     "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["ta", "r", "tusoteuthis", "procoptodon"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.8 },
-      { "item": 5, "amount": 2.08 },
-      { "item": 17, "amount": 2.58 },
-      { "item": 18, "amount": 2.58 }
+      { "itemId": 3, "amount": 2.8 },
+      { "itemId": 5, "amount": 2.08 },
+      { "itemId": 17, "amount": 2.58 },
+      { "itemId": 18, "amount": 2.58 }
     ],
     "baseStats": {
       "h": { "b": 400, "w": 80, "t": 5.4 },
@@ -9932,15 +9936,15 @@
     "immobilizedBy": [733, 1040, 785, 383, 384, 986],
     "allowableFlyers": ["ta", "r", "megalosaurus", "karkinos", "procoptodon"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.22 },
-      { "item": 12, "amount": 2.79 },
-      { "item": 13, "amount": 2.83 },
-      { "item": 14, "amount": 2.42 },
-      { "item": 15, "amount": 2.35 },
-      { "item": 16, "amount": 2.2 },
-      { "item": 58, "amount": 2.44 },
-      { "item": 62, "amount": 2.28 },
-      { "item": 68, "amount": 2.46 }
+      { "itemId": 11, "amount": 3.22 },
+      { "itemId": 12, "amount": 2.79 },
+      { "itemId": 13, "amount": 2.83 },
+      { "itemId": 14, "amount": 2.42 },
+      { "itemId": 15, "amount": 2.35 },
+      { "itemId": 16, "amount": 2.2 },
+      { "itemId": 58, "amount": 2.44 },
+      { "itemId": 62, "amount": 2.28 },
+      { "itemId": 68, "amount": 2.46 }
     ],
     "baseStats": {
       "h": { "b": 210, "w": 42, "t": 3 },
@@ -10019,16 +10023,16 @@
       "tusoteuthis"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 2.81 },
-      { "item": 12, "amount": 2.29 },
-      { "item": 13, "amount": 2.29 },
-      { "item": 14, "amount": 2.27 },
-      { "item": 15, "amount": 2.21 },
-      { "item": 16, "amount": 2.05 },
-      { "item": 58, "amount": 2.27 },
-      { "item": 62, "amount": 2.64 },
-      { "item": 68, "amount": 2.92 },
-      { "item": 250, "amount": 3.4 }
+      { "itemId": 11, "amount": 2.81 },
+      { "itemId": 12, "amount": 2.29 },
+      { "itemId": 13, "amount": 2.29 },
+      { "itemId": 14, "amount": 2.27 },
+      { "itemId": 15, "amount": 2.21 },
+      { "itemId": 16, "amount": 2.05 },
+      { "itemId": 58, "amount": 2.27 },
+      { "itemId": 62, "amount": 2.64 },
+      { "itemId": 68, "amount": 2.92 },
+      { "itemId": 250, "amount": 3.4 }
     ],
     "baseStats": {
       "h": { "b": 280, "w": 60.0012, "t": 5.4 },
@@ -10105,10 +10109,10 @@
     "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.44 },
-      { "item": 12, "amount": 2.82 },
-      { "item": 13, "amount": 3.26 },
-      { "item": 68, "amount": 3.19 }
+      { "itemId": 11, "amount": 3.44 },
+      { "itemId": 12, "amount": 2.82 },
+      { "itemId": 13, "amount": 3.26 },
+      { "itemId": 68, "amount": 3.19 }
     ],
     "baseStats": {
       "h": { "b": 275, "w": 55, "t": 5.4 },
@@ -10184,15 +10188,15 @@
     "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["ta", "r"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.2 },
-      { "item": 12, "amount": 2.92 },
-      { "item": 13, "amount": 2.86 },
-      { "item": 14, "amount": 2.7 },
-      { "item": 15, "amount": 2.61 },
-      { "item": 16, "amount": 2.49 },
-      { "item": 58, "amount": 2.51 },
-      { "item": 62, "amount": 2.8 },
-      { "item": 68, "amount": 2.85 }
+      { "itemId": 11, "amount": 3.2 },
+      { "itemId": 12, "amount": 2.92 },
+      { "itemId": 13, "amount": 2.86 },
+      { "itemId": 14, "amount": 2.7 },
+      { "itemId": 15, "amount": 2.61 },
+      { "itemId": 16, "amount": 2.49 },
+      { "itemId": 58, "amount": 2.51 },
+      { "itemId": 62, "amount": 2.8 },
+      { "itemId": 68, "amount": 2.85 }
     ],
     "baseStats": {
       "h": { "b": 1200, "w": 240, "t": 2.16 },
@@ -10290,14 +10294,14 @@
       "tusoteuthis"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.33 },
-      { "item": 12, "amount": 2.76 },
-      { "item": 13, "amount": 2.93 },
-      { "item": 14, "amount": 2.62 },
-      { "item": 15, "amount": 2.52 },
-      { "item": 16, "amount": 2.3 },
-      { "item": 62, "amount": 2.73 },
-      { "item": 68, "amount": 2.91 }
+      { "itemId": 11, "amount": 3.33 },
+      { "itemId": 12, "amount": 2.76 },
+      { "itemId": 13, "amount": 2.93 },
+      { "itemId": 14, "amount": 2.62 },
+      { "itemId": 15, "amount": 2.52 },
+      { "itemId": 16, "amount": 2.3 },
+      { "itemId": 62, "amount": 2.73 },
+      { "itemId": 68, "amount": 2.91 }
     ],
     "baseStats": {
       "h": { "b": 200, "w": 40, "t": 5.4 },
@@ -10380,15 +10384,15 @@
       "karkinos"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.55 },
-      { "item": 12, "amount": 3.03 },
-      { "item": 13, "amount": 3.59 },
-      { "item": 14, "amount": 3.28 },
-      { "item": 15, "amount": 3.13 },
-      { "item": 16, "amount": 3.31 },
-      { "item": 58, "amount": 2.54 },
-      { "item": 62, "amount": 2.73 },
-      { "item": 68, "amount": 3.19 }
+      { "itemId": 11, "amount": 3.55 },
+      { "itemId": 12, "amount": 3.03 },
+      { "itemId": 13, "amount": 3.59 },
+      { "itemId": 14, "amount": 3.28 },
+      { "itemId": 15, "amount": 3.13 },
+      { "itemId": 16, "amount": 3.31 },
+      { "itemId": 58, "amount": 2.54 },
+      { "itemId": 62, "amount": 2.73 },
+      { "itemId": 68, "amount": 3.19 }
     ],
     "baseStats": {
       "h": { "b": 400, "w": 80, "t": 5.4 },
@@ -10460,15 +10464,15 @@
     "immobilizedBy": [384],
     "allowableFlyers": ["ab"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.76 },
-      { "item": 12, "amount": 4.09 },
-      { "item": 13, "amount": 3.89 },
-      { "item": 14, "amount": 3.63 },
-      { "item": 15, "amount": 3.49 },
-      { "item": 16, "amount": 3.17 },
-      { "item": 58, "amount": 3.37 },
-      { "item": 62, "amount": 3.55 },
-      { "item": 68, "amount": 3.69 }
+      { "itemId": 11, "amount": 3.76 },
+      { "itemId": 12, "amount": 4.09 },
+      { "itemId": 13, "amount": 3.89 },
+      { "itemId": 14, "amount": 3.63 },
+      { "itemId": 15, "amount": 3.49 },
+      { "itemId": 16, "amount": 3.17 },
+      { "itemId": 58, "amount": 3.37 },
+      { "itemId": 62, "amount": 3.55 },
+      { "itemId": 68, "amount": 3.69 }
     ],
     "baseStats": {
       "h": { "b": 4500, "w": 234, "t": 2.7 },
@@ -10533,17 +10537,17 @@
     "immobilizedBy": [725, 384],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 4.65 },
-      { "item": 12, "amount": 4.01 },
-      { "item": 13, "amount": 3.95 },
-      { "item": 14, "amount": 3.49 },
-      { "item": 15, "amount": 3.47 },
-      { "item": 16, "amount": 3.35 },
-      { "item": 58, "amount": 3.17 },
-      { "item": 62, "amount": 3.46 },
-      { "item": 68, "amount": 3.69 },
-      { "item": 184, "amount": 3.91 },
-      { "item": 250, "amount": 3.24 }
+      { "itemId": 11, "amount": 4.65 },
+      { "itemId": 12, "amount": 4.01 },
+      { "itemId": 13, "amount": 3.95 },
+      { "itemId": 14, "amount": 3.49 },
+      { "itemId": 15, "amount": 3.47 },
+      { "itemId": 16, "amount": 3.35 },
+      { "itemId": 58, "amount": 3.17 },
+      { "itemId": 62, "amount": 3.46 },
+      { "itemId": 68, "amount": 3.69 },
+      { "itemId": 184, "amount": 3.91 },
+      { "itemId": 250, "amount": 3.24 }
     ],
     "baseStats": {
       "h": { "b": 1100, "w": 220, "t": 5.4 },
@@ -10606,16 +10610,16 @@
     "immobilizedBy": [785],
     "allowableFlyers": ["ab"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.74 },
-      { "item": 12, "amount": 3.62 },
-      { "item": 13, "amount": 3.75 },
-      { "item": 14, "amount": 3.39 },
-      { "item": 15, "amount": 3.28 },
-      { "item": 16, "amount": 3.16 },
-      { "item": 58, "amount": 3.06 },
-      { "item": 62, "amount": 3.29 },
-      { "item": 68, "amount": 3.53 },
-      { "item": 184, "amount": 3.61 }
+      { "itemId": 11, "amount": 3.74 },
+      { "itemId": 12, "amount": 3.62 },
+      { "itemId": 13, "amount": 3.75 },
+      { "itemId": 14, "amount": 3.39 },
+      { "itemId": 15, "amount": 3.28 },
+      { "itemId": 16, "amount": 3.16 },
+      { "itemId": 58, "amount": 3.06 },
+      { "itemId": 62, "amount": 3.29 },
+      { "itemId": 68, "amount": 3.53 },
+      { "itemId": 184, "amount": 3.61 }
     ],
     "baseStats": {
       "h": { "b": 1950, "w": 165.75, "t": 4.05 },
@@ -10691,25 +10695,25 @@
     "immobilizedBy": [],
     "allowableFlyers": ["ta", "r"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.96 },
-      { "item": 5, "amount": 3.25 },
-      { "item": 6, "amount": 4.03 },
-      { "item": 10, "amount": 3.12 },
-      { "item": 11, "amount": 3.26 },
-      { "item": 12, "amount": 3.17 },
-      { "item": 13, "amount": 3.18 },
-      { "item": 14, "amount": 3.21 },
-      { "item": 15, "amount": 3.18 },
-      { "item": 16, "amount": 3.1 },
-      { "item": 58, "amount": 3.23 },
-      { "item": 62, "amount": 3.12 },
-      { "item": 68, "amount": 3.25 },
-      { "item": 71, "amount": 3.42 },
-      { "item": 170, "amount": 3.35 },
-      { "item": 172, "amount": 3.72 },
-      { "item": 248, "amount": 3.58 },
-      { "item": 254, "amount": 3.57 },
-      { "item": 325, "amount": 3.79 }
+      { "itemId": 3, "amount": 2.96 },
+      { "itemId": 5, "amount": 3.25 },
+      { "itemId": 6, "amount": 4.03 },
+      { "itemId": 10, "amount": 3.12 },
+      { "itemId": 11, "amount": 3.26 },
+      { "itemId": 12, "amount": 3.17 },
+      { "itemId": 13, "amount": 3.18 },
+      { "itemId": 14, "amount": 3.21 },
+      { "itemId": 15, "amount": 3.18 },
+      { "itemId": 16, "amount": 3.1 },
+      { "itemId": 58, "amount": 3.23 },
+      { "itemId": 62, "amount": 3.12 },
+      { "itemId": 68, "amount": 3.25 },
+      { "itemId": 71, "amount": 3.42 },
+      { "itemId": 170, "amount": 3.35 },
+      { "itemId": 172, "amount": 3.72 },
+      { "itemId": 248, "amount": 3.58 },
+      { "itemId": 254, "amount": 3.57 },
+      { "itemId": 325, "amount": 3.79 }
     ],
     "baseStats": {
       "h": { "b": 25000, "w": 312.5, "t": null },
@@ -10805,11 +10809,11 @@
     "immobilizedBy": [785],
     "allowableFlyers": ["quetzal", "wyvern", "ab", "karkinos"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.96 },
-      { "item": 5, "amount": 4.12 },
-      { "item": 17, "amount": 3.56 },
-      { "item": 18, "amount": 3.36 },
-      { "item": 19, "amount": 3.14 }
+      { "itemId": 3, "amount": 2.96 },
+      { "itemId": 5, "amount": 4.12 },
+      { "itemId": 17, "amount": 3.56 },
+      { "itemId": 18, "amount": 3.36 },
+      { "itemId": 19, "amount": 3.14 }
     ],
     "baseStats": {
       "h": { "b": 850, "w": 170, "t": 5.4 },
@@ -10881,15 +10885,15 @@
     "immobilizedBy": [383, 384, 725, 986],
     "allowableFlyers": ["ta", "r"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.52 },
-      { "item": 12, "amount": 3.45 },
-      { "item": 13, "amount": 3.66 },
-      { "item": 14, "amount": 3.39 },
-      { "item": 15, "amount": 3.48 },
-      { "item": 16, "amount": 3.42 },
-      { "item": 58, "amount": 3.14 },
-      { "item": 62, "amount": 3.06 },
-      { "item": 68, "amount": 3.25 }
+      { "itemId": 11, "amount": 3.52 },
+      { "itemId": 12, "amount": 3.45 },
+      { "itemId": 13, "amount": 3.66 },
+      { "itemId": 14, "amount": 3.39 },
+      { "itemId": 15, "amount": 3.48 },
+      { "itemId": 16, "amount": 3.42 },
+      { "itemId": 58, "amount": 3.14 },
+      { "itemId": 62, "amount": 3.06 },
+      { "itemId": 68, "amount": 3.25 }
     ],
     "baseStats": {
       "h": { "b": 750, "w": 112.5, "t": 4.32 },
@@ -11007,15 +11011,15 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.42 },
-      { "item": 12, "amount": 3.08 },
-      { "item": 13, "amount": 3.96 },
-      { "item": 14, "amount": 4.02 },
-      { "item": 15, "amount": 3.92 },
-      { "item": 16, "amount": 3.6 },
-      { "item": 62, "amount": 2.88 },
-      { "item": 68, "amount": 2.94 },
-      { "item": 250, "amount": 4.02 }
+      { "itemId": 11, "amount": 3.42 },
+      { "itemId": 12, "amount": 3.08 },
+      { "itemId": 13, "amount": 3.96 },
+      { "itemId": 14, "amount": 4.02 },
+      { "itemId": 15, "amount": 3.92 },
+      { "itemId": 16, "amount": 3.6 },
+      { "itemId": 62, "amount": 2.88 },
+      { "itemId": 68, "amount": 2.94 },
+      { "itemId": 250, "amount": 4.02 }
     ],
     "baseStats": {
       "h": { "b": 250, "w": 50, "t": 5.4 },
@@ -11149,15 +11153,15 @@
       "tusoteuthis"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.56 },
-      { "item": 12, "amount": 3.25 },
-      { "item": 13, "amount": 3.44 },
-      { "item": 14, "amount": 3.04 },
-      { "item": 15, "amount": 2.94 },
-      { "item": 16, "amount": 2.77 },
-      { "item": 62, "amount": 3.66 },
-      { "item": 68, "amount": 3.88 },
-      { "item": 184, "amount": 3.67 }
+      { "itemId": 11, "amount": 3.56 },
+      { "itemId": 12, "amount": 3.25 },
+      { "itemId": 13, "amount": 3.44 },
+      { "itemId": 14, "amount": 3.04 },
+      { "itemId": 15, "amount": 2.94 },
+      { "itemId": 16, "amount": 2.77 },
+      { "itemId": 62, "amount": 3.66 },
+      { "itemId": 68, "amount": 3.88 },
+      { "itemId": 184, "amount": 3.67 }
     ],
     "baseStats": {
       "h": { "b": 400, "w": 80, "t": 5.4 },
@@ -11290,15 +11294,15 @@
     "immobilizedBy": [725, 383, 384, 986, 785],
     "allowableFlyers": ["quetzal"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.52 },
-      { "item": 12, "amount": 3.28 },
-      { "item": 13, "amount": 3.99 },
-      { "item": 14, "amount": 4.09 },
-      { "item": 15, "amount": 4.02 },
-      { "item": 16, "amount": 3.7 },
-      { "item": 62, "amount": 3.18 },
-      { "item": 68, "amount": 3.24 },
-      { "item": 250, "amount": 4.09 }
+      { "itemId": 11, "amount": 3.52 },
+      { "itemId": 12, "amount": 3.28 },
+      { "itemId": 13, "amount": 3.99 },
+      { "itemId": 14, "amount": 4.09 },
+      { "itemId": 15, "amount": 4.02 },
+      { "itemId": 16, "amount": 3.7 },
+      { "itemId": 62, "amount": 3.18 },
+      { "itemId": 68, "amount": 3.24 },
+      { "itemId": 250, "amount": 4.09 }
     ],
     "baseStats": {
       "h": { "b": 825, "w": 165, "t": 5.4 },
@@ -11526,15 +11530,15 @@
     "immobilizedBy": [725, 384, 986, 785],
     "allowableFlyers": [],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.53 },
-      { "item": 12, "amount": 2.73 },
-      { "item": 13, "amount": 3.5 },
-      { "item": 14, "amount": 2.72 },
-      { "item": 15, "amount": 2.52 },
-      { "item": 16, "amount": 2.63 },
-      { "item": 58, "amount": 2.62 },
-      { "item": 62, "amount": 2.38 },
-      { "item": 68, "amount": 3.37 }
+      { "itemId": 11, "amount": 3.53 },
+      { "itemId": 12, "amount": 2.73 },
+      { "itemId": 13, "amount": 3.5 },
+      { "itemId": 14, "amount": 2.72 },
+      { "itemId": 15, "amount": 2.52 },
+      { "itemId": 16, "amount": 2.63 },
+      { "itemId": 58, "amount": 2.62 },
+      { "itemId": 62, "amount": 2.38 },
+      { "itemId": 68, "amount": 3.37 }
     ],
     "baseStats": {
       "h": { "b": 325, "w": 65, "t": 5.4 },
@@ -11606,17 +11610,17 @@
     "immobilizedBy": [725, 384],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.87 },
-      { "item": 12, "amount": 3.83 },
-      { "item": 13, "amount": 3.63 },
-      { "item": 14, "amount": 3.15 },
-      { "item": 15, "amount": 3.07 },
-      { "item": 16, "amount": 2.93 },
-      { "item": 58, "amount": 2.66 },
-      { "item": 62, "amount": 3.97 },
-      { "item": 68, "amount": 4.09 },
-      { "item": 169, "amount": 3.75 },
-      { "item": 250, "amount": 4.12 }
+      { "itemId": 11, "amount": 3.87 },
+      { "itemId": 12, "amount": 3.83 },
+      { "itemId": 13, "amount": 3.63 },
+      { "itemId": 14, "amount": 3.15 },
+      { "itemId": 15, "amount": 3.07 },
+      { "itemId": 16, "amount": 2.93 },
+      { "itemId": 58, "amount": 2.66 },
+      { "itemId": 62, "amount": 3.97 },
+      { "itemId": 68, "amount": 4.09 },
+      { "itemId": 169, "amount": 3.75 },
+      { "itemId": 250, "amount": 4.12 }
     ],
     "baseStats": {
       "h": { "b": 700, "w": 140, "t": 5.4 },
@@ -11710,11 +11714,11 @@
       "karkinos"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 4.18 },
-      { "item": 5, "amount": 2.66 },
-      { "item": 17, "amount": 3.9 },
-      { "item": 18, "amount": 3.24 },
-      { "item": 19, "amount": 3.19 }
+      { "itemId": 3, "amount": 4.18 },
+      { "itemId": 5, "amount": 2.66 },
+      { "itemId": 17, "amount": 3.9 },
+      { "itemId": 18, "amount": 3.24 },
+      { "itemId": 19, "amount": 3.19 }
     ],
     "baseStats": {
       "h": { "b": 650, "w": 130, "t": 5.4 },
@@ -11781,15 +11785,15 @@
     "immobilizedBy": [384],
     "allowableFlyers": [],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.92 },
-      { "item": 4, "amount": 4.2 },
-      { "item": 5, "amount": 4.2 },
-      { "item": 6, "amount": 4.09 },
-      { "item": 7, "amount": 4.03 },
-      { "item": 8, "amount": 3.85 },
-      { "item": 17, "amount": 4.07 },
-      { "item": 57, "amount": 4.31 },
-      { "item": 325, "amount": 4.5 }
+      { "itemId": 3, "amount": 3.92 },
+      { "itemId": 4, "amount": 4.2 },
+      { "itemId": 5, "amount": 4.2 },
+      { "itemId": 6, "amount": 4.09 },
+      { "itemId": 7, "amount": 4.03 },
+      { "itemId": 8, "amount": 3.85 },
+      { "itemId": 17, "amount": 4.07 },
+      { "itemId": 57, "amount": 4.31 },
+      { "itemId": 325, "amount": 4.5 }
     ],
     "capabilities": [9, 12, 14, 18, 21, 27, 29, 34, 45, 46],
     "xVariant": false,
@@ -11865,14 +11869,14 @@
     "immobilizedBy": [1040, 785, 725, 383, 384, 986],
     "allowableFlyers": ["ta", "r", "megalosaurus", "karkinos", "procoptodon"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.08 },
-      { "item": 12, "amount": 2.95 },
-      { "item": 13, "amount": 3.13 },
-      { "item": 14, "amount": 3.11 },
-      { "item": 15, "amount": 3.02 },
-      { "item": 16, "amount": 2.97 },
-      { "item": 68, "amount": 2.96 },
-      { "item": 184, "amount": 3.46 }
+      { "itemId": 11, "amount": 3.08 },
+      { "itemId": 12, "amount": 2.95 },
+      { "itemId": 13, "amount": 3.13 },
+      { "itemId": 14, "amount": 3.11 },
+      { "itemId": 15, "amount": 3.02 },
+      { "itemId": 16, "amount": 2.97 },
+      { "itemId": 68, "amount": 2.96 },
+      { "itemId": 184, "amount": 3.46 }
     ],
     "baseStats": {
       "h": { "b": 325, "w": 65, "t": 5.4 },
@@ -11978,13 +11982,13 @@
       "tusoteuthis"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.06 },
-      { "item": 12, "amount": 2.82 },
-      { "item": 13, "amount": 2.82 },
-      { "item": 14, "amount": 2.56 },
-      { "item": 15, "amount": 2.37 },
-      { "item": 62, "amount": 2.65 },
-      { "item": 68, "amount": 3.08 }
+      { "itemId": 11, "amount": 3.06 },
+      { "itemId": 12, "amount": 2.82 },
+      { "itemId": 13, "amount": 2.82 },
+      { "itemId": 14, "amount": 2.56 },
+      { "itemId": 15, "amount": 2.37 },
+      { "itemId": 62, "amount": 2.65 },
+      { "itemId": 68, "amount": 3.08 }
     ],
     "baseStats": {
       "h": { "b": 270, "w": 54, "t": 5.4 },
@@ -12074,21 +12078,21 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.33 },
-      { "item": 4, "amount": 4.16 },
-      { "item": 5, "amount": 4.21 },
-      { "item": 11, "amount": 3.71 },
-      { "item": 12, "amount": 3.68 },
-      { "item": 13, "amount": 3.87 },
-      { "item": 14, "amount": 3.69 },
-      { "item": 15, "amount": 3.6 },
-      { "item": 16, "amount": 3.54 },
-      { "item": 17, "amount": 4 },
-      { "item": 18, "amount": 3.99 },
-      { "item": 19, "amount": 4.1 },
-      { "item": 62, "amount": 3.34 },
-      { "item": 68, "amount": 3.57 },
-      { "item": 184, "amount": 3.66 }
+      { "itemId": 3, "amount": 3.33 },
+      { "itemId": 4, "amount": 4.16 },
+      { "itemId": 5, "amount": 4.21 },
+      { "itemId": 11, "amount": 3.71 },
+      { "itemId": 12, "amount": 3.68 },
+      { "itemId": 13, "amount": 3.87 },
+      { "itemId": 14, "amount": 3.69 },
+      { "itemId": 15, "amount": 3.6 },
+      { "itemId": 16, "amount": 3.54 },
+      { "itemId": 17, "amount": 4 },
+      { "itemId": 18, "amount": 3.99 },
+      { "itemId": 19, "amount": 4.1 },
+      { "itemId": 62, "amount": 3.34 },
+      { "itemId": 68, "amount": 3.57 },
+      { "itemId": 184, "amount": 3.66 }
     ],
     "baseStats": {
       "h": { "b": 870, "w": 174, "t": 5.4 },
@@ -12192,16 +12196,16 @@
       "tusoteuthis"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.8 },
-      { "item": 5, "amount": 3.98 },
-      { "item": 11, "amount": 3.16 },
-      { "item": 12, "amount": 2.85 },
-      { "item": 13, "amount": 2.99 },
-      { "item": 14, "amount": 2.67 },
-      { "item": 15, "amount": 2.67 },
-      { "item": 16, "amount": 2.51 },
-      { "item": 62, "amount": 2.82 },
-      { "item": 68, "amount": 3.05 }
+      { "itemId": 3, "amount": 2.8 },
+      { "itemId": 5, "amount": 3.98 },
+      { "itemId": 11, "amount": 3.16 },
+      { "itemId": 12, "amount": 2.85 },
+      { "itemId": 13, "amount": 2.99 },
+      { "itemId": 14, "amount": 2.67 },
+      { "itemId": 15, "amount": 2.67 },
+      { "itemId": 16, "amount": 2.51 },
+      { "itemId": 62, "amount": 2.82 },
+      { "itemId": 68, "amount": 3.05 }
     ],
     "baseStats": {
       "h": { "b": 260, "w": 52, "t": null },
@@ -12294,15 +12298,15 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.78 },
-      { "item": 12, "amount": 3.63 },
-      { "item": 13, "amount": 4.1 },
-      { "item": 14, "amount": 3.75 },
-      { "item": 15, "amount": 3.74 },
-      { "item": 16, "amount": 3.82 },
-      { "item": 62, "amount": 3.25 },
-      { "item": 68, "amount": 3.33 },
-      { "item": 184, "amount": 3.67 }
+      { "itemId": 11, "amount": 3.78 },
+      { "itemId": 12, "amount": 3.63 },
+      { "itemId": 13, "amount": 4.1 },
+      { "itemId": 14, "amount": 3.75 },
+      { "itemId": 15, "amount": 3.74 },
+      { "itemId": 16, "amount": 3.82 },
+      { "itemId": 62, "amount": 3.25 },
+      { "itemId": 68, "amount": 3.33 },
+      { "itemId": 184, "amount": 3.67 }
     ],
     "baseStats": {
       "h": { "b": 700, "w": 140, "t": 5 },
@@ -12620,12 +12624,12 @@
     "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["quetzal", "wyvern", "ta", "r", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.88 },
-      { "item": 5, "amount": 2.39 },
-      { "item": 17, "amount": 3.7 },
-      { "item": 18, "amount": 2.56 },
-      { "item": 19, "amount": 2.57 },
-      { "item": 171, "amount": 2.4 }
+      { "itemId": 3, "amount": 3.88 },
+      { "itemId": 5, "amount": 2.39 },
+      { "itemId": 17, "amount": 3.7 },
+      { "itemId": 18, "amount": 2.56 },
+      { "itemId": 19, "amount": 2.57 },
+      { "itemId": 171, "amount": 2.4 }
     ],
     "baseStats": {
       "h": { "b": 375, "w": 75, "t": 5.4 },
@@ -12855,16 +12859,16 @@
     "immobilizedBy": [1040, 785, 725, 383, 384, 986],
     "allowableFlyers": [],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.07 },
-      { "item": 11, "amount": 3.79 },
-      { "item": 12, "amount": 3.75 },
-      { "item": 13, "amount": 3.64 },
-      { "item": 14, "amount": 3.41 },
-      { "item": 15, "amount": 3.53 },
-      { "item": 16, "amount": 3.39 },
-      { "item": 58, "amount": 2.66 },
-      { "item": 62, "amount": 2.52 },
-      { "item": 68, "amount": 2.48 }
+      { "itemId": 3, "amount": 3.07 },
+      { "itemId": 11, "amount": 3.79 },
+      { "itemId": 12, "amount": 3.75 },
+      { "itemId": 13, "amount": 3.64 },
+      { "itemId": 14, "amount": 3.41 },
+      { "itemId": 15, "amount": 3.53 },
+      { "itemId": 16, "amount": 3.39 },
+      { "itemId": 58, "amount": 2.66 },
+      { "itemId": 62, "amount": 2.52 },
+      { "itemId": 68, "amount": 2.48 }
     ],
     "baseStats": {
       "h": { "b": 360, "w": 72, "t": 4.86 },
@@ -12936,15 +12940,15 @@
     "immobilizedBy": [],
     "allowableFlyers": ["ta", "r"],
     "gatherEfficiency": [
-      { "item": 10, "amount": 3.27 },
-      { "item": 11, "amount": 3.55 },
-      { "item": 12, "amount": 3.62 },
-      { "item": 13, "amount": 3.25 },
-      { "item": 14, "amount": 3.12 },
-      { "item": 62, "amount": 3.76 },
-      { "item": 68, "amount": 3.78 },
-      { "item": 169, "amount": 4.7 },
-      { "item": 177, "amount": 3.42 }
+      { "itemId": 10, "amount": 3.27 },
+      { "itemId": 11, "amount": 3.55 },
+      { "itemId": 12, "amount": 3.62 },
+      { "itemId": 13, "amount": 3.25 },
+      { "itemId": 14, "amount": 3.12 },
+      { "itemId": 62, "amount": 3.76 },
+      { "itemId": 68, "amount": 3.78 },
+      { "itemId": 169, "amount": 4.7 },
+      { "itemId": 177, "amount": 3.42 }
     ],
     "baseStats": {
       "h": { "b": 2700, "w": 540, "t": 4.05 },
@@ -13043,9 +13047,9 @@
       "procoptodon"
     ],
     "gatherEfficiency": [
-      { "item": 3, "amount": 2.9 },
-      { "item": 5, "amount": 2.73 },
-      { "item": 17, "amount": 3.38 }
+      { "itemId": 3, "amount": 2.9 },
+      { "itemId": 5, "amount": 2.73 },
+      { "itemId": 17, "amount": 3.38 }
     ],
     "baseStats": {
       "h": { "b": 240, "w": 48, "t": 5.4 },
@@ -13124,15 +13128,15 @@
     "immobilizedBy": [725, 986, 384, 785],
     "allowableFlyers": ["crystalwyvern", "wyvern", "quetzal", "karkinos"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.83 },
-      { "item": 12, "amount": 3.57 },
-      { "item": 13, "amount": 4.03 },
-      { "item": 14, "amount": 3.94 },
-      { "item": 15, "amount": 3.82 },
-      { "item": 16, "amount": 3.61 },
-      { "item": 62, "amount": 3.78 },
-      { "item": 68, "amount": 3.92 },
-      { "item": 184, "amount": 3.96 }
+      { "itemId": 11, "amount": 3.83 },
+      { "itemId": 12, "amount": 3.57 },
+      { "itemId": 13, "amount": 4.03 },
+      { "itemId": 14, "amount": 3.94 },
+      { "itemId": 15, "amount": 3.82 },
+      { "itemId": 16, "amount": 3.61 },
+      { "itemId": 62, "amount": 3.78 },
+      { "itemId": 68, "amount": 3.92 },
+      { "itemId": 184, "amount": 3.96 }
     ],
     "baseStats": {
       "h": { "b": 440, "w": 88, "t": 5.4 },
@@ -13178,18 +13182,18 @@
     "immobilizedBy": [725, 785],
     "allowableFlyers": [],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.17 },
-      { "item": 11, "amount": 3.98 },
-      { "item": 12, "amount": 3.95 },
-      { "item": 13, "amount": 3.82 },
-      { "item": 14, "amount": 3.61 },
-      { "item": 15, "amount": 3.53 },
-      { "item": 16, "amount": 3.39 },
-      { "item": 58, "amount": 3.16 },
-      { "item": 62, "amount": 3.22 },
-      { "item": 68, "amount": 3.48 },
-      { "item": 248, "amount": 4.3 },
-      { "item": 249, "amount": 3.78 }
+      { "itemId": 3, "amount": 3.17 },
+      { "itemId": 11, "amount": 3.98 },
+      { "itemId": 12, "amount": 3.95 },
+      { "itemId": 13, "amount": 3.82 },
+      { "itemId": 14, "amount": 3.61 },
+      { "itemId": 15, "amount": 3.53 },
+      { "itemId": 16, "amount": 3.39 },
+      { "itemId": 58, "amount": 3.16 },
+      { "itemId": 62, "amount": 3.22 },
+      { "itemId": 68, "amount": 3.48 },
+      { "itemId": 248, "amount": 4.3 },
+      { "itemId": 249, "amount": 3.78 }
     ],
     "baseStats": {
       "h": { "b": 1295, "w": 194.25, "t": 4.05 },
@@ -13277,12 +13281,12 @@
     "immobilizedBy": [725, 1040, 785, 383, 986, 785],
     "allowableFlyers": ["ta", "human", "g", "procoptodon"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 3.15 },
-      { "item": 12, "amount": 3.21 },
-      { "item": 13, "amount": 2.86 },
-      { "item": 14, "amount": 2.34 },
-      { "item": 62, "amount": 3.02 },
-      { "item": 68, "amount": 2.98 }
+      { "itemId": 11, "amount": 3.15 },
+      { "itemId": 12, "amount": 3.21 },
+      { "itemId": 13, "amount": 2.86 },
+      { "itemId": 14, "amount": 2.34 },
+      { "itemId": 62, "amount": 3.02 },
+      { "itemId": 68, "amount": 2.98 }
     ],
     "baseStats": {
       "h": { "b": 125, "w": 25, "t": 5.4 },
@@ -13363,11 +13367,11 @@
     "immobilizedBy": [725, 384, 785, 986],
     "allowableFlyers": ["quetzal", "ta", "r", "tusoteuthis", "procoptodon"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.75 },
-      { "item": 5, "amount": 2.98 },
-      { "item": 17, "amount": 3.82 },
-      { "item": 18, "amount": 3.33 },
-      { "item": 19, "amount": 3.33 }
+      { "itemId": 3, "amount": 3.75 },
+      { "itemId": 5, "amount": 2.98 },
+      { "itemId": 17, "amount": 3.82 },
+      { "itemId": 18, "amount": 3.33 },
+      { "itemId": 19, "amount": 3.33 }
     ],
     "baseStats": {
       "h": { "b": 500, "w": 100, "t": 5.4 },
@@ -13436,18 +13440,18 @@
     "immobilizedBy": [725],
     "allowableFlyers": ["r"],
     "gatherEfficiency": [
-      { "item": 3, "amount": 3.17 },
-      { "item": 11, "amount": 3.98 },
-      { "item": 12, "amount": 3.95 },
-      { "item": 13, "amount": 3.82 },
-      { "item": 14, "amount": 3.61 },
-      { "item": 15, "amount": 3.53 },
-      { "item": 16, "amount": 3.39 },
-      { "item": 58, "amount": 3.16 },
-      { "item": 62, "amount": 3.22 },
-      { "item": 68, "amount": 3.48 },
-      { "item": 248, "amount": 4.3 },
-      { "item": 249, "amount": 3.78 }
+      { "itemId": 3, "amount": 3.17 },
+      { "itemId": 11, "amount": 3.98 },
+      { "itemId": 12, "amount": 3.95 },
+      { "itemId": 13, "amount": 3.82 },
+      { "itemId": 14, "amount": 3.61 },
+      { "itemId": 15, "amount": 3.53 },
+      { "itemId": 16, "amount": 3.39 },
+      { "itemId": 58, "amount": 3.16 },
+      { "itemId": 62, "amount": 3.22 },
+      { "itemId": 68, "amount": 3.48 },
+      { "itemId": 248, "amount": 4.3 },
+      { "itemId": 249, "amount": 3.78 }
     ],
     "baseStats": {
       "h": { "b": 1295, "w": 194.25, "t": 4.05 },
@@ -13584,16 +13588,16 @@
     "immobilizedBy": [725, 384, 785],
     "allowableFlyers": ["ta", "r", "tusoteuthis"],
     "gatherEfficiency": [
-      { "item": 11, "amount": 4.15 },
-      { "item": 12, "amount": 3.89 },
-      { "item": 13, "amount": 4.04 },
-      { "item": 14, "amount": 3.9 },
-      { "item": 15, "amount": 3.84 },
-      { "item": 16, "amount": 3.88 },
-      { "item": 58, "amount": 3.92 },
-      { "item": 62, "amount": 3.8 },
-      { "item": 68, "amount": 3.87 },
-      { "item": 184, "amount": 4.08 }
+      { "itemId": 11, "amount": 4.15 },
+      { "itemId": 12, "amount": 3.89 },
+      { "itemId": 13, "amount": 4.04 },
+      { "itemId": 14, "amount": 3.9 },
+      { "itemId": 15, "amount": 3.84 },
+      { "itemId": 16, "amount": 3.88 },
+      { "itemId": 58, "amount": 3.92 },
+      { "itemId": 62, "amount": 3.8 },
+      { "itemId": 68, "amount": 3.87 },
+      { "itemId": 184, "amount": 4.08 }
     ],
     "baseStats": {
       "h": { "b": 1100, "w": 220, "t": null },
