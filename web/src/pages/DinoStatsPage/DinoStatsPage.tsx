@@ -156,7 +156,9 @@ const DinoStatsPage = () => {
           (item: any) => item.name.toLowerCase() === foodName.toLowerCase()
         );
         if (!food) return null;
-        const foodValue = food.stats ? food.stats.find((stat) => stat.id === 8)?.value : 0;
+        const foodValue = food.stats
+          ? food.stats.find((stat) => stat.id === 8)?.value
+          : 0;
         const affinityValue =
           food.stats.find((stat) => stat.id === 15)?.value || 0;
         const foodMaxRaw = affinityNeeded / affinityValue / 4;
@@ -182,8 +184,8 @@ const DinoStatsPage = () => {
             foodSecondsPer = foodValue / foodConsumption;
             foodSeconds = Math.ceil(
               Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
-              foodSecondsPer +
-              (interval1 || 0)
+                foodSecondsPer +
+                (interval1 || 0)
             );
           }
         } else {
@@ -278,8 +280,12 @@ const DinoStatsPage = () => {
     let totalSecs = 0;
     foods.forEach((food: any) => {
       if (!food) return;
-      let foodVal = food.stats.find((f: any) => f.id === 8) ? food.stats.find((f: any) => f.id === 8).value : 0;
-      let affinityVal = food.stats.find((f: any) => f.id === 15) ? food.stats.find((f: any) => f.id === 15).value : 0;
+      let foodVal = food.stats.find((f: any) => f.id === 8)
+        ? food.stats.find((f: any) => f.id === 8).value
+        : 0;
+      let affinityVal = food.stats.find((f: any) => f.id === 15)
+        ? food.stats.find((f: any) => f.id === 15).value
+        : 0;
 
       if (affinityLeft > 0) {
         if (useExclusive >= 0) {
@@ -292,9 +298,9 @@ const DinoStatsPage = () => {
         if (method == "n") {
           numNeeded = Math.ceil(
             affinityLeft /
-            affinityVal /
-            tamingMultiplier /
-            cr.nonViolentFoodRateMultiplier
+              affinityVal /
+              tamingMultiplier /
+              cr.nonViolentFoodRateMultiplier
           );
         } else {
           numNeeded = Math.ceil(affinityLeft / affinityVal / tamingMultiplier);
@@ -352,8 +358,8 @@ const DinoStatsPage = () => {
       foods.forEach((food: any) => {
         numNeeded = Math.ceil(
           affinityLeft /
-          food.stats.find((f: any) => f.id === 15).value /
-          tamingMultiplier
+            food.stats.find((f: any) => f.id === 15).value /
+            tamingMultiplier
         );
         neededValues[food.key] = numNeeded;
       });
@@ -369,31 +375,31 @@ const DinoStatsPage = () => {
     let ascerbicMushroomsMin = Math.max(
       Math.ceil(
         (totalSecs * torporDepletionPS - totalTorpor) /
-        (narcotics.ascerbic.torpor +
-          torporDepletionPS * narcotics.ascerbic.secs)
+          (narcotics.ascerbic.torpor +
+            torporDepletionPS * narcotics.ascerbic.secs)
       ),
       0
     );
     let biotoxinsMin = Math.max(
       Math.ceil(
         (totalSecs * torporDepletionPS - totalTorpor) /
-        (narcotics.bio.torpor + torporDepletionPS * narcotics.bio.secs)
+          (narcotics.bio.torpor + torporDepletionPS * narcotics.bio.secs)
       ),
       0
     );
     let narcoticsMin = Math.max(
       Math.ceil(
         (totalSecs * torporDepletionPS - totalTorpor) /
-        (narcotics.narcotics.torpor +
-          torporDepletionPS * narcotics.narcotics.secs)
+          (narcotics.narcotics.torpor +
+            torporDepletionPS * narcotics.narcotics.secs)
       ),
       0
     );
     let narcoberriesMin = Math.max(
       Math.ceil(
         (totalSecs * torporDepletionPS - totalTorpor) /
-        (narcotics.narcoberries.torpor +
-          torporDepletionPS * narcotics.narcoberries.secs)
+          (narcotics.narcoberries.torpor +
+            torporDepletionPS * narcotics.narcoberries.secs)
       ),
       0
     );
@@ -691,86 +697,153 @@ const DinoStatsPage = () => {
                 {tame.dino.name} breeding:
               </p>
               {/* Mating internal: 24h - 48h * matingIntervalMultiplier */}
-              <p>Xp When Killed: {tame.dino.experiencePerKill * (1 + 0.1 * (tame.dino.level - 1))}xp</p>
-              {(typeof tame.dino.maturationTime !== "undefined" &&
-                (typeof tame.dino.incubationTime !== "undefined" || typeof tame.dino.basePoints !== "undefined")) && (
-                  <section className="my-3 rounded-md p-4 dark:text-white text-stone-600">
-                    <ol className="items-center justify-center w-full space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
-                      <li className="flex items-center space-x-2.5 dark:text-pea-500 text-pea-600">
-                        <span className="flex items-center justify-center w-8 h-8 border border-pea-600 rounded-full shrink-0 dark:border-pea-500">
+              {/* <p>Xp When Killed: {tame.dino.experiencePerKill * (1 + 0.1 * (tame.dino.level - 1))}xp</p> */}
+              {typeof tame.dino.maturationTime !== "undefined" &&
+                (typeof tame.dino.incubationTime !== "undefined" ||
+                  typeof tame.dino.basePoints !== "undefined") && (
+                  <section className="my-3 rounded-md p-4 text-stone-600 dark:text-white">
+                    <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
+                      <li className="dark:text-pea-500 text-pea-600 flex items-center space-x-2.5">
+                        <span className="border-pea-600 dark:border-pea-500 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
                           1
                         </span>
                         <span>
-                          <h3 className="font-medium leading-tight">Incubation</h3>
-                          <p className="text-sm">{timeFormatL(tame.dino.incubationTime / 1)}</p> {/* Hatch multiplier */}
+                          <h3 className="font-medium leading-tight">
+                            Incubation
+                          </h3>
+                          <p className="text-sm">
+                            {timeFormatL(tame.dino.incubationTime / 1)}
+                          </p>{" "}
+                          {/* Hatch multiplier */}
                         </span>
                       </li>
                       <li>
-                        <input id="1" type="checkbox" className="peer/item1 hidden" />
-                        <label htmlFor="1" className="peer-checked/item1:dark:fill-pea-500 peer-checked/item1:fill-pea-600 dark:fill-gray-400 fill-gray-500 ">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 " viewBox="0 0 256 512">
+                        <input
+                          id="1"
+                          type="checkbox"
+                          className="peer/item1 hidden"
+                        />
+                        <label
+                          htmlFor="1"
+                          className="peer-checked/item1:dark:fill-pea-500 peer-checked/item1:fill-pea-600 fill-gray-500 dark:fill-gray-400 "
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 "
+                            viewBox="0 0 256 512"
+                          >
                             <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
                           </svg>
                         </label>
                       </li>
-                      <li className="flex items-center text-gray-500 dark:text-gray-400 space-x-2.5">
-                        <span className="flex items-center justify-center w-8 h-8 border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
+                      <li className="flex items-center space-x-2.5 text-gray-500 dark:text-gray-400">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-500 dark:border-gray-400">
                           2
                         </span>
                         <span>
                           <h3 className="font-medium leading-tight">Baby</h3>
-                          <p className="text-sm">{timeFormatL((tame.dino.maturationTime * 1) / 10)}</p>
+                          <p className="text-sm">
+                            {timeFormatL((tame.dino.maturationTime * 1) / 10)}
+                          </p>
                         </span>
                       </li>
                       <li>
-                        <input id="2" type="checkbox" className="peer/item2 hidden" />
-                        <label htmlFor="2" className="peer-checked/item2:dark:fill-pea-500 peer-checked/item2:fill-pea-600 dark:fill-gray-400 fill-gray-500 ">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 " viewBox="0 0 256 512">
+                        <input
+                          id="2"
+                          type="checkbox"
+                          className="peer/item2 hidden"
+                        />
+                        <label
+                          htmlFor="2"
+                          className="peer-checked/item2:dark:fill-pea-500 peer-checked/item2:fill-pea-600 fill-gray-500 dark:fill-gray-400 "
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 "
+                            viewBox="0 0 256 512"
+                          >
                             <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
                           </svg>
                         </label>
                       </li>
-                      <li className="flex items-center text-gray-500 dark:text-gray-400 space-x-2.5">
-                        <span className="flex items-center justify-center w-8 h-8 border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
+                      <li className="flex items-center space-x-2.5 text-gray-500 dark:text-gray-400">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-500 dark:border-gray-400">
                           3
                         </span>
                         <span>
-                          <h3 className="font-medium leading-tight">Juvenile</h3>
-                          <p className="text-sm">{timeFormatL(((tame.dino.maturationTime * 1) / 2) - (tame.dino.maturationTime * 1) / 10)}</p>
+                          <h3 className="font-medium leading-tight">
+                            Juvenile
+                          </h3>
+                          <p className="text-sm">
+                            {timeFormatL(
+                              (tame.dino.maturationTime * 1) / 2 -
+                                (tame.dino.maturationTime * 1) / 10
+                            )}
+                          </p>
                         </span>
                       </li>
                       <li>
-                        <input id="3" type="checkbox" className="peer/item3 hidden" />
-                        <label htmlFor="3" className="peer-checked/item3:dark:fill-pea-500 peer-checked/item3:fill-pea-600 dark:fill-gray-400 fill-gray-500 ">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 " viewBox="0 0 256 512">
+                        <input
+                          id="3"
+                          type="checkbox"
+                          className="peer/item3 hidden"
+                        />
+                        <label
+                          htmlFor="3"
+                          className="peer-checked/item3:dark:fill-pea-500 peer-checked/item3:fill-pea-600 fill-gray-500 dark:fill-gray-400 "
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 "
+                            viewBox="0 0 256 512"
+                          >
                             <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
                           </svg>
                         </label>
                       </li>
-                      <li className="flex items-center text-gray-500 dark:text-gray-400 space-x-2.5">
-                        <span className="flex items-center justify-center w-8 h-8 border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
+                      <li className="flex items-center space-x-2.5 text-gray-500 dark:text-gray-400">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-500 dark:border-gray-400">
                           4
                         </span>
                         <span>
-                          <h3 className="font-medium leading-tight">Adolescent</h3>
-                          <p className="text-sm">{timeFormatL((tame.dino.maturationTime * 1) / 2)}</p> {/*matureMultiplier */}
+                          <h3 className="font-medium leading-tight">
+                            Adolescent
+                          </h3>
+                          <p className="text-sm">
+                            {timeFormatL((tame.dino.maturationTime * 1) / 2)}
+                          </p>{" "}
+                          {/*matureMultiplier */}
                         </span>
                       </li>
                       <li>
-                        <input id="4" type="checkbox" className="peer/item4 hidden" />
-                        <label htmlFor="4" className="peer-checked/item4:dark:fill-pea-500 peer-checked/item4:fill-pea-600 dark:fill-gray-400 fill-gray-500 ">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 " viewBox="0 0 256 512">
+                        <input
+                          id="4"
+                          type="checkbox"
+                          className="peer/item4 hidden"
+                        />
+                        <label
+                          htmlFor="4"
+                          className="peer-checked/item4:dark:fill-pea-500 peer-checked/item4:fill-pea-600 fill-gray-500 dark:fill-gray-400 "
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 "
+                            viewBox="0 0 256 512"
+                          >
                             <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
                           </svg>
                         </label>
                       </li>
-                      <li className="flex items-center text-gray-500 dark:text-gray-400 space-x-2.5">
-                        <span className="flex items-center justify-center w-8 h-8 border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
+                      <li className="flex items-center space-x-2.5 text-gray-500 dark:text-gray-400">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-500 dark:border-gray-400">
                           5
                         </span>
                         <span>
                           <h3 className="font-medium leading-tight">Total</h3>
-                          <p className="text-sm">{timeFormatL(tame.dino.maturationTime * 1)}</p> {/*matureMultiplier */}
+                          <p className="text-sm">
+                            {timeFormatL(tame.dino.maturationTime * 1)}
+                          </p>{" "}
+                          {/*matureMultiplier */}
                         </span>
                       </li>
                     </ol>
