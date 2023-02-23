@@ -719,7 +719,7 @@ const DinoStatsPage = () => {
                         </span>
                         <span>
                           <h3 className="font-medium leading-tight">Baby</h3>
-                          <p className="text-sm">Step details here</p>
+                          <p className="text-sm">{timeFormatL((tame.dino.maturationTime * 1) / 10)}</p>
                         </span>
                       </li>
                       <li>
@@ -736,7 +736,7 @@ const DinoStatsPage = () => {
                         </span>
                         <span>
                           <h3 className="font-medium leading-tight">Juvenile</h3>
-                          <p className="text-sm"></p>
+                          <p className="text-sm">{timeFormatL(((tame.dino.maturationTime * 1) / 2) - (tame.dino.maturationTime * 1) / 10)}</p>
                         </span>
                       </li>
                       <li>

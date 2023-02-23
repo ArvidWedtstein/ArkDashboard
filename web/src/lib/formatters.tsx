@@ -345,7 +345,7 @@ export const timeFormatL = (seconds, onlyLast = false) => {
     }
   }
   if (sec > 0 || time === "") {
-    time += `${sec}s`;
+    time += `${Math.round(sec)}s`;
   }
 
   return time.trim();
