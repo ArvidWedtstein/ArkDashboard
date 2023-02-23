@@ -156,7 +156,7 @@ const DinoStatsPage = () => {
           (item: any) => item.name.toLowerCase() === foodName.toLowerCase()
         );
         if (!food) return null;
-        const foodValue = food.stats.find((stat) => stat.id === 8)?.value || 0;
+        const foodValue = food.stats ? food.stats.find((stat) => stat.id === 8)?.value : 0;
         const affinityValue =
           food.stats.find((stat) => stat.id === 15)?.value || 0;
         const foodMaxRaw = affinityNeeded / affinityValue / 4;
@@ -182,8 +182,8 @@ const DinoStatsPage = () => {
             foodSecondsPer = foodValue / foodConsumption;
             foodSeconds = Math.ceil(
               Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
-                foodSecondsPer +
-                (interval1 || 0)
+              foodSecondsPer +
+              (interval1 || 0)
             );
           }
         } else {
@@ -278,8 +278,9 @@ const DinoStatsPage = () => {
     let totalSecs = 0;
     foods.forEach((food: any) => {
       if (!food) return;
-      let foodVal = food.stats.find((f: any) => f.id === 8).value;
-      let affinityVal = food.stats.find((f: any) => f.id === 15).value;
+      console.log(food);
+      let foodVal = food.stats ? food.stats.find((f: any) => f.id === 8).value : 0;
+      let affinityVal = food.stats ? food.stats.find((f: any) => f.id === 15).value : 0;
 
       if (affinityLeft > 0) {
         if (useExclusive >= 0) {
@@ -292,9 +293,9 @@ const DinoStatsPage = () => {
         if (method == "n") {
           numNeeded = Math.ceil(
             affinityLeft /
-              affinityVal /
-              tamingMultiplier /
-              cr.nonViolentFoodRateMultiplier
+            affinityVal /
+            tamingMultiplier /
+            cr.nonViolentFoodRateMultiplier
           );
         } else {
           numNeeded = Math.ceil(affinityLeft / affinityVal / tamingMultiplier);
@@ -352,8 +353,8 @@ const DinoStatsPage = () => {
       foods.forEach((food: any) => {
         numNeeded = Math.ceil(
           affinityLeft /
-            food.stats.find((f: any) => f.id === 15).value /
-            tamingMultiplier
+          food.stats.find((f: any) => f.id === 15).value /
+          tamingMultiplier
         );
         neededValues[food.key] = numNeeded;
       });
@@ -369,31 +370,31 @@ const DinoStatsPage = () => {
     let ascerbicMushroomsMin = Math.max(
       Math.ceil(
         (totalSecs * torporDepletionPS - totalTorpor) /
-          (narcotics.ascerbic.torpor +
-            torporDepletionPS * narcotics.ascerbic.secs)
+        (narcotics.ascerbic.torpor +
+          torporDepletionPS * narcotics.ascerbic.secs)
       ),
       0
     );
     let biotoxinsMin = Math.max(
       Math.ceil(
         (totalSecs * torporDepletionPS - totalTorpor) /
-          (narcotics.bio.torpor + torporDepletionPS * narcotics.bio.secs)
+        (narcotics.bio.torpor + torporDepletionPS * narcotics.bio.secs)
       ),
       0
     );
     let narcoticsMin = Math.max(
       Math.ceil(
         (totalSecs * torporDepletionPS - totalTorpor) /
-          (narcotics.narcotics.torpor +
-            torporDepletionPS * narcotics.narcotics.secs)
+        (narcotics.narcotics.torpor +
+          torporDepletionPS * narcotics.narcotics.secs)
       ),
       0
     );
     let narcoberriesMin = Math.max(
       Math.ceil(
         (totalSecs * torporDepletionPS - totalTorpor) /
-          (narcotics.narcoberries.torpor +
-            torporDepletionPS * narcotics.narcoberries.secs)
+        (narcotics.narcoberries.torpor +
+          torporDepletionPS * narcotics.narcoberries.secs)
       ),
       0
     );
@@ -649,6 +650,48 @@ const DinoStatsPage = () => {
                 With selected food:
               </p>
               <section className="my-3 rounded-md p-4 dark:bg-zinc-600 dark:text-white">
+                <div className="relative my-3 grid grid-cols-4 gap-4 text-center">
+                  <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
+                    <p className="text-thin text-sm">
+                      Lvl<span className="ml-1 text-lg font-semibold">100</span>
+                    </p>
+                  </div>
+                  <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
+                    <p className="text-thin text-sm">
+                      {(tame.effectiveness ? tame.effectiveness : 0).toFixed(2)}
+                      %
+                    </p>
+                  </div>
+                  <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
+                    <p className="text-thin text-sm">
+                      Lvl
+                      <span className="ml-1 text-lg font-semibold">
+                        {parseInt(tame.dino.level) + tame.levelsGained}
+                      </span>
+                    </p>
+                  </div>
+                  <div className="relative block before:absolute before:ml-auto before:w-full last:before:content-['']">
+                    <p className="text-thin text-sm">
+                      Lvl
+                      <span className="ml-1 text-lg font-semibold">
+                        {parseInt(tame.dino.level) +
+                          tame.levelsGained +
+                          (xVariant ? 88 : 77)}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <div className="my-3 grid grid-cols-4 gap-4 text-center">
+                  <p className="text-thin text-xs">Current</p>
+                  <p className="text-thin text-xs">Taming Eff.</p>
+                  <p className="text-thin text-xs">With Bonus</p>
+                  <p className="text-thin text-xs">Max after taming</p>
+                </div>
+              </section>
+              <p className="my-3 text-center text-sm dark:text-gray-200">
+                {tame.dino.name} breeding:
+              </p>
+              <section className="my-3 rounded-md p-4 dark:text-white text-stone-600">
                 <div className="relative my-3 grid grid-cols-4 gap-4 text-center">
                   <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
                     <p className="text-thin text-sm">

@@ -18080,17 +18080,14 @@
       "itemId": 1322,
       "name": "Berries",
       "description": "",
+      "image": "berries.png",
       "maxStack": 1,
       "weight": 0,
-      "stats": [{ "id": 1, "value": "Resource" }]
-    },
-    {
-      "itemId": 1322,
-      "name": "Berries",
-      "description": "",
-      "maxStack": 1,
-      "weight": 0,
-      "stats": [{ "id": 1, "value": "Resource" }]
+      "stats": [
+        { "id": 1, "value": "Consumable" },
+        { "id": 8, "value": 19.9999995 },
+        { "id": 15, "value": 20 }
+      ]
     }
   ]
 }

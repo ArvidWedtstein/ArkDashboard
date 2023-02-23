@@ -16,8 +16,7 @@ export const TimelineList = ({
   events: any[];
   options?: TimelineSettings;
 }) => {
-  const { ref, isComponentVisible, setIsComponentVisible } =
-    useComponentVisible(false);
+  const [isComponentVisible, setIsComponentVisible] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
 
@@ -146,8 +145,8 @@ export const TimelineList = ({
         </div>
         <RefModal
           isOpen={isComponentVisible}
-          setIsOpen={(open) => setIsComponentVisible(open)}
-          ref={ref}
+          onClose={() => setIsComponentVisible(false)}
+          // setIsOpen={(open) => setIsComponentVisible(open)}
           image={currentModalImage}
         />
         <article className="w-full p-1">

@@ -1,4 +1,4 @@
-import { forwardRef, useState } from "react";
+import { useEffect } from "react";
 import useComponentVisible from "src/components/useComponentVisible";
 
 type iModal = {
@@ -7,21 +7,36 @@ type iModal = {
   image?: string;
   title?: string;
   content?: string;
+  onClose?: () => void;
 };
-export const RefModal = forwardRef<HTMLDivElement, iModal>((props, ref) => {
-  const { isOpen, setIsOpen, image, title, content } = props;
+export const RefModal = (({ isOpen, onClose, image, title, content }: iModal) => {
+  const { ref: modalRef, isComponentVisible, setIsComponentVisible } =
+    useComponentVisible(false);
 
-  return (
+  useEffect(() => {
+    setIsComponentVisible(isOpen);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isComponentVisible) {
+      onClose()
+    }
+
+    setIsComponentVisible(!isComponentVisible);
+  }, [onClose, modalRef]);
+
+  return true ? (
     <div
       tabIndex={-1}
-      aria-hidden={isOpen ? "false" : "true"}
-      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 backdrop:bg-gray-50 md:inset-0 md:h-full ${
-        isOpen ? "block" : "hidden"
-      }`}
+      role="dialog"
+      aria-modal="true"
+      aria-hidden={isComponentVisible ? "false" : "true"}
+      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 backdrop:bg-gray-50 md:inset-0 md:h-full ${isComponentVisible ? "block" : "hidden"
+        }`}
     >
       <div
-        ref={ref}
-        className="relative top-1/2 left-1/2 h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2"
+        ref={modalRef}
+        className=" max-h-full relative top-1/2 left-1/2 w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2"
       >
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
@@ -34,11 +49,11 @@ export const RefModal = forwardRef<HTMLDivElement, iModal>((props, ref) => {
               type="button"
               className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
               onClick={() => {
-                setIsOpen(false);
+                onClose()
               }}
             >
               <svg
-                aria-hidden={isOpen ? "false" : "true"}
+                aria-hidden={isComponentVisible ? "false" : "true"}
                 className="h-5 w-5"
                 fill="currentColor"
                 viewBox="0 0 20 20"
@@ -64,16 +79,16 @@ export const RefModal = forwardRef<HTMLDivElement, iModal>((props, ref) => {
         </div>
       </div>
     </div>
-  );
+  ) : null;
 });
+
 export const Modal = ({ isOpen, setIsOpen, image, title, content }: iModal) => {
   return (
     <div
       tabIndex={-1}
       aria-hidden={isOpen ? "false" : "true"}
-      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full ${
-        isOpen ? "block" : "hidden"
-      }`}
+      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full ${isOpen ? "block" : "hidden"
+        }`}
     >
       <div className="relative top-1/2 left-1/2 h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2">
         <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
