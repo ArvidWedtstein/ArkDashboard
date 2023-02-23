@@ -13,7 +13,7 @@ import { MetaTags } from "@redwoodjs/web";
 import { useEffect, useReducer, useState } from "react";
 import Counter from "src/components/Util/Counter/Counter";
 import Table from "src/components/Util/Table/Table";
-import { combineBySummingKeys } from "src/lib/formatters";
+import { combineBySummingKeys, timeFormatL } from "src/lib/formatters";
 import items from "../../../public/arkitems.json";
 import arkdinos from "../../../public/dinotest.json";
 
@@ -278,9 +278,8 @@ const DinoStatsPage = () => {
     let totalSecs = 0;
     foods.forEach((food: any) => {
       if (!food) return;
-      console.log(food);
-      let foodVal = food.stats ? food.stats.find((f: any) => f.id === 8).value : 0;
-      let affinityVal = food.stats ? food.stats.find((f: any) => f.id === 15).value : 0;
+      let foodVal = food.stats.find((f: any) => f.id === 8) ? food.stats.find((f: any) => f.id === 8).value : 0;
+      let affinityVal = food.stats.find((f: any) => f.id === 15) ? food.stats.find((f: any) => f.id === 15).value : 0;
 
       if (affinityLeft > 0) {
         if (useExclusive >= 0) {
@@ -691,45 +690,92 @@ const DinoStatsPage = () => {
               <p className="my-3 text-center text-sm dark:text-gray-200">
                 {tame.dino.name} breeding:
               </p>
-              <section className="my-3 rounded-md p-4 dark:text-white text-stone-600">
-                <div className="relative my-3 grid grid-cols-4 gap-4 text-center">
-                  <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
-                    <p className="text-thin text-sm">
-                      Lvl<span className="ml-1 text-lg font-semibold">100</span>
-                    </p>
-                  </div>
-                  <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
-                    <p className="text-thin text-sm">
-                      {(tame.effectiveness ? tame.effectiveness : 0).toFixed(2)}
-                      %
-                    </p>
-                  </div>
-                  <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
-                    <p className="text-thin text-sm">
-                      Lvl
-                      <span className="ml-1 text-lg font-semibold">
-                        {parseInt(tame.dino.level) + tame.levelsGained}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="relative block before:absolute before:ml-auto before:w-full last:before:content-['']">
-                    <p className="text-thin text-sm">
-                      Lvl
-                      <span className="ml-1 text-lg font-semibold">
-                        {parseInt(tame.dino.level) +
-                          tame.levelsGained +
-                          (xVariant ? 88 : 77)}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-                <div className="my-3 grid grid-cols-4 gap-4 text-center">
-                  <p className="text-thin text-xs">Current</p>
-                  <p className="text-thin text-xs">Taming Eff.</p>
-                  <p className="text-thin text-xs">With Bonus</p>
-                  <p className="text-thin text-xs">Max after taming</p>
-                </div>
-              </section>
+              {/* Mating internal: 24h - 48h * matingIntervalMultiplier */}
+              <p>Xp When Killed: {tame.dino.experiencePerKill * (1 + 0.1 * (tame.dino.level - 1))}xp</p>
+              {(typeof tame.dino.maturationTime !== "undefined" &&
+                (typeof tame.dino.incubationTime !== "undefined" || typeof tame.dino.basePoints !== "undefined")) && (
+                  <section className="my-3 rounded-md p-4 dark:text-white text-stone-600">
+                    <ol className="items-center justify-center w-full space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
+                      <li className="flex items-center space-x-2.5 dark:text-pea-500 text-pea-600">
+                        <span className="flex items-center justify-center w-8 h-8 border border-pea-600 rounded-full shrink-0 dark:border-pea-500">
+                          1
+                        </span>
+                        <span>
+                          <h3 className="font-medium leading-tight">Incubation</h3>
+                          <p className="text-sm">{timeFormatL(tame.dino.incubationTime / 1)}</p> {/* Hatch multiplier */}
+                        </span>
+                      </li>
+                      <li>
+                        <input id="1" type="checkbox" className="peer/item1 hidden" />
+                        <label htmlFor="1" className="peer-checked/item1:dark:fill-pea-500 peer-checked/item1:fill-pea-600 dark:fill-gray-400 fill-gray-500 ">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 " viewBox="0 0 256 512">
+                            <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                          </svg>
+                        </label>
+                      </li>
+                      <li className="flex items-center text-gray-500 dark:text-gray-400 space-x-2.5">
+                        <span className="flex items-center justify-center w-8 h-8 border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
+                          2
+                        </span>
+                        <span>
+                          <h3 className="font-medium leading-tight">Baby</h3>
+                          <p className="text-sm">Step details here</p>
+                        </span>
+                      </li>
+                      <li>
+                        <input id="2" type="checkbox" className="peer/item2 hidden" />
+                        <label htmlFor="2" className="peer-checked/item2:dark:fill-pea-500 peer-checked/item2:fill-pea-600 dark:fill-gray-400 fill-gray-500 ">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 " viewBox="0 0 256 512">
+                            <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                          </svg>
+                        </label>
+                      </li>
+                      <li className="flex items-center text-gray-500 dark:text-gray-400 space-x-2.5">
+                        <span className="flex items-center justify-center w-8 h-8 border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
+                          3
+                        </span>
+                        <span>
+                          <h3 className="font-medium leading-tight">Juvenile</h3>
+                          <p className="text-sm"></p>
+                        </span>
+                      </li>
+                      <li>
+                        <input id="3" type="checkbox" className="peer/item3 hidden" />
+                        <label htmlFor="3" className="peer-checked/item3:dark:fill-pea-500 peer-checked/item3:fill-pea-600 dark:fill-gray-400 fill-gray-500 ">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 " viewBox="0 0 256 512">
+                            <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                          </svg>
+                        </label>
+                      </li>
+                      <li className="flex items-center text-gray-500 dark:text-gray-400 space-x-2.5">
+                        <span className="flex items-center justify-center w-8 h-8 border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
+                          4
+                        </span>
+                        <span>
+                          <h3 className="font-medium leading-tight">Adolescent</h3>
+                          <p className="text-sm">{timeFormatL((tame.dino.maturationTime * 1) / 2)}</p> {/*matureMultiplier */}
+                        </span>
+                      </li>
+                      <li>
+                        <input id="4" type="checkbox" className="peer/item4 hidden" />
+                        <label htmlFor="4" className="peer-checked/item4:dark:fill-pea-500 peer-checked/item4:fill-pea-600 dark:fill-gray-400 fill-gray-500 ">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 " viewBox="0 0 256 512">
+                            <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                          </svg>
+                        </label>
+                      </li>
+                      <li className="flex items-center text-gray-500 dark:text-gray-400 space-x-2.5">
+                        <span className="flex items-center justify-center w-8 h-8 border border-gray-500 rounded-full shrink-0 dark:border-gray-400">
+                          5
+                        </span>
+                        <span>
+                          <h3 className="font-medium leading-tight">Total</h3>
+                          <p className="text-sm">{timeFormatL(tame.dino.maturationTime * 1)}</p> {/*matureMultiplier */}
+                        </span>
+                      </li>
+                    </ol>
+                  </section>
+                )}
             </>
           )}
         </div>

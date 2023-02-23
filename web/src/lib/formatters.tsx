@@ -319,41 +319,36 @@ export const distance = ({ lat: lat1, lon: lon1 }: Coordinate, { lat: lat2, lon:
  *
  * @return {string} The formatted string representation.
  */
-function timeFormatL(seconds, onlyLast = false) {
-  const secNum = seconds;
-  const days = Math.floor(secNum / 86400);
+export const timeFormatL = (seconds, onlyLast = false) => {
+  var time = "";
+  var days = Math.floor(seconds / 86400);
+  var hours = Math.floor((seconds % 86400) / 3600);
+  var minutes = Math.floor((seconds % 3600) / 60);
+  var sec = seconds % 60;
 
-  const hours = Math.floor((secNum - days * 86400) / 3600);
-  const minutes = Math.floor((secNum - days * 86400 - hours * 3600) / 60);
-  const sec = secNum - days * 86400 - hours * 3600 - minutes * 60;
-
-  let time = "";
   if (days > 0) {
-    time += `${days}d`;
+    time += `${days}d `;
     if (onlyLast) {
-      return time;
+      return time.trim().split(" ").pop();
     }
   }
   if (hours > 0) {
-    time += days > 0 ? " " : "";
-    time += `${hours}h`;
+    time += `${hours}h `;
     if (onlyLast) {
-      return time;
+      return time.trim().split(" ").pop();
     }
   }
   if (minutes > 0) {
-    time += hours > 0 || days > 0 ? " " : "";
-    time += `${minutes}m`;
+    time += `${minutes}m `;
     if (onlyLast) {
-      return time;
+      return time.trim().split(" ").pop();
     }
   }
   if (sec > 0 || time === "") {
-    time += minutes > 0 || hours > 0 || days > 0 ? " " : "";
     time += `${sec}s`;
   }
 
-  return time;
+  return time.trim();
 }
 
 /**
