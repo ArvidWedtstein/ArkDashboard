@@ -45,8 +45,8 @@ export const truncate = (value: string | number, maxlength: number = 150) => {
   return output;
 };
 
-export const jsonTruncate = (obj: unknown) => {
-  return truncate(JSON.stringify(obj, null, 2));
+export const jsonTruncate = (obj: unknown, maxlength: number = 150) => {
+  return truncate(JSON.stringify(obj, null, 2), maxlength);
 };
 
 export const timeTag = (dateTime?: string | Date) => {

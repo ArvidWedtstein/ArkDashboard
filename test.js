@@ -1,6 +1,7 @@
 const { items } = require("./web/public/arkitems.json");
 const d = require("./web/public/maps.json");
 const d2 = require("./web/public/dinotest.json");
+const imgs = require("./web/public/arkimages.json");
 
 // let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
 console.time("normal");
@@ -11,6 +12,7 @@ console.time("optimized");
 
 console.timeEnd("optimized");
 
+return;
 // `INSERT INTO public."Dino" (name, exp_per_kill, attack, disable_tame, disable_ko, disable_food, flyer_dino, ridable, mounted_weaponry)
 //     SELECT '${dd.name}', ${dd.death && dd.death.baseXP ? dd.death.baseXP : 0}, '${JSON.stringify(dd.attack.attacks)}'::jsonb, ${!dd.flags.includes("isTamable")}, ${!dd.flags.includes("canBeTorpid")}, true, ${dd.flags.includes("isFlyerDino")}, ${dd.flags.includes('allowRiding')}, ${dd.flags.includes('allowMountedWeaponry')}
 //     WHERE NOT EXISTS (
@@ -2314,147 +2316,3 @@ console.log(m.join("\n"));
 //     }
 //   }
 // );
-/*
-  UPDATE public."Item"
-  SET gather = '[
-    {"itemId":"75","value":4},
-    {"itemId":"7","value":2.5},
-    {"itemId":"8","value":2.3},
-    {"itemId":"73","value":4.2},
-    {"itemId":"9","value":3.3},
-    {"itemId":"142","value":3.5},
-    {"itemId":"162","value":3.3},
-    {"itemId":"12","value":4.2},
-    {"itemId":"252","value":3.5},
-    {"itemId":"10","value":2.3},
-    {"itemId":"78","value":4.2},
-    {"itemId":"786","value":3.3},
-    {"itemId":"787","value":2.8},
-    {"itemId":"480","value":3.3},
-    {"itemId":"468","value":3.5},
-    {"itemId":"456","value":2.4},
-    {"itemId":"163","value":3.4},
-    {"itemId":"470","value":3.0},
-    {"itemId":"473","value":4.9},
-    {"itemId":"783","value":4.6},
-    {"itemId":"483","value":4.3},
-    {"itemId":"782","value":4.3},
-  ]'
-  WHERE id = 35;
-
-  UPDATE public."Item"
-  SET gather = '[
-    {"itemId":"75","value":4.3},
-    {"itemId":"7","value":4.9},
-    {"itemId":"162","value":3.9},
-    {"itemId":"12","value":4.4},
-    {"itemId":"252","value":4.3},
-    {"itemId":"10","value":4.9},
-    {"itemId":"11","value":4.3},
-    {"itemId":"217","value":4.3},
-    {"itemId":"502","value":4.8},
-    {"itemId":"787","value":3.4},
-    {"itemId":"719","value":4.8},
-    {"itemId":"469","value":4.9},
-    {"itemId":"474","value":4.5},
-    {"itemId":"828","value":3.8},
-    {"itemId":"470","value":1.0},
-  ]'
-  WHERE id = 486;
-
-  UPDATE public."Item"
-  SET gather = '[
-    {"itemId":"75","value":3.4},
-    {"itemId":"73","value":2.3},
-    {"itemId":"9","value":1.2},
-    {"itemId":"162","value":1.4},
-    {"itemId":"252","value":2.3},
-    {"itemId":"78","value":2.3},
-    {"itemId":"480","value":3.4},
-    {"itemId":"163","value":1.3},
-    {"itemId":"470","value":2},
-    {"itemId":"483","value":2},
-    {"itemId":"782","value":3.3},
-    {"itemId":"7","value":1.3},
-    {"itemId":"8","value":1.3},
-    {"itemId":"12","value":3.2},
-    {"itemId":"10","value":1.2},
-    {"itemId":"787","value":2.3},
-    {"itemId":"468","value":2.9},
-  ]'
-  WHERE id = 33;
-
-  UPDATE public."Item"
-  SET gather = '[
-    {"itemId":"75","value":2.3},
-    {"itemId":"7","value":1.3},
-    {"itemId":"12","value":1.3},
-    {"itemId":"502","value":4.9},
-  ]'
-  WHERE id = 434;
-
-  UPDATE public."Item"
-  SET gather = '[
-    {"itemId":"75","value":4.6},
-    {"itemId":"76","value":3},
-    {"itemId":"8","value":3},
-    {"itemId":"9","value":3},
-    {"itemId":"251","value":3},
-    {"itemId":"78","value":5},
-    {"itemId":"470","value":5},
-    {"itemId":"783","value":3.5},
-  ]'
-  WHERE id = 797;
-
-  UPDATE public."Item"
-  SET gather = '[
-    {"itemId":"76","value":4.9},
-    {"itemId":"786","value":4.3},
-    {"itemId":"484","value":3.4},
-  ]'
-  WHERE id = 380;
-
-  UPDATE public."Item"
-  SET gather = '[
-    {"itemId":"7","value":3.2},
-    {"itemId":"8","value":2.4},
-    {"itemId":"12","value":1.2},
-    {"itemId":"10","value":3.3},
-    {"itemId":"787","value":3.2},
-    {"itemId":"468","value":2.2},
-    {"itemId":"1321","value":3.2},
-  ]'
-  WHERE id = 34;
-
-  UPDATE public."Item"
-  SET gather = '[
-    {"itemId":"7","value":4.6},
-    {"itemId":"8","value":3.2},
-    {"itemId":"12","value":2.4},
-    {"itemId":"10","value":4},
-    {"itemId":"11","value":4.4},
-    {"itemId":"217","value":4.2},
-    {"itemId":"424","value":4.3},
-    {"itemId":"787","value":4.4},
-    {"itemId":"468","value":3.9},
-    {"itemId":"1321","value":4.3},
-    {"itemId":"466","value":4.5},
-    {"itemId":"783","value":4.6},
-  ]'
-  WHERE id = 36;
-
-  UPDATE public."Item"
-  SET gather = '[
-    {"itemId":"12","value":3.3},
-    {"itemId":"10","value":3.3},
-    {"itemId":"502","value":4.9},
-  ]'
-  WHERE id = 303;
-
-  UPDATE public."Item"
-  SET gather = '[
-    {"itemId":"469","value":4.3},
-    {"itemId":"468","value":2.3},
-  ]'
-  WHERE id = 492;
-*/
