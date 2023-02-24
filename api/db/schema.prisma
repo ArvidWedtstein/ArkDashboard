@@ -1,7 +1,6 @@
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native"]
-  previewFeatures = ["views"]
 }
 
 datasource db {
@@ -172,6 +171,8 @@ model Item {
   color         String?   @default("#ff0000")
   crafted_in    String[]
   effects       String[]
+
+  @@index([stats(ops: JsonbPathOps)], map: "idxginp", type: Gin)
 }
 
 model Map {

@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from "react";
 interface Props {
   map: string;
   size: { width: number; height: number };
-  pos?: { lat: number; lon: number, color?: string }[];
+  pos?: { lat: number; lon: number; color?: string }[];
   className?: string;
-  path?: { color?: string, coords: { lat: number; lon: number }[] };
+  path?: { color?: string; coords: { lat: number; lon: number }[] };
 }
 export const Map = ({
   map,
@@ -37,21 +37,20 @@ export const Map = ({
       "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/1/19/Valguero_Map.jpg",
     crystalisles:
       "https://ark.gamepedia.com/media/thumb/3/3e/Crystal_Isles_Map.jpg/600px-Crystal_Isles_Map.jpg",
-    fjordur:
-      "https://ark.wiki.gg/images/7/75/Fjordur_Map.jpg",
-    lostisland:
-      "https://ark.wiki.gg/images/1/1e/Lost_Island_Map.jpg",
+    fjordur: "https://ark.wiki.gg/images/7/75/Fjordur_Map.jpg",
+    lostisland: "https://ark.wiki.gg/images/1/1e/Lost_Island_Map.jpg",
   };
 
-
-  const drawSvgPath = ((coordinates: { lat: number; lon: number }[]): string => {
-    let pathString = '';
+  const drawSvgPath = (coordinates: { lat: number; lon: number }[]): string => {
+    let pathString = "";
     coordinates.forEach((coordinate, index) => {
-      const command = index === 0 ? 'M' : 'L';
-      pathString += `${command}${(size.height / 100) * coordinate.lat} ${(size.width / 100) * coordinate.lon} `;
+      const command = index === 0 ? "M" : "L";
+      pathString += `${command}${(size.height / 100) * coordinate.lon} ${
+        (size.width / 100) * coordinate.lat
+      } `;
     });
     return pathString;
-  });
+  };
   return (
     <svg
       className={className}
@@ -77,7 +76,7 @@ export const Map = ({
       )}
       {pos?.map((p, i) => (
         <circle
-          key={'map-pos-' + i}
+          key={"map-pos-" + i}
           fill={p.color || "red"}
           cy={(size.height / 100) * p.lat + size.height / 100}
           cx={(size.width / 100) * p.lon + size.width / 100}
@@ -117,7 +116,13 @@ const IslandMap = () => {
     if (!event.shiftKey) return;
     const delta = event.deltaY > 0 ? -0.1 : 0.1;
     const maxScale = Math.max(scale, 1);
-    const minScale = Math.min(1, Math.min(600 / svgRef.current.clientWidth, 450 / svgRef.current.clientHeight));
+    const minScale = Math.min(
+      1,
+      Math.min(
+        600 / svgRef.current.clientWidth,
+        450 / svgRef.current.clientHeight
+      )
+    );
     const newScale = Math.max(minScale, Math.min(maxScale + delta, 5));
     const svgElement = svgRef.current;
     if (svgElement) {
@@ -135,7 +140,7 @@ const IslandMap = () => {
   };
 
   const handleMouseDown = (event) => {
-    console.log(isFocused)
+    console.log(isFocused);
     if (event.button !== 0) return;
     event.preventDefault();
     const startCoords = {
@@ -153,23 +158,23 @@ const IslandMap = () => {
       startCoords.y = event.clientY;
     };
     const handleMouseUp = () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
     };
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
   };
 
   const handleKeyDown = (event) => {
-    if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+    if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
       event.preventDefault();
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     }
   };
 
   const handleKeyUp = (event) => {
-    if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
-      document.body.style.overflow = 'auto';
+    if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
+      document.body.style.overflow = "auto";
     }
   };
 
@@ -186,14 +191,20 @@ const IslandMap = () => {
       onKeyUp={handleKeyUp}
       tabIndex={0}
       viewBox={viewBox}
-      style={{ width: 500, height: 500, overflow: 'hidden', position: 'relative', background: 'linear-gradient(to top, #E7C4A0, #F8DEB7)' }}
+      style={{
+        width: 500,
+        height: 500,
+        overflow: "hidden",
+        position: "relative",
+        background: "linear-gradient(to top, #E7C4A0, #F8DEB7)",
+      }}
     >
       <image
         ref={imageRef}
         href="https://ark.gamepedia.com/media/thumb/3/3e/The_Island_Map.jpg/600px-The_Island_Map.jpg"
         width={500}
         height={500}
-        style={{ pointerEvents: 'none', transform: imageTransform }}
+        style={{ pointerEvents: "none", transform: imageTransform }}
       />
     </svg>
   );
