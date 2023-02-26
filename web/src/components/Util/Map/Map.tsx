@@ -3,9 +3,10 @@ import { useEffect, useRef, useState } from "react";
 interface Props {
   map: string;
   size: { width: number; height: number };
-  pos?: { lat: number; lon: number; color?: string }[];
+  pos?: { lat: number; lon: number; color?: string; note?: string }[];
   className?: string;
   path?: { color?: string; coords: { lat: number; lon: number }[] };
+  interactive?: boolean;
 }
 export const Map = ({
   map,
@@ -13,6 +14,7 @@ export const Map = ({
   pos,
   className,
   path,
+  interactive = false,
 }: Props) => {
   const maps = {
     theisland:
@@ -40,6 +42,10 @@ export const Map = ({
     fjordur: "https://ark.wiki.gg/images/7/75/Fjordur_Map.jpg",
     lostisland: "https://ark.wiki.gg/images/1/1e/Lost_Island_Map.jpg",
   };
+  const svgRef = useRef(null);
+  const imageRef = useRef(null);
+  const [scale, setScale] = useState(1);
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
 
   const drawSvgPath = (coordinates: { lat: number; lon: number }[]): string => {
     let pathString = "";
@@ -51,16 +57,104 @@ export const Map = ({
     });
     return pathString;
   };
+
+  useEffect(() => {
+    const svgElement = svgRef.current;
+    if (svgElement) {
+      const { width, height } = svgElement.getBoundingClientRect();
+      const maxScale = Math.max(width / 500, height / 500);
+      setScale(maxScale);
+    }
+  }, []);
+
+  const handleWheel = (event) => {
+    // event.preventDefault();
+    if (!event.shiftKey || !interactive) return;
+    const delta = event.deltaY > 0 ? -0.1 : 0.1;
+    const maxScale = Math.max(scale, 1);
+    const minScale = Math.min(
+      1,
+      Math.min(
+        600 / svgRef.current.clientWidth,
+        450 / svgRef.current.clientHeight
+      )
+    );
+    const newScale = Math.max(minScale, Math.min(maxScale + delta, 5));
+    const svgElement = svgRef.current;
+    if (svgElement) {
+      const { left, top } = svgElement.getBoundingClientRect();
+      const mouseX = event.clientX - left;
+      const mouseY = event.clientY - top;
+      const scaleDiff = newScale / scale;
+      const newTranslate = {
+        x: mouseX - scaleDiff * (mouseX - translate.x),
+        y: mouseY - scaleDiff * (mouseY - translate.y),
+      };
+      setTranslate(newTranslate);
+      setScale(newScale);
+    }
+  };
+
+  const handleMouseDown = (event) => {
+    if (event.button !== 0 || !interactive) return;
+    // event.preventDefault();
+    const startCoords = {
+      x: event.clientX,
+      y: event.clientY,
+    };
+    const handleMouseMove = (event) => {
+      const deltaX = event.clientX - startCoords.x;
+      const deltaY = event.clientY - startCoords.y;
+      setTranslate((prevState) => ({
+        x: prevState.x + deltaX, // / scale,
+        y: prevState.y + deltaY, // / scale,
+      }));
+      startCoords.x = event.clientX;
+      startCoords.y = event.clientY;
+    };
+    const handleMouseUp = () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
+      document.body.style.overflow = "hidden";
+    }
+  };
+
+  const handleKeyUp = (event) => {
+    if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
+      document.body.style.overflow = "auto";
+    }
+  };
+
+  const viewBox = `${-translate.x} ${-translate.y} ${size.width} ${
+    size.height
+  }`;
+
+  const imageTransform = `scale(${scale})`;
+
   return (
     <svg
+      ref={svgRef}
+      onWheel={handleWheel}
+      onMouseDown={handleMouseDown}
+      onKeyDown={handleKeyDown}
+      onKeyUp={handleKeyUp}
+      tabIndex={0}
       className={className}
       width={size.width}
       height={size.height}
-      viewBox={`0 0 ${size.width} ${size.height}`}
+      viewBox={viewBox}
       xmlns="http://www.w3.org/2000/svg"
     >
       <image
         href={maps[map.toLowerCase()]}
+        style={{ pointerEvents: "none", transform: imageTransform }}
         height={size.height}
         width={size.width}
       />
@@ -76,15 +170,19 @@ export const Map = ({
       )}
       {pos?.map((p, i) => (
         <circle
+          style={{ pointerEvents: "none", transform: imageTransform }}
           key={"map-pos-" + i}
           fill={p.color || "red"}
           cy={(size.height / 100) * p.lat + size.height / 100}
           cx={(size.width / 100) * p.lon + size.width / 100}
           r="5"
-        />
+        >
+          <title>{p.note}</title>
+        </circle>
       ))}
       {path?.coords && (
         <path
+          style={{ pointerEvents: "none", transform: imageTransform }}
           d={drawSvgPath(path.coords)}
           stroke={path.color || "red"}
           strokeWidth="2"
@@ -95,12 +193,17 @@ export const Map = ({
   );
 };
 
-const IslandMap = () => {
+export const InteractiveMap = ({
+  map,
+  size = { width: 500, height: 500 },
+  pos,
+  className,
+  path,
+}: Props) => {
   const svgRef = useRef(null);
   const imageRef = useRef(null);
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
-  const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
     const svgElement = svgRef.current;
@@ -112,7 +215,7 @@ const IslandMap = () => {
   }, []);
 
   const handleWheel = (event) => {
-    event.preventDefault();
+    // event.preventDefault();
     if (!event.shiftKey) return;
     const delta = event.deltaY > 0 ? -0.1 : 0.1;
     const maxScale = Math.max(scale, 1);
@@ -140,9 +243,8 @@ const IslandMap = () => {
   };
 
   const handleMouseDown = (event) => {
-    console.log(isFocused);
     if (event.button !== 0) return;
-    event.preventDefault();
+    // event.preventDefault();
     const startCoords = {
       x: event.clientX,
       y: event.clientY,
@@ -190,10 +292,11 @@ const IslandMap = () => {
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
       tabIndex={0}
-      viewBox={viewBox}
+      className={className}
+      width={size.width}
+      height={size.height}
+      viewBox={`0 0 ${size.width} ${size.height}`}
       style={{
-        width: 500,
-        height: 500,
         overflow: "hidden",
         position: "relative",
         background: "linear-gradient(to top, #E7C4A0, #F8DEB7)",
@@ -209,5 +312,3 @@ const IslandMap = () => {
     </svg>
   );
 };
-
-export default IslandMap;

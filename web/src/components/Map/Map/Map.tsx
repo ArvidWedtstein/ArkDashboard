@@ -1,7 +1,7 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import IslandMap, { Map as MapComp } from "src/components/Util/Map/Map";
+import { Map as MapComp } from "src/components/Util/Map/Map";
 
 import { findShortestPath, jsonDisplay, timeTag } from "src/lib/formatters";
 
@@ -35,18 +35,10 @@ const Map = ({ map }: Props) => {
       deleteMap({ variables: { id } });
     }
   };
-  function generateRandomHex(length: number): string {
-    const hexChars = "0123456789abcdef";
-    let result = "#";
-    for (let i = 0; i < length; i++) {
-      result += hexChars[Math.floor(Math.random() * hexChars.length)];
-    }
-    return result;
-  }
 
   let n: any = map.notes;
   let notes = n.map((n) => {
-    return { lat: n.lat, lon: n.long, color: "#ff0000" };
+    return { lat: n.lat, lon: n.long, color: "#00ff00", note: n.note };
   });
   let noterun = []; //[57, 520, 242, 241, 201, 79, 238, 143, 301, 283, 284, 60];
 
@@ -81,18 +73,17 @@ const Map = ({ map }: Props) => {
   // });
 
   // console.log(n.length);
-
   return (
     <>
       <div className="rw-segment">
         <header className="rw-segment-header">
           <h2 className="rw-heading rw-heading-secondary">
-            Map {map.name} Detail
+            The {map.name} Map
           </h2>
         </header>
-        {/* <IslandMap /> */}
         <MapComp
-          map={"TheIsland"}
+          interactive={true}
+          map={map.name.replace(" ", "")}
           size={{ width: 500, height: 500 }}
           pos={notes}
           path={{
