@@ -64,7 +64,7 @@ const MapsList = ({ maps }: FindMaps) => {
   return (
     <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
       {maps.map((map) => (
-        <div key={map.id}>
+        <Link key={map.id} to={routes.map({ id: map.id.toString() })}>
           <ArkCard
             title={map.name}
             image={{
@@ -74,7 +74,7 @@ const MapsList = ({ maps }: FindMaps) => {
             }}
             icon={{ src: map.img }}
           />
-        </div>
+        </Link>
       ))}
     </div>
   );
