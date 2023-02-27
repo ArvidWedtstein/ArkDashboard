@@ -184,8 +184,8 @@ const DinoStatsPage = () => {
             foodSecondsPer = foodValue / foodConsumption;
             foodSeconds = Math.ceil(
               Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
-                foodSecondsPer +
-                (interval1 || 0)
+              foodSecondsPer +
+              (interval1 || 0)
             );
           }
         } else {
@@ -298,9 +298,9 @@ const DinoStatsPage = () => {
         if (method == "n") {
           numNeeded = Math.ceil(
             affinityLeft /
-              affinityVal /
-              tamingMultiplier /
-              cr.nonViolentFoodRateMultiplier
+            affinityVal /
+            tamingMultiplier /
+            cr.nonViolentFoodRateMultiplier
           );
         } else {
           numNeeded = Math.ceil(affinityLeft / affinityVal / tamingMultiplier);
@@ -358,8 +358,8 @@ const DinoStatsPage = () => {
       foods.forEach((food: any) => {
         numNeeded = Math.ceil(
           affinityLeft /
-            food.stats.find((f: any) => f.id === 15).value /
-            tamingMultiplier
+          food.stats.find((f: any) => f.id === 15).value /
+          tamingMultiplier
         );
         neededValues[food.key] = numNeeded;
       });
@@ -375,31 +375,31 @@ const DinoStatsPage = () => {
     let ascerbicMushroomsMin = Math.max(
       Math.ceil(
         (totalSecs * torporDepletionPS - totalTorpor) /
-          (narcotics.ascerbic.torpor +
-            torporDepletionPS * narcotics.ascerbic.secs)
+        (narcotics.ascerbic.torpor +
+          torporDepletionPS * narcotics.ascerbic.secs)
       ),
       0
     );
     let biotoxinsMin = Math.max(
       Math.ceil(
         (totalSecs * torporDepletionPS - totalTorpor) /
-          (narcotics.bio.torpor + torporDepletionPS * narcotics.bio.secs)
+        (narcotics.bio.torpor + torporDepletionPS * narcotics.bio.secs)
       ),
       0
     );
     let narcoticsMin = Math.max(
       Math.ceil(
         (totalSecs * torporDepletionPS - totalTorpor) /
-          (narcotics.narcotics.torpor +
-            torporDepletionPS * narcotics.narcotics.secs)
+        (narcotics.narcotics.torpor +
+          torporDepletionPS * narcotics.narcotics.secs)
       ),
       0
     );
     let narcoberriesMin = Math.max(
       Math.ceil(
         (totalSecs * torporDepletionPS - totalTorpor) /
-          (narcotics.narcoberries.torpor +
-            torporDepletionPS * narcotics.narcoberries.secs)
+        (narcotics.narcoberries.torpor +
+          torporDepletionPS * narcotics.narcoberries.secs)
       ),
       0
     );
@@ -500,7 +500,7 @@ const DinoStatsPage = () => {
             </div>
           </Form>
           {/* TODO: Add pretame simulator. Assign available points to random stats */}
-          {/* <Table
+          <Table
             rows={dino}
             columns={[
               {
@@ -552,7 +552,7 @@ const DinoStatsPage = () => {
                 </nav>
               );
             }}
-          /> */}
+          />
 
           {select && (
             <>
@@ -654,7 +654,7 @@ const DinoStatsPage = () => {
               <p className="my-3 text-center text-sm dark:text-gray-200">
                 With selected food:
               </p>
-              <section className="my-3 rounded-md p-4 dark:bg-zinc-600 dark:text-white">
+              <section className="my-3 rounded-md p-4 dark:bg-zinc-600 bg-stone-200 dark:text-white">
                 <div className="relative my-3 grid grid-cols-4 gap-4 text-center">
                   <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
                     <p className="text-thin text-sm">
@@ -777,7 +777,7 @@ const DinoStatsPage = () => {
                           <p className="text-sm">
                             {timeFormatL(
                               (tame.dino.maturationTime * 1) / 2 -
-                                (tame.dino.maturationTime * 1) / 10
+                              (tame.dino.maturationTime * 1) / 10
                             )}
                           </p>
                         </span>

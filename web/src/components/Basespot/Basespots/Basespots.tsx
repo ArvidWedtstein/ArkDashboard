@@ -1,4 +1,4 @@
-import { Link, routes } from "@redwoodjs/router";
+import { Link, routes, useParams } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useState } from "react";
@@ -42,6 +42,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
     }
   };
 
+  let { map } = useParams();
   let basespots = basespotPage.basespots;
 
   const mapImages = {
@@ -67,7 +68,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
       "https://dicendpads.com/wp-content/uploads/2021/12/Ark-Lost-Island.png",
     Gen2: "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
   };
-  let [currentMap, setCurrentMap] = useState("");
+  let [currentMap, setCurrentMap] = useState(map || "");
 
   return (
     <div className="h-[80vh]">

@@ -1,10 +1,6 @@
 import { useAuth } from "@redwoodjs/auth";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
-import { useState } from "react";
-import Chat from "src/components/Chat/Chat";
-import { Modal, RefModal } from "src/components/Util/Modal/Modal";
-import useComponentVisible from "src/components/useComponentVisible";
 
 const HomePage = () => {
   const { isAuthenticated, client: supabase } = useAuth();
@@ -17,6 +13,7 @@ const HomePage = () => {
   // supabase.auth.onAuthStateChange((event, session) => {
   //   console.log(event, session)
   // })
+
   return (
     <>
       <MetaTags title="Home" description="Home page" />
