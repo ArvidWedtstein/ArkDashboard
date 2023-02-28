@@ -208,6 +208,10 @@
 .rw-table tr:nth-child(odd) th {
   @apply bg-gray-50;
 }
+.rw-table tr:nth-child(even) td,
+.rw-table tr:nth-child(even) th {
+  @apply bg-white;
+}
 .rw-table thead tr {
   @apply bg-gray-200 text-gray-600;
 }

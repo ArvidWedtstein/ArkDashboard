@@ -382,6 +382,25 @@ export const getWeekDates = (): [Date, Date] => {
   return [start, end];
 };
 
+
+/**
+ * Determines the type of a word based on regular expressions.
+ * @param {string} word - The word to determine the type of.
+ * @returns {string} The type of the word. Can be "noun", "verb", "adjective", or "unknown".
+ */
+export const getWordType = (word: string) => {
+  // Define regular expressions for each word type
+  const nounRegex = /^[A-Z][a-z]*$/;
+  const verbRegex = /^[a-z]+(?:ed|ing)$/;
+  const adjRegex = /^[a-z]+(?:able|ible|ful|ic|ous|ish|ive|less)$/;
+
+  // Test the word against each regex
+  if (nounRegex.test(word)) return "noun";
+  if (verbRegex.test(word)) return "verb";
+  if (adjRegex.test(word)) return "adjective";
+  return "unknown";
+}
+
 /**
  *
  * @param {number} min - minimum number

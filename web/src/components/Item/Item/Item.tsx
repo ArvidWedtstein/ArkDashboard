@@ -1,8 +1,10 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
+import clsx from "clsx";
+import LineChart from "src/components/Util/LineChart/LineChart";
 
-import { jsonDisplay, timeTag } from "src/lib/formatters";
+import { getWordType, jsonDisplay, timeTag } from "src/lib/formatters";
 
 import type { DeleteItemMutationVariables, FindItemById } from "types/graphql";
 
@@ -35,14 +37,59 @@ const Item = ({ item }: Props) => {
     }
   };
 
+  let gathereffvals = [
+    { "name": "Direbear", value: 3.9 },
+    { "name": "Maewing", value: 1.9 },
+  ]
   return (
     <>
       <div className="rw-segment">
-        <header className="rw-segment-header">
-          <h2 className="rw-heading rw-heading-secondary">
-            Item {item.id} Detail
-          </h2>
-        </header>
+        <section className="my-3 rounded-md p-4 dark:bg-zinc-600 bg-stone-200 dark:text-white text-gray-700">
+          <img className="" src={`https://www.arkresourcecalculator.com/assets/images/80px-${item.image}`} />
+          <h4 className="text-2xl font-bold font-serif my-1">{item.name}</h4>
+          <p className="italic text-sm">({getWordType(item.name)})</p>
+          <p className="mt-2">{item.description}</p>
+        </section>
+        <section className="my-3 rounded-md dark:text-white text-gray-700 grid grid-cols-2 gap-4">
+          <div className="dark:bg-zinc-600 bg-stone-200 rounded-md p-4">
+            <p className="text-lg my-1">Gather Efficiency</p>
+            <div className="flex flex-col">
+              {gathereffvals.map((eff) => (
+                <div className="flex items-center">
+                  <p className="text-sm mr-2 w-20">{eff.name}</p>
+
+                  <div className="h-2 w-32 bg-gray-300 rounded-full flex flex-row divide-x divide-black">
+                    {Array.from(Array(5)).map((_, i) => (
+                      <div className={clsx(`first:rounded-l-full last:rounded-r-full h-full w-1/5`, {
+                        "bg-transparent": Math.round(eff.value) < i + 1,
+                        "[&:nth-child(1)]:bg-red-500 [&:nth-child(2)]:bg-orange-500 [&:nth-child(3)]:bg-yellow-500 [&:nth-child(4)]:bg-lime-500 [&:nth-child(5)]:bg-green-500": Math.round(eff.value) >= i + 1,
+                      })}></div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="dark:bg-zinc-600 bg-stone-200 rounded-md p-4">
+            <p className="text-lg my-1">Weight Reduction</p>
+            <div className="flex flex-col">
+              {gathereffvals.map((eff) => (
+                <div className="flex items-center">
+                  <p className="text-sm mr-2 w-20">{eff.name}</p>
+
+                  <p className="text-lime-300 mr-1">
+                    50%
+                  </p>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="text-lime-300 inline-block fill-current w-4">
+                    <path d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z" />
+                  </svg>
+
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </section>
         <table className="rw-table">
           <tbody>
             <tr>
@@ -111,7 +158,7 @@ const Item = ({ item }: Props) => {
             </tr>
           </tbody>
         </table>
-      </div>
+      </div >
       <nav className="rw-button-group">
         <Link
           to={routes.editItem({ id: item.id.toString() })}
