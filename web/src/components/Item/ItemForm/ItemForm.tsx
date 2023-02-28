@@ -6,6 +6,8 @@ import {
   TextField,
   TextAreaField,
   Submit,
+  SelectField,
+  ColorField,
 } from "@redwoodjs/forms";
 
 import type { EditItemById, UpdateItemInput } from "types/graphql";
@@ -115,7 +117,7 @@ const ItemForm = (props: ItemFormProps) => {
 
         <TextField
           name="weight"
-          defaultValue={props.item?.weight}
+          defaultValue={props.item?.weight ? props.item.weight : 0}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ valueAsNumber: true }}
@@ -138,6 +140,7 @@ const ItemForm = (props: ItemFormProps) => {
           errorClassName="rw-input rw-input-error"
           validation={{ valueAsNumber: true }}
         />
+        <p className="rw-helper-text">Engram points earned by crafting this item</p>
 
         <FieldError name="engram_points" className="rw-field-error" />
 
@@ -151,11 +154,12 @@ const ItemForm = (props: ItemFormProps) => {
 
         <TextField
           name="crafting_time"
-          defaultValue={props.item?.crafting_time}
+          defaultValue={props.item?.crafting_time ? props.item.crafting_time.toString() : 0}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ valueAsNumber: true }}
         />
+        <p className="rw-helper-text">Time needed to craft this item</p>
 
         <FieldError name="crafting_time" className="rw-field-error" />
 
@@ -164,7 +168,7 @@ const ItemForm = (props: ItemFormProps) => {
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
-          Req level
+          Required level
         </Label>
 
         <TextField
@@ -173,7 +177,7 @@ const ItemForm = (props: ItemFormProps) => {
           className="rw-input"
           errorClassName="rw-input rw-input-error"
         />
-
+        <p className="rw-helper-text">Player level required to craft this item</p>
         <FieldError name="req_level" className="rw-field-error" />
 
         <Label
@@ -186,12 +190,12 @@ const ItemForm = (props: ItemFormProps) => {
 
         <TextField
           name="yields"
-          defaultValue={props.item?.yields}
+          defaultValue={props.item?.yields ? props.item.yields : 1}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ valueAsNumber: true }}
         />
-
+        <p className="rw-helper-text">The amount of this item gained when crafting</p>
         <FieldError name="yields" className="rw-field-error" />
 
         <Label
@@ -209,8 +213,90 @@ const ItemForm = (props: ItemFormProps) => {
           errorClassName="rw-input rw-input-error"
           validation={{ valueAsJSON: true }}
         />
+        <p className="rw-helper-text">Items needed for crafting this item</p>
 
         <FieldError name="recipe" className="rw-field-error" />
+
+        <Label
+          name="crafted_in"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Crafted in
+        </Label>
+
+        <SelectField
+          name="crafted_in"
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          multiple
+          validation={{
+            required: false,
+          }}
+        >
+          <option>Beer Barrel</option>
+          <option>Campfire</option>
+          <option>Chemistry Bench</option>
+          <option>Cooking Pot</option>
+          <option>Compost Bin</option>
+          <option>Fabricator</option>
+          <option>Industrial Cooker</option>
+          <option>Industrial Forge</option>
+          <option>Industrial Grill</option>
+          <option>Industrial Grinder</option>
+          <option>Mortar And Pestle</option>
+          <option>Refining Forge</option>
+          <option>Smithy</option>
+          <option>Tek Replicator</option>
+        </SelectField>
+
+        {/* <TextField
+          name="crafted_in"
+          defaultValue={props.item?.crafted_in}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ required: true }}
+        /> */}
+
+        <FieldError name="crafted_in" className="rw-field-error" />
+
+        <Label
+          name="category"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Category
+        </Label>
+
+        <SelectField
+          name="category"
+          className="rw-input"
+          defaultValue={props.item.stats[0].value}
+          errorClassName="rw-input rw-input-error"
+          multiple
+          validation={{
+            required: false,
+          }}
+        >
+          <option>Saddle</option>
+          <option>Structure</option>
+          <option>Weapon</option>
+          <option>Resource</option>
+          <option>Tool</option>
+          <option>Ammunition</option>
+          <option>Consumable</option>
+          <option>Tek</option>
+          <option>Building</option>
+          <option>Crafting</option>
+          <option>Armor</option>
+          <option>Egg</option>
+          <option>Attachment</option>
+          <option>Other</option>
+        </SelectField>
+
+        <FieldError name="category" className="rw-field-error" />
+
+        {/* TODO: If structure category selected, show input for durability etc */}
 
         <Label
           name="stats"
@@ -238,7 +324,7 @@ const ItemForm = (props: ItemFormProps) => {
           Color
         </Label>
 
-        <TextField
+        <ColorField
           name="color"
           defaultValue={props.item?.color}
           className="rw-input"
@@ -246,24 +332,6 @@ const ItemForm = (props: ItemFormProps) => {
         />
 
         <FieldError name="color" className="rw-field-error" />
-
-        <Label
-          name="crafted_in"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Crafted in
-        </Label>
-
-        <TextField
-          name="crafted_in"
-          defaultValue={props.item?.crafted_in}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
-
-        <FieldError name="crafted_in" className="rw-field-error" />
 
         <Label
           name="effects"
@@ -289,7 +357,7 @@ const ItemForm = (props: ItemFormProps) => {
           </Submit>
         </div>
       </Form>
-    </div>
+    </div >
   );
 };
 

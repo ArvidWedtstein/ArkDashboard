@@ -381,7 +381,7 @@
         { "itemId": 10, "count": 4 }
       ],
       "stats": [
-        { "id": 1, "value": "Hands" },
+        { "id": 1, "value": "Armor" },
         { "id": 2, "value": 10 },
         { "id": 3, "value": 5 },
         { "id": 4, "value": 10 }
@@ -606,7 +606,7 @@
         { "itemId": 76, "count": 2 }
       ],
       "stats": [
-        { "id": 1, "value": "Hands" },
+        { "id": 1, "value": "Armor" },
         { "id": 2, "value": 50 },
         { "id": 3, "value": 10 },
         { "id": 4, "value": -5 }
@@ -2193,7 +2193,7 @@
         { "itemId": 73, "count": 5 },
         { "itemId": 76, "count": 30 }
       ],
-      "stats": [{ "id": 1, "value": "Navigation" }],
+      "stats": [{ "id": 1, "value": "Other" }],
       "decomposes": 120
     },
     {
@@ -3543,7 +3543,7 @@
         { "itemId": 76, "count": 2 }
       ],
       "stats": [
-        { "id": 1, "value": "Hands" },
+        { "id": 1, "value": "Armor" },
         { "id": 2, "value": 100 },
         { "id": 3, "value": 10 },
         { "id": 4, "value": -4 }
@@ -5013,7 +5013,7 @@
         { "itemId": 166, "count": 50 },
         { "itemId": 78, "count": 25 }
       ],
-      "stats": [{ "id": 1, "value": "Tools" }],
+      "stats": [{ "id": 1, "value": "Tool" }],
       "decomposes": 120
     },
     {
@@ -5852,7 +5852,7 @@
         { "itemId": 76, "count": 20 },
         { "itemId": 73, "count": 5 }
       ],
-      "stats": [{ "id": 1, "value": "Grenade" }],
+      "stats": [{ "id": 1, "value": "Weapon" }],
       "decomposes": 120
     },
     {
@@ -5870,7 +5870,7 @@
         { "itemId": 74, "count": 80 },
         { "itemId": 146, "count": 110 }
       ],
-      "stats": [{ "id": 1, "value": "Gun" }],
+      "stats": [{ "id": 1, "value": "Weapon" }],
       "decomposes": 120
     },
     {
@@ -8426,7 +8426,7 @@
         { "itemId": 78, "count": 30 },
         { "itemId": 165, "count": 150 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Structure" }]
     },
     {
       "itemId": 599,
@@ -9444,7 +9444,7 @@
         { "itemId": 146, "count": 5 },
         { "itemId": 470, "count": 25 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Structure" }]
     },
     {
       "itemId": 656,
@@ -9461,7 +9461,7 @@
         { "itemId": 146, "count": 5 },
         { "itemId": 470, "count": 25 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Structure" }]
     },
     {
       "itemId": 657,
@@ -9479,7 +9479,7 @@
         { "itemId": 78, "count": 20 },
         { "itemId": 472, "count": 1 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Structure" }]
     },
     {
       "itemId": 658,
@@ -9497,7 +9497,7 @@
         { "itemId": 78, "count": 20 },
         { "itemId": 472, "count": 1 }
       ],
-      "stats": [{ "id": 1, "value": "Tool" }]
+      "stats": [{ "id": 1, "value": "Structure" }]
     },
     {
       "itemId": 659,

@@ -82,7 +82,7 @@ export const Success = ({ item }: CellSuccessProps<EditItemById>) => {
   return (
     <div className="rw-segment">
       <header className="rw-segment-header">
-        <h2 className="rw-heading rw-heading-secondary">Edit Item {item?.id}</h2>
+        <h2 className="rw-heading rw-heading-secondary">Edit Item {item?.name}</h2>
       </header>
       <div className="rw-segment-main">
         <ItemForm item={item} onSave={onSave} error={error} loading={loading} />
