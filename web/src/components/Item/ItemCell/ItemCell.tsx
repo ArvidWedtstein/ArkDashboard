@@ -31,10 +31,9 @@ export const Loading = () => <div>Loading...</div>
 
 export const Empty = () => <div>Item not found</div>
 
-let item = { "id": 75, "created_at": "2023-02-14T12:07:48.079024+00:00", "name": "Thatch", "description": "Sticks torn from trees. Useful for primitive buildings.", "image": "thatch.png", "max_stack": 100, "weight": -1, "engram_points": 0, "crafting_time": null, "req_level": 0, "yields": 1, "recipe": null, "stats": [{ "id": 1, "value": "Resource" }], "color": "#d0c485", "crafted_in": null, "effects": null }
 export const Failure = ({ error }: CellFailureProps) => (
-  // <div className="rw-cell-error">{error?.message}</div>
-  <Item item={item} />
+  <div className="rw-cell-error">{error?.message}</div>
+
 )
 
 export const Success = ({ item }: CellSuccessProps<FindItemById>) => {
