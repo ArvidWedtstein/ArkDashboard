@@ -52,15 +52,21 @@ export const schema = gql`
     effects: [String]!
   }
 
+  type ItemsPage {
+    basespots: [Item!]!
+    count: Int!
+  }
   """
   About queries
   """
   type Query {
     "Fetch Items."
-    items: [Item!]! @requireAuth
+    items: [Item!]! @skipAuth
 
     "Fetch a Item by id."
-    item(id: BigInt!): Item @requireAuth
+    item(id: BigInt!): Item @skipAuth
+
+    itemsPage(page: Int): ItemsPage @skipAuth
   }
 
   """
@@ -176,4 +182,4 @@ export const schema = gql`
     "Deletes an existing Item."
     deleteItem(id: BigInt!): Item! @requireAuth
   }
-`
+`;

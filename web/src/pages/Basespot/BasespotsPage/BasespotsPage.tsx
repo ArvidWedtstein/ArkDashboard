@@ -4,7 +4,7 @@ import BasespotsCell from 'src/components/Basespot/BasespotsCell'
 //   return <BasespotsCell />
 // }
 const BasespotsPage = ({ page = 1 }) => {
-  return <BasespotsCell basespotPage={page} page={page} />
+  return <BasespotsCell page={page} />
 }
 
 export default BasespotsPage
