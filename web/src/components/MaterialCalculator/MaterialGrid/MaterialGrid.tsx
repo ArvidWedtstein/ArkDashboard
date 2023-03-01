@@ -22,7 +22,7 @@ interface MaterialGridProps {
 export const MaterialGrid = ({ error }: MaterialGridProps) => {
   let { itemStats, items: itemsark } = arkitems;
   const items = useMemo(() => {
-    return itemsark.map((v) => ({ ...v, amount: 1 }));
+    return itemsark.map((v) => ({ ...v, amount: 1 * v.yields }));
   }, []);
   const formMethods = useForm();
 
@@ -30,7 +30,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
     switch (action.type) {
       case "ADD_AMOUNT_BY_NUM": {
         const itemIndex = state.findIndex(
-          (item) => item.itemId === action.item.itemId
+          (item) => item.id === action.item.id
         );
         if (itemIndex !== -1) {
           return state.map((item, i) => {
@@ -45,7 +45,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
       case "ADD_AMOUNT": {
         return state.map((item, i) => {
           if (i === action.index) {
-            return { ...item, amount: item.amount + 1 };
+            return { ...item, amount: item.amount + (1 * item.yields) };
           }
           return item;
         });
@@ -53,7 +53,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
       case "REMOVE_AMOUNT": {
         return state.map((item, i) => {
           if (i === action.index) {
-            return { ...item, amount: item.amount - 1 };
+            return { ...item, amount: item.amount - (1 * item.yields) };
           }
           return item;
         });
@@ -65,7 +65,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
         if (itemIndex !== -1) {
           return state.map((item, i) => {
             if (i === itemIndex) {
-              return { ...item, amount: item.amount + 1 };
+              return { ...item, amount: item.amount + (1 * item.yields) };
             }
             return item;
           });
@@ -92,7 +92,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
       (item) => item.name.toLowerCase() === data.itemName.toLowerCase()
     );
     formMethods.reset();
-    setItem({ type: "ADD", item: itemfound });
+    if (itemfound) setItem({ type: "ADD", item: itemfound });
   };
 
   const onRemove = (index) => {
@@ -153,7 +153,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
     //   676: amountTekGen, // Tek Generator
     // }
     let towerItems = {
-      168: 6,
+      168: 14,
       169: 2,
       172: 196,
       178: 2,
@@ -167,7 +167,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
     };
     for (const [key, value] of Object.entries(towerItems)) {
       let itemfound = items.find(
-        (item) => parseInt(item.itemId.toString()) === parseInt(key)
+        (item) => parseInt(item.id.toString()) === parseInt(key)
       );
       if (itemfound) {
         setItem({ type: "ADD_AMOUNT_BY_NUM", item: itemfound, index: value });
@@ -180,6 +180,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
     setItem({ type: "RESET" });
   };
 
+
   const [viewBaseMaterials, setViewBaseMaterials] = useState(false);
   const toggleBaseMaterials = useCallback(
     (e) => {
@@ -187,6 +188,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
     },
     [viewBaseMaterials]
   );
+  console.log(mergeItemRecipe(viewBaseMaterials, ...item.map((i) => ({ ...i, itemId: i.id }))))
 
   return (
     <Form onSubmit={onAdd} error={error}>
@@ -254,7 +256,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
           <Table
             vertical={true}
             header={false}
-            rows={mergeItemRecipe(viewBaseMaterials, ...item)}
+            rows={mergeItemRecipe(viewBaseMaterials, ...item.map((i) => ({ ...i, itemId: i.id })))}
             className="animate-fade-in my-4"
             caption={{
               title: "Item",
@@ -262,7 +264,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
                 <div className="flex items-center">
                   <CheckboxField
                     name="flexCheckDefault"
-                    className="rw-checkbox"
+                    className="inline-block rw-input"
                     onChange={toggleBaseMaterials}
                   />
                   <label className="inline-block" htmlFor="flexCheckDefault">
@@ -371,15 +373,15 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
                   "text-center flex flex-row justify-start items-center",
                 renderCell: ({ row }) => {
                   return mergeItemRecipe(false, {
-                    itemId: row.itemId,
+                    itemId: row.id,
                     amount: row.amount,
                   })
-                    .sort((a, b) => a.itemId - b.itemId)
+                    .sort((a, b) => a.id - b.id)
                     .map((itm, i) => (
                       <div
                         className="min-w-16 ml-2 flex w-10 flex-col items-center justify-center"
-                        id={`${itm.itemId}-${i * Math.random()}${i}`}
-                        key={`${itm.itemId}-${i * Math.random()}${i}`}
+                        id={`${itm.id}-${i * Math.random()}${i}`}
+                        key={`${itm.id}-${i * Math.random()}${i}`}
                       >
                         <img
                           src={`https://www.arkresourcecalculator.com/assets/images/80px-${itm.image}`}

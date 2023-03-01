@@ -168,7 +168,7 @@
 }
 .rw-checkbox,
 .rw-input[type="checkbox"] {
-  @apply ml-0 mr-1 mt-1 inline h-4 w-4 cursor-pointer appearance-none rounded border border-gray-300 bg-stone-100 bg-gray-600 bg-contain bg-center bg-no-repeat p-2 transition duration-200 focus:border-stone-500 focus:outline-none focus:ring-0 dark:border-zinc-500 dark:bg-zinc-500 dark:focus:border-zinc-400 dark:focus:ring-stone-200;
+  @apply ml-0 mr-1 h-6 w-6 cursor-pointer appearance-none rounded bg-contain bg-center bg-no-repeat p-2 transition duration-200 focus:outline-none;
 }
 .rw-checkbox:checked,
 .rw-input[type="checkbox"]:checked {

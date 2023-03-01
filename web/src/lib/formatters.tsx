@@ -163,33 +163,31 @@ export const getBaseMaterials = (
    * @param {number} amount - The number of objects required.
    */
   const findBaseMaterials = (itemId: number, amount: number) => {
-    let recipe = prices.items.find((r) => r.itemId === itemId);
+    let recipe = prices.items.find((r) => r.id === itemId);
 
-    if (!recipe?.recipe) {
+    if (!recipe?.recipe || recipe.recipe.length === 0) {
       return;
     }
 
     if (
       !firstRecipeOnly &&
-      recipe.stats &&
-      recipe.stats[0]?.value === "Resource"
+      recipe.type === "Resource"
     ) {
       return;
     }
 
     recipe.recipe.forEach(({ itemId, count: recipeCount }) => {
-      let recipeItem = prices.items.find((r) => r.itemId === itemId);
-      let count = recipeCount * amount;
-
-      if (!firstRecipeOnly || !recipeItem?.recipe.length) {
-        let material = materials.find((m) => m.itemId === itemId);
+      let recipeItem = prices.items.find((r) => r.id === itemId);
+      let count = (recipeCount * amount) / recipe.yields;
+      if (!firstRecipeOnly || !recipeItem?.recipe || !recipeItem?.recipe.length) {
+        let material = materials.find((m) => m.id === itemId);
         if (material) {
           material.amount += count;
         } else {
           materials.push({ ...recipeItem, amount: count });
         }
       } else {
-        findBaseMaterials(recipeItem.itemId, count);
+        findBaseMaterials(recipeItem.id, count * recipeItem.yields);
       }
     });
   };
@@ -202,7 +200,7 @@ export const getBaseMaterials = (
 };
 
 function getResourcesForCrafting(itemId: number, amount: number) {
-  const itemToCraft = prices.items.find((item) => item.itemId === itemId);
+  const itemToCraft = prices.items.find((item) => item.id === itemId);
   const resources = new Map<number, number>();
 
   if (!itemToCraft) {
@@ -211,15 +209,15 @@ function getResourcesForCrafting(itemId: number, amount: number) {
 
   for (const recipeItem of itemToCraft.recipe) {
     const requiredAmount = recipeItem.count * amount;
-    let availableAmount = itemToCraft.maxStack * requiredAmount;
+    let availableAmount = itemToCraft.max_stack * requiredAmount;
 
-    if (recipeItem.itemId === itemToCraft.itemId) {
+    if (recipeItem.itemId === itemToCraft.id) {
       availableAmount -= requiredAmount;
     }
 
     if (availableAmount < requiredAmount) {
       const ingredientItem = prices.items.find(
-        (item) => item.itemId === recipeItem.itemId
+        (item) => item.id === recipeItem.itemId
       );
 
       if (!ingredientItem) {
