@@ -369,7 +369,7 @@ const ItemForm = (props: ItemFormProps) => {
                 <option value={11}>Water</option>
               </select>
               <input name="value" type="number" className="rw-input mt-0 !rounded-r-md" defaultValue={stat.value} />
-              <button className="rw-button rw-button-green" onClick={() => setStats((s) => s.filter((v) => v.id !== stat.id))}>
+              <button className="rw-button rw-button-red" onClick={() => setStats((s) => s.filter((v) => v.id !== stat.id))}>
                 Remove Stat
               </button>
             </div>
