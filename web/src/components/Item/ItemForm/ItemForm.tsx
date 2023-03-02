@@ -264,7 +264,7 @@ const ItemForm = (props: ItemFormProps) => {
               }}
             >
               <option value={606}>Beer Barrel</option>
-              <option>Campfire</option>
+              <option>  Campfire</option>
               <option>Chemistry Bench</option>
               <option>Cooking Pot</option>
               <option>Compost Bin</option>
@@ -298,10 +298,10 @@ const ItemForm = (props: ItemFormProps) => {
           Category
         </Label>
 
-        {/* <SelectField
+        <SelectField
           name="category"
           className="rw-input"
-          defaultValue={props.item.stats}
+          defaultValue={props.item?.}
           errorClassName="rw-input rw-input-error"
           multiple
           validation={{
@@ -322,7 +322,7 @@ const ItemForm = (props: ItemFormProps) => {
           <option>Egg</option>
           <option>Attachment</option>
           <option>Other</option>
-        </SelectField> */}
+        </SelectField>
 
         <FieldError name="category" className="rw-field-error" />
 
