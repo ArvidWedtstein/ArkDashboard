@@ -18,7 +18,7 @@
     { "id": 16, "name": "Ammo" },
     { "id": 17, "name": "Weight Reduction" },
     { "id": 18, "name": "Fuel" },
-    { "id": 19, "name": "gather" }
+    { "id": 19, "name": "Gather" }
   ],
   "items": [
     {

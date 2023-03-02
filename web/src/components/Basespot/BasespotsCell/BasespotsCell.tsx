@@ -5,7 +5,6 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Basespots from "src/components/Basespot/Basespots";
 import Pagination from "src/components/Pagination/Pagination";
-import Lookup from "src/components/Util/Lookup/Lookup";
 
 // export const QUERY = gql`
 //   query FindBasespots {

@@ -6,55 +6,55 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import Items from 'src/components/Item/Items'
 import Pagination from 'src/components/Pagination/Pagination';
 
-// export const QUERY = gql`
-//   query FindItems {
-//     items {
-//       id
-//       created_at
-//       name
-//       description
-//       image
-//       max_stack
-//       weight
-//       engram_points
-//       crafting_time
-//       req_level
-//       yields
-//       recipe
-//       stats
-//       color
-//       crafted_in
-//       effects
-//       type
-//     }
-//   }
-// `
 export const QUERY = gql`
-  query FindItems($page: Int) {
-    itemsPage(page: $page) {
-        items {
-          id
-          created_at
-          name
-          description
-          image
-          max_stack
-          weight
-          engram_points
-          crafting_time
-          req_level
-          yields
-          recipe
-          stats
-          color
-          crafted_in
-          effects
-          type
-      }
-      count
+  query FindItems {
+    items {
+      id
+      created_at
+      name
+      description
+      image
+      max_stack
+      weight
+      engram_points
+      crafting_time
+      req_level
+      yields
+      recipe
+      stats
+      color
+      crafted_in
+      effects
+      type
     }
   }
-`;
+`
+// export const QUERY = gql`
+//   query FindItems($page: Int) {
+//     itemsPage(page: $page) {
+//         items {
+//           id
+//           created_at
+//           name
+//           description
+//           image
+//           max_stack
+//           weight
+//           engram_points
+//           crafting_time
+//           req_level
+//           yields
+//           recipe
+//           stats
+//           color
+//           crafted_in
+//           effects
+//           type
+//       }
+//       count
+//     }
+//   }
+// `;
 export const beforeQuery = ({ page }) => {
   page = parseInt(page) ? parseInt(page, 10) : 1;
 
@@ -82,15 +82,16 @@ export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>
 )
 
-export const Success = ({ itemsPage }: CellSuccessProps<FindItems>) => {
-  return itemsPage.count > 0 ? (
-    <>
-      <Items items={itemsPage.items} />
-      <Pagination count={itemsPage.count} route={"items"} />
-    </>
-  ) : (
-    Empty()
-  )
+export const Success = ({ items }: CellSuccessProps<FindItems>) => {
+  // return items.count > 0 ? (
+  //   <>
+  //     <Items items={itemsPage.items} />
+  //     <Pagination count={itemsPage.count} route={"items"} />
+  //   </>
+  // ) : (
+  //   Empty()
+  // )
+  return <Items items={items} />
 }
 
 // export const Success = ({ items }: CellSuccessProps<FindItems>) => {

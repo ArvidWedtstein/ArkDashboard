@@ -135,7 +135,10 @@
   @apply mr-1 text-xl leading-5;
 }
 .rw-button-group {
-  @apply my-3 mx-2 flex justify-center rounded-md shadow-sm;
+  @apply my-3 flex justify-center rounded-md shadow-sm;
+}
+.rw-button-group .rw-input {
+  @apply rounded-none first:rounded-l-md last:rounded-r-md;
 }
 .rw-button-group .rw-button {
   @apply mx-1;
@@ -144,7 +147,7 @@
   @apply mt-8;
 }
 .rw-label {
-  @apply mt-4 block text-left font-semibold uppercase tracking-wide text-gray-600 dark:text-stone-300;
+  @apply mt-4 inline-block text-left font-semibold uppercase tracking-wide text-gray-600 dark:text-stone-300;
 }
 .rw-label.rw-label-error {
   @apply text-red-600;

@@ -1,5 +1,5 @@
 const { items } = require("./web/public/arkitems.json");
-const d = require("./web/public/maps.json");
+// const d = require("./web/public/maps.json");
 const d2 = require("./web/public/dinotest.json");
 const imgs = require("./web/public/arkimages.json");
 

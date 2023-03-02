@@ -29,13 +29,24 @@ const ItemForm = (props: ItemFormProps) => {
     delete data["craftable"]
     console.log(data)
 
-    props.onSave(data, props?.item?.id);
+    // props.onSave(data, props?.item?.id);
   };
-
+  const [stats, setStats] = useState([]);
+  const [statType, setStatType] = useState(null);
+  const [statValue, setStatValue] = useState(0);
   const [craftable, setCraftable] = useState(false);
+
+  const addStat = (data) => {
+    data.preventDefault()
+
+    if (stats.filter((stat) => stat.id === statType).length > 0) return
+    setStats([...stats, { id: statType, value: statValue }]);
+    setStatType(null);
+    setStatValue(0);
+  }
   return (
     <div className="rw-form-wrapper">
-      <Form<FormItem> onSubmit={onSubmit} error={props.error}>
+      <Form<FormItem> onSubmit={onSubmit} error={props.error} className="w-auto">
         <FormError
           error={props.error}
           wrapperClassName="rw-form-error-wrapper"
@@ -141,7 +152,7 @@ const ItemForm = (props: ItemFormProps) => {
 
         <CheckboxField
           name="craftable"
-          defaultChecked={true}
+          defaultChecked={craftable}
           onChange={(e) => setCraftable(e.target.checked)}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
@@ -198,7 +209,7 @@ const ItemForm = (props: ItemFormProps) => {
 
             <TextField
               name="req_level"
-              defaultValue={props.item?.req_level}
+              defaultValue={props.item?.req_level ? props.item.req_level.toString() : 0}
               className="rw-input"
               errorClassName="rw-input rw-input-error"
               validation={{
@@ -255,43 +266,37 @@ const ItemForm = (props: ItemFormProps) => {
 
             <SelectField
               name="crafted_in"
+              defaultValue={props.item?.crafted_in}
               className="rw-input"
               errorClassName="rw-input rw-input-error"
               multiple
+              emptyAs={null}
               validation={{
                 required: false,
-                valueAsNumber: true
               }}
             >
               <option value={606}>Beer Barrel</option>
-              <option>  Campfire</option>
-              <option>Chemistry Bench</option>
-              <option>Cooking Pot</option>
-              <option>Compost Bin</option>
-              <option>Fabricator</option>
-              <option>Industrial Cooker</option>
-              <option>Industrial Forge</option>
-              <option>Industrial Grill</option>
-              <option>Industrial Grinder</option>
-              <option>Mortar And Pestle</option>
-              <option>Refining Forge</option>
-              <option>Smithy</option>
-              <option>Tek Replicator</option>
+              <option value={39}>Campfire</option>
+              <option value={607}>Chemistry Bench</option>
+              <option value={128}>Cooking Pot</option>
+              <option value={127}>Compost Bin</option>
+              <option value={185}>Fabricator</option>
+              <option value={601}>Industrial Cooker</option>
+              <option value={600}>Industrial Forge</option>
+              <option value={360}>Industrial Grill</option>
+              <option value={618}>Industrial Grinder</option>
+              <option value={107}>Mortar And Pestle</option>
+              <option value={125}>Refining Forge</option>
+              <option value={126}>Smithy</option>
+              <option value={652}>Tek Replicator</option>
             </SelectField>
 
-            {/* <TextField
-          name="crafted_in"
-          defaultValue={props.item?.crafted_in}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        /> */}
 
             <FieldError name="crafted_in" className="rw-field-error" />
           </>
         )}
         <Label
-          name="category"
+          name="type"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
@@ -299,11 +304,10 @@ const ItemForm = (props: ItemFormProps) => {
         </Label>
 
         <SelectField
-          name="category"
+          name="type"
           className="rw-input"
-          defaultValue={props.item?.}
+          // defaultValue={props.item?.type}
           errorClassName="rw-input rw-input-error"
-          multiple
           validation={{
             required: false,
           }}
@@ -324,7 +328,7 @@ const ItemForm = (props: ItemFormProps) => {
           <option>Other</option>
         </SelectField>
 
-        <FieldError name="category" className="rw-field-error" />
+        <FieldError name="type" className="rw-field-error" />
 
         {/* TODO: If structure category selected, show input for durability etc */}
 
@@ -335,6 +339,74 @@ const ItemForm = (props: ItemFormProps) => {
         >
           Stats
         </Label>
+
+        <div className="flex flex-col">
+          {stats && stats.map((stat, index) =>
+            <div className="rw-button-group !mt-0 justify-start">
+              <select
+                className="rw-input mt-0"
+                defaultValue={stat.id}
+                onChange={(e) => {
+                  setStatType(e.target.selectedOptions[0].value)
+                }}>
+                <option value={2}>Armor</option>
+                <option value={3}>Hypothermal Insulation</option>
+                <option value={4}>Hyperthermal Insulation</option>
+                <option value={5}>Durability</option>
+                <option value={7}>Health</option>
+                <option value={8}>Food</option>
+                <option value={6}>Weapon Damage</option>
+                <option value={9}>Spoils</option>
+                <option value={10}>Torpor</option>
+                <option value={15}>Affinity</option>
+                <option value={16}>Ammo</option>
+                <option value={12}>Stamina</option>
+                <option value={13}>Cooldown</option>
+                <option value={14}>Fertilizer Points</option>
+                <option value={17}>Weight Reduction</option>
+                <option value={18}>Fuel</option>
+                <option value={19}>Gather</option>
+                <option value={11}>Water</option>
+              </select>
+              <input name="value" type="number" className="rw-input mt-0 !rounded-r-md" defaultValue={stat.value} />
+              <button className="rw-button rw-button-green" onClick={() => setStats((s) => s.filter((v) => v.id !== stat.id))}>
+                Remove Stat
+              </button>
+            </div>
+          )}
+        </div>
+        <div className="rw-button-group justify-start">
+          <select
+            className="rw-input mt-0"
+            defaultValue={statType}
+            onChange={(e) => {
+              setStatType(e.target.selectedOptions[0].value)
+            }}>
+            <option value={2}>Armor</option>
+            <option value={3}>Hypothermal Insulation</option>
+            <option value={4}>Hyperthermal Insulation</option>
+            <option value={5}>Durability</option>
+            <option value={7}>Health</option>
+            <option value={8}>Food</option>
+            <option value={6}>Weapon Damage</option>
+            <option value={9}>Spoils</option>
+            <option value={10}>Torpor</option>
+            <option value={15}>Affinity</option>
+            <option value={16}>Ammo</option>
+            <option value={12}>Stamina</option>
+            <option value={13}>Cooldown</option>
+            <option value={14}>Fertilizer Points</option>
+            <option value={17}>Weight Reduction</option>
+            <option value={18}>Fuel</option>
+            <option value={19}>Gather</option>
+            <option value={11}>Water</option>
+          </select>
+          <input name="value" type="number" className="rw-input mt-0 !rounded-r-md" defaultValue={statValue} onChange={(e) => setStatValue(e.currentTarget.valueAsNumber)} />
+          <button className="rw-button rw-button-green" onClick={addStat}>
+            Add stat
+          </button>
+        </div>
+
 
         <TextAreaField
           name="stats"
