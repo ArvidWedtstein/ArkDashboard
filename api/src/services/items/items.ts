@@ -1,13 +1,12 @@
 import type { QueryResolvers, MutationResolvers } from "types/graphql";
 
 import { db } from "src/lib/db";
-
 export const itemsPage = ({
   page = 1,
   items_per_page = 36,
 }: {
   page: number;
-  items_per_page: number;
+  items_per_page?: number;
 }) => {
   const offset = (page - 1) * items_per_page;
   return {

@@ -25,6 +25,7 @@ import Pagination from 'src/components/Pagination/Pagination';
 //       color
 //       crafted_in
 //       effects
+//       type
 //     }
 //   }
 // `
@@ -48,6 +49,7 @@ export const QUERY = gql`
           color
           crafted_in
           effects
+          type
       }
       count
     }
