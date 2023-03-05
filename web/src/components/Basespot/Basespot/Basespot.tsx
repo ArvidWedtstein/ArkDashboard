@@ -1,14 +1,16 @@
+import { useAuth } from "@redwoodjs/auth";
+import { Link, routes, navigate } from "@redwoodjs/router";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
+import { useEffect, useState } from "react";
+import { Map } from "src/components/Util/Map/Map";
 
-import { useAuth } from '@redwoodjs/auth'
-import { Link, routes, navigate } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
-import { useEffect, useState } from 'react'
-import { Map } from 'src/components/Util/Map/Map'
+import { timeTag } from "src/lib/formatters";
 
-import { timeTag,  } from 'src/lib/formatters'
-
-import type { DeleteBasespotMutationVariables, FindBasespotById } from 'types/graphql'
+import type {
+  DeleteBasespotMutationVariables,
+  FindBasespotById,
+} from "types/graphql";
 
 const DELETE_BASESPOT_MUTATION = gql`
   mutation DeleteBasespotMutation($id: BigInt!) {
@@ -16,10 +18,10 @@ const DELETE_BASESPOT_MUTATION = gql`
       id
     }
   }
-`
+`;
 
 interface Props {
-  basespot: NonNullable<FindBasespotById['basespot']>
+  basespot: NonNullable<FindBasespotById["basespot"]>;
 }
 
 const Basespot = ({ basespot }: Props) => {
@@ -49,35 +51,35 @@ const Basespot = ({ basespot }: Props) => {
 
   const [deleteBasespot] = useMutation(DELETE_BASESPOT_MUTATION, {
     onCompleted: () => {
-      toast.success('Basespot deleted')
-      navigate(routes.basespots())
+      toast.success("Basespot deleted");
+      navigate(routes.basespots());
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error(error.message);
     },
-  })
+  });
 
-  const onDeleteClick = (id: DeleteBasespotMutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete basespot ' + id + '?')) {
-      deleteBasespot({ variables: { id } })
+  const onDeleteClick = (id: DeleteBasespotMutationVariables["id"]) => {
+    if (confirm("Are you sure you want to delete basespot " + id + "?")) {
+      deleteBasespot({ variables: { id } });
     }
-  }
+  };
 
   return (
     <>
-      <section className="body-font dark:text-stone-200 text-gray-700">
+      <section className="body-font text-gray-700 dark:text-stone-200">
         <div className="container mx-auto flex flex-col items-center px-5 py-12 md:flex-row">
           <div className="mb-16 flex flex-col items-center text-center md:mb-0 md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24">
-            <h1 className="title-font mb-4 text-3xl font-medium dark:text-stone-400 text-gray-900 sm:text-4xl">
+            <h1 className="title-font mb-4 text-3xl font-medium text-gray-900 dark:text-stone-400 sm:text-4xl">
               {basespot.name}
               <br className="hidden lg:inline-block" />
-              {basespot.Map.split(/(?=[A-Z])/).join(" ")}
+              {/* {basespot.Map.split(/(?=[A-Z])/).join(" ")} */}
             </h1>
             <p className="mb-8 leading-relaxed">{basespot.description}</p>
             <div className="flex justify-center">
               <Link
                 to={routes.editBasespot({ id: basespot.id.toString() })}
-                className="inline-flex rounded border-0 bg-gray-200 py-2 px-6 text-lg dark:text-stone-200 text-gray-700 hover:bg-gray-300 focus:outline-none"
+                className="inline-flex rounded border-0 bg-gray-200 py-2 px-6 text-lg text-gray-700 hover:bg-gray-300 focus:outline-none dark:text-stone-200"
               >
                 Edit
               </Link>
@@ -101,15 +103,15 @@ const Basespot = ({ basespot }: Props) => {
           </div>
         </div>
       </section>
-      <section className="body-font border-t dark:border-gray-200 border-stone-200 dark:text-stone-200 text-gray-700">
+      <section className="body-font border-t border-stone-200 text-gray-700 dark:border-gray-200 dark:text-stone-200">
         <div className="container mx-auto flex flex-wrap px-5 py-12">
           <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
-            <Map
+            {/* <Map
               className="h-full w-full object-cover object-center"
               map={basespot.Map}
               size={{ width: 500, height: 500 }}
-              pos={{ lat: basespot.latitude, lon: basespot.longitude }}
-            />
+              pos={[{ lat: basespot.latitude, lon: basespot.longitude }]}
+            /> */}
           </div>
           <div className="-mb-10 flex flex-col flex-wrap text-center lg:w-1/2 lg:py-6 lg:pl-12 lg:text-left">
             <div className="mb-10 flex flex-col items-center lg:items-start">
@@ -127,7 +129,7 @@ const Basespot = ({ basespot }: Props) => {
                 </svg>
               </div>
               <div className="flex-grow">
-                <h2 className="title-font mb-3 text-lg font-medium dark:text-stone-200 text-gray-900">
+                <h2 className="title-font mb-3 text-lg font-medium text-gray-900 dark:text-stone-200">
                   Coordinates
                 </h2>
                 <p className="text-base leading-relaxed">
@@ -152,7 +154,7 @@ const Basespot = ({ basespot }: Props) => {
                 </svg>
               </div>
               <div className="flex-grow">
-                <h2 className="title-font mb-3 text-lg font-medium dark:text-stone-200 text-gray-900">
+                <h2 className="title-font mb-3 text-lg font-medium text-gray-900 dark:text-stone-200">
                   Players
                 </h2>
                 <p className="text-base leading-relaxed">
@@ -164,19 +166,19 @@ const Basespot = ({ basespot }: Props) => {
           </div>
         </div>
       </section>
-      <section className="body-font border-t dark:border-gray-200 border-stone-200 dark:text-stone-200 text-gray-700">
+      <section className="body-font border-t border-stone-200 text-gray-700 dark:border-gray-200 dark:text-stone-200">
         <div className="container mx-auto px-5 py-24">
           <div className="mb-20 flex w-full flex-col text-center">
             <h2 className="title-font mb-1 text-xs font-medium tracking-widest text-indigo-500">
               Basespot Defense Setup
             </h2>
-            <h1 className="title-font text-2xl font-medium dark:text-stone-200 text-gray-900 sm:text-3xl">
+            <h1 className="title-font text-2xl font-medium text-gray-900 dark:text-stone-200 sm:text-3xl">
               Basespot Setup
             </h1>
           </div>
           <div className="-m-4 flex flex-wrap">
             <div className="p-4 md:w-1/3">
-              <div className="flex h-full flex-col rounded-lg dark:bg-gray-100 bg-gray-600 p-8">
+              <div className="flex h-full flex-col rounded-lg bg-gray-600 p-8 dark:bg-gray-100">
                 <div className="mb-3 flex items-center">
                   <div className="mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-indigo-500 text-white">
                     <svg
@@ -191,7 +193,7 @@ const Basespot = ({ basespot }: Props) => {
                       <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                     </svg>
                   </div>
-                  <h2 className="title-font text-lg font-medium dark:text-gray-900 text-stone-200">
+                  <h2 className="title-font text-lg font-medium text-stone-200 dark:text-gray-900">
                     Defense Nr.1
                   </h2>
                 </div>
@@ -212,7 +214,7 @@ const Basespot = ({ basespot }: Props) => {
               </div>
             </div>
             <div className="p-4 md:w-1/3">
-              <div className="flex h-full flex-col rounded-lg dark:bg-gray-100 bg-gray-600 p-8">
+              <div className="flex h-full flex-col rounded-lg bg-gray-600 p-8 dark:bg-gray-100">
                 <div className="mb-3 flex items-center">
                   <div className="mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-indigo-500 text-white">
                     <svg
@@ -228,7 +230,7 @@ const Basespot = ({ basespot }: Props) => {
                       <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                   </div>
-                  <h2 className="title-font text-lg font-medium dark:text-gray-900 text-stone-200">
+                  <h2 className="title-font text-lg font-medium text-stone-200 dark:text-gray-900">
                     Defense Nr.2
                   </h2>
                 </div>
@@ -249,7 +251,7 @@ const Basespot = ({ basespot }: Props) => {
               </div>
             </div>
             <div className="p-4 md:w-1/3">
-              <div className="flex h-full flex-col rounded-lg dark:bg-gray-100 bg-gray-600 p-8">
+              <div className="flex h-full flex-col rounded-lg bg-gray-600 p-8 dark:bg-gray-100">
                 <div className="mb-3 flex items-center">
                   <div className="mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-indigo-500 text-white">
                     <svg
@@ -266,7 +268,7 @@ const Basespot = ({ basespot }: Props) => {
                       <path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12"></path>
                     </svg>
                   </div>
-                  <h2 className="title-font text-lg font-medium dark:text-gray-900 text-stone-200">
+                  <h2 className="title-font text-lg font-medium text-stone-200 dark:text-gray-900">
                     Defense Nr.3
                   </h2>
                 </div>
@@ -290,7 +292,7 @@ const Basespot = ({ basespot }: Props) => {
         </div>
       </section>
     </>
-  )
-}
+  );
+};
 
-export default Basespot
+export default Basespot;

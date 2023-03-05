@@ -1,8 +1,4 @@
-import { useAuth } from '@redwoodjs/auth'
-import { Link, routes } from '@redwoodjs/router'
-import { Toaster } from '@redwoodjs/web/toast'
-import Navbar from 'src/components/Navbar/Navbar'
-import Sidebar from 'src/components/Sidebar/Sidebar'
+
 
 type LayoutProps = {
   children: React.ReactNode
@@ -11,9 +7,7 @@ type LayoutProps = {
 const ScaffoldLayout = ({
   children,
 }: LayoutProps) => {
-  const {
-    isAuthenticated
-  } = useAuth();
+
   return (
     <div className="rounded-2xl p-3 m-3">{/* bg-white dark:bg-[#3b424f] */}
       {children}

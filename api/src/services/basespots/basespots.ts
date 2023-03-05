@@ -54,6 +54,11 @@ export const deleteBasespot: MutationResolvers["deleteBasespot"] = ({ id }) => {
 };
 
 export const Basespot: BasespotRelationResolvers = {
+  Map_Basespot_MapToMap: (_obj, { root }) => {
+    return db.basespot
+      .findUnique({ where: { id: root?.id } })
+      .Map_Basespot_MapToMap();
+  },
   TimelineBasespot: (_obj, { root }) => {
     return db.basespot
       .findUnique({ where: { id: root?.id } })

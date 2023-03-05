@@ -5,7 +5,6 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Basespots from "src/components/Basespot/Basespots";
 import Pagination from "src/components/Pagination/Pagination";
-import Lookup from "src/components/Util/Lookup/Lookup";
 
 // export const QUERY = gql`
 //   query FindBasespots {
@@ -25,7 +24,7 @@ import Lookup from "src/components/Util/Lookup/Lookup";
 //       updated_at
 //     }
 //   }
-// `
+// `;
 export const QUERY = gql`
   query FindBasespots($page: Int) {
     basespotPage(page: $page) {
@@ -40,11 +39,15 @@ export const QUERY = gql`
         updated_at
         Map
         estimatedForPlayers
+        Map_Basespot_MapToMap {
+          name
+        }
       }
       count
     }
   }
 `;
+
 export const beforeQuery = ({ page }) => {
   page = parseInt(page) ? parseInt(page, 10) : 1;
 
@@ -103,8 +106,9 @@ export const Failure = ({ error }: CellFailureProps) => {
 };
 
 // export const Success = ({ basespots }: CellSuccessProps<FindBasespots>) => {
-//   return <Basespots basespots={basespots} />
-// }
+//   console.log(basespots);
+//   return <Basespots basespots={basespots} />;
+// };
 
 export const Success = ({ basespotPage }: CellSuccessProps<FindBasespots>) => {
   return (

@@ -1,14 +1,14 @@
 import { render } from '@redwoodjs/testing/web'
 
-import Dropdown from './Dropdown'
+import Counter from './Counter'
 
 //   Improve this test with help from the Redwood Testing Doc:
 //    https://redwoodjs.com/docs/testing#testing-components
 
-describe('Dropdown', () => {
+describe('Counter', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<Dropdown />)
+      render(<Counter />)
     }).not.toThrow()
   })
 })

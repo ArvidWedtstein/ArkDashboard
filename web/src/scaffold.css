@@ -44,7 +44,7 @@
   @apply py-3 px-4 text-gray-700 dark:text-stone-200;
 }
 .rw-segment-main {
-  @apply bg-gray-100 p-4;
+  @apply bg-gray-100 p-4 dark:bg-transparent;
 }
 .rw-link {
   @apply text-blue-400 underline;
@@ -101,14 +101,17 @@
   @apply rounded-sm py-1 px-2 text-xs;
 }
 .rw-button.rw-button-green-outline {
-  @apply border-pea-500 rounded border-2 font-normal leading-tight text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5;
+  @apply border-pea-500 rounded border-2 font-normal leading-tight text-white transition duration-150 ease-in-out hover:bg-opacity-5;
+}
+.rw-button.rw-button-green-outline:hover {
+  @apply ring-pea-700 ring;
 }
 .rw-button.rw-button-green {
   /* @apply bg-green-500 text-white; */
   @apply bg-pea-500 text-white;
 }
 .rw-button.rw-button-green:hover {
-  @apply bg-pea-700;
+  @apply bg-pea-600;
 }
 .rw-button.rw-button-blue {
   @apply bg-blue-500 text-white;
@@ -122,11 +125,20 @@
 .rw-button.rw-button-red:hover {
   @apply bg-red-700 text-white;
 }
+.rw-button.rw-button-gray {
+  @apply border-gray-300 bg-gray-50 text-gray-900 dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200;
+}
+.rw-button.rw-button-gray:hover {
+  @apply border-gray-500 bg-gray-500 dark:border-zinc-600 dark:bg-zinc-700;
+}
 .rw-button-icon {
   @apply mr-1 text-xl leading-5;
 }
 .rw-button-group {
-  @apply my-3 mx-2 flex justify-center rounded-md shadow-sm;
+  @apply my-3 flex justify-center rounded-md shadow-sm;
+}
+.rw-button-group .rw-input {
+  @apply rounded-none first:rounded-l-md last:rounded-r-md;
 }
 .rw-button-group .rw-button {
   @apply mx-1;
@@ -135,7 +147,7 @@
   @apply mt-8;
 }
 .rw-label {
-  @apply mt-4 block text-left font-semibold uppercase tracking-wide text-gray-600 dark:text-stone-300;
+  @apply mt-4 inline-block text-left font-semibold uppercase tracking-wide text-gray-600 dark:text-stone-300;
 }
 .rw-label.rw-label-error {
   @apply text-red-600;
@@ -148,14 +160,23 @@
   /* old color style dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-300 dark:focus:ring-stone-200 */
   @apply mt-1 block rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-900 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 contrast-more:border-black contrast-more:placeholder-black dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white dark:contrast-more:placeholder-white;
 }
-
+.rw-input option {
+  @apply appearance-none border-b border-black focus:outline-none dark:border-white;
+}
 .rw-check-radio-items {
   @apply flex justify-items-center;
 }
 .rw-check-radio-item-none {
   @apply text-gray-600;
 }
-.rw-input[type="checkbox"],
+.rw-checkbox,
+.rw-input[type="checkbox"] {
+  @apply ml-0 mr-1 h-6 w-6 cursor-pointer appearance-none rounded bg-contain bg-center bg-no-repeat p-2 transition duration-200 focus:outline-none;
+}
+.rw-checkbox:checked,
+.rw-input[type="checkbox"]:checked {
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='%23ffffff' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+}
 .rw-input[type="radio"] {
   @apply ml-0 mr-1 mt-1 inline w-4;
 }
@@ -191,6 +212,10 @@
 .rw-table tr:nth-child(odd) td,
 .rw-table tr:nth-child(odd) th {
   @apply bg-gray-50;
+}
+.rw-table tr:nth-child(even) td,
+.rw-table tr:nth-child(even) th {
+  @apply bg-white;
 }
 .rw-table thead tr {
   @apply bg-gray-200 text-gray-600;
@@ -253,4 +278,7 @@
 }
 .rw-webauthn-wrapper h2 {
   @apply mb-4 text-xl font-bold;
+}
+.rw-img-disable img {
+  @apply opacity-40 brightness-[1.4] contrast-0 hue-rotate-[116deg] saturate-[.28] sepia;
 }

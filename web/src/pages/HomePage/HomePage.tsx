@@ -1,7 +1,7 @@
 import { useAuth } from "@redwoodjs/auth";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
-import Chat from "src/components/Chat/Chat";
+
 const HomePage = () => {
   const { isAuthenticated, client: supabase } = useAuth();
   // if (document.addEventListener) {
@@ -13,13 +13,12 @@ const HomePage = () => {
   // supabase.auth.onAuthStateChange((event, session) => {
   //   console.log(event, session)
   // })
-  let gender = "female";
 
   return (
     <>
       <MetaTags title="Home" description="Home page" />
 
-      <div className="container-xl mt-3 p-3 text-center">
+      <div className="container-xl p-3 pt-0 text-center">
         <div
           className="relative overflow-hidden rounded-md bg-cover bg-no-repeat"
           style={{
@@ -62,9 +61,11 @@ const HomePage = () => {
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
+
       </div>
     </>
   );
 };
+
 
 export default HomePage;

@@ -16,6 +16,9 @@ export const QUERY = gql`
         id
         full_name
       }
+      TimelineBasespot {
+        id
+      }
     }
   }
 `;

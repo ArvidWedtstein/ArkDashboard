@@ -1,78 +1,90 @@
-import { TextField } from "@redwoodjs/forms";
-import { Link, routes } from "@redwoodjs/router";
-import { bool } from "prop-types";
-import { memo, useEffect, useMemo, useState } from "react";
-import {
-  capitalize,
-  debounce,
-  dynamicSort,
-  isDate,
-  isUUID,
-  timeTag,
-  truncate,
-} from "src/lib/formatters";
-
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { debounce, dynamicSort, isUUID, truncate } from "src/lib/formatters";
+import clsx from "clsx";
 interface Row {
   index: number;
 }
-interface ITableProps<P = {}> {
-  children?: React.ReactNode;
-  data: Object[];
-  cols?: any[];
-  renderCell?: (params: any) => React.ReactNode;
-  renderActions?: (params: any) => React.ReactNode;
-  tableOptions?: {
-    header: boolean;
-  };
-  className?: string;
+interface GridCell<V = any> {
+  columnIndex: number;
+  rowIndex: number;
+  field: string;
+  value: V;
+  row?: V;
 }
-interface ColumnData {
-  dataKey: string;
+interface ColumnData<V = any, F = V> {
+  field: string;
   label: string;
   numeric?: boolean;
+  className?: string;
   bold?: boolean;
   sortable?: boolean;
+  /**
+   * Function that allows to apply a formatter before rendering its value.
+   * @template V, F
+   * @param {GridValueFormatterParams<V>} params Object containing parameters for the formatter.
+   * @returns {F} The formatted value.
+   */
+  valueFormatter?: (params: GridCell<V>) => F; // add functionality for value formatting
+  /**
+   * Allows to override the component rendered as cell for this column.
+   * @param {GridCell} params Object containing parameters for the renderer.
+   * @returns {React.ReactNode} The element to be rendered.
+   */
+  renderCell?: (params: GridCell<V>) => React.ReactNode;
 }
-interface TaybulProps {
+interface TableProps {
   columns: ColumnData[];
   hover?: boolean;
   onRowClick?: (row: Row) => void;
   rows: any[];
-  headersVertical?: boolean;
+  vertical?: boolean;
   summary?: boolean;
   caption?: {
     title: string;
-    text: string;
+    content?: React.ReactNode;
   };
   className?: string;
   select?: boolean;
   search?: boolean;
   filter?: boolean;
-  rowsPerPage?: number;
+  header?: boolean;
+  pagination?: boolean;
   renderActions?: (row: any) => React.ReactNode;
+  /**
+   * Number of rows per page
+   * @default 10
+   */
+  rowsPerPage?: number;
+  onPageChange?: (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    page: number
+  ) => void;
+  page?: number;
 }
 
 /**
- * @todo add functionality for row click
  * @borrows dynamicSort and debounce from formatters.ts
  * @param param
  * @returns
  */
-export const Taybul = ({
+const Table = ({
   columns,
   rows: dataRows,
   onRowClick,
   className,
   caption,
-  headersVertical = false,
+  vertical = false,
   summary = false,
   hover = false,
   select = false,
   search = false,
+  header = true,
   filter = false,
-  rowsPerPage,
+  pagination = false,
+  rowsPerPage = 10,
   renderActions,
-}: TaybulProps) => {
+}: TableProps) => {
+  const [currentPage, setCurrentPage] = useState(1);
   const [rows, setRows] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sort, setSort] = useState({
@@ -80,11 +92,14 @@ export const Taybul = ({
     direction: "asc",
   });
 
-  const sortRows = (e) => {
-    let column = e.target.id;
-    let direction = sort.direction === "asc" ? "desc" : "asc";
-    setSort({ column, direction });
-  };
+  const sortRows = useCallback(
+    (e) => {
+      let column = e.target.id;
+      let direction = sort.direction === "asc" ? "desc" : "asc";
+      setSort({ column, direction });
+    },
+    [sort]
+  );
 
   const sortData = (data: any[]) => {
     let { column, direction } = sort;
@@ -98,14 +113,17 @@ export const Taybul = ({
   };
 
   const SortedFilteredData = useMemo(() => {
+    if (!dataRows || dataRows.length < 1) return [];
     let filteredData = dataRows.filter((row) => {
       let rowValues = Object.values(row);
       let rowString = rowValues.join(" ");
       return rowString.toLowerCase().includes(searchTerm.toLowerCase());
     });
-
-    return sortData(filteredData);
-  }, [sort, searchTerm, dataRows]);
+    // const indexOfLastData = currentPage * rowsPerPage;
+    // const indexOfFirstData = indexOfLastData - rowsPerPage;
+    // return sortData(filteredData).slice(indexOfFirstData, indexOfLastData);
+    return sortData(filteredData)
+  }, [sort, searchTerm, dataRows, currentPage]);
 
   useEffect(() => {
     if (select) {
@@ -138,13 +156,29 @@ export const Taybul = ({
     }
   };
 
+  const changePage = (dir: "next" | "prev") => {
+    if (dir === "prev") {
+      return setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);
+    } else {
+      return setCurrentPage(
+        currentPage < Math.ceil(dataRows.length / rowsPerPage)
+          ? currentPage + 1
+          : currentPage
+      );
+    }
+  };
+
   const headerRenderer = ({ label, columnIndex, ...other }) => {
     return (
-      <th key={`${columnIndex}-${label}`} className="px-6 py-3" scope="col">
+      <th
+        key={`headcell-${columnIndex}-${label}`}
+        className={clsx(other.className, "px-6 py-3")}
+        scope="col"
+      >
         {other.sortable ? (
           <div
             className="flex select-none items-center"
-            id={other.dataKey}
+            id={other.field}
             onClick={sortRows}
           >
             {truncate(label, 30)}
@@ -154,7 +188,7 @@ export const Taybul = ({
               fill="currentColor"
               viewBox="0 0 320 512"
             >
-              {sort.column === other.dataKey ? (
+              {sort.column === other.field ? (
                 sort.direction === "asc" ? (
                   <path d="M182.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8H288c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z" />
                 ) : (
@@ -172,45 +206,70 @@ export const Taybul = ({
     );
   };
 
-  const cellRenderer = ({ rowData, cellData, columnIndex, ...other }) => {
-    {
-      /* textAlign: `${other.numeric || false ? 'right' : 'left'}`*/
-    }
-    return (
-      <td
-        key={`${columnIndex}-${cellData}`}
-        className={`px-6 py-4 ${other.bold
-          ? "whitespace-nowrap font-bold text-gray-900 dark:text-white"
-          : ""
-          }`}
-      >
-        {/* {isDate(cellData) ? timeTag(cellData) : truncate(cellData, 30)} */}
-        {isUUID(cellData) && other.label.toLowerCase() === "created by" && ('Profile' in rowData) ? (
-          <div className="flex flex-row">
-            {rowData.Profile.avatar_url && (
-              <img
-                className="h-10 w-10 rounded-full"
-                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${rowData.Profile.avatar_url}`}
-                alt={rowData.Profile.full_name || "Profile Image"}
-              />
-            )}
-            <div className="flex items-center pl-3">
-              <div className="text-base font-semibold">
-                {rowData.Profile.full_name}
-              </div>
-              {/* <div className="font-normal text-gray-500">
-                {rowData.Profile.role_id}
-              </div> */}
-            </div>
+  const cellRenderer = ({
+    rowData,
+    cellData,
+    columnIndex,
+    rowIndex,
+    renderCell,
+    ...other
+  }) => {
+    const className = clsx(other.className, "px-3 py-2", {
+      "font-bold text-gray-900 dark:text-white": other.bold,
+    });
+    // px-6 py-4
+    const key = `${Math.random()}-${columnIndex}-${cellData}`;
+
+    let content = renderCell
+      ? renderCell({
+        columnIndex,
+        rowIndex,
+        value: other.valueFormatter
+          ? other.valueFormatter({
+            value: cellData,
+            row: rowData,
+            columnIndex,
+          })
+          : cellData,
+        field: other.field,
+        row: rowData,
+      })
+      : "";
+
+    if (
+      !content &&
+      isUUID(cellData) &&
+      other.label.toLowerCase() === "created by" &&
+      "Profile" in rowData
+    ) {
+      const profile = rowData.Profile;
+      content = (
+        <div className="flex flex-row">
+          {profile.avatar_url && (
+            <img
+              className="h-10 w-10 rounded-full"
+              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}`}
+              alt={profile.full_name || "Profile Image"}
+            />
+          )}
+          <div className="flex items-center pl-3">
+            <div className="text-base">{profile.full_name}</div>
           </div>
-        ) : isDate(cellData) ? (
-          timeTag(cellData)
-        ) : (
-          truncate(cellData, 30)
-        )}
+        </div>
+      );
+    } else if (!content) {
+      content = other.valueFormatter
+        ? other.valueFormatter({ value: cellData, row: rowData, columnIndex })
+        : truncate(cellData, 30);
+    }
+
+    return (
+      <td key={key} className={className}>
+        {content}
       </td>
     );
   };
+
   const tableSelect = ({
     header = false,
     row,
@@ -237,68 +296,135 @@ export const Taybul = ({
       </td>
     );
   };
+
+  // TODO: Fix summary for vertical table
   const tableFooter = () => {
     return (
       <tfoot>
-        <tr className="font-semibold text-gray-900 dark:text-white">
-          {select && <td className="p-4"></td>}
-          {columns.map(({ dataKey, ...other }, index) => {
-            return (
-              <th
-                key={`${index}-${dataKey}`}
-                className={`px-6 py-3 ${other.numeric ? "text-base" : ""}`}
-              >
-                {other.numeric
-                  ? SortedFilteredData.reduce((a, b) => a + b[dataKey], 0)
-                  : "Total"}
-              </th>
-            );
-          })}
+        <tr className="bg-gray-400 font-semibold text-gray-900 dark:bg-gray-700 dark:text-white">
+          {select && !vertical && <td className="p-4"></td>}
+          {!vertical &&
+            columns.map(({ field, ...other }, index) => {
+              return (
+                <th
+                  key={`${index}-${field}`}
+                  className={clsx("px-6 py-3", other.className, {
+                    "test-base": other.numeric,
+                  })}
+                >
+                  {other.numeric
+                    ? SortedFilteredData.reduce((a, b) => a + b[field], 0)
+                    : index === 0
+                      ? "Total"
+                      : ""}
+                </th>
+              );
+            })}
         </tr>
       </tfoot>
     );
   };
 
-  // const tablePagination = () => {
-  //   return (
-  //     <nav className="flex items-center justify-between pt-4" aria-label="Table navigation">
-  //       <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">Showing <span className="font-semibold text-gray-900 dark:text-white">1-{rowsPerPage * 1}</span> of <span className="font-semibold text-gray-900 dark:text-white">{rows.length}</span></span>
-  //       <ul className="inline-flex items-center -space-x-px">
-  //         <li>
-  //           <a href="#" className="block px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-  //             <span className="sr-only">Previous</span>
-  //             <svg className="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-  //           </a>
-  //         </li>
-  //         <li>
-  //           <a href="#" className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
-  //         </li>
-  //         <li>
-  //           <a href="#" className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
-  //         </li>
-  //         <li>
-  //           <a href="#" aria-current="page" className="z-10 px-3 py-2 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">3</a>
-  //         </li>
-  //         <li>
-  //           <a href="#" className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">...</a>
-  //         </li>
-  //         <li>
-  //           <a href="#" className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">100</a>
-  //         </li>
-  //         <li>
-  //           <a href="#" className="block px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
-  //             <span className="sr-only">Next</span>
-  //             <svg className="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-  //           </a>
-  //         </li>
-  //       </ul>
-  //     </nav>
-  //   )
-  // }
+  const tablePagination = () => {
+    return (
+      <nav
+        className="flex items-center justify-between pt-4"
+        aria-label="Table navigation"
+      >
+        <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+          Showing{" "}
+          <span className="font-semibold text-gray-900 dark:text-white">
+            {currentPage}-{rowsPerPage * 1}
+          </span>{" "}
+          of{" "}
+          <span className="font-semibold text-gray-900 dark:text-white">
+            {rows.length || dataRows.length}
+          </span>
+        </span>
+        <ul className="inline-flex items-center -space-x-px text-gray-500 dark:text-gray-400">
+          <li onClick={() => changePage("prev")}>
+            <a
+              href="#"
+              className="ml-0 block rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              <span className="sr-only">Previous</span>
+              <svg
+                className="h-5 w-5"
+                aria-hidden="true"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+            </a>
+          </li>
+          {/* {Array(Math.ceil(dataRows.length / rowsPerPage)).fill('').map((page, index) => {
+            return (
+              <li key={index}>
+                <a
+                  className={`px-3 py-2 leading-tight ${currentPage === index + 1 ? "bg-blue-50 hover:bg-blue-100 hover:text-blue-700 border-blue-300" : "bg-white hover:bg-gray-100 border-gray-300 hover:text-gray-700"} border dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white`}
+                >
+                  {index + 1}
+                </a>
+              </li>
+            )
+          })} */}
+          {currentPage > 1 && (
+            <li onClick={() => changePage("prev")}>
+              <a className="border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+                {currentPage - 1}
+              </a>
+            </li>
+          )}
+          <li>
+            <a className="border border-blue-300 bg-blue-50 px-3 py-2 leading-tight hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-white">
+              {currentPage}
+            </a>
+          </li>
+          {currentPage < Math.ceil(dataRows.length / rowsPerPage) && (
+            <li onClick={() => changePage("next")}>
+              <a className="border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+                {currentPage + 1}
+              </a>
+            </li>
+          )}
+          <li onClick={() => changePage("next")}>
+            <a
+              href="#"
+              className="block rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800  dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              <span className="sr-only">Next</span>
+              <svg
+                className="h-5 w-5"
+                aria-hidden="true"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    );
+  };
 
   return (
     <div
-      className={`relative overflow-x-auto shadow-md sm:rounded-lg ${className}`}
+      className={clsx(
+        "relative overflow-x-auto shadow-md sm:rounded-lg",
+        className
+      )}
     >
       {search && (
         <div className="flex items-center justify-between pb-4">
@@ -330,17 +456,19 @@ export const Taybul = ({
           </div>
         </div>
       )}
-      <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+      <table className="mr-auto w-full table-auto text-left text-sm text-gray-500 dark:text-stone-300">
         {!!caption && (
-          <caption className="bg-white p-5 text-left text-lg font-semibold text-gray-900 dark:bg-gray-800 dark:text-white">
+          <caption className="bg-white p-5 text-left text-lg font-semibold text-gray-900 dark:bg-zinc-800 dark:text-white">
             {caption.title}
-            <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-              {caption.text}
-            </p>
+            {caption.content && (
+              <div className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+                {caption.content}
+              </div>
+            )}
           </caption>
         )}
-        {!headersVertical && (
-          <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+        {!vertical && header && (
+          <thead className="bg-gray-400 text-sm uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-400">
             <tr className="table-row">
               {select && tableSelect({ header: true, row: 0 })}
               {columns.map(({ ...other }, index) => {
@@ -354,141 +482,76 @@ export const Taybul = ({
             </tr>
           </thead>
         )}
-        <tbody>
-          {headersVertical ? (
-            <>
-              {columns.map(({ dataKey, ...other }, index) => {
-                return (
-                  <tr
-                    key={index}
-                    className={`border-b bg-white dark:border-gray-700 dark:bg-gray-800 ${hover
-                      ? "hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-600"
-                      : ""
-                      }`}
-                    onClick={() => onRowClick && onRowClick({ index: index })}
-                  >
-                    {headerRenderer({
+        <tbody className="divide-y divide-gray-400 bg-gray-200 dark:divide-gray-800 dark:bg-zinc-600">
+          {vertical
+            ? columns.map(({ field, ...other }, index) => {
+              return (
+                <tr
+                  key={`row-${index}`}
+                  className={clsx("bg-white dark:bg-zinc-600", {
+                    "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
+                  })}
+                  onClick={() => onRowClick && onRowClick({ index: index })}
+                >
+                  {header &&
+                    headerRenderer({
                       label: other.label,
                       columnIndex: index,
                       ...other,
                     })}
-                    {SortedFilteredData.map((datarow) => {
-                      return cellRenderer({
-                        rowData: datarow,
-                        cellData: datarow[dataKey],
-                        columnIndex: index,
-                        ...other,
-                      });
-                    })}
-                  </tr>
-                );
-              })}
-            </>
-          ) : (
+                  {SortedFilteredData.map((datarow, rowIndex) => {
+                    return cellRenderer({
+                      rowData: datarow,
+                      cellData: datarow[field],
+                      columnIndex: index,
+                      rowIndex,
+                      renderCell: other.renderCell,
+                      field,
+                      ...other,
+                    });
+                  })}
+                </tr>
+              );
+            })
+            : dataRows &&
             SortedFilteredData.map((datarow, i) => {
               return (
                 <tr
-                  key={i}
-                  className={`border-b bg-white dark:border-gray-700 dark:bg-slate-800 ${hover
-                    ? "hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-600"
-                    : ""
-                    }`}
+                  key={`row-${i}`}
+                  className={clsx({
+                    "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
+                  })}
                   onClick={() => onRowClick && onRowClick({ index: i })}
                 >
                   {select && tableSelect({ row: i })}
-                  {columns.map(({ dataKey, ...other }, index) => {
+                  {columns.map(({ field, ...other }, index) => {
                     return cellRenderer({
                       rowData: datarow,
-                      cellData: datarow[dataKey],
+                      cellData: datarow[field],
                       columnIndex: index,
+                      rowIndex: i,
+                      renderCell: other.renderCell,
+                      field,
                       ...other,
                     });
                   })}
                   {renderActions && <td>{renderActions(datarow)}</td>}
                 </tr>
               );
-            })
+            })}
+          {(dataRows === null || dataRows.length === 0) && (
+            <tr className="w-full">
+              <td className="p-4 text-center" colSpan={100}>
+                <span className="px-3 py-2 text-gray-500 dark:text-gray-400 ">
+                  No data found
+                </span>
+              </td>
+            </tr>
           )}
         </tbody>
         {summary && tableFooter()}
       </table>
-      {/* {rowsPerPage && tablePagination()} */}
-    </div>
-  );
-};
-
-const Table = ({
-  data,
-  cols,
-  renderCell,
-  renderActions,
-  tableOptions = { header: true },
-  className,
-}: ITableProps) => {
-  if (!data || data.length < 1) return null;
-
-  let keys = cols || Object.keys(data[0]);
-
-  // https://codesandbox.io/s/3rso2u
-  const sort = (key: string) => {
-    data = data.sort(dynamicSort(key));
-    // tableData = tableData.sort(dynamicSort(key));
-  };
-  // TODO: Create filtering and sorting options for table
-  return (
-    <div className={`flex ${className && className}`}>
-      <div className="dark:border-pea-400 relative my-4 table w-full table-auto rounded-xl border p-3 shadow">
-        {tableOptions && tableOptions.header && (
-          <div className="table-header-group">
-            {keys.map((key) => (
-              <div
-                key={`${key}${Math.random()}`}
-                onClick={() => sort(key)}
-                className="table-cell p-2 text-xs text-[#888da9]"
-              // /*aria-[sort=ascending]:bg-red-500 aria-[sort=descending]:bg-red-400*/
-              >
-                {truncate(capitalize(key))}
-              </div>
-            ))}
-          </div>
-        )}
-        {data.map((row) => (
-          <div key={Math.random() * Math.random()} className="table-row-group">
-            {keys.map((value, i) => (
-              <div key={`table-item-${i}`} className="table-cell">
-                {value == "actions" ? (
-                  <div
-                    key={value}
-                    className="p-2 text-xs text-black dark:text-stone-200"
-                  >
-                    {renderActions && renderActions(row)}
-                  </div>
-                ) : (
-                  <>
-                    {renderCell ? (
-                      <div
-                        key={Math.random()}
-                        className="p-2 text-xs text-black dark:text-stone-200"
-                      >
-                        {renderCell({ id: value, amount: row[value] })}
-                      </div>
-                    ) : (
-                      <div
-                        key={Math.random()}
-                        className="p-2 text-xs text-black dark:text-stone-200"
-                      >
-                        {isDate(row[value])
-                          ? timeTag(row[value])
-                          : truncate(row[value])}
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
+      {pagination && tablePagination()}
     </div>
   );
 };

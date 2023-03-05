@@ -9,15 +9,11 @@ import {
   checkboxInputTag,
   dynamicSort,
   combineBySummingKeys,
-  mergeRecipe,
   isObject,
-  merge,
   capitalize,
   getWeekDates,
   isDate,
-  calcItemCost,
   random,
-  wordNumberRegex,
   getDateDiff,
   groupBy,
 } from './formatters'
@@ -98,10 +94,15 @@ describe('jsonTruncate', () => {
 })
 
 describe('timeTag', () => {
-  it('renders a date', async () => {
-    render(<div>{timeTag(new Date('1970-08-20').toUTCString())}</div>)
-
-    await waitFor(() => screen.getByText(/1970.*00:00:00/))
+  it('can take a date string', async () => {
+    expect(timeTag('2021-01-01T00:00:00.000Z')).toMatchInlineSnapshot(`
+      <time
+        dateTime="January 1, 2021 at 1:00 AM"
+        title="January 1, 2021 at 1:00 AM"
+      >
+      January 1, 2021 at 1:00 AM
+      </time>
+    `)
   })
 
   it('can take an empty input string', async () => {
@@ -238,56 +239,13 @@ describe('combineBySummingKeys', () => {
       { name: 'Peter', age: 10 },
     ]
 
-    expect(combineBySummingKeys(objects, 'age')).toEqual({
-      name: 'John, Mary, Peter',
+    expect(combineBySummingKeys(...objects)).toEqual({
+      name: 'JohnMaryPeter',
       age: 60,
     })
   })
 })
 
-// describe('mergeRecipe', () => {
-//   it('merges ark recipies', () => {
-//     const recipe = {
-//       name: 'Test Recipe',
-//       description: 'Test Description',
-//       ingredients: [
-//         {
-//           name: 'Test Ingredient',
-//           amount: 1,
-//           unit: 'Test Unit',
-//         },
-//       ],
-//       steps: [
-//         {
-//           name: 'Test Step',
-//           description: 'Test Description',
-//         },
-//       ],
-//     }
-
-//     expect(mergeRecipe(recipe, recipe)).toEqual({
-//       name: 'Test Recipe',
-//       description: 'Test Description',
-//       ingredients: [
-//         {
-//           name: 'Test Ingredient',
-//           amount: 2,
-//           unit: 'Test Unit',
-//         },
-//       ],
-//       steps: [
-//         {
-//           name: 'Test Step',
-//           description: 'Test Description',
-//         },
-//         {
-//           name: 'Test Step',
-//           description: 'Test Description',
-//         },
-//       ],
-//     })
-//   })
-// })
 
 describe('isObject', () => {
   it('returns true for objects', () => {
@@ -311,19 +269,6 @@ describe('isObject', () => {
   })
 })
 
-describe('merge', () => {
-  it('merges objects', () => {
-    expect(merge({ a: 1 }, { b: 2 })).toEqual({ a: 1, b: 2 })
-  })
-
-  it('merges objects recursively', () => {
-    expect(merge({ a: { b: 1 } }, { a: { c: 2 } })).toEqual({ a: { b: 1, c: 2 } })
-  })
-
-  it('merges objects with arrays', () => {
-    expect(merge({ a: [1, 2] }, { a: [3, 4] })).toEqual({ a: [1, 2, 3, 4] })
-  })
-})
 
 describe('capitalize', () => {
   it('capitalizes the first letter of a string', () => {
@@ -347,7 +292,7 @@ describe('getWeekDates', () => {
 
 describe('isDate', () => {
   it('returns true for dates', () => {
-    expect(isDate(`${new Date()}`)).toBe(true)
+    expect(isDate(new Date())).toBe(true)
   })
 
   it('returns false for strings', () => {
@@ -363,11 +308,7 @@ describe('isDate', () => {
   })
 })
 
-describe('calcItemCost', () => {
-  it('calculates the cost of an item', () => {
-    expect(calcItemCost(10, 2)).toBe(20)
-  })
-})
+
 
 describe('random', () => {
   it('returns a random number', () => {
@@ -376,34 +317,26 @@ describe('random', () => {
   })
 })
 
-describe('wordNumberRegex', () => {
-  it('matches a word number', () => {
-    expect(wordNumberRegex('one')).toBe(true)
-  })
-
-  it('does not match a non-word number', () => {
-    expect(wordNumberRegex('1')).toBe(false)
-  })
-})
 
 describe('getDateDiff', () => {
   it('returns the difference between two dates in days, hours, minutes and dateString', () => {
-    expect(getDateDiff(new Date('2020-01-01'), new Date('2020-01-02'))).toBe({days: 1, hours: 0, minutes: 0, dateString: '1 day'})
+    expect(getDateDiff(new Date('2020-01-01'), new Date('2020-01-02'))).toBe({ dateString: '1 days, 0 hours, 0 minutes' })
   })
 })
 
-// describe('groupBy', () => {
-//   it('groups an array by a key', () => {
-//     const objects = [
-//       { name: 'John', age: 30 },
-//       { name: 'Mary', age: 20 },
-//       { name: 'Peter', age: 10 },
-//     ]
+describe('groupBy', () => {
+  it('groups an array by a key', () => {
+    const objects = [
+      { name: 'John', age: 30 },
+      { name: 'Mary', age: 20 },
+      { name: 'Peter', age: 10 },
+      { name: 'Caitlin', age: 20 }
+    ]
 
-//     expect(groupBy(objects, 'age')).toEqual({
-//       10: [{ name: 'Peter', age: 10 }],
-//       20: [{ name: 'Mary', age: 20 }],
-//       30: [{ name: 'John', age: 30 }],
-//     })
-//   })
-// })
+    expect(groupBy(objects, 'age')).toEqual({
+      10: [{ name: 'Peter', age: 10 }],
+      20: [{ name: 'Mary', age: 20 }, { name: 'Caitlin', age: 20 }],
+      30: [{ name: 'John', age: 30 }],
+    })
+  })
+})

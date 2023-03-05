@@ -7,12 +7,13 @@ export const schema = gql`
     longitude: Float!
     image: String
     created_at: DateTime
-    Map: String!
+    Map: BigInt!
     estimatedForPlayers: String
     defenseImages: String
     created_by: String
     turretsetup_image: String
     updated_at: DateTime
+    Map_Basespot_MapToMap: Map!
     TimelineBasespot: [TimelineBasespot]!
   }
 
@@ -34,7 +35,7 @@ export const schema = gql`
     longitude: Float!
     image: String
     created_at: DateTime
-    Map: String!
+    Map: BigInt!
     estimatedForPlayers: String
     defenseImages: String
     created_by: String
@@ -49,7 +50,7 @@ export const schema = gql`
     longitude: Float
     image: String
     created_at: DateTime
-    Map: String
+    Map: BigInt
     estimatedForPlayers: String
     defenseImages: String
     created_by: String

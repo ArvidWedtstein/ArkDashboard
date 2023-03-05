@@ -27,7 +27,18 @@ const Avatar = ({
     }
   }, [url]);
 
-  async function downloadImage(path) {
+  const downloadImage = async (path) => {
+    try {
+      const { data, error } = await supabase.storage
+        .from(storage)
+        .download(path);
+      if (error) throw error;
+      if (data) setAvatarUrl(URL.createObjectURL(data));
+    } catch (error) {
+      console.log("Error downloading image: ", error.message);
+    }
+  };
+  async function downloadImage2(path) {
     try {
       const { data, error } = await supabase.storage
         .from(storage)
@@ -38,41 +49,33 @@ const Avatar = ({
       if (data) {
         const url = URL.createObjectURL(data);
         setAvatarUrl(url);
-        console.log("Avatar URL: ", url)
       }
     } catch (error) {
       console.log("Error downloading image: ", error.message);
     }
   }
 
-  async function uploadAvatar(event) {
+  const uploadAvatar = async (event) => {
     try {
       setUploading(true);
-
-      if (!event.target.files || event.target.files.length === 0) {
+      if (!event.target.files || event.target.files.length === 0)
         throw new Error("You must select an image to upload.");
-      }
 
       const file = event.target.files[0];
-      const fileExt = file.name.split(".").pop();
+      const [, fileExt] = file.name.split(".");
       const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `${fileName}`;
-
-      let { error: uploadError } = await supabase.storage
+      const filePath = fileName;
+      const { error: uploadError } = await supabase.storage
         .from(storage)
         .upload(filePath, file);
-
-      if (uploadError) {
-        throw uploadError;
-      }
-
-      onUpload(filePath);
+      if (uploadError) throw uploadError;
+      onUpload && onUpload(filePath);
     } catch (error) {
       alert(error.message);
     } finally {
       setUploading(false);
     }
-  }
+  };
 
   return (
     <div
@@ -110,7 +113,11 @@ const Avatar = ({
           <div
             className="h-full w-full rounded-full bg-cover bg-center bg-no-repeat"
             id="imagePreview"
-            style={{ backgroundImage: `url(${avatarUrl})`, height: size, width: size }}
+            style={{
+              backgroundImage: `url(${avatarUrl})`,
+              height: size,
+              width: size,
+            }}
           ></div>
         ) : (
           <svg

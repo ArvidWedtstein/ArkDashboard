@@ -34,7 +34,7 @@ const Slideshow = ({ slides, controls = true }: ISlideshowProps) => {
 
   return (
     <div className="my-0 mx-auto overflow-hidden max-w-[500px] relative">
-      <div className="whitespace-nowrap transition ease-in-out duration-1000"
+      <div className="whitespace-nowrap transition-transform duration-500 ease-in-out"
         style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}
       >
         {slides.map((slide, indegs) => (
