@@ -5,7 +5,6 @@ import type {
 } from "types/graphql";
 
 import { db } from "src/lib/db";
-
 const POSTS_PER_PAGE = 6;
 export const basespotPage = ({ page = 1 }: { page: number }) => {
   const offset = (page - 1) * POSTS_PER_PAGE;
@@ -54,6 +53,11 @@ export const deleteBasespot: MutationResolvers["deleteBasespot"] = ({ id }) => {
 };
 
 export const Basespot: BasespotRelationResolvers = {
+  Map_Basespot_MapToMap: (_obj, { root }) => {
+    return db.basespot
+      .findUnique({ where: { id: root?.id } })
+      .Map_Basespot_MapToMap();
+  },
   TimelineBasespot: (_obj, { root }) => {
     return db.basespot
       .findUnique({ where: { id: root?.id } })

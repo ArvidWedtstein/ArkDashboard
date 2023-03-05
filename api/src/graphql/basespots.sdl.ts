@@ -7,22 +7,22 @@ export const schema = gql`
     longitude: Float!
     image: String
     created_at: DateTime
-    Map: String!
+    Map: BigInt!
     estimatedForPlayers: String
     defenseImages: String
     created_by: String
     turretsetup_image: String
     updated_at: DateTime
+    Map_Basespot_MapToMap: Map!
     TimelineBasespot: [TimelineBasespot]!
   }
-
   type BasespotPage {
     basespots: [Basespot!]!
     count: Int!
   }
 
   type Query {
-    basespots: [Basespot!]! @skipAuth
+    basespots: [Basespot!]! @requireAuth
     basespot(id: BigInt!): Basespot @requireAuth
     basespotPage(page: Int): BasespotPage @skipAuth
   }
@@ -34,7 +34,7 @@ export const schema = gql`
     longitude: Float!
     image: String
     created_at: DateTime
-    Map: String!
+    Map: BigInt!
     estimatedForPlayers: String
     defenseImages: String
     created_by: String
@@ -49,7 +49,7 @@ export const schema = gql`
     longitude: Float
     image: String
     created_at: DateTime
-    Map: String
+    Map: BigInt
     estimatedForPlayers: String
     defenseImages: String
     created_by: String

@@ -8,7 +8,7 @@ export const schema = gql`
     endDate: DateTime
     basespot_id: BigInt
     tribeName: String!
-    map: String
+    map: BigInt
     server: String
     region: String
     season: String
@@ -20,6 +20,7 @@ export const schema = gql`
     raidcomment: String
     basespot: Basespot
     Profile: Profile
+    Map: Map
     timeline: Timeline!
   }
 
@@ -36,7 +37,7 @@ export const schema = gql`
     endDate: DateTime
     basespot_id: BigInt
     tribeName: String!
-    map: String
+    map: BigInt
     server: String
     region: String
     season: String
@@ -56,7 +57,7 @@ export const schema = gql`
     endDate: DateTime
     basespot_id: BigInt
     tribeName: String
-    map: String
+    map: BigInt
     server: String
     region: String
     season: String

@@ -17,7 +17,7 @@ model TimelineBasespot {
   endDate     DateTime? @db.Timestamptz(6)
   basespot_id BigInt?
   tribeName   String
-  map         String?
+  map         BigInt?
   server      String?
   region      String?
   season      String?
@@ -29,24 +29,26 @@ model TimelineBasespot {
   raidcomment String?
   basespot    Basespot? @relation(fields: [basespot_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Profile     Profile?  @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Map         Map?      @relation(fields: [map], references: [id], onDelete: NoAction, onUpdate: NoAction)
   timeline    Timeline  @relation(fields: [timeline_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Basespot {
-  id                  BigInt             @id(map: "basespot_pkey") @default(autoincrement())
-  name                String
-  description         String
-  latitude            Float
-  longitude           Float
-  image               String?
-  created_at          DateTime?          @default(now()) @db.Timestamptz(6)
-  Map                 String             @default("TheIsland")
-  estimatedForPlayers String?            @default("0")
-  defenseImages       String?
-  created_by          String?            @db.Uuid
-  turretsetup_image   String?
-  updated_at          DateTime?          @db.Timestamptz(6)
-  TimelineBasespot    TimelineBasespot[]
+  id                    BigInt             @id(map: "basespot_pkey") @default(autoincrement())
+  name                  String
+  description           String
+  latitude              Float
+  longitude             Float
+  image                 String?
+  created_at            DateTime?          @default(now()) @db.Timestamptz(6)
+  Map                   BigInt
+  estimatedForPlayers   String?            @default("0")
+  defenseImages         String?
+  created_by            String?            @db.Uuid
+  turretsetup_image     String?
+  updated_at            DateTime?          @db.Timestamptz(6)
+  Map_Basespot_MapToMap Map                @relation("Basespot_MapToMap", fields: [Map], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  TimelineBasespot      TimelineBasespot[]
 }
 
 model Profile {
@@ -68,7 +70,7 @@ model Profile {
 }
 
 model Role {
-  id                            String       @id(map: "roles_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                            String       @id(map: "roles_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   name                          String
   createdBy                     String?      @default(dbgenerated("auth.uid()")) @db.Uuid
   permissions                   permission[]
@@ -76,7 +78,7 @@ model Role {
 }
 
 model Timeline {
-  id               String             @id(map: "timeline_pkey") @unique(map: "timeline_id_key") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id               String             @id(map: "timeline_pkey") @unique(map: "timeline_id_key") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   createdAt        DateTime?          @default(now()) @db.Timestamptz(6)
   updatedAt        DateTime?          @db.Timestamptz(6)
   createdBy        String             @db.Uuid
@@ -96,7 +98,7 @@ model Tribe {
 }
 
 model Message {
-  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id         String    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   profile_id String    @default(dbgenerated("auth.uid()")) @db.Uuid
   content    String
   created_at DateTime? @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
@@ -104,7 +106,7 @@ model Message {
 }
 
 model Dino {
-  id                             String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                             String    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   created_at                     DateTime? @default(now()) @db.Timestamptz(6)
   name                           String
   synonyms                       String[]
@@ -177,26 +179,28 @@ model Item {
 }
 
 model Map {
-  id                BigInt    @id @default(autoincrement())
-  created_at        DateTime? @default(now()) @db.Timestamptz(6)
-  name              String?
-  loot_crates       Json?
-  oil_veins         Json?
-  water_veins       Json?
-  wyvern_nests      Json?
-  ice_wyvern_nests  Json?
-  gas_veins         Json?
-  deinonychus_nests Json?
-  charge_nodes      Json?
-  plant_z_nodes     Json?
-  drake_nests       Json?
-  glitches          Json?
-  magmasaur_nests   Json?
-  poison_trees      Json?
-  mutagen_bulbs     Json?
-  carniflora        Json?
-  notes             Json?
-  img               String?
+  id                         BigInt             @id @default(autoincrement())
+  created_at                 DateTime?          @default(now()) @db.Timestamptz(6)
+  name                       String?
+  loot_crates                Json?
+  oil_veins                  Json?
+  water_veins                Json?
+  wyvern_nests               Json?
+  ice_wyvern_nests           Json?
+  gas_veins                  Json?
+  deinonychus_nests          Json?
+  charge_nodes               Json?
+  plant_z_nodes              Json?
+  drake_nests                Json?
+  glitches                   Json?
+  magmasaur_nests            Json?
+  poison_trees               Json?
+  mutagen_bulbs              Json?
+  carniflora                 Json?
+  notes                      Json?
+  img                        String?
+  Basespot_Basespot_MapToMap Basespot[]         @relation("Basespot_MapToMap")
+  TimelineBasespot           TimelineBasespot[]
 }
 
 enum permission {
