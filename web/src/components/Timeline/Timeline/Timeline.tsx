@@ -50,8 +50,7 @@ const Timeline = ({ timeline }: Props) => {
           created_by,
           raided_by,
           raidcomment,
-          images,
-          basespot
+          images
         `
         )
         // .eq("created_by", "7a2878d1-4f61-456d-bcb6-edc707383ea8")
@@ -62,6 +61,7 @@ const Timeline = ({ timeline }: Props) => {
         throw error;
       }
       setBasespots(data);
+      console.log(data);
       // return <>{basespots && <TimelineList events={basespots} />}</>;
     } catch (error) {
       toast.error(error.message);
