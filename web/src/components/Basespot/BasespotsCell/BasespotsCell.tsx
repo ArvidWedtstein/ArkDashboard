@@ -24,7 +24,7 @@ import Pagination from "src/components/Pagination/Pagination";
 //       updated_at
 //     }
 //   }
-// `
+// `;
 export const QUERY = gql`
   query FindBasespots($page: Int) {
     basespotPage(page: $page) {
@@ -102,10 +102,12 @@ export const Failure = ({ error }: CellFailureProps) => {
 };
 
 // export const Success = ({ basespots }: CellSuccessProps<FindBasespots>) => {
-//   return <Basespots basespots={basespots} />
-// }
+//   console.log(basespots);
+//   return <Basespots basespots={basespots} />;
+// };
 
 export const Success = ({ basespotPage }: CellSuccessProps<FindBasespots>) => {
+  console.log(basespotPage);
   return (
     <>
       {basespotPage.count > 0 ? (
