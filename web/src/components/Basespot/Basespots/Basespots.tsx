@@ -90,19 +90,23 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
       </div>
       <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {basespots
-          // .filter((spot) =>
-          //   spot.Map.toLowerCase().includes(currentMap.toLowerCase())
-          // )
+          .filter((spot) =>
+            spot.Map_Basespot_MapToMap.name
+              .toLowerCase()
+              .includes(currentMap.toLowerCase())
+          )
           .map((basespot, i) => (
             <ArkCard
               key={`${basespot.id}-${i}`}
               title={basespot.name}
-              // subtitle={basespot.Map.split(/(?=[A-Z])/).join(" ")}
+              subtitle={basespot.Map_Basespot_MapToMap.name
+                .split(/(?=[A-Z])/)
+                .join(" ")}
               content={basespot.description}
               ring={`${basespot.estimatedForPlayers} players`}
               image={{
-                src: mapImages[basespot.Map],
-                // alt: basespot.Map,
+                src: mapImages[basespot.Map_Basespot_MapToMap.name],
+                alt: basespot.Map_Basespot_MapToMap.name,
                 position: `${random(0, 100)}% ${random(25, 75)}%`,
               }}
               button={{

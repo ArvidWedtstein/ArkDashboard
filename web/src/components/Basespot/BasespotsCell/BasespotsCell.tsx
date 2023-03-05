@@ -39,11 +39,15 @@ export const QUERY = gql`
         updated_at
         Map
         estimatedForPlayers
+        Map_Basespot_MapToMap {
+          name
+        }
       }
       count
     }
   }
 `;
+
 export const beforeQuery = ({ page }) => {
   page = parseInt(page) ? parseInt(page, 10) : 1;
 

@@ -16,6 +16,7 @@ export const schema = gql`
     Map_Basespot_MapToMap: Map!
     TimelineBasespot: [TimelineBasespot]!
   }
+
   type BasespotPage {
     basespots: [Basespot!]!
     count: Int!
