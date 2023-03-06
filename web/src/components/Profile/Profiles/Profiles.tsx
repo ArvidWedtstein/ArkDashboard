@@ -63,7 +63,7 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
               <th>Status</th>
               <th>Role id</th>
               <th>Created at</th>
-              <th>&nbsp;</th>
+              {/* <th>&nbsp;</th> */}
             </tr>
           </thead>
           <tbody>
@@ -80,7 +80,7 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
                 <td>{formatEnum(profile.status)}</td>
                 <td>{truncate(profile.role_id)}</td>
                 <td>{timeTag(profile.created_at)}</td>
-                <td>
+                {/* <td>
                   <nav className="rw-table-actions">
                     <Link
                       to={routes.profile({ id: profile.id })}
@@ -105,7 +105,7 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
                       Delete
                     </button>
                   </nav>
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>

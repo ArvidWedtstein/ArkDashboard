@@ -45,9 +45,14 @@ export const schema = gql`
     x_variant: Boolean
   }
 
+  type DinosPage {
+    dinos: [Dino!]!
+    count: Int!
+  }
   type Query {
-    dinos: [Dino!]! @requireAuth
-    dino(id: String!): Dino @requireAuth
+    dinos: [Dino!]! @skipAuth
+    dino(id: String!): Dino @skipAuth
+    dinosPage(page: Int): DinosPage @skipAuth
   }
 
   input CreateDinoInput {
@@ -145,4 +150,4 @@ export const schema = gql`
     updateDino(id: String!, input: UpdateDinoInput!): Dino! @requireAuth
     deleteDino(id: String!): Dino! @requireAuth
   }
-`
+`;

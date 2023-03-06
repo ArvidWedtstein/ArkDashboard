@@ -1,4 +1,5 @@
 import { Link, routes, useLocation, useParams } from "@redwoodjs/router";
+import { memo } from "react";
 import { singularize } from "src/lib/formatters";
 const Icon = (icon: string) => {
   const icons = {
@@ -64,10 +65,16 @@ const Icon = (icon: string) => {
         <path d="M630.4 236.8l-96-72c-10.62-7.969-25.72-5.797-33.59 4.797c-7.969 10.61-5.812 25.66 4.781 33.61L543.1 232H376V123.3C399.4 113.8 416 90.84 416 64c0-35.34-28.65-64-64-64C316.7 0 288 28.66 288 64c0 26.84 16.56 49.75 40 59.25V232h-176V123.3C175.4 113.8 192 90.84 192 64c0-35.34-28.65-64-64-64C92.65 0 64 28.66 64 64c0 26.84 16.56 49.75 40 59.25V232h-80C10.75 232 0 242.8 0 256s10.75 24 24 24h176v108.7C176.6 398.3 160 421.2 160 448c0 35.34 28.65 64 64 64c35.35 0 64-28.66 64-64c0-26.84-16.56-49.75-40-59.25V280h295.1l-38.4 28.8c-10.59 7.953-12.75 23-4.781 33.61C505.5 348.7 512.7 352 520 352c5 0 10.06-1.562 14.38-4.797l96-72C636.4 270.7 640 263.5 640 256S636.4 241.3 630.4 236.8zM352 40c13.23 0 24 10.77 24 24c0 13.23-10.77 24-24 24c-13.23 0-24-10.77-24-24C328 50.77 338.8 40 352 40zM128 40c13.23 0 24 10.77 24 24c0 13.23-10.77 24-24 24C114.8 88 104 77.23 104 64C104 50.77 114.8 40 128 40zM224 472c-13.23 0-24-10.77-24-24c0-13.23 10.77-24 24-24c13.23 0 24 10.77 24 24C248 461.2 237.2 472 224 472z" />
       </svg>
     ),
+    dinos: (
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 fill-current stroke-current" viewBox="0 0 640 512">
+        <path d="M528 248c-8.875 0-16 7.125-16 16s7.125 16 16 16S544 272.9 544 264S536.9 248 528 248zM619 179l-47.88-17.5C524.4 144.4 523.5 144 513.3 144C484.9 144 460 162.3 451.5 188.4l-1.25 4.5C395 199.6 352 246.9 352 304v72C352 398 333.1 416 312 416c-22 0-40-18-40-40v-240C272 61 211 0 136 0S0 61 0 136v223.5c0 43.63 5.375 84.5 17 128.6C20.75 502.3 33.5 512 48 512s27.25-9.75 31-23.88C90.63 444 96 403.1 96 359.5V136C96 114 113.1 96 136 96C157.1 96 176 114 176 136v240C176 451 237 512 312 512S448 451 448 376V304c0-4.125 1.625-7.875 4.125-10.75C461.6 318.9 485.8 336 512 336c11.38 0 12.5-.375 59.13-17.5L619 301C631.6 296.4 640 284.5 640 271.2V209C640 195.6 631.6 183.6 619 179zM608 271C520 303.1 519.3 304 513.3 304H512c-13.38 0-25.75-9.125-30-22.25L474.4 256H464C437.5 256 416 277.5 416 304v72C416 433.4 369.4 480 312 480S208 433.4 208 376v-240C208 96.25 175.8 64 136 64S64 96.25 64 136v223.5C64 401.5 58.63 439.6 48 480C37.38 439.6 32 401.5 32 359.5V136C32 78.63 78.63 32 136 32S240 78.63 240 136v240C240 415.8 272.3 448 312 448S384 415.8 384 376V304C384 259.9 419.9 224 464 224h10.38l7.625-25.75C486.3 185.1 498.6 176 512 176h1.25C519.3 176 520 176.9 608 209V271zM528 232c8.875 0 16-7.125 16-16s-7.125-16-16-16S512 207.1 512 216S519.1 232 528 232z" />
+      </svg>
+    )
   };
   return icons[icon.toLowerCase()] || null;
 };
-const Sidebar = () => {
+
+const Sidebar = memo(({ }) => {
   const { pathname } = useLocation();
   const navigation = [
     { name: "Home", href: routes.home(), color: "bg-pea-500" },
@@ -84,10 +91,11 @@ const Sidebar = () => {
     { name: "GTW", href: routes.gtw(), color: "bg-lime-500" },
     { name: "Tribes", href: routes.tribes(), color: "bg-emerald-500" },
     { name: "Story", href: routes.timelines(), color: "bg-sky-400" },
+    { name: "Dinos", href: routes.dinos(), color: "bg-green-600" },
   ];
 
   return (
-    <div className="">
+    <nav className="">
       {/* <div className="border border-[#60728F] bg-[#0D2836] p-3 text-[#97FBFF]">
         <div className="flex flex-row items-center justify-between rounded-2xl px-10 py-2 sm:flex-col sm:justify-center sm:py-10 sm:px-2">
           {navigation.map((item) => (
@@ -135,18 +143,18 @@ const Sidebar = () => {
           <Link
             key={item.name}
             to={item.href}
-            className={`${
-              singularize(item.href.split("?")[0]) === singularize(pathname)
-                ? `text-white ${item.color}`
-                : "bg-[#1f1c2ecc] text-[#dddddd] hover:bg-[#c3cff4] dark:bg-[#c3cff433] dark:text-[#ffffffcc] dark:hover:bg-[#c3cff41a]"
-            } mx-2 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl outline-none duration-200 hover:rounded-full hover:text-white sm:my-4`}
+            title={item.name}
+            className={`${singularize(item.href.split("?")[0]) === singularize(pathname)
+              ? `text-white ${item.color}`
+              : "bg-[#1f1c2ecc] text-[#dddddd] hover:bg-[#c3cff4] dark:bg-[#c3cff433] dark:text-[#ffffffcc] dark:hover:bg-[#c3cff41a]"
+              } mx-2 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl outline-none duration-200 hover:rounded-full hover:text-white sm:my-4`}
           >
             {Icon(item.name)}
           </Link>
         ))}
       </div>
-    </div>
+    </nav>
   );
-};
+});
 
 export default Sidebar;

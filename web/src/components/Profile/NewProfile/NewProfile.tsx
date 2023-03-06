@@ -31,7 +31,7 @@ const NewProfile = () => {
   const onSave = (input: CreateProfileInput) => {
     createProfile({ variables: { input } })
   }
-
+  navigate(routes.profiles())
   return (
     <div className="rw-segment">
       <header className="rw-segment-header">

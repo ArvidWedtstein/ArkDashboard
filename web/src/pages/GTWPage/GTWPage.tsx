@@ -53,11 +53,11 @@ const getWord = (word: string) => {
   })
 }
 
-interface BasespotFormProps {
+interface GTWPageProps {
   error: RWGqlError
   loading: boolean
 }
-const GtwPage = (props: BasespotFormProps) => {
+const GtwPage = (props: GTWPageProps) => {
   const [word, setWord] = useState('')
   const handlechange = (e) => {
     setWord(e.target.value)

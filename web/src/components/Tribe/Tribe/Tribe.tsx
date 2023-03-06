@@ -63,7 +63,7 @@ const Tribe = ({ tribe }: Props) => {
               <td>{timeTag(tribe.updated_at)}</td>
             </tr><tr>
               <th>Created by</th>
-              <td>{tribe.createdBy}</td>
+              <td>{tribe.Profile.full_name}</td>
             </tr><tr>
               <th>Updated by</th>
               <td>{tribe.updatedBy}</td>

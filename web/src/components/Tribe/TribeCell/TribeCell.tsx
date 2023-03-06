@@ -14,6 +14,10 @@ export const QUERY = gql`
       updated_at
       createdBy
       updatedBy
+      Profile {
+        full_name
+        avatar_url
+      }
     }
   }
 `
