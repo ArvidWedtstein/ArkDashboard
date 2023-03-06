@@ -51,6 +51,13 @@ const Dino = ({ dino }: Props) => {
     let timeElapsed = maturation * parseInt(dino.maturation_time) * 1;
     return timeElapsed / 100;
   }, [maturation, setMaturation])
+  const multipliers = {
+    hatch: 1,
+    baby: 1,
+    consumption: 1,
+    taming: 1,
+    mature: 1
+  }
   return (
     <div className="container mx-auto">
       <section className="grid grid-cols-1 md:grid-cols-2">
@@ -81,17 +88,19 @@ const Dino = ({ dino }: Props) => {
           </div> */}
           {dino.immobilized_by && dino.immobilized_by.length > 0 && (
             <div className="mr-4 mb-4 flex flex-row space-x-1">
-
-
               <strong>Immobilized By:</strong>
 
               {dino.immobilized_by.map((w) => (
-                <img
-                  className="w-5"
-                  src={`https://arkids.net/image/item/120/${w
-                    .replaceAll(" ", "-")
-                    .replace("plant-species-y", "plant-species-y-trap")}.png`}
-                />
+                <Link to={routes.item({ id: "1" })}>
+                  <img
+                    className="w-8"
+                    title={w}
+                    alt={w}
+                    src={`https://arkids.net/image/item/120/${w
+                      .replaceAll(" ", "-")
+                      .replace("plant-species-y", "plant-species-y-trap")}.png`}
+                  />
+                </Link>
               ))}
             </div>
           )}
@@ -100,10 +109,14 @@ const Dino = ({ dino }: Props) => {
               <strong>Can Destroy:</strong>
 
               {dino.can_destroy.map((w) => (
-                <img
-                  className="w-6"
-                  src={`https://arkids.net/image/item/120/${walls[w]}-wall.png`}
-                />
+                <Link to={routes.item({ id: "1" })}>
+                  <img
+                    className="w-8"
+                    title={walls[w]}
+                    alt={walls[w]}
+                    src={`https://arkids.net/image/item/120/${walls[w]}-wall.png`}
+                  />
+                </Link>
               ))}
             </div>
           )}
@@ -139,15 +152,15 @@ const Dino = ({ dino }: Props) => {
       {(dino.maturation_time && dino.incubation_time) && (
         <section className="my-3 rounded-md p-4 text-stone-600 dark:text-white">
           <Form className="flex my-3 mx-auto justify-center">
-            <NumberField name="matPerc" id="matPerc" className="text-right rw-input rounded-none rounded-l-lg" placeholder="Maturation Percent" min={0} max={100} onInput={(event) => {
+            <NumberField name="matPerc" id="matPerc" className="w-20 rw-input rounded-none rounded-l-lg" placeholder="Maturation Percent" min={0} max={100} onInput={(event) => {
               setMaturation(parseInt(event.target.value))
             }} />
             <label htmlFor="matPerc" className="rw-input rounded-none rounded-r-lg">%</label>
           </Form>
           <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
             <li className={clsx("flex items-center space-x-2.5", {
-              "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500": calcMaturationPercent() >= dino.incubation_time / 1,
-              "text-gray-500 dark:text-gray-400 [&>*]:border-gray-500 [&>*]:dark:border-gray-400": calcMaturationPercent() < dino.incubation_time / 1,
+              "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500": calcMaturationPercent() >= dino.incubation_time / multipliers.hatch,
+              "text-gray-500 dark:text-gray-400 [&>*]:border-gray-500 [&>*]:dark:border-gray-400": calcMaturationPercent() < dino.incubation_time / multipliers.hatch,
             })}>
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
                 1
@@ -157,9 +170,8 @@ const Dino = ({ dino }: Props) => {
                   Incubation
                 </h3>
                 <p className="text-sm">
-                  {timeFormatL(dino.incubation_time / 1)}
+                  {timeFormatL(dino.incubation_time / multipliers.hatch)}
                 </p>
-                {/* Hatch multiplier */}
               </span>
             </li>
             <li>
@@ -172,8 +184,8 @@ const Dino = ({ dino }: Props) => {
               </svg>
             </li>
             <li className={clsx("flex items-center space-x-2.5", {
-              "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500": calcMaturationPercent() >= (parseInt(dino.maturation_time) * 1) / 10,
-              "text-gray-500 dark:text-gray-400 [&>*]:border-gray-500 [&>*]:dark:border-gray-400": calcMaturationPercent() < (parseInt(dino.maturation_time) * 1) / 10,
+              "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500": calcMaturationPercent() >= (parseInt(dino.maturation_time) * multipliers.mature) / 10,
+              "text-gray-500 dark:text-gray-400 [&>*]:border-gray-500 [&>*]:dark:border-gray-400": calcMaturationPercent() < (parseInt(dino.maturation_time) * multipliers.mature) / 10,
             })}>
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
                 2
@@ -181,7 +193,7 @@ const Dino = ({ dino }: Props) => {
               <span>
                 <h3 className="font-medium leading-tight">Baby</h3>
                 <p className="text-sm">
-                  {timeFormatL((parseInt(dino.maturation_time) * 1) / 10)}
+                  {timeFormatL((parseInt(dino.maturation_time) * multipliers.mature) / 10)}
                 </p>
               </span>
             </li>
@@ -195,10 +207,10 @@ const Dino = ({ dino }: Props) => {
               </svg>
             </li>
             <li className={clsx("flex items-center space-x-2.5", {
-              "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500": calcMaturationPercent() >= (parseInt(dino.maturation_time) * 1) / 2 -
-                (parseInt(dino.maturation_time) * 1) / 10,
-              "text-gray-500 dark:text-gray-400 [&>*]:border-gray-500 [&>*]:dark:border-gray-400": calcMaturationPercent() < (parseInt(dino.maturation_time) * 1) / 2 -
-                (parseInt(dino.maturation_time) * 1) / 10,
+              "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500": calcMaturationPercent() >= (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
+                (parseInt(dino.maturation_time) * multipliers.mature) / 10,
+              "text-gray-500 dark:text-gray-400 [&>*]:border-gray-500 [&>*]:dark:border-gray-400": calcMaturationPercent() < (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
+                (parseInt(dino.maturation_time) * multipliers.mature) / 10,
             })}>
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
                 3
@@ -209,8 +221,8 @@ const Dino = ({ dino }: Props) => {
                 </h3>
                 <p className="text-sm">
                   {timeFormatL(
-                    (parseInt(dino.maturation_time) * 1) / 2 -
-                    (parseInt(dino.maturation_time) * 1) / 10
+                    (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
+                    (parseInt(dino.maturation_time) * multipliers.mature) / 10
                   )}
                 </p>
               </span>
@@ -236,9 +248,8 @@ const Dino = ({ dino }: Props) => {
                   Adolescent
                 </h3>
                 <p className="text-sm">
-                  {timeFormatL((parseInt(dino.maturation_time) * 1) / 2)}
+                  {timeFormatL((parseInt(dino.maturation_time) * multipliers.mature) / 2)}
                 </p>
-                {/*matureMultiplier */}
               </span>
             </li>
             <li>
@@ -260,15 +271,24 @@ const Dino = ({ dino }: Props) => {
               <span>
                 <h3 className="font-medium leading-tight">Total</h3>
                 <p className="text-sm">
-                  {timeFormatL(parseInt(dino.maturation_time) * 1)}
-                </p>{" "}
-                {/*matureMultiplier */}
+                  {timeFormatL(parseInt(dino.maturation_time) * multipliers.mature)}
+                </p>
               </span>
             </li>
           </ol>
         </section>
-      )
-      }
+      )}
+      {dino.egg_max !== 0 && dino.egg_min !== 0 && (
+        <section className="mt-4 text-white">
+          <img src={`https://www.dododex.com/media/item/Dodo_Egg.png`} alt={dino.name} />
+          <div className="flex flex-col space-y-2">
+            <h3 className="font-medium leading-tight">Egg</h3>
+            <p className="text-sm">
+              {dino.egg_min} - {dino.egg_max}°C
+            </p>
+          </div>
+        </section>
+      )}
       {/*
       <nav className="rw-button-group">
         <Link
