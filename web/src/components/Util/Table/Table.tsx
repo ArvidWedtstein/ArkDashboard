@@ -36,7 +36,7 @@ interface TableProps {
   columns: ColumnData[];
   hover?: boolean;
   onRowClick?: (row: Row) => void;
-  rows: any[];
+  rows: any[] | any;
   vertical?: boolean;
   summary?: boolean;
   caption?: {
@@ -172,7 +172,7 @@ const Table = ({
     return (
       <th
         key={`headcell-${columnIndex}-${label}`}
-        className={clsx(other.className, "px-6 py-3")}
+        className={clsx(other.className, "px-3 py-3")}
         scope="col"
       >
         {other.sortable ? (

@@ -71,7 +71,7 @@ const ItemsList = ({ items }: FindItems) => {
               title={item.name}
               subtitle={item.stats[0].value}
               content={view === "list" ? item.description : ''}
-              icon={{ src: `https://www.arkresourcecalculator.com/assets/images/80px-${item.image}`, alt: 'thatch' }}
+              icon={{ src: `https://www.arkresourcecalculator.com/assets/images/80px-${item.image}`, alt: `${item.name}` }}
             />
           </Link>
         ))}

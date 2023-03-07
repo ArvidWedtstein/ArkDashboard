@@ -50,6 +50,8 @@ export const QUERY = gql`
       exp_per_kill_adj
       disable_tame
       x_variant
+      # rideable
+      # mounted_weaponry
     }
   }
 `
@@ -57,6 +59,7 @@ export const QUERY = gql`
 export const Loading = () => <div>Loading...</div>
 
 export const Empty = () => <div>Dino not found</div>
+
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>

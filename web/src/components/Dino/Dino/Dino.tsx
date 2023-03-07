@@ -2,11 +2,14 @@ import { Form, NumberField } from "@redwoodjs/forms";
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import { timeFormatL } from "src/lib/formatters";
+import { timeFormatL, combineBySummingKeys } from "src/lib/formatters";
 import { useCallback, useState } from "react";
 
 import type { DeleteDinoMutationVariables, FindDinoById } from "types/graphql";
 import clsx from "clsx";
+import Table from "src/components/Util/Table/Table";
+
+import arkitems from "../../../../public/arkitems.json";
 
 const DELETE_DINO_MUTATION = gql`
   mutation DeleteDinoMutation($id: String!) {
@@ -46,6 +49,7 @@ const Dino = ({ dino }: Props) => {
     tk: "tek",
   };
 
+
   const [maturation, setMaturation] = useState(0);
   const calcMaturationPercent = useCallback(() => {
     let timeElapsed = maturation * parseInt(dino.maturation_time) * 1;
@@ -76,15 +80,19 @@ const Dino = ({ dino }: Props) => {
           alt={dino.name}
         />
         <div className="py-4 px-8 text-sm font-light text-white">
-          <div className="m-0 mb-4 text-2xl uppercase tracking-widest">
-            <strong className="text-3xl font-light">{dino.name}</strong>
+          <div className="m-0 mb-4 text-sm">
+            <strong className="text-3xl font-light uppercase tracking-widest">{dino.name}</strong>
+            <div className="flex flex-row space-x-2 italic">
+              <span>{dino.synonyms.join(', ')}</span>
+            </div>
           </div>
+
 
           <div className="mr-4 mb-4 italic">
             <p>{dino.description}</p>
           </div>
           {/* <div className="mr-4 mb-4 inline-block">
-            <strong>Seen:</strong> 0
+            <strong>Ridable:</strong> {dino["ridable"] ? "Yes" : "No"}
           </div> */}
           {dino.immobilized_by && dino.immobilized_by.length > 0 && (
             <div className="mr-4 mb-4 flex flex-row space-x-1">
@@ -133,7 +141,7 @@ const Dino = ({ dino }: Props) => {
             {dino.violent_tame ? "Aggressive" : "Passive"}
           </div>
 
-          {dino.eats && dino.eats.length > 0 && (
+          {!dino.disable_food && dino.eats && dino.eats.length > 0 && (
             <>
               <div className="text-lg">Food</div>
               <div className="mb-4">
@@ -153,7 +161,7 @@ const Dino = ({ dino }: Props) => {
         <section className="my-3 rounded-md p-4 text-stone-600 dark:text-white">
           <Form className="flex my-3 mx-auto justify-center">
             <NumberField name="matPerc" id="matPerc" className="w-20 rw-input rounded-none rounded-l-lg" placeholder="Maturation Percent" min={0} max={100} onInput={(event) => {
-              setMaturation(parseInt(event.target.value))
+              setMaturation(parseInt(event.target ? event.target["value"] : 0))
             }} />
             <label htmlFor="matPerc" className="rw-input rounded-none rounded-r-lg">%</label>
           </Form>
@@ -278,17 +286,237 @@ const Dino = ({ dino }: Props) => {
           </ol>
         </section>
       )}
-      {dino.egg_max !== 0 && dino.egg_min !== 0 && (
+      {(dino.egg_min && dino.egg_max) && dino.egg_max !== 0 && dino.egg_min !== 0 && (
         <section className="mt-4 text-white">
           <img src={`https://www.dododex.com/media/item/Dodo_Egg.png`} alt={dino.name} />
           <div className="flex flex-col space-y-2">
             <h3 className="font-medium leading-tight">Egg</h3>
             <p className="text-sm">
-              {dino.egg_min} - {dino.egg_max}°C
+              {dino.egg_min} - {dino.egg_max} °C
             </p>
           </div>
         </section>
       )}
+
+
+      <section className="my-3 rounded-md p-4 text-stone-600 dark:text-white">
+
+      </section>
+      {/* <section className="mt-4 text-gray-400 dark:text-white">
+        <Table
+          rows={[combineBySummingKeys({
+            t: false,
+            w: false,
+            a: false,
+            s: false,
+            m: false,
+            tk: false,
+          }, dino.can_destroy.reduce((a, v) => ({ ...a, [v]: true }), {}))]}
+          columns={[
+            {
+              field: "t", label: "Thatch", renderCell: ({ value }) => {
+                return value > 0 ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="fill-pea-500 w-8 h-8">
+                    <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
+                  </svg>) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="fill-red-500 w-8 h-8">
+                    <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
+                  </svg>
+                )
+              },
+            },
+            {
+              field: "w", label: "Wood", renderCell: ({ value }) => {
+                return value > 0 ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="fill-pea-500 w-8 h-8">
+                    <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
+                  </svg>) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="fill-red-500 w-8 h-8">
+                    <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
+                  </svg>
+                )
+              },
+            },
+            {
+              field: "a", label: "Adobe", renderCell: ({ value }) => {
+                return value > 0 ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="fill-pea-500 w-8 h-8">
+                    <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
+                  </svg>) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="fill-red-500 w-8 h-8">
+                    <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
+                  </svg>
+                )
+              },
+            },
+            {
+              field: "s", label: "Stone", renderCell: ({ value }) => {
+                return value > 0 ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="fill-pea-500 w-8 h-8">
+                    <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
+                  </svg>) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="fill-red-500 w-8 h-8">
+                    <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
+                  </svg>
+                )
+              },
+            },
+            {
+              field: "m", label: "Metal", renderCell: ({ value }) => {
+                return value > 0 ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="fill-pea-500 w-8 h-8">
+                    <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
+                  </svg>) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="fill-red-500 w-8 h-8">
+                    <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
+                  </svg>
+                )
+              },
+            },
+            {
+              field: "tk", label: "Tek", renderCell: ({ value }) => {
+                return value > 0 ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="fill-pea-500 w-8 h-8">
+                    <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
+                  </svg>) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="fill-red-500 w-8 h-8">
+                    <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
+                  </svg>
+                )
+              },
+            },
+          ]}
+        />
+      </section> */}
+      <section className="mt-4 text-gray-400 dark:text-white">
+        <Table
+          rows={[dino.base_stats]}
+          columns={[
+            { field: "h", label: "Health", valueFormatter: (value) => value.value.b },
+            { field: "s", label: "Stamina", valueFormatter: (value) => value.value.b },
+            { field: "w", label: "Weight", valueFormatter: (value) => value.value.b },
+            { field: "f", label: "Food", valueFormatter: (value) => value.value.b },
+            { field: "t", label: "Torpor", valueFormatter: (value) => value.value.b },
+            !dino.water_movement && { field: "o", label: "Oxygen", valueFormatter: (value) => value.value.b },
+            { field: "m", label: "Melee", valueFormatter: (value) => value.value.b },
+            { field: "d", label: "Damage", valueFormatter: (value) => value.value.b },
+          ]}
+        />
+      </section>
+      <section className="my-3 rounded-md dark:text-white text-gray-700 grid grid-cols-2 gap-4">
+        {/* <div className="dark:bg-zinc-600 bg-stone-200 rounded-md p-4">
+          <p className="text-lg my-1">Gather Efficiency</p>
+          <div className="flex flex-col">
+            {gathereffvals.map((eff) => (
+              <div className="flex items-center">
+                <p className="text-sm mr-2 w-20">{eff.name}</p>
+
+                <div className="h-2 w-32 bg-gray-300 rounded-full flex flex-row divide-x divide-black">
+                  {Array.from(Array(5)).map((_, i) => (
+                    <div className={clsx(`first:rounded-l-full last:rounded-r-full h-full w-1/5`, {
+                      "bg-transparent": Math.round(eff.value) < i + 1,
+                      "[&:nth-child(1)]:bg-red-500 [&:nth-child(2)]:bg-orange-500 [&:nth-child(3)]:bg-yellow-500 [&:nth-child(4)]:bg-lime-500 [&:nth-child(5)]:bg-green-500": Math.round(eff.value) >= i + 1,
+                    })}></div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div> */}
+        {/* <div className="dark:bg-zinc-600 bg-stone-200 rounded-md p-4">
+          <p className="text-lg my-1">Weight Reduction</p>
+          <div className="flex flex-col">
+            {gathereffvals.map((eff) => (
+              <div className="flex items-center">
+                <p className="text-sm mr-2 w-20">{eff.name}</p>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="inline-block fill-current w-4">
+                  <path d="M510.3 445.9L437.3 153.8C433.5 138.5 420.8 128 406.4 128H346.1c3.625-9.1 5.875-20.75 5.875-32c0-53-42.1-96-96-96S159.1 43 159.1 96c0 11.25 2.25 22 5.875 32H105.6c-14.38 0-27.13 10.5-30.88 25.75l-73.01 292.1C-6.641 479.1 16.36 512 47.99 512h416C495.6 512 518.6 479.1 510.3 445.9zM256 128C238.4 128 223.1 113.6 223.1 96S238.4 64 256 64c17.63 0 32 14.38 32 32S273.6 128 256 128z" />
+                </svg>
+                <p className="text-lime-300 mx-1">
+                  50%
+                </p>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="text-lime-300 inline-block fill-current w-4">
+                  <path d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z" />
+                </svg>
+
+              </div>
+            ))}
+          </div>
+        </div> */}
+
+      </section>
+      <section className="mt-4 text-gray-400 dark:text-white grid grid-cols-1 md:grid-cols-2">
+        <div className="space-y-2">
+          <h4>Gather Efficiency</h4>
+          <Table
+            className="w-fit"
+            header={false}
+            rows={(dino.gather_eff as any).sort((a, b) => b.value - a.value)}
+            columns={[
+              {
+                field: "itemId", label: "", valueFormatter: (value) => {
+                  const item = arkitems.items.find(item => item.id === value.value)
+                  return item && (
+                    <div className="flex flex-row space-x-2 mr-3">
+                      <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${item.image}`} className="w-8 h-8 self-end" />
+                      <p>{item.name}</p>
+                    </div>
+                  )
+                }
+              },
+              {
+                field: "value", label: "", valueFormatter: (value) => (
+                  <div className="h-2 w-32 bg-gray-300 rounded-full flex flex-row divide-x divide-black">
+                    {Array.from(Array(5)).map((_, i) => (
+                      <div className={clsx(`first:rounded-l-full last:rounded-r-full h-full w-1/5`, {
+                        "bg-transparent": Math.round(value.value) < i + 1,
+                        "[&:nth-child(1)]:bg-red-500 [&:nth-child(2)]:bg-orange-500 [&:nth-child(3)]:bg-yellow-500 [&:nth-child(4)]:bg-lime-500 [&:nth-child(5)]:bg-green-500": Math.round(value.value) >= i + 1,
+                      })}></div>
+                    ))}
+                  </div>
+                )
+              },
+            ]}
+          />
+        </div>
+        <div className="space-y-2">
+          <h4>Weight Reduction</h4>
+          <Table
+            className="w-fit"
+            header={false}
+            rows={(dino.weight_reduction as any).sort((a, b) => b.value - a.value)}
+            columns={[
+              {
+                field: "itemId", label: "", valueFormatter: (value) => {
+                  const item = arkitems.items.find(item => item.id === value.value)
+                  return item && (
+                    <div className="flex flex-row space-x-2 mr-3">
+                      <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${item.image}`} className="w-8 h-8 self-end" />
+                      <p>{item.name}</p>
+                    </div>
+                  )
+                }
+              },
+              {
+                field: "value", label: "", valueFormatter: (value) => (
+                  <div className="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="inline-block fill-current w-4">
+                      <path d="M510.3 445.9L437.3 153.8C433.5 138.5 420.8 128 406.4 128H346.1c3.625-9.1 5.875-20.75 5.875-32c0-53-42.1-96-96-96S159.1 43 159.1 96c0 11.25 2.25 22 5.875 32H105.6c-14.38 0-27.13 10.5-30.88 25.75l-73.01 292.1C-6.641 479.1 16.36 512 47.99 512h416C495.6 512 518.6 479.1 510.3 445.9zM256 128C238.4 128 223.1 113.6 223.1 96S238.4 64 256 64c17.63 0 32 14.38 32 32S273.6 128 256 128z" />
+                    </svg>
+                    <p className="text-lime-300 mx-1">
+                      50%
+                    </p>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="text-lime-300 inline-block fill-current w-4">
+                      <path d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z" />
+                    </svg>
+
+                  </div>
+                )
+              },
+            ]}
+          />
+        </div>
+      </section>
       {/*
       <nav className="rw-button-group">
         <Link
