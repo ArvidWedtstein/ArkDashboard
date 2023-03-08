@@ -43,8 +43,12 @@ export const schema = gql`
     exp_per_kill_adj: Float
     disable_tame: Boolean
     x_variant: Boolean
+    attack: JSON
+    mounted_weaponry: Boolean
+    ridable: Boolean
+    flyer_dino: Boolean
+    water_dino: Boolean
   }
-
   type DinosPage {
     dinos: [Dino!]!
     count: Int!
@@ -98,6 +102,11 @@ export const schema = gql`
     exp_per_kill_adj: Float
     disable_tame: Boolean
     x_variant: Boolean
+    attack: JSON
+    mounted_weaponry: Boolean
+    ridable: Boolean
+    flyer_dino: Boolean
+    water_dino: Boolean
   }
 
   input UpdateDinoInput {
@@ -143,6 +152,11 @@ export const schema = gql`
     exp_per_kill_adj: Float
     disable_tame: Boolean
     x_variant: Boolean
+    attack: JSON
+    mounted_weaponry: Boolean
+    ridable: Boolean
+    flyer_dino: Boolean
+    water_dino: Boolean
   }
 
   type Mutation {
