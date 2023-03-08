@@ -52,6 +52,11 @@ import Pagination from 'src/components/Pagination/Pagination';
 //       exp_per_kill_adj
 //       disable_tame
 //       x_variant
+//       attack
+//       mounted_weaponry
+//       ridable
+//       flyer_dino
+//       water_dino
 //     }
 //   }
 // `
@@ -103,6 +108,11 @@ export const QUERY = gql`
         exp_per_kill_adj
         disable_tame
         x_variant
+        attack
+        mounted_weaponry
+        ridable
+        flyer_dino
+        water_dino
       }
       count
     }

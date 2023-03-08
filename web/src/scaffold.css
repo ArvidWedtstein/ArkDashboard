@@ -89,6 +89,16 @@
 .rw-form-error-list {
   @apply mt-2 list-inside list-disc;
 }
+/* Form Section */
+.rw-form-group {
+  @apply flex flex-col items-start mt-2 border-t border-stone-500 text-gray-900 dark:border-zinc-300 dark:text-stone-200;
+}
+.rw-form-group legend {
+  @apply pr-2 text-xl;
+}
+.rw-form-group > div {
+  @apply flex flex-row items-start space-y-3 sm:space-y-0 sm:space-x-3;
+}
 
 .rw-button {
   /* @apply flex cursor-pointer justify-center rounded border-0 bg-gray-200 py-1 px-4 text-xs font-semibold uppercase leading-loose tracking-wide text-gray-500 no-underline transition duration-100; */
@@ -153,7 +163,7 @@
   @apply text-red-600;
 }
 .rw-helper-text {
-  @apply mt-2 text-xs italic text-gray-600 dark:text-stone-300;
+  @apply mt-2 text-xs text-gray-600 dark:text-stone-300;
 }
 .rw-input {
   /* @apply block mt-2 w-full p-2 bg-white border border-gray-200 rounded outline-none; */
@@ -184,7 +194,7 @@
   @apply border-gray-400;
 } */
 .rw-input-error {
-  @apply border-red-600 text-red-600;
+  @apply border-red-600 text-red-600 placeholder-red-700;
 }
 .rw-input-error:focus {
   @apply border-red-600 outline-none;
@@ -281,4 +291,26 @@
 }
 .rw-img-disable img {
   @apply opacity-40 brightness-[1.4] contrast-0 hue-rotate-[116deg] saturate-[.28] sepia;
+}
+
+.rw-check-input {
+  @apply absolute overflow-hidden hidden;
+}
+.rw-check-input:checked + .rw-check-tile {
+  @apply border-pea-500 shadow-lg text-pea-500;
+}
+.rw-check-input:checked + .rw-check-tile::before {
+  @apply scale-100 opacity-100 bg-pea-500 border-pea-500;
+}
+.rw-check-input:checked + .rw-check-tile span {
+  @apply text-white;
+}
+.rw-check-tile {
+  @apply flex flex-col items-center border-2 w-28 h-28 justify-center cursor-pointer shadow relative transition-all duration-150 border-gray-300 bg-gray-50 dark:border-zinc-500 dark:bg-zinc-600 rounded-lg;
+}
+.rw-check-tile:hover::before {
+  @apply opacity-100 scale-100 text-stone-100 stroke-stone-100;
+}
+.rw-check-tile::before {
+  @apply absolute content-[''] transition-all duration-150 ease-in block top-1 left-1 w-5 h-5 bg-[url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='192'%20height='192'%20fill='%23FF0000'%20viewBox='0%200%20256%20256'%3E%3Crect%20width='256'%20height='256'%20fill='none'%3E%3C/rect%3E%3Cpolyline%20points='216%2072.005%20104%20184%2048%20128.005'%20fill='none'%20stroke='%23ffffff'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='32'%3E%3C/polyline%3E%3C/svg%3E")] bg-[length:12px_12px] bg-center bg-no-repeat rounded-full border transform scale-0 opacity-0;
 }
