@@ -107,6 +107,12 @@
 .rw-button:hover {
   @apply bg-gray-500 text-white;
 }
+.rw-button.disabled {
+  @apply cursor-not-allowed opacity-50;
+}
+.rw-button.disabled:hover {
+  @apply bg-current ring-0;
+}
 .rw-button.rw-button-small {
   @apply rounded-sm py-1 px-2 text-xs;
 }
@@ -136,10 +142,10 @@
   @apply bg-red-700 text-white;
 }
 .rw-button.rw-button-gray {
-  @apply border-gray-300 bg-gray-50 text-gray-900 dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200;
+  @apply border-gray-300 bg-gray-50 text-gray-900 dark:border-zinc-500 dark:bg-zinc-700 dark:text-stone-200;
 }
 .rw-button.rw-button-gray:hover {
-  @apply border-gray-500 bg-gray-500 dark:border-zinc-600 dark:bg-zinc-700;
+  @apply border-gray-500 bg-gray-500 ring ring-gray-200 dark:border-zinc-600 dark:bg-zinc-700 dark:ring-zinc-600;
 }
 .rw-button-icon {
   @apply mr-1 text-xl leading-5;

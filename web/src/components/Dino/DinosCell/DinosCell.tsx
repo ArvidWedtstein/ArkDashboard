@@ -4,7 +4,9 @@ import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import Dinos from 'src/components/Dino/Dinos'
-import Pagination from 'src/components/Pagination/Pagination';
+import Pagination from 'src/components/Util/Pagination/Pagination';
+
+
 
 // export const QUERY = gql`
 //   query FindDinos {
@@ -121,7 +123,6 @@ export const QUERY = gql`
 
 export const beforeQuery = ({ page }) => {
   page = parseInt(page) ? parseInt(page, 10) : 1;
-
   return { variables: { page } };
 };
 
@@ -144,6 +145,7 @@ export const Empty = () => {
     </div>
   )
 }
+
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>

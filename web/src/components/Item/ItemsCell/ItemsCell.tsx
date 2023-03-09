@@ -4,7 +4,7 @@ import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import Items from 'src/components/Item/Items'
-import Pagination from 'src/components/Pagination/Pagination';
+import Pagination from 'src/components/Util/Pagination/Pagination';
 
 // export const QUERY = gql`
 //   query FindItems {

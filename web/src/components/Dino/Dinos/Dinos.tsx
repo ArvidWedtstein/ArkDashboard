@@ -37,8 +37,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
       deleteDino({ variables: { id } });
     }
   };
-
-  let dinos = dinosPage.dinos;
+  const { dinos } = dinosPage;
   const [search, setSearch] = useState('')
 
   const handlechange = (e) => {
@@ -61,6 +60,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
           debouncedChangeHandler(event)
         }} />
       </Form>
+
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-5">
         {dinos
           .filter(
