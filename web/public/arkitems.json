@@ -6,13 +6,29 @@
     { "id": 4, "name": "Hyperthermal Insulation" },
     { "id": 5, "name": "Durability" },
     { "id": 6, "name": "Weapon Damage" },
-    { "id": 7, "name": "Health" },
-    { "id": 8, "name": "Food" },
+    {
+      "id": 7,
+      "name": "Health",
+      "icon": "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/f/f3/Healing.png"
+    },
+    {
+      "id": 8,
+      "name": "Food",
+      "icon": "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/a/a8/Digesting.png"
+    },
     { "id": 9, "name": "Spoils" },
-    { "id": 10, "name": "Torpor" },
+    {
+      "id": 10,
+      "name": "Torpor",
+      "icon": "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/4/42/Tranquilized.png"
+    },
     { "id": 11, "name": "Water" },
     { "id": 12, "name": "Stamina" },
-    { "id": 13, "name": "Cooldown" },
+    {
+      "id": 13,
+      "name": "Cooldown",
+      "icon": "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/9/93/Cryo_Cooldown.png"
+    },
     { "id": 14, "name": "Fertilizer Points" },
     { "id": 15, "name": "Affinity" },
     { "id": 16, "name": "Ammo" },

@@ -60,7 +60,14 @@ const Dino = ({ dino }: Props) => {
     baby: 1,
     consumption: 1,
     taming: 1,
-    mature: 1
+    mature: 1,
+    harvest: 1,
+    xp: 1,
+    matingInterval: 1,
+    eggHatchSpeed: 1,
+    babyCuddleInterval: 1,
+    babyImprintAmount: 1,
+    hexagonReward: 1
   }
   return (
     <div className="container mx-auto">

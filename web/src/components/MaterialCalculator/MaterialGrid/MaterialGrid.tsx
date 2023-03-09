@@ -188,7 +188,6 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
     },
     [viewBaseMaterials]
   );
-  console.log(mergeItemRecipe(viewBaseMaterials, ...item.map((i) => ({ ...i, itemId: i.id }))))
 
   return (
     <Form onSubmit={onAdd} error={error}>

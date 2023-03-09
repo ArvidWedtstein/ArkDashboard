@@ -2,6 +2,7 @@ const { items } = require("./web/public/arkitems.json");
 // const d = require("./web/public/maps.json");
 const d2 = require("./web/public/dinotest.json");
 const imgs = require("./web/public/arkimages.json");
+const dd = require("./t.json");
 
 // let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
 console.time("normal");
@@ -11,6 +12,50 @@ console.timeEnd("normal");
 console.time("optimized");
 
 console.timeEnd("optimized");
+
+let dinot = [];
+let c = dd.species.map((x) => {
+  if (
+    dinot.includes(x.name.startsWith("X-") ? x.name.replace("X-", "") : x.name)
+  ) {
+    return;
+  }
+
+  dinot.push(x.name.startsWith("X-") ? x.name.replace("X-", "") : x.name);
+  return `UPDATE public."Dino" SET "mounted_weaponry" = '${
+    x?.flags ? (x.flags.includes("allowMountedWeaponry") ? true : false) : false
+  }',
+  "movement" = '${JSON.stringify({
+    w: x.movementW,
+    d: x.movementD,
+    staminaRates: x.staminaRates,
+  })}',
+  "exp_per_kill" = '${x.death?.baseXP ? x.death.baseXP : 0}',
+  "x_variant" = '${x.name.startsWith("X-") ? true : false}', "type" = ${
+    x?.flags && x.flags.length > 0
+      ? `ARRAY[${
+          x.flags ? (x.flags.includes("isFlyerDino") ? "'flyer'" : null) : null
+        }, ${
+          x?.flags
+            ? x.flags.includes("isAmphibious")
+              ? `'amphibious'`
+              : null
+            : null
+        }, ${
+          x?.flags ? (x.flags.includes("isBossDino") ? "'boss'" : null) : null
+        }]`
+      : null
+  }
+  WHERE "name" = '${
+    x.name.startsWith("X-") ? x.name.replace("X-", "") : x.name
+  }';`;
+});
+// console.log(c.join("\n"));
+require("fs").writeFile("insert.txt", c.join("\n"), (error) => {
+  if (error) {
+    throw error;
+  }
+});
 
 return;
 

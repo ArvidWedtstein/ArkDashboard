@@ -1,6 +1,5 @@
 import { useAuth } from "@redwoodjs/auth";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Dropdown from "../Dropdown/Dropdown";
 import useComponentVisible from "../useComponentVisible";
 import Avatar from "../Avatar/Avatar";
 import { Link, routes, useLocation, AvailableRoutes } from "@redwoodjs/router";
