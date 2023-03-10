@@ -53,6 +53,11 @@ export const QUERY = gql`
       exp_per_kill_adj
       disable_tame
       x_variant
+      attack
+      mounted_weaponry
+      ridable
+      flyer_dino
+      water_dino
     }
   }
 `
@@ -102,6 +107,11 @@ const UPDATE_DINO_MUTATION = gql`
       exp_per_kill_adj
       disable_tame
       x_variant
+      attack
+      mounted_weaponry
+      ridable
+      flyer_dino
+      water_dino
     }
   }
 `
@@ -136,7 +146,7 @@ export const Success = ({ dino }: CellSuccessProps<EditDinoById>) => {
   return (
     <div className="rw-segment">
       <header className="rw-segment-header">
-        <h2 className="rw-heading rw-heading-secondary">Edit Dino {dino?.id}</h2>
+        <h2 className="rw-heading rw-heading-secondary">Edit Dino {dino?.name}</h2>
       </header>
       <div className="rw-segment-main">
         <DinoForm dino={dino} onSave={onSave} error={error} loading={loading} />

@@ -102,7 +102,7 @@
 
 .rw-button {
   /* @apply flex cursor-pointer justify-center rounded border-0 bg-gray-200 py-1 px-4 text-xs font-semibold uppercase leading-loose tracking-wide text-gray-500 no-underline transition duration-100; */
-  @apply rounded-lg py-2.5 px-6 text-sm font-medium text-white focus:outline-none;
+  @apply rounded-lg py-2.5 px-6 text-sm font-medium text-white transition duration-100 ease-in-out focus:outline-none;
 }
 .rw-button:hover {
   @apply bg-gray-500 text-white;
@@ -113,39 +113,91 @@
 .rw-button.disabled:hover {
   @apply bg-current ring-0;
 }
+/*
+// ----------------------------
+// Button Sizes
+// ----------------------------
+*/
 .rw-button.rw-button-small {
   @apply rounded-sm py-1 px-2 text-xs;
 }
+.rw-button.rw-button-large {
+  @apply rounded-lg py-3 px-8 text-base;
+}
+
+/*
+// ----------------------------
+// Button Variants
+// ----------------------------
+*/
 .rw-button.rw-button-green-outline {
-  @apply border-pea-500 rounded border-2 font-normal leading-tight text-white transition duration-150 ease-in-out hover:bg-opacity-5;
+  @apply border-pea-700 text-pea-700 dark:border-pea-500 dark:text-pea-500 border;
+  /* @apply border-pea-500 text-pea-500 rounded border-2 font-normal leading-tight transition duration-150 ease-in-out hover:bg-opacity-5; */
 }
 .rw-button.rw-button-green-outline:hover {
-  @apply ring-pea-700 ring;
+  @apply bg-pea-800 dark:bg-pea-600 text-white;
 }
+.rw-button.rw-button-green-outline:focus {
+  @apply ring-pea-300 dark:ring-pea-800 outline-none ring-4;
+}
+
+/* Green Button */
 .rw-button.rw-button-green {
-  /* @apply bg-green-500 text-white; */
   @apply bg-pea-500 text-white;
 }
 .rw-button.rw-button-green:hover {
   @apply bg-pea-600;
 }
+.rw-button.rw-button-green:focus {
+  @apply ring-pea-300 dark:ring-pea-800 outline-none ring-4;
+}
+
+/* Blue Button */
 .rw-button.rw-button-blue {
   @apply bg-blue-500 text-white;
 }
 .rw-button.rw-button-blue:hover {
-  @apply bg-blue-700;
+  @apply bg-blue-600;
 }
+.rw-button.rw-button-blue:focus {
+  @apply outline-none ring-4 ring-blue-300 dark:ring-blue-800;
+}
+
+/* Red Button */
 .rw-button.rw-button-red {
   @apply bg-red-500 text-white;
 }
 .rw-button.rw-button-red:hover {
   @apply bg-red-700 text-white;
 }
+.rw-button.rw-button-red:focus {
+  @apply outline-none ring-4 ring-red-300 dark:ring-red-800;
+}
+
+/* Yellow Button */
+.rw-button.rw-button-yellow {
+  @apply bg-yellow-500 text-white;
+}
+.rw-button.rw-button-yellow:hover {
+  @apply bg-yellow-600 text-white;
+}
+.rw-button.rw-button-yellow:focus {
+  @apply outline-none ring-4 ring-yellow-300 dark:ring-yellow-800;
+}
+
+/* Gray Button */
 .rw-button.rw-button-gray {
   @apply border-gray-300 bg-gray-50 text-gray-900 dark:border-zinc-500 dark:bg-zinc-700 dark:text-stone-200;
 }
 .rw-button.rw-button-gray:hover {
   @apply border-gray-500 bg-gray-500 ring ring-gray-200 dark:border-zinc-600 dark:bg-zinc-700 dark:ring-zinc-600;
+}
+.rw-button.rw-button-gray:focus {
+  @apply outline-none ring-4 ring-gray-300 dark:ring-zinc-800;
+}
+
+.rw-button.rw-button-icon {
+  @apply inline-flex items-center;
 }
 .rw-button-icon {
   @apply mr-1 text-xl leading-5;

@@ -14,30 +14,41 @@ import type { EditDinoById, UpdateDinoInput } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
 import Lookup from 'src/components/Util/Lookup/Lookup'
 import arkitems from "../../../../public/arkitems.json";
+import CheckboxGroup from 'src/components/Util/CheckSelect/CheckboxGroup'
 type FormDino = NonNullable<EditDinoById['dino']>
 
 interface DinoFormProps {
   dino?: EditDinoById['dino']
   onSave: (data: UpdateDinoInput, id?: FormDino['id']) => void
-  error: RWGqlError
+  error?: RWGqlError
   loading: boolean
 }
 
 const DinoForm = (props: DinoFormProps) => {
-  const [fitsThrough, setFitsThrough] = useState([]);
-  const [affected, setAffected] = useState([]);
-  const [canDestroy, setCanDestroy] = useState([]);
-  const [types, setTypes] = useState([]);
+  const [basestat, setBasestat] = useState({
+    "d": { "b": 100, "t": 2.5, "w": 5.8, "a": [{ "b": 60 }], },
+    "f": { "b": 2000, "t": 10, "w": 200 },
+    "h": { "b": 710, "t": 5.4, "w": 142 },
+    "m": { "b": 100, "t": 2.5, "w": null, "a": { "s": { "b": 546 } }, },
+    "o": { "b": null, "t": null, "w": null },
+    "s": { "b": 200, "t": 10, "w": 20 },
+    "t": { "b": 1150, "t": null, "w": 69 },
+    "w": { "b": 910, "t": 4, "w": 18.2 }
+  });
   const [drops, setDrops] = useState([]);
   const [eats, setEats] = useState([]);
+
+  const [selectedOptions, setSelectedOptions] = useState([]);
+
+  const handleCheckboxGroupChange = (selected) => {
+    setSelectedOptions(selected);
+  };
   const onSubmit = (data: FormDino) => {
     console.log(data)
-    console.log(fitsThrough)
-    data.fits_through = fitsThrough;
-    data.drops = drops
-    // delete data["flyer_dino"]
+    console.log(basestat)
     props.onSave(data, props?.dino?.id)
   }
+
 
   return (
     <div className="rw-form-wrapper">
@@ -80,7 +91,7 @@ const DinoForm = (props: DinoFormProps) => {
 
             <TextField
               name="synonyms"
-              defaultValue={props.dino?.synonyms}
+              defaultValue={props.dino?.synonyms.join(', ')}
               className="rw-input"
               errorClassName="rw-input rw-input-error"
               validation={{ required: false, setValueAs: (e) => e.length > 0 ? e.split(',').map((s) => s.trim()) : null }}
@@ -99,7 +110,7 @@ const DinoForm = (props: DinoFormProps) => {
           Description
         </Label>
 
-        <TextField
+        <TextAreaField
           name="description"
           defaultValue={props.dino?.description}
           className="rw-input"
@@ -109,7 +120,7 @@ const DinoForm = (props: DinoFormProps) => {
         <FieldError name="description" className="rw-field-error" />
 
         <fieldset className="rw-form-group">
-          <legend >Taming</legend>
+          <legend>Other</legend>
           <div>
             <div>
               <Label
@@ -120,7 +131,7 @@ const DinoForm = (props: DinoFormProps) => {
                 Taming notice
               </Label>
 
-              <TextField
+              <TextAreaField
                 name="taming_notice"
                 defaultValue={props.dino?.taming_notice}
                 className="rw-input"
@@ -129,7 +140,7 @@ const DinoForm = (props: DinoFormProps) => {
 
               <FieldError name="taming_notice" className="rw-field-error" />
             </div>
-            <div className="">
+            <div>
               <Label
                 name="admin_note"
                 className="rw-label"
@@ -138,7 +149,7 @@ const DinoForm = (props: DinoFormProps) => {
                 Admin note
               </Label>
 
-              <TextField
+              <TextAreaField
                 name="admin_note"
                 defaultValue={props.dino?.admin_note}
                 className="rw-input"
@@ -158,74 +169,21 @@ const DinoForm = (props: DinoFormProps) => {
           Can destroy
         </Label>
 
-        <div className="flex gap-3">
-          <label>
-            <input type="checkbox" onChange={(e) => setCanDestroy((f) => canDestroy.includes('322') ? f.filter((f) => f !== "322") : [...f, ""])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/thatch-wall.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Thatch</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setCanDestroy((f) => canDestroy.includes('322') ? f.filter((f) => f !== "322") : [...f, "322"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/wooden-wall.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Wood</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setCanDestroy((f) => canDestroy.includes('1066') ? f.filter((f) => f !== "1066") : [...f, "1066"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/adobe-wall.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Adobe</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setCanDestroy((f) => canDestroy.includes('143') ? f.filter((f) => f !== "143") : [...f, "143"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/stone-wall.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Stone</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setCanDestroy((f) => canDestroy.includes('381') ? f.filter((f) => f !== "381") : [...f, "381"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/greenhouse-wall.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Greenhouse</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setCanDestroy((f) => canDestroy.includes('316') ? f.filter((f) => f !== "316") : [...f, "316"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/metal-wall.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Metal</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setCanDestroy((f) => canDestroy.includes('619') ? f.filter((f) => f !== "619") : [...f, "619"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/tek-wall.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Tek</span>
-            </span>
-          </label>
-        </div>
+        <CheckboxGroup
+          name="can_destroy"
+          defaultValue={props.dino?.can_destroy}
+          options={[
+            { value: "t", label: "Thatch", image: "https://arkids.net/image/item/120/thatch-wall.png" },
+            { value: "w", label: "Wood", image: "https://arkids.net/image/item/120/wooden-wall.png" },
+            { value: "a", label: "Adobe", image: "https://arkids.net/image/item/120/adobe-wall.png" },
+            { value: "s", label: "Stone", image: "https://arkids.net/image/item/120/stone-wall.png" },
+            { value: "g", label: "Greenhouse", image: "https://arkids.net/image/item/120/greenhouse-wall.png" },
+            { value: "m", label: "Metal", image: "https://arkids.net/image/item/120/metal-wall.png" },
+            { value: "tk", label: "Tek", image: "https://arkids.net/image/item/120/tek-wall.png" },
+          ]}
+        />
 
         <FieldError name="can_destroy" className="rw-field-error" />
-
 
         <Label
           name="immobilized_by"
@@ -235,71 +193,19 @@ const DinoForm = (props: DinoFormProps) => {
           Immobilized by
         </Label>
 
-        <div className="flex gap-3">
-          <label>
-            <input type="checkbox" onChange={(e) => setAffected((f) => affected.includes('733') ? f.filter((f) => f !== "733") : [...f, "733"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/lasso.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Lasso</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setAffected((f) => affected.includes('1040') ? f.filter((f) => f !== "1040") : [...f, "1040"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/bola.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Bola</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setAffected((f) => affected.includes('785') ? f.filter((f) => f !== "785") : [...f, "785"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/net-projectile.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Net Projectile</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setAffected((f) => affected.includes('725') ? f.filter((f) => f !== "725") : [...f, "725"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/chain-bola.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Chain Bola</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setAffected((f) => affected.includes('1252') ? f.filter((f) => f !== "1252") : [...f, "1252"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/plant-species-y-trap.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Plant Species Y Trap</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setAffected((f) => affected.includes('383') ? f.filter((f) => f !== "383") : [...f, "383"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/bear-trap.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Bear Trap</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setAffected((f) => fitsThrough.includes('384') ? f.filter((f) => f !== "384") : [...f, "384"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/large-bear-trap.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Large Bear Trap</span>
-            </span>
-          </label>
-        </div>
+        <CheckboxGroup
+          name="immobilized_by"
+          defaultValue={props.dino?.immobilized_by}
+          options={[
+            { value: "733", label: "Lasso", image: "https://arkids.net/image/item/120/lasso.png" },
+            { value: "1040", label: "Bola", image: "https://arkids.net/image/item/120/bola.png" },
+            { value: "725", label: "Chain Bola", image: "https://arkids.net/image/item/120/chain-bola.png" },
+            { value: "785", label: "Net Projectile", image: "https://arkids.net/image/item/120/net-projectile.png" },
+            { value: "1252", label: "Plant Species Y Trap", image: "https://arkids.net/image/item/120/plant-species-y-trap.png" },
+            { value: "383", label: "Bear Trap", image: "https://arkids.net/image/item/120/bear-trap.png" },
+            { value: "384", label: "Large Bear Trap", image: "https://arkids.net/image/item/120/large-bear-trap.png" }
+          ]}
+        />
 
         <FieldError name="immobilized_by" className="rw-field-error" />
 
@@ -320,6 +226,32 @@ const DinoForm = (props: DinoFormProps) => {
           emptyAs={'undefined'}
           validation={{ valueAsJSON: true }}
         />
+
+        <div className="text-white flex flex-col">
+          <div className="flex flex-row items-center space-x-1">
+            <p className="w-5"></p>
+            <p className="w-20">base</p>
+            <p className="w-20">wild inc.</p>
+            <p className="w-20">tamed inc.</p>
+          </div>
+          {Object.entries(basestat).map(([stat, value], index) => (
+            <div className="flex flex-row items-center space-x-1" key={index}>
+              <p className="w-5">{stat}</p>
+              {Object.entries(value).filter(([key, _]) => ["b", "w", "t"].includes(key)).sort(([k, _]: any, [k2, f]: any) => k2 - k).map(([key, value], index) => (
+                <input className="rw-input w-20" key={index} defaultValue={value} placeholder={key} onChange={(e) => (setBasestat((b) => {
+                  return {
+                    ...b,
+                    [stat]: {
+                      ...b[stat],
+                      [key]: Number(e.target.value)
+                    }
+                  }
+                }))}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
 
         <FieldError name="base_stats" className="rw-field-error" />
 
@@ -370,62 +302,18 @@ const DinoForm = (props: DinoFormProps) => {
           Fits through
         </Label>
 
-        <div className="flex gap-3">
-          <label>
-            <input type="checkbox" onChange={(e) => setFitsThrough((f) => fitsThrough.includes('322') ? f.filter((f) => f !== "322") : [...f, "322"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/stone-doorframe.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Doorframe</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setFitsThrough((f) => fitsThrough.includes('1066') ? f.filter((f) => f !== "1066") : [...f, "1066"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/stone-double-doorframe.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Double Doorframe</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setFitsThrough((f) => fitsThrough.includes('143') ? f.filter((f) => f !== "143") : [...f, "143"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/stone-dinosaur-gateway.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Dinosaur Gateway</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setFitsThrough((f) => fitsThrough.includes('381') ? f.filter((f) => f !== "381") : [...f, "381"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/behemoth-stone-dinosaur-gateway.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Behemoth Dino Gateway</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setFitsThrough((f) => fitsThrough.includes('316') ? f.filter((f) => f !== "316") : [...f, "316"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/stone-hatchframe.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Hatchframe</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setFitsThrough((f) => fitsThrough.includes('619') ? f.filter((f) => f !== "619") : [...f, "619"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/giant-stone-hatchframe.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Giant Hatchframe</span>
-            </span>
-          </label>
-        </div>
+        <CheckboxGroup
+          name="fits_through"
+          defaultValue={props.dino?.fits_through}
+          options={[
+            { value: "322", label: "Doorframe", image: "https://arkids.net/image/item/120/stone-doorframe.png" },
+            { value: "1066", label: "Double Doorframe", image: "https://arkids.net/image/item/120/stone-double-doorframe.png" },
+            { value: "143", label: "Dinosaur Gateway", image: "https://arkids.net/image/item/120/stone-dinosaur-gateway.png" },
+            { value: "381", label: "Behemoth Dino Gateway", image: "https://arkids.net/image/item/120/behemoth-stone-dinosaur-gateway.png" },
+            { value: "316", label: "Hatchframe", image: "https://arkids.net/image/item/120/stone-hatchframe.png" },
+            { value: "619", label: "Giant Hatchframe", image: "https://arkids.net/image/item/120/giant-stone-hatchframe.png" }
+          ]}
+        />
 
         <FieldError name="fits_through" className="rw-field-error" />
 
@@ -640,46 +528,179 @@ const DinoForm = (props: DinoFormProps) => {
           </div>
         </fieldset>
 
-        <Label
-          name="eats"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Eats
-        </Label>
+        <fieldset className="rw-form-group">
+          <legend>Breeding</legend>
+          <div>
+            <div>
+              <Label
+                name="egg_min"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Egg minimum temperature
+              </Label>
 
-        <Lookup
-          items={arkitems.items.filter((item) => item.type === 'Consumable')}
-          search={true}
-          name="eats"
-          onChange={(e) => setEats((d) => [...d, { id: e.id, name: e.name, img: e.img }])}
-        />
+              <TextField
+                name="egg_min"
+                defaultValue={props.dino?.egg_min}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+                validation={{ valueAsNumber: true }}
+              />
 
-        {eats.length > 0 ? (
-          <div className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-zinc-600 dark:border-zinc-500 dark:text-white mt-2">
-            {eats.map((food, i) => (
-              <button key={i} onClick={() => setEats((d) => d.filter((g) => g.id !== food.id))} className="block w-full px-2 py-1 first:rounded-t-lg last:rounded-b-lg transition-color cursor-pointer hover:ring hover:ring-red-500">
-                  {food.name}
-              </button>
-            ))}
+              <FieldError name="egg_min" className="rw-field-error" />
+            </div>
+            <div>
+              <Label
+                name="egg_max"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Egg maximum temperature
+              </Label>
+
+              <TextField
+                name="egg_max"
+                defaultValue={props.dino?.egg_max}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+                validation={{ valueAsNumber: true }}
+              />
+
+
+              <FieldError name="egg_max" className="rw-field-error" />
+            </div>
           </div>
-        ) : (
-            <p className="rw-helper-text">
-              No food added yet.
-              Does this dino even eat?
-            </p>
-          )
-        }
+          <div>
+            <div>
+              <Label
+                name="maturation_time"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Maturation time
+              </Label>
 
-        {/* <TextField
-          name="eats"
-          defaultValue={props.dino?.eats}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        /> */}
+              <TextField
+                name="maturation_time"
+                defaultValue={props.dino?.maturation_time}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+                validation={{ valueAsNumber: true }}
+              />
 
-        <FieldError name="eats" className="rw-field-error" />
+              <FieldError name="maturation_time" className="rw-field-error" />
+            </div>
+            <div>
+              <Label
+                name="incubation_time"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Incubation time
+              </Label>
+
+              <TextField
+                name="incubation_time"
+                defaultValue={props.dino?.incubation_time}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+                validation={{ valueAsNumber: true }}
+              />
+
+              <FieldError name="incubation_time" className="rw-field-error" />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset className="rw-form-group">
+          <legend>Food</legend>
+          <div>
+            <div>
+              <Label
+                name="eats"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Eats
+              </Label>
+
+              <Lookup
+                items={arkitems.items.filter((item) => item.type === 'Consumable')}
+                search={true}
+                name="eats"
+                onChange={(e) => setEats((d) => [...d, { id: e.id, name: e.name, img: e.img }])}
+              />
+
+              {eats.length > 0 ? (
+                <div className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-zinc-600 dark:border-zinc-500 dark:text-white mt-2">
+                  {eats.map((food, i) => (
+                    <button key={i} onClick={() => setEats((d) => d.filter((g) => g.id !== food.id))} className="block w-full px-2 py-1 first:rounded-t-lg last:rounded-b-lg transition-color cursor-pointer hover:ring hover:ring-red-500">
+                      {food.name}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="rw-helper-text">
+                  No food added yet.
+                  Does this dino even eat?
+                </p>
+              )
+              }
+
+              {/* <TextField
+                  name="eats"
+                  defaultValue={props.dino?.eats}
+                  className="rw-input"
+                  errorClassName="rw-input rw-input-error"
+                  validation={{ required: true }}
+                /> */}
+
+              <FieldError name="eats" className="rw-field-error" />
+            </div>
+          </div>
+          <div>
+            <div>
+              <Label
+                name="food_consumption_base"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Food consumption base
+              </Label>
+
+              <TextField
+                name="food_consumption_base"
+                defaultValue={props.dino?.food_consumption_base}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+                validation={{ valueAsNumber: true }}
+              />
+
+
+              <FieldError name="food_consumption_base" className="rw-field-error" />
+            </div>
+            <div>
+              <Label
+                name="food_consumption_mult"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Food consumption mult
+              </Label>
+
+              <TextField
+                name="food_consumption_mult"
+                defaultValue={props.dino?.food_consumption_mult}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+                validation={{ valueAsNumber: true }}
+              />
+
+              <FieldError name="food_consumption_mult" className="rw-field-error" />
+            </div>
+          </div>
+        </fieldset>
 
         <Label
           name="weight_reduction"
@@ -735,12 +756,15 @@ const DinoForm = (props: DinoFormProps) => {
           items={arkitems.items.filter((item) => item.type === 'Resource')}
           search={true}
           name="drops"
-          onChange={(e) => setDrops((d) => [...d, { id: e.id, name: e.name, img: e.img }])}
+          onChange={(e) => setDrops((d) => [...d, { id: e.id, name: e.name, img: e.image }])}
         />
 
-        <div className="flex flex-row">
+        <div className="flex flex-row mt-2">
           {drops.map((drop, i) => (
-            <button key={i} className="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300 hover:ring hover:ring-red-500" onClick={() => setDrops((d) => d.filter((g) => g.id !== drop.id))}>{drop.name}</button>
+            <button key={i} className="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300 hover:ring hover:ring-red-500" onClick={() => setDrops((d) => d.filter((g) => g.id !== drop.id))}>
+              <img className="rw-button-icon w-4 h-4" src={`https://www.arkresourcecalculator.com/assets/images/80px-${drop.img}`} />
+              {drop.name}
+            </button>
           ))}
         </div>
         {/* <TextField
@@ -752,43 +776,6 @@ const DinoForm = (props: DinoFormProps) => {
         /> */}
 
         <FieldError name="drops" className="rw-field-error" />
-
-        <Label
-          name="food_consumption_base"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Food consumption base
-        </Label>
-
-        <TextField
-          name="food_consumption_base"
-          defaultValue={props.dino?.food_consumption_base}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsNumber: true }}
-        />
-
-
-        <FieldError name="food_consumption_base" className="rw-field-error" />
-
-        <Label
-          name="food_consumption_mult"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Food consumption mult
-        </Label>
-
-        <TextField
-          name="food_consumption_mult"
-          defaultValue={props.dino?.food_consumption_mult}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsNumber: true }}
-        />
-
-        <FieldError name="food_consumption_mult" className="rw-field-error" />
 
         <Label
           name="disable_ko"
@@ -935,26 +922,14 @@ const DinoForm = (props: DinoFormProps) => {
           validation={{ required: false }}
         />
 
-        <div className="flex gap-3">
-          <label>
-            <input type="checkbox" onChange={(e) => setAffected((f) => affected.includes('v') ? f.filter((f) => f !== "v") : [...f, "v"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/lasso.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">V</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setAffected((f) => affected.includes('n') ? f.filter((f) => f !== "n") : [...f, "n"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://arkids.net/image/item/120/bola.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">N</span>
-            </span>
-          </label>
-        </div>
+        <CheckboxGroup
+          name="type"
+          defaultValue={props.dino?.method}
+          options={[
+            { label: 'v', image: 'https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/7/78/Landing.png' },
+            { label: 'n', image: 'https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/f/f5/Slow.png' }
+          ]}
+        />
 
         <FieldError name="method" className="rw-field-error" />
 
@@ -1133,53 +1108,17 @@ const DinoForm = (props: DinoFormProps) => {
           Dino Type
         </Label>
 
-        <div className="flex gap-3">
-          <label>
-            <input type="checkbox" onChange={(e) => setTypes((f) => types.includes('flyer') ? f.filter((f) => f !== "flyer") : [...f, "flyer"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/7/78/Landing.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Flyer</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setTypes((f) => types.includes('ground') ? f.filter((f) => f !== "ground") : [...f, "ground"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/f/f5/Slow.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Ground</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setTypes((f) => types.includes('water') ? f.filter((f) => f !== "water") : [...f, "water"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/9/9d/Water.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Water</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setTypes((f) => types.includes('amphibious') ? f.filter((f) => f !== "amphibious") : [...f, "amphibious"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/4/44/Swim_Mode.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Amphibious</span>
-            </span>
-          </label>
-          <label>
-            <input type="checkbox" onChange={(e) => setTypes((f) => types.includes('boss') ? f.filter((f) => f !== "boss") : [...f, "boss"])} className="rw-check-input" />
-            <span className="rw-check-tile">
-              <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-                <img className="w-12 h-12" src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/5/50/Cowardice.png" />
-              </span>
-              <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">Boss</span>
-            </span>
-          </label>
-        </div>
+        <CheckboxGroup
+          name="type"
+          defaultValue={props.dino?.type}
+          options={[
+            { value: 'flyer', label: 'Flyer', image: 'https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/7/78/Landing.png' },
+            { value: 'ground', label: 'Ground', image: 'https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/f/f5/Slow.png' },
+            { value: 'water', label: 'Water', image: 'https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/9/9d/Water.png' },
+            { value: 'amphibious', label: 'Amphibious', image: 'https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/4/44/Swim_Mode.png' },
+            { value: 'boss', label: 'Boss', image: 'https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/5/50/Cowardice.png' },
+          ]}
+        />
 
         <FieldError name="type" className="rw-field-error" />
 
