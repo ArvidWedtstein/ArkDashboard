@@ -1,5 +1,5 @@
 import { TextField } from "@redwoodjs/forms";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useComponentVisible from "../../useComponentVisible";
 import { debounce } from "src/lib/formatters";
 
@@ -33,7 +33,8 @@ const Lookup = ({
     setIsComponentVisible(!isComponentVisible);
   };
   const handleSelect = (e) => {
-    // setSearch(e.name);
+    setSearch(e.name || "");
+    console.log(searchValue)
     onChange ? onChange(e) : null;
     setIsComponentVisible(false);
   };
@@ -42,15 +43,23 @@ const Lookup = ({
     setItems(items);
   }, [value]);
 
-  const handleSearch = debounce((e) => setSearch(e.target.value));
+  const handleSearch = ((e) => {
+    setSearch(e.target.value);
+    setIsComponentVisible(true);
+  });
 
   const handleReset = (e) => {
+
     setSearch("");
     setItems(items);
     onChange ? onChange({ name: "" }) : null;
   };
   useEffect(() => {
-    if (!!!searchValue || searchValue === "") return;
+    if (!!!searchValue || searchValue === "") {
+      setItems(items);
+      setSearch("");
+      return;
+    };
     setItems(
       items.filter((item) =>
         item.name.toLowerCase().includes(searchValue.toLowerCase())
@@ -76,7 +85,8 @@ const Lookup = ({
             // className="flex items-center w-full py-2 px-4 bg-gray-600 dark:bg-gray-800 dark:hover:bg-gray-600 dark:hover:text-white"
             className="flex w-full items-center bg-transparent outline-none"
             onChange={handleSearch}
-            onFocus={() => setIsComponentVisible(true)}
+            value={!!!searchValue ? "" : searchValue}
+            // onFocus={() => setIsComponentVisible(true)}
             placeholder="Search..."
           />
         ) : (
@@ -161,3 +171,111 @@ const Lookup = ({
 };
 
 export default Lookup;
+
+
+
+
+export const DropdownLookup = ({ name, options, onSelect, className = "", defaultValue }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredOptions, setFilteredOptions] = useState(options);
+  const [selectedOption, setSelectedOption] = useState(defaultValue || null);
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    setFilteredOptions(
+      options.filter(option =>
+        option.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [options, searchTerm]);
+
+  useEffect(() => {
+    if (selectedOption) {
+
+      onSelect(selectedOption);
+    }
+  }, [selectedOption, onSelect]);
+
+  useEffect(() => {
+    const handleClickOutside = e => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownRef]);
+
+  const handleInputChange = e => {
+    setSearchTerm(e.target.value);
+    setIsOpen(true);
+  };
+
+  const handleOptionClick = option => {
+    console.log(option)
+    // setSearchTerm(option.name);
+    setSelectedOption(option);
+    setIsOpen(false);
+  };
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  return (
+    <div className={`z-10 text-gray-700 dark:text-gray-200`} ref={dropdownRef}>
+      <div className="dropdown-lookup__input-container" onClick={toggleDropdown}>
+        <input
+          className={`rw-input ${className}`}
+          type="text"
+          value={selectedOption ? selectedOption.name : searchTerm}
+          onChange={handleInputChange}
+          name={name}
+          placeholder="Type to search"
+        />
+        {/* {selectedOption && (
+          <input type="hidden" name={name} value={selectedOption.value} />
+        )} */}
+      </div>
+      {isOpen && (
+        <div className="relative text-gray-700 dark:text-gray-200">
+          <div className="absolute top-0 z-10 w-60 rounded border-gray-800 bg-white shadow dark:bg-gray-700" style={{ maxHeight: '200px', overflowY: 'auto' }}>
+            {filteredOptions.map(option => (
+              <div
+                key={option.value}
+                className="dropdown-lookup__option"
+                onClick={() => handleOptionClick(option)}
+              >
+                {option.name}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {/* {selectedOption && (
+        <div className="dropdown-lookup__selected-option">
+          {selectedOption.label}
+        </div>
+      )} */}
+    </div>
+  );
+};
+
+DropdownLookup.propTypes = {
+  name: PropTypes.string.isRequired,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      value: PropTypes.any.isRequired,
+    })
+  ).isRequired,
+  onSelect: PropTypes.func.isRequired,
+  defaultValue: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    value: PropTypes.any.isRequired,
+  }),
+  className: PropTypes.string,
+};

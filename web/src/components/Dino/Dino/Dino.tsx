@@ -106,12 +106,12 @@ const Dino = ({ dino }: Props) => {
               <strong>Immobilized By:</strong>
 
               {dino.immobilized_by.map((w) => (
-                <Link to={routes.item({ id: "1" })}>
+                <Link to={routes.item({ id: w })}>
                   <img
                     className="w-8"
-                    title={w}
-                    alt={w}
-                    src={`https://arkids.net/image/item/120/${w
+                    title={arkitems.items.find(item => item.id === Number(w))?.name}
+                    alt={arkitems.items.find(item => item.id === Number(w))?.name}
+                    src={`https://arkids.net/image/item/120/${arkitems.items.find(item => item.id === Number(w))?.name
                       .replaceAll(" ", "-")
                       .replace("plant-species-y", "plant-species-y-trap")}.png`}
                   />
@@ -153,7 +153,17 @@ const Dino = ({ dino }: Props) => {
               <div className="text-lg">Food</div>
               <div className="mb-4">
                 {dino.eats.map((f) => (
-                  <p className="leading-5">{f}</p>
+                  <p className="leading-5 flex">
+                    {arkitems.items.find(item => item.id === Number(f))?.name}
+                    <img
+                      className="w-5"
+                      title={arkitems.items.find(item => item.id === Number(f))?.name}
+                      alt={arkitems.items.find(item => item.id === Number(f))?.name}
+                      src={`https://arkids.net/image/item/120/${arkitems.items.find(item => item.id === Number(f))?.name
+                        .replaceAll(" ", "-")
+                        .replace("plant-species-y", "plant-species-y-trap")}.png`}
+                    />
+                  </p>
                 ))}
               </div>
             </>

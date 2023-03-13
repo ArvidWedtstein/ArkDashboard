@@ -9,10 +9,10 @@ import {
   Submit,
   SelectField,
 } from '@redwoodjs/forms'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { EditDinoById, UpdateDinoInput } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
-import Lookup from 'src/components/Util/Lookup/Lookup'
+import Lookup, { Dropdown, DropdownLookup, Lookup2 } from 'src/components/Util/Lookup/Lookup'
 import arkitems from "../../../../public/arkitems.json";
 import CheckboxGroup from 'src/components/Util/CheckSelect/CheckboxGroup'
 type FormDino = NonNullable<EditDinoById['dino']>
@@ -23,7 +23,24 @@ interface DinoFormProps {
   error?: RWGqlError
   loading: boolean
 }
-
+const StatInput = ({ stat, label, value, setValue }) => {
+  return (
+    <input
+      className="rw-input w-20"
+      defaultValue={value}
+      placeholder={label}
+      onChange={(e) =>
+        setValue((b) => ({
+          ...b,
+          [stat]: {
+            ...b[stat],
+            [label]: Number(e.target.value),
+          },
+        }))
+      }
+    />
+  );
+}
 const DinoForm = (props: DinoFormProps) => {
   const [basestat, setBasestat] = useState({
     "d": { "b": 100, "t": 2.5, "w": 5.8, "a": [{ "b": 60 }], },
@@ -35,11 +52,27 @@ const DinoForm = (props: DinoFormProps) => {
     "t": { "b": 1150, "t": null, "w": 69 },
     "w": { "b": 910, "t": 4, "w": 18.2 }
   });
+  const statEntries = useMemo(
+    () => Object.entries(basestat),
+    [basestat]
+  );
   const [drops, setDrops] = useState([]);
   const [eats, setEats] = useState([]);
 
   const [selectedOptions, setSelectedOptions] = useState([]);
 
+  const [stats, setStats] = useState([]);
+  const [statType, setStatType] = useState(null);
+  const [statValue, setStatValue] = useState(0);
+
+  const addStat = (data) => {
+    data.preventDefault()
+
+    if (stats.filter((stat) => stat.id === statType).length > 0) return
+    setStats([...stats, { id: statType, value: statValue }]);
+    setStatType(null);
+    setStatValue(0);
+  }
   const handleCheckboxGroupChange = (selected) => {
     setSelectedOptions(selected);
   };
@@ -49,7 +82,18 @@ const DinoForm = (props: DinoFormProps) => {
     props.onSave(data, props?.dino?.id)
   }
 
+  const options = [
+    { label: 'Apple', value: 'apple' },
+    { label: 'Banana', value: 'banana' },
+    { label: 'Cherry', value: 'cherry' },
+    { label: 'Grape', value: 'grape' },
+    { label: 'Kiwi', value: 'kiwi' },
+  ];
+  const [selectedOption, setSelectedOption] = useState(null);
 
+  const handleSelect = option => {
+    setSelectedOption(option);
+  };
   return (
     <div className="rw-form-wrapper">
       <Form<FormDino> onSubmit={onSubmit} error={props.error}>
@@ -209,7 +253,40 @@ const DinoForm = (props: DinoFormProps) => {
 
         <FieldError name="immobilized_by" className="rw-field-error" />
 
-        {/* TODO: Find a better alternative */}
+
+        <Label
+          name="carryable_by"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Carryable by
+        </Label>
+
+        <CheckboxGroup
+          name="carryable_by"
+          // defaultValue={props.dino?.carryable_by}
+          options={[
+            { value: "e85015a5-8694-44e6-81d3-9e1fdd06061d", label: "Pteranodon", image: "https://www.dododex.com/media/creature/pteranodon.png" },
+            { value: "1e7966e7-d63d-483d-a541-1a6d8cf739c8", label: "Tropeognathus", image: "https://www.dododex.com/media/creature/tropeognathus.png" },
+            { value: "b8e304b3-ab46-4232-9226-c713e5a0d22c", label: "Tapejara", image: "https://www.dododex.com/media/creature/tapejara.png" },
+            { value: "da86d88a-3171-4fc9-b96d-79e8f59f1601", label: "Griffin", image: "https://www.dododex.com/media/creature/griffin.png" },
+            { value: "147922ce-912d-4ab6-b4b6-712a42a9d939", label: "Desmodus", image: "https://www.dododex.com/media/creature/desmodus.png" },
+            { value: "28971d02-8375-4bf5-af20-6acb20bf7a76", label: "Argentavis", image: "https://www.dododex.com/media/creature/argentavis.png" },
+            { value: "f924e5d6-832a-4fb3-abc0-2fa42481cee1", label: "Crystal Wyvern", image: "https://www.dododex.com/media/creature/crystalwyvern.png" },
+            { value: "7aec6bf6-357e-44ec-8647-3943ca34e666", label: "Wyvern", image: "https://www.dododex.com/media/creature/wyvern.png" },
+            { value: "2b938227-61c2-4230-b7da-5d4d55f639ae", label: "Quetzal", image: "https://www.dododex.com/media/creature/quetzal.png" },
+            { value: "b1d6f790-d15c-4813-a6c8-9e6f62fafb52", label: "Tusoteuthis", image: "https://www.dododex.com/media/creature/tusoteuthis.png" },
+            { value: "d670e948-055e-45e1-adf3-e56d63236238", label: "Karkinos", image: "https://www.dododex.com/media/creature/karkinos.png" },
+            { value: "52156470-6075-487b-a042-2f1d0d88536c", label: "Kaprosuchus", image: "https://www.dododex.com/media/creature/kaprosuchus.png" },
+            { value: "f723f861-0aa3-40b5-b2d4-6c48ec0ca683", label: "Procoptodon", image: "https://www.dododex.com/media/creature/procoptodon.png" },
+            { value: "human", label: "Human", image: "https://www.dododex.com/media/item/Pet.png" },
+            { value: "94708e56-483b-4eef-ad35-2b9ce0e9c669", label: "Gigantopithecus", image: "https://www.dododex.com/media/creature/gigantopithecus.png" },
+          ]}
+        />
+
+        <FieldError name="carryable_by" className="rw-field-error" />
+
+
         <Label
           name="base_stats"
           className="rw-label"
@@ -234,19 +311,16 @@ const DinoForm = (props: DinoFormProps) => {
             <p className="w-20">wild inc.</p>
             <p className="w-20">tamed inc.</p>
           </div>
-          {Object.entries(basestat).map(([stat, value], index) => (
+          {statEntries.map(([stat, value], index) => (
             <div className="flex flex-row items-center space-x-1" key={index}>
               <p className="w-5">{stat}</p>
-              {Object.entries(value).filter(([key, _]) => ["b", "w", "t"].includes(key)).sort(([k, _]: any, [k2, f]: any) => k2 - k).map(([key, value], index) => (
-                <input className="rw-input w-20" key={index} defaultValue={value} placeholder={key} onChange={(e) => (setBasestat((b) => {
-                  return {
-                    ...b,
-                    [stat]: {
-                      ...b[stat],
-                      [key]: Number(e.target.value)
-                    }
-                  }
-                }))}
+              {["b", "w", "t"].map((label) => (
+                <StatInput
+                  key={label}
+                  stat={stat}
+                  label={label}
+                  value={value[label]}
+                  setValue={setBasestat}
                 />
               ))}
             </div>
@@ -255,6 +329,7 @@ const DinoForm = (props: DinoFormProps) => {
 
         <FieldError name="base_stats" className="rw-field-error" />
 
+
         <Label
           name="gather_eff"
           className="rw-label"
@@ -262,6 +337,59 @@ const DinoForm = (props: DinoFormProps) => {
         >
           Gather Efficiency
         </Label>
+
+
+        <div className="flex flex-col">
+          {stats && stats.map((stat, index) =>
+            <div className="rw-button-group !mt-0 justify-start text-white">
+              <p className="rw-input mt-0 !rounded-l-md !rounded-none w-20">{arkitems.items.find((i) => i.id === stat.id).name}</p>
+              {/* <Lookup
+                value={stat.id}
+                className="rw-input mt-0 !rounded-l-md !rounded-none"
+                items={arkitems.items.filter((item) => item.type === 'Resource')}
+                search={true}
+                name="gather_eff"
+                onChange={(e) => setStatType(e.id)}
+              /> */}
+              {/* <DropdownLookup className="mt-0 !rounded-l-md !rounded-none" defaultValue={{ name: stat.id, value: stat.id }} options={arkitems.items.filter((item) => item.type === 'Resource').map((f) => {
+                return {
+                  name: f.name,
+                  value: f.id,
+                }
+              })} onSelect={(e) => setStatType(e.id)} /> */}
+              <input name="value" type="number" className="rw-input mt-0 !rounded-r-md" defaultValue={stat.value} />
+              <button className="rw-button rw-button-red" onClick={() => setStats((s) => s.filter((v) => v.id !== stat.id))}>
+                Remove Stat
+              </button>
+            </div>
+          )}
+        </div>
+        <div className="rw-button-group justify-start">
+          <Lookup
+            className="rw-input mt-0 !rounded-l-md !rounded-none"
+            // value={statType ? arkitems.items.find((i) => i.id === statType).name : ''}
+            items={arkitems.items.filter((item) => item.type === 'Resource')}
+            search={true}
+            name="gather_eff"
+            onChange={(e) => setStatType(e.id)}
+          />
+
+          {/* <DropdownLookup className="mt-0 !rounded-l-md !rounded-none" options={arkitems.items.filter((item) => item.type === 'Resource').map((f) => {
+            return {
+              name: f.name,
+              value: f.id,
+            }
+          })} onSelect={handleSelect} /> */}
+          {/* {selectedOption && (
+            <p>You selected: {selectedOption.value}</p>
+          )} */}
+          <input name="value" type="number" className="rw-input mt-0 !rounded-r-md" defaultValue={statValue} onChange={(e) => setStatValue(e.currentTarget.valueAsNumber)} />
+          <button className="rw-button rw-button-green" onClick={addStat}>
+            Add stat
+          </button>
+        </div>
+
+
 
         <TextAreaField
           name="gather_eff"
@@ -566,7 +694,6 @@ const DinoForm = (props: DinoFormProps) => {
                 errorClassName="rw-input rw-input-error"
                 validation={{ valueAsNumber: true }}
               />
-
 
               <FieldError name="egg_max" className="rw-field-error" />
             </div>

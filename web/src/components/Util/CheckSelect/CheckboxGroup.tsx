@@ -41,7 +41,7 @@ const CheckboxGroup = ({ name, options, defaultValue, onChange, validation }: Ch
   }
 
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-3 flex-wrap">
       {options.map(({ label, image, value: optValue }) => (
         <label key={label}>
           <input type="checkbox" name={optValue || label} onChange={handleCheckboxChange} checked={selectedOptions.includes(optValue || label)} className="rw-check-input" />
