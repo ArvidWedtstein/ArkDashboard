@@ -58,6 +58,7 @@ export const QUERY = gql`
       ridable
       flyer_dino
       water_dino
+      type
     }
   }
 `
@@ -112,6 +113,7 @@ const UPDATE_DINO_MUTATION = gql`
       ridable
       flyer_dino
       water_dino
+      type
     }
   }
 `

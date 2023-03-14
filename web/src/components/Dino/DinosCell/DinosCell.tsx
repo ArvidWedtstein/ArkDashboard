@@ -115,6 +115,7 @@ export const QUERY = gql`
         ridable
         flyer_dino
         water_dino
+        type
       }
       count
     }

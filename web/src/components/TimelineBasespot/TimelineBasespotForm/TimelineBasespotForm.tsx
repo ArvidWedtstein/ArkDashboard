@@ -158,7 +158,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           Basespot
         </Label>
         <Lookup
-          value={props.timelineBasespot?.basespot_id ? basespots.find((b) => b.id === props.timelineBasespot?.basespot_id).name : null}
+          defaultValue={props.timelineBasespot?.basespot_id ? basespots.find((b) => b.id === props.timelineBasespot?.basespot_id).name : null}
           items={basespots}
           onChange={(e) => setSelectedBasespot(e)}
         >

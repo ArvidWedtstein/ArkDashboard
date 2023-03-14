@@ -12,9 +12,10 @@ import {
 import { useMemo, useState } from 'react'
 import type { EditDinoById, UpdateDinoInput } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
-import Lookup, { Dropdown, DropdownLookup, Lookup2 } from 'src/components/Util/Lookup/Lookup'
+import Lookup from 'src/components/Util/Lookup/Lookup'
 import arkitems from "../../../../public/arkitems.json";
 import CheckboxGroup from 'src/components/Util/CheckSelect/CheckboxGroup'
+import Slider from 'src/components/Util/Slider/Slider'
 type FormDino = NonNullable<EditDinoById['dino']>
 
 interface DinoFormProps {
@@ -68,7 +69,7 @@ const DinoForm = (props: DinoFormProps) => {
   const addStat = (data) => {
     data.preventDefault()
 
-    if (stats.filter((stat) => stat.id === statType).length > 0) return
+    if (!statType || stats.filter((stat) => stat.id === statType).length > 0) return
     setStats([...stats, { id: statType, value: statValue }]);
     setStatType(null);
     setStatValue(0);
@@ -77,23 +78,11 @@ const DinoForm = (props: DinoFormProps) => {
     setSelectedOptions(selected);
   };
   const onSubmit = (data: FormDino) => {
-    console.log(data)
-    console.log(basestat)
+
     props.onSave(data, props?.dino?.id)
   }
 
-  const options = [
-    { label: 'Apple', value: 'apple' },
-    { label: 'Banana', value: 'banana' },
-    { label: 'Cherry', value: 'cherry' },
-    { label: 'Grape', value: 'grape' },
-    { label: 'Kiwi', value: 'kiwi' },
-  ];
-  const [selectedOption, setSelectedOption] = useState(null);
 
-  const handleSelect = option => {
-    setSelectedOption(option);
-  };
   return (
     <div className="rw-form-wrapper">
       <Form<FormDino> onSubmit={onSubmit} error={props.error}>
@@ -342,22 +331,8 @@ const DinoForm = (props: DinoFormProps) => {
         <div className="flex flex-col">
           {stats && stats.map((stat, index) =>
             <div className="rw-button-group !mt-0 justify-start text-white">
-              <p className="rw-input mt-0 !rounded-l-md !rounded-none w-20">{arkitems.items.find((i) => i.id === stat.id).name}</p>
-              {/* <Lookup
-                value={stat.id}
-                className="rw-input mt-0 !rounded-l-md !rounded-none"
-                items={arkitems.items.filter((item) => item.type === 'Resource')}
-                search={true}
-                name="gather_eff"
-                onChange={(e) => setStatType(e.id)}
-              /> */}
-              {/* <DropdownLookup className="mt-0 !rounded-l-md !rounded-none" defaultValue={{ name: stat.id, value: stat.id }} options={arkitems.items.filter((item) => item.type === 'Resource').map((f) => {
-                return {
-                  name: f.name,
-                  value: f.id,
-                }
-              })} onSelect={(e) => setStatType(e.id)} /> */}
-              <input name="value" type="number" className="rw-input mt-0 !rounded-r-md" defaultValue={stat.value} />
+              <p className="rw-input mt-0 !rounded-l-md !rounded-none w-40">{arkitems.items.find((i) => i.id === stat.id).name}</p>
+              <input name="value" type="number" className="w-20 rw-input mt-0 !rounded-r-md" step={5} defaultValue={stat.value} />
               <button className="rw-button rw-button-red" onClick={() => setStats((s) => s.filter((v) => v.id !== stat.id))}>
                 Remove Stat
               </button>
@@ -367,22 +342,13 @@ const DinoForm = (props: DinoFormProps) => {
         <div className="rw-button-group justify-start">
           <Lookup
             className="rw-input mt-0 !rounded-l-md !rounded-none"
-            // value={statType ? arkitems.items.find((i) => i.id === statType).name : ''}
-            items={arkitems.items.filter((item) => item.type === 'Resource')}
+            items={arkitems.items.filter((item) => item.type === 'Resource').map((g) => {
+              return { value: g.id, name: g.name, image: `https://arkids.net/image/item/120/${g.image ? g.image.replace('_(Scorched_Earth)', '').replace('_(Aberration)', '').replace('_(Genesis_Part_2)', '').replaceAll('_', '-').toLowerCase() : `${g.name.toLowerCase()}.png`}` }
+            })}
             search={true}
             name="gather_eff"
-            onChange={(e) => setStatType(e.id)}
+            onChange={(e) => setStatType(e.value)}
           />
-
-          {/* <DropdownLookup className="mt-0 !rounded-l-md !rounded-none" options={arkitems.items.filter((item) => item.type === 'Resource').map((f) => {
-            return {
-              name: f.name,
-              value: f.id,
-            }
-          })} onSelect={handleSelect} /> */}
-          {/* {selectedOption && (
-            <p>You selected: {selectedOption.value}</p>
-          )} */}
           <input name="value" type="number" className="rw-input mt-0 !rounded-r-md" defaultValue={statValue} onChange={(e) => setStatValue(e.currentTarget.valueAsNumber)} />
           <button className="rw-button rw-button-green" onClick={addStat}>
             Add stat
@@ -447,91 +413,6 @@ const DinoForm = (props: DinoFormProps) => {
 
 
         <fieldset className="rw-form-group">
-          <legend>Breeding</legend>
-          <div>
-            <div>
-              <Label
-                name="egg_min"
-                className="rw-label"
-                errorClassName="rw-label rw-label-error"
-              >
-                Egg minimum temperature
-              </Label>
-
-              <TextField
-                name="egg_min"
-                defaultValue={props.dino?.egg_min}
-                className="rw-input"
-                errorClassName="rw-input rw-input-error"
-                validation={{ valueAsNumber: true }}
-              />
-
-              <FieldError name="egg_min" className="rw-field-error" />
-            </div>
-            <div>
-              <Label
-                name="egg_max"
-                className="rw-label"
-                errorClassName="rw-label rw-label-error"
-              >
-                Egg maximum temperature
-              </Label>
-
-              <TextField
-                name="egg_max"
-                defaultValue={props.dino?.egg_max}
-                className="rw-input"
-                errorClassName="rw-input rw-input-error"
-                validation={{ valueAsNumber: true }}
-              />
-
-
-              <FieldError name="egg_max" className="rw-field-error" />
-            </div>
-          </div>
-          <div>
-            <div>
-              <Label
-                name="maturation_time"
-                className="rw-label"
-                errorClassName="rw-label rw-label-error"
-              >
-                Maturation time
-              </Label>
-
-              <TextField
-                name="maturation_time"
-                defaultValue={props.dino?.maturation_time}
-                className="rw-input"
-                errorClassName="rw-input rw-input-error"
-                validation={{ valueAsNumber: true }}
-              />
-
-              <FieldError name="maturation_time" className="rw-field-error" />
-            </div>
-            <div>
-              <Label
-                name="incubation_time"
-                className="rw-label"
-                errorClassName="rw-label rw-label-error"
-              >
-                Incubation time
-              </Label>
-
-              <TextField
-                name="incubation_time"
-                defaultValue={props.dino?.incubation_time}
-                className="rw-input"
-                errorClassName="rw-input rw-input-error"
-                validation={{ valueAsNumber: true }}
-              />
-
-              <FieldError name="incubation_time" className="rw-field-error" />
-            </div>
-          </div>
-        </fieldset>
-
-        <fieldset className="rw-form-group">
           <legend>Taming</legend>
           <div>
             <div>
@@ -548,6 +429,7 @@ const DinoForm = (props: DinoFormProps) => {
                 defaultValue={props.dino?.tdps}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
+                emptyAs={0}
                 validation={{ valueAsNumber: true }}
               />
 
@@ -753,10 +635,10 @@ const DinoForm = (props: DinoFormProps) => {
               </Label>
 
               <Lookup
-                items={arkitems.items.filter((item) => item.type === 'Consumable')}
+                items={arkitems.items.filter((item) => item.type === 'Consumable').map((item) => ({ value: item.id, name: item.name, image: `https://arkids.net/image/item/120/${item.image ? item.image.replace('_(Scorched_Earth)', '').replace('_(Aberration)', '').replace('_(Genesis_Part_2)', '').replaceAll('_', '-').toLowerCase() : `${item.name.toLowerCase()}.png`}` }))}
                 search={true}
                 name="eats"
-                onChange={(e) => setEats((d) => [...d, { id: e.id, name: e.name, img: e.img }])}
+                onChange={(e) => setEats((d) => [...d, { id: e.id, name: e.name, img: e.image }])}
               />
 
               {eats.length > 0 ? (
