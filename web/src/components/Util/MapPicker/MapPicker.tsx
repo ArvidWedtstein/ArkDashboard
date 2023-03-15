@@ -52,6 +52,30 @@ const MapPicker = (props: MapPickerProps) => {
       "https://ark.wiki.gg/images/7/75/Fjordur_Map.jpg",
     lostisland:
       "https://ark.wiki.gg/images/1/1e/Lost_Island_Map.jpg",
+
+    "1":
+      "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/1/19/Valguero_Map.jpg",
+    "2":
+      "https://ark.gamepedia.com/media/thumb/3/3e/The_Island_Map.jpg/600px-The_Island_Map.jpg",
+    "3":
+      "https://ark.gamepedia.com/media/thumb/1/1a/The_Center_Map.jpg/600px-The_Center_Map.jpg",
+    "4":
+      "https://ark.gamepedia.com/media/thumb/5/5e/Ragnarok_Map.jpg/600px-Ragnarok_Map.jpg",
+    "5":
+      "https://ark.gamepedia.com/media/thumb/6/6e/Aberration_Map.jpg/600px-Aberration_Map.jpg",
+    "6":
+      "https://ark.gamepedia.com/media/thumb/2/2c/Extinction_Map.jpg/600px-Extinction_Map.jpg",
+    "7":
+      "https://ark.gamepedia.com/media/thumb/3/3e/Scorched_Earth_Map.jpg/600px-Scorched_Earth_Map.jpg",
+
+    "8": "https://ark.gamepedia.com/media/thumb/4/4e/Genesis_Part_1.jpg/600px-Genesis_Part_1.jpg",
+    "9": "https://ark.gamepedia.com/media/thumb/0/0d/Genesis_Part_2.jpg/600px-Genesis_Part_2.jpg",
+    "10":
+      "https://ark.gamepedia.com/media/thumb/3/3e/Crystal_Isles_Map.jpg/600px-Crystal_Isles_Map.jpg",
+    "11":
+      "https://ark.wiki.gg/images/7/75/Fjordur_Map.jpg",
+    "12":
+      "https://ark.wiki.gg/images/1/1e/Lost_Island_Map.jpg",
   };
   const [pos, setPos] = useState<{ latitude: number; longitude: number }>(valueProp);
   let svgRef = useRef<SVGSVGElement>(null);

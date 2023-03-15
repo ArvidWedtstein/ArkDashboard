@@ -18,6 +18,7 @@ import type { RWGqlError } from "@redwoodjs/forms";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import { useRef, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
+import Lookup from "src/components/Util/Lookup/Lookup";
 
 const formatDatetime = (value) => {
   if (value) {
@@ -111,33 +112,25 @@ const BasespotForm = (props: BasespotFormProps) => {
           Map
         </Label>
 
-        <SelectField
-          className="rw-input"
-          name="Map"
-          defaultValue={map}
-          onChange={(e) => {
-            setMap(e.target.value);
-          }}
-          validation={{ required: true }}
-          errorClassName="rw-input rw-input-error"
-        >
-          <option value="TheIsland">The Island</option>
-          <option value="TheCenter">The Center</option>
-          <option value="ScorchedEarth">Scorched Earth</option>
-          <option value="Ragnarok">Ragnarok</option>
-          <option value="Abberation">Abberation</option>
-          <option value="Extinction">Extinction</option>
-          <option value="Gen1">Genesis</option>
-          <option value="Gen2">Genesis 2</option>
-          <option value="Valguero">Valguero</option>
-          <option value="CrystalIsles">Crystal Isles</option>
-          <option value="Fjordur">Fjordur</option>
-          <option value="LostIsland">Lost Island</option>
-        </SelectField>
+        <Lookup items={[
+          { name: "Valguero", value: "1" },
+          { name: "The Island", value: "2" },
+          { name: "The Center", value: "3" },
+          { name: "Ragnarok", value: "4" },
+          { name: "Abberation", value: "5" },
+          { name: "Extinction", value: "6" },
+          { name: "Scorched Earth", value: "7" },
+          { name: "Genesis", value: "8" },
+          { name: "Genesis 2", value: "9" },
+          { name: "Crystal Isles", value: "10" },
+          { name: "Fjordur", value: "11" },
+          { name: "Lost Island", value: "12" }
+        ]} name="Map" />
 
         <FieldError name="Map" className="rw-field-error" />
 
-        <MapPicker map={map} valueProp={{ ...props.basespot }} onChanges={(e) => {
+
+        <MapPicker map={map.toString()} valueProp={{ ...props.basespot }} onChanges={(e) => {
           formMethods.setValue("latitude", e.latitude);
           formMethods.setValue("longitude", e.longitude);
         }} />
@@ -243,7 +236,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
-          Turretsetup image
+          Turret Setup image
         </Label>
 
         <TextField
