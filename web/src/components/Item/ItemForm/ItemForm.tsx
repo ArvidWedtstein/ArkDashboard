@@ -14,6 +14,7 @@ import {
 import type { EditItemById, UpdateItemInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { useState } from "react";
+import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 
 type FormItem = NonNullable<EditItemById["item"]>;
 
@@ -106,41 +107,72 @@ const ItemForm = (props: ItemFormProps) => {
 
         <FieldError name="image" className="rw-field-error" />
 
-        <Label
-          name="max_stack"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Max stack
-        </Label>
 
-        <TextField
-          name="max_stack"
-          defaultValue={props.item?.max_stack}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsNumber: true }}
-        />
 
-        <FieldError name="max_stack" className="rw-field-error" />
+        <fieldset className="rw-form-group">
+          <legend>Stats</legend>
+          <div>
+            <div>
+              <Label
+                name="color"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Color
+              </Label>
 
-        <Label
-          name="weight"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Weight
-        </Label>
+              <ColorField
+                name="color"
+                defaultValue={props.item?.color}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+              />
 
-        <TextField
-          name="weight"
-          defaultValue={props.item?.weight ? props.item.weight : 0}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsNumber: true }}
-        />
+              <FieldError name="color" className="rw-field-error" />
+            </div>
+          </div>
+          <div>
+            <div>
+              <Label
+                name="weight"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Weight
+              </Label>
 
-        <FieldError name="weight" className="rw-field-error" />
+              <TextField
+                name="weight"
+                defaultValue={props.item?.weight ? props.item.weight : 0}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+                validation={{ valueAsNumber: true }}
+              />
+
+              <FieldError name="weight" className="rw-field-error" />
+            </div>
+            <div>
+              <Label
+                name="max_stack"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Max stack
+              </Label>
+
+              <TextField
+                name="max_stack"
+                defaultValue={props.item?.max_stack || 0}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+                validation={{ valueAsNumber: true }}
+              />
+
+              <FieldError name="max_stack" className="rw-field-error" />
+            </div>
+          </div>
+        </fieldset>
+
 
         <Label
           name="craftable"
@@ -160,175 +192,185 @@ const ItemForm = (props: ItemFormProps) => {
 
 
         {craftable && (
-          <>
-            <Label
-              name="engram_points"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Engram points
-            </Label>
+          <fieldset className="rw-form-group">
+            <legend>Crafting</legend>
+            <div>
+              <div>
+                <Label
+                  name="engram_points"
+                  className="rw-label"
+                  errorClassName="rw-label rw-label-error"
+                >
+                  Engram points
+                </Label>
 
-            <TextField
-              name="engram_points"
-              defaultValue={props.item?.engram_points ? props.item.engram_points.toString() : 0}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-              validation={{ valueAsNumber: true }}
-            />
-            <p className="rw-helper-text">Engram points earned by crafting this item</p>
+                <TextField
+                  name="engram_points"
+                  defaultValue={props.item?.engram_points ? props.item.engram_points.toString() : 0}
+                  className="rw-input"
+                  errorClassName="rw-input rw-input-error"
+                  validation={{ valueAsNumber: true }}
+                />
+                <p className="rw-helper-text">Engram points earned by crafting this item</p>
 
-            <FieldError name="engram_points" className="rw-field-error" />
+                <FieldError name="engram_points" className="rw-field-error" />
+              </div>
+              <div>
+                <Label
+                  name="req_level"
+                  className="rw-label"
+                  errorClassName="rw-label rw-label-error"
+                >
+                  Required level
+                </Label>
 
-            <Label
-              name="crafting_time"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Crafting time
-            </Label>
+                <TextField
+                  name="req_level"
+                  defaultValue={props.item?.req_level ? props.item.req_level.toString() : 0}
+                  className="rw-input"
+                  errorClassName="rw-input rw-input-error"
+                  validation={{
+                    valueAsNumber: true
+                  }}
+                />
+                <p className="rw-helper-text">Player level required to craft this item</p>
+                <FieldError name="req_level" className="rw-field-error" />
+              </div>
+            </div>
+            <div>
+              <div>
+                <Label
+                  name="crafting_time"
+                  className="rw-label"
+                  errorClassName="rw-label rw-label-error"
+                >
+                  Crafting time
+                </Label>
 
-            <TextField
-              name="crafting_time"
-              defaultValue={props.item?.crafting_time ? props.item.crafting_time.toString() : 0}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-              validation={{ valueAsNumber: true }}
-            />
-            <p className="rw-helper-text">Time needed to craft this item</p>
+                <TextField
+                  name="crafting_time"
+                  defaultValue={props.item?.crafting_time ? props.item.crafting_time.toString() : 0}
+                  className="rw-input"
+                  errorClassName="rw-input rw-input-error"
+                  validation={{ valueAsNumber: true }}
+                />
+                <p className="rw-helper-text">Time needed to craft this item</p>
 
-            <FieldError name="crafting_time" className="rw-field-error" />
+                <FieldError name="crafting_time" className="rw-field-error" />
+              </div>
+              <div>
+                <Label
+                  name="yields"
+                  className="rw-label"
+                  errorClassName="rw-label rw-label-error"
+                >
+                  Yields
+                </Label>
 
-            <Label
-              name="req_level"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Required level
-            </Label>
+                <TextField
+                  name="yields"
+                  defaultValue={props.item?.yields ? props.item.yields : 1}
+                  className="rw-input"
+                  errorClassName="rw-input rw-input-error"
+                  validation={{ valueAsNumber: true }}
+                />
+                <p className="rw-helper-text">The amount of this item gained when crafting</p>
+                <FieldError name="yields" className="rw-field-error" />
+              </div>
+            </div>
+            <div>
+              <div>
+                <Label
+                  name="crafted_in"
+                  className="rw-label"
+                  errorClassName="rw-label rw-label-error"
+                >
+                  Crafted in
+                </Label>
 
-            <TextField
-              name="req_level"
-              defaultValue={props.item?.req_level ? props.item.req_level.toString() : 0}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-              validation={{
-                valueAsNumber: true
-              }}
-            />
-            <p className="rw-helper-text">Player level required to craft this item</p>
-            <FieldError name="req_level" className="rw-field-error" />
+                <CheckboxGroup
+                  name="crafted_in"
+                  defaultValue={props.item?.crafted_in}
+                  options={[
+                    { value: "606", label: 'Beer Barrel', image: "https://arkids.net/image/item/120/beer-barrel.png" },
+                    { value: "39", label: 'Campfire', image: "https://arkids.net/image/item/120/campfire.png" },
+                    { value: "607", label: 'Chemistry Bench', image: "https://arkids.net/image/item/120/chemistry-bench.png" },
+                    { value: "128", label: 'Cooking Pot', image: "https://arkids.net/image/item/120/cooking-pot.png" },
+                    { value: "127", label: 'Compost Bin', image: "https://arkids.net/image/item/120/compost-bin.png" },
+                    { value: "185", label: 'Fabricator', image: "https://arkids.net/image/item/120/fabricator.png" },
+                    { value: "601", label: 'Industrial Cooker', image: "https://arkids.net/image/item/120/industrial-cooker.png" },
+                    { value: "600", label: 'Industrial Forge', image: "https://arkids.net/image/item/120/industrial-forge.png" },
+                    { value: "360", label: 'Industrial Grill', image: "https://arkids.net/image/item/120/industrial-grill.png" },
+                    { value: "618", label: 'Industrial Grinder', image: "https://arkids.net/image/item/120/industrial-grinder.png" },
+                    { value: "107", label: 'Mortar And Pestle', image: "https://arkids.net/image/item/120/mortar-and-pestle.png" },
+                    { value: "126", label: 'Refining Forge', image: "https://arkids.net/image/item/120/refining-forge.png" },
+                    { value: "129", label: 'Smithy', image: "https://arkids.net/image/item/120/smithy.png" },
+                    { value: "609", label: 'Tek Replicator', image: "https://arkids.net/image/item/120/tek-replicator.png" }
+                  ]}
+                />
+                <FieldError name="crafted_in" className="rw-field-error" />
+              </div>
+            </div>
+            <div>
+              <div>
+                <Label
+                  name="recipe"
+                  className="rw-label"
+                  errorClassName="rw-label rw-label-error"
+                >
+                  Recipe
+                </Label>
 
-            <Label
-              name="yields"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Yields
-            </Label>
+                <TextAreaField
+                  name="recipe"
+                  defaultValue={JSON.stringify(props.item?.recipe)}
+                  className="rw-input"
+                  errorClassName="rw-input rw-input-error"
+                  validation={{ valueAsJSON: true }}
+                />
+                <p className="rw-helper-text">Items needed for crafting this item</p>
 
-            <TextField
-              name="yields"
-              defaultValue={props.item?.yields ? props.item.yields : 1}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-              validation={{ valueAsNumber: true }}
-            />
-            <p className="rw-helper-text">The amount of this item gained when crafting</p>
-            <FieldError name="yields" className="rw-field-error" />
+                <FieldError name="recipe" className="rw-field-error" />
+              </div>
+              <div>
+                <Label
+                  name="type"
+                  className="rw-label"
+                  errorClassName="rw-label rw-label-error"
+                >
+                  Category
+                </Label>
 
-            <Label
-              name="recipe"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Recipe
-            </Label>
+                <SelectField
+                  name="type"
+                  className="rw-input"
+                  defaultValue={props.item?.type}
+                  errorClassName="rw-input rw-input-error"
+                  validation={{
+                    required: false,
+                  }}
+                >
+                  <option>Saddle</option>
+                  <option>Structure</option>
+                  <option>Weapon</option>
+                  <option>Resource</option>
+                  <option>Tool</option>
+                  <option>Ammunition</option>
+                  <option>Consumable</option>
+                  <option>Tek</option>
+                  <option>Building</option>
+                  <option>Crafting</option>
+                  <option>Armor</option>
+                  <option>Egg</option>
+                  <option>Attachment</option>
+                  <option>Other</option>
+                </SelectField>
 
-            <TextAreaField
-              name="recipe"
-              defaultValue={JSON.stringify(props.item?.recipe)}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-              validation={{ valueAsJSON: true }}
-            />
-            <p className="rw-helper-text">Items needed for crafting this item</p>
-
-            <FieldError name="recipe" className="rw-field-error" />
-
-            <Label
-              name="crafted_in"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Crafted in
-            </Label>
-
-            <SelectField
-              name="crafted_in"
-              defaultValue={props.item?.crafted_in}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-              multiple
-              emptyAs={null}
-              validation={{
-                required: false,
-              }}
-            >
-              <option value={606}>Beer Barrel</option>
-              <option value={39}>Campfire</option>
-              <option value={607}>Chemistry Bench</option>
-              <option value={128}>Cooking Pot</option>
-              <option value={127}>Compost Bin</option>
-              <option value={185}>Fabricator</option>
-              <option value={601}>Industrial Cooker</option>
-              <option value={600}>Industrial Forge</option>
-              <option value={360}>Industrial Grill</option>
-              <option value={618}>Industrial Grinder</option>
-              <option value={107}>Mortar And Pestle</option>
-              <option value={125}>Refining Forge</option>
-              <option value={126}>Smithy</option>
-              <option value={652}>Tek Replicator</option>
-            </SelectField>
-
-
-            <FieldError name="crafted_in" className="rw-field-error" />
-          </>
+                <FieldError name="type" className="rw-field-error" />
+              </div>
+            </div>
+          </fieldset>
         )}
-        <Label
-          name="type"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Category
-        </Label>
-
-        <SelectField
-          name="type"
-          className="rw-input"
-          // defaultValue={props.item?.type}
-          errorClassName="rw-input rw-input-error"
-          validation={{
-            required: false,
-          }}
-        >
-          <option>Saddle</option>
-          <option>Structure</option>
-          <option>Weapon</option>
-          <option>Resource</option>
-          <option>Tool</option>
-          <option>Ammunition</option>
-          <option>Consumable</option>
-          <option>Tek</option>
-          <option>Building</option>
-          <option>Crafting</option>
-          <option>Armor</option>
-          <option>Egg</option>
-          <option>Attachment</option>
-          <option>Other</option>
-        </SelectField>
-
-        <FieldError name="type" className="rw-field-error" />
 
         {/* TODO: If structure category selected, show input for durability etc */}
 
@@ -407,34 +449,8 @@ const ItemForm = (props: ItemFormProps) => {
           </button>
         </div>
 
-
-        <TextAreaField
-          name="stats"
-          defaultValue={JSON.stringify(props.item?.stats)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-          required={false}
-        />
-
         <FieldError name="stats" className="rw-field-error" />
 
-        <Label
-          name="color"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Color
-        </Label>
-
-        <ColorField
-          name="color"
-          defaultValue={props.item?.color}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="color" className="rw-field-error" />
 
         <Label
           name="effects"
