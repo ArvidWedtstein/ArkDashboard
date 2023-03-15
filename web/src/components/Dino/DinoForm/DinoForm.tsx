@@ -417,6 +417,63 @@ const DinoForm = (props: DinoFormProps) => {
           <div>
             <div>
               <Label
+                name="disable_tame"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Disable tame
+              </Label>
+
+              <CheckboxField
+                name="disable_tame"
+                defaultChecked={props.dino?.disable_tame}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+              />
+              <p className="rw-helper-text">If this dino is tamable</p>
+
+              <FieldError name="disable_tame" className="rw-field-error" />
+            </div>
+            <div>
+              <Label
+                name="disable_ko"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Disable ko
+              </Label>
+
+              <CheckboxField
+                name="disable_ko"
+                defaultChecked={props.dino?.disable_ko}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+              />
+              <p className="rw-helper-text">Can this dino be KO'd?</p>
+              <FieldError name="disable_ko" className="rw-field-error" />
+            </div>
+            <div>
+              <Label
+                name="violent_tame"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Violent tame
+              </Label>
+
+              <CheckboxField
+                name="violent_tame"
+                defaultChecked={props.dino?.violent_tame}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+              />
+              <p className="rw-helper-text">Is this dino aggressive?</p>
+              <FieldError name="violent_tame" className="rw-field-error" />
+            </div>
+          </div>
+          <div>
+            <div>
+              <Label
                 name="tdps"
                 className="rw-label"
                 errorClassName="rw-label rw-label-error"
@@ -536,6 +593,68 @@ const DinoForm = (props: DinoFormProps) => {
               <FieldError name="flee_threshold" className="rw-field-error" />
             </div>
           </div>
+          <div>
+            <div>
+              <Label
+                name="base_taming_time"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Base taming time
+              </Label>
+
+              <TextField
+                name="base_taming_time"
+                defaultValue={props.dino?.base_taming_time || 0}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+                emptyAs={0}
+                validation={{ valueAsNumber: true }}
+              />
+
+              <FieldError name="base_taming_time" className="rw-field-error" />
+            </div>
+            <div>
+              <Label
+                name="taming_interval"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Taming interval
+              </Label>
+
+              <TextField
+                name="taming_interval"
+                defaultValue={props.dino?.taming_interval}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+                validation={{ valueAsNumber: true }}
+              />
+
+              <FieldError name="taming_interval" className="rw-field-error" />
+            </div>
+            <div>
+              <Label
+                name="taming_bonus_attr"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Taming bonus attribute
+              </Label>
+
+              <TextField
+                name="taming_bonus_attr"
+                defaultValue={props.dino?.taming_bonus_attr || 0}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+                emptyAs={0}
+                validation={{ valueAsNumber: true }}
+              />
+
+
+              <FieldError name="taming_bonus_attr" className="rw-field-error" />
+            </div>
+          </div>
         </fieldset>
 
         <fieldset className="rw-form-group">
@@ -627,6 +746,26 @@ const DinoForm = (props: DinoFormProps) => {
           <div>
             <div>
               <Label
+                name="disable_food"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Disable food
+              </Label>
+
+              <CheckboxField
+                name="disable_food"
+                defaultChecked={props.dino?.disable_food}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+              />
+
+              <FieldError name="disable_food" className="rw-field-error" />
+            </div>
+          </div>
+          <div>
+            <div>
+              <Label
                 name="eats"
                 className="rw-label"
                 errorClassName="rw-label rw-label-error"
@@ -657,14 +796,6 @@ const DinoForm = (props: DinoFormProps) => {
               )
               }
 
-              {/* <TextField
-                  name="eats"
-                  defaultValue={props.dino?.eats}
-                  className="rw-input"
-                  errorClassName="rw-input rw-input-error"
-                  validation={{ required: true }}
-                /> */}
-
               <FieldError name="eats" className="rw-field-error" />
             </div>
           </div>
@@ -685,7 +816,6 @@ const DinoForm = (props: DinoFormProps) => {
                 errorClassName="rw-input rw-input-error"
                 validation={{ valueAsNumber: true }}
               />
-
 
               <FieldError name="food_consumption_base" className="rw-field-error" />
             </div>
@@ -753,6 +883,7 @@ const DinoForm = (props: DinoFormProps) => {
 
         <FieldError name="weight_reduction" className="rw-field-error" />
 
+
         <Label
           name="drops"
           className="rw-label"
@@ -776,88 +907,9 @@ const DinoForm = (props: DinoFormProps) => {
             </button>
           ))}
         </div>
-        {/* <TextField
-          name="drops"
-          defaultValue={props.dino?.drops}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: false }}
-        /> */}
 
         <FieldError name="drops" className="rw-field-error" />
 
-        <Label
-          name="disable_ko"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Disable ko
-        </Label>
-
-        <CheckboxField
-          name="disable_ko"
-          defaultChecked={props.dino?.disable_ko}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-
-        <FieldError name="disable_ko" className="rw-field-error" />
-
-        <Label
-          name="violent_tame"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Violent tame
-        </Label>
-
-        <CheckboxField
-          name="violent_tame"
-          defaultChecked={props.dino?.violent_tame}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-
-        <FieldError name="violent_tame" className="rw-field-error" />
-
-        <Label
-          name="taming_bonus_attr"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Taming bonus attr
-        </Label>
-
-        <TextField
-          name="taming_bonus_attr"
-          defaultValue={props.dino?.taming_bonus_attr}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsNumber: true }}
-        />
-
-
-        <FieldError name="taming_bonus_attr" className="rw-field-error" />
-
-        <Label
-          name="disable_food"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Disable food
-        </Label>
-
-        <CheckboxField
-          name="disable_food"
-          defaultChecked={props.dino?.disable_food}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-
-        <FieldError name="disable_food" className="rw-field-error" />
 
         <Label
           name="disable_mult"
@@ -905,9 +957,10 @@ const DinoForm = (props: DinoFormProps) => {
 
         <TextField
           name="base_points"
-          defaultValue={props.dino?.base_points}
+          defaultValue={props.dino?.base_points || 0}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
+          emptyAs={0}
           validation={{ valueAsNumber: true }}
         />
 
@@ -921,15 +974,6 @@ const DinoForm = (props: DinoFormProps) => {
         >
           Method
         </Label>
-
-        <TextField
-          name="method"
-          defaultValue={props.dino?.method}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          emptyAs={null}
-          validation={{ required: false }}
-        />
 
         <CheckboxGroup
           name="type"
@@ -967,7 +1011,7 @@ const DinoForm = (props: DinoFormProps) => {
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
-          Non violent food rate mult
+          Non violent food rate multiplier
         </Label>
 
         <TextField
@@ -978,64 +1022,8 @@ const DinoForm = (props: DinoFormProps) => {
           validation={{ valueAsNumber: true }}
         />
 
-
         <FieldError name="non_violent_food_rate_mult" className="rw-field-error" />
 
-        <Label
-          name="taming_interval"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Taming interval
-        </Label>
-
-        <TextField
-          name="taming_interval"
-          defaultValue={props.dino?.taming_interval}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsNumber: true }}
-        />
-
-
-        <FieldError name="taming_interval" className="rw-field-error" />
-
-        <Label
-          name="base_taming_time"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Base taming time
-        </Label>
-
-        <TextField
-          name="base_taming_time"
-          defaultValue={props.dino?.base_taming_time}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsNumber: true }}
-        />
-
-
-        <FieldError name="base_taming_time" className="rw-field-error" />
-
-        <Label
-          name="disable_tame"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Disable tame
-        </Label>
-
-        <CheckboxField
-          name="disable_tame"
-          defaultChecked={props.dino?.disable_tame}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-        <p className="rw-helper-text">If this dino is tamable</p>
-
-        <FieldError name="disable_tame" className="rw-field-error" />
 
         <Label
           name="x_variant"
@@ -1059,7 +1047,7 @@ const DinoForm = (props: DinoFormProps) => {
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
-          Attack
+          Attacks
         </Label>
 
         <TextField
@@ -1130,41 +1118,6 @@ const DinoForm = (props: DinoFormProps) => {
         />
 
         <FieldError name="type" className="rw-field-error" />
-
-
-        {/* <Label
-          name="flyer_dino"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Flyer Dino
-        </Label>
-
-        <CheckboxField
-          name="flyer_dino"
-          defaultChecked={props.dino?.flyer_dino}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="flyer_dino" className="rw-field-error" />
-
-        <Label
-          name="water_dino"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Water Dino
-        </Label>
-
-        <CheckboxField
-          name="water_dino"
-          defaultChecked={props.dino?.water_dino}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="water_dino" className="rw-field-error" /> */}
 
         <div className="rw-button-group">
           <Submit

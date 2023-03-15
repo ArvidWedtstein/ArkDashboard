@@ -1,46 +1,106 @@
 import clsx from "clsx";
 import { useState } from "react";
 
-const Slider = ({ min, max, step, value, onChange }) => {
-  const [sliderValue, setSliderValue] = useState(value);
+// const Slider = ({ min, max, onChange }) => {
+//   const [values, setValues] = useState([min, max]);
 
-  const handleChange = (event) => {
-    const newValue = event.target.value;
-    setSliderValue(newValue);
-    onChange(newValue);
+//   const handleChange = (index, newValue) => {
+//     const newValues = [...values];
+//     newValues[index] = newValue;
+//     setValues(newValues);
+//     onChange(newValues);
+//   };
+
+//   return (
+//     <div className="range-slider">
+//       <input
+//         type="range"
+//         min={min}
+//         max={max}
+//         value={values[0]}
+//         onChange={(e) => handleChange(0, Number(e.target.value))}
+//       />
+//       <input
+//         type="range"
+//         min={min}
+//         max={max}
+//         value={values[1]}
+//         onChange={(e) => handleChange(1, Number(e.target.value))}
+//       />
+//       <div className="range-values">
+//         <span>{values[0]}</span>
+//         <span>{values[1]}</span>
+//       </div>
+//     </div>
+//   );
+// };
+
+const Slider = ({ min, max, step, value, onChange, className }) => {
+  const [values, setValues] = useState(value || [min, max]);
+  const [activeThumb, setActiveThumb] = useState(null);
+
+  const handleChange = (index, newValue) => {
+    const newValues = [...values];
+    newValues[index] = newValue;
+    setValues(newValues);
+    onChange(newValues);
+  };
+
+  const handleThumbMouseDown = (index) => {
+    setActiveThumb(index);
+  };
+
+  const handleMouseUp = () => {
+    setActiveThumb(null);
+  };
+
+  const handleMouseMove = (e) => {
+    if (activeThumb === 0) {
+      const newValue = Math.max(
+        min,
+        Math.min(values[1] - step, parseFloat(e.target.value))
+      );
+      handleChange(0, newValue);
+    } else if (activeThumb === 1) {
+      const newValue = Math.min(
+        max,
+        Math.max(values[0] + step, parseFloat(e.target.value))
+      );
+      handleChange(1, newValue);
+    }
   };
 
   return (
-    <div className="relative">
+    <div className={`range-slider ${className}`} onMouseUp={handleMouseUp}>
       <input
         type="range"
         min={min}
         max={max}
         step={step}
-        value={sliderValue}
-        onChange={handleChange}
-        className="w-full h-3 bg-gray-300 rounded-full appearance-none focus:outline-none"
+        value={values[0]}
+        onChange={(e) => handleChange(0, parseFloat(e.target.value))}
+        onMouseDown={() => handleThumbMouseDown(0)}
+        onMouseMove={handleMouseMove}
       />
-      <div
-        className={clsx(
-          "absolute top-0 left-0 h-3 rounded-full w-4 bg-gradient-to-r from-green-400 to-blue-500 transition-all duration-300 ease-in-out",
-          {
-            "w-0": sliderValue === min,
-            "w-full": sliderValue === max,
-          }
-        )}
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={values[1]}
+        onChange={(e) => handleChange(1, parseFloat(e.target.value))}
+        onMouseDown={() => handleThumbMouseDown(1)}
+        onMouseMove={handleMouseMove}
       />
-      <div
-        className={clsx("absolute top-0 left-0 flex items-center justify-center w-10 h-10 rounded-full bg-white shadow border-4 border-blue-500 transform -translate-y-1/2",
-          {
-            "left-0": sliderValue === min,
-            "right-0": sliderValue === max,
-            "translate-x-full": sliderValue === max,
-          }
-        )}
-      >
-        <div className="text-blue-500">{sliderValue}</div>
+      <div className="range-values">
+        <span>{values[0]}</span>
+        <span>{values[1]}</span>
       </div>
+      {activeThumb !== null && (
+        <div className="range-tooltip">
+          {values[activeThumb]}
+        </div>
+      )}
     </div>
   );
 };
