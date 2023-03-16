@@ -848,7 +848,7 @@ const DinoForm = (props: DinoFormProps) => {
         >
           Weight reduction
         </Label>
-
+        {/* TODO: Fix */}
         {/* <Lookup
           items={arkitems.items.filter((item) => item.type === 'Consumable')}
           search={true}
@@ -955,13 +955,13 @@ const DinoForm = (props: DinoFormProps) => {
           movement
         </Label>
 
-        <CheckboxField
+        <TextField
           name="movement"
-          defaultChecked={props.dino?.movement}
+          defaultValue={JSON.stringify(props.dino?.movement)}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
         />
-        <p className="rw-helper-text">Can this dino move in water?</p>
+        <p className="rw-helper-text">Movement speeds</p>
 
         <FieldError name="movement" className="rw-field-error" />
 
