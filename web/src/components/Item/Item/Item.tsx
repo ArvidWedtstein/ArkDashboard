@@ -45,7 +45,7 @@ const Item = ({ item }: Props) => {
     <>
       <div className="rw-segment">
         <section className="my-3 rounded-md p-4 dark:bg-zinc-600 bg-stone-200 dark:text-white text-gray-700">
-          <img className="" src={`https://www.arkresourcecalculator.com/assets/images/80px-${item.image}`} />
+          <img className="" src={`https://arkids.net/image/item/120/${item.image ? item.image.replaceAll('_', '-') : `${item.name.replaceAll(' ', '-')}.png`}`} />
           <h4 className="text-2xl font-bold font-serif my-1">{item.name}</h4>
           <p className="italic text-sm">({getWordType(item.name)})</p>
           <p className="mt-2">{item.description}</p>
@@ -60,16 +60,16 @@ const Item = ({ item }: Props) => {
 
                   <div className="h-2 w-32 bg-gray-300 rounded-full flex flex-row divide-x divide-black">
                     {Array.from(Array(5)).map((_, i) => (
-                      <div className={clsx(`first:rounded-l-full last:rounded-r-full h-full w-1/5`, {
+                      <div className={clsx(`first:rounded-l-full last:rounded-r-full h-full w-1 /5`, {
                         "bg-transparent": Math.round(eff.value) < i + 1,
                         "[&:nth-child(1)]:bg-red-500 [&:nth-child(2)]:bg-orange-500 [&:nth-child(3)]:bg-yellow-500 [&:nth-child(4)]:bg-lime-500 [&:nth-child(5)]:bg-green-500": Math.round(eff.value) >= i + 1,
                       })}></div>
                     ))}
-                  </div>
-                </div>
+                  </div >
+                </div >
               ))}
-            </div>
-          </div>
+            </div >
+          </div >
           <div className="dark:bg-zinc-600 bg-stone-200 rounded-md p-4">
             <p className="text-lg my-1">Weight Reduction</p>
             <div className="flex flex-col">
@@ -91,7 +91,7 @@ const Item = ({ item }: Props) => {
             </div>
           </div>
 
-        </section>
+        </section >
         <table className="rw-table">
           <tbody>
             <tr>

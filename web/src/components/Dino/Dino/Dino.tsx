@@ -420,44 +420,45 @@ const Dino = ({ dino }: Props) => {
           ]}
         />
       </section>
-
+      <p>{JSON.stringify(dino.gather_eff)}</p>
       <section className="mt-4 text-gray-400 dark:text-white grid grid-cols-1 md:grid-cols-2">
-        <div className="space-y-2">
-          <h4>Gather Efficiency</h4>
-          <Table
-            className="w-fit"
-            header={false}
-            rows={(dino.gather_eff as any).sort((a, b) => b.value - a.value)}
-            columns={[
-              {
-                field: "itemId", label: "", valueFormatter: (value) => {
-                  const item = arkitems.items.find(item => item.id === value.value)
-                  return item && (
-                    <div className="flex flex-row space-x-2 mr-3">
-                      <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${item.image}`} className="w-8 h-8 self-end" />
-                      <p>{item.name}</p>
+        {dino.gather_eff && Object.values(dino.gather_eff) !== null && (
+          <div className="space-y-2">
+            <h4>Gather Efficiency</h4>
+            <Table
+              className="w-fit"
+              header={false}
+              rows={(dino.gather_eff as any[]).sort((a, b) => Number(b.value) - Number(a.value))}
+              columns={[
+                {
+                  field: "itemId", label: "", valueFormatter: (value) => {
+                    const item = arkitems.items.find(item => item.id === value.value)
+                    return item && (
+                      <div className="flex flex-row space-x-2 mr-3">
+                        <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${item.image}`} className="w-8 h-8 self-end" />
+                        <p>{item.name}</p>
+                      </div>
+                    )
+                  }
+                },
+                {
+                  field: "value", label: "", valueFormatter: (value) => (
+                    <div className="h-2 w-32 bg-gray-300 rounded-full flex flex-row divide-x divide-black">
+                      {Array.from(Array(5)).map((_, i) => (
+                        <div className={clsx(`first:rounded-l-full last:rounded-r-full h-full w-1/5`, {
+                          "bg-transparent": Math.round(value.value) < i + 1,
+                          "[&:nth-child(1)]:bg-red-500 [&:nth-child(2)]:bg-orange-500 [&:nth-child(3)]:bg-yellow-500 [&:nth-child(4)]:bg-lime-500 [&:nth-child(5)]:bg-green-500": Math.round(value.value) >= i + 1,
+                        })}></div>
+                      ))}
                     </div>
                   )
-                }
-              },
-              {
-                field: "value", label: "", valueFormatter: (value) => (
-                  <div className="h-2 w-32 bg-gray-300 rounded-full flex flex-row divide-x divide-black">
-                    {Array.from(Array(5)).map((_, i) => (
-                      <div className={clsx(`first:rounded-l-full last:rounded-r-full h-full w-1/5`, {
-                        "bg-transparent": Math.round(value.value) < i + 1,
-                        "[&:nth-child(1)]:bg-red-500 [&:nth-child(2)]:bg-orange-500 [&:nth-child(3)]:bg-yellow-500 [&:nth-child(4)]:bg-lime-500 [&:nth-child(5)]:bg-green-500": Math.round(value.value) >= i + 1,
-                      })}></div>
-                    ))}
-                  </div>
-                )
-              },
-            ]}
-          />
-        </div>
-        <div className="space-y-2">
+                },
+              ]}
+            />
+          </div>)}
+        {dino.weight_reduction && (<div className="space-y-2">
           <h4>Weight Reduction</h4>
-          <Table
+          {/*<Table
             className="w-fit"
             header={false}
             rows={(dino.weight_reduction as any).sort((a, b) => b.value - a.value)}
@@ -490,8 +491,8 @@ const Dino = ({ dino }: Props) => {
                 )
               },
             ]}
-          />
-        </div>
+          />*/}
+        </div>)}
       </section>
       {/*
       <nav className="rw-button-group">

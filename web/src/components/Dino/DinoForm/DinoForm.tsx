@@ -966,7 +966,7 @@ const DinoForm = (props: DinoFormProps) => {
               {["base", "sprint"].map((label) => (
                 <p
                   className="rw-input w-20"
-                  contenteditable="true"
+                  contentEditable="true"
 
                 >{!value[label] ? '-' : truncate((useFoundationUnit ? Number(value[label] / 300) : Number(value[label])).toFixed(2), 6)}</p >
               ))}
