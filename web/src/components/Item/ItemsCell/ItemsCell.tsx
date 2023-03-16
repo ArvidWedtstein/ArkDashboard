@@ -85,7 +85,7 @@ export const Failure = ({ error }: CellFailureProps) => (
 export const Success = ({ itemsPage }: CellSuccessProps<FindItems>) => {
   return itemsPage.count > 0 ? (
     <>
-      <Items items={itemsPage.items} />
+      <Items itemsPage={itemsPage} />
       <Pagination count={itemsPage.count} route={"items"} />
     </>
   ) : (

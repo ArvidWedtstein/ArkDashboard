@@ -23,6 +23,7 @@ export const QUERY = gql`
       color
       crafted_in
       effects
+      type
     }
   }
 `
@@ -33,7 +34,6 @@ export const Empty = () => <div>Item not found</div>
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>
-
 )
 
 export const Success = ({ item }: CellSuccessProps<FindItemById>) => {

@@ -20,7 +20,7 @@ const DELETE_ITEM_MUTATION = gql`
   }
 `;
 
-const ItemsList = ({ items }: FindItems) => {
+const ItemsList = ({ itemsPage }: FindItems) => {
   const [deleteItem] = useMutation(DELETE_ITEM_MUTATION, {
     onCompleted: () => {
       toast.success("Item deleted");
@@ -64,7 +64,7 @@ const ItemsList = ({ items }: FindItems) => {
         "grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6": view === "grid",
       })
       }>
-        {items.map((item) => (
+        {itemsPage.items.map((item) => (
           <Link to={routes.item({ id: item.id.toString() })}>
             <ArkCard
               className="border dark:border-gray-500 border-gray-800"
