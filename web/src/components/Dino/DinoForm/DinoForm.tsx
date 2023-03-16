@@ -7,7 +7,6 @@ import {
   TextAreaField,
   CheckboxField,
   Submit,
-  SelectField,
 } from '@redwoodjs/forms'
 import { useMemo, useState } from 'react'
 import type { EditDinoById, UpdateDinoInput } from 'types/graphql'
@@ -15,7 +14,8 @@ import type { RWGqlError } from '@redwoodjs/forms'
 import Lookup from 'src/components/Util/Lookup/Lookup'
 import arkitems from "../../../../public/arkitems.json";
 import CheckboxGroup from 'src/components/Util/CheckSelect/CheckboxGroup'
-import Slider from 'src/components/Util/Slider/Slider'
+import { truncate } from 'src/lib/formatters'
+
 type FormDino = NonNullable<EditDinoById['dino']>
 
 interface DinoFormProps {
@@ -24,24 +24,7 @@ interface DinoFormProps {
   error?: RWGqlError
   loading: boolean
 }
-const StatInput = ({ stat, label, value, setValue }) => {
-  return (
-    <input
-      className="rw-input w-20"
-      defaultValue={value}
-      placeholder={label}
-      onChange={(e) =>
-        setValue((b) => ({
-          ...b,
-          [stat]: {
-            ...b[stat],
-            [label]: Number(e.target.value),
-          },
-        }))
-      }
-    />
-  );
-}
+
 const DinoForm = (props: DinoFormProps) => {
   const [basestat, setBasestat] = useState({
     "d": { "b": 100, "t": 2.5, "w": 5.8, "a": [{ "b": 60 }], },
@@ -60,29 +43,55 @@ const DinoForm = (props: DinoFormProps) => {
   const [drops, setDrops] = useState([]);
   const [eats, setEats] = useState([]);
 
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [useFoundationUnit, setUseFoundationUnit] = useState(false);
 
-  const [stats, setStats] = useState([]);
-  const [statType, setStatType] = useState(null);
-  const [statValue, setStatValue] = useState(0);
+  const [ge, setGE] = useState([]);
+  const [geType, setGeType] = useState(null);
+  const [geValue, setGeValue] = useState(0);
 
-  const addStat = (data) => {
+  const addGE = (data) => {
     data.preventDefault()
 
-    if (!statType || stats.filter((stat) => stat.id === statType).length > 0) return
-    setStats([...stats, { id: statType, value: statValue }]);
-    setStatType(null);
-    setStatValue(0);
+    if (!geType || ge.filter((stat) => stat.id === geType).length > 0) return
+    setGE([...ge, { id: geType, value: geValue }]);
+    setGeType(null);
+    setGeValue(0);
   }
-  const handleCheckboxGroupChange = (selected) => {
-    setSelectedOptions(selected);
-  };
-  const onSubmit = (data: FormDino) => {
 
+  const [wr, setWR] = useState([]);
+  const [wrType, setWrType] = useState(null);
+  const [wrValue, setWrValue] = useState(0);
+
+  const addWR = (data) => {
+    data.preventDefault()
+
+    if (!wrType || wr.filter((stat) => stat.id === wrType).length > 0) return
+    setWR([...wr, { id: wrType, value: wrValue }]);
+    setWrType(null);
+    setWrValue(0);
+  }
+
+  const onSubmit = (data: FormDino) => {
     props.onSave(data, props?.dino?.id)
   }
 
+  // Movement is shown in game units. UE game units are 1 cm 1:1
+  // A foundation is 300x300 game units, i.e 3x3 meters
+  // https://ark.fandom.com/wiki/Game_units
 
+  const movementFly = {
+    "d": {
+      "walk": { "base": 260, "sprint": 585 },
+      "swim": { "base": 600 },
+      "fly": { "base": 600, "sprint": 1350 }
+    },
+    "w": {
+      "walk": { "base": 260, "sprint": 315.3 },
+      "swim": { "base": 600 },
+      "fly": { "base": 600, "sprint": 727.5 }
+    },
+    "staminaRates": { "sprint": -6, "swimOrFly": -0.275 }
+  }
   return (
     <div className="rw-form-wrapper">
       <Form<FormDino> onSubmit={onSubmit} error={props.error}>
@@ -94,7 +103,7 @@ const DinoForm = (props: DinoFormProps) => {
         />
 
         <div className="flex flex-row items-start space-x-3">
-          <div className="">
+          <div>
             <Label
               name="name"
               className="rw-label"
@@ -113,7 +122,7 @@ const DinoForm = (props: DinoFormProps) => {
 
             <FieldError name="name" className="rw-field-error" />
           </div>
-          <div className="">
+          <div>
             <Label
               name="synonyms"
               className="rw-label"
@@ -304,12 +313,19 @@ const DinoForm = (props: DinoFormProps) => {
             <div className="flex flex-row items-center space-x-1" key={index}>
               <p className="w-5">{stat}</p>
               {["b", "w", "t"].map((label) => (
-                <StatInput
-                  key={label}
-                  stat={stat}
-                  label={label}
-                  value={value[label]}
-                  setValue={setBasestat}
+                <input
+                  className="rw-input w-20"
+                  defaultValue={JSON.stringify(value[label])}
+                  placeholder={label}
+                  onChange={(e) =>
+                    setBasestat((b) => ({
+                      ...b,
+                      [stat]: {
+                        ...b[stat],
+                        [label]: Number(e.target.value),
+                      },
+                    }))
+                  }
                 />
               ))}
             </div>
@@ -327,13 +343,12 @@ const DinoForm = (props: DinoFormProps) => {
           Gather Efficiency
         </Label>
 
-
         <div className="flex flex-col">
-          {stats && stats.map((stat, index) =>
+          {ge && ge.map((stat, index) =>
             <div className="rw-button-group !mt-0 justify-start text-white">
               <p className="rw-input mt-0 !rounded-l-md !rounded-none w-40">{arkitems.items.find((i) => i.id === stat.id).name}</p>
               <input name="value" type="number" className="w-20 rw-input mt-0 !rounded-r-md" step={5} defaultValue={stat.value} />
-              <button className="rw-button rw-button-red" onClick={() => setStats((s) => s.filter((v) => v.id !== stat.id))}>
+              <button className="rw-button rw-button-red" onClick={() => setGE((s) => s.filter((v) => v.id !== stat.id))}>
                 Remove Stat
               </button>
             </div>
@@ -347,27 +362,16 @@ const DinoForm = (props: DinoFormProps) => {
             })}
             search={true}
             name="gather_eff"
-            onChange={(e) => setStatType(e.value)}
+            onChange={(e) => setGeType(e.value)}
           />
-          <input name="value" type="number" className="rw-input mt-0 !rounded-r-md" defaultValue={statValue} onChange={(e) => setStatValue(e.currentTarget.valueAsNumber)} />
-          <button className="rw-button rw-button-green" onClick={addStat}>
+          <input name="value" type="number" className="rw-input mt-0 !rounded-r-md" defaultValue={geValue} onChange={(e) => setGeValue(e.currentTarget.valueAsNumber)} />
+          <button className="rw-button rw-button-green" onClick={addGE}>
             Add stat
           </button>
         </div>
 
-
-
-        <TextAreaField
-          name="gather_eff"
-          defaultValue={JSON.stringify(props.dino?.gather_eff)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          emptyAs='undefined'
-          validation={{ valueAsJSON: true }}
-        />
-
-
         <FieldError name="gather_eff" className="rw-field-error" />
+
 
         <Label
           name="exp_per_kill"
@@ -848,38 +852,33 @@ const DinoForm = (props: DinoFormProps) => {
         >
           Weight reduction
         </Label>
-        {/* TODO: Fix */}
-        {/* <Lookup
-          items={arkitems.items.filter((item) => item.type === 'Consumable')}
-          search={true}
-          name="weight_reduction"
-          onChange={(e) => setEats((d) => [...d, { id: e.id, name: e.name, img: e.img }])}
-        />
 
-        {eats.length > 0 ? (
-          <div className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-zinc-600 dark:border-zinc-500 dark:text-white mt-2">
-            {eats.map((food, i) => (
-              <button key={i} onClick={() => setEats((d) => d.filter((g) => g.id !== food.id))} className="block w-full px-2 py-1 first:rounded-t-lg last:rounded-b-lg transition-color cursor-pointer hover:ring hover:ring-red-500">
-                  {food.name}
+        <div className="flex flex-col">
+          {wr && wr.map((stat, index) =>
+            <div className="rw-button-group !mt-0 justify-start text-white">
+              <p className="rw-input mt-0 !rounded-l-md !rounded-none w-40">{arkitems.items.find((i) => i.id === stat.id).name}</p>
+              <input name="value" type="number" className="w-20 rw-input mt-0 !rounded-r-md" step={5} defaultValue={stat.value} />
+              <button className="rw-button rw-button-red" onClick={() => setWR((s) => s.filter((v) => v.id !== stat.id))}>
+                Remove Stat
               </button>
-            ))}
-          </div>
-        ) : (
-            <p className="rw-helper-text">
-              No food added yet.
-              Does this dino even eat?
-            </p>
-          )
-        } */}
-
-        <TextAreaField
-          name="weight_reduction"
-          defaultValue={JSON.stringify(props.dino?.weight_reduction)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          emptyAs={'undefined'}
-          validation={{ valueAsJSON: true }}
-        />
+            </div>
+          )}
+        </div>
+        <div className="rw-button-group justify-start">
+          <Lookup
+            className="rw-input mt-0 !rounded-l-md !rounded-none"
+            items={arkitems.items.filter((item) => item.type === 'Resource').map((g) => {
+              return { value: g.id, name: g.name, image: `https://arkids.net/image/item/120/${g.image ? g.image.replace('_(Scorched_Earth)', '').replace('_(Aberration)', '').replace('_(Genesis_Part_2)', '').replaceAll('_', '-').toLowerCase() : `${g.name.toLowerCase()}.png`}` }
+            })}
+            search={true}
+            name="weight_reduction"
+            onChange={(e) => setWrType(e.value)}
+          />
+          <input name="value" type="number" className="rw-input mt-0 !rounded-r-md" defaultValue={wrValue} onChange={(e) => setWrValue(e.currentTarget.valueAsNumber)} />
+          <button className="rw-button rw-button-green" onClick={addWR}>
+            Add stat
+          </button>
+        </div>
 
         <FieldError name="weight_reduction" className="rw-field-error" />
 
@@ -952,16 +951,47 @@ const DinoForm = (props: DinoFormProps) => {
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
-          movement
+          Movement
         </Label>
 
-        <TextField
-          name="movement"
-          defaultValue={JSON.stringify(props.dino?.movement)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-        <p className="rw-helper-text">Movement speeds</p>
+        <div className="text-white flex flex-col">
+          <div className="flex flex-row items-center space-x-1">
+            <p className="w-14"></p>
+            <p className="w-20">base</p>
+            <p className="w-20">sprint</p>
+          </div>
+          {Object.entries(movementFly["w"]).map(([stat, value], index) => (
+            <div className="flex flex-row items-center space-x-1" key={index}>
+              <p className="w-14">{stat}</p>
+              {["base", "sprint"].map((label) => (
+                <p
+                  className="rw-input w-20"
+                  contenteditable="true"
+
+                >{!value[label] ? '-' : truncate((useFoundationUnit ? Number(value[label] / 300) : Number(value[label])).toFixed(2), 6)}</p >
+              ))}
+              <p className="w-20">{useFoundationUnit ? 'Foundations' : `Units`} per sec</p>
+            </div>
+          ))}
+        </div>
+        <label className="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" checked={useFoundationUnit} className="sr-only peer" onChange={(e) => setUseFoundationUnit(!useFoundationUnit)} />
+          <div className="rw-toggle peer-focus:ring-pea-300 dark:peer-focus:ring-pea-800 peer-checked:bg-pea-600 peer peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4"></div>
+          <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Game Units / Foundation</span>
+        </label>
+
+        {/* <div className="relative">
+          <span className="absolute inset-y-0 left-0 pl-3 flex items-center">
+            <img className="w-8 h-8" src={"https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/7/78/Landing.png"} />
+          </span>
+          <TextField
+            name="movement"
+            defaultValue={JSON.stringify(props.dino?.movement)}
+            className="rw-input pl-12"
+            errorClassName="rw-input rw-input-error"
+          />
+        </div> */}
+        <p className="rw-helper-text">Walking Movement speeds</p>
 
         <FieldError name="movement" className="rw-field-error" />
 
@@ -995,7 +1025,7 @@ const DinoForm = (props: DinoFormProps) => {
         </Label>
 
         <CheckboxGroup
-          name="type"
+          name="method"
           defaultValue={props.dino?.method}
           options={[
             { label: 'v', image: 'https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/7/78/Landing.png' },
