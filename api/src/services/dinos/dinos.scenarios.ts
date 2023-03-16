@@ -14,6 +14,8 @@ export const standard = defineScenario<Prisma.DinoCreateArgs>({
         drops: 'String',
         method: 'String',
         knockout: 'String',
+        type: 'String',
+        carryable_by: 'String',
       },
     },
     two: {
@@ -27,6 +29,8 @@ export const standard = defineScenario<Prisma.DinoCreateArgs>({
         drops: 'String',
         method: 'String',
         knockout: 'String',
+        type: 'String',
+        carryable_by: 'String',
       },
     },
   },

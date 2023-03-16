@@ -34,6 +34,8 @@ describe('dinos', () => {
         drops: 'String',
         method: 'String',
         knockout: 'String',
+        type: 'String',
+        carryable_by: 'String',
       },
     })
 
@@ -46,6 +48,8 @@ describe('dinos', () => {
     expect(result.drops).toEqual('String')
     expect(result.method).toEqual('String')
     expect(result.knockout).toEqual('String')
+    expect(result.type).toEqual('String')
+    expect(result.carryable_by).toEqual('String')
   })
 
   scenario('updates a dino', async (scenario: StandardScenario) => {

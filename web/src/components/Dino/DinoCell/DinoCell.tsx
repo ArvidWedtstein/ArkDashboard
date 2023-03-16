@@ -47,7 +47,6 @@ export const QUERY = gql`
       non_violent_food_rate_mult
       taming_interval
       base_taming_time
-      exp_per_kill_adj
       disable_tame
       x_variant
       attack
@@ -55,7 +54,9 @@ export const QUERY = gql`
       ridable
       flyer_dino
       water_dino
+      movement
       type
+      carryable_by
     }
   }
 `

@@ -948,6 +948,25 @@ const DinoForm = (props: DinoFormProps) => {
 
 
         <Label
+          name="movement"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          movement
+        </Label>
+
+        <CheckboxField
+          name="movement"
+          defaultChecked={props.dino?.movement}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+        <p className="rw-helper-text">Can this dino move in water?</p>
+
+        <FieldError name="movement" className="rw-field-error" />
+
+
+        <Label
           name="base_points"
           className="rw-label"
           errorClassName="rw-label rw-label-error"

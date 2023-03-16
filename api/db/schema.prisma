@@ -70,7 +70,7 @@ model Profile {
 }
 
 model Role {
-  id                            String       @id(map: "roles_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                            String       @id(map: "roles_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name                          String
   createdBy                     String?      @default(dbgenerated("auth.uid()")) @db.Uuid
   permissions                   permission[]
@@ -78,7 +78,7 @@ model Role {
 }
 
 model Timeline {
-  id               String             @id(map: "timeline_pkey") @unique(map: "timeline_id_key") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id               String             @id(map: "timeline_pkey") @unique(map: "timeline_id_key") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   createdAt        DateTime?          @default(now()) @db.Timestamptz(6)
   updatedAt        DateTime?          @db.Timestamptz(6)
   createdBy        String             @db.Uuid
@@ -92,13 +92,13 @@ model Tribe {
   description String?
   created_at  DateTime? @default(now())
   updated_at  DateTime?
-  createdBy   String?   @db.Uuid
+  createdBy   String?   @default(dbgenerated("auth.uid()")) @db.Uuid
   updatedBy   String?   @db.Uuid
   Profile     Profile?  @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Message {
-  id         String    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   profile_id String    @default(dbgenerated("auth.uid()")) @db.Uuid
   content    String
   created_at DateTime? @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
@@ -106,7 +106,7 @@ model Message {
 }
 
 model Dino {
-  id                             String    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                             String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at                     DateTime? @default(now()) @db.Timestamptz(6)
   name                           String
   synonyms                       String[]
@@ -146,7 +146,6 @@ model Dino {
   non_violent_food_rate_mult     Float?
   taming_interval                Float?
   base_taming_time               Float?
-  exp_per_kill_adj               Float?
   disable_tame                   Boolean?  @default(false)
   x_variant                      Boolean?  @default(false)
   attack                         Json?
@@ -154,6 +153,9 @@ model Dino {
   ridable                        Boolean?  @default(false)
   flyer_dino                     Boolean?  @default(false)
   water_dino                     Boolean?  @default(false)
+  movement                       Json?     @default("null")
+  type                           String[]
+  carryable_by                   String[]
 }
 
 model Item {
