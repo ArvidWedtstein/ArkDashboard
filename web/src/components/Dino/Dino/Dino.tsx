@@ -152,14 +152,14 @@ const Dino = ({ dino }: Props) => {
             <>
               <div className="text-lg">Food</div>
               <div className="mb-4">
-                {dino.eats.map((f) => (
+                {dino.eats.map((f: any) => (
                   <p className="leading-5 flex">
-                    {arkitems.items.find(item => item.id === Number(f))?.name}
+                    {f.name}
                     <img
                       className="w-5"
-                      title={arkitems.items.find(item => item.id === Number(f))?.name}
-                      alt={arkitems.items.find(item => item.id === Number(f))?.name}
-                      src={`https://arkids.net/image/item/120/${arkitems.items.find(item => item.id === Number(f))?.name
+                      title={f.name}
+                      alt={f.name}
+                      src={`https://arkids.net/image/item/120/${f.name
                         .replaceAll(" ", "-")
                         .replace("plant-species-y", "plant-species-y-trap")}.png`}
                     />
@@ -420,7 +420,7 @@ const Dino = ({ dino }: Props) => {
           ]}
         />
       </section>
-      <p>{JSON.stringify(dino.gather_eff)}</p>
+
       <section className="mt-4 text-gray-400 dark:text-white grid grid-cols-1 md:grid-cols-2">
         {dino.gather_eff && Object.values(dino.gather_eff) !== null && (
           <div className="space-y-2">
@@ -428,15 +428,15 @@ const Dino = ({ dino }: Props) => {
             <Table
               className="w-fit"
               header={false}
-              rows={(dino.gather_eff as any[]).sort((a, b) => Number(b.value) - Number(a.value))}
+              rows={(dino.gather_eff as any[]).sort((a, b) => b.value - a.value)}
               columns={[
                 {
                   field: "itemId", label: "", valueFormatter: (value) => {
-                    const item = arkitems.items.find(item => item.id === value.value)
-                    return item && (
+                    console.log(value)
+                    return value.row && (
                       <div className="flex flex-row space-x-2 mr-3">
-                        <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${item.image}`} className="w-8 h-8 self-end" />
-                        <p>{item.name}</p>
+                        <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${value.row.image}`} className="w-8 h-8 self-end" />
+                        <p>{value.row.name}</p>
                       </div>
                     )
                   }
@@ -455,44 +455,69 @@ const Dino = ({ dino }: Props) => {
                 },
               ]}
             />
-          </div>)}
-        {dino.weight_reduction && (<div className="space-y-2">
-          <h4>Weight Reduction</h4>
-          {/*<Table
-            className="w-fit"
-            header={false}
-            rows={(dino.weight_reduction as any).sort((a, b) => b.value - a.value)}
-            columns={[
-              {
-                field: "itemId", label: "", valueFormatter: (value) => {
-                  const item = arkitems.items.find(item => item.id === value.value)
-                  return item && (
-                    <div className="flex flex-row space-x-2 mr-3">
-                      <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${item.image}`} className="w-8 h-8 self-end" />
-                      <p>{item.name}</p>
+          </div>
+        )}
+        {dino.weight_reduction && (
+          <div className="space-y-2">
+            <h4>Weight Reduction</h4>
+            <Table
+              className="w-fit"
+              header={false}
+              rows={(dino.weight_reduction as any).sort((a, b) => b.value - a.value)}
+              columns={[
+                {
+                  field: "itemId", label: "", valueFormatter: (value) => {
+                    return value.row && (
+                      <div className="flex flex-row space-x-2 mr-3">
+                        <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${value.row.image}`} className="w-8 h-8 self-end" />
+                        <p>{value.row.name}</p>
+                      </div>
+                    )
+                  }
+                },
+                {
+                  field: "value", label: "", valueFormatter: (value) => (
+                    <div className="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="inline-block fill-current w-4">
+                        <path d="M510.3 445.9L437.3 153.8C433.5 138.5 420.8 128 406.4 128H346.1c3.625-9.1 5.875-20.75 5.875-32c0-53-42.1-96-96-96S159.1 43 159.1 96c0 11.25 2.25 22 5.875 32H105.6c-14.38 0-27.13 10.5-30.88 25.75l-73.01 292.1C-6.641 479.1 16.36 512 47.99 512h416C495.6 512 518.6 479.1 510.3 445.9zM256 128C238.4 128 223.1 113.6 223.1 96S238.4 64 256 64c17.63 0 32 14.38 32 32S273.6 128 256 128z" />
+                      </svg>
+                      <p className="text-lime-300 mx-1">
+                        50%
+                      </p>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="text-lime-300 inline-block fill-current w-4">
+                        <path d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z" />
+                      </svg>
                     </div>
                   )
-                }
-              },
-              {
-                field: "value", label: "", valueFormatter: (value) => (
-                  <div className="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="inline-block fill-current w-4">
-                      <path d="M510.3 445.9L437.3 153.8C433.5 138.5 420.8 128 406.4 128H346.1c3.625-9.1 5.875-20.75 5.875-32c0-53-42.1-96-96-96S159.1 43 159.1 96c0 11.25 2.25 22 5.875 32H105.6c-14.38 0-27.13 10.5-30.88 25.75l-73.01 292.1C-6.641 479.1 16.36 512 47.99 512h416C495.6 512 518.6 479.1 510.3 445.9zM256 128C238.4 128 223.1 113.6 223.1 96S238.4 64 256 64c17.63 0 32 14.38 32 32S273.6 128 256 128z" />
-                    </svg>
-                    <p className="text-lime-300 mx-1">
-                      50%
-                    </p>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="text-lime-300 inline-block fill-current w-4">
-                      <path d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z" />
-                    </svg>
+                },
+              ]}
+            />
+          </div>
+        )}
+      </section>
 
+      <section className="mt-4 text-gray-400 dark:text-white">
+        <div className="space-y-2">
+          <h4>Drops</h4>
+        </div>
+        <Table
+          className="w-fit"
+          header={false}
+          rows={(dino.drops as any)}
+          columns={[
+            {
+              field: "itemId", label: "", valueFormatter: (value) => {
+
+                return value.row && (
+                  <div className="flex flex-row space-x-2 mr-3">
+                    <img src={`https://www.arkresourcecalculator.com/assets/images/80px-${value.row.image}`} className="w-8 h-8 self-end" />
+                    <p>{value.row.name}</p>
                   </div>
                 )
-              },
-            ]}
-          />*/}
-        </div>)}
+              }
+            }
+          ]}
+        />
       </section>
       {/*
       <nav className="rw-button-group">

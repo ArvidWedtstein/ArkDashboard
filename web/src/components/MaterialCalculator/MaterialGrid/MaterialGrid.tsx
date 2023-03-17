@@ -10,19 +10,15 @@ import {
 import { useCallback, useMemo, useReducer, useState } from "react";
 import { useForm } from "react-hook-form";
 import Lookup from "src/components/Util/Lookup/Lookup";
-import { getBaseMaterials, jsonDisplay } from "src/lib/formatters";
+import { getBaseMaterials } from "src/lib/formatters";
 import Table from "src/components/Util/Table/Table";
-import arkitems from "../../../../public/arkitems.json";
-import LineChart from "src/components/Util/LineChart/LineChart";
-import Counter from "src/components/Util/Counter/Counter";
 interface MaterialGridProps {
-  // items: any;
+  items: any;
   error?: RWGqlError;
 }
-export const MaterialGrid = ({ error }: MaterialGridProps) => {
-  let { itemStats, items: itemsark } = arkitems;
+export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
   const items = useMemo(() => {
-    return itemsark.map((v) => ({ ...v, amount: 1 * v.yields }));
+    return arkitems.map((v) => ({ ...v, amount: 1 * v.yields }));
   }, []);
   const formMethods = useForm();
 
@@ -207,7 +203,15 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
 
       <div className="relative flex flex-row space-x-3">
         <Lookup
-          items={items}
+          items={items.map((item) => {
+            return {
+              ...item,
+              image: `https://arkids.net/image/item/120/${item.name
+                .replaceAll(" ", "-")
+                .replace("plant-species-y", "plant-species-y-trap")}.png`
+            };
+          })}
+          group={"type"}
           search={true}
           name="itemName"
           onChange={(e) => onAdd({ itemName: e.name })}

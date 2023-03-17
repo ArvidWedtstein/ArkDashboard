@@ -30,6 +30,7 @@ const Lookup = ({
   // const { ref: refFilter, isComponentVisible: isFilterVisible, setIsComponentVisible: setIsFilterVisible } =
   //   useComponentVisible(false);
   const [inputValue, setInputValue] = useState<string | object>("");
+  const [openIndexes, setOpenIndexes] = useState([]);
   const [lookupitems, setItems] = useState<{ name?: string, image?: string, value?: string | number }[]>([]);
 
   const handleInputChange = (e) => {
@@ -45,9 +46,10 @@ const Lookup = ({
 
   const handleSelect = (option) => {
     setInputValue(option)
-    setItems(items);
+    setItems(group ? groupBy(items, group) : items);
     onChange ? onChange(option) : null;
     setIsComponentVisible(false);
+    setOpenIndexes([])
   }
   const handleReset = (e) => {
     setInputValue("");
@@ -55,15 +57,14 @@ const Lookup = ({
     onChange ? onChange({ name: "" }) : null;
   };
   useEffect(() => {
-    setItems(items);
+    setItems(group ? groupBy(items, group) : items);
     if (defaultValue) {
       const defVal = items.find((f) => (f.value === defaultValue) || (f === defaultValue));
       setInputValue(defVal ? defVal : '');
       onChange ? onChange(defVal) : null;
     }
-  }, [defaultValue]);
+  }, [defaultValue, group]);
 
-  const [openIndexes, setOpenIndexes] = useState([]);
 
   /**
    * @description For toggling the open state of the groups
@@ -166,7 +167,7 @@ const Lookup = ({
                       <img
                         className="mr-2 h-6 w-6 rounded-full"
                         src={item.image}
-                        alt={""}
+                        alt={item.name}
                       />
                     )}
                     {item.name}
@@ -201,11 +202,11 @@ const Lookup = ({
                             onClick={() => handleSelect(item)}
                             className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                           >
-                            {"image" in item ?? (
+                            {"image" in item && (
                               <img
                                 className="mr-2 h-6 w-6 rounded-full"
                                 src={item.image}
-                                alt="image"
+                                alt=""
                               />
                             )}
                             {item.name}
