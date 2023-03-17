@@ -171,9 +171,9 @@ export const afterQuery = (data) => {
         } : item
       }),
       immobilized_by: data.dino.immobilized_by.map((item) => {
-        const itemData = data.items.find((i) => i.id == item.itemId)
+        const itemData = data.items.find((i) => i.id == item)
         return itemData ? {
-          ...item,
+          id: item,
           image: itemData.image,
           name: itemData.name,
         } : item

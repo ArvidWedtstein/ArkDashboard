@@ -9,7 +9,6 @@ import type { DeleteDinoMutationVariables, FindDinoById } from "types/graphql";
 import clsx from "clsx";
 import Table from "src/components/Util/Table/Table";
 
-import arkitems from "../../../../public/arkitems.json";
 
 const DELETE_DINO_MUTATION = gql`
   mutation DeleteDinoMutation($id: String!) {
@@ -105,13 +104,13 @@ const Dino = ({ dino }: Props) => {
             <div className="mr-4 mb-4 flex flex-row space-x-1">
               <strong>Immobilized By:</strong>
 
-              {dino.immobilized_by.map((w) => (
-                <Link to={routes.item({ id: w })}>
+              {dino.immobilized_by.map((item: any) => (
+                <Link to={routes.item({ id: item.id })}>
                   <img
                     className="w-8"
-                    title={arkitems.items.find(item => item.id === Number(w))?.name}
-                    alt={arkitems.items.find(item => item.id === Number(w))?.name}
-                    src={`https://arkids.net/image/item/120/${arkitems.items.find(item => item.id === Number(w))?.name
+                    title={item.name}
+                    alt={item.name}
+                    src={`https://arkids.net/image/item/120/${item.name
                       .replaceAll(" ", "-")
                       .replace("plant-species-y", "plant-species-y-trap")}.png`}
                   />
