@@ -38,42 +38,57 @@ const Item = ({ item }: Props) => {
   };
 
   let gathereffvals = [
-    { "name": "Direbear", value: 3.9 },
-    { "name": "Maewing", value: 1.9 },
-  ]
+    { name: "Direbear", value: 3.9 },
+    { name: "Maewing", value: 1.9 },
+  ];
   return (
     <>
       <div className="rw-segment">
-        <section className="my-3 rounded-md p-4 dark:bg-zinc-600 bg-stone-200 dark:text-white text-gray-700">
-          <img className="" src={`https://arkids.net/image/item/120/${item.image ? item.image.replaceAll('_', '-') : `${item.name.replaceAll(' ', '-')}.png`}`} />
-          <h4 className="text-2xl font-bold font-serif my-1">{item.name}</h4>
-          <p className="italic text-sm">({getWordType(item.name)})</p>
+        <section className="my-3 rounded-md bg-stone-200 p-4 text-gray-700 dark:bg-zinc-600 dark:text-white">
+          <img
+            className=""
+            src={`https://arkids.net/image/item/120/${item.name
+              .replaceAll(" ", "-")
+              .replace("plant-species-y", "plant-species-y-trap")}.png`}
+          />
+          <h4 className="my-1 font-serif text-2xl font-bold">{item.name}</h4>
+          <p className="text-sm italic">
+            (
+            {getWordType(item.name.split(" ")[item.name.split(" ").length - 1])}
+            )
+          </p>
           <p className="mt-2">{item.description}</p>
         </section>
-        <section className="my-3 rounded-md dark:text-white text-gray-700 grid grid-cols-2 gap-4">
-          <div className="dark:bg-zinc-600 bg-stone-200 rounded-md p-4">
-            <p className="text-lg my-1">Gather Efficiency</p>
+        <section className="my-3 grid grid-cols-2 gap-4 rounded-md text-gray-700 dark:text-white">
+          <div className="rounded-md bg-stone-200 p-4 dark:bg-zinc-600">
+            <p className="my-1 text-lg">Gather Efficiency</p>
             <div className="flex flex-col">
-              {gathereffvals.map((eff) => (
+              {/* {gathereffvals.map((eff) => (
                 <div className="flex items-center">
-                  <p className="text-sm mr-2 w-20">{eff.name}</p>
+                  <p className="mr-2 w-20 text-sm">{eff.name}</p>
 
-                  <div className="h-2 w-32 bg-gray-300 rounded-full flex flex-row divide-x divide-black">
+                  <div className="flex h-2 w-32 flex-row divide-x divide-black rounded-full bg-gray-300">
                     {Array.from(Array(5)).map((_, i) => (
-                      <div className={clsx(`first:rounded-l-full last:rounded-r-full h-full w-1 /5`, {
-                        "bg-transparent": Math.round(eff.value) < i + 1,
-                        "[&:nth-child(1)]:bg-red-500 [&:nth-child(2)]:bg-orange-500 [&:nth-child(3)]:bg-yellow-500 [&:nth-child(4)]:bg-lime-500 [&:nth-child(5)]:bg-green-500": Math.round(eff.value) >= i + 1,
-                      })}></div>
+                      <div
+                        className={clsx(
+                          `/5 h-full w-1 first:rounded-l-full last:rounded-r-full`,
+                          {
+                            "bg-transparent": Math.round(eff.value) < i + 1,
+                            "[&:nth-child(1)]:bg-red-500 [&:nth-child(2)]:bg-orange-500 [&:nth-child(3)]:bg-yellow-500 [&:nth-child(4)]:bg-lime-500 [&:nth-child(5)]:bg-green-500":
+                              Math.round(eff.value) >= i + 1,
+                          }
+                        )}
+                      ></div>
                     ))}
-                  </div >
-                </div >
-              ))}
-            </div >
-          </div >
-          <div className="dark:bg-zinc-600 bg-stone-200 rounded-md p-4">
-            <p className="text-lg my-1">Weight Reduction</p>
+                  </div>
+                </div>
+              ))} */}
+            </div>
+          </div>
+          <div className="rounded-md bg-stone-200 p-4 dark:bg-zinc-600">
+            <p className="my-1 text-lg">Weight Reduction</p>
             <div className="flex flex-col">
-              {gathereffvals.map((eff) => (
+              {/* {gathereffvals.map((eff) => (
                 <div className="flex items-center">
                   <p className="text-sm mr-2 w-20">{eff.name}</p>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="inline-block fill-current w-4">
@@ -87,11 +102,10 @@ const Item = ({ item }: Props) => {
                   </svg>
 
                 </div>
-              ))}
+              ))} */}
             </div>
           </div>
-
-        </section >
+        </section>
         <table className="rw-table">
           <tbody>
             <tr>
@@ -160,7 +174,7 @@ const Item = ({ item }: Props) => {
             </tr>
           </tbody>
         </table>
-      </div >
+      </div>
       <nav className="rw-button-group">
         <Link
           to={routes.editItem({ id: item.id.toString() })}
