@@ -1,8 +1,7 @@
 const { items } = require("./web/public/arkitems.json");
 // const d = require("./web/public/maps.json");
 const d2 = require("./web/public/dinotest.json");
-const imgs = require("./web/public/arkimages.json");
-const dd = require("./j.json");
+// const dd = require("./j.json");
 
 // let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
 console.time("normal");
@@ -14,23 +13,37 @@ console.time("optimized");
 console.timeEnd("optimized");
 
 let dinot = [];
-let c = dd.map((x) => {
-  return x.fits_through
-    ? `UPDATE public."Dino"
-  SET "fits_through" = ARRAY[${x.fits_through.map((i) => {
-    return items.find((y) => y.name.toLowerCase() == i.toLowerCase())
-      ? `'${items.find((y) => y.name.toLowerCase() == i.toLowerCase()).id}'`
-      : `'${i
-          .replace("behemoth dinosaur gateway", "381")
-          .replace("giant hatchframe", "619")
-          .replace("double doorframe", "1066")
-          .replace("hatchframe", "316")
-          .replace("doorframe", "322")}'`;
-  })}]::text[]
+// let c = dd.map((x) => {
+//   return x.fits_through
+//     ? `UPDATE public."Dino"
+//   SET "fits_through" = ARRAY[${x.fits_through.map((i) => {
+//     return items.find((y) => y.name.toLowerCase() == i.toLowerCase())
+//       ? `'${items.find((y) => y.name.toLowerCase() == i.toLowerCase()).id}'`
+//       : `'${i
+//           .replace("behemoth dinosaur gateway", "381")
+//           .replace("giant hatchframe", "619")
+//           .replace("double doorframe", "1066")
+//           .replace("hatchframe", "316")
+//           .replace("doorframe", "322")}'`;
+//   })}]::text[]
+//   WHERE "id" = '${x.id}';`
+//     : "";
+// });
+// console.log(c.join("\n"));
+
+let c = items.map((x) => {
+  return Object.entries(imgs).find(
+    ([y, z]) => y.toLowerCase() == x.name.toLowerCase()
+  )
+    ? `UPDATE public."Item"
+  SET "image" = '${
+    Object.entries(imgs).find(
+      ([y, z]) => y.toLowerCase() == x.name.toLowerCase()
+    )[1]
+  }'
   WHERE "id" = '${x.id}';`
     : "";
 });
-// console.log(c.join("\n"));
 require("fs").writeFile("insert.txt", c.join("\n"), (error) => {
   if (error) {
     throw error;

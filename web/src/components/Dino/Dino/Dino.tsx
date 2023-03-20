@@ -2,13 +2,12 @@ import { Form, NumberField } from "@redwoodjs/forms";
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import { timeFormatL, combineBySummingKeys } from "src/lib/formatters";
+import { timeFormatL, combineBySummingKeys, truncate } from "src/lib/formatters";
 import { useCallback, useState } from "react";
 
 import type { DeleteDinoMutationVariables, FindDinoById } from "types/graphql";
 import clsx from "clsx";
 import Table from "src/components/Util/Table/Table";
-
 
 const DELETE_DINO_MUTATION = gql`
   mutation DeleteDinoMutation($id: String!) {
@@ -48,7 +47,15 @@ const Dino = ({ dino }: Props) => {
     tk: "tek",
   };
 
-
+  const canDestroy = ({ value }) => {
+    return value > 0 ? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="fill-pea-500 w-8 h-8">
+    <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
+  </svg> :
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="fill-red-500 w-8 h-8">
+    <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
+  </svg>
+  }
+  const [useFoundationUnit, setUseFoundationUnit] = useState(false);
   const [maturation, setMaturation] = useState(0);
   const calcMaturationPercent = useCallback(() => {
     let timeElapsed = maturation * parseInt(dino.maturation_time) * 1;
@@ -84,28 +91,29 @@ const Dino = ({ dino }: Props) => {
             .replace(",masteroftheocean", "")
             .replace("insectswarm", "bladewasp")}.png`}
           alt={dino.name}
+          className="w-full m-4 p-4"
         />
         <div className="py-4 px-8 text-sm font-light text-white">
           <div className="m-0 mb-4 text-sm">
             <strong className="text-3xl font-light uppercase tracking-widest">{dino.name}</strong>
             <div className="flex flex-row space-x-2 italic">
-              <span>{dino.synonyms.join(', ')}</span>
+              <span>{dino.synonyms && dino.synonyms.join(', ')}</span>
             </div>
           </div>
-
 
           <div className="mr-4 mb-4 italic">
             <p>{dino.description}</p>
           </div>
-          {/* <div className="mr-4 mb-4 inline-block">
-            <strong>Ridable:</strong> {dino["ridable"] ? "Yes" : "No"}
-          </div> */}
+          <div className="mr-4 mb-4 inline-block">
+            <strong>Ridable:</strong> {dino.ridable ? "Yes" : "No"}
+          </div>
           {dino.immobilized_by && dino.immobilized_by.length > 0 && (
             <div className="mr-4 mb-4 flex flex-row space-x-1">
               <strong>Immobilized By:</strong>
 
-              {dino.immobilized_by.map((item: any) => (
-                <Link to={routes.item({ id: item.id })}>
+              {/* {dino.immobilized_by.map((item: any) => (
+
+                  <Link to={item.id ? routes.item({ id: item.id }) : routes.items()}>
                   <img
                     className="w-8"
                     title={item.name}
@@ -115,10 +123,10 @@ const Dino = ({ dino }: Props) => {
                       .replace("plant-species-y", "plant-species-y-trap")}.png`}
                   />
                 </Link>
-              ))}
+              ))} */}
             </div>
           )}
-          {dino.can_destroy && dino.can_destroy.length > 0 && (
+          {/* {dino.can_destroy && dino.can_destroy.length > 0 && (
             <div className="mr-4 mb-4 flex flex-row space-x-1">
               <strong>Can Destroy:</strong>
 
@@ -133,25 +141,24 @@ const Dino = ({ dino }: Props) => {
                 </Link>
               ))}
             </div>
-          )}
-          {/* <br /> */}
-          {/* <div className="mr-4 mb-4 inline-block">
-            <strong>Weight:</strong> 69kg
-          </div>
-          <div className="mr-4 mb-4 inline-block">
-            <strong>Height:</strong> 0.3m
-          </div> */}
+          )} */}
           <br />
           <div className="mr-4 mb-4 inline-block">
-            <strong>Type:</strong>{" "}
-            {dino.violent_tame ? "Aggressive" : "Passive"}
+            <strong>X-Variant:</strong> {dino.x_variant ? 'Yes' : 'No'}
+          </div>
+          <div className="mr-4 mb-4 inline-block">
+            <strong>Weapon:</strong> {dino.mounted_weaponry ? 'Yes' : 'No'}
+          </div>
+          <br />
+          <div className="mr-4 mb-4 inline-block">
+            <strong>Type:</strong> {dino.violent_tame ? "Aggressive" : "Passive"}
           </div>
 
           {!dino.disable_food && dino.eats && dino.eats.length > 0 && (
             <>
               <div className="text-lg">Food</div>
               <div className="mb-4">
-                {dino.eats.map((f: any) => (
+                {/* {dino.eats.map((f: any) => (
                   <p className="leading-5 flex">
                     {f.name}
                     <img
@@ -163,7 +170,7 @@ const Dino = ({ dino }: Props) => {
                         .replace("plant-species-y", "plant-species-y-trap")}.png`}
                     />
                   </p>
-                ))}
+                ))} */}
               </div>
             </>
           )}
@@ -315,10 +322,37 @@ const Dino = ({ dino }: Props) => {
       )}
 
 
-      <section className="my-3 rounded-md p-4 text-stone-600 dark:text-white">
+      {dino.movement && (
+        <section className="my-3 rounded-md p-4 text-stone-600 dark:text-white">
+          <div className="text-white flex flex-col">
+          <div className="flex flex-row items-center space-x-1">
+            <p className="w-14"></p>
+            <p className="w-20">Base</p>
+            <p className="w-20">Sprint</p>
+          </div>
+          {Object.entries(dino.movement["w"]).map(([stat, value], index) => (
+            <div className="flex flex-row items-center space-x-1" key={index}>
+              <p className="w-14">{stat}</p>
+              {["base", "sprint"].map((label) => (
+                <p
+                  className="rw-input w-20"
+                >{!value[label] ? '-' : truncate((useFoundationUnit ? Number(value[label] / 300) : Number(value[label])).toFixed(2), 6)}</p >
+              ))}
+              <p className="w-20">{useFoundationUnit ? 'Foundations' : `Units`} per sec</p>
+            </div>
+          ))}
+        </div>
+        <label className="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" checked={useFoundationUnit} className="sr-only peer" onChange={(e) => setUseFoundationUnit(!useFoundationUnit)} />
+          <div className="rw-toggle peer-focus:ring-pea-300 dark:peer-focus:ring-pea-800 peer-checked:bg-pea-600 peer peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4"></div>
+          <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Game Units / Foundation</span>
+        </label>
+       </section>
+      )}
 
-      </section>
-      {/* <section className="mt-4 text-gray-400 dark:text-white">
+      {dino.can_destroy && (
+      <section className="mt-4 text-gray-400 dark:text-white">
+         <h3 className="font-medium leading-tight">Can Destroy</h3>
         <Table
           rows={[combineBySummingKeys({
             t: false,
@@ -330,80 +364,27 @@ const Dino = ({ dino }: Props) => {
           }, dino.can_destroy.reduce((a, v) => ({ ...a, [v]: true }), {}))]}
           columns={[
             {
-              field: "t", label: "Thatch", renderCell: ({ value }) => {
-                return value > 0 ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="fill-pea-500 w-8 h-8">
-                    <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
-                  </svg>) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="fill-red-500 w-8 h-8">
-                    <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
-                  </svg>
-                )
-              },
+              field: "t", label: "Thatch", renderCell: canDestroy
             },
             {
-              field: "w", label: "Wood", renderCell: ({ value }) => {
-                return value > 0 ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="fill-pea-500 w-8 h-8">
-                    <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
-                  </svg>) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="fill-red-500 w-8 h-8">
-                    <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
-                  </svg>
-                )
-              },
+              field: "w", label: "Wood", renderCell: canDestroy
             },
             {
-              field: "a", label: "Adobe", renderCell: ({ value }) => {
-                return value > 0 ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="fill-pea-500 w-8 h-8">
-                    <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
-                  </svg>) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="fill-red-500 w-8 h-8">
-                    <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
-                  </svg>
-                )
-              },
+              field: "a", label: "Adobe", renderCell: canDestroy
             },
             {
-              field: "s", label: "Stone", renderCell: ({ value }) => {
-                return value > 0 ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="fill-pea-500 w-8 h-8">
-                    <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
-                  </svg>) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="fill-red-500 w-8 h-8">
-                    <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
-                  </svg>
-                )
-              },
+              field: "s", label: "Stone", renderCell: canDestroy
             },
             {
-              field: "m", label: "Metal", renderCell: ({ value }) => {
-                return value > 0 ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="fill-pea-500 w-8 h-8">
-                    <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
-                  </svg>) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="fill-red-500 w-8 h-8">
-                    <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
-                  </svg>
-                )
-              },
+              field: "m", label: "Metal", renderCell: canDestroy
             },
             {
-              field: "tk", label: "Tek", renderCell: ({ value }) => {
-                return value > 0 ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="fill-pea-500 w-8 h-8">
-                    <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
-                  </svg>) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="fill-red-500 w-8 h-8">
-                    <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
-                  </svg>
-                )
-              },
+              field: "tk", label: "Tek", renderCell: canDestroy
             },
           ]}
         />
-      </section> */}
+      </section>
+      )}
       <section className="mt-4 text-gray-400 dark:text-white">
         <Table
           rows={[dino.base_stats]}
