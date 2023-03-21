@@ -2,8 +2,8 @@ import { FieldError, useRegister } from "@redwoodjs/forms"
 import { useEffect, useState } from "react"
 
 interface CheckboxGroupProps {
-  name: string;
-  options: { label: string, value?: string, image?: string }[];
+  name?: string;
+  options: { label: string, value?: string, image?: string | React.ReactNode }[];
   defaultValue?: Array<string>;
   onChange?: (name: string, value: string[]) => void;
   validation?: {
@@ -15,10 +15,10 @@ interface CheckboxGroupProps {
 const CheckboxGroup = ({ name, options, defaultValue, onChange, validation }: CheckboxGroupProps) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
 
-  const register = useRegister({
+  const register = name ? useRegister({
     name,
     validation: { ...validation }
-  })
+  }) : null
 
   useEffect(() => {
     setSelectedOptions(defaultValue || []);
@@ -47,13 +47,13 @@ const CheckboxGroup = ({ name, options, defaultValue, onChange, validation }: Ch
           <input type="checkbox" name={optValue || label} onChange={handleCheckboxChange} checked={selectedOptions.includes(optValue || label)} className="rw-check-input" />
           <span className="rw-check-tile">
             <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-              {image && <img className="w-12 h-12" src={image} />}
+              {image && (React.isValidElement(image) ? image : <img className="w-12 h-12" src={image.toString()} />)}
             </span>
             <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">{label}</span>
           </span>
         </label>
       ))}
-      <input type="hidden" name={name} value={selectedOptions} {...register} />
+      <input type="hidden" name={name} value={selectedOptions} {...name ? { ...register } : ''} />
     </div>
   );
 }

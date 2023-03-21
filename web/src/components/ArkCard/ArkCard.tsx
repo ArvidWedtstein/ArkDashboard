@@ -3,7 +3,7 @@ import clsx from "clsx";
 
 interface IArkCard {
   title?: String;
-  subtitle?: String;
+  subtitle?: String | React.ReactNode;
   content?: String;
   ring?: String;
   button?: {
