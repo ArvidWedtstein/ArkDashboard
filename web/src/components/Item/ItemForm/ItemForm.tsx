@@ -394,7 +394,7 @@ const ItemForm = (props: ItemFormProps) => {
                   }))}
                   search={true}
                   name="recipe"
-                  onChange={(e) => setRecipe({ type: "ADD", item: { ...e, amount: e.yields } })} //  setRecipe((d) => [...d, e])
+                  onChange={(e) => setRecipe({ type: "ADD", item: { ...e, amount: 1 } })} //  setRecipe((d) => [...d, e])
                 />
 
                 <div className="flex flex-col mt-2">
