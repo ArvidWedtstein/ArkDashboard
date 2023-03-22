@@ -48,7 +48,7 @@ const BasespotForm = (props: BasespotFormProps) => {
     data.image && (data.image = thumbnailUrl);
 
     console.log(data);
-    // props.onSave(data, props?.basespot?.id);
+    props.onSave(data, props?.basespot?.id);
   };
 
   return (

@@ -408,6 +408,17 @@ export const getWordType = (word: string) => {
 export const random = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1) + min);
 
+export const arrRandNoRep = (arr: any[]) => {
+  let lastElement = null;
+  let randomIndex = null;
+
+  do {
+    randomIndex = Math.floor(Math.random() * arr.length);
+  } while (arr[randomIndex] === lastElement);
+
+  lastElement = arr[randomIndex];
+  return lastElement;
+}
 /**
  * singularizes a word.
  * @param word

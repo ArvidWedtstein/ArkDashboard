@@ -82,11 +82,17 @@ const TimelinesList = ({ timelines }: FindTimelines) => {
                   perspiciatis.
                 </div>
                 <Link
-                  to={routes.timeline({ id })}
+                  to={routes.timelineBasespots({ id })}
                   className="rw-button rw-button-green mt-5 inline-block"
                 >
                   View Timeline
                 </Link>
+                {/* <Link
+                  to={routes.timeline({ id })}
+                  className="rw-button rw-button-green mt-5 inline-block"
+                >
+                  View Timeline
+                </Link> */}
               </div>
             </div>
           ))}
