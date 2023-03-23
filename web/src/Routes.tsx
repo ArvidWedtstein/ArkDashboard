@@ -159,7 +159,7 @@ const Routes = () => {
             page={TimelineBasespotNewTimelineBasespotPage}
             name="newTimelineBasespot"
           />
-          {/* <Route path="/timeline-basespots/{id}/edit" page={TimelineBasespotEditTimelineBasespotPage} name="editTimelineBasespot" /> */}
+          <Route path="/timeline-basespots/{id}/edit" page={TimelineBasespotEditTimelineBasespotPage} name="editTimelineBasespot" />
           <Route
             path="/timeline-basespots/{id}"
             page={TimelineBasespotTimelineBasespotPage}

@@ -3,6 +3,7 @@ import type { FindTimelineBasespotById } from 'types/graphql'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
 import TimelineBasespot from 'src/components/TimelineBasespot/TimelineBasespot'
+import { supabase } from 'src/App'
 
 export const QUERY = gql`
   query FindTimelineBasespotById($id: BigInt!) {
@@ -25,9 +26,30 @@ export const QUERY = gql`
       created_by
       raided_by
       raidcomment
+      Map {
+        name
+      }
+      basespot {
+        name
+        latitude
+        longitude
+      }
     }
   }
 `
+
+export const afterQuery = (data) => {
+  return data.timelineBasespot.basespot_id !== null ? {
+    ...data,
+    timelineBasespot: {
+      ...data.timelineBasespot,
+      location: {
+        lat: data.timelineBasespot.basespot.latitude,
+        lon: data.timelineBasespot.basespot.longitude,
+      },
+    },
+  } : data
+}
 
 export const Loading = () => <div>Loading...</div>
 
