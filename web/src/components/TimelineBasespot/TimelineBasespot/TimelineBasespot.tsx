@@ -78,30 +78,30 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                 {timelineBasespot.season &&
                   `, Season ${timelineBasespot.season}`}
               </p>
-              <div className="flex justify-center">
+              <div className="flex justify-center space-x-2 mt-2">
                 <Link
                   to={routes.editTimelineBasespot({ id: timelineBasespot.id.toString() })}
-                  className="inline-flex rounded border-0 bg-gray-200 py-2 px-6 text-lg text-gray-700 hover:bg-gray-300 focus:outline-none"
+                  className="rw-button rw-button-gray-outline"
                 >
                   Edit
                 </Link>
                 <button
                   onClick={() => onDeleteClick(timelineBasespot.id)}
-                  className="ml-4 inline-flex rounded border-0 bg-red-500 py-2 px-6 text-lg text-white hover:bg-red-600 focus:outline-none"
+                  className="rw-button rw-button-red-outline"
                 >
                   Delete
                 </button>
               </div>
             </div>
-            <div className="w-5/6 md:w-1/2 lg:w-full lg:max-w-lg">
+            {images.length > 0 && <div className="w-5/6 md:w-1/2 lg:w-full lg:max-w-lg">
               <img
-                className="rounded object-cover object-center"
+                className="rounded-lg object-cover object-center"
                 src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineBasespot.id}/${images[0].name}`}
                 alt={timelineBasespot.tribeName}
               />
-            </div>
+            </div>}
           </div>
-        </section>
+        </section >
         <section className="body-font mx-4 border-t border-gray-200 text-gray-700 dark:text-neutral-200">
           <div className="container mx-auto flex flex-wrap px-5 py-12">
             <div className="mb-10 w-full overflow-hidden text-sm lg:mb-0 lg:w-1/2">
@@ -134,32 +134,34 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
             </div>
           </div>
         </section>
-        {timelineBasespot.raidcomment && timelineBasespot.raided_by && (
-          <section className="body-font mx-4 border-t border-gray-200 text-stone-300">
-            <div className="container mx-auto px-5 py-24">
-              <div className="mx-auto w-full text-center lg:w-3/4 xl:w-1/2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  className="mb-8 inline-block h-8 w-8 text-white"
-                  viewBox="0 0 975.036 975.036"
-                >
-                  <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
-                </svg>
-                <p className="text-lg leading-relaxed">
-                  {timelineBasespot.raidcomment}
-                </p>
-                <span className="mt-8 mb-6 inline-block h-1 w-10 rounded bg-indigo-500"></span>
-                <h2 className="title-font text-sm font-medium tracking-wider text-stone-400">
-                  {timelineBasespot.raided_by}
-                </h2>
-                <p className="text-gray-500">
-                  {timelineBasespot.cluster}
-                </p>
+        {
+          timelineBasespot.raidcomment && timelineBasespot.raided_by && (
+            <section className="body-font mx-4 border-t border-gray-200 text-stone-300">
+              <div className="container mx-auto px-5 py-24">
+                <div className="mx-auto w-full text-center lg:w-3/4 xl:w-1/2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    className="mb-8 inline-block h-8 w-8 text-white"
+                    viewBox="0 0 975.036 975.036"
+                  >
+                    <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
+                  </svg>
+                  <p className="text-lg leading-relaxed">
+                    {timelineBasespot.raidcomment}
+                  </p>
+                  <span className="mt-8 mb-6 inline-block h-1 w-10 rounded bg-indigo-500"></span>
+                  <h2 className="title-font text-sm font-medium tracking-wider text-stone-400">
+                    {timelineBasespot.raided_by}
+                  </h2>
+                  <p className="text-gray-500">
+                    {timelineBasespot.cluster}
+                  </p>
+                </div>
               </div>
-            </div>
-          </section>
-        )}
+            </section>
+          )
+        }
         <section className="body-font mx-4 border-t border-gray-200 text-gray-700 dark:text-neutral-200">
           <div className="container mx-auto flex flex-wrap px-5 py-12">
             <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
@@ -272,16 +274,8 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                   <div className="flex h-full flex-col rounded-lg bg-gray-100 p-0 dark:bg-gray-600">
                     <div className="mb-3 flex items-center m-3">
                       <div className="mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-pea-500 text-white">
-                        <svg
-                          fill="none"
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          className="h-5 w-5"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" strokeWidth={2} className="h-5 w-5 m-1 fill-current">
+                          <path d="M464 96h-88l-12.38-32.88C356.6 44.38 338.8 32 318.8 32h-125.5c-20 0-38 12.38-45 31.12L136 96H48C21.5 96 0 117.5 0 144v288C0 458.5 21.5 480 48 480h416c26.5 0 48-21.5 48-48v-288C512 117.5 490.5 96 464 96zM496 432c0 17.64-14.36 32-32 32h-416c-17.64 0-32-14.36-32-32v-288c0-17.64 14.36-32 32-32h99.11l16.12-43.28C167.9 56.33 179.9 48 193.3 48h125.5c13.25 0 25.26 8.326 29.9 20.76L364.9 112H464c17.64 0 32 14.36 32 32V432zM256 176C194.2 176 144 226.2 144 288c0 61.76 50.24 112 112 112s112-50.24 112-112C368 226.2 317.8 176 256 176zM256 384c-53 0-96-43-96-96s43-96 96-96s96 43 96 96S309 384 256 384z" />
                         </svg>
                       </div>
                       <h2 className="title-font text-lg font-medium text-gray-900 dark:text-neutral-200">
@@ -308,8 +302,8 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
             </div>
           </div>
         </section>
-      </div>
-    </article>
+      </div >
+    </article >
   )
 }
 

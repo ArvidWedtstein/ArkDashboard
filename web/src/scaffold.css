@@ -151,6 +151,16 @@
   @apply outline-none ring-4 ring-stone-300 dark:ring-stone-800;
 }
 
+.rw-button.rw-button-red-outline {
+  @apply border border-red-700 text-red-700 dark:border-red-500 dark:text-red-500;
+}
+.rw-button.rw-button-red-outline:hover {
+  @apply border-red-800 dark:border-red-600;
+}
+.rw-button.rw-button-red-outline:focus {
+  @apply outline-none ring-4 ring-red-300 dark:ring-red-800;
+}
+
 /* Green Button */
 .rw-button.rw-button-green {
   @apply bg-pea-500 text-white;
