@@ -2,8 +2,6 @@ import { navigate, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
-import TimelineForm from 'src/components/Timeline/TimelineForm'
-
 import type { CreateTimelineInput } from 'types/graphql'
 
 const CREATE_TIMELINE_MUTATION = gql`
@@ -29,6 +27,7 @@ const NewTimeline = () => {
   )
 
   const onSave = (input: CreateTimelineInput) => {
+    console.log(input)
     createTimeline({ variables: { input } })
   }
 
@@ -38,7 +37,7 @@ const NewTimeline = () => {
         <h2 className="rw-heading rw-heading-secondary">New Timeline</h2>
       </header>
       <div className="rw-segment-main">
-        <button onClick={() => { onSave({createdBy: ''})}} className="rw-button rw-button-green">Save</button>
+        <button onClick={() => { onSave({ createdBy: '' }) }} className="rw-button rw-button-green">Create</button>
       </div>
     </div>
   )

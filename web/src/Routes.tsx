@@ -132,14 +132,14 @@ const Routes = () => {
           buttonTo="newTimeline"
         >
           <Route
-            path="/timelines/{id:String}"
-            page={TimelineTimelinePage}
-            name="timeline"
-          />
-          <Route
             path="/timelines/new"
             page={TimelineNewTimelinePage}
             name="newTimeline"
+          />
+          <Route
+            path="/timelines/{id:String}"
+            page={TimelineTimelinePage}
+            name="timeline"
           />
           <Route
             path="/timelines"

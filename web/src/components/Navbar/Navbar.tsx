@@ -4,7 +4,7 @@ import useComponentVisible from "../useComponentVisible";
 import Avatar from "../Avatar/Avatar";
 import { Link, routes, useLocation, AvailableRoutes } from "@redwoodjs/router";
 import { useRouterState } from "@redwoodjs/router/dist/router-context";
-import { capitalize, singularize } from "src/lib/formatters";
+import { capitalize, capitalizeSentence, singularize } from "src/lib/formatters";
 
 const Navbar = () => {
   const { currentUser, isAuthenticated } = useAuth();
@@ -23,6 +23,7 @@ const Navbar = () => {
   const handleOpen = useCallback(() => {
     setIsComponentVisible(!isComponentVisible);
   }, [isComponentVisible]);
+
 
   return (
     <>
@@ -60,10 +61,10 @@ const Navbar = () => {
         </div>
         <div className="flex items-center">
           {isAuthenticated &&
-            routes[`new${singularize(title)}`] !== undefined && (
+            routes[`new${singularize(capitalizeSentence(title.split('-').join(' ')).replace(' ', ''))}`] !== undefined && (
               <Link
-                to={routes[`new${singularize(title)}`]()}
-                title={`New ${singularize(title)}`}
+                to={routes[`new${singularize(capitalizeSentence(title.split('-').join(' ')).replace(' ', ''))}`]()}
+                title={`New ${singularize(capitalizeSentence(title.split('-').join(' ')).replace(' ', ''))}`}
                 className="ml-2 flex h-5 w-5 items-center justify-center rounded-full border-none bg-[#1f1c24] p-0 text-[#ffffffcc] dark:bg-[#1f2937] dark:text-white md:h-8 md:w-8"
               >
                 <svg

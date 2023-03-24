@@ -7,9 +7,8 @@ type LayoutProps = {
 const ScaffoldLayout = ({
   children,
 }: LayoutProps) => {
-
   return (
-    <div className="rounded-2xl p-3 m-3">{/* bg-white dark:bg-[#3b424f] */}
+    <div className="p-3 m-3">{/* bg-white dark:bg-[#3b424f] */}
       {children}
     </div>
     // <div className="w-full flex flex-col h-[100vh] overflow-hidden" >

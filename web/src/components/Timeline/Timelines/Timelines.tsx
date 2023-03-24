@@ -87,12 +87,6 @@ const TimelinesList = ({ timelines }: FindTimelines) => {
                 >
                   View Timeline
                 </Link>
-                {/* <Link
-                  to={routes.timeline({ id })}
-                  className="rw-button rw-button-green mt-5 inline-block"
-                >
-                  View Timeline
-                </Link> */}
               </div>
             </div>
           ))}
