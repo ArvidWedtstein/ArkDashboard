@@ -1,4 +1,4 @@
-import { Link, routes, useLocation, useParams } from "@redwoodjs/router";
+import { Link, NavLink, routes, useLocation, useParams } from "@redwoodjs/router";
 import { memo } from "react";
 import { singularize } from "src/lib/formatters";
 const Icon = (icon: string) => {
@@ -96,61 +96,20 @@ const Sidebar = memo(({ }) => {
 
   return (
     <nav className="">
-      {/* <div className="border border-[#60728F] bg-[#0D2836] p-3 text-[#97FBFF]">
-        <div className="flex flex-row items-center justify-between rounded-2xl px-10 py-2 sm:flex-col sm:justify-center sm:py-10 sm:px-2">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              to={item.href}
-              className={`${
-                singularize(item.href.split("?")[0]) === singularize(pathname)
-                  ? `text-white ${item.color}`
-                  : ""
-              } mx-2 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-[#11667B] uppercase text-[#dddddd] outline outline-1 outline-offset-1 outline-[#11667B] transition-colors duration-150 hover:outline-2 hover:outline-offset-0 dark:text-[#ffffffcc] sm:my-4`}
-            >
-              {Icon(item.name)}
-            </Link>
-          ))}
-        </div>
-      </div> */}
-
-      {/* <div className="flex h-[100vh] w-40 flex-col items-center overflow-hidden rounded bg-gray-700 text-gray-400">
-        <a className="mt-3 flex w-full flex-col items-center px-3" href="#">
-          <span className="text-sm font-bold">ArkDashboard</span>
-          <span className="text-sm font-bold">Basespots</span>
-        </a>
-        <div className="w-full px-2">
-          <div className="mt-3 flex w-full flex-col items-center border-t border-gray-500">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`${
-                  singularize(item.href.split("?")[0]) === singularize(pathname)
-                    ? `bg-gray-500 text-gray-200 ${item.color}`
-                    : ""
-                } mt-2 flex h-12 w-full items-center rounded px-3 hover:bg-gray-500 hover:text-gray-300`}
-              >
-                {Icon(item.name.toLowerCase())}
-                <span className="ml-2 text-sm font-medium">{item.name}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div> */}
       <div className="flex flex-row items-center justify-between rounded-2xl px-10 py-2 max-sm:border-b sm:flex-col sm:justify-center sm:border-r sm:py-10 sm:px-2">
         {navigation.map((item) => (
-          <Link
+          <NavLink
             key={item.name}
             to={item.href}
             title={item.name}
-            className={`${singularize(item.href.split("?")[0]) === singularize(pathname)
-              ? `text-white ${item.color}`
-              : "bg-[#1f1c2ecc] text-[#dddddd] hover:bg-[#c3cff4] dark:bg-[#c3cff433] dark:text-[#ffffffcc] dark:hover:bg-[#c3cff41a]"
+            activeClassName={`text-white ${item.color}`}
+            className={`${singularize(item.href.split("?")[0]) !== singularize(pathname)
+              ? "bg-[#1f1c2ecc] text-[#dddddd] hover:bg-[#c3cff4] dark:bg-[#c3cff433] dark:text-[#ffffffcc] dark:hover:bg-[#c3cff41a]"
+              : ""
               } mx-2 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl outline-none duration-200 hover:rounded-full hover:text-white sm:my-4`}
           >
             {Icon(item.name)}
-          </Link>
+          </NavLink>
         ))}
       </div>
     </nav>

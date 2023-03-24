@@ -19,12 +19,12 @@ const MainLayout = ({
   return (
     // <div className="overflow-hidden ">
     <div className="w-full flex flex-col h-[100vh]">
-      <SkipNavLink />
+      {/* <SkipNavLink contentId="main-content"></SkipNavLink> */}
       <Navbar />
       <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
       <div className="flex sm:flex-row flex-col w-full overflow-hidden">
         <Sidebar />
-        <SkipNavContent />
+        <SkipNavContent id="main-content" />
         <main className="overflow-y-auto sm:w-full">
           {loading && (
             <div className="w-full h-full bg-white bg-opacity-50 z-50 flex items-center justify-center">

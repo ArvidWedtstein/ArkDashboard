@@ -15,9 +15,10 @@ import MainLayout from "./layouts/MainLayout/MainLayout";
 
 const Routes = () => {
   return (
-    <Router>
+    <Router pageLoadingDelay={500}>
       <Set wrap={MainLayout}>
         {/*whileLoadingPage*/}
+        <Route path="/lootcrates" page={LootcratesPage} name="lootcrates" />
         <Route path="/dino-stats" page={DinoStatsPage} name="dinoStats" />
         <Route
           path="/material-calculator"

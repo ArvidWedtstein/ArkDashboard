@@ -1,6 +1,6 @@
 import type { FindDinoById, FindItems } from 'types/graphql'
 
-import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
+import { CellSuccessProps, CellFailureProps, MetaTags } from '@redwoodjs/web'
 
 import Dino from 'src/components/Dino/Dino'
 
@@ -192,5 +192,13 @@ export const Failure = ({ error }: CellFailureProps) => (
 
 // CellSuccessProps<FindDinoById> & CellSuccessProps<FindItems>
 export const Success = ({ dino }: CellSuccessProps<FindDinoById>) => {
-  return <Dino dino={dino} />
+  return (
+    <>
+      <MetaTags
+        title={dino.name}
+        description={dino.description}
+      />
+      <Dino dino={dino} />
+    </>
+  )
 }
