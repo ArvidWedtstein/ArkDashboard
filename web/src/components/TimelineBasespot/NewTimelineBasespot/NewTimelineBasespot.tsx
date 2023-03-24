@@ -14,7 +14,7 @@ const CREATE_TIMELINE_BASESPOT_MUTATION = gql`
   }
 `
 
-const NewTimelineBasespot = () => {
+const NewTimelineBasespot = ({ id }) => {
   const [createTimelineBasespot, { loading, error }] = useMutation(
     CREATE_TIMELINE_BASESPOT_MUTATION,
     {
