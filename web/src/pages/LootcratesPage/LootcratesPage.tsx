@@ -28,7 +28,7 @@ const LootcratesPage = () => {
                       <li key={`crate${i}-set${l}-entry${ind}`}>
                         <details className="ml-5">
                           <summary>{e.name}</summary>
-                          <ul className="ml-5">{e.items.map((itm) => <li><p className="text-white">{getItem(itm[1])}</p></li>)}</ul>
+                          <ul className="ml-4">{e.items.map((itm) => <li><p className="text-white">{getItem(itm[1])}</p></li>)}</ul>
                         </details>
                       </li>
                     ))}
