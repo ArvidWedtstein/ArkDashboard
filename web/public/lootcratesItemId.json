@@ -2,11 +2,10 @@
   "lootCrates": [
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/ArtifactCrate_2_AB.ArtifactCrate_2_AB_C",
+      "name": "Artifact Container Shadows",
+      "map": "Aberration",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -30,11 +29,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/ArtifactCrate_3_AB.ArtifactCrate_3_AB_C",
+      "name": "Artifact Container Stalker",
+      "map": "Aberration",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -58,11 +56,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/ArtifactCrate_4_AB.ArtifactCrate_4_AB_C",
+      "name": "Artifact Container Lost",
+      "map": "Aberration",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -86,11 +83,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/ArtifactCrate_AB.ArtifactCrate_AB_C",
+      "name": "Artifact Container Depths",
+      "map": "Aberration",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -114,11 +110,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Cave_Aberration_Level10.SupplyCrate_Cave_Aberration_Level10_C",
+      "name": "White Crate",
+      "map": "Aberration",
       "levelReq": { "min": 10, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -515,11 +510,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Cave_Aberration_Level10_Double.SupplyCrate_Cave_Aberration_Level10_Double_C",
+      "name": "White Crate",
+      "map": "Aberration",
       "levelReq": { "min": 10, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -916,11 +910,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Cave_Aberration_Level25.SupplyCrate_Cave_Aberration_Level25_C",
+      "name": "Green Crate",
+      "map": "Aberration",
       "levelReq": { "min": 25, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -1006,11 +999,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Cave_Aberration_Level25_Double.SupplyCrate_Cave_Aberration_Level25_Double_C",
+      "name": "Green Crate",
+      "map": "Aberration",
       "levelReq": { "min": 25, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -1096,11 +1088,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Cave_Aberration_Level35.SupplyCrate_Cave_Aberration_Level35_C",
+      "name": "Blue Crate",
+      "map": "Aberration",
       "levelReq": { "min": 35, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 2, "pow": 1 },
@@ -1264,11 +1255,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Cave_Aberration_Level35_Double.SupplyCrate_Cave_Aberration_Level35_Double_C",
+      "name": "Blue Crate",
+      "map": "Aberration",
       "levelReq": { "min": 35, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -1432,11 +1422,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Cave_Aberration_Level50.SupplyCrate_Cave_Aberration_Level50_C",
+      "name": "Purple Crate",
+      "map": "Aberration",
       "levelReq": { "min": 50, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 2, "pow": 1 },
@@ -1677,11 +1666,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Cave_Aberration_Level50_Double.SupplyCrate_Cave_Aberration_Level50_Double_C",
+      "name": "Purple Crate",
+      "map": "Aberration",
       "levelReq": { "min": 50, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -1922,11 +1910,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Cave_Aberration_Level65.SupplyCrate_Cave_Aberration_Level65_C",
+      "name": "Yellow Crate",
+      "map": "Aberration",
       "levelReq": { "min": 65, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 2, "pow": 1 },
@@ -2234,11 +2221,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Cave_Aberration_Level65_Double.SupplyCrate_Cave_Aberration_Level65_Double_C",
+      "name": "Yellow Crate",
+      "map": "Aberration",
       "levelReq": { "min": 65, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -2546,11 +2532,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Cave_Aberration_Level80.SupplyCrate_Cave_Aberration_Level80_C",
+      "name": "Red Crate",
+      "map": "Aberration",
       "levelReq": { "min": 80, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 3, "pow": 1 },
@@ -2911,11 +2896,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Cave_Aberration_Level80_Double.SupplyCrate_Cave_Aberration_Level80_Double_C",
+      "name": "Red Crate",
+      "map": "Aberration",
       "levelReq": { "min": 80, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 3, "max": 3, "pow": 1 },
@@ -3276,11 +3260,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Dungeon_Aberration_Level35.SupplyCrate_Dungeon_Aberration_Level35_C",
+      "name": "Blue Dungeon Crate",
+      "map": "Aberration",
       "levelReq": { "min": 35, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2.2, "max": 4 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -3355,11 +3338,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Dungeon_Aberration_Level50.SupplyCrate_Dungeon_Aberration_Level50_C",
+      "name": "Purple Dungeon Crate",
+      "map": "Aberration",
       "levelReq": { "min": 50, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2.1, "max": 3.4 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -3465,11 +3447,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Dungeon_Aberration_Level65.SupplyCrate_Dungeon_Aberration_Level65_C",
+      "name": "Yellow Dungeon Crate",
+      "map": "Aberration",
       "levelReq": { "min": 65, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2.2, "max": 3.7 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -3604,11 +3585,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Dungeon_Aberration_Level80.SupplyCrate_Dungeon_Aberration_Level80_C",
+      "name": "Red Dungeon Crate",
+      "map": "Aberration",
       "levelReq": { "min": 80, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2.2, "max": 3.7 },
       "setQty": { "min": 2, "max": 3, "pow": 1 },
@@ -3765,11 +3745,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Level35_Aberrant_Surface.SupplyCrate_Level35_Aberrant_Surface_C",
+      "name": "Blue Surface Beacon",
+      "map": "Aberration",
       "levelReq": { "min": 35, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1.5, "max": 2.5 },
       "setQty": { "min": 1, "max": 2, "pow": 1 },
@@ -3844,11 +3823,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Level35_Aberrant_Surface_double.SupplyCrate_Level35_Aberrant_Surface_Double_C",
+      "name": "Blue Surface Beacon",
+      "map": "Aberration",
       "levelReq": { "min": 35, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1.5, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -3923,11 +3901,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Level50_Aberrant_Surface.SupplyCrate_Level50_Aberrant_Surface_C",
+      "name": "Purple Surface Beacon",
+      "map": "Aberration",
       "levelReq": { "min": 50, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1.5, "max": 3.1 },
       "setQty": { "min": 1, "max": 2, "pow": 1 },
@@ -4033,11 +4010,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Level50_Aberrant_Surface_Double.SupplyCrate_Level50_Aberrant_Surface_Double_C",
+      "name": "Purple Surface Beacon",
+      "map": "Aberration",
       "levelReq": { "min": 50, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1.5, "max": 3.1 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -4143,11 +4119,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Level65_Aberrant_Surface.SupplyCrate_Level65_Aberrant_Surface_C",
+      "name": "Yellow Surface Beacon",
+      "map": "Aberration",
       "levelReq": { "min": 65, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1.6, "max": 3.5 },
       "setQty": { "min": 1, "max": 2, "pow": 1 },
@@ -4282,11 +4257,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Level65_Aberrant_Surface_Double.SupplyCrate_Level65_Aberrant_Surface_Double_C",
+      "name": "Yellow Surface Beacon",
+      "map": "Aberration",
       "levelReq": { "min": 65, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1.6, "max": 3.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -4421,11 +4395,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Level80_Aberrant_Surface.SupplyCrate_Level80_Aberrant_Surface_C",
+      "name": "Red Surface Beacon",
+      "map": "Aberration",
       "levelReq": { "min": 80, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1.65, "max": 3.7 },
       "setQty": { "min": 1, "max": 3, "pow": 1 },
@@ -4582,11 +4555,10 @@
     },
     {
       "bp": "/Game/Aberration/CoreBlueprints/ItemLootSets/SupplyCrate/SupplyCrate_Level80_Aberrant_Surface_Double.SupplyCrate_Level80_Aberrant_Surface_Double_C",
+      "name": "Red Surface Beacon",
+      "map": "Aberration",
       "levelReq": { "min": 80, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1.65, "max": 3.7 },
       "setQty": { "min": 3, "max": 3, "pow": 1 },
@@ -4744,10 +4716,7 @@
     {
       "bp": "/Game/Extinction/CoreBlueprints/HordeCrates/ElementNode_Base_Horde.ElementNode_Base_Horde_C",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -5119,11 +5088,10 @@
     },
     {
       "bp": "/Game/Extinction/CoreBlueprints/HordeCrates/ElementNode_Easy_Horde.ElementNode_Easy_Horde_C",
+      "name": "Corrupt Element Node",
+      "map": "Extinction",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -5495,11 +5463,10 @@
     },
     {
       "bp": "/Game/Extinction/CoreBlueprints/HordeCrates/ElementNode_Hard_Horde.ElementNode_Hard_Horde_C",
+      "name": "Corrupt Element Node",
+      "map": "Extinction",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -5871,11 +5838,10 @@
     },
     {
       "bp": "/Game/Extinction/CoreBlueprints/HordeCrates/ElementNode_Medium_Horde.ElementNode_Medium_Horde_C",
+      "name": "Corrupt Element Node",
+      "map": "Extinction",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -6248,10 +6214,7 @@
     {
       "bp": "/Game/Extinction/CoreBlueprints/HordeCrates/SupplyCrate_Base_Horde.SupplyCrate_Base_Horde_C",
       "levelReq": { "min": 1, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -6623,11 +6586,10 @@
     },
     {
       "bp": "/Game/Extinction/CoreBlueprints/HordeCrates/SupplyCrate_Base_Horde_Easy.SupplyCrate_Base_Horde_Easy_C",
+      "name": "Orbital Supply Drop Blue",
+      "map": "Extinction",
       "levelReq": { "min": 1, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -6861,11 +6823,10 @@
     },
     {
       "bp": "/Game/Extinction/CoreBlueprints/HordeCrates/SupplyCrate_Base_Horde_Hard.SupplyCrate_Base_Horde_Hard_C",
+      "name": "Orbital Supply Drop Red",
+      "map": "Extinction",
       "levelReq": { "min": 1, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -7115,11 +7076,10 @@
     },
     {
       "bp": "/Game/Extinction/CoreBlueprints/HordeCrates/SupplyCrate_Base_Horde_Legendary.SupplyCrate_Base_Horde_Legendary_C",
+      "name": "Orbital Supply Drop Purple",
+      "map": "Extinction",
       "levelReq": { "min": 1, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -7371,11 +7331,10 @@
     },
     {
       "bp": "/Game/Extinction/CoreBlueprints/HordeCrates/SupplyCrate_Base_Horde_Medium.SupplyCrate_Base_Horde_Medium_C",
+      "name": "Orbital Supply Drop Yellow",
+      "map": "Extinction",
       "levelReq": { "min": 1, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -7619,10 +7578,7 @@
     {
       "bp": "/Game/Extinction/CoreBlueprints/HordeCrates/SupplyCrate_Horde_MeteorBase.SupplyCrate_Horde_MeteorBase_C",
       "levelReq": { "min": 1, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -7994,11 +7950,10 @@
     },
     {
       "bp": "/Game/Extinction/CoreBlueprints/ItemLootSets/SupplyCrates/ArtifactCrate_Desert_Kaiju_EX.ArtifactCrate_Desert_Kaiju_EX_C",
+      "name": "Artifact Container Chaos",
+      "map": "Extinction",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -8022,11 +7977,10 @@
     },
     {
       "bp": "/Game/Extinction/CoreBlueprints/ItemLootSets/SupplyCrates/ArtifactCrate_ForestKaiju_EX.ArtifactCrate_ForestKaiju_EX_C",
+      "name": "Artifact Container Growth",
+      "map": "Extinction",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -8050,11 +8004,10 @@
     },
     {
       "bp": "/Game/Extinction/CoreBlueprints/ItemLootSets/SupplyCrates/ArtifactCrate_IceKaiju_EX.ArtifactCrate_IceKaiju_EX_C",
+      "name": "Artifact Container Void",
+      "map": "Extinction",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -8078,11 +8031,10 @@
     },
     {
       "bp": "/Game/Extinction/CoreBlueprints/ItemLootSets/SupplyCrates/ArtifactCrate_KingKaiju_Alpha_EX.ArtifactCrate_KingKaiju_Alpha_EX_C",
+      "name": "King Titan Alpha",
+      "map": "Extinction",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 24, "max": 30, "pow": 1.5 },
@@ -8259,10 +8211,7 @@
     {
       "bp": "/Game/Extinction/CoreBlueprints/ItemLootSets/SupplyCrates/ArtifactCrate_KingKaiju_Beta_EX.ArtifactCrate_KingKaiju_Beta_EX_C",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 24, "max": 30, "pow": 1.5 },
@@ -8442,11 +8391,10 @@
     },
     {
       "bp": "/Game/Extinction/CoreBlueprints/ItemLootSets/SupplyCrates/ArtifactCrate_KingKaiju_EX.ArtifactCrate_KingKaiju_EX_C",
+      "name": "King Titan Gamma",
+      "map": "Extinction",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 18, "max": 24, "pow": 1.5 },
@@ -8619,11 +8567,10 @@
     },
     {
       "bp": "/Game/Extinction/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Cave_QualityTier1_EX.SupplyCrate_Cave_QualityTier1_EX_C",
+      "name": "Cave Loot Crate Blue",
+      "map": "Extinction",
       "levelReq": { "min": 25, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1.5, "max": 2.2 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -8791,11 +8738,10 @@
     },
     {
       "bp": "/Game/Extinction/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Cave_QualityTier2_EX.SupplyCrate_Cave_QualityTier2_EX_C",
+      "name": "Cave Loot Crate Yellow",
+      "map": "Extinction",
       "levelReq": { "min": 45, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1.5, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -8963,11 +8909,10 @@
     },
     {
       "bp": "/Game/Extinction/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Cave_QualityTier3_EX.SupplyCrate_Cave_QualityTier3_EX_C",
+      "name": "Cave Loot Crate Red",
+      "map": "Extinction",
       "levelReq": { "min": 65, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1.6, "max": 2.6 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -9135,11 +9080,10 @@
     },
     {
       "bp": "/Game/Extinction/Dinos/KingKaiju/KingKaiju_ElementNode.KingKaiju_ElementNode_C",
+      "name": "Corrupt Element Node",
+      "map": "Extinction",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -9512,10 +9456,7 @@
     {
       "bp": "/Game/Extinction/Dinos/KingKaiju/KingKaiju_ElementNode_Alpha.KingKaiju_ElementNode_Alpha_C",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -9888,10 +9829,7 @@
     {
       "bp": "/Game/Extinction/Dinos/KingKaiju/KingKaiju_ElementNode_Beta.KingKaiju_ElementNode_Beta_C",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -10263,11 +10201,10 @@
     },
     {
       "bp": "/Game/Genesis2/Structures/SpaceCrates/SupplyCrate_Space_01_Ambergris.SupplyCrate_Space_01_Ambergris_C",
+      "name": "White Supply Crate",
+      "map": "Genesis 2",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 3, "max": 3, "pow": 1 },
@@ -10918,11 +10855,10 @@
     },
     {
       "bp": "/Game/Genesis2/Structures/SpaceCrates/SupplyCrate_Space_02_Crystal.SupplyCrate_Space_02_Crystal_C",
+      "name": "Green Supply Crate",
+      "map": "Genesis 2",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 3, "max": 3, "pow": 1 },
@@ -11571,11 +11507,10 @@
     },
     {
       "bp": "/Game/Genesis2/Structures/SpaceCrates/SupplyCrate_Space_03_Sulfur.SupplyCrate_Space_03_Sulfur_C",
+      "name": "Blue Supply Crate",
+      "map": "Genesis 2",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 3, "max": 3, "pow": 1 },
@@ -12224,11 +12159,10 @@
     },
     {
       "bp": "/Game/Genesis2/Structures/SpaceCrates/SupplyCrate_Space_04_ElementShards.SupplyCrate_Space_04_ElementShards_C",
+      "name": "Purple Supply Crate",
+      "map": "Genesis 2",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 3, "max": 3, "pow": 1 },
@@ -12876,11 +12810,10 @@
     },
     {
       "bp": "/Game/Genesis2/Structures/SpaceCrates/SupplyCrate_Space_05_Obsidian.SupplyCrate_Space_05_Obsidian_C",
+      "name": "Yellow Supply Crate",
+      "map": "Genesis 2",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 3, "max": 3, "pow": 1 },
@@ -13529,11 +13462,10 @@
     },
     {
       "bp": "/Game/Genesis2/Structures/SpaceCrates/SupplyCrate_Space_06_Oil.SupplyCrate_Space_06_Oil_C",
+      "name": "Red Supply Crate",
+      "map": "Genesis 2",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 3, "max": 3, "pow": 1 },
@@ -14182,11 +14114,10 @@
     },
     {
       "bp": "/Game/Genesis2/Structures/SpaceCrates/SupplyCrate_Space_07_ElementDust.SupplyCrate_Space_07_ElementDust_C",
+      "name": "Cyan Supply Crate",
+      "map": "Genesis 2",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 3, "max": 3, "pow": 1 },
@@ -14835,11 +14766,10 @@
     },
     {
       "bp": "/Game/Genesis2/Structures/SpaceCrates/SupplyCrate_Space_08_BlackPearls.SupplyCrate_Space_08_BlackPearls_C",
+      "name": "Orange Supply Crate",
+      "map": "Genesis 2",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 3, "max": 3, "pow": 1 },
@@ -15489,10 +15419,7 @@
     {
       "bp": "/Game/LostIsland/Structures/SupplyCrates/SupplyCrate_Cave_QualityTier4_LostIsland.SupplyCrate_Cave_QualityTier4_LostIsland_C",
       "levelReq": { "min": 55, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 3.25, "max": 4 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -15831,11 +15758,10 @@
     },
     {
       "bp": "/Game/LostIsland/Structures/SupplyCrates/SupplyCrate_Level45_LostIsland.SupplyCrate_Level45_LostIsland_C",
+      "name": "Yellow Beacon",
+      "map": "LostIsland",
       "levelReq": { "min": 45, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 2, "pow": 1 },
@@ -15992,11 +15918,10 @@
     },
     {
       "bp": "/Game/LostIsland/Structures/SupplyCrates/SupplyCrate_Level45_LostIsland_Double.SupplyCrate_Level45_LostIsland_Double_C",
+      "name": "Yellow Beacon (Double items)",
+      "map": "LostIsland",
       "levelReq": { "min": 45, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -16153,11 +16078,10 @@
     },
     {
       "bp": "/Game/LostIsland/Structures/SupplyCrates/SupplyCrate_Level60_LostIsland.SupplyCrate_Level60_LostIsland_C",
+      "name": "Red Beacon",
+      "map": "LostIsland",
       "levelReq": { "min": 60, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 3, "pow": 1 },
@@ -16340,11 +16264,10 @@
     },
     {
       "bp": "/Game/LostIsland/Structures/SupplyCrates/SupplyCrate_Level60_LostIsland_Double.SupplyCrate_Level60_LostIsland_Double_C",
+      "name": "Red Beacon (Double items)",
+      "map": "LostIsland",
       "levelReq": { "min": 60, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 3, "max": 3, "pow": 1 },
@@ -16527,11 +16450,10 @@
     },
     {
       "bp": "/Game/LostIsland/Structures/SupplyCrates/SupplyCrate_Ruins_LostIsland.SupplyCrate_Ruins_LostIsland_C",
+      "name": "Ruins Dungeon Crate",
+      "map": "LostIsland",
       "levelReq": { "min": 55, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 3.5, "max": 4.25 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -16609,12 +16531,66 @@
       ]
     },
     {
-      "bp": "/Game/Mods/LostIsland/Assets/BeaverDam/SupplyCrateBaseBP_Instantaneous_DamLogs_Child.SupplyCrateBaseBP_Instantaneous_DamLogs_Child_C",
+      "bp": "/Game/LostIsland/Assets/BeaverDam/SupplyCrateBaseBP_Instantaneous_DamLogs_Child.SupplyCrateBaseBP_Instantaneous_DamLogs_Child_C",
+      "name": "",
+      "map": "LostIsland",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
+      "noRepeatsInSets": false,
+      "qualityMult": { "min": 1, "max": 1 },
+      "setQty": { "min": 1, "max": 1, "pow": 1 },
+      "sets": [
+        {
+          "bp": "/Game/PrimalEarth/CoreBlueprints/ItemLootSets/LootItemSet_BeaverDam.LootItemSet_BeaverDam_C",
+          "name": "Beaver Dam",
+          "weight": 1,
+          "qtyScale": { "min": 15, "max": 10, "pow": 1 },
+          "entries": [
+            {
+              "name": "Wood",
+              "weight": 2.3,
+              "qty": { "min": 100, "max": 100, "pow": 1 },
+              "quality": { "min": 1, "max": 1, "pow": 1 },
+              "items": [1, 7]
+            },
+            {
+              "name": "rare flower",
+              "weight": 0.35,
+              "qty": { "min": 10, "max": 20, "pow": 1 },
+              "quality": { "min": 1, "max": 1, "pow": 1 },
+              "items": [1, 250]
+            },
+            {
+              "name": "rare mushroom",
+              "weight": 0.35,
+              "qty": { "min": 2, "max": 6, "pow": 1 },
+              "quality": { "min": 1, "max": 1, "pow": 1 },
+              "items": [1, 251]
+            },
+            {
+              "name": "paste",
+              "weight": 1.1,
+              "qty": { "min": 45, "max": 95, "pow": 1 },
+              "quality": { "min": 1, "max": 1, "pow": 1 },
+              "items": [1, 146]
+            },
+            {
+              "name": "silica",
+              "weight": 0.3,
+              "qty": { "min": 10, "max": 25, "pow": 1 },
+              "quality": { "min": 1, "max": 1, "pow": 1 },
+              "items": [1, 163]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "bp": "/Game/Ragnarok/Custom_Assets/Environment/BeaverDam/SupplyCrateBaseBP_Instantaneous_DamLogs_Child.SupplyCrateBaseBP_Instantaneous_DamLogs_Child_C",
+      "name": "",
+      "map": "Ragnarok",
+      "levelReq": { "min": 0, "max": 0 },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -16664,12 +16640,11 @@
       ]
     },
     {
-      "bp": "/Game/Mods/Ragnarok/Custom_Assets/Environment/BeaverDam/SupplyCrateBaseBP_Instantaneous_DamLogs_Child.SupplyCrateBaseBP_Instantaneous_DamLogs_Child_C",
+      "bp": "/Game/Ragnarok/Custom_Assets/Environment/BeaverDam/SupplyCrateBaseBP_Instantaneous_DenLogs_Child2.SupplyCrateBaseBP_Instantaneous_DenLogs_Child2_C",
+      "name": "",
+      "map": "Ragnarok",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -16719,73 +16694,15 @@
       ]
     },
     {
-      "bp": "/Game/Mods/Ragnarok/Custom_Assets/Environment/BeaverDam/SupplyCrateBaseBP_Instantaneous_DenLogs_Child2.SupplyCrateBaseBP_Instantaneous_DenLogs_Child2_C",
+      "bp": "/Game/Ragnarok/Custom_Assets/Environment/Lava/Volcano/CrystalSpawns/SupplyCrateBaseBP_Instantaneous_VolcanoCrystal_C.SupplyCrateBaseBP_Instantaneous_VolcanoCrystal_C_C",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
       "sets": [
         {
-          "bp": "/Game/PrimalEarth/CoreBlueprints/ItemLootSets/LootItemSet_BeaverDam.LootItemSet_BeaverDam_C",
-          "weight": 1,
-          "qtyScale": { "min": 15, "max": 10, "pow": 1 },
-          "entries": [
-            {
-              "name": "wood",
-              "weight": 2.3,
-              "qty": { "min": 100, "max": 100, "pow": 1 },
-              "quality": { "min": 1, "max": 1, "pow": 1 },
-              "items": [1, 7]
-            },
-            {
-              "name": "rare flower",
-              "weight": 0.35,
-              "qty": { "min": 10, "max": 20, "pow": 1 },
-              "quality": { "min": 1, "max": 1, "pow": 1 },
-              "items": [1, 250]
-            },
-            {
-              "name": "rare mushroom",
-              "weight": 0.35,
-              "qty": { "min": 2, "max": 6, "pow": 1 },
-              "quality": { "min": 1, "max": 1, "pow": 1 },
-              "items": [1, 251]
-            },
-            {
-              "name": "paste",
-              "weight": 1.1,
-              "qty": { "min": 45, "max": 95, "pow": 1 },
-              "quality": { "min": 1, "max": 1, "pow": 1 },
-              "items": [1, 146]
-            },
-            {
-              "name": "silica",
-              "weight": 0.3,
-              "qty": { "min": 10, "max": 25, "pow": 1 },
-              "quality": { "min": 1, "max": 1, "pow": 1 },
-              "items": [1, 163]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "bp": "/Game/Mods/Ragnarok/Custom_Assets/Environment/Lava/Volcano/CrystalSpawns/SupplyCrateBaseBP_Instantaneous_VolcanoCrystal_C.SupplyCrateBaseBP_Instantaneous_VolcanoCrystal_C_C",
-      "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
-      "noRepeatsInSets": false,
-      "qualityMult": { "min": 1, "max": 1 },
-      "setQty": { "min": 1, "max": 1, "pow": 1 },
-      "sets": [
-        {
-          "bp": "/Game/Mods/Ragnarok/Custom_Assets/Environment/Lava/Volcano/CrystalSpawns/LootItemSet_VolcanicCrystal.LootItemSet_VolcanicCrystal_C",
+          "bp": "/Game/Ragnarok/Custom_Assets/Environment/Lava/Volcano/CrystalSpawns/LootItemSet_VolcanicCrystal.LootItemSet_VolcanicCrystal_C",
           "weight": 1,
           "qtyScale": { "min": 1, "max": 5, "pow": 1 },
           "entries": [
@@ -16822,12 +16739,9 @@
       ]
     },
     {
-      "bp": "/Game/Mods/Ragnarok/Custom_Assets/JacksonL/SupplyCrate_Chest_Treasure_JacksonL.SupplyCrate_Chest_Treasure_JacksonL_C",
+      "bp": "/Game/Ragnarok/Custom_Assets/JacksonL/SupplyCrate_Chest_Treasure_JacksonL.SupplyCrate_Chest_Treasure_JacksonL_C",
       "levelReq": { "min": 80, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 120
-      },
+      "decayTime": { "start": 0, "interval": 120 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 4.5, "max": 4.5 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -16901,12 +16815,11 @@
       ]
     },
     {
-      "bp": "/Game/Mods/Valguero/Assets/SupplyCrates/Val_SupplyCrate_Level35.Val_SupplyCrate_Level35_C",
+      "bp": "/Game/Valguero/Assets/SupplyCrates/Val_SupplyCrate_Level35.Val_SupplyCrate_Level35_C",
+      "name": "Purple Beacon ",
+      "map": "Valguero",
       "levelReq": { "min": 35, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 2, "pow": 1 },
@@ -17028,12 +16941,11 @@
       ]
     },
     {
-      "bp": "/Game/Mods/Valguero/Assets/SupplyCrates/Val_SupplyCrate_Level35_Double.Val_SupplyCrate_Level35_Double_C",
+      "bp": "/Game/Valguero/Assets/SupplyCrates/Val_SupplyCrate_Level35_Double.Val_SupplyCrate_Level35_Double_C",
+      "name": "Purple Beacon (Double items)",
+      "map": "Valguero",
       "levelReq": { "min": 35, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -17155,12 +17067,11 @@
       ]
     },
     {
-      "bp": "/Game/Mods/Valguero/Assets/SupplyCrates/Val_SupplyCrate_Level45.Val_SupplyCrate_Level45_C",
+      "bp": "/Game/Valguero/Assets/SupplyCrates/Val_SupplyCrate_Level45.Val_SupplyCrate_Level45_C",
+      "name": "Yellow Beacon",
+      "map": "Valguero",
       "levelReq": { "min": 45, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 2, "pow": 1 },
@@ -17317,12 +17228,9 @@
       ]
     },
     {
-      "bp": "/Game/Mods/Valguero/Assets/SupplyCrates/Val_SupplyCrate_Level45_Double.Val_SupplyCrate_Level45_Double_C",
+      "bp": "/Game/Valguero/Assets/SupplyCrates/Val_SupplyCrate_Level45_Double.Val_SupplyCrate_Level45_Double_C",
       "levelReq": { "min": 45, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -17479,12 +17387,11 @@
       ]
     },
     {
-      "bp": "/Game/Mods/Valguero/Assets/SupplyCrates/Val_SupplyCrate_Level60.Val_SupplyCrate_Level60_C",
+      "bp": "/Game/Valguero/Assets/SupplyCrates/Val_SupplyCrate_Level60.Val_SupplyCrate_Level60_C",
+      "name": "Red Beacon",
+      "map": "Valguero",
       "levelReq": { "min": 60, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 3, "pow": 1 },
@@ -17666,12 +17573,11 @@
       ]
     },
     {
-      "bp": "/Game/Mods/Valguero/Assets/SupplyCrates/Val_SupplyCrate_Level60_Double.Val_SupplyCrate_Level60_Double_C",
+      "bp": "/Game/Valguero/Assets/SupplyCrates/Val_SupplyCrate_Level60_Double.Val_SupplyCrate_Level60_Double_C",
+      "name": "Red Beacon (Double items)",
+      "map": "Valguero",
       "levelReq": { "min": 60, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 3, "max": 3, "pow": 1 },
@@ -17854,11 +17760,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/ArtifactCrates/ArtifactCrate_1.ArtifactCrate_1_C",
+      "name": "Artifact Container Hunter",
+      "map": "The Island",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -17881,11 +17786,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/ArtifactCrates/ArtifactCrate_10.ArtifactCrate_10_C",
+      "name": "Artifact Container Cunning",
+      "map": "The Island",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -17908,11 +17812,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/ArtifactCrates/ArtifactCrate_11.ArtifactCrate_11_C",
+      "name": "Artifact Container Brute",
+      "map": "The Island",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -17935,11 +17838,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/ArtifactCrates/ArtifactCrate_2.ArtifactCrate_2_C",
+      "name": "Artifact Container Pack",
+      "map": "The Island",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -17962,11 +17864,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/ArtifactCrates/ArtifactCrate_3.ArtifactCrate_3_C",
+      "name": "Artifact Container Massive",
+      "map": "The Island",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -17989,11 +17890,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/ArtifactCrates/ArtifactCrate_4.ArtifactCrate_4_C",
+      "name": "Artifact Container Devious",
+      "map": "The Island",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -18016,11 +17916,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/ArtifactCrates/ArtifactCrate_5.ArtifactCrate_5_C",
+      "name": "Artifact Container Clever",
+      "map": "The Island",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -18043,11 +17942,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/ArtifactCrates/ArtifactCrate_6.ArtifactCrate_6_C",
+      "name": "Artifact Container Skylord",
+      "map": "The Island",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -18070,11 +17968,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/ArtifactCrates/ArtifactCrate_7.ArtifactCrate_7_C",
+      "name": "Artifact Container Devourer",
+      "map": "The Island",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -18097,11 +17994,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/ArtifactCrates/ArtifactCrate_8.ArtifactCrate_8_C",
+      "name": "Artifact Container Immune",
+      "map": "The Island",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -18124,11 +18020,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/ArtifactCrates/ArtifactCrate_9.ArtifactCrate_9_C",
+      "name": "Artifact Container Strong",
+      "map": "The Island",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -18151,11 +18046,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Cave_QualityTier1.SupplyCrate_Cave_QualityTier1_C",
+      "name": "Cave Beacon 1",
+      "map": "The Island",
       "levelReq": { "min": 10, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1.75 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -18239,11 +18133,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Cave_QualityTier2.SupplyCrate_Cave_QualityTier2_C",
+      "name": "Cave Beacon 2",
+      "map": "The Island",
       "levelReq": { "min": 25, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1.75, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -18415,11 +18308,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Cave_QualityTier3.SupplyCrate_Cave_QualityTier3_C",
+      "name": "Cave Beacon 3",
+      "map": "The Island",
       "levelReq": { "min": 40, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2.5, "max": 3.25 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -18676,11 +18568,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Cave_QualityTier4.SupplyCrate_Cave_QualityTier4_C",
+      "name": "Cave Beacon 4",
+      "map": "The Island",
       "levelReq": { "min": 55, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 3.25, "max": 4 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -19019,10 +18910,7 @@
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_DinoHat.SupplyCrate_DinoHat_C",
       "levelReq": { "min": 3, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -19108,11 +18996,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Gift.SupplyCrate_Gift_C",
+      "name": "Raptor Claus Present",
+      "map": "The Island",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 180,
-        "interval": 15
-      },
+      "decayTime": { "start": 180, "interval": 15 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 2.7, "max": 2.7 },
       "setQty": { "min": 3, "max": 3, "pow": 1 },
@@ -19492,11 +19379,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_IceCaveTier1.SupplyCrate_IceCaveTier1_C",
+      "name": "Ice Cave Loot Crate blue",
+      "map": "The Island",
       "levelReq": { "min": 25, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1.75, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -19668,11 +19554,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_IceCaveTier2.SupplyCrate_IceCaveTier2_C",
+      "name": "Ice Cave Loot Crate yellow",
+      "map": "The Island",
       "levelReq": { "min": 40, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2.5, "max": 3.25 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -19929,11 +19814,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_IceCaveTier3.SupplyCrate_IceCaveTier3_C",
+      "name": "Ice Cave Loot Crate red",
+      "map": "The Island",
       "levelReq": { "min": 55, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 3.25, "max": 4 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -19998,11 +19882,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Level03.SupplyCrate_Level03_C",
+      "name": "White Beacon",
+      "map": "The Island",
       "levelReq": { "min": 3, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -20374,11 +20257,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Level03_Double.SupplyCrate_Level03_Double_C",
+      "name": "White Beacon (Double items)",
+      "map": "The Island",
       "levelReq": { "min": 3, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -20750,11 +20632,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Level15.SupplyCrate_Level15_C",
+      "name": "Green Beacon",
+      "map": "The Island",
       "levelReq": { "min": 15, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -21312,11 +21193,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Level15_Double.SupplyCrate_Level15_Double_C",
+      "name": "Green Beacon (Double items)",
+      "map": "The Island",
       "levelReq": { "min": 15, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -21874,11 +21754,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Level25.SupplyCrate_Level25_C",
+      "name": "Blue Beacon",
+      "map": "The Island",
       "levelReq": { "min": 25, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 2, "pow": 1 },
@@ -21957,11 +21836,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Level25_Double.SupplyCrate_Level25_Double_C",
+      "name": "Blue Beacon (Double items)",
+      "map": "The Island",
       "levelReq": { "min": 25, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -22040,11 +21918,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Level35.SupplyCrate_Level35_C",
+      "name": "Purple Beacon",
+      "map": "The Island",
       "levelReq": { "min": 35, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 2, "pow": 1 },
@@ -22166,11 +22043,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Level35_Double.SupplyCrate_Level35_Double_C",
+      "name": "Purple Beacon (Double items)",
+      "map": "The Island",
       "levelReq": { "min": 35, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -22292,11 +22168,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Level45.SupplyCrate_Level45_C",
+      "name": "Yellow Beacon",
+      "map": "The Island",
       "levelReq": { "min": 45, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 2, "pow": 1 },
@@ -22452,11 +22327,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Level45_Double.SupplyCrate_Level45_Double_C",
+      "name": "Yellow Beacon (Double items)",
+      "map": "The Island",
       "levelReq": { "min": 45, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -22612,11 +22486,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Level60.SupplyCrate_Level60_C",
+      "name": "Red Beacon",
+      "map": "The Island",
       "levelReq": { "min": 60, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 3, "pow": 1 },
@@ -22797,11 +22670,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_Level60_Double.SupplyCrate_Level60_Double_C",
+      "name": "Red Beacon (Double items)",
+      "map": "The Island",
       "levelReq": { "min": 60, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 2.5 },
       "setQty": { "min": 3, "max": 3, "pow": 1 },
@@ -22982,11 +22854,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_OceanInstant.SupplyCrate_OceanInstant_C",
+      "name": "Deep Sea Loot Crate",
+      "map": "The Island",
       "levelReq": { "min": 80, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 3.25, "max": 4 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -23062,10 +22933,7 @@
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_PlayerHat.SupplyCrate_PlayerHat_C",
       "levelReq": { "min": 3, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -23165,11 +23033,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_SwampCaveTier1.SupplyCrate_SwampCaveTier1_C",
+      "name": "Swamp Cave Loot Crate blue",
+      "map": "The Island",
       "levelReq": { "min": 25, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1.75, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -23341,11 +23208,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_SwampCaveTier2.SupplyCrate_SwampCaveTier2_C",
+      "name": "Swamp Cave Loot Crate yellow",
+      "map": "The Island",
       "levelReq": { "min": 40, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2.5, "max": 3.25 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -23602,11 +23468,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_SwampCaveTier3.SupplyCrate_SwampCaveTier3_C",
+      "name": "Swamp Cave Loot Crate red",
+      "map": "The Island",
       "levelReq": { "min": 70, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 3.25, "max": 4 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -23749,11 +23614,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_UnderwaterCaveTier1.SupplyCrate_UnderwaterCaveTier1_C",
+      "name": "Underwater Caves Loot Crate blue",
+      "map": "The Island",
       "levelReq": { "min": 50, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 3.25, "max": 4 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -23863,11 +23727,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_UnderwaterCaveTier2.SupplyCrate_UnderwaterCaveTier2_C",
+      "name": "Underwater Caves Loot Crate yellow",
+      "map": "The Island",
       "levelReq": { "min": 60, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 3.35, "max": 4.05 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -24054,11 +23917,10 @@
     },
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCrate_UnderwaterCaveTier3.SupplyCrate_UnderwaterCaveTier3_C",
+      "name": "Underwater Caves Loot Crate red",
+      "map": "The Island",
       "levelReq": { "min": 70, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 3.25, "max": 4.1 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -24217,10 +24079,7 @@
     {
       "bp": "/Game/PrimalEarth/Structures/SupplyCreate_OceanInstant_High.SupplyCreate_OceanInstant_High_C",
       "levelReq": { "min": 80, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 3.3, "max": 4.3 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -24295,11 +24154,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/ArtifactCrate_2_SE.ArtifactCrate_2_SE_C",
+      "name": "Artifact Container Gatekeeper",
+      "map": "Scorched Earth",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -24329,11 +24187,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/ArtifactCrate_3_SE.ArtifactCrate_3_SE_C",
+      "name": "Artifact Container Crag",
+      "map": "Scorched Earth",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -24363,11 +24220,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/ArtifactCrate_SE.ArtifactCrate_SE_C",
+      "name": "Artifact Container Destroyer",
+      "map": "Scorched Earth",
       "levelReq": { "min": 0, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 1, "max": 1, "pow": 1 },
@@ -24397,11 +24253,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Cave_QualityTier1_ScorchedEarth.SupplyCrate_Cave_QualityTier1_ScorchedEarth_C",
+      "name": "Cave Beacon 1",
+      "map": "Scorched Earth",
       "levelReq": { "min": 25, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1.5, "max": 2.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -24474,11 +24329,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Cave_QualityTier2_ScorchedEarth.SupplyCrate_Cave_QualityTier2_ScorchedEarth_C",
+      "name": "Cave Beacon 2",
+      "map": "Scorched Earth",
       "levelReq": { "min": 45, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 2.4, "max": 3.5 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -24599,11 +24453,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Cave_QualityTier3_ScorchedEarth.SupplyCrate_Cave_QualityTier3_ScorchedEarth_C",
+      "name": "Cave Beacon 3",
+      "map": "Scorched Earth",
       "levelReq": { "min": 65, "max": 0 },
-      "decayTime": {
-        "start": 0,
-        "interval": 0
-      },
+      "decayTime": { "start": 0, "interval": 0 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 3.5, "max": 4.7 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -24769,11 +24622,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Level03_Double_ScorchedEarth.SupplyCrate_Level03_Double_ScorchedEarth_C",
+      "name": "White Beacon (Double items)",
+      "map": "Scorched Earth",
       "levelReq": { "min": 3, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 2, "max": 3 },
       "setQty": { "min": 4, "max": 4, "pow": 1 },
@@ -25216,11 +25068,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Level03_ScorchedEarth.SupplyCrate_Level03_ScorchedEarth_C",
+      "name": "White Beacon",
+      "map": "Scorched Earth",
       "levelReq": { "min": 3, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -25663,11 +25514,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Level15_Double_ScorchedEarth.SupplyCrate_Level15_Double_ScorchedEarth_C",
+      "name": "Green Beacon (Double items)",
+      "map": "Scorched Earth",
       "levelReq": { "min": 15, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 2, "max": 3 },
       "setQty": { "min": 4, "max": 4, "pow": 1 },
@@ -26811,11 +26661,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Level15_ScorchedEarth.SupplyCrate_Level15_ScorchedEarth_C",
+      "name": "Green Beacon",
+      "map": "Scorched Earth",
       "levelReq": { "min": 15, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": true,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -27959,11 +27808,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Level30_Double_ScorchedEarth.SupplyCrate_Level30_Double_ScorchedEarth_C",
+      "name": "Blue Beacon (Double items)",
+      "map": "Scorched Earth",
       "levelReq": { "min": 30, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 3 },
       "setQty": { "min": 4, "max": 4, "pow": 1 },
@@ -28096,11 +27944,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Level30_ScorchedEarth.SupplyCrate_Level30_ScorchedEarth_C",
+      "name": "Blue Beacon",
+      "map": "Scorched Earth",
       "levelReq": { "min": 30, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 2, "max": 2, "pow": 1 },
@@ -28233,11 +28080,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Level45_Double_ScorchedEarth.SupplyCrate_Level45_Double_ScorchedEarth_C",
+      "name": "Purple Beacon (Double items)",
+      "map": "Scorched Earth",
       "levelReq": { "min": 45, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 3 },
       "setQty": { "min": 5, "max": 5, "pow": 1 },
@@ -28450,11 +28296,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Level45_ScorchedEarth.SupplyCrate_Level45_ScorchedEarth_C",
+      "name": "Purple Beacon",
+      "map": "Scorched Earth",
       "levelReq": { "min": 45, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 3, "max": 3, "pow": 1 },
@@ -28667,11 +28512,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Level55_Double_ScorchedEarth.SupplyCrate_Level55_Double_ScorchedEarth_C",
+      "name": "Yellow Beacon (Double items)",
+      "map": "Scorched Earth",
       "levelReq": { "min": 55, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 3 },
       "setQty": { "min": 5, "max": 5, "pow": 1 },
@@ -28897,11 +28741,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Level55_ScorchedEarth.SupplyCrate_Level55_ScorchedEarth_C",
+      "name": "Yellow Beacon",
+      "map": "Scorched Earth",
       "levelReq": { "min": 55, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 3, "max": 3, "pow": 1 },
@@ -29127,11 +28970,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Level70_Double_ScorchedEarth.SupplyCrate_Level70_Double_ScorchedEarth_C",
+      "name": "Red Beacon (Double items)",
+      "map": "Scorched Earth",
       "levelReq": { "min": 70, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 2, "max": 3 },
       "setQty": { "min": 6, "max": 6, "pow": 1 },
@@ -29376,11 +29218,10 @@
     },
     {
       "bp": "/Game/ScorchedEarth/CoreBlueprints/ItemLootSets/SupplyCrates/SupplyCrate_Level70_ScorchedEarth.SupplyCrate_Level70_ScorchedEarth_C",
+      "name": "Red Beacon",
+      "map": "Scorched Earth",
       "levelReq": { "min": 70, "max": 0 },
-      "decayTime": {
-        "start": 200,
-        "interval": 45
-      },
+      "decayTime": { "start": 200, "interval": 45 },
       "noRepeatsInSets": false,
       "qualityMult": { "min": 1, "max": 1 },
       "setQty": { "min": 4, "max": 4, "pow": 1 },
