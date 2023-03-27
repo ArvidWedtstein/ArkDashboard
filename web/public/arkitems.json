@@ -7847,6 +7847,25 @@
       "type": "Resource"
     },
     {
+      "id": 471,
+      "created_at": "2023-03-27T12:00:45.905634+00:00",
+      "name": "Angler Gel",
+      "description": "A thick, viscous substance that can sustain a flame for a remarkably long time.",
+      "image": "Plant_Species_Z_Seed_(Aberration).png",
+      "max_stack": 100,
+      "weight": 0.01,
+      "engram_points": 0,
+      "crafting_time": 0,
+      "req_level": 0,
+      "yields": 1,
+      "recipe": null,
+      "stats": null,
+      "color": "#ff0000",
+      "crafted_in": null,
+      "effects": null,
+      "type": "Resource"
+    },
+    {
       "id": 472,
       "created_at": "2023-02-14T12:15:43.125188+00:00",
       "name": "Element",
@@ -15541,30 +15560,6 @@
       "type": "Other"
     },
     {
-      "id": 830,
-      "created_at": "2023-02-14T12:18:22.033689+00:00",
-      "name": "King Titan Flag",
-      "description": "This flag is proof that you have defeated the Mecha King of the Titans!",
-      "image": null,
-      "max_stack": 100,
-      "weight": 4,
-      "engram_points": 0,
-      "crafting_time": 5,
-      "req_level": 0,
-      "yields": 1,
-      "recipe": [
-        { "count": 10, "itemId": 7 },
-        { "count": 100, "itemId": 76 },
-        { "count": 20, "itemId": 10 },
-        { "count": 30, "itemId": 75 }
-      ],
-      "stats": null,
-      "color": null,
-      "crafted_in": null,
-      "effects": null,
-      "type": "Other"
-    },
-    {
       "id": 831,
       "created_at": "2023-02-14T12:18:22.033689+00:00",
       "name": "Cannon Shell",
@@ -15754,31 +15749,6 @@
         { "id": 7, "value": 20, "duration": 5 },
         { "id": 12, "value": 25, "duration": 6.25 }
       ],
-      "color": null,
-      "crafted_in": null,
-      "effects": null,
-      "type": "Other"
-    },
-    {
-      "id": 839,
-      "created_at": "2023-02-14T12:18:22.033689+00:00",
-      "name": "Unassembled Enforcer",
-      "description": "Use this item to assemble a new Enforcer!",
-      "image": null,
-      "max_stack": 1,
-      "weight": 200,
-      "engram_points": 0,
-      "crafting_time": 5,
-      "req_level": 0,
-      "yields": 1,
-      "recipe": [
-        { "count": 500, "itemId": 474 },
-        { "count": 60, "itemId": 74 },
-        { "count": 30, "itemId": 166 },
-        { "count": 50, "itemId": 78 },
-        { "count": 20, "itemId": 162 }
-      ],
-      "stats": null,
       "color": null,
       "crafted_in": null,
       "effects": null,
@@ -16017,11 +15987,11 @@
         { "count": 20, "itemId": 7 },
         { "count": 25, "itemId": 10 }
       ],
-      "stats": null,
+      "stats": [{ "id": 5, "value": 300 }],
       "color": null,
       "crafted_in": null,
       "effects": null,
-      "type": "Other"
+      "type": "Weapon"
     },
     {
       "id": 850,
@@ -16507,30 +16477,6 @@
       "type": "Other"
     },
     {
-      "id": 870,
-      "created_at": "2023-02-14T12:18:22.033689+00:00",
-      "name": "Magmasaur Egg",
-      "description": "Tremendously nourishing by itself, this egg provides extraordinary nutritional value in many cooking recipes.",
-      "image": null,
-      "max_stack": 1,
-      "weight": 50,
-      "engram_points": 0,
-      "crafting_time": null,
-      "req_level": 0,
-      "yields": 1,
-      "recipe": null,
-      "stats": [
-        { "id": 9, "value": 691200 },
-        { "id": 8, "value": 35, "duration": 8.75 },
-        { "id": 7, "value": 35, "duration": 8.75 },
-        { "id": 12, "value": 35, "duration": 8.75 }
-      ],
-      "color": null,
-      "crafted_in": null,
-      "effects": null,
-      "type": "Other"
-    },
-    {
       "id": 871,
       "created_at": "2023-02-14T12:18:22.033689+00:00",
       "name": "Metal Ocean Platform",
@@ -16697,105 +16643,6 @@
         { "count": 3, "itemId": 10 }
       ],
       "stats": null,
-      "color": null,
-      "crafted_in": null,
-      "effects": null,
-      "type": "Other"
-    },
-    {
-      "id": 878,
-      "created_at": "2023-02-14T12:18:22.033689+00:00",
-      "name": "Fish Net",
-      "description": "Wind up and throw it to catch nearby fish.",
-      "image": null,
-      "max_stack": 10,
-      "weight": 0.5,
-      "engram_points": 0,
-      "crafting_time": 5,
-      "req_level": 0,
-      "yields": 1,
-      "recipe": [
-        { "count": 10, "itemId": 75 },
-        { "count": 3, "itemId": 8 },
-        { "count": 15, "itemId": 76 },
-        { "count": 3, "itemId": 10 }
-      ],
-      "stats": null,
-      "color": null,
-      "crafted_in": null,
-      "effects": null,
-      "type": "Other"
-    },
-    {
-      "id": 879,
-      "created_at": "2023-02-14T12:18:22.033689+00:00",
-      "name": "Fish Net",
-      "description": "Wind up and throw it to catch nearby fish.",
-      "image": null,
-      "max_stack": 10,
-      "weight": 0.5,
-      "engram_points": 0,
-      "crafting_time": 5,
-      "req_level": 0,
-      "yields": 1,
-      "recipe": [
-        { "count": 10, "itemId": 75 },
-        { "count": 3, "itemId": 8 },
-        { "count": 15, "itemId": 76 },
-        { "count": 3, "itemId": 10 }
-      ],
-      "stats": null,
-      "color": null,
-      "crafted_in": null,
-      "effects": null,
-      "type": "Other"
-    },
-    {
-      "id": 880,
-      "created_at": "2023-02-14T12:18:22.033689+00:00",
-      "name": "Tek Grenade Launcher",
-      "description": "An advanced launcher that can shoot various grenade types and can enable on-impact explosions. Equipping this requires learning its Tekgram.",
-      "image": null,
-      "max_stack": 1,
-      "weight": 12,
-      "engram_points": 0,
-      "crafting_time": 15,
-      "req_level": 0,
-      "yields": 1,
-      "recipe": [
-        { "count": 180, "itemId": 166 },
-        { "count": 420, "itemId": 74 },
-        { "count": 180, "itemId": 78 },
-        { "count": 40, "itemId": 472 },
-        { "count": 80, "itemId": 456 },
-        { "count": 60, "itemId": 165 }
-      ],
-      "stats": [{ "id": 5, "value": 140 }],
-      "color": null,
-      "crafted_in": null,
-      "effects": null,
-      "type": "Other"
-    },
-    {
-      "id": 881,
-      "created_at": "2023-02-14T12:18:22.033689+00:00",
-      "name": "Tek Claws",
-      "description": "Rips through metal and armor when infused with Element and can chain hits to temporarily increase their speed and damage. Equipping this requires learning its Tekgram.",
-      "image": null,
-      "max_stack": 1,
-      "weight": 5,
-      "engram_points": 0,
-      "crafting_time": 15,
-      "req_level": 0,
-      "yields": 1,
-      "recipe": [
-        { "count": 160, "itemId": 166 },
-        { "count": 180, "itemId": 74 },
-        { "count": 184, "itemId": 78 },
-        { "count": 28, "itemId": 472 },
-        { "count": 52, "itemId": 456 }
-      ],
-      "stats": [{ "id": 5, "value": 140 }],
       "color": null,
       "crafted_in": null,
       "effects": null,
@@ -18086,34 +17933,6 @@
       "type": "Other"
     },
     {
-      "id": 936,
-      "created_at": "2023-02-14T12:41:14.996973+00:00",
-      "name": "Tek Phase Pistol",
-      "description": "Shoots plasma beams with varying intensity and effect, at a cost of Element.",
-      "image": null,
-      "max_stack": 1,
-      "weight": 2.5,
-      "engram_points": 0,
-      "crafting_time": 10,
-      "req_level": 0,
-      "yields": 1,
-      "recipe": [
-        { "count": 70, "itemId": 166 },
-        { "count": 300, "itemId": 74 },
-        { "count": 70, "itemId": 78 },
-        { "count": 15, "itemId": 472 },
-        { "count": 35, "itemId": 456 },
-        { "count": 15, "itemId": 483 },
-        { "count": 15, "itemId": 782 },
-        { "count": 15, "itemId": 478 }
-      ],
-      "stats": [{ "id": 5, "value": 120 }],
-      "color": null,
-      "crafted_in": null,
-      "effects": null,
-      "type": "Other"
-    },
-    {
       "id": 937,
       "created_at": "2023-02-14T12:41:14.996973+00:00",
       "name": "Dinopithecus King Flag",
@@ -18235,30 +18054,6 @@
     },
     {
       "id": 942,
-      "created_at": "2023-02-14T12:41:14.996973+00:00",
-      "name": "Fertilized Ice Wyvern Egg",
-      "description": "Tremendously nourishing by itself, this egg provides extraordinary nutritional value in many cooking recipes.",
-      "image": null,
-      "max_stack": 1,
-      "weight": 50,
-      "engram_points": 0,
-      "crafting_time": null,
-      "req_level": 0,
-      "yields": 1,
-      "recipe": null,
-      "stats": [
-        { "id": 9, "value": 691200 },
-        { "id": 8, "value": 35, "duration": 8.75 },
-        { "id": 7, "value": 35, "duration": 8.75 },
-        { "id": 12, "value": 35, "duration": 8.75 }
-      ],
-      "color": null,
-      "crafted_in": null,
-      "effects": null,
-      "type": "Other"
-    },
-    {
-      "id": 943,
       "created_at": "2023-02-14T12:41:14.996973+00:00",
       "name": "Fertilized Ice Wyvern Egg",
       "description": "Tremendously nourishing by itself, this egg provides extraordinary nutritional value in many cooking recipes.",
@@ -18998,147 +18793,83 @@
     },
     {
       "id": 978,
-      "created_at": "2023-02-14T12:41:14.996973+00:00",
-      "name": "Dinosaur Egg",
-      "description": "Tremendously nourishing by itself, this egg provides superior nutritional value in many cooking recipes.",
-      "image": null,
-      "max_stack": 100,
-      "weight": 6,
-      "engram_points": 0,
-      "crafting_time": null,
-      "req_level": 0,
+      "created_at": "2023-03-27T08:55:17.959553+00:00",
+      "name": "Zip-Line Motor Attachment",
+      "description": null,
+      "image": "Zip-Line_Motor_Attachment_Skin_(Aberration).png",
+      "max_stack": 1,
+      "weight": 20,
+      "engram_points": 34,
+      "crafting_time": 10,
+      "req_level": 54,
       "yields": 1,
-      "recipe": null,
-      "stats": [
-        { "id": 9, "value": 691200 },
-        { "id": 8, "value": 100, "duration": 25 },
-        { "id": 7, "value": 100, "duration": 25 },
-        { "id": 12, "value": 100, "duration": 25 }
+      "recipe": [
+        { "count": 60, "itemId": 74 },
+        { "count": 40, "itemId": 782 },
+        { "count": 12, "itemId": 165 }
       ],
-      "color": null,
-      "crafted_in": null,
+      "stats": null,
+      "color": "#ff0000",
+      "crafted_in": ["185", "652"],
       "effects": null,
-      "type": "Other"
+      "type": "Attachment"
     },
     {
       "id": 979,
-      "created_at": "2023-02-14T12:41:14.996973+00:00",
-      "name": "Dinosaur Egg",
-      "description": "Tremendously nourishing by itself, this egg provides regular nutritional value in many cooking recipes.",
-      "image": null,
+      "created_at": "2023-03-27T11:38:00.608795+00:00",
+      "name": "Plant Species Z Seed",
+      "description": null,
+      "image": "Plant_Species_Z_Seed_(Aberration).png",
       "max_stack": 100,
-      "weight": 6,
+      "weight": 0.01,
       "engram_points": 0,
-      "crafting_time": null,
+      "crafting_time": 0,
       "req_level": 0,
       "yields": 1,
       "recipe": null,
-      "stats": [
-        { "id": 9, "value": 691200 },
-        { "id": 8, "value": 100, "duration": 25 },
-        { "id": 7, "value": 100, "duration": 25 },
-        { "id": 12, "value": 100, "duration": 25 }
-      ],
-      "color": null,
+      "stats": null,
+      "color": "#ff0000",
       "crafted_in": null,
       "effects": null,
       "type": "Other"
     },
     {
       "id": 980,
-      "created_at": "2023-02-14T12:41:14.996973+00:00",
-      "name": "Dinosaur Egg",
-      "description": "Tremendously nourishing by itself, this egg provides simple nutritional value in many cooking recipes.",
-      "image": null,
-      "max_stack": 100,
-      "weight": 6,
+      "created_at": "2023-03-27T12:20:21.309423+00:00",
+      "name": "Wyvern Milk",
+      "description": "Eat it to gain nourishment, or feed to raise Wyverns!",
+      "image": "Wyvern_Milk_(Scorched_Earth).png",
+      "max_stack": 1,
+      "weight": 0.1,
       "engram_points": 0,
-      "crafting_time": null,
+      "crafting_time": 0,
       "req_level": 0,
       "yields": 1,
       "recipe": null,
-      "stats": [
-        { "id": 9, "value": 691200 },
-        { "id": 8, "value": 100, "duration": 25 },
-        { "id": 7, "value": 100, "duration": 25 },
-        { "id": 12, "value": 100, "duration": 25 }
-      ],
-      "color": null,
+      "stats": null,
+      "color": "#ff0000",
       "crafted_in": null,
       "effects": null,
-      "type": "Other"
+      "type": "Consumable"
     },
     {
       "id": 981,
-      "created_at": "2023-02-14T12:41:14.996973+00:00",
-      "name": "Dinosaur Egg",
-      "description": "Tremendously nourishing by itself, this egg provides extraordinary nutritional value in many cooking recipes.",
-      "image": null,
+      "created_at": "2023-03-27T12:30:19.989881+00:00",
+      "name": "Plant Species Z Fruit",
+      "description": "Bioluminescent Fruit that provides a flash of Charge lighting",
+      "image": "Plant_Species_Z_Fruit_(Aberration).png",
       "max_stack": 100,
-      "weight": 6,
+      "weight": 5,
       "engram_points": 0,
-      "crafting_time": null,
+      "crafting_time": 0,
       "req_level": 0,
       "yields": 1,
       "recipe": null,
-      "stats": [
-        { "id": 9, "value": 691200 },
-        { "id": 8, "value": 100, "duration": 25 },
-        { "id": 7, "value": 100, "duration": 25 },
-        { "id": 12, "value": 100, "duration": 25 }
-      ],
-      "color": null,
+      "stats": null,
+      "color": "#ff0000",
       "crafted_in": null,
       "effects": null,
-      "type": "Other"
-    },
-    {
-      "id": 982,
-      "created_at": "2023-02-14T12:41:14.996973+00:00",
-      "name": "Dinosaur Egg",
-      "description": "Tremendously nourishing by itself, this egg provides basic nutritional value in many cooking recipes.",
-      "image": null,
-      "max_stack": 100,
-      "weight": 6,
-      "engram_points": 0,
-      "crafting_time": null,
-      "req_level": 0,
-      "yields": 1,
-      "recipe": null,
-      "stats": [
-        { "id": 9, "value": 691200 },
-        { "id": 8, "value": 100, "duration": 25 },
-        { "id": 7, "value": 100, "duration": 25 },
-        { "id": 12, "value": 100, "duration": 25 }
-      ],
-      "color": null,
-      "crafted_in": null,
-      "effects": null,
-      "type": "Other"
-    },
-    {
-      "id": 983,
-      "created_at": "2023-02-14T12:41:14.996973+00:00",
-      "name": "Dinosaur Egg",
-      "description": "Tremendously nourishing by itself, this egg provides exceptional nutritional value in many cooking recipes.",
-      "image": null,
-      "max_stack": 100,
-      "weight": 6,
-      "engram_points": 0,
-      "crafting_time": null,
-      "req_level": 0,
-      "yields": 1,
-      "recipe": null,
-      "stats": [
-        { "id": 9, "value": 691200 },
-        { "id": 8, "value": 100, "duration": 25 },
-        { "id": 7, "value": 100, "duration": 25 },
-        { "id": 12, "value": 100, "duration": 25 }
-      ],
-      "color": null,
-      "crafted_in": null,
-      "effects": null,
-      "type": "Other"
+      "type": "Explosive"
     },
     {
       "id": 984,
@@ -19500,30 +19231,6 @@
         { "count": 2, "itemId": 77 },
         { "count": 9, "itemId": 117 },
         { "count": 9, "itemId": 118 }
-      ],
-      "stats": null,
-      "color": null,
-      "crafted_in": null,
-      "effects": null,
-      "type": "Other"
-    },
-    {
-      "id": 1000,
-      "created_at": "2023-02-14T12:41:14.996973+00:00",
-      "name": "Purple Coloring",
-      "description": "This substance can be used to color certain items and structures.",
-      "image": null,
-      "max_stack": 100,
-      "weight": 0.1,
-      "engram_points": 0,
-      "crafting_time": 10,
-      "req_level": 0,
-      "yields": 5,
-      "recipe": [
-        { "count": 1, "itemId": 807 },
-        { "count": 2, "itemId": 77 },
-        { "count": 3, "itemId": 119 },
-        { "count": 3, "itemId": 118 }
       ],
       "stats": null,
       "color": null,
@@ -20484,26 +20191,27 @@
     },
     {
       "id": 1042,
-      "created_at": "2023-02-14T12:41:46.153609+00:00",
-      "name": "Shotgun",
-      "description": "Very powerful up close, but less reliable with range.",
-      "image": null,
+      "created_at": "2023-03-27T06:52:03.128609+00:00",
+      "name": "Glider Suit",
+      "description": "When attached to a Chest Armor, the Glider Suit enables sailing through the air by double-tapping jump, while gaining speed by running and diving!",
+      "image": "Glider_Suit_Skin_(Aberration).png",
       "max_stack": 1,
-      "weight": 10,
-      "engram_points": 0,
-      "crafting_time": 15,
-      "req_level": 0,
+      "weight": 20,
+      "engram_points": 26,
+      "crafting_time": 5,
+      "req_level": 62,
       "yields": 1,
       "recipe": [
-        { "count": 80, "itemId": 74 },
-        { "count": 20, "itemId": 7 },
-        { "count": 25, "itemId": 10 }
+        { "count": 60, "itemId": 74 },
+        { "count": 25, "itemId": 782 },
+        { "count": 60, "itemId": 10 },
+        { "count": 100, "itemId": 76 }
       ],
-      "stats": [{ "id": 5, "value": 300 }],
-      "color": null,
-      "crafted_in": null,
+      "stats": null,
+      "color": "#ff0000",
+      "crafted_in": [126, 214, 525, 572, 652],
       "effects": null,
-      "type": "Other"
+      "type": "Armor"
     },
     {
       "id": 1043,
@@ -20834,7 +20542,7 @@
       "color": null,
       "crafted_in": null,
       "effects": null,
-      "type": "Other"
+      "type": "Structure"
     },
     {
       "id": 1057,
@@ -20853,7 +20561,7 @@
       "color": null,
       "crafted_in": null,
       "effects": null,
-      "type": "Other"
+      "type": "Structure"
     },
     {
       "id": 1058,
@@ -20877,7 +20585,7 @@
       "color": null,
       "crafted_in": null,
       "effects": null,
-      "type": "Other"
+      "type": "Structure"
     },
     {
       "id": 1059,
@@ -20900,7 +20608,7 @@
       "color": null,
       "crafted_in": null,
       "effects": null,
-      "type": "Other"
+      "type": "Structure"
     },
     {
       "id": 1060,
@@ -20922,7 +20630,7 @@
       "color": null,
       "crafted_in": null,
       "effects": null,
-      "type": "Other"
+      "type": "Structure"
     },
     {
       "id": 1061,
@@ -20945,7 +20653,7 @@
       "color": null,
       "crafted_in": null,
       "effects": null,
-      "type": "Other"
+      "type": "Structure"
     },
     {
       "id": 1062,
@@ -20969,7 +20677,7 @@
       "color": null,
       "crafted_in": null,
       "effects": null,
-      "type": "Other"
+      "type": "Structure"
     },
     {
       "id": 1063,
@@ -20992,7 +20700,7 @@
       "color": null,
       "crafted_in": null,
       "effects": null,
-      "type": "Other"
+      "type": "Structure"
     },
     {
       "id": 1064,
@@ -21016,7 +20724,7 @@
       "color": null,
       "crafted_in": null,
       "effects": null,
-      "type": "Other"
+      "type": "Structure"
     },
     {
       "id": 1065,
@@ -22381,30 +22089,6 @@
       "type": "Other"
     },
     {
-      "id": 1123,
-      "created_at": "2023-02-14T12:42:18.260119+00:00",
-      "name": "Fertilized Dimorph Egg",
-      "description": "Tremendously nourishing by itself, this egg provides simple nutritional value in many cooking recipes.",
-      "image": null,
-      "max_stack": 1,
-      "weight": 5,
-      "engram_points": 0,
-      "crafting_time": null,
-      "req_level": 0,
-      "yields": 1,
-      "recipe": null,
-      "stats": [
-        { "id": 9, "value": 691200 },
-        { "id": 8, "value": 25, "duration": 6.25 },
-        { "id": 7, "value": 25, "duration": 6.25 },
-        { "id": 12, "value": 25, "duration": 6.25 }
-      ],
-      "color": null,
-      "crafted_in": null,
-      "effects": null,
-      "type": "Other"
-    },
-    {
       "id": 1124,
       "created_at": "2023-02-14T12:42:18.260119+00:00",
       "name": "Diplo Egg",
@@ -22574,30 +22258,6 @@
     },
     {
       "id": 1131,
-      "created_at": "2023-02-14T12:42:18.260119+00:00",
-      "name": "Giganotosaurus Egg",
-      "description": "Tremendously nourishing by itself, this egg provides exceptional nutritional value in many cooking recipes.",
-      "image": null,
-      "max_stack": 100,
-      "weight": 40,
-      "engram_points": 0,
-      "crafting_time": null,
-      "req_level": 0,
-      "yields": 1,
-      "recipe": null,
-      "stats": [
-        { "id": 9, "value": 691200 },
-        { "id": 8, "value": 120, "duration": 30 },
-        { "id": 7, "value": 150, "duration": 37.5 },
-        { "id": 12, "value": 120, "duration": 30 }
-      ],
-      "color": null,
-      "crafted_in": null,
-      "effects": null,
-      "type": "Other"
-    },
-    {
-      "id": 1132,
       "created_at": "2023-02-14T12:42:18.260119+00:00",
       "name": "Giganotosaurus Egg",
       "description": "Tremendously nourishing by itself, this egg provides exceptional nutritional value in many cooking recipes.",
@@ -25429,29 +25089,6 @@
       "type": "Other"
     },
     {
-      "id": 1250,
-      "created_at": "2023-02-14T12:44:30.324423+00:00",
-      "name": "Boomerang",
-      "description": "Your trusty ranged weapon.",
-      "image": null,
-      "max_stack": 10,
-      "weight": 0.2,
-      "engram_points": 0,
-      "crafting_time": 5,
-      "req_level": 0,
-      "yields": 1,
-      "recipe": [
-        { "count": 15, "itemId": 76 },
-        { "count": 3, "itemId": 7 },
-        { "count": 5, "itemId": 468 }
-      ],
-      "stats": null,
-      "color": null,
-      "crafted_in": null,
-      "effects": null,
-      "type": "Other"
-    },
-    {
       "id": 1251,
       "created_at": "2023-02-14T12:44:30.324423+00:00",
       "name": "Electronic Binoculars",
@@ -26792,6 +26429,25 @@
       "crafted_in": null,
       "effects": null,
       "type": "Other"
+    },
+    {
+      "id": 1320,
+      "created_at": "2023-03-27T08:40:56.265947+00:00",
+      "name": "Silicate",
+      "description": null,
+      "image": "Silicate_(Extinction).png",
+      "max_stack": 100,
+      "weight": 0.02,
+      "engram_points": 0,
+      "crafting_time": 0,
+      "req_level": 0,
+      "yields": 1,
+      "recipe": null,
+      "stats": null,
+      "color": "#ff0000",
+      "crafted_in": null,
+      "effects": null,
+      "type": "Resource"
     },
     {
       "id": 1321,
