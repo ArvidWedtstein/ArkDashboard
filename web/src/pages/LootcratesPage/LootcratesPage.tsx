@@ -18,7 +18,32 @@ const LootcratesPage = () => {
   return (
     <>
       <MetaTags title="Lootcrates" description="Lootcrates page" />
-
+      <div className="camera camera--dark">
+        <div className="camera__contents">
+          <div className="camera__lens-shadow"></div>
+          <div className="camera__lens-ring">
+            <div className="camera__lens-ring-glare1"></div>
+            <div className="camera__lens-ring-glare2"></div>
+            <div className="camera__lens-ring-glare3"></div>
+          </div>
+          <div className="camera__lens-inner">
+            <div className="camera__lens-inner-glare1"></div>
+            <div className="camera__lens-inner-glare2"></div>
+            <div className="camera__lens-eye-shadow"></div>
+            <div className="camera__lens-glare"></div>
+            <div className="camera__lens-eye">
+              <div className="camera__lens-eye-ring"></div>
+              <div className="camera__lens-eye-inner-glare"></div>
+              <div className="camera__lens-eye-center">
+                <div className="camera__lens-eye-center-glare"></div>
+              </div>
+              <div className="camera__lens-eye-glass-color"></div>
+              <div className="camera__lens-eye-glare"></div>
+              <div className="camera__lens-eye-glass"></div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div>
         <div className="mx-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {lootcratesList.map((lootcrate, i) => (
@@ -40,10 +65,13 @@ const LootcratesPage = () => {
                           {(Math.pow(lootcrate.qualityMult.min * e.quality.min, e.quality.pow) * 100) > 0 && (<p>Quality range: {(Math.pow(lootcrate.qualityMult.min * e.quality.min, e.quality.pow) * 100).toFixed(0)}% - {(Math.pow(lootcrate.qualityMult.max * e.quality.max, e.quality.pow) * 100).toFixed(0)}%</p>)}
                           <ul className="ml-4 flex flex-col">
                             {e.items.map((itm) => (
-                              <li className="inline-flex space-x-2">
-                                <img src={`https://arkcheat.com/images/ark/items/${getItem(itm[1])?.image}`} className="w-6 h-6 inline-block" />
-                                <p className="text-white">{getItem(itm[1])?.name} ({e.qty.min} - {e.qty.max})</p>
-                              </li>
+
+                              getItem(itm[1])?.name && (<li className="space-x-2">
+                                <Link to={routes.item({ id: itm[1].toString() })} className="inline-flex">
+                                  <img src={`https://arkcheat.com/images/ark/items/${getItem(itm[1])?.image}`} className="w-6 h-6 inline-block" />
+                                  <p className="text-white">{getItem(itm[1])?.name} ({e.qty.min} - {e.qty.max})</p>
+                                </Link>
+                              </li>)
                             ))}
                           </ul>
                         </li>
@@ -54,8 +82,8 @@ const LootcratesPage = () => {
               ring={`Lvl ${lootcrate.levelReq.min}`}
             />
           ))}
-        </div>
-      </div>
+        </div >
+      </div >
     </>
   );
 };

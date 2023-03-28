@@ -5,6 +5,9 @@
 .rw-scaffold h2 {
   @apply m-0;
 }
+a {
+  @apply font-medium text-blue-600 hover:underline dark:text-blue-500;
+}
 .rw-scaffold a {
   @apply bg-transparent;
 }
@@ -394,4 +397,339 @@
 }
 .rw-check-tile::before {
   @apply absolute top-1 left-1 block h-5 w-5 scale-0 transform rounded-full border bg-[url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='192'%20height='192'%20fill='%23FF0000'%20viewBox='0%200%20256%20256'%3E%3Crect%20width='256'%20height='256'%20fill='none'%3E%3C/rect%3E%3Cpolyline%20points='216%2072.005%20104%20184%2048%20128.005'%20fill='none'%20stroke='%23ffffff'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='32'%3E%3C/polyline%3E%3C/svg%3E")] bg-[length:12px_12px] bg-center bg-no-repeat opacity-0 transition-all duration-150 ease-in content-[''];
+}
+
+.camera {
+  display: flex;
+  margin: 1.5em;
+  position: relative;
+  width: 14em;
+  height: 14em;
+  transform: translateZ(0);
+  transform-style: preserve-3d;
+}
+.camera__front,
+.camera__contents,
+.camera__red-light,
+.camera__lens-inner,
+.camera__lens-inner-glare1,
+.camera__lens-inner-glare2,
+.camera__lens-glare,
+.camera__lens-ring,
+.camera__lens-ring-glare1,
+.camera__lens-ring-glare2,
+.camera__lens-ring-glare3,
+.camera__lens-eye,
+.camera__lens-eye-shadow,
+.camera__lens-eye-ring,
+.camera__lens-eye-inner-glare,
+.camera__lens-eye-center,
+.camera__lens-eye-center-glare,
+.camera__lens-eye-glass,
+.camera__lens-eye-glass-color,
+.camera__lens-eye-glare,
+.camera__lens-shadow,
+.camera__shadow {
+  position: absolute;
+}
+.camera__red-light,
+.camera__lens-back,
+.camera__lens-ring,
+.camera__lens-inner,
+.camera__lens-inner-glare1,
+.camera__lens-inner-glare2,
+.camera__lens-glare,
+.camera__lens-ring-glare1,
+.camera__lens-ring-glare2,
+.camera__lens-ring-glare3,
+.camera__lens-eye,
+.camera__lens-eye-shadow,
+.camera__lens-eye-ring,
+.camera__lens-eye-center,
+.camera__lens-eye-glass,
+.camera__lens-eye-glass-color {
+  border-radius: 0.3rem;
+}
+.camera__front {
+  background-image: linear-gradient(hsl(223, 10%, 85%), hsl(223, 10%, 90%));
+  border-radius: inherit;
+  box-shadow: 0 0.1em 0 hsl(223, 10%, 95%) inset;
+  width: 100%;
+  height: 100%;
+  transform: translateZ(1em);
+  z-index: 1;
+}
+.camera__contents {
+  top: 2.5em;
+  left: 2.5em;
+  width: 9em;
+  height: 9em;
+  transform: translateZ(1em);
+  transform-style: preserve-3d;
+  z-index: 2;
+}
+.camera__red-light {
+  animation-name: cameraRedLight;
+  background-color: hsl(3, 90%, 65%);
+  box-shadow: 0.1em -0.1em 0.1em 0.1em hsl(3, 90%, 50%) inset,
+    0 0 0.5em 0.25em hsla(3, 90%, 70%, 0.5);
+  top: 0;
+  right: 0;
+  width: 0.6em;
+  height: 0.6em;
+}
+.camera__lens-back,
+.camera__lens-ring,
+.camera__lens-inner {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.camera__lens-back {
+  background-color: hsl(223, 10%, 70%);
+  transform: translateZ(0.01em);
+}
+.camera__lens-ring {
+  background-color: hsl(223, 10%, 45%);
+  overflow: hidden;
+  transform: translateZ(1.5em);
+}
+.camera__lens-ring-glare1 {
+  animation-name: cameraRingGlare1;
+  background-image: radial-gradient(
+    100% 100% at center,
+    hsl(0, 0%, 100%) 25%,
+    hsla(0, 0%, 100%, 0) 50%
+  );
+  bottom: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 50%;
+}
+.camera__lens-ring-glare2 {
+  animation-name: cameraRingGlare2;
+  background-image: radial-gradient(
+    100% 100% at center,
+    hsl(223, 10%, 85%) 30%,
+    hsla(223, 10%, 85%, 0) 50%
+  );
+  top: 30%;
+  right: 30%;
+  width: 140%;
+  height: 140%;
+}
+.camera__lens-ring-glare3 {
+  animation-name: cameraRingGlare3;
+  background-image: radial-gradient(
+    100% 100% at center,
+    hsl(223, 10%, 70%) 30%,
+    hsla(223, 10%, 70%, 0) 50%
+  );
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+}
+.camera__lens-inner {
+  animation-name: cameraLensInner;
+  background-color: hsl(223, 10%, 65%);
+  box-shadow: 0 0 0 0.125em hsl(223, 10%, 50%);
+  top: 0.5em;
+  left: 0.5em;
+  width: 8em;
+  height: 8em;
+  transform: translateZ(1.5em);
+}
+.camera__lens-inner-glare1 {
+  animation-name: cameraLensInnerGlare1;
+  box-shadow: 0.5em -1em 0.5em 0.5em hsl(223, 10%, 85%) inset;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+}
+.camera__lens-inner-glare2 {
+  animation-name: cameraLensInnerGlare2;
+  border: 1em solid hsl(223, 10%, 85%);
+  border-bottom: 1em solid transparent;
+  filter: blur(4px);
+  opacity: 0.5;
+  top: 0.6em;
+  left: 0.6em;
+  width: 6.8em;
+  height: 6.8em;
+  transform: rotate(-45deg);
+}
+.camera__lens-glare {
+  animation-name: cameraLensGlare;
+  background-image: radial-gradient(
+    100% 100% at center,
+    hsl(0, 0%, 100%) 15%,
+    hsla(0, 0%, 100%, 0) 50%
+  );
+  top: 4em;
+  left: 3em;
+  width: 2em;
+  height: 0.875em;
+  transform: rotate(0) translateY(2.5em);
+}
+.camera__lens-eye,
+.camera__lens-eye-shadow {
+  top: 1.5em;
+  left: 1.5em;
+  width: 5em;
+  height: 5em;
+  transform: translateZ(0);
+}
+.camera__lens-eye {
+  background-color: hsl(223, 10%, 10%);
+  box-shadow: 0 0 0 0.0625em hsl(223, 10%, 10%);
+  overflow: hidden;
+}
+.camera__lens-eye-shadow {
+  box-shadow: 0 0 0.375em 0.25em hsl(223, 10%, 50%);
+}
+.camera__lens-eye-ring {
+  box-shadow: 0 0 0 0.25em hsl(0, 0%, 0%), 0 0 0.25em 0.5em hsl(223, 10%, 25%),
+    0 -0.25em 0.25em 0.5em hsl(223, 10%, 20%),
+    0 0.2em 0.125em hsl(223, 10%, 40%) inset;
+  top: 1em;
+  left: 1em;
+  width: 3em;
+  height: 3em;
+}
+.camera__lens-eye-inner-glare {
+  animation-name: cameraEyeInnerGlare;
+  background-color: hsl(223, 10%, 35%);
+  /* border-radius: 50% 50% 50% 50% / 20% 20% 80% 80%; */
+  box-shadow: 0 0 0.375em 0.25em hsl(223, 10%, 35%);
+  top: 3em;
+  left: 1.75em;
+  width: 1.5em;
+  height: 0.5em;
+  opacity: 0;
+  transform: scale(0);
+}
+.camera__lens-eye-center {
+  background-image: linear-gradient(
+    hsl(123, 90%, 5%) 45%,
+    hsl(123, 90%, 15%) 75%
+  );
+  box-shadow: 0 0 0.125em 0.25em hsl(0, 0%, 0%);
+  overflow: hidden;
+  top: 2.125em;
+  left: 2.125em;
+  width: 0.75em;
+  height: 0.75em;
+}
+.camera__lens-eye-center-glare {
+  animation-name: cameraEyeCenterGlare;
+  background-color: hsl(123, 10%, 35%);
+  /* border-radius: 50%; */
+  top: 0;
+  right: 0;
+  width: 0.3em;
+  height: 0.3em;
+}
+.camera__lens-eye-glass {
+  animation-name: cameraEyeGlass;
+  box-shadow: 0 -0.1em 0.1em hsl(63, 90%, 20%) inset,
+    0 0 0.125em hsl(3, 90%, 20%) inset, 0 0 0.125em hsl(263, 90%, 40%) inset,
+    0 0 0.125em 0.25em hsl(0, 0%, 0%) inset;
+  width: 100%;
+  height: 100%;
+}
+.camera__lens-eye-glass-color {
+  background-image: linear-gradient(
+    hsla(253, 90%, 10%, 0.5) 60%,
+    hsla(253, 90%, 40%, 0.5) 60%
+  );
+  width: 100%;
+  height: 100%;
+}
+.camera__lens-eye-glare {
+  animation-name: cameraEyeGlare;
+  background-color: hsla(223, 90%, 60%, 0.7);
+  border-radius: 50%;
+  box-shadow: -0.125em 0.375em 0.5em hsl(268, 90%, 50%) inset;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 50%;
+  transform: translateX(0) rotate(45deg) scaleY(0.45);
+}
+.camera__lens-shadow {
+  background-image: linear-gradient(
+    135deg,
+    hsla(223, 50%, 0%, 0.25),
+    hsla(223, 50%, 0%, 0)
+  );
+  filter: blur(4px);
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 7em;
+}
+.camera__shadow {
+  background-image: linear-gradient(
+    90deg,
+    hsla(223, 50%, 0%, 0.5),
+    hsla(223, 50%, 0%, 0.1)
+  );
+  border-radius: 40%;
+  filter: blur(1px);
+  top: calc(100% - 1em);
+  width: 100%;
+  height: 1em;
+  transform: translateZ(-0.01em);
+}
+
+/* Dark icon styles */
+
+.camera--dark .camera__front {
+  background-image: linear-gradient(hsl(223, 10%, 15%), hsl(223, 10%, 20%));
+  box-shadow: 0 0.1em 0 hsl(223, 10%, 25%) inset;
+}
+.camera--dark .camera__red-light {
+  box-shadow: 0.1em -0.1em 0.1em 0.1em hsl(3, 90%, 50%) inset,
+    0 0 0.5em 0.25em hsla(3, 90%, 50%, 0.5);
+}
+.camera--dark .camera__lens-back {
+  background-color: hsl(223, 10%, 10%);
+}
+.camera--dark .camera__lens-inner {
+  background-color: hsl(223, 10%, 5%);
+}
+.camera--dark .camera__lens-inner-glare1 {
+  box-shadow: 0.5em -1em 0.5em 0.5em hsl(223, 10%, 25%) inset;
+}
+.camera--dark .camera__lens-inner-glare2 {
+  border: 1em solid hsl(223, 10%, 25%);
+  border-bottom: 1em solid transparent;
+}
+.camera--dark .camera__lens-glare {
+  background-image: radial-gradient(
+    100% 100% at center,
+    hsl(223, 10%, 70%) 15%,
+    hsla(223, 10%, 70%, 0) 50%
+  );
+}
+.camera--dark .camera__lens-eye-shadow {
+  box-shadow: 0 0 0.375em 0.25em hsl(223, 10%, 2);
+}
+
+/* Dark page theme */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: hsl(223, 10%, 30%);
+    --fg: hsl(223, 10%, 90%);
+  }
+}
+
+/* Beyond mobile */
+@media (min-width: 768px) {
+  main {
+    flex-direction: row;
+  }
 }
