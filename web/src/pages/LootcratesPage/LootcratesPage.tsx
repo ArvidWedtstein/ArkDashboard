@@ -41,7 +41,7 @@ const LootcratesPage = () => {
                           <ul className="ml-4 flex flex-col">
                             {e.items.map((itm) => (
                               <li className="inline-flex space-x-2">
-                                <img src={`https://arkids.net/image/item/120/${getItem(itm[1])?.image}`} className="w-6 h-6 inline-block" />
+                                <img src={`https://arkcheat.com/images/ark/items/${getItem(itm[1])?.image}`} className="w-6 h-6 inline-block" />
                                 <p className="text-white">{getItem(itm[1])?.name} ({e.qty.min} - {e.qty.max})</p>
                               </li>
                             ))}
