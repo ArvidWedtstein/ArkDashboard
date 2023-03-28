@@ -47,9 +47,7 @@ const Item = ({ item }: Props) => {
         <section className="my-3 rounded-md bg-stone-200 p-4 text-gray-700 dark:bg-zinc-600 dark:text-white">
           <img
             className=""
-            src={`https://arkids.net/image/item/120/${item.name
-              .replaceAll(" ", "-")
-              .replace("plant-species-y", "plant-species-y-trap")}.png`}
+            src={`https://arkids.net/image/item/120/${item.image}`}
           />
           <h4 className="my-1 font-serif text-2xl font-bold">{item.name}</h4>
           <p className="text-sm italic">

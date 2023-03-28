@@ -6,240 +6,30 @@ const lootcrates = require("./web/public/lootcratesItemId.json");
 
 // let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
 console.time("normal");
-const t = `
-Cave Beacon 1-SupplyCrate_Cave_QualityTier1_C
-Cave Beacon 2-SupplyCrate_Cave_QualityTier2_C
-Cave Beacon 3-SupplyCrate_Cave_QualityTier3_C
-Cave Beacon 4-SupplyCrate_Cave_QualityTier4_C
-Swamp Cave Loot Crate blue-SupplyCrate_SwampCaveTier1_C
-Swamp Cave Loot Crate yellow-SupplyCrate_SwampCaveTier2_C
-Swamp Cave Loot Crate red-SupplyCrate_SwampCaveTier3_C
-Ice Cave Loot Crate blue-SupplyCrate_IceCaveTier1_C
-Ice Cave Loot Crate yellow-SupplyCrate_IceCaveTier2_C
-Ice Cave Loot Crate red-SupplyCrate_IceCaveTier3_C
-Underwater Caves Loot Crate blue-SupplyCrate_UnderwaterCaveTier1_C
-Underwater Caves Loot Crate yellow-SupplyCrate_UnderwaterCaveTier2_C
-Underwater Caves Loot Crate red-SupplyCrate_UnderwaterCaveTier3_C
-Deep Sea Loot Crate-SupplyCrate_OceanInstant_C
-SupplyCrate_OceanInstant_High_C
 
-White Beacon-SupplyCrate_Level03_C
-White Beacon (Double items)-SupplyCrate_Level03_Double_C
-Green Beacon-SupplyCrate_Level15_C
-Green Beacon (Double items)-SupplyCrate_Level15_Double_C
-Blue Beacon-SupplyCrate_Level25_C
-Blue Beacon (Double items)-SupplyCrate_Level25_Double_C
-Purple Beacon-SupplyCrate_Level35_C
-Purple Beacon (Double items)-SupplyCrate_Level35_Double_C
-Yellow Beacon-SupplyCrate_Level45_C
-Yellow Beacon (Double items)-SupplyCrate_Level45_Double_C
-Red Beacon-SupplyCrate_Level60_C
-Red Beacon (Double items)-SupplyCrate_Level60_Double_C
-Artifact Container Hunter-ArtifactCrate_1_C
-Artifact Container Pack-ArtifactCrate_2_C
-Artifact Container Massive-ArtifactCrate_3_C
-Artifact Container Devious-ArtifactCrate_4_C
-Artifact Container Clever-ArtifactCrate_5_C
-Artifact Container Skylord-ArtifactCrate_6_C
-Artifact Container Devourer-ArtifactCrate_7_C
-Artifact Container Immune-ArtifactCrate_8_C
-Artifact Container Strong-ArtifactCrate_9_C
-Artifact Container Cunning-ArtifactCrate_10_C
-Artifact Container Brute-ArtifactCrate_11_C
-Beaver Dam-BeaverDam_C
-Giant Beaver Dam Logs-SupplyCrateBaseBP_Instantaneous_DamLogs_Child_C
-Giant Beaver Dam-SupplyCrateBaseBP_Instantaneous_DenLogs_Child2_C
-Raptor Claus Present-SupplyCrate_Gift_C
-Map: ScorchedEarth
-
-Cave Beacon 1-SupplyCrate_Cave_QualityTier1_ScorchedEarth_C
-Cave Beacon 2-SupplyCrate_Cave_QualityTier2_ScorchedEarth_C
-Cave Beacon 3-SupplyCrate_Cave_QualityTier3_ScorchedEarth_C
-White Beacon-SupplyCrate_Level03_ScorchedEarth_C
-White Beacon (Double items)-SupplyCrate_Level03_Double_ScorchedEarth_C
-Green Beacon-SupplyCrate_Level15_ScorchedEarth_C
-Green Beacon (Double items)-SupplyCrate_Level15_Double_ScorchedEarth_C
-Blue Beacon-SupplyCrate_Level30_ScorchedEarth_C
-Blue Beacon (Double items)-SupplyCrate_Level30_Double_ScorchedEarth_C
-Purple Beacon-SupplyCrate_Level45_ScorchedEarth_C
-Purple Beacon (Double items)-SupplyCrate_Level45_Double_ScorchedEarth_C
-Yellow Beacon-SupplyCrate_Level55_ScorchedEarth_C
-Yellow Beacon (Double items)-SupplyCrate_Level55_Double_ScorchedEarth_C
-Red Beacon-SupplyCrate_Level70_ScorchedEarth_C
-Red Beacon (Double items)-SupplyCrate_Level70_Double_ScorchedEarth_C
-Artifact Container Destroyer-ArtifactCrate_SE_C
-Artifact Container Gatekeeper-ArtifactCrate_2_SE_C
-Artifact Container Crag-ArtifactCrate_3_SE_C
-Map: Ragnarok
-
-Treasure Chest- SupplyCrate_Chest_Treasure_JacksonL_C
-Desert Loot Crate- SupplyCreate_OceanInstant_High_C
-Additionally Ragnarok uses the Supply Crates of both The Island and Scorched Earth.
-
-Map: Aberration
-
-White Crate-SupplyCrate_Cave_Aberration_Level10_C
-White Crate-SupplyCrate_Cave_Aberration_Level10_Double_C
-
-Green Crate-SupplyCrate_Cave_Aberration_Level25_C
-Green Crate-SupplyCrate_Cave_Aberration_Level25_Double_C
-
-Blue Crate-SupplyCrate_Cave_Aberration_Level35_C
-Blue Crate-SupplyCrate_Cave_Aberration_Level35_Double_C
-
-Purple Crate-SupplyCrate_Cave_Aberration_Level50_C
-Purple Crate-SupplyCrate_Cave_Aberration_Level50_Double_C
-
-Yellow Crate-SupplyCrate_Cave_Aberration_Level65_C
-Yellow Crate-SupplyCrate_Cave_Aberration_Level65_Double_C
-
-Red Crate-SupplyCrate_Cave_Aberration_Level80_C
-Red Crate-SupplyCrate_Cave_Aberration_Level80_Double_C
-
-Blue Dungeon Crate-SupplyCrate_Dungeon_Aberration_Level35_C
-Purple Dungeon Crate-SupplyCrate_Dungeon_Aberration_Level50_C
-Yellow Dungeon Crate-SupplyCrate_Dungeon_Aberration_Level65_C
-Red Dungeon Crate-SupplyCrate_Dungeon_Aberration_Level80_C
-Blue Surface Beacon-SupplyCrate_Level35_Aberrant_Surface_C
-Blue Surface Beacon-SupplyCrate_Level35_Aberrant_Surface_Double_C
-
-Purple Surface Beacon-SupplyCrate_Level50_Aberrant_Surface_C
-Purple Surface Beacon-SupplyCrate_Level50_Aberrant_Surface_Double_C
-
-Yellow Surface Beacon-SupplyCrate_Level65_Aberrant_Surface_C
-Yellow Surface Beacon-SupplyCrate_Level65_Aberrant_Surface_Double_C
-
-Red Surface Beacon-SupplyCrate_Level80_Aberrant_Surface_C
-Red Surface Beacon-SupplyCrate_Level80_Aberrant_Surface_Double_C
-
-Artifact Container Depths-ArtifactCrate_AB_C
-Artifact Container Shadows-ArtifactCrate_2_AB_C
-Artifact Container Stalker-ArtifactCrate_3_AB_C
-Artifact Container Lost-ArtifactCrate_4_AB_C
-Map: Extinction
-
-Cave Loot Crate Blue-SupplyCrate_Cave_QualityTier1_EX_C
-Cave Loot Crate Yellow-SupplyCrate_Cave_QualityTier2_EX_C
-Cave Loot Crate Red-SupplyCrate_Cave_QualityTier3_EX_C
-Orbital Supply Drop Blue-SupplyCrate_Base_Horde_Easy_C
-Orbital Supply Drop Yellow-SupplyCrate_Base_Horde_Medium_C
-Orbital Supply Drop Red-SupplyCrate_Base_Horde_Hard_C
-Orbital Supply Drop Purple-SupplyCrate_Base_Horde_Legendary_C
-Corrupt Element Node-ElementNode_Easy_Horde_C
-Corrupt Element Node-ElementNode_Hard_Horde_C
-Corrupt Element Node-ElementNode_Medium_Horde_C
-Corrupt Element Node-KingKaiju_ElementNode_C
-Artifact Container Chaos-ArtifactCrate_Desert_Kaiju_EX_C
-Artifact Container Growth-ArtifactCrate_ForestKaiju_EX_C
-Artifact Container Void-ArtifactCrate_IceKaiju_EX_C
-King Titan Alpha-ArtifactCrate_KingKaiju_Alpha_EX_C
-King Titan Beta- ArtifactCrate_KingKaiju_Beta_EX_C
-King Titan Gamma-ArtifactCrate_KingKaiju_EX_C
-Map: Valguero
-
-Purple Beacon -Val_SupplyCrate_Level35_C
-Purple Beacon (Double items)  -Val_SupplyCrate_Level35_Double_C
-Yellow Beacon-Val_SupplyCrate_Level45_C
-Yellow Beacon (Double items)- Val_SupplyCrate_Level45_Double_C
-Red Beacon-Val_SupplyCrate_Level60_C
-Red Beacon (Double items)-Val_SupplyCrate_Level60_Double_C
-
-Map: Genesis2
-
-White Supply Crate-SupplyCrate_Space_01_Ambergris_C
-Green Supply Crate-SupplyCrate_Space_02_Crystal_C
-Blue Supply Crate-SupplyCrate_Space_03_Sulfur_C
-Purple Supply Crate-SupplyCrate_Space_04_ElementShards_C
-Yellow Supply Crate-SupplyCrate_Space_05_Obsidian_C
-Red Supply Crate-SupplyCrate_Space_06_Oil_C
-Cyan Supply Crate-SupplyCrate_Space_07_ElementDust_C
-Orange Supply Crate-SupplyCrate_Space_08_BlackPearls_C
-Map: LostIsland
-
-Yellow Beacon-SupplyCrate_Level45_LostIsland_C
-Yellow Beacon (Double items)-SupplyCrate_Level45_LostIsland_Double_C
-Red Beacon-SupplyCrate_Level60_LostIsland_C
-Red Beacon (Double items)-SupplyCrate_Level60_LostIsland_Double_C
-Ruins Dungeon Crate-SupplyCrate_Ruins_LostIsland_C
-
-Map: Fjordur
-
-Green Beacon-Fjo_SupplyCrate_Level15_C
-Green Beacon (Double items)-Fjo_SupplyCrate_Level15_Double_C
-Blue Beacon-Fjo_SupplyCrate_Level25_C
-Blue Beacon (Double items)-Fjo_SupplyCrate_Level25_Double_C
-Purple Beacon-Fjo_SupplyCrate_Level35_C
-Purple Beacon (Double items)-Fjo_SupplyCrate_Level35_Double_C
-Yellow Beacon-Fjo_SupplyCrate_Level45_C
-Yellow Beacon (Double items)-Fjo_SupplyCrate_Level45_Double_C
-Red Beacon-Fjo_SupplyCrate_Level60_C
-Red Beacon (Double items)-Fjo_SupplyCrate_Level60_Double_C
-`;
-let ggg = {
-  Fjordur: {},
-  LostIsland: {},
-  Genesis2: {},
-  Valguero: {},
-  Extinction: {},
-  Aberration: {},
-  ScorchedEarth: {},
-  PrimalEarth: {},
-  Ragnarok: {},
-  CrystalIsles: {},
-  TheCenter: {},
-};
-let cra = [];
-let currentMap = "PrimalEarth";
-t.split("\n").forEach((x) => {
-  if (x.startsWith("Map:")) {
-    currentMap = x.split("Map:")[1].trim();
-  }
-  let bp = x.split("-")[1];
-  if (bp) {
-    ggg[currentMap][x.split("-")[1]] = x.split("-")[0];
-    cra.push(x.split("-")[1]);
-  }
-});
-// lootcrates.lootCrates.forEach((x) => {
-//   if (
-//     !cra.find(
-//       (f) => f === x.bp.split("/")[x.bp.split("/").length - 1].split(".")[1]
-//     )
-//   ) {
-//     console.log(x.bp);
-//   }
+// const crates = lootcrates.lootCrates.map((x) => {
+//   x.sets.forEach((y) => {
+//     y.entries.forEach((z) => {
+//       if (z.items.length == 2 && isNaN(z.items[0][0])) {
+//         z.items = [z.items];
+//       }
+//     });
+//   });
+//   return x;
 // });
-
-const crates = lootcrates.lootCrates.map((x) => {
-  if (
-    cra.find(
-      (f) => f === x.bp.split("/")[x.bp.split("/").length - 1].split(".")[1]
-    )
-  ) {
-    return {
-      bp: x.bp,
-      name:
-        x.name ||
-        ggg[x.bp.split("/")[2]][
-          x.bp.split("/")[x.bp.split("/").length - 1].split(".")[1]
-        ]
-          ? ggg[x.bp.split("/")[2]][
-              x.bp.split("/")[x.bp.split("/").length - 1].split(".")[1]
-            ]
-          : "",
-      map: x.map || x.bp.split("/")[2],
-      ...x,
-    };
-  }
-
-  return x;
+const fff = items.map((itm) => {
+  itm.image = `${itm.name
+    .toLowerCase()
+    .replaceAll(" ", "-")
+    .replace("plant-species-y", "plant-species-y-trap")}.png`;
+  return `UPDATE public."Item" SET "image" = '${itm.image}' WHERE "id" = ${itm.id};`;
 });
 console.timeEnd("normal");
 const g = {
-  lootCrates: crates,
+  items: fff,
 };
 console.time("optimized");
-require("fs").writeFile("insert.json", JSON.stringify(g), (error) => {
+require("fs").writeFile("insert.txt", fff.join("\n"), (error) => {
   if (error) {
     throw error;
   }
