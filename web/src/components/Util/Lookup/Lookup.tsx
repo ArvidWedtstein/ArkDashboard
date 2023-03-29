@@ -95,7 +95,7 @@ const Lookup = ({
             placeholder="Search..."
           />
         ) : (
-          <>{children ? children : null}</>
+          <>{children ? children : inputValue["name"]}</>
         )}
         <label htmlFor={name} className="flex flex-row">
           <svg

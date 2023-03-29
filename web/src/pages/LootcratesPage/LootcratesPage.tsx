@@ -2,84 +2,143 @@ import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import lootcrates from "../../../public/lootcratesItemId.json";
 import items from "../../../public/arkitems.json";
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import ArkCard from "src/components/ArkCard/ArkCard";
+import Lookup from "src/components/Util/Lookup/Lookup";
+import { removeDuplicates } from "src/lib/formatters";
+import Tabs from "src/components/Util/Tabs/Tabs";
 const LootcratesPage = () => {
-  const [search, setSearch] = useState("");
-  const lootcratesList = lootcrates.lootCrates;
-
-  const getItem = (id) => {
+  // const [daLootcrates, setDaLootcrates] = useState([]);
+  const [currentMap, setCurrentMab] = useState("");
+  const [currentCategory, setCurrentCategorb] = useState("");
+  const [filters, setFilters] = useState({ map: "", category: "" });
+  const [categoryItems, setCategoryItems] = useState([]);
+  const getItem = useCallback((id) => {
     return !id || isNaN(id)
       ? null
-      : items.items.find((g) => g.id.toString() == id.toString())
-        ? items.items.find((g) => g.id.toString() == id.toString())
-        : null;
-  };
+      : items.items.find((g) => g.id.toString() === id.toString());
+  }, [items.items]);
+
+  const daLootcrates = useMemo(() => {
+    let filteredCrates = lootcrates?.lootCrates;
+
+    if (filters.map) {
+
+      filteredCrates = filteredCrates.filter(
+        (crate) =>
+          crate?.map &&
+          crate.map.toLowerCase().includes(filters.map.toLowerCase())
+      );
+      setCategoryItems(
+        removeDuplicates(
+          filteredCrates
+            .map((crate) => crate?.sets)
+            .flat()
+            .map((set) => set?.name)
+        )
+      );
+    }
+
+    if (filters.category) {
+      filteredCrates = filteredCrates.map((crate) => ({
+        ...crate,
+        sets: crate?.sets
+          ? crate?.sets.filter((set) => set.name == filters.category)
+          : [],
+      }));
+    }
+
+    return filteredCrates;
+  }, [filters]);
+
+
+  const setCurrentMap = useCallback((map) => {
+    setFilters({ ...filters, map });
+  }, []);
+
+  const setCurrentCategory = useCallback((category) => {
+    setFilters({ ...filters, category });
+  }, []);
+
+
+  const mapImages = [
+    'The Island',
+    'The Center',
+    'Scorched Earth',
+    'Ragnarok',
+    'Aberration',
+    'Extinction',
+    'Valguero',
+    'Genesis',
+    'Crystal Isles',
+    'Fjordur',
+    'Lost Island',
+    'Genesis 2',
+  ];
   return (
     <>
       <MetaTags title="Lootcrates" description="Lootcrates page" />
-      <div className="camera camera--dark">
-        <div className="camera__contents">
-          <div className="camera__lens-shadow"></div>
-          <div className="camera__lens-ring">
-            <div className="camera__lens-ring-glare1"></div>
-            <div className="camera__lens-ring-glare2"></div>
-            <div className="camera__lens-ring-glare3"></div>
-          </div>
-          <div className="camera__lens-inner">
-            <div className="camera__lens-inner-glare1"></div>
-            <div className="camera__lens-inner-glare2"></div>
-            <div className="camera__lens-eye-shadow"></div>
-            <div className="camera__lens-glare"></div>
-            <div className="camera__lens-eye">
-              <div className="camera__lens-eye-ring"></div>
-              <div className="camera__lens-eye-inner-glare"></div>
-              <div className="camera__lens-eye-center">
-                <div className="camera__lens-eye-center-glare"></div>
-              </div>
-              <div className="camera__lens-eye-glass-color"></div>
-              <div className="camera__lens-eye-glare"></div>
-              <div className="camera__lens-eye-glass"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div className="mx-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {lootcratesList.map((lootcrate, i) => (
+      <div className="m-3">
+        <Lookup
+          items={mapImages.map((k) => ({
+            name: k,
+          }))}
+          onChange={(e) => setCurrentMap(e.name)}
+        >
+        </Lookup>
+        <Lookup
+          items={categoryItems.map((k) => ({
+            name: k,
+          }))}
+          onChange={(e) => setCurrentCategory(e.name)}
+        >
+        </Lookup>
+        <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {daLootcrates.map((lootcrate, i) => (
             <ArkCard
+              className="border-t-2"
+              style={{ borderColor: lootcrate.color ? lootcrate.color : 'white' }}
+              image={{
+                src: `https://images.squarespace-cdn.com/content/v1/5a77b6ab18b27d34acd418fe/1543032194681-R59KJT0WFQG43AFYSDXA/ark-survival-evolved-hd-wallpapers-hd-68984-8087136.png`,
+                alt: 'test',
+                position: '70% 30%'
+              }}
               title={lootcrate.name}
               subtitle={lootcrate.map}
-              content={<div className="space-y-2">
-                <p className="text-sm">The crate contains exactly {Math.pow(lootcrate.setQty.min, lootcrate.setQty.pow)} of the following tier sets.</p>
-                {lootcrate.sets.map((s, l) => (
-                  <details key={l} className="text-stone-200 bg-slate-600 rounded p-2">
-                    <summary className="appearance-none font-bold">{s.name}</summary>
-
-                    <p className="text-sm">The set "{s.name}" contains exactly {Math.pow(s.qtyScale.min, s.qtyScale.pow)} of the following item entries.</p>
-                    <ul key={`crate${i}-set${l}`} className="space-y-2">
-                      {s.entries.map((e, ind) => (
-                        <li key={`crate${i}-set${l}-entry${ind}`} className="border border-gray-500 p-2">
-                          <h3 className="font-semibold">{e.name}</h3>
-                          <p className="text-sm">The item entry "{e.name}" contains exactly {Math.pow(e.qty.min, e.qty.pow)} of the following items.</p>
-                          {(Math.pow(lootcrate.qualityMult.min * e.quality.min, e.quality.pow) * 100) > 0 && (<p>Quality range: {(Math.pow(lootcrate.qualityMult.min * e.quality.min, e.quality.pow) * 100).toFixed(0)}% - {(Math.pow(lootcrate.qualityMult.max * e.quality.max, e.quality.pow) * 100).toFixed(0)}%</p>)}
-                          <ul className="ml-4 flex flex-col">
-                            {e.items.map((itm) => (
-
-                              getItem(itm[1])?.name && (<li className="space-x-2">
-                                <Link to={routes.item({ id: itm[1].toString() })} className="inline-flex">
-                                  <img src={`https://arkcheat.com/images/ark/items/${getItem(itm[1])?.image}`} className="w-6 h-6 inline-block" />
-                                  <p className="text-white">{getItem(itm[1])?.name} ({e.qty.min} - {e.qty.max})</p>
-                                </Link>
-                              </li>)
-                            ))}
-                          </ul>
-                        </li>
-                      ))}
-                    </ul>
-                  </details>
-                ))}</div>}
-              ring={`Lvl ${lootcrate.levelReq.min}`}
+              content={
+                <div className="space-y-2 w-full">
+                  <Tabs tabs={
+                    lootcrate.sets.map((s, l) => {
+                      return {
+                        title: s.name, content: (
+                          <div className="w-full text-sm font-medium text-gray-900  border border-gray-200 rounded-lg  dark:border-gray-400 dark:text-white">
+                            {s.entries.map((e, ind) => {
+                              return e.items.every((g) => !isNaN(g[1])) && (<details open={e.items.length == 1 && s.entries.length == 1} key={`crate${i}-set${l}-entry${ind}`} className="w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:text-pea-700 focus:outline-none focus:ring-2 focus:ring-pea-700 focus:text-pea-700 dark:border-gray-400  dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+                                <summary className="font-semibold text-base">{e.name}</summary>
+                                <ul className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 my-2 py-2 border-t border-gray-200 dark:border-gray-400">
+                                  {e.items.map((itm) => (
+                                    getItem(itm[1])?.name && (
+                                      <li className="space-x-2">
+                                        <Link to={routes.item({ id: itm[1].toString() })} className="inline-flex space-x-2">
+                                          <img src={`https://arkcheat.com/images/ark/items/${getItem(itm[1])?.image}`} className="w-6 h-6 inline-block" />
+                                          <p className="text-white">{getItem(itm[1])?.name}</p>
+                                        </Link>
+                                      </li>
+                                    )
+                                  ))}
+                                </ul>
+                              </details>)
+                            }
+                            )}
+                          </div>
+                        )
+                      }
+                    })
+                  }
+                  />
+                </div>
+              }
+              ring={lootcrate.levelReq.min > 0 ? `Lvl ${lootcrate.levelReq.min}` : null}
             />
           ))}
         </div >

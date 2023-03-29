@@ -17,19 +17,34 @@ console.time("normal");
 //   });
 //   return x;
 // });
-const fff = items.map((itm) => {
-  itm.image = `${itm.name
-    .toLowerCase()
-    .replaceAll(" ", "-")
-    .replace("plant-species-y", "plant-species-y-trap")}.png`;
-  return `UPDATE public."Item" SET "image" = '${itm.image}' WHERE "id" = ${itm.id};`;
+let color = {
+  white: "#ffffff",
+  green: "#1FD50E",
+  blue: "#0A3BE5",
+  purple: "#B60AE5",
+  yellow: "#FFD600",
+  red: "#EE0C0C",
+  cyan: "#0CDBEE",
+  orange: "#F58508",
+};
+const fff = lootcrates.lootCrates.map((x) => {
+  Object.entries(color).forEach((g) => {
+    if (x?.name && x?.name.toLowerCase().includes(g[0])) x.color = g[1];
+  });
+  return {
+    bp: x.bp,
+    name: x.name,
+    map: x.map,
+    color: x.color,
+    ...x,
+  };
 });
 console.timeEnd("normal");
 const g = {
   items: fff,
 };
 console.time("optimized");
-require("fs").writeFile("insert.txt", fff.join("\n"), (error) => {
+require("fs").writeFile("insert.json", JSON.stringify(g), (error) => {
   if (error) {
     throw error;
   }

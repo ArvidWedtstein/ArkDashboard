@@ -70,7 +70,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
     genesis2:
       "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
   };
-  let [currentMap, setCurrentMap] = useState(map || "");
+  const [currentMap, setCurrentMap] = useState(map || "");
 
   return (
     <div className="h-[80vh]">

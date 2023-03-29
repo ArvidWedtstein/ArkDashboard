@@ -22,6 +22,7 @@ interface IArkCard {
     alt?: string;
   };
   className?: string;
+  style?: React.CSSProperties;
 }
 const ArkCard: React.FC<IArkCard> = React.memo<IArkCard>(({
   title = "",
@@ -31,7 +32,8 @@ const ArkCard: React.FC<IArkCard> = React.memo<IArkCard>(({
   button = null,
   image = null,
   icon = null,
-  className = ""
+  className = "",
+  style = null
 }) => {
   return (
     <div
@@ -41,6 +43,7 @@ const ArkCard: React.FC<IArkCard> = React.memo<IArkCard>(({
         { "bg-gray-600": !image }
       )}
       style={{
+        ...style,
         background: typeof image === "string" ? `${image}` : image ? `url('${image.src}')` : "url()",
         backgroundSize: "cover",
         backgroundPosition: `${typeof image !== "string" ? image?.position ?? "center" : "center"}`,
