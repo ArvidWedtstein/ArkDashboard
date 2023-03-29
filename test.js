@@ -71,26 +71,29 @@ const fff = lootcrates.lootCrates.map((x) => {
   //   .join("\n");
   return x.sets
     .map((y) => {
-      return y.entries
-        .map((z) => {
-          return `INSERT INTO public."LootcrateSetEntry" ("set_id", "name", "weight", "qty", "quality", "items")
-               VALUES ((SELECT id FROM public."LootcrateSet" WHERE lootcrate_id = (SELECT id from public."Lootcrate" WHERE map = ${
-                 map[x.map] ? map[x.map] : 1
-               } AND blueprint LIKE '${x.bp}' AND name LIKE '${
-            x.name
-          }' LIMIT 1) AND name LIKE '${
-            y.name
-          }' AND qty_scale = '${JSON.stringify(y.qtyScale)}'), '${z.name}', ${
-            z.weight
-          }, '${JSON.stringify(z.qty)}', '${JSON.stringify(
-            z.quality
-          )}', '${JSON.stringify(z.items)}');`;
-        })
-        .join("\n");
+      // return y.entries
+      //   .map((z) => {
+      //     // return `INSERT INTO public."LootcrateSetEntry" ("set_id", "name", "weight", "qty", "quality", "items")
+      //     //      VALUES ((SELECT id FROM public."LootcrateSet" WHERE lootcrate_id = (SELECT id from public."Lootcrate" WHERE map = ${
+      //     //        map[x.map] ? map[x.map] : 1
+      //     //      } AND blueprint LIKE '${x.bp}' AND name LIKE '${
+      //     //   x.name
+      //     // }' LIMIT 1) AND name LIKE '${
+      //     //   y.name
+      //     // }' AND qty_scale = '${JSON.stringify(y.qtyScale)}' LIMIT 1), '${z.name}', ${
+      //     //   z.weight
+      //     // }, '${JSON.stringify(z.qty)}', '${JSON.stringify(
+      //     //   z.quality
+      //     // )}', '${JSON.stringify(z.items)}');`;
+      //   })
+      // .join("\n");
+      return y.entries.length;
     })
-    .join("\n");
+    .reduce((a, b) => a + b, 0);
+  // .join("\n");
 });
-
+console.log(fff.reduce((a, b) => a + b, 0));
+return;
 console.timeEnd("normal");
 const g = {
   items: fff,
@@ -208,7 +211,6 @@ function Creature(creatureID) {
     }
   };
 }
-var starveTimer, totalFood;
 function initTamingNotice() {
   if (creature.tamingNotice && creature.tamingNotice.charCodeAt(0) != 55358) {
     $("#taming").append(
