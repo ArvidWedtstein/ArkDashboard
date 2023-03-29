@@ -34,7 +34,7 @@ const LootcratesPage = () => {
           filteredCrates
             .map((crate) => crate?.sets)
             .flat()
-            .map((set) => set?.name)
+            .map((set: any) => set?.name)
         )
       );
     }
@@ -42,9 +42,7 @@ const LootcratesPage = () => {
     if (filters.category) {
       filteredCrates = filteredCrates.map((crate) => ({
         ...crate,
-        sets: crate?.sets
-          ? crate?.sets.filter((set) => set.name == filters.category)
-          : [],
+        sets: (crate?.sets as any[]).filter((set) => set.name == filters.category)
       }));
     }
 
@@ -111,23 +109,29 @@ const LootcratesPage = () => {
                     lootcrate.sets.map((s, l) => {
                       return {
                         title: s.name, content: (
-                          <div className="w-full text-sm font-medium text-gray-900  border border-gray-200 rounded-lg  dark:border-gray-400 dark:text-white">
+                          <div className="w-full transition-all duration-150 text-sm font-medium text-gray-900 border border-gray-200 rounded-lg dark:border-gray-400 dark:text-white backdrop-blur-sm bg-white/20">
                             {s.entries.map((e, ind) => {
-                              return e.items.every((g) => !isNaN(g[1])) && (<details open={e.items.length == 1 && s.entries.length == 1} key={`crate${i}-set${l}-entry${ind}`} className="w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:text-pea-700 focus:outline-none focus:ring-2 focus:ring-pea-700 focus:text-pea-700 dark:border-gray-400  dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
-                                <summary className="font-semibold text-base">{e.name}</summary>
-                                <ul className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 my-2 py-2 border-t border-gray-200 dark:border-gray-400">
-                                  {e.items.map((itm) => (
-                                    getItem(itm[1])?.name && (
-                                      <li className="space-x-2">
-                                        <Link to={routes.item({ id: itm[1].toString() })} className="inline-flex space-x-2">
-                                          <img src={`https://arkcheat.com/images/ark/items/${getItem(itm[1])?.image}`} className="w-6 h-6 inline-block" />
-                                          <p className="text-white">{getItem(itm[1])?.name}</p>
-                                        </Link>
-                                      </li>
-                                    )
-                                  ))}
-                                </ul>
-                              </details>)
+                              return e.items.every((g) => !isNaN(g[1])) && (
+                                <details
+                                  open={e.items.length == 1 && s.entries.length == 1}
+                                  key={`crate${i}-set${l}-entry${ind}`}
+                                  className="w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:text-pea-700 focus:outline-none focus:ring-2 focus:ring-pea-700 focus:text-pea-700 dark:border-gray-400  dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white"
+                                >
+                                  <summary className="font-semibold text-base">{e.name}</summary>
+                                  <ul className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 my-2 py-2 border-t border-gray-200 dark:border-gray-400">
+                                    {e.items.map((itm) => (
+                                      getItem(itm[1])?.name && (
+                                        <li className="space-x-2">
+                                          <Link to={routes.item({ id: itm[1].toString() })} className="inline-flex space-x-2">
+                                            <img src={`https://arkcheat.com/images/ark/items/${getItem(itm[1])?.image}`} className="w-6 h-6 inline-block" />
+                                            <p className="text-white">{getItem(itm[1])?.name}</p>
+                                          </Link>
+                                        </li>
+                                      )
+                                    ))}
+                                  </ul>
+                                </details>
+                              )
                             }
                             )}
                           </div>

@@ -27,28 +27,87 @@ let color = {
   cyan: "#0CDBEE",
   orange: "#F58508",
 };
+
 const fff = lootcrates.lootCrates.map((x) => {
-  Object.entries(color).forEach((g) => {
-    if (x?.name && x?.name.toLowerCase().includes(g[0])) x.color = g[1];
-  });
-  return {
-    bp: x.bp,
-    name: x.name,
-    map: x.map,
-    color: x.color,
-    ...x,
+  // Object.entries(color).forEach((g) => {
+  //   if (x?.name && x?.name.toLowerCase().includes(g[0])) x.color = g[1];
+  // });
+  // return {
+  //   bp: x.bp,
+  //   name: x.name,
+  //   map: x.map,
+  //   color: x.color,
+  //   ...x,
+  // };
+  let map = {
+    "The Island": 2,
+    "The Center": 3,
+    "Scorched Earth": 7,
+    Ragnarok: 4,
+    Aberration: 5,
+    Extinction: 6,
+    Valguero: 1,
+    Genesis: 8,
+    "Genesis 2": 9,
+    Fjordur: 11,
+    "Crystal Isles": 10,
+    "Lost Island": 12,
   };
+  // return `INSERT INTO public."Lootcrate" ("blueprint", "name", "map", "color", "set_qty", "quality_multiplier", "no_repeat_in_sets", "decay_time", "level_requirement")
+  // VALUES ('${x.bp}', '${x.name}', ${map[x.map] ? map[x.map] : 1}, '${
+  //   x.color ? x.color : "#000000"
+  // }', '${JSON.stringify(x.setQty)}', '${JSON.stringify(x.qualityMult)}', ${
+  //   x.noRepeatsInSets
+  // }, '${JSON.stringify(x.decayTime)}', '${JSON.stringify(x.levelReq)}');`;
+  // return x.sets
+  //   .map((y) => {
+  //     return `INSERT INTO public."LootcrateSet" ("lootcrate_id", "name", "can_repeat_items", "qty_scale", "weight")
+  //      VALUES ((SELECT id from public."Lootcrate" WHERE map = ${
+  //        map[x.map] ? map[x.map] : 1
+  //      } AND blueprint LIKE '${x.bp}'), '${y.name}', ${
+  //       y.canRepeatItems
+  //     }, '${JSON.stringify(y.qtyScale)}', ${y.weight});`;
+  //   })
+  //   .join("\n");
+  return x.sets
+    .map((y) => {
+      return y.entries
+        .map((z) => {
+          return `INSERT INTO public."LootcrateSetEntry" ("set_id", "name", "weight", "qty", "quality", "items")
+               VALUES ((SELECT id FROM public."LootcrateSet" WHERE lootcrate_id = (SELECT id from public."Lootcrate" WHERE map = ${
+                 map[x.map] ? map[x.map] : 1
+               } AND blueprint LIKE '${x.bp}' AND name LIKE '${
+            x.name
+          }' LIMIT 1) AND name LIKE '${
+            y.name
+          }' AND qty_scale = '${JSON.stringify(y.qtyScale)}'), '${z.name}', ${
+            z.weight
+          }, '${JSON.stringify(z.qty)}', '${JSON.stringify(
+            z.quality
+          )}', '${JSON.stringify(z.items)}');`;
+        })
+        .join("\n");
+    })
+    .join("\n");
 });
+
 console.timeEnd("normal");
 const g = {
   items: fff,
 };
+
+const chunkSize = 50;
+for (let i = 0; i < fff.length; i += chunkSize) {
+  const chunk = fff.slice(i, i + chunkSize);
+  // do whatever
+  require("fs").writeFile(`insert${i}.txt`, chunk.join("\n"), (error) => {
+    if (error) {
+      throw error;
+    }
+  });
+}
 console.time("optimized");
-require("fs").writeFile("insert.json", JSON.stringify(g), (error) => {
-  if (error) {
-    throw error;
-  }
-});
+
 console.timeEnd("optimized");
 return;
 
