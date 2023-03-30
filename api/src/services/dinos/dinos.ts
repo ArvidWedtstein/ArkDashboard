@@ -1,7 +1,14 @@
-import type { QueryResolvers, MutationResolvers } from "types/graphql";
+import type {
+  QueryResolvers,
+  MutationResolvers,
+  DinoRelationResolvers,
+} from "types/graphql";
 
 import { db } from "src/lib/db";
 
+export const dinos: QueryResolvers["dinos"] = () => {
+  return db.dino.findMany();
+};
 export const dinosPage = ({
   page = 1,
   dinos_per_page = 36,
@@ -19,11 +26,6 @@ export const dinosPage = ({
     count: db.dino.count(),
   };
 };
-
-export const dinos: QueryResolvers["dinos"] = () => {
-  return db.dino.findMany();
-};
-
 export const dino: QueryResolvers["dino"] = ({ id }) => {
   return db.dino.findUnique({
     where: { id },
@@ -47,4 +49,10 @@ export const deleteDino: MutationResolvers["deleteDino"] = ({ id }) => {
   return db.dino.delete({
     where: { id },
   });
+};
+
+export const Dino: DinoRelationResolvers = {
+  DinoEffWeight: (_obj, { root }) => {
+    return db.dino.findUnique({ where: { id: root?.id } }).DinoEffWeight();
+  },
 };
