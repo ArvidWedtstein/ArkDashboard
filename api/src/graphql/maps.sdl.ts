@@ -21,12 +21,13 @@ export const schema = gql`
     notes: JSON
     img: String
     Basespot_Basespot_MapToMap: [Basespot]!
+    Lootcrate: [Lootcrate]!
     TimelineBasespot: [TimelineBasespot]!
   }
 
   type Query {
-    maps: [Map!]! @skipAuth
-    map(id: BigInt!): Map @skipAuth
+    maps: [Map!]! @requireAuth
+    map(id: BigInt!): Map @requireAuth
   }
 
   input CreateMapInput {
@@ -78,4 +79,4 @@ export const schema = gql`
     updateMap(id: BigInt!, input: UpdateMapInput!): Map! @requireAuth
     deleteMap(id: BigInt!): Map! @requireAuth
   }
-`;
+`

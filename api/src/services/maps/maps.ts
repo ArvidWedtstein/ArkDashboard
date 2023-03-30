@@ -41,6 +41,9 @@ export const Map: MapRelationResolvers = {
       .findUnique({ where: { id: root?.id } })
       .Basespot_Basespot_MapToMap()
   },
+  Lootcrate: (_obj, { root }) => {
+    return db.map.findUnique({ where: { id: root?.id } }).Lootcrate()
+  },
   TimelineBasespot: (_obj, { root }) => {
     return db.map.findUnique({ where: { id: root?.id } }).TimelineBasespot()
   },
