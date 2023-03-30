@@ -1,7 +1,8 @@
 const { items } = require("./web/public/arkitems.json");
 // const d = require("./web/public/maps.json");
-const d2 = require("./web/public/dinotest.json");
+const d2 = require("./web/public/f.json");
 const lootcrates = require("./web/public/lootcratesItemId.json");
+
 // const dd = require("./j.json");
 
 // let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
@@ -27,18 +28,46 @@ let color = {
   cyan: "#0CDBEE",
   orange: "#F58508",
 };
+let map = {
+  "The Island": 2,
+  "The Center": 3,
+  "Scorched Earth": 7,
+  Ragnarok: 4,
+  Aberration: 5,
+  Extinction: 6,
+  Valguero: 1,
+  Genesis: 8,
+  "Genesis 2": 9,
+  Fjordur: 11,
+  "Crystal Isles": 10,
+  "Lost Island": 12,
+};
 
+const dd = d2.dinos.map((x) => {
+  if (x?.weight_reduction && x.weight_reduction !== null) {
+    return x.weight_reduction
+      .map((y) => {
+        return `('${x.id}', ${y?.itemId}, ${y?.value}, FALSE),`;
+      })
+      .join("\n");
+  }
+  return "";
+  // return `INSERT INTO public."DinoEffWeight" ("dino_id", "item_id", "value", "is_gather_eff")`;
+});
+require("fs").writeFile(
+  `insert.txt`,
+  [
+    `INSERT INTO public."DinoEffWeight" ("dino_id", "item_id", "value", "is_gather_eff") VALUES`,
+    ...dd,
+  ].join("\n"),
+  (error) => {
+    if (error) {
+      throw error;
+    }
+  }
+);
+return;
 const fff = lootcrates.lootCrates.map((x) => {
-  // Object.entries(color).forEach((g) => {
-  //   if (x?.name && x?.name.toLowerCase().includes(g[0])) x.color = g[1];
-  // });
-  // return {
-  //   bp: x.bp,
-  //   name: x.name,
-  //   map: x.map,
-  //   color: x.color,
-  //   ...x,
-  // };
   let map = {
     "The Island": 2,
     "The Center": 3,
@@ -53,6 +82,7 @@ const fff = lootcrates.lootCrates.map((x) => {
     "Crystal Isles": 10,
     "Lost Island": 12,
   };
+
   // return `INSERT INTO public."Lootcrate" ("blueprint", "name", "map", "color", "set_qty", "quality_multiplier", "no_repeat_in_sets", "decay_time", "level_requirement")
   // VALUES ('${x.bp}', '${x.name}', ${map[x.map] ? map[x.map] : 1}, '${
   //   x.color ? x.color : "#000000"
