@@ -78,21 +78,21 @@ const Icon = (icon: string) => {
 const Sidebar = memo(({ }) => {
   const { pathname } = useLocation();
   const navigation = [
-    { name: "Home", href: routes.home(), color: "bg-pea-500" },
+    { name: "Home", href: routes.home(), color: "ring-pea-500 bg-pea-500" },
     {
       name: "Basespot",
       href: routes.basespots({ page: 1 }),
-      color: "bg-blue-500",
+      color: "ring-blue-500 bg-blue-500",
     },
     {
       name: "Calculator",
       href: routes.materialCalculator(),
       color: "ring-red-500 bg-red-500",
     },
-    { name: "GTW", href: routes.gtw(), color: "ring-lime-500 bg-lime-500" },
-    { name: "Tribes", href: routes.tribes(), color: "ring-emerald-500 bg-emerald-500" },
-    { name: "Story", href: routes.timelines(), color: "ring-sky-400 bg-sky-400" },
-    { name: "Dinos", href: routes.dinos(), color: "ring-green-600 bg-green-600" },
+    { name: "GTW", href: routes.gtw(), color: "ring-lime-300 bg-lime-500" },
+    { name: "Tribes", href: routes.tribes(), color: "ring-emerald-300 bg-emerald-500" },
+    { name: "Story", href: routes.timelines(), color: "ring-sky-200 bg-sky-400" },
+    { name: "Dinos", href: routes.dinos(), color: "ring-indigo-300 bg-indigo-500" },
   ];
 
   return (
@@ -103,7 +103,7 @@ const Sidebar = memo(({ }) => {
             key={item.name}
             to={item.href}
             title={item.name}
-            activeClassName={`text-white ${item.color}`}
+            activeClassName={`text-white ring-2 ${item.color}`}
             className={clsx("mx-2 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl outline-none duration-100 hover:text-white sm:my-4 ring-1 ring-transparent", {
               "bg-[#1f1c2ecc] text-[#dddddd] dark:bg-[#c3cff433] dark:text-[#ffffffcc] hover:ring-white": singularize(item.href.split("?")[0]) !== singularize(pathname),
             })}
