@@ -45,7 +45,6 @@ const Dino = ({ dino }: Props) => {
     },
   });
 
-  console.log(dino);
   const onDeleteClick = (id: DeleteDinoMutationVariables["id"]) => {
     if (confirm("Are you sure you want to delete dino " + id + "?")) {
       deleteDino({ variables: { id } });
@@ -297,11 +296,11 @@ const Dino = ({ dino }: Props) => {
                 "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500":
                   calcMaturationPercent() >=
                   (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                    (parseInt(dino.maturation_time) * multipliers.mature) / 10,
+                  (parseInt(dino.maturation_time) * multipliers.mature) / 10,
                 "text-gray-500 dark:text-gray-400 [&>*]:border-gray-500 [&>*]:dark:border-gray-400":
                   calcMaturationPercent() <
                   (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                    (parseInt(dino.maturation_time) * multipliers.mature) / 10,
+                  (parseInt(dino.maturation_time) * multipliers.mature) / 10,
               })}
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
@@ -312,7 +311,7 @@ const Dino = ({ dino }: Props) => {
                 <p className="text-sm">
                   {timeFormatL(
                     (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                      (parseInt(dino.maturation_time) * multipliers.mature) / 10
+                    (parseInt(dino.maturation_time) * multipliers.mature) / 10
                   )}
                 </p>
               </span>
@@ -417,12 +416,12 @@ const Dino = ({ dino }: Props) => {
                     {!value[label]
                       ? "-"
                       : truncate(
-                          (useFoundationUnit
-                            ? Number(value[label] / 300)
-                            : Number(value[label])
-                          ).toFixed(2),
-                          6
-                        )}
+                        (useFoundationUnit
+                          ? Number(value[label] / 300)
+                          : Number(value[label])
+                        ).toFixed(2),
+                        6
+                      )}
                   </p>
                 ))}
                 <p className="w-20">
@@ -545,9 +544,73 @@ const Dino = ({ dino }: Props) => {
           ]}
         />
       </section>
-
       <section className="mt-4 grid grid-cols-1 text-gray-400 dark:text-white md:grid-cols-2">
-        {!dino.gather_eff && Object.values(dino.gather_eff) !== null && (
+        {(dino.DinoEffWeight && dino.DinoEffWeight.filter((d) => d.is_gather_eff).length > 0) && (
+          <div className="space-y-2">
+            <h4>Gather Efficiency</h4>
+            <Table
+              className="w-fit"
+              header={false}
+              rows={(dino.DinoEffWeight as any[]).filter((d) => d.is_gather_eff).sort(
+                (a, b) => b.value - a.value
+              )}
+              columns={[
+                {
+                  field: "image",
+                  label: "",
+                  valueFormatter: (value) => {
+                    return (
+                      <img
+                        src={`https://arkcheat.com/images/ark/items/${value.value}`}
+                        className="h-8 w-8 self-end"
+                      />
+                    );
+                  },
+                },
+                {
+                  field: "name",
+                  label: "",
+                  valueFormatter: (value) => {
+                    return (
+                      <p>{value.value}</p>
+                    );
+                  },
+                },
+                {
+                  field: "value",
+                  label: "",
+                  valueFormatter: (value) => (
+                    <div className="flex h-2 w-32 flex-row divide-x divide-black rounded-full bg-gray-300">
+                      {Array.from(Array(5)).map((_, i) => (
+                        <div
+                          key={`${i},${value.value}`}
+                          className={clsx(
+                            `h-full w-1/5 first:rounded-l-full last:rounded-r-full`,
+                            {
+                              "bg-transparent": Math.round(value.value) < i + 1,
+                              "[&:nth-child(1)]:bg-red-500 [&:nth-child(2)]:bg-orange-500 [&:nth-child(3)]:bg-yellow-500 [&:nth-child(4)]:bg-lime-500 [&:nth-child(5)]:bg-green-500":
+                                Math.round(value.value) >= i + 1,
+                            }
+                          )}
+                        ></div>
+                      ))}
+                    </div>
+                  ),
+                },
+                {
+                  field: "rank",
+                  label: "",
+                  valueFormatter: ({ value }) => {
+                    return (
+                      value <= 10 && <p>#{value}</p>
+                    );
+                  }
+                }
+              ]}
+            />
+          </div>
+        )}
+        {/* {!dino.gather_eff && Object.values(dino.gather_eff) !== null && (
           <div className="space-y-2">
             <h4>Gather Efficiency</h4>
             <Table
@@ -598,8 +661,75 @@ const Dino = ({ dino }: Props) => {
               ]}
             />
           </div>
+        )} */}
+        {(dino.DinoEffWeight && dino.DinoEffWeight.filter((d) => !d.is_gather_eff).length > 0) && (
+          <div className="space-y-2">
+            <h4>Weight Reduction</h4>
+            <Table
+              className="w-fit"
+              header={false}
+              rows={(dino.DinoEffWeight as any[]).filter((d) => !d.is_gather_eff).sort(
+                (a, b) => b.value - a.value
+              )}
+              columns={[
+                {
+                  field: "image",
+                  label: "",
+                  valueFormatter: (value) => {
+                    return (
+                      <img
+                        src={`https://arkcheat.com/images/ark/items/${value.value}`}
+                        className="h-8 w-8 self-end"
+                      />
+                    );
+                  },
+                },
+                {
+                  field: "name",
+                  label: "",
+                  valueFormatter: (value) => {
+                    return (
+                      <p>{value.value}</p>
+                    );
+                  },
+                },
+                {
+                  field: "value",
+                  label: "",
+                  valueFormatter: (value) => (
+                    <div className="flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 512 512"
+                        className="inline-block w-4 fill-current"
+                      >
+                        <path d="M510.3 445.9L437.3 153.8C433.5 138.5 420.8 128 406.4 128H346.1c3.625-9.1 5.875-20.75 5.875-32c0-53-42.1-96-96-96S159.1 43 159.1 96c0 11.25 2.25 22 5.875 32H105.6c-14.38 0-27.13 10.5-30.88 25.75l-73.01 292.1C-6.641 479.1 16.36 512 47.99 512h416C495.6 512 518.6 479.1 510.3 445.9zM256 128C238.4 128 223.1 113.6 223.1 96S238.4 64 256 64c17.63 0 32 14.38 32 32S273.6 128 256 128z" />
+                      </svg>
+                      <p className="mx-1 text-lime-300">{value.value}%</p>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 320 512"
+                        className="inline-block w-4 fill-current text-lime-300"
+                      >
+                        <path d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z" />
+                      </svg>
+                    </div>
+                  ),
+                },
+                {
+                  field: "rank",
+                  label: "",
+                  valueFormatter: ({ value }) => {
+                    return (
+                      value <= 10 && <p>#{value}</p>
+                    );
+                  }
+                }
+              ]}
+            />
+          </div>
         )}
-        {dino.weight_reduction && (
+        {/* {dino.weight_reduction && (
           <div className="space-y-2">
             <h4>Weight Reduction</h4>
             <Table
@@ -652,7 +782,7 @@ const Dino = ({ dino }: Props) => {
               ]}
             />
           </div>
-        )}
+        )} */}
       </section>
 
       <section className="mt-4 text-gray-400 dark:text-white">

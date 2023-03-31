@@ -123,6 +123,7 @@ export const QUERY = gql`
           id
         }
         value
+        rank
         is_gather_eff
       }
     }
@@ -140,73 +141,78 @@ export const afterQuery = (data) => {
     dino: {
       ...data.dino,
       weight_reduction:
-        data.dino.weight_reduction &&
-        data.dino.weight_reduction.map((item) => {
-          const itemData = data.items.find((i) => i.id == item.itemId);
-          return itemData
-            ? {
-                ...item,
-                image: itemData.image,
-                name: itemData.name,
-              }
-            : null;
-        }),
+        data.dino.DinoEffWeight &&
+        data.dino.DinoEffWeight.filter((d) => !d.is_gather_eff),
+      // weight_reduction:
+      //   data.dino.weight_reduction &&
+      //   data.dino.weight_reduction.map((item) => {
+      //     const itemData = data.items.find((i) => i.id == item.itemId);
+      //     return itemData
+      //       ? {
+      //         ...item,
+      //         image: itemData.image,
+      //         name: itemData.name,
+      //       }
+      //       : null;
+      //   }),
       gather_eff:
-        data.dino.gather_eff &&
-        data.dino.gather_eff.map((item) => {
-          const itemData = data.items.find((i) => i.id == item?.itemId);
-          return itemData
-            ? {
-                ...item,
-                image: itemData.image,
-                name: itemData.name,
-              }
-            : null;
-        }),
+        data.dino.DinoEffWeight &&
+        data.dino.DinoEffWeight.filter((d) => d.is_gather_eff),
+      // gather_eff:
+      //   data.dino.gather_eff &&
+      //   data.dino.gather_eff.map((item) => {
+      //     const itemData = data.items.find((i) => i.id == item?.itemId);
+      //     return itemData
+      //       ? {
+      //         ...item,
+      //         image: itemData.image,
+      //         name: itemData.name,
+      //       }
+      //       : null;
+      //   }),
       eats: data.dino.eats.map((item) => {
         const itemData = data.items.find((i) => i.id == item);
         return itemData
           ? {
-              id: item,
-              image: itemData.image,
-              name: itemData.name,
-            }
+            id: item,
+            image: itemData.image,
+            name: itemData.name,
+          }
           : item;
       }),
       drops: data.dino.drops.map((item) => {
         const itemData = data.items.find((i) => i.id == item);
         return itemData
           ? {
-              id: item,
-              image: itemData.image,
-              name: itemData.name,
-            }
+            id: item,
+            image: itemData.image,
+            name: itemData.name,
+          }
           : item;
       }),
       fits_through: data.dino.fits_through.map((item) => {
         const itemData = data.items.find((i) => i.id == item.itemId);
         return itemData
           ? {
-              ...item,
-              image: itemData.image,
-              name: itemData.name,
-            }
+            ...item,
+            image: itemData.image,
+            name: itemData.name,
+          }
           : item;
       }),
       immobilized_by: data.dino.immobilized_by.map((item) => {
         const itemData = data.items.find((i) => i.id == item);
         return itemData
           ? {
-              id: item,
-              image: itemData.image,
-              name: itemData.name,
-            }
+            id: item,
+            image: itemData.image,
+            name: itemData.name,
+          }
           : item;
       }),
     },
   };
 };
-
 export const Loading = () => <div>Loading...</div>;
 
 export const Empty = () => <div>Dino not found</div>;
@@ -216,7 +222,7 @@ export const Failure = ({ error }: CellFailureProps) => (
 );
 
 // CellSuccessProps<FindDinoById> & CellSuccessProps<FindItems>
-export const Success = ({ dino }: CellSuccessProps<FindDinoById>) => {
+export const Success = ({ dino }: CellSuccessProps<FindDinoById> & CellSuccessProps<FindItems>) => {
   return (
     <>
       <MetaTags title={dino.name} description={dino.description} />

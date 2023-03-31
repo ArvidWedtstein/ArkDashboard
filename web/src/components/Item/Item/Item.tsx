@@ -61,7 +61,7 @@ const Item = ({ item }: Props) => {
           <div className="rounded-md bg-stone-200 p-4 dark:bg-zinc-600">
             <p className="my-1 text-lg">Gather Efficiency</p>
             <div className="flex flex-col">
-              {/* {gathereffvals.map((eff) => (
+              {gathereffvals.map((eff) => (
                 <div className="flex items-center">
                   <p className="mr-2 w-20 text-sm">{eff.name}</p>
 
@@ -80,7 +80,7 @@ const Item = ({ item }: Props) => {
                     ))}
                   </div>
                 </div>
-              ))} */}
+              ))}
             </div>
           </div>
           <div className="rounded-md bg-stone-200 p-4 dark:bg-zinc-600">

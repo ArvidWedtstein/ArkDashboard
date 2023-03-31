@@ -65,7 +65,7 @@ const Navbar = () => {
               <Link
                 to={routes[`new${singularize(capitalizeSentence(title.split('-').join(' ')).replace(' ', ''))}`]()}
                 title={`New ${singularize(capitalizeSentence(title.split('-').join(' ')).replace(' ', ''))}`}
-                className="ml-2 flex h-5 w-5 items-center justify-center rounded-full border-none bg-[#1f1c24] p-0 text-[#ffffffcc] dark:bg-[#1f2937] dark:text-white md:h-8 md:w-8"
+                className="ml-2 flex h-5 w-5 items-center justify-center rounded-full border-none bg-white p-0 text-[#ffffffcc] dark:bg-gray-700 dark:text-white md:h-8 md:w-8"
               >
                 <svg
                   className="btn-icon"
