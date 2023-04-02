@@ -25,9 +25,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
   const reducer = (state, action) => {
     switch (action.type) {
       case "ADD_AMOUNT_BY_NUM": {
-        const itemIndex = state.findIndex(
-          (item) => item.id === action.item.id
-        );
+        const itemIndex = state.findIndex((item) => item.id === action.item.id);
         if (itemIndex !== -1) {
           return state.map((item, i) => {
             if (i === itemIndex) {
@@ -41,7 +39,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
       case "ADD_AMOUNT": {
         return state.map((item, i) => {
           if (i === action.index) {
-            return { ...item, amount: item.amount + (1 * item.yields) };
+            return { ...item, amount: item.amount + 1 * item.yields };
           }
           return item;
         });
@@ -49,7 +47,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
       case "REMOVE_AMOUNT": {
         return state.map((item, i) => {
           if (i === action.index) {
-            return { ...item, amount: item.amount - (1 * item.yields) };
+            return { ...item, amount: item.amount - 1 * item.yields };
           }
           return item;
         });
@@ -61,7 +59,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
         if (itemIndex !== -1) {
           return state.map((item, i) => {
             if (i === itemIndex) {
-              return { ...item, amount: item.amount + (1 * item.yields) };
+              return { ...item, amount: item.amount + 1 * item.yields };
             }
             return item;
           });
@@ -176,7 +174,6 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
     setItem({ type: "RESET" });
   };
 
-
   const [viewBaseMaterials, setViewBaseMaterials] = useState(false);
   const toggleBaseMaterials = useCallback(
     (e) => {
@@ -206,9 +203,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
           items={items.map((item) => {
             return {
               ...item,
-              image: `https://arkids.net/image/item/120/${item.name
-                .replaceAll(" ", "-")
-                .replace("plant-species-y", "plant-species-y-trap")}.png`
+              image: `https://arkcheat.com/images/ark/items/${item.image}`,
             };
           })}
           group={"type"}
@@ -258,7 +253,10 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
           <Table
             vertical={true}
             header={false}
-            rows={mergeItemRecipe(viewBaseMaterials, ...item.map((i) => ({ ...i, itemId: i.id })))}
+            rows={mergeItemRecipe(
+              viewBaseMaterials,
+              ...item.map((i) => ({ ...i, itemId: i.id }))
+            )}
             className="animate-fade-in my-4"
             caption={{
               title: "Item",
@@ -266,7 +264,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                 <div className="flex items-center">
                   <CheckboxField
                     name="flexCheckDefault"
-                    className="inline-block rw-input"
+                    className="rw-input inline-block"
                     onChange={toggleBaseMaterials}
                   />
                   <label className="inline-block" htmlFor="flexCheckDefault">
@@ -290,7 +288,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                   return (
                     <div className="flex flex-col items-center justify-center">
                       <img
-                        src={`https://www.arkresourcecalculator.com/assets/images/80px-${row.image}`}
+                        src={`https://arkcheat.com/images/ark/items/${row.image}`}
                         className="h-6 w-6"
                       />
                       <span className="text-sm">{value}</span>
@@ -324,8 +322,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                         className="h-8 w-8"
                         name="itemimage"
                         src={
-                          "https://www.arkresourcecalculator.com/assets/images/80px-" +
-                          row.image
+                          "https://arkcheat.com/images/ark/items/" + row.image
                         }
                       />
                     </button>
@@ -386,7 +383,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                         key={`${itm.id}-${i * Math.random()}${i}`}
                       >
                         <img
-                          src={`https://www.arkresourcecalculator.com/assets/images/80px-${itm.image}`}
+                          src={`https://arkcheat.com/images/ark/items/${itm.image}`}
                           className="h-6 w-6"
                           title={itm.name}
                           alt={itm.name}
