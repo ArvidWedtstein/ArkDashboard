@@ -119,10 +119,12 @@ const Table = ({
       let rowString = rowValues.join(" ");
       return rowString.toLowerCase().includes(searchTerm.toLowerCase());
     });
-    // const indexOfLastData = currentPage * rowsPerPage;
-    // const indexOfFirstData = indexOfLastData - rowsPerPage;
-    // return sortData(filteredData).slice(indexOfFirstData, indexOfLastData);
-    return sortData(filteredData)
+    if (pagination) {
+      const indexOfLastData = currentPage * rowsPerPage;
+      const indexOfFirstData = indexOfLastData - rowsPerPage;
+      return sortData(filteredData).slice(indexOfFirstData, indexOfLastData);
+    }
+    return sortData(filteredData);
   }, [sort, searchTerm, dataRows, currentPage]);
 
   useEffect(() => {
@@ -222,18 +224,18 @@ const Table = ({
 
     let content = renderCell
       ? renderCell({
-        columnIndex,
-        rowIndex,
-        value: other.valueFormatter
-          ? other.valueFormatter({
-            value: cellData,
-            row: rowData,
-            columnIndex,
-          })
-          : cellData,
-        field: other.field,
-        row: rowData,
-      })
+          columnIndex,
+          rowIndex,
+          value: other.valueFormatter
+            ? other.valueFormatter({
+                value: cellData,
+                row: rowData,
+                columnIndex,
+              })
+            : cellData,
+          field: other.field,
+          row: rowData,
+        })
       : "";
 
     if (
@@ -315,8 +317,8 @@ const Table = ({
                   {other.numeric
                     ? SortedFilteredData.reduce((a, b) => a + b[field], 0)
                     : index === 0
-                      ? "Total"
-                      : ""}
+                    ? "Total"
+                    : ""}
                 </th>
               );
             })}
@@ -334,7 +336,10 @@ const Table = ({
         <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">
           Showing{" "}
           <span className="font-semibold text-gray-900 dark:text-white">
-            {currentPage}-{rowsPerPage * 1}
+            {currentPage * rowsPerPage - rowsPerPage}-
+            {currentPage * rowsPerPage > dataRows.length
+              ? dataRows.length || rows.length
+              : currentPage * rowsPerPage}
           </span>{" "}
           of{" "}
           <span className="font-semibold text-gray-900 dark:text-white">
@@ -376,19 +381,19 @@ const Table = ({
           })} */}
           {currentPage > 1 && (
             <li onClick={() => changePage("prev")}>
-              <a className="border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+              <a className="block border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
                 {currentPage - 1}
               </a>
             </li>
           )}
           <li>
-            <a className="border border-blue-300 bg-blue-50 px-3 py-2 leading-tight hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-white">
+            <a className="block border border-blue-300 bg-blue-50 px-3 py-2 leading-tight hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-white">
               {currentPage}
             </a>
           </li>
           {currentPage < Math.ceil(dataRows.length / rowsPerPage) && (
             <li onClick={() => changePage("next")}>
-              <a className="border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+              <a className="block border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
                 {currentPage + 1}
               </a>
             </li>
@@ -422,7 +427,7 @@ const Table = ({
   return (
     <div
       className={clsx(
-        "relative overflow-x-auto shadow-md sm:rounded-lg",
+        "relative overflow-x-auto overflow-y-hidden sm:rounded-lg",
         className
       )}
     >
@@ -485,60 +490,60 @@ const Table = ({
         <tbody className="divide-y divide-gray-400 bg-gray-200 dark:divide-gray-800 dark:bg-zinc-600">
           {vertical
             ? columns.map(({ field, ...other }, index) => {
-              return (
-                <tr
-                  key={`row-${index}`}
-                  className={clsx("bg-white dark:bg-zinc-600", {
-                    "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
-                  })}
-                  onClick={() => onRowClick && onRowClick({ index: index })}
-                >
-                  {header &&
-                    headerRenderer({
-                      label: other.label,
-                      columnIndex: index,
-                      ...other,
+                return (
+                  <tr
+                    key={`row-${index}`}
+                    className={clsx("bg-white dark:bg-zinc-600", {
+                      "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
                     })}
-                  {SortedFilteredData.map((datarow, rowIndex) => {
-                    return cellRenderer({
-                      rowData: datarow,
-                      cellData: datarow[field],
-                      columnIndex: index,
-                      rowIndex,
-                      renderCell: other.renderCell,
-                      field,
-                      ...other,
-                    });
-                  })}
-                </tr>
-              );
-            })
+                    onClick={() => onRowClick && onRowClick({ index: index })}
+                  >
+                    {header &&
+                      headerRenderer({
+                        label: other.label,
+                        columnIndex: index,
+                        ...other,
+                      })}
+                    {SortedFilteredData.map((datarow, rowIndex) => {
+                      return cellRenderer({
+                        rowData: datarow,
+                        cellData: datarow[field],
+                        columnIndex: index,
+                        rowIndex,
+                        renderCell: other.renderCell,
+                        field,
+                        ...other,
+                      });
+                    })}
+                  </tr>
+                );
+              })
             : dataRows &&
-            SortedFilteredData.map((datarow, i) => {
-              return (
-                <tr
-                  key={`row-${i}`}
-                  className={clsx({
-                    "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
-                  })}
-                  onClick={() => onRowClick && onRowClick({ index: i })}
-                >
-                  {select && tableSelect({ row: i })}
-                  {columns.map(({ field, ...other }, index) => {
-                    return cellRenderer({
-                      rowData: datarow,
-                      cellData: datarow[field],
-                      columnIndex: index,
-                      rowIndex: i,
-                      renderCell: other.renderCell,
-                      field,
-                      ...other,
-                    });
-                  })}
-                  {renderActions && <td>{renderActions(datarow)}</td>}
-                </tr>
-              );
-            })}
+              SortedFilteredData.map((datarow, i) => {
+                return (
+                  <tr
+                    key={`row-${i}`}
+                    className={clsx({
+                      "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
+                    })}
+                    onClick={() => onRowClick && onRowClick({ index: i })}
+                  >
+                    {select && tableSelect({ row: i })}
+                    {columns.map(({ field, ...other }, index) => {
+                      return cellRenderer({
+                        rowData: datarow,
+                        cellData: datarow[field],
+                        columnIndex: index,
+                        rowIndex: i,
+                        renderCell: other.renderCell,
+                        field,
+                        ...other,
+                      });
+                    })}
+                    {renderActions && <td>{renderActions(datarow)}</td>}
+                  </tr>
+                );
+              })}
           {(dataRows === null || dataRows.length === 0) && (
             <tr className="w-full">
               <td className="p-4 text-center" colSpan={100}>

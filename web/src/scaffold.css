@@ -392,7 +392,7 @@ a {
 .rw-check-tile {
   @apply relative flex h-28 w-28 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-gray-300 bg-gray-50 shadow transition-all duration-150 dark:border-zinc-500 dark:bg-zinc-600;
 }
-.rw-check-tile:hover::before {
+.rw-check-tile:hover::before:not(.disabled) {
   @apply scale-100 stroke-stone-100 text-stone-100 opacity-100;
 }
 .rw-check-tile::before {

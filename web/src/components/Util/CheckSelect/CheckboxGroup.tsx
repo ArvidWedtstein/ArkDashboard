@@ -1,9 +1,14 @@
-import { FieldError, useRegister } from "@redwoodjs/forms"
-import { useEffect, useState } from "react"
+import { FieldError, useRegister } from "@redwoodjs/forms";
+import clsx from "clsx";
+import { useEffect, useState } from "react";
 
 interface CheckboxGroupProps {
   name?: string;
-  options: { label: string, value?: string, image?: string | React.ReactNode }[];
+  options: {
+    label: string;
+    value?: string;
+    image?: string | React.ReactNode;
+  }[];
   defaultValue?: Array<string>;
   onChange?: (name: string, value: string[]) => void;
   validation?: {
@@ -12,13 +17,21 @@ interface CheckboxGroupProps {
     required?: boolean;
   };
 }
-const CheckboxGroup = ({ name, options, defaultValue, onChange, validation }: CheckboxGroupProps) => {
+const CheckboxGroup = ({
+  name,
+  options,
+  defaultValue,
+  onChange,
+  validation,
+}: CheckboxGroupProps) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
 
-  const register = name ? useRegister({
-    name,
-    validation: { ...validation }
-  }) : null
+  const register = name
+    ? useRegister({
+        name,
+        validation: { ...validation },
+      })
+    : null;
 
   useEffect(() => {
     setSelectedOptions(defaultValue || []);
@@ -29,33 +42,57 @@ const CheckboxGroup = ({ name, options, defaultValue, onChange, validation }: Ch
     let newSelectedOptions;
 
     if (selectedOptions.includes(name)) {
-      newSelectedOptions = selectedOptions.filter(
-        (option) => option !== name
-      );
+      newSelectedOptions = selectedOptions.filter((option) => option !== name);
     } else {
       newSelectedOptions = [...selectedOptions, name];
     }
 
     setSelectedOptions(newSelectedOptions);
     onChange && onChange(name, newSelectedOptions);
-  }
+  };
 
   return (
-    <div className="flex gap-3 flex-wrap">
+    <div className="flex flex-wrap gap-3">
       {options.map(({ label, image, value: optValue }) => (
         <label key={label}>
-          <input type="checkbox" name={optValue || label} onChange={handleCheckboxChange} checked={selectedOptions.includes(optValue || label)} className="rw-check-input" />
-          <span className="rw-check-tile">
-            <span className="transition-all duration-150 ease-in text-gray-900 dark:text-stone-200">
-              {image && (React.isValidElement(image) ? image : <img className="w-12 h-12" src={image.toString()} />)}
+          <input
+            disabled={!name}
+            type="checkbox"
+            name={optValue || label}
+            onChange={handleCheckboxChange}
+            checked={selectedOptions.includes(optValue || label)}
+            className="rw-check-input"
+          />
+          <span
+            className={clsx("rw-check-tile", {
+              disabled: !name,
+            })}
+          >
+            <span className="text-gray-900 transition-all duration-150 ease-in dark:text-stone-200">
+              {image &&
+                (React.isValidElement(image) ? (
+                  image
+                ) : (
+                  <img
+                    className=" max-w-16 max-h-12 w-auto"
+                    src={image.toString()}
+                  />
+                ))}
             </span>
-            <span className="text-center transition-all duration-300 ease-linear text-gray-900 dark:text-stone-200 text-xs mx-2">{label}</span>
+            <span className="mx-2 text-center text-xs text-gray-900 transition-all duration-300 ease-linear dark:text-stone-200">
+              {label}
+            </span>
           </span>
         </label>
       ))}
-      <input type="hidden" name={name} value={selectedOptions} {...name ? { ...register } : ''} />
+      <input
+        type="hidden"
+        name={name}
+        value={selectedOptions}
+        {...(name ? { ...register } : "")}
+      />
     </div>
   );
-}
+};
 
 export default CheckboxGroup;

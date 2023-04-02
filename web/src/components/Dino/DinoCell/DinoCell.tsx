@@ -116,23 +116,17 @@ export const QUERY = gql`
       movement
       type
       carryable_by
-      DinoEffWeight {
+      DinoStat {
         item_id
         Item {
           name
           id
+          image
         }
         value
         rank
-        is_gather_eff
+        type
       }
-    }
-    items: items {
-      id
-      name
-      description
-      type
-      image
     }
   }
 `;
@@ -141,75 +135,23 @@ export const afterQuery = (data) => {
     dino: {
       ...data.dino,
       weight_reduction:
-        data.dino.DinoEffWeight &&
-        data.dino.DinoEffWeight.filter((d) => !d.is_gather_eff),
-      // weight_reduction:
-      //   data.dino.weight_reduction &&
-      //   data.dino.weight_reduction.map((item) => {
-      //     const itemData = data.items.find((i) => i.id == item.itemId);
-      //     return itemData
-      //       ? {
-      //         ...item,
-      //         image: itemData.image,
-      //         name: itemData.name,
-      //       }
-      //       : null;
-      //   }),
-      gather_eff:
-        data.dino.DinoEffWeight &&
-        data.dino.DinoEffWeight.filter((d) => d.is_gather_eff),
-      // gather_eff:
-      //   data.dino.gather_eff &&
-      //   data.dino.gather_eff.map((item) => {
-      //     const itemData = data.items.find((i) => i.id == item?.itemId);
-      //     return itemData
-      //       ? {
-      //         ...item,
-      //         image: itemData.image,
-      //         name: itemData.name,
-      //       }
-      //       : null;
-      //   }),
-      eats: data.dino.eats.map((item) => {
-        const itemData = data.items.find((i) => i.id == item);
-        return itemData
-          ? {
-            id: item,
-            image: itemData.image,
-            name: itemData.name,
-          }
-          : item;
-      }),
-      drops: data.dino.drops.map((item) => {
-        const itemData = data.items.find((i) => i.id == item);
-        return itemData
-          ? {
-            id: item,
-            image: itemData.image,
-            name: itemData.name,
-          }
-          : item;
-      }),
-      fits_through: data.dino.fits_through.map((item) => {
-        const itemData = data.items.find((i) => i.id == item.itemId);
-        return itemData
-          ? {
-            ...item,
-            image: itemData.image,
-            name: itemData.name,
-          }
-          : item;
-      }),
-      immobilized_by: data.dino.immobilized_by.map((item) => {
-        const itemData = data.items.find((i) => i.id == item);
-        return itemData
-          ? {
-            id: item,
-            image: itemData.image,
-            name: itemData.name,
-          }
-          : item;
-      }),
+        data.dino.DinoStat &&
+        data.dino.DinoStat.filter((d) => d.type == "weight_reduction"),
+      gather_efficiency:
+        data.dino.DinoStat &&
+        data.dino.DinoStat.filter((d) => d.type == "gather_efficiency"),
+      eats:
+        data.dino.DinoStat &&
+        data.dino.DinoStat.filter((d) => d.type == "food"),
+      drops:
+        data.dino.DinoStat &&
+        data.dino.DinoStat.filter((d) => d.type == "drops"),
+      fits_through:
+        data.dino.DinoStat &&
+        data.dino.DinoStat.filter((d) => d.type == "fits_through"),
+      immobilized_by:
+        data.dino.DinoStat &&
+        data.dino.DinoStat.filter((d) => d.type == "immobilized_by"),
     },
   };
 };
@@ -222,7 +164,9 @@ export const Failure = ({ error }: CellFailureProps) => (
 );
 
 // CellSuccessProps<FindDinoById> & CellSuccessProps<FindItems>
-export const Success = ({ dino }: CellSuccessProps<FindDinoById> & CellSuccessProps<FindItems>) => {
+export const Success = ({
+  dino,
+}: CellSuccessProps<FindDinoById> & CellSuccessProps<FindItems>) => {
   return (
     <>
       <MetaTags title={dino.name} description={dino.description} />

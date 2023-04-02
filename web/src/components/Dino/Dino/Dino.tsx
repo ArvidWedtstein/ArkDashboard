@@ -12,6 +12,7 @@ import { useCallback, useState } from "react";
 import type { DeleteDinoMutationVariables, FindDinoById } from "types/graphql";
 import clsx from "clsx";
 import Table from "src/components/Util/Table/Table";
+import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 
 const DELETE_DINO_MUTATION = gql`
   mutation DeleteDinoMutation($id: String!) {
@@ -184,20 +185,18 @@ const Dino = ({ dino }: Props) => {
           {!dino.disable_food && dino.eats && dino.eats.length > 0 && (
             <>
               <div className="text-lg">Food</div>
-              <div className="mb-4">
-                {/* {dino.eats.map((f: any) => (
-                  <p className="leading-5 flex">
+              <div className="mb-4 space-x-1">
+                {dino.eats.map((f: any) => (
+                  <p className="inline-flex leading-5">
                     {f.name}
                     <img
                       className="w-5"
                       title={f.name}
                       alt={f.name}
-                      src={`https://arkids.net/image/item/120/${f.name
-                        .replaceAll(" ", "-")
-                        .replace("plant-species-y", "plant-species-y-trap")}.png`}
+                      src={`https://arkcheat.com/images/ark/items/${f.Item.image}`}
                     />
                   </p>
-                ))} */}
+                ))}
               </div>
             </>
           )}
@@ -296,11 +295,11 @@ const Dino = ({ dino }: Props) => {
                 "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500":
                   calcMaturationPercent() >=
                   (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                  (parseInt(dino.maturation_time) * multipliers.mature) / 10,
+                    (parseInt(dino.maturation_time) * multipliers.mature) / 10,
                 "text-gray-500 dark:text-gray-400 [&>*]:border-gray-500 [&>*]:dark:border-gray-400":
                   calcMaturationPercent() <
                   (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                  (parseInt(dino.maturation_time) * multipliers.mature) / 10,
+                    (parseInt(dino.maturation_time) * multipliers.mature) / 10,
               })}
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
@@ -311,7 +310,7 @@ const Dino = ({ dino }: Props) => {
                 <p className="text-sm">
                   {timeFormatL(
                     (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                    (parseInt(dino.maturation_time) * multipliers.mature) / 10
+                      (parseInt(dino.maturation_time) * multipliers.mature) / 10
                   )}
                 </p>
               </span>
@@ -416,12 +415,12 @@ const Dino = ({ dino }: Props) => {
                     {!value[label]
                       ? "-"
                       : truncate(
-                        (useFoundationUnit
-                          ? Number(value[label] / 300)
-                          : Number(value[label])
-                        ).toFixed(2),
-                        6
-                      )}
+                          (useFoundationUnit
+                            ? Number(value[label] / 300)
+                            : Number(value[label])
+                          ).toFixed(2),
+                          6
+                        )}
                   </p>
                 ))}
                 <p className="w-20">
@@ -442,6 +441,190 @@ const Dino = ({ dino }: Props) => {
               Game Units / Foundation
             </span>
           </label>
+        </section>
+      )}
+
+      {dino.immobilized_by && (
+        <section className="mt-4 text-gray-400 dark:text-white">
+          <h3 className="font-medium leading-tight">Immobilized by</h3>
+          <CheckboxGroup
+            defaultValue={dino.immobilized_by.map((item) =>
+              item?.item_id.toString()
+            )}
+            options={[
+              {
+                value: "733",
+                label: "Lasso",
+                image: "https://arkids.net/image/item/120/lasso.png",
+              },
+              {
+                value: "1040",
+                label: "Bola",
+                image: "https://arkids.net/image/item/120/bola.png",
+              },
+              {
+                value: "725",
+                label: "Chain Bola",
+                image: "https://arkids.net/image/item/120/chain-bola.png",
+              },
+              {
+                value: "785",
+                label: "Net Projectile",
+                image: "https://arkids.net/image/item/120/net-projectile.png",
+              },
+              {
+                value: "1252",
+                label: "Plant Species Y Trap",
+                image:
+                  "https://arkids.net/image/item/120/plant-species-y-trap.png",
+              },
+              {
+                value: "383",
+                label: "Bear Trap",
+                image: "https://arkids.net/image/item/120/bear-trap.png",
+              },
+              {
+                value: "384",
+                label: "Large Bear Trap",
+                image: "https://arkids.net/image/item/120/large-bear-trap.png",
+              },
+            ]}
+          />
+        </section>
+      )}
+
+      {dino.carryable_by && (
+        <section className="mt-4 text-gray-400 dark:text-white">
+          <h3 className="font-medium leading-tight">Carryable by</h3>
+          <CheckboxGroup
+            defaultValue={dino?.carryable_by}
+            options={[
+              {
+                value: "e85015a5-8694-44e6-81d3-9e1fdd06061d",
+                label: "Pteranodon",
+                image: "https://www.dododex.com/media/creature/pteranodon.png",
+              },
+              {
+                value: "1e7966e7-d63d-483d-a541-1a6d8cf739c8",
+                label: "Tropeognathus",
+                image:
+                  "https://www.dododex.com/media/creature/tropeognathus.png",
+              },
+              {
+                value: "b8e304b3-ab46-4232-9226-c713e5a0d22c",
+                label: "Tapejara",
+                image: "https://www.dododex.com/media/creature/tapejara.png",
+              },
+              {
+                value: "da86d88a-3171-4fc9-b96d-79e8f59f1601",
+                label: "Griffin",
+                image: "https://www.dododex.com/media/creature/griffin.png",
+              },
+              {
+                value: "147922ce-912d-4ab6-b4b6-712a42a9d939",
+                label: "Desmodus",
+                image: "https://www.dododex.com/media/creature/desmodus.png",
+              },
+              {
+                value: "28971d02-8375-4bf5-af20-6acb20bf7a76",
+                label: "Argentavis",
+                image: "https://www.dododex.com/media/creature/argentavis.png",
+              },
+              {
+                value: "f924e5d6-832a-4fb3-abc0-2fa42481cee1",
+                label: "Crystal Wyvern",
+                image:
+                  "https://www.dododex.com/media/creature/crystalwyvern.png",
+              },
+              {
+                value: "7aec6bf6-357e-44ec-8647-3943ca34e666",
+                label: "Wyvern",
+                image: "https://www.dododex.com/media/creature/wyvern.png",
+              },
+              {
+                value: "2b938227-61c2-4230-b7da-5d4d55f639ae",
+                label: "Quetzal",
+                image: "https://www.dododex.com/media/creature/quetzal.png",
+              },
+              {
+                value: "b1d6f790-d15c-4813-a6c8-9e6f62fafb52",
+                label: "Tusoteuthis",
+                image: "https://www.dododex.com/media/creature/tusoteuthis.png",
+              },
+              {
+                value: "d670e948-055e-45e1-adf3-e56d63236238",
+                label: "Karkinos",
+                image: "https://www.dododex.com/media/creature/karkinos.png",
+              },
+              {
+                value: "52156470-6075-487b-a042-2f1d0d88536c",
+                label: "Kaprosuchus",
+                image: "https://www.dododex.com/media/creature/kaprosuchus.png",
+              },
+              {
+                value: "f723f861-0aa3-40b5-b2d4-6c48ec0ca683",
+                label: "Procoptodon",
+                image: "https://www.dododex.com/media/creature/procoptodon.png",
+              },
+              {
+                value: "human",
+                label: "Human",
+                image: "https://www.dododex.com/media/item/Pet.png",
+              },
+              {
+                value: "94708e56-483b-4eef-ad35-2b9ce0e9c669",
+                label: "Gigantopithecus",
+                image:
+                  "https://www.dododex.com/media/creature/gigantopithecus.png",
+              },
+            ]}
+          />
+        </section>
+      )}
+      {dino.fits_through && (
+        <section className="mt-4 text-gray-400 dark:text-white">
+          <h3 className="font-medium leading-tight">Fits Through</h3>
+          <CheckboxGroup
+            defaultValue={dino.fits_through.map((item) =>
+              item?.item_id.toString()
+            )}
+            options={[
+              {
+                value: "322",
+                label: "Doorframe",
+                image: "https://arkids.net/image/item/120/stone-doorframe.png",
+              },
+              {
+                value: "1066",
+                label: "Double Doorframe",
+                image:
+                  "https://arkids.net/image/item/120/stone-double-doorframe.png",
+              },
+              {
+                value: "143",
+                label: "Dinosaur Gateway",
+                image:
+                  "https://arkids.net/image/item/120/stone-dinosaur-gateway.png",
+              },
+              {
+                value: "381",
+                label: "Behemoth Dino Gateway",
+                image:
+                  "https://arkids.net/image/item/120/behemoth-stone-dinosaur-gateway.png",
+              },
+              {
+                value: "316",
+                label: "Hatchframe",
+                image: "https://arkids.net/image/item/120/stone-hatchframe.png",
+              },
+              {
+                value: "619",
+                label: "Giant Hatchframe",
+                image:
+                  "https://arkids.net/image/item/120/giant-stone-hatchframe.png",
+              },
+            ]}
+          />
         </section>
       )}
 
@@ -545,40 +728,41 @@ const Dino = ({ dino }: Props) => {
         />
       </section>
       <section className="mt-4 grid grid-cols-1 text-gray-400 dark:text-white md:grid-cols-2">
-        {(dino.DinoEffWeight && dino.DinoEffWeight.filter((d) => d.is_gather_eff).length > 0) && (
+        {dino.gather_efficiency && (
           <div className="space-y-2">
             <h4>Gather Efficiency</h4>
             <Table
               className="w-fit"
-              header={false}
-              rows={(dino.DinoEffWeight as any[]).filter((d) => d.is_gather_eff).sort(
+              header={true}
+              pagination={true}
+              rowsPerPage={5}
+              rows={(dino.gather_efficiency as any[]).sort(
                 (a, b) => b.value - a.value
               )}
               columns={[
                 {
-                  field: "image",
+                  field: "Item",
                   label: "",
-                  valueFormatter: (value) => {
+                  valueFormatter: ({ value }) => {
                     return (
                       <img
-                        src={`https://arkcheat.com/images/ark/items/${value.value}`}
+                        src={`https://arkcheat.com/images/ark/items/${value.image}`}
                         className="h-8 w-8 self-end"
                       />
                     );
                   },
                 },
                 {
-                  field: "name",
-                  label: "",
-                  valueFormatter: (value) => {
-                    return (
-                      <p>{value.value}</p>
-                    );
+                  field: "Item",
+                  label: "Name",
+                  valueFormatter: ({ value }) => {
+                    return <p>{value.name}</p>;
                   },
                 },
                 {
                   field: "value",
-                  label: "",
+                  label: "Value",
+                  sortable: true,
                   valueFormatter: (value) => (
                     <div className="flex h-2 w-32 flex-row divide-x divide-black rounded-full bg-gray-300">
                       {Array.from(Array(5)).map((_, i) => (
@@ -599,104 +783,50 @@ const Dino = ({ dino }: Props) => {
                 },
                 {
                   field: "rank",
-                  label: "",
+                  label: "rank",
+                  sortable: true,
                   valueFormatter: ({ value }) => {
-                    return (
-                      value <= 10 && <p>#{value}</p>
-                    );
-                  }
-                }
+                    return value <= 10 && <p>#{value}</p>;
+                  },
+                },
               ]}
             />
           </div>
         )}
-        {/* {!dino.gather_eff && Object.values(dino.gather_eff) !== null && (
-          <div className="space-y-2">
-            <h4>Gather Efficiency</h4>
-            <Table
-              className="w-fit"
-              header={false}
-              rows={(dino.gather_eff as any[]).sort(
-                (a, b) => b.value - a.value
-              )}
-              columns={[
-                {
-                  field: "itemId",
-                  label: "",
-                  valueFormatter: (value) => {
-                    return (
-                      value.row && (
-                        <div className="mr-3 flex flex-row space-x-2">
-                          <img
-                            src={`https://www.arkresourcecalculator.com/assets/images/80px-${value.row.image}`}
-                            className="h-8 w-8 self-end"
-                          />
-                          <p>{value.row.name}</p>
-                        </div>
-                      )
-                    );
-                  },
-                },
-                {
-                  field: "value",
-                  label: "",
-                  valueFormatter: (value) => (
-                    <div className="flex h-2 w-32 flex-row divide-x divide-black rounded-full bg-gray-300">
-                      {Array.from(Array(5)).map((_, i) => (
-                        <div
-                          key={`${i},${value.value}`}
-                          className={clsx(
-                            `h-full w-1/5 first:rounded-l-full last:rounded-r-full`,
-                            {
-                              "bg-transparent": Math.round(value.value) < i + 1,
-                              "[&:nth-child(1)]:bg-red-500 [&:nth-child(2)]:bg-orange-500 [&:nth-child(3)]:bg-yellow-500 [&:nth-child(4)]:bg-lime-500 [&:nth-child(5)]:bg-green-500":
-                                Math.round(value.value) >= i + 1,
-                            }
-                          )}
-                        ></div>
-                      ))}
-                    </div>
-                  ),
-                },
-              ]}
-            />
-          </div>
-        )} */}
-        {(dino.DinoEffWeight && dino.DinoEffWeight.filter((d) => !d.is_gather_eff).length > 0) && (
+
+        {dino.weight_reduction && (
           <div className="space-y-2">
             <h4>Weight Reduction</h4>
             <Table
               className="w-fit"
               header={false}
-              rows={(dino.DinoEffWeight as any[]).filter((d) => !d.is_gather_eff).sort(
+              rows={(dino.weight_reduction as any[]).sort(
                 (a, b) => b.value - a.value
               )}
               columns={[
                 {
-                  field: "image",
+                  field: "Item",
                   label: "",
-                  valueFormatter: (value) => {
+                  valueFormatter: ({ value }) => {
                     return (
                       <img
-                        src={`https://arkcheat.com/images/ark/items/${value.value}`}
+                        src={`https://arkcheat.com/images/ark/items/${value.image}`}
                         className="h-8 w-8 self-end"
                       />
                     );
                   },
                 },
                 {
-                  field: "name",
+                  field: "Item",
                   label: "",
-                  valueFormatter: (value) => {
-                    return (
-                      <p>{value.value}</p>
-                    );
+                  valueFormatter: ({ value }) => {
+                    return <p>{value.name}</p>;
                   },
                 },
                 {
                   field: "value",
                   label: "",
-                  valueFormatter: (value) => (
+                  valueFormatter: ({ value }) => (
                     <div className="flex items-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -705,7 +835,7 @@ const Dino = ({ dino }: Props) => {
                       >
                         <path d="M510.3 445.9L437.3 153.8C433.5 138.5 420.8 128 406.4 128H346.1c3.625-9.1 5.875-20.75 5.875-32c0-53-42.1-96-96-96S159.1 43 159.1 96c0 11.25 2.25 22 5.875 32H105.6c-14.38 0-27.13 10.5-30.88 25.75l-73.01 292.1C-6.641 479.1 16.36 512 47.99 512h416C495.6 512 518.6 479.1 510.3 445.9zM256 128C238.4 128 223.1 113.6 223.1 96S238.4 64 256 64c17.63 0 32 14.38 32 32S273.6 128 256 128z" />
                       </svg>
-                      <p className="mx-1 text-lime-300">{value.value}%</p>
+                      <p className="mx-1 text-lime-300">{value}%</p>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 320 512"
@@ -720,69 +850,13 @@ const Dino = ({ dino }: Props) => {
                   field: "rank",
                   label: "",
                   valueFormatter: ({ value }) => {
-                    return (
-                      value <= 10 && <p>#{value}</p>
-                    );
-                  }
-                }
+                    return value <= 10 && <p>#{value}</p>;
+                  },
+                },
               ]}
             />
           </div>
         )}
-        {/* {dino.weight_reduction && (
-          <div className="space-y-2">
-            <h4>Weight Reduction</h4>
-            <Table
-              className="w-fit"
-              header={false}
-              rows={(dino.weight_reduction as any).sort(
-                (a, b) => b.value - a.value
-              )}
-              columns={[
-                {
-                  field: "itemId",
-                  label: "",
-                  valueFormatter: (value) => {
-                    return (
-                      value.row && (
-                        <div className="mr-3 flex flex-row space-x-2">
-                          <img
-                            src={`https://www.arkresourcecalculator.com/assets/images/80px-${value.row.image}`}
-                            className="h-8 w-8 self-end"
-                          />
-                          <p>{value.row.name}</p>
-                        </div>
-                      )
-                    );
-                  },
-                },
-                {
-                  field: "value",
-                  label: "",
-                  valueFormatter: (value) => (
-                    <div className="flex items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 512 512"
-                        className="inline-block w-4 fill-current"
-                      >
-                        <path d="M510.3 445.9L437.3 153.8C433.5 138.5 420.8 128 406.4 128H346.1c3.625-9.1 5.875-20.75 5.875-32c0-53-42.1-96-96-96S159.1 43 159.1 96c0 11.25 2.25 22 5.875 32H105.6c-14.38 0-27.13 10.5-30.88 25.75l-73.01 292.1C-6.641 479.1 16.36 512 47.99 512h416C495.6 512 518.6 479.1 510.3 445.9zM256 128C238.4 128 223.1 113.6 223.1 96S238.4 64 256 64c17.63 0 32 14.38 32 32S273.6 128 256 128z" />
-                      </svg>
-                      <p className="mx-1 text-lime-300">50%</p>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 320 512"
-                        className="inline-block w-4 fill-current text-lime-300"
-                      >
-                        <path d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z" />
-                      </svg>
-                    </div>
-                  ),
-                },
-              ]}
-            />
-          </div>
-        )} */}
       </section>
 
       <section className="mt-4 text-gray-400 dark:text-white">
@@ -795,19 +869,17 @@ const Dino = ({ dino }: Props) => {
           rows={dino.drops as any}
           columns={[
             {
-              field: "itemId",
+              field: "Item",
               label: "",
-              valueFormatter: (value) => {
+              valueFormatter: ({ value }) => {
                 return (
-                  value.row && (
-                    <div className="mr-3 flex flex-row space-x-2">
-                      <img
-                        src={`https://www.arkresourcecalculator.com/assets/images/80px-${value.row.image}`}
-                        className="h-8 w-8 self-end"
-                      />
-                      <p>{value.row.name}</p>
-                    </div>
-                  )
+                  <div className="mr-3 flex flex-row space-x-2">
+                    <img
+                      src={`https://arkcheat.com/images/ark/items/${value.image}`}
+                      className="h-8 w-8 self-end"
+                    />
+                    <p>{value.name}</p>
+                  </div>
                 );
               },
             },

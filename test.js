@@ -44,10 +44,11 @@ let map = {
 };
 
 const dd = d2.dinos.map((x) => {
-  if (x?.weight_reduction && x.weight_reduction !== null) {
-    return x.weight_reduction
+  if (x?.eats && x.eats !== null) {
+    return x.eats
+      .filter((d) => !isNaN(d))
       .map((y) => {
-        return `('${x.id}', ${y?.itemId}, ${y?.value}, FALSE),`;
+        return `('${x.id}', ${parseInt(y)}, 'food'),`;
       })
       .join("\n");
   }
@@ -57,7 +58,7 @@ const dd = d2.dinos.map((x) => {
 require("fs").writeFile(
   `insert.txt`,
   [
-    `INSERT INTO public."DinoEffWeight" ("dino_id", "item_id", "value", "is_gather_eff") VALUES`,
+    `INSERT INTO public."DinoStat" ("dino_id", "item_id", "type") VALUES`,
     ...dd,
   ].join("\n"),
   (error) => {
@@ -67,62 +68,6 @@ require("fs").writeFile(
   }
 );
 return;
-const fff = lootcrates.lootCrates.map((x) => {
-  let map = {
-    "The Island": 2,
-    "The Center": 3,
-    "Scorched Earth": 7,
-    Ragnarok: 4,
-    Aberration: 5,
-    Extinction: 6,
-    Valguero: 1,
-    Genesis: 8,
-    "Genesis 2": 9,
-    Fjordur: 11,
-    "Crystal Isles": 10,
-    "Lost Island": 12,
-  };
-
-  // return `INSERT INTO public."Lootcrate" ("blueprint", "name", "map", "color", "set_qty", "quality_multiplier", "no_repeat_in_sets", "decay_time", "level_requirement")
-  // VALUES ('${x.bp}', '${x.name}', ${map[x.map] ? map[x.map] : 1}, '${
-  //   x.color ? x.color : "#000000"
-  // }', '${JSON.stringify(x.setQty)}', '${JSON.stringify(x.qualityMult)}', ${
-  //   x.noRepeatsInSets
-  // }, '${JSON.stringify(x.decayTime)}', '${JSON.stringify(x.levelReq)}');`;
-  // return x.sets
-  //   .map((y) => {
-  //     return `INSERT INTO public."LootcrateSet" ("lootcrate_id", "name", "can_repeat_items", "qty_scale", "weight")
-  //      VALUES ((SELECT id from public."Lootcrate" WHERE map = ${
-  //        map[x.map] ? map[x.map] : 1
-  //      } AND blueprint LIKE '${x.bp}'), '${y.name}', ${
-  //       y.canRepeatItems
-  //     }, '${JSON.stringify(y.qtyScale)}', ${y.weight});`;
-  //   })
-  //   .join("\n");
-  return x.sets
-    .map((y) => {
-      // return y.entries
-      //   .map((z) => {
-      //     // return `INSERT INTO public."LootcrateSetEntry" ("set_id", "name", "weight", "qty", "quality", "items")
-      //     //      VALUES ((SELECT id FROM public."LootcrateSet" WHERE lootcrate_id = (SELECT id from public."Lootcrate" WHERE map = ${
-      //     //        map[x.map] ? map[x.map] : 1
-      //     //      } AND blueprint LIKE '${x.bp}' AND name LIKE '${
-      //     //   x.name
-      //     // }' LIMIT 1) AND name LIKE '${
-      //     //   y.name
-      //     // }' AND qty_scale = '${JSON.stringify(y.qtyScale)}' LIMIT 1), '${z.name}', ${
-      //     //   z.weight
-      //     // }, '${JSON.stringify(z.qty)}', '${JSON.stringify(
-      //     //   z.quality
-      //     // )}', '${JSON.stringify(z.items)}');`;
-      //   })
-      // .join("\n");
-      return y.entries.length;
-    })
-    .reduce((a, b) => a + b, 0);
-  // .join("\n");
-});
-console.log(fff.reduce((a, b) => a + b, 0));
 return;
 console.timeEnd("normal");
 const g = {
