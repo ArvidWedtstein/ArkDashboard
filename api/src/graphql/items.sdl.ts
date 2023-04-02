@@ -17,8 +17,8 @@ export const schema = gql`
     crafted_in: [String]!
     effects: [String]!
     type: String!
+    DinoStat: [DinoStat]!
   }
-
   type ItemsPage {
     items: [Item!]!
     count: Int!

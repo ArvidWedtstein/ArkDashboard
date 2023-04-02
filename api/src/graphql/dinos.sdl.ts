@@ -50,7 +50,7 @@ export const schema = gql`
     movement: JSON
     type: [String]!
     carryable_by: [String]!
-    DinoEffWeight: [DinoEffWeight]!
+    DinoStat: [DinoStat]!
   }
   type DinosPage {
     dinos: [Dino!]!

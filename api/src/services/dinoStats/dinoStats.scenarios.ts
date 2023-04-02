@@ -1,11 +1,10 @@
-import type { Prisma, DinoEffWeight } from '@prisma/client'
+import type { Prisma, DinoStat } from '@prisma/client'
 import type { ScenarioData } from '@redwoodjs/testing/api'
 
-export const standard = defineScenario<Prisma.DinoEffWeightCreateArgs>({
-  dinoEffWeight: {
+export const standard = defineScenario<Prisma.DinoStatCreateArgs>({
+  dinoStat: {
     one: {
       data: {
-        value: 4192434.6890772157,
         Dino: {
           create: {
             name: 'String',
@@ -28,7 +27,6 @@ export const standard = defineScenario<Prisma.DinoEffWeightCreateArgs>({
     },
     two: {
       data: {
-        value: 1349509.8779279168,
         Dino: {
           create: {
             name: 'String',
@@ -52,4 +50,4 @@ export const standard = defineScenario<Prisma.DinoEffWeightCreateArgs>({
   },
 })
 
-export type StandardScenario = ScenarioData<DinoEffWeight, 'dinoEffWeight'>
+export type StandardScenario = ScenarioData<DinoStat, 'dinoStat'>

@@ -52,7 +52,7 @@ export const deleteDino: MutationResolvers["deleteDino"] = ({ id }) => {
 };
 
 export const Dino: DinoRelationResolvers = {
-  DinoEffWeight: (_obj, { root }) => {
-    return db.dino.findUnique({ where: { id: root?.id } }).DinoEffWeight();
+  DinoStat: (_obj, { root }) => {
+    return db.dino.findUnique({ where: { id: root?.id } }).DinoStat();
   },
 };
