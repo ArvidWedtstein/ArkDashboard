@@ -24,6 +24,15 @@ export const QUERY = gql`
       crafted_in
       effects
       type
+      DinoStat {
+        Dino {
+          id
+          name
+        }
+        value
+        rank
+        type
+      }
     }
   }
 `;

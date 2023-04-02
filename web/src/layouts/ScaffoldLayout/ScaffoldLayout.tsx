@@ -1,14 +1,11 @@
-
-
 type LayoutProps = {
-  children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
-const ScaffoldLayout = ({
-  children,
-}: LayoutProps) => {
+const ScaffoldLayout = ({ children }: LayoutProps) => {
   return (
-    <div className="p-3 m-3">{/* bg-white dark:bg-[#3b424f] */}
+    <div className="m-3 p-3">
+      {/* bg-white dark:bg-[#3b424f] */}
       {children}
     </div>
     // <div className="w-full flex flex-col h-[100vh] overflow-hidden" >
@@ -33,7 +30,7 @@ const ScaffoldLayout = ({
     //   </header>
     //   <main className="rw-main">{children}</main>
     // </div>
-  )
-}
+  );
+};
 
-export default ScaffoldLayout
+export default ScaffoldLayout;

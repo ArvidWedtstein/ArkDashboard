@@ -17,7 +17,7 @@ export const itemsPage = ({
     items: db.item.findMany({
       take: items_per_page,
       skip: offset,
-      orderBy: { created_at: "desc" },
+      orderBy: { name: "asc" },
     }),
     count: db.item.count(),
   };

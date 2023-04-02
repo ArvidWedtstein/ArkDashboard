@@ -41,7 +41,7 @@ const ItemsList = ({ itemsPage }: FindItems) => {
   const [view, setView] = useState("grid");
 
   return (
-    <div className="rw-segment rw-table-wrapper-responsive">
+    <div className="rw-segment overflow-hidden">
       <nav className="rw-button-group">
         <input
           type="radio"
@@ -87,7 +87,7 @@ const ItemsList = ({ itemsPage }: FindItems) => {
         </label>
       </nav>
       <div
-        className={clsx("grid gap-4", {
+        className={clsx("grid gap-4 overflow-y-hidden", {
           "grid-cols-1": view === "list",
           "grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6":
             view === "grid",
@@ -101,9 +101,7 @@ const ItemsList = ({ itemsPage }: FindItems) => {
               subtitle={item.type}
               content={view === "list" ? item.description : ""}
               icon={{
-                src: `https://arkids.net/image/item/120/${item.name
-                  .replaceAll(" ", "-")
-                  .replace("plant-species-y", "plant-species-y-trap")}.png`,
+                src: `https://arkcheat.com/images/ark/items/${item.image}`,
                 alt: `${item.name}`,
               }}
             />
