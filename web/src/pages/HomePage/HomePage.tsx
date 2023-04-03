@@ -35,13 +35,13 @@ const HomePage = () => {
           >
             <div className="flex h-full items-center justify-center">
               <div className="px-6 text-center font-extralight text-white md:px-12">
-                <h1 className="mt-0 mb-6 text-5xl">Welcome Home</h1>
+                <h1 className="mt-0 mb-6 text-5xl">Welcome Home Bob!</h1>
                 <h3 className="mb-8 text-3xl">
                   Here you can find{" "}
                   <span className="decoration-pea-500 underline decoration-4 underline-offset-8">
                     base
                   </span>{" "}
-                  locations, material calculators and much more
+                  locations, material calculator and much more
                 </h3>
                 {/* <h3 className="mb-8 text-3xl">
                   H're thee can findeth <span className="underline decoration-pea-500 decoration-4 underline-offset-8">base</span> locations, mat'rial calculat'rs and much m're

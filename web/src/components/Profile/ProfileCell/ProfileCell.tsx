@@ -24,7 +24,6 @@ export const QUERY = gql`
 export const Loading = () => <div>Loading...</div>
 
 export const Empty = () => <div>Profile not found</div>
-
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error flex items-center space-x-3 animate-fly-in" >
     <svg className="w-12 h-12 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
