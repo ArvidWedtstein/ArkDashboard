@@ -1,10 +1,34 @@
-import { FindItems, FindItemsVariables } from 'types/graphql'
+
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import { MaterialGrid } from '../MaterialGrid/MaterialGrid'
 
 
+// export const QUERY = gql`
+//    query {
+//      items {
+//        id
+//        created_at
+//        name
+//        description
+//        image
+//        max_stack
+//        weight
+//        engram_points
+//        crafting_time
+//        req_level
+//        yields
+//        recipe
+//        stats
+//        color
+//        crafted_in
+//        effects
+//        type
+//      }
+//    }
+//  `
+
 export const QUERY = gql`
-  query {
+  query FindItemsMats {
     items {
       id
       created_at

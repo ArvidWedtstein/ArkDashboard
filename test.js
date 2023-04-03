@@ -1,6 +1,6 @@
 const { items } = require("./web/public/arkitems.json");
 // const d = require("./web/public/maps.json");
-const d2 = require("./web/public/f.json");
+// const d2 = require("./web/public/f.json");
 const lootcrates = require("./web/public/lootcratesItemId.json");
 
 // const dd = require("./j.json");
@@ -43,22 +43,41 @@ let map = {
   "Lost Island": 12,
 };
 
-const dd = d2.dinos.map((x) => {
-  if (x?.eats && x.eats !== null) {
-    return x.eats
-      .filter((d) => !isNaN(d))
+// const dd = d2.dinos.map((x) => {
+//   if (x?.eats && x.eats !== null) {
+//     return x.eats
+//       .filter((d) => !isNaN(d))
+//       .map((y) => {
+//         return `('${x.id}', ${parseInt(y)}, 'food'),`;
+//       })
+//       .join("\n");
+//   }
+//   return "";
+//   // return `INSERT INTO public."DinoEffWeight" ("dino_id", "item_id", "value", "is_gather_eff")`;
+// });
+const dd = items.map((x) => {
+  if (!x.crafted_in && x.crafted_in === null && x.recipe && x.recipe !== null) {
+    return x.recipe
+      .filter((y) => !isNaN(y.itemId))
       .map((y) => {
-        return `('${x.id}', ${parseInt(y)}, 'food'),`;
+        return `(${x.id}, ${y.itemId}, ${y.count || 1}),`;
       })
       .join("\n");
   }
+  // if (x?.recipe && x.recipe !== null) {
+  //   return x.recipe
+  //     .map((y) => {
+  //       return `(${x.id}, ${y.itemId}, ${y.count}, ${x.}),`;
+  //     })
+  //     .join("\n");
+  // }
   return "";
   // return `INSERT INTO public."DinoEffWeight" ("dino_id", "item_id", "value", "is_gather_eff")`;
 });
 require("fs").writeFile(
   `insert.txt`,
   [
-    `INSERT INTO public."DinoStat" ("dino_id", "item_id", "type") VALUES`,
+    `INSERT INTO public."ItemRecipe" ("crafted_item_id", "item_id", "amount") VALUES`,
     ...dd,
   ].join("\n"),
   (error) => {
