@@ -41,13 +41,7 @@ export const Empty = () => {
     </div>
   );
 };
-const timelines = [{
-  "id": "76e83e7e-0e05-4c70-a3ab-3ec8a30d1c87", "createdAt": "2022-12-27T23:00:00+00:00", "TimelineBasespot": [{
-    id: 1232
-  }, {
-    id: 1232
-  }], "updatedAt": "2022-12-28T13:34:44.430151+00:00", "Profile": { id: '1232', full_name: "Arvid" }, "createdBy": "7a2878d1-4f61-456d-bcb6-edc707383ea8"
-}]
+
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error flex items-center space-x-3 animate-fly-in" >
     <svg className="w-12 h-12 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">

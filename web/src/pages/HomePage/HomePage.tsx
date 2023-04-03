@@ -30,8 +30,7 @@ const HomePage = () => {
           }}
         >
           <div
-            className="h-full w-full overflow-hidden bg-fixed"
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.55)" }}
+            className="h-full w-full overflow-hidden bg-fixed bg-black bg-opacity-60"
           >
             <div className="flex h-full items-center justify-center">
               <div className="px-6 text-center font-extralight text-white md:px-12">
