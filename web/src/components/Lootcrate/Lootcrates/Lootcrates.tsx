@@ -20,6 +20,7 @@ import type {
   DeleteLootcrateMutationVariables,
   FindLootcrates,
 } from "types/graphql";
+import { useParams } from "@redwoodjs/router";
 
 const DELETE_LOOTCRATE_MUTATION = gql`
   mutation DeleteLootcrateMutation($id: String!) {
@@ -50,7 +51,8 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
     }
   };
 
-  const [filters, setFilters] = useState({ map: "", category: "" });
+  let { map } = useParams();
+  const [filters, setFilters] = useState({ map: map || "", category: "" });
   const [categoryItems, setCategoryItems] = useState([]);
   const getItem = useCallback(
     (id) => {
@@ -176,9 +178,8 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
                                               className="inline-flex space-x-2"
                                             >
                                               <img
-                                                src={`https://arkcheat.com/images/ark/items/${
-                                                  getItem(itm[1])?.image
-                                                }`}
+                                                src={`https://arkcheat.com/images/ark/items/${getItem(itm[1])?.image
+                                                  }`}
                                                 className="inline-block h-6 w-6"
                                               />
                                               <p className="text-white">
@@ -202,7 +203,7 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
             }
             ring={
               lootcrate?.level_requirement &&
-              lootcrate.level_requirement?.min > 0
+                lootcrate.level_requirement?.min > 0
                 ? `Lvl ${lootcrate.level_requirement.min}`
                 : null
             }

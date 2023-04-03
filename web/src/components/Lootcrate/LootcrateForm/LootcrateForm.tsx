@@ -26,34 +26,8 @@ interface LootcrateFormProps {
 
 const LootcrateForm = (props: LootcrateFormProps) => {
   const onSubmit = (data: FormLootcrate) => {
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
+
+
     props.onSave(data, props?.lootcrate?.id)
   }
 
@@ -66,7 +40,7 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
-      
+
         <Label
           name="blueprint"
           className="rw-label"
@@ -74,15 +48,15 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         >
           Blueprint
         </Label>
-        
-          <TextField
-            name="blueprint"
-            defaultValue={props.lootcrate?.blueprint}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ required: true }}
-          />
-        
+
+        <TextField
+          name="blueprint"
+          defaultValue={props.lootcrate?.blueprint}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ required: true }}
+        />
+
 
         <FieldError name="blueprint" className="rw-field-error" />
 
@@ -93,14 +67,14 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         >
           Name
         </Label>
-        
-          <TextField
-            name="name"
-            defaultValue={props.lootcrate?.name}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-        
+
+        <TextField
+          name="name"
+          defaultValue={props.lootcrate?.name}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+
 
         <FieldError name="name" className="rw-field-error" />
 
@@ -111,15 +85,15 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         >
           Map
         </Label>
-        
-          <TextField
-            name="map"
-            defaultValue={props.lootcrate?.map}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ required: true }}
-          />
-        
+
+        <TextField
+          name="map"
+          defaultValue={props.lootcrate?.map}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ required: true }}
+        />
+
 
         <FieldError name="map" className="rw-field-error" />
 
@@ -130,15 +104,15 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         >
           Level requirement
         </Label>
-        
-          <TextAreaField
-            name="level_requirement"
-            defaultValue={JSON.stringify(props.lootcrate?.level_requirement)}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ valueAsJSON: true }}
-          />
-        
+
+        <TextAreaField
+          name="level_requirement"
+          defaultValue={JSON.stringify(props.lootcrate?.level_requirement)}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ valueAsJSON: true }}
+        />
+
 
         <FieldError name="level_requirement" className="rw-field-error" />
 
@@ -149,15 +123,15 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         >
           Decay time
         </Label>
-        
-          <TextAreaField
-            name="decay_time"
-            defaultValue={JSON.stringify(props.lootcrate?.decay_time)}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ valueAsJSON: true }}
-          />
-        
+
+        <TextAreaField
+          name="decay_time"
+          defaultValue={JSON.stringify(props.lootcrate?.decay_time)}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ valueAsJSON: true }}
+        />
+
 
         <FieldError name="decay_time" className="rw-field-error" />
 
@@ -168,14 +142,14 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         >
           No repeat in sets
         </Label>
-        
-          <CheckboxField
-            name="no_repeat_in_sets"
-            defaultChecked={props.lootcrate?.no_repeat_in_sets}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-        
+
+        <CheckboxField
+          name="no_repeat_in_sets"
+          defaultChecked={props.lootcrate?.no_repeat_in_sets}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+
 
         <FieldError name="no_repeat_in_sets" className="rw-field-error" />
 
@@ -186,15 +160,15 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         >
           Quality multiplier
         </Label>
-        
-          <TextAreaField
-            name="quality_multiplier"
-            defaultValue={JSON.stringify(props.lootcrate?.quality_multiplier)}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ valueAsJSON: true }}
-          />
-        
+
+        <TextAreaField
+          name="quality_multiplier"
+          defaultValue={JSON.stringify(props.lootcrate?.quality_multiplier)}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ valueAsJSON: true }}
+        />
+
 
         <FieldError name="quality_multiplier" className="rw-field-error" />
 
@@ -205,15 +179,15 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         >
           Set qty
         </Label>
-        
-          <TextAreaField
-            name="set_qty"
-            defaultValue={JSON.stringify(props.lootcrate?.set_qty)}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-            validation={{ valueAsJSON: true }}
-          />
-        
+
+        <TextAreaField
+          name="set_qty"
+          defaultValue={JSON.stringify(props.lootcrate?.set_qty)}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ valueAsJSON: true }}
+        />
+
 
         <FieldError name="set_qty" className="rw-field-error" />
 
@@ -224,14 +198,14 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         >
           Color
         </Label>
-        
-          <TextField
-            name="color"
-            defaultValue={props.lootcrate?.color}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-        
+
+        <TextField
+          name="color"
+          defaultValue={props.lootcrate?.color}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+
 
         <FieldError name="color" className="rw-field-error" />
 

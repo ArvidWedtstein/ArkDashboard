@@ -415,3 +415,75 @@ a {
   align-items: flex-end;
   justify-content: flex-end;
 }
+
+.dot-revolution {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  /* border-radius: 5px; */
+  /* background-color: #9880ff; */
+  background: url("https://arkcheat.com/images/ark/items/hide.png");
+  background-position: center;
+  background-size: cover;
+  color: #9880ff;
+}
+.dot-revolution::before,
+.dot-revolution::after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+}
+.dot-revolution::before {
+  left: 0;
+  top: -15px;
+  width: 20px;
+  height: 20px;
+  /* border-radius: 5px; */
+  /* background-color: #9880ff; */
+  background: url("https://arkcheat.com/images/ark/items/hide.png");
+  background-position: center;
+  background-size: cover;
+  color: #9880ff;
+  transform-origin: 5px 20px;
+  animation: dot-revolution 1.4s linear infinite;
+}
+.dot-revolution::after {
+  left: 0;
+  top: -30px;
+  width: 20px;
+  height: 20px;
+  /* border-radius: 5px; */
+  /* background-color: #9880ff; */
+  background: url("https://arkcheat.com/images/ark/items/hide.png");
+  background-position: center;
+  background-size: cover;
+  color: #9880ff;
+  transform-origin: 5px 35px;
+  animation: dot-revolution 1s linear infinite;
+}
+
+@keyframes dot-revolution {
+  0% {
+    transform: rotateZ(0deg) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: rotateZ(360deg) translate3d(0, 0, 0);
+  }
+}
+
+@keyframes flyIn {
+  from {
+    transform: translateX(calc(100% + 1.5em));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes flyOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(100% + 1.5em));
+  }
+}

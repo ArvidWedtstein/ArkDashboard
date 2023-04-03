@@ -103,7 +103,7 @@ const Sidebar = memo(({ }) => {
             title={item.name}
             activeClassName={`text-white ring-2 ${item.color}`}
             className={clsx("mx-2 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl outline-none duration-100 hover:text-white sm:my-4 ring-1 ring-transparent", {
-              "bg-[#1f1c2ecc] text-[#dddddd] dark:bg-[#c3cff433] dark:text-[#ffffffcc] hover:ring-white": singularize(item.href.split("?")[0]) !== singularize(pathname),
+              "bg-[#1f1c2ecc] text-[#dddddd] dark:bg-[#c3cff433] dark:text-[#ffffffcc] hover:ring-white focus:ring-white focus-visible:ring-white": singularize(item.href.split("?")[0]) !== singularize(pathname),
             })}
           >
             {Icon(item.name)}
