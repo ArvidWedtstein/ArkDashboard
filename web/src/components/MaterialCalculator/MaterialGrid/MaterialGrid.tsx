@@ -10,28 +10,22 @@ import {
 import { useCallback, useMemo, useReducer, useState } from "react";
 import { useForm } from "react-hook-form";
 import Lookup from "src/components/Util/Lookup/Lookup";
-import { getBaseMaterials, jsonDisplay } from "src/lib/formatters";
+import { getBaseMaterials } from "src/lib/formatters";
 import Table from "src/components/Util/Table/Table";
-import arkitems from "../../../../public/arkitems.json";
-import LineChart from "src/components/Util/LineChart/LineChart";
-import Counter from "src/components/Util/Counter/Counter";
 interface MaterialGridProps {
-  // items: any;
+  items: any;
   error?: RWGqlError;
 }
-export const MaterialGrid = ({ error }: MaterialGridProps) => {
-  let { itemStats, items: itemsark } = arkitems;
+export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
   const items = useMemo(() => {
-    return itemsark.map((v) => ({ ...v, amount: 1 * v.yields }));
+    return arkitems.map((v) => ({ ...v, amount: 1 * v.yields }));
   }, []);
   const formMethods = useForm();
 
   const reducer = (state, action) => {
     switch (action.type) {
       case "ADD_AMOUNT_BY_NUM": {
-        const itemIndex = state.findIndex(
-          (item) => item.id === action.item.id
-        );
+        const itemIndex = state.findIndex((item) => item.id === action.item.id);
         if (itemIndex !== -1) {
           return state.map((item, i) => {
             if (i === itemIndex) {
@@ -45,7 +39,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
       case "ADD_AMOUNT": {
         return state.map((item, i) => {
           if (i === action.index) {
-            return { ...item, amount: item.amount + (1 * item.yields) };
+            return { ...item, amount: item.amount + 1 * item.yields };
           }
           return item;
         });
@@ -53,7 +47,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
       case "REMOVE_AMOUNT": {
         return state.map((item, i) => {
           if (i === action.index) {
-            return { ...item, amount: item.amount - (1 * item.yields) };
+            return { ...item, amount: item.amount - 1 * item.yields };
           }
           return item;
         });
@@ -65,7 +59,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
         if (itemIndex !== -1) {
           return state.map((item, i) => {
             if (i === itemIndex) {
-              return { ...item, amount: item.amount + (1 * item.yields) };
+              return { ...item, amount: item.amount + 1 * item.yields };
             }
             return item;
           });
@@ -180,7 +174,6 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
     setItem({ type: "RESET" });
   };
 
-
   const [viewBaseMaterials, setViewBaseMaterials] = useState(false);
   const toggleBaseMaterials = useCallback(
     (e) => {
@@ -188,7 +181,6 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
     },
     [viewBaseMaterials]
   );
-  console.log(mergeItemRecipe(viewBaseMaterials, ...item.map((i) => ({ ...i, itemId: i.id }))))
 
   return (
     <Form onSubmit={onAdd} error={error}>
@@ -208,7 +200,13 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
 
       <div className="relative flex flex-row space-x-3">
         <Lookup
-          items={items}
+          items={items.map((item) => {
+            return {
+              ...item,
+              image: `https://arkcheat.com/images/ark/items/${item.image}`,
+            };
+          })}
+          group={"type"}
           search={true}
           name="itemName"
           onChange={(e) => onAdd({ itemName: e.name })}
@@ -220,7 +218,6 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
             onClick={addTurretTower}
             className="rw-button rw-button-green inline-flex items-center rounded-none first:rounded-l-lg last:rounded-r-lg"
           >
-            {" "}
             {/*py-2 px-4 text-sm font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-secondary dark:border-gray-600 dark:text-white dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-blue-500 dark:focus:text-white*/}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -256,7 +253,10 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
           <Table
             vertical={true}
             header={false}
-            rows={mergeItemRecipe(viewBaseMaterials, ...item.map((i) => ({ ...i, itemId: i.id })))}
+            rows={mergeItemRecipe(
+              viewBaseMaterials,
+              ...item.map((i) => ({ ...i, itemId: i.id }))
+            )}
             className="animate-fade-in my-4"
             caption={{
               title: "Item",
@@ -264,7 +264,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
                 <div className="flex items-center">
                   <CheckboxField
                     name="flexCheckDefault"
-                    className="inline-block rw-input"
+                    className="rw-input inline-block"
                     onChange={toggleBaseMaterials}
                   />
                   <label className="inline-block" htmlFor="flexCheckDefault">
@@ -288,7 +288,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
                   return (
                     <div className="flex flex-col items-center justify-center">
                       <img
-                        src={`https://www.arkresourcecalculator.com/assets/images/80px-${row.image}`}
+                        src={`https://arkcheat.com/images/ark/items/${row.image}`}
                         className="h-6 w-6"
                       />
                       <span className="text-sm">{value}</span>
@@ -322,8 +322,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
                         className="h-8 w-8"
                         name="itemimage"
                         src={
-                          "https://www.arkresourcecalculator.com/assets/images/80px-" +
-                          row.image
+                          "https://arkcheat.com/images/ark/items/" + row.image
                         }
                       />
                     </button>
@@ -384,7 +383,7 @@ export const MaterialGrid = ({ error }: MaterialGridProps) => {
                         key={`${itm.id}-${i * Math.random()}${i}`}
                       >
                         <img
-                          src={`https://www.arkresourcecalculator.com/assets/images/80px-${itm.image}`}
+                          src={`https://arkcheat.com/images/ark/items/${itm.image}`}
                           className="h-6 w-6"
                           title={itm.name}
                           alt={itm.name}

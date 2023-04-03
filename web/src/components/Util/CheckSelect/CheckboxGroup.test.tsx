@@ -1,14 +1,14 @@
 import { render } from '@redwoodjs/testing/web'
 
-import MaterialCalculatorForm from './MaterialCalculatorForm'
+import CheckboxGroup from './CheckboxGroup'
 
 //   Improve this test with help from the Redwood Testing Doc:
 //    https://redwoodjs.com/docs/testing#testing-components
 
-describe('MaterialCalculatorForm', () => {
+describe('CheckSelect', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<MaterialCalculatorForm />)
+      render(<CheckboxGroup />)
     }).not.toThrow()
   })
 })

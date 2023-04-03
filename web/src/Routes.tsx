@@ -7,17 +7,18 @@
 // 'src/pages/HomePage/HomePage.js'         -> HomePage
 // 'src/pages/Admin/BooksPage/BooksPage.js' -> AdminBooksPage
 
-import { Set, Router, Route } from '@redwoodjs/router'
+import { Set, Router, Route } from "@redwoodjs/router";
 
-import ScaffoldLayout from 'src/layouts/ScaffoldLayout';
+import ScaffoldLayout from "src/layouts/ScaffoldLayout";
 
 import MainLayout from "./layouts/MainLayout/MainLayout";
 
 const Routes = () => {
   return (
-    <Router>
+    <Router pageLoadingDelay={500}>
       <Set wrap={MainLayout}>
         {/*whileLoadingPage*/}
+
         <Route path="/dino-stats" page={DinoStatsPage} name="dinoStats" />
         <Route
           path="/material-calculator"
@@ -40,6 +41,34 @@ const Routes = () => {
         <Route path="/signin" page={SigninPage} name="signin" />
         <Route path="/signup" page={SignupPage} name="signup" />
         <Route notfound page={NotFoundPage} />
+        <Set
+          wrap={ScaffoldLayout}
+          title="Lootcrates"
+          titleTo="lootcrates"
+          buttonLabel="New Lootcrate"
+          buttonTo="newLootcrate"
+        >
+          <Route
+            path="/lootcrates/new"
+            page={LootcrateNewLootcratePage}
+            name="newLootcrate"
+          />
+          <Route
+            path="/lootcrates/{id}/edit"
+            page={LootcrateEditLootcratePage}
+            name="editLootcrate"
+          />
+          <Route
+            path="/lootcrates/{id}"
+            page={LootcrateLootcratePage}
+            name="lootcrate"
+          />
+          <Route
+            path="/lootcrates"
+            page={LootcrateLootcratesPage}
+            name="lootcrates"
+          />
+        </Set>
         <Set
           wrap={ScaffoldLayout}
           title="Maps"
@@ -132,14 +161,14 @@ const Routes = () => {
           buttonTo="newTimeline"
         >
           <Route
-            path="/timelines/{id:String}"
-            page={TimelineTimelinePage}
-            name="timeline"
-          />
-          <Route
             path="/timelines/new"
             page={TimelineNewTimelinePage}
             name="newTimeline"
+          />
+          <Route
+            path="/timelines/{id:String}"
+            page={TimelineTimelinePage}
+            name="timeline"
           />
           <Route
             path="/timelines"
@@ -159,7 +188,11 @@ const Routes = () => {
             page={TimelineBasespotNewTimelineBasespotPage}
             name="newTimelineBasespot"
           />
-          {/* <Route path="/timeline-basespots/{id}/edit" page={TimelineBasespotEditTimelineBasespotPage} name="editTimelineBasespot" /> */}
+          <Route
+            path="/timeline-basespots/{id}/edit"
+            page={TimelineBasespotEditTimelineBasespotPage}
+            name="editTimelineBasespot"
+          />
           <Route
             path="/timeline-basespots/{id}"
             page={TimelineBasespotTimelineBasespotPage}

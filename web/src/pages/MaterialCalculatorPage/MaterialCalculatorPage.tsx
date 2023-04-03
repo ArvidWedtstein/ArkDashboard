@@ -1,7 +1,6 @@
 import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
-import MaterialCalculatorForm from 'src/components/MaterialCalculator/MaterialCalculatorForm/MaterialCalculatorForm'
-
+import MaterialCalculatorCell from 'src/components/MaterialCalculator/MaterialCalculatorCell'
 
 const MaterialCalculatorPage = () => {
   return (
@@ -12,7 +11,7 @@ const MaterialCalculatorPage = () => {
           <h2 className="rw-heading text-xl dark:text-white text-black">Material Calculator</h2>
         </header>
         <div className="p-4 rounded-b-lg">
-          <MaterialCalculatorForm />
+          <MaterialCalculatorCell />
         </div>
       </div>
     </>

@@ -40,14 +40,26 @@ export const schema = gql`
     non_violent_food_rate_mult: Float
     taming_interval: Float
     base_taming_time: Float
-    exp_per_kill_adj: Float
     disable_tame: Boolean
     x_variant: Boolean
+    attack: JSON
+    mounted_weaponry: Boolean
+    ridable: Boolean
+    flyer_dino: Boolean
+    water_dino: Boolean
+    movement: JSON
+    type: [String]!
+    carryable_by: [String]!
+    DinoStat: [DinoStat]!
   }
-
+  type DinosPage {
+    dinos: [Dino!]!
+    count: Int!
+  }
   type Query {
-    dinos: [Dino!]! @requireAuth
-    dino(id: String!): Dino @requireAuth
+    dinos: [Dino!]! @skipAuth
+    dino(id: String!): Dino @skipAuth
+    dinosPage(page: Int): DinosPage @skipAuth
   }
 
   input CreateDinoInput {
@@ -90,9 +102,16 @@ export const schema = gql`
     non_violent_food_rate_mult: Float
     taming_interval: Float
     base_taming_time: Float
-    exp_per_kill_adj: Float
     disable_tame: Boolean
     x_variant: Boolean
+    attack: JSON
+    mounted_weaponry: Boolean
+    ridable: Boolean
+    flyer_dino: Boolean
+    water_dino: Boolean
+    movement: JSON
+    type: [String]!
+    carryable_by: [String]!
   }
 
   input UpdateDinoInput {
@@ -135,9 +154,16 @@ export const schema = gql`
     non_violent_food_rate_mult: Float
     taming_interval: Float
     base_taming_time: Float
-    exp_per_kill_adj: Float
     disable_tame: Boolean
     x_variant: Boolean
+    attack: JSON
+    mounted_weaponry: Boolean
+    ridable: Boolean
+    flyer_dino: Boolean
+    water_dino: Boolean
+    movement: JSON
+    type: [String]!
+    carryable_by: [String]!
   }
 
   type Mutation {
@@ -145,4 +171,4 @@ export const schema = gql`
     updateDino(id: String!, input: UpdateDinoInput!): Dino! @requireAuth
     deleteDino(id: String!): Dino! @requireAuth
   }
-`
+`;

@@ -119,9 +119,7 @@ const DinoStatsPage = () => {
     setSelect(c);
   };
 
-  // const handleComplete = (todo) => {
-  //   dispatch({ type: "COMPLETE", id: todo.id });
-  // };
+
   const genRandomStats = () => {
     // scramble level
     let newlevel = {};

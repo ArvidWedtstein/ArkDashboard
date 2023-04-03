@@ -1,4 +1,8 @@
-import type { QueryResolvers, MutationResolvers } from "types/graphql";
+import type {
+  QueryResolvers,
+  MutationResolvers,
+  ItemRelationResolvers,
+} from "types/graphql";
 
 import { db } from "src/lib/db";
 export const itemsPage = ({
@@ -13,9 +17,30 @@ export const itemsPage = ({
     items: db.item.findMany({
       take: items_per_page,
       skip: offset,
-      orderBy: { created_at: "desc" },
+      orderBy: { name: "asc" },
     }),
     count: db.item.count(),
+  };
+};
+
+export const itemsByCategory = ({
+  category,
+  page = 1,
+  items_per_page = 36,
+}: {
+  category: string;
+  page: number;
+  items_per_page?: number;
+}) => {
+  const offset = (page - 1) * items_per_page;
+  return {
+    items: db.item.findMany({
+      where: { type: category },
+      take: items_per_page,
+      skip: offset,
+      orderBy: { created_at: "desc" },
+    }),
+    count: db.item.count({ where: { type: category } }),
   };
 };
 
@@ -46,4 +71,10 @@ export const deleteItem: MutationResolvers["deleteItem"] = ({ id }) => {
   return db.item.delete({
     where: { id },
   });
+};
+
+export const Item: ItemRelationResolvers = {
+  DinoStat: (_obj, { root }) => {
+    return db.item.findUnique({ where: { id: root?.id } }).DinoStat();
+  },
 };

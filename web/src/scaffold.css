@@ -5,6 +5,9 @@
 .rw-scaffold h2 {
   @apply m-0;
 }
+a {
+  @apply font-medium text-blue-600 hover:underline dark:text-blue-500;
+}
 .rw-scaffold a {
   @apply bg-transparent;
 }
@@ -89,47 +92,135 @@
 .rw-form-error-list {
   @apply mt-2 list-inside list-disc;
 }
+/* Form Section */
+.rw-form-group {
+  @apply mt-2 flex flex-col items-start border-t border-stone-500 text-gray-900 dark:border-zinc-300 dark:text-stone-200;
+}
+.rw-form-group legend {
+  @apply pr-2 text-xl;
+}
+.rw-form-group > div {
+  @apply flex flex-row items-start space-y-3 sm:space-y-0 sm:space-x-3;
+}
 
 .rw-button {
   /* @apply flex cursor-pointer justify-center rounded border-0 bg-gray-200 py-1 px-4 text-xs font-semibold uppercase leading-loose tracking-wide text-gray-500 no-underline transition duration-100; */
-  @apply rounded-lg py-2.5 px-6 text-sm font-medium text-white focus:outline-none;
+  @apply rounded-lg py-2.5 px-6 text-sm font-medium text-white transition duration-100 ease-in-out focus:outline-none;
 }
-.rw-button:hover {
+/* .rw-button:hover {
   @apply bg-gray-500 text-white;
+} */
+.rw-button.disabled {
+  @apply cursor-not-allowed opacity-50;
 }
+.rw-button.disabled:hover {
+  @apply bg-current ring-0;
+}
+/*
+// ----------------------------
+// Button Sizes
+// ----------------------------
+*/
 .rw-button.rw-button-small {
   @apply rounded-sm py-1 px-2 text-xs;
 }
+.rw-button.rw-button-large {
+  @apply rounded-lg py-3 px-8 text-base;
+}
+
+/*
+// ----------------------------
+// Button Variants
+// ----------------------------
+*/
 .rw-button.rw-button-green-outline {
-  @apply border-pea-500 rounded border-2 font-normal leading-tight text-white transition duration-150 ease-in-out hover:bg-opacity-5;
+  @apply border-pea-700 text-pea-700 dark:border-pea-500 dark:text-pea-500 border;
+  /* @apply border-pea-500 text-pea-500 rounded border-2 font-normal leading-tight transition duration-150 ease-in-out hover:bg-opacity-5; */
 }
 .rw-button.rw-button-green-outline:hover {
-  @apply ring-pea-700 ring;
+  @apply bg-pea-800 dark:bg-pea-600 text-white;
 }
+.rw-button.rw-button-green-outline:focus {
+  @apply ring-pea-300 dark:ring-pea-800 outline-none ring-4;
+}
+
+.rw-button.rw-button-gray-outline {
+  @apply border border-stone-700 dark:border-gray-500;
+}
+.rw-button.rw-button-gray-outline:hover {
+  @apply border-stone-800 dark:border-stone-600;
+}
+.rw-button.rw-button-gray-outline:focus {
+  @apply outline-none ring-4 ring-stone-300 dark:ring-stone-800;
+}
+
+.rw-button.rw-button-red-outline {
+  @apply border border-red-700 text-red-700 dark:border-red-500 dark:text-red-500;
+}
+.rw-button.rw-button-red-outline:hover {
+  @apply border-red-800 dark:border-red-600;
+}
+.rw-button.rw-button-red-outline:focus {
+  @apply outline-none ring-4 ring-red-300 dark:ring-red-800;
+}
+
+/* Green Button */
 .rw-button.rw-button-green {
-  /* @apply bg-green-500 text-white; */
   @apply bg-pea-500 text-white;
 }
 .rw-button.rw-button-green:hover {
   @apply bg-pea-600;
 }
+.rw-button.rw-button-green:focus {
+  @apply ring-pea-300 dark:ring-pea-800 outline-none ring-4;
+}
+
+/* Blue Button */
 .rw-button.rw-button-blue {
   @apply bg-blue-500 text-white;
 }
 .rw-button.rw-button-blue:hover {
-  @apply bg-blue-700;
+  @apply bg-blue-600;
 }
+.rw-button.rw-button-blue:focus {
+  @apply outline-none ring-4 ring-blue-300 dark:ring-blue-800;
+}
+
+/* Red Button */
 .rw-button.rw-button-red {
   @apply bg-red-500 text-white;
 }
 .rw-button.rw-button-red:hover {
   @apply bg-red-700 text-white;
 }
+.rw-button.rw-button-red:focus {
+  @apply outline-none ring-4 ring-red-300 dark:ring-red-800;
+}
+
+/* Yellow Button */
+.rw-button.rw-button-yellow {
+  @apply bg-yellow-500 text-white;
+}
+.rw-button.rw-button-yellow:hover {
+  @apply bg-yellow-600 text-white;
+}
+.rw-button.rw-button-yellow:focus {
+  @apply outline-none ring-4 ring-yellow-300 dark:ring-yellow-800;
+}
+
+/* Gray Button */
 .rw-button.rw-button-gray {
-  @apply border-gray-300 bg-gray-50 text-gray-900 dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200;
+  @apply border-gray-300 bg-gray-50 text-gray-900 dark:border-zinc-500 dark:bg-zinc-700 dark:text-stone-200;
 }
 .rw-button.rw-button-gray:hover {
-  @apply border-gray-500 bg-gray-500 dark:border-zinc-600 dark:bg-zinc-700;
+  @apply border-gray-500 bg-gray-500 ring ring-gray-200 dark:border-zinc-600 dark:bg-zinc-700 dark:ring-zinc-600;
+}
+.rw-button.rw-button-gray:focus {
+  @apply outline-none ring-4 ring-gray-300 dark:ring-zinc-800;
+}
+
+.rw-button.rw-button-icon {
+  @apply inline-flex items-center;
 }
 .rw-button-icon {
   @apply mr-1 text-xl leading-5;
@@ -153,7 +244,7 @@
   @apply text-red-600;
 }
 .rw-helper-text {
-  @apply mt-2 text-xs italic text-gray-600 dark:text-stone-300;
+  @apply mt-2 text-xs text-gray-600 dark:text-stone-300;
 }
 .rw-input {
   /* @apply block mt-2 w-full p-2 bg-white border border-gray-200 rounded outline-none; */
@@ -180,11 +271,14 @@
 .rw-input[type="radio"] {
   @apply ml-0 mr-1 mt-1 inline w-4;
 }
+.rw-toggle {
+  @apply h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] dark:border-gray-600 dark:bg-gray-700;
+}
 /* .rw-input:focus {
   @apply border-gray-400;
 } */
 .rw-input-error {
-  @apply border-red-600 text-red-600;
+  @apply border-red-600 text-red-600 placeholder-red-700;
 }
 .rw-input-error:focus {
   @apply border-red-600 outline-none;
@@ -281,4 +375,115 @@
 }
 .rw-img-disable img {
   @apply opacity-40 brightness-[1.4] contrast-0 hue-rotate-[116deg] saturate-[.28] sepia;
+}
+
+.rw-check-input {
+  @apply absolute hidden overflow-hidden;
+}
+.rw-check-input:checked + .rw-check-tile {
+  @apply border-pea-500 text-pea-500 shadow-lg;
+}
+.rw-check-input:checked + .rw-check-tile::before {
+  @apply bg-pea-500 border-pea-500 scale-100 opacity-100;
+}
+.rw-check-input:checked + .rw-check-tile span {
+  @apply text-white;
+}
+.rw-check-tile {
+  @apply relative flex h-28 w-28 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-gray-300 bg-gray-50 shadow transition-all duration-150 dark:border-zinc-500 dark:bg-zinc-600;
+}
+.rw-check-tile:hover::before:not(.disabled) {
+  @apply scale-100 stroke-stone-100 text-stone-100 opacity-100;
+}
+.rw-check-tile::before {
+  @apply absolute top-1 left-1 block h-5 w-5 scale-0 transform rounded-full border bg-[url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='192'%20height='192'%20fill='%23FF0000'%20viewBox='0%200%20256%20256'%3E%3Crect%20width='256'%20height='256'%20fill='none'%3E%3C/rect%3E%3Cpolyline%20points='216%2072.005%20104%20184%2048%20128.005'%20fill='none'%20stroke='%23ffffff'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='32'%3E%3C/polyline%3E%3C/svg%3E")] bg-[length:12px_12px] bg-center bg-no-repeat opacity-0 transition-all duration-150 ease-in content-[''];
+}
+
+.rw-image-overlay {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    0deg,
+    rgba(0, 16, 34, 0.8) 0%,
+    rgba(240, 244, 253, 0.2) 90%
+  );
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.dot-revolution {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  /* border-radius: 5px; */
+  /* background-color: #9880ff; */
+  background: url("https://arkcheat.com/images/ark/items/hide.png");
+  background-position: center;
+  background-size: cover;
+  color: #9880ff;
+}
+.dot-revolution::before,
+.dot-revolution::after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+}
+.dot-revolution::before {
+  left: 0;
+  top: -15px;
+  width: 20px;
+  height: 20px;
+  /* border-radius: 5px; */
+  /* background-color: #9880ff; */
+  background: url("https://arkcheat.com/images/ark/items/hide.png");
+  background-position: center;
+  background-size: cover;
+  color: #9880ff;
+  transform-origin: 5px 20px;
+  animation: dot-revolution 1.4s linear infinite;
+}
+.dot-revolution::after {
+  left: 0;
+  top: -30px;
+  width: 20px;
+  height: 20px;
+  /* border-radius: 5px; */
+  /* background-color: #9880ff; */
+  background: url("https://arkcheat.com/images/ark/items/hide.png");
+  background-position: center;
+  background-size: cover;
+  color: #9880ff;
+  transform-origin: 5px 35px;
+  animation: dot-revolution 1s linear infinite;
+}
+
+@keyframes dot-revolution {
+  0% {
+    transform: rotateZ(0deg) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: rotateZ(360deg) translate3d(0, 0, 0);
+  }
+}
+
+@keyframes flyIn {
+  from {
+    transform: translateX(calc(100% + 1.5em));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes flyOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(100% + 1.5em));
+  }
 }

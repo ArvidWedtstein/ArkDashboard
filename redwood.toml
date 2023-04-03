@@ -10,6 +10,7 @@
   port = 8910
   apiUrl = "/.netlify/functions"
   includeEnvironmentVariables = ["NODE_ENV", "DATABASE_URL", "SUPABASE_URL", "SUPABASE_KEY"] # any ENV vars that should be available to the web side, see https://redwoodjs.com/docs/environment-variables#web
+  fastRefresh = true
 [api]
   port = 8911
 [browser]

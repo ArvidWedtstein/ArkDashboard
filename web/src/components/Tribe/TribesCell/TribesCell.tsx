@@ -42,28 +42,26 @@ export const Empty = () => {
   );
 };
 
-export const Failure = ({ error }: CellFailureProps) => {
-  return (
-    <section className="text-center">
-      <div className="mx-auto max-w-3xl border border-[#60728F] bg-[#0D2836] p-8 text-[#97FBFF]">
-        <h1 className="mb-3 text-2xl font-bold uppercase">{error.name}</h1>
-        <h1 className="my-8">
-          <span>{error?.message}</span>
-        </h1>
-        <div className="mt-3 flex flex-row items-center justify-center space-x-3 text-center">
-          <Link
-            to={routes.home()}
-            className="w-1/2 bg-[#11667B] px-6 py-1 uppercase outline outline-1 outline-offset-1 outline-[#11667B] transition-colors duration-150 hover:outline-2 hover:outline-offset-0"
-          >
-            Accept
-          </Link>
-          {/* <Link to={routes.home()} className="uppercase w-1/2 duration-150 bg-[#11667B] px-6 py-1 outline outline-1 transition-colors outline-[#11667B] outline-offset-1 hover:outline-offset-0 hover:outline-2">Cancel</Link> */}
-        </div>
+export const Failure = ({ error }: CellFailureProps) => (
+  <section className="text-center">
+    <div className="mx-auto max-w-3xl border border-[#60728F] bg-[#0D2836] p-8 text-[#97FBFF]">
+      <h1 className="mb-3 text-2xl font-bold uppercase">{error.name}</h1>
+      <h1 className="my-8">
+        <span>{error?.message}</span>
+      </h1>
+      <div className="mt-3 flex flex-row items-center justify-center space-x-3 text-center">
+        <Link
+          to={routes.home()}
+          className="w-1/2 bg-[#11667B] px-6 py-1 uppercase outline outline-1 outline-offset-1 outline-[#11667B] transition-colors duration-150 hover:outline-2 hover:outline-offset-0"
+        >
+          Accept
+        </Link>
+        {/* <Link to={routes.home()} className="uppercase w-1/2 duration-150 bg-[#11667B] px-6 py-1 outline outline-1 transition-colors outline-[#11667B] outline-offset-1 hover:outline-offset-0 hover:outline-2">Cancel</Link> */}
       </div>
-    </section>
-    // <div className="rw-cell-error">{error?.message}</div>
-  );
-};
+    </div>
+  </section>
+
+);
 
 export const Success = ({ tribes }: CellSuccessProps<FindTribes>) => {
   return <Tribes tribes={tribes} />;

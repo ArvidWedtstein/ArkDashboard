@@ -12,6 +12,7 @@ import {
 import { Link, navigate, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { toast, Toaster } from "@redwoodjs/web/toast";
+import { RouteFocus } from "@redwoodjs/router";
 
 const WELCOME_MESSAGE = "Welcome back!";
 const REDIRECT = routes.home();
@@ -70,23 +71,25 @@ const SigninPage = () => {
             <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
           </svg>
         </div>
-        <TextField
-          name="email"
-          className="rw-input pl-10"
-          errorClassName="rw-input rw-input-error"
-          placeholder="ola@nordmann.com"
-          autoFocus
-          validation={{
-            required: {
-              value: true,
-              message: "Email is required",
-            },
-            pattern: {
-              message: "Email must be valid",
-              value: /[^@]+@[^\.]+\..+/,
-            },
-          }}
-        />
+        <RouteFocus>
+          <TextField
+            name="email"
+            className="rw-input pl-10"
+            errorClassName="rw-input rw-input-error"
+            placeholder="ola@nordmann.com"
+            autoFocus
+            validation={{
+              required: {
+                value: true,
+                message: "Email is required",
+              },
+              pattern: {
+                message: "Email must be valid",
+                value: /[^@]+@[^\.]+\..+/,
+              },
+            }}
+          />
+        </RouteFocus>
         <FieldError name="email" className="rw-field-error" />
       </div>
 

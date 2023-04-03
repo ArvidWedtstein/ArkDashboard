@@ -6,6 +6,7 @@ import {
   TextField,
   DatetimeLocalField,
   Submit,
+  TextAreaField,
 } from "@redwoodjs/forms";
 
 import type { EditTribeById, UpdateTribeInput } from "types/graphql";
@@ -30,8 +31,7 @@ const TribeForm = (props: TribeFormProps) => {
   const { currentUser } = useAuth();
   const onSubmit = (data: FormTribe) => {
     // data.createdBy =
-    //   props.tribe?.createdBy ||
-    //   currentUser.props.onSave(data, props?.tribe?.id);
+    //   props.tribe?.createdBy || currentUser?.sub;
     props.onSave(data, props?.tribe?.id);
   };
 
@@ -56,6 +56,7 @@ const TribeForm = (props: TribeFormProps) => {
         <TextField
           name="name"
           defaultValue={props.tribe?.name}
+          placeholder="Tribe name"
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ required: true }}
@@ -71,9 +72,10 @@ const TribeForm = (props: TribeFormProps) => {
           Description
         </Label>
 
-        <TextField
+        <TextAreaField
           name="description"
           defaultValue={props.tribe?.description}
+          placeholder="Describe your tribe"
           className="rw-input"
           errorClassName="rw-input rw-input-error"
         />

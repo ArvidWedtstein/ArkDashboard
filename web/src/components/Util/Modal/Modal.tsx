@@ -11,19 +11,17 @@ type iModal = {
 };
 export const RefModal = (({ isOpen, onClose, image, title, content }: iModal) => {
   const { ref: modalRef, isComponentVisible, setIsComponentVisible } =
-    useComponentVisible(false);
-
+    useComponentVisible(isOpen);
   useEffect(() => {
     setIsComponentVisible(isOpen);
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   useEffect(() => {
     if (isComponentVisible) {
       onClose()
     }
-
-    setIsComponentVisible(!isComponentVisible);
-  }, [onClose, modalRef]);
+    // if (modalRef.current) setIsComponentVisible(!isComponentVisible);
+  }, [modalRef]);
 
   return true ? (
     <div
@@ -31,7 +29,7 @@ export const RefModal = (({ isOpen, onClose, image, title, content }: iModal) =>
       role="dialog"
       aria-modal="true"
       aria-hidden={isComponentVisible ? "false" : "true"}
-      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 backdrop:bg-gray-50 md:inset-0 md:h-full ${isComponentVisible ? "block" : "hidden"
+      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 backdrop:bg-gray-50 md:inset-0 md:h-full ${isComponentVisible === true ? "block" : "hidden"
         }`}
     >
       <div

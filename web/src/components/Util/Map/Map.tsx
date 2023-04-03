@@ -25,7 +25,7 @@ export const Map = ({
       "https://ark.gamepedia.com/media/thumb/3/3e/Scorched_Earth_Map.jpg/600px-Scorched_Earth_Map.jpg",
     ragnarok:
       "https://ark.gamepedia.com/media/thumb/5/5e/Ragnarok_Map.jpg/600px-Ragnarok_Map.jpg",
-    aberration:
+    abberation:
       "https://ark.gamepedia.com/media/thumb/6/6e/Aberration_Map.jpg/600px-Aberration_Map.jpg",
     extinction:
       "https://ark.gamepedia.com/media/thumb/2/2c/Extinction_Map.jpg/600px-Extinction_Map.jpg",
@@ -34,13 +34,39 @@ export const Map = ({
       "https://ark.gamepedia.com/media/thumb/4/4e/Genesis_Part_1.jpg/600px-Genesis_Part_1.jpg",
     gen2: "https://ark.gamepedia.com/media/thumb/0/0d/Genesis_Part_2.jpg/600px-Genesis_Part_2.jpg",
     genesis2:
-      "https://ark.wiki.gg/images/thumb/4/44/Genesis_Part_2_Map.jpg/600px-Genesis_Part_2_Map.jpg",
+      "https://ark.gamepedia.com/media/thumb/0/0d/Genesis_Part_2.jpg/600px-Genesis_Part_2.jpg",
     valguero:
       "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/1/19/Valguero_Map.jpg",
     crystalisles:
       "https://ark.gamepedia.com/media/thumb/3/3e/Crystal_Isles_Map.jpg/600px-Crystal_Isles_Map.jpg",
-    fjordur: "https://ark.wiki.gg/images/7/75/Fjordur_Map.jpg",
-    lostisland: "https://ark.wiki.gg/images/1/1e/Lost_Island_Map.jpg",
+    fjordur:
+      "https://ark.wiki.gg/images/7/75/Fjordur_Map.jpg",
+    lostisland:
+      "https://ark.wiki.gg/images/1/1e/Lost_Island_Map.jpg",
+
+    "1":
+      "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/1/19/Valguero_Map.jpg",
+    "2":
+      "https://ark.gamepedia.com/media/thumb/3/3e/The_Island_Map.jpg/600px-The_Island_Map.jpg",
+    "3":
+      "https://ark.gamepedia.com/media/thumb/1/1a/The_Center_Map.jpg/600px-The_Center_Map.jpg",
+    "4":
+      "https://ark.gamepedia.com/media/thumb/5/5e/Ragnarok_Map.jpg/600px-Ragnarok_Map.jpg",
+    "5":
+      "https://ark.gamepedia.com/media/thumb/6/6e/Aberration_Map.jpg/600px-Aberration_Map.jpg",
+    "6":
+      "https://ark.gamepedia.com/media/thumb/2/2c/Extinction_Map.jpg/600px-Extinction_Map.jpg",
+    "7":
+      "https://ark.gamepedia.com/media/thumb/3/3e/Scorched_Earth_Map.jpg/600px-Scorched_Earth_Map.jpg",
+
+    "8": "https://ark.gamepedia.com/media/thumb/4/4e/Genesis_Part_1.jpg/600px-Genesis_Part_1.jpg",
+    "9": "https://ark.gamepedia.com/media/thumb/0/0d/Genesis_Part_2.jpg/600px-Genesis_Part_2.jpg",
+    "10":
+      "https://ark.gamepedia.com/media/thumb/3/3e/Crystal_Isles_Map.jpg/600px-Crystal_Isles_Map.jpg",
+    "11":
+      "https://ark.wiki.gg/images/7/75/Fjordur_Map.jpg",
+    "12":
+      "https://ark.wiki.gg/images/1/1e/Lost_Island_Map.jpg",
   };
   const svgRef = useRef(null);
   const [scale, setScale] = useState(1);
@@ -176,7 +202,8 @@ export const Map = ({
           fill={p.color || "red"}
           cy={(size.height / 100) * p.lat + size.height / 100}
           cx={(size.width / 100) * p.lon + size.width / 100}
-          r="5"
+          // r={((imageTransform.replace("scale(", "").replace(')', '')) as number * 2) * 2}
+          r="3"
         >
           <title>{p.name}</title>
         </circle>

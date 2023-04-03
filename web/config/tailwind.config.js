@@ -15,6 +15,8 @@ module.exports = {
       animation: {
         "circle-progress": "progress 1s ease-out forwards",
         "fade-in": "fade 0.5s ease-in forwards",
+        "fly-in": "flyIn 0.3s ease-out",
+        "fly-out": "flyOut 0.3s ease-out",
       },
       boxShadow: {
         boxContent:

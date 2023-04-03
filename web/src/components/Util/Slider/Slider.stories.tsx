@@ -4,8 +4,8 @@
 // ```tsx
 // import type { ComponentStory } from '@storybook/react'
 //
-// export const generated: ComponentStory<typeof MaterialCalculatorForm> = (args) => {
-//   return <MaterialCalculatorForm {...args} />
+// export const generated: ComponentStory<typeof Slider> = (args) => {
+//   return <Slider {...args} />
 // }
 // ```
 //
@@ -13,13 +13,13 @@
 
 import type { ComponentMeta } from '@storybook/react'
 
-import MaterialCalculatorForm from './MaterialCalculatorForm'
+import Slider from './Slider'
 
 export const generated = () => {
-  return <MaterialCalculatorForm />
+  return <Slider />
 }
 
 export default {
-  title: 'Components/MaterialCalculatorForm',
-  component: MaterialCalculatorForm,
-} as ComponentMeta<typeof MaterialCalculatorForm>
+  title: 'Components/Slider',
+  component: Slider,
+} as ComponentMeta<typeof Slider>

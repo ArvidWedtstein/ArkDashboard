@@ -1,17 +1,111 @@
 const { items } = require("./web/public/arkitems.json");
 // const d = require("./web/public/maps.json");
-const d2 = require("./web/public/dinotest.json");
-const imgs = require("./web/public/arkimages.json");
+// const d2 = require("./web/public/f.json");
+const lootcrates = require("./web/public/lootcratesItemId.json");
+
+// const dd = require("./j.json");
 
 // let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
 console.time("normal");
 
-console.timeEnd("normal");
+// const crates = lootcrates.lootCrates.map((x) => {
+//   x.sets.forEach((y) => {
+//     y.entries.forEach((z) => {
+//       if (z.items.length == 2 && isNaN(z.items[0][0])) {
+//         z.items = [z.items];
+//       }
+//     });
+//   });
+//   return x;
+// });
+let color = {
+  white: "#ffffff",
+  green: "#1FD50E",
+  blue: "#0A3BE5",
+  purple: "#B60AE5",
+  yellow: "#FFD600",
+  red: "#EE0C0C",
+  cyan: "#0CDBEE",
+  orange: "#F58508",
+};
+let map = {
+  "The Island": 2,
+  "The Center": 3,
+  "Scorched Earth": 7,
+  Ragnarok: 4,
+  Aberration: 5,
+  Extinction: 6,
+  Valguero: 1,
+  Genesis: 8,
+  "Genesis 2": 9,
+  Fjordur: 11,
+  "Crystal Isles": 10,
+  "Lost Island": 12,
+};
 
+// const dd = d2.dinos.map((x) => {
+//   if (x?.eats && x.eats !== null) {
+//     return x.eats
+//       .filter((d) => !isNaN(d))
+//       .map((y) => {
+//         return `('${x.id}', ${parseInt(y)}, 'food'),`;
+//       })
+//       .join("\n");
+//   }
+//   return "";
+//   // return `INSERT INTO public."DinoEffWeight" ("dino_id", "item_id", "value", "is_gather_eff")`;
+// });
+const dd = items.map((x) => {
+  if (!x.crafted_in && x.crafted_in === null && x.recipe && x.recipe !== null) {
+    return x.recipe
+      .filter((y) => !isNaN(y.itemId))
+      .map((y) => {
+        return `(${x.id}, ${y.itemId}, ${y.count || 1}),`;
+      })
+      .join("\n");
+  }
+  // if (x?.recipe && x.recipe !== null) {
+  //   return x.recipe
+  //     .map((y) => {
+  //       return `(${x.id}, ${y.itemId}, ${y.count}, ${x.}),`;
+  //     })
+  //     .join("\n");
+  // }
+  return "";
+  // return `INSERT INTO public."DinoEffWeight" ("dino_id", "item_id", "value", "is_gather_eff")`;
+});
+require("fs").writeFile(
+  `insert.txt`,
+  [
+    `INSERT INTO public."ItemRecipe" ("crafted_item_id", "item_id", "amount") VALUES`,
+    ...dd,
+  ].join("\n"),
+  (error) => {
+    if (error) {
+      throw error;
+    }
+  }
+);
+return;
+return;
+console.timeEnd("normal");
+const g = {
+  items: fff,
+};
+
+const chunkSize = 50;
+for (let i = 0; i < fff.length; i += chunkSize) {
+  const chunk = fff.slice(i, i + chunkSize);
+  // do whatever
+  require("fs").writeFile(`insert${i}.txt`, chunk.join("\n"), (error) => {
+    if (error) {
+      throw error;
+    }
+  });
+}
 console.time("optimized");
 
 console.timeEnd("optimized");
-
 return;
 
 function calcXP(theXpk, level, night = false) {
@@ -110,196 +204,6 @@ function Creature(creatureID) {
       return null;
     }
   };
-}
-var Settings = {
-  defaults: {
-    level: 100,
-    tamingMultiplier: 1.0,
-    consumptionMultiplier: 1.0,
-    meleeMultiplier: 100,
-    matingIntervalMultiplier: 1.0,
-    eggHatchSpeedMultiplier: 1.0,
-    babyMatureSpeedMultiplier: 1.0,
-    playerDamageMultiplier: 1.0,
-    XPMultiplier: 1.0,
-    usps: false,
-    sanguineElixir: false,
-    secGap: 5,
-    userDamage: {},
-    timers: {},
-  },
-  settings: {},
-  init: function () {
-    this.settings = this.defaults;
-    for (var i = 0; i < localStorage.length; i++) {
-      var theKey = localStorage.key(i);
-      var theValue = localStorage.getItem(theKey);
-      if (
-        theKey == "userDamage" ||
-        theKey == "timers" ||
-        theKey == "usps" ||
-        theKey == "sanguineElixir"
-      ) {
-        try {
-          theValue = JSON.parse(theValue);
-        } catch {}
-      }
-      this.settings[theKey] = theValue;
-    }
-  },
-  get: function (key) {
-    if (key == "level") {
-      return parseInt(this.settings[key]);
-    } else {
-      return this.settings[key];
-    }
-  },
-  set: function (key, value) {
-    this.settings[key] = value;
-    if (typeof value == "object") {
-      value = JSON.stringify(this.settings[key]);
-    }
-    localStorage.setItem(key, value);
-  },
-  setObject: function (objectKey, key, value) {
-    if (typeof this.settings[objectKey] == "undefined") {
-      this.settings[objectKey] = {};
-    }
-    this.settings[objectKey][key] = value;
-    localStorage.setItem(objectKey, JSON.stringify(this.settings[objectKey]));
-  },
-};
-Settings.init();
-var starveTimer, totalFood;
-function initTamingApp() {
-  var hashVars = getURLHashVars();
-  if (hashVars.level) {
-    var parsedLevel = parseInt(hashVars.level);
-    if (parsedLevel > 0) {
-      Settings.set("level", parsedLevel);
-      history.replaceState(
-        {},
-        document.title,
-        window.location.href.split("#")[0]
-      );
-    }
-  }
-  fetchData().then(() => {
-    creature = new Creature(creatureID);
-    $("#level").val(Settings.get("level"));
-    $("#tamingMultiplier").val(Settings.get("tamingMultiplier"));
-    $("#consumptionMultiplier").val(Settings.get("consumptionMultiplier"));
-    methods = creature.method;
-    if (typeof methods == "object") {
-      if (methods[0] == "n") {
-        method = "n";
-      }
-    }
-    if (creature.isTamable) {
-      initTaming();
-    } else {
-      initTamingNotice();
-    }
-    console.log("fetchData, sanguineElixir", Settings.get("sanguineElixir"));
-    console.log(
-      "fetchData, sanguineElixir",
-      typeof Settings.get("sanguineElixir")
-    );
-    $("#sanguineElixir").prop("checked", Settings.get("sanguineElixir"));
-    if (creature.isKOable) {
-      fetchWeapons();
-      calculateAllWeapons();
-      initKO();
-    }
-    $("#secGap").on("keyup change", function (e) {
-      var newVal = $(e.target).val();
-      if (newVal > 0) {
-        Settings.set("secGap", newVal);
-      }
-      updateAllWeapons();
-    });
-    $(".boolButtons[data-type=xv] .boolButton").on("click", function (e) {
-      if ($(e.target).data("xv") === true) {
-        Settings.set("xv", true);
-      } else {
-        Settings.set("xv", false);
-      }
-      updateAllWeapons();
-    });
-    $(".koInput").on("keyup change", function (e) {
-      var newVal = parseInt($(e.target).val());
-      if (newVal > 0) {
-        var itemID = $(e.target).closest("[data-weapon]").data("weapon");
-        weapons[itemID].userDamage = newVal;
-        Settings.setObject("userDamage", itemID, newVal);
-        updateWeapon(itemID);
-      }
-    });
-    $("#taming").on("keyup change", "input.use", function (e) {
-      var newVal = $(e.target).val();
-      var itemID = $(e.target).closest("[data-ttrow]").data("ttrow");
-      if (newVal == 0) {
-        $(this).addClass("empty");
-      } else {
-        $(this).removeClass("empty");
-      }
-      taming.food[itemID].use = newVal;
-      processTameInput();
-    });
-    $("#taming").on("click", ".useExclusive", function (e) {
-      var row = $(e.target).closest("[data-ttrow]");
-      var foodID = $(row).data("ttrow");
-      var newVal = useExclusive(foodID);
-      $("#tamingTable .use").val(0).addClass("empty");
-      $(row).find(".use").val(newVal).removeClass("empty");
-      processTameInput();
-    });
-    $("#taming").on("click", ".ttexp", function (e) {
-      var row = $(e.target).closest("[data-ttrow]").find(".ttRow2");
-      if ($(row).is(":hidden")) {
-        $(row).slideDown(300);
-        $(this).find(".arrow").addClass("up").removeClass("down");
-      } else {
-        $(row).slideUp(300);
-        $(this).find(".arrow").addClass("down").removeClass("up");
-      }
-    });
-  });
-  $("#content").on("keyup change", ".tameSetting input", function () {
-    var theLevel = parseInt($("#level").val());
-    theLevel = Math.max(Math.min(theLevel, 2000), 1);
-    if (isNaN(theLevel)) {
-    } else {
-      Settings.set("level", theLevel);
-      if (creature.isTamable) {
-        torporTimerInit();
-        starveTimer.updateEstimatedFood();
-      }
-    }
-    var tamingMultiplier = parseFloat($("#tamingMultiplier").val());
-    tamingMultiplier = Math.max(Math.min(tamingMultiplier, 1000), 0.1);
-    if (isNaN(tamingMultiplier)) {
-    } else {
-      Settings.set("tamingMultiplier", tamingMultiplier);
-    }
-    var consumptionMultiplier = parseFloat($("#consumptionMultiplier").val());
-    consumptionMultiplier = Math.max(
-      Math.min(consumptionMultiplier, 1000),
-      0.1
-    );
-    if (isNaN(consumptionMultiplier)) {
-    } else {
-      Settings.set("consumptionMultiplier", consumptionMultiplier);
-    }
-    if ($("#sanguineElixir").is(":checked")) {
-      Settings.set("sanguineElixir", true);
-    } else {
-      Settings.set("sanguineElixir", false);
-    }
-    processTamingTable();
-    processTameInput();
-    updateAllWeapons();
-  });
 }
 function initTamingNotice() {
   if (creature.tamingNotice && creature.tamingNotice.charCodeAt(0) != 55358) {

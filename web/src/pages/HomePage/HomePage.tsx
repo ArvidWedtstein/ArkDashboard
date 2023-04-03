@@ -17,7 +17,6 @@ const HomePage = () => {
   return (
     <>
       <MetaTags title="Home" description="Home page" />
-
       <div className="container-xl p-3 pt-0 text-center">
         <div
           className="relative overflow-hidden rounded-md bg-cover bg-no-repeat"
@@ -31,18 +30,17 @@ const HomePage = () => {
           }}
         >
           <div
-            className="h-full w-full overflow-hidden bg-fixed"
-            style={{ backgroundColor: "rgba(0, 0, 0, 0.75)" }}
+            className="h-full w-full overflow-hidden bg-fixed bg-black bg-opacity-60"
           >
             <div className="flex h-full items-center justify-center">
               <div className="px-6 text-center font-extralight text-white md:px-12">
-                <h1 className="mt-0 mb-6 text-5xl">Welcome Home</h1>
+                <h1 className="mt-0 mb-6 text-5xl">Welcome Home Bob!</h1>
                 <h3 className="mb-8 text-3xl">
                   Here you can find{" "}
                   <span className="decoration-pea-500 underline decoration-4 underline-offset-8">
                     base
                   </span>{" "}
-                  locations, material calculators and much more
+                  locations, material calculator and much more
                 </h3>
                 {/* <h3 className="mb-8 text-3xl">
                   H're thee can findeth <span className="underline decoration-pea-500 decoration-4 underline-offset-8">base</span> locations, mat'rial calculat'rs and much m're
@@ -61,7 +59,6 @@ const HomePage = () => {
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
-
       </div>
     </>
   );

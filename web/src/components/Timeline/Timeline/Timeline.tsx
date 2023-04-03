@@ -61,7 +61,6 @@ const Timeline = ({ timeline }: Props) => {
         throw error;
       }
       setBasespots(data);
-      console.log(data);
       // return <>{basespots && <TimelineList events={basespots} />}</>;
     } catch (error) {
       toast.error(error.message);
