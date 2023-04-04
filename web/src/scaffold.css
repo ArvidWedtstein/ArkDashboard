@@ -105,7 +105,7 @@ a {
 
 .rw-button {
   /* @apply flex cursor-pointer justify-center rounded border-0 bg-gray-200 py-1 px-4 text-xs font-semibold uppercase leading-loose tracking-wide text-gray-500 no-underline transition duration-100; */
-  @apply rounded-lg py-2.5 px-6 text-sm font-medium text-white transition duration-100 ease-in-out focus:outline-none;
+  @apply rounded-lg py-2.5 px-6 text-sm font-medium text-gray-900 transition duration-100 ease-in-out focus:outline-none dark:text-white;
 }
 /* .rw-button:hover {
   @apply bg-gray-500 text-white;
@@ -133,17 +133,19 @@ a {
 // Button Variants
 // ----------------------------
 */
+/* Green Outline Button */
 .rw-button.rw-button-green-outline {
-  @apply border-pea-700 text-pea-700 dark:border-pea-500 dark:text-pea-500 border;
+  @apply border-pea-500 text-pea-500 border;
   /* @apply border-pea-500 text-pea-500 rounded border-2 font-normal leading-tight transition duration-150 ease-in-out hover:bg-opacity-5; */
 }
 .rw-button.rw-button-green-outline:hover {
-  @apply bg-pea-800 dark:bg-pea-600 text-white;
+  @apply bg-pea-600 text-white;
 }
 .rw-button.rw-button-green-outline:focus {
-  @apply ring-pea-300 dark:ring-pea-800 outline-none ring-4;
+  @apply ring-pea-800 outline-none ring-4;
 }
 
+/* Gray Outline Button */
 .rw-button.rw-button-gray-outline {
   @apply border border-stone-700 dark:border-gray-500;
 }
@@ -154,6 +156,7 @@ a {
   @apply outline-none ring-4 ring-stone-300 dark:ring-stone-800;
 }
 
+/* Red Outline Button */
 .rw-button.rw-button-red-outline {
   @apply border border-red-700 text-red-700 dark:border-red-500 dark:text-red-500;
 }
@@ -249,7 +252,7 @@ a {
 .rw-input {
   /* @apply block mt-2 w-full p-2 bg-white border border-gray-200 rounded outline-none; */
   /* old color style dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-300 dark:focus:ring-stone-200 */
-  @apply mt-1 block rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-900 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 contrast-more:border-black contrast-more:placeholder-black dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white dark:contrast-more:placeholder-white;
+  @apply mt-1 block rounded-lg border border-gray-300 bg-gray-200 px-4 py-2.5 text-sm text-gray-900 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 contrast-more:border-black contrast-more:placeholder-black dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white dark:contrast-more:placeholder-white;
 }
 .rw-input option {
   @apply appearance-none border-b border-black focus:outline-none dark:border-white;
