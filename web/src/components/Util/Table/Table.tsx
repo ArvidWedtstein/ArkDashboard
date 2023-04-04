@@ -174,7 +174,7 @@ const Table = ({
     return (
       <th
         key={`headcell-${columnIndex}-${label}`}
-        className={clsx(other.className, "px-3 py-3")}
+        className={clsx("px-3 py-3", other.className)}
         scope="col"
       >
         {other.sortable ? (
@@ -473,7 +473,7 @@ const Table = ({
           </caption>
         )}
         {!vertical && header && (
-          <thead className="bg-gray-400 text-sm uppercase text-gray-600 dark:bg-gray-700 dark:text-gray-400">
+          <thead className="bg-gray-400 text-sm uppercase text-gray-600 dark:bg-zinc-700 dark:text-gray-400">
             <tr className="table-row">
               {select && tableSelect({ header: true, row: 0 })}
               {columns.map(({ ...other }, index) => {
