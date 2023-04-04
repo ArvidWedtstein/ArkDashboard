@@ -228,12 +228,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           <option value="Fjordur">Fjordur</option>
           <option value="LostIsland">Lost Island</option>
         </SelectField>
-        {/* <TextField
-          name="map"
-          defaultValue={props.timelineBasespot?.map}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        /> */}
+
 
         <FieldError name="map" className="rw-field-error" />
 
@@ -346,13 +341,19 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         <TextField
           name="players"
-          defaultValue={props.timelineBasespot?.players}
+          defaultValue={props.timelineBasespot?.players.join(", ")}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           emptyAs={""}
-          validation={{ required: true }}
+          validation={{
+            required: false,
+            setValueAs: (e) =>
+              e.length > 0 ? e.split(",").map((s) => s.trim()) : null,
+          }}
         />
-
+        <p className="rw-helper-text">
+          Player names, comma seperated
+        </p>
 
         <FieldError name="players" className="rw-field-error" />
 

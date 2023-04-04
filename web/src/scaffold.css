@@ -47,7 +47,7 @@ a {
   @apply py-3 px-4 text-gray-700 dark:text-stone-200;
 }
 .rw-segment-main {
-  @apply bg-gray-100 p-4 dark:bg-transparent;
+  @apply p-4;
 }
 .rw-link {
   @apply text-blue-400 underline;
@@ -229,7 +229,7 @@ a {
   @apply mr-1 text-xl leading-5;
 }
 .rw-button-group {
-  @apply my-3 flex justify-center rounded-md shadow-sm;
+  @apply my-3 flex justify-center rounded-md;
 }
 .rw-button-group .rw-input {
   @apply rounded-none first:rounded-l-md last:rounded-r-md;
