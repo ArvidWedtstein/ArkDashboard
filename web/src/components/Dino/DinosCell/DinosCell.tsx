@@ -72,7 +72,7 @@ export const beforeQuery = ({ page }) => {
 };
 
 export const Loading = () => (
-  <div className='w-full h-full flex items-center justify-center '>
+  <div className='w-full h-full flex items-center justify-center bg-transparent'>
     <span className='w-16 h-16 inline-block rounded-full border-t-4 border-white border-r-2 border-transparent animate-spin'></span>
   </div>
 )

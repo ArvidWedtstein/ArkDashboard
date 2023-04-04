@@ -387,13 +387,13 @@ a {
   @apply bg-pea-500 border-pea-500 scale-100 opacity-100;
 }
 .rw-check-input:checked + .rw-check-tile span {
-  @apply text-white;
+  @apply text-black dark:text-white;
 }
 .rw-check-tile {
-  @apply relative flex h-28 w-28 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-gray-300 bg-gray-50 shadow transition-all duration-150 dark:border-zinc-500 dark:bg-zinc-600;
+  @apply relative flex h-28 w-28 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-zinc-500 bg-zinc-600 shadow transition-all duration-150;
 }
 .rw-check-tile:hover::before:not(.disabled) {
-  @apply scale-100 stroke-stone-100 text-stone-100 opacity-100;
+  @apply scale-100 stroke-stone-100 text-stone-600 opacity-100 dark:text-stone-100;
 }
 .rw-check-tile::before {
   @apply absolute top-1 left-1 block h-5 w-5 scale-0 transform rounded-full border bg-[url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='192'%20height='192'%20fill='%23FF0000'%20viewBox='0%200%20256%20256'%3E%3Crect%20width='256'%20height='256'%20fill='none'%3E%3C/rect%3E%3Cpolyline%20points='216%2072.005%20104%20184%2048%20128.005'%20fill='none'%20stroke='%23ffffff'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='32'%3E%3C/polyline%3E%3C/svg%3E")] bg-[length:12px_12px] bg-center bg-no-repeat opacity-0 transition-all duration-150 ease-in content-[''];

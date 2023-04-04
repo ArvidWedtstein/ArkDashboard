@@ -46,7 +46,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
   useEffect(() => {
     supabase.storage
       .from('timelineimages')
-      .list('21')
+      .list(timelineBasespot.id.toString())
       .then(({ data, error }) => {
         if (error) throw error;
         if (data) {
