@@ -94,7 +94,7 @@ const Sidebar = memo(({ }) => {
   ];
 
   return (
-    <nav className="flex flex-row items-center justify-between rounded-2xl px-10 py-2 max-sm:border-b sm:flex-col sm:justify-center sm:border-r sm:py-10 sm:px-2 border-gray-700 dark:border-gray-200">
+    <nav className="flex flex-row items-center justify-between rounded-2xl px-10 py-2 max-sm:border-b sm:flex-col sm:justify-start sm:border-r sm:py-10 sm:px-2 border-gray-700 dark:border-gray-200">
       {navigation.map((item) => (
         <NavLink
           key={item.name}

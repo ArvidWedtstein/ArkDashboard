@@ -195,7 +195,6 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           validation={{ required: true }}
         />
 
-
         <FieldError name="tribeName" className="rw-field-error" />
 
         <Label
@@ -207,28 +206,21 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         </Label>
 
         {/* TODO: Replace with maps from db */}
-        <SelectField
-          className="rw-input"
-          name="map"
-          defaultValue={props.timelineBasespot?.map || selectedBasespot?.map}
-          validation={{ required: true }}
-          errorClassName="rw-input rw-input-error"
-          disabled={!(!props.timelineBasespot?.basespot_id)}
-        >
-          <option value="TheIsland">The Island</option>
-          <option value="TheCenter">The Center</option>
-          <option value="ScorchedEarth">Scorched Earth</option>
-          <option value="Ragnarok">Ragnarok</option>
-          <option value="5">Abberation</option>
-          <option value="Extinction">Extinction</option>
-          <option value="Gen1">Genesis</option>
-          <option value="Gen2">Genesis 2</option>
-          <option value="Valguero">Valguero</option>
-          <option value="CrystalIsles">Crystal Isles</option>
-          <option value="Fjordur">Fjordur</option>
-          <option value="LostIsland">Lost Island</option>
-        </SelectField>
 
+        <Lookup items={[
+          { name: "Valguero", value: "1" },
+          { name: "The Island", value: "2" },
+          { name: "The Center", value: "3" },
+          { name: "Ragnarok", value: "4" },
+          { name: "Abberation", value: "5" },
+          { name: "Extinction", value: "6" },
+          { name: "Scorched Earth", value: "7" },
+          { name: "Genesis", value: "8" },
+          { name: "Genesis 2", value: "9" },
+          { name: "Crystal Isles", value: "10" },
+          { name: "Fjordur", value: "11" },
+          { name: "Lost Island", value: "12" }
+        ]} name="map" defaultValue={props.timelineBasespot?.map || selectedBasespot?.map} disabled={!(!props.timelineBasespot?.basespot_id)} />
 
         <FieldError name="map" className="rw-field-error" />
 

@@ -61,7 +61,7 @@ const ProfileForm = (props: ProfileFormProps) => {
             ></span>
           </div>
         </section>
-        <section className="relative -mt-32 py-16">
+        <section className="bg-blueGray-200 relative -mt-32 py-16">
           <div className="container-fluid mx-auto px-4">
             <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded-lg bg-white dark:bg-gray-800 dark:text-white shadow-xl">
               <div className="px-6">
