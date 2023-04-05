@@ -18,7 +18,11 @@ export const schema = gql`
     effects: [String]!
     type: String!
     DinoStat: [DinoStat]!
+    ItemRecipe_ItemRecipe_crafted_item_idToItem: [ItemRecipe]!
+    ItemRecipe_ItemRecipe_crafting_stationToItem: [ItemRecipe]!
+    ItemRecipe_ItemRecipe_item_idToItem: [ItemRecipe]!
   }
+
   type ItemsPage {
     items: [Item!]!
     count: Int!

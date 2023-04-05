@@ -77,4 +77,19 @@ export const Item: ItemRelationResolvers = {
   DinoStat: (_obj, { root }) => {
     return db.item.findUnique({ where: { id: root?.id } }).DinoStat();
   },
+  ItemRecipe_ItemRecipe_crafted_item_idToItem: (_obj, { root }) => {
+    return db.item
+      .findUnique({ where: { id: root?.id } })
+      .ItemRecipe_ItemRecipe_crafted_item_idToItem();
+  },
+  ItemRecipe_ItemRecipe_crafting_stationToItem: (_obj, { root }) => {
+    return db.item
+      .findUnique({ where: { id: root?.id } })
+      .ItemRecipe_ItemRecipe_crafting_stationToItem();
+  },
+  ItemRecipe_ItemRecipe_item_idToItem: (_obj, { root }) => {
+    return db.item
+      .findUnique({ where: { id: root?.id } })
+      .ItemRecipe_ItemRecipe_item_idToItem();
+  },
 };
