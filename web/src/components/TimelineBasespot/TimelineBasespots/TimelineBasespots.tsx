@@ -135,6 +135,29 @@ const TimelineBasespotsList = ({
     }
   }
 
+  const handleScroll = e => {
+    if (imgTrack.current.dataset.mouseDownAt === "0") return;
+    const mouseDelta = parseFloat(imgTrack.current.dataset.mouseDownAt) - parseFloat(e.delta[0]),
+      maxDelta = Number(imgTrack.current.clientWidth) / 2;
+
+    const percentage = (Number(mouseDelta) / Number(maxDelta)) * -100,
+      nextPercentageUnconstrained = parseFloat(imgTrack.current.dataset.prevPercentage) + percentage,
+      nextPercentage = Math.max(Math.min(nextPercentageUnconstrained, 0), -100);
+
+    imgTrack.current.dataset.percentage = nextPercentage;
+
+    imgTrack.current.animate({
+      transform: `translate(${nextPercentage}%, -50%)`
+    }, { duration: 1200, fill: "forwards" });
+
+
+    for (const image of imgTrack.current.getElementsByClassName("image")) {
+      image.animate({
+        backgroundPosition: `${100 + nextPercentage}% center`
+      }, { duration: 1200, fill: "forwards" });
+    }
+  }
+
   return (
     <div className="rw-segment relative">
       <section className="rw-segment h-[40rem]">
@@ -153,6 +176,7 @@ const TimelineBasespotsList = ({
           onTouchEnd={handleOnUp}
           onTouchMove={(e) => handleOnMove(e.touches[0])}
           onTouchCancel={handleOnUp}
+          onScroll={handleScroll}
         >
           {timelineBasespots.length > 0 && timelineBasespots.map((timelineBasespot, i) => (
             <div

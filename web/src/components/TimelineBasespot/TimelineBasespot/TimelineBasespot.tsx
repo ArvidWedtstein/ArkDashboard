@@ -46,7 +46,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
   useEffect(() => {
     supabase.storage
       .from('timelineimages')
-      .list('21')
+      .list(timelineBasespot.id.toString())
       .then(({ data, error }) => {
         if (error) throw error;
         if (data) {
@@ -101,8 +101,8 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
               />
             </div>}
           </div>
-        </section >
-        <section className="body-font mx-4 border-t border-gray-200 text-gray-700 dark:text-neutral-200">
+        </section>
+        <section className="body-font mx-4 border-t border-gray-700 dark:border-gray-200 text-gray-700 dark:text-neutral-200">
           <div className="container mx-auto flex flex-wrap px-5 py-12">
             <div className="mb-10 w-full overflow-hidden text-sm lg:mb-0 lg:w-1/2">
               <p>
@@ -136,7 +136,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
         </section>
         {
           timelineBasespot.raidcomment && timelineBasespot.raided_by && (
-            <section className="body-font mx-4 border-t border-gray-200 text-stone-300">
+            <section className="body-font mx-4 border-t border-gray-700 dark:border-gray-200 text-stone-300">
               <div className="container mx-auto px-5 py-24">
                 <div className="mx-auto w-full text-center lg:w-3/4 xl:w-1/2">
                   <svg
@@ -162,7 +162,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
             </section>
           )
         }
-        <section className="body-font mx-4 border-t border-gray-200 text-gray-700 dark:text-neutral-200">
+        <section className="body-font mx-4 border-t border-gray-700 dark:border-gray-200 text-gray-700 dark:text-neutral-200">
           <div className="container mx-auto flex flex-wrap px-5 py-12">
             <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
               <Map
@@ -258,7 +258,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
             </div>
           </div>
         </section>
-        <section className="body-font mx-4 border-t border-gray-200 text-gray-700 dark:text-neutral-200">
+        <section className="body-font mx-4 border-t border-gray-700 dark:border-gray-200 text-gray-700 dark:text-neutral-200">
           <div className="container mx-auto px-5 py-24">
             <div className="mb-20 flex w-full flex-col text-center">
               <h2 className="title-font mb-1 text-xs font-medium tracking-widest text-pea-500">

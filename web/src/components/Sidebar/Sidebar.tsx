@@ -94,22 +94,20 @@ const Sidebar = memo(({ }) => {
   ];
 
   return (
-    <nav className="">
-      <div className="flex flex-row items-center justify-between rounded-2xl px-10 py-2 max-sm:border-b sm:flex-col sm:justify-center sm:border-r sm:py-10 sm:px-2">
-        {navigation.map((item) => (
-          <NavLink
-            key={item.name}
-            to={item.href}
-            title={item.name}
-            activeClassName={`text-white ring-2 ${item.color}`}
-            className={clsx("mx-2 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl outline-none duration-100 hover:text-white sm:my-4 ring-1 ring-transparent", {
-              "bg-[#1f1c2ecc] text-[#dddddd] dark:bg-[#c3cff433] dark:text-[#ffffffcc] hover:ring-white focus:ring-white focus-visible:ring-white": singularize(item.href.split("?")[0]) !== singularize(pathname),
-            })}
-          >
-            {Icon(item.name)}
-          </NavLink>
-        ))}
-      </div>
+    <nav className="flex flex-row items-center justify-between rounded-2xl px-10 py-2 max-sm:border-b sm:flex-col sm:justify-start sm:border-r sm:py-10 sm:px-2 border-gray-700 dark:border-gray-200">
+      {navigation.map((item) => (
+        <NavLink
+          key={item.name}
+          to={item.href}
+          title={item.name}
+          activeClassName={`text-white ring-2 ${item.color}`}
+          className={clsx("mx-2 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl outline-none duration-100 hover:text-gray-900 dark:hover:text-white sm:my-4 ring-1 ring-transparent", {
+            "bg-stone-300 text-black dark:bg-[#c3cff433] dark:text-[#ffffffcc] dark:hover:ring-white hover:ring-stone-400 dark:focus:ring-white focus:ring-stone-400 focus-visible:ring-white": singularize(item.href.split("?")[0]) !== singularize(pathname),
+          })}
+        >
+          {Icon(item.name)}
+        </NavLink>
+      ))}
     </nav>
   );
 });

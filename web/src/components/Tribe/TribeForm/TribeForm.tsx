@@ -30,8 +30,8 @@ interface TribeFormProps {
 const TribeForm = (props: TribeFormProps) => {
   const { currentUser } = useAuth();
   const onSubmit = (data: FormTribe) => {
-    // data.createdBy =
-    //   props.tribe?.createdBy || currentUser?.sub;
+    data.createdBy =
+      props.tribe?.createdBy || currentUser?.sub;
     props.onSave(data, props?.tribe?.id);
   };
 
@@ -81,60 +81,6 @@ const TribeForm = (props: TribeFormProps) => {
         />
 
         <FieldError name="description" className="rw-field-error" />
-
-        {/* <Label
-          name="updated_at"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Updated at
-        </Label>
-
-          <DatetimeLocalField
-            name="updated_at"
-            defaultValue={formatDatetime(props.tribe?.updated_at)}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-
-
-        <FieldError name="updated_at" className="rw-field-error" /> */}
-
-        {/* <Label
-          name="createdBy"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Created by
-        </Label>
-
-          <TextField
-            name="createdBy"
-            defaultValue={props.tribe?.createdBy}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-
-
-        <FieldError name="createdBy" className="rw-field-error" /> */}
-
-        {/* <Label
-          name="updatedBy"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Updated by
-        </Label>
-
-          <TextField
-            name="updatedBy"
-            defaultValue={props.tribe?.updatedBy}
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
-          />
-
-
-        <FieldError name="updatedBy" className="rw-field-error" /> */}
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">

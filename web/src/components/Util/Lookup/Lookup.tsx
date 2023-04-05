@@ -14,6 +14,7 @@ interface ILookup {
   search?: boolean;
   group?: string;
   name?: string;
+  disabled?: boolean;
 }
 const Lookup = ({
   items,
@@ -24,6 +25,7 @@ const Lookup = ({
   search = false,
   group,
   name,
+  disabled = false,
 }: ILookup) => {
   const { ref, isComponentVisible, setIsComponentVisible } =
     useComponentVisible(false);
@@ -81,8 +83,10 @@ const Lookup = ({
   return (
     <div className="relative flex items-center" ref={ref}>
       <div
-        onClick={(e) => setIsComponentVisible(true)}
-        className={clsx("flex h-full items-center text-center rw-input", className)}
+        onClick={(e) => !disabled && setIsComponentVisible(true)}
+        className={clsx("flex h-full items-center text-center rw-input ", className, {
+          "cursor-not-allowed select-none": disabled
+        })}
       >
         {search ? (
           <input
@@ -93,6 +97,7 @@ const Lookup = ({
             className="flex w-full items-center bg-transparent outline-none"
             onChange={handleInputChange}
             placeholder="Search..."
+            disabled={disabled}
           />
         ) : (
           <>{children ? children : inputValue["name"]}</>

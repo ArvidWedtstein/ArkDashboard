@@ -18,6 +18,9 @@ export const QUERY = gql`
       status
       role_id
       created_at
+      role_profile_role_idTorole {
+        name
+      }
     }
   }
 `
