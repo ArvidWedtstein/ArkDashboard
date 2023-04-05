@@ -1,4 +1,4 @@
-import { TextField } from "@redwoodjs/forms";
+import { TextField, useRegister } from "@redwoodjs/forms";
 import { useEffect, useRef, useState } from "react";
 import useComponentVisible from "../../useComponentVisible";
 import { debounce, groupBy } from "src/lib/formatters";
@@ -6,7 +6,6 @@ import clsx from "clsx";
 
 interface ILookup {
   items: { name?: string, image?: string, value?: string | number }[];
-
   defaultValue?: string | number | object;
   children?: any;
   className?: string;
@@ -29,8 +28,11 @@ const Lookup = ({
 }: ILookup) => {
   const { ref, isComponentVisible, setIsComponentVisible } =
     useComponentVisible(false);
-  // const { ref: refFilter, isComponentVisible: isFilterVisible, setIsComponentVisible: setIsFilterVisible } =
-  //   useComponentVisible(false);
+  const register = name
+    ? useRegister({
+      name,
+    })
+    : null;
   const [inputValue, setInputValue] = useState<string | object>("");
   const [openIndexes, setOpenIndexes] = useState([]);
   const [lookupitems, setItems] = useState<{ name?: string, image?: string, value?: string | number }[]>([]);
@@ -42,24 +44,25 @@ const Lookup = ({
       item.name.toLowerCase().includes(value.toLowerCase())
     )
 
-    setItems(group ? groupBy(filtered, group) : filtered);
+    setItems(!!group ? groupBy(filtered, group) : filtered);
     setIsComponentVisible(true);
   }
 
   const handleSelect = (option) => {
     setInputValue(option)
-    setItems(group ? groupBy(items, group) : items);
-    onChange ? onChange(option) : null;
+    setItems(!!group ? groupBy(items, group) : items);
     setIsComponentVisible(false);
     setOpenIndexes([])
+    onChange && onChange(option);
   }
   const handleReset = (e) => {
-    setInputValue("");
-    setItems(items);
-    onChange ? onChange({ name: "" }) : null;
+    setInputValue({ name: "", value: "" });
+    setItems(!!group ? groupBy(items, group) : items);
+    setOpenIndexes([])
+    onChange && onChange({ name: "", value: "" });
   };
   useEffect(() => {
-    setItems(group ? groupBy(items, group) : items);
+    setItems(!!group ? groupBy(items, group) : items);
     if (defaultValue) {
       const defVal = items.find((f) => (f.value === defaultValue) || (f === defaultValue));
       setInputValue(defVal ? defVal : '');
@@ -100,8 +103,19 @@ const Lookup = ({
             disabled={disabled}
           />
         ) : (
-          <>{children ? children : inputValue["name"]}</>
+          <>
+            <input
+              type="text"
+              name={name}
+              id={name}
+              value={inputValue["name"] || inputValue || inputValue["value"]}
+              className="hidden"
+              onChange={handleInputChange}
+              disabled={disabled}
+            />
+            {children ? children : inputValue["name"]}</>
         )}
+
         <label htmlFor={name} className="flex flex-row">
           <svg
             className="ml-2 h-4 w-4"

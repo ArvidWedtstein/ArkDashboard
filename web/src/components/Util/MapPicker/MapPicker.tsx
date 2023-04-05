@@ -1,9 +1,9 @@
 import { Controller, FieldError, InputFieldProps, NumberField, RegisterOptions, useErrorStyles, useForm, useRegister } from "@redwoodjs/forms";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
 
 interface MapPickerProps extends Omit<InputFieldProps, 'name'> {
   validation?: RegisterOptions
-  map: string;
+  map: string | number;
   valueProp?: {
     latitude: number;
     longitude: number;
@@ -92,6 +92,7 @@ const MapPicker = (props: MapPickerProps) => {
 
 
 
+
   const updatePosition = useCallback((evt) => {
     let pt = svgRef.current.createSVGPoint();
     pt.x = evt.clientX;
@@ -110,12 +111,11 @@ const MapPicker = (props: MapPickerProps) => {
 
   }, [pos])
 
-
   return (
     <div style={style} className={className}>
       <svg
         className="select-none cursor-pointer"
-        id="mapSelector"
+        id={`mapSelector${name}`}
         width={500}
         height={500}
         viewBox={`0 0 ${500} ${500}`}
@@ -123,12 +123,13 @@ const MapPicker = (props: MapPickerProps) => {
         onClick={updatePosition}
         ref={svgRef}
       >
+
         <image
-          href={maps[map.toLowerCase()]}
+          href={maps[map.toString().toLowerCase()]}
           height={500}
           width={500}
         />
-        {!maps[map.toLowerCase()] && (
+        {!maps[map.toString().toLowerCase()] && (
           <text
             x={250}
             y={250}
@@ -170,14 +171,6 @@ const MapPicker = (props: MapPickerProps) => {
             0, 0
           </text>
         </g>
-        {/* <map name="Map" id="Map">
-          <area href="#" shape="poly" className="brick 1" coords="669,0,405,268,931,265" />
-          <area href="#" shape="poly" className="brick 2" coords="399,269,681,268,673,468,227,455" />
-          <area href="#" shape="poly" className="brick 3" coords="685,267,934,267,1134,473,676,468" />
-          <area href="#" shape="poly" className="brick 4" coords="220,458,33,641,378,640,540,465,224,458" />
-          <area href="#" shape="poly" className="brick 5" coords="542,467,380,643,975,641,802,471,547,467" />
-          <area href="#" shape="poly" className="brick 6" coords="809,473,1137,476,1315,645,980,642,811,472" />
-        </map> */}
       </svg>
     </div>
   )

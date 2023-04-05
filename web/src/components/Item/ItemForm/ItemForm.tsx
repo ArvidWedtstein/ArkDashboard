@@ -385,7 +385,19 @@ const ItemForm = (props: ItemFormProps) => {
                   errorClassName="rw-input rw-input-error"
                   validation={{ valueAsJSON: true }}
                 /> */}
+                {/* {fields.map((name, index) => (
+                  <div key={name + index} className="flex flex-row">
+                    <input
+                      type="text"
+                      {...control[`players.${index}`].join(",")}
 
+                      className="rw-input"
+                    />
+                    <p className="text-white">{JSON.stringify(control[`players.${index}`])}</p>
+                    <button type="button" className="rw-button rw-button-small rw-button-red" onClick={() => remove(index)}>Remove</button>
+                  </div>
+                ))}
+                <button type="button" className="rw-button rw-button-green" onClick={() => append([] as never[])}>Add</button> */}
                 <Lookup
                   items={arkitems.items.filter((item) => item.type === 'Resource').map((item) => ({
                     ...item, image: `https://arkids.net/image/item/120/${item.name

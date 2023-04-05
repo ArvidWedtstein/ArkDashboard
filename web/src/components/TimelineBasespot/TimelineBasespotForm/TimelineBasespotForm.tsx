@@ -9,6 +9,7 @@ import {
   Submit,
   SelectField,
   useForm,
+  useFieldArray,
 } from '@redwoodjs/forms'
 
 import type { EditTimelineBasespotById, UpdateTimelineBasespotInput } from 'types/graphql'
@@ -18,6 +19,7 @@ import { useAuth } from '@redwoodjs/auth'
 import { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { RouteAnnouncement } from '@redwoodjs/router'
+import MapPicker from 'src/components/Util/MapPicker/MapPicker'
 
 const formatDatetime = (value) => {
   if (value) {
@@ -39,18 +41,22 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
   let { isAuthenticated, client: supabase } = useAuth();
   let [basespots, setBasespots] = useState([])
   let [selectedBasespot, setSelectedBasespot] = useState(null)
+  const formMethods = useForm<FormTimelineBasespot>();
+  const { setValue, control, watch } = formMethods;
+
   const onSubmit = (data: FormTimelineBasespot) => {
     if (selectedBasespot) {
-      data.map = selectedBasespot?.map
+      data.map = selectedBasespot?.Map
       data.location = { lat: selectedBasespot?.latitude, lon: selectedBasespot?.longitude }
     }
+    formMethods.reset()
     props.onSave(data, props?.timelineBasespot?.id)
   }
   const getBasespots = async () => {
     let { data, error, status } = await supabase
-      .from("basespot")
+      .from("Basespot")
       .select(
-        `id, name, map, latitude, longitude`
+        `id, name, Map, latitude, longitude`
       )
 
     if (error && status !== 406) {
@@ -62,8 +68,15 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
   }
   useEffect(() => {
     getBasespots()
+
     props?.timelineBasespot?.basespot_id ? setSelectedBasespot(basespots.find((b) => b.id === props?.timelineBasespot?.basespot_id)) : null
   }, [])
+
+  useEffect(() => {
+    if (selectedBasespot) {
+      formMethods.setValue("basespot_id", (selectedBasespot.value as any));
+    }
+  }, [selectedBasespot, setSelectedBasespot])
 
 
   // let { handleSubmit, control } = useForm<FormTimelineBasespot>({
@@ -78,9 +91,12 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
   //   },
   // })
+
+
+  const map = watch('map')
   return (
     <div className="rw-form-wrapper">
-      <Form<FormTimelineBasespot> onSubmit={onSubmit} error={props.error}>
+      <Form<FormTimelineBasespot> onSubmit={onSubmit} formMethods={formMethods} error={props.error}>
         <FormError
           error={props.error}
           wrapperClassName="rw-form-error-wrapper"
@@ -151,6 +167,35 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           </div>
         </fieldset>
 
+        <Label
+          name="map"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Map
+        </Label>
+
+        {/* TODO: Replace with maps from db */}
+
+        <Lookup items={[
+          { name: "Valguero", value: "1" },
+          { name: "The Island", value: "2" },
+          { name: "The Center", value: "3" },
+          { name: "Ragnarok", value: "4" },
+          { name: "Aberration", value: "5" },
+          { name: "Extinction", value: "6" },
+          { name: "Scorched Earth", value: "7" },
+          { name: "Genesis", value: "8" },
+          { name: "Genesis 2", value: "9" },
+          { name: "Crystal Isles", value: "10" },
+          { name: "Fjordur", value: "11" },
+          { name: "Lost Island", value: "12" }
+        ]} name="map" defaultValue={props.timelineBasespot?.map.toString()} onChange={(e) => {
+          setValue("map", parseInt(e.value));
+        }} />
+
+        <FieldError name="map" className="rw-field-error" />
+
 
         <Label
           name="basespot_id"
@@ -162,22 +207,17 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         <Lookup
           defaultValue={props.timelineBasespot?.basespot_id ? basespots.find((b) => b.id === props.timelineBasespot?.basespot_id).name : null}
-          items={basespots}
+          items={props.timelineBasespot?.map ? basespots.filter((b) => b.Map === map) : basespots}
           onChange={(e) => setSelectedBasespot(e)}
           name="basespot_id"
-        >
-          {!!selectedBasespot ? selectedBasespot.name : "Choose Basespot"}
-        </Lookup>
-
-        {/* <TextField
-          name="basespot_id"
-          defaultValue={props.timelineBasespot?.basespot_id}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        /> */}
-
+        />
 
         <FieldError name="basespot_id" className="rw-field-error" />
+
+        <MapPicker map={map || props.timelineBasespot?.map} valueProp={{ latitude: props.timelineBasespot?.location.lat, longitude: props.timelineBasespot?.location.lon }} onChanges={(e) => {
+          formMethods.setValue("location", JSON.stringify({ lat: e.latitude, lon: e.longitude }));
+        }} />
+
 
         <Label
           name="tribeName"
@@ -196,33 +236,6 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         />
 
         <FieldError name="tribeName" className="rw-field-error" />
-
-        <Label
-          name="map"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Map
-        </Label>
-
-        {/* TODO: Replace with maps from db */}
-
-        <Lookup items={[
-          { name: "Valguero", value: "1" },
-          { name: "The Island", value: "2" },
-          { name: "The Center", value: "3" },
-          { name: "Ragnarok", value: "4" },
-          { name: "Abberation", value: "5" },
-          { name: "Extinction", value: "6" },
-          { name: "Scorched Earth", value: "7" },
-          { name: "Genesis", value: "8" },
-          { name: "Genesis 2", value: "9" },
-          { name: "Crystal Isles", value: "10" },
-          { name: "Fjordur", value: "11" },
-          { name: "Lost Island", value: "12" }
-        ]} name="map" defaultValue={props.timelineBasespot?.map || selectedBasespot?.map} disabled={!(!props.timelineBasespot?.basespot_id)} />
-
-        <FieldError name="map" className="rw-field-error" />
 
         <fieldset className="rw-form-group">
           <legend>Server Info</legend>

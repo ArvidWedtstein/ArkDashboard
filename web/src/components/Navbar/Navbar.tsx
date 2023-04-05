@@ -82,7 +82,7 @@ const Navbar = () => {
           <div ref={ref} className="relative ml-3">
             <button
               onClick={handleOpen}
-              className="flex items-center border-l-2 border-l-[#c4c4c4] bg-transparent p-0 pl-2 outline-none"
+              className="flex items-center border-l-2 border-l-[#c4c4c4] bg-transparent p-0 pl-2 outline-none space-x-3"
             >
               <span className="sr-only">Open user menu</span>
               <Avatar
