@@ -5,7 +5,6 @@ import type {
 } from "types/graphql";
 
 import { db } from "src/lib/db";
-import { validate } from "@redwoodjs/api";
 
 const POSTS_PER_PAGE = 6;
 export const basespotPage = ({ page = 1 }: { page: number }) => {
