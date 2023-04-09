@@ -24,26 +24,6 @@ export const QUERY = gql`
       Map {
         name
       }
-      LootcrateSet {
-        id
-        name
-        weight
-        can_repeat_items
-        qty_scale
-        LootcrateSetEntry {
-          id
-          name
-          weight
-          qty
-          quality
-          LootcrateSetEntryItem {
-            value
-            Item {
-              name
-            }
-          }
-        }
-      }
     }
   }
 `;

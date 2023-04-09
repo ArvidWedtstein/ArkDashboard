@@ -169,17 +169,18 @@ export const getBaseMaterials = (
       return;
     }
 
-    if (
-      !firstRecipeOnly &&
-      recipe.type === "Resource"
-    ) {
+    if (!firstRecipeOnly && recipe.type === "Resource") {
       return;
     }
 
     recipe.recipe.forEach(({ itemId, count: recipeCount }) => {
       let recipeItem = prices.items.find((r) => r.id === itemId);
       let count = (recipeCount * amount) / recipe.yields;
-      if (!firstRecipeOnly || !recipeItem?.recipe || !recipeItem?.recipe.length) {
+      if (
+        !firstRecipeOnly ||
+        !recipeItem?.recipe ||
+        !recipeItem?.recipe.length
+      ) {
         let material = materials.find((m) => m.id === itemId);
         if (material) {
           material.amount += count;
@@ -298,7 +299,10 @@ export const findShortestPath = (coordinates: Coordinate[]): Coordinate[] => {
   return path;
 };
 
-export const distance = ({ lat: lat1, lon: lon1 }: Coordinate, { lat: lat2, lon: lon2 }: Coordinate) => {
+export const distance = (
+  { lat: lat1, lon: lon1 }: Coordinate,
+  { lat: lat2, lon: lon2 }: Coordinate
+) => {
   const latDiff = lat1 - lat2;
   const lonDiff = lon1 - lon2;
   return (latDiff ** 2 + lonDiff ** 2) ** 0.5;
@@ -347,7 +351,7 @@ export const timeFormatL = (seconds, onlyLast = false) => {
   }
 
   return time.trim();
-}
+};
 
 /**
  * Capitalizes the first letter of a given string.
@@ -380,7 +384,6 @@ export const getWeekDates = (): [Date, Date] => {
   return [start, end];
 };
 
-
 /**
  * Determines the type of a word based on regular expressions.
  * @param {string} word - The word to determine the type of.
@@ -397,7 +400,7 @@ export const getWordType = (word: string) => {
   if (verbRegex.test(word)) return "verb";
   if (adjRegex.test(word)) return "adjective";
   return "unknown";
-}
+};
 
 /**
  *
@@ -418,7 +421,7 @@ export const arrRandNoRep = (arr: any[]) => {
 
   lastElement = arr[randomIndex];
   return lastElement;
-}
+};
 /**
  * singularizes a word.
  * @param word

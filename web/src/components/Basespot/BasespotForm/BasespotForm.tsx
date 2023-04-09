@@ -36,9 +36,7 @@ interface BasespotFormProps {
 }
 
 const BasespotForm = (props: BasespotFormProps) => {
-  const formMethods = useForm<FormBasespot>(
-
-  )
+  const formMethods = useForm<FormBasespot>();
   const [thumbnailUrl, setThumbnailUrl] = useState(null);
   const [defenseImages, setDefenseImages] = useState([]);
 
@@ -47,23 +45,36 @@ const BasespotForm = (props: BasespotFormProps) => {
   const onSubmit = (data: FormBasespot) => {
     data.image && (data.image = thumbnailUrl);
 
-    console.log(data);
     props.onSave(data, props?.basespot?.id);
   };
 
   return (
     <div className="rw-form-wrapper">
-      <Form<FormBasespot> onSubmit={onSubmit} formMethods={formMethods} error={props.error}>
+      <Form<FormBasespot>
+        onSubmit={onSubmit}
+        formMethods={formMethods}
+        error={props.error}
+      >
         <FormError
           error={props.error}
           wrapperClassName="rw-form-error-wrapper"
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
-        {/* <div  className="relative">
-    <input type="text" id="floating_outlined"  className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
-    <label htmlFor="floating_outlined"  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Floating outlined</label>
-</div> */}
+        {/* <div className="relative border-b ">
+          <input
+            type="text"
+            id="floating_outlined"
+            className="border-1 focus:border-pea-600 dark:focus:border-pea-500 peer block w-full appearance-none rounded-lg border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white"
+            placeholder=" "
+          />
+          <label
+            htmlFor="floating_outlined"
+            className="peer-focus:text-pea-600 peer-focus:dark:text-pea-500 absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-75 transform px-2 text-sm text-gray-500 duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 dark:text-gray-400"
+          >
+            Floating outlined
+          </label>
+        </div> */}
         <div className="relative">
           <Label
             name="name"
@@ -95,14 +106,14 @@ const BasespotForm = (props: BasespotFormProps) => {
         <TextAreaField
           name="description"
           defaultValue={props.basespot?.description}
-          className="rw-input"
+          className="rw-input min-w-[300px]"
           errorClassName="rw-input rw-input-error"
           emptyAs={""}
+          rows={5}
           validation={{ required: true }}
         />
 
         <FieldError name="description" className="rw-field-error" />
-
 
         <Label
           name="Map"
@@ -112,28 +123,36 @@ const BasespotForm = (props: BasespotFormProps) => {
           Map
         </Label>
 
-        <Lookup items={[
-          { name: "Valguero", value: "1" },
-          { name: "The Island", value: "2" },
-          { name: "The Center", value: "3" },
-          { name: "Ragnarok", value: "4" },
-          { name: "Abberation", value: "5" },
-          { name: "Extinction", value: "6" },
-          { name: "Scorched Earth", value: "7" },
-          { name: "Genesis", value: "8" },
-          { name: "Genesis 2", value: "9" },
-          { name: "Crystal Isles", value: "10" },
-          { name: "Fjordur", value: "11" },
-          { name: "Lost Island", value: "12" }
-        ]} name="Map" />
+        <Lookup
+          defaultValue={props.basespot?.Map.toString()}
+          items={[
+            { name: "Valguero", value: "1" },
+            { name: "The Island", value: "2" },
+            { name: "The Center", value: "3" },
+            { name: "Ragnarok", value: "4" },
+            { name: "Abberation", value: "5" },
+            { name: "Extinction", value: "6" },
+            { name: "Scorched Earth", value: "7" },
+            { name: "Genesis", value: "8" },
+            { name: "Genesis 2", value: "9" },
+            { name: "Crystal Isles", value: "10" },
+            { name: "Fjordur", value: "11" },
+            { name: "Lost Island", value: "12" },
+          ]}
+          name="Map"
+        />
 
         <FieldError name="Map" className="rw-field-error" />
 
-
-        <MapPicker map={map.toString()} valueProp={{ ...props.basespot }} onChanges={(e) => {
-          formMethods.setValue("latitude", e.latitude);
-          formMethods.setValue("longitude", e.longitude);
-        }} />
+        <MapPicker
+          className="mt-2"
+          map={map.toString()}
+          valueProp={{ ...props.basespot }}
+          onChanges={(e) => {
+            formMethods.setValue("latitude", e.latitude);
+            formMethods.setValue("longitude", e.longitude);
+          }}
+        />
 
         <div className="flex flex-row items-start">
           <div className="group relative z-0 mb-6">
@@ -185,9 +204,12 @@ const BasespotForm = (props: BasespotFormProps) => {
         </Label>
 
         <FileUpload
-          storagePath={`basespotimages/${basename.current?.value.replaceAll(" ", "") ||
+          multiple={true}
+          name="image"
+          storagePath={`basespotimages/${
+            basename.current?.value.replaceAll(" ", "") ||
             props.basespot?.name.replaceAll(" ", "")
-            }`}
+          }`}
           onUpload={(url) => {
             setThumbnailUrl(url);
           }}
