@@ -52,11 +52,11 @@ const CheckboxGroup = ({
   };
 
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className="flex h-fit flex-wrap gap-3">
       {options.map(({ label, image, value: optValue }) => (
         <label key={label}>
           <input
-            disabled={!name}
+            disabled={!name && !label}
             type="checkbox"
             name={optValue || label}
             onChange={handleCheckboxChange}
@@ -65,7 +65,7 @@ const CheckboxGroup = ({
           />
           <span
             className={clsx("rw-check-tile", {
-              disabled: !name,
+              disabled: !name && !label,
             })}
           >
             <span className="text-gray-900 transition-all duration-150 ease-in dark:text-stone-200">
