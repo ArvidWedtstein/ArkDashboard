@@ -36,7 +36,12 @@ export const QUERY = gql`
           weight
           qty
           quality
-          items
+          LootcrateSetEntryItem {
+            value
+            Item {
+              name
+            }
+          }
         }
       }
     }
