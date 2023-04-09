@@ -114,10 +114,10 @@ const Sidebar = memo(({}) => {
     {
       name: "Dinos",
       href: routes.dinos(),
-      color: "ring-indigo-300 [.active]:!bg-indigo-500",
+      color: "ring-indigo-300 bg-indigo-500",
     },
   ];
-
+  console.log(`/${pathname.split("/")[1]}`);
   return (
     <nav className="flex flex-row items-center justify-between rounded-2xl border-gray-700 px-10 py-2 dark:border-gray-200 max-sm:border-b sm:flex-col sm:justify-start sm:border-r sm:py-10 sm:px-2">
       {navigation.map((item) => (
@@ -130,9 +130,11 @@ const Sidebar = memo(({}) => {
             "mx-2 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl outline-none ring-1 ring-transparent duration-100 hover:text-gray-900 dark:hover:text-white sm:my-4",
             {
               "bg-stone-300 text-black hover:ring-stone-400 focus:ring-stone-400 focus-visible:ring-white dark:bg-[#c3cff433] dark:text-[#ffffffcc] dark:hover:ring-white dark:focus:ring-white":
-                singularize(item.href.split("?")[0]) !== singularize(pathname),
+                singularize(item.href.split("?")[0]) !==
+                singularize(`/${pathname.split("/")[1]}`),
               "text-white ring-2":
-                singularize(item.href.split("?")[0]) === singularize(pathname),
+                singularize(item.href.split("?")[0]) ===
+                singularize(`/${pathname.split("/")[1]}`),
             },
             item.color
           )}
