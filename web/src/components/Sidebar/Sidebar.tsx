@@ -117,7 +117,6 @@ const Sidebar = memo(({}) => {
       color: "ring-indigo-300 bg-indigo-500",
     },
   ];
-  console.log(`/${pathname.split("/")[1]}`);
   return (
     <nav className="flex flex-row items-center justify-between rounded-2xl border-gray-700 px-10 py-2 dark:border-gray-200 max-sm:border-b sm:flex-col sm:justify-start sm:border-r sm:py-10 sm:px-2">
       {navigation.map((item) => (

@@ -16,7 +16,7 @@ import {
 import type { EditBasespotById, UpdateBasespotInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
 import Lookup from "src/components/Util/Lookup/Lookup";
 
@@ -41,12 +41,20 @@ const BasespotForm = (props: BasespotFormProps) => {
   const [defenseImages, setDefenseImages] = useState([]);
 
   const basename = useRef(null);
-  const [map, setMap] = useState(props.basespot?.Map);
-  const onSubmit = (data: FormBasespot) => {
-    data.image && (data.image = thumbnailUrl);
+  const [map, setMap] = useState(props.basespot?.Map || 2);
 
+  const onSubmit = (data: FormBasespot) => {
+    console.log(data);
+    data.Map = parseInt(data.Map.toString() || map.toString());
+    if (thumbnailUrl) data.image = thumbnailUrl;
     props.onSave(data, props?.basespot?.id);
   };
+
+  useEffect(() => {
+    if (props.basespot?.Map) {
+      setMap(props.basespot.Map);
+    }
+  }, []);
 
   return (
     <div className="rw-form-wrapper">
@@ -123,21 +131,49 @@ const BasespotForm = (props: BasespotFormProps) => {
           Map
         </Label>
 
+        {/* <SelectField
+          name="Map"
+          defaultValue={props.basespot?.Map || map}
+          validation={{
+            required: true,
+            validate: {
+              matchesInitialValue: (value) => {
+                return (
+                  value !== "Please select an option" || "Select an Option"
+                );
+              },
+            },
+          }}
+        >
+          <option>Please select an option</option>
+          <option value={1}>Valguero</option>
+          <option value={2}>The Island</option>
+          <option value={3}>The Center</option>
+          <option value={4}>Ragnarok</option>
+          <option value={5}>Aberration</option>
+          <option value={6}>Extinction</option>
+          <option value={7}>Scorched Earth</option>
+          <option value={8}>Genesis</option>
+          <option value={9}>Genesis 2</option>
+          <option value={10}>Crystal Isles</option>
+          <option value={11}>Fjordur</option>
+          <option value={12}>Lost Island</option>
+        </SelectField> */}
         <Lookup
-          defaultValue={props.basespot?.Map.toString()}
+          defaultValue={props.basespot?.Map || map}
           items={[
-            { name: "Valguero", value: "1" },
-            { name: "The Island", value: "2" },
-            { name: "The Center", value: "3" },
-            { name: "Ragnarok", value: "4" },
-            { name: "Abberation", value: "5" },
-            { name: "Extinction", value: "6" },
-            { name: "Scorched Earth", value: "7" },
-            { name: "Genesis", value: "8" },
-            { name: "Genesis 2", value: "9" },
-            { name: "Crystal Isles", value: "10" },
-            { name: "Fjordur", value: "11" },
-            { name: "Lost Island", value: "12" },
+            { name: "Valguero", value: 1 },
+            { name: "The Island", value: 2 },
+            { name: "The Center", value: 3 },
+            { name: "Ragnarok", value: 4 },
+            { name: "Abberation", value: 5 },
+            { name: "Extinction", value: 6 },
+            { name: "Scorched Earth", value: 7 },
+            { name: "Genesis", value: 8 },
+            { name: "Genesis 2", value: 9 },
+            { name: "Crystal Isles", value: 10 },
+            { name: "Fjordur", value: 11 },
+            { name: "Lost Island", value: 12 },
           ]}
           name="Map"
         />
@@ -204,11 +240,12 @@ const BasespotForm = (props: BasespotFormProps) => {
         </Label>
 
         <FileUpload
-          multiple={true}
+          multiple={false}
           name="image"
           storagePath={`basespotimages/${
-            basename.current?.value.replaceAll(" ", "") ||
-            props.basespot?.name.replaceAll(" ", "")
+            props.basespot.id
+            // basename.current?.value.replaceAll(" ", "") ||
+            // props.basespot?.name.replaceAll(" ", "")
           }`}
           onUpload={(url) => {
             setThumbnailUrl(url);

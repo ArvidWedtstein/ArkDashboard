@@ -32,7 +32,7 @@ const Basespot = ({ basespot }: Props) => {
     if (basespot.image && !baseUrl && !basespot.image.startsWith("http")) {
       const { data, error } = await supabase.storage
         .from(`basespotimages`)
-        .download(`${basespot.name.replaceAll(" ", "")}/${basespot.image}`);
+        .download(`${basespot.id}/${basespot.image}`);
       // .download(`thumbnails/${basespot.image}`);
       if (error) {
         throw error;
