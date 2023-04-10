@@ -22,6 +22,7 @@ export const schema = gql`
     Profile: Profile
     Map: Map
     timeline: Timeline!
+    TimelineBasespotDino: [TimelineBasespotDino]!
   }
 
   type Query {
