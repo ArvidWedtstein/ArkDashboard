@@ -43,6 +43,34 @@ const Routes = () => {
         <Route notfound page={NotFoundPage} />
         <Set
           wrap={ScaffoldLayout}
+          title="TimelineBasespotDinos"
+          titleTo="timelineBasespotDinos"
+          buttonLabel="New TimelineBasespotDino"
+          buttonTo="newTimelineBasespotDino"
+        >
+          <Route
+            path="/timeline-basespot-dinos/new"
+            page={TimelineBasespotDinoNewTimelineBasespotDinoPage}
+            name="newTimelineBasespotDino"
+          />
+          <Route
+            path="/timeline-basespot-dinos/{id}/edit"
+            page={TimelineBasespotDinoEditTimelineBasespotDinoPage}
+            name="editTimelineBasespotDino"
+          />
+          <Route
+            path="/timeline-basespot-dinos/{id}"
+            page={TimelineBasespotDinoTimelineBasespotDinoPage}
+            name="timelineBasespotDino"
+          />
+          <Route
+            path="/timeline-basespot-dinos"
+            page={TimelineBasespotDinoTimelineBasespotDinosPage}
+            name="timelineBasespotDinos"
+          />
+        </Set>
+        <Set
+          wrap={ScaffoldLayout}
           title="Lootcrates"
           titleTo="lootcrates"
           buttonLabel="New Lootcrate"
