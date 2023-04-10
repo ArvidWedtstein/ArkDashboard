@@ -10,74 +10,85 @@ import {
   SelectField,
   useForm,
   useFieldArray,
-} from '@redwoodjs/forms'
+} from "@redwoodjs/forms";
 
-import type { EditTimelineBasespotById, UpdateTimelineBasespotInput } from 'types/graphql'
-import type { RWGqlError } from '@redwoodjs/forms'
-import Lookup from 'src/components/Util/Lookup/Lookup'
-import { useAuth } from '@redwoodjs/auth'
-import { useEffect, useState } from 'react'
-import clsx from 'clsx'
-import { RouteAnnouncement } from '@redwoodjs/router'
-import MapPicker from 'src/components/Util/MapPicker/MapPicker'
+import type {
+  EditTimelineBasespotById,
+  UpdateTimelineBasespotInput,
+} from "types/graphql";
+import type { RWGqlError } from "@redwoodjs/forms";
+import Lookup from "src/components/Util/Lookup/Lookup";
+import { useAuth } from "@redwoodjs/auth";
+import { useEffect, useState } from "react";
+import clsx from "clsx";
+import MapPicker from "src/components/Util/MapPicker/MapPicker";
+import FileUpload from "src/components/Util/FileUpload/FileUpload";
 
 const formatDatetime = (value) => {
   if (value) {
-    return value.replace(/:\d{2}\.\d{3}\w/, '')
+    return value.replace(/:\d{2}\.\d{3}\w/, "");
   }
-}
+};
 
-
-type FormTimelineBasespot = NonNullable<EditTimelineBasespotById['timelineBasespot']>
+type FormTimelineBasespot = NonNullable<
+  EditTimelineBasespotById["timelineBasespot"]
+>;
 
 interface TimelineBasespotFormProps {
-  timelineBasespot?: EditTimelineBasespotById['timelineBasespot']
-  onSave: (data: UpdateTimelineBasespotInput, id?: FormTimelineBasespot['id']) => void
-  error: RWGqlError
-  loading: boolean
+  timelineBasespot?: EditTimelineBasespotById["timelineBasespot"];
+  onSave: (
+    data: UpdateTimelineBasespotInput,
+    id?: FormTimelineBasespot["id"]
+  ) => void;
+  error: RWGqlError;
+  loading: boolean;
 }
 
 const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
   let { isAuthenticated, client: supabase } = useAuth();
-  let [basespots, setBasespots] = useState([])
-  let [selectedBasespot, setSelectedBasespot] = useState(null)
+  let [basespots, setBasespots] = useState([]);
+  let [selectedBasespot, setSelectedBasespot] = useState(null);
   const formMethods = useForm<FormTimelineBasespot>();
   const { setValue, control, watch } = formMethods;
 
   const onSubmit = (data: FormTimelineBasespot) => {
     if (selectedBasespot) {
-      data.map = selectedBasespot?.Map
-      data.location = { lat: selectedBasespot?.latitude, lon: selectedBasespot?.longitude }
+      data.map = selectedBasespot?.Map;
+      data.location = {
+        lat: selectedBasespot?.latitude,
+        lon: selectedBasespot?.longitude,
+      };
     }
-    formMethods.reset()
-    props.onSave(data, props?.timelineBasespot?.id)
-  }
+    formMethods.reset();
+    props.onSave(data, props?.timelineBasespot?.id);
+  };
   const getBasespots = async () => {
     let { data, error, status } = await supabase
       .from("Basespot")
-      .select(
-        `id, name, Map, latitude, longitude`
-      )
+      .select(`id, name, Map, latitude, longitude`);
 
     if (error && status !== 406) {
       throw error;
     }
     if (data) {
-      setBasespots(data)
+      setBasespots(data);
     }
-  }
+  };
   useEffect(() => {
-    getBasespots()
+    getBasespots();
 
-    props?.timelineBasespot?.basespot_id ? setSelectedBasespot(basespots.find((b) => b.id === props?.timelineBasespot?.basespot_id)) : null
-  }, [])
+    props?.timelineBasespot?.basespot_id
+      ? setSelectedBasespot(
+          basespots.find((b) => b.id === props?.timelineBasespot?.basespot_id)
+        )
+      : null;
+  }, []);
 
   useEffect(() => {
     if (selectedBasespot) {
-      formMethods.setValue("basespot_id", (selectedBasespot.value as any));
+      formMethods.setValue("basespot_id", selectedBasespot.value as any);
     }
-  }, [selectedBasespot, setSelectedBasespot])
-
+  }, [selectedBasespot, setSelectedBasespot]);
 
   // let { handleSubmit, control } = useForm<FormTimelineBasespot>({
   //   defaultValues: {
@@ -88,15 +99,17 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
   //     location: props?.timelineBasespot?.location,
   //     map: props?.timelineBasespot?.map,
 
-
   //   },
   // })
 
-
-  const map = watch('map')
+  const map: any = watch("map");
   return (
     <div className="rw-form-wrapper">
-      <Form<FormTimelineBasespot> onSubmit={onSubmit} formMethods={formMethods} error={props.error}>
+      <Form<FormTimelineBasespot>
+        onSubmit={onSubmit}
+        formMethods={formMethods}
+        error={props.error}
+      >
         <FormError
           error={props.error}
           wrapperClassName="rw-form-error-wrapper"
@@ -177,25 +190,29 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         {/* TODO: Replace with maps from db */}
 
-        <Lookup items={[
-          { name: "Valguero", value: "1" },
-          { name: "The Island", value: "2" },
-          { name: "The Center", value: "3" },
-          { name: "Ragnarok", value: "4" },
-          { name: "Aberration", value: "5" },
-          { name: "Extinction", value: "6" },
-          { name: "Scorched Earth", value: "7" },
-          { name: "Genesis", value: "8" },
-          { name: "Genesis 2", value: "9" },
-          { name: "Crystal Isles", value: "10" },
-          { name: "Fjordur", value: "11" },
-          { name: "Lost Island", value: "12" }
-        ]} name="map" defaultValue={props.timelineBasespot?.map.toString()} onChange={(e) => {
-          setValue("map", parseInt(e.value));
-        }} />
+        <Lookup
+          items={[
+            { name: "Valguero", value: "1" },
+            { name: "The Island", value: "2" },
+            { name: "The Center", value: "3" },
+            { name: "Ragnarok", value: "4" },
+            { name: "Aberration", value: "5" },
+            { name: "Extinction", value: "6" },
+            { name: "Scorched Earth", value: "7" },
+            { name: "Genesis", value: "8" },
+            { name: "Genesis 2", value: "9" },
+            { name: "Crystal Isles", value: "10" },
+            { name: "Fjordur", value: "11" },
+            { name: "Lost Island", value: "12" },
+          ]}
+          name="map"
+          defaultValue={props.timelineBasespot?.map.toString()}
+          onChange={(e) => {
+            setValue("map", parseInt(e.value));
+          }}
+        />
 
         <FieldError name="map" className="rw-field-error" />
-
 
         <Label
           name="basespot_id"
@@ -206,18 +223,37 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         </Label>
 
         <Lookup
-          defaultValue={props.timelineBasespot?.basespot_id ? basespots.find((b) => b.id === props.timelineBasespot?.basespot_id).name : null}
-          items={props.timelineBasespot?.map ? basespots.filter((b) => b.Map === map) : basespots}
+          defaultValue={
+            props.timelineBasespot?.basespot_id
+              ? basespots.find(
+                  (b) => b.id === props.timelineBasespot?.basespot_id
+                ).name
+              : null
+          }
+          items={
+            props.timelineBasespot?.map
+              ? basespots.filter((b) => b.Map === map)
+              : basespots
+          }
           onChange={(e) => setSelectedBasespot(e)}
           name="basespot_id"
         />
 
         <FieldError name="basespot_id" className="rw-field-error" />
 
-        <MapPicker map={map || props.timelineBasespot?.map} valueProp={{ latitude: props.timelineBasespot?.location.lat, longitude: props.timelineBasespot?.location.lon }} onChanges={(e) => {
-          formMethods.setValue("location", JSON.stringify({ lat: e.latitude, lon: e.longitude }));
-        }} />
-
+        <MapPicker
+          map={map || props.timelineBasespot?.map}
+          valueProp={{
+            latitude: props.timelineBasespot?.location["lat"],
+            longitude: props.timelineBasespot?.location["lon"],
+          }}
+          onChanges={(e) => {
+            formMethods.setValue(
+              "location",
+              JSON.stringify({ lat: e.latitude, lon: e.longitude })
+            );
+          }}
+        />
 
         <Label
           name="tribeName"
@@ -317,7 +353,6 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           </div>
         </fieldset>
 
-
         <Label
           name="location"
           className="rw-label"
@@ -356,9 +391,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
               e.length > 0 ? e.split(",").map((s) => s.trim()) : null,
           }}
         />
-        <p className="rw-helper-text">
-          Player names, comma seperated
-        </p>
+        <p className="rw-helper-text">Player names, comma seperated</p>
 
         <FieldError name="players" className="rw-field-error" />
 
@@ -381,7 +414,9 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                   className="rw-input"
                   errorClassName="rw-input rw-input-error"
                 />
-                <p className="rw-helper-text">The name of the tribe you got raided by</p>
+                <p className="rw-helper-text">
+                  The name of the tribe you got raided by
+                </p>
 
                 <FieldError name="raided_by" className="rw-field-error" />
               </div>
@@ -407,17 +442,21 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           </fieldset>
         )}
 
+        {props.timelineBasespot?.id && (
+          <FileUpload
+            multiple={true}
+            storagePath={`timelineimages/${props.timelineBasespot?.id}`}
+          />
+        )}
+
         <div className="rw-button-group">
-          <Submit
-            disabled={props.loading}
-            className="rw-button rw-button-blue"
-          >
+          <Submit disabled={props.loading} className="rw-button rw-button-blue">
             Save
           </Submit>
         </div>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default TimelineBasespotForm
+export default TimelineBasespotForm;

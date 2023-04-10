@@ -73,7 +73,6 @@ export const Success = ({ basespot }: CellSuccessProps<EditBasespotById>) => {
     UPDATE_BASESPOT_MUTATION,
     {
       onCompleted: (data) => {
-        console.log(data);
         toast.success("Basespot updated");
         navigate(routes.basespot({ id: data.updateBasespot.id.toString() }));
       },

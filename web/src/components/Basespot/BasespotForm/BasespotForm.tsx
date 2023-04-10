@@ -44,7 +44,6 @@ const BasespotForm = (props: BasespotFormProps) => {
   const [map, setMap] = useState(props.basespot?.Map || 2);
 
   const onSubmit = (data: FormBasespot) => {
-    console.log(data);
     data.Map = parseInt(data.Map.toString() || map.toString());
     if (thumbnailUrl) data.image = thumbnailUrl;
     props.onSave(data, props?.basespot?.id);
@@ -182,7 +181,7 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <MapPicker
           className="mt-2"
-          map={map.toString()}
+          map={props.basespot?.Map || map.toString()}
           valueProp={{ ...props.basespot }}
           onChanges={(e) => {
             formMethods.setValue("latitude", e.latitude);
@@ -231,28 +230,33 @@ const BasespotForm = (props: BasespotFormProps) => {
           </div>
         </div>
 
-        <Label
-          name="image"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Image
-        </Label>
+        {props.basespot?.id && (
+          <>
+            <Label
+              name="image"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Image
+            </Label>
 
-        <FileUpload
-          multiple={false}
-          name="image"
-          storagePath={`basespotimages/${
-            props.basespot.id
-            // basename.current?.value.replaceAll(" ", "") ||
-            // props.basespot?.name.replaceAll(" ", "")
-          }`}
-          onUpload={(url) => {
-            setThumbnailUrl(url);
-          }}
-        />
+            <FileUpload
+              multiple={false}
+              name="image"
+              storagePath={`basespotimages/${
+                props.basespot?.id ||
+                basename.current?.value.replaceAll(" ", "")
+                // basename.current?.value.replaceAll(" ", "") ||
+                // props.basespot?.name.replaceAll(" ", "")
+              }`}
+              onUpload={(url) => {
+                setThumbnailUrl(url);
+              }}
+            />
 
-        <FieldError name="image" className="rw-field-error" />
+            <FieldError name="image" className="rw-field-error" />
+          </>
+        )}
 
         <Label
           name="estimatedForPlayers"
@@ -286,7 +290,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           errorClassName="rw-input rw-input-error"
           validation={{ required: false }}
           emptyAs={"undefined"}
-        /> */}
+        />
 
         <FieldError name="defenseImages" className="rw-field-error" />
 
@@ -305,7 +309,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           errorClassName="rw-input rw-input-error"
         />
 
-        <FieldError name="turretsetup_image" className="rw-field-error" />
+        <FieldError name="turretsetup_image" className="rw-field-error" /> */}
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">
