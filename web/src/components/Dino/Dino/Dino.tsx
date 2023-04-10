@@ -51,16 +51,6 @@ const Dino = ({ dino }: Props) => {
       deleteDino({ variables: { id } });
     }
   };
-
-  let walls = {
-    t: "thatch",
-    w: "wooden",
-    a: "adobe",
-    s: "stone",
-    m: "metal",
-    tk: "tek",
-  };
-
   const canDestroy = ({ value }) => {
     return value > 0 ? (
       <svg
