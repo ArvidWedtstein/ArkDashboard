@@ -30,6 +30,14 @@ export const QUERY = gql`
       movement_speed
       torpor
       gender
+      wild_health
+      wild_stamina
+      wild_oxygen
+      wild_food
+      wild_weight
+      wild_melee_damage
+      wild_movement_speed
+      wild_torpor
     }
   }
 `
@@ -56,6 +64,14 @@ const UPDATE_TIMELINE_BASESPOT_DINO_MUTATION = gql`
       movement_speed
       torpor
       gender
+      wild_health
+      wild_stamina
+      wild_oxygen
+      wild_food
+      wild_weight
+      wild_melee_damage
+      wild_movement_speed
+      wild_torpor
     }
   }
 `

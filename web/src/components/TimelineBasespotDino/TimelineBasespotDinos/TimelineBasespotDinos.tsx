@@ -3,7 +3,7 @@ import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
 import { QUERY } from 'src/components/TimelineBasespotDino/TimelineBasespotDinosCell'
-import { jsonTruncate, timeTag, truncate } from 'src/lib/formatters'
+import { timeTag, truncate } from 'src/lib/formatters'
 
 import type { DeleteTimelineBasespotDinoMutationVariables, FindTimelineBasespotDinos } from 'types/graphql'
 
@@ -61,6 +61,14 @@ const TimelineBasespotDinosList = ({ timelineBasespotDinos }: FindTimelineBasesp
             <th>Movement speed</th>
             <th>Torpor</th>
             <th>Gender</th>
+            <th>Wild health</th>
+            <th>Wild stamina</th>
+            <th>Wild oxygen</th>
+            <th>Wild food</th>
+            <th>Wild weight</th>
+            <th>Wild melee damage</th>
+            <th>Wild movement speed</th>
+            <th>Wild torpor</th>
             <th>&nbsp;</th>
           </tr>
         </thead>
@@ -78,15 +86,23 @@ const TimelineBasespotDinosList = ({ timelineBasespotDinos }: FindTimelineBasesp
               <td>{truncate(timelineBasespotDino.death_cause)}</td>
               <td>{truncate(timelineBasespotDino.level_wild)}</td>
               <td>{truncate(timelineBasespotDino.level)}</td>
-              <td>{jsonTruncate(timelineBasespotDino.health)}</td>
-              <td>{jsonTruncate(timelineBasespotDino.stamina)}</td>
-              <td>{jsonTruncate(timelineBasespotDino.oxygen)}</td>
-              <td>{jsonTruncate(timelineBasespotDino.food)}</td>
-              <td>{jsonTruncate(timelineBasespotDino.weight)}</td>
-              <td>{jsonTruncate(timelineBasespotDino.melee_damage)}</td>
-              <td>{jsonTruncate(timelineBasespotDino.movement_speed)}</td>
-              <td>{jsonTruncate(timelineBasespotDino.torpor)}</td>
+              <td>{truncate(timelineBasespotDino.health)}</td>
+              <td>{truncate(timelineBasespotDino.stamina)}</td>
+              <td>{truncate(timelineBasespotDino.oxygen)}</td>
+              <td>{truncate(timelineBasespotDino.food)}</td>
+              <td>{truncate(timelineBasespotDino.weight)}</td>
+              <td>{truncate(timelineBasespotDino.melee_damage)}</td>
+              <td>{truncate(timelineBasespotDino.movement_speed)}</td>
+              <td>{truncate(timelineBasespotDino.torpor)}</td>
               <td>{truncate(timelineBasespotDino.gender)}</td>
+              <td>{truncate(timelineBasespotDino.wild_health)}</td>
+              <td>{truncate(timelineBasespotDino.wild_stamina)}</td>
+              <td>{truncate(timelineBasespotDino.wild_oxygen)}</td>
+              <td>{truncate(timelineBasespotDino.wild_food)}</td>
+              <td>{truncate(timelineBasespotDino.wild_weight)}</td>
+              <td>{truncate(timelineBasespotDino.wild_melee_damage)}</td>
+              <td>{truncate(timelineBasespotDino.wild_movement_speed)}</td>
+              <td>{truncate(timelineBasespotDino.wild_torpor)}</td>
               <td>
                 <nav className="rw-table-actions">
                   <Link

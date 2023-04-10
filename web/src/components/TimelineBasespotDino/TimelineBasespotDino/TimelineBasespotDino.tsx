@@ -3,7 +3,7 @@ import { Link, routes, navigate } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
-import { jsonDisplay, timeTag,  } from 'src/lib/formatters'
+import { timeTag,  } from 'src/lib/formatters'
 
 import type { DeleteTimelineBasespotDinoMutationVariables, FindTimelineBasespotDinoById } from 'types/graphql'
 
@@ -81,31 +81,55 @@ const TimelineBasespotDino = ({ timelineBasespotDino }: Props) => {
               <td>{timelineBasespotDino.level}</td>
             </tr><tr>
               <th>Health</th>
-              <td>{jsonDisplay(timelineBasespotDino.health)}</td>
+              <td>{timelineBasespotDino.health}</td>
             </tr><tr>
               <th>Stamina</th>
-              <td>{jsonDisplay(timelineBasespotDino.stamina)}</td>
+              <td>{timelineBasespotDino.stamina}</td>
             </tr><tr>
               <th>Oxygen</th>
-              <td>{jsonDisplay(timelineBasespotDino.oxygen)}</td>
+              <td>{timelineBasespotDino.oxygen}</td>
             </tr><tr>
               <th>Food</th>
-              <td>{jsonDisplay(timelineBasespotDino.food)}</td>
+              <td>{timelineBasespotDino.food}</td>
             </tr><tr>
               <th>Weight</th>
-              <td>{jsonDisplay(timelineBasespotDino.weight)}</td>
+              <td>{timelineBasespotDino.weight}</td>
             </tr><tr>
               <th>Melee damage</th>
-              <td>{jsonDisplay(timelineBasespotDino.melee_damage)}</td>
+              <td>{timelineBasespotDino.melee_damage}</td>
             </tr><tr>
               <th>Movement speed</th>
-              <td>{jsonDisplay(timelineBasespotDino.movement_speed)}</td>
+              <td>{timelineBasespotDino.movement_speed}</td>
             </tr><tr>
               <th>Torpor</th>
-              <td>{jsonDisplay(timelineBasespotDino.torpor)}</td>
+              <td>{timelineBasespotDino.torpor}</td>
             </tr><tr>
               <th>Gender</th>
               <td>{timelineBasespotDino.gender}</td>
+            </tr><tr>
+              <th>Wild health</th>
+              <td>{timelineBasespotDino.wild_health}</td>
+            </tr><tr>
+              <th>Wild stamina</th>
+              <td>{timelineBasespotDino.wild_stamina}</td>
+            </tr><tr>
+              <th>Wild oxygen</th>
+              <td>{timelineBasespotDino.wild_oxygen}</td>
+            </tr><tr>
+              <th>Wild food</th>
+              <td>{timelineBasespotDino.wild_food}</td>
+            </tr><tr>
+              <th>Wild weight</th>
+              <td>{timelineBasespotDino.wild_weight}</td>
+            </tr><tr>
+              <th>Wild melee damage</th>
+              <td>{timelineBasespotDino.wild_melee_damage}</td>
+            </tr><tr>
+              <th>Wild movement speed</th>
+              <td>{timelineBasespotDino.wild_movement_speed}</td>
+            </tr><tr>
+              <th>Wild torpor</th>
+              <td>{timelineBasespotDino.wild_torpor}</td>
             </tr>
           </tbody>
         </table>
