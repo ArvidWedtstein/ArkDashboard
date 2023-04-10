@@ -51,6 +51,7 @@ export const schema = gql`
     type: [String]!
     carryable_by: [String]!
     DinoStat: [DinoStat]!
+    TimelineBasespotDino: [TimelineBasespotDino]!
   }
   type DinosPage {
     dinos: [Dino!]!
