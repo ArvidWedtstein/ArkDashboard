@@ -11,15 +11,23 @@ export const schema = gql`
     death_cause: String
     level_wild: BigInt
     level: BigInt
-    health: JSON
-    stamina: JSON
-    oxygen: JSON
-    food: JSON
-    weight: JSON
-    melee_damage: JSON
-    movement_speed: JSON
-    torpor: JSON
+    health: Float
+    stamina: Float
+    oxygen: Float
+    food: Float
+    weight: Float
+    melee_damage: Float
+    movement_speed: Float
+    torpor: Float
     gender: String
+    wild_health: Float!
+    wild_stamina: Float
+    wild_oxygen: Float
+    wild_food: Float
+    wild_weight: Float
+    wild_melee_damage: Float
+    wild_movement_speed: Float
+    wild_torpor: Float
     Dino: Dino!
     TimelineBasespot: TimelineBasespot!
   }
@@ -40,15 +48,23 @@ export const schema = gql`
     death_cause: String
     level_wild: BigInt
     level: BigInt
-    health: JSON
-    stamina: JSON
-    oxygen: JSON
-    food: JSON
-    weight: JSON
-    melee_damage: JSON
-    movement_speed: JSON
-    torpor: JSON
+    health: Float
+    stamina: Float
+    oxygen: Float
+    food: Float
+    weight: Float
+    melee_damage: Float
+    movement_speed: Float
+    torpor: Float
     gender: String
+    wild_health: Float!
+    wild_stamina: Float
+    wild_oxygen: Float
+    wild_food: Float
+    wild_weight: Float
+    wild_melee_damage: Float
+    wild_movement_speed: Float
+    wild_torpor: Float
   }
 
   input UpdateTimelineBasespotDinoInput {
@@ -62,15 +78,23 @@ export const schema = gql`
     death_cause: String
     level_wild: BigInt
     level: BigInt
-    health: JSON
-    stamina: JSON
-    oxygen: JSON
-    food: JSON
-    weight: JSON
-    melee_damage: JSON
-    movement_speed: JSON
-    torpor: JSON
+    health: Float
+    stamina: Float
+    oxygen: Float
+    food: Float
+    weight: Float
+    melee_damage: Float
+    movement_speed: Float
+    torpor: Float
     gender: String
+    wild_health: Float
+    wild_stamina: Float
+    wild_oxygen: Float
+    wild_food: Float
+    wild_weight: Float
+    wild_melee_damage: Float
+    wild_movement_speed: Float
+    wild_torpor: Float
   }
 
   type Mutation {
