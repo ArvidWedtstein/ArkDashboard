@@ -107,6 +107,9 @@ a {
   /* @apply flex cursor-pointer justify-center rounded border-0 bg-gray-200 py-1 px-4 text-xs font-semibold uppercase leading-loose tracking-wide text-gray-500 no-underline transition duration-100; */
   @apply rounded-lg py-2.5 px-6 text-sm font-medium text-gray-900 transition duration-100 ease-in-out focus:outline-none dark:text-white;
 }
+.rw-button-ark {
+  @apply bg-[#11667B] px-6 py-1 uppercase outline outline-1 outline-offset-1 outline-[#11667B] transition-colors duration-150 hover:outline-2 hover:outline-offset-0;
+}
 /* .rw-button:hover {
   @apply bg-gray-500 text-white;
 } */

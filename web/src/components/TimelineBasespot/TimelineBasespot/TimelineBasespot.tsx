@@ -1,12 +1,13 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
+import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { supabase } from "src/App";
 import { Map } from "src/components/Util/Map/Map";
 import { RefModal } from "src/components/Util/Modal/Modal";
 
-import { getDateDiff, timeTag } from "src/lib/formatters";
+import { getDateDiff, nmbFormat, timeTag, truncate } from "src/lib/formatters";
 
 import type {
   DeleteTimelineBasespotMutationVariables,
@@ -320,42 +321,231 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                 Dinos
               </h1>
             </div>
-            <div className="-m-4 flex flex-wrap">
-              {/* {images.map((img, i) => (
-                <div key={`img${i}`} className="p-4 md:w-1/3">
-                  <div className="flex h-full flex-col rounded-lg bg-gray-100 p-0 dark:bg-gray-600">
-                    <div className="m-3 mb-3 flex items-center">
-                      <div className="bg-pea-500 mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-white">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 512 512"
-                          strokeWidth={2}
-                          className="m-1 h-5 w-5 fill-current"
-                        >
-                          <path d="M464 96h-88l-12.38-32.88C356.6 44.38 338.8 32 318.8 32h-125.5c-20 0-38 12.38-45 31.12L136 96H48C21.5 96 0 117.5 0 144v288C0 458.5 21.5 480 48 480h416c26.5 0 48-21.5 48-48v-288C512 117.5 490.5 96 464 96zM496 432c0 17.64-14.36 32-32 32h-416c-17.64 0-32-14.36-32-32v-288c0-17.64 14.36-32 32-32h99.11l16.12-43.28C167.9 56.33 179.9 48 193.3 48h125.5c13.25 0 25.26 8.326 29.9 20.76L364.9 112H464c17.64 0 32 14.36 32 32V432zM256 176C194.2 176 144 226.2 144 288c0 61.76 50.24 112 112 112s112-50.24 112-112C368 226.2 317.8 176 256 176zM256 384c-53 0-96-43-96-96s43-96 96-96s96 43 96 96S309 384 256 384z" />
-                        </svg>
-                      </div>
-                      <h2 className="title-font text-lg font-medium text-gray-900 dark:text-neutral-200">
-                        {timeTag(img.created_at)}
-                      </h2>
-                    </div>
-                    <div className="flex-grow">
-                      <p className="text-base leading-relaxed"></p>
+            <div className="-m-4 flex flex-wrap gap-2">
+              {timelineBasespot.TimelineBasespotDino.map((dino, i) => (
+                // <div key={`dino${i}`} className="p-4 md:w-1/3">
+                //   <div className="flex h-full flex-col rounded-lg bg-gray-100 p-0 dark:bg-gray-600">
+                //     <div className="m-3 mb-3 flex items-center">
+                //       <div className="bg-pea-500 mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-white">
+                //         <svg
+                //           xmlns="http://www.w3.org/2000/svg"
+                //           viewBox="0 0 512 512"
+                //           strokeWidth={2}
+                //           className="m-1 h-5 w-5 fill-current"
+                //         >
+                //           <path d="M464 96h-88l-12.38-32.88C356.6 44.38 338.8 32 318.8 32h-125.5c-20 0-38 12.38-45 31.12L136 96H48C21.5 96 0 117.5 0 144v288C0 458.5 21.5 480 48 480h416c26.5 0 48-21.5 48-48v-288C512 117.5 490.5 96 464 96zM496 432c0 17.64-14.36 32-32 32h-416c-17.64 0-32-14.36-32-32v-288c0-17.64 14.36-32 32-32h99.11l16.12-43.28C167.9 56.33 179.9 48 193.3 48h125.5c13.25 0 25.26 8.326 29.9 20.76L364.9 112H464c17.64 0 32 14.36 32 32V432zM256 176C194.2 176 144 226.2 144 288c0 61.76 50.24 112 112 112s112-50.24 112-112C368 226.2 317.8 176 256 176zM256 384c-53 0-96-43-96-96s43-96 96-96s96 43 96 96S309 384 256 384z" />
+                //         </svg>
+                //       </div>
+                //       <h2 className="title-font text-lg font-medium text-gray-900 dark:text-neutral-200">
+                //         {dino.name} {dino.level}
+                //       </h2>
+                //     </div>
+                //     <div className="flex-grow">
+                //       <p className="text-base leading-relaxed">{dino.name}</p>
+                //     </div>
+                //   </div>
+                // </div>
+                <div className="w-1/3 max-w-3xl border border-[#97FBFF] bg-[#0D2836] p-4">
+                  <div className="flex flex-row space-x-3">
+                    <div className="h-28 w-28 overflow-hidden border border-[#97FBFF]">
                       <img
-                        onClick={() => {
-                          setCurrentModalImage(
-                            `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineBasespot.id}/${img.name}`
-                          );
-                          setIsComponentVisible(true);
+                        style={{
+                          filter:
+                            "invert(95%) sepia(69%) saturate(911%) hue-rotate(157deg) brightness(100%) contrast(103%)",
                         }}
-                        className="h-full w-full cursor-pointer rounded-b object-cover object-center"
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineBasespot.id}/${img.name}`}
-                        alt={timelineBasespot.id.toString()}
+                        className="h-full w-full object-cover object-center p-2"
+                        src={`https://arkids.net/image/creature/120/${dino.Dino.name
+                          .replaceAll(" ", "-")
+                          .toLowerCase()}.png`}
+                        alt=""
                       />
+                    </div>
+                    <div className="flex flex-col items-start justify-start leading-snug">
+                      <h1 className="mb-2 text-2xl font-semibold uppercase text-white">
+                        {truncate(dino.name, 14)} {dino.level}
+                      </h1>
+                      <p
+                        className={clsx({
+                          "text-blue-500": dino.gender === "Male",
+                          "text-pink-500": dino.gender === "Female",
+                          "text-white": dino.gender === "N/A",
+                        })}
+                      >
+                        {dino.gender}
+                      </p>
+                      <p
+                        className="font-semibold text-green-500"
+                        title={dino.death_cause}
+                      >
+                        {timelineBasespot.tribeName}
+                        {/* {timeTag(dino.birth_date)} - {timeTag(dino.death_date)} */}
+                      </p>
+                      <p className="font-semibold text-green-500">
+                        Tamed ({dino.level_wild})
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-3 grid grid-cols-4 place-content-center gap-1 text-center font-medium">
+                    <p className="inline-flex space-x-2">
+                      <img
+                        className="h-6 w-6"
+                        src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/8/8d/Stamina.png"
+                        alt=""
+                      />
+                      <span>
+                        {dino.wild_stamina * dino.Dino.base_stats["s"]["w"] +
+                          dino.stamina * dino.Dino.base_stats["s"]["t"] +
+                          dino.Dino.base_stats["s"]["b"]}
+                      </span>
+                    </p>
+                    <p className="text-center">
+                      ({dino.wild_stamina}-{dino.stamina})
+                    </p>
+                    <p className="inline-flex space-x-2">
+                      <img
+                        className="h-6 w-6"
+                        src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/6/6f/Weight.png"
+                        alt=""
+                      />
+                      <span>
+                        {dino.wild_weight * dino.Dino.base_stats["w"]["w"] +
+                          dino.weight * dino.Dino.base_stats["w"]["t"] +
+                          dino.Dino.base_stats["w"]["b"]}
+                      </span>
+                    </p>
+                    <p className="text-center">
+                      ({dino.wild_weight}-{dino.weight})
+                    </p>
+                    <p className="inline-flex space-x-2">
+                      <img
+                        className="h-6 w-6"
+                        src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/1/19/Oxygen.png"
+                        alt=""
+                      />
+                      <span>
+                        {dino.wild_oxygen * dino.Dino.base_stats["o"]["w"] ||
+                          0 + dino.oxygen * dino.Dino.base_stats["o"]["t"] ||
+                          0 + dino.Dino.base_stats["o"]["b"] ||
+                          0}
+                      </span>
+                    </p>
+                    <p className="text-center">
+                      ({dino.wild_oxygen}-{dino.oxygen})
+                    </p>
+                    <p className="inline-flex space-x-2">
+                      <img
+                        className="h-6 w-6"
+                        src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/0/01/Melee_Damage.png"
+                        alt=""
+                      />
+                      <span>
+                        {dino.wild_melee_damage *
+                          dino.Dino.base_stats["d"]["w"] +
+                          dino.melee_damage * dino.Dino.base_stats["d"]["t"] +
+                          dino.Dino.base_stats["d"]["b"]}
+                        %
+                      </span>
+                    </p>
+                    <p className="text-center">
+                      ({dino.wild_melee_damage}-{dino.melee_damage})
+                    </p>
+                    <p className="inline-flex space-x-2">
+                      <img
+                        className="h-6 w-6"
+                        src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/c/c6/Food.png"
+                        alt=""
+                      />
+                      <span>
+                        {nmbFormat(
+                          dino.wild_food * dino.Dino.base_stats["f"]["w"] +
+                            dino.food * dino.Dino.base_stats["f"]["t"] +
+                            dino.Dino.base_stats["f"]["b"]
+                        )}
+                      </span>
+                    </p>
+                    <p className="text-center">
+                      ({dino.wild_food}-{dino.food})
+                    </p>
+                    <p className="inline-flex space-x-2">
+                      <img
+                        className="h-6 w-6"
+                        src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/e/e1/Movement_Speed.png"
+                        alt=""
+                      />
+                      <span>
+                        {nmbFormat(
+                          dino.wild_movement_speed *
+                            dino.Dino.base_stats["m"]["w"] +
+                            dino.movement_speed *
+                              dino.Dino.base_stats["m"]["t"] +
+                            dino.Dino.base_stats["m"]["b"]
+                        )}
+                        %
+                      </span>
+                    </p>
+                    <p className="text-center">
+                      ({dino.wild_movement_speed}-{dino.movement_speed})
+                    </p>
+                  </div>
+                  <div className="relative mt-3 h-8 w-full border border-[#97FBFF] bg-[#646665] text-center">
+                    <div className="relative flex h-full w-full items-center border-2 border-[#0D2836]">
+                      <div className="h-full w-full bg-gradient-to-t from-[#A30100] to-red-500"></div>
+                      <span className="absolute w-full items-center text-base font-semibold">
+                        {nmbFormat(
+                          dino.wild_health * dino.Dino.base_stats["h"]["w"] +
+                            dino.health * dino.Dino.base_stats["h"]["t"] +
+                            dino.Dino.base_stats["h"]["b"]
+                        )}
+                        /
+                        {nmbFormat(
+                          dino.wild_health * dino.Dino.base_stats["h"]["w"] +
+                            dino.health * dino.Dino.base_stats["h"]["t"] +
+                            dino.Dino.base_stats["h"]["b"]
+                        )}{" "}
+                        Health ({dino.wild_health}-{dino.health})
+                      </span>
+                    </div>
+                  </div>
+                  <div className="relative mt-2 h-8 w-full border border-[#97FBFF] bg-[#646665] text-center">
+                    <div className="relative flex h-full w-full items-center border-2 border-[#0D2836]">
+                      <div className="h-full w-full bg-gradient-to-t from-[#009136] to-green-500"></div>
+                      <span className="absolute w-full items-center text-base font-semibold">
+                        {nmbFormat(
+                          dino.wild_food * dino.Dino.base_stats["f"]["w"] +
+                            dino.food * dino.Dino.base_stats["f"]["t"] +
+                            dino.Dino.base_stats["f"]["b"]
+                        )}
+                        /
+                        {nmbFormat(
+                          dino.wild_food * dino.Dino.base_stats["f"]["w"] +
+                            dino.food * dino.Dino.base_stats["f"]["t"] +
+                            dino.Dino.base_stats["f"]["b"]
+                        )}{" "}
+                        Food ({dino.wild_food}-{dino.food})
+                      </span>
+                    </div>
+                  </div>
+                  <div className="relative mt-2 h-8 w-full border border-[#97FBFF] bg-[#646665] text-center">
+                    <div className="relative flex h-full w-full items-center border-2 border-[#0D2836]">
+                      <div className="h-full w-full bg-gradient-to-t from-[#A340B7] to-fuchsia-500"></div>
+                      <span className="absolute w-full items-center text-base font-semibold">
+                        {nmbFormat(
+                          dino.wild_torpor * dino.Dino.base_stats["t"]["w"] +
+                            dino.torpor * dino.Dino.base_stats["t"]["t"] +
+                            dino.Dino.base_stats["t"]["b"]
+                        )}
+                        /
+                        {nmbFormat(
+                          dino.wild_torpor * dino.Dino.base_stats["t"]["w"] +
+                            dino.torpor * dino.Dino.base_stats["t"]["t"] +
+                            dino.Dino.base_stats["t"]["b"]
+                        )}{" "}
+                        Torpor ({dino.wild_torpor}-{dino.torpor})
+                      </span>
                     </div>
                   </div>
                 </div>
-              ))} */}
+              ))}
             </div>
           </div>
         </section>

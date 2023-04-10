@@ -320,7 +320,7 @@ model TimelineBasespotDino {
   movement_speed      Float?           @default(0)
   torpor              Float?           @default(0)
   gender              String?          @default("N/A")
-  wild_health         Float            @default(0)
+  wild_health         Float?           @default(0)
   wild_stamina        Float?           @default(0)
   wild_oxygen         Float?           @default(0)
   wild_food           Float?           @default(0)

@@ -35,6 +35,10 @@ export const jsonDisplay = (obj: unknown) => {
   );
 };
 
+export const nmbFormat = Intl.NumberFormat("en", {
+  notation: "compact",
+}).format;
+
 export const truncate = (value: string | number, maxlength: number = 150) => {
   let output = value?.toString() ?? "";
 
@@ -55,7 +59,7 @@ export const timeTag = (dateTime?: string | Date) => {
   if (dateTime) {
     output = (
       <time dateTime={dateTime.toString()} title={dateTime.toString()}>
-        {new Date(dateTime).toLocaleString("en-US", {
+        {new Date(dateTime).toLocaleString("en-GB", {
           timeStyle: "short",
           dateStyle: "long",
         })}

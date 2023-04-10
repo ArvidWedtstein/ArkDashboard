@@ -20,7 +20,7 @@ export const schema = gql`
     movement_speed: Float
     torpor: Float
     gender: String
-    wild_health: Float!
+    wild_health: Float
     wild_stamina: Float
     wild_oxygen: Float
     wild_food: Float
@@ -57,7 +57,7 @@ export const schema = gql`
     movement_speed: Float
     torpor: Float
     gender: String
-    wild_health: Float!
+    wild_health: Float
     wild_stamina: Float
     wild_oxygen: Float
     wild_food: Float
