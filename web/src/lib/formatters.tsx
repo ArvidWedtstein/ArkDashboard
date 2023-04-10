@@ -236,8 +236,9 @@ export const getBaseMaterials = (
       }
     });
   };
-  objects.forEach((item) => {
-    findBaseMaterials(item, item.amount);
+  objects.forEach(({ itemId, amount }) => {
+    // findBaseMaterials(item, item.amount);
+    findBaseMaterials(itemId, amount);
   });
 
   return materials;
