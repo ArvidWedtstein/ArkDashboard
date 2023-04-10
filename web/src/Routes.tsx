@@ -58,7 +58,7 @@ const Routes = () => {
             page={TimelineBasespotDinoEditTimelineBasespotDinoPage}
             name="editTimelineBasespotDino"
           />
-          <Route
+          {/* <Route
             path="/timeline-basespot-dinos/{id}"
             page={TimelineBasespotDinoTimelineBasespotDinoPage}
             name="timelineBasespotDino"
@@ -67,7 +67,7 @@ const Routes = () => {
             path="/timeline-basespot-dinos"
             page={TimelineBasespotDinoTimelineBasespotDinosPage}
             name="timelineBasespotDinos"
-          />
+          /> */}
         </Set>
         <Set
           wrap={ScaffoldLayout}

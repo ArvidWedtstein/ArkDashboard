@@ -45,6 +45,14 @@ export const QUERY = gql`
       crafted_in
       effects
       type
+      ItemRecipe_ItemRecipe_crafted_item_idToItem {
+        amount
+        Item_ItemRecipe_item_idToItem {
+          name
+          image
+          yields
+        }
+      }
     }
   }
 `;

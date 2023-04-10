@@ -166,6 +166,46 @@ export const getBaseMaterials = (
    * @param {number} itemId - The unique identifier for the object.
    * @param {number} amount - The number of objects required.
    */
+  // const findBaseMaterials = (item, amount) => {
+  //   // let recipe = prices.items.find((r) => r.id === itemId);
+
+  //   if (!item?.recipe || item.recipe.length === 0) {
+  //     return;
+  //   }
+
+  //   if (!firstRecipeOnly && item.type === "Resource") {
+  //     return;
+  //   }
+  //   // if (!recipe?.recipe || recipe.recipe.length === 0) {
+  //   //   return;
+  //   // }
+
+  //   // if (!firstRecipeOnly && recipe.type === "Resource") {
+  //   //   return;
+  //   // }
+
+  //   item.ItemRecipe_ItemRecipe_crafted_item_idToItem.forEach(
+  //     ({ Item_ItemRecipe_item_idToItem, amount: recipeAmount }) => {
+  //       // let recipeItem = prices.items.find((r) => r.id === itemId);
+  //       console.log(Item_ItemRecipe_item_idToItem, recipeAmount, amount);
+  //       let count = (recipeAmount * amount) / recipe.yields;
+  //       if (
+  //         !firstRecipeOnly ||
+  //         !recipeItem?.recipe ||
+  //         !recipeItem?.recipe.length
+  //       ) {
+  //         let material = materials.find((m) => m.id === itemId);
+  //         if (material) {
+  //           material.amount += count;
+  //         } else {
+  //           materials.push({ ...recipeItem, amount: count });
+  //         }
+  //       } else {
+  //         findBaseMaterials(recipeItem.id, count * recipeItem.yields);
+  //       }
+  //     }
+  //   );
+  // };
   const findBaseMaterials = (itemId: number, amount: number) => {
     let recipe = prices.items.find((r) => r.id === itemId);
 
@@ -196,9 +236,8 @@ export const getBaseMaterials = (
       }
     });
   };
-
-  objects.forEach(({ itemId, amount }) => {
-    findBaseMaterials(itemId, amount);
+  objects.forEach((item) => {
+    findBaseMaterials(item, item.amount);
   });
 
   return materials;
