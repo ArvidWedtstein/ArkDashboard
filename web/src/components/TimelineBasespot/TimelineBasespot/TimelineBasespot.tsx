@@ -380,9 +380,11 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           alt=""
                         />
                         <span>
-                          {dino.wild_stamina * dino.Dino.base_stats["s"]["w"] +
-                            dino.stamina * dino.Dino.base_stats["s"]["t"] +
-                            dino.Dino.base_stats["s"]["b"]}
+                          {nmbFormat(
+                            dino.wild_stamina * dino.Dino.base_stats["s"]["w"] +
+                              dino.stamina * dino.Dino.base_stats["s"]["t"] +
+                              dino.Dino.base_stats["s"]["b"]
+                          )}
                         </span>
                       </p>
                       <p className="text-center">
@@ -395,9 +397,11 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           alt=""
                         />
                         <span>
-                          {dino.wild_weight * dino.Dino.base_stats["w"]["w"] +
-                            dino.weight * dino.Dino.base_stats["w"]["t"] +
-                            dino.Dino.base_stats["w"]["b"]}
+                          {nmbFormat(
+                            dino.wild_weight * dino.Dino.base_stats["w"]["w"] +
+                              dino.weight * dino.Dino.base_stats["w"]["t"] +
+                              dino.Dino.base_stats["w"]["b"]
+                          )}
                         </span>
                       </p>
                       <p className="text-center">
@@ -410,10 +414,11 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           alt=""
                         />
                         <span>
-                          {dino.wild_oxygen * dino.Dino.base_stats["o"]["w"] ||
-                            0 + dino.oxygen * dino.Dino.base_stats["o"]["t"] ||
-                            0 + dino.Dino.base_stats["o"]["b"] ||
-                            0}
+                          {nmbFormat(
+                            dino.wild_oxygen * dino.Dino.base_stats["o"]["w"] +
+                              dino.oxygen * dino.Dino.base_stats["o"]["t"] +
+                              dino.Dino.base_stats["o"]["b"]
+                          )}
                         </span>
                       </p>
                       <p className="text-center">
