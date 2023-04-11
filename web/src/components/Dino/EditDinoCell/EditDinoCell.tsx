@@ -60,6 +60,17 @@ export const QUERY = gql`
       movement
       type
       carryable_by
+      DinoStat {
+        item_id
+        Item {
+          name
+          id
+          image
+        }
+        value
+        rank
+        type
+      }
     }
   }
 `
