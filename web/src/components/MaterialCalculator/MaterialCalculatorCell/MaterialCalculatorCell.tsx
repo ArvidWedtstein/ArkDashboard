@@ -47,6 +47,10 @@ export const QUERY = gql`
       type
       ItemRecipe_ItemRecipe_crafted_item_idToItem {
         amount
+        Item_ItemRecipe_crafting_stationToItem {
+          id
+          name
+        }
         Item_ItemRecipe_item_idToItem {
           id
           name
@@ -56,6 +60,10 @@ export const QUERY = gql`
           crafting_time
           ItemRecipe_ItemRecipe_crafted_item_idToItem {
             amount
+            Item_ItemRecipe_crafting_stationToItem {
+              id
+              name
+            }
             Item_ItemRecipe_item_idToItem {
               id
               name
@@ -65,6 +73,10 @@ export const QUERY = gql`
               crafting_time
               ItemRecipe_ItemRecipe_crafted_item_idToItem {
                 amount
+                Item_ItemRecipe_crafting_stationToItem {
+                  id
+                  name
+                }
                 Item_ItemRecipe_item_idToItem {
                   id
                   name
@@ -72,6 +84,21 @@ export const QUERY = gql`
                   yields
                   type
                   crafting_time
+                  ItemRecipe_ItemRecipe_crafted_item_idToItem {
+                    amount
+                    Item_ItemRecipe_crafting_stationToItem {
+                      id
+                      name
+                    }
+                    Item_ItemRecipe_item_idToItem {
+                      id
+                      name
+                      image
+                      yields
+                      type
+                      crafting_time
+                    }
+                  }
                 }
               }
             }
