@@ -1,3 +1,6 @@
+import clsx from "clsx";
+import { useEffect, useState } from "react";
+
 class FibonacciCircle {
   #points;
 
@@ -24,13 +27,18 @@ class FibonacciCircle {
 const FibonacciSphere = ({
   vertices,
   text,
+  className,
+  animate = false,
 }: {
   vertices?: number;
   text?: string[];
+  className?: string;
+  animate?: boolean;
 }) => {
+  const [rotationAngle, setRotationAngle] = useState(0);
+  const [gradientOffset, setGradientOffset] = useState(0);
   let points = new FibonacciCircle(vertices ? vertices : text.length).points;
-  var rotationAxis = [1, 0, 0];
-  let rotationAngle = 0;
+  var rotationAxis = [0, 1, 0];
   let size = 1.5;
   const sin = Math.sin(rotationAngle);
   const cos = Math.cos(rotationAngle);
@@ -82,20 +90,53 @@ const FibonacciSphere = ({
     points[i].push(scale);
     points[i].push(opacity);
   }
+
+  useEffect(() => {
+    if (animate) {
+      const animationFrame = requestAnimationFrame(() => {
+        setRotationAngle(rotationAngle + 0.001); // Adjust rotation speed here
+      });
+
+      return () => {
+        cancelAnimationFrame(animationFrame);
+      };
+    }
+
+  }, [rotationAngle, gradientOffset]);
+  const gradientId = "textGradient";
   return (
-    <div className="relative">
+    <div className={clsx('relative', className)}>
       <svg viewBox="-1 -1 2 2" style={{ width: "100%", height: "100%" }}>
-        <g>
+        <defs>
+          <linearGradient
+            id={gradientId}
+            gradientUnits="userSpaceOnUse"
+            x1="-1"
+            y1="0"
+            x2="1"
+            y2="0"
+            gradientTransform={`rotate(${rotationAngle})`}
+          >
+            <stop offset="0%" stopColor="#ff6bff" />
+            <stop offset="30%" stopColor="#fc0e8e" />
+            <stop offset="70%" stopColor="#3497ff" />
+            <stop offset="100%" stopColor="#1e0038" />
+          </linearGradient>
+
+        </defs>
+        <g transform={`rotate(${rotationAngle})`}>
           {points.map((point, i) => (
             <text
               key={i}
               x={point[0]}
               y={point[1]}
-              fill="black"
-              fontSize={0.1}
+              // fill="currentColor"
+              fill={`url(#${gradientId})`} // use the gradient as fill
+              fontSize={0.05}
               opacity={point[6]}
               scale={point[5]}
               textAnchor="middle"
+              className="transition-all duration-200 ease-in-out animate-fade-in animate-pulse"
             >
               {text ? text[i] : i}
             </text>
