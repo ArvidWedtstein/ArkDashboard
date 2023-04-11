@@ -69,6 +69,11 @@ export const schema = gql`
     raided_by: String
     raidcomment: String
   }
+  input RaidTimelineBasespotInput {
+    endDate: DateTime
+    raided_by: String
+    raidcomment: String
+  }
 
   type Mutation {
     createTimelineBasespot(
@@ -78,6 +83,10 @@ export const schema = gql`
       id: BigInt!
       input: UpdateTimelineBasespotInput!
     ): TimelineBasespot! @requireAuth
+    raidTimelineBasespot(
+      id: BigInt!
+      input: RaidTimelineBasespotInput!
+    ): TimelineBasespot! @requireAuth
     deleteTimelineBasespot(id: BigInt!): TimelineBasespot! @requireAuth
   }
-`
+`;

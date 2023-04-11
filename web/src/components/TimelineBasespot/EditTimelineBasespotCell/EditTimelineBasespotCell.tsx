@@ -28,6 +28,36 @@ export const QUERY = gql`
       created_by
       raided_by
       raidcomment
+      TimelineBasespotDino {
+        id
+        name
+        birth_date
+        death_date
+        death_cause
+        level_wild
+        level
+        health
+        stamina
+        oxygen
+        food
+        weight
+        melee_damage
+        movement_speed
+        torpor
+        wild_health
+        wild_stamina
+        wild_oxygen
+        wild_food
+        wild_weight
+        wild_melee_damage
+        wild_movement_speed
+        wild_torpor
+        gender
+        Dino {
+          name
+          base_stats
+        }
+      }
     }
   }
 `
