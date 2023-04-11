@@ -53,6 +53,7 @@ export const QUERY = gql`
           image
           yields
           type
+          crafting_time
           ItemRecipe_ItemRecipe_crafted_item_idToItem {
             amount
             Item_ItemRecipe_item_idToItem {
@@ -61,6 +62,7 @@ export const QUERY = gql`
               image
               yields
               type
+              crafting_time
               ItemRecipe_ItemRecipe_crafted_item_idToItem {
                 amount
                 Item_ItemRecipe_item_idToItem {
@@ -69,6 +71,7 @@ export const QUERY = gql`
                   image
                   yields
                   type
+                  crafting_time
                 }
               }
             }
