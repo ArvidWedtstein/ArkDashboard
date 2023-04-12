@@ -227,7 +227,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
           group={"type"}
           search={true}
           name="itemName"
-          onChange={(e) => onAdd({ itemName: e.name })}
+          onSelect={(e) => onAdd({ itemName: e.name })}
         />
         <div className="inline-flex rounded-md shadow-sm" role="group">
           <button

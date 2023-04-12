@@ -210,7 +210,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           ]}
           name="map"
           defaultValue={props.timelineBasespot?.map.toString()}
-          onChange={(e) => {
+          onSelect={(e) => {
             setValue("map", parseInt(e.value));
           }}
         />
@@ -238,7 +238,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
               ? basespots.filter((b) => b.Map === map)
               : basespots
           }
-          onChange={(e) => setSelectedBasespot(e)}
+          onSelect={(e) => setSelectedBasespot(e)}
           name="basespot_id"
         />
 

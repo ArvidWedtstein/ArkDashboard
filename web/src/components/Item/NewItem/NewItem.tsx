@@ -18,7 +18,8 @@ const NewItem = () => {
   const [createItem, { loading, error }] = useMutation(
     CREATE_ITEM_MUTATION,
     {
-      onCompleted: () => {
+      onCompleted: (data) => {
+        console.log(data)
         toast.success('Item created')
         navigate(routes.items())
       },
@@ -27,6 +28,7 @@ const NewItem = () => {
       },
     }
   )
+
 
   const onSave = (input: CreateItemInput) => {
     createItem({ variables: { input } })

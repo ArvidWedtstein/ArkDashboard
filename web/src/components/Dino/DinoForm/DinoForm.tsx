@@ -495,21 +495,20 @@ const DinoForm = (props: DinoFormProps) => {
                 return {
                   value: g.id,
                   name: g.name,
-                  image: `https://arkids.net/image/item/120/${
-                    g.image
-                      ? g.image
-                          .replace("_(Scorched_Earth)", "")
-                          .replace("_(Aberration)", "")
-                          .replace("_(Genesis_Part_2)", "")
-                          .replaceAll("_", "-")
-                          .toLowerCase()
-                      : `${g.name.toLowerCase()}.png`
-                  }`,
+                  image: `https://arkids.net/image/item/120/${g.image
+                    ? g.image
+                      .replace("_(Scorched_Earth)", "")
+                      .replace("_(Aberration)", "")
+                      .replace("_(Genesis_Part_2)", "")
+                      .replaceAll("_", "-")
+                      .toLowerCase()
+                    : `${g.name.toLowerCase()}.png`
+                    }`,
                 };
               })}
             search={true}
             name="gather_eff"
-            onChange={(e) => setGeType(e.value)}
+            onSelect={(e) => setGeType(e.value)}
           />
           <input
             name="value"
@@ -963,20 +962,19 @@ const DinoForm = (props: DinoFormProps) => {
                   .map((item) => ({
                     value: item.id,
                     name: item.name,
-                    image: `https://arkids.net/image/item/120/${
-                      item.image
-                        ? item.image
-                            .replace("_(Scorched_Earth)", "")
-                            .replace("_(Aberration)", "")
-                            .replace("_(Genesis_Part_2)", "")
-                            .replaceAll("_", "-")
-                            .toLowerCase()
-                        : `${item.name.toLowerCase()}.png`
-                    }`,
+                    image: `https://arkids.net/image/item/120/${item.image
+                      ? item.image
+                        .replace("_(Scorched_Earth)", "")
+                        .replace("_(Aberration)", "")
+                        .replace("_(Genesis_Part_2)", "")
+                        .replaceAll("_", "-")
+                        .toLowerCase()
+                      : `${item.name.toLowerCase()}.png`
+                      }`,
                   }))}
                 search={true}
                 name="eats"
-                onChange={(e) =>
+                onSelect={(e) =>
                   setEats((d) => [
                     ...d,
                     { id: e.id, name: e.name, img: e.image },
@@ -1097,21 +1095,20 @@ const DinoForm = (props: DinoFormProps) => {
                 return {
                   value: g.id,
                   name: g.name,
-                  image: `https://arkids.net/image/item/120/${
-                    g.image
-                      ? g.image
-                          .replace("_(Scorched_Earth)", "")
-                          .replace("_(Aberration)", "")
-                          .replace("_(Genesis_Part_2)", "")
-                          .replaceAll("_", "-")
-                          .toLowerCase()
-                      : `${g.name.toLowerCase()}.png`
-                  }`,
+                  image: `https://arkids.net/image/item/120/${g.image
+                    ? g.image
+                      .replace("_(Scorched_Earth)", "")
+                      .replace("_(Aberration)", "")
+                      .replace("_(Genesis_Part_2)", "")
+                      .replaceAll("_", "-")
+                      .toLowerCase()
+                    : `${g.name.toLowerCase()}.png`
+                    }`,
                 };
               })}
             search={true}
             name="weight_reduction"
-            onChange={(e) => setWrType(e.value)}
+            onSelect={(e) => setWrType(e.value)}
           />
           <input
             name="value"
@@ -1139,7 +1136,7 @@ const DinoForm = (props: DinoFormProps) => {
           items={arkitems.items.filter((item) => item.type === "Resource")}
           search={true}
           name="drops"
-          onChange={(e) =>
+          onSelect={(e) =>
             setDrops((d) => [...d, { id: e.id, name: e.name, img: e.image }])
           }
         />
@@ -1219,12 +1216,12 @@ const DinoForm = (props: DinoFormProps) => {
                   {!value[label]
                     ? "-"
                     : truncate(
-                        (useFoundationUnit
-                          ? Number(value[label] / 300)
-                          : Number(value[label])
-                        ).toFixed(2),
-                        6
-                      )}
+                      (useFoundationUnit
+                        ? Number(value[label] / 300)
+                        : Number(value[label])
+                      ).toFixed(2),
+                      6
+                    )}
                 </p>
               ))}
               <p className="w-20">

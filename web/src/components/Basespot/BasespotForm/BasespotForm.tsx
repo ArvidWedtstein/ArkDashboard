@@ -160,19 +160,19 @@ const BasespotForm = (props: BasespotFormProps) => {
         </SelectField> */}
         <Lookup
           defaultValue={props.basespot?.Map || map}
-          items={[
-            { name: "Valguero", value: 1 },
-            { name: "The Island", value: 2 },
-            { name: "The Center", value: 3 },
-            { name: "Ragnarok", value: 4 },
-            { name: "Abberation", value: 5 },
-            { name: "Extinction", value: 6 },
-            { name: "Scorched Earth", value: 7 },
-            { name: "Genesis", value: 8 },
-            { name: "Genesis 2", value: 9 },
-            { name: "Crystal Isles", value: 10 },
-            { name: "Fjordur", value: 11 },
-            { name: "Lost Island", value: 12 },
+          options={[
+            { label: "Valguero", value: 1 },
+            { label: "The Island", value: 2 },
+            { label: "The Center", value: 3 },
+            { label: "Ragnarok", value: 4 },
+            { label: "Abberation", value: 5 },
+            { label: "Extinction", value: 6 },
+            { label: "Scorched Earth", value: 7 },
+            { label: "Genesis", value: 8 },
+            { label: "Genesis 2", value: 9 },
+            { label: "Crystal Isles", value: 10 },
+            { label: "Fjordur", value: 11 },
+            { label: "Lost Island", value: 12 },
           ]}
           name="Map"
         />
@@ -243,12 +243,11 @@ const BasespotForm = (props: BasespotFormProps) => {
             <FileUpload
               multiple={false}
               name="image"
-              storagePath={`basespotimages/${
-                props.basespot?.id ||
+              storagePath={`basespotimages/${props.basespot?.id ||
                 basename.current?.value.replaceAll(" ", "")
                 // basename.current?.value.replaceAll(" ", "") ||
                 // props.basespot?.name.replaceAll(" ", "")
-              }`}
+                }`}
               onUpload={(url) => {
                 setThumbnailUrl(url);
               }}

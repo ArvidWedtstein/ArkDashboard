@@ -55,6 +55,11 @@ export const item: QueryResolvers["item"] = ({ id }) => {
 };
 
 export const createItem: MutationResolvers["createItem"] = ({ input }) => {
+  // return db.$queryRaw<{ id: BigInt }>`
+  // SELECT id
+  // FROM public."Item"
+  // ORDER BY created_at DESC
+  // LIMIT 1;`
   return db.item.create({
     data: input,
   });

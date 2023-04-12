@@ -15,6 +15,7 @@ interface CheckboxGroupProps {
     valueAsBoolean?: boolean;
     valueAsJSON?: boolean;
     required?: boolean;
+    single?: boolean;
   };
 }
 const CheckboxGroup = ({
@@ -22,15 +23,17 @@ const CheckboxGroup = ({
   options,
   defaultValue,
   onChange,
-  validation,
+  validation = {
+    single: false,
+  },
 }: CheckboxGroupProps) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
 
   const register = name
     ? useRegister({
-        name,
-        validation: { ...validation },
-      })
+      name,
+      validation: { ...validation },
+    })
     : null;
 
   useEffect(() => {
@@ -44,7 +47,7 @@ const CheckboxGroup = ({
     if (selectedOptions.includes(name)) {
       newSelectedOptions = selectedOptions.filter((option) => option !== name);
     } else {
-      newSelectedOptions = [...selectedOptions, name];
+      newSelectedOptions = validation.single ? [name] : [...selectedOptions, name];
     }
 
     setSelectedOptions(newSelectedOptions);

@@ -79,7 +79,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
           items={Object.keys(mapImages).map((k) => ({
             name: k,
           }))}
-          onChange={(e) => setCurrentMap(e.name)}
+          onSelect={(e) => setCurrentMap(e.name)}
         >
           {!!currentMap ? currentMap : "Choose map"}
         </Lookup>

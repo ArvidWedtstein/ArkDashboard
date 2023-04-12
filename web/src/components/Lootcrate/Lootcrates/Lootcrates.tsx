@@ -123,13 +123,13 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
         items={mapImages.map((k) => ({
           name: k,
         }))}
-        onChange={(e) => setCurrentMap(e.name)}
+        onSelect={(e) => setCurrentMap(e.name)}
       ></Lookup>
       <Lookup
         items={categoryItems.map((k) => ({
           name: k,
         }))}
-        onChange={(e) => setCurrentCategory(e.name)}
+        onSelect={(e) => setCurrentCategory(e.name)}
       ></Lookup>
       <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {daLootcrates.map((lootcrate, i) => (
@@ -148,7 +148,7 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
             subtitle={lootcrate.Map.name}
             ring={
               lootcrate?.level_requirement &&
-              lootcrate.level_requirement?.min > 0
+                lootcrate.level_requirement?.min > 0
                 ? `Lvl ${lootcrate.level_requirement.min}`
                 : null
             }

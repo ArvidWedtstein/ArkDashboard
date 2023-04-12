@@ -9,6 +9,8 @@ import {
   SelectField,
   ColorField,
   CheckboxField,
+  useFieldArray,
+  useForm,
 } from "@redwoodjs/forms";
 
 import type { EditItemById, UpdateItemInput } from "types/graphql";
@@ -35,20 +37,24 @@ const ItemForm = (props: ItemFormProps) => {
 
     props.onSave(data, props?.item?.id);
   };
-  const [stats, setStats] = useState([]);
-  const [statType, setStatType] = useState(null);
-  const [statValue, setStatValue] = useState(0);
 
   const [craftable, setCraftable] = useState(false);
 
-  const addStat = (data) => {
-    data.preventDefault()
+  const { register, control } = useForm({
+    defaultValues: {
+      stats: [],
+      recipe: []
+    }
+  });
+  const { fields: statFields, append: appendStat, remove: removeStat } = useFieldArray({
+    control,
+    name: 'stats', // the name of the field array in your form data
+  });
+  const { fields: recipeFields, append: appendRecipe, remove: removeRecipe } = useFieldArray({
+    control,
+    name: 'recipe', // the name of the field array in your form data
+  });
 
-    if (stats.filter((stat) => stat.id === statType).length > 0) return
-    setStats([...stats, { id: statType, value: statValue }]);
-    setStatType(null);
-    setStatValue(0);
-  }
 
   const reducer = (state, action) => {
     const { type, item, id, amount = 1 } = action;
@@ -378,27 +384,69 @@ const ItemForm = (props: ItemFormProps) => {
                   Recipe
                 </Label>
 
-                {/* <TextAreaField
-                  name="recipe"
-                  defaultValue={JSON.stringify(props.item?.recipe)}
-                  className="rw-input"
-                  errorClassName="rw-input rw-input-error"
-                  validation={{ valueAsJSON: true }}
-                /> */}
-                {/* {fields.map((name, index) => (
-                  <div key={name + index} className="flex flex-row">
-                    <input
-                      type="text"
-                      {...control[`players.${index}`].join(",")}
-
-                      className="rw-input"
+                {recipeFields.map((recipe, index) => (
+                  <div className="bg-zinc-800 p-3 rounded-md" key={`recipe-${index}`}>
+                    <CheckboxGroup
+                      defaultValue={recipe.crafting_station}
+                      validation={{ single: true }}
+                      options={[
+                        { value: "606", label: 'Beer Barrel', image: "https://arkids.net/image/item/120/beer-barrel.png" },
+                        { value: "39", label: 'Campfire', image: "https://arkids.net/image/item/120/campfire.png" },
+                        { value: "607", label: 'Chemistry Bench', image: "https://arkids.net/image/item/120/chemistry-bench.png" },
+                        { value: "128", label: 'Cooking Pot', image: "https://arkids.net/image/item/120/cooking-pot.png" },
+                        { value: "127", label: 'Compost Bin', image: "https://arkids.net/image/item/120/compost-bin.png" },
+                        { value: "185", label: 'Fabricator', image: "https://arkids.net/image/item/120/fabricator.png" },
+                        { value: "601", label: 'Industrial Cooker', image: "https://arkids.net/image/item/120/industrial-cooker.png" },
+                        { value: "600", label: 'Industrial Forge', image: "https://arkids.net/image/item/120/industrial-forge.png" },
+                        { value: "360", label: 'Industrial Grill', image: "https://arkids.net/image/item/120/industrial-grill.png" },
+                        { value: "618", label: 'Industrial Grinder', image: "https://arkids.net/image/item/120/industrial-grinder.png" },
+                        { value: "107", label: 'Mortar And Pestle', image: "https://arkids.net/image/item/120/mortar-and-pestle.png" },
+                        { value: "126", label: 'Refining Forge', image: "https://arkids.net/image/item/120/refining-forge.png" },
+                        { value: "129", label: 'Smithy', image: "https://arkids.net/image/item/120/smithy.png" },
+                        { value: "609", label: 'Tek Replicator', image: "https://arkids.net/image/item/120/tek-replicator.png" }
+                      ]}
                     />
-                    <p className="text-white">{JSON.stringify(control[`players.${index}`])}</p>
-                    <button type="button" className="rw-button rw-button-small rw-button-red" onClick={() => remove(index)}>Remove</button>
+                    <div className="rw-button-group justify-start" role="group" key={`recipe-${index}`}>
+                      <Lookup
+                        {...register(`recipe.${index}.item_id`)}
+                        items={arkitems.items.filter((f) => ['Consumable', 'Resource', 'Other', 'Structure', 'Building', 'Tool'].includes(f.type)).map((item) => {
+                          return {
+                            ...item,
+                            value: item.id,
+                            image: `https://arkcheat.com/images/ark/items/${item.image}`,
+                          };
+                        })}
+                        group={"type"}
+                        options={arkitems.items.filter((f) => ['Consumable', 'Resource', 'Other', 'Structure', 'Building', 'Tool'].includes(f.type)).map((item) => {
+                          return {
+                            type: item.type,
+                            label: item.name,
+                            value: item.id,
+                            image: `https://arkcheat.com/images/ark/items/${item.image}`,
+                          };
+                        })}
+                        search={true}
+                        className="!rounded-none !rounded-l-md !mt-0"
+
+                        defaultValue={recipe.item_id}
+                        filterFn={(item, search) => {
+                          return item.label.toLowerCase().includes(search.toLowerCase())
+                        }}
+                      />
+                      <input {...register(`recipe.${index}.amount`, { required: true })} type="number" className="rw-input mt-0" defaultValue={recipe.amount} />
+                      <button type="button" className="rw-button rw-button-red rounded-none !ml-0 !rounded-r-md" onClick={() => removeRecipe(index)}>
+                        Remove Recipe
+                      </button>
+                    </div>
                   </div>
                 ))}
-                <button type="button" className="rw-button rw-button-green" onClick={() => append([] as never[])}>Add</button> */}
-                <Lookup
+                <div className="rw-button-group justify-start">
+                  <button type="button" className="rw-button rw-button-gray" onClick={() => appendRecipe({ item_id: 7, amount: 1, crafting_station: "129" })}>
+                    Add Recipe
+                  </button>
+                </div>
+
+                {/* <Lookup
                   items={arkitems.items.filter((item) => item.type === 'Resource').map((item) => ({
                     ...item, image: `https://arkids.net/image/item/120/${item.name
                       .replaceAll(" ", "-")
@@ -406,8 +454,8 @@ const ItemForm = (props: ItemFormProps) => {
                   }))}
                   search={true}
                   name="recipe"
-                  onChange={(e) => setRecipe({ type: "ADD", item: { ...e, amount: 1 } })} //  setRecipe((d) => [...d, e])
-                />
+                  onSelect={(e) => setRecipe({ type: "ADD", item: { ...e, amount: 1 } })} //  setRecipe((d) => [...d, e])
+                /> */}
 
                 <div className="flex flex-col mt-2">
                   {recipe.map((rec) => (
@@ -441,47 +489,44 @@ const ItemForm = (props: ItemFormProps) => {
                 <p className="rw-helper-text">The amount of this item gained when crafting</p>
                 <FieldError name="yields" className="rw-field-error" />
               </div>
-              <div>
-                <Label
-                  name="type"
-                  className="rw-label"
-                  errorClassName="rw-label rw-label-error"
-                >
-                  Category
-                </Label>
-
-                <SelectField
-                  name="type"
-                  className="rw-input"
-                  defaultValue={props.item?.type}
-                  errorClassName="rw-input rw-input-error"
-                  validation={{
-                    required: false,
-                  }}
-                >
-                  <option>Saddle</option>
-                  <option>Structure</option>
-                  <option>Weapon</option>
-                  <option>Resource</option>
-                  <option>Tool</option>
-                  <option>Ammunition</option>
-                  <option>Consumable</option>
-                  <option>Tek</option>
-                  <option>Building</option>
-                  <option>Crafting</option>
-                  <option>Armor</option>
-                  <option>Egg</option>
-                  <option>Attachment</option>
-                  <option>Other</option>
-                </SelectField>
-
-                <FieldError name="type" className="rw-field-error" />
-              </div>
             </div>
           </fieldset>
         )}
 
-        {/* TODO: If structure category selected, show input for durability etc */}
+        <Label
+          name="type"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Category
+        </Label>
+
+        <SelectField
+          name="type"
+          className="rw-input"
+          defaultValue={props.item?.type}
+          errorClassName="rw-input rw-input-error"
+          validation={{
+            required: false,
+          }}
+        >
+          <option>Saddle</option>
+          <option>Structure</option>
+          <option>Weapon</option>
+          <option>Resource</option>
+          <option>Tool</option>
+          <option>Ammunition</option>
+          <option>Consumable</option>
+          <option>Tek</option>
+          <option>Building</option>
+          <option>Crafting</option>
+          <option>Armor</option>
+          <option>Egg</option>
+          <option>Attachment</option>
+          <option>Other</option>
+        </SelectField>
+
+        <FieldError name="type" className="rw-field-error" />
 
         <Label
           name="stats"
@@ -491,9 +536,56 @@ const ItemForm = (props: ItemFormProps) => {
           Stats
         </Label>
 
-        <div className="flex flex-col">
+        {statFields.map((stat, index) => (
+          <div className="rw-button-group !mt-0 justify-start" role="group" key={`stat-${index}`}>
+            <select
+              className="rw-input mt-0"
+              defaultValue={stat.id}
+              {...register(`stats.${index}.id`)}
+            >
+              <optgroup label="Consumable">
+                <option value={8}>Food</option>
+                <option value={9}>Spoils</option>
+                <option value={10}>Torpor</option>
+                <option value={15}>Affinity</option>
+                <option value={12}>Stamina</option>
+                <option value={11}>Water</option>
+                <option value={7}>Health</option>
+              </optgroup>
+              <optgroup label="Tool/Armor">
+                <option value={2}>Armor</option>
+                <option value={3}>Hypothermal Insulation</option>
+                <option value={4}>Hyperthermal Insulation</option>
+                <option value={5}>Durability</option>
+                <option value={6}>Weapon Damage</option>
+                <option value={16}>Ammo For Item</option>
+                <option value={17}>Weight Reduction</option>
+                <option value={19}>Gather Efficiency</option>
+                <option value={18}>Fuel</option>
+              </optgroup>
+              <optgroup label="Structure">
+                <option value={7}>Health</option>
+                <option value={18}>Fuel</option>
+              </optgroup>
+              <option value={13}>Cooldown</option>
+              <option value={14}>Fertilizer Points</option>
+              <option value={20}>Other</option>
+            </select>
+            <input {...register(`stats.${index}.value`, { required: true })} type="number" className="rw-input mt-0" defaultValue={stat.value} />
+            <button type="button" className="rw-button rw-button-red rounded-none !ml-0 !rounded-r-md" onClick={() => removeStat(index)}>
+              Remove Stat
+            </button>
+          </div>
+        ))}
+        <div className="rw-button-group justify-start">
+          <button type="button" className="rw-button rw-button-gray" onClick={() => appendStat({ id: 0, value: 0 })}>
+            Add Stat
+          </button>
+        </div>
+
+        {/* <div className="flex flex-col">
           {stats && stats.map((stat, index) =>
-            <div className="rw-button-group !mt-0 justify-start">
+            <div className="rw-button-group !mt-0 justify-start" key={`stat-${index}`}>
               <select
                 className="rw-input mt-0"
                 defaultValue={stat.id}
@@ -556,28 +648,9 @@ const ItemForm = (props: ItemFormProps) => {
           <button className="rw-button rw-button-green" onClick={addStat}>
             Add stat
           </button>
-        </div>
+        </div> */}
 
         <FieldError name="stats" className="rw-field-error" />
-
-
-        <Label
-          name="effects"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Effects
-        </Label>
-
-        <TextField
-          name="effects"
-          defaultValue={props.item?.effects}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: false, valueAsJSON: true }}
-        />
-
-        <FieldError name="effects" className="rw-field-error" />
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">
