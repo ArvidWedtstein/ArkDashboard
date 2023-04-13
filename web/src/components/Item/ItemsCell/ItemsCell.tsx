@@ -48,7 +48,6 @@ export const QUERY = gql`
         stats
         color
         crafted_in
-        effects
         type
       }
       count

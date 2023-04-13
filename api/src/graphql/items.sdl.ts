@@ -15,12 +15,12 @@ export const schema = gql`
     stats: JSON
     color: String
     crafted_in: [String]!
-    effects: [String]!
     type: String!
     DinoStat: [DinoStat]!
     ItemRecipe_ItemRecipe_crafted_item_idToItem: [ItemRecipe]!
     ItemRecipe_ItemRecipe_crafting_stationToItem: [ItemRecipe]!
     ItemRecipe_ItemRecipe_item_idToItem: [ItemRecipe]!
+    LootcrateSetEntryItem: [LootcrateSetEntryItem]!
   }
 
   type ItemsPage {
@@ -49,7 +49,6 @@ export const schema = gql`
     stats: JSON
     color: String
     crafted_in: [String]!
-    effects: [String]!
     type: String!
   }
 
@@ -68,7 +67,6 @@ export const schema = gql`
     stats: JSON
     color: String
     crafted_in: [String]!
-    effects: [String]!
     type: String
   }
 
