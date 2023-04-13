@@ -41,7 +41,6 @@ export const QUERY = gql`
       taming_bonus_attr
       disable_food
       disable_mult
-      water_movement
       admin_note
       base_points
       method
@@ -108,7 +107,6 @@ const UPDATE_DINO_MUTATION = gql`
       taming_bonus_attr
       disable_food
       disable_mult
-      water_movement
       admin_note
       base_points
       method

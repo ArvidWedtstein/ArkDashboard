@@ -23,21 +23,14 @@ export const itemsPage = ({
   };
 };
 
-export const itemsByCategory = ({
+export const itemsByCategory: QueryResolvers["itemsByCategory"] = ({
   category,
-  page = 1,
-  items_per_page = 36,
 }: {
   category: string;
-  page: number;
-  items_per_page?: number;
 }) => {
-  const offset = (page - 1) * items_per_page;
   return {
     items: db.item.findMany({
       where: { type: category },
-      take: items_per_page,
-      skip: offset,
       orderBy: { created_at: "desc" },
     }),
     count: db.item.count({ where: { type: category } }),

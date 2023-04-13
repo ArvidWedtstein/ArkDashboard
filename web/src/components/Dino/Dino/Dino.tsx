@@ -285,11 +285,11 @@ const Dino = ({ dino }: Props) => {
                 "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500":
                   calcMaturationPercent() >=
                   (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                    (parseInt(dino.maturation_time) * multipliers.mature) / 10,
+                  (parseInt(dino.maturation_time) * multipliers.mature) / 10,
                 "text-gray-500 dark:text-gray-400 [&>*]:border-gray-500 [&>*]:dark:border-gray-400":
                   calcMaturationPercent() <
                   (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                    (parseInt(dino.maturation_time) * multipliers.mature) / 10,
+                  (parseInt(dino.maturation_time) * multipliers.mature) / 10,
               })}
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
@@ -300,7 +300,7 @@ const Dino = ({ dino }: Props) => {
                 <p className="text-sm">
                   {timeFormatL(
                     (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                      (parseInt(dino.maturation_time) * multipliers.mature) / 10
+                    (parseInt(dino.maturation_time) * multipliers.mature) / 10
                   )}
                 </p>
               </span>
@@ -405,12 +405,12 @@ const Dino = ({ dino }: Props) => {
                     {!value[label]
                       ? "-"
                       : truncate(
-                          (useFoundationUnit
-                            ? Number(value[label] / 300)
-                            : Number(value[label])
-                          ).toFixed(2),
-                          6
-                        )}
+                        (useFoundationUnit
+                          ? Number(value[label] / 300)
+                          : Number(value[label])
+                        ).toFixed(2),
+                        6
+                      )}
                   </p>
                 ))}
                 <p className="w-20">
@@ -699,7 +699,7 @@ const Dino = ({ dino }: Props) => {
               label: "Torpor",
               valueFormatter: (value) => value.value.b,
             },
-            !dino.water_movement && {
+            {
               field: "o",
               label: "Oxygen",
               valueFormatter: (value) => value.value.b,

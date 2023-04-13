@@ -40611,6 +40611,10 @@
     {
       "bp": "/Game/PrimalEarth/Structures/ArtifactCrates/ArtifactCrate_1.ArtifactCrate_1_C",
       "name": "Artifact Container Hunter",
+      "location": {
+        "lat": 83.5,
+        "lon": 56.0
+      },
       "map": "The Island",
       "levelReq": { "min": 0, "max": 0 },
       "decayTime": { "start": 0, "interval": 0 },

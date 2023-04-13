@@ -55,7 +55,7 @@ const CheckboxGroup = ({
   };
 
   return (
-    <div className="flex h-fit flex-wrap gap-3">
+    <div className="flex h-fit flex-wrap gap-3 mt-1">
       {options.map(({ label, image, value: optValue }) => (
         <label key={label}>
           <input
