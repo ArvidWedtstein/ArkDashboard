@@ -409,13 +409,6 @@ const ItemForm = (props: ItemFormProps) => {
                     <div className="rw-button-group justify-start" role="group" key={`recipe-${index}`}>
                       <Lookup
                         {...register(`recipe.${index}.item_id`)}
-                        items={arkitems.items.filter((f) => ['Consumable', 'Resource', 'Other', 'Structure', 'Building', 'Tool'].includes(f.type)).map((item) => {
-                          return {
-                            ...item,
-                            value: item.id,
-                            image: `https://arkcheat.com/images/ark/items/${item.image}`,
-                          };
-                        })}
                         group={"type"}
                         options={arkitems.items.filter((f) => ['Consumable', 'Resource', 'Other', 'Structure', 'Building', 'Tool'].includes(f.type)).map((item) => {
                           return {

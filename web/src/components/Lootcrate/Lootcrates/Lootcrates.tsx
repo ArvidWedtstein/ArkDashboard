@@ -116,7 +116,7 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
     "Lost Island",
     "Genesis 2",
   ];
-
+  // https://ark.wiki.gg/wiki/Coordinates
   return (
     <div className="m-3">
       <Lookup
@@ -143,6 +143,9 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
               src: `https://images.squarespace-cdn.com/content/v1/5a77b6ab18b27d34acd418fe/1543032194681-R59KJT0WFQG43AFYSDXA/ark-survival-evolved-hd-wallpapers-hd-68984-8087136.png`,
               alt: "test",
               position: "70% 30%",
+            }}
+            icon={{
+              src: 'https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/f/f2/Purple_Beacon.png',
             }}
             title={lootcrate.name}
             subtitle={lootcrate.Map.name}

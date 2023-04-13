@@ -100,7 +100,7 @@ a {
   @apply pr-2 text-xl;
 }
 .rw-form-group > div {
-  @apply flex flex-row items-start space-y-3 sm:space-y-0 sm:space-x-3;
+  @apply flex flex-col items-start space-y-3 md:flex-row md:space-y-0 md:space-x-3;
 }
 
 .rw-button {
@@ -278,7 +278,7 @@ a {
   @apply ml-0 mr-1 mt-1 inline w-4;
 }
 .rw-toggle {
-  @apply h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] dark:border-gray-600 dark:bg-gray-700;
+  @apply h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] dark:border-gray-600 dark:bg-zinc-600;
 }
 /* .rw-input:focus {
   @apply border-gray-400;

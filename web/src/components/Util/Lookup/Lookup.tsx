@@ -21,7 +21,6 @@ interface ILookup {
   sortFn?: (a: any, b: any) => number;
 }
 const Lookup = ({
-  items,
   defaultValue,
   children,
   className,
@@ -87,7 +86,6 @@ const Lookup = ({
   // Handle option select
   const handleOptionSelect = option => {
     setSelectedOption(option)
-    // setSearchTerm('')
     setSearchTerm(option.label)
     clearErrors(name)
     onSelect && onSelect(option);
@@ -134,6 +132,7 @@ const Lookup = ({
             onChange={handleInputChange}
             placeholder={placeholder || 'Search...'}
             className="flex w-full items-center bg-transparent outline-none"
+            disabled={disabled}
             {...register}
           />
         ) : (
@@ -170,7 +169,7 @@ const Lookup = ({
               ></path>
             </svg>
           </label>
-          {selectedOption && (
+          {!!selectedOption && (
             <svg
               onClick={handleOptionClear}
               fill="currentColor"

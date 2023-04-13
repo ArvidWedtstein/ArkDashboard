@@ -38,7 +38,6 @@ import Dino from "src/components/Dino/Dino";
 //       taming_bonus_attr
 //       disable_food
 //       disable_mult
-//       water_movement
 //       admin_note
 //       base_points
 //       method
@@ -97,11 +96,8 @@ export const QUERY = gql`
       taming_bonus_attr
       disable_food
       disable_mult
-      water_movement
       admin_note
       base_points
-      method
-      knockout
       non_violent_food_affinity_mult
       non_violent_food_rate_mult
       taming_interval
