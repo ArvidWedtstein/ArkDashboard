@@ -180,6 +180,7 @@ export const getBaseMaterials = (
             .Item_ItemRecipe_crafting_stationToItem.id
         : null;
 
+    // Group by crafting_station somehow
     item.ItemRecipe_ItemRecipe_crafted_item_idToItem.filter((f) =>
       f.Item_ItemRecipe_crafting_stationToItem
         ? f.Item_ItemRecipe_crafting_stationToItem.id === c
