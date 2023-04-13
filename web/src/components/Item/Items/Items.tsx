@@ -93,8 +93,8 @@ const ItemsList = ({ itemsPage }: FindItems) => {
             view === "grid",
         })}
       >
-        {itemsPage.items.map((item) => (
-          <Link to={routes.item({ id: item.id.toString() })}>
+        {itemsPage.items.map((item, i) => (
+          <Link to={routes.item({ id: item.id.toString() })} key={`item-${i}`}>
             <ArkCard
               className="border border-gray-800 dark:border-gray-500"
               title={item.name}
