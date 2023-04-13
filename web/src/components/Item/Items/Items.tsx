@@ -101,7 +101,7 @@ const ItemsList = ({ itemsPage }: FindItems) => {
               subtitle={item.type}
               content={view === "list" ? item.description : ""}
               icon={{
-                src: `https://arkcheat.com/images/ark/items/${item.image}`,
+                src: `/ArkImages/${item.image}`,
                 alt: `${item.name}`,
               }}
             />

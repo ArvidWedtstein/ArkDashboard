@@ -18,6 +18,19 @@ console.time("normal");
 //   });
 //   return x;
 // });
+
+// For downloading images
+// Array.from(document.getElementsByClassName("search-result--image")).filter(function(item, pos) {
+//   return Array.from(document.getElementsByClassName("search-result--image")).indexOf(item) == pos;
+// }).forEach((img) => {
+//   var link = document.createElement('a');
+// link.href = img.currentSrc;
+// link.download = 'Download.jpg';
+// document.body.appendChild(link);
+// link.click();
+// document.body.removeChild(link);
+// });
+
 let color = {
   white: "#ffffff",
   green: "#1FD50E",

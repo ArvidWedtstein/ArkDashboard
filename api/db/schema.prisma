@@ -141,11 +141,8 @@ model Dino {
   taming_bonus_attr              Float?                 @default(0)
   disable_food                   Boolean?               @default(false)
   disable_mult                   Boolean?               @default(false)
-  water_movement                 Boolean?               @default(true)
   admin_note                     String?
   base_points                    Float?
-  method                         String[]
-  knockout                       String[]
   non_violent_food_affinity_mult Float?
   non_violent_food_rate_mult     Float?
   taming_interval                Float?
@@ -180,7 +177,6 @@ model Item {
   stats                                        Json?
   color                                        String?                 @default("#ff0000")
   crafted_in                                   String[]
-  effects                                      String[]
   type                                         String                  @default("Other")
   DinoStat                                     DinoStat[]
   ItemRecipe_ItemRecipe_crafted_item_idToItem  ItemRecipe[]            @relation("ItemRecipe_crafted_item_idToItem")
@@ -281,6 +277,7 @@ model ItemRecipe {
   amount                                 Float     @default(1)
   crafted_item_id                        BigInt
   crafting_station                       BigInt?
+  yields                                 Float?    @default(1)
   Item_ItemRecipe_crafted_item_idToItem  Item      @relation("ItemRecipe_crafted_item_idToItem", fields: [crafted_item_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   Item_ItemRecipe_crafting_stationToItem Item?     @relation("ItemRecipe_crafting_stationToItem", fields: [crafting_station], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Item_ItemRecipe_item_idToItem          Item      @relation("ItemRecipe_item_idToItem", fields: [item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
