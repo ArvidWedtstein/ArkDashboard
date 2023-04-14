@@ -67,6 +67,9 @@ export const deleteItem: MutationResolvers["deleteItem"] = ({ id }) => {
 };
 
 export const Item: ItemRelationResolvers = {
+  Dino: (_obj, { root }) => {
+    return db.item.findUnique({ where: { id: root?.id } }).Dino();
+  },
   DinoStat: (_obj, { root }) => {
     return db.item.findUnique({ where: { id: root?.id } }).DinoStat();
   },

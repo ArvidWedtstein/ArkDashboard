@@ -15,14 +15,15 @@ export const schema = gql`
     stats: JSON
     color: String
     crafted_in: [String]!
-    type: String!
+    type: String
+    category: String!
+    Dino: [Dino]!
     DinoStat: [DinoStat]!
     ItemRecipe_ItemRecipe_crafted_item_idToItem: [ItemRecipe]!
     ItemRecipe_ItemRecipe_crafting_stationToItem: [ItemRecipe]!
     ItemRecipe_ItemRecipe_item_idToItem: [ItemRecipe]!
     LootcrateSetEntryItem: [LootcrateSetEntryItem]!
   }
-
   type ItemsPage {
     items: [Item!]!
     count: Int!
@@ -49,7 +50,8 @@ export const schema = gql`
     stats: JSON
     color: String
     crafted_in: [String]!
-    type: String!
+    type: String
+    category: String!
   }
 
   input UpdateItemInput {
@@ -68,6 +70,7 @@ export const schema = gql`
     color: String
     crafted_in: [String]!
     type: String
+    category: String
   }
 
   type Mutation {

@@ -32,8 +32,6 @@ describe('dinos', () => {
         fits_through: 'String',
         eats: 'String',
         drops: 'String',
-        method: 'String',
-        knockout: 'String',
         type: 'String',
         carryable_by: 'String',
       },
@@ -46,8 +44,6 @@ describe('dinos', () => {
     expect(result.fits_through).toEqual('String')
     expect(result.eats).toEqual('String')
     expect(result.drops).toEqual('String')
-    expect(result.method).toEqual('String')
-    expect(result.knockout).toEqual('String')
     expect(result.type).toEqual('String')
     expect(result.carryable_by).toEqual('String')
   })

@@ -157,6 +157,10 @@ model Dino {
   movement                       Json?                  @default("null")
   type                           String[]
   carryable_by                   String[]
+  saddle_id                      BigInt?
+  icon                           String?
+  image                          String?
+  Item                           Item?                  @relation(fields: [saddle_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   DinoStat                       DinoStat[]
   TimelineBasespotDino           TimelineBasespotDino[]
 }
@@ -177,7 +181,9 @@ model Item {
   stats                                        Json?
   color                                        String?                 @default("#ff0000")
   crafted_in                                   String[]
-  type                                         String                  @default("Other")
+  type                                         String?
+  category                                     String                  @default("'Other'::text")
+  Dino                                         Dino[]
   DinoStat                                     DinoStat[]
   ItemRecipe_ItemRecipe_crafted_item_idToItem  ItemRecipe[]            @relation("ItemRecipe_crafted_item_idToItem")
   ItemRecipe_ItemRecipe_crafting_stationToItem ItemRecipe[]            @relation("ItemRecipe_crafting_stationToItem")
