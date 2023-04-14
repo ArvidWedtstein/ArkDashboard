@@ -25,7 +25,6 @@ export const QUERY = gql`
       stats
       color
       crafted_in
-      effects
       type
     }
   }
@@ -48,7 +47,6 @@ const UPDATE_ITEM_MUTATION = gql`
       stats
       color
       crafted_in
-      effects
       type
     }
   }

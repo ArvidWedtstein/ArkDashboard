@@ -1,7 +1,7 @@
 const { items } = require("./web/public/arkitems.json");
 // const d = require("./web/public/maps.json");
 // const d2 = require("./web/public/f.json");
-const lootcrates = require("./web/public/lootcratesItemId.json");
+// const lootcrates = require("./web/public/lootcratesItemId.json");
 
 // const dd = require("./j.json");
 
@@ -20,9 +20,19 @@ console.time("normal");
 // });
 
 // For downloading images
-// Array.from(document.getElementsByClassName("search-result--image")).filter(function(item, pos) {
-//   return Array.from(document.getElementsByClassName("search-result--image")).indexOf(item) == pos;
-// }).forEach((img) => {
+// setInterval(function(){
+// if(images.length > i){
+//         srcList.push(images[i].src);
+//         var link = document.createElement("a");
+//         link.id=i;
+//         link.download = images[i].src;
+//         link.href = images[i].src;
+//         link.click();
+// 		link.remove();
+//         i++;
+//     }
+
+// 		Array.from(document.querySelectorAll("img.download-me")).forEach((img) => {
 //   var link = document.createElement('a');
 // link.href = img.currentSrc;
 // link.download = 'Download.jpg';
@@ -30,6 +40,7 @@ console.time("normal");
 // link.click();
 // document.body.removeChild(link);
 // });
+// },500);
 
 let color = {
   white: "#ffffff",
@@ -68,29 +79,18 @@ let map = {
 //   return "";
 //   // return `INSERT INTO public."DinoEffWeight" ("dino_id", "item_id", "value", "is_gather_eff")`;
 // });
-const dd = items.map((x) => {
-  if (!x.crafted_in && x.crafted_in === null && x.recipe && x.recipe !== null) {
-    return x.recipe
-      .filter((y) => !isNaN(y.itemId))
-      .map((y) => {
-        return `(${x.id}, ${y.itemId}, ${y.count || 1}),`;
-      })
-      .join("\n");
-  }
-  // if (x?.recipe && x.recipe !== null) {
-  //   return x.recipe
-  //     .map((y) => {
-  //       return `(${x.id}, ${y.itemId}, ${y.count}, ${x.}),`;
-  //     })
-  //     .join("\n");
-  // }
-  return "";
-  // return `INSERT INTO public."DinoEffWeight" ("dino_id", "item_id", "value", "is_gather_eff")`;
-});
+const dd = items
+  .filter((x) => x.name.includes("Saddle"))
+  .map((x) => {
+    return `
+  UPDATE public."Item"
+  SET type = '${x.type}'
+  WHERE id = ${x.id};`;
+  });
 require("fs").writeFile(
   `insert.txt`,
   [
-    `INSERT INTO public."ItemRecipe" ("crafted_item_id", "item_id", "amount") VALUES`,
+    // `INSERT INTO public."Item" ("crafted_item_id", "item_id", "amount") VALUES`,
     ...dd,
   ].join("\n"),
   (error) => {

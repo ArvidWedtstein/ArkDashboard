@@ -19,7 +19,6 @@ import { MaterialGrid } from "../MaterialGrid/MaterialGrid";
 //        stats
 //        color
 //        crafted_in
-//        effects
 //        type
 //      }
 //    }
@@ -43,7 +42,6 @@ export const QUERY = gql`
       stats
       color
       crafted_in
-      effects
       type
       ItemRecipe_ItemRecipe_crafted_item_idToItem {
         amount
