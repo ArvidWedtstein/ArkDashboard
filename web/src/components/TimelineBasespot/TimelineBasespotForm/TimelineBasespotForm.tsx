@@ -227,15 +227,15 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         <Lookup
           defaultValue={props.timelineBasespot?.basespot_id}
-          options={
-            props.timelineBasespot?.map ? basespots.filter((b) => b.Map === map).map((b) => ({
-              label: b.name,
-              value: b.id,
-            }) : basespots.map((b) => ({
-              label: b.name,
-              value: b.id,
-            })
-          }
+          // options={
+          //   props.timelineBasespot?.map ? basespots.filter((b) => b.Map === map).map((b) => ({
+          //     label: b.name,
+          //     value: b.id,
+          //   }) : basespots.map((b) => ({
+          //     label: b.name,
+          //     value: b.id,
+          //   })
+          // }
           onSelect={(e) => setSelectedBasespot(e)}
           name="basespot_id"
         />
