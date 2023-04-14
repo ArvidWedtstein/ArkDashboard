@@ -21,16 +21,7 @@ const DELETE_DINO_MUTATION = gql`
     }
   }
 `;
-interface stats {
-  h: number;
-  s: number;
-  o: number;
-  f: number;
-  w: number;
-  d: number;
-  m: number;
-  t: number;
-}
+
 interface Props {
   dino: NonNullable<FindDinoById["dino"]>;
 }

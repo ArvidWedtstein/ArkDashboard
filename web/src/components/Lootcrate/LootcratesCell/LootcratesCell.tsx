@@ -7,12 +7,11 @@ import Lootcrates from "src/components/Lootcrate/Lootcrates";
 import { toast } from "@redwoodjs/web/dist/toast";
 
 export const QUERY = gql`
-  query FindLootcrates {
-    lootcrates {
+  query FindLootcrates($map: String) {
+    lootcratesByMap(map: $map) {
       id
       created_at
       updated_at
-      blueprint
       name
       map
       level_requirement
@@ -28,7 +27,13 @@ export const QUERY = gql`
   }
 `;
 
-// export const Loading = () => <div>Loading...</div>;
+
+export const beforeQuery = ({ map }: { map: string }) => {
+
+  console.log("beforeQuery", { variables: { map } })
+  return { variables: { map } };
+};
+
 export const Loading = () => (
   <div className="m-4 flex items-center justify-center text-white">
     <p className="mr-4">LOADING</p>

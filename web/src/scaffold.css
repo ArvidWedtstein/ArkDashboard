@@ -493,3 +493,11 @@ a {
     transform: translateX(calc(100% + 1.5em));
   }
 }
+@keyframes popUp {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}

@@ -1,7 +1,7 @@
 import LootcratesCell from 'src/components/Lootcrate/LootcratesCell'
 
-const LootcratesPage = () => {
-  return <LootcratesCell />
+const LootcratesPage = ({ map = "" }) => {
+  return <LootcratesCell map={map} />
 }
 
 export default LootcratesPage

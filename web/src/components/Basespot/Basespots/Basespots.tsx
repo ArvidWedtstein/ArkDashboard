@@ -77,7 +77,8 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
       <div className="flex items-center">
         <Lookup
           items={Object.keys(mapImages).map((k) => ({
-            name: k,
+            label: k,
+            value: k,
           }))}
           onSelect={(e) => setCurrentMap(e.name)}
         >

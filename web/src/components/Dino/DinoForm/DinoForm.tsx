@@ -1446,6 +1446,33 @@ const DinoForm = (props: DinoFormProps) => {
 
         <FieldError name="ridable" className="rw-field-error" />
 
+        {/* TODO: Insert saddle lookup here */}
+        {props.dino?.ridable && (
+          <>
+            <Label
+              name="saddle_id"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Saddle
+            </Label>
+
+            <TextField
+              name="saddle_id"
+              defaultValue={props.dino?.saddle_id}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              validation={{ valueAsNumber: true }}
+            />
+
+            <FieldError
+              name="saddle_id"
+              className="rw-field-error"
+            />
+          </>
+        )}
+
+
         <Label
           name="type"
           className="rw-label"

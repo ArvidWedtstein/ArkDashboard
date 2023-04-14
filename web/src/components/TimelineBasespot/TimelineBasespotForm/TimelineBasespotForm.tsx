@@ -194,19 +194,19 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         {/* TODO: Replace with maps from db */}
 
         <Lookup
-          items={[
-            { name: "Valguero", value: "1" },
-            { name: "The Island", value: "2" },
-            { name: "The Center", value: "3" },
-            { name: "Ragnarok", value: "4" },
-            { name: "Aberration", value: "5" },
-            { name: "Extinction", value: "6" },
-            { name: "Scorched Earth", value: "7" },
-            { name: "Genesis", value: "8" },
-            { name: "Genesis 2", value: "9" },
-            { name: "Crystal Isles", value: "10" },
-            { name: "Fjordur", value: "11" },
-            { name: "Lost Island", value: "12" },
+          options={[
+            { label: "Valguero", value: 1 },
+            { label: "The Island", value: 2 },
+            { label: "The Center", value: 3 },
+            { label: "Ragnarok", value: 4 },
+            { label: "Aberration", value: 5 },
+            { label: "Extinction", value: 6 },
+            { label: "Scorched Earth", value: 7 },
+            { label: "Genesis", value: 8 },
+            { label: "Genesis 2", value: 9 },
+            { label: "Crystal Isles", value: 10 },
+            { label: "Fjordur", value: 11 },
+            { label: "Lost Island", value: 12 },
           ]}
           name="map"
           defaultValue={props.timelineBasespot?.map.toString()}
@@ -226,17 +226,15 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         </Label>
 
         <Lookup
-          defaultValue={
-            props.timelineBasespot?.basespot_id
-              ? basespots.find(
-                (b) => b.id === props.timelineBasespot?.basespot_id
-              ).name
-              : null
-          }
-          items={
-            props.timelineBasespot?.map
-              ? basespots.filter((b) => b.Map === map)
-              : basespots
+          defaultValue={props.timelineBasespot?.basespot_id}
+          options={
+            props.timelineBasespot?.map ? basespots.filter((b) => b.Map === map).map((b) => ({
+              label: b.name,
+              value: b.id,
+            }) : basespots.map((b) => ({
+              label: b.name,
+              value: b.id,
+            })
           }
           onSelect={(e) => setSelectedBasespot(e)}
           name="basespot_id"
