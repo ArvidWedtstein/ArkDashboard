@@ -101,7 +101,7 @@ const ItemsList = ({ itemsPage }: FindItems) => {
               subtitle={item.type}
               content={view === "list" ? item.description : ""}
               icon={{
-                src: `/ArkImages/${item.image}`,
+                src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
                 alt: `${item.name}`,
               }}
             />

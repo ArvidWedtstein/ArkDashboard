@@ -5,7 +5,7 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Dinos from "src/components/Dino/Dinos";
 import Pagination from "src/components/Util/Pagination/Pagination";
-
+// query FindDinos($page: Int) {
 export const QUERY = gql`
   query FindDinos($page: Int) {
     dinosPage(page: $page) {
@@ -43,8 +43,6 @@ export const QUERY = gql`
         disable_mult
         admin_note
         base_points
-        method
-        knockout
         non_violent_food_affinity_mult
         non_violent_food_rate_mult
         taming_interval

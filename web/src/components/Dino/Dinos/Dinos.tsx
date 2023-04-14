@@ -1,11 +1,19 @@
 import { Link, routes } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import { FieldError, Form, FormError, Label, RWGqlError, SelectField, TextField } from '@redwoodjs/forms'
+import {
+  FieldError,
+  Form,
+  FormError,
+  Label,
+  RWGqlError,
+  SelectField,
+  TextField,
+} from "@redwoodjs/forms";
 import { useEffect, useMemo, useState } from "react";
 
 import { QUERY } from "src/components/Dino/DinosCell";
-import debounce from 'lodash.debounce';
+import debounce from "lodash.debounce";
 import type { DeleteDinoMutationVariables, FindDinos } from "types/graphql";
 
 const DELETE_DINO_MUTATION = gql`
@@ -39,29 +47,53 @@ const DinosList = ({ dinosPage }: FindDinos) => {
   };
   // const { dinos } = dinosPage;
   const [dinos, setDinos] = useState([]);
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState("");
   useEffect(() => {
-    setDinos(dinosPage.dinos)
-  }, [dinosPage.dinos])
+    setDinos(dinosPage.dinos);
+  }, [dinosPage.dinos]);
   const handlechange = (e) => {
-    setSearch(e.target.value)
-  }
+    setSearch(e.target.value);
+  };
   const handleSelect = (e) => {
     const value = e.target.value;
-    if (!value) return setDinos(dinosPage.dinos)
-    setDinos(dinosPage.dinos.filter((d) => d.type ? d.type.includes(value) : ''))
-  }
+    if (!value) return setDinos(dinosPage.dinos);
+    setDinos(
+      dinosPage.dinos.filter((d) => (d.type ? d.type.includes(value) : ""))
+    );
+  };
   const types = {
-    boss: 'https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/5/50/Cowardice.png',
-    flyer: 'https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/7/78/Landing.png',
-    amphibious: 'https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/4/44/Swim_Mode.png',
-    ground: 'https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/f/f5/Slow.png',
-    water: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/9/9d/Water.png"
-  }
-  const debouncedChangeHandler = useMemo(() => debounce(handlechange, 500), [])
+    boss: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/5/50/Cowardice.png",
+    flyer:
+      "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/7/78/Landing.png",
+    amphibious:
+      "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/4/44/Swim_Mode.png",
+    ground:
+      "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/f/f5/Slow.png",
+    water:
+      "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/9/9d/Water.png",
+  };
+  const debouncedChangeHandler = useMemo(() => debounce(handlechange, 500), []);
   return (
     <section className="">
-      <Form className="flex my-4">
+      {dinosPage.dinos.map((dino) => (
+        <div className="inline-block">
+          <img
+            className="h-8 w-8"
+            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_${dino.name
+              .toLowerCase()
+              .replaceAll(" ", "")
+              .replace("spinosaurus", "spinosaur")
+              .replaceAll("ö", "o")
+              .replaceAll("tek", "")
+              .replaceAll("paraceratherium", "paracer")
+              .replace("&", "")
+              .replace("prime", "")
+              .replace(",masteroftheocean", "")
+              .replace("insectswarm", "bladewasp")}.png`}
+          />
+        </div>
+      ))}
+      {/* <Form className="flex my-4">
         <label htmlFor="category" className="sr-only">Choose a category</label>
         <SelectField name="category" className="flex-shrink-0 z-10 inline-flex items-center rw-input rounded-none rounded-l-lg" onChange={handleSelect}>
           <option selected>Choose a category</option>
@@ -112,7 +144,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
               </div>
             </Link>
           ))}
-      </div>
+      </div> */}
     </section>
   );
 };
