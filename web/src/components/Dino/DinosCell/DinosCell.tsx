@@ -57,6 +57,8 @@ export const QUERY = gql`
         movement
         type
         carryable_by
+        icon
+        image
       }
       count
     }

@@ -40,8 +40,6 @@ import Dino from "src/components/Dino/Dino";
 //       disable_mult
 //       admin_note
 //       base_points
-//       method
-//       knockout
 //       non_violent_food_affinity_mult
 //       non_violent_food_rate_mult
 //       taming_interval

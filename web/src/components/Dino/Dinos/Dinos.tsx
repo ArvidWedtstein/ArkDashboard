@@ -79,17 +79,8 @@ const DinosList = ({ dinosPage }: FindDinos) => {
         <div className="inline-block">
           <img
             className="h-8 w-8"
-            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_${dino.name
-              .toLowerCase()
-              .replaceAll(" ", "")
-              .replace("spinosaurus", "spinosaur")
-              .replaceAll("ö", "o")
-              .replaceAll("tek", "")
-              .replaceAll("paraceratherium", "paracer")
-              .replace("&", "")
-              .replace("prime", "")
-              .replace(",masteroftheocean", "")
-              .replace("insectswarm", "bladewasp")}.png`}
+            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
+            title={dino.image}
           />
         </div>
       ))}

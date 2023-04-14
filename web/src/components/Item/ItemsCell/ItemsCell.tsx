@@ -49,7 +49,7 @@ export const QUERY = gql`
         stats
         color
         crafted_in
-        # category
+        category
         type
       }
       count
