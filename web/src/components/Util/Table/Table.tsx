@@ -179,11 +179,12 @@ const Table = ({
       >
         {other.sortable ? (
           <div
-            className="flex select-none items-center"
+            className="line-clamp-1 flex select-none items-center"
             id={other.field}
             onClick={sortRows}
           >
-            {truncate(label, 30)}
+            {/* {truncate(label, 30)} */}
+            {label}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="ml-1 h-3 w-3"

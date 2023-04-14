@@ -75,19 +75,17 @@ const DinosList = ({ dinosPage }: FindDinos) => {
   const debouncedChangeHandler = useMemo(() => debounce(handlechange, 500), []);
   return (
     <section className="">
-      {dinosPage.dinos.map((dino) => (
-        <div className="inline-block">
-          <img
-            className="h-8 w-8"
-            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
-            title={dino.image}
-          />
-        </div>
-      ))}
-      {/* <Form className="flex my-4">
-        <label htmlFor="category" className="sr-only">Choose a category</label>
-        <SelectField name="category" className="flex-shrink-0 z-10 inline-flex items-center rw-input rounded-none rounded-l-lg" onChange={handleSelect}>
-          <option selected>Choose a category</option>
+      <Form className="my-4 flex">
+        <label htmlFor="category" className="sr-only">
+          Choose a category
+        </label>
+        <SelectField
+          name="category"
+          className="rw-input z-10 inline-flex flex-shrink-0 items-center rounded-none rounded-l-lg"
+          onChange={handleSelect}
+          defaultValue={"default"}
+        >
+          <option value="default">Choose a category</option>
           <option value="boss">Boss</option>
           <option value="flyer">Flyer</option>
           <option value="water">Water</option>
@@ -95,10 +93,17 @@ const DinosList = ({ dinosPage }: FindDinos) => {
           <option value="ground">Ground</option>
         </SelectField>
 
-        <label htmlFor="dino" className="sr-only">Search for dino</label>
-        <TextField name="dino" className="rw-input rounded-none !rounded-r-lg w-full" placeholder="Search for dino" onInput={(event) => {
-          debouncedChangeHandler(event)
-        }} />
+        <label htmlFor="dino" className="sr-only">
+          Search for dino
+        </label>
+        <TextField
+          name="dino"
+          className="rw-input w-full rounded-none !rounded-r-lg"
+          placeholder="Search for dino"
+          onInput={(event) => {
+            debouncedChangeHandler(event);
+          }}
+        />
       </Form>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-5">
@@ -106,36 +111,45 @@ const DinosList = ({ dinosPage }: FindDinos) => {
           .filter((d) => d.name.toLowerCase().includes(search.toLowerCase()))
           .map((dino) => (
             <Link
+              key={`dino-${dino.id}`}
               to={routes.dino({ id: dino.id })}
-              className="flex h-auto max-w-xs w-auto flex-row rounded-md bg-zinc-600 p-4 text-center text-white items-start justify-start"
+              className="flex h-auto w-auto max-w-xs flex-row items-start justify-start rounded-md bg-zinc-600 p-4 text-center text-white"
             >
-              <div className="flex flex-col justify-between w-full h-full items-start justify-items-stretch">
-                <div className="mb-6 h-32 w-32 rounded-full border bg-gradient-to-br from-zinc-700 to-zinc-700 relative">
+              <div className="flex h-full w-full flex-col items-start justify-between justify-items-stretch">
+                <div className="relative mb-6 h-32 w-32 rounded-full border bg-gradient-to-br from-zinc-700 to-zinc-700">
                   <img
                     className="h-auto max-h-full"
-                    src={`https://www.dododex.com/media/creature/${dino.name
-                      .toLowerCase()
-                      .replaceAll(" ", "")
-                      .replace("spinosaurus", "spinosaur")
-                      .replaceAll("ö", "o")
-                      .replaceAll("tek", "")
-                      .replaceAll("paraceratherium", "paracer")
-                      .replace("&", "")
-                      .replace("prime", "")
-                      .replace(",masteroftheocean", "")
-                      .replace("insectswarm", "bladewasp")}.png`}
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
+                    onError={(e) => {
+                      e.currentTarget.parentElement.hidden = true;
+                      e.currentTarget.parentElement.parentElement.classList.replace(
+                        "justify-between",
+                        "justify-end"
+                      );
+                    }}
+                    // sizes="1rem"
+                    // src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/render/image/public/arkimages/dodo.png?width=500&quality=75`}
+                    // onLoad={() => console.log(`loaded ${dino.name}`)}
                   />
                 </div>
-                <p className="">{dino.name}</p>
+                <p className="tracking-wide subpixel-antialiased">
+                  {dino.name}
+                </p>
               </div>
               <div className="flex flex-col gap-1">
-                {dino.type && dino.type.map((type) => (
-                  <img className="w-8" title={type} src={types[type]} />
-                ))}
+                {dino.type &&
+                  dino.type.map((type) => (
+                    <img
+                      key={`dino-${dino.id}-${type}`}
+                      className="w-8"
+                      title={type}
+                      src={types[type]}
+                    />
+                  ))}
               </div>
             </Link>
           ))}
-      </div> */}
+      </div>
     </section>
   );
 };
