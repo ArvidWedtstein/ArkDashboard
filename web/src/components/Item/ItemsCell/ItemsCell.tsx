@@ -96,9 +96,8 @@ export const Failure = ({ error }: CellFailureProps) => (
     {argitems.items.map((item, i) => {
       return (
         <div className="" title={item.name}>
-          {/* <img className="w-8" src={`/ArkImages/${item.image}`} /> */}
-          {/* <a className="download" href={`https://arkcheat.com/images/ark/items/${item.image}`} download>a</a> */}
-          <img className="w-8" src={`https://arkcheat.com/images/ark/items/${item.image}`} />
+          <img className="w-8" src={`/ArkImages/${item.image}`} />
+          {/* <img className="w-8" src={`https://arkcheat.com/images/ark/items/${item.image}`} /> */}
         </div>
       );
     })
