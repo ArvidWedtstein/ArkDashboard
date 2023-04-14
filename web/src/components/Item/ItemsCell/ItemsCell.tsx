@@ -97,7 +97,8 @@ export const Failure = ({ error }: CellFailureProps) => (
       return (
         <div className="" title={item.name}>
           {/* <img className="w-8" src={`/ArkImages/${item.image}`} /> */}
-          <img className="w-8 download-me" src={`https://arkcheat.com/images/ark/items/${item.image}`} />
+          {/* <a className="download" href={`https://arkcheat.com/images/ark/items/${item.image}`} download>a</a> */}
+          <img className="w-8" src={`https://arkcheat.com/images/ark/items/${item.image}`} />
         </div>
       );
     })
