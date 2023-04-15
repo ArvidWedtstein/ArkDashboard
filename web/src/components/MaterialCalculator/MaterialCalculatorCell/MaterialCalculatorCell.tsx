@@ -42,7 +42,7 @@ export const QUERY = gql`
       stats
       color
       crafted_in
-      type
+      category
       ItemRecipe_ItemRecipe_crafted_item_idToItem {
         amount
         Item_ItemRecipe_crafting_stationToItem {
@@ -54,7 +54,7 @@ export const QUERY = gql`
           name
           image
           yields
-          type
+          category
           crafting_time
           ItemRecipe_ItemRecipe_crafted_item_idToItem {
             amount
@@ -67,7 +67,7 @@ export const QUERY = gql`
               name
               image
               yields
-              type
+              category
               crafting_time
               ItemRecipe_ItemRecipe_crafted_item_idToItem {
                 amount
@@ -80,7 +80,7 @@ export const QUERY = gql`
                   name
                   image
                   yields
-                  type
+                  category
                   crafting_time
                   ItemRecipe_ItemRecipe_crafted_item_idToItem {
                     amount
@@ -93,7 +93,7 @@ export const QUERY = gql`
                       name
                       image
                       yields
-                      type
+                      category
                       crafting_time
                     }
                   }

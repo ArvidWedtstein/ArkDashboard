@@ -218,13 +218,14 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
 
       <div className="relative flex flex-row space-x-3">
         <Lookup
-          items={items.map((item) => {
+          options={items.map((item) => {
             return {
-              ...item,
+              label: item.name,
+              value: item.id,
               image: `https://arkcheat.com/images/ark/items/${item.image}`,
             };
           })}
-          group={"type"}
+          group={"category"}
           search={true}
           name="itemName"
           onSelect={(e) => onAdd({ itemName: e.name })}
