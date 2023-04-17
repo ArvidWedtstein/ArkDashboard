@@ -9,6 +9,7 @@ import {
   Submit,
   useForm,
   useFieldArray,
+  NumberField,
 } from "@redwoodjs/forms";
 import { useEffect, useMemo, useState } from "react";
 import type { EditDinoById, UpdateDinoInput } from "types/graphql";
@@ -118,7 +119,7 @@ const DinoForm = (props: DinoFormProps) => {
     defaultValues: {
       attack: [],
       DinoStat: [],
-      weight_reduction: [],
+      wr: [],
     },
   });
   const {
@@ -135,7 +136,7 @@ const DinoForm = (props: DinoFormProps) => {
     remove: removeWr,
   } = useFieldArray({
     control,
-    name: "weight_reduction", // the name of the field array in your form data
+    name: "wr", // the name of the field array in your form data
   });
   const {
     fields: attackFields,
@@ -154,7 +155,9 @@ const DinoForm = (props: DinoFormProps) => {
 
   const onSubmit = (data: FormDino) => {
     data.eats = eats.map((f) => f.id.toString());
+    data.DinoStat = [...data.DinoStat, ...data["wr"]];
     console.log(data);
+    delete data["wr"];
     const d = {
       name: "test",
       description: "test",
@@ -175,7 +178,7 @@ const DinoForm = (props: DinoFormProps) => {
       ],
     };
     // props.onSave(d, props?.dino?.id);
-    // props.onSave(data, props?.dino?.id);
+    props.onSave(data, props?.dino?.id);
   };
 
   // Movement is shown in game units. UE game units are 1 cm 1:1
@@ -341,7 +344,7 @@ const DinoForm = (props: DinoFormProps) => {
                             type: item.type,
                             label: item.name,
                             value: item.id,
-                            image: `https://arkcheat.com/images/ark/items/${item.image}`,
+                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
                           };
                         })}
                       search={true}
@@ -352,11 +355,12 @@ const DinoForm = (props: DinoFormProps) => {
                           .includes(search.toLowerCase());
                       }}
                     />
-                    <TextField
+                    <NumberField
                       {...register(`DinoStat.${index}.value`, {
                         required: true,
                         min: 0,
                         max: 5,
+                        valueAsNumber: true,
                       })}
                       className="rw-input mt-0 max-w-[7rem]"
                       defaultValue={ge.value}
@@ -413,7 +417,7 @@ const DinoForm = (props: DinoFormProps) => {
                     key={`wr-${index}`}
                   >
                     <Lookup
-                      {...register(`weight_reduction.${index}.item_id`)}
+                      {...register(`wr.${index}.item_id`)}
                       className="!mt-0 !rounded-none !rounded-l-md"
                       options={arkitems.items
                         .filter((f) => f.type === "Resource")
@@ -433,13 +437,20 @@ const DinoForm = (props: DinoFormProps) => {
                           .includes(search.toLowerCase());
                       }}
                     />
-                    <input
-                      {...register(`weight_reduction.${index}.value`, {
+                    <NumberField
+                      {...register(`wr.${index}.value`, {
                         required: true,
+                        min: 0,
+                        max: 100,
+                        valueAsNumber: true,
                       })}
-                      type="number"
                       className="rw-input mt-0 max-w-[7rem]"
                       defaultValue={wr.value}
+                    />
+                    <TextField
+                      {...register(`wr.${index}.type`)}
+                      className="rw-input mt-0 hidden max-w-[7rem]"
+                      defaultValue={wr.type}
                     />
                     <button
                       type="button"
@@ -457,8 +468,8 @@ const DinoForm = (props: DinoFormProps) => {
                   onClick={() =>
                     appendWr({
                       item_id: 0,
-                      value: 0,
                       type: "weight_reduction",
+                      value: 0,
                     })
                   }
                 >
@@ -924,7 +935,7 @@ const DinoForm = (props: DinoFormProps) => {
                             type: item.type,
                             label: item.name,
                             value: item.id,
-                            image: `https://arkcheat.com/images/ark/items/${item.image}`,
+                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
                           };
                         })}
                       search={true}
@@ -1359,16 +1370,7 @@ const DinoForm = (props: DinoFormProps) => {
                   .map((item) => ({
                     value: item.id,
                     label: item.name,
-                    image: `https://arkids.net/image/item/120/${
-                      item.image
-                        ? item.image
-                            .replace("_(Scorched_Earth)", "")
-                            .replace("_(Aberration)", "")
-                            .replace("_(Genesis_Part_2)", "")
-                            .replaceAll("_", "-")
-                            .toLowerCase()
-                        : `${item.name.toLowerCase()}.png`
-                    }`,
+                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
                   }))}
                 search={true}
                 name="eats"

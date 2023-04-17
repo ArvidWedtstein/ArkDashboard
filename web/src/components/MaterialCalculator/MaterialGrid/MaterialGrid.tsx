@@ -222,7 +222,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
             return {
               label: item.name,
               value: item.id,
-              image: `https://arkcheat.com/images/ark/items/${item.image}`,
+              image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
             };
           })}
           group={"category"}
@@ -312,7 +312,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                   return (
                     <div className="flex flex-col items-center justify-center">
                       <img
-                        src={`https://arkcheat.com/images/ark/items/${row.image}`}
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
                         className="h-6 w-6"
                       />
                       <span className="text-sm">{value}</span>
@@ -343,9 +343,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                       <ImageField
                         className="h-8 w-8"
                         name="itemimage"
-                        src={
-                          "https://arkcheat.com/images/ark/items/" + row.image
-                        }
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
                       />
                     </button>
                   );
@@ -420,7 +418,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                         key={`${itm.id}-${i * Math.random()}${i}`}
                       >
                         <img
-                          src={`https://arkcheat.com/images/ark/items/${itm.image}`}
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${itm.image}`}
                           className="h-6 w-6"
                           title={itm.name}
                           alt={itm.name}

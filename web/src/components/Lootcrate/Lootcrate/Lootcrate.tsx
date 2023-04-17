@@ -148,7 +148,7 @@ const Lootcrate = ({ lootcrate }: Props) => {
                                   >
                                     {itm.Item.image && (
                                       <img
-                                        src={`https://arkcheat.com/images/ark/items/${itm.Item.image}`}
+                                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${itm.Item.image}`}
                                         className="inline-block h-6 w-6"
                                       />
                                     )}
