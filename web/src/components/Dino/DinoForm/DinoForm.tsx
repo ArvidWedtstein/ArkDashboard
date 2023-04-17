@@ -158,25 +158,27 @@ const DinoForm = (props: DinoFormProps) => {
     data.DinoStat = [...data.DinoStat, ...data["wr"]];
     console.log(data);
     delete data["wr"];
-    const d = {
-      name: "test",
-      description: "test",
-      synonyms: ["test"],
-      can_destroy: ["t"],
-      fits_through: ["381"],
-      immobilized_by: ["t"],
-      carryable_by: ["t"],
-      drops: ["11"],
-      type: ["Ground"],
-      eats: ["11"],
-      DinoStat: [
-        {
-          type: "gather_efficiency",
-          value: 5,
-          item_id: 8,
-        },
-      ],
-    };
+
+    // Test Dino Object
+    // const d = {
+    //   name: "test",
+    //   description: "test",
+    //   synonyms: ["test"],
+    //   can_destroy: ["t"],
+    //   fits_through: ["381"],
+    //   immobilized_by: ["t"],
+    //   carryable_by: ["t"],
+    //   drops: ["11"],
+    //   type: ["Ground"],
+    //   eats: ["11"],
+    //   DinoStat: [
+    //     {
+    //       type: "gather_efficiency",
+    //       value: 5,
+    //       item_id: 8,
+    //     },
+    //   ],
+    // };
     // props.onSave(d, props?.dino?.id);
     props.onSave(data, props?.dino?.id);
   };
