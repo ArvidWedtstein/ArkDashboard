@@ -50,6 +50,9 @@ export const item: QueryResolvers["item"] = ({ id }) => {
 export const createItem: MutationResolvers["createItem"] = ({ input }) => {
   return db.item.create({
     data: input,
+    include: {
+      DinoStat: true,
+    },
   });
 };
 

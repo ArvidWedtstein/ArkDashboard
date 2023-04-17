@@ -118,12 +118,12 @@ const DinoForm = (props: DinoFormProps) => {
   const { register, control } = useForm({
     defaultValues: {
       attack: [],
-      gather_eff: []
+      DinoStat: []
     }
   });
   const { fields: statFields, append: appendStat, remove: removeStat } = useFieldArray({
     control,
-    name: 'gather_eff', // the name of the field array in your form data
+    name: 'DinoStat', // the name of the field array in your form data
   });
   const { fields: attackFields, append: appendAttack, remove: removeAttack } = useFieldArray({
     control,
@@ -136,17 +136,10 @@ const DinoForm = (props: DinoFormProps) => {
 
   const [useFoundationUnit, setUseFoundationUnit] = useState(false);
 
-  const [ge, setGE] = useState([]);
-  const [geType, setGeType] = useState(null);
-  const [geValue, setGeValue] = useState(0);
-
-  const [wr, setWR] = useState([]);
-  const [wrType, setWrType] = useState(null);
-  const [wrValue, setWrValue] = useState(0);
-
-
 
   const onSubmit = (data: FormDino) => {
+    data.eats = eats.map((f) => f.id.toString());
+    console.log(data)
     props.onSave(data, props?.dino?.id);
   };
 
@@ -209,6 +202,7 @@ const DinoForm = (props: DinoFormProps) => {
             <TextField
               name="synonyms"
               defaultValue={props.dino?.synonyms.join(", ")}
+              emptyAs={[]}
               className="rw-input"
               errorClassName="rw-input rw-input-error"
               validation={{
@@ -295,7 +289,7 @@ const DinoForm = (props: DinoFormProps) => {
               {statFields.filter((ge) => ge.type === 'gather_efficiency').map((ge, index) => (
                 <div className="rw-button-group justify-start" role="group" key={`ge-${index}`}>
                   <Lookup
-                    {...register(`gather_eff.${index}.item_id`)}
+                    {...register(`DinoStat.${index}.item_id`)}
                     className="!rounded-none !rounded-l-md !mt-0"
                     options={arkitems.items.filter((f) => f.type === 'Resource').map((item) => {
                       return {
@@ -311,7 +305,7 @@ const DinoForm = (props: DinoFormProps) => {
                       return item.label.toLowerCase().includes(search.toLowerCase())
                     }}
                   />
-                  <input {...register(`gather_eff.${index}.value`, { required: true })} type="number" className="rw-input mt-0 max-w-[7rem]" defaultValue={ge.value} />
+                  <input {...register(`DinoStat.${index}.value`, { required: true })} type="number" className="rw-input mt-0 max-w-[7rem]" defaultValue={ge.value} />
                   <button type="button" className="rw-button rw-button-red rounded-none !ml-0 !rounded-r-md" onClick={() => removeStat(index)}>
                     Remove
                   </button>
@@ -337,7 +331,7 @@ const DinoForm = (props: DinoFormProps) => {
               {statFields.filter((stat) => stat.type === 'weight_reduction').map((wr, index) => (
                 <div className="rw-button-group justify-start" role="group" key={`wr-${index}`}>
                   <Lookup
-                    {...register(`gather_eff.${index}.item_id`)}
+                    {...register(`DinoStat.${index}.item_id`)}
                     className="!rounded-none !rounded-l-md !mt-0"
                     options={arkitems.items.filter((f) => f.type === 'Resource').map((item) => {
                       return {
@@ -353,7 +347,7 @@ const DinoForm = (props: DinoFormProps) => {
                       return item.label.toLowerCase().includes(search.toLowerCase())
                     }}
                   />
-                  <input {...register(`gather_eff.${index}.value`, { required: true })} type="number" className="rw-input mt-0 max-w-[7rem]" defaultValue={wr.value} />
+                  <input {...register(`DinoStat.${index}.value`, { required: true })} type="number" className="rw-input mt-0 max-w-[7rem]" defaultValue={wr.value} />
                   <button type="button" className="rw-button rw-button-red rounded-none !ml-0 !rounded-r-md" onClick={() => removeStat(index)}>
                     Remove
                   </button>
@@ -646,7 +640,7 @@ const DinoForm = (props: DinoFormProps) => {
             <p className="w-20">Tamed inc.</p>
           </div>
           {statEntries.map(([stat, value], index) => (
-            <div className="flex flex-row items-center space-x-1" key={index}>
+            <div className="flex flex-row items-center space-x-1" key={`stat-${index}`}>
               <img
                 title={{
                   "s": "Stamina",
@@ -671,8 +665,9 @@ const DinoForm = (props: DinoFormProps) => {
                 }[stat]}
                 alt=""
               />
-              {["b", "w", "t"].map((label) => (
+              {["b", "w", "t"].map((label, i) => (
                 <input
+                  key={`${label}-${i}`}
                   className="rw-input w-20"
                   defaultValue={JSON.stringify(value[label])}
                   placeholder={label}
@@ -710,10 +705,11 @@ const DinoForm = (props: DinoFormProps) => {
                 Drops
               </Label>
 
+              <TextField name="drops" className="rw-input" defaultValue={JSON.stringify(12)} />
               {statFields.filter((ge) => ge.type === 'drops').map((ge, index) => (
                 <div className="rw-button-group justify-start !mt-0" role="group" key={`drops-${index}`}>
                   <Lookup
-                    {...register(`gather_eff.${index}.item_id`)}
+                    {...register(`DinoStat.${index}.item_id`)}
                     className="!rounded-none !rounded-l-md !mt-0"
                     options={arkitems.items.filter((f) => f.type === 'Resource').map((item) => {
                       return {
@@ -963,7 +959,7 @@ const DinoForm = (props: DinoFormProps) => {
 
               <TextField
                 name="base_taming_time"
-                defaultValue={props.dino?.base_taming_time || 0}
+                defaultValue={props.dino?.base_taming_time}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
                 emptyAs={0}
@@ -983,7 +979,7 @@ const DinoForm = (props: DinoFormProps) => {
 
               <TextField
                 name="taming_interval"
-                defaultValue={props.dino?.taming_interval || 0}
+                defaultValue={props.dino?.taming_interval}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
                 validation={{ valueAsNumber: true }}
@@ -1002,7 +998,7 @@ const DinoForm = (props: DinoFormProps) => {
 
               <TextField
                 name="taming_bonus_attr"
-                defaultValue={props.dino?.taming_bonus_attr || 0}
+                defaultValue={props.dino?.taming_bonus_attr}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
                 emptyAs={0}
@@ -1068,7 +1064,7 @@ const DinoForm = (props: DinoFormProps) => {
 
               <TextField
                 name="maturation_time"
-                defaultValue={props.dino?.maturation_time || 0}
+                defaultValue={props.dino?.maturation_time}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
                 validation={{ valueAsNumber: true }}
@@ -1087,7 +1083,7 @@ const DinoForm = (props: DinoFormProps) => {
 
               <TextField
                 name="incubation_time"
-                defaultValue={props.dino?.incubation_time || 0}
+                defaultValue={props.dino?.incubation_time}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
                 validation={{ valueAsNumber: true }}
@@ -1148,11 +1144,13 @@ const DinoForm = (props: DinoFormProps) => {
                   }))}
                 search={true}
                 name="eats"
-                onSelect={(e) =>
+                onSelect={(e) => {
                   setEats((d) => [
                     ...d,
-                    { id: e.id, name: e.name, img: e.image },
+                    { id: e.value, name: e.label, img: e.image },
                   ])
+                }
+
                 }
               />
 
@@ -1160,7 +1158,7 @@ const DinoForm = (props: DinoFormProps) => {
                 <div className="mt-2 w-48 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:border-zinc-500 dark:bg-zinc-600 dark:text-white">
                   {eats.map((food, i) => (
                     <button
-                      key={i}
+                      key={`food-${i}`}
                       onClick={() =>
                         setEats((d) => d.filter((g) => g.id !== food.id))
                       }
@@ -1253,14 +1251,14 @@ const DinoForm = (props: DinoFormProps) => {
 
         <div className="flex flex-col text-white space-y-2">
           {Object.entries(movement).map(([k, v], i) => (
-            <div>
+            <div key={`m-${i}`}>
               <p>{{ "w": "Forwards", "d": "Sideways", "staminaRates": "Stamina Rates" }[k]}</p>
               <div className="flex flex-row items-center space-x-1 space-y-1 relative" key={`m-${i}`}>
                 {Object.entries(v).map(([k2, v2]: any, i2) => (
                   <div className="bg-zinc-700 p-3 rounded-lg" key={`m-${i}-c-${i2}`}>
                     <legend className="capitalize text-base font-medium">{k2}</legend>
                     {typeof v2 === 'object' ? Object.entries(v2).map(([k3, v3]: any, i3) => (
-                      <div className="mt-2 border-t border-spacing-6">
+                      <div className="mt-2 border-t border-spacing-6" key={`m-${i}-c-${i2}-s-${i3}`}>
                         <label className="capitalize text-sm font-light">{k3}</label>
                         <input className="rw-input max-w-[10rem]" key={`m-${i}-c-${i2}-f-${i3}`} onChange={(e) => setMovement((prevMovement) => {
                           const newMovement = { ...prevMovement }
@@ -1447,7 +1445,7 @@ const DinoForm = (props: DinoFormProps) => {
         <FieldError name="ridable" className="rw-field-error" />
 
         {/* TODO: Insert saddle lookup here */}
-        {props.dino?.ridable && (
+        {/* {props.dino?.ridable && (
           <>
             <Label
               name="saddle_id"
@@ -1470,7 +1468,7 @@ const DinoForm = (props: DinoFormProps) => {
               className="rw-field-error"
             />
           </>
-        )}
+        )} */}
 
 
         <Label
@@ -1478,12 +1476,15 @@ const DinoForm = (props: DinoFormProps) => {
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
-          Dino Type
+          Dino Type {props.dino?.type}
         </Label>
 
         <CheckboxGroup
           name="type"
           defaultValue={props.dino?.type}
+          validation={{
+            required: true
+          }}
           options={[
             {
               value: "flyer",

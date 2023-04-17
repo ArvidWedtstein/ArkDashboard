@@ -1,4 +1,4 @@
-import { FieldError, useRegister } from "@redwoodjs/forms";
+import { FieldError, TextField, useFormContext, useRegister } from "@redwoodjs/forms";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 
@@ -28,13 +28,14 @@ const CheckboxGroup = ({
   },
 }: CheckboxGroupProps) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
-
   const register = name
-    ? useRegister({
-      name,
-      validation: { ...validation },
-    })
-    : null;
+    && useRegister({
+      name: name,
+      validation: { ...validation, required: false },
+      element: name
+    });
+
+  const reg = useFormContext().register(name, { ...validation });
 
   useEffect(() => {
     setSelectedOptions(defaultValue || []);
@@ -61,7 +62,7 @@ const CheckboxGroup = ({
           <input
             disabled={!name && !label}
             type="checkbox"
-            name={optValue || label}
+            name={optValue || label + "checkbox"}
             onChange={handleCheckboxChange}
             checked={selectedOptions.includes(optValue || label)}
             className="rw-check-input"
@@ -88,8 +89,21 @@ const CheckboxGroup = ({
           </span>
         </label>
       ))}
-      <input
+      {/* <input
         type="hidden"
+        {...reg}
+        name={name}
+        value={selectedOptions}
+      /> */}
+      {/* <TextField
+        {...reg}
+        name={name}
+        value={selectedOptions}
+        validation={{ ...validation, required: false }}
+      /> */}
+
+      <input
+        type="text"
         name={name}
         value={selectedOptions}
         {...(name ? { ...register } : "")}
