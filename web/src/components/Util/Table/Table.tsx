@@ -9,7 +9,7 @@ interface GridCell<V = any> {
   rowIndex: number;
   field: string;
   value: V;
-  row?: V;
+  row?: V | ThisType<Row>;
 }
 interface ColumnData<V = any, F = V> {
   field: string;

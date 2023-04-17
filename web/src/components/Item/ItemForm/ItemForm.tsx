@@ -37,6 +37,7 @@ const ItemForm = (props: ItemFormProps) => {
     //   count: item.amount,
     // }));
     console.log(data);
+
     props.onSave(data, props?.item?.id);
   };
 
@@ -116,9 +117,9 @@ const ItemForm = (props: ItemFormProps) => {
     reducer,
     props.item?.recipe
       ? (props.item?.recipe as any[]).map((f) => {
-        let i = arkitems.items.find((i) => i.id === f.itemId);
-        return { ...i, amount: f.count };
-      })
+          let i = arkitems.items.find((i) => i.id === f.itemId);
+          return { ...i, amount: f.count };
+        })
       : []
   );
 
@@ -192,7 +193,7 @@ const ItemForm = (props: ItemFormProps) => {
           <summary className="inline-flex items-center">
             Stats
             <svg
-              className="h-4 w-4 ml-1"
+              className="ml-1 h-4 w-4"
               aria-hidden="true"
               fill="none"
               stroke="currentColor"

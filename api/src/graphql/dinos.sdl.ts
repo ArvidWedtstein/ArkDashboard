@@ -115,6 +115,7 @@ export const schema = gql`
     saddle_id: BigInt
     icon: String
     image: String
+    DinoStat: JSON
   }
 
   input UpdateDinoInput {
@@ -167,6 +168,7 @@ export const schema = gql`
     saddle_id: BigInt
     icon: String
     image: String
+    DinoStat: JSON
   }
 
   type Mutation {
