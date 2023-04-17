@@ -35,12 +35,23 @@ export const dino: QueryResolvers["dino"] = ({ id }) => {
 export const createDino: MutationResolvers["createDino"] = ({ input }) => {
   return db.dino.create({
     data: input,
+    // data: {
+    //   ...input,
+    //   DinoStat: {
+    //     create: input?.DinoStat,
+    //   },
+    // },
   });
 };
 
 export const updateDino: MutationResolvers["updateDino"] = ({ id, input }) => {
   return db.dino.update({
-    data: input,
+    data: {
+      ...input,
+      // DinoStat: {
+      //   connect: { id: input.DinoStat?.connect?.id },
+      // }
+    },
     where: { id },
   });
 };

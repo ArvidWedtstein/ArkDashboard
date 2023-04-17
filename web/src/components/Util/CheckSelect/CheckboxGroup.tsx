@@ -31,11 +31,8 @@ const CheckboxGroup = ({
   const register = name
     && useRegister({
       name: name,
-      validation: { ...validation, required: false },
-      element: name
+      validation: { ...validation },
     });
-
-  const reg = useFormContext().register(name, { ...validation });
 
   useEffect(() => {
     setSelectedOptions(defaultValue || []);

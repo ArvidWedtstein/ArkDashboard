@@ -202,13 +202,13 @@ const DinoForm = (props: DinoFormProps) => {
             <TextField
               name="synonyms"
               defaultValue={props.dino?.synonyms.join(", ")}
-              emptyAs={[]}
+              emptyAs={[] as any}
               className="rw-input"
               errorClassName="rw-input rw-input-error"
               validation={{
                 required: false,
                 setValueAs: (e) =>
-                  e.length > 0 ? e.split(",").map((s) => s.trim()) : null,
+                  e.length > 0 ? e.split(",").map((s) => s.trim()) : [],
               }}
             />
             <p className="rw-helper-text">
