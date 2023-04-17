@@ -31,12 +31,12 @@ interface ItemFormProps {
 
 const ItemForm = (props: ItemFormProps) => {
   const onSubmit = (data: FormItem) => {
-    delete data["craftable"];
-    data.recipe = recipe.map((item) => ({
-      itemId: item.id,
-      count: item.amount,
-    }));
-
+    // delete data["craftable"];
+    // data.recipe = recipe.map((item) => ({
+    //   itemId: item.id,
+    //   count: item.amount,
+    // }));
+    console.log(data);
     props.onSave(data, props?.item?.id);
   };
 
@@ -116,9 +116,9 @@ const ItemForm = (props: ItemFormProps) => {
     reducer,
     props.item?.recipe
       ? (props.item?.recipe as any[]).map((f) => {
-          let i = arkitems.items.find((i) => i.id === f.itemId);
-          return { ...i, amount: f.count };
-        })
+        let i = arkitems.items.find((i) => i.id === f.itemId);
+        return { ...i, amount: f.count };
+      })
       : []
   );
 
@@ -252,20 +252,21 @@ const ItemForm = (props: ItemFormProps) => {
           </div>
         </fieldset>
 
-        <Label
+        {/* <Label
           name="craftable"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
           Craftable
-        </Label>
+        </Label> */}
 
-        <CheckboxField
-          name="craftable"
+        <input
+          type="checkbox"
+          // name="craftable"
           defaultChecked={craftable}
           onChange={(e) => setCraftable(e.target.checked)}
           className="rw-input"
-          errorClassName="rw-input rw-input-error"
+        // errorClassName="rw-input rw-input-error"
         />
 
         {craftable && (
@@ -752,9 +753,9 @@ const ItemForm = (props: ItemFormProps) => {
         </Label>
 
         <SelectField
-          name="type"
+          name="category"
           className="rw-input"
-          defaultValue={props.item?.type}
+          defaultValue={props.item?.category}
           errorClassName="rw-input rw-input-error"
           validation={{
             required: false,
@@ -776,7 +777,7 @@ const ItemForm = (props: ItemFormProps) => {
           <option>Other</option>
         </SelectField>
 
-        <FieldError name="type" className="rw-field-error" />
+        <FieldError name="category" className="rw-field-error" />
 
         <Label
           name="stats"

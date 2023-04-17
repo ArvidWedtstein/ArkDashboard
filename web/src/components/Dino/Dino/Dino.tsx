@@ -429,7 +429,7 @@ const Dino = ({ dino }: Props) => {
         <section className="mt-4 text-gray-400 dark:text-white">
           <h3 className="font-medium leading-tight">Immobilized by</h3>
           <CheckboxGroup
-            defaultValue={dino.immobilized_by.map((item) =>
+            defaultValue={dino.immobilized_by.map((item: any) =>
               item?.item_id.toString()
             )}
             options={[
@@ -566,7 +566,7 @@ const Dino = ({ dino }: Props) => {
         <section className="mt-4 text-gray-400 dark:text-white">
           <h3 className="font-medium leading-tight">Fits Through</h3>
           <CheckboxGroup
-            defaultValue={dino.fits_through.map((item) =>
+            defaultValue={dino.fits_through.map((item: any) =>
               item?.item_id.toString()
             )}
             options={[
@@ -709,7 +709,7 @@ const Dino = ({ dino }: Props) => {
         />
       </section>
       <section className="mt-4 grid grid-cols-1 text-gray-400 dark:text-white md:grid-cols-2">
-        {dino.gather_efficiency && (
+        {dino.gather_eff && (
           <div className="space-y-2">
             <h4>Gather Efficiency</h4>
             <Table
@@ -717,7 +717,7 @@ const Dino = ({ dino }: Props) => {
               header={true}
               pagination={true}
               rowsPerPage={5}
-              rows={(dino.gather_efficiency as any[]).sort(
+              rows={(dino.gather_eff as any[]).sort(
                 (a, b) => b.value - a.value
               )}
               columns={[

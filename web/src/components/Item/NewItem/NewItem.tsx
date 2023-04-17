@@ -50,8 +50,15 @@ const NewItem = () => {
 
 
   const onSave = async (input: CreateItemInput) => {
-    const { data: { createItem: { id } } } = await createItem({ variables: { input } })
-    console.log(id)
+    try {
+      // delete input.category
+      // const d = await createItem({ variables: { input } })
+      console.log(input)
+      createItem({ variables: { input } })
+      // console.log(d)
+    } catch (error) {
+      console.log(error)
+    }
     // await createItemRecipe({ variables: { crafted_item_id: id, amount: 1, item_id: 1, crafting_station: 606 } });
     // createItem({ variables: { input } })
   }

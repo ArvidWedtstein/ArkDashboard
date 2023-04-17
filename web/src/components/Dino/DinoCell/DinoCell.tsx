@@ -131,7 +131,7 @@ export const afterQuery = (data) => {
       weight_reduction:
         data.dino.DinoStat &&
         data.dino.DinoStat.filter((d) => d.type == "weight_reduction"),
-      gather_efficiency:
+      gather_eff:
         data.dino.DinoStat &&
         data.dino.DinoStat.filter((d) => d.type == "gather_efficiency"),
       eats:
