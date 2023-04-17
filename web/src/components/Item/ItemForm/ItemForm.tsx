@@ -188,8 +188,30 @@ const ItemForm = (props: ItemFormProps) => {
 
         <FieldError name="image" className="rw-field-error" />
 
-        <fieldset className="rw-form-group">
-          <legend>Stats</legend>
+        <details className="rw-form-group group">
+          <summary className="inline-flex items-center">
+            Stats
+            <svg
+              className="h-4 w-4 ml-1"
+              aria-hidden="true"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                className="group-open:block [&:not(open)]:hidden"
+                d="M19 9l-7 7-7-7"
+              ></path>
+              <path
+                className="group-open:hidden [&:not(open)]:block"
+                d="M9 5l7 7-7 7"
+              ></path>
+            </svg>
+          </summary>
           <div>
             <div>
               <Label
@@ -222,7 +244,7 @@ const ItemForm = (props: ItemFormProps) => {
 
               <TextField
                 name="weight"
-                defaultValue={props.item?.weight ? props.item.weight : 0}
+                defaultValue={props.item?.weight || 0}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
                 validation={{ valueAsNumber: true }}
@@ -241,7 +263,7 @@ const ItemForm = (props: ItemFormProps) => {
 
               <TextField
                 name="max_stack"
-                defaultValue={props.item?.max_stack || 0}
+                defaultValue={props.item?.max_stack || 1}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
                 validation={{ valueAsNumber: true }}
@@ -250,23 +272,14 @@ const ItemForm = (props: ItemFormProps) => {
               <FieldError name="max_stack" className="rw-field-error" />
             </div>
           </div>
-        </fieldset>
+        </details>
 
-        {/* <Label
-          name="craftable"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Craftable
-        </Label> */}
-
+        <label className="rw-label">Craftable</label>
         <input
           type="checkbox"
-          // name="craftable"
           defaultChecked={craftable}
           onChange={(e) => setCraftable(e.target.checked)}
-          className="rw-input"
-        // errorClassName="rw-input rw-input-error"
+          className="rw-input mt-3"
         />
 
         {craftable && (

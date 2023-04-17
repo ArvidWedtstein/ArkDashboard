@@ -94,10 +94,11 @@ a {
 }
 /* Form Section */
 .rw-form-group {
-  @apply mt-2 flex flex-col items-start border-t border-stone-500 text-gray-900 dark:border-zinc-300 dark:text-stone-200;
+  @apply mt-2 flex flex-col items-start border-t border-stone-500 pt-2 text-gray-900 dark:border-zinc-300 dark:text-stone-200;
 }
-.rw-form-group legend {
-  @apply pr-2 text-xl;
+.rw-form-group legend,
+.rw-form-group summary {
+  @apply relative pr-2 text-xl; /* list-decimal */
 }
 .rw-form-group > div {
   @apply flex flex-col items-start space-y-3 md:flex-row md:space-y-0 md:space-x-3;
