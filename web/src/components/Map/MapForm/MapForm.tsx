@@ -6,10 +6,14 @@ import {
   TextField,
   TextAreaField,
   Submit,
+  useForm,
+  useFieldArray,
+  useFormContext,
 } from '@redwoodjs/forms'
 
 import type { EditMapById, UpdateMapInput } from 'types/graphql'
-import type { RWGqlError } from '@redwoodjs/forms'
+import type { Control, FieldValues, RWGqlError, UseFieldArrayReturn, UseFormRegister } from '@redwoodjs/forms'
+import { Map } from 'src/components/Util/Map/Map'
 
 
 
@@ -23,11 +27,111 @@ interface MapFormProps {
   loading: boolean
 }
 
+interface MapInputProps {
+  name: string;
+  control: Control<FieldValues>;
+  register: UseFormRegister<FieldValues>;
+}
+const MapInput = ({ name, control, register }: MapInputProps) => {
+  const { fields: fields, append: append, remove: remove } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormContext)
+    name, // the name of the field array in your form data
+  });
+  return (
+    <details className="rw-form-group group custom">
+      <summary className="inline-flex items-center capitalize">
+        {name.replaceAll('_', ' ')}
+        <svg
+          className="h-4 w-4 ml-1"
+          aria-hidden="true"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            className="group-open:block [&:not(open)]:hidden"
+            d="M19 9l-7 7-7-7"
+          ></path>
+          <path
+            className="group-open:hidden [&:not(open)]:block"
+            d="M9 5l7 7-7 7"
+          ></path>
+        </svg>
+      </summary>
+      <div className='grid grid-cols-1 md:grid-cols-2'>
+        <div className='flex flex-col'>
+          {fields.map((cr: any, index) => (
+            <div className="rw-button-group justify-start !mt-0" role="group" key={cr.id} >
+              <TextField
+                name={`${name}.${index}.lat`}
+                {...register(`${name}.${index}.lat`)}
+                defaultValue={cr.lat.toString()}
+                className="rw-input !mt-0 max-w-[7rem]"
+                errorClassName="rw-input rw-input-error"
+                title='Latitude'
+                placeholder='Latitude'
+              />
+              <TextField
+                name={`${name}.${index}.lon`}
+                {...register(`${name}.${index}.lon`)}
+                defaultValue={cr.lon.toString()}
+                className="rw-input !mt-0 max-w-[7rem]"
+                errorClassName="rw-input rw-input-error"
+                title='Longitude'
+                placeholder='Longitude'
+              />
+              <button type="button" className="rw-button rw-button-red rounded-none !ml-0 !rounded-r-md" onClick={() => remove(index)}>
+                Remove
+              </button>
+            </div>
+          ))
+          }
+        </div>
+        <div>
+          <Map
+            map={"1"}
+            pos={fields.map((cr: any) => ({ lat: cr.lat, lon: cr.lon }))}
+          />
+        </div>
+      </div>
+      <div className="rw-button-group justify-start">
+        <button type="button" className="rw-button rw-button-gray !ml-0 capitalize" onClick={() => append({ lat: 50, lon: 50 })}>
+          Add {name.replaceAll('_', ' ')}
+        </button>
+      </div>
+      <FieldError name={name} className="rw-field-error" />
+    </details>
+  )
+}
 const MapForm = (props: MapFormProps) => {
+
+  // <DeepPartial<FormMap>>
+  const { register, control, setValue } = useForm();
+
+  const { fields: crateFields, append: appendCrate, remove: removeCrate } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormContext)
+    name: 'loot_crates', // the name of the field array in your form data
+  });
+  const { fields: oilFields, append: appendOil, remove: removeOil } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormContext)
+    name: 'oil_veins', // the name of the field array in your form data
+  });
+  const { fields: waterFields, append: appendWater, remove: removeWater } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormContext)
+    name: 'water_veins', // the name of the field array in your form data
+  });
+  const { fields: wyvernNestFields, append: appendWyvernNest, remove: removeWyvernNest } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormContext)
+    name: 'wyvern_nests', // the name of the field array in your form data
+  });
+
   const onSubmit = (data: FormMap) => {
     props.onSave(data, props?.map?.id)
   }
-
   return (
     <div className="rw-form-wrapper">
       <Form<FormMap> onSubmit={onSubmit} error={props.error}>
@@ -53,311 +157,8 @@ const MapForm = (props: MapFormProps) => {
           errorClassName="rw-input rw-input-error"
         />
 
-
         <FieldError name="name" className="rw-field-error" />
 
-        <Label
-          name="loot_crates"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Loot crates
-        </Label>
-
-        <TextAreaField
-          name="loot_crates"
-          defaultValue={JSON.stringify(props.map?.loot_crates)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-        />
-
-
-        <FieldError name="loot_crates" className="rw-field-error" />
-
-        <Label
-          name="oil_veins"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Oil veins
-        </Label>
-
-        <TextAreaField
-          name="oil_veins"
-          defaultValue={JSON.stringify(props.map?.oil_veins)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-        />
-
-
-        <FieldError name="oil_veins" className="rw-field-error" />
-
-        <Label
-          name="water_veins"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Water veins
-        </Label>
-
-        <TextAreaField
-          name="water_veins"
-          defaultValue={JSON.stringify(props.map?.water_veins)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-        />
-
-
-        <FieldError name="water_veins" className="rw-field-error" />
-
-        <Label
-          name="wyvern_nests"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Wyvern nests
-        </Label>
-
-        <TextAreaField
-          name="wyvern_nests"
-          defaultValue={JSON.stringify(props.map?.wyvern_nests)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-        />
-
-
-        <FieldError name="wyvern_nests" className="rw-field-error" />
-
-        <Label
-          name="ice_wyvern_nests"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Ice wyvern nests
-        </Label>
-
-        <TextAreaField
-          name="ice_wyvern_nests"
-          defaultValue={JSON.stringify(props.map?.ice_wyvern_nests)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-        />
-
-
-        <FieldError name="ice_wyvern_nests" className="rw-field-error" />
-
-        <Label
-          name="gas_veins"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Gas veins
-        </Label>
-
-        <TextAreaField
-          name="gas_veins"
-          defaultValue={JSON.stringify(props.map?.gas_veins)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-        />
-
-
-        <FieldError name="gas_veins" className="rw-field-error" />
-
-        <Label
-          name="deinonychus_nests"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Deinonychus nests
-        </Label>
-
-        <TextAreaField
-          name="deinonychus_nests"
-          defaultValue={JSON.stringify(props.map?.deinonychus_nests)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-        />
-
-
-        <FieldError name="deinonychus_nests" className="rw-field-error" />
-
-        <Label
-          name="charge_nodes"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Charge nodes
-        </Label>
-
-        <TextAreaField
-          name="charge_nodes"
-          defaultValue={JSON.stringify(props.map?.charge_nodes)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-        />
-
-
-        <FieldError name="charge_nodes" className="rw-field-error" />
-
-        <Label
-          name="plant_z_nodes"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Plant z nodes
-        </Label>
-
-        <TextAreaField
-          name="plant_z_nodes"
-          defaultValue={JSON.stringify(props.map?.plant_z_nodes)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-        />
-
-
-        <FieldError name="plant_z_nodes" className="rw-field-error" />
-
-        <Label
-          name="drake_nests"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Drake nests
-        </Label>
-
-        <TextAreaField
-          name="drake_nests"
-          defaultValue={JSON.stringify(props.map?.drake_nests)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-        />
-
-
-        <FieldError name="drake_nests" className="rw-field-error" />
-
-        <Label
-          name="glitches"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Glitches
-        </Label>
-
-        <TextAreaField
-          name="glitches"
-          defaultValue={JSON.stringify(props.map?.glitches)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-        />
-
-
-        <FieldError name="glitches" className="rw-field-error" />
-
-        <Label
-          name="magmasaur_nests"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Magmasaur nests
-        </Label>
-
-        <TextAreaField
-          name="magmasaur_nests"
-          defaultValue={JSON.stringify(props.map?.magmasaur_nests)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-        />
-
-
-        <FieldError name="magmasaur_nests" className="rw-field-error" />
-
-        <Label
-          name="poison_trees"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Poison trees
-        </Label>
-
-        <TextAreaField
-          name="poison_trees"
-          defaultValue={JSON.stringify(props.map?.poison_trees)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-        />
-
-
-        <FieldError name="poison_trees" className="rw-field-error" />
-
-        <Label
-          name="mutagen_bulbs"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Mutagen bulbs
-        </Label>
-
-        <TextAreaField
-          name="mutagen_bulbs"
-          defaultValue={JSON.stringify(props.map?.mutagen_bulbs)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-        />
-
-
-        <FieldError name="mutagen_bulbs" className="rw-field-error" />
-
-        <Label
-          name="carniflora"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Carniflora
-        </Label>
-
-        <TextAreaField
-          name="carniflora"
-          defaultValue={JSON.stringify(props.map?.carniflora)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-        />
-
-        <FieldError name="carniflora" className="rw-field-error" />
-
-
-        <Label
-          name="notes"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Notes
-        </Label>
-
-        <TextAreaField
-          name="notes"
-          defaultValue={JSON.stringify(props.map?.notes)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
-        />
-
-        <FieldError name="notes" className="rw-field-error" />
 
         <Label
           name="img"
@@ -374,8 +175,39 @@ const MapForm = (props: MapFormProps) => {
           errorClassName="rw-input rw-input-error"
         />
 
-
         <FieldError name="img" className="rw-field-error" />
+
+        <MapInput name="loot_crates" register={register} control={control} />
+
+        <MapInput name="oil_veins" register={register} control={control} />
+
+        <MapInput name="water_veins" register={register} control={control} />
+
+        <MapInput name="wyvern_nests" register={register} control={control} />
+
+        <MapInput name="ice_wyvern_nests" register={register} control={control} />
+
+        <MapInput name="gas_veins" register={register} control={control} />
+
+        <MapInput name="deinonychus_nests" register={register} control={control} />
+
+        <MapInput name="charge_nodes" register={register} control={control} />
+
+        <MapInput name="plant_z_nodes" register={register} control={control} />
+
+        <MapInput name="drake_nests" register={register} control={control} />
+
+        <MapInput name="glitches" register={register} control={control} />
+
+        <MapInput name="magmasaur_nests" register={register} control={control} />
+
+        <MapInput name="poison_trees" register={register} control={control} />
+
+        <MapInput name="mutagen_bulbs" register={register} control={control} />
+
+        <MapInput name="carniflora" register={register} control={control} />
+
+        <MapInput name="notes" register={register} control={control} />
 
         <div className="rw-button-group">
           <Submit
@@ -385,8 +217,8 @@ const MapForm = (props: MapFormProps) => {
             Save
           </Submit>
         </div>
-      </Form>
-    </div>
+      </Form >
+    </div >
   )
 }
 

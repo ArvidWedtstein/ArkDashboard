@@ -98,9 +98,9 @@ a {
 }
 .rw-form-group legend,
 .rw-form-group summary {
-  @apply relative pr-2 text-xl; /* list-decimal */
+  @apply relative mb-2 pr-2 text-xl; /* list-decimal */
 }
-.rw-form-group > div {
+.rw-form-group:not(.custom) > div {
   @apply flex flex-col items-start space-y-3 md:flex-row md:space-y-0 md:space-x-3;
 }
 
