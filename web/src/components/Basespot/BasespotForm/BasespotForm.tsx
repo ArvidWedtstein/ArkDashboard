@@ -243,11 +243,12 @@ const BasespotForm = (props: BasespotFormProps) => {
             <FileUpload
               multiple={false}
               name="image"
-              storagePath={`basespotimages/${props.basespot?.id ||
+              storagePath={`basespotimages/${
+                props.basespot?.id ||
                 basename.current?.value.replaceAll(" ", "")
                 // basename.current?.value.replaceAll(" ", "") ||
                 // props.basespot?.name.replaceAll(" ", "")
-                }`}
+              }`}
               onUpload={(url) => {
                 setThumbnailUrl(url);
               }}

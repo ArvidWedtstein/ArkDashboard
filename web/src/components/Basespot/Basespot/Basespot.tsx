@@ -72,12 +72,14 @@ const Basespot = ({ basespot }: Props) => {
             <h1 className="title-font mb-4 text-3xl font-medium text-gray-900 dark:text-stone-400 sm:text-4xl">
               {basespot.name}
               <br className="hidden lg:inline-block" />
-              {basespot.map && (<Link
-                to={routes.map({ id: basespot.map.toString() })}
-                className=""
-              >
-                {basespot.Map_Basespot_MapToMap.name}
-              </Link>)}
+              {basespot.map && (
+                <Link
+                  to={routes.map({ id: basespot.map.toString() })}
+                  className=""
+                >
+                  {basespot.Map_Basespot_MapToMap.name}
+                </Link>
+              )}
             </h1>
             <p className="mb-8 leading-relaxed">{basespot.description}</p>
             <div className="flex justify-center space-x-2">

@@ -110,15 +110,15 @@ const ItemForm = (props: ItemFormProps) => {
     }
   };
 
-  let [recipe, setRecipe] = useReducer(
-    reducer,
-    props.item?.recipe
-      ? (props.item?.recipe as any[]).map((f) => {
-        let i = arkitems.items.find((i) => i.id === f.itemId);
-        return { ...i, amount: f.count };
-      })
-      : []
-  );
+  // let [recipe, setRecipe] = useReducer(
+  //   reducer,
+  //   props.item?.recipe
+  //     ? (props.item?.recipe as any[]).map((f) => {
+  //       let i = arkitems.items.find((i) => i.id === f.itemId);
+  //       return { ...i, amount: f.count };
+  //     })
+  //     : []
+  // );
 
   return (
     <div className="rw-form-wrapper">

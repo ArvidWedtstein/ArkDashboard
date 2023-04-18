@@ -18,7 +18,6 @@ export const QUERY = gql`
       crafting_time
       req_level
       yields
-      recipe
       stats
       color
       crafted_in
