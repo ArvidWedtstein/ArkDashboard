@@ -12,26 +12,21 @@ export const QUERY = gql`
       created_at
       updated_at
       timeline_id
-      startDate
-      endDate
-      # start_date
-      # end_date
+      start_date
+      end_date
       basespot_id
-      tribeName
-      # tribe_name
+      tribe_name
       map
       server
       region
       season
       cluster
-      location
-      # latitude
-      # longitude
+      latitude
+      longitude
       players
       created_by
       raided_by
-      raidcomment
-      # raid_comment
+      raid_comment
       Map {
         name
       }
@@ -79,10 +74,8 @@ export const afterQuery = (data) => {
       ...data,
       timelineBasespot: {
         ...data.timelineBasespot,
-        location: {
-          lat: data.timelineBasespot.basespot.latitude,
-          lon: data.timelineBasespot.basespot.longitude,
-        },
+        latitude: data.timelineBasespot.basespot.latitude,
+        longitude: data.timelineBasespot.basespot.longitude,
       },
     }
     : data;

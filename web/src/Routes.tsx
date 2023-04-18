@@ -193,11 +193,11 @@ const Routes = () => {
             page={TimelineNewTimelinePage}
             name="newTimeline"
           />
-          <Route
+          {/* <Route
             path="/timelines/{id:String}"
             page={TimelineTimelinePage}
             name="timeline"
-          />
+          /> */}
           <Route
             path="/timelines"
             page={TimelineTimelinesPage}

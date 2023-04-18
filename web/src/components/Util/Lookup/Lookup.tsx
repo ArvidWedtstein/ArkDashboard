@@ -5,7 +5,6 @@ import { debounce, groupBy } from "src/lib/formatters";
 import clsx from "clsx";
 
 interface ILookup {
-  items?: { name?: string; image?: string; value?: string | number }[];
   defaultValue?: any;
   children?: any;
   className?: string;

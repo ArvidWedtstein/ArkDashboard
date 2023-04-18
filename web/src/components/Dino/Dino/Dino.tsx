@@ -85,17 +85,7 @@ const Dino = ({ dino }: Props) => {
     <div className="container mx-auto">
       <section className="grid grid-cols-1 md:grid-cols-2">
         <img
-          src={`https://www.dododex.com/media/creature/${dino.name
-            .toLowerCase()
-            .replaceAll(" ", "")
-            .replace("spinosaurus", "spinosaur")
-            .replaceAll("ö", "o")
-            .replaceAll("tek", "")
-            .replaceAll("paraceratherium", "paracer")
-            .replace("&", "")
-            .replace("prime", "")
-            .replace(",masteroftheocean", "")
-            .replace("insectswarm", "bladewasp")}.png`}
+          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
           alt={dino.name}
           className="m-4 w-full p-4"
         />
@@ -276,11 +266,11 @@ const Dino = ({ dino }: Props) => {
                 "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500":
                   calcMaturationPercent() >=
                   (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                    (parseInt(dino.maturation_time) * multipliers.mature) / 10,
+                  (parseInt(dino.maturation_time) * multipliers.mature) / 10,
                 "text-gray-500 dark:text-gray-400 [&>*]:border-gray-500 [&>*]:dark:border-gray-400":
                   calcMaturationPercent() <
                   (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                    (parseInt(dino.maturation_time) * multipliers.mature) / 10,
+                  (parseInt(dino.maturation_time) * multipliers.mature) / 10,
               })}
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
@@ -291,7 +281,7 @@ const Dino = ({ dino }: Props) => {
                 <p className="text-sm">
                   {timeFormatL(
                     (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                      (parseInt(dino.maturation_time) * multipliers.mature) / 10
+                    (parseInt(dino.maturation_time) * multipliers.mature) / 10
                   )}
                 </p>
               </span>
@@ -396,12 +386,12 @@ const Dino = ({ dino }: Props) => {
                     {!value[label]
                       ? "-"
                       : truncate(
-                          (useFoundationUnit
-                            ? Number(value[label] / 300)
-                            : Number(value[label])
-                          ).toFixed(2),
-                          6
-                        )}
+                        (useFoundationUnit
+                          ? Number(value[label] / 300)
+                          : Number(value[label])
+                        ).toFixed(2),
+                        6
+                      )}
                   </p>
                 ))}
                 <p className="w-20">

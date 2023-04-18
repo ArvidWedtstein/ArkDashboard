@@ -592,24 +592,6 @@ const ItemForm = (props: ItemFormProps) => {
                     >
                       <Lookup
                         {...register(`recipe.${index}.item_id`)}
-                        items={arkitems.items
-                          .filter((f) =>
-                            [
-                              "Consumable",
-                              "Resource",
-                              "Other",
-                              "Structure",
-                              "Building",
-                              "Tool",
-                            ].includes(f.type)
-                          )
-                          .map((item) => {
-                            return {
-                              ...item,
-                              value: item.id,
-                              image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                            };
-                          })}
                         group={"type"}
                         options={arkitems.items
                           .filter((f) =>
@@ -684,7 +666,7 @@ const ItemForm = (props: ItemFormProps) => {
                   onSelect={(e) => setRecipe({ type: "ADD", item: { ...e, amount: 1 } })} //  setRecipe((d) => [...d, e])
                 /> */}
 
-                <div className="mt-2 flex flex-col">
+                {/* <div className="mt-2 flex flex-col">
                   {recipe.map((rec) => (
                     <div className="rw-button-group !mt-0 mb-0 justify-start text-sm font-medium">
                       <span
@@ -715,13 +697,13 @@ const ItemForm = (props: ItemFormProps) => {
                       />
                     </div>
                   ))}
-                </div>
+                </div> */}
 
                 <p className="rw-helper-text">
                   Items needed for crafting this item
                 </p>
 
-                <FieldError name="recipe" className="rw-field-error" />
+                {/* <FieldError name="recipe" className="rw-field-error" /> */}
 
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

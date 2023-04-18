@@ -133,8 +133,8 @@ const TimelineBasespotsList = ({
   const handleOnMove = (e) => {
     if (imgTrack.current.dataset.mouseDownAt === "0") return;
     const mouseDelta =
-        parseFloat(imgTrack.current.dataset.mouseDownAt) -
-        parseFloat(e.clientX),
+      parseFloat(imgTrack.current.dataset.mouseDownAt) -
+      parseFloat(e.clientX),
       maxDelta = Number(imgTrack.current.clientWidth) / 2;
 
     const percentage = (Number(mouseDelta) / Number(maxDelta)) * -100,
@@ -164,8 +164,8 @@ const TimelineBasespotsList = ({
   const handleScroll = (e) => {
     if (imgTrack.current.dataset.mouseDownAt === "0") return;
     const mouseDelta =
-        parseFloat(imgTrack.current.dataset.mouseDownAt) -
-        parseFloat(e.delta[0]),
+      parseFloat(imgTrack.current.dataset.mouseDownAt) -
+      parseFloat(e.delta[0]),
       maxDelta = Number(imgTrack.current.clientWidth) / 2;
 
     const percentage = (Number(mouseDelta) / Number(maxDelta)) * -100,
@@ -229,7 +229,7 @@ const TimelineBasespotsList = ({
               >
                 <div className="z-10 flex h-full flex-col items-start justify-end px-8 py-4 text-stone-200">
                   <p className="text-xl font-bold uppercase">
-                    {timelineBasespot.tribeName}
+                    {timelineBasespot.tribe_name}
                   </p>
                   <p className="text-base font-light">
                     {timelineBasespot.Map.name}{" "}
@@ -242,7 +242,7 @@ const TimelineBasespotsList = ({
                     <div className="flex flex-col items-start">
                       <p className="text-md font-light">
                         {new Date(
-                          timelineBasespot.startDate
+                          timelineBasespot.start_date
                         ).toLocaleDateString("no-NO", {
                           month: "short",
                           day: "numeric",
@@ -262,9 +262,9 @@ const TimelineBasespotsList = ({
                         <img
                           src={
                             servers[
-                              timelineBasespot.server
-                                .toLowerCase()
-                                .replaceAll(" ", "")
+                            timelineBasespot.server
+                              .toLowerCase()
+                              .replaceAll(" ", "")
                             ]
                           }
                           className="ml-1 inline-block h-6 w-6 rounded-full"

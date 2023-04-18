@@ -56,14 +56,10 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
   const onSubmit = (data: FormTimelineBasespot) => {
     if (selectedBasespot) {
-      data.map = selectedBasespot?.Map;
-      data.location = {
-        lat: selectedBasespot?.latitude,
-        lon: selectedBasespot?.longitude,
-      };
-      // TODO: Replace once timelinebasespot is updated
-      // data.latitude = selectedBasespot?.latitude;
-      // data.longitude = selectedBasespot?.longitude;
+      data.map = selectedBasespot?.map;
+
+      data.latitude = selectedBasespot?.latitude;
+      data.longitude = selectedBasespot?.longitude;
     }
     formMethods.reset();
     props.onSave(data, props?.timelineBasespot?.id);
@@ -71,7 +67,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
   const getBasespots = async () => {
     let { data, error, status } = await supabase
       .from("Basespot")
-      .select(`id, name, Map, latitude, longitude`);
+      .select(`id, name, map, latitude, longitude`);
 
     if (error && status !== 406) {
       throw error;
@@ -135,7 +131,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           <div>
             <div>
               <Label
-                name="startDate"
+                name="start_date"
                 className="rw-label"
                 errorClassName="rw-label rw-label-error"
               >
@@ -143,19 +139,19 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
               </Label>
 
               <DatetimeLocalField
-                name="startDate"
-                defaultValue={formatDatetime(props.timelineBasespot?.startDate)}
+                name="start_date"
+                defaultValue={formatDatetime(props.timelineBasespot?.start_date)}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
                 emptyAs={null}
                 validation={{ required: true }}
               />
 
-              <FieldError name="startDate" className="rw-field-error" />
+              <FieldError name="start_date" className="rw-field-error" />
             </div>
             <div>
               <Label
-                name="endDate"
+                name="end_date"
                 className="rw-label"
                 errorClassName="rw-label rw-label-error"
               >
@@ -163,14 +159,14 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
               </Label>
 
               <DatetimeLocalField
-                name="endDate"
-                defaultValue={formatDatetime(props.timelineBasespot?.endDate)}
+                name="end_Date"
+                defaultValue={formatDatetime(props.timelineBasespot?.end_date)}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
                 emptyAs={null}
               />
 
-              <FieldError name="endDate" className="rw-field-error" />
+              <FieldError name="end_date" className="rw-field-error" />
             </div>
           </div>
         </fieldset>
@@ -237,19 +233,17 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         <MapPicker
           map={map || props.timelineBasespot?.map}
           valueProp={{
-            latitude: props.timelineBasespot?.location["lat"],
-            longitude: props.timelineBasespot?.location["lon"],
+            latitude: props.timelineBasespot?.latitude,
+            longitude: props.timelineBasespot?.latitude,
           }}
           onChanges={(e) => {
-            formMethods.setValue(
-              "location",
-              JSON.stringify({ lat: e.latitude, lon: e.longitude })
-            );
+            formMethods.setValue("latitude", e.latitude);
+            formMethods.setValue("longitude", e.longitude);
           }}
         />
 
         <Label
-          name="tribeName"
+          name="tribe_name"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
@@ -257,14 +251,14 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         </Label>
 
         <TextField
-          name="tribeName"
-          defaultValue={props.timelineBasespot?.tribeName}
+          name="tribe_name"
+          defaultValue={props.timelineBasespot?.tribe_name}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ required: true }}
         />
 
-        <FieldError name="tribeName" className="rw-field-error" />
+        <FieldError name="tribe_name" className="rw-field-error" />
 
         <fieldset className="rw-form-group">
           <legend>Server Info</legend>
@@ -351,18 +345,35 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
-          Location
+          Latitude
         </Label>
 
-        <TextAreaField
-          name="location"
-          defaultValue={JSON.stringify(props.timelineBasespot?.location)}
+        <TextField
+          name="latitude"
+          defaultValue={props.timelineBasespot?.latitude}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
-          validation={{ valueAsJSON: true }}
         />
 
-        <FieldError name="location" className="rw-field-error" />
+        <FieldError name="latitude" className="rw-field-error" />
+
+
+        <Label
+          name="longitude"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Longitude
+        </Label>
+
+        <TextField
+          name="longitude"
+          defaultValue={props.timelineBasespot?.longitude}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+
+        <FieldError name="longitude" className="rw-field-error" />
 
         <Label
           name="players"
@@ -388,7 +399,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         <FieldError name="players" className="rw-field-error" />
 
-        {(true || !props.timelineBasespot?.endDate) && (
+        {(true || !props.timelineBasespot?.end_date) && (
           <fieldset className="rw-form-group">
             <legend>Raid Info</legend>
             <div>
@@ -415,7 +426,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
               </div>
               <div>
                 <Label
-                  name="raidcomment"
+                  name="raid_comment"
                   className="rw-label"
                   errorClassName="rw-label rw-label-error"
                 >
@@ -423,13 +434,13 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                 </Label>
 
                 <TextAreaField
-                  name="raidcomment"
+                  name="raid_comment"
                   defaultValue={props.timelineBasespot?.raidcomment}
                   className="rw-input"
                   errorClassName="rw-input rw-input-error"
                 />
 
-                <FieldError name="raidcomment" className="rw-field-error" />
+                <FieldError name="raid_comment" className="rw-field-error" />
               </div>
             </div>
           </fieldset>
@@ -458,17 +469,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                                 "invert(95%) sepia(69%) saturate(911%) hue-rotate(157deg) brightness(100%) contrast(103%)",
                             }}
                             className="h-full w-full object-cover object-center p-2"
-                            src={`https://arkids.net/image/creature/120/${dino.Dino.name
-                              .toLowerCase()
-                              .replaceAll(" ", "-")
-                              .replace("spinosaurus", "spinosaur")
-                              .replaceAll("ö", "o")
-                              .replaceAll("tek", "")
-                              .replaceAll("paraceratherium", "paracer")
-                              .replace("&", "")
-                              .replace("prime", "")
-                              .replace(",masteroftheocean", "")
-                              .replace("insectswarm", "bladewasp")}.png`}
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
                             alt=""
                           />
                         </div>
@@ -489,7 +490,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                             className="font-semibold text-green-500"
                             title={dino.death_cause}
                           >
-                            {dino.birth_date != null && dino.death_date != null ? `${timeTag(dino.birth_date)} - ${timeTag(dino.death_date)}` : props.timelineBasespot.tribeName}
+                            {dino.birth_date != null && dino.death_date != null ? `${timeTag(dino.birth_date)} - ${timeTag(dino.death_date)}` : props.timelineBasespot.tribe_name}
                           </p>
                           <p className="font-semibold text-green-500">
                             Tamed ({dino.level_wild})

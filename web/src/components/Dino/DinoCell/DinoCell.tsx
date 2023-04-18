@@ -110,6 +110,8 @@ export const QUERY = gql`
       movement
       type
       carryable_by
+      image
+      icon
       DinoStat {
         item_id
         Item {

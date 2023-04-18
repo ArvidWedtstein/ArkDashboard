@@ -8,9 +8,9 @@ export const QUERY = gql`
   query FindTimelineById($id: String!) {
     timeline: timeline(id: $id) {
       id
-      createdAt
-      updatedAt
-      createdBy
+      created_at
+      updated_at
+      created_by
       # createdBy {
       #   username
       # }

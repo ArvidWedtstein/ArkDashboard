@@ -120,17 +120,19 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
   return (
     <div className="m-3">
       <Lookup
-        items={mapImages.map((k) => ({
-          name: k,
+        options={mapImages.map((k) => ({
+          label: k,
+          value: k,
         }))}
         onSelect={(e) => setCurrentMap(e.name)}
-      ></Lookup>
+      />
       <Lookup
-        items={categoryItems.map((k) => ({
-          name: k,
+        options={categoryItems.map((k) => ({
+          label: k,
+          value: k,
         }))}
         onSelect={(e) => setCurrentCategory(e.name)}
-      ></Lookup>
+      />
       <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {daLootcrates.map((lootcrate, i) => (
           <ArkCard
