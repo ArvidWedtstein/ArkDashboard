@@ -96,17 +96,6 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
     }
   }, [selectedBasespot, setSelectedBasespot]);
 
-  // let { handleSubmit, control } = useForm<FormTimelineBasespot>({
-  //   defaultValues: {
-  //     timeline_id: props?.timelineBasespot?.timeline_id,
-  //     startDate: formatDatetime(props?.timelineBasespot?.startDate),
-  //     endDate: formatDatetime(props?.timelineBasespot?.endDate),
-  //     basespot_id: props?.timelineBasespot?.basespot_id,
-  //     location: props?.timelineBasespot?.location,
-  //     map: props?.timelineBasespot?.map,
-
-  //   },
-  // })
 
   const map: any = watch("map");
   return (

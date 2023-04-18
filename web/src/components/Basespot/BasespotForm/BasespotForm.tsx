@@ -123,7 +123,7 @@ const BasespotForm = (props: BasespotFormProps) => {
         <FieldError name="description" className="rw-field-error" />
 
         <Label
-          name="Map"
+          name="map"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
@@ -159,7 +159,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           <option value={12}>Lost Island</option>
         </SelectField> */}
         <Lookup
-          defaultValue={props.basespot?.Map || map}
+          defaultValue={props.basespot?.map || map}
           options={[
             { label: "Valguero", value: 1 },
             { label: "The Island", value: 2 },
@@ -174,14 +174,14 @@ const BasespotForm = (props: BasespotFormProps) => {
             { label: "Fjordur", value: 11 },
             { label: "Lost Island", value: 12 },
           ]}
-          name="Map"
+          name="map"
         />
 
-        <FieldError name="Map" className="rw-field-error" />
+        <FieldError name="map" className="rw-field-error" />
 
         <MapPicker
           className="mt-2"
-          map={props.basespot?.Map || map.toString()}
+          map={props.basespot?.map || map.toString()}
           valueProp={{ ...props.basespot }}
           onChanges={(e) => {
             formMethods.setValue("latitude", e.latitude);

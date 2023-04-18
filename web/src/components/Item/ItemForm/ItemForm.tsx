@@ -32,10 +32,7 @@ interface ItemFormProps {
 const ItemForm = (props: ItemFormProps) => {
   const onSubmit = (data: FormItem) => {
     // delete data["craftable"];
-    // data.recipe = recipe.map((item) => ({
-    //   itemId: item.id,
-    //   count: item.amount,
-    // }));
+
     console.log(data);
 
     props.onSave(data, props?.item?.id);
@@ -117,9 +114,9 @@ const ItemForm = (props: ItemFormProps) => {
     reducer,
     props.item?.recipe
       ? (props.item?.recipe as any[]).map((f) => {
-          let i = arkitems.items.find((i) => i.id === f.itemId);
-          return { ...i, amount: f.count };
-        })
+        let i = arkitems.items.find((i) => i.id === f.itemId);
+        return { ...i, amount: f.count };
+      })
       : []
   );
 

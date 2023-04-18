@@ -1,9 +1,9 @@
 export const schema = gql`
   type Timeline {
     id: String!
-    createdAt: DateTime
-    updatedAt: DateTime
-    createdBy: String!
+    created_at: DateTime
+    updated_at: DateTime
+    created_by: String!
     Profile: Profile!
     TimelineBasespot: [TimelineBasespot]!
   }
@@ -14,11 +14,11 @@ export const schema = gql`
   }
 
   input CreateTimelineInput {
-    createdBy: String!
+    created_by: String!
   }
 
   input UpdateTimelineInput {
-    createdBy: String
+    created_by: String
   }
 
   type Mutation {

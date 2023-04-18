@@ -2,7 +2,7 @@ export const schema = gql`
   type Role {
     id: String!
     name: String!
-    createdBy: String
+    created_by: String
     permissions: [permission]!
     profile_profile_role_idTorole: [Profile]!
   }
@@ -33,13 +33,13 @@ export const schema = gql`
 
   input CreateRoleInput {
     name: String!
-    createdBy: String
+    created_by: String
     permissions: [permission]!
   }
 
   input UpdateRoleInput {
     name: String
-    createdBy: String
+    created_by: String
     permissions: [permission]!
   }
 
@@ -48,4 +48,4 @@ export const schema = gql`
     updateRole(id: String!, input: UpdateRoleInput!): Role! @requireAuth
     deleteRole(id: String!): Role! @requireAuth
   }
-`
+`;

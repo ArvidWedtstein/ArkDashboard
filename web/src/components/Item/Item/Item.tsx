@@ -71,7 +71,7 @@ const Item = ({ item }: Props) => {
                 <strong>Type:</strong> {item.type}
               </div>
 
-              {item.recipe && item.crafting_time && (
+              {item.crafting_time && (
                 <>
                   <div className="mr-4 mb-4 inline-block">
                     <strong>Crafting time:</strong> {item.crafting_time}
@@ -102,7 +102,7 @@ const Item = ({ item }: Props) => {
         <section className="my-3 grid grid-cols-2 gap-4 rounded-md text-gray-700 dark:text-white">
           {item.DinoStat &&
             item.DinoStat.filter((g) => g.type === "gather_efficiency").length >
-              0 && (
+            0 && (
               <div className="rounded-md bg-stone-200 p-4 dark:bg-zinc-600">
                 <p className="my-1 text-lg">Gather Efficiency</p>
                 <div className="flex flex-col">
@@ -150,7 +150,7 @@ const Item = ({ item }: Props) => {
 
           {item.DinoStat &&
             item.DinoStat.filter((g) => g.type === "weight_reduction").length >
-              0 && (
+            0 && (
               <div className="rounded-md bg-stone-200 p-4 dark:bg-zinc-600">
                 <p className="my-1 text-lg">Weight Reduction</p>
                 <div className="flex flex-col">

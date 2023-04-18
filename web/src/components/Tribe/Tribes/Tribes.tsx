@@ -120,7 +120,7 @@ const TribesList = ({ tribes }: FindTribes) => {
             valueFormatter: (params) => timeTag(params.value),
           },
           {
-            field: "createdBy",
+            field: "created_by",
             label: "Created By",
           },
         ]}

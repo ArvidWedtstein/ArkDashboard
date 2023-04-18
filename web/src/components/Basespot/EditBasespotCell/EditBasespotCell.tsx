@@ -17,9 +17,9 @@ export const QUERY = gql`
       longitude
       image
       created_at
-      Map
-      estimatedForPlayers
-      defenseImages
+      map
+      estimated_for_players
+      defense_images
       created_by
       turretsetup_image
       updated_at
@@ -36,9 +36,9 @@ const UPDATE_BASESPOT_MUTATION = gql`
       longitude
       image
       created_at
-      Map
-      estimatedForPlayers
-      defenseImages
+      map
+      estimated_for_players
+      defense_images
       created_by
       turretsetup_image
       updated_at
@@ -93,7 +93,7 @@ export const Success = ({ basespot }: CellSuccessProps<EditBasespotById>) => {
     <div className="rw-segment">
       <header className="rw-segment-header">
         <h2 className="rw-heading rw-heading-secondary">
-          Edit Basespot {basespot?.id}
+          Edit Basespot {basespot?.name}
         </h2>
       </header>
       <div className="rw-segment-main">

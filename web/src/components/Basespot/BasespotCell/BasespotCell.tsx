@@ -14,9 +14,9 @@ export const QUERY = gql`
       longitude
       image
       created_at
-      Map
-      estimatedForPlayers
-      defenseImages
+      map
+      estimated_for_players
+      defense_images
       created_by
       turretsetup_image
       updated_at

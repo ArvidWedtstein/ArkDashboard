@@ -72,8 +72,8 @@ const Basespot = ({ basespot }: Props) => {
             <h1 className="title-font mb-4 text-3xl font-medium text-gray-900 dark:text-stone-400 sm:text-4xl">
               {basespot.name}
               <br className="hidden lg:inline-block" />
-              {basespot.Map && (<Link
-                to={routes.map({ id: basespot.Map.toString() })}
+              {basespot.map && (<Link
+                to={routes.map({ id: basespot.map.toString() })}
                 className=""
               >
                 {basespot.Map_Basespot_MapToMap.name}
@@ -112,7 +112,7 @@ const Basespot = ({ basespot }: Props) => {
           <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
             <Map
               className="h-full w-full object-cover object-center"
-              map={basespot.Map.toString()}
+              map={basespot.map.toString()}
               size={{ width: 500, height: 500 }}
               pos={[{ lat: basespot.latitude, lon: basespot.longitude }]}
             />

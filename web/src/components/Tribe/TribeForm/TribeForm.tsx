@@ -30,8 +30,8 @@ interface TribeFormProps {
 const TribeForm = (props: TribeFormProps) => {
   const { currentUser } = useAuth();
   const onSubmit = (data: FormTribe) => {
-    data.createdBy =
-      props.tribe?.createdBy || currentUser?.sub;
+    data.created_by =
+      props.tribe?.created_by || currentUser?.sub;
     props.onSave(data, props?.tribe?.id);
   };
 

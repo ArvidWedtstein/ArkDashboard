@@ -76,7 +76,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
     <div className="h-[80vh]">
       <div className="flex items-center">
         <Lookup
-          items={Object.keys(mapImages).map((k) => ({
+          options={Object.keys(mapImages).map((k) => ({
             label: k,
             value: k,
           }))}

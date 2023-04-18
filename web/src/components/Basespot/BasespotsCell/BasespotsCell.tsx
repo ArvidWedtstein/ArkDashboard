@@ -37,7 +37,7 @@ export const QUERY = gql`
         image
         created_at
         updated_at
-        Map
+        map
         estimatedForPlayers
         Map_Basespot_MapToMap {
           name
