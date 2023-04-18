@@ -33,17 +33,17 @@ describe('basespots', () => {
       input: {
         name: 'String',
         description: 'String',
-        latitude: 7332792.844606764,
-        longitude: 3588271.851449574,
-        Map: scenario.basespot.two.Map,
+        latitude: 1910645.2962801557,
+        longitude: 6200662.535123184,
+        map: scenario.basespot.two.map,
       },
     })
 
     expect(result.name).toEqual('String')
     expect(result.description).toEqual('String')
-    expect(result.latitude).toEqual(7332792.844606764)
-    expect(result.longitude).toEqual(3588271.851449574)
-    expect(result.Map).toEqual(scenario.basespot.two.Map)
+    expect(result.latitude).toEqual(1910645.2962801557)
+    expect(result.longitude).toEqual(6200662.535123184)
+    expect(result.map).toEqual(scenario.basespot.two.map)
   })
 
   scenario('updates a basespot', async (scenario: StandardScenario) => {
