@@ -61,6 +61,9 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         lat: selectedBasespot?.latitude,
         lon: selectedBasespot?.longitude,
       };
+      // TODO: Replace once timelinebasespot is updated
+      // data.latitude = selectedBasespot?.latitude;
+      // data.longitude = selectedBasespot?.longitude;
     }
     formMethods.reset();
     props.onSave(data, props?.timelineBasespot?.id);

@@ -78,6 +78,8 @@ const UPDATE_TIMELINE_BASESPOT_MUTATION = gql`
       season
       cluster
       location
+      # latitude
+      # longitude
       players
       created_by
       raided_by

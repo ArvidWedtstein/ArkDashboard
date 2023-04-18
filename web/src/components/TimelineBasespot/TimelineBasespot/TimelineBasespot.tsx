@@ -202,6 +202,13 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
         <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
           <div className="container mx-auto flex flex-wrap px-5 py-12">
             <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
+              {/* <Map
+                className="h-full w-full object-cover object-center"
+                map={timelineBasespot.map.toString()}
+                size={{ width: 500, height: 500 }}
+                pos={[{ lat: timelineBasespot.latitude, lon: timelineBasespot.longitude } as any]}
+                interactive={true}
+              /> */}
               <Map
                 className="h-full w-full object-cover object-center"
                 map={timelineBasespot.map.toString()}
@@ -229,12 +236,19 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                   <h2 className="title-font mb-3 text-lg font-medium text-gray-900 dark:text-neutral-200">
                     Coordinates
                   </h2>
+                  {/* <p className="text-base leading-relaxed">
+                    Our base was located at: {timelineBasespot.latitude}{" "}
+                    <abbr title="Latitude">Lat</abbr>,{" "}
+                    {timelineBasespot.longitude}{" "}
+                    <abbr title="Longitude">Lon</abbr>
+                  </p> */}
                   <p className="text-base leading-relaxed">
                     Our base was located at: {timelineBasespot.location["lat"]}{" "}
                     <abbr title="Latitude">Lat</abbr>,{" "}
                     {timelineBasespot.location["lon"]}{" "}
                     <abbr title="Longitude">Lon</abbr>
                   </p>
+                  {/* TODO: Replace this once timelinebasespot has been updated */}
                 </div>
               </div>
               {timelineBasespot.basespot && (

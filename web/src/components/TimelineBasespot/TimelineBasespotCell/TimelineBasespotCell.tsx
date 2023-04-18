@@ -22,6 +22,8 @@ export const QUERY = gql`
       season
       cluster
       location
+      # latitude
+      # longitude
       players
       created_by
       raided_by
@@ -70,15 +72,15 @@ export const QUERY = gql`
 export const afterQuery = (data) => {
   return data.timelineBasespot.basespot_id !== null
     ? {
-        ...data,
-        timelineBasespot: {
-          ...data.timelineBasespot,
-          location: {
-            lat: data.timelineBasespot.basespot.latitude,
-            lon: data.timelineBasespot.basespot.longitude,
-          },
+      ...data,
+      timelineBasespot: {
+        ...data.timelineBasespot,
+        location: {
+          lat: data.timelineBasespot.basespot.latitude,
+          lon: data.timelineBasespot.basespot.longitude,
         },
-      }
+      },
+    }
     : data;
 };
 

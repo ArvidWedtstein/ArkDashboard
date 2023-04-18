@@ -22,6 +22,8 @@ export const QUERY = gql`
       season
       cluster
       location
+      # latitude
+      # longitude
       players
       created_by
       raided_by
