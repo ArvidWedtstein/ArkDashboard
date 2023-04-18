@@ -13,10 +13,10 @@ model TimelineBasespot {
   created_at           DateTime?              @default(now()) @db.Timestamptz(6)
   updated_at           DateTime?              @db.Timestamptz(6)
   timeline_id          String                 @db.Uuid
-  startDate            DateTime?              @db.Timestamptz(6)
-  endDate              DateTime?              @db.Timestamptz(6)
+  start_date           DateTime?              @db.Timestamptz(6)
+  end_date             DateTime?              @db.Timestamptz(6)
   basespot_id          BigInt?
-  tribeName            String
+  tribe_name           String
   map                  BigInt?
   server               String?
   region               String?
@@ -26,7 +26,9 @@ model TimelineBasespot {
   players              String[]
   created_by           String?                @db.Uuid
   raided_by            String?
-  raidcomment          String?
+  raid_comment         String?
+  latitude             Float?                 @default(0)
+  longitude            Float?                 @default(0)
   basespot             Basespot?              @relation(fields: [basespot_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Profile              Profile?               @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Map                  Map?                   @relation(fields: [map], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -42,51 +44,53 @@ model Basespot {
   longitude             Float
   image                 String?
   created_at            DateTime?          @default(now()) @db.Timestamptz(6)
-  Map                   BigInt
-  estimatedForPlayers   String?            @default("0")
-  defenseImages         String?
+  map                   BigInt
+  estimated_for_players String?            @default("0")
+  defense_images        String?
   created_by            String?            @db.Uuid
   turretsetup_image     String?
   updated_at            DateTime?          @db.Timestamptz(6)
-  Map_Basespot_MapToMap Map                @relation("Basespot_MapToMap", fields: [Map], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Map                   Map                @relation(fields: [map], references: [id], onDelete: NoAction, onUpdate: NoAction)
   TimelineBasespot      TimelineBasespot[]
 }
 
 model Profile {
-  id                         String             @id(map: "profiles_pkey") @db.Uuid
-  updated_at                 DateTime?          @db.Timestamptz(6)
-  username                   String?            @unique(map: "profiles_username_key")
-  full_name                  String?
-  avatar_url                 String?
-  website                    String?
-  biography                  String?
-  status                     user_status        @default(OFFLINE)
-  role_id                    String             @default(dbgenerated("'697b7d70-bab3-4ff9-9c3e-f30b058b621c'::uuid")) @db.Uuid
-  created_at                 DateTime?          @default(now()) @db.Timestamptz(6)
-  updated_by                 String?            @db.Uuid
-  Message                    Message[]
-  role_profile_role_idTorole Role               @relation("profile_role_idTorole", fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Profile                    Profile?           @relation("ProfileToProfile", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  other_Profile              Profile[]          @relation("ProfileToProfile")
-  Timeline                   Timeline[]
-  TimelineBasespot           TimelineBasespot[]
-  Tribe                      Tribe[]
+  id                            String             @id(map: "profiles_pkey") @db.Uuid
+  updated_at                    DateTime?          @db.Timestamptz(6)
+  username                      String?            @unique(map: "profiles_username_key")
+  full_name                     String?
+  avatar_url                    String?
+  website                       String?
+  biography                     String?
+  status                        user_status        @default(OFFLINE)
+  role_id                       String             @default(dbgenerated("'697b7d70-bab3-4ff9-9c3e-f30b058b621c'::uuid")) @db.Uuid
+  created_at                    DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_by                    String?            @db.Uuid
+  Message                       Message[]
+  role_profile_role_idTorole    Role               @relation("profile_role_idTorole", fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Profile                       Profile?           @relation("ProfileToProfile", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  other_Profile                 Profile[]          @relation("ProfileToProfile")
+  Role_Role_created_byToProfile Role[]             @relation("Role_created_byToProfile")
+  Timeline                      Timeline[]
+  TimelineBasespot              TimelineBasespot[]
+  Tribe                         Tribe[]
 }
 
 model Role {
-  id                            String       @id(map: "roles_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
-  name                          String
-  createdBy                     String?      @default(dbgenerated("auth.uid()")) @db.Uuid
-  permissions                   permission[]
-  profile_profile_role_idTorole Profile[]    @relation("profile_role_idTorole")
+  id                               String       @id(map: "roles_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  name                             String
+  created_by                       String?      @db.Uuid
+  permissions                      permission[]
+  profile_profile_role_idTorole    Profile[]    @relation("profile_role_idTorole")
+  Profile_Role_created_byToProfile Profile?     @relation("Role_created_byToProfile", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Timeline {
   id               String             @id(map: "timeline_pkey") @unique(map: "timeline_id_key") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
-  createdAt        DateTime?          @default(now()) @db.Timestamptz(6)
-  updatedAt        DateTime?          @db.Timestamptz(6)
-  createdBy        String             @db.Uuid
-  Profile          Profile            @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  created_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?          @db.Timestamptz(6)
+  created_by       String             @db.Uuid
+  Profile          Profile            @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   TimelineBasespot TimelineBasespot[]
 }
 
@@ -96,9 +100,9 @@ model Tribe {
   description String?
   created_at  DateTime? @default(now())
   updated_at  DateTime?
-  createdBy   String?   @default(dbgenerated("auth.uid()")) @db.Uuid
-  updatedBy   String?   @db.Uuid
-  Profile     Profile?  @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  created_by  String?   @default(dbgenerated("auth.uid()")) @db.Uuid
+  updated_by  String?   @db.Uuid
+  Profile     Profile?  @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Message {
@@ -113,7 +117,7 @@ model Dino {
   id                             String                 @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   created_at                     DateTime?              @default(now()) @db.Timestamptz(6)
   name                           String
-  synonyms                       String[]
+  synonyms                       String?
   description                    String?
   taming_notice                  String?
   can_destroy                    String[]
@@ -166,7 +170,7 @@ model Dino {
 }
 
 model Item {
-  id                                           BigInt                  @id(map: "Items_pkey") @default(autoincrement())
+  id                                           BigInt                  @id(map: "Items_pkey") @unique @default(autoincrement())
   created_at                                   DateTime?               @default(now()) @db.Timestamptz(6)
   name                                         String
   description                                  String?
@@ -177,7 +181,6 @@ model Item {
   crafting_time                                Float?                  @default(0)
   req_level                                    BigInt?                 @default(0)
   yields                                       Float?                  @default(1)
-  recipe                                       Json?
   stats                                        Json?
   color                                        String?                 @default("#ff0000")
   crafted_in                                   String[]
@@ -194,29 +197,29 @@ model Item {
 }
 
 model Map {
-  id                         BigInt             @id @default(autoincrement())
-  created_at                 DateTime?          @default(now()) @db.Timestamptz(6)
-  name                       String?
-  loot_crates                Json?
-  oil_veins                  Json?
-  water_veins                Json?
-  wyvern_nests               Json?
-  ice_wyvern_nests           Json?
-  gas_veins                  Json?
-  deinonychus_nests          Json?
-  charge_nodes               Json?
-  plant_z_nodes              Json?
-  drake_nests                Json?
-  glitches                   Json?
-  magmasaur_nests            Json?
-  poison_trees               Json?
-  mutagen_bulbs              Json?
-  carniflora                 Json?
-  notes                      Json?
-  img                        String?
-  Basespot_Basespot_MapToMap Basespot[]         @relation("Basespot_MapToMap")
-  Lootcrate                  Lootcrate[]
-  TimelineBasespot           TimelineBasespot[]
+  id                BigInt             @id @default(autoincrement())
+  created_at        DateTime?          @default(now()) @db.Timestamptz(6)
+  name              String?
+  loot_crates       Json?
+  oil_veins         Json?
+  water_veins       Json?
+  wyvern_nests      Json?
+  ice_wyvern_nests  Json?
+  gas_veins         Json?
+  deinonychus_nests Json?
+  charge_nodes      Json?
+  plant_z_nodes     Json?
+  drake_nests       Json?
+  glitches          Json?
+  magmasaur_nests   Json?
+  poison_trees      Json?
+  mutagen_bulbs     Json?
+  carniflora        Json?
+  notes             Json?
+  img               String?
+  Basespot          Basespot[]
+  Lootcrate         Lootcrate[]
+  TimelineBasespot  TimelineBasespot[]
 }
 
 model Lootcrate {
