@@ -41,4 +41,9 @@ export const Role: RoleRelationResolvers = {
       .findUnique({ where: { id: root?.id } })
       .profile_profile_role_idTorole()
   },
+  Profile_Role_created_byToProfile: (_obj, { root }) => {
+    return db.role
+      .findUnique({ where: { id: root?.id } })
+      .Profile_Role_created_byToProfile()
+  },
 }
