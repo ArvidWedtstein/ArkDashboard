@@ -14,10 +14,14 @@ export const schema = gql`
   }
 
   input CreateTimelineInput {
+    created_at: DateTime
+    updated_at: DateTime
     created_by: String!
   }
 
   input UpdateTimelineInput {
+    created_at: DateTime
+    updated_at: DateTime
     created_by: String
   }
 

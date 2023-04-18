@@ -30,10 +30,10 @@ describe('timelines', () => {
 
   scenario('creates a timeline', async (scenario: StandardScenario) => {
     const result = await createTimeline({
-      input: { createdBy: scenario.timeline.two.createdBy },
+      input: { created_by: scenario.timeline.two.created_by },
     })
 
-    expect(result.createdBy).toEqual(scenario.timeline.two.createdBy)
+    expect(result.created_by).toEqual(scenario.timeline.two.created_by)
   })
 
   scenario('updates a timeline', async (scenario: StandardScenario) => {
@@ -42,10 +42,10 @@ describe('timelines', () => {
     })) as Timeline
     const result = await updateTimeline({
       id: original.id,
-      input: { createdBy: scenario.timeline.two.createdBy },
+      input: { created_by: scenario.timeline.two.created_by },
     })
 
-    expect(result.createdBy).toEqual(scenario.timeline.two.createdBy)
+    expect(result.created_by).toEqual(scenario.timeline.two.created_by)
   })
 
   scenario('deletes a timeline', async (scenario: StandardScenario) => {
