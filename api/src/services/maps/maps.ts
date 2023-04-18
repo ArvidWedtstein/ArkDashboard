@@ -36,10 +36,8 @@ export const deleteMap: MutationResolvers['deleteMap'] = ({ id }) => {
 }
 
 export const Map: MapRelationResolvers = {
-  Basespot_Basespot_MapToMap: (_obj, { root }) => {
-    return db.map
-      .findUnique({ where: { id: root?.id } })
-      .Basespot_Basespot_MapToMap()
+  Basespot: (_obj, { root }) => {
+    return db.map.findUnique({ where: { id: root?.id } }).Basespot()
   },
   Lootcrate: (_obj, { root }) => {
     return db.map.findUnique({ where: { id: root?.id } }).Lootcrate()

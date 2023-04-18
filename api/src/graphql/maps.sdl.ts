@@ -20,7 +20,7 @@ export const schema = gql`
     carniflora: JSON
     notes: JSON
     img: String
-    Basespot_Basespot_MapToMap: [Basespot]!
+    Basespot: [Basespot]!
     Lootcrate: [Lootcrate]!
     TimelineBasespot: [TimelineBasespot]!
   }
