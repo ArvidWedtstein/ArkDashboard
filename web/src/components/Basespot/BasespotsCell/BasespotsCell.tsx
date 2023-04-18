@@ -38,8 +38,8 @@ export const QUERY = gql`
         created_at
         updated_at
         map
-        estimatedForPlayers
-        Map_Basespot_MapToMap {
+        estimated_for_players
+        Map {
           name
         }
       }

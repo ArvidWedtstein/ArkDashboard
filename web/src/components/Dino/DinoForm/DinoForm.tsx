@@ -45,7 +45,6 @@ const QUERY = gql`
         crafting_time
         req_level
         yields
-        recipe
         stats
         color
         crafted_in
@@ -249,7 +248,8 @@ const DinoForm = (props: DinoFormProps) => {
                 required: false,
                 pattern: {
                   value: /^[A-Za-z\s,]+$/, // Regex pattern to allow only letters, spaces, and commas
-                  message: "Uh oh! Your dino is getting tongue-tied! Only text is allowed, no dino roars or growls!",
+                  message:
+                    "Uh oh! Your dino is getting tongue-tied! Only text is allowed, no dino roars or growls!",
                 },
               }}
             />
