@@ -11,7 +11,6 @@ export const schema = gql`
     crafting_time: Float
     req_level: BigInt
     yields: Float
-    recipe: JSON
     stats: JSON
     color: String
     crafted_in: [String]!
@@ -24,6 +23,7 @@ export const schema = gql`
     ItemRecipe_ItemRecipe_item_idToItem: [ItemRecipe]!
     LootcrateSetEntryItem: [LootcrateSetEntryItem]!
   }
+
   type ItemsPage {
     items: [Item!]!
     count: Int!
@@ -46,7 +46,6 @@ export const schema = gql`
     crafting_time: Float
     req_level: BigInt
     yields: Float
-    recipe: JSON
     stats: JSON
     color: String
     crafted_in: [String]!
@@ -65,7 +64,6 @@ export const schema = gql`
     crafting_time: Float
     req_level: BigInt
     yields: Float
-    recipe: JSON
     stats: JSON
     color: String
     crafted_in: [String]!
