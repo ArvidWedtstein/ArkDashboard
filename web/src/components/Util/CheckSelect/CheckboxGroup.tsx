@@ -100,7 +100,7 @@ const CheckboxGroup = ({
       /> */}
 
       <input
-        type="text"
+        type="hidden"
         name={name}
         value={selectedOptions}
         {...(name ? { ...register } : "")}

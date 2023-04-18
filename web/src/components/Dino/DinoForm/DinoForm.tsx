@@ -10,6 +10,7 @@ import {
   useForm,
   useFieldArray,
   NumberField,
+  ButtonField,
 } from "@redwoodjs/forms";
 import { useEffect, useMemo, useState } from "react";
 import type { EditDinoById, UpdateDinoInput } from "types/graphql";
@@ -241,14 +242,15 @@ const DinoForm = (props: DinoFormProps) => {
 
             <TextField
               name="synonyms"
-              defaultValue={props.dino?.synonyms.join(", ")}
-              emptyAs={[] as any}
+              defaultValue={props.dino?.synonyms}
               className="rw-input"
               errorClassName="rw-input rw-input-error"
               validation={{
                 required: false,
-                setValueAs: (e) =>
-                  e.length > 0 ? e.split(",").map((s) => s.trim()) : [],
+                pattern: {
+                  value: /^[A-Za-z\s,]+$/, // Regex pattern to allow only letters, spaces, and commas
+                  message: "Uh oh! Your dino is getting tongue-tied! Only text is allowed, no dino roars or growls!",
+                },
               }}
             />
             <p className="rw-helper-text">
@@ -598,6 +600,8 @@ const DinoForm = (props: DinoFormProps) => {
 
               <FieldError name="fits_through" className="rw-field-error" />
             </div>
+          </div>
+          <div>
             <div>
               <Label
                 name="can_destroy"
