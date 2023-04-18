@@ -4,26 +4,22 @@ export const schema = gql`
     created_at: DateTime
     updated_at: DateTime
     timeline_id: String!
-    startDate: DateTime
-    # start_date: DateTime
-    endDate: DateTime
-    # end_date: DateTime
+    start_date: DateTime
+    end_date: DateTime
     basespot_id: BigInt
-    tribeName: String!
-    # tribe_name: String!
+    tribe_name: String!
     map: BigInt
     server: String
     region: String
     season: String
     cluster: String
     location: JSON
-    # latitude: Float
-    # longitude: Float
     players: [String]!
     created_by: String
     raided_by: String
-    raidcomment: String
-    # raid_comment: String
+    raid_comment: String
+    latitude: Float
+    longitude: Float
     basespot: Basespot
     Profile: Profile
     Map: Map
@@ -40,10 +36,10 @@ export const schema = gql`
     created_at: DateTime
     updated_at: DateTime
     timeline_id: String!
-    startDate: DateTime
-    endDate: DateTime
+    start_date: DateTime
+    end_date: DateTime
     basespot_id: BigInt
-    tribeName: String!
+    tribe_name: String!
     map: BigInt
     server: String
     region: String
@@ -53,17 +49,19 @@ export const schema = gql`
     players: [String]!
     created_by: String
     raided_by: String
-    raidcomment: String
+    raid_comment: String
+    latitude: Float
+    longitude: Float
   }
 
   input UpdateTimelineBasespotInput {
     created_at: DateTime
     updated_at: DateTime
     timeline_id: String
-    startDate: DateTime
-    endDate: DateTime
+    start_date: DateTime
+    end_date: DateTime
     basespot_id: BigInt
-    tribeName: String
+    tribe_name: String
     map: BigInt
     server: String
     region: String
@@ -73,14 +71,15 @@ export const schema = gql`
     players: [String]!
     created_by: String
     raided_by: String
-    raidcomment: String
+    raid_comment: String
+    latitude: Float
+    longitude: Float
   }
   input RaidTimelineBasespotInput {
     endDate: DateTime
     raided_by: String
     raidcomment: String
   }
-
   type Mutation {
     createTimelineBasespot(
       input: CreateTimelineBasespotInput!

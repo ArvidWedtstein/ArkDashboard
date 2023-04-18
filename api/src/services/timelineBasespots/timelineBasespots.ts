@@ -58,7 +58,6 @@ export const raidTimelineBasespot: MutationResolvers["raidTimelineBasespot"] =
       where: { id },
     });
   };
-
 export const TimelineBasespot: TimelineBasespotRelationResolvers = {
   basespot: (_obj, { root }) => {
     return db.timelineBasespot
