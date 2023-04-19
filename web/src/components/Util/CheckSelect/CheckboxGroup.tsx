@@ -44,7 +44,7 @@ const CheckboxGroup = ({
 
     setSelectedOptions(newSelectedOptions);
     // onChange && onChange(value, newSelectedOptions);
-    field.onChange(newSelectedOptions);
+    !!name && field.onChange(newSelectedOptions);
     onChange?.(value, newSelectedOptions);
   }, [name, onChange, selectedOptions, validation.single]
   );

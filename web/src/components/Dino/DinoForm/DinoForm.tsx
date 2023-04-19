@@ -548,7 +548,7 @@ const DinoForm = (props: DinoFormProps) => {
 
               <CheckboxGroup
                 name="can_destroy"
-                defaultValue={props.dino?.can_destroy}
+                defaultValue={props.dino?.can_destroy || []}
                 options={[
                   {
                     value: "t",
@@ -794,6 +794,7 @@ const DinoForm = (props: DinoFormProps) => {
                 errorClassName="rw-input rw-input-error"
               />
 
+
               <FieldError name="ridable" className="rw-field-error" />
             </div>
           </div>
@@ -828,7 +829,7 @@ const DinoForm = (props: DinoFormProps) => {
                   }
                 )) : []}
                 search={true}
-                defaultValue={props.dino?.saddle_id || 0}
+                defaultValue={props.dino?.saddle_id}
                 filterFn={(item, search) => {
                   return item.label
                     .toLowerCase()
@@ -952,16 +953,18 @@ const DinoForm = (props: DinoFormProps) => {
                       key={`drops-${index}`}
                     >
                       <Lookup
-                        {...register(`DinoStat.${index}.item_id`)}
+                        {...register(`DinoStat.${index}.item_id`, {
+                          required: true,
+                        })}
                         className="!mt-0 !rounded-none !rounded-l-md"
-                        options={data.itemsByCategory.items.map((item) => (
+                        options={data ? data.itemsByCategory.items.map((item) => (
                           {
                             type: item.type,
                             label: item.name,
                             value: item.id,
                             image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
                           }
-                        ))}
+                        )) : []}
                         search={true}
                         defaultValue={dr.item_id}
                         filterFn={(item, search) => {
@@ -969,6 +972,21 @@ const DinoForm = (props: DinoFormProps) => {
                             .toLowerCase()
                             .includes(search.toLowerCase());
                         }}
+                      />
+                      <TextField
+                        {...register(`DinoStat.${index}.value`, {
+                          required: false,
+                        })}
+                        emptyAs={null}
+                        className="rw-input mt-0 hidden max-w-[7rem]"
+                        defaultValue={dr.value}
+                      />
+                      <TextField
+                        {...register(`DinoStat.${index}.type`, {
+                          required: false,
+                        } as const)}
+                        className="rw-input mt-0 hidden max-w-[7rem]"
+                        defaultValue={dr.type}
                       />
                       <button
                         type="button"
@@ -992,7 +1010,7 @@ const DinoForm = (props: DinoFormProps) => {
                   type="button"
                   className="rw-button rw-button-gray !ml-0"
                   onClick={() =>
-                    appendStat({ item_id: null, value: null, type: "drops" })
+                    appendStat({ item_id: 0, value: null, type: "drops" })
                   }
                 >
                   Add Drop

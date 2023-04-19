@@ -1,4 +1,4 @@
-import { FieldError, TextField, useFormContext, useRegister } from "@redwoodjs/forms";
+import { Controller, FieldError, TextField, useController, useFormContext, useRegister } from "@redwoodjs/forms";
 import { useEffect, useMemo, useRef, useState } from "react";
 import useComponentVisible from "../../useComponentVisible";
 import { debounce, groupBy } from "src/lib/formatters";
@@ -44,7 +44,7 @@ const Lookup = ({
     : null;
 
 
-  // const { setValue, setError, clearErrors } = useFormContext()
+  const { field } = name && useController({ name: name });
   const [searchTerm, setSearchTerm] = useState(defaultValue ? options.find(option => option.value === defaultValue).label : '')
   const [filteredOptions, setFilteredOptions] = useState(options)
   const [openIndexes, setOpenIndexes] = useState([]);
@@ -88,6 +88,7 @@ const Lookup = ({
     setSearchTerm(option.label)
     // name && clearErrors(name)
     onSelect && onSelect(option);
+    !!name && field.onChange(option.value);
   }
 
   // Handle option clear
@@ -96,6 +97,7 @@ const Lookup = ({
     setSearchTerm('')
     // name && clearErrors(name)
     onSelect && onSelect({ label: null, value: null });
+    !!name && field.onChange(null);
   }
 
   /**
@@ -132,7 +134,6 @@ const Lookup = ({
             placeholder={placeholder || 'Search...'}
             className="flex w-full items-center bg-transparent outline-none"
             disabled={disabled}
-            {...register}
           />
         ) : (
           <>
@@ -144,7 +145,6 @@ const Lookup = ({
               className="hidden"
               onChange={handleInputChange}
               disabled={disabled}
-              {...register}
             />
             {children ? children : (selectedOption ? selectedOption["label"] : placeholder)}
           </>
