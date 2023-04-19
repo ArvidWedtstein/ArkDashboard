@@ -76,9 +76,9 @@ export const schema = gql`
     longitude: Float
   }
   input RaidTimelineBasespotInput {
-    endDate: DateTime
+    end_date: DateTime
     raided_by: String
-    raidcomment: String
+    raid_comment: String
   }
   type Mutation {
     createTimelineBasespot(

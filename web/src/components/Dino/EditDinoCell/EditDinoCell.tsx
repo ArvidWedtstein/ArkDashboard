@@ -57,6 +57,7 @@ export const QUERY = gql`
       movement
       type
       carryable_by
+      saddle_id
       DinoStat {
         item_id
         Item {

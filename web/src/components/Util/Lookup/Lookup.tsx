@@ -36,7 +36,7 @@ const Lookup = ({
 }: ILookup) => {
   const { ref, isComponentVisible, setIsComponentVisible } =
     useComponentVisible(false);
-  const [isFilterVisible, setIsFilterVisible] = useState(false)
+  // const [isFilterVisible, setIsFilterVisible] = useState(false)
   const register = name
     ? useRegister({
       name,
@@ -210,6 +210,11 @@ const Lookup = ({
             className="max-h-48 overflow-y-auto py-1 text-gray-700 dark:text-gray-200"
             aria-labelledby="dropdownButton"
           >
+            {!options.length ? (
+              <li className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                No options available
+              </li>
+            ) : null}
             {!group
               ? filteredOptions.map((option, i) => (
                 <li

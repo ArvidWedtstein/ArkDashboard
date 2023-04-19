@@ -10,7 +10,6 @@ import {
   useForm,
   useFieldArray,
   NumberField,
-  ButtonField,
 } from "@redwoodjs/forms";
 import { useEffect, useMemo, useState } from "react";
 import type { EditDinoById, UpdateDinoInput } from "types/graphql";
@@ -19,7 +18,9 @@ import Lookup from "src/components/Util/Lookup/Lookup";
 import arkitems from "../../../../public/arkitems.json";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { truncate } from "src/lib/formatters";
-import { useQuery } from "@redwoodjs/web";
+import { useCellCacheContext, useQuery } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
+import { useLazyQuery } from "@apollo/client";
 
 type FormDino = NonNullable<EditDinoById["dino"]>;
 
@@ -30,44 +31,43 @@ interface DinoFormProps {
   loading: boolean;
 }
 
-const QUERY = gql`
+const ITEMQUERY = gql`
   query FindItemsByCategory($category: String!) {
     itemsByCategory(category: $category) {
       items {
         id
-        created_at
         name
         description
         image
-        max_stack
-        weight
-        engram_points
-        crafting_time
-        req_level
-        yields
-        stats
         color
-        crafted_in
         type
+        category
       }
       count
     }
   }
 `;
 const DinoForm = (props: DinoFormProps) => {
-  // const { loading, error, data } = useQuery(QUERY, {
-  //   variables: { category: 'Resource' },
-  // });
 
-  // useEffect(() => {
-  //   if (data) {
-  //     console.log(data);
-  //   }
+  const [loadItems, { called, loading, data }] = useLazyQuery(ITEMQUERY, {
+    variables: { category: 'Resource' },
+    // onCompleted: (data) => {
+    //   console.log(data);
+    //   toast.success('Items loaded');
+    // },
+    onError: (error) => {
+      console.log(error);
+      toast.error(error.message);
+    }
+  });
 
-  //   if (error) {
-  //     console.log(error);
-  //   }
-  // }, [data, error]);
+  useEffect(() => {
+    if (!called) {
+      loadItems();
+    }
+  }, []);
+
+  // https://www.apollographql.com/docs/react/api/react/hooks/#uselazyquery
 
   const [basestat, setBasestat] = useState({
     d: { b: 100, t: 2.5, w: 5.8, a: [{ b: 60 }] },
@@ -156,7 +156,7 @@ const DinoForm = (props: DinoFormProps) => {
   const onSubmit = (data: FormDino) => {
     data.eats = eats.map((f) => f.id.toString());
     data.DinoStat = [...data.DinoStat, ...data["wr"]];
-    console.log(data);
+
     delete data["wr"];
 
     // Test Dino Object
@@ -187,19 +187,6 @@ const DinoForm = (props: DinoFormProps) => {
   // A foundation is 300x300 game units, i.e 3x3 meters
   // https://ark.fandom.com/wiki/Game_units
 
-  const movementFly = {
-    d: {
-      walk: { base: 260, sprint: 585 },
-      swim: { base: 600 },
-      fly: { base: 600, sprint: 1350 },
-    },
-    w: {
-      walk: { base: 260, sprint: 315.3 },
-      swim: { base: 600 },
-      fly: { base: 600, sprint: 727.5 },
-    },
-    staminaRates: { sprint: -6, swimOrFly: -0.275 },
-  };
   return (
     <div className="rw-form-wrapper">
       <Form<FormDino> onSubmit={onSubmit} error={props.error}>
@@ -278,8 +265,30 @@ const DinoForm = (props: DinoFormProps) => {
 
         <FieldError name="description" className="rw-field-error" />
 
-        <fieldset className="rw-form-group">
-          <legend>Other</legend>
+        <details className="rw-form-group group">
+          <summary className="inline-flex items-center">
+            Other
+            <svg
+              className="ml-1 h-4 w-4"
+              aria-hidden="true"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                className="group-open:block [&:not(open)]:hidden"
+                d="M19 9l-7 7-7-7"
+              ></path>
+              <path
+                className="group-open:hidden [&:not(open)]:block"
+                d="M9 5l7 7-7 7"
+              ></path>
+            </svg>
+          </summary>
           <div>
             <div>
               <Label
@@ -329,9 +338,9 @@ const DinoForm = (props: DinoFormProps) => {
               </Label>
 
               {statFields
-                .filter((ge) => ge.type === "gather_efficiency")
+                // .filter((ge) => ge.type === "gather_efficiency")
                 .map((ge, index) => (
-                  <div
+                  ge.type === "gather_efficiency" && (<div
                     className="rw-button-group justify-start"
                     role="group"
                     key={`ge-${index}`}
@@ -341,16 +350,14 @@ const DinoForm = (props: DinoFormProps) => {
                         required: true,
                       })}
                       className="!mt-0 !rounded-none !rounded-l-md"
-                      options={arkitems.items
-                        .filter((f) => f.type === "Resource")
-                        .map((item) => {
-                          return {
-                            type: item.type,
-                            label: item.name,
-                            value: item.id,
-                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                          };
-                        })}
+                      options={data.itemsByCategory.items.map((item) => (
+                        {
+                          type: item.type,
+                          label: item.name,
+                          value: item.id,
+                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                        }
+                      ))}
                       search={true}
                       defaultValue={ge.item_id}
                       filterFn={(item, search) => {
@@ -383,7 +390,7 @@ const DinoForm = (props: DinoFormProps) => {
                     >
                       Remove
                     </button>
-                  </div>
+                  </div>)
                 ))}
               <div className="rw-button-group justify-start">
                 <button
@@ -412,27 +419,25 @@ const DinoForm = (props: DinoFormProps) => {
                 Weight reduction
               </Label>
 
-              {wrFields
-                .filter((stat) => stat.type === "weight_reduction")
+              {statFields
+                // .filter((stat) => stat.type === "weight_reduction")
                 .map((wr, index) => (
-                  <div
+                  wr.type === "weight_reduction" && (<div
                     className="rw-button-group justify-start"
                     role="group"
                     key={`wr-${index}`}
                   >
                     <Lookup
-                      {...register(`wr.${index}.item_id`)}
+                      {...register(`DinoStat.${index}.item_id`)}
                       className="!mt-0 !rounded-none !rounded-l-md"
-                      options={arkitems.items
-                        .filter((f) => f.type === "Resource")
-                        .map((item) => {
-                          return {
-                            type: item.type,
-                            label: item.name,
-                            value: item.id,
-                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                          };
-                        })}
+                      options={data.itemsByCategory.items.map((item) => (
+                        {
+                          type: item.type,
+                          label: item.name,
+                          value: item.id,
+                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                        }
+                      ))}
                       search={true}
                       defaultValue={wr.item_id}
                       filterFn={(item, search) => {
@@ -442,7 +447,7 @@ const DinoForm = (props: DinoFormProps) => {
                       }}
                     />
                     <NumberField
-                      {...register(`wr.${index}.value`, {
+                      {...register(`DinoStat.${index}.value`, {
                         required: true,
                         min: 0,
                         max: 100,
@@ -452,25 +457,25 @@ const DinoForm = (props: DinoFormProps) => {
                       defaultValue={wr.value}
                     />
                     <TextField
-                      {...register(`wr.${index}.type`)}
+                      {...register(`DinoStat.${index}.type`)}
                       className="rw-input mt-0 hidden max-w-[7rem]"
                       defaultValue={wr.type}
                     />
                     <button
                       type="button"
                       className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
-                      onClick={() => removeWr(index)}
+                      onClick={() => removeStat(index)}
                     >
                       Remove
                     </button>
-                  </div>
+                  </div>)
                 ))}
               <div className="rw-button-group justify-start">
                 <button
                   type="button"
                   className="rw-button rw-button-gray !ml-0"
                   onClick={() =>
-                    appendWr({
+                    appendStat({
                       item_id: 0,
                       type: "weight_reduction",
                       value: 0,
@@ -480,67 +485,6 @@ const DinoForm = (props: DinoFormProps) => {
                   Add Weight Reduction
                 </button>
               </div>
-              {/* {statFields
-                .filter((stat) => stat.type === "weight_reduction")
-                .map((wr, index) => (
-                  <div
-                    className="rw-button-group justify-start"
-                    role="group"
-                    key={`wr-${index}`}
-                  >
-                    <Lookup
-                      {...register(`DinoStat.${index}.item_id`)}
-                      className="!mt-0 !rounded-none !rounded-l-md"
-                      options={arkitems.items
-                        .filter((f) => f.type === "Resource")
-                        .map((item) => {
-                          return {
-                            type: item.type,
-                            label: item.name,
-                            value: item.id,
-                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                          };
-                        })}
-                      search={true}
-                      defaultValue={wr.item_id}
-                      filterFn={(item, search) => {
-                        return item.label
-                          .toLowerCase()
-                          .includes(search.toLowerCase());
-                      }}
-                    />
-                    <input
-                      {...register(`DinoStat.${index}.value`, {
-                        required: true,
-                      })}
-                      type="number"
-                      className="rw-input mt-0 max-w-[7rem]"
-                      defaultValue={wr.value}
-                    />
-                    <button
-                      type="button"
-                      className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
-                      onClick={() => removeStat(index)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
-              <div className="rw-button-group justify-start">
-                <button
-                  type="button"
-                  className="rw-button rw-button-gray !ml-0"
-                  onClick={() =>
-                    appendStat({
-                      item_id: 0,
-                      value: 0,
-                      type: "weight_reduction",
-                    })
-                  }
-                >
-                  Add Weight Reduction
-                </button>
-              </div> */}
 
               <FieldError name="weight_reduction" className="rw-field-error" />
             </div>
@@ -563,37 +507,37 @@ const DinoForm = (props: DinoFormProps) => {
                     value: "322",
                     label: "Doorframe",
                     image:
-                      "https://arkids.net/image/item/120/stone-doorframe.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-doorframe.png",
                   },
                   {
                     value: "1066",
                     label: "Double Doorframe",
                     image:
-                      "https://arkids.net/image/item/120/stone-double-doorframe.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-double-doorframe.png",
                   },
                   {
                     value: "143",
                     label: "Dinosaur Gateway",
                     image:
-                      "https://arkids.net/image/item/120/stone-dinosaur-gateway.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-dinosaur-gateway.png",
                   },
                   {
                     value: "381",
                     label: "Behemoth Dino Gateway",
                     image:
-                      "https://arkids.net/image/item/120/behemoth-stone-dinosaur-gateway.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/behemoth-stone-dinosaur-gateway.png",
                   },
                   {
                     value: "316",
                     label: "Hatchframe",
                     image:
-                      "https://arkids.net/image/item/120/stone-hatchframe.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-hatchframe.png",
                   },
                   {
                     value: "619",
                     label: "Giant Hatchframe",
                     image:
-                      "https://arkids.net/image/item/120/giant-stone-hatchframe.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/giant-stone-hatchframe.png",
                   },
                 ]}
               />
@@ -618,38 +562,38 @@ const DinoForm = (props: DinoFormProps) => {
                   {
                     value: "t",
                     label: "Thatch",
-                    image: "https://arkids.net/image/item/120/thatch-wall.png",
+                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/thatch-wall.png",
                   },
                   {
                     value: "w",
                     label: "Wood",
-                    image: "https://arkids.net/image/item/120/wooden-wall.png",
+                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/wooden-wall.png",
                   },
                   {
                     value: "a",
                     label: "Adobe",
-                    image: "https://arkids.net/image/item/120/adobe-wall.png",
+                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/adobe-wall.png",
                   },
                   {
                     value: "s",
                     label: "Stone",
-                    image: "https://arkids.net/image/item/120/stone-wall.png",
+                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-wall.png",
                   },
                   {
                     value: "g",
                     label: "Greenhouse",
                     image:
-                      "https://arkids.net/image/item/120/greenhouse-wall.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/greenhouse-wall.png",
                   },
                   {
                     value: "m",
                     label: "Metal",
-                    image: "https://arkids.net/image/item/120/metal-wall.png",
+                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/metal-wall.png",
                   },
                   {
                     value: "tk",
                     label: "Tek",
-                    image: "https://arkids.net/image/item/120/tek-wall.png",
+                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/tek-wall.png",
                   },
                 ]}
               />
@@ -674,40 +618,40 @@ const DinoForm = (props: DinoFormProps) => {
                   {
                     value: "733",
                     label: "Lasso",
-                    image: "https://arkids.net/image/item/120/lasso.png",
+                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/lasso.png",
                   },
                   {
                     value: "1040",
                     label: "Bola",
-                    image: "https://arkids.net/image/item/120/bola.png",
+                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bola.png",
                   },
                   {
                     value: "725",
                     label: "Chain Bola",
-                    image: "https://arkids.net/image/item/120/chain-bola.png",
+                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/chain-bola.png",
                   },
                   {
                     value: "785",
                     label: "Net Projectile",
                     image:
-                      "https://arkids.net/image/item/120/net-projectile.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/net-projectile.png",
                   },
                   {
                     value: "1252",
                     label: "Plant Species Y Trap",
                     image:
-                      "https://arkids.net/image/item/120/plant-species-y-trap.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/plant-species-y-trap.png",
                   },
                   {
                     value: "383",
                     label: "Bear Trap",
-                    image: "https://arkids.net/image/item/120/bear-trap.png",
+                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bear-trap.png",
                   },
                   {
                     value: "384",
                     label: "Large Bear Trap",
                     image:
-                      "https://arkids.net/image/item/120/large-bear-trap.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/large-bear-trap.png",
                   },
                 ]}
               />
@@ -733,76 +677,76 @@ const DinoForm = (props: DinoFormProps) => {
                     value: "e85015a5-8694-44e6-81d3-9e1fdd06061d",
                     label: "Pteranodon",
                     image:
-                      "https://www.dododex.com/media/creature/pteranodon.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_pteranodon.png",
                   },
                   {
                     value: "1e7966e7-d63d-483d-a541-1a6d8cf739c8",
                     label: "Tropeognathus",
                     image:
-                      "https://www.dododex.com/media/creature/tropeognathus.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_tropeognathus.png",
                   },
                   {
                     value: "b8e304b3-ab46-4232-9226-c713e5a0d22c",
                     label: "Tapejara",
                     image:
-                      "https://www.dododex.com/media/creature/tapejara.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_tapejara.png",
                   },
                   {
                     value: "da86d88a-3171-4fc9-b96d-79e8f59f1601",
                     label: "Griffin",
-                    image: "https://www.dododex.com/media/creature/griffin.png",
+                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_griffin.png",
                   },
                   {
                     value: "147922ce-912d-4ab6-b4b6-712a42a9d939",
                     label: "Desmodus",
                     image:
-                      "https://www.dododex.com/media/creature/desmodus.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_desmodus.png",
                   },
                   {
                     value: "28971d02-8375-4bf5-af20-6acb20bf7a76",
                     label: "Argentavis",
                     image:
-                      "https://www.dododex.com/media/creature/argentavis.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_argentavis.png",
                   },
                   {
                     value: "f924e5d6-832a-4fb3-abc0-2fa42481cee1",
                     label: "Crystal Wyvern",
                     image:
-                      "https://www.dododex.com/media/creature/crystalwyvern.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_crystalwyvern.png",
                   },
                   {
                     value: "7aec6bf6-357e-44ec-8647-3943ca34e666",
                     label: "Wyvern",
-                    image: "https://www.dododex.com/media/creature/wyvern.png",
+                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_wyvern.png",
                   },
                   {
                     value: "2b938227-61c2-4230-b7da-5d4d55f639ae",
                     label: "Quetzal",
-                    image: "https://www.dododex.com/media/creature/quetzal.png",
+                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_quetzal.png",
                   },
                   {
                     value: "b1d6f790-d15c-4813-a6c8-9e6f62fafb52",
                     label: "Tusoteuthis",
                     image:
-                      "https://www.dododex.com/media/creature/tusoteuthis.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_tusoteuthis.png",
                   },
                   {
                     value: "d670e948-055e-45e1-adf3-e56d63236238",
                     label: "Karkinos",
                     image:
-                      "https://www.dododex.com/media/creature/karkinos.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_karkinos.png",
                   },
                   {
                     value: "52156470-6075-487b-a042-2f1d0d88536c",
                     label: "Kaprosuchus",
                     image:
-                      "https://www.dododex.com/media/creature/kaprosuchus.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_kaprosuchus.png",
                   },
                   {
                     value: "f723f861-0aa3-40b5-b2d4-6c48ec0ca683",
                     label: "Procoptodon",
                     image:
-                      "https://www.dododex.com/media/creature/procoptodon.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_procoptodon.png",
                   },
                   {
                     value: "human",
@@ -813,7 +757,7 @@ const DinoForm = (props: DinoFormProps) => {
                     value: "94708e56-483b-4eef-ad35-2b9ce0e9c669",
                     label: "Gigantopithecus",
                     image:
-                      "https://www.dododex.com/media/creature/gigantopithecus.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_gigantopithecus.png",
                   },
                 ]}
               />
@@ -821,7 +765,96 @@ const DinoForm = (props: DinoFormProps) => {
               <FieldError name="carryable_by" className="rw-field-error" />
             </div>
           </div>
-        </fieldset>
+          <div>
+            <div>
+              <Label
+                name="mounted_weaponry"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Mounted Weaponry
+              </Label>
+
+              <CheckboxField
+                name="mounted_weaponry"
+                defaultChecked={props.dino?.mounted_weaponry}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+              />
+              <p className="rw-helper-text">
+                Can you use weapons while riding this dino?
+              </p>
+
+              <FieldError name="mounted_weaponry" className="rw-field-error" />
+            </div>
+            <div>
+              <Label
+                name="ridable"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Ridable
+              </Label>
+
+              <CheckboxField
+                name="ridable"
+                defaultChecked={props.dino?.ridable}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+              />
+
+              <FieldError name="ridable" className="rw-field-error" />
+            </div>
+          </div>
+          <div>
+            <div>
+              {/* TODO: Insert saddle lookup here */}
+              {/* {props.dino?.ridable && ( */}
+              <Label
+                name="saddle_id"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Saddle
+              </Label>
+
+              {/* <TextField
+                name="saddle_id"
+                defaultValue={props.dino?.saddle_id}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+                validation={{ valueAsNumber: true }}
+              /> */}
+
+              <Lookup
+                name="saddle_id"
+                options={data ? data.itemsByCategory.items.map((item) => (
+                  {
+                    type: item.type,
+                    label: item.name,
+                    value: item.id,
+                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                  }
+                )) : []}
+                search={true}
+                defaultValue={props.dino?.saddle_id}
+                filterFn={(item, search) => {
+                  return item.label
+                    .toLowerCase()
+                    .includes(search.toLowerCase());
+                }}
+              />
+
+              <FieldError
+                name="saddle_id"
+                className="rw-field-error"
+              />
+              {/* )} */}
+
+            </div>
+          </div>
+        </details>
+
 
         <Label
           name="base_stats"
@@ -894,7 +927,7 @@ const DinoForm = (props: DinoFormProps) => {
 
         <FieldError name="base_stats" className="rw-field-error" />
 
-        <fieldset className="rw-form-group ">
+        <fieldset className="rw-form-group">
           <legend className="inline-flex space-x-3">
             <span>Death</span>
             <svg
@@ -918,55 +951,50 @@ const DinoForm = (props: DinoFormProps) => {
                 Drops
               </Label>
 
-              <TextField
-                name="drops"
-                className="rw-input"
-                defaultValue={JSON.stringify(12)}
-              />
               {statFields
-                .filter((ge) => ge.type === "drops")
-                .map((ge, index) => (
-                  <div
-                    className="rw-button-group !mt-0 justify-start"
-                    role="group"
-                    key={`drops-${index}`}
-                  >
-                    <Lookup
-                      {...register(`DinoStat.${index}.item_id`)}
-                      className="!mt-0 !rounded-none !rounded-l-md"
-                      options={arkitems.items
-                        .filter((f) => f.type === "Resource")
-                        .map((item) => {
-                          return {
+                // .filter((ge) => ge.type === "drops")
+                .map((dr, index) => (
+                  dr.type === "drops" && (
+                    <div
+                      className="rw-button-group justify-start !mt-0"
+                      role="group"
+                      key={`drops-${index}`}
+                    >
+                      <Lookup
+                        {...register(`DinoStat.${index}.item_id`)}
+                        className="!mt-0 !rounded-none !rounded-l-md"
+                        options={data.itemsByCategory.items.map((item) => (
+                          {
                             type: item.type,
                             label: item.name,
                             value: item.id,
                             image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                          };
-                        })}
-                      search={true}
-                      defaultValue={ge.item_id}
-                      filterFn={(item, search) => {
-                        return item.label
-                          .toLowerCase()
-                          .includes(search.toLowerCase());
-                      }}
-                    />
-                    <button
-                      type="button"
-                      title="Close"
-                      className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
-                      onClick={() => removeStat(index)}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 320 512"
-                        className="rw-button-icon w-4 fill-current"
+                          }
+                        ))}
+                        search={true}
+                        defaultValue={dr.item_id}
+                        filterFn={(item, search) => {
+                          return item.label
+                            .toLowerCase()
+                            .includes(search.toLowerCase());
+                        }}
+                      />
+                      <button
+                        type="button"
+                        title="Close"
+                        className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
+                        onClick={() => removeStat(index)}
                       >
-                        <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
-                      </svg>
-                    </button>
-                  </div>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 320 512"
+                          className="rw-button-icon w-4 fill-current"
+                        >
+                          <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
+                        </svg>
+                      </button>
+                    </div>
+                  )
                 ))}
               <div className="rw-button-group justify-start">
                 <button
@@ -1004,8 +1032,30 @@ const DinoForm = (props: DinoFormProps) => {
           </div>
         </fieldset>
 
-        <fieldset className="rw-form-group">
-          <legend>Taming</legend>
+        <details className="rw-form-group group">
+          <summary className="inline-flex items-center">
+            Taming
+            <svg
+              className="ml-1 h-4 w-4"
+              aria-hidden="true"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                className="group-open:block [&:not(open)]:hidden"
+                d="M19 9l-7 7-7-7"
+              ></path>
+              <path
+                className="group-open:hidden [&:not(open)]:block"
+                d="M9 5l7 7-7 7"
+              ></path>
+            </svg>
+          </summary>
           <div>
             <div>
               <Label
@@ -1252,10 +1302,32 @@ const DinoForm = (props: DinoFormProps) => {
               <FieldError name="taming_bonus_attr" className="rw-field-error" />
             </div>
           </div>
-        </fieldset>
+        </details>
 
-        <fieldset className="rw-form-group">
-          <legend>Breeding</legend>
+        <details className="rw-form-group group">
+          <summary className="inline-flex items-center">
+            Breeding
+            <svg
+              className="ml-1 h-4 w-4"
+              aria-hidden="true"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                className="group-open:block [&:not(open)]:hidden"
+                d="M19 9l-7 7-7-7"
+              ></path>
+              <path
+                className="group-open:hidden [&:not(open)]:block"
+                d="M9 5l7 7-7 7"
+              ></path>
+            </svg>
+          </summary>
           <div>
             <div>
               <Label
@@ -1336,10 +1408,32 @@ const DinoForm = (props: DinoFormProps) => {
               <FieldError name="incubation_time" className="rw-field-error" />
             </div>
           </div>
-        </fieldset>
+        </details>
 
-        <fieldset className="rw-form-group">
-          <legend>Food</legend>
+        <details className="rw-form-group group">
+          <summary className="inline-flex items-center">
+            Food
+            <svg
+              className="ml-1 h-4 w-4"
+              aria-hidden="true"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                className="group-open:block [&:not(open)]:hidden"
+                d="M19 9l-7 7-7-7"
+              ></path>
+              <path
+                className="group-open:hidden [&:not(open)]:block"
+                d="M9 5l7 7-7 7"
+              ></path>
+            </svg>
+          </summary>
           <div>
             <div>
               <Label
@@ -1423,9 +1517,10 @@ const DinoForm = (props: DinoFormProps) => {
 
               <TextField
                 name="food_consumption_base"
-                defaultValue={props.dino?.food_consumption_base}
+                defaultValue={props.dino?.food_consumption_base || 0}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
+                emptyAs={0}
                 validation={{ valueAsNumber: true }}
               />
 
@@ -1445,9 +1540,10 @@ const DinoForm = (props: DinoFormProps) => {
 
               <TextField
                 name="food_consumption_mult"
-                defaultValue={props.dino?.food_consumption_mult}
+                defaultValue={props.dino?.food_consumption_mult || 0}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
+                emptyAs={0}
                 validation={{ valueAsNumber: true }}
               />
 
@@ -1456,8 +1552,30 @@ const DinoForm = (props: DinoFormProps) => {
                 className="rw-field-error"
               />
             </div>
+            <div>
+              <Label
+                name="non_violent_food_rate_mult"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Non violent food rate multiplier
+              </Label>
+
+              <TextField
+                name="non_violent_food_rate_mult"
+                defaultValue={props.dino?.non_violent_food_rate_mult || 0}
+                className="rw-input"
+                errorClassName="rw-input rw-input-error"
+                validation={{ valueAsNumber: true }}
+              />
+
+              <FieldError
+                name="non_violent_food_rate_mult"
+                className="rw-field-error"
+              />
+            </div>
           </div>
-        </fieldset>
+        </details>
         <Label
           name="disable_mult"
           className="rw-label"
@@ -1603,26 +1721,7 @@ const DinoForm = (props: DinoFormProps) => {
 
         <FieldError name="base_points" className="rw-field-error" />
 
-        <Label
-          name="non_violent_food_rate_mult"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Non violent food rate multiplier
-        </Label>
 
-        <TextField
-          name="non_violent_food_rate_mult"
-          defaultValue={props.dino?.non_violent_food_rate_mult || 0}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsNumber: true }}
-        />
-
-        <FieldError
-          name="non_violent_food_rate_mult"
-          className="rw-field-error"
-        />
 
         <Label
           name="x_variant"
@@ -1728,68 +1827,6 @@ const DinoForm = (props: DinoFormProps) => {
 
         <FieldError name="attack" className="rw-field-error" />
 
-        <Label
-          name="mounted_weaponry"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Mounted Weaponry
-        </Label>
-
-        <CheckboxField
-          name="mounted_weaponry"
-          defaultChecked={props.dino?.mounted_weaponry}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-        <p className="rw-helper-text">
-          Can you use weapons while riding this dino?
-        </p>
-
-        <FieldError name="mounted_weaponry" className="rw-field-error" />
-
-        <Label
-          name="ridable"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Ridable
-        </Label>
-
-        <CheckboxField
-          name="ridable"
-          defaultChecked={props.dino?.ridable}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="ridable" className="rw-field-error" />
-
-        {/* TODO: Insert saddle lookup here */}
-        {/* {props.dino?.ridable && (
-          <>
-            <Label
-              name="saddle_id"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Saddle
-            </Label>
-
-            <TextField
-              name="saddle_id"
-              defaultValue={props.dino?.saddle_id}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-              validation={{ valueAsNumber: true }}
-            />
-
-            <FieldError
-              name="saddle_id"
-              className="rw-field-error"
-            />
-          </>
-        )} */}
 
         <Label
           name="type"

@@ -7,7 +7,9 @@ import type {
 import { db } from "src/lib/db";
 
 export const timelineBasespots: QueryResolvers["timelineBasespots"] = () => {
-  return db.timelineBasespot.findMany();
+  return db.timelineBasespot.findMany({
+    orderBy: { start_date: "asc" },
+  });
 };
 
 export const timelineBasespot: QueryResolvers["timelineBasespot"] = ({
@@ -51,8 +53,8 @@ export const raidTimelineBasespot: MutationResolvers["raidTimelineBasespot"] =
     return db.timelineBasespot.update({
       data: {
         id,
-        endDate: new Date(),
-        raidcomment: input.raidcomment,
+        end_date: input.end_date || new Date(),
+        raid_comment: input.raid_comment,
         raided_by: input.raided_by,
       },
       where: { id },

@@ -7,7 +7,11 @@ import type {
 import { db } from "src/lib/db";
 
 const POSTS_PER_PAGE = 6;
-export const basespotPage = ({ page = 1 }: { page: number }) => {
+export const basespotPage: QueryResolvers["basespotPage"] = ({
+  page = 1,
+}: {
+  page: number;
+}) => {
   const offset = (page - 1) * POSTS_PER_PAGE;
   return {
     basespots: db.basespot.findMany({

@@ -94,7 +94,7 @@ a {
 }
 /* Form Section */
 .rw-form-group {
-  @apply mt-2 flex flex-col items-start border-t border-stone-500 pt-2 text-gray-900 dark:border-zinc-300 dark:text-stone-200;
+  @apply mt-2 flex flex-col items-start border-stone-500 pt-2 text-gray-900 dark:border-zinc-300 dark:text-stone-200 [&:not(details)]:border-t [&:not(fieldset)]:border-b [&:not(fieldset)]:pb-2;
 }
 .rw-form-group legend,
 .rw-form-group summary {

@@ -31,7 +31,7 @@ export const itemsByCategory: QueryResolvers["itemsByCategory"] = ({
 }) => {
   return {
     items: db.item.findMany({
-      where: { type: category },
+      where: { category: category },
       orderBy: { created_at: "desc" },
     }),
     count: db.item.count({ where: { type: category } }),

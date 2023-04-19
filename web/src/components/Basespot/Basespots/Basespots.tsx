@@ -1,7 +1,8 @@
+import { useLazyQuery } from "@apollo/client";
 import { Link, routes, useParams } from "@redwoodjs/router";
-import { useMutation } from "@redwoodjs/web";
+import { useMutation, useQuery } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ArkCard from "src/components/ArkCard/ArkCard";
 
 import { QUERY } from "src/components/Basespot/BasespotsCell/BasespotsCell";
@@ -17,6 +18,17 @@ const DELETE_BASESPOT_MUTATION = gql`
   mutation DeleteBasespotMutation($id: BigInt!) {
     deleteBasespot(id: $id) {
       id
+    }
+  }
+`;
+
+
+const MAPQUERY = gql`
+  query FindMaps {
+    maps {
+      id
+      name
+      img
     }
   }
 `;
@@ -44,6 +56,20 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
 
   let { map } = useParams();
   let basespots = basespotPage.basespots;
+
+  // const [loadMaps, { called, loading, error, data }] = useLazyQuery(MAPQUERY, {
+  //   onCompleted: (data) => {
+  //     console.log(data);
+  //   },
+  //   onError: (error) => {
+  //     console.log(error);
+  //     toast.error(error.message);
+  //   }
+  // });
+
+  // useEffect(() => {
+  //   loadMaps();
+  // }, []);
 
   const mapImages = {
     theisland:
@@ -90,6 +116,10 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
             { label: "Fjordur", value: 11 },
             { label: "Lost Island", value: 12 },
           ]}
+          // options={data?.maps.map((map) => ({
+          //   label: map.name,
+          //   value: map.id,
+          // }))}
           placeholder="Choose Map"
           defaultValue={currentMap}
           onSelect={(e) => setCurrentMap(e.value ? e.value : null)}
