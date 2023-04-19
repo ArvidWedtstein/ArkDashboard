@@ -1,6 +1,6 @@
-import { FieldError, HiddenField, TextField, useForm, useFormContext, useRegister } from "@redwoodjs/forms";
+import { useController } from "@redwoodjs/forms";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 interface CheckboxGroupProps {
   name?: string;
@@ -21,46 +21,43 @@ interface CheckboxGroupProps {
 const CheckboxGroup = ({
   name,
   options,
-  defaultValue,
+  defaultValue = [],
   onChange,
   validation = {
     single: false,
   },
 }: CheckboxGroupProps) => {
-  const [selectedOptions, setSelectedOptions] = useState([]);
-  const register = name
-    && useRegister({
-      name: name,
-      validation: { ...validation },
-    });
+  const [selectedOptions, setSelectedOptions] = useState(() => defaultValue);
+  const { field } = name && useController({ name: name });
 
-  useEffect(() => {
-    setSelectedOptions(defaultValue || []);
-  }, [defaultValue]);
+  const memoizedOptions = useMemo(() => options, [options]);
 
-  const handleCheckboxChange = (event) => {
-    const { name } = event.target;
+  const handleCheckboxChange = useCallback((event) => {
+    const { value } = event.target;
     let newSelectedOptions;
 
-    if (selectedOptions.includes(name)) {
-      newSelectedOptions = selectedOptions.filter((option) => option !== name);
+    if (selectedOptions.includes(value)) {
+      newSelectedOptions = selectedOptions.filter((option) => option !== value);
     } else {
-      newSelectedOptions = validation.single ? [name] : [...selectedOptions, name];
+      newSelectedOptions = validation.single ? [value] : [...selectedOptions, value];
     }
 
     setSelectedOptions(newSelectedOptions);
-    onChange && onChange(name, newSelectedOptions);
-    // register?.ref?.current?.value = newSelectedOptions;
-  };
+    // onChange && onChange(value, newSelectedOptions);
+    field.onChange(newSelectedOptions);
+    onChange?.(value, newSelectedOptions);
+  }, [name, onChange, selectedOptions, validation.single]
+  );
 
   return (
-    <fieldset className="flex h-fit flex-wrap gap-3 mt-1" name={name}>
-      {options.map(({ label, image, value: optValue }) => (
+    <div className="flex h-fit flex-wrap gap-3 mt-1">
+      {memoizedOptions.map(({ label, image, value: optValue }) => (
         <label key={label}>
           <input
             disabled={!name && !label}
             type="checkbox"
-            name={optValue || label + "checkbox"}
+            name={name || optValue || label + "checkbox"}
+            value={optValue || label}
             onChange={handleCheckboxChange}
             checked={selectedOptions.includes(optValue || label)}
             className="rw-check-input"
@@ -87,29 +84,8 @@ const CheckboxGroup = ({
           </span>
         </label>
       ))}
-      {/* <input
-        type="hidden"
-        {...reg}
-        name={name}
-        value={selectedOptions}
-      /> */}
-      {/* <TextField
-        {...reg}
-        name={name}
-        value={selectedOptions}
-        validation={{ ...validation, required: false }}
-      /> */}
-
-      <input
-        type="text"
-        id={name}
-        name={name}
-        value={JSON.stringify(selectedOptions)}
-        {...(name ? register : "")}
-      />
-    </fieldset>
+    </div>
   );
 };
 
 export default CheckboxGroup;
-

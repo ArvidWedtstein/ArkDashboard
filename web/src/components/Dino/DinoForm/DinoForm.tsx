@@ -16,7 +16,7 @@ import type { EditDinoById, UpdateDinoInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import Lookup from "src/components/Util/Lookup/Lookup";
 import arkitems from "../../../../public/arkitems.json";
-import CheckboxGroup, { CheckboxGroupField, CheckboxGroupSelect } from "src/components/Util/CheckSelect/CheckboxGroup";
+import CheckboxGroup, { CheckboxGroupField, CheckboxGroupSelect, CustomCheckboxGroup } from "src/components/Util/CheckSelect/CheckboxGroup";
 import { truncate } from "src/lib/formatters";
 import { useCellCacheContext, useQuery } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
@@ -1863,77 +1863,6 @@ const DinoForm = (props: DinoFormProps) => {
               label: "Boss",
               image:
                 "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/5/50/Cowardice.png",
-            },
-          ]}
-        />
-        <Table
-          select={true}
-          summary={true}
-          rows={[
-            {
-              t: 0,
-              w: 43,
-              a: 5,
-              s: 23,
-              m: 56,
-              tk: 4,
-            },
-            {
-              t: 34,
-              w: 3,
-              a: 1,
-              s: 3,
-              m: 8,
-              tk: 1,
-            },
-            {
-              t: 5,
-              w: 5,
-              a: 5,
-              s: 2,
-              m: 9,
-              tk: 7,
-            },
-            {
-              t: 5,
-              w: 5,
-              a: 2,
-              s: 3,
-              m: 23,
-              tk: 23,
-            },
-          ]}
-          columns={[
-            {
-              field: "t",
-              label: "Thatch",
-              numeric: true,
-
-            },
-            {
-              field: "w",
-              label: "Wood",
-              numeric: true,
-            },
-            {
-              field: "a",
-              label: "Adobe",
-              numeric: true,
-            },
-            {
-              field: "s",
-              label: "Stone",
-              numeric: true,
-            },
-            {
-              field: "m",
-              label: "Metal",
-              numeric: true,
-            },
-            {
-              field: "tk",
-              label: "Tek",
-              numeric: true,
             },
           ]}
         />
