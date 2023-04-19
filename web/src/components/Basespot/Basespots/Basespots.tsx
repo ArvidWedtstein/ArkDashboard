@@ -22,9 +22,8 @@ const DELETE_BASESPOT_MUTATION = gql`
   }
 `;
 
-
 const MAPQUERY = gql`
-  query FindMaps {
+  query FindMaps2 {
     maps {
       id
       name
@@ -128,22 +127,20 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
       <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {basespots
           .filter((spot) =>
-            currentMap != null ? spot.map.toString() === currentMap.toString() : true
+            currentMap != null
+              ? spot.map.toString() === currentMap.toString()
+              : true
           )
           .map((basespot, i) => (
             <ArkCard
               key={`${basespot.id}-${i}`}
               title={basespot.name}
-              subtitle={basespot.Map.name
-                .split(/(?=[A-Z])/)
-                .join(" ")}
+              subtitle={basespot.Map.name.split(/(?=[A-Z])/).join(" ")}
               content={basespot.description}
               ring={`${basespot.estimated_for_players} players`}
               image={{
                 src: mapImages[
-                  basespot.Map.name
-                    .toLowerCase()
-                    .replaceAll(" ", "")
+                  basespot.Map.name.toLowerCase().replaceAll(" ", "")
                 ],
                 alt: basespot.Map.name,
                 position: `${random(0, 100)}% ${random(25, 75)}%`,
