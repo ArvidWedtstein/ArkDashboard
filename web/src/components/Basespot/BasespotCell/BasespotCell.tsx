@@ -20,9 +20,9 @@ export const QUERY = gql`
       created_by
       turretsetup_image
       updated_at
-      Map_Basespot_MapToMap {
-        name
-      }
+      # Map {
+      #   name
+      # }
     }
   }
 `;

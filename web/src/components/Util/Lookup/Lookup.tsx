@@ -44,7 +44,7 @@ const Lookup = ({
     : null;
 
 
-  const { setValue, setError, clearErrors } = useFormContext()
+  // const { setValue, setError, clearErrors } = useFormContext()
   const [searchTerm, setSearchTerm] = useState(defaultValue ? options.find(option => option.value === defaultValue).label : '')
   const [filteredOptions, setFilteredOptions] = useState(options)
   const [openIndexes, setOpenIndexes] = useState([]);
@@ -62,9 +62,9 @@ const Lookup = ({
   }, [options, searchTerm, filterFn, sortFn])
 
   // Update form values when selectedOption changes
-  useEffect(() => {
-    setValue(name, selectedOption ? selectedOption.value : null)
-  }, [selectedOption, setValue, name])
+  // useEffect(() => {
+  //   setValue(name, selectedOption ? selectedOption.value : null)
+  // }, [selectedOption, setValue, name])
 
   // Update selectedOption when defaultValue changes
   useEffect(() => {
@@ -86,7 +86,7 @@ const Lookup = ({
   const handleOptionSelect = option => {
     setSelectedOption(option)
     setSearchTerm(option.label)
-    clearErrors(name)
+    // name && clearErrors(name)
     onSelect && onSelect(option);
   }
 
@@ -94,8 +94,8 @@ const Lookup = ({
   const handleOptionClear = () => {
     setSelectedOption(null)
     setSearchTerm('')
-    clearErrors(name)
-    onSelect && onSelect(null)
+    // name && clearErrors(name)
+    onSelect && onSelect({ label: null, value: null });
   }
 
   /**
@@ -146,7 +146,7 @@ const Lookup = ({
               disabled={disabled}
               {...register}
             />
-            {children ? children : selectedOption["label"]}
+            {children ? children : (selectedOption ? selectedOption["label"] : placeholder)}
           </>
         )}
 

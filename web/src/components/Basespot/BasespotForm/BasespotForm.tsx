@@ -41,17 +41,17 @@ const BasespotForm = (props: BasespotFormProps) => {
   const [defenseImages, setDefenseImages] = useState([]);
 
   const basename = useRef(null);
-  const [map, setMap] = useState(props.basespot?.Map || 2);
+  const [map, setMap] = useState(props.basespot?.map || 2);
 
   const onSubmit = (data: FormBasespot) => {
-    data.Map = parseInt(data.Map.toString() || map.toString());
+    data.map = parseInt(data.map.toString() || map.toString());
     if (thumbnailUrl) data.image = thumbnailUrl;
     props.onSave(data, props?.basespot?.id);
   };
 
   useEffect(() => {
-    if (props.basespot?.Map) {
-      setMap(props.basespot.Map);
+    if (props.basespot?.map) {
+      setMap(props.basespot.map);
     }
   }, []);
 
@@ -243,12 +243,11 @@ const BasespotForm = (props: BasespotFormProps) => {
             <FileUpload
               multiple={false}
               name="image"
-              storagePath={`basespotimages/${
-                props.basespot?.id ||
+              storagePath={`basespotimages/${props.basespot?.id ||
                 basename.current?.value.replaceAll(" ", "")
                 // basename.current?.value.replaceAll(" ", "") ||
                 // props.basespot?.name.replaceAll(" ", "")
-              }`}
+                }`}
               onUpload={(url) => {
                 setThumbnailUrl(url);
               }}

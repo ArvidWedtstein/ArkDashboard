@@ -70,50 +70,52 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
     genesis2:
       "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
   };
-  const [currentMap, setCurrentMap] = useState(map || "");
+  const [currentMap, setCurrentMap] = useState(map || null);
 
   return (
     <div className="h-[80vh]">
       <div className="flex items-center">
         <Lookup
-          options={Object.keys(mapImages).map((k) => ({
-            label: k,
-            value: k,
-          }))}
-          onSelect={(e) => setCurrentMap(e.name)}
-        >
-          {!!currentMap ? currentMap : "Choose map"}
-        </Lookup>
-        {/* <button
-          className="rw-button rounded-md bg-gray-800 px-4 py-2 text-white"
-          onClick={() => setCurrentMap("")}
-        >
-          Clear
-        </button> */}
+          options={[
+            { label: "Valguero", value: 1 },
+            { label: "The Island", value: 2 },
+            { label: "The Center", value: 3 },
+            { label: "Ragnarok", value: 4 },
+            { label: "Abberation", value: 5 },
+            { label: "Extinction", value: 6 },
+            { label: "Scorched Earth", value: 7 },
+            { label: "Genesis", value: 8 },
+            { label: "Genesis 2", value: 9 },
+            { label: "Crystal Isles", value: 10 },
+            { label: "Fjordur", value: 11 },
+            { label: "Lost Island", value: 12 },
+          ]}
+          placeholder="Choose Map"
+          defaultValue={currentMap}
+          onSelect={(e) => setCurrentMap(e.value ? e.value : null)}
+        />
       </div>
       <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {basespots
           .filter((spot) =>
-            spot.Map_Basespot_MapToMap.name
-              .toLowerCase()
-              .includes(currentMap.toLowerCase())
+            currentMap != null ? spot.map.toString() === currentMap.toString() : true
           )
           .map((basespot, i) => (
             <ArkCard
               key={`${basespot.id}-${i}`}
               title={basespot.name}
-              subtitle={basespot.Map_Basespot_MapToMap.name
+              subtitle={basespot.Map.name
                 .split(/(?=[A-Z])/)
                 .join(" ")}
               content={basespot.description}
-              ring={`${basespot.estimatedForPlayers} players`}
+              ring={`${basespot.estimated_for_players} players`}
               image={{
                 src: mapImages[
-                  basespot.Map_Basespot_MapToMap.name
+                  basespot.Map.name
                     .toLowerCase()
                     .replaceAll(" ", "")
                 ],
-                alt: basespot.Map_Basespot_MapToMap.name,
+                alt: basespot.Map.name,
                 position: `${random(0, 100)}% ${random(25, 75)}%`,
               }}
               button={{
