@@ -16,11 +16,12 @@ import type { EditDinoById, UpdateDinoInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import Lookup from "src/components/Util/Lookup/Lookup";
 import arkitems from "../../../../public/arkitems.json";
-import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
+import CheckboxGroup, { CheckboxGroupField, CheckboxGroupSelect } from "src/components/Util/CheckSelect/CheckboxGroup";
 import { truncate } from "src/lib/formatters";
 import { useCellCacheContext, useQuery } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useLazyQuery } from "@apollo/client";
+import Table from "src/components/Util/Table/Table";
 
 type FormDino = NonNullable<EditDinoById["dino"]>;
 
@@ -130,14 +131,7 @@ const DinoForm = (props: DinoFormProps) => {
     control,
     name: "DinoStat", // the name of the field array in your form data
   });
-  const {
-    fields: wrFields,
-    append: appendWr,
-    remove: removeWr,
-  } = useFieldArray({
-    control,
-    name: "wr", // the name of the field array in your form data
-  });
+
   const {
     fields: attackFields,
     append: appendAttack,
@@ -155,10 +149,7 @@ const DinoForm = (props: DinoFormProps) => {
 
   const onSubmit = (data: FormDino) => {
     data.eats = eats.map((f) => f.id.toString());
-    data.DinoStat = [...data.DinoStat, ...data["wr"]];
-
-    delete data["wr"];
-
+    console.log(data)
     // Test Dino Object
     // const d = {
     //   name: "test",
@@ -837,7 +828,7 @@ const DinoForm = (props: DinoFormProps) => {
                   }
                 )) : []}
                 search={true}
-                defaultValue={props.dino?.saddle_id}
+                defaultValue={props.dino?.saddle_id || 0}
                 filterFn={(item, search) => {
                   return item.label
                     .toLowerCase()
@@ -1872,6 +1863,77 @@ const DinoForm = (props: DinoFormProps) => {
               label: "Boss",
               image:
                 "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/5/50/Cowardice.png",
+            },
+          ]}
+        />
+        <Table
+          select={true}
+          summary={true}
+          rows={[
+            {
+              t: 0,
+              w: 43,
+              a: 5,
+              s: 23,
+              m: 56,
+              tk: 4,
+            },
+            {
+              t: 34,
+              w: 3,
+              a: 1,
+              s: 3,
+              m: 8,
+              tk: 1,
+            },
+            {
+              t: 5,
+              w: 5,
+              a: 5,
+              s: 2,
+              m: 9,
+              tk: 7,
+            },
+            {
+              t: 5,
+              w: 5,
+              a: 2,
+              s: 3,
+              m: 23,
+              tk: 23,
+            },
+          ]}
+          columns={[
+            {
+              field: "t",
+              label: "Thatch",
+              numeric: true,
+
+            },
+            {
+              field: "w",
+              label: "Wood",
+              numeric: true,
+            },
+            {
+              field: "a",
+              label: "Adobe",
+              numeric: true,
+            },
+            {
+              field: "s",
+              label: "Stone",
+              numeric: true,
+            },
+            {
+              field: "m",
+              label: "Metal",
+              numeric: true,
+            },
+            {
+              field: "tk",
+              label: "Tek",
+              numeric: true,
             },
           ]}
         />

@@ -86,6 +86,7 @@ const Table = ({
 }: TableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rows, setRows] = useState<any[]>([]);
+  const [selectedRows, setSelectedRows] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sort, setSort] = useState({
     column: "",
@@ -124,8 +125,9 @@ const Table = ({
       const indexOfFirstData = indexOfLastData - rowsPerPage;
       return sortData(filteredData).slice(indexOfFirstData, indexOfLastData);
     }
+
     return sortData(filteredData);
-  }, [sort, searchTerm, dataRows, currentPage]);
+  }, [sort, searchTerm, dataRows, currentPage, selectedRows]);
 
   useEffect(() => {
     if (select) {
@@ -140,11 +142,12 @@ const Table = ({
 
   const selectRow = (e) => {
     if (e.target.id === "checkbox-all-select") {
-      rows.map((row) => {
+      let ro = rows.map((row) => {
         if (row.checked !== e.target.checked) {
           row.checked = e.target.checked;
         }
       });
+      setSelectedRows(rows.filter((row) => row.checked === true));
       return;
     }
 
@@ -156,6 +159,7 @@ const Table = ({
         check.checked = true;
       }
     }
+    setSelectedRows(rows.filter((row) => row.checked === true));
   };
 
   const changePage = (dir: "next" | "prev") => {
@@ -225,18 +229,18 @@ const Table = ({
 
     let content = renderCell
       ? renderCell({
-          columnIndex,
-          rowIndex,
-          value: other.valueFormatter
-            ? other.valueFormatter({
-                value: cellData,
-                row: rowData,
-                columnIndex,
-              })
-            : cellData,
-          field: other.field,
-          row: rowData,
-        })
+        columnIndex,
+        rowIndex,
+        value: other.valueFormatter
+          ? other.valueFormatter({
+            value: cellData,
+            row: rowData,
+            columnIndex,
+          })
+          : cellData,
+        field: other.field,
+        row: rowData,
+      })
       : "";
 
     if (
@@ -316,13 +320,15 @@ const Table = ({
                   })}
                 >
                   {other.numeric
-                    ? SortedFilteredData.reduce(
-                        (a, b) => a + parseInt(b[field]),
-                        0
-                      )
+                    ? SortedFilteredData.filter((r, i) => (select && selectedRows.length > 0) ? rows.map((d: any, k) => {
+                      return d.checked ? k : -1
+                    }).includes(i) : true).reduce(
+                      (a, b) => a + parseInt(b[field]),
+                      0
+                    )
                     : index === 0
-                    ? "Total"
-                    : ""}
+                      ? "Total"
+                      : ""}
                 </th>
               );
             })}
@@ -494,60 +500,60 @@ const Table = ({
         <tbody className="divide-y divide-gray-400 bg-gray-200 dark:divide-gray-800 dark:bg-zinc-600">
           {vertical
             ? columns.map(({ field, ...other }, index) => {
-                return (
-                  <tr
-                    key={`row-${index}`}
-                    className={clsx("bg-white dark:bg-zinc-600", {
-                      "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
+              return (
+                <tr
+                  key={`row-${index}`}
+                  className={clsx("bg-white dark:bg-zinc-600", {
+                    "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
+                  })}
+                  onClick={() => onRowClick && onRowClick({ index: index })}
+                >
+                  {header &&
+                    headerRenderer({
+                      label: other.label,
+                      columnIndex: index,
+                      ...other,
                     })}
-                    onClick={() => onRowClick && onRowClick({ index: index })}
-                  >
-                    {header &&
-                      headerRenderer({
-                        label: other.label,
-                        columnIndex: index,
-                        ...other,
-                      })}
-                    {SortedFilteredData.map((datarow, rowIndex) => {
-                      return cellRenderer({
-                        rowData: datarow,
-                        cellData: datarow[field],
-                        columnIndex: index,
-                        rowIndex,
-                        renderCell: other.renderCell,
-                        field,
-                        ...other,
-                      });
-                    })}
-                  </tr>
-                );
-              })
+                  {SortedFilteredData.map((datarow, rowIndex) => {
+                    return cellRenderer({
+                      rowData: datarow,
+                      cellData: datarow[field],
+                      columnIndex: index,
+                      rowIndex,
+                      renderCell: other.renderCell,
+                      field,
+                      ...other,
+                    });
+                  })}
+                </tr>
+              );
+            })
             : dataRows &&
-              SortedFilteredData.map((datarow, i) => {
-                return (
-                  <tr
-                    key={`row-${i}`}
-                    className={clsx({
-                      "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
-                    })}
-                    onClick={() => onRowClick && onRowClick({ index: i })}
-                  >
-                    {select && tableSelect({ row: i })}
-                    {columns.map(({ field, ...other }, index) => {
-                      return cellRenderer({
-                        rowData: datarow,
-                        cellData: datarow[field],
-                        columnIndex: index,
-                        rowIndex: i,
-                        renderCell: other.renderCell,
-                        field,
-                        ...other,
-                      });
-                    })}
-                    {renderActions && <td>{renderActions(datarow)}</td>}
-                  </tr>
-                );
-              })}
+            SortedFilteredData.map((datarow, i) => {
+              return (
+                <tr
+                  key={`row-${i}`}
+                  className={clsx({
+                    "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
+                  })}
+                  onClick={() => onRowClick && onRowClick({ index: i })}
+                >
+                  {select && tableSelect({ row: i })}
+                  {columns.map(({ field, ...other }, index) => {
+                    return cellRenderer({
+                      rowData: datarow,
+                      cellData: datarow[field],
+                      columnIndex: index,
+                      rowIndex: i,
+                      renderCell: other.renderCell,
+                      field,
+                      ...other,
+                    });
+                  })}
+                  {renderActions && <td>{renderActions(datarow)}</td>}
+                </tr>
+              );
+            })}
           {(dataRows === null || dataRows.length === 0) && (
             <tr className="w-full">
               <td className="p-4 text-center" colSpan={100}>

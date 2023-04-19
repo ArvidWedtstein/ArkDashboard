@@ -1,4 +1,4 @@
-import { FieldError, TextField, useFormContext, useRegister } from "@redwoodjs/forms";
+import { FieldError, HiddenField, TextField, useForm, useFormContext, useRegister } from "@redwoodjs/forms";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 
@@ -50,10 +50,11 @@ const CheckboxGroup = ({
 
     setSelectedOptions(newSelectedOptions);
     onChange && onChange(name, newSelectedOptions);
+    // register?.ref?.current?.value = newSelectedOptions;
   };
 
   return (
-    <div className="flex h-fit flex-wrap gap-3 mt-1">
+    <fieldset className="flex h-fit flex-wrap gap-3 mt-1" name={name}>
       {options.map(({ label, image, value: optValue }) => (
         <label key={label}>
           <input
@@ -100,13 +101,15 @@ const CheckboxGroup = ({
       /> */}
 
       <input
-        type="hidden"
+        type="text"
+        id={name}
         name={name}
-        value={selectedOptions}
-        {...(name ? { ...register } : "")}
+        value={JSON.stringify(selectedOptions)}
+        {...(name ? register : "")}
       />
-    </div>
+    </fieldset>
   );
 };
 
 export default CheckboxGroup;
+
