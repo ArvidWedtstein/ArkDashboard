@@ -15,11 +15,10 @@ import { useEffect, useMemo, useReducer, useState } from "react";
 import Counter from "src/components/Util/Counter/Counter";
 import Table from "src/components/Util/Table/Table";
 import { combineBySummingKeys, timeFormatL } from "src/lib/formatters";
-import items from "../../../public/arkitems.json";
-import arkdinos from "../../../public/dinotest.json";
 import { useLazyQuery } from "@apollo/client";
 import { toast } from "@redwoodjs/web/dist/toast";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
+import clsx from "clsx";
 
 interface stats {
   h: number;
@@ -32,62 +31,73 @@ interface stats {
   t: number;
 }
 const DINOQUERY = gql`
-  query FindDinos2 {
-      dinos {
-        id
-        name
-        description
-        taming_notice
-        can_destroy
-        base_stats
-        gather_eff
-        exp_per_kill
-        egg_min
-        egg_max
-        tdps
-        eats
-        maturation_time
-        weight_reduction
-        incubation_time
-        affinity_needed
-        aff_inc
-        flee_threshold
-        hitboxes
-        drops
-        food_consumption_base
-        food_consumption_mult
-        disable_ko
-        violent_tame
-        taming_bonus_attr
-        disable_food
-        disable_mult
-        admin_note
-        base_points
-        non_violent_food_affinity_mult
-        non_violent_food_rate_mult
-        taming_interval
-        base_taming_time
-        disable_tame
-        x_variant
-        attack
-        mounted_weaponry
-        ridable
-        flyer_dino
-        water_dino
-        movement
-        type
-        icon
-        image
-        DinoStat {
-          Item {
-            name
-            id
-            image
-            stats
-          }
-          type
+  query DinoStats($id: String!) {
+    dino: dino(id: $id) {
+      id
+      name
+      description
+      taming_notice
+      can_destroy
+      base_stats
+      gather_eff
+      exp_per_kill
+      egg_min
+      egg_max
+      tdps
+      eats
+      maturation_time
+      weight_reduction
+      incubation_time
+      affinity_needed
+      aff_inc
+      flee_threshold
+      hitboxes
+      food_consumption_base
+      food_consumption_mult
+      disable_ko
+      violent_tame
+      taming_bonus_attr
+      disable_food
+      disable_mult
+      admin_note
+      base_points
+      non_violent_food_affinity_mult
+      non_violent_food_rate_mult
+      taming_interval
+      base_taming_time
+      disable_tame
+      x_variant
+      attack
+      mounted_weaponry
+      ridable
+      movement
+      type
+      icon
+      image
+      DinoStat {
+        Item {
+          name
+          id
+          image
+          stats
         }
+        type
       }
+    }
+    # itemsByCategory(category: $category) {
+    #   items {
+    #     id
+    #     name
+    #     description
+    #     image
+    #     color
+    #     type
+    #     category
+    #     stats
+    #     image
+    #   }
+    #   count
+    # }
   }
 `;
 const DinoStatsPage = () => {
@@ -98,10 +108,11 @@ const DinoStatsPage = () => {
   } = useForm({ defaultValues: { name: "Dodo", level: 1 } });
 
   const [loadDinos, { called, loading, data }] = useLazyQuery(DINOQUERY, {
-    // onCompleted: (data) => {
-    //   console.log(data);
-    //   toast.success('Dinos loaded');
-    // },
+    variables: { id: "f65d01a8-c158-4c8d-9171-4e7d99a0bd1d", category: "Weapon" },
+    onCompleted: (data) => {
+      console.log(data);
+      toast.success('Dinos loaded');
+    },
     onError: (error) => {
       console.log(error);
       toast.error(error.message);
@@ -115,9 +126,7 @@ const DinoStatsPage = () => {
   }, []);
 
   let [dino, setDino] = useState(null);
-  let [select, setSelect] = useState(null);
   let [selectedFood, setSelectedFood] = useState(null);
-  let [tame, setTame] = useState(null);
   let [points, setPoints] = useState(0);
   let [level, setLevel] = useState<stats>({
     h: 0,
@@ -147,24 +156,6 @@ const DinoStatsPage = () => {
     dyno.dino = (level[id] - 1) * dyno.increasePerLevelWild + dyno.base;
   };
 
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case "COMPLETE":
-        return state.map((todo) => {
-          if (todo.id === action.id) {
-            return { ...todo, complete: !todo.complete };
-          } else {
-            return todo;
-          }
-        });
-      case "use_exclusive":
-
-      default:
-        return state;
-    }
-  };
-  let xVariant = false;
-  const [taming, dispatch] = useReducer(reducer, []);
 
   function calculateTamingTime(dinoLevel: number, foodValue: number, foodConsumptionRate: number): number {
     const tamingMultiplier = 1.5; // This is a constant multiplier used in Ark to calculate taming time.
@@ -192,14 +183,18 @@ const DinoStatsPage = () => {
     tamingMultiplier: 1,
     hatchMultiplier: 1,
     matureMultiplier: 1,
+    userDamage: 100,
+    meleeMultiplier: 1,
+    playerDamageMultiplier: 1,
   };
 
 
   const onSubmit = (dinoData) => {
     const { name, level, x_variant } = dinoData
 
-    if (!data.dinos) return null;
-    let theDino = data.dinos.find((dino) => dino.name.toLowerCase() === name.toLowerCase());
+    if (!data.dino) return null;
+    // let theDino = data.dinos.find((dino) => dino.name.toLowerCase() === name.toLowerCase());
+    let theDino = data.dino
 
 
     if (!theDino) return null;
@@ -212,82 +207,6 @@ const DinoStatsPage = () => {
         // ...value,
       };
     });
-
-    // let foodValues = theDino.DinoStat.filter((f) => f.type === 'food').map((food) => {
-    //   const numNeeded = Math.ceil(
-    //     affinityLeft /
-    //     food.stats.find((f: any) => f.id === 15).value /
-    //     tamingMultiplier
-    //   );
-    //   neededValues[food.key] = numNeeded;
-    // });
-    const affinityNeeded =
-      theDino.affinity_needed + theDino.aff_inc * level;
-
-    const foodConsumption =
-      theDino.food_consumption_base *
-      theDino.food_consumption_mult *
-      settings.consumptionMultiplier *
-      1;
-    // (method === "n" ? creature.nonViolentFoodRateMultiplier : 1);
-
-
-
-    const tamingFoods = theDino.DinoStat.filter((f) => f.type === 'food').map((foodItem: any, index: number) => {
-      const foodValue = foodItem.Item.stats
-        ? foodItem.Item.stats.find((stat) => stat.id === 8)?.value
-        : 0;
-      const affinityValue =
-        foodItem.Item.stats.find((stat) => stat.id === 15)?.value || 0;
-
-      const foodMaxRaw = affinityNeeded / affinityValue / 4;
-      const foodMax = Math.ceil(foodMaxRaw);
-      const isFoodSelected = foodItem.Item.id === selectedFood;
-      let interval = null;
-      let interval1 = null;
-      let foodSecondsPer = 0;
-      let foodSeconds = 0;
-      if (theDino.violent_tame) { // if violent tame
-        const baseStat = theDino.base_stats?.f;
-        if (
-          typeof baseStat?.b === "number" &&
-          typeof baseStat?.w === "number"
-        ) {
-          const averagePerStat = Math.round(level / 7);
-          const estimatedFood = baseStat.b + baseStat.w * averagePerStat;
-          const requiredFood = Math.max(estimatedFood * 0.1, foodValue);
-          interval1 = requiredFood / foodConsumption;
-        }
-        interval = foodValue / foodConsumption;
-        if (foodMax > 1) {
-          foodSecondsPer = foodValue / foodConsumption;
-          foodSeconds = Math.ceil(
-            Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
-            foodSecondsPer +
-            (interval1 || 0)
-          );
-        }
-      } else {
-        foodSecondsPer = foodValue / foodConsumption;
-        foodSeconds = Math.ceil(foodMax * foodSecondsPer);
-      }
-      return {
-        ...foodItem.Item,
-        max: foodMax,
-        food: foodValue,
-        seconds: foodSeconds,
-        secondsPer: foodSecondsPer,
-        percentPer: 100 / foodMaxRaw,
-        interval,
-        interval1,
-        use: isFoodSelected ? foodMax : 0,
-        key: index,
-      };
-    })
-    console.log(theDino);
-
-
-    // console.log(calculateTamingTime(level, basestats.find((stat) => stat.stat === "f").base + basestats.find((stat) => stat.stat === "f").increasePerLevelWild * level, theDino.food_consumption_base * theDino.food_consumption_mult))
 
     // setValue("level", level);
     setPoints(level - 1);
@@ -304,114 +223,8 @@ const DinoStatsPage = () => {
         ...Item,
       })),
     });
-    // let calculatedData = calcData({ creature: theDino, level: level, method: "v" });
-
-    // for (let i in calculatedData.food) {
-    //   calculatedData.food[i].results = calcTame({
-    //     cr: theDino,
-    //     level: data.level,
-    //     foods: calculatedData.food,
-    //     useExclusive: i,
-    //   });
-    // }
-    // setTame(calcTame({ cr: theDino, level: data.level, foods: calculatedData.food }));
-    // setSelect(calculatedData);
   };
 
-  // function Creature(creatureID) {
-  //   Object.assign(this, CREATURES[creatureID]);
-  //   if (
-  //     this.disableTame == 1 ||
-  //     typeof this.a0 == "undefined" ||
-  //     typeof this.eats == "undefined"
-  //   ) {
-  //     this.isTamable = false;
-  //   } else {
-  //     this.isTamable = true;
-  //   }
-  //   if (
-  //     this.disableKO != "1" &&
-  //     WEAPONS != null &&
-  //     typeof this.t1 != "undefined" &&
-  //     typeof this.tI != "undefined"
-  //   ) {
-  //     this.isKOable = true;
-  //   } else {
-  //     this.isKOable = false;
-  //   }
-  //   if (typeof this.forceW == "object") {
-  //     this.isKOable = true;
-  //   }
-  //   if (
-  //     typeof this.bm !== "undefined" &&
-  //     (typeof this.be !== "undefined" || typeof this.bp !== "undefined")
-  //   ) {
-  //     this.isBreedable = true;
-  //   }
-
-  //   // X Creatues gain 88 levels after taming, while others gain 73
-  //   if (typeof this.c == "object" && this.c.indexOf(40) >= 0) {
-  //     this.maxLevelsAfterTame = 88;
-  //   } else {
-  //     this.maxLevelsAfterTame = 73;
-  //   }
-  //   this.getAttr = function (attr) {
-  //     var r = false;
-  //     if (typeof this.af == "object") {
-  //       r = this.af.indexOf(attr) >= 0;
-  //     }
-  //     if (r != true && typeof this.carry == "object") {
-  //       r = this.carry.indexOf(attr) >= 0;
-  //     }
-  //     return r;
-  //   };
-  //   this.hasStats = function () {
-  //     return typeof this.bs == "object";
-  //   };
-  //   this.getNumStats = function () {
-  //     if (this.hasStats()) {
-  //       return Object.keys(this.stats.bs);
-  //     } else {
-  //       return 0;
-  //     }
-  //   };
-  //   this.getStat = function (statKey) {
-  //     if (this.hasStats() && typeof this.bs[statKey] == "object") {
-  //       return this.bs[statKey];
-  //     } else {
-  //       return null;
-  //     }
-  //   };
-  //   this.getNumEligibleStats = function () {
-  //     var theStat = this.getStat("o");
-  //     if (typeof theStat == "object" && theStat.b == null) {
-  //       return 5;
-  //     } else {
-  //       return 6;
-  //     }
-  //   };
-  //   this.getEstimatedStat = function (statKey, level) {
-  //     if (this.hasStats()) {
-  //       var baseStat = this.getStat(statKey);
-  //       if (baseStat) {
-  //         if (baseStat.b >= 0 && baseStat.w > 0) {
-  //           var numEligibleStats = this.getNumEligibleStats();
-  //           if (level > 0) {
-  //             var numLevels = level - 1;
-  //           } else {
-  //             var numLevels = 1;
-  //           }
-  //           var estFoodLevels = Math.round(numLevels / numEligibleStats);
-  //           return baseStat.b + baseStat.w * estFoodLevels;
-  //         } else if (typeof baseStat.b == "number") {
-  //           return baseStat.b;
-  //         }
-  //       }
-  //     } else {
-  //       return null;
-  //     }
-  //   };
-  // }
   const tamingFood = useMemo(() => {
     if (!dino) return [];
     const affinityNeeded =
@@ -476,6 +289,467 @@ const DinoStatsPage = () => {
     })
   }, [selectedFood, dino]);
 
+  const weapons = [
+    {
+      "name": "Tranquilizer Dart",
+      "img": "Tranquilizer Dart",
+      "torpor": 221,
+      "damage": 26,
+      "durationDevKit": 5,
+      "duration": 6,
+      "hasMultipler": true,
+      "mult": [
+        "DmgType_Projectile",
+        "DamageType"
+      ],
+      "id": "Longneck Rifle",
+      "type": "Longneck Rifle",
+      "userDamage": 100
+    },
+    {
+      "name": "Shocking Tranquilizer Dart",
+      "img": "Shocking Tranquilizer Dart",
+      "torpor": 442,
+      "damage": 26,
+      "durationDevKit": 5,
+      "duration": 6,
+      "hasMultipler": true,
+      "mult": [
+        "DmgType_Projectile",
+        "DamageType"
+      ],
+      "id": "Shocking Tranquilizer Dart",
+      "type": "Shocking Tranquilizer Dart",
+      "userDamage": 100,
+    },
+    {
+      "name": "Bow",
+      "img": "Tranq Arrow Bow",
+      "torpor": 90,
+      "damage": 20,
+      "duration": 6,
+      "hasMultipler": true,
+      "mult": [
+        "DmgType_Projectile",
+        "DamageType"
+      ],
+      "id": "Bow",
+      "type": "Bow",
+      "userDamage": 100,
+    },
+    {
+      "name": "Crossbow",
+      "img": "Tranq Arrow Crossbow",
+      "torpor": 157.5,
+      "damage": 35,
+      "duration": 6,
+      "hasMultipler": true,
+      "mult": [
+        "DmgType_Projectile",
+        "DamageType"
+      ],
+      "id": "Crossbow",
+      "type": "Crossbow",
+      "userDamage": 100,
+    },
+    {
+      "name": "Tek Bow",
+      "img": "Tek Bow",
+      "torpor": 336,
+      "damage": 24,
+      "duration": 6,
+      "hasMultipler": true,
+      "mult": [
+        "DmgType_Projectile",
+        "DamageType"
+      ],
+      "id": "Tek Bow",
+      "type": "Tek Bow",
+      "userDamage": 100,
+    },
+    {
+      "name": "Compound Bow",
+      "img": "Tranq Arrow Compound",
+      "torpor": 121.5,
+      "damage": 27,
+      "duration": 6,
+      "hasMultipler": true,
+      "mult": [
+        "DmgType_Projectile",
+        "DamageType"
+      ],
+      "id": "Compound Bow",
+      "type": "Compound Bow",
+      "userDamage": 100,
+
+    },
+    {
+      "name": "Harpoon Launcher",
+      "img": "Harpoon Launcher",
+      "torpor": 300,
+      "damage": 36,
+      "duration": 5,
+      "hasMultipler": true,
+      "mult": [
+        "DmgType_Projectile",
+        "DamageType"
+      ],
+      "id": "Harpoon Launcher",
+      "type": "Harpoon Launcher",
+      "userDamage": 100,
+    },
+    {
+      "name": "Fists",
+      "img": "Fists",
+      "torpor": 14,
+      "damage": 8,
+      "hasMultipler": false,
+      "usesMeleeDamage": true,
+      "mult": [
+        "DmgType_Melee_Torpidity_StoneWeapon",
+        "DmgType_Melee_Torpidity",
+        "DmgType_Melee_Human",
+        "DmgType_Melee",
+        "DamageType"
+      ],
+      "id": "Fists",
+      "type": "Fists",
+      "userDamage": 100,
+    },
+    {
+      "name": "Slingshot",
+      "img": "Slingshot",
+      "torpor": 23.8,
+      "damage": 14,
+      "hasMultipler": true,
+      "mult": [
+        "DmgType_StoneWeapon",
+        "DamageType"
+      ],
+      "id": "Slingshot",
+      "type": "Slingshot",
+      "userDamage": 100,
+    },
+    {
+      "name": "Wooden Club",
+      "img": "Wooden Club",
+      "torpor": 20,
+      "damage": 5,
+      "hasMultipler": true,
+      "usesMeleeDamage": true,
+      "mult": [
+        "DmgType_Melee_HighTorpidity_StoneWeapon",
+        "DmgType_Melee_Human",
+        "DmgType_StoneWeapon",
+        "DamageType"
+      ],
+      "id": "Wooden Club",
+      "type": "Wooden Club",
+      "userDamage": 100,
+    },
+    {
+      "name": "Boomerang (Melee)",
+      "img": "Boomerang Melee",
+      "group": "Boomerang",
+      "append": "(Melee)",
+      "damage": 30,
+      "torpor": 42,
+      "usesMeleeDamage": true,
+      "hide": true,
+      "mult": [
+        "DmgType_Melee_Torpidity_StoneWeapon",
+        "DmgType_Melee_Human",
+        "DmgType_StoneWeapon",
+        "DamageType"
+      ],
+      "id": "Boomerang Melee",
+      "type": "Boomerang Melee",
+      "userDamage": 100,
+    },
+    {
+      "name": "Boomerang",
+      "img": "Boomerang",
+      "group": "Boomerang",
+      "damage": 30,
+      "torpor": 70.5,
+      "mult": [
+        "DmgType_Melee_Torpidity_StoneWeapon",
+        "DmgType_StoneWeapon",
+        "DamageType"
+      ],
+      "id": "Boomerang",
+      "type": "Boomerang",
+      "userDamage": 100,
+    },
+    {
+      "name": "Electric Prod",
+      "img": "Electric Prod",
+      "torpor": 266,
+      "damage": 1,
+      "hasMultipler": true,
+      "mult": [
+        "DmgType_Melee_Human",
+        "DamageType"
+      ],
+      "id": "Electric Prod",
+      "type": "Electric Prod",
+      "userDamage": 100,
+    },
+    {
+      "name": "Tripwire Narcotic Trap",
+      "img": "Tripwire Narcotic Trap",
+      "torpor": 240,
+      "damage": 0,
+      "duration": 10,
+      "mult": [
+        "DamageType"
+      ],
+      "id": "Tripwire Narcotic Trap",
+      "type": "Tripwire Narcotic Trap",
+      "userDamage": 100,
+    },
+    {
+      "name": "Longbow",
+      "img": "Longbow",
+      "torpor": 75,
+      "damage": 30,
+      "duration": 5,
+      "hasMultipler": true,
+      "mult": [
+        "DmgType_Projectile",
+        "DamageType"
+      ],
+      "id": "Longbow",
+      "type": "Longbow",
+      "userDamage": 100,
+    },
+    {
+      "name": "Recurve Bow",
+      "img": "Recurve Bow",
+      "torpor": 180,
+      "damage": 40,
+      "duration": 4,
+      "hasMultipler": true,
+      "mult": [
+        "DmgType_Projectile",
+        "DamageType"
+      ],
+      "id": "Recurve Bow",
+      "type": "Recurve Bow",
+      "userDamage": 100,
+    }
+  ]
+  function nper(n, x) {
+    let n1 = n + 1;
+    let r = 1.0;
+    let xx = Math.min(x, n - x);
+    for (let i = 1; i < xx + 1; i++) {
+      r = (r * (n1 - i)) / i;
+    }
+    return r;
+  }
+
+  function calculatePropabilityMore(ll, ul, p) {
+    var n = ul;
+    var numIntervals = n + 1;
+    var probs = new Array(numIntervals);
+    var maxProb = 0;
+    for (let i = 0; i < numIntervals; i++) {
+      probs[i] = nper(n, i) * Math.pow(p, i) * Math.pow(1.0 - p, n - i);
+      maxProb = Math.max(maxProb, probs[i]);
+    }
+    var topProb = Math.ceil(100 * maxProb) / 100;
+    var pCumulative = 0;
+    for (let i = 0; i < numIntervals; i++) {
+      if (i >= ll && i <= ul) {
+        pCumulative += probs[i];
+      }
+    }
+    pCumulative = Math.round(10000 * pCumulative) / 100;
+    return pCumulative;
+  }
+  function calculatePropability(n, numOptions, ll) {
+    var ll, ul;
+    var p = 1 / numOptions;
+    if (!isNaN(n) && !isNaN(p)) {
+      if (n > 0 && p > 0 && p < 1) {
+        if (!isNaN(ll) && ll >= 0) {
+          return calculatePropabilityMore(ll, n, p);
+        }
+      }
+    }
+  }
+
+  const calcWeapons = useMemo(() => {
+    if (!data) return []
+
+    return weapons.map((weapon) => {
+      // const weapon = data.itemsByCategory.items.find((item) => item.name === 'Longneck Rifle')
+      const secGap = 1//Settings.get("secGap");
+
+
+
+      let creatureT = dino.base_taming_time + dino.taming_interval * (dino.level - 1);
+
+      const fleeThreshold = typeof dino.flee_threshold == "number" ? dino.flee_threshold : 0.75;
+
+
+      let torporPerHit = weapon.torpor;
+      let weaponDuration = weapon.duration;
+      let isPossible = true;
+      let secsOfRegen = 0;
+
+      const weaponUsesMelee = true // test
+
+      if (dino.tdps) {
+        let torporDeplPS =
+          dino.tdps +
+          Math.pow(dino.level - 1, 0.8493) / (22.39671632 / dino.tdps);
+        if (secGap > weaponDuration) {
+          secsOfRegen = secGap - weaponDuration;
+          torporPerHit = torporPerHit - secsOfRegen * torporDeplPS;
+        }
+        isPossible = torporPerHit > 0
+      }
+      let knockOut = creatureT / torporPerHit;
+      let totalMultipliers = 1;
+      // if (
+      //   typeof WEAPONS[weapon.type].mult == "object" &&
+      //   WEAPONS[weapon.type].mult != null &&
+      //   typeof creature.mult == "object"
+      // ) {
+      //   for (var i in WEAPONS[weapon.type].mult) {
+      //     if (typeof creature.mult[WEAPONS[weapon.type].mult[i]] == "number") {
+      //       knockOut /= creature.mult[WEAPONS[weapon.type].mult[i]];
+      //       totalMultipliers *= creature.mult[WEAPONS[weapon.type].mult[i]];
+      //     }
+      //   }
+      // }
+      if (weaponUsesMelee) {
+        knockOut = knockOut / (settings.meleeMultiplier / 100);
+        totalMultipliers *= settings.meleeMultiplier / 100;
+      }
+      if (dino.x_variant) { // add x variant checkbox to this
+        knockOut = knockOut / 0.4;
+        totalMultipliers *= 0.4;
+      }
+      knockOut = knockOut / settings.playerDamageMultiplier;
+      totalMultipliers *= settings.playerDamageMultiplier;
+      let numHitsRaw = knockOut / (weapon.userDamage / 100);
+      let hitsUntilFlee: any = 0
+      let hitboxes = [];
+      if (typeof dino.hitboxes !== "undefined") {
+        for (let i in dino.hitboxes) {
+          let hitboxHits = numHitsRaw / dino.hitboxes[i];
+          if (fleeThreshold == 1) {
+            hitsUntilFlee = "-";
+          } else {
+            hitsUntilFlee = Math.max(
+              1,
+              Math.ceil(hitboxHits * fleeThreshold)
+            );
+          }
+          hitboxes.push({
+            name: name,
+            multiplier: dino.hitboxes[i],
+            hitsRaw: hitboxHits,
+            hitsUntilFlee: hitsUntilFlee,
+            hits: Math.ceil(hitboxHits),
+            chanceOfDeath: 0,
+            isPossible: isPossible,
+          });
+        }
+      }
+      let bodyChanceOfDeath = 0;
+      let minChanceOfDeath = 0;
+      if (isPossible) {
+        if (
+          typeof dino.base_stats == "object" &&
+          typeof dino.base_stats.h == "object" &&
+          typeof dino.base_stats.h.b == "number" &&
+          typeof dino.base_stats.h.w == "number"
+        ) {
+          let baseHealth = dino.base_stats.h.b;
+          let incPerLevel = dino.base_stats.h.w;
+          if (
+            typeof weapon.userDamage != null &&
+            typeof baseHealth != null &&
+            typeof incPerLevel != null
+          ) {
+            var numStats = 7;
+            var totalDamage =
+              weapon.userDamage *
+              Math.ceil(numHitsRaw) *
+              totalMultipliers *
+              (weapon.userDamage / 100);
+            if (totalDamage < baseHealth) {
+              var propsurvival = 100;
+            } else {
+              var pointsNeeded = Math.max(
+                Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                0
+              );
+              if (dino.level - 1 < pointsNeeded) {
+                var propsurvival = 0;
+              } else {
+                var propsurvival = calculatePropability(
+                  dino.level - 1,
+                  numStats,
+                  pointsNeeded
+                );
+              }
+            }
+            bodyChanceOfDeath = (100 - propsurvival);
+            minChanceOfDeath = bodyChanceOfDeath;
+            if (hitboxes.length > 0) {
+              for (let i in hitboxes) {
+                totalDamage =
+                  weapon.userDamage *
+                  Math.ceil(hitboxes[i].hitsRaw) *
+                  totalMultipliers *
+                  (weapon.userDamage / 100) *
+                  hitboxes[i].multiplier;
+                if (totalDamage < baseHealth) {
+                  var propsurvival = 100;
+                } else {
+                  pointsNeeded = Math.max(
+                    Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                    0
+                  );
+                  propsurvival = calculatePropability(
+                    dino.level - 1,
+                    numStats,
+                    pointsNeeded
+                  );
+                }
+                let chanceOfDeath = (100 - propsurvival);
+                hitboxes[i].chanceOfDeath = chanceOfDeath;
+                hitboxes[i].chanceOfDeathHigh = chanceOfDeath > 40;
+                minChanceOfDeath = Math.min(minChanceOfDeath, chanceOfDeath);
+              }
+            }
+          }
+        }
+      }
+      let chanceOfDeathHigh = bodyChanceOfDeath > 40;
+      hitsUntilFlee = fleeThreshold == 1 ? '-' : Math.max(1, Math.ceil(numHitsRaw * fleeThreshold))
+
+      return {
+        ...weapon,
+        hits: Math.ceil(numHitsRaw),
+        hitsRaw: numHitsRaw,
+        hitsUntilFlee: hitsUntilFlee,
+        chanceOfDeath: bodyChanceOfDeath,
+        chanceOfDeathHigh: chanceOfDeathHigh,
+        minChanceOfDeath: minChanceOfDeath || 0,
+        isPossible: isPossible,
+        isRecommended: isPossible && minChanceOfDeath < 90,
+        hitboxes: hitboxes,
+      };
+    });
+
+  }, [dino])
+
   const tameData = useMemo(() => {
     if (!dino) return null;
     let effectiveness = 100;
@@ -504,11 +778,6 @@ const DinoStatsPage = () => {
 
     let affinityLeft = affinityNeeded;
 
-    const foodConsumption =
-      dino.food_consumption_base *
-      dino.food_consumption_mult *
-      settings.consumptionMultiplier *
-      1;
     let totalFood = 0;
 
     let tamingMultiplier = dino.disable_mult
@@ -870,13 +1139,13 @@ const DinoStatsPage = () => {
                   </div>
                   <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
 
-                    <p className="text-thin text-sm">
+                    <span className="text-thin text-sm">
                       Lvl
                       <span className="ml-1 text-lg font-semibold">
                         <Counter startNum={0} endNum={parseInt(dino.level) + tameData.levelsGained} duration={500} />
                         {/* {parseInt(dino.level) + tameData.levelsGained} */}
                       </span>
-                    </p>
+                    </span>
                   </div>
                   <div className="relative block before:absolute before:ml-auto before:w-full last:before:content-['']">
                     <p className="text-thin text-sm">
@@ -1050,6 +1319,64 @@ const DinoStatsPage = () => {
                     </ol>
                   </section>
                 )}
+              <p className="text-white">{JSON.stringify(calcWeapons)}</p>
+              {/* <CheckboxGroup
+                form={false}
+                defaultValue={[selectedFood]}
+                validation={{
+                  single: true,
+                }}
+                options={calcWeapons.map((weapon) => {
+                  return {
+                    value: food.id,
+                    label: `${food.name} (${food.max})`,
+                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${food.image}`
+                  }
+                })}
+                onChange={(e) => {
+                  setSelectedFood(e);
+                }}
+              /> */}
+
+              <Table
+                rows={calcWeapons}
+                columns={[
+                  {
+                    field: "hits",
+                    label: "Hit be baby one more time",
+                    bold: true,
+                    sortable: true,
+                  },
+                  {
+                    field: "hitsUntilFlee",
+                    label: "Hits Until Dino has had enough of your bullshit",
+                    bold: true,
+                  },
+                  {
+                    field: "chanceOfDeath",
+                    label: "Chance of dying",
+                    numeric: false,
+                    className: "text-center",
+                    valueFormatter: ({ value, row }) => {
+                      return <span className={clsx({
+                        "text-red-500": row.chanceOfDeathHigh
+                      })}>{value}%</span>
+                    }
+                  },
+                  {
+                    field: "name",
+                    label: "Item",
+                    className: "text-center",
+                  },
+                  {
+                    field: "isPossible",
+                    label: "Is Possible?",
+                    valueFormatter: ({ value }) => {
+                      return value ? "Yes" : "No";
+                    }
+                  },
+                ]}
+              />
             </>
           )}
 
@@ -1108,167 +1435,7 @@ const DinoStatsPage = () => {
             }}
           />)}
 
-          {select && (
-            <>
 
-              <p className="my-3 text-center text-sm dark:text-gray-200">
-                {tame.dino.name} breeding:
-              </p>
-              {/* Mating internal: 24h - 48h * matingIntervalMultiplier */}
-              {/* <p>Xp When Killed: {tame.dino.experiencePerKill * (1 + 0.1 * (tame.dino.level - 1))}xp</p> */}
-              {typeof tame.dino.maturationTime !== "undefined" &&
-                (typeof tame.dino.incubationTime !== "undefined" ||
-                  typeof tame.dino.basePoints !== "undefined") && (
-                  <section className="my-3 rounded-md p-4 text-stone-600 dark:text-white">
-                    <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
-                      <li className="dark:text-pea-500 text-pea-600 flex items-center space-x-2.5">
-                        <span className="border-pea-600 dark:border-pea-500 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
-                          1
-                        </span>
-                        <span>
-                          <h3 className="font-medium leading-tight">
-                            Incubation
-                          </h3>
-                          <p className="text-sm">
-                            {timeFormatL(tame.dino.incubationTime / 1)}
-                          </p>{" "}
-                          {/* Hatch multiplier */}
-                        </span>
-                      </li>
-                      <li>
-                        <input
-                          id="1"
-                          type="checkbox"
-                          className="peer/item1 hidden"
-                        />
-                        <label
-                          htmlFor="1"
-                          className="peer-checked/item1:dark:fill-pea-500 peer-checked/item1:fill-pea-600 fill-gray-500 dark:fill-gray-400 "
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6 "
-                            viewBox="0 0 256 512"
-                          >
-                            <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
-                          </svg>
-                        </label>
-                      </li>
-                      <li className="flex items-center space-x-2.5 text-gray-500 dark:text-gray-400">
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-500 dark:border-gray-400">
-                          2
-                        </span>
-                        <span>
-                          <h3 className="font-medium leading-tight">Baby</h3>
-                          <p className="text-sm">
-                            {timeFormatL((tame.dino.maturationTime * 1) / 10)}
-                          </p>
-                        </span>
-                      </li>
-                      <li>
-                        <input
-                          id="2"
-                          type="checkbox"
-                          className="peer/item2 hidden"
-                        />
-                        <label
-                          htmlFor="2"
-                          className="peer-checked/item2:dark:fill-pea-500 peer-checked/item2:fill-pea-600 fill-gray-500 dark:fill-gray-400 "
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6 "
-                            viewBox="0 0 256 512"
-                          >
-                            <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
-                          </svg>
-                        </label>
-                      </li>
-                      <li className="flex items-center space-x-2.5 text-gray-500 dark:text-gray-400">
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-500 dark:border-gray-400">
-                          3
-                        </span>
-                        <span>
-                          <h3 className="font-medium leading-tight">
-                            Juvenile
-                          </h3>
-                          <p className="text-sm">
-                            {timeFormatL(
-                              (tame.dino.maturationTime * 1) / 2 -
-                              (tame.dino.maturationTime * 1) / 10
-                            )}
-                          </p>
-                        </span>
-                      </li>
-                      <li>
-                        <input
-                          id="3"
-                          type="checkbox"
-                          className="peer/item3 hidden"
-                        />
-                        <label
-                          htmlFor="3"
-                          className="peer-checked/item3:dark:fill-pea-500 peer-checked/item3:fill-pea-600 fill-gray-500 dark:fill-gray-400 "
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6 "
-                            viewBox="0 0 256 512"
-                          >
-                            <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
-                          </svg>
-                        </label>
-                      </li>
-                      <li className="flex items-center space-x-2.5 text-gray-500 dark:text-gray-400">
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-500 dark:border-gray-400">
-                          4
-                        </span>
-                        <span>
-                          <h3 className="font-medium leading-tight">
-                            Adolescent
-                          </h3>
-                          <p className="text-sm">
-                            {timeFormatL((tame.dino.maturationTime * 1) / 2)}
-                          </p>{" "}
-                          {/*matureMultiplier */}
-                        </span>
-                      </li>
-                      <li>
-                        <input
-                          id="4"
-                          type="checkbox"
-                          className="peer/item4 hidden"
-                        />
-                        <label
-                          htmlFor="4"
-                          className="peer-checked/item4:dark:fill-pea-500 peer-checked/item4:fill-pea-600 fill-gray-500 dark:fill-gray-400 "
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6 "
-                            viewBox="0 0 256 512"
-                          >
-                            <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
-                          </svg>
-                        </label>
-                      </li>
-                      <li className="flex items-center space-x-2.5 text-gray-500 dark:text-gray-400">
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-500 dark:border-gray-400">
-                          5
-                        </span>
-                        <span>
-                          <h3 className="font-medium leading-tight">Total</h3>
-                          <p className="text-sm">
-                            {timeFormatL(tame.dino.maturationTime * 1)}
-                          </p>{" "}
-                          {/*matureMultiplier */}
-                        </span>
-                      </li>
-                    </ol>
-                  </section>
-                )}
-            </>
-          )}
         </div>
       </div>
     </>
