@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React, { useState, useEffect, useRef } from 'react';
 
 
-const Counter = ({ startNum, endNum, duration = 3 }) => {
+const Counter = ({ startNum, endNum, duration = 1000, className = "" }) => {
   const [count, setCount] = useState(startNum);
   const countValueRef = useRef(null);
 
@@ -37,25 +37,20 @@ const Counter = ({ startNum, endNum, duration = 3 }) => {
   }, [count]);
 
   return (
-    <div className="rw-input p-3 w-16">
-      <div
-        ref={countValueRef}
-        className={clsx({
-          'animate-countup': endNum !== count,
-        })}
-      >
-        {count}
-      </div>
-      {/* <div className="absolute left-1/2 bottom-0 transform -translate-x-1/2 text-lg text-gray-500 opacity-0 animate-fade-in-delayed">
-        Counting
-      </div> */}
-    </div>
-  );
-  return (
-    <div className="rw-input p-3 text-center relative w-16 animate-countup">
+
+    <div
+      ref={countValueRef}
+      className={clsx(className, {
+        'animate-countup': endNum !== count,
+      })}
+    >
       {count}
+      {/* <div className="absolute left-1/2 bottom-0 transform -translate-x-1/2 text-lg text-gray-500 opacity-0 animate-fade-in-delayed">
+          Counting
+        </div> */}
     </div>
   );
 };
+
 
 export default Counter;

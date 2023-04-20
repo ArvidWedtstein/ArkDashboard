@@ -5,85 +5,85 @@ module.exports = {
       values: [
         {
           name: "basespot_delete",
-          dbName: "basespot:delete"
+          dbName: "basespot:delete",
         },
         {
           name: "basespot_create",
-          dbName: "basespot:create"
+          dbName: "basespot:create",
         },
         {
           name: "basespot_update",
-          dbName: "basespot:update"
+          dbName: "basespot:update",
         },
         {
           name: "basespot_view",
-          dbName: "basespot:view"
+          dbName: "basespot:view",
         },
         {
           name: "role_create",
-          dbName: "role:create"
+          dbName: "role:create",
         },
         {
           name: "role_update",
-          dbName: "role:update"
+          dbName: "role:update",
         },
         {
           name: "role_delete",
-          dbName: "role:delete"
+          dbName: "role:delete",
         },
         {
           name: "user_create",
-          dbName: "user:create"
+          dbName: "user:create",
         },
         {
           name: "user_update",
-          dbName: "user:update"
+          dbName: "user:update",
         },
         {
           name: "user_delete",
-          dbName: "user:delete"
+          dbName: "user:delete",
         },
         {
           name: "tribe_create",
-          dbName: "tribe:create"
+          dbName: "tribe:create",
         },
         {
           name: "tribe_update",
-          dbName: "tribe:update"
+          dbName: "tribe:update",
         },
         {
           name: "tribe_delete",
-          dbName: "tribe:delete"
+          dbName: "tribe:delete",
         },
         {
           name: "timeline_create",
-          dbName: "timeline:create"
+          dbName: "timeline:create",
         },
         {
           name: "timeline_update",
-          dbName: "timeline:update"
+          dbName: "timeline:update",
         },
         {
           name: "timeline_delete",
-          dbName: "timeline:delete"
-        }
+          dbName: "timeline:delete",
+        },
       ],
-      dbName: null
+      dbName: null,
     },
     {
       name: "user_status",
       values: [
         {
           name: "ONLINE",
-          dbName: null
+          dbName: null,
         },
         {
           name: "OFFLINE",
-          dbName: null
-        }
+          dbName: null,
+        },
       ],
-      dbName: null
-    }
+      dbName: null,
+    },
   ],
   models: [
     {
@@ -102,10 +102,10 @@ module.exports = {
           type: "BigInt",
           default: {
             name: "autoincrement",
-            args: []
+            args: [],
           },
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "created_at",
@@ -119,10 +119,10 @@ module.exports = {
           type: "DateTime",
           default: {
             name: "now",
-            args: []
+            args: [],
           },
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "updated_at",
@@ -135,7 +135,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "DateTime",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "timeline_id",
@@ -148,7 +148,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "startDate",
@@ -161,7 +161,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "DateTime",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "endDate",
@@ -174,7 +174,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "DateTime",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "basespot_id",
@@ -187,7 +187,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "BigInt",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "tribeName",
@@ -200,7 +200,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "map",
@@ -213,7 +213,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "server",
@@ -226,7 +226,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "region",
@@ -239,7 +239,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "season",
@@ -252,7 +252,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "cluster",
@@ -265,7 +265,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "location",
@@ -278,7 +278,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "Json",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "players",
@@ -291,7 +291,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "created_by",
@@ -304,7 +304,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "raided_by",
@@ -317,7 +317,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "raidcomment",
@@ -330,7 +330,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "basespot",
@@ -343,15 +343,11 @@ module.exports = {
           hasDefaultValue: false,
           type: "Basespot",
           relationName: "BasespotToTimelineBasespot",
-          relationFromFields: [
-            "basespot_id"
-          ],
-          relationToFields: [
-            "id"
-          ],
+          relationFromFields: ["basespot_id"],
+          relationToFields: ["id"],
           relationOnDelete: "NoAction",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "timeline",
@@ -364,21 +360,17 @@ module.exports = {
           hasDefaultValue: false,
           type: "Timeline",
           relationName: "TimelineToTimelineBasespot",
-          relationFromFields: [
-            "timeline_id"
-          ],
-          relationToFields: [
-            "id"
-          ],
+          relationFromFields: ["timeline_id"],
+          relationToFields: ["id"],
           relationOnDelete: "NoAction",
           isGenerated: false,
-          isUpdatedAt: false
-        }
+          isUpdatedAt: false,
+        },
       ],
       primaryKey: null,
       uniqueFields: [],
       uniqueIndexes: [],
-      isGenerated: false
+      isGenerated: false,
     },
     {
       name: "Basespot",
@@ -396,10 +388,10 @@ module.exports = {
           type: "BigInt",
           default: {
             name: "autoincrement",
-            args: []
+            args: [],
           },
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "name",
@@ -412,7 +404,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "description",
@@ -425,7 +417,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "latitude",
@@ -438,7 +430,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "Float",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "longitude",
@@ -451,7 +443,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "Float",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "image",
@@ -464,7 +456,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "created_at",
@@ -478,13 +470,13 @@ module.exports = {
           type: "DateTime",
           default: {
             name: "now",
-            args: []
+            args: [],
           },
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
-          name: "Map",
+          name: "map",
           kind: "scalar",
           isList: false,
           isRequired: true,
@@ -495,7 +487,7 @@ module.exports = {
           type: "String",
           default: "TheIsland",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "estimatedForPlayers",
@@ -509,7 +501,7 @@ module.exports = {
           type: "String",
           default: "0",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "defenseImages",
@@ -522,7 +514,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "created_by",
@@ -535,7 +527,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "turretsetup_image",
@@ -548,7 +540,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "updated_at",
@@ -561,7 +553,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "DateTime",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "TimelineBasespot",
@@ -577,13 +569,13 @@ module.exports = {
           relationFromFields: [],
           relationToFields: [],
           isGenerated: false,
-          isUpdatedAt: false
-        }
+          isUpdatedAt: false,
+        },
       ],
       primaryKey: null,
       uniqueFields: [],
       uniqueIndexes: [],
-      isGenerated: false
+      isGenerated: false,
     },
     {
       name: "Profile",
@@ -600,7 +592,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "updated_at",
@@ -613,7 +605,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "DateTime",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "username",
@@ -626,7 +618,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "full_name",
@@ -639,7 +631,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "avatar_url",
@@ -652,7 +644,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "website",
@@ -665,7 +657,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "biography",
@@ -678,7 +670,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "status",
@@ -692,7 +684,7 @@ module.exports = {
           type: "user_status",
           default: "OFFLINE",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "role_id",
@@ -706,12 +698,10 @@ module.exports = {
           type: "String",
           default: {
             name: "dbgenerated",
-            args: [
-              "'697b7d70-bab3-4ff9-9c3e-f30b058b621c'::uuid"
-            ]
+            args: ["'697b7d70-bab3-4ff9-9c3e-f30b058b621c'::uuid"],
           },
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "created_at",
@@ -725,10 +715,10 @@ module.exports = {
           type: "DateTime",
           default: {
             name: "now",
-            args: []
+            args: [],
           },
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "Message",
@@ -744,7 +734,7 @@ module.exports = {
           relationFromFields: [],
           relationToFields: [],
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "role_profile_role_idTorole",
@@ -757,21 +747,17 @@ module.exports = {
           hasDefaultValue: false,
           type: "Role",
           relationName: "profile_role_idTorole",
-          relationFromFields: [
-            "role_id"
-          ],
-          relationToFields: [
-            "id"
-          ],
+          relationFromFields: ["role_id"],
+          relationToFields: ["id"],
           relationOnDelete: "NoAction",
           isGenerated: false,
-          isUpdatedAt: false
-        }
+          isUpdatedAt: false,
+        },
       ],
       primaryKey: null,
       uniqueFields: [],
       uniqueIndexes: [],
-      isGenerated: false
+      isGenerated: false,
     },
     {
       name: "Role",
@@ -789,12 +775,10 @@ module.exports = {
           type: "String",
           default: {
             name: "dbgenerated",
-            args: [
-              "extensions.uuid_generate_v4()"
-            ]
+            args: ["extensions.uuid_generate_v4()"],
           },
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "name",
@@ -807,10 +791,10 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
-          name: "createdBy",
+          name: "created_by",
           kind: "scalar",
           isList: false,
           isRequired: false,
@@ -821,12 +805,10 @@ module.exports = {
           type: "String",
           default: {
             name: "dbgenerated",
-            args: [
-              "auth.uid()"
-            ]
+            args: ["auth.uid()"],
           },
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "permissions",
@@ -839,7 +821,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "permission",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "profile_profile_role_idTorole",
@@ -855,13 +837,13 @@ module.exports = {
           relationFromFields: [],
           relationToFields: [],
           isGenerated: false,
-          isUpdatedAt: false
-        }
+          isUpdatedAt: false,
+        },
       ],
       primaryKey: null,
       uniqueFields: [],
       uniqueIndexes: [],
-      isGenerated: false
+      isGenerated: false,
     },
     {
       name: "Timeline",
@@ -879,12 +861,10 @@ module.exports = {
           type: "String",
           default: {
             name: "dbgenerated",
-            args: [
-              "extensions.uuid_generate_v4()"
-            ]
+            args: ["extensions.uuid_generate_v4()"],
           },
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "createdAt",
@@ -898,10 +878,10 @@ module.exports = {
           type: "DateTime",
           default: {
             name: "now",
-            args: []
+            args: [],
           },
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "updatedAt",
@@ -914,10 +894,10 @@ module.exports = {
           hasDefaultValue: false,
           type: "DateTime",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
-          name: "createdBy",
+          name: "created_by",
           kind: "scalar",
           isList: false,
           isRequired: false,
@@ -927,7 +907,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "TimelineBasespot",
@@ -943,13 +923,13 @@ module.exports = {
           relationFromFields: [],
           relationToFields: [],
           isGenerated: false,
-          isUpdatedAt: false
-        }
+          isUpdatedAt: false,
+        },
       ],
       primaryKey: null,
       uniqueFields: [],
       uniqueIndexes: [],
-      isGenerated: false
+      isGenerated: false,
     },
     {
       name: "Tribe",
@@ -967,10 +947,10 @@ module.exports = {
           type: "Int",
           default: {
             name: "autoincrement",
-            args: []
+            args: [],
           },
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "name",
@@ -983,7 +963,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "description",
@@ -996,7 +976,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "created_at",
@@ -1010,10 +990,10 @@ module.exports = {
           type: "DateTime",
           default: {
             name: "now",
-            args: []
+            args: [],
           },
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "updated_at",
@@ -1026,10 +1006,10 @@ module.exports = {
           hasDefaultValue: false,
           type: "DateTime",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
-          name: "createdBy",
+          name: "created_by",
           kind: "scalar",
           isList: false,
           isRequired: false,
@@ -1039,10 +1019,10 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
-          name: "updatedBy",
+          name: "updated_by",
           kind: "scalar",
           isList: false,
           isRequired: false,
@@ -1052,13 +1032,13 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
-        }
+          isUpdatedAt: false,
+        },
       ],
       primaryKey: null,
       uniqueFields: [],
       uniqueIndexes: [],
-      isGenerated: false
+      isGenerated: false,
     },
     {
       name: "Message",
@@ -1076,12 +1056,10 @@ module.exports = {
           type: "String",
           default: {
             name: "dbgenerated",
-            args: [
-              "extensions.uuid_generate_v4()"
-            ]
+            args: ["extensions.uuid_generate_v4()"],
           },
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "profile_id",
@@ -1095,12 +1073,10 @@ module.exports = {
           type: "String",
           default: {
             name: "dbgenerated",
-            args: [
-              "auth.uid()"
-            ]
+            args: ["auth.uid()"],
           },
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "content",
@@ -1113,7 +1089,7 @@ module.exports = {
           hasDefaultValue: false,
           type: "String",
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "created_at",
@@ -1127,12 +1103,10 @@ module.exports = {
           type: "DateTime",
           default: {
             name: "dbgenerated",
-            args: [
-              "timezone('utc'::text, now())"
-            ]
+            args: ["timezone('utc'::text, now())"],
           },
           isGenerated: false,
-          isUpdatedAt: false
+          isUpdatedAt: false,
         },
         {
           name: "Profile",
@@ -1145,22 +1119,18 @@ module.exports = {
           hasDefaultValue: false,
           type: "Profile",
           relationName: "MessageToProfile",
-          relationFromFields: [
-            "profile_id"
-          ],
-          relationToFields: [
-            "id"
-          ],
+          relationFromFields: ["profile_id"],
+          relationToFields: ["id"],
           relationOnDelete: "Cascade",
           isGenerated: false,
-          isUpdatedAt: false
-        }
+          isUpdatedAt: false,
+        },
       ],
       primaryKey: null,
       uniqueFields: [],
       uniqueIndexes: [],
-      isGenerated: false
-    }
+      isGenerated: false,
+    },
   ],
-  types: []
+  types: [],
 };

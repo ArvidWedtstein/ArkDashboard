@@ -12,20 +12,21 @@ export const QUERY = gql`
       created_at
       updated_at
       timeline_id
-      startDate
-      endDate
+      start_date
+      end_date
       basespot_id
-      tribeName
+      tribe_name
       map
       server
       region
       season
       cluster
-      location
+      latitude
+      longitude
       players
       created_by
       raided_by
-      raidcomment
+      raid_comment
       Map {
         name
       }

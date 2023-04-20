@@ -9,7 +9,7 @@ interface GridCell<V = any> {
   rowIndex: number;
   field: string;
   value: V;
-  row?: V;
+  row?: V | ThisType<Row>;
 }
 interface ColumnData<V = any, F = V> {
   field: string;
@@ -86,6 +86,7 @@ const Table = ({
 }: TableProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rows, setRows] = useState<any[]>([]);
+  const [selectedRows, setSelectedRows] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sort, setSort] = useState({
     column: "",
@@ -124,8 +125,9 @@ const Table = ({
       const indexOfFirstData = indexOfLastData - rowsPerPage;
       return sortData(filteredData).slice(indexOfFirstData, indexOfLastData);
     }
+
     return sortData(filteredData);
-  }, [sort, searchTerm, dataRows, currentPage]);
+  }, [sort, searchTerm, dataRows, currentPage, selectedRows]);
 
   useEffect(() => {
     if (select) {
@@ -136,15 +138,16 @@ const Table = ({
     }
   }, []);
 
-  const handleSearch = debounce((e) => setSearchTerm(e.target.value));
+  const handleSearch = debounce((e) => setSearchTerm(e.target.value), 500);
 
   const selectRow = (e) => {
     if (e.target.id === "checkbox-all-select") {
-      rows.map((row) => {
+      let ro = rows.map((row) => {
         if (row.checked !== e.target.checked) {
           row.checked = e.target.checked;
         }
       });
+      setSelectedRows(rows.filter((row) => row.checked === true));
       return;
     }
 
@@ -156,6 +159,7 @@ const Table = ({
         check.checked = true;
       }
     }
+    setSelectedRows(rows.filter((row) => row.checked === true));
   };
 
   const changePage = (dir: "next" | "prev") => {
@@ -179,11 +183,12 @@ const Table = ({
       >
         {other.sortable ? (
           <div
-            className="flex select-none items-center"
+            className="line-clamp-1 flex select-none items-center"
             id={other.field}
             onClick={sortRows}
           >
-            {truncate(label, 30)}
+            {/* {truncate(label, 30)} */}
+            {label}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="ml-1 h-3 w-3"
@@ -315,7 +320,12 @@ const Table = ({
                   })}
                 >
                   {other.numeric
-                    ? SortedFilteredData.reduce((a, b) => a + b[field], 0)
+                    ? SortedFilteredData.filter((r, i) => (select && selectedRows.length > 0) ? rows.map((d: any, k) => {
+                      return d.checked ? k : -1
+                    }).includes(i) : true).reduce(
+                      (a, b) => a + parseInt(b[field]),
+                      0
+                    )
                     : index === 0
                       ? "Total"
                       : ""}

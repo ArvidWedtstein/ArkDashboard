@@ -11,14 +11,19 @@ export const schema = gql`
     crafting_time: Float
     req_level: BigInt
     yields: Float
-    recipe: JSON
     stats: JSON
     color: String
     crafted_in: [String]!
-    effects: [String]!
-    type: String!
+    type: String
+    category: String!
+    Dino: [Dino]!
     DinoStat: [DinoStat]!
+    ItemRecipe_ItemRecipe_crafted_item_idToItem: [ItemRecipe]!
+    ItemRecipe_ItemRecipe_crafting_stationToItem: [ItemRecipe]!
+    ItemRecipe_ItemRecipe_item_idToItem: [ItemRecipe]!
+    LootcrateSetEntryItem: [LootcrateSetEntryItem]!
   }
+
   type ItemsPage {
     items: [Item!]!
     count: Int!
@@ -27,6 +32,7 @@ export const schema = gql`
     items: [Item!]! @skipAuth
     item(id: BigInt!): Item @skipAuth
     itemsPage(page: Int): ItemsPage @skipAuth
+    itemsByCategory(category: String!): ItemsPage @skipAuth
   }
 
   input CreateItemInput {
@@ -40,12 +46,11 @@ export const schema = gql`
     crafting_time: Float
     req_level: BigInt
     yields: Float
-    recipe: JSON
     stats: JSON
     color: String
     crafted_in: [String]!
-    effects: [String]!
-    type: String!
+    type: String
+    category: String!
   }
 
   input UpdateItemInput {
@@ -59,12 +64,11 @@ export const schema = gql`
     crafting_time: Float
     req_level: BigInt
     yields: Float
-    recipe: JSON
     stats: JSON
     color: String
     crafted_in: [String]!
-    effects: [String]!
     type: String
+    category: String
   }
 
   type Mutation {

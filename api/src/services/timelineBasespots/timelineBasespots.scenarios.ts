@@ -5,7 +5,7 @@ export const standard = defineScenario<Prisma.TimelineBasespotCreateArgs>({
   timelineBasespot: {
     one: {
       data: {
-        tribeName: 'String',
+        tribe_name: 'String',
         players: 'String',
         timeline: {
           create: {
@@ -23,7 +23,7 @@ export const standard = defineScenario<Prisma.TimelineBasespotCreateArgs>({
     },
     two: {
       data: {
-        tribeName: 'String',
+        tribe_name: 'String',
         players: 'String',
         timeline: {
           create: {

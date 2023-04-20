@@ -21,11 +21,10 @@ export const QUERY = gql`
       crafting_time
       req_level
       yields
-      recipe
       stats
       color
       crafted_in
-      effects
+      category
       type
     }
   }
@@ -44,11 +43,10 @@ const UPDATE_ITEM_MUTATION = gql`
       crafting_time
       req_level
       yields
-      recipe
       stats
       color
       crafted_in
-      effects
+      category
       type
     }
   }

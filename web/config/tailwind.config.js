@@ -17,6 +17,8 @@ module.exports = {
         "fade-in": "fade 0.5s ease-in forwards",
         "fly-in": "flyIn 0.3s ease-out",
         "fly-out": "flyOut 0.3s ease-out",
+        "pop-up":
+          "popUp 0.5s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
       },
       boxShadow: {
         boxContent:

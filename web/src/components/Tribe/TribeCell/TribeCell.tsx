@@ -12,8 +12,8 @@ export const QUERY = gql`
       description
       created_at
       updated_at
-      createdBy
-      updatedBy
+      created_by
+      updated_by
       Profile {
         full_name
         avatar_url

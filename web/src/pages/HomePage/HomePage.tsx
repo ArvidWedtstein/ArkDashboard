@@ -14,6 +14,8 @@ const HomePage = () => {
   //   console.log(event, session)
   // })
 
+  // TODO: Update Timeline, Role, Tribe, TimelineBasespot and Basespot SDL
+
   return (
     <>
       <MetaTags title="Home" description="Home page" />

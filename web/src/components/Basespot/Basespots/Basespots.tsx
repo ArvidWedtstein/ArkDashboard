@@ -1,7 +1,8 @@
+import { useLazyQuery } from "@apollo/client";
 import { Link, routes, useParams } from "@redwoodjs/router";
-import { useMutation } from "@redwoodjs/web";
+import { useMutation, useQuery } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ArkCard from "src/components/ArkCard/ArkCard";
 
 import { QUERY } from "src/components/Basespot/BasespotsCell/BasespotsCell";
@@ -17,6 +18,16 @@ const DELETE_BASESPOT_MUTATION = gql`
   mutation DeleteBasespotMutation($id: BigInt!) {
     deleteBasespot(id: $id) {
       id
+    }
+  }
+`;
+
+const MAPQUERY = gql`
+  query FindMaps2 {
+    maps {
+      id
+      name
+      img
     }
   }
 `;
@@ -45,6 +56,20 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
   let { map } = useParams();
   let basespots = basespotPage.basespots;
 
+  // const [loadMaps, { called, loading, error, data }] = useLazyQuery(MAPQUERY, {
+  //   onCompleted: (data) => {
+  //     console.log(data);
+  //   },
+  //   onError: (error) => {
+  //     console.log(error);
+  //     toast.error(error.message);
+  //   }
+  // });
+
+  // useEffect(() => {
+  //   loadMaps();
+  // }, []);
+
   const mapImages = {
     theisland:
       "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
@@ -70,49 +95,54 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
     genesis2:
       "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
   };
-  const [currentMap, setCurrentMap] = useState(map || "");
+  const [currentMap, setCurrentMap] = useState(map || null);
 
   return (
     <div className="h-[80vh]">
       <div className="flex items-center">
         <Lookup
-          items={Object.keys(mapImages).map((k) => ({
-            name: k,
-          }))}
-          onChange={(e) => setCurrentMap(e.name)}
-        >
-          {!!currentMap ? currentMap : "Choose map"}
-        </Lookup>
-        {/* <button
-          className="rw-button rounded-md bg-gray-800 px-4 py-2 text-white"
-          onClick={() => setCurrentMap("")}
-        >
-          Clear
-        </button> */}
+          options={[
+            { label: "Valguero", value: 1 },
+            { label: "The Island", value: 2 },
+            { label: "The Center", value: 3 },
+            { label: "Ragnarok", value: 4 },
+            { label: "Abberation", value: 5 },
+            { label: "Extinction", value: 6 },
+            { label: "Scorched Earth", value: 7 },
+            { label: "Genesis", value: 8 },
+            { label: "Genesis 2", value: 9 },
+            { label: "Crystal Isles", value: 10 },
+            { label: "Fjordur", value: 11 },
+            { label: "Lost Island", value: 12 },
+          ]}
+          // options={data?.maps.map((map) => ({
+          //   label: map.name,
+          //   value: map.id,
+          // }))}
+          placeholder="Choose Map"
+          defaultValue={currentMap}
+          onSelect={(e) => setCurrentMap(e.value ? e.value : null)}
+        />
       </div>
       <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {basespots
           .filter((spot) =>
-            spot.Map_Basespot_MapToMap.name
-              .toLowerCase()
-              .includes(currentMap.toLowerCase())
+            currentMap != null
+              ? spot.map.toString() === currentMap.toString()
+              : true
           )
           .map((basespot, i) => (
             <ArkCard
               key={`${basespot.id}-${i}`}
               title={basespot.name}
-              subtitle={basespot.Map_Basespot_MapToMap.name
-                .split(/(?=[A-Z])/)
-                .join(" ")}
+              subtitle={basespot.Map.name.split(/(?=[A-Z])/).join(" ")}
               content={basespot.description}
-              ring={`${basespot.estimatedForPlayers} players`}
+              ring={`${basespot.estimated_for_players} players`}
               image={{
                 src: mapImages[
-                  basespot.Map_Basespot_MapToMap.name
-                    .toLowerCase()
-                    .replaceAll(" ", "")
+                  basespot.Map.name.toLowerCase().replaceAll(" ", "")
                 ],
-                alt: basespot.Map_Basespot_MapToMap.name,
+                alt: basespot.Map.name,
                 position: `${random(0, 100)}% ${random(25, 75)}%`,
               }}
               button={{

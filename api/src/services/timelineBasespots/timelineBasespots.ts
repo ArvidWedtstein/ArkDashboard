@@ -7,7 +7,9 @@ import type {
 import { db } from "src/lib/db";
 
 export const timelineBasespots: QueryResolvers["timelineBasespots"] = () => {
-  return db.timelineBasespot.findMany({ orderBy: { startDate: "asc" } });
+  return db.timelineBasespot.findMany({
+    orderBy: { start_date: "asc" },
+  });
 };
 
 export const timelineBasespot: QueryResolvers["timelineBasespot"] = ({
@@ -40,6 +42,24 @@ export const deleteTimelineBasespot: MutationResolvers["deleteTimelineBasespot"]
     });
   };
 
+export const raidTimelineBasespot: MutationResolvers["raidTimelineBasespot"] =
+  ({ id, input }) => {
+    // db.timelineBasespotDino.update({
+    //   data: {
+    //     death_date: new Date(),
+    //   },
+    //   where: { timelinebasespot_id: id },
+    // });
+    return db.timelineBasespot.update({
+      data: {
+        id,
+        end_date: input.end_date || new Date(),
+        raid_comment: input.raid_comment,
+        raided_by: input.raided_by,
+      },
+      where: { id },
+    });
+  };
 export const TimelineBasespot: TimelineBasespotRelationResolvers = {
   basespot: (_obj, { root }) => {
     return db.timelineBasespot
@@ -58,5 +78,10 @@ export const TimelineBasespot: TimelineBasespotRelationResolvers = {
     return db.timelineBasespot
       .findUnique({ where: { id: root?.id } })
       .timeline();
+  },
+  TimelineBasespotDino: (_obj, { root }) => {
+    return db.timelineBasespot
+      .findUnique({ where: { id: root?.id } })
+      .TimelineBasespotDino();
   },
 };

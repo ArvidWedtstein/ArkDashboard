@@ -10,9 +10,13 @@ export const schema = gql`
     status: user_status!
     role_id: String!
     created_at: DateTime
+    updated_by: String
     Message: [Message]!
     role_profile_role_idTorole: Role!
+    Profile: Profile
+    other_Profile: [Profile]!
     Timeline: [Timeline]!
+    TimelineBasespot: [TimelineBasespot]!
     Tribe: [Tribe]!
   }
 
@@ -36,6 +40,7 @@ export const schema = gql`
     status: user_status!
     role_id: String!
     created_at: DateTime
+    updated_by: String
   }
 
   input UpdateProfileInput {
@@ -48,6 +53,7 @@ export const schema = gql`
     status: user_status
     role_id: String
     created_at: DateTime
+    updated_by: String
   }
 
   type Mutation {

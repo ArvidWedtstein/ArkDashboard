@@ -7,8 +7,8 @@ export const schema = gql`
     weight: Float
     qty: JSON
     quality: JSON
-    items: JSON
     LootcrateSet: LootcrateSet!
+    LootcrateSetEntryItem: [LootcrateSetEntryItem]!
   }
 
   type Query {
@@ -23,7 +23,6 @@ export const schema = gql`
     weight: Float
     qty: JSON
     quality: JSON
-    items: JSON
   }
 
   input UpdateLootcrateSetEntryInput {
@@ -33,7 +32,6 @@ export const schema = gql`
     weight: Float
     qty: JSON
     quality: JSON
-    items: JSON
   }
 
   type Mutation {

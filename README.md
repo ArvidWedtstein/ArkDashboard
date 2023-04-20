@@ -47,9 +47,11 @@
       <a href="#usage">Usage</a>
       <ul>
         <li><a href="#pages">Pages</a></li>
+        <li><a href="#database">Prisma & Database</a></li>
         <li><a href="#sdl">SDL</a></li>
-        <li><a href="#cell">Cell</a></li>
-        <li><a href="#database">Database</a></li>
+        <li><a href="#cells">Cells</a></li>
+        <li><a href="#storybook">Storybook</a></li>
+        <li><a href="#testing">Testing</a></li>
       </ul>
     </li>
     <li><a href="#roadmap">Roadmap</a></li>
@@ -72,7 +74,7 @@ Description in progress
 
 This project is mainly written in React, together with these frameworks and libraries:
 
-[![Redwood][Redwood.js]][Redwood-url]
+[![Redwood][redwood.js]][redwood-url]
 
 <!-- GETTING STARTED -->
 
@@ -83,6 +85,9 @@ To get a local copy up and running follow these simple steps.
 ### Prerequisites
 
 To run this project you'll need to have nodejs installed on your computer. You can download it [here](https://nodejs.org/en/download/)
+
+> - Redwood requires [Node.js](https://nodejs.org/en/) (>=14.19.x <=16.x) and [Yarn](https://yarnpkg.com/) (>=1.15)
+> - Are you on Windows? For best results, follow redwood's [Windows development setup](https://redwoodjs.com/docs/how-to/windows-development-setup) guide
 
 Get latest npm version
 
@@ -145,32 +150,10 @@ Deploying image to scaleway:
 
 Project can be used to browse through some of the best Ark: Survival Evolved spots out there, and much more.
 
-Apply changes to database:
-
-```sh
-yarn rw prisma migrate dev (yarn rw db push for mongodb)
-```
-
-```sh
-prisma migrate dev --name added_job_title
-```
-
-To view SQLite data in a GUI:
-
-```sh
-yarn rw prisma studio
-```
-
 To generate types:
 
 ```sh
 yarn rw g types
-```
-
-Generate schema:
-
-```sh
-yarn rw g sdl basespot
 ```
 
 Generate Secret:
@@ -193,12 +176,6 @@ To open redwood console:
 yarn rw c
 ```
 
-Fucked up the database? Start all over again with
-
-```sh
-yarn rw prisma migrate reset
-```
-
 Seed the database with
 
 ```sh
@@ -213,25 +190,117 @@ Check for stuff:
 yarn redwood check
 ```
 
+### Pages
+
+Pages can be generated with the `yarn rw g page` command. For example, to generate a page named `About`:
+
+```sh
+yarn rw g page About
+```
+
+> `g` is short for `generate`
+
+### Database
+
+Redwood wouldn't be a full-stack framework without a database. It all starts with the schema. The [`schema.prisma`](api/db/schema.prisma) file is located in `api/db`
+
 Local supabase postgresql setup:
 
-```sh
-supabase login
-```
+`supabase login`
+
+`supabase init`
+
+`supabase start`
+
+To view SQLite data in a GUI:
 
 ```sh
-supabase init
+yarn rw prisma studio
 ```
 
-```sh
-supabase start
+Redwood uses [Prisma](https://www.prisma.io/), a next-gen Node.js and TypeScript <abbr title="Object Relational Mapping">ORM</abbr>, to talk to the database. Prisma's schema offers a declarative way of defining your app's data models. And Prisma [Migrate](https://www.prisma.io/migrate) uses that schema to make database migrations hassle-free:
+
 ```
+yarn rw prisma migrate dev (yarn rw prisma db push for mongodb)
+
+# ...
+
+? Enter a name for the new migration: › create <model>
+```
+
+> `rw` is short for `redwood`
+
+You'll be prompted for the name of your migration. `create <model>`
+
+With `yarn rw g scaffold <model>`, Redwood created all the pages, components, and services necessary to perform all <abbr title="Create, Retrieve, Update, Delete">CRUD</abbr> actions on our table.
+
+Fucked up the database once again? Start all over again with:
+`yarn rw prisma migrate reset`
+
+### SDL
+
+If you only want to generate services for your table, you can use:
+`yarn rw g sdl <model>`
+
+### Cells
+
+Cells are a declarative approach to data fetching and one of Redwood's signature modes of abstraction. By providing conventions around data fetching, Redwood can get in between the request and the response to do things like query optimization and more, all without you ever having to change your code.
+
+A Cell can be generated with `yarn rw generate cell <name>`
+
+<b>Single Item Cell vs List Cell</b>
+
+Sometimes you want a Cell that renders a single item, like the example above, and other times you want a Cell that renders a list. Redwood's Cell generator can do both.
+Just specify the `--list` flag and you'll get a list cell
+`yarn rw generate cell equipment --list`
+
+Cells has up to seven exports to work with, only 2 are required though (success and QUERY).
+
+| Name          | Type               | Description                                                  |
+| :------------ | :----------------- | :----------------------------------------------------------- |
+| `QUERY`       | `string\|function` | The query to execute                                         |
+| `beforeQuery` | `function`         | Lifecycle hook; prepares variables and options for the query |
+| `isEmpty`     | `function`         | Lifecycle hook; decides if Cell should render Empty          |
+| `afterQuery`  | `function`         | Lifecycle hook; sanitizes data returned from the query       |
+| `Loading`     | `component`        | If the request is in flight, render this component           |
+| `Empty`       | `component`        | If there's no data (`null` or `[]`), render this component   |
+| `Failure`     | `component`        | If something went wrong, render this component               |
+| `Success`     | `component`        | If the data has loaded, render this component                |
+
+### Storybook
+
+I personally don't make use of storybook in this project, but it's a great tool to use when you're working on a design system.
+
+Don't know what your data models look like?
+That's more than ok—Redwood integrates Storybook so that you can work on design without worrying about data.
+Mockup, build, and verify your React components, even in complete isolation from the backend:
+
+```
+yarn rw storybook
+```
+
+Before you start, see if the CLI's `setup ui` command has your favorite styling library:
+
+```
+yarn rw setup ui --help
+```
+
+### Testing
+
+It'd be hard to scale from side project to startup without a few tests.
+Redwood fully integrates Jest with the front and the backends and makes it easy to keep your whole app covered by generating test files with all your components and services:
+
+```
+yarn rw test
+```
+
+To make the integration even more seamless, Redwood augments Jest with database [scenarios](https://redwoodjs.com/docs/testing.md#scenarios) and [GraphQL mocking](https://redwoodjs.com/docs/testing.md#mocking-graphql-calls).
 
 <!-- ROADMAP -->
 
 ## Roadmap
 
-- [ ] Get to know Redwood and React
+- [x] Get to know Redwood and React
 - [x] Add a base spot system
 - [x] Add a map system
 - [ ] Testing
@@ -297,129 +366,5 @@ No contact :)
 [license-url]: https://github.com/ArvidWedtstein/ArkDashboard/blob/prod/LICENSE.txt
 [version-shield]: https://img.shields.io/github/package-json/v/ArvidWedtstein/ArkDashboard/dev?style=for-the-badge
 [version-url]: https://github.com/ArvidWedtstein/ArkDashboard
-[Redwood.js]: https://img.shields.io/badge/Redwood-454545?style=for-the-badge&logo=redwoodjs&logoColor=BF4722
-[Redwood-url]: https://redwoodjs.com/
-
-# README
-
-Welcome to [RedwoodJS](https://redwoodjs.com)!
-
-> **Prerequisites**
->
-> - Redwood requires [Node.js](https://nodejs.org/en/) (>=14.19.x <=16.x) and [Yarn](https://yarnpkg.com/) (>=1.15)
-> - Are you on Windows? For best results, follow our [Windows development setup](https://redwoodjs.com/docs/how-to/windows-development-setup) guide
-
-Start by installing dependencies:
-
-```
-yarn install
-```
-
-Then change into that directory and start the development server:
-
-```
-cd my-redwood-project
-yarn redwood dev
-```
-
-Your browser should automatically open to http://localhost:8910 where you'll see the Welcome Page, which links out to a ton of great resources.
-
-> **The Redwood CLI**
->
-> Congratulations on running your first Redwood CLI command!
-> From dev to deploy, the CLI is with you the whole way.
-> And there's quite a few commands at your disposal:
->
-> ```
-> yarn redwood --help
-> ```
->
-> For all the details, see the [CLI reference](https://redwoodjs.com/docs/cli-commands).
-
-## Prisma and the database
-
-Redwood wouldn't be a full-stack framework without a database. It all starts with the schema. Open the [`schema.prisma`](api/db/schema.prisma) file in `api/db` and replace the `UserExample` model with the following `Post` model:
-
-```
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  body      String
-  createdAt DateTime @default(now())
-}
-```
-
-Redwood uses [Prisma](https://www.prisma.io/), a next-gen Node.js and TypeScript ORM, to talk to the database. Prisma's schema offers a declarative way of defining your app's data models. And Prisma [Migrate](https://www.prisma.io/migrate) uses that schema to make database migrations hassle-free:
-
-```
-yarn rw prisma migrate dev
-
-# ...
-
-? Enter a name for the new migration: › create posts
-```
-
-> `rw` is short for `redwood`
-
-You'll be prompted for the name of your migration. `create posts` will do.
-
-Now let's generate everything we need to perform all the CRUD (Create, Retrieve, Update, Delete) actions on our `Post` model:
-
-```
-yarn redwood g scaffold post
-```
-
-Navigate to http://localhost:8910/posts/new, fill in the title and body, and click "Save":
-
-Did we just create a post in the database? Yup! With `yarn rw g scaffold <model>`, Redwood created all the pages, components, and services necessary to perform all CRUD actions on our posts table.
-
-## Frontend first with Storybook
-
-Don't know what your data models look like?
-That's more than ok—Redwood integrates Storybook so that you can work on design without worrying about data.
-Mockup, build, and verify your React components, even in complete isolation from the backend:
-
-```
-yarn rw storybook
-```
-
-Before you start, see if the CLI's `setup ui` command has your favorite styling library:
-
-```
-yarn rw setup ui --help
-```
-
-## Testing with Jest
-
-It'd be hard to scale from side project to startup without a few tests.
-Redwood fully integrates Jest with the front and the backends and makes it easy to keep your whole app covered by generating test files with all your components and services:
-
-```
-yarn rw test
-```
-
-To make the integration even more seamless, Redwood augments Jest with database [scenarios](https://redwoodjs.com/docs/testing.md#scenarios) and [GraphQL mocking](https://redwoodjs.com/docs/testing.md#mocking-graphql-calls).
-
-## Ship it
-
-Redwood is designed for both serverless deploy targets like Netlify and Vercel and serverful deploy targets like Render and AWS:
-
-```
-yarn rw setup deploy --help
-```
-
-Don't go live without auth!
-Lock down your front and backends with Redwood's built-in, database-backed authentication system ([dbAuth](https://redwoodjs.com/docs/authentication#self-hosted-auth-installation-and-setup)), or integrate with nearly a dozen third party auth providers:
-
-```
-yarn rw setup auth --help
-```
-
-## Next Steps
-
-The best way to learn Redwood is by going through the comprehensive [tutorial](https://redwoodjs.com/docs/tutorial/foreword) and joining the community (via the [Discourse forum](https://community.redwoodjs.com) or the [Discord server](https://discord.gg/redwoodjs)).
-
-## Quick Links
-
-- Stay updated: read [Forum announcements](https://community.redwoodjs.com/c/announcements/5), follow us on [Twitter](https://twitter.com/redwoodjs), and subscribe to the [newsletter](https://redwoodjs.com/newsletter)
-- [Learn how to contribute](https://redwoodjs.com/docs/contributing)
+[redwood.js]: https://img.shields.io/badge/Redwood-454545?style=for-the-badge&logo=redwoodjs&logoColor=BF4722
+[redwood-url]: https://redwoodjs.com/

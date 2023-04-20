@@ -1,8 +1,10 @@
 import type { APIGatewayProxyEvent, Context } from "aws-lambda";
 
-import { DbAuthHandler, PasswordValidationError } from "@redwoodjs/api";
-import type { DbAuthHandlerOptions } from "@redwoodjs/api";
-
+import {
+  DbAuthHandler,
+  PasswordValidationError,
+  DbAuthHandlerOptions,
+} from "@redwoodjs/api";
 import { db } from "src/lib/db";
 
 export const handler = async (

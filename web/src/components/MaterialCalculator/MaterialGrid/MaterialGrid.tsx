@@ -10,7 +10,8 @@ import {
 import { useCallback, useMemo, useReducer, useState } from "react";
 import { useForm } from "react-hook-form";
 import Lookup from "src/components/Util/Lookup/Lookup";
-import { getBaseMaterials } from "src/lib/formatters";
+import { formatNumberWithThousandSeparator, getBaseMaterials } from "src/lib/formatters";
+import debounce from "lodash.debounce";
 import Table from "src/components/Util/Table/Table";
 interface MaterialGridProps {
   items: any;
@@ -25,11 +26,24 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
   const reducer = (state, action) => {
     switch (action.type) {
       case "ADD_AMOUNT_BY_NUM": {
-        const itemIndex = state.findIndex((item) => item.id === action.item.id);
+        let itemIndex = state.findIndex((item) => item.id === action.item.id);
+
         if (itemIndex !== -1) {
           return state.map((item, i) => {
             if (i === itemIndex) {
               return { ...item, amount: item.amount + action.index };
+            }
+            return item;
+          });
+        }
+        return [...state, { ...action.item, amount: action.index }];
+      }
+      case "CHANGE_AMOUNT": {
+        let itemIndex = action.item;
+        if (itemIndex !== -1) {
+          return state.map((item, i) => {
+            if (i == itemIndex) {
+              return { ...item, amount: action.index };
             }
             return item;
           });
@@ -99,6 +113,9 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
   const onRemoveAmount = (index) => {
     setItem({ type: "REMOVE_AMOUNT", index: index });
   };
+  const onChangeAmount = debounce((index, amount) => {
+    setItem({ type: "CHANGE_AMOUNT", item: index, index: amount });
+  }, 500);
 
   const addTurretTower = useCallback(() => {
     // let turretTower = {
@@ -170,6 +187,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
   }, []);
 
   const mergeItemRecipe = useCallback(getBaseMaterials, [item]);
+
   const clear = () => {
     setItem({ type: "RESET" });
   };
@@ -181,6 +199,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
     },
     [viewBaseMaterials]
   );
+
 
   return (
     <Form onSubmit={onAdd} error={error}>
@@ -200,16 +219,17 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
 
       <div className="relative flex flex-row space-x-3">
         <Lookup
-          items={items.map((item) => {
+          options={items.map((item) => {
             return {
-              ...item,
-              image: `https://arkcheat.com/images/ark/items/${item.image}`,
+              label: item.name,
+              value: item.id,
+              image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
             };
           })}
-          group={"type"}
+          group={"category"}
           search={true}
           name="itemName"
-          onChange={(e) => onAdd({ itemName: e.name })}
+          onSelect={(e) => onAdd({ itemName: e.name })}
         />
         <div className="inline-flex rounded-md shadow-sm" role="group">
           <button
@@ -248,6 +268,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
         </div>
       </div>
       <FieldError name="itemName" className="rw-field-error" />
+
       {item.length > 0 && (
         <>
           <Table
@@ -257,6 +278,10 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
               viewBaseMaterials,
               ...item.map((i) => ({ ...i, itemId: i.id }))
             )}
+            // rows={mergeItemRecipe(
+            //   viewBaseMaterials,
+            //   ...item.map((i) => ({ ...i, itemId: i.id }))
+            // )}
             className="animate-fade-in my-4"
             caption={{
               title: "Item",
@@ -288,13 +313,11 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                   return (
                     <div className="flex flex-col items-center justify-center">
                       <img
-                        src={`https://arkcheat.com/images/ark/items/${row.image}`}
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
                         className="h-6 w-6"
                       />
-                      <span className="text-sm">{value}</span>
-                      <span className="sr-only">
-                        {value} {value}
-                      </span>
+                      <span className="text-sm">{formatNumberWithThousandSeparator(value)}</span>
+                      <span className="sr-only">{value}</span>
                     </div>
                   );
                 },
@@ -321,9 +344,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                       <ImageField
                         className="h-8 w-8"
                         name="itemimage"
-                        src={
-                          "https://arkcheat.com/images/ark/items/" + row.image
-                        }
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
                       />
                     </button>
                   );
@@ -338,7 +359,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                   return (
                     <div
                       className="flex flex-row items-center"
-                      key={`${row.itemId}+${Math.random()}`}
+                      key={`${row.id}+${Math.random()}`}
                     >
                       <button
                         type="button"
@@ -347,12 +368,19 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                       >
                         -
                       </button>
-                      <p
+                      {/* <p
                         defaultValue={row.amount}
                         className="rw-input w-16 p-3 text-center"
                       >
                         {row.amount}
-                      </p>
+                      </p> */}
+                      <input
+                        defaultValue={row.amount}
+                        className="rw-input w-16 p-3 text-center"
+                        onChange={(e) => {
+                          onChangeAmount(rowIndex, e.target.value);
+                        }}
+                      />
                       <button
                         type="button"
                         className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
@@ -364,16 +392,24 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                   );
                 },
               },
+              // {
+              //   field: "crafting_time",
+              //   label: "Time",
+              //   numeric: false,
+              //   className: "w-0 text-center",
+              //   valueFormatter: ({ value, row }) => {
+              //     return value * row.amount + "s";
+              //   },
+              // },
               {
-                field: "recipe",
+                field: "ItemRecipe_ItemRecipe_crafted_item_idToItem",
                 label: "Ingredients",
                 numeric: false,
                 className:
                   "text-center flex flex-row justify-start items-center",
-                renderCell: ({ row }) => {
+                renderCell: ({ row, value }) => {
                   return mergeItemRecipe(false, {
-                    itemId: row.id,
-                    amount: row.amount,
+                    ...row,
                   })
                     .sort((a, b) => a.id - b.id)
                     .map((itm, i) => (
@@ -383,13 +419,13 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                         key={`${itm.id}-${i * Math.random()}${i}`}
                       >
                         <img
-                          src={`https://arkcheat.com/images/ark/items/${itm.image}`}
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${itm.image}`}
                           className="h-6 w-6"
                           title={itm.name}
                           alt={itm.name}
                         />
                         <span className="text-sm text-black dark:text-white">
-                          {itm.amount}
+                          {formatNumberWithThousandSeparator(itm.amount)}
                         </span>
                       </div>
                     ));

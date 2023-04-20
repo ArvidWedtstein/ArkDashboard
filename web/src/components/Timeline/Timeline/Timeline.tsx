@@ -3,7 +3,6 @@ import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useEffect, useState } from "react";
-import { TimelineList } from "src/components/Util/Timeline";
 import { timeTag } from "src/lib/formatters";
 
 import type {
@@ -24,52 +23,7 @@ interface Props {
 }
 
 const Timeline = ({ timeline }: Props) => {
-  const { client: supabase } = useAuth();
-  const [basespots, setBasespots] = useState([]);
 
-  const getStory = async () => {
-    try {
-      let { data, error, status } = await supabase
-        .from("timelinebasespot_view")
-        .select(
-          `
-          id,
-          created_at,
-          updated_at,
-          startDate,
-          endDate,
-          timeline_id,
-          tribeName,
-          map,
-          server,
-          region,
-          season,
-          cluster,
-          location,
-          players,
-          created_by,
-          raided_by,
-          raidcomment,
-          images
-        `
-        )
-        // .eq("created_by", "7a2878d1-4f61-456d-bcb6-edc707383ea8")
-        .eq("timeline_id", timeline.id)
-        .order("startDate", { ascending: true });
-
-      if (error && status !== 406) {
-        throw error;
-      }
-      setBasespots(data);
-      // return <>{basespots && <TimelineList events={basespots} />}</>;
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
-  useEffect(() => {
-    getStory();
-  }, []);
   const [deleteTimeline] = useMutation(DELETE_TIMELINE_MUTATION, {
     onCompleted: () => {
       toast.success("Timeline deleted");
@@ -88,14 +42,7 @@ const Timeline = ({ timeline }: Props) => {
 
   return (
     <>
-      {basespots && (
-        <TimelineList
-          options={{
-            arrowkeys: true,
-          }}
-          events={basespots}
-        />
-      )}
+
     </>
   );
 };

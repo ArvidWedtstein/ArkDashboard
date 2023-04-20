@@ -94,27 +94,33 @@ a {
 }
 /* Form Section */
 .rw-form-group {
-  @apply mt-2 flex flex-col items-start border-t border-stone-500 text-gray-900 dark:border-zinc-300 dark:text-stone-200;
+  @apply mt-2 flex flex-col items-start border-stone-500 pt-2 text-gray-900 dark:border-zinc-300 dark:text-stone-200 [&:not(details)]:border-t [&:not(fieldset)]:border-b [&:not(fieldset)]:pb-2;
 }
-.rw-form-group legend {
-  @apply pr-2 text-xl;
+.rw-form-group legend,
+.rw-form-group summary {
+  @apply relative mb-2 pr-2 text-xl; /* list-decimal */
 }
-.rw-form-group > div {
-  @apply flex flex-row items-start space-y-3 sm:space-y-0 sm:space-x-3;
+.rw-form-group:not(.custom) > div {
+  @apply flex flex-col items-start space-y-3 md:flex-row md:space-y-0 md:space-x-3;
 }
 
 .rw-button {
   /* @apply flex cursor-pointer justify-center rounded border-0 bg-gray-200 py-1 px-4 text-xs font-semibold uppercase leading-loose tracking-wide text-gray-500 no-underline transition duration-100; */
   @apply rounded-lg py-2.5 px-6 text-sm font-medium text-gray-900 transition duration-100 ease-in-out focus:outline-none dark:text-white;
 }
+.rw-button-ark {
+  @apply bg-[#11667B] px-6 py-1 uppercase outline outline-1 outline-offset-1 outline-[#11667B] transition-colors duration-150 hover:outline-2 hover:outline-offset-0;
+}
 /* .rw-button:hover {
   @apply bg-gray-500 text-white;
 } */
-.rw-button.disabled {
+.rw-button.disabled,
+.rw-button[disabled] {
   @apply cursor-not-allowed opacity-50;
 }
-.rw-button.disabled:hover {
-  @apply bg-current ring-0;
+.rw-button.disabled:hover,
+.rw-button[disabled]:hover {
+  @apply ring-0;
 }
 /*
 // ----------------------------
@@ -275,7 +281,7 @@ a {
   @apply ml-0 mr-1 mt-1 inline w-4;
 }
 .rw-toggle {
-  @apply h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] dark:border-gray-600 dark:bg-gray-700;
+  @apply h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] dark:border-gray-600 dark:bg-zinc-600;
 }
 /* .rw-input:focus {
   @apply border-gray-400;
@@ -425,7 +431,7 @@ a {
   height: 20px;
   /* border-radius: 5px; */
   /* background-color: #9880ff; */
-  background: url("https://arkcheat.com/images/ark/items/hide.png");
+  background: url("https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages//hide.png");
   background-position: center;
   background-size: cover;
   color: #9880ff;
@@ -443,7 +449,7 @@ a {
   height: 20px;
   /* border-radius: 5px; */
   /* background-color: #9880ff; */
-  background: url("https://arkcheat.com/images/ark/items/hide.png");
+  background: url("https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/hide.png");
   background-position: center;
   background-size: cover;
   color: #9880ff;
@@ -457,7 +463,7 @@ a {
   height: 20px;
   /* border-radius: 5px; */
   /* background-color: #9880ff; */
-  background: url("https://arkcheat.com/images/ark/items/hide.png");
+  background: url("https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages//hide.png");
   background-position: center;
   background-size: cover;
   color: #9880ff;
@@ -488,5 +494,13 @@ a {
   }
   to {
     transform: translateX(calc(100% + 1.5em));
+  }
+}
+@keyframes popUp {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
   }
 }

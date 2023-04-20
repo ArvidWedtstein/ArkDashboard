@@ -41,7 +41,7 @@ const Tribe = ({ tribe }: Props) => {
       <div className="rw-segment">
         <header className="rw-segment-header">
           <h2 className="rw-heading rw-heading-secondary">
-            Tribe {tribe.id} Detail
+            Tribe {tribe.name} Detail
           </h2>
         </header>
         <table className="rw-table">
@@ -66,7 +66,7 @@ const Tribe = ({ tribe }: Props) => {
               <td>{tribe.Profile.full_name}</td>
             </tr><tr>
               <th>Updated by</th>
-              <td>{tribe.updatedBy}</td>
+              <td>{tribe.updated_by}</td>
             </tr>
           </tbody>
         </table>

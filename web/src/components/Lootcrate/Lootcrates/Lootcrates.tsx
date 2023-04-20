@@ -116,23 +116,27 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
     "Lost Island",
     "Genesis 2",
   ];
+  // https://ark.wiki.gg/wiki/Coordinates
   return (
     <div className="m-3">
       <Lookup
-        items={mapImages.map((k) => ({
-          name: k,
+        options={mapImages.map((k) => ({
+          label: k,
+          value: k,
         }))}
-        onChange={(e) => setCurrentMap(e.name)}
-      ></Lookup>
+        onSelect={(e) => setCurrentMap(e.name)}
+      />
       <Lookup
-        items={categoryItems.map((k) => ({
-          name: k,
+        options={categoryItems.map((k) => ({
+          label: k,
+          value: k,
         }))}
-        onChange={(e) => setCurrentCategory(e.name)}
-      ></Lookup>
+        onSelect={(e) => setCurrentCategory(e.name)}
+      />
       <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {daLootcrates.map((lootcrate, i) => (
           <ArkCard
+            key={`lootcrate-${i}`}
             className="border-t-2"
             style={{
               borderColor: lootcrate.color ? lootcrate.color : "white",
@@ -142,71 +146,21 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
               alt: "test",
               position: "70% 30%",
             }}
+            icon={{
+              src: 'https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/f/f2/Purple_Beacon.png',
+            }}
             title={lootcrate.name}
             subtitle={lootcrate.Map.name}
-            content={
-              <div className="w-full space-y-2">
-                <Tabs
-                  tabs={lootcrate.LootcrateSet.map((s, l) => {
-                    return {
-                      title: s.name,
-                      content: (
-                        <div className="w-full rounded-lg border border-gray-200 bg-white/20 text-sm font-medium text-gray-900 backdrop-blur-sm transition-all duration-150 dark:border-gray-400 dark:text-white">
-                          {s.LootcrateSetEntry.map((e, ind) => {
-                            return (
-                              e.items.every((g) => !isNaN(g[1])) && (
-                                <details
-                                  open={
-                                    e.items.length == 1 &&
-                                    s.LootcrateSetEntry.length == 1
-                                  }
-                                  key={`crate${i}-set${l}-entry${ind}`}
-                                  className="hover:text-pea-700 focus:ring-pea-700 focus:text-pea-700 w-full cursor-pointer border-b border-gray-200 px-4 py-2 focus:outline-none focus:ring-2 dark:border-gray-400  dark:hover:text-white dark:focus:text-white dark:focus:ring-gray-500"
-                                >
-                                  <summary className="text-base font-semibold">
-                                    {e.name}
-                                  </summary>
-                                  <ul className="my-2 grid grid-cols-1 border-t border-gray-200 py-2 dark:border-gray-400 md:grid-cols-1 xl:grid-cols-2">
-                                    {e.items.map(
-                                      (itm) =>
-                                        true && (
-                                          <li className="space-x-2">
-                                            <Link
-                                              to={routes.item({
-                                                id: itm[1],
-                                              })}
-                                              className="inline-flex space-x-2"
-                                            >
-                                              <img
-                                                src={`https://arkcheat.com/images/ark/items/${getItem(itm[1])?.image
-                                                  }`}
-                                                className="inline-block h-6 w-6"
-                                              />
-                                              <p className="text-white">
-                                                {getItem(itm[1])?.name}
-                                              </p>
-                                            </Link>
-                                          </li>
-                                        )
-                                    )}
-                                  </ul>
-                                </details>
-                              )
-                            );
-                          })}
-                        </div>
-                      ),
-                    };
-                  })}
-                />
-              </div>
-            }
             ring={
               lootcrate?.level_requirement &&
                 lootcrate.level_requirement?.min > 0
                 ? `Lvl ${lootcrate.level_requirement.min}`
                 : null
             }
+            button={{
+              text: "View",
+              link: routes.lootcrate({ id: lootcrate.id }),
+            }}
           />
         ))}
       </div>

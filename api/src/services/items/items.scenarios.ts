@@ -3,8 +3,8 @@ import type { ScenarioData } from '@redwoodjs/testing/api'
 
 export const standard = defineScenario<Prisma.ItemCreateArgs>({
   item: {
-    one: { data: { name: 'String', crafted_in: 'String', effects: 'String' } },
-    two: { data: { name: 'String', crafted_in: 'String', effects: 'String' } },
+    one: { data: { name: 'String', crafted_in: 'String' } },
+    two: { data: { name: 'String', crafted_in: 'String' } },
   },
 })
 

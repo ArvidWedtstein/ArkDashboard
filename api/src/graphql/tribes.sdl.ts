@@ -5,8 +5,8 @@ export const schema = gql`
     description: String
     created_at: DateTime
     updated_at: DateTime
-    createdBy: String
-    updatedBy: String
+    created_by: String
+    updated_by: String
     Profile: Profile
   }
 
@@ -20,8 +20,8 @@ export const schema = gql`
     description: String
     created_at: DateTime
     updated_at: DateTime
-    createdBy: String
-    updatedBy: String
+    created_by: String
+    updated_by: String
   }
 
   input UpdateTribeInput {
@@ -29,8 +29,8 @@ export const schema = gql`
     description: String
     created_at: DateTime
     updated_at: DateTime
-    createdBy: String
-    updatedBy: String
+    created_by: String
+    updated_by: String
   }
 
   type Mutation {

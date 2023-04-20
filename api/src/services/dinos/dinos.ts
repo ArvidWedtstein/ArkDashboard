@@ -32,15 +32,37 @@ export const dino: QueryResolvers["dino"] = ({ id }) => {
   });
 };
 
-export const createDino: MutationResolvers["createDino"] = ({ input }) => {
+export const createDino:
+  | MutationResolvers["createDino"]
+  | MutationResolvers["createDinoStat"] = ({ input }) => {
+  // input.DinoStat = [
+  //   {
+  //     type: "gather_efficiency",
+  //     value: 1,
+  //     item_id: 8,
+  //   },
+  // ];
+
   return db.dino.create({
-    data: input,
+    // data: input,
+    data: {
+      ...input,
+      DinoStat: {
+        create: input?.DinoStat,
+      },
+    },
   });
 };
 
 export const updateDino: MutationResolvers["updateDino"] = ({ id, input }) => {
   return db.dino.update({
     data: input,
+    // data: {
+    //   ...input,
+    //   DinoStat: {
+    //     connect: { id: input.DinoStat?.connect?.id },
+    //   },
+    // },
     where: { id },
   });
 };
@@ -52,7 +74,15 @@ export const deleteDino: MutationResolvers["deleteDino"] = ({ id }) => {
 };
 
 export const Dino: DinoRelationResolvers = {
+  Item: (_obj, { root }) => {
+    return db.dino.findUnique({ where: { id: root?.id } }).Item();
+  },
   DinoStat: (_obj, { root }) => {
     return db.dino.findUnique({ where: { id: root?.id } }).DinoStat();
+  },
+  TimelineBasespotDino: (_obj, { root }) => {
+    return db.dino
+      .findUnique({ where: { id: root?.id } })
+      .TimelineBasespotDino();
   },
 };

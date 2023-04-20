@@ -13,12 +13,20 @@ const CREATE_ITEM_MUTATION = gql`
     }
   }
 `
+const CREATE_ITEM_RECIPE_MUTATION = gql`
+  mutation CreateItemRecipeMutation($input: CreateItemRecipeInput!) {
+    createItemRecipe(input: $input) {
+      id
+    }
+  }
+`
 
 const NewItem = () => {
   const [createItem, { loading, error }] = useMutation(
     CREATE_ITEM_MUTATION,
     {
-      onCompleted: () => {
+      onCompleted: (data) => {
+        console.log(data)
         toast.success('Item created')
         navigate(routes.items())
       },
@@ -27,9 +35,32 @@ const NewItem = () => {
       },
     }
   )
+  const [createItemRecipe, { loading: rLoading, error: rError }] = useMutation(
+    CREATE_ITEM_RECIPE_MUTATION,
+    {
+      onCompleted: (data) => {
+        console.log(data)
+        toast.success('Item Recipe created')
+      },
+      onError: (error) => {
+        toast.error(error.message)
+      },
+    }
+  )
 
-  const onSave = (input: CreateItemInput) => {
-    createItem({ variables: { input } })
+
+  const onSave = async (input: CreateItemInput) => {
+    try {
+      // delete input.category
+      // const d = await createItem({ variables: { input } })
+      console.log(input)
+      createItem({ variables: { input } })
+      // console.log(d)
+    } catch (error) {
+      console.log(error)
+    }
+    // await createItemRecipe({ variables: { crafted_item_id: id, amount: 1, item_id: 1, crafting_station: 606 } });
+    // createItem({ variables: { input } })
   }
 
   return (

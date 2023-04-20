@@ -16,7 +16,7 @@ import {
 import type { EditBasespotById, UpdateBasespotInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
 import Lookup from "src/components/Util/Lookup/Lookup";
 
@@ -36,34 +36,52 @@ interface BasespotFormProps {
 }
 
 const BasespotForm = (props: BasespotFormProps) => {
-  const formMethods = useForm<FormBasespot>(
-
-  )
+  const formMethods = useForm<FormBasespot>();
   const [thumbnailUrl, setThumbnailUrl] = useState(null);
   const [defenseImages, setDefenseImages] = useState([]);
 
   const basename = useRef(null);
-  const [map, setMap] = useState(props.basespot?.Map);
-  const onSubmit = (data: FormBasespot) => {
-    data.image && (data.image = thumbnailUrl);
+  const [map, setMap] = useState(props.basespot?.map || 2);
 
-    console.log(data);
+  const onSubmit = (data: FormBasespot) => {
+    data.map = parseInt(data.map.toString() || map.toString());
+    if (thumbnailUrl) data.image = thumbnailUrl;
     props.onSave(data, props?.basespot?.id);
   };
 
+  useEffect(() => {
+    if (props.basespot?.map) {
+      setMap(props.basespot.map);
+    }
+  }, []);
+
   return (
     <div className="rw-form-wrapper">
-      <Form<FormBasespot> onSubmit={onSubmit} formMethods={formMethods} error={props.error}>
+      <Form<FormBasespot>
+        onSubmit={onSubmit}
+        formMethods={formMethods}
+        error={props.error}
+      >
         <FormError
           error={props.error}
           wrapperClassName="rw-form-error-wrapper"
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
-        {/* <div  className="relative">
-    <input type="text" id="floating_outlined"  className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
-    <label htmlFor="floating_outlined"  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">Floating outlined</label>
-</div> */}
+        {/* <div className="relative border-b ">
+          <input
+            type="text"
+            id="floating_outlined"
+            className="border-1 focus:border-pea-600 dark:focus:border-pea-500 peer block w-full appearance-none rounded-lg border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white"
+            placeholder=" "
+          />
+          <label
+            htmlFor="floating_outlined"
+            className="peer-focus:text-pea-600 peer-focus:dark:text-pea-500 absolute top-2 left-1 z-10 origin-[0] -translate-y-4 scale-75 transform px-2 text-sm text-gray-500 duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 dark:text-gray-400"
+          >
+            Floating outlined
+          </label>
+        </div> */}
         <div className="relative">
           <Label
             name="name"
@@ -95,45 +113,81 @@ const BasespotForm = (props: BasespotFormProps) => {
         <TextAreaField
           name="description"
           defaultValue={props.basespot?.description}
-          className="rw-input"
+          className="rw-input min-w-[300px]"
           errorClassName="rw-input rw-input-error"
           emptyAs={""}
+          rows={5}
           validation={{ required: true }}
         />
 
         <FieldError name="description" className="rw-field-error" />
 
-
         <Label
-          name="Map"
+          name="map"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
           Map
         </Label>
 
-        <Lookup items={[
-          { name: "Valguero", value: "1" },
-          { name: "The Island", value: "2" },
-          { name: "The Center", value: "3" },
-          { name: "Ragnarok", value: "4" },
-          { name: "Abberation", value: "5" },
-          { name: "Extinction", value: "6" },
-          { name: "Scorched Earth", value: "7" },
-          { name: "Genesis", value: "8" },
-          { name: "Genesis 2", value: "9" },
-          { name: "Crystal Isles", value: "10" },
-          { name: "Fjordur", value: "11" },
-          { name: "Lost Island", value: "12" }
-        ]} name="Map" />
+        {/* <SelectField
+          name="Map"
+          defaultValue={props.basespot?.Map || map}
+          validation={{
+            required: true,
+            validate: {
+              matchesInitialValue: (value) => {
+                return (
+                  value !== "Please select an option" || "Select an Option"
+                );
+              },
+            },
+          }}
+        >
+          <option>Please select an option</option>
+          <option value={1}>Valguero</option>
+          <option value={2}>The Island</option>
+          <option value={3}>The Center</option>
+          <option value={4}>Ragnarok</option>
+          <option value={5}>Aberration</option>
+          <option value={6}>Extinction</option>
+          <option value={7}>Scorched Earth</option>
+          <option value={8}>Genesis</option>
+          <option value={9}>Genesis 2</option>
+          <option value={10}>Crystal Isles</option>
+          <option value={11}>Fjordur</option>
+          <option value={12}>Lost Island</option>
+        </SelectField> */}
+        <Lookup
+          defaultValue={props.basespot?.map || map}
+          options={[
+            { label: "Valguero", value: 1 },
+            { label: "The Island", value: 2 },
+            { label: "The Center", value: 3 },
+            { label: "Ragnarok", value: 4 },
+            { label: "Abberation", value: 5 },
+            { label: "Extinction", value: 6 },
+            { label: "Scorched Earth", value: 7 },
+            { label: "Genesis", value: 8 },
+            { label: "Genesis 2", value: 9 },
+            { label: "Crystal Isles", value: 10 },
+            { label: "Fjordur", value: 11 },
+            { label: "Lost Island", value: 12 },
+          ]}
+          name="map"
+        />
 
-        <FieldError name="Map" className="rw-field-error" />
+        <FieldError name="map" className="rw-field-error" />
 
-
-        <MapPicker map={map.toString()} valueProp={{ ...props.basespot }} onChanges={(e) => {
-          formMethods.setValue("latitude", e.latitude);
-          formMethods.setValue("longitude", e.longitude);
-        }} />
+        <MapPicker
+          className="mt-2"
+          map={props.basespot?.map || map.toString()}
+          valueProp={{ ...props.basespot }}
+          onChanges={(e) => {
+            formMethods.setValue("latitude", e.latitude);
+            formMethods.setValue("longitude", e.longitude);
+          }}
+        />
 
         <div className="flex flex-row items-start">
           <div className="group relative z-0 mb-6">
@@ -176,24 +230,32 @@ const BasespotForm = (props: BasespotFormProps) => {
           </div>
         </div>
 
-        <Label
-          name="image"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Image
-        </Label>
+        {props.basespot?.id && (
+          <>
+            <Label
+              name="image"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Image
+            </Label>
 
-        <FileUpload
-          storagePath={`basespotimages/${basename.current?.value.replaceAll(" ", "") ||
-            props.basespot?.name.replaceAll(" ", "")
-            }`}
-          onUpload={(url) => {
-            setThumbnailUrl(url);
-          }}
-        />
+            <FileUpload
+              multiple={false}
+              name="image"
+              storagePath={`basespotimages/${props.basespot?.id ||
+                basename.current?.value.replaceAll(" ", "")
+                // basename.current?.value.replaceAll(" ", "") ||
+                // props.basespot?.name.replaceAll(" ", "")
+                }`}
+              onUpload={(url) => {
+                setThumbnailUrl(url);
+              }}
+            />
 
-        <FieldError name="image" className="rw-field-error" />
+            <FieldError name="image" className="rw-field-error" />
+          </>
+        )}
 
         <Label
           name="estimatedForPlayers"
@@ -227,7 +289,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           errorClassName="rw-input rw-input-error"
           validation={{ required: false }}
           emptyAs={"undefined"}
-        /> */}
+        />
 
         <FieldError name="defenseImages" className="rw-field-error" />
 
@@ -246,7 +308,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           errorClassName="rw-input rw-input-error"
         />
 
-        <FieldError name="turretsetup_image" className="rw-field-error" />
+        <FieldError name="turretsetup_image" className="rw-field-error" /> */}
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">

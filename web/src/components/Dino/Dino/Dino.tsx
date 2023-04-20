@@ -21,16 +21,7 @@ const DELETE_DINO_MUTATION = gql`
     }
   }
 `;
-interface stats {
-  h: number;
-  s: number;
-  o: number;
-  f: number;
-  w: number;
-  d: number;
-  m: number;
-  t: number;
-}
+
 interface Props {
   dino: NonNullable<FindDinoById["dino"]>;
 }
@@ -51,16 +42,6 @@ const Dino = ({ dino }: Props) => {
       deleteDino({ variables: { id } });
     }
   };
-
-  let walls = {
-    t: "thatch",
-    w: "wooden",
-    a: "adobe",
-    s: "stone",
-    m: "metal",
-    tk: "tek",
-  };
-
   const canDestroy = ({ value }) => {
     return value > 0 ? (
       <svg
@@ -104,17 +85,7 @@ const Dino = ({ dino }: Props) => {
     <div className="container mx-auto">
       <section className="grid grid-cols-1 md:grid-cols-2">
         <img
-          src={`https://www.dododex.com/media/creature/${dino.name
-            .toLowerCase()
-            .replaceAll(" ", "")
-            .replace("spinosaurus", "spinosaur")
-            .replaceAll("ö", "o")
-            .replaceAll("tek", "")
-            .replaceAll("paraceratherium", "paracer")
-            .replace("&", "")
-            .replace("prime", "")
-            .replace(",masteroftheocean", "")
-            .replace("insectswarm", "bladewasp")}.png`}
+          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
           alt={dino.name}
           className="m-4 w-full p-4"
         />
@@ -193,7 +164,7 @@ const Dino = ({ dino }: Props) => {
                       className="w-5"
                       title={f.name}
                       alt={f.name}
-                      src={`https://arkcheat.com/images/ark/items/${f.Item.image}`}
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${f.Item.image}`}
                     />
                   </p>
                 ))}
@@ -295,11 +266,11 @@ const Dino = ({ dino }: Props) => {
                 "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500":
                   calcMaturationPercent() >=
                   (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                    (parseInt(dino.maturation_time) * multipliers.mature) / 10,
+                  (parseInt(dino.maturation_time) * multipliers.mature) / 10,
                 "text-gray-500 dark:text-gray-400 [&>*]:border-gray-500 [&>*]:dark:border-gray-400":
                   calcMaturationPercent() <
                   (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                    (parseInt(dino.maturation_time) * multipliers.mature) / 10,
+                  (parseInt(dino.maturation_time) * multipliers.mature) / 10,
               })}
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
@@ -310,7 +281,7 @@ const Dino = ({ dino }: Props) => {
                 <p className="text-sm">
                   {timeFormatL(
                     (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                      (parseInt(dino.maturation_time) * multipliers.mature) / 10
+                    (parseInt(dino.maturation_time) * multipliers.mature) / 10
                   )}
                 </p>
               </span>
@@ -415,12 +386,12 @@ const Dino = ({ dino }: Props) => {
                     {!value[label]
                       ? "-"
                       : truncate(
-                          (useFoundationUnit
-                            ? Number(value[label] / 300)
-                            : Number(value[label])
-                          ).toFixed(2),
-                          6
-                        )}
+                        (useFoundationUnit
+                          ? Number(value[label] / 300)
+                          : Number(value[label])
+                        ).toFixed(2),
+                        6
+                      )}
                   </p>
                 ))}
                 <p className="w-20">
@@ -448,7 +419,7 @@ const Dino = ({ dino }: Props) => {
         <section className="mt-4 text-gray-400 dark:text-white">
           <h3 className="font-medium leading-tight">Immobilized by</h3>
           <CheckboxGroup
-            defaultValue={dino.immobilized_by.map((item) =>
+            defaultValue={dino.immobilized_by.map((item: any) =>
               item?.item_id.toString()
             )}
             options={[
@@ -585,7 +556,7 @@ const Dino = ({ dino }: Props) => {
         <section className="mt-4 text-gray-400 dark:text-white">
           <h3 className="font-medium leading-tight">Fits Through</h3>
           <CheckboxGroup
-            defaultValue={dino.fits_through.map((item) =>
+            defaultValue={dino.fits_through.map((item: any) =>
               item?.item_id.toString()
             )}
             options={[
@@ -709,7 +680,7 @@ const Dino = ({ dino }: Props) => {
               label: "Torpor",
               valueFormatter: (value) => value.value.b,
             },
-            !dino.water_movement && {
+            {
               field: "o",
               label: "Oxygen",
               valueFormatter: (value) => value.value.b,
@@ -728,7 +699,7 @@ const Dino = ({ dino }: Props) => {
         />
       </section>
       <section className="mt-4 grid grid-cols-1 text-gray-400 dark:text-white md:grid-cols-2">
-        {dino.gather_efficiency && (
+        {dino.gather_eff && (
           <div className="space-y-2">
             <h4>Gather Efficiency</h4>
             <Table
@@ -736,7 +707,7 @@ const Dino = ({ dino }: Props) => {
               header={true}
               pagination={true}
               rowsPerPage={5}
-              rows={(dino.gather_efficiency as any[]).sort(
+              rows={(dino.gather_eff as any[]).sort(
                 (a, b) => b.value - a.value
               )}
               columns={[
@@ -746,7 +717,7 @@ const Dino = ({ dino }: Props) => {
                   valueFormatter: ({ value }) => {
                     return (
                       <img
-                        src={`https://arkcheat.com/images/ark/items/${value.image}`}
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${value.image}`}
                         className="h-8 w-8 self-end"
                       />
                     );
@@ -810,7 +781,7 @@ const Dino = ({ dino }: Props) => {
                   valueFormatter: ({ value }) => {
                     return (
                       <img
-                        src={`https://arkcheat.com/images/ark/items/${value.image}`}
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${value.image}`}
                         className="h-8 w-8 self-end"
                       />
                     );
@@ -875,7 +846,7 @@ const Dino = ({ dino }: Props) => {
                 return (
                   <div className="mr-3 flex flex-row space-x-2">
                     <img
-                      src={`https://arkcheat.com/images/ark/items/${value.image}`}
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${value.image}`}
                       className="h-8 w-8 self-end"
                     />
                     <p>{value.name}</p>
@@ -1302,414 +1273,3 @@ const Dino = ({ dino }: Props) => {
 };
 
 export default Dino;
-
-// const {
-//   formState: { isDirty, isValid, isSubmitting, dirtyFields },
-//   getValues,
-//   setValue,
-// } = useForm({ defaultValues: { name: "Dodo", level: 1 } });
-// let [dino, setDino] = useState(null);
-// let [select, setSelect] = useState(null);
-// let [tame, setTame] = useState(null);
-// let [points, setPoints] = useState(null);
-// let [level, setLevel] = useState<stats>({
-//   h: 0,
-//   s: 0,
-//   o: 0,
-//   f: 0,
-//   w: 0,
-//   d: 0,
-//   m: 0,
-//   t: 0,
-// });
-
-// const onAdd = (data) => {
-//   let id = data.target.id.replace("add", "");
-//   setLevel({ ...level, [id]: level[id] + 1 });
-//   setPoints(points - 1);
-//   let dyno = dino.find((d) => d.stat === id);
-//   if (!dyno) return null;
-//   // dyno.dino = (level[id] + 1) * dyno.increaseperlevel + dyno.base;
-//   dyno.dino = (level[id] + 1) * dyno.increasePerLevelWild + dyno.base;
-// };
-// const onRemove = (data) => {
-//   let id = data.target.id.replace("rem", "");
-//   setLevel({ ...level, [id]: level[id] - 1 });
-//   setPoints(points + 1);
-//   let dyno = dino.find((d) => d.stat === id);
-//   dyno.dino = (level[id] - 1) * dyno.increasePerLevelWild + dyno.base;
-// };
-
-// const reducer = (state, action) => {
-//   switch (action.type) {
-//     case "COMPLETE":
-//       return state.map((todo) => {
-//         if (todo.id === action.id) {
-//           return { ...todo, complete: !todo.complete };
-//         } else {
-//           return todo;
-//         }
-//       });
-//     case "use_exclusive":
-
-//     default:
-//       return state;
-//   }
-// };
-// let xVariant = false;
-// const [taming, dispatch] = useReducer(reducer, []);
-
-// const onSubmit = (data) => {
-//   // console.log(getEstimatedStat("food", data.name, data.level))
-//   let dinon = arkdinos.find(
-//     (d) => d.name.toLowerCase() === data.name.toLowerCase()
-//   );
-//   if (!dinon) return null;
-//   let t = Object.entries(dinon.baseStats).map(([key, value]) => {
-//     return {
-//       stat: key,
-//       base: value.b,
-//       increasePerLevelWild: value.w || null,
-//       increasePerLevelTamed: value.t || null,
-//       dino:
-//         value.b && value.w && level[key]
-//           ? value.b + value.w * level[key]
-//           : null,
-//     };
-//   });
-//   setValue("level", data.level);
-//   setPoints(data.level - 1);
-//   setDino(t);
-//   let c = calcData({ creature: dinon, level: data.level, method: "v" });
-//   for (let i in c.food) {
-//     c.food[i].results = calcTame({
-//       cr: dinon,
-//       level: data.level,
-//       foods: c.food,
-//       useExclusive: i,
-//     });
-//   }
-//   dinon["level"] = data.level;
-//   setTame(calcTame({ cr: dinon, level: data.level, foods: c.food }));
-//   setSelect(c);
-// };
-
-// const genRandomStats = () => {
-//   // scramble level
-//   let newlevel = {};
-//   let i = points;
-//   while (i > 0) {
-//     let stat = dino[Math.floor(Math.random() * dino.length)];
-//     newlevel[stat.stat] = (newlevel[stat.stat] || 0) + 1;
-//     i--;
-//   }
-//   let newlvl: any = combineBySummingKeys(level, newlevel);
-//   setLevel(newlvl);
-//   setPoints(i);
-// };
-
-// let settings = {
-//   consumptionMultiplier: 1,
-//   tamingMultiplier: 1,
-// };
-
-// const calcData = ({ creature, level, method = "v", selectedFood }: any) => {
-//   const affinityNeeded =
-//     creature.affinityNeeded + creature.affinityIncreasePerLevel * level;
-//   const foodConsumption =
-//     creature.foodConsumptionBase *
-//     creature.foodConsumptionMult *
-//     settings.consumptionMultiplier *
-//     (method === "n" ? creature.nonViolentFoodRateMultiplier : 1);
-
-//   const foods = creature.eats
-//     .map((foodName: any, index: number) => {
-//       const food: any = items.items.find(
-//         (item: any) => item.name.toLowerCase() === foodName.toLowerCase()
-//       );
-//       if (!food) return null;
-//       const foodValue = food.stats
-//         ? food.stats.find((stat) => stat.id === 8)?.value
-//         : 0;
-//       const affinityValue =
-//         food.stats.find((stat) => stat.id === 15)?.value || 0;
-//       const foodMaxRaw = affinityNeeded / affinityValue / 4;
-//       const foodMax = Math.ceil(foodMaxRaw);
-//       const isFoodSelected = food.itemId === selectedFood;
-//       let interval = null;
-//       let interval1 = null;
-//       let foodSecondsPer = 0;
-//       let foodSeconds = 0;
-//       if (method === "n") {
-//         const baseStat = creature.baseStats?.f;
-//         if (
-//           typeof baseStat?.b === "number" &&
-//           typeof baseStat?.w === "number"
-//         ) {
-//           const averagePerStat = Math.round(level / 7);
-//           const estimatedFood = baseStat.b + baseStat.w * averagePerStat;
-//           const requiredFood = Math.max(estimatedFood * 0.1, foodValue);
-//           interval1 = requiredFood / foodConsumption;
-//         }
-//         interval = foodValue / foodConsumption;
-//         if (foodMax > 1) {
-//           foodSecondsPer = foodValue / foodConsumption;
-//           foodSeconds = Math.ceil(
-//             Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
-//             foodSecondsPer +
-//             (interval1 || 0)
-//           );
-//         }
-//       } else {
-//         foodSecondsPer = foodValue / foodConsumption;
-//         foodSeconds = Math.ceil(foodMax * foodSecondsPer);
-//       }
-//       return {
-//         id: food.itemId,
-//         stats: food.stats,
-//         name: food.name,
-//         icon: food.image,
-//         max: foodMax,
-//         food: foodValue,
-//         seconds: foodSeconds,
-//         secondsPer: foodSecondsPer,
-//         percentPer: 100 / foodMaxRaw,
-//         interval,
-//         interval1,
-//         use: isFoodSelected ? foodMax : 0,
-//         key: index,
-//       };
-//     })
-//     .filter((food) => !!food);
-
-//   return {
-//     food: foods.map((f, i) => {
-//       return { ...f, key: i };
-//     }),
-//     affinityNeeded,
-//   };
-// };
-// const useExclusive = (usedFoodIndex: number) => {
-//   // dispatch({ type: "use_exclusive", id: usedFoodIndex });
-//   setSelect({
-//     ...select,
-//     food: select.food.map((f, index) => {
-//       if (index == usedFoodIndex) {
-//         return { ...f, use: f.max };
-//       } else {
-//         return { ...f, use: 0 };
-//       }
-//     }),
-//   });
-//   // setTame(calcTame({ cr: dino, level: level, foods: select.food }));
-// };
-
-// const calcTame = ({ cr, level, foods, useExclusive, method = "v" }: any) => {
-//   let effectiveness = 100;
-//   // Replace with item json
-//   let narcotics = {
-//     ascerbic: {
-//       torpor: 25,
-//       secs: 2,
-//     },
-//     bio: {
-//       torpor: 80,
-//       secs: 16,
-//     },
-//     narcotics: {
-//       torpor: 40,
-//       secs: 8,
-//     },
-//     narcoberries: {
-//       torpor: 7.5,
-//       secs: 3,
-//     },
-//   };
-//   let affinityNeeded =
-//     cr.affinityNeeded + cr.affinityIncreasePerLevel * level;
-//   // sanguineElixir = affinityNeeded *= 0.7
-
-//   let affinityLeft = affinityNeeded;
-
-//   let foodConsumption =
-//     cr.foodConsumptionBase *
-//     cr.foodConsumptionMult *
-//     settings.consumptionMultiplier;
-//   let totalFood = 0;
-
-//   let tamingMultiplier = cr.disableMultiplier
-//     ? 4
-//     : settings.tamingMultiplier * 4;
-
-//   if (method == "n") {
-//     foodConsumption = foodConsumption * cr.nonViolentFoodRateMultiplier;
-//   }
-//   let tooMuchFood = false;
-//   let enoughFood = false;
-//   let numUsedTotal = 0;
-//   let numNeeded = 0;
-//   let numToUse = 0;
-//   let totalSecs = 0;
-//   foods.forEach((food: any) => {
-//     if (!food) return;
-//     let foodVal = food.stats.find((f: any) => f.id === 8)
-//       ? food.stats.find((f: any) => f.id === 8).value
-//       : 0;
-//     let affinityVal = food.stats.find((f: any) => f.id === 15)
-//       ? food.stats.find((f: any) => f.id === 15).value
-//       : 0;
-
-//     if (affinityLeft > 0) {
-//       if (useExclusive >= 0) {
-//         if (food.key == useExclusive) {
-//           food.use = food.max;
-//         } else {
-//           food.use = 0;
-//         }
-//       }
-//       if (method == "n") {
-//         numNeeded = Math.ceil(
-//           affinityLeft /
-//           affinityVal /
-//           tamingMultiplier /
-//           cr.nonViolentFoodRateMultiplier
-//         );
-//       } else {
-//         numNeeded = Math.ceil(affinityLeft / affinityVal / tamingMultiplier);
-//       }
-
-//       if (numNeeded >= food.use) {
-//         numToUse = food.use;
-//       } else {
-//         tooMuchFood = true;
-//         numToUse = numNeeded;
-//       }
-
-//       if (method == "n") {
-//         affinityLeft -=
-//           numToUse *
-//           affinityVal *
-//           tamingMultiplier *
-//           cr.nonViolentFoodRateMultiplier;
-//       } else {
-//         affinityLeft -= numToUse * affinityVal * tamingMultiplier;
-//       }
-//       totalFood += numToUse * foodVal;
-//       let i = 1;
-//       while (i <= numToUse) {
-//         if (method == "n") {
-//           effectiveness -=
-//             (Math.pow(effectiveness, 2) * cr.tamingBonusAttribute) /
-//             affinityVal /
-//             tamingMultiplier /
-//             cr.nonViolentFoodRateMultiplier;
-//         } else {
-//           effectiveness -=
-//             (Math.pow(effectiveness, 2) * cr.tamingBonusAttribute) /
-//             affinityVal /
-//             100;
-//         }
-//         numUsedTotal++;
-//         i++;
-//       }
-//       if (effectiveness < 0) {
-//         effectiveness = 0;
-//       }
-//     } else if (food.use > 0) {
-//       tooMuchFood = true;
-//     }
-//   });
-
-//   let neededValues = Array();
-
-//   if (affinityLeft <= 0) {
-//     enoughFood = true;
-//   } else {
-//     enoughFood = false;
-
-//     foods.forEach((food: any) => {
-//       numNeeded = Math.ceil(
-//         affinityLeft /
-//         food.stats.find((f: any) => f.id === 15).value /
-//         tamingMultiplier
-//       );
-//       neededValues[food.key] = numNeeded;
-//     });
-//   }
-
-//   let percentLeft = affinityLeft / affinityNeeded;
-//   let percentTamed = 1 - percentLeft;
-//   let totalTorpor = cr.baseTamingTime + cr.tamingInterval * (level - 1);
-//   let torporDepletionPS =
-//     cr.torporDepletionPS +
-//     Math.pow(level - 1, 0.800403041) / (22.39671632 / cr.torporDepletionPS);
-//   let levelsGained = Math.floor((level * 0.5 * effectiveness) / 100);
-//   let ascerbicMushroomsMin = Math.max(
-//     Math.ceil(
-//       (totalSecs * torporDepletionPS - totalTorpor) /
-//       (narcotics.ascerbic.torpor +
-//         torporDepletionPS * narcotics.ascerbic.secs)
-//     ),
-//     0
-//   );
-//   let biotoxinsMin = Math.max(
-//     Math.ceil(
-//       (totalSecs * torporDepletionPS - totalTorpor) /
-//       (narcotics.bio.torpor + torporDepletionPS * narcotics.bio.secs)
-//     ),
-//     0
-//   );
-//   let narcoticsMin = Math.max(
-//     Math.ceil(
-//       (totalSecs * torporDepletionPS - totalTorpor) /
-//       (narcotics.narcotics.torpor +
-//         torporDepletionPS * narcotics.narcotics.secs)
-//     ),
-//     0
-//   );
-//   let narcoberriesMin = Math.max(
-//     Math.ceil(
-//       (totalSecs * torporDepletionPS - totalTorpor) /
-//       (narcotics.narcoberries.torpor +
-//         torporDepletionPS * narcotics.narcoberries.secs)
-//     ),
-//     0
-//   );
-//   return {
-//     dino: cr,
-//     effectiveness,
-//     neededValues,
-//     enoughFood,
-//     tooMuchFood,
-//     totalFood,
-//     totalSecs,
-//     levelsGained,
-//     totalTorpor,
-//     torporDepletionPS,
-//     percentTamed,
-//     numUsedTotal,
-//     ascerbicMushroomsMin,
-//     biotoxinsMin,
-//     narcoticsMin,
-//     narcoberriesMin,
-//   };
-// };
-
-// const calcMaturation = () => {
-//   let maturation = 0;
-//   let maturationCalcCurrent = 0;
-//   let weightCurrent = 0;
-//   let weightTotal = 30;
-//   let mutationTimeTotal = 15002;
-//   if (weightCurrent > weightTotal) {
-//     weightCurrent = weightTotal;
-//   }
-
-//   weightCurrent = Math.max(weightCurrent, 0);
-//   let percentDone = weightCurrent / weightTotal;
-//   let timeElapsed = percentDone * mutationTimeTotal;
-//   let timeStarted = Date.now() - timeElapsed;
-//   let timeRemaining = (1 - percentDone) * mutationTimeTotal;
-
-//   console.log(timeRemaining);
-// };

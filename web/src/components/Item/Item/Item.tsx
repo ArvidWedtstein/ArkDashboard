@@ -4,7 +4,7 @@ import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
 import LineChart from "src/components/Util/LineChart/LineChart";
 
-import { getWordType, jsonDisplay, timeTag } from "src/lib/formatters";
+import { getWordType } from "src/lib/formatters";
 
 import type { DeleteItemMutationVariables, FindItemById } from "types/graphql";
 
@@ -44,7 +44,7 @@ const Item = ({ item }: Props) => {
           <div className="">
             <img
               className="w-auto max-w-6xl"
-              src={`https://arkcheat.com/images/ark/items/${item.image}`}
+              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
             />
             <h4 className="my-1 font-serif text-2xl font-bold">{item.name}</h4>
             <p className="text-sm italic">
@@ -71,7 +71,7 @@ const Item = ({ item }: Props) => {
                 <strong>Type:</strong> {item.type}
               </div>
 
-              {item.recipe && item.crafting_time && (
+              {item.crafting_time && (
                 <>
                   <div className="mr-4 mb-4 inline-block">
                     <strong>Crafting time:</strong> {item.crafting_time}
@@ -102,7 +102,7 @@ const Item = ({ item }: Props) => {
         <section className="my-3 grid grid-cols-2 gap-4 rounded-md text-gray-700 dark:text-white">
           {item.DinoStat &&
             item.DinoStat.filter((g) => g.type === "gather_efficiency").length >
-              0 && (
+            0 && (
               <div className="rounded-md bg-stone-200 p-4 dark:bg-zinc-600">
                 <p className="my-1 text-lg">Gather Efficiency</p>
                 <div className="flex flex-col">
@@ -120,7 +120,7 @@ const Item = ({ item }: Props) => {
 
                         <div
                           className="flex h-2 w-32 flex-row divide-x divide-black rounded-full bg-gray-300"
-                          title={eff.value}
+                          title={eff.value.toString()}
                         >
                           {Array.from(Array(5)).map((_, i) => (
                             <div
@@ -136,7 +136,10 @@ const Item = ({ item }: Props) => {
                             ></div>
                           ))}
                         </div>
-                        <p className="ml-2 w-40 text-sm" title={eff.value}>
+                        <p
+                          className="ml-2 w-40 text-sm"
+                          title={eff.value.toString()}
+                        >
                           #{eff.rank}
                         </p>
                       </div>
@@ -147,7 +150,7 @@ const Item = ({ item }: Props) => {
 
           {item.DinoStat &&
             item.DinoStat.filter((g) => g.type === "weight_reduction").length >
-              0 && (
+            0 && (
               <div className="rounded-md bg-stone-200 p-4 dark:bg-zinc-600">
                 <p className="my-1 text-lg">Weight Reduction</p>
                 <div className="flex flex-col">

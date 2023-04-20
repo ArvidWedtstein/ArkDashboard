@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState } from 'react'
 import debounce from 'lodash.debounce';
 import { toast } from '@redwoodjs/web/dist/toast';
 import Chat from 'src/components/Chat/Chat';
+import FibonacciSphere from 'src/components/Util/FibonacciSphere/FibonacciSphere';
 
 const ArkDinos = [
   "Ankylosaurus", "Argentavis", "Arthropluera", "Baryonyx", "Beelzebufo", "Brontosaurus", "Carbonemys", "Castoroides",
@@ -72,18 +73,35 @@ const GtwPage = (props: GTWPageProps) => {
   const [word, setWord] = useState('')
   const handlechange = (e) => {
     setWord(e.target.value)
+
     if (getWord(e.target.value)[0] === undefined) return;
     toast.success('Copied to clipboard')
     navigator.clipboard.writeText(getWord(e.target.value)[0]);
   }
 
+  function hasLetters(word: string, letters: string): boolean {
+    // Convert the word and letters to lowercase to make the comparison case-insensitive
+    word = word.toLowerCase();
+    letters = letters.toLowerCase();
 
+    // Loop through each letter in the letters string
+    for (let i = 0; i < letters.length; i++) {
+      // If the letter is not found in the word, return false
+      if (word.indexOf(letters[i]) === -1) {
+        return false;
+      }
+    }
+
+    // If all letters are found in the word, return true
+    return true;
+  }
   const debouncedChangeHandler = useMemo(() => debounce(handlechange, 500), [])
   return (
     <>
       <MetaTags title="Gtw" description="Gtw page" />
 
       <div className="container-xl text-center m-3">
+        <FibonacciSphere animate={true} text={ArkDinos.filter((f) => hasLetters(f.toString(), word))} className="text-white w-1/3 h-1/3" />
         <Form error={props.error} className="m-6 p-3">
           <FormError
             error={props.error}

@@ -2,9 +2,10 @@ export const schema = gql`
   type Role {
     id: String!
     name: String!
-    createdBy: String
+    created_by: String
     permissions: [permission]!
     profile_profile_role_idTorole: [Profile]!
+    Profile_Role_created_byToProfile: Profile
   }
 
   enum permission {
@@ -24,6 +25,9 @@ export const schema = gql`
     timeline_create
     timeline_update
     timeline_delete
+    gamedata_delete
+    gamedata_update
+    gamedata_create
   }
 
   type Query {
@@ -33,13 +37,13 @@ export const schema = gql`
 
   input CreateRoleInput {
     name: String!
-    createdBy: String
+    created_by: String
     permissions: [permission]!
   }
 
   input UpdateRoleInput {
     name: String
-    createdBy: String
+    created_by: String
     permissions: [permission]!
   }
 

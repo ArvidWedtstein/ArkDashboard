@@ -5,7 +5,7 @@ import type {
 } from "types/graphql";
 
 import { db } from "src/lib/db";
-import { validate, validateUniqueness, validateWith } from "@redwoodjs/api";
+import { validate, validateWith } from "@redwoodjs/api";
 
 export const profiles: QueryResolvers["profiles"] = () => {
   return db.profile.findMany();
@@ -71,8 +71,19 @@ export const Profile: ProfileRelationResolvers = {
       .findUnique({ where: { id: root?.id } })
       .role_profile_role_idTorole();
   },
+  Profile: (_obj, { root }) => {
+    return db.profile.findUnique({ where: { id: root?.id } }).Profile();
+  },
+  other_Profile: (_obj, { root }) => {
+    return db.profile.findUnique({ where: { id: root?.id } }).other_Profile();
+  },
   Timeline: (_obj, { root }) => {
     return db.profile.findUnique({ where: { id: root?.id } }).Timeline();
+  },
+  TimelineBasespot: (_obj, { root }) => {
+    return db.profile
+      .findUnique({ where: { id: root?.id } })
+      .TimelineBasespot();
   },
   Tribe: (_obj, { root }) => {
     return db.profile.findUnique({ where: { id: root?.id } }).Tribe();

@@ -9,9 +9,9 @@ export const QUERY = gql`
   query FindTimelines {
     timelines {
       id
-      createdAt
-      updatedAt
-      createdBy
+      created_at
+      updated_at
+      created_by
       Profile {
         id
         full_name

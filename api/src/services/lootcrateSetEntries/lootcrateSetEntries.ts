@@ -47,4 +47,9 @@ export const LootcrateSetEntry: LootcrateSetEntryRelationResolvers = {
       .findUnique({ where: { id: root?.id } })
       .LootcrateSet()
   },
+  LootcrateSetEntryItem: (_obj, { root }) => {
+    return db.lootcrateSetEntry
+      .findUnique({ where: { id: root?.id } })
+      .LootcrateSetEntryItem()
+  },
 }

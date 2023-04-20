@@ -5,6 +5,7 @@ import type {
 } from "types/graphql";
 
 import { db } from "src/lib/db";
+
 export const itemsPage = ({
   page = 1,
   items_per_page = 36,
@@ -23,21 +24,14 @@ export const itemsPage = ({
   };
 };
 
-export const itemsByCategory = ({
+export const itemsByCategory: QueryResolvers["itemsByCategory"] = ({
   category,
-  page = 1,
-  items_per_page = 36,
 }: {
   category: string;
-  page: number;
-  items_per_page?: number;
 }) => {
-  const offset = (page - 1) * items_per_page;
   return {
     items: db.item.findMany({
-      where: { type: category },
-      take: items_per_page,
-      skip: offset,
+      where: { category: category },
       orderBy: { created_at: "desc" },
     }),
     count: db.item.count({ where: { type: category } }),
@@ -74,7 +68,30 @@ export const deleteItem: MutationResolvers["deleteItem"] = ({ id }) => {
 };
 
 export const Item: ItemRelationResolvers = {
+  Dino: (_obj, { root }) => {
+    return db.item.findUnique({ where: { id: root?.id } }).Dino();
+  },
   DinoStat: (_obj, { root }) => {
     return db.item.findUnique({ where: { id: root?.id } }).DinoStat();
+  },
+  ItemRecipe_ItemRecipe_crafted_item_idToItem: (_obj, { root }) => {
+    return db.item
+      .findUnique({ where: { id: root?.id } })
+      .ItemRecipe_ItemRecipe_crafted_item_idToItem();
+  },
+  ItemRecipe_ItemRecipe_crafting_stationToItem: (_obj, { root }) => {
+    return db.item
+      .findUnique({ where: { id: root?.id } })
+      .ItemRecipe_ItemRecipe_crafting_stationToItem();
+  },
+  ItemRecipe_ItemRecipe_item_idToItem: (_obj, { root }) => {
+    return db.item
+      .findUnique({ where: { id: root?.id } })
+      .ItemRecipe_ItemRecipe_item_idToItem();
+  },
+  LootcrateSetEntryItem: (_obj, { root }) => {
+    return db.item
+      .findUnique({ where: { id: root?.id } })
+      .LootcrateSetEntryItem();
   },
 };

@@ -32,10 +32,9 @@ const Basespot = ({ basespot }: Props) => {
     if (basespot.image && !baseUrl && !basespot.image.startsWith("http")) {
       const { data, error } = await supabase.storage
         .from(`basespotimages`)
-        .download(`${basespot.name.replaceAll(" ", "")}/${basespot.image}`);
+        .download(`${basespot.id}/${basespot.image}`);
       // .download(`thumbnails/${basespot.image}`);
       if (error) {
-        console.log(error);
         throw error;
       }
       if (data) {
@@ -73,19 +72,26 @@ const Basespot = ({ basespot }: Props) => {
             <h1 className="title-font mb-4 text-3xl font-medium text-gray-900 dark:text-stone-400 sm:text-4xl">
               {basespot.name}
               <br className="hidden lg:inline-block" />
-              {/* {basespot.Map.split(/(?=[A-Z])/).join(" ")} */}
+              {basespot.map && (
+                <Link
+                  to={routes.map({ id: basespot.map.toString() })}
+                  className=""
+                >
+                  {basespot.Map_Basespot_MapToMap.name}
+                </Link>
+              )}
             </h1>
             <p className="mb-8 leading-relaxed">{basespot.description}</p>
-            <div className="flex justify-center">
+            <div className="flex justify-center space-x-2">
               <Link
                 to={routes.editBasespot({ id: basespot.id.toString() })}
-                className="inline-flex rounded border-0 bg-gray-200 py-2 px-6 text-lg text-gray-700 hover:bg-gray-300 focus:outline-none dark:text-stone-200"
+                className="rw-button rw-button-gray-outline"
               >
                 Edit
               </Link>
               <button
                 onClick={() => onDeleteClick(basespot.id)}
-                className="ml-4 inline-flex rounded border-0 bg-red-500 py-2 px-6 text-lg text-white hover:bg-red-600 focus:outline-none"
+                className="rw-button rw-button-red-outline"
               >
                 Delete
               </button>
@@ -106,16 +112,16 @@ const Basespot = ({ basespot }: Props) => {
       <section className="body-font border-t border-stone-200 text-gray-700 dark:border-gray-200 dark:text-stone-200">
         <div className="container mx-auto flex flex-wrap px-5 py-12">
           <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
-            {/* <Map
+            <Map
               className="h-full w-full object-cover object-center"
-              map={basespot.Map}
+              map={basespot.map.toString()}
               size={{ width: 500, height: 500 }}
               pos={[{ lat: basespot.latitude, lon: basespot.longitude }]}
-            /> */}
+            />
           </div>
           <div className="-mb-10 flex flex-col flex-wrap text-center lg:w-1/2 lg:py-6 lg:pl-12 lg:text-left">
             <div className="mb-10 flex flex-col items-center lg:items-start">
-              <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-indigo-500">
+              <div className="bg-pea-50 text-pea-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full">
                 <svg
                   fill="none"
                   stroke="currentColor"
@@ -139,7 +145,7 @@ const Basespot = ({ basespot }: Props) => {
               </div>
             </div>
             <div className="mb-10 flex flex-col items-center lg:items-start">
-              <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-indigo-500">
+              <div className=" bg-pea-50 text-pea-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full">
                 <svg
                   fill="none"
                   stroke="currentColor"
@@ -169,7 +175,7 @@ const Basespot = ({ basespot }: Props) => {
       <section className="body-font border-t border-stone-200 text-gray-700 dark:border-gray-200 dark:text-stone-200">
         <div className="container mx-auto px-5 py-24">
           <div className="mb-20 flex w-full flex-col text-center">
-            <h2 className="title-font mb-1 text-xs font-medium tracking-widest text-indigo-500">
+            <h2 className="title-font text-pea-500 mb-1 text-xs font-medium tracking-widest">
               Basespot Defense Setup
             </h2>
             <h1 className="title-font text-2xl font-medium text-gray-900 dark:text-stone-200 sm:text-3xl">
@@ -178,29 +184,26 @@ const Basespot = ({ basespot }: Props) => {
           </div>
           <div className="-m-4 flex flex-wrap">
             <div className="p-4 md:w-1/3">
-              <div className="flex h-full flex-col rounded-lg bg-gray-600 p-8 dark:bg-gray-100">
-                <div className="mb-3 flex items-center">
-                  <div className="mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-indigo-500 text-white">
+              <div className="flex h-full flex-col rounded-lg bg-gray-100 dark:bg-gray-600">
+                <div className="m-3 flex items-center">
+                  <div className="bg-pea-500 mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-white">
                     <svg
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className="h-5 w-5"
-                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                      strokeWidth={2}
+                      className="m-1 h-5 w-5 fill-current"
                     >
-                      <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                      <path d="M464 96h-88l-12.38-32.88C356.6 44.38 338.8 32 318.8 32h-125.5c-20 0-38 12.38-45 31.12L136 96H48C21.5 96 0 117.5 0 144v288C0 458.5 21.5 480 48 480h416c26.5 0 48-21.5 48-48v-288C512 117.5 490.5 96 464 96zM496 432c0 17.64-14.36 32-32 32h-416c-17.64 0-32-14.36-32-32v-288c0-17.64 14.36-32 32-32h99.11l16.12-43.28C167.9 56.33 179.9 48 193.3 48h125.5c13.25 0 25.26 8.326 29.9 20.76L364.9 112H464c17.64 0 32 14.36 32 32V432zM256 176C194.2 176 144 226.2 144 288c0 61.76 50.24 112 112 112s112-50.24 112-112C368 226.2 317.8 176 256 176zM256 384c-53 0-96-43-96-96s43-96 96-96s96 43 96 96S309 384 256 384z" />
                     </svg>
                   </div>
-                  <h2 className="title-font text-lg font-medium text-stone-200 dark:text-gray-900">
+                  <h2 className="title-font text-lg font-medium text-gray-900 dark:text-neutral-200">
                     Defense Nr.1
                   </h2>
                 </div>
                 <div className="flex-grow">
-                  <p className="text-base leading-relaxed">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    Nulla, voluptatum?
+                  <p className="my-2 px-4 text-base leading-relaxed">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Impedit, vel.
                   </p>
                   <img
                     className="rounded object-cover object-center"
@@ -214,30 +217,26 @@ const Basespot = ({ basespot }: Props) => {
               </div>
             </div>
             <div className="p-4 md:w-1/3">
-              <div className="flex h-full flex-col rounded-lg bg-gray-600 p-8 dark:bg-gray-100">
-                <div className="mb-3 flex items-center">
-                  <div className="mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-indigo-500 text-white">
+              <div className="flex h-full flex-col rounded-lg bg-gray-100 dark:bg-gray-600">
+                <div className="m-3 flex items-center">
+                  <div className="bg-pea-500 mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-white">
                     <svg
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className="h-5 w-5"
-                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                      strokeWidth={2}
+                      className="m-1 h-5 w-5 fill-current"
                     >
-                      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
-                      <circle cx="12" cy="7" r="4"></circle>
+                      <path d="M464 96h-88l-12.38-32.88C356.6 44.38 338.8 32 318.8 32h-125.5c-20 0-38 12.38-45 31.12L136 96H48C21.5 96 0 117.5 0 144v288C0 458.5 21.5 480 48 480h416c26.5 0 48-21.5 48-48v-288C512 117.5 490.5 96 464 96zM496 432c0 17.64-14.36 32-32 32h-416c-17.64 0-32-14.36-32-32v-288c0-17.64 14.36-32 32-32h99.11l16.12-43.28C167.9 56.33 179.9 48 193.3 48h125.5c13.25 0 25.26 8.326 29.9 20.76L364.9 112H464c17.64 0 32 14.36 32 32V432zM256 176C194.2 176 144 226.2 144 288c0 61.76 50.24 112 112 112s112-50.24 112-112C368 226.2 317.8 176 256 176zM256 384c-53 0-96-43-96-96s43-96 96-96s96 43 96 96S309 384 256 384z" />
                     </svg>
                   </div>
-                  <h2 className="title-font text-lg font-medium text-stone-200 dark:text-gray-900">
+                  <h2 className="title-font text-lg font-medium text-gray-900 dark:text-neutral-200">
                     Defense Nr.2
                   </h2>
                 </div>
                 <div className="flex-grow">
-                  <p className="text-base leading-relaxed">
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                    Ducimus, laborum.
+                  <p className="my-2 px-4 text-base leading-relaxed">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Impedit, vel.
                   </p>
                   <img
                     className="rounded object-cover object-center"
@@ -251,29 +250,24 @@ const Basespot = ({ basespot }: Props) => {
               </div>
             </div>
             <div className="p-4 md:w-1/3">
-              <div className="flex h-full flex-col rounded-lg bg-gray-600 p-8 dark:bg-gray-100">
-                <div className="mb-3 flex items-center">
-                  <div className="mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-indigo-500 text-white">
+              <div className="flex h-full flex-col rounded-lg bg-gray-100 dark:bg-gray-600">
+                <div className="m-3 flex items-center">
+                  <div className="bg-pea-500 mr-3 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-white">
                     <svg
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      className="h-5 w-5"
-                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                      strokeWidth={2}
+                      className="m-1 h-5 w-5 fill-current"
                     >
-                      <circle cx="6" cy="6" r="3"></circle>
-                      <circle cx="6" cy="18" r="3"></circle>
-                      <path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12"></path>
+                      <path d="M464 96h-88l-12.38-32.88C356.6 44.38 338.8 32 318.8 32h-125.5c-20 0-38 12.38-45 31.12L136 96H48C21.5 96 0 117.5 0 144v288C0 458.5 21.5 480 48 480h416c26.5 0 48-21.5 48-48v-288C512 117.5 490.5 96 464 96zM496 432c0 17.64-14.36 32-32 32h-416c-17.64 0-32-14.36-32-32v-288c0-17.64 14.36-32 32-32h99.11l16.12-43.28C167.9 56.33 179.9 48 193.3 48h125.5c13.25 0 25.26 8.326 29.9 20.76L364.9 112H464c17.64 0 32 14.36 32 32V432zM256 176C194.2 176 144 226.2 144 288c0 61.76 50.24 112 112 112s112-50.24 112-112C368 226.2 317.8 176 256 176zM256 384c-53 0-96-43-96-96s43-96 96-96s96 43 96 96S309 384 256 384z" />
                     </svg>
                   </div>
-                  <h2 className="title-font text-lg font-medium text-stone-200 dark:text-gray-900">
+                  <h2 className="title-font text-lg font-medium text-gray-900 dark:text-neutral-200">
                     Defense Nr.3
                   </h2>
                 </div>
                 <div className="flex-grow">
-                  <p className="text-base leading-relaxed">
+                  <p className="my-2 px-4 text-base leading-relaxed">
                     Lorem ipsum dolor sit amet consectetur adipisicing elit.
                     Impedit, vel.
                   </p>
