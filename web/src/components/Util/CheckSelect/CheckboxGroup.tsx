@@ -9,6 +9,7 @@ interface CheckboxGroupProps {
     value?: string;
     image?: string | React.ReactNode;
   }[];
+  form?: boolean;
   defaultValue?: Array<string>;
   onChange?: (name: string, value: string[]) => void;
   validation?: {
@@ -21,6 +22,7 @@ interface CheckboxGroupProps {
 const CheckboxGroup = ({
   name,
   options,
+  form = true,
   defaultValue = [],
   onChange,
   validation = {
@@ -28,7 +30,7 @@ const CheckboxGroup = ({
   },
 }: CheckboxGroupProps) => {
   const [selectedOptions, setSelectedOptions] = useState(() => defaultValue);
-  const { field } = name && useController({ name: name });
+  const { field } = (form && !!name) ? useController({ name: name }) : { field: null };
 
   const memoizedOptions = useMemo(() => options, [options]);
 
@@ -44,7 +46,7 @@ const CheckboxGroup = ({
 
     setSelectedOptions(newSelectedOptions);
     // onChange && onChange(value, newSelectedOptions);
-    !!name && field.onChange(newSelectedOptions);
+    (!!name && form) && field.onChange(newSelectedOptions);
     onChange?.(value, newSelectedOptions);
   }, [name, onChange, selectedOptions, validation.single]
   );
@@ -59,7 +61,7 @@ const CheckboxGroup = ({
             name={name || optValue || label + "checkbox"}
             value={optValue || label}
             onChange={handleCheckboxChange}
-            checked={selectedOptions.includes(optValue || label)}
+            checked={selectedOptions.includes(optValue.toString() || label)}
             className="rw-check-input"
           />
           <span
@@ -68,6 +70,7 @@ const CheckboxGroup = ({
             })}
           >
             <span className="text-gray-900 transition-all duration-150 ease-in dark:text-stone-200">
+
               {image &&
                 (React.isValidElement(image) ? (
                   image

@@ -1,4 +1,5 @@
 import {
+  CheckboxField,
   FieldError,
   Form,
   ImageField,
@@ -10,12 +11,15 @@ import {
 } from "@redwoodjs/forms";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import Counter from "src/components/Util/Counter/Counter";
 import Table from "src/components/Util/Table/Table";
 import { combineBySummingKeys, timeFormatL } from "src/lib/formatters";
 import items from "../../../public/arkitems.json";
 import arkdinos from "../../../public/dinotest.json";
+import { useLazyQuery } from "@apollo/client";
+import { toast } from "@redwoodjs/web/dist/toast";
+import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 
 interface stats {
   h: number;
@@ -27,16 +31,94 @@ interface stats {
   m: number;
   t: number;
 }
+const DINOQUERY = gql`
+  query FindDinos2 {
+      dinos {
+        id
+        name
+        description
+        taming_notice
+        can_destroy
+        base_stats
+        gather_eff
+        exp_per_kill
+        egg_min
+        egg_max
+        tdps
+        eats
+        maturation_time
+        weight_reduction
+        incubation_time
+        affinity_needed
+        aff_inc
+        flee_threshold
+        hitboxes
+        drops
+        food_consumption_base
+        food_consumption_mult
+        disable_ko
+        violent_tame
+        taming_bonus_attr
+        disable_food
+        disable_mult
+        admin_note
+        base_points
+        non_violent_food_affinity_mult
+        non_violent_food_rate_mult
+        taming_interval
+        base_taming_time
+        disable_tame
+        x_variant
+        attack
+        mounted_weaponry
+        ridable
+        flyer_dino
+        water_dino
+        movement
+        type
+        icon
+        image
+        DinoStat {
+          Item {
+            name
+            id
+            image
+            stats
+          }
+          type
+        }
+      }
+  }
+`;
 const DinoStatsPage = () => {
   const {
     formState: { isDirty, isValid, isSubmitting, dirtyFields },
     getValues,
     setValue,
   } = useForm({ defaultValues: { name: "Dodo", level: 1 } });
+
+  const [loadDinos, { called, loading, data }] = useLazyQuery(DINOQUERY, {
+    // onCompleted: (data) => {
+    //   console.log(data);
+    //   toast.success('Dinos loaded');
+    // },
+    onError: (error) => {
+      console.log(error);
+      toast.error(error.message);
+    }
+  });
+
+  useEffect(() => {
+    if (!called) {
+      loadDinos();
+    }
+  }, []);
+
   let [dino, setDino] = useState(null);
   let [select, setSelect] = useState(null);
+  let [selectedFood, setSelectedFood] = useState(null);
   let [tame, setTame] = useState(null);
-  let [points, setPoints] = useState(null);
+  let [points, setPoints] = useState(0);
   let [level, setLevel] = useState<stats>({
     h: 0,
     s: 0,
@@ -84,41 +166,12 @@ const DinoStatsPage = () => {
   let xVariant = false;
   const [taming, dispatch] = useReducer(reducer, []);
 
-  const onSubmit = (data) => {
-    // console.log(getEstimatedStat("food", data.name, data.level))
-    let dinon = arkdinos.find(
-      (d) => d.name.toLowerCase() === data.name.toLowerCase()
-    );
-    if (!dinon) return null;
-    let t = Object.entries(dinon.baseStats).map(([key, value]) => {
-      return {
-        stat: key,
-        base: value.b,
-        increasePerLevelWild: value.w || null,
-        increasePerLevelTamed: value.t || null,
-        dino:
-          value.b && value.w && level[key]
-            ? value.b + value.w * level[key]
-            : null,
-      };
-    });
-    setValue("level", data.level);
-    setPoints(data.level - 1);
-    setDino(t);
-    let c = calcData({ creature: dinon, level: data.level, method: "v" });
-    for (let i in c.food) {
-      c.food[i].results = calcTame({
-        cr: dinon,
-        level: data.level,
-        foods: c.food,
-        useExclusive: i,
-      });
-    }
-    dinon["level"] = data.level;
-    setTame(calcTame({ cr: dinon, level: data.level, foods: c.food }));
-    setSelect(c);
-  };
-
+  function calculateTamingTime(dinoLevel: number, foodValue: number, foodConsumptionRate: number): number {
+    const tamingMultiplier = 1.5; // This is a constant multiplier used in Ark to calculate taming time.
+    const foodRequired = foodValue / (dinoLevel * tamingMultiplier); // Calculate the total amount of food required to tame the dinosaur.
+    const tamingTime = foodRequired / (foodConsumptionRate * 10); // Calculate the total taming time in seconds, assuming a food consumption rate of 10 food points per second.
+    return tamingTime;
+  }
 
   const genRandomStats = () => {
     // scramble level
@@ -134,106 +187,299 @@ const DinoStatsPage = () => {
     setPoints(i);
   };
 
-  let settings = {
+  const settings = {
     consumptionMultiplier: 1,
     tamingMultiplier: 1,
+    hatchMultiplier: 1,
+    matureMultiplier: 1,
   };
 
-  const calcData = ({ creature, level, method = "v", selectedFood }: any) => {
-    const affinityNeeded =
-      creature.affinityNeeded + creature.affinityIncreasePerLevel * level;
-    const foodConsumption =
-      creature.foodConsumptionBase *
-      creature.foodConsumptionMult *
-      settings.consumptionMultiplier *
-      (method === "n" ? creature.nonViolentFoodRateMultiplier : 1);
 
-    const foods = creature.eats
-      .map((foodName: any, index: number) => {
-        const food: any = items.items.find(
-          (item: any) => item.name.toLowerCase() === foodName.toLowerCase()
-        );
-        if (!food) return null;
-        const foodValue = food.stats
-          ? food.stats.find((stat) => stat.id === 8)?.value
-          : 0;
-        const affinityValue =
-          food.stats.find((stat) => stat.id === 15)?.value || 0;
-        const foodMaxRaw = affinityNeeded / affinityValue / 4;
-        const foodMax = Math.ceil(foodMaxRaw);
-        const isFoodSelected = food.itemId === selectedFood;
-        let interval = null;
-        let interval1 = null;
-        let foodSecondsPer = 0;
-        let foodSeconds = 0;
-        if (method === "n") {
-          const baseStat = creature.baseStats?.f;
-          if (
-            typeof baseStat?.b === "number" &&
-            typeof baseStat?.w === "number"
-          ) {
-            const averagePerStat = Math.round(level / 7);
-            const estimatedFood = baseStat.b + baseStat.w * averagePerStat;
-            const requiredFood = Math.max(estimatedFood * 0.1, foodValue);
-            interval1 = requiredFood / foodConsumption;
-          }
-          interval = foodValue / foodConsumption;
-          if (foodMax > 1) {
-            foodSecondsPer = foodValue / foodConsumption;
-            foodSeconds = Math.ceil(
-              Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
-              foodSecondsPer +
-              (interval1 || 0)
-            );
-          }
-        } else {
-          foodSecondsPer = foodValue / foodConsumption;
-          foodSeconds = Math.ceil(foodMax * foodSecondsPer);
-        }
-        return {
-          id: food.itemId,
-          stats: food.stats,
-          name: food.name,
-          icon: food.image,
-          max: foodMax,
-          food: foodValue,
-          seconds: foodSeconds,
-          secondsPer: foodSecondsPer,
-          percentPer: 100 / foodMaxRaw,
-          interval,
-          interval1,
-          use: isFoodSelected ? foodMax : 0,
-          key: index,
-        };
-      })
-      .filter((food) => !!food);
+  const onSubmit = (dinoData) => {
+    const { name, level, x_variant } = dinoData
 
-    return {
-      food: foods.map((f, i) => {
-        return { ...f, key: i };
-      }),
-      affinityNeeded,
-    };
-  };
-  const useExclusive = (usedFoodIndex: number) => {
-    // dispatch({ type: "use_exclusive", id: usedFoodIndex });
-    setSelect({
-      ...select,
-      food: select.food.map((f, index) => {
-        if (index == usedFoodIndex) {
-          return { ...f, use: f.max };
-        } else {
-          return { ...f, use: 0 };
-        }
-      }),
+    if (!data.dinos) return null;
+    let theDino = data.dinos.find((dino) => dino.name.toLowerCase() === name.toLowerCase());
+
+
+    if (!theDino) return null;
+    const basestats = Object.entries(theDino.base_stats).map(([key, value]: any) => {
+      return {
+        stat: key,
+        base: value.b,
+        increasePerLevelWild: value.w || null,
+        increasePerLevelTamed: value.t || null,
+        // ...value,
+      };
     });
-    // setTame(calcTame({ cr: dino, level: level, foods: select.food }));
+
+    // let foodValues = theDino.DinoStat.filter((f) => f.type === 'food').map((food) => {
+    //   const numNeeded = Math.ceil(
+    //     affinityLeft /
+    //     food.stats.find((f: any) => f.id === 15).value /
+    //     tamingMultiplier
+    //   );
+    //   neededValues[food.key] = numNeeded;
+    // });
+    const affinityNeeded =
+      theDino.affinity_needed + theDino.aff_inc * level;
+
+    const foodConsumption =
+      theDino.food_consumption_base *
+      theDino.food_consumption_mult *
+      settings.consumptionMultiplier *
+      1;
+    // (method === "n" ? creature.nonViolentFoodRateMultiplier : 1);
+
+
+
+    const tamingFoods = theDino.DinoStat.filter((f) => f.type === 'food').map((foodItem: any, index: number) => {
+      const foodValue = foodItem.Item.stats
+        ? foodItem.Item.stats.find((stat) => stat.id === 8)?.value
+        : 0;
+      const affinityValue =
+        foodItem.Item.stats.find((stat) => stat.id === 15)?.value || 0;
+
+      const foodMaxRaw = affinityNeeded / affinityValue / 4;
+      const foodMax = Math.ceil(foodMaxRaw);
+      const isFoodSelected = foodItem.Item.id === selectedFood;
+      let interval = null;
+      let interval1 = null;
+      let foodSecondsPer = 0;
+      let foodSeconds = 0;
+      if (theDino.violent_tame) { // if violent tame
+        const baseStat = theDino.base_stats?.f;
+        if (
+          typeof baseStat?.b === "number" &&
+          typeof baseStat?.w === "number"
+        ) {
+          const averagePerStat = Math.round(level / 7);
+          const estimatedFood = baseStat.b + baseStat.w * averagePerStat;
+          const requiredFood = Math.max(estimatedFood * 0.1, foodValue);
+          interval1 = requiredFood / foodConsumption;
+        }
+        interval = foodValue / foodConsumption;
+        if (foodMax > 1) {
+          foodSecondsPer = foodValue / foodConsumption;
+          foodSeconds = Math.ceil(
+            Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
+            foodSecondsPer +
+            (interval1 || 0)
+          );
+        }
+      } else {
+        foodSecondsPer = foodValue / foodConsumption;
+        foodSeconds = Math.ceil(foodMax * foodSecondsPer);
+      }
+      return {
+        ...foodItem.Item,
+        max: foodMax,
+        food: foodValue,
+        seconds: foodSeconds,
+        secondsPer: foodSecondsPer,
+        percentPer: 100 / foodMaxRaw,
+        interval,
+        interval1,
+        use: isFoodSelected ? foodMax : 0,
+        key: index,
+      };
+    })
+    console.log(theDino);
+
+
+    // console.log(calculateTamingTime(level, basestats.find((stat) => stat.stat === "f").base + basestats.find((stat) => stat.stat === "f").increasePerLevelWild * level, theDino.food_consumption_base * theDino.food_consumption_mult))
+
+    // setValue("level", level);
+    setPoints(level - 1);
+    // setDino(basestats);
+    setDino({
+      ...theDino,
+      isTamable: (!theDino.disable_tame || theDino.affinity_needed || theDino.eats),
+      isKOable: (!theDino.disable_ko && theDino.base_taming_time && theDino.taming_interval),
+      isBreedable: (theDino.maturation_time && (theDino.incubation_time || theDino.base_points)),
+      maxLevelsAfterTame: x_variant && theDino.x_variant ? 88 : 73,
+      level: level,
+      base_stats: basestats,
+      food: theDino.DinoStat.filter((stat) => stat.type === "food").map(({ Item }) => ({
+        ...Item,
+      })),
+    });
+    // let calculatedData = calcData({ creature: theDino, level: level, method: "v" });
+
+    // for (let i in calculatedData.food) {
+    //   calculatedData.food[i].results = calcTame({
+    //     cr: theDino,
+    //     level: data.level,
+    //     foods: calculatedData.food,
+    //     useExclusive: i,
+    //   });
+    // }
+    // setTame(calcTame({ cr: theDino, level: data.level, foods: calculatedData.food }));
+    // setSelect(calculatedData);
   };
 
-  const calcTame = ({ cr, level, foods, useExclusive, method = "v" }: any) => {
+  // function Creature(creatureID) {
+  //   Object.assign(this, CREATURES[creatureID]);
+  //   if (
+  //     this.disableTame == 1 ||
+  //     typeof this.a0 == "undefined" ||
+  //     typeof this.eats == "undefined"
+  //   ) {
+  //     this.isTamable = false;
+  //   } else {
+  //     this.isTamable = true;
+  //   }
+  //   if (
+  //     this.disableKO != "1" &&
+  //     WEAPONS != null &&
+  //     typeof this.t1 != "undefined" &&
+  //     typeof this.tI != "undefined"
+  //   ) {
+  //     this.isKOable = true;
+  //   } else {
+  //     this.isKOable = false;
+  //   }
+  //   if (typeof this.forceW == "object") {
+  //     this.isKOable = true;
+  //   }
+  //   if (
+  //     typeof this.bm !== "undefined" &&
+  //     (typeof this.be !== "undefined" || typeof this.bp !== "undefined")
+  //   ) {
+  //     this.isBreedable = true;
+  //   }
+
+  //   // X Creatues gain 88 levels after taming, while others gain 73
+  //   if (typeof this.c == "object" && this.c.indexOf(40) >= 0) {
+  //     this.maxLevelsAfterTame = 88;
+  //   } else {
+  //     this.maxLevelsAfterTame = 73;
+  //   }
+  //   this.getAttr = function (attr) {
+  //     var r = false;
+  //     if (typeof this.af == "object") {
+  //       r = this.af.indexOf(attr) >= 0;
+  //     }
+  //     if (r != true && typeof this.carry == "object") {
+  //       r = this.carry.indexOf(attr) >= 0;
+  //     }
+  //     return r;
+  //   };
+  //   this.hasStats = function () {
+  //     return typeof this.bs == "object";
+  //   };
+  //   this.getNumStats = function () {
+  //     if (this.hasStats()) {
+  //       return Object.keys(this.stats.bs);
+  //     } else {
+  //       return 0;
+  //     }
+  //   };
+  //   this.getStat = function (statKey) {
+  //     if (this.hasStats() && typeof this.bs[statKey] == "object") {
+  //       return this.bs[statKey];
+  //     } else {
+  //       return null;
+  //     }
+  //   };
+  //   this.getNumEligibleStats = function () {
+  //     var theStat = this.getStat("o");
+  //     if (typeof theStat == "object" && theStat.b == null) {
+  //       return 5;
+  //     } else {
+  //       return 6;
+  //     }
+  //   };
+  //   this.getEstimatedStat = function (statKey, level) {
+  //     if (this.hasStats()) {
+  //       var baseStat = this.getStat(statKey);
+  //       if (baseStat) {
+  //         if (baseStat.b >= 0 && baseStat.w > 0) {
+  //           var numEligibleStats = this.getNumEligibleStats();
+  //           if (level > 0) {
+  //             var numLevels = level - 1;
+  //           } else {
+  //             var numLevels = 1;
+  //           }
+  //           var estFoodLevels = Math.round(numLevels / numEligibleStats);
+  //           return baseStat.b + baseStat.w * estFoodLevels;
+  //         } else if (typeof baseStat.b == "number") {
+  //           return baseStat.b;
+  //         }
+  //       }
+  //     } else {
+  //       return null;
+  //     }
+  //   };
+  // }
+  const tamingFood = useMemo(() => {
+    if (!dino) return [];
+    const affinityNeeded =
+      dino.affinity_needed + dino.aff_inc * dino.level;
+
+    const foodConsumption =
+      dino.food_consumption_base *
+      dino.food_consumption_mult *
+      settings.consumptionMultiplier *
+      1;
+    if (!selectedFood) setSelectedFood(dino.DinoStat.filter((f) => f.type === 'food')[0].Item.id)
+    return dino.DinoStat.filter((f) => f.type === 'food').map((foodItem: any, index: number) => {
+      const foodValue = foodItem.Item.stats
+        ? foodItem.Item.stats.find((stat) => stat.id === 8)?.value
+        : 0;
+      const affinityValue =
+        foodItem.Item.stats.find((stat) => stat.id === 15)?.value || 0;
+
+      const foodMaxRaw = affinityNeeded / affinityValue / 4;
+      const foodMax = Math.ceil(foodMaxRaw);
+      const isFoodSelected = foodItem.Item.id === selectedFood;
+      let interval = null;
+      let interval1 = null;
+      let foodSecondsPer = 0;
+      let foodSeconds = 0;
+      if (dino.violent_tame) { // if violent tame
+        const baseStat = dino.base_stats?.f;
+        if (
+          typeof baseStat?.b === "number" &&
+          typeof baseStat?.w === "number"
+        ) {
+          const averagePerStat = Math.round(dino.level / 7);
+          const estimatedFood = baseStat.b + baseStat.w * averagePerStat;
+          const requiredFood = Math.max(estimatedFood * 0.1, foodValue);
+          interval1 = requiredFood / foodConsumption;
+        }
+        interval = foodValue / foodConsumption;
+        if (foodMax > 1) {
+          foodSecondsPer = foodValue / foodConsumption;
+          foodSeconds = Math.ceil(
+            Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
+            foodSecondsPer +
+            (interval1 || 0)
+          );
+        }
+      } else {
+        foodSecondsPer = foodValue / foodConsumption;
+        foodSeconds = Math.ceil(foodMax * foodSecondsPer);
+      }
+      return {
+        ...foodItem.Item,
+        max: foodMax,
+        food: foodValue,
+        seconds: foodSeconds,
+        secondsPer: foodSecondsPer,
+        percentPer: 100 / foodMaxRaw,
+        interval,
+        interval1,
+        use: isFoodSelected ? foodMax : 0,
+        key: index,
+      };
+    })
+  }, [selectedFood, dino]);
+
+  const tameData = useMemo(() => {
+    if (!dino) return null;
     let effectiveness = 100;
-    // Replace with item json
-    let narcotics = {
+    const narcotics = {
       ascerbic: {
         torpor: 25,
         secs: 2,
@@ -251,32 +497,32 @@ const DinoStatsPage = () => {
         secs: 3,
       },
     };
+
     let affinityNeeded =
-      cr.affinityNeeded + cr.affinityIncreasePerLevel * level;
+      dino.affinity_needed + dino.aff_inc * dino.level;
     // sanguineElixir = affinityNeeded *= 0.7
 
     let affinityLeft = affinityNeeded;
 
-    let foodConsumption =
-      cr.foodConsumptionBase *
-      cr.foodConsumptionMult *
-      settings.consumptionMultiplier;
+    const foodConsumption =
+      dino.food_consumption_base *
+      dino.food_consumption_mult *
+      settings.consumptionMultiplier *
+      1;
     let totalFood = 0;
 
-    let tamingMultiplier = cr.disableMultiplier
+    let tamingMultiplier = dino.disable_mult
       ? 4
       : settings.tamingMultiplier * 4;
 
-    if (method == "n") {
-      foodConsumption = foodConsumption * cr.nonViolentFoodRateMultiplier;
-    }
     let tooMuchFood = false;
     let enoughFood = false;
     let numUsedTotal = 0;
     let numNeeded = 0;
     let numToUse = 0;
     let totalSecs = 0;
-    foods.forEach((food: any) => {
+
+    tamingFood.forEach((food: any) => {
       if (!food) return;
       let foodVal = food.stats.find((f: any) => f.id === 8)
         ? food.stats.find((f: any) => f.id === 8).value
@@ -286,19 +532,19 @@ const DinoStatsPage = () => {
         : 0;
 
       if (affinityLeft > 0) {
-        if (useExclusive >= 0) {
-          if (food.key == useExclusive) {
+        if (selectedFood) {
+          if (food.id == selectedFood) {
             food.use = food.max;
           } else {
             food.use = 0;
           }
         }
-        if (method == "n") {
+        if (!dino.violent_tame) {
           numNeeded = Math.ceil(
             affinityLeft /
             affinityVal /
             tamingMultiplier /
-            cr.nonViolentFoodRateMultiplier
+            dino.non_violent_food_rate_mult
           );
         } else {
           numNeeded = Math.ceil(affinityLeft / affinityVal / tamingMultiplier);
@@ -311,27 +557,27 @@ const DinoStatsPage = () => {
           numToUse = numNeeded;
         }
 
-        if (method == "n") {
+        if (!dino.violent_tame) {
           affinityLeft -=
             numToUse *
             affinityVal *
             tamingMultiplier *
-            cr.nonViolentFoodRateMultiplier;
+            dino.non_violent_food_rate_mult;
         } else {
           affinityLeft -= numToUse * affinityVal * tamingMultiplier;
         }
         totalFood += numToUse * foodVal;
         let i = 1;
         while (i <= numToUse) {
-          if (method == "n") {
+          if (!dino.violent_tame) {
             effectiveness -=
-              (Math.pow(effectiveness, 2) * cr.tamingBonusAttribute) /
+              (Math.pow(effectiveness, 2) * dino.taming_bonus_attr) /
               affinityVal /
               tamingMultiplier /
-              cr.nonViolentFoodRateMultiplier;
+              dino.non_violent_food_rate_mult;
           } else {
             effectiveness -=
-              (Math.pow(effectiveness, 2) * cr.tamingBonusAttribute) /
+              (Math.pow(effectiveness, 2) * dino.taming_bonus_attr) /
               affinityVal /
               100;
           }
@@ -353,56 +599,37 @@ const DinoStatsPage = () => {
     } else {
       enoughFood = false;
 
-      foods.forEach((food: any) => {
+      dino.food.forEach((food: any) => {
         numNeeded = Math.ceil(
           affinityLeft /
           food.stats.find((f: any) => f.id === 15).value /
           tamingMultiplier
         );
-        neededValues[food.key] = numNeeded;
+        neededValues[food.id] = numNeeded;
       });
     }
 
     let percentLeft = affinityLeft / affinityNeeded;
     let percentTamed = 1 - percentLeft;
-    let totalTorpor = cr.baseTamingTime + cr.tamingInterval * (level - 1);
+    let totalTorpor = dino.base_taming_time + dino.taming_interval * (dino.level - 1);
     let torporDepletionPS =
-      cr.torporDepletionPS +
-      Math.pow(level - 1, 0.800403041) / (22.39671632 / cr.torporDepletionPS);
-    let levelsGained = Math.floor((level * 0.5 * effectiveness) / 100);
-    let ascerbicMushroomsMin = Math.max(
-      Math.ceil(
-        (totalSecs * torporDepletionPS - totalTorpor) /
-        (narcotics.ascerbic.torpor +
-          torporDepletionPS * narcotics.ascerbic.secs)
-      ),
-      0
-    );
-    let biotoxinsMin = Math.max(
-      Math.ceil(
-        (totalSecs * torporDepletionPS - totalTorpor) /
-        (narcotics.bio.torpor + torporDepletionPS * narcotics.bio.secs)
-      ),
-      0
-    );
-    let narcoticsMin = Math.max(
-      Math.ceil(
-        (totalSecs * torporDepletionPS - totalTorpor) /
-        (narcotics.narcotics.torpor +
-          torporDepletionPS * narcotics.narcotics.secs)
-      ),
-      0
-    );
-    let narcoberriesMin = Math.max(
-      Math.ceil(
-        (totalSecs * torporDepletionPS - totalTorpor) /
-        (narcotics.narcoberries.torpor +
-          torporDepletionPS * narcotics.narcoberries.secs)
-      ),
-      0
-    );
+      dino.tdps +
+      Math.pow(dino.level - 1, 0.800403041) / (22.39671632 / dino.tdps);
+    let levelsGained = Math.floor((dino.level * 0.5 * effectiveness) / 100);
+
+    const calcNarcotics = Object.entries(narcotics).map(([name, stats]: any) => {
+      return {
+        [`${name}Min`]: Math.max(
+          Math.ceil(
+            (totalSecs * torporDepletionPS - totalTorpor) /
+            (stats.torpor + torporDepletionPS * stats.secs)
+          ),
+          0
+        )
+      }
+    });
+
     return {
-      dino: cr,
       effectiveness,
       neededValues,
       enoughFood,
@@ -414,31 +641,29 @@ const DinoStatsPage = () => {
       torporDepletionPS,
       percentTamed,
       numUsedTotal,
-      ascerbicMushroomsMin,
-      biotoxinsMin,
-      narcoticsMin,
-      narcoberriesMin,
+      ...calcNarcotics.reduce((acc, cur) => ({ ...acc, ...cur }), {})
     };
-  };
+  }, [selectedFood]);
 
-  const calcMaturation = () => {
-    let maturation = 0;
-    let maturationCalcCurrent = 0;
-    let weightCurrent = 0;
-    let weightTotal = 30;
-    let mutationTimeTotal = 15002;
-    if (weightCurrent > weightTotal) {
-      weightCurrent = weightTotal;
-    }
 
-    weightCurrent = Math.max(weightCurrent, 0);
-    let percentDone = weightCurrent / weightTotal;
-    let timeElapsed = percentDone * mutationTimeTotal;
-    let timeStarted = Date.now() - timeElapsed;
-    let timeRemaining = (1 - percentDone) * mutationTimeTotal;
+  // const calcMaturation = () => {
+  //   let maturation = 0;
+  //   let maturationCalcCurrent = 0;
+  //   let weightCurrent = 0;
+  //   let weightTotal = 30;
+  //   let mutationTimeTotal = 15002;
+  //   if (weightCurrent > weightTotal) {
+  //     weightCurrent = weightTotal;
+  //   }
 
-    console.log(timeRemaining);
-  };
+  //   weightCurrent = Math.max(weightCurrent, 0);
+  //   let percentDone = weightCurrent / weightTotal;
+  //   let timeElapsed = percentDone * mutationTimeTotal;
+  //   let timeStarted = Date.now() - timeElapsed;
+  //   let timeRemaining = (1 - percentDone) * mutationTimeTotal;
+
+  //   console.log(timeRemaining);
+  // };
 
   return (
     <>
@@ -468,6 +693,7 @@ const DinoStatsPage = () => {
             />
 
             <FieldError name="name" className="rw-field-error" />
+
             <Label
               name="level"
               className="rw-label"
@@ -486,8 +712,25 @@ const DinoStatsPage = () => {
 
             <FieldError name="level" className="rw-field-error" />
 
+            <Label
+              name="x_variant"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              X Variant
+            </Label>
+
+            <CheckboxField
+              name="x_variant"
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              validation={{ required: false }}
+            />
+
+            <FieldError name="x_variant" className="rw-field-error" />
+
             <div className="rw-button-group">
-              <Submit className="rw-button rw-button-green">Calc</Submit>
+              <Submit className="rw-button rw-button-green" >Calc</Submit>
               <button
                 type="button"
                 className="rw-button rw-button-red"
@@ -497,9 +740,322 @@ const DinoStatsPage = () => {
               </button>
             </div>
           </Form>
+
+
+          {(dino && tamingFood && tameData) && (
+            <>
+              <CheckboxGroup
+                name="foodSelect"
+                form={false}
+                defaultValue={[selectedFood]}
+                validation={{
+                  single: true,
+                }}
+                options={tamingFood.map((food) => {
+                  return {
+                    value: food.id,
+                    label: `${food.name} (${food.max})`,
+                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${food.image}`
+                  }
+                })}
+                onChange={(e) => {
+                  setSelectedFood(e);
+                }}
+              />
+              {/* <Table
+                rows={tamingFood}
+                columns={[
+                  {
+                    field: "name",
+                    label: "Food",
+                    bold: true,
+                    sortable: true,
+                    renderCell: ({ row }) => {
+                      return (
+                        <button className="flex flex-row content-center items-center align-middle" onClick={() => setSelectedFood(row.id)}>
+                          <img
+                            className="w-6 h-6 mr-2"
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
+                            alt={row.name}
+                          />
+                          <span>{row.name}</span>
+                        </button>
+                      );
+                    },
+                  },
+                  {
+                    field: "use",
+                    label: "Use",
+                    bold: true,
+                    renderCell: ({ row }) => {
+                      return (
+                        <div
+                          className="flex flex-row items-center rw-button-group justify-start"
+                          key={`${row.use}+${Math.random()}`}
+                        >
+                          <button
+                            type="button"
+                            disabled={row.use <= 0}
+                            className="rw-button"
+                          >
+                            -
+                          </button>
+                          <p
+                            defaultValue={row.use}
+                            className="rw-input w-20 p-3 text-center"
+                          >
+                            {row.use}/{row.max}
+                          </p>
+                          <button
+                            type="button"
+                            disabled={row.use >= row.max}
+                            className="rw-button"
+                          >
+                            +
+                          </button>
+                        </div>
+                      );
+                    },
+                  },
+                  {
+                    field: "seconds",
+                    label: "Time",
+                    numeric: true,
+                    className: "text-center",
+                    valueFormatter: ({ value }) => {
+                      let minutes = Math.floor(value / 60);
+                      let remainingSeconds =
+                        value % 60 < 10 ? `0${value % 60}` : value % 60;
+                      return `${minutes}:${remainingSeconds}`;
+                    },
+                  },
+                  {
+                    field: "results",
+                    label: "Effectiveness",
+                    renderCell: ({ value }) => {
+                      return (
+                        <div className="block">
+                          <div className="my-2 h-1 overflow-hidden rounded-md bg-white">
+                            <span
+                              className="bg-pea-500 block h-1 w-full rounded-md"
+                              style={{
+                                width: `${value ? value.effectiveness : 0}%`,
+                              }}
+                            ></span>
+                          </div>
+                          <p className="text-xs">
+                            {(value ? value.effectiveness : 0).toFixed(2)}%
+                          </p>
+                        </div>
+                      );
+                    },
+                  },
+                ]}
+              /> */}
+              <p className="my-3 text-center text-sm dark:text-gray-200">
+                With selected food:
+              </p>
+              <section className="my-3 rounded-md p-4 dark:bg-zinc-600 bg-stone-200 dark:text-white">
+                <div className="relative my-3 grid grid-cols-4 gap-4 text-center">
+                  <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
+                    <p className="text-thin text-sm">
+                      Lvl<span className="ml-1 text-lg font-semibold">{dino.level}</span>
+                    </p>
+                  </div>
+                  <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
+                    <p className="text-thin text-sm">
+                      {(tameData.effectiveness ? tameData.effectiveness : 0).toFixed(2)}
+                      %
+                    </p>
+                  </div>
+                  <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
+
+                    <p className="text-thin text-sm">
+                      Lvl
+                      <span className="ml-1 text-lg font-semibold">
+                        <Counter startNum={0} endNum={parseInt(dino.level) + tameData.levelsGained} duration={500} />
+                        {/* {parseInt(dino.level) + tameData.levelsGained} */}
+                      </span>
+                    </p>
+                  </div>
+                  <div className="relative block before:absolute before:ml-auto before:w-full last:before:content-['']">
+                    <p className="text-thin text-sm">
+                      Lvl
+                      <span className="ml-1 text-lg font-semibold">
+                        {parseInt(dino.level) +
+                          tameData.levelsGained +
+                          dino.maxLevelsAfterTame}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <div className="my-3 grid grid-cols-4 gap-4 text-center">
+                  <p className="text-thin text-xs">Current</p>
+                  <p className="text-thin text-xs">Taming Eff.</p>
+                  <p className="text-thin text-xs">With Bonus</p>
+                  <p className="text-thin text-xs">Max after taming</p>
+                </div>
+              </section>
+
+              <p className="my-3 text-center text-sm dark:text-gray-200">
+                {dino.name} breeding:
+              </p>
+              {/* Mating internal: 24h - 48h * matingIntervalMultiplier */}
+              {/* <p>Xp When Killed: {tame.dino.experiencePerKill * (1 + 0.1 * (tame.dino.level - 1))}xp</p> */}
+              {typeof dino.maturation_time !== "undefined" &&
+                (typeof dino.incubation_time !== "undefined" ||
+                  typeof dino.base_points !== "undefined") && (
+                  <section className="my-3 rounded-md p-4 text-stone-600 dark:text-white">
+                    <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
+                      <li className="dark:text-pea-500 text-pea-600 flex items-center space-x-2.5">
+                        <span className="border-pea-600 dark:border-pea-500 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
+                          1
+                        </span>
+                        <span>
+                          <h3 className="font-medium leading-tight">
+                            Incubation
+                          </h3>
+                          <p className="text-sm">
+                            {timeFormatL(dino.incubation_time / settings.hatchMultiplier)}
+                          </p>
+                        </span>
+                      </li>
+                      <li>
+                        <input
+                          id="1"
+                          type="checkbox"
+                          className="peer/item1 hidden"
+                        />
+                        <label
+                          htmlFor="1"
+                          className="peer-checked/item1:dark:fill-pea-500 peer-checked/item1:fill-pea-600 fill-gray-500 dark:fill-gray-400 "
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 "
+                            viewBox="0 0 256 512"
+                          >
+                            <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                          </svg>
+                        </label>
+                      </li>
+                      <li className="flex items-center space-x-2.5 text-gray-500 dark:text-gray-400">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-500 dark:border-gray-400">
+                          2
+                        </span>
+                        <span>
+                          <h3 className="font-medium leading-tight">Baby</h3>
+                          <p className="text-sm">
+                            {timeFormatL((dino.maturation_time * 1) / 10)}
+                          </p>
+                        </span>
+                      </li>
+                      <li>
+                        <input
+                          id="2"
+                          type="checkbox"
+                          className="peer/item2 hidden"
+                        />
+                        <label
+                          htmlFor="2"
+                          className="peer-checked/item2:dark:fill-pea-500 peer-checked/item2:fill-pea-600 fill-gray-500 dark:fill-gray-400 "
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 "
+                            viewBox="0 0 256 512"
+                          >
+                            <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                          </svg>
+                        </label>
+                      </li>
+                      <li className="flex items-center space-x-2.5 text-gray-500 dark:text-gray-400">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-500 dark:border-gray-400">
+                          3
+                        </span>
+                        <span>
+                          <h3 className="font-medium leading-tight">
+                            Juvenile
+                          </h3>
+                          <p className="text-sm">
+                            {timeFormatL(
+                              (dino.maturation_time * 1) / 2 -
+                              (dino.maturation_time * 1) / 10
+                            )}
+                          </p>
+                        </span>
+                      </li>
+                      <li>
+                        <input
+                          id="3"
+                          type="checkbox"
+                          className="peer/item3 hidden"
+                        />
+                        <label
+                          htmlFor="3"
+                          className="peer-checked/item3:dark:fill-pea-500 peer-checked/item3:fill-pea-600 fill-gray-500 dark:fill-gray-400 "
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 "
+                            viewBox="0 0 256 512"
+                          >
+                            <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                          </svg>
+                        </label>
+                      </li>
+                      <li className="flex items-center space-x-2.5 text-gray-500 dark:text-gray-400">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-500 dark:border-gray-400">
+                          4
+                        </span>
+                        <span>
+                          <h3 className="font-medium leading-tight">
+                            Adolescent
+                          </h3>
+                          <p className="text-sm">
+                            {timeFormatL((dino.maturation_time * settings.matureMultiplier) / 2)}
+                          </p>
+                        </span>
+                      </li>
+                      <li>
+                        <input
+                          id="4"
+                          type="checkbox"
+                          className="peer/item4 hidden"
+                        />
+                        <label
+                          htmlFor="4"
+                          className="peer-checked/item4:dark:fill-pea-500 peer-checked/item4:fill-pea-600 fill-gray-500 dark:fill-gray-400 "
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 "
+                            viewBox="0 0 256 512"
+                          >
+                            <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                          </svg>
+                        </label>
+                      </li>
+                      <li className="flex items-center space-x-2.5 text-gray-500 dark:text-gray-400">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-500 dark:border-gray-400">
+                          5
+                        </span>
+                        <span>
+                          <h3 className="font-medium leading-tight">Total</h3>
+                          <p className="text-sm">
+                            {timeFormatL(dino.maturation_time * settings.matureMultiplier)}
+                          </p>
+                        </span>
+                      </li>
+                    </ol>
+                  </section>
+                )}
+            </>
+          )}
+
           {/* TODO: Add pretame simulator. Assign available points to random stats */}
-          <Table
-            rows={dino}
+          {dino && (<Table
+            rows={dino.base_stats}
             columns={[
               {
                 field: "stat",
@@ -550,147 +1106,11 @@ const DinoStatsPage = () => {
                 </nav>
               );
             }}
-          />
+          />)}
 
           {select && (
             <>
-              <Table
-                rows={select.food}
-                columns={[
-                  {
-                    field: "name",
-                    label: "Food",
-                    bold: true,
-                    sortable: true,
-                    renderCell: ({ row, rowIndex }) => {
-                      return (
-                        <button
-                          className="relative flex items-center justify-start"
-                          onClick={() => useExclusive(rowIndex)}
-                        >
-                          <img
-                            className="mr-3 h-8 w-8"
-                            src={
-                              "https://www.arkresourcecalculator.com/assets/images/80px-" +
-                              row.icon
-                            }
-                          />
-                          <p>{row.name}</p>
-                        </button>
-                      );
-                    },
-                  },
-                  {
-                    field: "use",
-                    label: "Use",
-                    bold: true,
-                    renderCell: ({ row }) => {
-                      return (
-                        <div
-                          className="flex flex-row items-center"
-                          key={`${row.use}+${Math.random()}`}
-                        >
-                          <button
-                            type="button"
-                            disabled={row.use <= 0}
-                            className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black disabled:bg-slate-500 disabled:text-white dark:border-white dark:text-white"
-                          >
-                            -
-                          </button>
-                          <p
-                            defaultValue={row.use}
-                            className="rw-input w-16 p-3 text-center"
-                          >
-                            {row.use}/{row.max}
-                          </p>
-                          <button
-                            type="button"
-                            disabled={row.use >= row.max}
-                            className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black disabled:bg-slate-500 disabled:text-white dark:border-white dark:text-white"
-                          >
-                            +
-                          </button>
-                        </div>
-                      );
-                    },
-                  },
-                  {
-                    field: "seconds",
-                    label: "Time",
-                    numeric: true,
-                    className: "text-center",
-                    valueFormatter: ({ value }) => {
-                      let minutes = Math.floor(value / 60);
-                      let remainingSeconds =
-                        value % 60 < 10 ? `0${value % 60}` : value % 60;
-                      return `${minutes}:${remainingSeconds}`;
-                    },
-                  },
-                  {
-                    field: "results",
-                    label: "Effectiveness",
-                    renderCell: ({ value }) => {
-                      return (
-                        <div className="block">
-                          <div className="my-2 h-1 overflow-hidden rounded-md bg-white">
-                            <span
-                              className="bg-pea-500 block h-1 w-full rounded-md"
-                              style={{
-                                width: `${value ? value.effectiveness : 0}%`,
-                              }}
-                            ></span>
-                          </div>
-                          <p className="text-xs">
-                            {(value ? value.effectiveness : 0).toFixed(2)}%
-                          </p>
-                        </div>
-                      );
-                    },
-                  },
-                ]}
-              />
-              <p className="my-3 text-center text-sm dark:text-gray-200">
-                With selected food:
-              </p>
-              <section className="my-3 rounded-md p-4 dark:bg-zinc-600 bg-stone-200 dark:text-white">
-                <div className="relative my-3 grid grid-cols-4 gap-4 text-center">
-                  <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
-                    <p className="text-thin text-sm">
-                      Lvl<span className="ml-1 text-lg font-semibold">100</span>
-                    </p>
-                  </div>
-                  <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
-                    <p className="text-thin text-sm">
-                      {(tame.effectiveness ? tame.effectiveness : 0).toFixed(2)}
-                      %
-                    </p>
-                  </div>
-                  <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
-                    <p className="text-thin text-sm">
-                      Lvl
-                      <span className="ml-1 text-lg font-semibold">
-                        {parseInt(tame.dino.level) + tame.levelsGained}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="relative block before:absolute before:ml-auto before:w-full last:before:content-['']">
-                    <p className="text-thin text-sm">
-                      Lvl
-                      <span className="ml-1 text-lg font-semibold">
-                        {parseInt(tame.dino.level) +
-                          tame.levelsGained +
-                          (xVariant ? 88 : 77)}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-                <div className="my-3 grid grid-cols-4 gap-4 text-center">
-                  <p className="text-thin text-xs">Current</p>
-                  <p className="text-thin text-xs">Taming Eff.</p>
-                  <p className="text-thin text-xs">With Bonus</p>
-                  <p className="text-thin text-xs">Max after taming</p>
-                </div>
-              </section>
+
               <p className="my-3 text-center text-sm dark:text-gray-200">
                 {tame.dino.name} breeding:
               </p>

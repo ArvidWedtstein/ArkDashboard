@@ -114,11 +114,13 @@ a {
 /* .rw-button:hover {
   @apply bg-gray-500 text-white;
 } */
-.rw-button.disabled {
+.rw-button.disabled,
+.rw-button[disabled] {
   @apply cursor-not-allowed opacity-50;
 }
-.rw-button.disabled:hover {
-  @apply bg-current ring-0;
+.rw-button.disabled:hover,
+.rw-button[disabled]:hover {
+  @apply ring-0;
 }
 /*
 // ----------------------------

@@ -16,7 +16,7 @@ import type { EditDinoById, UpdateDinoInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import Lookup from "src/components/Util/Lookup/Lookup";
 import arkitems from "../../../../public/arkitems.json";
-import CheckboxGroup, { CheckboxGroupField, CheckboxGroupSelect, CustomCheckboxGroup } from "src/components/Util/CheckSelect/CheckboxGroup";
+import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { truncate } from "src/lib/formatters";
 import { useCellCacheContext, useQuery } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";

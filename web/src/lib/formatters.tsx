@@ -39,6 +39,12 @@ export const nmbFormat = Intl.NumberFormat("en", {
   notation: "compact",
 }).format;
 
+export const formatNumberWithThousandSeparator = (num: number): string => {
+  const formattedNum = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return formattedNum;
+}
+
+
 export const truncate = (value: string | number, maxlength: number = 150) => {
   let output = value?.toString() ?? "";
 
@@ -174,10 +180,10 @@ export const getBaseMaterials = (
     // TODO: Replace this shit
     let c =
       item.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0 &&
-      item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-        .Item_ItemRecipe_crafting_stationToItem != null
+        item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
+          .Item_ItemRecipe_crafting_stationToItem != null
         ? item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-            .Item_ItemRecipe_crafting_stationToItem.id
+          .Item_ItemRecipe_crafting_stationToItem.id
         : null;
 
     // Group by crafting_station somehow

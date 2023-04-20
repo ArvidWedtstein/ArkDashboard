@@ -10,7 +10,7 @@ import {
 import { useCallback, useMemo, useReducer, useState } from "react";
 import { useForm } from "react-hook-form";
 import Lookup from "src/components/Util/Lookup/Lookup";
-import { getBaseMaterials } from "src/lib/formatters";
+import { formatNumberWithThousandSeparator, getBaseMaterials } from "src/lib/formatters";
 import debounce from "lodash.debounce";
 import Table from "src/components/Util/Table/Table";
 interface MaterialGridProps {
@@ -200,6 +200,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
     [viewBaseMaterials]
   );
 
+
   return (
     <Form onSubmit={onAdd} error={error}>
       <FormError
@@ -315,7 +316,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                         src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
                         className="h-6 w-6"
                       />
-                      <span className="text-sm">{value}</span>
+                      <span className="text-sm">{formatNumberWithThousandSeparator(value)}</span>
                       <span className="sr-only">{value}</span>
                     </div>
                   );
@@ -424,7 +425,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                           alt={itm.name}
                         />
                         <span className="text-sm text-black dark:text-white">
-                          {itm.amount}
+                          {formatNumberWithThousandSeparator(itm.amount)}
                         </span>
                       </div>
                     ));
