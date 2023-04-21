@@ -39,7 +39,7 @@ const DINOQUERY = gql`
       taming_notice
       can_destroy
       base_stats
-      gather_eff
+      multipliers
       exp_per_kill
       egg_min
       egg_max
@@ -582,7 +582,6 @@ const DinoStatsPage = () => {
       let isPossible = true;
       let secsOfRegen = 0;
       let totalMultipliers = 1;
-      let knockOut = creatureT / torporPerHit;
       let numHitsRaw = 0
       let hitsUntilFlee: any = 0
       let hitboxes = [];
@@ -599,6 +598,7 @@ const DinoStatsPage = () => {
         }
         isPossible = torporPerHit > 0;
       }
+      let knockOut = creatureT / torporPerHit;
 
       // if (
       //   typeof weapon.mult == "object" &&
@@ -1305,11 +1305,17 @@ const DinoStatsPage = () => {
 
               <div className="flex flex-row gap-2 overflow-x-auto max-w-screen relative py-3 rounded-md dark:text-white text-gray-800 text-center my-3">
                 {calcWeapons.map((weapon, i) => (
-                  <div className="flex flex-col space-y-1 flex-1 min-h-full rounded p-3 dark:bg-opacity-50 dark:bg-zinc-600 bg-white min-w-[8rem] justify-between items-center animate-fade-in" key={`weapon-${i}`}>
+                  <div key={`weapon-${i}`} className="flex flex-col space-y-1 flex-1 min-h-full rounded p-3 dark:bg-opacity-50 dark:bg-zinc-600 bg-white min-w-[8rem] justify-between items-center animate-fade-in">
                     <img className="w-16 h-16" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${weapon.image}`} />
                     <p className="w-full">{weapon.name}</p>
                     {weapon.isPossible ? <Counter startNum={0} endNum={weapon.hits} duration={500 / weapon.hits} /> : <p>Not Possible</p>}
-                    <p className="text-xs text-gray-300">{weapon.chanceOfDeath}%</p>
+                    {weapon.chanceOfDeathHigh && <p className="text-xs text-red-300">{weapon.chanceOfDeath}% chance of death</p>}
+                    <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                      {weapon.hitboxes.map((h) => (
+                        `${h.name} - ${h.multiplier}x`
+                      ))}
+                    </span>
+                    <p></p>
                   </div>
                 ))}
               </div>
