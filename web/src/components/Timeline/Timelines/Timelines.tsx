@@ -44,7 +44,7 @@ const TimelinesList = ({ timelines }: FindTimelines) => {
     <div className="rw-segment rw-table-wrapper-responsive">
       <div className="mt-10 w-full">
         <div className="flex bg-transparent">
-          {timelines.map(({ id, Profile, TimelineBasespot }) => (
+          {timelines.map(({ id, created_at, Profile }) => (
             <div
               key={id}
               className="border-pea-500 relative mr-[1px] flex h-64 w-fit min-w-fit max-w-[100px] border p-6"
@@ -65,9 +65,10 @@ const TimelinesList = ({ timelines }: FindTimelines) => {
                 </div>
                 <div className="rate">
                   <span
-                    className="mt-2 whitespace-nowrap align-sub text-xs text-white" /*ml-2*/
+                    className="mt-2 whitespace-nowrap align-sub text-xs text-white"
                   >
-                    {pluralize(TimelineBasespot.length, "basespot")}
+                    Created {timeTag(created_at)}
+                    {/* {pluralize(TimelineBasespot.length, "basespot")} */}
                   </span>
                 </div>
                 <div

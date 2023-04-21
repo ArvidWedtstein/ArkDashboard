@@ -37,18 +37,13 @@ const Lookup = ({
   const { ref, isComponentVisible, setIsComponentVisible } =
     useComponentVisible(false);
   // const [isFilterVisible, setIsFilterVisible] = useState(false)
-  const register = name
-    ? useRegister({
-      name,
-    })
-    : null;
 
 
   const { field } = name && useController({ name: name });
-  const [searchTerm, setSearchTerm] = useState(defaultValue ? options.find(option => option.value === defaultValue).label : '')
+  const [searchTerm, setSearchTerm] = useState(!!defaultValue && options.length > 0 ? options?.find((option) => option?.value === defaultValue)?.label : '')
   const [filteredOptions, setFilteredOptions] = useState(options)
   const [openIndexes, setOpenIndexes] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(defaultValue ? options.find(option => option.value === defaultValue) : null)
+  const [selectedOption, setSelectedOption] = useState(!!defaultValue && options.length > 0 ? options.find(option => option.value === defaultValue) : null)
 
   // Run filter and sort functions when options or searchTerm changes
   useEffect(() => {

@@ -12,7 +12,7 @@ import {
 
 const Navbar = () => {
   const { currentUser, isAuthenticated } = useAuth();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const [title, setTitle] = useState(pathname.split("/")[1]);
 
   useRouterState();
@@ -68,9 +68,9 @@ const Navbar = () => {
         <div className="flex items-center space-x-2">
           {isAuthenticated &&
             routes[
-              `new${singularize(
-                capitalizeSentence(title.split("-").join(" ")).replace(" ", "")
-              )}`
+            `new${singularize(
+              capitalizeSentence(title.split("-").join(" ")).replace(" ", "")
+            )}`
             ] !== undefined && (
               <Link
                 to={routes[
@@ -80,7 +80,7 @@ const Navbar = () => {
                       ""
                     )
                   )}`
-                ]()}
+                ](search ? { id: new URLSearchParams(search).get("id") } : {})}
                 title={`New ${singularize(
                   capitalizeSentence(title.split("-").join(" ")).replace(
                     " ",

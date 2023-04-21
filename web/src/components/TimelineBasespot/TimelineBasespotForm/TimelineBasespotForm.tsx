@@ -38,6 +38,7 @@ type FormTimelineBasespot = NonNullable<
 >;
 
 interface TimelineBasespotFormProps {
+  id?: string;
   timelineBasespot?: EditTimelineBasespotById["timelineBasespot"];
   onSave: (
     data: UpdateTimelineBasespotInput,
@@ -118,7 +119,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         <TextField
           name="timeline_id"
-          defaultValue={props.timelineBasespot?.timeline_id}
+          defaultValue={props?.id || props.timelineBasespot?.timeline_id}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ required: true }}
@@ -215,15 +216,12 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         <Lookup
           defaultValue={props.timelineBasespot?.basespot_id}
-          // options={
-          //   props.timelineBasespot?.map ? basespots.filter((b) => b.Mmp === map).map((b) => ({
-          //     label: b.name,
-          //     value: b.id,
-          //   }) : basespots.map((b) => ({
-          //     label: b.name,
-          //     value: b.id,
-          //   })
-          // }
+          options={
+            basespots.filter((b) => b.map === map).map((b) => ({
+              label: b.name,
+              value: b.id,
+            }))
+          }
           onSelect={(e) => setSelectedBasespot(e)}
           name="basespot_id"
         />
@@ -232,9 +230,12 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         <MapPicker
           map={map || props.timelineBasespot?.map}
-          valueProp={{
+          valueProp={selectedBasespot !== null ? { latitude: basespots.find((b) => b.id === selectedBasespot.value).latitude, longitude: basespots.find((b) => b.id === selectedBasespot.value).longitude, } : {
             latitude: props.timelineBasespot?.latitude,
             longitude: props.timelineBasespot?.latitude,
+          }}
+          validation={{
+            disabled: selectedBasespot !== null
           }}
           onChanges={(e) => {
             formMethods.setValue("latitude", e.latitude);
@@ -435,7 +436,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
                 <TextAreaField
                   name="raid_comment"
-                  defaultValue={props.timelineBasespot?.raidcomment}
+                  defaultValue={props.timelineBasespot?.raid_comment}
                   className="rw-input"
                   errorClassName="rw-input rw-input-error"
                 />
@@ -469,8 +470,8 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                                 "invert(95%) sepia(69%) saturate(911%) hue-rotate(157deg) brightness(100%) contrast(103%)",
                             }}
                             className="h-full w-full object-cover object-center p-2"
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
-                            alt=""
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.Dino.icon}`}
+                            alt="s"
                           />
                         </div>
                         <div className="flex flex-col items-start justify-start leading-snug">

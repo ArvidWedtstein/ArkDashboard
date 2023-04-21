@@ -62,6 +62,7 @@ export const QUERY = gql`
         Dino {
           name
           base_stats
+          icon
         }
       }
     }

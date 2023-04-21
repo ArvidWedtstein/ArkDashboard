@@ -38,7 +38,7 @@ const NewTimelineBasespot = ({ id }) => {
         <h2 className="rw-heading rw-heading-secondary">New TimelineBasespot</h2>
       </header>
       <div className="rw-segment-main">
-        <TimelineBasespotForm onSave={onSave} loading={loading} error={error} />
+        <TimelineBasespotForm onSave={onSave} loading={loading} error={error} id={id} />
       </div>
     </div>
   )
