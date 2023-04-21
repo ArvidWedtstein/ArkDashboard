@@ -37,6 +37,10 @@ const Dino = ({ dino }: Props) => {
     },
   });
 
+  // Melee damage is affected by 4 factors: Weapon Base Damage, Weapon Damage Quality Multiplier, Survivor Melee Damage Multiplier and Server Settings: Player Damage.
+
+  // Melee Damage = WBD * WDQM * SMDM * PD
+
   const onDeleteClick = (id: DeleteDinoMutationVariables["id"]) => {
     if (confirm("Are you sure you want to delete dino " + id + "?")) {
       deleteDino({ variables: { id } });
