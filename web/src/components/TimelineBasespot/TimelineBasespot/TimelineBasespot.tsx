@@ -6,7 +6,7 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { supabase } from "src/App";
 import { Map } from "src/components/Util/Map/Map";
-import { RefModal } from "src/components/Util/Modal/Modal";
+import { Modal, RefModal } from "src/components/Util/Modal/Modal";
 
 import { getDateDiff, nmbFormat, timeTag, truncate } from "src/lib/formatters";
 
@@ -57,7 +57,6 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
     {
       onCompleted: () => {
         toast.success("TimelineBasespot raid initiated");
-        // navigate(routes.timelineBasespot({ id: timelineBasespot.id.toString() }));
       },
       onError: (error) => {
         toast.error(error.message);
@@ -72,20 +71,13 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
       deleteTimelineBasespot({ variables: { id } });
     }
   };
-
-  const initRaid = (id: DeleteTimelineBasespotMutationVariables["id"]) => {
+  const [isRaided, setIsRaided] = useState(false);
+  const initRaid = () => {
     if (
       confirm("Are you sure you are being raided?")
     ) {
-      raidTimelineBasespot({
-        variables: {
-          id, input: {
-            end_date: new Date(),
-            raid_comment: "test",
-            raided_by: 'some random tribe',
-          },
-        }
-      });
+      setIsRaided(true);
+      setIsComponentVisible(false)
     }
   }
   const [images, setImages] = useState([]);
@@ -111,6 +103,40 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
         setIsOpen={(open) => setIsComponentVisible(open)}
         image={currentModalImage}
       />
+      <Modal
+        isOpen={isRaided}
+        onClose={() => setIsRaided(false)}
+        form={
+          <div className="flex flex-col items-center justify-center dark:text-white text-gray-700">
+            <h1 className="text-2xl font-bold">You are being raided!</h1>
+            <p className="text-lg">Please fill out the form below to report the raid.</p>
+            <label className="rw-label">Raided By</label>
+            <input className="rw-input" type="text" name="raided_by" />
+
+            <label className="rw-label">Raid Comment</label>
+            <textarea className="rw-input" name="raid_comment" />
+
+            <label className="rw-label">Raid Comment</label>
+            <input type="datetime-local" className="rw-input" name="end_date" />
+          </div>
+        }
+        formSubmit={(data) => {
+          data.preventDefault()
+          const formData = new FormData(data.currentTarget)
+          raidTimelineBasespot({
+            variables: {
+              id: timelineBasespot.id,
+              input: {
+                end_date: formData.get("end_date") || new Date(),
+                raid_comment: formData.get("raid_comment"),
+                raided_by: formData.get("raided_by"),
+              },
+            }
+          });
+          setIsRaided(false);
+        }}
+      />
+
       <div className="m-2 block rounded-md text-white">
         <section className="body-font">
           <div className="container mx-auto flex flex-col items-center px-5 py-12 md:flex-row">
@@ -346,6 +372,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                             `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineBasespot.id}/${img.name}`
                           );
                           setIsComponentVisible(true);
+                          setIsRaided(false);
                         }}
                         className="h-full w-full cursor-pointer rounded-b object-cover object-center"
                         src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineBasespot.id}/${img.name}`}
@@ -362,7 +389,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
 
         {(isAuthenticated && !timelineBasespot.end_date && !timelineBasespot.raided_by && !timelineBasespot.raid_comment) && (
           <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
-            <button className="rw-button rw-button-red-outline rw-button-large m-3" onClick={() => initRaid(timelineBasespot.id)}>Raid
+            <button className="rw-button rw-button-red-outline rw-button-large m-3" onClick={() => initRaid()}>Raid
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="fill-current">
                 <path d="M285.3 247.1c-3.093-4.635-8.161-7.134-13.32-7.134c-8.739 0-15.1 7.108-15.1 16.03c0 3.05 .8717 6.133 2.693 8.859l52.37 78.56l-76.12 25.38c-6.415 2.16-10.94 8.159-10.94 15.18c0 2.758 .7104 5.498 2.109 7.946l63.1 112C293.1 509.1 298.5 512 304 512c11.25 0 15.99-9.84 15.99-16.02c0-2.691-.6807-5.416-2.114-7.915L263.6 393l77.48-25.81c1.701-.5727 10.93-4.426 10.93-15.19c0-3.121-.9093-6.205-2.685-8.873L285.3 247.1zM575.1 256c0-4.435-1.831-8.841-5.423-12l-58.6-51.87c.002-.0938 0 .0938 0 0l.0247-144.1c0-8.844-7.156-16-15.1-16L400 32c-8.844 0-15.1 7.156-15.1 16l-.0014 31.37L298.6 4c-3.016-2.656-6.797-3.997-10.58-3.997c-3.781 0-7.563 1.34-10.58 3.997l-271.1 240C1.831 247.2 .0007 251.6 .0007 256c0 8.92 7.239 15.99 16.04 15.99c3.757 0 7.52-1.313 10.54-3.993l37.42-33.02V432c0 44.13 35.89 80 79.1 80h63.1c8.844 0 15.1-7.156 15.1-16S216.8 480 208 480h-63.1c-26.47 0-47.1-21.53-47.1-48v-224c0-.377-.1895-.6914-.2148-1.062L288 37.34l192.2 169.6C480.2 207.3 479.1 207.6 479.1 208v224c0 26.47-21.53 48-47.1 48h-31.1c-8.844 0-15.1 7.156-15.1 16s7.156 16 15.1 16h31.1c44.11 0 79.1-35.88 79.1-80V234.1L549.4 268C552.5 270.7 556.2 272 559.1 272C568.7 272 575.1 264.9 575.1 256zM479.1 164.1l-63.1-56.47V64h63.1V164.1z" />
               </svg>
