@@ -3,7 +3,7 @@ export const schema = gql`
     id: String!
     created_at: DateTime
     name: String!
-    synonyms: [String]!
+    synonyms: String
     description: String
     taming_notice: String
     can_destroy: [String]!
@@ -50,10 +50,12 @@ export const schema = gql`
     saddle_id: BigInt
     icon: String
     image: String
+    multipliers: JSON
     Item: Item
     DinoStat: [DinoStat]!
     TimelineBasespotDino: [TimelineBasespotDino]!
   }
+
   type DinosPage {
     dinos: [Dino!]!
     count: Int!
@@ -68,7 +70,7 @@ export const schema = gql`
   input CreateDinoInput {
     created_at: DateTime
     name: String!
-    synonyms: [String]!
+    synonyms: String
     description: String
     taming_notice: String
     can_destroy: [String]!
@@ -115,13 +117,13 @@ export const schema = gql`
     saddle_id: BigInt
     icon: String
     image: String
-    DinoStat: JSON
+    multipliers: JSON
   }
 
   input UpdateDinoInput {
     created_at: DateTime
     name: String
-    synonyms: [String]!
+    synonyms: String
     description: String
     taming_notice: String
     can_destroy: [String]!
@@ -168,7 +170,7 @@ export const schema = gql`
     saddle_id: BigInt
     icon: String
     image: String
-    DinoStat: JSON
+    multipliers: JSON
   }
 
   type Mutation {
