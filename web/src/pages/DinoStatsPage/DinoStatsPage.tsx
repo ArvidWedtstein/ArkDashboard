@@ -127,8 +127,8 @@ const DinoStatsPage = () => {
 
   let [dino, setDino] = useState(null);
   let [selectedFood, setSelectedFood] = useState(null);
-  let [points, setPoints] = useState(0);
   const [secondsBetweenHits, setSecondsBetweenHits] = useState(5);
+  let [points, setPoints] = useState(0);
   let [level, setLevel] = useState<stats>({
     h: 0,
     s: 0,
@@ -980,7 +980,7 @@ const DinoStatsPage = () => {
             <FieldError name="x_variant" className="rw-field-error" />
 
             <div className="rw-button-group">
-              <Submit className="rw-button rw-button-green" >Calc</Submit>
+              <Submit className="rw-button rw-button-green">Calc</Submit>
               <button
                 type="button"
                 className="rw-button rw-button-red"

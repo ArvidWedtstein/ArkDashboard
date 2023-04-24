@@ -1,4 +1,4 @@
-import { Form, NumberField } from "@redwoodjs/forms";
+import { CheckboxField, FieldError, Form, Label, NumberField, Submit } from "@redwoodjs/forms";
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
@@ -7,12 +7,13 @@ import {
   combineBySummingKeys,
   truncate,
 } from "src/lib/formatters";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import type { DeleteDinoMutationVariables, FindDinoById } from "types/graphql";
 import clsx from "clsx";
 import Table from "src/components/Util/Table/Table";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
+import Counter from "src/components/Util/Counter/Counter";
 
 const DELETE_DINO_MUTATION = gql`
   mutation DeleteDinoMutation($id: String!) {
@@ -36,6 +37,7 @@ const Dino = ({ dino }: Props) => {
       toast.error(error.message);
     },
   });
+
 
   // Melee damage is affected by 4 factors: Weapon Base Damage, Weapon Damage Quality Multiplier, Survivor Melee Damage Multiplier and Server Settings: Player Damage.
 
@@ -65,26 +67,475 @@ const Dino = ({ dino }: Props) => {
       </svg>
     );
   };
+
   const [useFoundationUnit, setUseFoundationUnit] = useState(false);
   const [maturation, setMaturation] = useState(0);
+  const [selectedFood, setSelectedFood] = useState(null);
+  const [secondsBetweenHits, setSecondsBetweenHits] = useState(5);
+  const [dinoData, setDinoData] = useState(null);
+
   const calcMaturationPercent = useCallback(() => {
     let timeElapsed = maturation * parseInt(dino.maturation_time) * 1;
     return timeElapsed / 100;
   }, [maturation, setMaturation]);
-  const multipliers = {
-    hatch: 1,
-    baby: 1,
-    consumption: 1,
-    taming: 1,
-    mature: 1,
-    harvest: 1,
-    xp: 1,
-    matingInterval: 1,
-    eggHatchSpeed: 1,
+
+  const weapons = useMemo(() => {
+    return [
+      {
+        "name": "Tranquilizer Dart",
+        "image": "tranquilizer-dart.png",
+        "torpor": 221,
+        "damage": 26,
+        "durationDevKit": 5,
+        "duration": 6,
+        "hasMultipler": true,
+        "mult": [
+          "DmgType_Projectile",
+          "DamageType"
+        ],
+        "id": 745,
+        "userDamage": 100
+      },
+      {
+        "name": "Shocking Tranquilizer Dart",
+        "image": "shocking-tranquilizer-dart.png",
+        "torpor": 442,
+        "damage": 26,
+        "durationDevKit": 5,
+        "duration": 6,
+        "hasMultipler": true,
+        "mult": [
+          "DmgType_Projectile",
+          "DamageType"
+        ],
+        "id": 748,
+        "userDamage": 100,
+      },
+      {
+        "name": "Bow",
+        "image": "tranquilizer-arrow-bow.png",
+        "torpor": 90,
+        "damage": 20,
+        "duration": 6,
+        "hasMultipler": true,
+        "mult": [
+          "DmgType_Projectile",
+          "DamageType"
+        ],
+        "id": 1038,
+        "userDamage": 100,
+      },
+      {
+        "name": "Crossbow",
+        "image": "crossbow.png",
+        "torpor": 157.5,
+        "damage": 35,
+        "duration": 6,
+        "hasMultipler": true,
+        "mult": [
+          "DmgType_Projectile",
+          "DamageType"
+        ],
+        "id": 362,
+        "userDamage": 100,
+      },
+      {
+        "name": "Tek Bow",
+        "image": "tek-bow.png",
+        "torpor": 336,
+        "damage": 24,
+        "duration": 6,
+        "hasMultipler": true,
+        "mult": [
+          "DmgType_Projectile",
+          "DamageType"
+        ],
+        "id": 784,
+        "userDamage": 100,
+      },
+      {
+        "name": "Compound Bow",
+        "image": "compound-bow.png",
+        "torpor": 121.5,
+        "damage": 27,
+        "duration": 6,
+        "hasMultipler": true,
+        "mult": [
+          "DmgType_Projectile",
+          "DamageType"
+        ],
+        "id": 376,
+        "userDamage": 100,
+
+      },
+      {
+        "name": "Harpoon Launcher",
+        "image": "harpoon-launcher.png",
+        "torpor": 300,
+        "damage": 36,
+        "duration": 5,
+        "hasMultipler": true,
+        "mult": [
+          "DmgType_Projectile",
+          "DamageType"
+        ],
+        "id": 731,
+        "userDamage": 100,
+      },
+      {
+        "name": "Fists",
+        "image": "fists.png",
+        "torpor": 14,
+        "damage": 8,
+        "hasMultipler": false,
+        "usesMeleeDamage": true,
+        "mult": [
+          "DmgType_Melee_Torpidity_StoneWeapon",
+          "DmgType_Melee_Torpidity",
+          "DmgType_Melee_Human",
+          "DmgType_Melee",
+          "DamageType"
+        ],
+        "id": "Fists",
+        "userDamage": 100,
+      },
+      {
+        "name": "Slingshot",
+        "image": "slingshot.png",
+        "torpor": 23.8,
+        "damage": 14,
+        "hasMultipler": true,
+        "mult": [
+          "DmgType_StoneWeapon",
+          "DamageType"
+        ],
+        "id": 139,
+        "userDamage": 100,
+      },
+      {
+        "name": "Wooden Club",
+        "image": "wooden-club.png",
+        "torpor": 20,
+        "damage": 5,
+        "hasMultipler": true,
+        "usesMeleeDamage": true,
+        "mult": [
+          "DmgType_Melee_HighTorpidity_StoneWeapon",
+          "DmgType_Melee_Human",
+          "DmgType_StoneWeapon",
+          "DamageType"
+        ],
+        "id": 434,
+        "userDamage": 100,
+      },
+
+      {
+        "name": "Boomerang",
+        "image": "boomerang.png",
+        "damage": 30,
+        "torpor": 70.5,
+        "mult": [
+          "DmgType_Melee_Torpidity_StoneWeapon",
+          "DmgType_StoneWeapon",
+          "DamageType"
+        ],
+        "id": 848,
+        "userDamage": 100,
+      },
+      {
+        "name": "Electric Prod",
+        "image": "electric-prod.png",
+        "torpor": 266,
+        "damage": 1,
+        "hasMultipler": true,
+        "mult": [
+          "DmgType_Melee_Human",
+          "DamageType"
+        ],
+        "id": 451,
+        "userDamage": 100,
+      },
+      {
+        "name": "Tripwire Narcotic Trap",
+        "image": "tripwire-narcotic-trap.png",
+        "torpor": 240,
+        "damage": 0,
+        "duration": 10,
+        "mult": [
+          "DamageType"
+        ],
+        "id": 1041,
+        "type": "Tripwire Narcotic Trap",
+        "userDamage": 100,
+      },
+    ]
+  }, [dinoData]);
+
+  // Multipliers
+  const settings = {
+    harvestMultiplier: 1,
     babyCuddleInterval: 1,
     babyImprintAmount: 1,
     hexagonReward: 1,
+    tamingMultiplier: 1.0,
+    consumptionMultiplier: 1.0,
+    hatchMultiplier: 1,
+    matureMultiplier: 1,
+    meleeMultiplier: 100,
+    playerDamageMultiplier: 1.0,
+    matingIntervalMultiplier: 1.0,
+    eggHatchSpeedMultiplier: 1.0,
+    babyMatureSpeedMultiplier: 1.0,
+    XPMultiplier: 1.0
   };
+
+  const calculateDino = (e) => {
+    const { level, x_variant } = e
+    if (!level) return null;
+
+    setDinoData({
+      ...dino,
+      isTamable: (!dino.disable_tame || dino.affinity_needed || dino.eats),
+      isKOable: (!dino.disable_ko && dino.base_taming_time && dino.taming_interval),
+      isBreedable: (dino.maturation_time && (dino.incubation_time || dino.base_points)),
+      maxLevelsAfterTame: x_variant && dino.x_variant ? 88 : 73,
+      level: level,
+      base_stats: Object.entries(dino.base_stats).map(([key, value]: any) => {
+        return {
+          stat: key,
+          base: value.b,
+          increasePerLevelWild: value.w || null,
+          increasePerLevelTamed: value.t || null,
+        };
+      }),
+      food: dino.DinoStat.filter((stat) => stat.type === "food").map(({ Item }) => ({
+        ...Item,
+      })),
+    });
+
+    // if (!selectedFood) setSelectedFood(dino.DinoStat.filter((f) => f.type === 'food')[0].Item.id)
+  }
+
+  const tamingFood = useMemo(() => {
+    if (!dinoData) return [];
+    const affinityNeeded =
+      dino.affinity_needed + dino.aff_inc * dinoData.level;
+
+    const foodConsumption =
+      dino.food_consumption_base *
+      dino.food_consumption_mult *
+      settings.consumptionMultiplier *
+      1;
+    if (!selectedFood) setSelectedFood(dino.DinoStat.filter((f) => f.type === 'food')[0].Item.id)
+
+
+    return dino.DinoStat.filter((f) => f.type === 'food').map((foodItem: any, index: number) => {
+      const foodValue = foodItem.Item.stats
+        ? foodItem.Item.stats.find((stat) => stat.id === 8)?.value
+        : 0;
+      const affinityValue =
+        foodItem.Item.stats.find((stat) => stat.id === 15)?.value || 0;
+
+      const foodMaxRaw = affinityNeeded / affinityValue / 4;
+      const foodMax = Math.ceil(foodMaxRaw);
+      const isFoodSelected = foodItem.Item.id === selectedFood;
+      let interval = null;
+      let interval1 = null;
+      let foodSecondsPer = 0;
+      let foodSeconds = 0;
+      if (dino.violent_tame) { // if violent tame
+        const baseStat = dinoData.base_stats?.f;
+        if (
+          typeof baseStat?.b === "number" &&
+          typeof baseStat?.w === "number"
+        ) {
+          const averagePerStat = Math.round(dinoData.level / 7);
+          const estimatedFood = baseStat.b + baseStat.w * averagePerStat;
+          const requiredFood = Math.max(estimatedFood * 0.1, foodValue);
+          interval1 = requiredFood / foodConsumption;
+        }
+        interval = foodValue / foodConsumption;
+        if (foodMax > 1) {
+          foodSecondsPer = foodValue / foodConsumption;
+          foodSeconds = Math.ceil(
+            Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
+            foodSecondsPer +
+            (interval1 || 0)
+          );
+        }
+      } else {
+        foodSecondsPer = foodValue / foodConsumption;
+        foodSeconds = Math.ceil(foodMax * foodSecondsPer);
+      }
+      return {
+        ...foodItem.Item,
+        max: foodMax,
+        food: foodValue,
+        seconds: foodSeconds,
+        secondsPer: foodSecondsPer,
+        percentPer: 100 / foodMaxRaw,
+        interval,
+        interval1,
+        use: isFoodSelected ? foodMax : 0,
+        key: index,
+      };
+    })
+  }, [dinoData]);
+
+  const tameData = useMemo(() => {
+    if (!dinoData || !tamingFood) return null;
+    let effectiveness = 100;
+    const narcotics = {
+      ascerbic: {
+        torpor: 25,
+        secs: 2,
+      },
+      bio: {
+        torpor: 80,
+        secs: 16,
+      },
+      narcotics: {
+        torpor: 40,
+        secs: 8,
+      },
+      narcoberries: {
+        torpor: 7.5,
+        secs: 3,
+      },
+    };
+
+    let affinityNeeded =
+      dino.affinity_needed + dino.aff_inc * dinoData.level;
+    // sanguineElixir = affinityNeeded *= 0.7
+
+    let affinityLeft = affinityNeeded;
+
+    let totalFood = 0;
+
+    let tamingMultiplier = dino.disable_mult
+      ? 4
+      : settings.tamingMultiplier * 4;
+    let foodConsumption =
+      dino.food_consumption_base * dino.food_consumption_mult * settings.consumptionMultiplier;
+
+    foodConsumption = dino.violent_tame ? foodConsumption : foodConsumption * dino.non_violent_food_rate_mult;
+
+    let tooMuchFood = false;
+    let enoughFood = false;
+    let numUsedTotal = 0;
+    let numNeeded = 0;
+    let numToUse = 0;
+    let totalSecs = 0;
+
+    tamingFood.forEach((food: any) => {
+      if (!food) return;
+      let foodVal = food?.stats.find((f: any) => f.id === 8)
+        ? food?.stats.find((f: any) => f.id === 8).value
+        : 0;
+      let affinityVal = food?.stats.find((f: any) => f.id === 15)
+        ? food?.stats.find((f: any) => f.id === 15).value
+        : 0;
+
+      if (affinityLeft > 0) {
+        if (selectedFood) {
+          food.use = food.id == selectedFood ? food.max : 0;
+        }
+        numNeeded = dino.violent_tame ? Math.ceil(affinityLeft / affinityVal / tamingMultiplier) : Math.ceil(
+          affinityLeft /
+          affinityVal /
+          tamingMultiplier /
+          dino.non_violent_food_rate_mult
+        );
+
+        numToUse = numNeeded >= food.use ? food.use : numNeeded;
+        tooMuchFood = numNeeded >= food.use ? false : true;
+
+        affinityLeft = dino.violent_tame
+          ? affinityLeft - numToUse * affinityVal * tamingMultiplier
+          : affinityLeft - numToUse * affinityVal * tamingMultiplier * dino.non_violent_food_rate_mult;
+
+        totalFood += numToUse * foodVal;
+
+        let i = 1;
+        while (i <= numToUse) {
+          effectiveness -= dino.violent_tame
+            ? (Math.pow(effectiveness, 2) * dino.taming_bonus_attr) / affinityVal / tamingMultiplier / 100
+            : (Math.pow(effectiveness, 2) * dino.taming_bonus_attr) /
+            affinityVal /
+            tamingMultiplier /
+            dino.non_violent_food_rate_mult / 100;
+
+          totalSecs = numUsedTotal == 1
+            ? totalSecs + food.interval
+            : foodVal / foodConsumption;
+
+          numUsedTotal++;
+          i++;
+        }
+        if (effectiveness < 0) {
+          effectiveness = 0;
+        }
+      } else if (food.use > 0) {
+        tooMuchFood = true;
+      }
+    });
+    totalSecs = Math.ceil(totalSecs);
+    let neededValues = Array();
+    let neededValuesSecs = Array();
+
+    if (affinityLeft <= 0) {
+      enoughFood = true;
+    } else {
+      enoughFood = false;
+      tamingFood.forEach((food: any) => {
+        numNeeded = Math.ceil(
+          affinityLeft /
+          food?.stats.find((f: any) => f.id === 15)?.value /
+          tamingMultiplier
+        );
+        neededValues[food.id] = numNeeded;
+        neededValuesSecs[food.id] = Math.ceil(
+          (numNeeded * food.stats.find((f: any) => f.id === 8)?.value) / settings.consumptionMultiplier + totalSecs
+        );
+      })
+    }
+
+    let percentLeft = affinityLeft / affinityNeeded;
+    let percentTamed = 1 - percentLeft;
+    let totalTorpor = dino.base_taming_time + dino.taming_interval * (dinoData.level - 1);
+    let torporDepletionPS =
+      dino.tdps +
+      Math.pow(dinoData.level - 1, 0.800403041) / (22.39671632 / dino.tdps);
+    let levelsGained = Math.floor((dinoData.level * 0.5 * effectiveness) / 100);
+
+    const calcNarcotics = Object.entries(narcotics).map(([name, stats]: any) => {
+      return {
+        [`${name}Min`]: Math.max(
+          Math.ceil(
+            (totalSecs * torporDepletionPS - totalTorpor) /
+            (stats.torpor + torporDepletionPS * stats.secs)
+          ),
+          0
+        )
+      }
+    });
+
+    return {
+      effectiveness,
+      neededValues,
+      enoughFood,
+      tooMuchFood,
+      totalFood,
+      totalSecs,
+      levelsGained,
+      totalTorpor,
+      torporDepletionPS,
+      percentTamed,
+      numUsedTotal,
+      ...calcNarcotics.reduce((acc, cur) => ({ ...acc, ...cur }), {})
+    };
+  }, [tamingFood]);
+
   return (
     <div className="container mx-auto">
       <section className="grid grid-cols-1 md:grid-cols-2">
@@ -99,7 +550,7 @@ const Dino = ({ dino }: Props) => {
               {dino.name}
             </strong>
             <div className="flex flex-row space-x-2 italic">
-              <span>{dino.synonyms && dino.synonyms.join(", ")}</span>
+              <span>{dino.synonyms && dino.synonyms.split(',').join(", ")}</span>
             </div>
           </div>
 
@@ -109,25 +560,7 @@ const Dino = ({ dino }: Props) => {
           <div className="mr-4 mb-4 inline-block">
             <strong>Ridable:</strong> {dino.ridable ? "Yes" : "No"}
           </div>
-          {dino.immobilized_by && dino.immobilized_by.length > 0 && (
-            <div className="mr-4 mb-4 flex flex-row space-x-1">
-              <strong>Immobilized By:</strong>
 
-              {/* {dino.immobilized_by.map((item: any) => (
-
-                  <Link to={item.id ? routes.item({ id: item.id }) : routes.items()}>
-                  <img
-                    className="w-8"
-                    title={item.name}
-                    alt={item.name}
-                    src={`https://arkids.net/image/item/120/${item.name
-                      .replaceAll(" ", "-")
-                      .replace("plant-species-y", "plant-species-y-trap")}.png`}
-                  />
-                </Link>
-              ))} */}
-            </div>
-          )}
           {/* {dino.can_destroy && dino.can_destroy.length > 0 && (
             <div className="mr-4 mb-4 flex flex-row space-x-1">
               <strong>Can Destroy:</strong>
@@ -161,8 +594,8 @@ const Dino = ({ dino }: Props) => {
             <>
               <div className="text-lg">Food</div>
               <div className="mb-4 space-x-1">
-                {dino.eats.map((f: any) => (
-                  <p className="inline-flex leading-5">
+                {dino.eats.map((f: any, i) => (
+                  <p className="inline-flex leading-5" key={`food-${i}`}>
                     {f.name}
                     <img
                       className="w-5"
@@ -209,10 +642,10 @@ const Dino = ({ dino }: Props) => {
               className={clsx("flex items-center space-x-2.5", {
                 "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500":
                   calcMaturationPercent() >=
-                  dino.incubation_time / multipliers.hatch,
+                  dino.incubation_time / settings.hatchMultiplier,
                 "text-gray-500 dark:text-gray-400 [&>*]:border-gray-500 [&>*]:dark:border-gray-400":
                   calcMaturationPercent() <
-                  dino.incubation_time / multipliers.hatch,
+                  dino.incubation_time / settings.hatchMultiplier,
               })}
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
@@ -221,7 +654,7 @@ const Dino = ({ dino }: Props) => {
               <span>
                 <h3 className="font-medium leading-tight">Incubation</h3>
                 <p className="text-sm">
-                  {timeFormatL(dino.incubation_time / multipliers.hatch)}
+                  {timeFormatL(dino.incubation_time / settings.hatchMultiplier)}
                 </p>
               </span>
             </li>
@@ -238,10 +671,10 @@ const Dino = ({ dino }: Props) => {
               className={clsx("flex items-center space-x-2.5", {
                 "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500":
                   calcMaturationPercent() >=
-                  (parseInt(dino.maturation_time) * multipliers.mature) / 10,
+                  (parseInt(dino.maturation_time) * settings.matureMultiplier) / 10,
                 "text-gray-500 dark:text-gray-400 [&>*]:border-gray-500 [&>*]:dark:border-gray-400":
                   calcMaturationPercent() <
-                  (parseInt(dino.maturation_time) * multipliers.mature) / 10,
+                  (parseInt(dino.maturation_time) * settings.matureMultiplier) / 10,
               })}
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
@@ -251,7 +684,7 @@ const Dino = ({ dino }: Props) => {
                 <h3 className="font-medium leading-tight">Baby</h3>
                 <p className="text-sm">
                   {timeFormatL(
-                    (parseInt(dino.maturation_time) * multipliers.mature) / 10
+                    (parseInt(dino.maturation_time) * settings.matureMultiplier) / 10
                   )}
                 </p>
               </span>
@@ -269,12 +702,12 @@ const Dino = ({ dino }: Props) => {
               className={clsx("flex items-center space-x-2.5", {
                 "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500":
                   calcMaturationPercent() >=
-                  (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                  (parseInt(dino.maturation_time) * multipliers.mature) / 10,
+                  (parseInt(dino.maturation_time) * settings.matureMultiplier) / 2 -
+                  (parseInt(dino.maturation_time) * settings.matureMultiplier) / 10,
                 "text-gray-500 dark:text-gray-400 [&>*]:border-gray-500 [&>*]:dark:border-gray-400":
                   calcMaturationPercent() <
-                  (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                  (parseInt(dino.maturation_time) * multipliers.mature) / 10,
+                  (parseInt(dino.maturation_time) * settings.matureMultiplier) / 2 -
+                  (parseInt(dino.maturation_time) * settings.matureMultiplier) / 10,
               })}
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
@@ -284,8 +717,8 @@ const Dino = ({ dino }: Props) => {
                 <h3 className="font-medium leading-tight">Juvenile</h3>
                 <p className="text-sm">
                   {timeFormatL(
-                    (parseInt(dino.maturation_time) * multipliers.mature) / 2 -
-                    (parseInt(dino.maturation_time) * multipliers.mature) / 10
+                    (parseInt(dino.maturation_time) * settings.matureMultiplier) / 2 -
+                    (parseInt(dino.maturation_time) * settings.matureMultiplier) / 10
                   )}
                 </p>
               </span>
@@ -316,7 +749,7 @@ const Dino = ({ dino }: Props) => {
                 <h3 className="font-medium leading-tight">Adolescent</h3>
                 <p className="text-sm">
                   {timeFormatL(
-                    (parseInt(dino.maturation_time) * multipliers.mature) / 2
+                    (parseInt(dino.maturation_time) * settings.matureMultiplier) / 2
                   )}
                 </p>
               </span>
@@ -345,7 +778,7 @@ const Dino = ({ dino }: Props) => {
                 <h3 className="font-medium leading-tight">Total</h3>
                 <p className="text-sm">
                   {timeFormatL(
-                    parseInt(dino.maturation_time) * multipliers.mature
+                    parseInt(dino.maturation_time) * settings.matureMultiplier
                   )}
                 </p>
               </span>
@@ -702,6 +1135,7 @@ const Dino = ({ dino }: Props) => {
           ]}
         />
       </section>
+
       <section className="mt-4 grid grid-cols-1 text-gray-400 dark:text-white md:grid-cols-2">
         {dino.gather_eff && (
           <div className="space-y-2">
@@ -834,7 +1268,7 @@ const Dino = ({ dino }: Props) => {
         )}
       </section>
 
-      <section className="mt-4 text-gray-400 dark:text-white">
+      <section className="my-4 text-gray-400 dark:text-white">
         <div className="space-y-2">
           <h4>Drops</h4>
         </div>
@@ -861,6 +1295,433 @@ const Dino = ({ dino }: Props) => {
           ]}
         />
       </section>
+
+      <section className="my-4 text-gray-400 dark:text-white ">
+        <h3 className="font-medium text-xl leading-tight">Taming</h3>
+        <div>
+          <Form onSubmit={(e) => {
+            calculateDino(e)
+          }}>
+
+            <Label
+              name="level"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Level
+            </Label>
+
+            <NumberField
+              name="level"
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              validation={{ required: true, valueAsNumber: true, min: 1, max: 500 }}
+              defaultValue={100}
+            />
+
+            <FieldError name="level" className="rw-field-error" />
+
+            {dino.x_variant && (
+              <>
+                <Label
+                  name="x_variant"
+                  className="rw-label"
+                  errorClassName="rw-label rw-label-error"
+                >
+                  X Variant
+                </Label>
+
+                <CheckboxField
+                  name="x_variant"
+                  className="rw-input"
+                  errorClassName="rw-input rw-input-error"
+                  validation={{ required: false, valueAsBoolean: true }}
+                />
+
+                <FieldError name="x_variant" className="rw-field-error" />
+              </>
+            )}
+
+            <div className="rw-button-group justify-start">
+              <Submit className="rw-button rw-button-green !ml-0">Calculate</Submit>
+            </div>
+          </Form>
+        </div>
+        {(dinoData && tamingFood && tameData) && (
+          <>
+            <CheckboxGroup
+              name="foodSelect"
+              form={false}
+              defaultValue={[selectedFood]}
+              validation={{
+                single: true,
+              }}
+              options={tamingFood.map((food) => {
+                return {
+                  value: food.id,
+                  label: `${food.name} (${food.max})`,
+                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${food.image}`
+                }
+              })}
+              onChange={(e) => {
+                setSelectedFood(e);
+              }}
+            />
+            {/* <Table
+                rows={tamingFood}
+                columns={[
+                  {
+                    field: "name",
+                    label: "Food",
+                    bold: true,
+                    sortable: true,
+                    renderCell: ({ row }) => {
+                      return (
+                        <button className="flex flex-row content-center items-center align-middle" onClick={() => setSelectedFood(row.id)}>
+                          <img
+                            className="w-6 h-6 mr-2"
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
+                            alt={row.name}
+                          />
+                          <span>{row.name}</span>
+                        </button>
+                      );
+                    },
+                  },
+                  {
+                    field: "use",
+                    label: "Use",
+                    bold: true,
+                    renderCell: ({ row }) => {
+                      return (
+                        <div
+                          className="flex flex-row items-center rw-button-group justify-start"
+                          key={`${row.use}+${Math.random()}`}
+                        >
+                          <button
+                            type="button"
+                            disabled={row.use <= 0}
+                            className="rw-button"
+                          >
+                            -
+                          </button>
+                          <p
+                            defaultValue={row.use}
+                            className="rw-input w-20 p-3 text-center"
+                          >
+                            {row.use}/{row.max}
+                          </p>
+                          <button
+                            type="button"
+                            disabled={row.use >= row.max}
+                            className="rw-button"
+                          >
+                            +
+                          </button>
+                        </div>
+                      );
+                    },
+                  },
+                  {
+                    field: "seconds",
+                    label: "Time",
+                    numeric: true,
+                    className: "text-center",
+                    valueFormatter: ({ value }) => {
+                      let minutes = Math.floor(value / 60);
+                      let remainingSeconds =
+                        value % 60 < 10 ? `0${value % 60}` : value % 60;
+                      return `${minutes}:${remainingSeconds}`;
+                    },
+                  },
+                  {
+                    field: "results",
+                    label: "Effectiveness",
+                    renderCell: ({ value }) => {
+                      return (
+                        <div className="block">
+                          <div className="my-2 h-1 overflow-hidden rounded-md bg-white">
+                            <span
+                              className="bg-pea-500 block h-1 w-full rounded-md"
+                              style={{
+                                width: `${value ? value.effectiveness : 0}%`,
+                              }}
+                            ></span>
+                          </div>
+                          <p className="text-xs">
+                            {(value ? value.effectiveness : 0).toFixed(2)}%
+                          </p>
+                        </div>
+                      );
+                    },
+                  },
+                ]}
+              /> */}
+            {tameData && (
+              <>
+                <p className="my-3 text-center text-sm dark:text-gray-200">
+                  With selected food:
+                </p>
+                <section className="my-3 rounded-md p-4 dark:bg-zinc-600 bg-stone-200 dark:text-white">
+                  <div className="relative my-3 grid grid-cols-4 gap-4 text-center">
+                    <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
+                      <p className="text-thin text-sm">
+                        Lvl<span className="ml-1 text-lg font-semibold">{dinoData.level}</span>
+                      </p>
+                    </div>
+                    <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
+                      <p className="text-thin text-sm">
+                        {(tameData.effectiveness ? tameData.effectiveness : 0).toFixed(2)}
+                        %
+                      </p>
+                    </div>
+                    <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
+
+                      <span className="text-thin text-sm">
+                        Lvl
+                        <span className="ml-1 text-lg font-semibold">
+                          <Counter startNum={0} endNum={parseInt(dinoData.level) + tameData.levelsGained} duration={500} />
+                        </span>
+                      </span>
+                    </div>
+                    <div className="relative block before:absolute before:ml-auto before:w-full last:before:content-['']">
+                      <p className="text-thin text-sm">
+                        Lvl
+                        <span className="ml-1 text-lg font-semibold">
+                          {parseInt(dinoData.level) +
+                            tameData.levelsGained +
+                            dinoData.maxLevelsAfterTame}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="my-3 grid grid-cols-4 gap-4 text-center">
+                    <p className="text-thin text-xs">Current</p>
+                    <p className="text-thin text-xs">Taming Eff.</p>
+                    <p className="text-thin text-xs">With Bonus</p>
+                    <p className="text-thin text-xs">Max after taming</p>
+                  </div>
+                </section>
+
+                <p className="my-3 text-center text-sm dark:text-gray-200">
+                  {dino.name} breeding:
+                </p>
+                {/* Mating internal: 24h - 48h * matingIntervalMultiplier */}
+                {/* <p>Xp When Killed: {tame.dino.experiencePerKill * (1 + 0.1 * (tame.dino.level - 1))}xp</p> */}
+                {typeof dino.maturation_time !== "undefined" &&
+                  (typeof dino.incubation_time !== "undefined" ||
+                    typeof dino.base_points !== "undefined") && (
+                    <section className="my-3 rounded-md p-4 text-stone-600 dark:text-white">
+                      <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
+                        <li className="dark:text-pea-500 text-pea-600 flex items-center space-x-2.5">
+                          <span className="border-pea-600 dark:border-pea-500 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
+                            1
+                          </span>
+                          <span>
+                            <h3 className="font-medium leading-tight">
+                              Incubation
+                            </h3>
+                            <p className="text-sm">
+                              {timeFormatL(dino.incubation_time / settings.hatchMultiplier)}
+                            </p>
+                          </span>
+                        </li>
+                        <li>
+                          <input
+                            id="1"
+                            type="checkbox"
+                            className="peer/item1 hidden"
+                          />
+                          <label
+                            htmlFor="1"
+                            className="peer-checked/item1:dark:fill-pea-500 peer-checked/item1:fill-pea-600 fill-gray-500 dark:fill-gray-400"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-6 w-6 "
+                              viewBox="0 0 256 512"
+                            >
+                              <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                            </svg>
+                          </label>
+                        </li>
+                        <li className="flex items-center space-x-2.5 text-gray-500 dark:text-gray-400">
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-500 dark:border-gray-400">
+                            2
+                          </span>
+                          <span>
+                            <h3 className="font-medium leading-tight">Baby</h3>
+                            <p className="text-sm">
+                              {timeFormatL((dinoData.maturation_time * 1) / 10)}
+                            </p>
+                          </span>
+                        </li>
+                        <li>
+                          <input
+                            id="2"
+                            type="checkbox"
+                            className="peer/item2 hidden"
+                          />
+                          <label
+                            htmlFor="2"
+                            className="peer-checked/item2:dark:fill-pea-500 peer-checked/item2:fill-pea-600 fill-gray-500 dark:fill-gray-400 "
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-6 w-6 "
+                              viewBox="0 0 256 512"
+                            >
+                              <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                            </svg>
+                          </label>
+                        </li>
+                        <li className="flex items-center space-x-2.5 text-gray-500 dark:text-gray-400">
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-500 dark:border-gray-400">
+                            3
+                          </span>
+                          <span>
+                            <h3 className="font-medium leading-tight">
+                              Juvenile
+                            </h3>
+                            <p className="text-sm">
+                              {timeFormatL(
+                                (dinoData.maturation_time * 1) / 2 -
+                                (dinoData.maturation_time * 1) / 10
+                              )}
+                            </p>
+                          </span>
+                        </li>
+                        <li>
+                          <input
+                            id="3"
+                            type="checkbox"
+                            className="peer/item3 hidden"
+                          />
+                          <label
+                            htmlFor="3"
+                            className="peer-checked/item3:dark:fill-pea-500 peer-checked/item3:fill-pea-600 fill-gray-500 dark:fill-gray-400 "
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-6 w-6 "
+                              viewBox="0 0 256 512"
+                            >
+                              <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                            </svg>
+                          </label>
+                        </li>
+                        <li className="flex items-center space-x-2.5 text-gray-500 dark:text-gray-400">
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-500 dark:border-gray-400">
+                            4
+                          </span>
+                          <span>
+                            <h3 className="font-medium leading-tight">
+                              Adolescent
+                            </h3>
+                            <p className="text-sm">
+                              {timeFormatL((dinoData.maturation_time * settings.matureMultiplier) / 2)}
+                            </p>
+                          </span>
+                        </li>
+                        <li>
+                          <input
+                            id="4"
+                            type="checkbox"
+                            className="peer/item4 hidden"
+                          />
+                          <label
+                            htmlFor="4"
+                            className="peer-checked/item4:dark:fill-pea-500 peer-checked/item4:fill-pea-600 fill-gray-500 dark:fill-gray-400 "
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-6 w-6 "
+                              viewBox="0 0 256 512"
+                            >
+                              <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                            </svg>
+                          </label>
+                        </li>
+                        <li className="flex items-center space-x-2.5 text-gray-500 dark:text-gray-400">
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-500 dark:border-gray-400">
+                            5
+                          </span>
+                          <span>
+                            <h3 className="font-medium leading-tight">Total</h3>
+                            <p className="text-sm">
+                              {timeFormatL(dinoData.maturation_time * settings.matureMultiplier)}
+                            </p>
+                          </span>
+                        </li>
+                      </ol>
+                    </section>
+                  )}
+
+
+                {/* <div className="flex flex-row gap-2 overflow-x-auto max-w-screen relative py-3 rounded-md dark:text-white text-gray-800 text-center my-3">
+              {calcWeapons.map((weapon, i) => (
+                <div key={`weapon-${i}`} className="flex flex-col space-y-1 flex-1 min-h-full rounded p-3 dark:bg-opacity-50 dark:bg-zinc-600 bg-white min-w-[8rem] justify-between items-center animate-fade-in">
+                  <img className="w-16 h-16" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${weapon.image}`} />
+                  <p className="w-full">{weapon.name}</p>
+                  {weapon.isPossible ? <Counter startNum={0} endNum={weapon.hits} duration={500 / weapon.hits} /> : <p>Not Possible</p>}
+                  {weapon.chanceOfDeathHigh && <p className="text-xs text-red-300">{weapon.chanceOfDeath}% chance of death</p>}
+                  <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                    {weapon.hitboxes.map((h) => (
+                      `${h.name} - ${h.multiplier}x`
+                    ))}
+                  </span>
+                  <p></p>
+                </div>
+              ))}
+            </div> */}
+
+                {/* <Table
+              rows={calcWeapons}
+              columns={[
+                {
+                  field: "hits",
+                  label: "Hit be baby one more time",
+                  bold: true,
+                  sortable: true,
+                },
+                {
+                  field: "hitsUntilFlee",
+                  label: "Hits Until Dino has had enough of your bullshit",
+                  bold: true,
+                },
+                {
+                  field: "chanceOfDeath",
+                  label: "Chance of dying",
+                  numeric: false,
+                  className: "text-center",
+                  valueFormatter: ({ value, row }) => {
+                    return <span className={clsx({
+                      "text-red-500": row.chanceOfDeathHigh
+                    })}>{value}%</span>
+                  }
+                },
+                {
+                  field: "name",
+                  label: "Item",
+                  className: "text-center",
+                },
+                {
+                  field: "isPossible",
+                  label: "Is Possible?",
+                  valueFormatter: ({ value }) => {
+                    return value ? "Yes" : "No";
+                  }
+                },
+              ]}
+            /> */}
+                <input type="number" inputMode="numeric" name="sec_between_hits" className="rw-input" placeholder="Seconds between hits" defaultValue={secondsBetweenHits || 5} onChange={(e) => {
+                  setSecondsBetweenHits(parseInt(e.target.value));
+                }} />
+              </>)}
+          </>
+        )}
+      </section>
+
       {/*
       <nav className="rw-button-group">
         <Link
@@ -877,6 +1738,7 @@ const Dino = ({ dino }: Props) => {
           Delete
         </button>
       </nav> */}
+
       {/* <div className="p-4">
           <Form onSubmit={onSubmit}>
             <Label

@@ -118,6 +118,7 @@ export const QUERY = gql`
           name
           id
           image
+          stats
         }
         value
         rank

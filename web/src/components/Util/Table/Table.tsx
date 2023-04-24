@@ -360,7 +360,7 @@ const Table = ({
           <li onClick={() => changePage("prev")}>
             <a
               href="#"
-              className="ml-0 block rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white"
+              className="ml-0 block rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-white"
             >
               <span className="sr-only">Previous</span>
               <svg
@@ -378,32 +378,22 @@ const Table = ({
               </svg>
             </a>
           </li>
-          {/* {Array(Math.ceil(dataRows.length / rowsPerPage)).fill('').map((page, index) => {
-            return (
-              <li key={index}>
-                <a
-                  className={`px-3 py-2 leading-tight ${currentPage === index + 1 ? "bg-blue-50 hover:bg-blue-100 hover:text-blue-700 border-blue-300" : "bg-white hover:bg-gray-100 border-gray-300 hover:text-gray-700"} border dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white`}
-                >
-                  {index + 1}
-                </a>
-              </li>
-            )
-          })} */}
+
           {currentPage > 1 && (
             <li onClick={() => changePage("prev")}>
-              <a className="block border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+              <a className="block border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-white">
                 {currentPage - 1}
               </a>
             </li>
           )}
           <li>
-            <a className="block border border-blue-300 bg-blue-50 px-3 py-2 leading-tight hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-gray-700 dark:hover:text-white">
+            <a className="block border border-pea-300 bg-pea-50 px-3 py-2 leading-tight hover:bg-pea-100 hover:text-pea-700 dark:hover:bg-zinc-700 dark:hover:text-white">
               {currentPage}
             </a>
           </li>
           {currentPage < Math.ceil(dataRows.length / rowsPerPage) && (
             <li onClick={() => changePage("next")}>
-              <a className="block border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:text-white">
+              <a className="block border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-white">
                 {currentPage + 1}
               </a>
             </li>
@@ -411,7 +401,7 @@ const Table = ({
           <li onClick={() => changePage("next")}>
             <a
               href="#"
-              className="block rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800  dark:hover:bg-gray-700 dark:hover:text-white"
+              className="block rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600  dark:hover:bg-zinc-700 dark:hover:text-white"
             >
               <span className="sr-only">Next</span>
               <svg

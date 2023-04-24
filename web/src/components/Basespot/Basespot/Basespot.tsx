@@ -77,7 +77,7 @@ const Basespot = ({ basespot }: Props) => {
                   to={routes.map({ id: basespot.map.toString() })}
                   className=""
                 >
-                  {basespot.Map_Basespot_MapToMap.name}
+                  {basespot.Map.name}
                 </Link>
               )}
             </h1>

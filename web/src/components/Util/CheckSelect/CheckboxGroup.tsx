@@ -54,7 +54,7 @@ const CheckboxGroup = ({
   return (
     <div className="flex h-fit flex-wrap gap-3 mt-1">
       {memoizedOptions.map(({ label, image, value: optValue }) => (
-        <label key={label}>
+        <label key={label} aria-details={`Item: ${optValue}`}>
           <input
             disabled={!name && !label}
             type="checkbox"
@@ -70,7 +70,6 @@ const CheckboxGroup = ({
             })}
           >
             <span className="text-gray-900 transition-all duration-150 ease-in dark:text-stone-200">
-
               {image &&
                 (React.isValidElement(image) ? (
                   image
