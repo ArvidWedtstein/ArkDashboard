@@ -112,6 +112,7 @@ export const QUERY = gql`
       carryable_by
       image
       icon
+      multipliers
       DinoStat {
         item_id
         Item {

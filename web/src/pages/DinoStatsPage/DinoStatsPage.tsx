@@ -710,16 +710,14 @@ const DinoStatsPage = () => {
           }
         }
       }
-      let chanceOfDeathHigh = bodyChanceOfDeath > 40;
-      hitsUntilFlee = fleeThreshold == 1 ? '-' : Math.max(1, Math.ceil(numHitsRaw * fleeThreshold))
 
       return {
         ...weapon,
         hits: Math.ceil(numHitsRaw),
         hitsRaw: numHitsRaw,
-        hitsUntilFlee: hitsUntilFlee,
+        hitsUntilFlee: fleeThreshold == 1 ? '-' : Math.max(1, Math.ceil(numHitsRaw * fleeThreshold)),
         chanceOfDeath: bodyChanceOfDeath,
-        chanceOfDeathHigh: chanceOfDeathHigh,
+        chanceOfDeathHigh: bodyChanceOfDeath > 40,
         minChanceOfDeath: minChanceOfDeath || 0,
         isPossible: isPossible,
         isRecommended: isPossible && minChanceOfDeath < 90,
@@ -1310,7 +1308,7 @@ const DinoStatsPage = () => {
                     <p className="w-full">{weapon.name}</p>
                     {weapon.isPossible ? <Counter startNum={0} endNum={weapon.hits} duration={500 / weapon.hits} /> : <p>Not Possible</p>}
                     {weapon.chanceOfDeathHigh && <p className="text-xs text-red-300">{weapon.chanceOfDeath}% chance of death</p>}
-                    <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                    <span className="bg-blue-100 text-blue-500 text-sm font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
                       {weapon.hitboxes.map((h) => (
                         `${h.name} - ${h.multiplier}x`
                       ))}

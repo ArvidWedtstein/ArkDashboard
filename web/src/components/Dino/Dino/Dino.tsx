@@ -72,13 +72,31 @@ const Dino = ({ dino }: Props) => {
   const [maturation, setMaturation] = useState(0);
   const [selectedFood, setSelectedFood] = useState(null);
   const [secondsBetweenHits, setSecondsBetweenHits] = useState(5);
-  const [dinoData, setDinoData] = useState(null);
-
+  // const [dinoData, setDinoData] = useState(null);
+  const [dinoLevel, setDinoLevel] = useState(0);
+  const [dinoXVariant, setDinoXVariant] = useState(false);
   const calcMaturationPercent = useCallback(() => {
     let timeElapsed = maturation * parseInt(dino.maturation_time) * 1;
     return timeElapsed / 100;
   }, [maturation, setMaturation]);
 
+  // Multipliers
+  const settings = {
+    harvestMultiplier: 1,
+    babyCuddleInterval: 1,
+    babyImprintAmount: 1,
+    hexagonReward: 1,
+    tamingMultiplier: 1.0,
+    consumptionMultiplier: 1.0,
+    hatchMultiplier: 1,
+    matureMultiplier: 1,
+    meleeMultiplier: 100,
+    playerDamageMultiplier: 1.0,
+    matingIntervalMultiplier: 1.0,
+    eggHatchSpeedMultiplier: 1.0,
+    babyMatureSpeedMultiplier: 1.0,
+    XPMultiplier: 1.0
+  };
   const weapons = useMemo(() => {
     return [
       {
@@ -269,101 +287,325 @@ const Dino = ({ dino }: Props) => {
         "userDamage": 100,
       },
     ]
-  }, [dinoData]);
+  }, []);
+  const nper = (n, x) => {
+    let n1 = n + 1;
+    let r = 1.0;
+    let xx = Math.min(x, n - x);
+    for (let i = 1; i < xx + 1; i++) {
+      r = (r * (n1 - i)) / i;
+    }
+    return r;
+  }
 
-  // Multipliers
-  const settings = {
-    harvestMultiplier: 1,
-    babyCuddleInterval: 1,
-    babyImprintAmount: 1,
-    hexagonReward: 1,
-    tamingMultiplier: 1.0,
-    consumptionMultiplier: 1.0,
-    hatchMultiplier: 1,
-    matureMultiplier: 1,
-    meleeMultiplier: 100,
-    playerDamageMultiplier: 1.0,
-    matingIntervalMultiplier: 1.0,
-    eggHatchSpeedMultiplier: 1.0,
-    babyMatureSpeedMultiplier: 1.0,
-    XPMultiplier: 1.0
-  };
+  /**
+
+    Calculates the cumulative probability of getting a result between the given lower and upper limits,
+    based on a binomial distribution with a given number of trials and probability of success.
+    @param {number} ll - Lower limit of the result
+    @param {number} ul - Upper limit of the result
+    @param {number} p - Probability of success
+    @returns {number} - The cumulative probability
+    */
+  function calculateProbabilityMore(ll, ul, p) {
+    let maxProb = 0;
+    let pCumulative = 0;
+
+    for (let i = ll; i <= ul; i++) {
+      const probability = nper(ul, i) * Math.pow(p, i) * Math.pow(1.0 - p, ul - i);
+      maxProb = Math.max(maxProb, probability);
+      pCumulative += probability;
+    }
+
+    const topProb = Math.ceil(100 * maxProb) / 100;
+    pCumulative = Math.round(100 * pCumulative) / 100;
+
+    return pCumulative;
+  }
+
+  /**
+
+    Calculates the cumulative probability of getting a result greater than or equal to the given lower limit,
+    based on a binomial distribution with a given number of trials and probability of success.
+    @param {number} n - Number of trials
+    @param {number} numOptions - Number of possible outcomes
+    @param {number} ll - Lower limit of the result
+    @returns {number|undefined} - The cumulative probability if all the parameters are valid, undefined otherwise
+    */
+  function calculatePropability(n, numOptions, ll) {
+    const p = 1 / numOptions;
+
+    if (isNaN(n) || isNaN(p) || n <= 0 || p <= 0 || p >= 1 || isNaN(ll) || ll < 0) {
+      return undefined;
+    }
+
+    return calculateProbabilityMore(ll, n, p);
+  }
+
+  const calcWeapons = useMemo(() => {
+    const {
+      base_taming_time: baseTamingTime,
+      base_stats: bs,
+      taming_interval: tamingInterval,
+      flee_threshold: fleeThreshold,
+      tdps,
+      multipliers: dinoMult,
+      hitboxes: dinoHitboxes
+    }: Partial<{
+      base_taming_time: number,
+      base_stats: any,
+      taming_interval: number,
+      flee_threshold: number,
+      tdps: number,
+      multipliers: any,
+      hitboxes: any
+    }> = dino;
+
+    const {
+      meleeMultiplier,
+      playerDamageMultiplier,
+    } = settings;
+
+    return weapons.map((weapon) => {
+      const {
+        torpor,
+        duration,
+        userDamage,
+        damage: weaponDamage,
+        mult: weaponMult,
+        usesMeleeDamage,
+      } = weapon;
+      let creatureT = baseTamingTime + tamingInterval * (dinoLevel - 1);
+
+      let torporPerHit = torpor;
+      let isPossible = true;
+      let secsOfRegen = 0;
+      let totalMultipliers = 1;
+      let numHitsRaw = 0
+      let hitsUntilFlee: any = 0
+      let hitboxes = [];
+      let bodyChanceOfDeath = 0;
+      let minChanceOfDeath = 0;
+      let propsurvival = 0;
+
+      if (tdps) {
+        const torporDeplPS =
+          tdps + Math.pow(dinoLevel - 1, 0.8493) / (22.39671632 / tdps);
+        if (secondsBetweenHits > duration) {
+          secsOfRegen = secondsBetweenHits - duration;
+          torporPerHit = torporPerHit - secsOfRegen * torporDeplPS;
+        }
+        isPossible = torporPerHit > 0;
+      }
+      let knockOut = creatureT / torporPerHit;
+
+      if (
+        typeof weapon.mult == "object" &&
+        dinoMult !== null &&
+        weapon.mult != null &&
+        typeof dinoMult == "object"
+      ) {
+        for (let i in weapon.mult) {
+          if (typeof dinoMult[weapon.mult[i]] == "number") {
+            knockOut /= dinoMult[weapon.mult[i]];
+            totalMultipliers *= dinoMult[weapon.mult[i]];
+          }
+        }
+      }
+
+      if (weaponMult && dinoMult) {
+        weaponMult.forEach((key) => {
+          if (typeof dinoMult[key] === "number") {
+            totalMultipliers *= dinoMult[key];
+            torporPerHit /= dinoMult[key];
+          }
+        });
+      }
+      if (usesMeleeDamage) {
+        knockOut = knockOut / (meleeMultiplier / 100);
+        totalMultipliers *= meleeMultiplier / 100;
+      }
+      if (dino.x_variant && dinoXVariant) { // add x variant checkbox to this
+        knockOut = knockOut / 0.4;
+        totalMultipliers *= 0.4;
+      }
+      numHitsRaw = knockOut / (userDamage / 100);
+      knockOut /= playerDamageMultiplier;
+      totalMultipliers *= playerDamageMultiplier;
+      if (typeof dinoHitboxes !== "undefined" && dinoHitboxes !== null) {
+        Object.entries(dinoHitboxes).forEach(([key, value]: [string, number]) => {
+          let hitboxHits = numHitsRaw / value;
+          hitsUntilFlee = fleeThreshold == 1 ? "-" : Math.max(1, Math.ceil(hitboxHits * fleeThreshold));
+
+          hitboxes.push({
+            name: key,
+            multiplier: value,
+            hitsRaw: hitboxHits,
+            hitsUntilFlee: hitsUntilFlee,
+            hits: Math.ceil(hitboxHits),
+            chanceOfDeath: 0,
+            isPossible: isPossible,
+          });
+        });
+
+      }
+
+      if (dinoLevel < 1000 && isPossible) {
+        if (
+          typeof bs == "object" &&
+          typeof bs.h == "object" &&
+          typeof bs.h.b == "number" &&
+          typeof bs.h.w == "number"
+        ) {
+          const baseHealth = bs.h.b;
+          const incPerLevel = bs.h.w;
+          if (
+            typeof userDamage != null &&
+            typeof baseHealth != null &&
+            typeof incPerLevel != null
+          ) {
+            const numStats = 7;
+            let totalDamage =
+              weaponDamage *
+              Math.ceil(numHitsRaw) *
+              totalMultipliers *
+              (userDamage / 100);
+
+            propsurvival = totalDamage < baseHealth
+              ? 100
+              : dinoLevel - 1 < Math.max(
+                Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                0
+              )
+                ? 0
+                : calculatePropability(
+                  dinoLevel - 1,
+                  numStats,
+                  Math.max(Math.ceil((totalDamage - baseHealth) / incPerLevel), 0)
+                );
+
+
+            bodyChanceOfDeath = (100 - propsurvival);
+            minChanceOfDeath = bodyChanceOfDeath;
+            if (hitboxes.length > 0) {
+              for (let i in hitboxes) {
+                totalDamage =
+                  userDamage *
+                  Math.ceil(hitboxes[i].hitsRaw) *
+                  totalMultipliers *
+                  (userDamage / 100) *
+                  hitboxes[i].multiplier;
+
+                propsurvival = totalDamage < baseHealth ? 100 : calculatePropability(
+                  dinoLevel - 1,
+                  numStats,
+                  Math.max(
+                    Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                    0
+                  )
+                );
+
+                let chanceOfDeath = Math.round((100 - propsurvival) * 10) / 10;
+                hitboxes[i].chanceOfDeath = chanceOfDeath;
+                hitboxes[i].chanceOfDeathHigh = chanceOfDeath > 40;
+                minChanceOfDeath = Math.min(minChanceOfDeath, chanceOfDeath);
+              }
+            }
+          }
+        }
+      }
+
+      return {
+        ...weapon,
+        hits: Math.ceil(numHitsRaw),
+        hitsRaw: numHitsRaw,
+        hitsUntilFlee: fleeThreshold == 1 ? '-' : Math.max(1, Math.ceil(numHitsRaw * fleeThreshold)),
+        chanceOfDeath: bodyChanceOfDeath,
+        chanceOfDeathHigh: bodyChanceOfDeath > 40,
+        minChanceOfDeath: minChanceOfDeath,
+        isPossible: isPossible,
+        isRecommended: isPossible && minChanceOfDeath < 90,
+        hitboxes: hitboxes,
+      };
+    });
+
+  }, [dino, secondsBetweenHits])
+
+
 
   const calculateDino = (e) => {
     const { level, x_variant } = e
     if (!level) return null;
 
-    setDinoData({
-      ...dino,
-      isTamable: (!dino.disable_tame || dino.affinity_needed || dino.eats),
-      isKOable: (!dino.disable_ko && dino.base_taming_time && dino.taming_interval),
-      isBreedable: (dino.maturation_time && (dino.incubation_time || dino.base_points)),
-      maxLevelsAfterTame: x_variant && dino.x_variant ? 88 : 73,
-      level: level,
-      base_stats: Object.entries(dino.base_stats).map(([key, value]: any) => {
-        return {
-          stat: key,
-          base: value.b,
-          increasePerLevelWild: value.w || null,
-          increasePerLevelTamed: value.t || null,
-        };
-      }),
-      food: dino.DinoStat.filter((stat) => stat.type === "food").map(({ Item }) => ({
-        ...Item,
-      })),
-    });
+    setDinoLevel(parseInt(level));
+    setDinoXVariant(x_variant);
 
-    // if (!selectedFood) setSelectedFood(dino.DinoStat.filter((f) => f.type === 'food')[0].Item.id)
+    if (!selectedFood) setSelectedFood(dino.DinoStat.filter((f) => f.type === 'food')[0].Item.id)
   }
 
   const tamingFood = useMemo(() => {
-    if (!dinoData) return [];
+    if (!dino || !dinoLevel) return [];
     const affinityNeeded =
-      dino.affinity_needed + dino.aff_inc * dinoData.level;
+      dino.affinity_needed + dino.aff_inc * dinoLevel;
 
     const foodConsumption =
       dino.food_consumption_base *
       dino.food_consumption_mult *
       settings.consumptionMultiplier *
       1;
+
+
+    const tamingMultiplier = dino.disable_mult
+      ? 4
+      : settings.tamingMultiplier * 4;
     if (!selectedFood) setSelectedFood(dino.DinoStat.filter((f) => f.type === 'food')[0].Item.id)
 
 
     return dino.DinoStat.filter((f) => f.type === 'food').map((foodItem: any, index: number) => {
       const foodValue = foodItem.Item.stats
-        ? foodItem.Item.stats.find((stat) => stat.id === 8)?.value
+        ? foodItem.Item.stats.find((stat) => stat.id == 8)?.value
         : 0;
       const affinityValue =
-        foodItem.Item.stats.find((stat) => stat.id === 15)?.value || 0;
+        foodItem.Item.stats.find((stat) => stat.id == 15)?.value || 0;
 
-      const foodMaxRaw = affinityNeeded / affinityValue / 4;
-      const foodMax = Math.ceil(foodMaxRaw);
-      const isFoodSelected = foodItem.Item.id === selectedFood;
+      let foodMaxRaw = affinityNeeded / affinityValue / tamingMultiplier;
+      let foodMax = 0;
+      const isFoodSelected = foodItem.Item.id === (selectedFood || dino.DinoStat.filter((f) => f.type === 'food')[0].Item.id);
       let interval = null;
       let interval1 = null;
       let foodSecondsPer = 0;
       let foodSeconds = 0;
-      if (dino.violent_tame) { // if violent tame
-        const baseStat = dinoData.base_stats?.f;
+      if (!dino.violent_tame) { // if non violent tame
+        foodMaxRaw = foodMaxRaw / dino.non_violent_food_rate_mult
+        interval = foodValue / foodConsumption;
+        const baseStat = (dino.base_stats as any)?.f;
         if (
           typeof baseStat?.b === "number" &&
           typeof baseStat?.w === "number"
         ) {
-          const averagePerStat = Math.round(dinoData.level / 7);
+          const averagePerStat = Math.round(dinoLevel / 7);
           const estimatedFood = baseStat.b + baseStat.w * averagePerStat;
           const requiredFood = Math.max(estimatedFood * 0.1, foodValue);
           interval1 = requiredFood / foodConsumption;
         }
-        interval = foodValue / foodConsumption;
-        if (foodMax > 1) {
+        foodMax = Math.ceil(foodMaxRaw);
+
+        if (foodMax !== 1) {
           foodSecondsPer = foodValue / foodConsumption;
           foodSeconds = Math.ceil(
             Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
             foodSecondsPer +
-            (interval1 || 0)
+            (typeof interval1 === "number" ? interval1 : 0)
           );
+        } else {
+          foodSecondsPer = 0;
+          foodSeconds = 0;
+          interval1 = 0;
+          interval = 0;
         }
       } else {
+        interval = null
+        foodMax = Math.ceil(foodMaxRaw)
         foodSecondsPer = foodValue / foodConsumption;
         foodSeconds = Math.ceil(foodMax * foodSecondsPer);
       }
@@ -380,10 +622,11 @@ const Dino = ({ dino }: Props) => {
         key: index,
       };
     })
-  }, [dinoData]);
+  }, [selectedFood]);
 
   const tameData = useMemo(() => {
-    if (!dinoData || !tamingFood) return null;
+
+    if (!tamingFood) return null;
     let effectiveness = 100;
     const narcotics = {
       ascerbic: {
@@ -405,7 +648,7 @@ const Dino = ({ dino }: Props) => {
     };
 
     let affinityNeeded =
-      dino.affinity_needed + dino.aff_inc * dinoData.level;
+      dino.affinity_needed + dino.aff_inc * dinoLevel;
     // sanguineElixir = affinityNeeded *= 0.7
 
     let affinityLeft = affinityNeeded;
@@ -423,7 +666,7 @@ const Dino = ({ dino }: Props) => {
     let tooMuchFood = false;
     let enoughFood = false;
     let numUsedTotal = 0;
-    let numNeeded = 0;
+    var numNeeded = 0;
     let numToUse = 0;
     let totalSecs = 0;
 
@@ -480,33 +723,34 @@ const Dino = ({ dino }: Props) => {
       }
     });
     totalSecs = Math.ceil(totalSecs);
-    let neededValues = Array();
-    let neededValuesSecs = Array();
+    const neededValues = {};
+    const neededValuesSecs = {};
 
     if (affinityLeft <= 0) {
       enoughFood = true;
     } else {
       enoughFood = false;
+
       tamingFood.forEach((food: any) => {
+
         numNeeded = Math.ceil(
           affinityLeft /
-          food?.stats.find((f: any) => f.id === 15)?.value /
+          food?.stats.find((f) => f.id === 15)?.value /
           tamingMultiplier
         );
         neededValues[food.id] = numNeeded;
         neededValuesSecs[food.id] = Math.ceil(
-          (numNeeded * food.stats.find((f: any) => f.id === 8)?.value) / settings.consumptionMultiplier + totalSecs
+          (numNeeded * food.stats.find((f: any) => f.id === 8)?.value) / foodConsumption + totalSecs
         );
       })
     }
 
     let percentLeft = affinityLeft / affinityNeeded;
     let percentTamed = 1 - percentLeft;
-    let totalTorpor = dino.base_taming_time + dino.taming_interval * (dinoData.level - 1);
+    let totalTorpor = dino.base_taming_time + dino.taming_interval * (dinoLevel - 1);
     let torporDepletionPS =
       dino.tdps +
-      Math.pow(dinoData.level - 1, 0.800403041) / (22.39671632 / dino.tdps);
-    let levelsGained = Math.floor((dinoData.level * 0.5 * effectiveness) / 100);
+      Math.pow(dinoLevel - 1, 0.800403041) / (22.39671632 / dino.tdps);
 
     const calcNarcotics = Object.entries(narcotics).map(([name, stats]: any) => {
       return {
@@ -521,17 +765,18 @@ const Dino = ({ dino }: Props) => {
     });
 
     return {
+      affinityNeeded,
       effectiveness,
       neededValues,
+      neededValuesSecs,
       enoughFood,
       tooMuchFood,
       totalFood,
       totalSecs,
-      levelsGained,
+      levelsGained: Math.floor((dinoLevel * 0.5 * effectiveness) / 100),
       totalTorpor,
       torporDepletionPS,
       percentTamed,
-      numUsedTotal,
       ...calcNarcotics.reduce((acc, cur) => ({ ...acc, ...cur }), {})
     };
   }, [tamingFood]);
@@ -1347,12 +1592,12 @@ const Dino = ({ dino }: Props) => {
             </div>
           </Form>
         </div>
-        {(dinoData && tamingFood && tameData) && (
+        {(tamingFood && tameData) && (
           <>
             <CheckboxGroup
               name="foodSelect"
               form={false}
-              defaultValue={[selectedFood]}
+              defaultValue={[selectedFood ? selectedFood.toString() : dino.DinoStat.filter((f) => f.type === 'food')[0].Item.id.toString()]}
               validation={{
                 single: true,
               }}
@@ -1367,111 +1612,113 @@ const Dino = ({ dino }: Props) => {
                 setSelectedFood(e);
               }}
             />
+
             {/* <Table
-                rows={tamingFood}
-                columns={[
-                  {
-                    field: "name",
-                    label: "Food",
-                    bold: true,
-                    sortable: true,
-                    renderCell: ({ row }) => {
-                      return (
-                        <button className="flex flex-row content-center items-center align-middle" onClick={() => setSelectedFood(row.id)}>
-                          <img
-                            className="w-6 h-6 mr-2"
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
-                            alt={row.name}
-                          />
-                          <span>{row.name}</span>
-                        </button>
-                      );
-                    },
+              rows={tamingFood}
+              columns={[
+                {
+                  field: "name",
+                  label: "Food",
+                  bold: true,
+                  sortable: true,
+                  renderCell: ({ row }) => {
+                    return (
+                      <button className="flex flex-row content-center items-center align-middle" onClick={() => setSelectedFood(row.id)}>
+                        <img
+                          className="w-6 h-6 mr-2"
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
+                          alt={row.name}
+                        />
+                        <span>{row.name}</span>
+                      </button>
+                    );
                   },
-                  {
-                    field: "use",
-                    label: "Use",
-                    bold: true,
-                    renderCell: ({ row }) => {
-                      return (
-                        <div
-                          className="flex flex-row items-center rw-button-group justify-start"
-                          key={`${row.use}+${Math.random()}`}
+                },
+                {
+                  field: "use",
+                  label: "Use",
+                  bold: true,
+                  renderCell: ({ row }) => {
+                    return (
+                      <div
+                        className="flex flex-row items-center rw-button-group justify-start"
+                        key={`${row.use}+${Math.random()}`}
+                      >
+                        <button
+                          type="button"
+                          disabled={row.use <= 0}
+                          className="rw-button"
                         >
-                          <button
-                            type="button"
-                            disabled={row.use <= 0}
-                            className="rw-button"
-                          >
-                            -
-                          </button>
-                          <p
-                            defaultValue={row.use}
-                            className="rw-input w-20 p-3 text-center"
-                          >
-                            {row.use}/{row.max}
-                          </p>
-                          <button
-                            type="button"
-                            disabled={row.use >= row.max}
-                            className="rw-button"
-                          >
-                            +
-                          </button>
+                          -
+                        </button>
+                        <p
+                          defaultValue={row.use}
+                          className="rw-input w-20 p-3 text-center"
+                        >
+                          {row.use}/{row.max}
+                        </p>
+                        <button
+                          type="button"
+                          disabled={row.use >= row.max}
+                          className="rw-button"
+                        >
+                          +
+                        </button>
+                      </div>
+                    );
+                  },
+                },
+                {
+                  field: "seconds",
+                  label: "Time",
+                  numeric: true,
+                  className: "text-center",
+                  valueFormatter: ({ value }) => {
+                    console.log(value)
+                    let minutes = Math.floor(value / 60);
+                    let remainingSeconds =
+                      value % 60 < 10 ? `0${value % 60}` : value % 60;
+                    return `${minutes}:${remainingSeconds}`;
+                  },
+                },
+                {
+                  field: "results",
+                  label: "Effectiveness",
+                  renderCell: ({ value }) => {
+                    return (
+                      <div className="block">
+                        <div className="my-2 h-1 overflow-hidden rounded-md bg-white">
+                          <span
+                            className="bg-pea-500 block h-1 w-full rounded-md"
+                            style={{
+                              width: `${value ? value.effectiveness : 0}%`,
+                            }}
+                          ></span>
                         </div>
-                      );
-                    },
+                        <p className="text-xs">
+                          {(value ? value.effectiveness : 0).toFixed(2)}%
+                        </p>
+                      </div>
+                    );
                   },
-                  {
-                    field: "seconds",
-                    label: "Time",
-                    numeric: true,
-                    className: "text-center",
-                    valueFormatter: ({ value }) => {
-                      let minutes = Math.floor(value / 60);
-                      let remainingSeconds =
-                        value % 60 < 10 ? `0${value % 60}` : value % 60;
-                      return `${minutes}:${remainingSeconds}`;
-                    },
-                  },
-                  {
-                    field: "results",
-                    label: "Effectiveness",
-                    renderCell: ({ value }) => {
-                      return (
-                        <div className="block">
-                          <div className="my-2 h-1 overflow-hidden rounded-md bg-white">
-                            <span
-                              className="bg-pea-500 block h-1 w-full rounded-md"
-                              style={{
-                                width: `${value ? value.effectiveness : 0}%`,
-                              }}
-                            ></span>
-                          </div>
-                          <p className="text-xs">
-                            {(value ? value.effectiveness : 0).toFixed(2)}%
-                          </p>
-                        </div>
-                      );
-                    },
-                  },
-                ]}
-              /> */}
+                },
+              ]}
+            /> */}
             {tameData && (
               <>
-                <p className="my-3 text-center text-sm dark:text-gray-200">
+                <p className="my-3 text-center text-base dark:text-gray-200">
                   With selected food:
                 </p>
                 <section className="my-3 rounded-md p-4 dark:bg-zinc-600 bg-stone-200 dark:text-white">
                   <div className="relative my-3 grid grid-cols-4 gap-4 text-center">
                     <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
                       <p className="text-thin text-sm">
-                        Lvl<span className="ml-1 text-lg font-semibold">{dinoData.level}</span>
+                        Lvl<span className="ml-1 text-lg font-semibold">{dinoLevel}</span>
                       </p>
                     </div>
                     <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
                       <p className="text-thin text-sm">
-                        {(tameData.effectiveness ? tameData.effectiveness : 0).toFixed(2)}
+                        <span className="ml-1 text-lg font-semibold">{(tameData.effectiveness ? tameData.effectiveness : 0).toFixed(1)}</span>
                         %
                       </p>
                     </div>
@@ -1480,7 +1727,7 @@ const Dino = ({ dino }: Props) => {
                       <span className="text-thin text-sm">
                         Lvl
                         <span className="ml-1 text-lg font-semibold">
-                          <Counter startNum={0} endNum={parseInt(dinoData.level) + tameData.levelsGained} duration={500} />
+                          <Counter startNum={0} endNum={dinoLevel + tameData.levelsGained} duration={500} />
                         </span>
                       </span>
                     </div>
@@ -1488,9 +1735,9 @@ const Dino = ({ dino }: Props) => {
                       <p className="text-thin text-sm">
                         Lvl
                         <span className="ml-1 text-lg font-semibold">
-                          {parseInt(dinoData.level) +
+                          {dinoLevel +
                             tameData.levelsGained +
-                            dinoData.maxLevelsAfterTame}
+                            (dinoXVariant && dino.x_variant ? 88 : 73)}
                         </span>
                       </p>
                     </div>
@@ -1552,7 +1799,7 @@ const Dino = ({ dino }: Props) => {
                           <span>
                             <h3 className="font-medium leading-tight">Baby</h3>
                             <p className="text-sm">
-                              {timeFormatL((dinoData.maturation_time * 1) / 10)}
+                              {timeFormatL((parseInt(dino.maturation_time) * 1) / 10)}
                             </p>
                           </span>
                         </li>
@@ -1585,8 +1832,8 @@ const Dino = ({ dino }: Props) => {
                             </h3>
                             <p className="text-sm">
                               {timeFormatL(
-                                (dinoData.maturation_time * 1) / 2 -
-                                (dinoData.maturation_time * 1) / 10
+                                (parseInt(dino.maturation_time) * 1) / 2 -
+                                (parseInt(dino.maturation_time) * 1) / 10
                               )}
                             </p>
                           </span>
@@ -1619,7 +1866,7 @@ const Dino = ({ dino }: Props) => {
                               Adolescent
                             </h3>
                             <p className="text-sm">
-                              {timeFormatL((dinoData.maturation_time * settings.matureMultiplier) / 2)}
+                              {timeFormatL((parseInt(dino.maturation_time) * settings.matureMultiplier) / 2)}
                             </p>
                           </span>
                         </li>
@@ -1649,7 +1896,7 @@ const Dino = ({ dino }: Props) => {
                           <span>
                             <h3 className="font-medium leading-tight">Total</h3>
                             <p className="text-sm">
-                              {timeFormatL(dinoData.maturation_time * settings.matureMultiplier)}
+                              {timeFormatL(parseInt(dino.maturation_time) * settings.matureMultiplier)}
                             </p>
                           </span>
                         </li>
@@ -1658,22 +1905,30 @@ const Dino = ({ dino }: Props) => {
                   )}
 
 
-                {/* <div className="flex flex-row gap-2 overflow-x-auto max-w-screen relative py-3 rounded-md dark:text-white text-gray-800 text-center my-3">
-              {calcWeapons.map((weapon, i) => (
-                <div key={`weapon-${i}`} className="flex flex-col space-y-1 flex-1 min-h-full rounded p-3 dark:bg-opacity-50 dark:bg-zinc-600 bg-white min-w-[8rem] justify-between items-center animate-fade-in">
-                  <img className="w-16 h-16" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${weapon.image}`} />
-                  <p className="w-full">{weapon.name}</p>
-                  {weapon.isPossible ? <Counter startNum={0} endNum={weapon.hits} duration={500 / weapon.hits} /> : <p>Not Possible</p>}
-                  {weapon.chanceOfDeathHigh && <p className="text-xs text-red-300">{weapon.chanceOfDeath}% chance of death</p>}
-                  <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
-                    {weapon.hitboxes.map((h) => (
-                      `${h.name} - ${h.multiplier}x`
-                    ))}
-                  </span>
-                  <p></p>
+                <div className="flex flex-row gap-2 overflow-x-auto max-w-screen relative py-3 rounded-md dark:text-white text-gray-800 text-center my-3">
+                  {calcWeapons.map((weapon, i) => (
+                    <div key={`weapon-${i}`} className="flex flex-col space-y-1 flex-1 min-h-full rounded p-3 dark:bg-opacity-50 dark:bg-zinc-600 bg-white min-w-[8rem] justify-between items-center animate-fade-in">
+                      <img className="w-16 h-16" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${weapon.image}`} />
+                      <p className="w-full">{weapon.name}</p>
+                      {weapon.isPossible ? <Counter startNum={0} endNum={weapon.hits} duration={3000 / weapon.hits} /> : <p>Not Possible</p>}
+                      {weapon.chanceOfDeathHigh && <p className="text-xs text-red-300">{weapon.chanceOfDeath}% chance of death</p>}
+                      {weapon.hitboxes.length > 0 && (
+                        <span className="bg-blue-100 text-blue-500 text-sm font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">
+                          {weapon.hitboxes.map((h) => (
+                            `${h.name} - ${h.multiplier}x`
+                          ))}
+                        </span>
+                      )}
+                      <div className="rw-button-group max-w-full">
+                        <input className="w-12 !p-1 rw-input text-center" defaultValue={weapon.userDamage} onChange={(e) => {
+                          weapons[i].userDamage = parseInt(e.target.value)
+                          // TODO: Add debounce here
+                        }} />
+                        <input type="readonly" className="!w-5 !p-1 rw-input text-center" readOnly placeholder="%" defaultValue={`%`} />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div> */}
 
                 {/* <Table
               rows={calcWeapons}

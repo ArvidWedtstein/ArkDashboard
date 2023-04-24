@@ -1,4 +1,4 @@
-const { items } = require("./web/public/arkitems.json");
+const dino = require("./web/public/arkdinos.json");
 // const d = require("./web/public/maps.json");
 // const d2 = require("./web/public/f.json");
 // const lootcrates = require("./web/public/lootcratesItemId.json");
@@ -8,16 +8,14 @@ const { items } = require("./web/public/arkitems.json");
 // let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
 console.time("normal");
 
-// const crates = lootcrates.lootCrates.map((x) => {
-//   x.sets.forEach((y) => {
-//     y.entries.forEach((z) => {
-//       if (z.items.length == 2 && isNaN(z.items[0][0])) {
-//         z.items = [z.items];
-//       }
-//     });
-//   });
-//   return x;
-// });
+const crates = Object.entries(dino).map(([k, v]) => {
+  let d = v.mult
+    ? `UPDATE public."Dino" SET multipliers = '[${JSON.stringify(
+        v.mult || ""
+      )}]' WHERE name LIKE '${v.name}';`
+    : "";
+  return d;
+});
 
 // For downloading images
 // setInterval(function(){
@@ -79,19 +77,19 @@ let map = {
 //   return "";
 //   // return `INSERT INTO public."DinoEffWeight" ("dino_id", "item_id", "value", "is_gather_eff")`;
 // });
-const dd = items
-  .filter((x) => x.name.includes("Saddle"))
-  .map((x) => {
-    return `
-  UPDATE public."Item"
-  SET type = '${x.type}'
-  WHERE id = ${x.id};`;
-  });
+// const dd = items
+//   .filter((x) => x.name.includes("Saddle"))
+//   .map((x) => {
+//     return `
+//   UPDATE public."Item"
+//   SET type = '${x.type}'
+//   WHERE id = ${x.id};`;
+//   });
 require("fs").writeFile(
   `insert.txt`,
   [
     // `INSERT INTO public."Item" ("crafted_item_id", "item_id", "amount") VALUES`,
-    ...dd,
+    ...crates,
   ].join("\n"),
   (error) => {
     if (error) {
