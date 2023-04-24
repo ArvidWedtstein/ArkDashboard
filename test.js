@@ -98,7 +98,6 @@ require("fs").writeFile(
   }
 );
 return;
-return;
 console.timeEnd("normal");
 const g = {
   items: fff,
