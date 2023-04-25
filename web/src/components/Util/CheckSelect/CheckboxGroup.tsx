@@ -31,7 +31,6 @@ const CheckboxGroup = ({
 }: CheckboxGroupProps) => {
   const [selectedOptions, setSelectedOptions] = useState(() => defaultValue);
   const { field } = (form && !!name) ? useController({ name: name }) : { field: null };
-
   const memoizedOptions = useMemo(() => options, [options]);
 
   const handleCheckboxChange = useCallback((event) => {
@@ -56,7 +55,7 @@ const CheckboxGroup = ({
       {memoizedOptions.map(({ label, image, value: optValue }) => (
         <label key={label} aria-details={`Item: ${optValue}`}>
           <input
-            disabled={!name && !label}
+            disabled={!name && !label || (!name && !form)}
             type="checkbox"
             name={name || optValue || label + "checkbox"}
             value={optValue || label}

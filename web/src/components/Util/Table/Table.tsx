@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { debounce, dynamicSort, isUUID, truncate } from "src/lib/formatters";
+import { debounce, dynamicSort, formatNumberWithThousandSeparator, isUUID, nmbFormat, truncate } from "src/lib/formatters";
 import clsx from "clsx";
 interface Row {
   index: number;
@@ -225,6 +225,9 @@ const Table = ({
       "font-bold text-gray-900 dark:text-white": other.bold,
     });
     // px-6 py-4
+    if (other.numeric) {
+      cellData = formatNumberWithThousandSeparator(cellData.toFixed() || 0);
+    }
     const key = `${Math.random()}-${columnIndex}-${cellData}`;
 
     let content = renderCell

@@ -460,13 +460,13 @@ const ItemForm = (props: ItemFormProps) => {
                         "https://arkids.net/image/item/120/mortar-and-pestle.png",
                     },
                     {
-                      value: "126",
+                      value: "125",
                       label: "Refining Forge",
                       image:
                         "https://arkids.net/image/item/120/refining-forge.png",
                     },
                     {
-                      value: "129",
+                      value: "126",
                       label: "Smithy",
                       image: "https://arkids.net/image/item/120/smithy.png",
                     },
