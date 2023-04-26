@@ -13,7 +13,7 @@ import {
   useForm,
 } from "@redwoodjs/forms";
 
-import type { EditItemById, UpdateItemInput } from "types/graphql";
+import type { EditItemById, UpdateItemInput, UpdateItemRecipeInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { useReducer, useState } from "react";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
@@ -24,7 +24,7 @@ type FormItem = NonNullable<EditItemById["item"]>;
 
 interface ItemFormProps {
   item?: EditItemById["item"];
-  onSave: (data: UpdateItemInput, id?: FormItem["id"]) => void;
+  onSave: (data: any | UpdateItemInput, id?: FormItem["id"]) => void;
   error: RWGqlError;
   loading: boolean;
 }
@@ -34,8 +34,30 @@ const ItemForm = (props: ItemFormProps) => {
     // delete data["craftable"];
 
     console.log(data);
+    let itm = {
+      "name": "test",
+      "description": "",
+      "image": "",
+      "color": "#000000",
+      "weight": 0,
+      "max_stack": 1,
+      "category": "Saddle",
+      "engram_points": 0,
+      "req_level": 0,
+      "crafting_time": 0,
+      "yields": 1,
+      ItemRecipe_ItemRecipe_crafted_item_idToItem: {
+        create: [
+          {
+            item_id: 1,
+            amount: 2,
+            yields: 1,
+          },
+        ]
+      },
+    }
 
-    props.onSave(data, props?.item?.id);
+    props.onSave(itm, props?.item?.id);
   };
 
   const [craftable, setCraftable] = useState(false);
@@ -382,7 +404,7 @@ const ItemForm = (props: ItemFormProps) => {
               </div> */}
             </div>
             <div>
-              <div>
+              {/* <div>
                 <Label
                   name="crafted_in"
                   className="rw-label"
@@ -471,7 +493,7 @@ const ItemForm = (props: ItemFormProps) => {
                       image: "https://arkids.net/image/item/120/smithy.png",
                     },
                     {
-                      value: "609",
+                      value: "652",
                       label: "Tek Replicator",
                       image:
                         "https://arkids.net/image/item/120/tek-replicator.png",
@@ -479,7 +501,7 @@ const ItemForm = (props: ItemFormProps) => {
                   ]}
                 />
                 <FieldError name="crafted_in" className="rw-field-error" />
-              </div>
+              </div> */}
             </div>
             <div>
               <div>

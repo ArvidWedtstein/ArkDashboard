@@ -4,17 +4,17 @@ import clsx from "clsx";
 interface Row {
   index: number;
 }
-interface GridCell<V = any> {
+interface GridCell<V> {
   columnIndex: number;
   rowIndex: number;
-  field: string;
+  field: ColumnData['field'];
   value: V;
   row?: V | ThisType<Row>;
-  isBig?: boolean;
 }
+
 interface ColumnData<V = any, F = V> {
   field: string;
-  label: string;
+  label: string
   numeric?: boolean;
   className?: string;
   bold?: boolean;
@@ -33,6 +33,7 @@ interface ColumnData<V = any, F = V> {
    */
   renderCell?: (params: GridCell<V>) => React.ReactNode;
 }
+
 interface TableProps {
   columns: ColumnData[];
   hover?: boolean;

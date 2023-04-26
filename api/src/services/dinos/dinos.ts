@@ -32,9 +32,7 @@ export const dino: QueryResolvers["dino"] = ({ id }) => {
   });
 };
 
-export const createDino:
-  | MutationResolvers["createDino"]
-  | MutationResolvers["createDinoStat"] = ({ input }) => {
+export const createDino: MutationResolvers["createDino"] = ({ input }) => {
   // input.DinoStat = [
   //   {
   //     type: "gather_efficiency",
@@ -44,25 +42,27 @@ export const createDino:
   // ];
 
   return db.dino.create({
+    data: input,
+    // data: {
+    //   ...i,
+    //   DinoStat: {
+    //     create: input?.DinoStat,
+    //   },
+    // },
+  });
+};
+
+export const updateDino:
+  | MutationResolvers["updateDino"]
+  | MutationResolvers["updateDinoStat"] = ({ id, input }) => {
+  return db.dino.update({
     // data: input,
     data: {
       ...input,
       DinoStat: {
-        create: input?.DinoStat,
+        connect: { id: input.DinoStat?.connect?.id },
       },
     },
-  });
-};
-
-export const updateDino: MutationResolvers["updateDino"] = ({ id, input }) => {
-  return db.dino.update({
-    data: input,
-    // data: {
-    //   ...input,
-    //   DinoStat: {
-    //     connect: { id: input.DinoStat?.connect?.id },
-    //   },
-    // },
     where: { id },
   });
 };

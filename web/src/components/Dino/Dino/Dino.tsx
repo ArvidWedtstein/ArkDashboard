@@ -1877,14 +1877,14 @@ const Dino = ({ dino }: Props) => {
                         Clear
                       </button>
                     </div>
-                    <p>{dinoLevel - baseStats.map((b) => b.points).reduce((a: any, b: any): any => a + b, 0)} points wasted</p>
+                    <p>{dinoLevel - baseStats.map((b) => b.points).reduce((a, b) => a + b, 0)} points wasted</p>
                   </>
               }}
               columns={[
                 {
                   field: "stat",
-                  label: "Stat",
                   bold: true,
+                  label: "Stat",
                   sortable: true,
                   renderCell: ({ value }) => {
                     return <div className="inline-flex items-center space-x-2">

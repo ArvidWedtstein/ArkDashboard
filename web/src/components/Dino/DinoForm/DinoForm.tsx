@@ -148,13 +148,13 @@ const DinoForm = (props: DinoFormProps) => {
   const [useFoundationUnit, setUseFoundationUnit] = useState(false);
 
   const onSubmit = (data: FormDino) => {
-    data.eats = eats.map((f) => f.id.toString());
+    // data.eats = eats.map((f) => f.id.toString());
     console.log(data)
     // Test Dino Object
     // const d = {
     //   name: "test",
     //   description: "test",
-    //   synonyms: ["test"],
+    //   synonyms: "test",
     //   can_destroy: ["t"],
     //   fits_through: ["381"],
     //   immobilized_by: ["t"],
@@ -162,13 +162,13 @@ const DinoForm = (props: DinoFormProps) => {
     //   drops: ["11"],
     //   type: ["Ground"],
     //   eats: ["11"],
-    //   DinoStat: [
-    //     {
-    //       type: "gather_efficiency",
-    //       value: 5,
-    //       item_id: 8,
-    //     },
-    //   ],
+    //   // DinoStat: [
+    //   //   {
+    //   //     type: "gather_efficiency",
+    //   //     value: 5,
+    //   //     item_id: 8,
+    //   //   },
+    //   // ],
     // };
     // props.onSave(d, props?.dino?.id);
     props.onSave(data, props?.dino?.id);
