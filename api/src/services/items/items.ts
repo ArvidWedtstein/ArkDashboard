@@ -56,7 +56,7 @@ export const createItem: MutationResolvers["createItem"] = ({ input }) => {
     data: input,
   });
 };
-
+// https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#connect-or-create-a-record
 export const updateItem: MutationResolvers["updateItem"] = ({ id, input }) => {
   return db.item.update({
     include: {
