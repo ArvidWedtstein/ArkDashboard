@@ -61,10 +61,10 @@ const CheckboxGroup = ({
             value={optValue || label}
             onChange={handleCheckboxChange}
             checked={selectedOptions.includes(optValue.toString() || label)}
-            className="rw-check-input"
+            className="rw-check-input absolute hidden overflow-hidden"
           />
           <span
-            className={clsx("rw-check-tile", {
+            className={clsx("rw-check-tile relative flex h-28 w-28 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-zinc-500 bg-zinc-300 dark:bg-zinc-600 shadow transition-all duration-150", {
               disabled: !name && !label,
             })}
           >
@@ -74,7 +74,7 @@ const CheckboxGroup = ({
                   image
                 ) : (
                   <img
-                    className=" max-w-16 max-h-12 w-auto"
+                    className="max-w-16 max-h-12 w-auto"
                     src={image.toString()}
                   />
                 ))}

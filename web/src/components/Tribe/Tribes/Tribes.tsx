@@ -120,8 +120,22 @@ const TribesList = ({ tribes }: FindTribes) => {
             valueFormatter: (params) => timeTag(params.value),
           },
           {
-            field: "created_by",
+            field: "Profile",
             label: "Created By",
+            renderCell: ({ value }) => (
+              <div className="flex flex-row">
+                {value.avatar_url && (
+                  <img
+                    className="h-10 w-10 rounded-full"
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${value.avatar_url}`}
+                    alt={value.full_name || "Profile Image"}
+                  />
+                )}
+                <div className="flex items-center pl-3">
+                  <div className="text-base">{value.full_name}</div>
+                </div>
+              </div>
+            )
           },
         ]}
         rows={tribes}

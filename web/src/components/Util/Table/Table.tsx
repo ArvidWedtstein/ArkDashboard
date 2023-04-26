@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { debounce, dynamicSort, formatNumberWithThousandSeparator, isUUID, nmbFormat, truncate } from "src/lib/formatters";
 import clsx from "clsx";
 interface Row {
@@ -10,6 +10,7 @@ interface GridCell<V = any> {
   field: string;
   value: V;
   row?: V | ThisType<Row>;
+  isBig?: boolean;
 }
 interface ColumnData<V = any, F = V> {
   field: string;
@@ -88,6 +89,7 @@ const Table = ({
   const [rows, setRows] = useState<any[]>([]);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const checkboxAllSelectRef = useRef(null);
   const [sort, setSort] = useState({
     column: "",
     direction: "asc",
@@ -102,8 +104,7 @@ const Table = ({
     [sort]
   );
 
-  const sortData = (data: any[]) => {
-    let { column, direction } = sort;
+  const sortData = (data: any[], column: string, direction: string) => {
     if (column) {
       data.sort(dynamicSort(column));
       if (direction === "desc") {
@@ -114,20 +115,23 @@ const Table = ({
   };
 
   const SortedFilteredData = useMemo(() => {
-    if (!dataRows || dataRows.length < 1) return [];
-    let filteredData = dataRows.filter((row) => {
-      let rowValues = Object.values(row);
-      let rowString = rowValues.join(" ");
-      return rowString.toLowerCase().includes(searchTerm.toLowerCase());
-    });
-    if (pagination) {
-      const indexOfLastData = currentPage * rowsPerPage;
-      const indexOfFirstData = indexOfLastData - rowsPerPage;
-      return sortData(filteredData).slice(indexOfFirstData, indexOfLastData);
-    }
+    if (!dataRows?.length) return dataRows;
 
-    return sortData(filteredData);
-  }, [sort, searchTerm, dataRows, currentPage, selectedRows]);
+    const filteredData = dataRows.filter(row => {
+      const rowString = Object.values(row)
+        .join(" ")
+        .toLowerCase();
+      return rowString.includes(searchTerm.toLowerCase());
+    });
+
+    if (pagination) {
+      const startIndex = (currentPage - 1) * rowsPerPage;
+      const endIndex = startIndex + rowsPerPage;
+      const sortedData = sortData(filteredData, sort.column, sort.direction);
+      return sortedData.slice(startIndex, endIndex);
+    }
+    return sortData(filteredData, sort.column, sort.direction);
+  }, [sort, searchTerm, dataRows, currentPage, pagination]);
 
   useEffect(() => {
     if (select) {
@@ -142,37 +146,27 @@ const Table = ({
 
   const selectRow = (e) => {
     if (e.target.id === "checkbox-all-select") {
-      let ro = rows.map((row) => {
-        if (row.checked !== e.target.checked) {
-          row.checked = e.target.checked;
+      const isChecked = e.target.checked;
+      rows.forEach((row) => {
+        if (row.checked !== isChecked) {
+          row.checked = isChecked;
         }
       });
       setSelectedRows(rows.filter((row) => row.checked === true));
       return;
     }
 
-    let check: any = document.getElementById("checkbox-all-select");
+    const checkboxAllSelect = checkboxAllSelectRef.current;
     if (!e.target.checked) {
-      check.checked = e.target.checked;
+      checkboxAllSelect.checked = e.target.checked;
     } else {
-      if (rows.every((row) => row.checked === true) && rows.length > 0) {
-        check.checked = true;
+      if (!rows.some((row) => !row.checked) && rows.length > 0) {
+        checkboxAllSelect.checked = true;
       }
     }
     setSelectedRows(rows.filter((row) => row.checked === true));
   };
 
-  const changePage = (dir: "next" | "prev") => {
-    if (dir === "prev") {
-      return setCurrentPage(currentPage > 1 ? currentPage - 1 : 1);
-    } else {
-      return setCurrentPage(
-        currentPage < Math.ceil(dataRows.length / rowsPerPage)
-          ? currentPage + 1
-          : currentPage
-      );
-    }
-  };
 
   const headerRenderer = ({ label, columnIndex, ...other }) => {
     return (
@@ -187,7 +181,6 @@ const Table = ({
             id={other.field}
             onClick={sortRows}
           >
-            {/* {truncate(label, 30)} */}
             {label}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -221,57 +214,33 @@ const Table = ({
     renderCell,
     ...other
   }) => {
-    const className = clsx(other.className, "px-3 py-2", {
-      "font-bold text-gray-900 dark:text-white": other.bold,
-    });
     // px-6 py-4
+    const className = clsx(other.className, "px-3 py-2", {
+      "font-bold": other.bold,
+      "truncate": !renderCell && !other.valueFormatter,
+    });
+
     if (other.numeric) {
       cellData = formatNumberWithThousandSeparator(cellData.toFixed() || 0);
     }
-    const key = `${Math.random()}-${columnIndex}-${cellData}`;
+    const key = `cell-${rowIndex}-${columnIndex}`;
+
+    const valueFormatter = other.valueFormatter ? other.valueFormatter({
+      value: cellData,
+      row: rowData,
+      columnIndex,
+    }) : cellData;
 
     let content = renderCell
       ? renderCell({
         columnIndex,
         rowIndex,
-        value: other.valueFormatter
-          ? other.valueFormatter({
-            value: cellData,
-            row: rowData,
-            columnIndex,
-          })
-          : cellData,
+        value: valueFormatter,
         field: other.field,
         row: rowData,
       })
-      : "";
+      : valueFormatter;
 
-    if (
-      !content &&
-      isUUID(cellData) &&
-      other.label.toLowerCase() === "created by" &&
-      "Profile" in rowData
-    ) {
-      const profile = rowData.Profile;
-      content = (
-        <div className="flex flex-row">
-          {profile.avatar_url && (
-            <img
-              className="h-10 w-10 rounded-full"
-              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}`}
-              alt={profile.full_name || "Profile Image"}
-            />
-          )}
-          <div className="flex items-center pl-3">
-            <div className="text-base">{profile.full_name}</div>
-          </div>
-        </div>
-      );
-    } else if (!content) {
-      content = other.valueFormatter
-        ? other.valueFormatter({ value: cellData, row: rowData, columnIndex })
-        : truncate(cellData, 30);
-    }
 
     return (
       <td key={key} className={className}>
@@ -292,6 +261,7 @@ const Table = ({
         <div className="flex items-center">
           <input
             id={header ? "checkbox-all-select" : `checkbox-row-${row}`}
+            ref={header ? checkboxAllSelectRef : null}
             onChange={selectRow}
             type="checkbox"
             className="rw-input h-4 w-4"
@@ -307,41 +277,50 @@ const Table = ({
     );
   };
 
+
   // TODO: Fix summary for vertical table
   const tableFooter = () => {
+    let total = 0;
+    const columnData = useMemo(() => columns.map(({ field, ...other }) => ({ field, numeric: other.numeric })), [columns]);
     return (
       <tfoot>
         <tr className="bg-gray-400 font-semibold text-gray-900 dark:bg-gray-700 dark:text-white">
           {select && !vertical && <td className="p-4"></td>}
           {!vertical &&
-            columns.map(({ field, ...other }, index) => {
+            columnData.map(({ field, numeric }, index) => {
+              const sum = numeric ? SortedFilteredData.filter((r, i) => (select && selectedRows.length > 0) ? rows.map((d: any, k) => {
+                return d.checked ? k : -1
+              }).includes(i) : true).reduce((a, b) => a + parseInt(b[field]), 0) : '';
+              total += numeric ? sum : 0;
               return (
                 <th
                   key={`${index}-${field}`}
-                  className={clsx("px-6 py-3", other.className, {
-                    "test-base": other.numeric,
-                  })}
+                  className={clsx("px-3 py-4", numeric && "test-base")}
                 >
-                  {other.numeric
-                    ? SortedFilteredData.filter((r, i) => (select && selectedRows.length > 0) ? rows.map((d: any, k) => {
-                      return d.checked ? k : -1
-                    }).includes(i) : true).reduce(
-                      (a, b) => a + parseInt(b[field]),
-                      0
-                    )
-                    : index === 0
-                      ? "Total"
-                      : ""}
+                  {numeric ? sum : index === 0 ? "Total" : ""}
                 </th>
               );
-            })}
+            })
+          }
+          {renderActions && <th></th>}
         </tr>
       </tfoot>
     );
   };
 
   const tablePagination = () => {
-    return (
+    const totalRows = dataRows.length || rows.length;
+    const lastRowIndex = currentPage * rowsPerPage > totalRows ? totalRows : currentPage * rowsPerPage;
+    const firstRowIndex = currentPage * rowsPerPage - rowsPerPage;
+
+    const changePage = useCallback((dir: "next" | "prev") => {
+      if (dir === "prev" && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      } else if (dir === "next" && currentPage < Math.ceil(totalRows / rowsPerPage)) {
+        setCurrentPage(currentPage + 1);
+      }
+    }, [currentPage, dataRows.length, rowsPerPage]);
+    return useMemo(() => (
       <nav
         className="flex items-center justify-between pt-4"
         aria-label="Table navigation"
@@ -349,20 +328,19 @@ const Table = ({
         <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">
           Showing{" "}
           <span className="font-semibold text-gray-900 dark:text-white">
-            {currentPage * rowsPerPage - rowsPerPage}-
-            {currentPage * rowsPerPage > dataRows.length
-              ? dataRows.length || rows.length
-              : currentPage * rowsPerPage}
+            {firstRowIndex + 1}-{lastRowIndex}
           </span>{" "}
           of{" "}
           <span className="font-semibold text-gray-900 dark:text-white">
-            {rows.length || dataRows.length}
+            {totalRows}
           </span>
         </span>
         <ul className="inline-flex items-center -space-x-px text-gray-500 dark:text-gray-400">
-          <li onClick={() => changePage("prev")}>
-            <a
-              href="#"
+          <li>
+            <button
+              type="button"
+              disabled={currentPage === 1}
+              onClick={() => changePage("prev")}
               className="ml-0 block rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-white"
             >
               <span className="sr-only">Previous</span>
@@ -377,33 +355,45 @@ const Table = ({
                   fillRule="evenodd"
                   d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
                   clipRule="evenodd"
-                ></path>
+                />
               </svg>
-            </a>
+            </button>
           </li>
 
           {currentPage > 1 && (
-            <li onClick={() => changePage("prev")}>
-              <a className="block border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-white">
+            <li>
+              <button
+                type="button"
+                onClick={() => changePage("prev")}
+                className="block border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-white"
+              >
                 {currentPage - 1}
-              </a>
+              </button>
             </li>
           )}
           <li>
-            <a className="block border border-pea-300 bg-pea-50 px-3 py-2 leading-tight hover:bg-pea-100 hover:text-pea-700 dark:hover:bg-zinc-700 dark:hover:text-white">
+            <button
+              type="button"
+              className="block border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:hover:bg-zinc-700 font-bold text-lg dark:hover:text-stone-300 dark:text-white text-black"
+            >
               {currentPage}
-            </a>
+            </button>
           </li>
           {currentPage < Math.ceil(dataRows.length / rowsPerPage) && (
-            <li onClick={() => changePage("next")}>
-              <a className="block border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-white">
+            <li>
+              <button
+                type="button"
+                onClick={() => changePage("next")}
+                className="block border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-white"
+              >
                 {currentPage + 1}
-              </a>
+              </button>
             </li>
           )}
-          <li onClick={() => changePage("next")}>
-            <a
-              href="#"
+          <li>
+            <button
+              type="button"
+              onClick={() => changePage("next")}
               className="block rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600  dark:hover:bg-zinc-700 dark:hover:text-white"
             >
               <span className="sr-only">Next</span>
@@ -420,11 +410,11 @@ const Table = ({
                   clipRule="evenodd"
                 ></path>
               </svg>
-            </a>
+            </button>
           </li>
         </ul>
       </nav>
-    );
+    ), [currentPage]);
   };
 
   return (
@@ -464,19 +454,19 @@ const Table = ({
           </div>
         </div>
       )}
-      <table className="mr-auto w-full table-auto text-left text-sm text-gray-500 dark:text-stone-300">
+      <table className="relative mr-auto w-full table-auto text-left text-sm text-gray-700 dark:text-stone-300">
         {!!caption && (
-          <caption className="bg-white p-5 text-left text-lg font-semibold text-gray-900 dark:bg-zinc-800 dark:text-white">
+          <caption className="bg-zinc-200 p-5 text-left text-lg font-semibold text-gray-900 dark:bg-zinc-800 dark:text-white">
             {caption.title}
             {caption.content && (
-              <div className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+              <div className="mt-1 text-sm font-normal">
                 {caption.content}
               </div>
             )}
           </caption>
         )}
         {!vertical && header && (
-          <thead className="bg-gray-400 text-sm uppercase text-gray-600 dark:bg-zinc-700 dark:text-gray-400">
+          <thead className="bg-zinc-400 text-sm uppercase text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
             <tr className="table-row">
               {select && tableSelect({ header: true, row: 0 })}
               {columns.map(({ ...other }, index) => {
@@ -490,14 +480,15 @@ const Table = ({
             </tr>
           </thead>
         )}
-        <tbody className="divide-y divide-gray-400 bg-gray-200 dark:divide-gray-800 dark:bg-zinc-600">
+        <tbody className="divide-y divide-gray-400 bg-zinc-300 dark:divide-gray-800 dark:bg-zinc-600">
+
           {vertical
             ? columns.map(({ field, ...other }, index) => {
               return (
                 <tr
                   key={`row-${index}`}
-                  className={clsx("bg-white dark:bg-zinc-600", {
-                    "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
+                  className={clsx("bg-zinc-300 dark:bg-zinc-600", {
+                    "hover:bg-gray-50 dark:hover:bg-zinc-700": hover,
                   })}
                   onClick={() => onRowClick && onRowClick({ index: index })}
                 >
@@ -507,17 +498,16 @@ const Table = ({
                       columnIndex: index,
                       ...other,
                     })}
-                  {SortedFilteredData.map((datarow, rowIndex) => {
-                    return cellRenderer({
-                      rowData: datarow,
-                      cellData: datarow[field],
-                      columnIndex: index,
-                      rowIndex,
-                      renderCell: other.renderCell,
-                      field,
-                      ...other,
-                    });
-                  })}
+                  {SortedFilteredData.map((datarow, rowIndex) => cellRenderer({
+                    rowData: datarow,
+                    cellData: datarow[field],
+                    columnIndex: index,
+                    rowIndex,
+                    renderCell: other.renderCell,
+                    field,
+                    ...other,
+                  })
+                  )}
                 </tr>
               );
             })
@@ -526,7 +516,7 @@ const Table = ({
               return (
                 <tr
                   key={`row-${i}`}
-                  className={clsx({
+                  className={clsx("relative", {
                     "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
                   })}
                   onClick={() => onRowClick && onRowClick({ index: i })}
@@ -550,7 +540,7 @@ const Table = ({
           {(dataRows === null || dataRows.length === 0) && (
             <tr className="w-full">
               <td className="p-4 text-center" colSpan={100}>
-                <span className="px-3 py-2 text-gray-500 dark:text-gray-400 ">
+                <span className="px-3 py-2 text-gray-500 dark:text-gray-400">
                   No data found
                 </span>
               </td>

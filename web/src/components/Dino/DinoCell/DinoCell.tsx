@@ -69,24 +69,18 @@ export const QUERY = gql`
       synonyms
       description
       taming_notice
-      can_destroy
-      immobilized_by
       base_stats
-      gather_eff
       exp_per_kill
-      fits_through
+      can_destroy
       egg_min
       egg_max
       tdps
-      eats
       maturation_time
-      weight_reduction
       incubation_time
       affinity_needed
       aff_inc
       flee_threshold
       hitboxes
-      drops
       food_consumption_base
       food_consumption_mult
       disable_ko
@@ -102,11 +96,8 @@ export const QUERY = gql`
       base_taming_time
       disable_tame
       x_variant
-      attack
       mounted_weaponry
       ridable
-      flyer_dino
-      water_dino
       movement
       type
       carryable_by
@@ -146,31 +137,7 @@ export const QUERY = gql`
     }
   }
 `;
-export const afterQuery = (data) => {
-  return {
-    dino: {
-      ...data.dino,
-      weight_reduction:
-        data.dino.DinoStat &&
-        data.dino.DinoStat.filter((d) => d.type == "weight_reduction"),
-      gather_eff:
-        data.dino.DinoStat &&
-        data.dino.DinoStat.filter((d) => d.type == "gather_efficiency"),
-      eats:
-        data.dino.DinoStat &&
-        data.dino.DinoStat.filter((d) => d.type == "food"),
-      drops:
-        data.dino.DinoStat &&
-        data.dino.DinoStat.filter((d) => d.type == "drops"),
-      fits_through:
-        data.dino.DinoStat &&
-        data.dino.DinoStat.filter((d) => d.type == "fits_through"),
-      immobilized_by:
-        data.dino.DinoStat &&
-        data.dino.DinoStat.filter((d) => d.type == "immobilized_by"),
-    },
-  };
-};
+
 export const Loading = () => (
   <div className="flex h-full w-full items-center justify-center bg-transparent">
     <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>
