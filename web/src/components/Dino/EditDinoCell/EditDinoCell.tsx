@@ -17,7 +17,6 @@ export const QUERY = gql`
       description
       taming_notice
       can_destroy
-      immobilized_by
       base_stats
       gather_eff
       exp_per_kill
@@ -82,7 +81,6 @@ const UPDATE_DINO_MUTATION = gql`
       description
       taming_notice
       can_destroy
-      immobilized_by
       base_stats
       gather_eff
       exp_per_kill

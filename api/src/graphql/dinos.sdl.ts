@@ -7,7 +7,6 @@ export const schema = gql`
     description: String
     taming_notice: String
     can_destroy: [String]!
-    immobilized_by: [String]!
     base_stats: JSON
     gather_eff: JSON
     exp_per_kill: Float
@@ -74,7 +73,6 @@ export const schema = gql`
     description: String
     taming_notice: String
     can_destroy: [String]!
-    immobilized_by: [String]!
     base_stats: JSON
     gather_eff: JSON
     exp_per_kill: Float
@@ -127,7 +125,6 @@ export const schema = gql`
     description: String
     taming_notice: String
     can_destroy: [String]!
-    immobilized_by: [String]!
     base_stats: JSON
     gather_eff: JSON
     exp_per_kill: Float
