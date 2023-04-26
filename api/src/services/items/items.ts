@@ -50,12 +50,38 @@ export const item: QueryResolvers["item"] = ({ id }) => {
 
 export const createItem: MutationResolvers["createItem"] = ({ input }) => {
   return db.item.create({
+    include: {
+      ItemRecipe_ItemRecipe_crafted_item_idToItem: true,
+    },
     data: input,
   });
 };
 
 export const updateItem: MutationResolvers["updateItem"] = ({ id, input }) => {
   return db.item.update({
+    include: {
+      ItemRecipe_ItemRecipe_crafted_item_idToItem: true,
+    },
+    // data: {
+    //   ItemRecipe_ItemRecipe_crafted_item_idToItem: {
+    //     upsert: [
+    //       {
+    //         create: {
+    //           item_id: input.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
+    //             .item_id,
+    //         },
+    //         update: {
+    //           item_id: input.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
+    //             .item_id,
+    //         },
+    //         where: {
+    //           item_id: input.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
+    //             .item_id,
+    //         },
+    //       }
+    //     ]
+    //   },
+    // },
     data: input,
     where: { id },
   });

@@ -66,9 +66,9 @@ export const schema = gql`
     yields: Float
     stats: JSON
     color: String
-    crafted_in: [String]!
     type: String
     category: String
+    ItemRecipe_ItemRecipe_crafted_item_idToItem: JSON
   }
 
   type Mutation {
