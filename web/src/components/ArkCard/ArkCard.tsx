@@ -11,12 +11,12 @@ interface IArkCard {
     link: string;
   };
   image?:
-    | {
-        src: string;
-        alt?: string;
-        position?: string | number | (string & {});
-      }
-    | string;
+  | {
+    src: string;
+    alt?: string;
+    position?: string | number | (string & {});
+  }
+  | string;
   icon?: {
     src: string;
     alt?: string;
@@ -39,7 +39,7 @@ const ArkCard: React.FC<IArkCard> = React.memo<IArkCard>(
     return (
       <div
         className={clsx("relative w-auto rounded-3xl shadow-md", className, {
-          "bg-gray-600": !image,
+          "bg-zinc-600": !image,
         })}
         style={{
           ...style,
@@ -47,12 +47,11 @@ const ArkCard: React.FC<IArkCard> = React.memo<IArkCard>(
             typeof image === "string"
               ? `${image}`
               : image
-              ? `url('${image.src}')`
-              : "",
+                ? `url('${image.src}')`
+                : "",
           backgroundSize: "cover",
-          backgroundPosition: `${
-            typeof image !== "string" ? image?.position ?? "center" : "center"
-          }`,
+          backgroundPosition: `${typeof image !== "string" ? image?.position ?? "center" : "center"
+            }`,
         }}
       >
         <div
@@ -141,12 +140,11 @@ const ArkCard2 = ({
           typeof image === "string"
             ? `${image}`
             : image
-            ? `url('${image.src}')`
-            : "url()",
+              ? `url('${image.src}')`
+              : "url()",
         backgroundSize: "cover",
-        backgroundPosition: `${
-          typeof image !== "string" ? image?.position ?? "center" : "center"
-        }`,
+        backgroundPosition: `${typeof image !== "string" ? image?.position ?? "center" : "center"
+          }`,
       }}
     >
       <div className="h-full rounded-3xl bg-[#121317] bg-opacity-60 p-4">

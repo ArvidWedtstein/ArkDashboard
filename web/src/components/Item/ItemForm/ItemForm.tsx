@@ -70,63 +70,6 @@ const ItemForm = (props: ItemFormProps) => {
     name: "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert", // the name of the field array in your form data
   });
 
-  const reducer = (state, action) => {
-    const { type, item, id, amount = 1 } = action;
-    switch (type) {
-      case "UPDATE_AMOUNT": {
-        const itemIndex = state.findIndex((i) => i.id === item.id);
-
-        if (itemIndex === -1) {
-          return [...state, { ...item, amount }];
-        }
-
-        return state.map((i, index) => {
-          if (index === itemIndex) {
-            return { ...i, amount: i.amount + amount };
-          }
-          return i;
-        });
-      }
-
-      case "ADD": {
-        const exists = state.some((i) => i.id === item.id);
-
-        if (exists) {
-          return state.map((i) => {
-            if (i.id === item.id) {
-              return { ...i, amount: i.amount + 1 };
-            }
-            return i;
-          });
-        }
-
-        return [...state, item];
-      }
-
-      case "REMOVE": {
-        return state.filter((i) => i.id !== id);
-      }
-
-      case "RESET": {
-        return [];
-      }
-
-      default: {
-        return state;
-      }
-    }
-  };
-
-  // let [recipe, setRecipe] = useReducer(
-  //   reducer,
-  //   props.item?.recipe
-  //     ? (props.item?.recipe as any[]).map((f) => {
-  //       let i = arkitems.items.find((i) => i.id === f.itemId);
-  //       return { ...i, amount: f.count };
-  //     })
-  //     : []
-  // );
-
   return (
     <div className="rw-form-wrapper">
       <Form<FormItem>

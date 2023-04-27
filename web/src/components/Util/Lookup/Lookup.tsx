@@ -39,7 +39,7 @@ const Lookup = ({
   // const [isFilterVisible, setIsFilterVisible] = useState(false)
 
 
-  const { field } = name && useController({ name: name });
+  const { field } = !!name && useController({ name: name });
   const [searchTerm, setSearchTerm] = useState(defaultValue && options.length > 0 ? options?.find((option) => option?.value === defaultValue)?.label : '')
   const [filteredOptions, setFilteredOptions] = useState(options)
   const [openIndexes, setOpenIndexes] = useState([]);

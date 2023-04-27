@@ -5,34 +5,10 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Items from "src/components/Item/Items";
 import Pagination from "src/components/Util/Pagination/Pagination";
-import argitems from "../../../../public/arkitems.json";
 
-// export const QUERY = gql`
-//   query FindItems {
-//     items {
-//       id
-//       created_at
-//       name
-//       description
-//       image
-//       max_stack
-//       weight
-//       engram_points
-//       crafting_time
-//       req_level
-//       yields
-//       recipe
-//       stats
-//       color
-//       crafted_in
-//       effects
-//       type
-//     }
-//   }
-// `
 export const QUERY = gql`
-  query FindItems($page: Int) {
-    itemsPage(page: $page) {
+  query FindItems($page: Int, $search: String) {
+    itemsPage(page: $page, search: $search) {
       items {
         id
         created_at
@@ -47,7 +23,6 @@ export const QUERY = gql`
         yields
         stats
         color
-        crafted_in
         category
         type
       }
@@ -55,10 +30,9 @@ export const QUERY = gql`
     }
   }
 `;
-export const beforeQuery = ({ page }) => {
+export const beforeQuery = ({ page, search }) => {
   page = parseInt(page) ? parseInt(page, 10) : 1;
-
-  return { variables: { page } };
+  return { variables: { page, search } };
 };
 
 export const Loading = () => (
@@ -108,18 +82,13 @@ export const Failure = ({ error }: CellFailureProps) => (
   </div>
 );
 
-export const Success = ({ itemsPage }: CellSuccessProps<FindItems>) => {
+export const Success = ({ itemsPage, variables }: CellSuccessProps<FindItems>) => {
   return itemsPage.count > 0 ? (
     <>
       <Items itemsPage={itemsPage} />
-      <Pagination count={itemsPage.count} route={"items"} />
+      <Pagination count={itemsPage.count} route={"items"} itemsPerPage={36} />
     </>
   ) : (
     Empty()
   );
 };
-
-// export const Success = ({ items }: CellSuccessProps<FindItems>) => {
-
-//   return <Items items={items} />
-// }

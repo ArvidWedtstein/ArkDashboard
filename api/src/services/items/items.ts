@@ -8,9 +8,11 @@ import { db } from "src/lib/db";
 
 export const itemsPage = ({
   page = 1,
+  search = "",
   items_per_page = 36,
 }: {
   page: number;
+  search?: string;
   items_per_page?: number;
 }) => {
   const offset = (page - 1) * items_per_page;
@@ -19,8 +21,23 @@ export const itemsPage = ({
       take: items_per_page,
       skip: offset,
       orderBy: { name: "asc" },
+      where: {
+        OR: [
+          { name: { startsWith: search, mode: "insensitive" } },
+          { category: { contains: search, mode: "insensitive" } },
+          { type: { contains: search, mode: "insensitive" } },
+        ],
+      },
     }),
-    count: db.item.count(),
+    count: db.item.count({
+      where: {
+        OR: [
+          { name: { startsWith: search, mode: "insensitive" } },
+          { category: { contains: search, mode: "insensitive" } },
+          { type: { contains: search, mode: "insensitive" } },
+        ],
+      },
+    }),
   };
 };
 
@@ -62,26 +79,6 @@ export const updateItem: MutationResolvers["updateItem"] = ({ id, input }) => {
     include: {
       ItemRecipe_ItemRecipe_crafted_item_idToItem: true,
     },
-    // data: {
-    //   ItemRecipe_ItemRecipe_crafted_item_idToItem: {
-    //     upsert: [
-    //       {
-    //         create: {
-    //           item_id: input.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-    //             .item_id,
-    //         },
-    //         update: {
-    //           item_id: input.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-    //             .item_id,
-    //         },
-    //         where: {
-    //           item_id: input.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-    //             .item_id,
-    //         },
-    //       }
-    //     ]
-    //   },
-    // },
     data: input,
     where: { id },
   });
