@@ -22,15 +22,7 @@ const DELETE_BASESPOT_MUTATION = gql`
   }
 `;
 
-const MAPQUERY = gql`
-  query FindMaps2 {
-    maps {
-      id
-      name
-      img
-    }
-  }
-`;
+
 
 const BasespotsList = ({ basespotPage }: FindBasespots) => {
   const [deleteBasespot] = useMutation(DELETE_BASESPOT_MUTATION, {
@@ -99,7 +91,34 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
 
   return (
     <div className="h-[80vh]">
-      <div className="flex items-center">
+      <header
+        className="flex flex-col justify-between w-full min-h-[200px] p-12 bg-center bg-cover rounded-2xl text-white"
+        // style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1520808663317-647b476a81b9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80)' }}
+        style={{ backgroundImage: 'url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/9/20210806171146_1.jpg)' }}
+      >
+        <div className="flex justify-between pb-5">
+          <div className="text-xl font-bold uppercase tracking-[0.4rem] opacity-90">basespots</div>
+          <div className="flex items-center opacity-50 text-sm">
+            <p><span className="inline-block pb-1" id="sinceData">today</span></p>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" className="w-5 ml-3 fill-current">
+              <path className="d" d="M15,0C6.75,0,0,6.75,0,15s6.75,15,15,15,15-6.75,15-15S23.25,0,15,0Zm7.35,16.65h-7.35c-.83,0-1.5-.67-1.5-1.5V7.8c0-.9,.6-1.5,1.5-1.5s1.5,.6,1.5,1.5v5.85h5.85c.9,0,1.5,.6,1.5,1.5s-.6,1.5-1.5,1.5Z" />
+            </svg>
+          </div>
+        </div>
+        <div className="pt-12">
+          <div className="flex items-center opacity-75 mb-3 [&>span:not(:last-child)]:after:content-[','] space-x-1">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" className="w-5 mr-3 fill-current ">
+              <path className="d" d="M19.22,9.66L10.77,1.21c-.74-.74-1.86-1.21-2.97-1.21H1.67C.75,0,0,.75,0,1.67V7.8c0,1.11,.46,2.23,1.3,2.97l8.45,8.46c1,1,2.62,1,3.62,0l5.94-5.95c.93-.93,.93-2.6-.09-3.62ZM6.96,6.35c-.59,.59-1.56,.59-2.15,0-.59-.59-.59-1.56,0-2.15,.59-.59,1.56-.59,2.15,0,.59,.59,.59,1.56,0,2.15Z" />
+            </svg>
+            {["Deez", "Nuts"].map((tag) => (
+              <span className="text-sm" key={tag}>{tag}</span>
+            ))}
+          </div>
+          <h1 className="my-5 text-5xl font-bold opacity-90">Basespots!</h1>
+          <p className="w-1/2 mt-3 opacity-75 leading-7">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus imperdiet ut quam sit amet vehicula.</p>
+        </div>
+      </header>
+      <div className="flex items-center my-4">
         <Lookup
           options={[
             { label: "Valguero", value: 1 },
@@ -125,7 +144,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
         />
         {/* TODO: add search here */}
       </div>
-      <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {basespots
           .filter((spot) =>
             currentMap != null
@@ -153,7 +172,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
             />
           ))}
       </div>
-    </div>
+    </div >
   );
 };
 
