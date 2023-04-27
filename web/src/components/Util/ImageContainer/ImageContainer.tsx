@@ -2,7 +2,7 @@ import clsx from "clsx"
 import { useRef, useState } from "react"
 import useIntersectionObserver from "src/components/useIntersectionObserver"
 
-interface ImageContainerProps {
+interface ImageContainerProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string
   alt?: string
   caption?: string
@@ -19,14 +19,17 @@ interface ImageContainerProps {
   key?: any
 }
 const ImageContainer = ({
-  src,
-  alt,
-  caption,
-  className,
-  width = 500,
-  height = 500,
-  key
+  ...props
 }: ImageContainerProps) => {
+  const {
+    src,
+    alt,
+    caption,
+    className,
+    width = 500,
+    height = 500,
+    key
+  } = props
   const ref = useRef(null)
   const [isVisible, setIsVisible] = useState(false)
 
@@ -47,10 +50,11 @@ const ImageContainer = ({
       key={key}
       ref={ref}
       className={clsx("relative overflow-hidden transition-opacity duration-300 ease-linear", className)}
+      style={{ paddingBottom: `${aspectRatio}%` }}
     >
       {isVisible && (
-        <figure className="max-w-lg  overflow-hidden" style={{ paddingBottom: `${aspectRatio}%` }}>
-          <img className="h-auto max-w-full rounded-lg" src={src} alt={alt} />
+        <figure className="max-w-lg">
+          <img className="h-auto max-w-full rounded-lg" src={src} alt={alt} {...props} />
           {!!caption && <figcaption className="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">{caption}</figcaption>}
         </figure>
       )}

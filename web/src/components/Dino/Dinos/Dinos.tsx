@@ -15,6 +15,7 @@ import { useEffect, useMemo, useState } from "react";
 import { QUERY } from "src/components/Dino/DinosCell";
 import debounce from "lodash.debounce";
 import type { DeleteDinoMutationVariables, FindDinos } from "types/graphql";
+import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
 
 const DELETE_DINO_MUTATION = gql`
   mutation DeleteDinoMutation($id: String!) {
@@ -96,6 +97,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
         <label htmlFor="dino" className="sr-only">
           Search for dino
         </label>
+
         <TextField
           name="dino"
           className="rw-input w-full rounded-none !rounded-r-lg"
@@ -117,7 +119,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
             >
               <div className="flex h-full w-full flex-col items-start justify-between justify-items-stretch">
                 <div className="relative mb-6 h-32 w-32 rounded-full border bg-gradient-to-br from-zinc-700 to-zinc-700">
-                  <img
+                  <ImageContainer
                     className="h-auto max-h-full"
                     src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
                     onError={(e) => {
@@ -127,10 +129,23 @@ const DinosList = ({ dinosPage }: FindDinos) => {
                         "justify-end"
                       );
                     }}
-                    // sizes="1rem"
-                    // src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/render/image/public/arkimages/dodo.png?width=500&quality=75`}
-                    // onLoad={() => console.log(`loaded ${dino.name}`)}
+                  // caption={dino.name}
+                  // sizes="1rem"
+                  // src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/render/image/public/arkimages/dodo.png?width=500&quality=75`}
+                  // onLoad={() => console.log(`loaded ${dino.name}`)}
                   />
+                  {/* <img
+                    className="h-auto max-h-full"
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
+                    onError={(e) => {
+                      e.currentTarget.parentElement.hidden = true;
+                      e.currentTarget.parentElement.parentElement.classList.replace(
+                        "justify-between",
+                        "justify-end"
+                      );
+                    }}
+
+                  /> */}
                 </div>
                 <p className="tracking-wide subpixel-antialiased">
                   {dino.name}
