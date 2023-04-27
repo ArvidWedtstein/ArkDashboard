@@ -40,17 +40,16 @@ const Lookup = ({
 
 
   const { field } = name && useController({ name: name });
-  const [searchTerm, setSearchTerm] = useState(!!defaultValue && options.length > 0 ? options?.find((option) => option?.value === defaultValue)?.label : '')
+  const [searchTerm, setSearchTerm] = useState(defaultValue && options.length > 0 ? options?.find((option) => option?.value === defaultValue)?.label : '')
   const [filteredOptions, setFilteredOptions] = useState(options)
   const [openIndexes, setOpenIndexes] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(!!defaultValue && options.length > 0 ? options.find(option => option.value === defaultValue) : null)
+  const [selectedOption, setSelectedOption] = useState(defaultValue && options.length > 0 ? options.find(option => option.value === defaultValue) : null)
 
   // Run filter and sort functions when options or searchTerm changes
   useEffect(() => {
-    const filtered = filterFn ? options.filter(option =>
+    const filtered = filterFn && searchTerm ? options.filter(option =>
       filterFn(option, searchTerm)
     ) : options
-
     const sorted = sortFn ? filtered.sort(sortFn) : filtered
     const grouped = !!group ? groupBy(sorted, group) : sorted
     setFilteredOptions(grouped);
@@ -65,6 +64,7 @@ const Lookup = ({
   useEffect(() => {
     const selected = options.find(option => option.value == defaultValue)
     setSelectedOption(selected || defaultValue)
+    !!name && field.onChange(defaultValue);
   }, [defaultValue])
 
   // Handle input change

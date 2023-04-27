@@ -36,78 +36,13 @@ interface ItemFormProps {
 
 const ItemForm = (props: ItemFormProps) => {
   const onSubmit = (data: FormItem) => {
-    // delete data["craftable"];
+    data.ItemRecipe_ItemRecipe_crafted_item_idToItem["upsert"] = data.ItemRecipe_ItemRecipe_crafted_item_idToItem["upsert"].map((u, i) => ({
+      create: { ...u },
+      update: { ...u },
+      where: { id: props.item?.ItemRecipe_ItemRecipe_crafted_item_idToItem[i]?.id || "00000000000000000000000000000000" }
+    }));
 
-    console.log(data);
-    let itm = {
-      name: "test12",
-      description: "",
-      image: "",
-      color: "#000000",
-      weight: 0,
-      max_stack: 1,
-      category: "Saddle",
-      engram_points: 0,
-      req_level: 0,
-      crafting_time: 0,
-      yields: 1,
-      // ItemRecipe_ItemRecipe_crafted_item_idToItem: {
-      //   create: [
-      //     {
-      //       item_id: 1,
-      //       amount: 2,
-      //       yields: 1,
-      //     },
-      //   ],
-      // },
-      ItemRecipe_ItemRecipe_crafted_item_idToItem: {
-        upsert: [
-          {
-            create: {
-              item_id: 2,
-              amount: 2,
-              yields: 69,
-              crafting_station: 606,
-            },
-            update: {
-              amount: 69,
-              yields: 420,
-            },
-            // where: { id: "" },
-            where: { id: "815479ff-e5cf-449e-ac07-fbea961ee2e9" },
-          },
-        ],
-      },
-      // ItemRecipe_ItemRecipe_crafted_item_idToItem: {
-      //   connectOrCreate: [
-      //     {
-      //       create: {
-      //         item_id: 2,
-      //         amount: 2,
-      //         yields: 3,
-      //         crafting_station: 606,
-      //       },
-      //       where: { id: "815479ff-e5cf-449e-ac07-fbea961ee2e6" },
-      //     },
-      //   ],
-      // },
-      // ItemRecipe_ItemRecipe_crafted_item_idToItem: {
-      //   update: [
-      //     {
-      //       data: {
-      //         item_id: 2,
-      //         amount: 2,
-      //         yields: 3,
-      //         crafting_station: 601,
-      //       },
-      //       where: { id: "815479ff-e5cf-449e-ac07-fbea961ee2e6" },
-      //     },
-      //   ],
-      // },
-    };
-
-    props.onSave(itm, props?.item?.id);
-    // props.onSave(data, props?.item?.id);
+    props.onSave(data, props?.item?.id);
   };
 
   const [craftable, setCraftable] = useState(false);
@@ -115,8 +50,7 @@ const ItemForm = (props: ItemFormProps) => {
   const { register, control } = useForm({
     defaultValues: {
       stats: [],
-      "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert": [],
-      "ItemRecipe_ItemRecipe_crafted_item_idToItem.connectOrCreate.where": [],
+      "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert": props.item.ItemRecipe_ItemRecipe_crafted_item_idToItem || [],
     },
   });
   const {
@@ -455,106 +389,6 @@ const ItemForm = (props: ItemFormProps) => {
               </div> */}
             </div>
             <div>
-              {/* <div>
-                <Label
-                  name="crafted_in"
-                  className="rw-label"
-                  errorClassName="rw-label rw-label-error"
-                >
-                  Crafted in
-                </Label>
-
-                <CheckboxGroup
-                  name="crafted_in"
-                  defaultValue={props.item?.crafted_in}
-                  options={[
-                    {
-                      value: "606",
-                      label: "Beer Barrel",
-                      image:
-                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/beer-barrel.png",
-                    },
-                    {
-                      value: "39",
-                      label: "Campfire",
-                      image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/campfire.png",
-                    },
-                    {
-                      value: "607",
-                      label: "Chemistry Bench",
-                      image:
-                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/chemistry-bench.png",
-                    },
-                    {
-                      value: "128",
-                      label: "Cooking Pot",
-                      image:
-                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/cooking-pot.png",
-                    },
-                    {
-                      value: "127",
-                      label: "Compost Bin",
-                      image:
-                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/compost-bin.png",
-                    },
-                    {
-                      value: "185",
-                      label: "Fabricator",
-                      image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/fabricator.png",
-                    },
-                    {
-                      value: "601",
-                      label: "Industrial Cooker",
-                      image:
-                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-cooker.png",
-                    },
-                    {
-                      value: "600",
-                      label: "Industrial Forge",
-                      image:
-                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-forge.png",
-                    },
-                    {
-                      value: "360",
-                      label: "Industrial Grill",
-                      image:
-                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-grill.png",
-                    },
-                    {
-                      value: "618",
-                      label: "Industrial Grinder",
-                      image:
-                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-grinder.png",
-                    },
-                    {
-                      value: "107",
-                      label: "Mortar And Pestle",
-                      image:
-                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/mortar-and-pestle.png",
-                    },
-                    {
-                      value: "125",
-                      label: "Refining Forge",
-                      image:
-                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/refining-forge.png",
-                    },
-                    {
-                      value: "126",
-                      label: "Smithy",
-                      image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/smithy.png",
-                    },
-                    {
-                      value: "652",
-                      label: "Tek Replicator",
-                      image:
-                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/tek-replicator.png",
-                    },
-                  ]}
-                />
-                <FieldError name="crafted_in" className="rw-field-error" />
-              </div> */}
-            </div>
-            <div>
               <div>
                 <Label
                   name="recipe"
@@ -569,8 +403,9 @@ const ItemForm = (props: ItemFormProps) => {
                     className="rounded-md bg-zinc-800 p-3"
                     key={`recipe-${index}`}
                   >
+                    <p>{recipe.crafting_station}</p>
                     <CheckboxGroup
-                      defaultValue={[recipe.crafting_station]}
+                      defaultValue={[recipe?.crafting_station?.toString()]}
                       validation={{ single: true, valueAsNumber: true }}
                       name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.crafting_station`}
                       options={[
@@ -666,7 +501,13 @@ const ItemForm = (props: ItemFormProps) => {
                     >
                       {/* TODO: replace with items from db */}
                       <Lookup
-                        name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.create.item_id`}
+                        // {...register(
+                        //   `ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.item_id`,
+                        //   {
+                        //     required: true,
+                        //   }
+                        // )}
+                        name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.item_id`}
                         group={"type"}
                         options={arkitems.items
                           .filter((f) =>
@@ -682,7 +523,7 @@ const ItemForm = (props: ItemFormProps) => {
                           .map((item) => {
                             return {
                               type: item.type,
-                              label: item.name,
+                              label: item.name || "",
                               value: item.id,
                               image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
                             };
@@ -691,6 +532,7 @@ const ItemForm = (props: ItemFormProps) => {
                         className="!mt-0 !rounded-none !rounded-l-md"
                         defaultValue={recipe.item_id}
                         filterFn={(item, search) => {
+                          if (!search) return true
                           return item.label
                             .toLowerCase()
                             .includes(search.toLowerCase());
@@ -734,7 +576,7 @@ const ItemForm = (props: ItemFormProps) => {
                     className="rw-button rw-button-gray"
                     onClick={() =>
                       appendRecipe({
-                        item_id: 7,
+                        item_id: 1,
                         amount: 1,
                         crafting_station: 126,
                         yields: 1,

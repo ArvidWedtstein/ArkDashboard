@@ -25,6 +25,13 @@ export const QUERY = gql`
       color
       category
       type
+      ItemRecipe_ItemRecipe_crafted_item_idToItem {
+        id
+        amount
+        yields
+        crafting_station
+        item_id
+      }
     }
   }
 `;
@@ -46,6 +53,13 @@ const UPDATE_ITEM_MUTATION = gql`
       color
       category
       type
+      ItemRecipe_ItemRecipe_crafted_item_idToItem {
+        id
+        amount
+        yields
+        crafting_station
+        item_id
+      }
     }
   }
 `;
