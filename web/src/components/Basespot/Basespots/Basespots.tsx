@@ -92,9 +92,10 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
   return (
     <div className="h-[80vh]">
       <header
-        className="flex flex-col justify-between w-full min-h-[200px] p-12 bg-center bg-cover rounded-2xl text-white"
+        className="flex flex-col justify-between w-full min-h-[200px] p-12 bg-center bg-cover bg-no-repeat rounded-2xl text-white"
         // style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1520808663317-647b476a81b9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80)' }}
-        style={{ backgroundImage: 'url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/9/20210806171146_1.jpg)' }}
+        // style={{ backgroundImage: 'url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/9/20210806171146_1.jpg)' }}
+        style={{ backgroundImage: 'url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg)' }}
       >
         <div className="flex justify-between pb-5">
           <div className="text-xl font-bold uppercase tracking-[0.4rem] opacity-90">basespots</div>
