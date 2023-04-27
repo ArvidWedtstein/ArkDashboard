@@ -258,7 +258,7 @@ const BasespotForm = (props: BasespotFormProps) => {
         )}
 
         <Label
-          name="estimatedForPlayers"
+          name="estimated_for_players"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
@@ -266,13 +266,13 @@ const BasespotForm = (props: BasespotFormProps) => {
         </Label>
 
         <TextField
-          name="estimatedForPlayers"
-          defaultValue={props.basespot?.estimatedForPlayers}
+          name="estimated_for_players"
+          defaultValue={props.basespot?.estimated_for_players}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
         />
 
-        <FieldError name="estimatedForPlayers" className="rw-field-error" />
+        <FieldError name="estimated_for_players" className="rw-field-error" />
 
         {/* <Label
           name="defenseImages"

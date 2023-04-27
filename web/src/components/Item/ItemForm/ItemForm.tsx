@@ -115,7 +115,7 @@ const ItemForm = (props: ItemFormProps) => {
   const { register, control } = useForm({
     defaultValues: {
       stats: [],
-      "ItemRecipe_ItemRecipe_crafted_item_idToItem.connectOrCreate.create": [],
+      "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert": [],
       "ItemRecipe_ItemRecipe_crafted_item_idToItem.connectOrCreate.where": [],
     },
   });
@@ -133,7 +133,7 @@ const ItemForm = (props: ItemFormProps) => {
     remove: removeRecipe,
   } = useFieldArray({
     control,
-    name: "ItemRecipe_ItemRecipe_crafted_item_idToItem.connectOrCreate.create", // the name of the field array in your form data
+    name: "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert", // the name of the field array in your form data
   });
 
   const reducer = (state, action) => {
@@ -472,82 +472,82 @@ const ItemForm = (props: ItemFormProps) => {
                       value: "606",
                       label: "Beer Barrel",
                       image:
-                        "https://arkids.net/image/item/120/beer-barrel.png",
+                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/beer-barrel.png",
                     },
                     {
                       value: "39",
                       label: "Campfire",
-                      image: "https://arkids.net/image/item/120/campfire.png",
+                      image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/campfire.png",
                     },
                     {
                       value: "607",
                       label: "Chemistry Bench",
                       image:
-                        "https://arkids.net/image/item/120/chemistry-bench.png",
+                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/chemistry-bench.png",
                     },
                     {
                       value: "128",
                       label: "Cooking Pot",
                       image:
-                        "https://arkids.net/image/item/120/cooking-pot.png",
+                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/cooking-pot.png",
                     },
                     {
                       value: "127",
                       label: "Compost Bin",
                       image:
-                        "https://arkids.net/image/item/120/compost-bin.png",
+                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/compost-bin.png",
                     },
                     {
                       value: "185",
                       label: "Fabricator",
-                      image: "https://arkids.net/image/item/120/fabricator.png",
+                      image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/fabricator.png",
                     },
                     {
                       value: "601",
                       label: "Industrial Cooker",
                       image:
-                        "https://arkids.net/image/item/120/industrial-cooker.png",
+                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-cooker.png",
                     },
                     {
                       value: "600",
                       label: "Industrial Forge",
                       image:
-                        "https://arkids.net/image/item/120/industrial-forge.png",
+                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-forge.png",
                     },
                     {
                       value: "360",
                       label: "Industrial Grill",
                       image:
-                        "https://arkids.net/image/item/120/industrial-grill.png",
+                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-grill.png",
                     },
                     {
                       value: "618",
                       label: "Industrial Grinder",
                       image:
-                        "https://arkids.net/image/item/120/industrial-grinder.png",
+                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-grinder.png",
                     },
                     {
                       value: "107",
                       label: "Mortar And Pestle",
                       image:
-                        "https://arkids.net/image/item/120/mortar-and-pestle.png",
+                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/mortar-and-pestle.png",
                     },
                     {
                       value: "125",
                       label: "Refining Forge",
                       image:
-                        "https://arkids.net/image/item/120/refining-forge.png",
+                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/refining-forge.png",
                     },
                     {
                       value: "126",
                       label: "Smithy",
-                      image: "https://arkids.net/image/item/120/smithy.png",
+                      image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/smithy.png",
                     },
                     {
                       value: "652",
                       label: "Tek Replicator",
                       image:
-                        "https://arkids.net/image/item/120/tek-replicator.png",
+                        "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/tek-replicator.png",
                     },
                   ]}
                 />
@@ -572,90 +572,90 @@ const ItemForm = (props: ItemFormProps) => {
                     <CheckboxGroup
                       defaultValue={[recipe.crafting_station]}
                       validation={{ single: true, valueAsNumber: true }}
-                      name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.connectOrCreate.create.${index}.crafting_station`}
+                      name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.crafting_station`}
                       options={[
                         {
                           value: 606,
                           label: "Beer Barrel",
                           image:
-                            "https://arkids.net/image/item/120/beer-barrel.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/beer-barrel.png",
                         },
                         {
                           value: 39,
                           label: "Campfire",
                           image:
-                            "https://arkids.net/image/item/120/campfire.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/campfire.png",
                         },
                         {
                           value: 607,
                           label: "Chemistry Bench",
                           image:
-                            "https://arkids.net/image/item/120/chemistry-bench.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/chemistry-bench.png",
                         },
                         {
                           value: 128,
                           label: "Cooking Pot",
                           image:
-                            "https://arkids.net/image/item/120/cooking-pot.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/cooking-pot.png",
                         },
                         {
                           value: 127,
                           label: "Compost Bin",
                           image:
-                            "https://arkids.net/image/item/120/compost-bin.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/compost-bin.png",
                         },
                         {
                           value: 185,
                           label: "Fabricator",
                           image:
-                            "https://arkids.net/image/item/120/fabricator.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/fabricator.png",
                         },
                         {
                           value: 601,
                           label: "Industrial Cooker",
                           image:
-                            "https://arkids.net/image/item/120/industrial-cooker.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-cooker.png",
                         },
                         {
                           value: 600,
                           label: "Industrial Forge",
                           image:
-                            "https://arkids.net/image/item/120/industrial-forge.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-forge.png",
                         },
                         {
                           value: 360,
                           label: "Industrial Grill",
                           image:
-                            "https://arkids.net/image/item/120/industrial-grill.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-grill.png",
                         },
                         {
                           value: 618,
                           label: "Industrial Grinder",
                           image:
-                            "https://arkids.net/image/item/120/industrial-grinder.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-grinder.png",
                         },
                         {
                           value: 107,
                           label: "Mortar And Pestle",
                           image:
-                            "https://arkids.net/image/item/120/mortar-and-pestle.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/mortar-and-pestle.png",
                         },
                         {
                           value: 125,
                           label: "Refining Forge",
                           image:
-                            "https://arkids.net/image/item/120/refining-forge.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/refining-forge.png",
                         },
                         {
                           value: 126,
                           label: "Smithy",
-                          image: "https://arkids.net/image/item/120/smithy.png",
+                          image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/smithy.png",
                         },
                         {
                           value: 652,
                           label: "Tek Replicator",
                           image:
-                            "https://arkids.net/image/item/120/tek-replicator.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/tek-replicator.png",
                         },
                       ]}
                     />
@@ -664,8 +664,9 @@ const ItemForm = (props: ItemFormProps) => {
                       role="group"
                       key={`recipe-${index}`}
                     >
+                      {/* TODO: replace with items from db */}
                       <Lookup
-                        name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.connectOrCreate.create.${index}.item_id`}
+                        name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.create.item_id`}
                         group={"type"}
                         options={arkitems.items
                           .filter((f) =>
@@ -699,7 +700,7 @@ const ItemForm = (props: ItemFormProps) => {
                         className="rw-input mt-0"
                         defaultValue={recipe.amount}
                         {...register(
-                          `ItemRecipe_ItemRecipe_crafted_item_idToItem.connectOrCreate.create.${index}.amount`,
+                          `ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.amount`,
                           {
                             required: true,
                           }
@@ -709,12 +710,13 @@ const ItemForm = (props: ItemFormProps) => {
                         className="rw-input mt-0"
                         defaultValue={recipe.yields}
                         {...register(
-                          `ItemRecipe_ItemRecipe_crafted_item_idToItem.connectOrCreate.create.${index}.yields`,
+                          `ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.yields`,
                           {
                             required: true,
                           }
                         )}
                       />
+                      <FieldError name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.yields`} className="rw-field-error" />
 
                       <button
                         type="button"
@@ -745,7 +747,7 @@ const ItemForm = (props: ItemFormProps) => {
 
                 {/* <Lookup
                   items={arkitems.items.filter((item) => item.type === 'Resource').map((item) => ({
-                    ...item, image: `https://arkids.net/image/item/120/${item.name
+                    ...item, image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.name
                       .replaceAll(" ", "-")
                       .replace("plant-species-y", "plant-species-y-trap")}.png`
                   }))}

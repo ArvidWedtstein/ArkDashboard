@@ -1,6 +1,7 @@
 import { useAuth } from "@redwoodjs/auth";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
+import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
 
 const HomePage = () => {
   const { isAuthenticated, client: supabase } = useAuth();
@@ -15,7 +16,16 @@ const HomePage = () => {
   // })
 
   // TODO: Update Timeline, Role, Tribe, TimelineBasespot and Basespot SDL
-
+  const images = [
+    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.png",
+    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp",
+    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.png",
+    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.png",
+    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.png",
+    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.png",
+    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/torpidity.png",
+    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.png",
+  ]
   return (
     <>
       <MetaTags title="Home" description="Home page" />
@@ -61,6 +71,12 @@ const HomePage = () => {
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
+
+        <div className="flex gap-1 flex-wrap">
+          {images.map((image, index) => (
+            <ImageContainer key={index} src={image} />
+          ))}
+        </div>
       </div>
     </>
   );

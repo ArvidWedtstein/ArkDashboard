@@ -486,8 +486,8 @@ const Dino = ({ dino }: Props) => {
           foodSecondsPer = foodValue / foodConsumption;
           foodSeconds = Math.ceil(
             Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
-              foodSecondsPer +
-              (typeof interval1 === "number" ? interval1 : 0)
+            foodSecondsPer +
+            (typeof interval1 === "number" ? interval1 : 0)
           );
         } else {
           foodSecondsPer = 0;
@@ -579,11 +579,11 @@ const Dino = ({ dino }: Props) => {
         numNeeded = dino.violent_tame
           ? Math.ceil(affinityLeft / affinityVal / tamingMultiplier)
           : Math.ceil(
-              affinityLeft /
-                affinityVal /
-                tamingMultiplier /
-                dino.non_violent_food_rate_mult
-            );
+            affinityLeft /
+            affinityVal /
+            tamingMultiplier /
+            dino.non_violent_food_rate_mult
+          );
 
         numToUse = numNeeded >= food.use ? food.use : numNeeded;
         tooMuchFood = numNeeded >= food.use ? false : true;
@@ -591,10 +591,10 @@ const Dino = ({ dino }: Props) => {
         affinityLeft = dino.violent_tame
           ? affinityLeft - numToUse * affinityVal * tamingMultiplier
           : affinityLeft -
-            numToUse *
-              affinityVal *
-              tamingMultiplier *
-              dino.non_violent_food_rate_mult;
+          numToUse *
+          affinityVal *
+          tamingMultiplier *
+          dino.non_violent_food_rate_mult;
 
         totalFood += numToUse * foodVal;
 
@@ -602,14 +602,14 @@ const Dino = ({ dino }: Props) => {
         while (i <= numToUse) {
           effectiveness -= dino.violent_tame
             ? (Math.pow(effectiveness, 2) * dino.taming_bonus_attr) /
-              affinityVal /
-              tamingMultiplier /
-              100
+            affinityVal /
+            tamingMultiplier /
+            100
             : (Math.pow(effectiveness, 2) * dino.taming_bonus_attr) /
-              affinityVal /
-              tamingMultiplier /
-              dino.non_violent_food_rate_mult /
-              100;
+            affinityVal /
+            tamingMultiplier /
+            dino.non_violent_food_rate_mult /
+            100;
 
           totalSecs =
             numUsedTotal == 1
@@ -638,14 +638,14 @@ const Dino = ({ dino }: Props) => {
       tamingFood.forEach((food: any) => {
         numNeeded = Math.ceil(
           affinityLeft /
-            food?.stats.find((f) => f.id === 15)?.value /
-            tamingMultiplier
+          food?.stats.find((f) => f.id === 15)?.value /
+          tamingMultiplier
         );
         neededValues[food.id] = numNeeded;
         neededValuesSecs[food.id] = Math.ceil(
           (numNeeded * food.stats.find((f: any) => f.id === 8)?.value) /
-            foodConsumption +
-            totalSecs
+          foodConsumption +
+          totalSecs
         );
       });
     }
@@ -664,7 +664,7 @@ const Dino = ({ dino }: Props) => {
           [`${name}Min`]: Math.max(
             Math.ceil(
               (totalSecs * torporDepletionPS - totalTorpor) /
-                (stats.torpor + torporDepletionPS * stats.secs)
+              (stats.torpor + torporDepletionPS * stats.secs)
             ),
             0
           ),
@@ -808,8 +808,8 @@ const Dino = ({ dino }: Props) => {
                     Math.ceil((totalDamage - baseHealth) / incPerLevel),
                     0
                   )
-                ? 0
-                : calculatePropability(
+                  ? 0
+                  : calculatePropability(
                     dinoLevel - 1,
                     numStats,
                     Math.max(
@@ -834,13 +834,13 @@ const Dino = ({ dino }: Props) => {
                   totalDamage < baseHealth
                     ? 100
                     : calculatePropability(
-                        dinoLevel - 1,
-                        numStats,
-                        Math.max(
-                          Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                          0
-                        )
-                      );
+                      dinoLevel - 1,
+                      numStats,
+                      Math.max(
+                        Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                        0
+                      )
+                    );
 
                 const chanceOfDeath = Math.round(100 - propsurvival);
                 hitboxes[i].chanceOfDeath = chanceOfDeath;
@@ -1054,6 +1054,7 @@ const Dino = ({ dino }: Props) => {
       {dino.DinoStat.some((d) => d.type == "immobilized_by") && (
         <section className="mt-4">
           <h3 className="font-medium leading-tight">Immobilized by</h3>
+
           <CheckboxGroup
             defaultValue={dino.DinoStat.filter(
               (d) => d.type == "immobilized_by"
@@ -1063,38 +1064,44 @@ const Dino = ({ dino }: Props) => {
               {
                 value: "733",
                 label: "Lasso",
-                image: "https://arkids.net/image/item/120/lasso.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/lasso.png",
               },
               {
                 value: "1040",
                 label: "Bola",
-                image: "https://arkids.net/image/item/120/bola.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bola.png",
               },
               {
                 value: "725",
                 label: "Chain Bola",
-                image: "https://arkids.net/image/item/120/chain-bola.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/chain-bola.png",
               },
               {
                 value: "785",
                 label: "Net Projectile",
-                image: "https://arkids.net/image/item/120/net-projectile.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/net-projectile.png",
               },
               {
                 value: "1252",
                 label: "Plant Species Y Trap",
                 image:
-                  "https://arkids.net/image/item/120/plant-species-y-trap.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/plant-species-y-trap.png",
               },
               {
                 value: "383",
                 label: "Bear Trap",
-                image: "https://arkids.net/image/item/120/bear-trap.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bear-trap.png",
               },
               {
                 value: "384",
                 label: "Large Bear Trap",
-                image: "https://arkids.net/image/item/120/large-bear-trap.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/large-bear-trap.png",
               },
             ]}
           />
@@ -1111,69 +1118,69 @@ const Dino = ({ dino }: Props) => {
               {
                 value: "e85015a5-8694-44e6-81d3-9e1fdd06061d",
                 label: "Pteranodon",
-                image: "https://www.dododex.com/media/creature/pteranodon.png",
+                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_pteranodon.png",
               },
               {
                 value: "1e7966e7-d63d-483d-a541-1a6d8cf739c8",
                 label: "Tropeognathus",
                 image:
-                  "https://www.dododex.com/media/creature/tropeognathus.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_tropeognathus.png",
               },
               {
                 value: "b8e304b3-ab46-4232-9226-c713e5a0d22c",
                 label: "Tapejara",
-                image: "https://www.dododex.com/media/creature/tapejara.png",
+                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_tapejara.png",
               },
               {
                 value: "da86d88a-3171-4fc9-b96d-79e8f59f1601",
                 label: "Griffin",
-                image: "https://www.dododex.com/media/creature/griffin.png",
+                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_griffin.png",
               },
               {
                 value: "147922ce-912d-4ab6-b4b6-712a42a9d939",
                 label: "Desmodus",
-                image: "https://www.dododex.com/media/creature/desmodus.png",
+                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_desmodus.png",
               },
               {
                 value: "28971d02-8375-4bf5-af20-6acb20bf7a76",
                 label: "Argentavis",
-                image: "https://www.dododex.com/media/creature/argentavis.png",
+                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_argentavis.png",
               },
               {
                 value: "f924e5d6-832a-4fb3-abc0-2fa42481cee1",
                 label: "Crystal Wyvern",
                 image:
-                  "https://www.dododex.com/media/creature/crystalwyvern.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_crystalwyvern.png",
               },
               {
                 value: "7aec6bf6-357e-44ec-8647-3943ca34e666",
                 label: "Wyvern",
-                image: "https://www.dododex.com/media/creature/wyvern.png",
+                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_wyvern.png",
               },
               {
                 value: "2b938227-61c2-4230-b7da-5d4d55f639ae",
                 label: "Quetzal",
-                image: "https://www.dododex.com/media/creature/quetzal.png",
+                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_quetzal.png",
               },
               {
                 value: "b1d6f790-d15c-4813-a6c8-9e6f62fafb52",
                 label: "Tusoteuthis",
-                image: "https://www.dododex.com/media/creature/tusoteuthis.png",
+                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_tusoteuthis.png",
               },
               {
                 value: "d670e948-055e-45e1-adf3-e56d63236238",
                 label: "Karkinos",
-                image: "https://www.dododex.com/media/creature/karkinos.png",
+                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_karkinos.png",
               },
               {
                 value: "52156470-6075-487b-a042-2f1d0d88536c",
                 label: "Kaprosuchus",
-                image: "https://www.dododex.com/media/creature/kaprosuchus.png",
+                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_kaprosuchus.png",
               },
               {
                 value: "f723f861-0aa3-40b5-b2d4-6c48ec0ca683",
                 label: "Procoptodon",
-                image: "https://www.dododex.com/media/creature/procoptodon.png",
+                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_procoptodon.png",
               },
               {
                 value: "human",
@@ -1184,7 +1191,7 @@ const Dino = ({ dino }: Props) => {
                 value: "94708e56-483b-4eef-ad35-2b9ce0e9c669",
                 label: "Gigantopithecus",
                 image:
-                  "https://www.dododex.com/media/creature/gigantopithecus.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_gigantopithecus.png",
               },
             ]}
           />
@@ -1203,36 +1210,36 @@ const Dino = ({ dino }: Props) => {
               {
                 value: "322",
                 label: "Doorframe",
-                image: "https://arkids.net/image/item/120/stone-doorframe.png",
+                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-doorframe.png",
               },
               {
                 value: "1066",
                 label: "Double Doorframe",
                 image:
-                  "https://arkids.net/image/item/120/stone-double-doorframe.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-double-doorframe.png",
               },
               {
                 value: "143",
                 label: "Dinosaur Gateway",
                 image:
-                  "https://arkids.net/image/item/120/stone-dinosaur-gateway.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-dinosaur-gateway.png",
               },
               {
                 value: "381",
                 label: "Behemoth Dino Gateway",
                 image:
-                  "https://arkids.net/image/item/120/behemoth-stone-dinosaur-gateway.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/behemoth-stone-dinosaur-gateway.png",
               },
               {
                 value: "316",
                 label: "Hatchframe",
-                image: "https://arkids.net/image/item/120/stone-hatchframe.png",
+                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-hatchframe.png",
               },
               {
                 value: "619",
                 label: "Giant Hatchframe",
                 image:
-                  "https://arkids.net/image/item/120/giant-stone-hatchframe.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/giant-stone-hatchframe.png",
               },
             ]}
           />
@@ -1553,8 +1560,8 @@ const Dino = ({ dino }: Props) => {
                 selectedFood
                   ? selectedFood.toString()
                   : dino.DinoStat.filter(
-                      (f) => f.type === "food"
-                    )[0].Item.id.toString(),
+                    (f) => f.type === "food"
+                  )[0].Item.id.toString(),
               ]}
               validation={{
                 single: true,
@@ -1746,45 +1753,45 @@ const Dino = ({ dino }: Props) => {
                       tameData["bioMin"] !== 0 ||
                       tameData["narcoticsMin"] !== 0 ||
                       tameData["ascerbicMin"] !== 0) && (
-                      <>
-                        <div className="flex flex-col items-center">
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcoberry.png`}
-                            alt=""
-                            className="w-12"
-                          />
-                          <p>{tameData["narcoberriesMin"]}</p>
-                          <p className="text-xs">Narcoberries</p>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bio-toxin.png`}
-                            alt=""
-                            className="w-12"
-                          />
-                          <p>{tameData["bioMin"]}</p>
-                          <p className="text-xs">Bio Toxin</p>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcotic.png`}
-                            alt=""
-                            className="w-12"
-                          />
-                          <p>{tameData["narcoticsMin"]}</p>
-                          <p className="text-xs">Narcotics</p>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/ascerbic-mushroom.png`}
-                            alt=""
-                            className="w-12"
-                          />
-                          <p>{tameData["ascerbicMin"]}</p>
-                          <p className="text-xs">Ascerbic Mushroom</p>
-                        </div>
-                      </>
-                    )}
+                        <>
+                          <div className="flex flex-col items-center">
+                            <img
+                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcoberry.png`}
+                              alt=""
+                              className="w-12"
+                            />
+                            <p>{tameData["narcoberriesMin"]}</p>
+                            <p className="text-xs">Narcoberries</p>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <img
+                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bio-toxin.png`}
+                              alt=""
+                              className="w-12"
+                            />
+                            <p>{tameData["bioMin"]}</p>
+                            <p className="text-xs">Bio Toxin</p>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <img
+                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcotic.png`}
+                              alt=""
+                              className="w-12"
+                            />
+                            <p>{tameData["narcoticsMin"]}</p>
+                            <p className="text-xs">Narcotics</p>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <img
+                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/ascerbic-mushroom.png`}
+                              alt=""
+                              className="w-12"
+                            />
+                            <p>{tameData["ascerbicMin"]}</p>
+                            <p className="text-xs">Ascerbic Mushroom</p>
+                          </div>
+                        </>
+                      )}
                   </div>
                 </section>
 
@@ -2032,14 +2039,14 @@ const Dino = ({ dino }: Props) => {
                           className="h-6 w-6"
                           src={
                             {
-                              s: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/8/8d/Stamina.png",
-                              w: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/6/6f/Weight.png",
-                              o: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/1/19/Oxygen.png",
-                              d: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/0/01/Melee_Damage.png",
-                              f: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/c/c6/Food.png",
-                              m: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/e/e1/Movement_Speed.png",
-                              t: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/3/32/Torpidity.png",
-                              h: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/9/94/Health.png",
+                              s: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp",
+                              w: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp",
+                              o: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp",
+                              d: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp",
+                              f: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp",
+                              m: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp",
+                              t: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/torpidity.webp",
+                              h: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp",
                             }[value]
                           }
                           alt=""
@@ -2096,7 +2103,7 @@ const Dino = ({ dino }: Props) => {
                     <button
                       disabled={
                         baseStats.find((s) => s.stat === row.stat)?.points <=
-                          0 || row.stat === "t"
+                        0 || row.stat === "t"
                       }
                       className="rw-button rw-button-small rw-button-red-outline disabled:bg-slate-500 disabled:text-white"
                       onClick={() => onRemove(row.stat)}
@@ -2113,7 +2120,7 @@ const Dino = ({ dino }: Props) => {
                         baseStats
                           .map((b) => b.points)
                           .reduce((a: any, b: any): any => a + b, 0) >=
-                          dinoLevel || row.stat === "t"
+                        dinoLevel || row.stat === "t"
                       }
                       className="rw-button rw-button-small rw-button-green-outline disabled:bg-slate-500 disabled:text-white"
                       onClick={() => onAdd(row.stat)}
@@ -2148,12 +2155,12 @@ const Dino = ({ dino }: Props) => {
                           {!value[label]
                             ? "-"
                             : truncate(
-                                (useFoundationUnit
-                                  ? Number(value[label] / 300)
-                                  : Number(value[label])
-                                ).toFixed(2),
-                                6
-                              )}
+                              (useFoundationUnit
+                                ? Number(value[label] / 300)
+                                : Number(value[label])
+                              ).toFixed(2),
+                              6
+                            )}
                         </p>
                       ))}
                       <p className="w-20">
