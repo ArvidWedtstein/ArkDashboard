@@ -1,8 +1,6 @@
 import { useAuth } from "@redwoodjs/auth";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
-import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
-
 const HomePage = () => {
   const { isAuthenticated, client: supabase } = useAuth();
   // if (document.addEventListener) {
@@ -14,7 +12,6 @@ const HomePage = () => {
   // supabase.auth.onAuthStateChange((event, session) => {
   //   console.log(event, session)
   // })
-
 
   return (
     <>
@@ -31,9 +28,7 @@ const HomePage = () => {
             height: "350px",
           }}
         >
-          <div
-            className="h-full w-full overflow-hidden bg-fixed bg-black bg-opacity-60"
-          >
+          <div className="h-full w-full overflow-hidden bg-black bg-opacity-60 bg-fixed">
             <div className="flex h-full items-center justify-center">
               <div className="px-6 text-center font-extralight text-white md:px-12">
                 <h1 className="mt-0 mb-6 text-5xl">Welcome Home Bob!</h1>
@@ -65,6 +60,5 @@ const HomePage = () => {
     </>
   );
 };
-
 
 export default HomePage;
