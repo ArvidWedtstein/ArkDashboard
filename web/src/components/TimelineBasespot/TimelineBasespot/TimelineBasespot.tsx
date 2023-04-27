@@ -24,7 +24,10 @@ const DELETE_TIMELINE_BASESPOT_MUTATION = gql`
 `;
 
 const RAID_TIMELINE_BASESPOT_MUTATION = gql`
-  mutation RaidTimelineBasespotMutation($id: BigInt!, $input: RaidTimelineBasespotInput!) {
+  mutation RaidTimelineBasespotMutation(
+    $id: BigInt!
+    $input: RaidTimelineBasespotInput!
+  ) {
     raidTimelineBasespot(id: $id, input: $input) {
       id
       end_date
@@ -52,17 +55,14 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
       },
     }
   );
-  const [raidTimelineBasespot] = useMutation(
-    RAID_TIMELINE_BASESPOT_MUTATION,
-    {
-      onCompleted: () => {
-        toast.success("TimelineBasespot raid initiated");
-      },
-      onError: (error) => {
-        toast.error(error.message);
-      },
-    }
-  );
+  const [raidTimelineBasespot] = useMutation(RAID_TIMELINE_BASESPOT_MUTATION, {
+    onCompleted: () => {
+      toast.success("TimelineBasespot raid initiated");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   const onDeleteClick = (id: DeleteTimelineBasespotMutationVariables["id"]) => {
     if (
@@ -73,13 +73,11 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
   };
   const [isRaided, setIsRaided] = useState(false);
   const initRaid = () => {
-    if (
-      confirm("Are you sure you are being raided?")
-    ) {
+    if (confirm("Are you sure you are being raided?")) {
       setIsRaided(true);
-      setIsComponentVisible(false)
+      setIsComponentVisible(false);
     }
-  }
+  };
   const [images, setImages] = useState([]);
   const [isComponentVisible, setIsComponentVisible] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(null);
@@ -103,13 +101,444 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
         setIsOpen={(open) => setIsComponentVisible(open)}
         image={currentModalImage}
       />
+      <div className="w-full p-2 lg:w-2/3">
+        <div className="bg-card h-60 rounded-lg sm:h-80">
+          <div className="flex h-full flex-col p-4">
+            <div className="">
+              <div className="flex items-center">
+                <div className="font-bold text-white">Your Work Summary</div>
+                <div className="flex-grow"></div>
+                <img
+                  src="https://assets.codepen.io/3685267/res-react-dash-graph-range.svg"
+                  alt=""
+                  className="h-4 w-4"
+                />
+                <div className="ml-2">Last 9 Months</div>
+                <div className="icon-background ml-6 flex h-5 w-5 items-center justify-center rounded-full">
+                  ?
+                </div>
+              </div>
+              <div className="ml-5 font-bold">Nov - July</div>
+            </div>
+            <div className="flex-grow">
+              <div className="recharts-responsive-container h-full w-full">
+                <div className="recharts-wrapper relative h-[240px] w-[639px]">
+                  <svg
+                    className="recharts-surface"
+                    width="639"
+                    height="240"
+                    viewBox="0 0 639 240"
+                    version="1.1"
+                  >
+                    <defs>
+                      <clipPath id="recharts3-clip">
+                        <rect x="65" y="5" height="200" width="569"></rect>
+                      </clipPath>
+                    </defs>
+                    <defs>
+                      <linearGradient
+                        id="paint0_linear"
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="0"
+                      >
+                        <stop stop-color="#6B8DE3"></stop>
+                        <stop offset="1" stop-color="#7D1C8D"></stop>
+                      </linearGradient>
+                    </defs>
+                    <g className="recharts-cartesian-grid">
+                      <g className="recharts-cartesian-grid-vertical">
+                        <line
+                          stroke-width="6"
+                          stroke="#252525"
+                          fill="none"
+                          x="65"
+                          y="5"
+                          width="569"
+                          height="200"
+                          x1="65"
+                          y1="5"
+                          x2="65"
+                          y2="205"
+                        ></line>
+                        <line
+                          stroke-width="6"
+                          stroke="#252525"
+                          fill="none"
+                          x="65"
+                          y="5"
+                          width="569"
+                          height="200"
+                          x1="136.125"
+                          y1="5"
+                          x2="136.125"
+                          y2="205"
+                        ></line>
+                        <line
+                          stroke-width="6"
+                          stroke="#252525"
+                          fill="none"
+                          x="65"
+                          y="5"
+                          width="569"
+                          height="200"
+                          x1="207.25"
+                          y1="5"
+                          x2="207.25"
+                          y2="205"
+                        ></line>
+                        <line
+                          stroke-width="6"
+                          stroke="#252525"
+                          fill="none"
+                          x="65"
+                          y="5"
+                          width="569"
+                          height="200"
+                          x1="278.375"
+                          y1="5"
+                          x2="278.375"
+                          y2="205"
+                        ></line>
+                        <line
+                          stroke-width="6"
+                          stroke="#252525"
+                          fill="none"
+                          x="65"
+                          y="5"
+                          width="569"
+                          height="200"
+                          x1="349.5"
+                          y1="5"
+                          x2="349.5"
+                          y2="205"
+                        ></line>
+                        <line
+                          stroke-width="6"
+                          stroke="#252525"
+                          fill="none"
+                          x="65"
+                          y="5"
+                          width="569"
+                          height="200"
+                          x1="420.625"
+                          y1="5"
+                          x2="420.625"
+                          y2="205"
+                        ></line>
+                        <line
+                          stroke-width="6"
+                          stroke="#252525"
+                          fill="none"
+                          x="65"
+                          y="5"
+                          width="569"
+                          height="200"
+                          x1="491.75"
+                          y1="5"
+                          x2="491.75"
+                          y2="205"
+                        ></line>
+                        <line
+                          stroke-width="6"
+                          stroke="#252525"
+                          fill="none"
+                          x="65"
+                          y="5"
+                          width="569"
+                          height="200"
+                          x1="562.875"
+                          y1="5"
+                          x2="562.875"
+                          y2="205"
+                        ></line>
+                        <line
+                          stroke-width="6"
+                          stroke="#252525"
+                          fill="none"
+                          x="65"
+                          y="5"
+                          width="569"
+                          height="200"
+                          x1="634"
+                          y1="5"
+                          x2="634"
+                          y2="205"
+                        ></line>
+                      </g>
+                    </g>
+                    <g className="recharts-layer recharts-cartesian-axis recharts-xAxis xAxis">
+                      <g className="recharts-cartesian-axis-ticks">
+                        <g className="recharts-layer recharts-cartesian-axis-tick">
+                          <text
+                            width="569"
+                            height="30"
+                            x="65"
+                            y="221"
+                            stroke="none"
+                            fill="#666"
+                            className="recharts-text recharts-cartesian-axis-tick-value"
+                            text-anchor="middle"
+                          >
+                            <tspan x="65" dy="0.71em">
+                              Nov
+                            </tspan>
+                          </text>
+                        </g>
+                        <g className="recharts-layer recharts-cartesian-axis-tick">
+                          <text
+                            width="569"
+                            height="30"
+                            x="136.125"
+                            y="221"
+                            stroke="none"
+                            fill="#666"
+                            className="recharts-text recharts-cartesian-axis-tick-value"
+                            text-anchor="middle"
+                          >
+                            <tspan x="136.125" dy="0.71em">
+                              Dec
+                            </tspan>
+                          </text>
+                        </g>
+                        <g className="recharts-layer recharts-cartesian-axis-tick">
+                          <text
+                            width="569"
+                            height="30"
+                            x="207.25"
+                            y="221"
+                            stroke="none"
+                            fill="#666"
+                            className="recharts-text recharts-cartesian-axis-tick-value"
+                            text-anchor="middle"
+                          >
+                            <tspan x="207.25" dy="0.71em">
+                              Jan
+                            </tspan>
+                          </text>
+                        </g>
+                        <g className="recharts-layer recharts-cartesian-axis-tick">
+                          <text
+                            width="569"
+                            height="30"
+                            x="278.375"
+                            y="221"
+                            stroke="none"
+                            fill="#666"
+                            className="recharts-text recharts-cartesian-axis-tick-value"
+                            text-anchor="middle"
+                          >
+                            <tspan x="278.375" dy="0.71em">
+                              Feb
+                            </tspan>
+                          </text>
+                        </g>
+                        <g className="recharts-layer recharts-cartesian-axis-tick">
+                          <text
+                            width="569"
+                            height="30"
+                            x="349.5"
+                            y="221"
+                            stroke="none"
+                            fill="#666"
+                            className="recharts-text recharts-cartesian-axis-tick-value"
+                            text-anchor="middle"
+                          >
+                            <tspan x="349.5" dy="0.71em">
+                              Mar
+                            </tspan>
+                          </text>
+                        </g>
+                        <g className="recharts-layer recharts-cartesian-axis-tick">
+                          <text
+                            width="569"
+                            height="30"
+                            x="420.625"
+                            y="221"
+                            stroke="none"
+                            fill="#666"
+                            className="recharts-text recharts-cartesian-axis-tick-value"
+                            text-anchor="middle"
+                          >
+                            <tspan x="420.625" dy="0.71em">
+                              Apr
+                            </tspan>
+                          </text>
+                        </g>
+                        <g className="recharts-layer recharts-cartesian-axis-tick">
+                          <text
+                            width="569"
+                            height="30"
+                            x="491.75"
+                            y="221"
+                            stroke="none"
+                            fill="#666"
+                            className="recharts-text recharts-cartesian-axis-tick-value"
+                            text-anchor="middle"
+                          >
+                            <tspan x="491.75" dy="0.71em">
+                              May
+                            </tspan>
+                          </text>
+                        </g>
+                        <g className="recharts-layer recharts-cartesian-axis-tick">
+                          <text
+                            width="569"
+                            height="30"
+                            x="562.875"
+                            y="221"
+                            stroke="none"
+                            fill="#666"
+                            className="recharts-text recharts-cartesian-axis-tick-value"
+                            text-anchor="middle"
+                          >
+                            <tspan x="562.875" dy="0.71em">
+                              June
+                            </tspan>
+                          </text>
+                        </g>
+                        <g className="recharts-layer recharts-cartesian-axis-tick">
+                          <text
+                            width="569"
+                            height="30"
+                            x="624.7734375"
+                            y="221"
+                            stroke="none"
+                            fill="#666"
+                            className="recharts-text recharts-cartesian-axis-tick-value"
+                            text-anchor="middle"
+                          >
+                            <tspan x="624.7734375" dy="0.71em">
+                              July
+                            </tspan>
+                          </text>
+                        </g>
+                      </g>
+                    </g>
+                    <g className="recharts-layer recharts-cartesian-axis recharts-yAxis yAxis">
+                      <g className="recharts-cartesian-axis-ticks">
+                        <g className="recharts-layer recharts-cartesian-axis-tick">
+                          <text
+                            width="60"
+                            height="200"
+                            x="49"
+                            y="205"
+                            stroke="none"
+                            fill="#666"
+                            className="recharts-text recharts-cartesian-axis-tick-value"
+                            text-anchor="end"
+                          >
+                            <tspan x="49" dy="0.355em">
+                              0
+                            </tspan>
+                          </text>
+                        </g>
+                        <g className="recharts-layer recharts-cartesian-axis-tick">
+                          <text
+                            width="60"
+                            height="200"
+                            x="49"
+                            y="155"
+                            stroke="none"
+                            fill="#666"
+                            className="recharts-text recharts-cartesian-axis-tick-value"
+                            text-anchor="end"
+                          >
+                            <tspan x="49" dy="0.355em">
+                              650
+                            </tspan>
+                          </text>
+                        </g>
+                        <g className="recharts-layer recharts-cartesian-axis-tick">
+                          <text
+                            width="60"
+                            height="200"
+                            x="49"
+                            y="105"
+                            stroke="none"
+                            fill="#666"
+                            className="recharts-text recharts-cartesian-axis-tick-value"
+                            text-anchor="end"
+                          >
+                            <tspan x="49" dy="0.355em">
+                              1300
+                            </tspan>
+                          </text>
+                        </g>
+                        <g className="recharts-layer recharts-cartesian-axis-tick">
+                          <text
+                            width="60"
+                            height="200"
+                            x="49"
+                            y="55"
+                            stroke="none"
+                            fill="#666"
+                            className="recharts-text recharts-cartesian-axis-tick-value"
+                            text-anchor="end"
+                          >
+                            <tspan x="49" dy="0.355em">
+                              1950
+                            </tspan>
+                          </text>
+                        </g>
+                        <g className="recharts-layer recharts-cartesian-axis-tick">
+                          <text
+                            width="60"
+                            height="200"
+                            x="49"
+                            y="12"
+                            stroke="none"
+                            fill="#666"
+                            className="recharts-text recharts-cartesian-axis-tick-value"
+                            text-anchor="end"
+                          >
+                            <tspan x="49" dy="0.355em">
+                              2600
+                            </tspan>
+                          </text>
+                        </g>
+                      </g>
+                    </g>
+                    <g className="recharts-layer recharts-line">
+                      <path
+                        stroke="#242424"
+                        stroke-width="3"
+                        stroke-dasharray="8 8"
+                        fill="none"
+                        width="569"
+                        height="200"
+                        className="recharts-curve recharts-line-curve"
+                        d="M65,48.36191760214189C88.70833333333333,64.50728197077581,112.41666666666667,80.65264633940971,136.125,80.65264633940971C159.83333333333334,80.65264633940971,183.54166666666666,11.297235679305459,207.25,11.297235679305459C230.95833333333334,11.297235679305459,254.66666666666666,60.69777480461221,278.375,84.9175159405845C302.0833333333333,109.13725707655678,325.7916666666667,156.6156824951392,349.5,156.6156824951392C373.2083333333333,156.6156824951392,396.9166666666667,67.42182793472833,420.625,67.42182793472833C444.3333333333333,67.42182793472833,468.0416666666667,183.84815615562746,491.75,183.84815615562746C515.4583333333334,183.84815615562746,539.1666666666666,84.87472003976761,562.875,84.87472003976761C586.5833333333334,84.87472003976761,610.2916666666666,121.45069886187211,634,158.0266776839766"
+                      ></path>
+                    </g>
+                    <g className="recharts-layer recharts-line">
+                      <path
+                        stroke="url(#paint0_linear)"
+                        stroke-width="4"
+                        fill="none"
+                        width="569"
+                        height="200"
+                        className="recharts-curve recharts-line-curve"
+                        d="M65,48.787215407603554C88.70833333333333,52.08354278566151,112.41666666666667,55.37987016371946,136.125,55.37987016371946C159.83333333333334,55.37987016371946,183.54166666666666,55.31375355528897,207.25,55.31375355528897C230.95833333333334,55.31375355528897,254.66666666666666,63.1456317307987,278.375,78.80938808181816C302.0833333333333,94.47314443283761,325.7916666666667,159.37017169008817,349.5,159.37017169008817C373.2083333333333,159.37017169008817,396.9166666666667,99.76602814025466,420.625,99.76602814025466C444.3333333333333,99.76602814025466,468.0416666666667,129.98249279188164,491.75,129.98249279188164C515.4583333333334,129.98249279188164,539.1666666666666,23.2724149434207,562.875,23.2724149434207C586.5833333333334,23.2724149434207,610.2916666666666,53.6005700527309,634,83.9287251620411"
+                      ></path>
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <Modal
         isOpen={isRaided}
         onClose={() => setIsRaided(false)}
         form={
-          <div className="flex flex-col items-center justify-center dark:text-white text-gray-700">
+          <div className="flex flex-col items-center justify-center text-gray-700 dark:text-white">
             <h1 className="text-2xl font-bold">You are being raided!</h1>
-            <p className="text-lg">Please fill out the form below to report the raid.</p>
+            <p className="text-lg">
+              Please fill out the form below to report the raid.
+            </p>
             <label className="rw-label">Raided By</label>
             <input className="rw-input" type="text" name="raided_by" />
 
@@ -121,8 +550,8 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
           </div>
         }
         formSubmit={(data) => {
-          data.preventDefault()
-          const formData = new FormData(data.currentTarget)
+          data.preventDefault();
+          const formData = new FormData(data.currentTarget);
           raidTimelineBasespot({
             variables: {
               id: timelineBasespot.id,
@@ -131,7 +560,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                 raid_comment: formData.get("raid_comment"),
                 raided_by: formData.get("raided_by"),
               },
-            }
+            },
           });
           setIsRaided(false);
         }}
@@ -240,7 +669,12 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                 className="h-full w-full object-cover object-center"
                 map={timelineBasespot.map.toString()}
                 size={{ width: 500, height: 500 }}
-                pos={[{ lat: timelineBasespot.latitude, lon: timelineBasespot.longitude } as any]}
+                pos={[
+                  {
+                    lat: timelineBasespot.latitude,
+                    lon: timelineBasespot.longitude,
+                  } as any,
+                ]}
                 interactive={true}
               />
               {/* <Map
@@ -386,16 +820,26 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
           </div>
         </section>
 
-
-        {(isAuthenticated && !timelineBasespot.end_date && !timelineBasespot.raided_by && !timelineBasespot.raid_comment) && (
-          <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
-            <button className="rw-button rw-button-red-outline rw-button-large m-3" onClick={() => initRaid()}>Raid
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="fill-current">
-                <path d="M285.3 247.1c-3.093-4.635-8.161-7.134-13.32-7.134c-8.739 0-15.1 7.108-15.1 16.03c0 3.05 .8717 6.133 2.693 8.859l52.37 78.56l-76.12 25.38c-6.415 2.16-10.94 8.159-10.94 15.18c0 2.758 .7104 5.498 2.109 7.946l63.1 112C293.1 509.1 298.5 512 304 512c11.25 0 15.99-9.84 15.99-16.02c0-2.691-.6807-5.416-2.114-7.915L263.6 393l77.48-25.81c1.701-.5727 10.93-4.426 10.93-15.19c0-3.121-.9093-6.205-2.685-8.873L285.3 247.1zM575.1 256c0-4.435-1.831-8.841-5.423-12l-58.6-51.87c.002-.0938 0 .0938 0 0l.0247-144.1c0-8.844-7.156-16-15.1-16L400 32c-8.844 0-15.1 7.156-15.1 16l-.0014 31.37L298.6 4c-3.016-2.656-6.797-3.997-10.58-3.997c-3.781 0-7.563 1.34-10.58 3.997l-271.1 240C1.831 247.2 .0007 251.6 .0007 256c0 8.92 7.239 15.99 16.04 15.99c3.757 0 7.52-1.313 10.54-3.993l37.42-33.02V432c0 44.13 35.89 80 79.1 80h63.1c8.844 0 15.1-7.156 15.1-16S216.8 480 208 480h-63.1c-26.47 0-47.1-21.53-47.1-48v-224c0-.377-.1895-.6914-.2148-1.062L288 37.34l192.2 169.6C480.2 207.3 479.1 207.6 479.1 208v224c0 26.47-21.53 48-47.1 48h-31.1c-8.844 0-15.1 7.156-15.1 16s7.156 16 15.1 16h31.1c44.11 0 79.1-35.88 79.1-80V234.1L549.4 268C552.5 270.7 556.2 272 559.1 272C568.7 272 575.1 264.9 575.1 256zM479.1 164.1l-63.1-56.47V64h63.1V164.1z" />
-              </svg>
-            </button>
-          </section>
-        )}
+        {isAuthenticated &&
+          !timelineBasespot.end_date &&
+          !timelineBasespot.raided_by &&
+          !timelineBasespot.raid_comment && (
+            <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
+              <button
+                className="rw-button rw-button-red-outline rw-button-large m-3"
+                onClick={() => initRaid()}
+              >
+                Raid
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 576 512"
+                  className="fill-current"
+                >
+                  <path d="M285.3 247.1c-3.093-4.635-8.161-7.134-13.32-7.134c-8.739 0-15.1 7.108-15.1 16.03c0 3.05 .8717 6.133 2.693 8.859l52.37 78.56l-76.12 25.38c-6.415 2.16-10.94 8.159-10.94 15.18c0 2.758 .7104 5.498 2.109 7.946l63.1 112C293.1 509.1 298.5 512 304 512c11.25 0 15.99-9.84 15.99-16.02c0-2.691-.6807-5.416-2.114-7.915L263.6 393l77.48-25.81c1.701-.5727 10.93-4.426 10.93-15.19c0-3.121-.9093-6.205-2.685-8.873L285.3 247.1zM575.1 256c0-4.435-1.831-8.841-5.423-12l-58.6-51.87c.002-.0938 0 .0938 0 0l.0247-144.1c0-8.844-7.156-16-15.1-16L400 32c-8.844 0-15.1 7.156-15.1 16l-.0014 31.37L298.6 4c-3.016-2.656-6.797-3.997-10.58-3.997c-3.781 0-7.563 1.34-10.58 3.997l-271.1 240C1.831 247.2 .0007 251.6 .0007 256c0 8.92 7.239 15.99 16.04 15.99c3.757 0 7.52-1.313 10.54-3.993l37.42-33.02V432c0 44.13 35.89 80 79.1 80h63.1c8.844 0 15.1-7.156 15.1-16S216.8 480 208 480h-63.1c-26.47 0-47.1-21.53-47.1-48v-224c0-.377-.1895-.6914-.2148-1.062L288 37.34l192.2 169.6C480.2 207.3 479.1 207.6 479.1 208v224c0 26.47-21.53 48-47.1 48h-31.1c-8.844 0-15.1 7.156-15.1 16s7.156 16 15.1 16h31.1c44.11 0 79.1-35.88 79.1-80V234.1L549.4 268C552.5 270.7 556.2 272 559.1 272C568.7 272 575.1 264.9 575.1 256zM479.1 164.1l-63.1-56.47V64h63.1V164.1z" />
+                </svg>
+              </button>
+            </section>
+          )}
 
         {timelineBasespot.TimelineBasespotDino.length > 0 && (
           <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
@@ -410,7 +854,10 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
               </div>
               <div className="-m-4 flex flex-wrap">
                 {timelineBasespot.TimelineBasespotDino.map((dino, i) => (
-                  <div className="w-1/3 max-w-3xl p-2" key={`timelinebasespotdino-${i}`}>
+                  <div
+                    className="w-1/3 max-w-3xl p-2"
+                    key={`timelinebasespotdino-${i}`}
+                  >
                     <div className="border border-[#97FBFF] bg-[#0D2836] p-4">
                       <div className="flex flex-row space-x-3">
                         <div className="h-28 w-28 overflow-hidden border border-[#97FBFF]">
@@ -458,9 +905,10 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           />
                           <span>
                             {nmbFormat(
-                              dino.wild_stamina * dino.Dino.base_stats["s"]["w"] +
-                              dino.stamina * dino.Dino.base_stats["s"]["t"] +
-                              dino.Dino.base_stats["s"]["b"]
+                              dino.wild_stamina *
+                                dino.Dino.base_stats["s"]["w"] +
+                                dino.stamina * dino.Dino.base_stats["s"]["t"] +
+                                dino.Dino.base_stats["s"]["b"]
                             )}
                           </span>
                         </p>
@@ -475,9 +923,10 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           />
                           <span>
                             {nmbFormat(
-                              dino.wild_weight * dino.Dino.base_stats["w"]["w"] +
-                              dino.weight * dino.Dino.base_stats["w"]["t"] +
-                              dino.Dino.base_stats["w"]["b"]
+                              dino.wild_weight *
+                                dino.Dino.base_stats["w"]["w"] +
+                                dino.weight * dino.Dino.base_stats["w"]["t"] +
+                                dino.Dino.base_stats["w"]["b"]
                             )}
                           </span>
                         </p>
@@ -492,9 +941,10 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           />
                           <span>
                             {nmbFormat(
-                              dino.wild_oxygen * dino.Dino.base_stats["o"]["w"] +
-                              dino.oxygen * dino.Dino.base_stats["o"]["t"] +
-                              dino.Dino.base_stats["o"]["b"]
+                              dino.wild_oxygen *
+                                dino.Dino.base_stats["o"]["w"] +
+                                dino.oxygen * dino.Dino.base_stats["o"]["t"] +
+                                dino.Dino.base_stats["o"]["b"]
                             )}
                           </span>
                         </p>
@@ -510,7 +960,8 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {dino.wild_melee_damage *
                               dino.Dino.base_stats["d"]["w"] +
-                              dino.melee_damage * dino.Dino.base_stats["d"]["t"] +
+                              dino.melee_damage *
+                                dino.Dino.base_stats["d"]["t"] +
                               dino.Dino.base_stats["d"]["b"]}
                             %
                           </span>
@@ -527,8 +978,8 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {nmbFormat(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                              dino.food * dino.Dino.base_stats["f"]["t"] +
-                              dino.Dino.base_stats["f"]["b"]
+                                dino.food * dino.Dino.base_stats["f"]["t"] +
+                                dino.Dino.base_stats["f"]["b"]
                             )}
                           </span>
                         </p>
@@ -544,10 +995,10 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {nmbFormat(
                               dino.wild_movement_speed *
-                              dino.Dino.base_stats["m"]["w"] +
-                              dino.movement_speed *
-                              dino.Dino.base_stats["m"]["t"] +
-                              dino.Dino.base_stats["m"]["b"]
+                                dino.Dino.base_stats["m"]["w"] +
+                                dino.movement_speed *
+                                  dino.Dino.base_stats["m"]["t"] +
+                                dino.Dino.base_stats["m"]["b"]
                             )}
                             %
                           </span>
@@ -561,15 +1012,17 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <div className="h-full w-full bg-gradient-to-t from-[#A30100] to-red-500"></div>
                           <span className="absolute w-full items-center text-base font-semibold">
                             {nmbFormat(
-                              dino.wild_health * dino.Dino.base_stats["h"]["w"] +
-                              dino.health * dino.Dino.base_stats["h"]["t"] +
-                              dino.Dino.base_stats["h"]["b"]
+                              dino.wild_health *
+                                dino.Dino.base_stats["h"]["w"] +
+                                dino.health * dino.Dino.base_stats["h"]["t"] +
+                                dino.Dino.base_stats["h"]["b"]
                             )}
                             /
                             {nmbFormat(
-                              dino.wild_health * dino.Dino.base_stats["h"]["w"] +
-                              dino.health * dino.Dino.base_stats["h"]["t"] +
-                              dino.Dino.base_stats["h"]["b"]
+                              dino.wild_health *
+                                dino.Dino.base_stats["h"]["w"] +
+                                dino.health * dino.Dino.base_stats["h"]["t"] +
+                                dino.Dino.base_stats["h"]["b"]
                             )}{" "}
                             Health ({dino.wild_health}-{dino.health})
                           </span>
@@ -581,14 +1034,14 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span className="absolute w-full items-center text-base font-semibold">
                             {nmbFormat(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                              dino.food * dino.Dino.base_stats["f"]["t"] +
-                              dino.Dino.base_stats["f"]["b"]
+                                dino.food * dino.Dino.base_stats["f"]["t"] +
+                                dino.Dino.base_stats["f"]["b"]
                             )}
                             /
                             {nmbFormat(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                              dino.food * dino.Dino.base_stats["f"]["t"] +
-                              dino.Dino.base_stats["f"]["b"]
+                                dino.food * dino.Dino.base_stats["f"]["t"] +
+                                dino.Dino.base_stats["f"]["b"]
                             )}{" "}
                             Food ({dino.wild_food}-{dino.food})
                           </span>
@@ -599,15 +1052,17 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <div className="h-full w-full bg-gradient-to-t from-[#A340B7] to-fuchsia-500"></div>
                           <span className="absolute w-full items-center text-base font-semibold">
                             {nmbFormat(
-                              dino.wild_torpor * dino.Dino.base_stats["t"]["w"] +
-                              dino.torpor * dino.Dino.base_stats["t"]["t"] +
-                              dino.Dino.base_stats["t"]["b"]
+                              dino.wild_torpor *
+                                dino.Dino.base_stats["t"]["w"] +
+                                dino.torpor * dino.Dino.base_stats["t"]["t"] +
+                                dino.Dino.base_stats["t"]["b"]
                             )}
                             /
                             {nmbFormat(
-                              dino.wild_torpor * dino.Dino.base_stats["t"]["w"] +
-                              dino.torpor * dino.Dino.base_stats["t"]["t"] +
-                              dino.Dino.base_stats["t"]["b"]
+                              dino.wild_torpor *
+                                dino.Dino.base_stats["t"]["w"] +
+                                dino.torpor * dino.Dino.base_stats["t"]["t"] +
+                                dino.Dino.base_stats["t"]["b"]
                             )}{" "}
                             Torpor ({dino.wild_torpor}-{dino.torpor})
                           </span>
