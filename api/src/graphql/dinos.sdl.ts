@@ -8,15 +8,13 @@ export const schema = gql`
     taming_notice: String
     can_destroy: [String]!
     base_stats: JSON
-    gather_eff: JSON
     exp_per_kill: Float
     fits_through: [String]!
     egg_min: Float
     egg_max: Float
     tdps: Float
     eats: [String]!
-    maturation_time: String
-    weight_reduction: JSON
+    maturation_time: Float
     incubation_time: Float
     affinity_needed: Float
     aff_inc: Float
@@ -27,7 +25,7 @@ export const schema = gql`
     food_consumption_mult: Float
     disable_ko: Boolean
     violent_tame: Boolean
-    taming_bonus_attr: Float
+    taming_ineffectiveness: Float
     disable_food: Boolean
     disable_mult: Boolean
     admin_note: String
@@ -50,11 +48,14 @@ export const schema = gql`
     icon: String
     image: String
     multipliers: JSON
+    baby_food_consumption_mult: Float
+    gestation_time: Float
+    mating_cooldown_min: BigInt
+    mating_cooldown_max: BigInt
     Item: Item
     DinoStat: [DinoStat]!
     TimelineBasespotDino: [TimelineBasespotDino]!
   }
-
   type DinosPage {
     dinos: [Dino!]!
     count: Int!
@@ -74,15 +75,13 @@ export const schema = gql`
     taming_notice: String
     can_destroy: [String]!
     base_stats: JSON
-    gather_eff: JSON
     exp_per_kill: Float
     fits_through: [String]!
     egg_min: Float
     egg_max: Float
     tdps: Float
     eats: [String]!
-    maturation_time: String
-    weight_reduction: JSON
+    maturation_time: Float
     incubation_time: Float
     affinity_needed: Float
     aff_inc: Float
@@ -93,7 +92,7 @@ export const schema = gql`
     food_consumption_mult: Float
     disable_ko: Boolean
     violent_tame: Boolean
-    taming_bonus_attr: Float
+    taming_ineffectiveness: Float
     disable_food: Boolean
     disable_mult: Boolean
     admin_note: String
@@ -116,6 +115,10 @@ export const schema = gql`
     icon: String
     image: String
     multipliers: JSON
+    baby_food_consumption_mult: Float
+    gestation_time: Float
+    mating_cooldown_min: BigInt
+    mating_cooldown_max: BigInt
   }
 
   input UpdateDinoInput {
@@ -126,15 +129,13 @@ export const schema = gql`
     taming_notice: String
     can_destroy: [String]!
     base_stats: JSON
-    gather_eff: JSON
     exp_per_kill: Float
     fits_through: [String]!
     egg_min: Float
     egg_max: Float
     tdps: Float
     eats: [String]!
-    maturation_time: String
-    weight_reduction: JSON
+    maturation_time: Float
     incubation_time: Float
     affinity_needed: Float
     aff_inc: Float
@@ -145,7 +146,7 @@ export const schema = gql`
     food_consumption_mult: Float
     disable_ko: Boolean
     violent_tame: Boolean
-    taming_bonus_attr: Float
+    taming_ineffectiveness: Float
     disable_food: Boolean
     disable_mult: Boolean
     admin_note: String
@@ -168,6 +169,10 @@ export const schema = gql`
     icon: String
     image: String
     multipliers: JSON
+    baby_food_consumption_mult: Float
+    gestation_time: Float
+    mating_cooldown_min: BigInt
+    mating_cooldown_max: BigInt
   }
 
   type Mutation {

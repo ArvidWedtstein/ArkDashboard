@@ -839,11 +839,11 @@ const DinoForm = (props: DinoFormProps) => {
                 options={
                   data
                     ? data.itemsByCategory.items.map((item) => ({
-                        type: item.type,
-                        label: item.name,
-                        value: item.id,
-                        image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                      }))
+                      type: item.type,
+                      label: item.name,
+                      value: item.id,
+                      image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                    }))
                     : []
                 }
                 search={true}
@@ -974,11 +974,11 @@ const DinoForm = (props: DinoFormProps) => {
                           options={
                             data
                               ? data.itemsByCategory.items.map((item) => ({
-                                  type: item.type,
-                                  label: item.name,
-                                  value: item.id,
-                                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                                }))
+                                type: item.type,
+                                label: item.name,
+                                value: item.id,
+                                image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                              }))
                               : []
                           }
                           search={true}
@@ -1308,7 +1308,7 @@ const DinoForm = (props: DinoFormProps) => {
             </div>
             <div>
               <Label
-                name="taming_bonus_attr"
+                name="taming_ineffectiveness"
                 className="rw-label"
                 errorClassName="rw-label rw-label-error"
               >
@@ -1316,15 +1316,15 @@ const DinoForm = (props: DinoFormProps) => {
               </Label>
 
               <TextField
-                name="taming_bonus_attr"
-                defaultValue={props.dino?.taming_bonus_attr}
+                name="taming_ineffectiveness"
+                defaultValue={props.dino?.taming_ineffectiveness}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
                 emptyAs={0}
                 validation={{ valueAsNumber: true }}
               />
 
-              <FieldError name="taming_bonus_attr" className="rw-field-error" />
+              <FieldError name="taming_ineffectiveness" className="rw-field-error" />
             </div>
           </div>
         </details>

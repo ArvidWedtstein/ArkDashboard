@@ -37,7 +37,7 @@ export const QUERY = gql`
       food_consumption_mult
       disable_ko
       violent_tame
-      taming_bonus_attr
+      taming_ineffectiveness
       disable_food
       disable_mult
       admin_note
@@ -101,7 +101,7 @@ const UPDATE_DINO_MUTATION = gql`
       food_consumption_mult
       disable_ko
       violent_tame
-      taming_bonus_attr
+      taming_ineffectiveness
       disable_food
       disable_mult
       admin_note

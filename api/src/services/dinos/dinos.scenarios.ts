@@ -7,7 +7,6 @@ export const standard = defineScenario<Prisma.DinoCreateArgs>({
       data: {
         name: 'String',
         can_destroy: 'String',
-        immobilized_by: 'String',
         fits_through: 'String',
         eats: 'String',
         drops: 'String',
@@ -19,7 +18,6 @@ export const standard = defineScenario<Prisma.DinoCreateArgs>({
       data: {
         name: 'String',
         can_destroy: 'String',
-        immobilized_by: 'String',
         fits_through: 'String',
         eats: 'String',
         drops: 'String',

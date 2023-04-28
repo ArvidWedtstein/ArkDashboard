@@ -601,11 +601,11 @@ const Dino = ({ dino }: Props) => {
         let i = 1;
         while (i <= numToUse) {
           effectiveness -= dino.violent_tame
-            ? (Math.pow(effectiveness, 2) * dino.taming_bonus_attr) /
+            ? (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
             affinityVal /
             tamingMultiplier /
             100
-            : (Math.pow(effectiveness, 2) * dino.taming_bonus_attr) /
+            : (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
             affinityVal /
             tamingMultiplier /
             dino.non_violent_food_rate_mult /

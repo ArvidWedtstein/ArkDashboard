@@ -55,6 +55,8 @@ const DinosList = ({ dinosPage }: FindDinos) => {
   const handlechange = (e) => {
     setSearch(e.target.value);
   };
+
+  // TODO: Replace this search with a GraphQL query
   const handleSelect = (e) => {
     const value = e.target.value;
     if (!value) return setDinos(dinosPage.dinos);
