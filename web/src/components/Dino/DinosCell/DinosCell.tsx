@@ -7,8 +7,8 @@ import Dinos from "src/components/Dino/Dinos";
 import Pagination from "src/components/Util/Pagination/Pagination";
 // query FindDinos($page: Int) {
 export const QUERY = gql`
-  query FindDinos($page: Int) {
-    dinosPage(page: $page) {
+  query FindDinos($page: Int, $search: String, $category: String) {
+    dinosPage(page: $page, search: $search, category: $category) {
       dinos {
         id
         created_at
@@ -62,9 +62,9 @@ export const QUERY = gql`
   }
 `;
 
-export const beforeQuery = ({ page }) => {
+export const beforeQuery = ({ page, search, category }) => {
   page = parseInt(page) ? parseInt(page, 10) : 1;
-  return { variables: { page } };
+  return { variables: { page, search, category } };
 };
 
 export const Loading = () => (

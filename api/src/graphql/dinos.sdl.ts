@@ -64,7 +64,7 @@ export const schema = gql`
   type Query {
     dinos: [Dino!]! @skipAuth
     dino(id: String!): Dino @skipAuth
-    dinosPage(page: Int): DinosPage @skipAuth
+    dinosPage(page: Int, search: String, category: String): DinosPage @skipAuth
   }
 
   input CreateDinoInput {
@@ -119,6 +119,7 @@ export const schema = gql`
     gestation_time: Float
     mating_cooldown_min: BigInt
     mating_cooldown_max: BigInt
+    DinoStat: JSON
   }
 
   input UpdateDinoInput {

@@ -82,7 +82,7 @@ export const Failure = ({ error }: CellFailureProps) => (
   </div>
 );
 
-export const Success = ({ itemsPage, variables }: CellSuccessProps<FindItems>) => {
+export const Success = ({ itemsPage }: CellSuccessProps<FindItems>) => {
   return itemsPage.count > 0 ? (
     <>
       <Items itemsPage={itemsPage} />

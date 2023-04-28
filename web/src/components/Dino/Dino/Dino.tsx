@@ -97,12 +97,12 @@ const Dino = ({ dino }: Props) => {
   const [dinoXVariant, setDinoXVariant] = useState(false);
   const [weaponDamage, setWeaponDamage] = useState({});
   const calcMaturationPercent = useCallback(() => {
-    let timeElapsed = maturation * parseInt(dino.maturation_time) * 1;
+    let timeElapsed = maturation * dino?.maturation_time * 1;
     return timeElapsed / 100;
   }, [maturation, setMaturation]);
 
   const [baseStats, setBaseStats] = useState(
-    Object.entries(dino.base_stats).map(([key, value]: any) => {
+    dino?.base_points && Object.entries(dino?.base_stats).map(([key, value]: any) => {
       return {
         stat: key,
         base: (typeof value === "object" ? value.b || 0 : value) || 0,
@@ -470,7 +470,7 @@ const Dino = ({ dino }: Props) => {
         // if non violent tame
         foodMaxRaw = foodMaxRaw / dino.non_violent_food_rate_mult;
         interval = foodValue / foodConsumption;
-        const baseStat = (dino.base_stats as any)?.f;
+        const baseStat = dino?.base_stats ? (dino.base_stats as any)?.f : null;
         if (
           typeof baseStat?.b === "number" &&
           typeof baseStat?.w === "number"
@@ -784,7 +784,7 @@ const Dino = ({ dino }: Props) => {
       let bodyChanceOfDeath = 0;
       let minChanceOfDeath = 0;
       if (dinoLevel < 2000 && isPossible) {
-        const baseStats = dino.base_stats["h"];
+        const baseStats = dino?.base_stats ? dino?.base_stats["h"] : null;
         if (baseStats?.b && baseStats?.w) {
           const baseHealth = baseStats.b;
           const incPerLevel = baseStats.w;
@@ -949,7 +949,7 @@ const Dino = ({ dino }: Props) => {
       ]}
         tabClassName="" /> */}
 
-      {!!dino.maturation_time && (dino.incubation_time || dino.base_points) && (
+      {!!dino.maturation_time && dino.maturation_time != 0 && (dino.incubation_time || dino.base_points) && (
         <section className="my-3 rounded-md p-4">
           <p className="my-3 text-center text-sm">{dino.name} breeding:</p>
           <Form className="my-6 mx-auto flex justify-center">
@@ -982,23 +982,23 @@ const Dino = ({ dino }: Props) => {
                 name: "Incubation",
                 time: dino.incubation_time / settings.hatchMultiplier,
               },
-              { name: "Baby", time: (parseInt(dino.maturation_time) * 1) / 10 },
+              { name: "Baby", time: (dino.maturation_time * 1) / 10 },
               {
                 name: "Juvenile",
                 time:
-                  (parseInt(dino.maturation_time) * 1) / 2 -
-                  (parseInt(dino.maturation_time) * 1) / 10,
+                  (dino?.maturation_time * 1) / 2 -
+                  (dino?.maturation_time * 1) / 10,
               },
               {
                 name: "Adolescent",
                 time:
-                  (parseInt(dino.maturation_time) * settings.matureMultiplier) /
+                  (dino?.maturation_time * settings.matureMultiplier) /
                   2,
               },
               {
                 name: "Total",
                 time:
-                  parseInt(dino.maturation_time) * settings.matureMultiplier,
+                  dino?.maturation_time * settings.matureMultiplier,
               },
             ].map(({ name, time }, i) => (
               <>
@@ -1051,7 +1051,7 @@ const Dino = ({ dino }: Props) => {
           </section>
         )}
 
-      {dino.DinoStat.some((d) => d.type == "immobilized_by") && (
+      {dino?.DinoStat.some((d) => d.type == "immobilized_by") && (
         <section className="mt-4">
           <h3 className="font-medium leading-tight">Immobilized by</h3>
 
@@ -1198,7 +1198,7 @@ const Dino = ({ dino }: Props) => {
         </section>
       )}
 
-      {dino.DinoStat.some((d) => d.type == "fits_through") && (
+      {dino?.DinoStat.some((d) => d.type == "fits_through") && (
         <section className="mt-4">
           <h3 className="font-medium leading-tight">Fits Through</h3>
           <CheckboxGroup

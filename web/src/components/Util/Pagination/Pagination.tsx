@@ -14,7 +14,8 @@ const Pagination = ({
   pageLimit?: number;
 }) => {
   // const items = [];
-  let { page = "1", search } = useParams();
+  let params = useParams();
+  const { page } = params
 
   // const addSearchParams = (url: any, params: any = {}) =>
   //   new URL(
@@ -102,7 +103,7 @@ const Pagination = ({
             <li className="">
               <Link
                 className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200"
-                to={routes[route]({ search: search, page: changePage("prev") })}
+                to={routes[route]({ ...params, page: changePage("prev") })}
                 aria-label="Previous"
               >
                 <span aria-hidden="true" className="sr-only">Previous</span>
@@ -122,7 +123,7 @@ const Pagination = ({
             {getPaginationGroup().map((item, index) => (
               <li key={`page-${index}`}>
                 <Link
-                  to={routes[route]({ search: search, page: index + 1 })}
+                  to={routes[route]({ ...params, page: index + 1 })}
                   className={clsx("inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200", {
                     "border-2 border-gray-800 outline dark:border-stone-200": parseInt(page) === index + 1,
                     "border-gray-500 dark:border-gray-200": parseInt(page) !== index + 1,
@@ -136,7 +137,7 @@ const Pagination = ({
             <li className="">
               <Link
                 className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200"
-                to={routes[route]({ search: search, page: changePage("next") })}
+                to={routes[route]({ ...params, page: changePage("next") })}
                 aria-label="Next"
               >
                 <span aria-hidden="true" className="sr-only">Next</span>

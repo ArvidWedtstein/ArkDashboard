@@ -11,9 +11,13 @@ export const dinos: QueryResolvers["dinos"] = () => {
 };
 export const dinosPage = ({
   page = 1,
+  search = "",
+  category = "",
   dinos_per_page = 36,
 }: {
   page: number;
+  search?: string;
+  category?: string;
   dinos_per_page?: number;
 }) => {
   const offset = (page - 1) * dinos_per_page;
@@ -22,8 +26,23 @@ export const dinosPage = ({
       take: dinos_per_page,
       skip: offset,
       orderBy: { name: "asc" },
+      where: {
+        OR: [
+          { name: { contains: search, mode: "insensitive" } },
+          { synonyms: { contains: search, mode: "insensitive" } },
+          category ? { type: { has: category } } : {},
+        ],
+      },
     }),
-    count: db.dino.count(),
+    count: db.dino.count({
+      where: {
+        OR: [
+          { name: { startsWith: search, mode: "insensitive" } },
+          { synonyms: { contains: search, mode: "insensitive" } },
+          category ? { type: { has: category } } : {},
+        ],
+      },
+    }),
   };
 };
 

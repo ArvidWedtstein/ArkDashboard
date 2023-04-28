@@ -78,7 +78,7 @@ const Icon = (icon: string) => {
   return icons[icon.toLowerCase()] || null;
 };
 
-const Sidebar = memo(({}) => {
+const Sidebar = memo(({ }) => {
   const { pathname } = useLocation();
   const navigation = [
     {
@@ -113,7 +113,7 @@ const Sidebar = memo(({}) => {
     },
     {
       name: "Dinos",
-      href: routes.dinos(),
+      href: routes.dinos({ category: "ground" }),
       color: "ring-indigo-300 bg-indigo-500",
     },
   ];

@@ -118,7 +118,7 @@ const DinoForm = (props: DinoFormProps) => {
   const { register, control } = useForm({
     defaultValues: {
       attack: [],
-      DinoStat: [],
+      "DinoStat.create": [],
       wr: [],
     },
   });
@@ -128,7 +128,7 @@ const DinoForm = (props: DinoFormProps) => {
     remove: removeStat,
   } = useFieldArray({
     control,
-    name: "DinoStat", // the name of the field array in your form data
+    name: "DinoStat.create", // the name of the field array in your form data
   });
 
   const {
@@ -147,8 +147,10 @@ const DinoForm = (props: DinoFormProps) => {
   const [useFoundationUnit, setUseFoundationUnit] = useState(false);
 
   const onSubmit = (data: FormDino) => {
-    // data.eats = eats.map((f) => f.id.toString());
+    data.eats = eats.map((f) => f.id.toString());
+    data.drops = ["12"]
     console.log(data);
+    delete data.immobilized_by
     // Test Dino Object
     // const d = {
     //   name: "test",
@@ -320,7 +322,7 @@ const DinoForm = (props: DinoFormProps) => {
           <div>
             <div>
               <Label
-                name="DinoStat.0.item_id"
+                name="DinoStat.create.0.item_id"
                 className="rw-label"
                 errorClassName="rw-label rw-label-error"
               >
@@ -338,7 +340,7 @@ const DinoForm = (props: DinoFormProps) => {
                         key={`ge-${index}`}
                       >
                         <Lookup
-                          {...register(`DinoStat.${index}.item_id`, {
+                          {...register(`DinoStat.create.${index}.item_id`, {
                             required: true,
                           })}
                           className="!mt-0 !rounded-none !rounded-l-md"
@@ -357,7 +359,7 @@ const DinoForm = (props: DinoFormProps) => {
                           }}
                         />
                         <NumberField
-                          {...register(`DinoStat.${index}.value`, {
+                          {...register(`DinoStat.create.${index}.value`, {
                             required: true,
                             min: 0,
                             max: 5,
@@ -367,7 +369,7 @@ const DinoForm = (props: DinoFormProps) => {
                           defaultValue={ge.value}
                         />
                         <TextField
-                          {...register(`DinoStat.${index}.type`, {
+                          {...register(`DinoStat.create.${index}.type`, {
                             required: false,
                           } as const)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
@@ -399,7 +401,7 @@ const DinoForm = (props: DinoFormProps) => {
                 </button>
               </div>
 
-              <FieldError name="DinoStat.0.item_id" className="rw-field-error" />
+              <FieldError name="DinoStat.create.0.item_id" className="rw-field-error" />
             </div>
             <div>
               <Label
@@ -421,7 +423,7 @@ const DinoForm = (props: DinoFormProps) => {
                         key={`wr-${index}`}
                       >
                         <Lookup
-                          {...register(`DinoStat.${index}.item_id`)}
+                          {...register(`DinoStat.create.${index}.item_id`)}
                           className="!mt-0 !rounded-none !rounded-l-md"
                           options={data.itemsByCategory.items.map((item) => ({
                             type: item.type,
@@ -438,7 +440,7 @@ const DinoForm = (props: DinoFormProps) => {
                           }}
                         />
                         <NumberField
-                          {...register(`DinoStat.${index}.value`, {
+                          {...register(`DinoStat.create.${index}.value`, {
                             required: true,
                             min: 0,
                             max: 100,
@@ -448,7 +450,7 @@ const DinoForm = (props: DinoFormProps) => {
                           defaultValue={wr.value}
                         />
                         <TextField
-                          {...register(`DinoStat.${index}.type`)}
+                          {...register(`DinoStat.create.${index}.type`)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
                           defaultValue={wr.type}
                         />
@@ -602,7 +604,7 @@ const DinoForm = (props: DinoFormProps) => {
           <div>
             <div>
               {/* TODO: fix */}
-              <Label
+              {/* <Label
                 name="immobilized_by"
                 className="rw-label"
                 errorClassName="rw-label rw-label-error"
@@ -661,7 +663,7 @@ const DinoForm = (props: DinoFormProps) => {
                 ]}
               />
 
-              <FieldError name="immobilized_by" className="rw-field-error" />
+              <FieldError name="immobilized_by" className="rw-field-error" /> */}
             </div>
           </div>
           <div>
@@ -967,7 +969,7 @@ const DinoForm = (props: DinoFormProps) => {
                         key={`drops-${index}`}
                       >
                         <Lookup
-                          {...register(`DinoStat.${index}.item_id`, {
+                          {...register(`DinoStat.create.${index}.item_id`, {
                             required: true,
                           })}
                           className="!mt-0 !rounded-none !rounded-l-md"
@@ -990,7 +992,7 @@ const DinoForm = (props: DinoFormProps) => {
                           }}
                         />
                         <TextField
-                          {...register(`DinoStat.${index}.value`, {
+                          {...register(`DinoStat.create.${index}.value`, {
                             required: false,
                           })}
                           emptyAs={null}
@@ -998,7 +1000,7 @@ const DinoForm = (props: DinoFormProps) => {
                           defaultValue={dr.value}
                         />
                         <TextField
-                          {...register(`DinoStat.${index}.type`, {
+                          {...register(`DinoStat.create.${index}.type`, {
                             required: false,
                           } as const)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
