@@ -320,7 +320,7 @@ const DinoForm = (props: DinoFormProps) => {
           <div>
             <div>
               <Label
-                name="gather_eff"
+                name="DinoStat.0.item_id"
                 className="rw-label"
                 errorClassName="rw-label rw-label-error"
               >
@@ -399,7 +399,7 @@ const DinoForm = (props: DinoFormProps) => {
                 </button>
               </div>
 
-              <FieldError name="gather_eff" className="rw-field-error" />
+              <FieldError name="DinoStat.0.item_id" className="rw-field-error" />
             </div>
             <div>
               <Label

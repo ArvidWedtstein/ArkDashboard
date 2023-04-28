@@ -18,7 +18,6 @@ export const QUERY = gql`
         taming_notice
         can_destroy
         base_stats
-        gather_eff
         exp_per_kill
         fits_through
         egg_min
@@ -26,7 +25,6 @@ export const QUERY = gql`
         tdps
         eats
         maturation_time
-        weight_reduction
         incubation_time
         affinity_needed
         aff_inc
