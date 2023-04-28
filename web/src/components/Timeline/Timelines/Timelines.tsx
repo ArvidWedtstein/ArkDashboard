@@ -31,7 +31,7 @@ const TimelinesList = ({ timelines }: FindTimelines) => {
     // update the cache over here:
     // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
     refetchQueries: [{ query: QUERY }],
-    awaitRefetchQueries: true,
+    awaitRefetchQueries: false,
   });
 
   const onDeleteClick = (id: DeleteTimelineMutationVariables["id"]) => {
@@ -64,9 +64,7 @@ const TimelinesList = ({ timelines }: FindTimelines) => {
                   by {Profile.full_name}
                 </div>
                 <div className="rate">
-                  <span
-                    className="mt-2 whitespace-nowrap align-sub text-xs text-white"
-                  >
+                  <span className="mt-2 whitespace-nowrap align-sub text-xs text-white">
                     Created {timeTag(created_at)}
                     {/* {pluralize(TimelineBasespot.length, "basespot")} */}
                   </span>

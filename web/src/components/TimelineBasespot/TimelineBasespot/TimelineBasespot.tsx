@@ -101,22 +101,14 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
         setIsOpen={(open) => setIsComponentVisible(open)}
         image={currentModalImage}
       />
-      <div className="w-full p-2 lg:w-2/3">
-        <div className="bg-card h-60 rounded-lg sm:h-80">
+      <div className="w-fit p-2 text-white">
+        <div className="h-60 rounded-lg sm:h-80">
           <div className="flex h-full flex-col p-4">
             <div className="">
               <div className="flex items-center">
-                <div className="font-bold text-white">Your Work Summary</div>
+                <div className="font-bold">Your Work Summary</div>
                 <div className="flex-grow"></div>
-                <img
-                  src="https://assets.codepen.io/3685267/res-react-dash-graph-range.svg"
-                  alt=""
-                  className="h-4 w-4"
-                />
                 <div className="ml-2">Last 9 Months</div>
-                <div className="icon-background ml-6 flex h-5 w-5 items-center justify-center rounded-full">
-                  ?
-                </div>
               </div>
               <div className="ml-5 font-bold">Nov - July</div>
             </div>
@@ -149,6 +141,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                     </defs>
                     <g className="recharts-cartesian-grid">
                       <g className="recharts-cartesian-grid-vertical">
+                        {/* Vertical Lines */}
                         <line
                           stroke-width="6"
                           stroke="#252525"
@@ -520,7 +513,11 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                         width="569"
                         height="200"
                         className="recharts-curve recharts-line-curve"
-                        d="M65,48.787215407603554C88.70833333333333,52.08354278566151,112.41666666666667,55.37987016371946,136.125,55.37987016371946C159.83333333333334,55.37987016371946,183.54166666666666,55.31375355528897,207.25,55.31375355528897C230.95833333333334,55.31375355528897,254.66666666666666,63.1456317307987,278.375,78.80938808181816C302.0833333333333,94.47314443283761,325.7916666666667,159.37017169008817,349.5,159.37017169008817C373.2083333333333,159.37017169008817,396.9166666666667,99.76602814025466,420.625,99.76602814025466C444.3333333333333,99.76602814025466,468.0416666666667,129.98249279188164,491.75,129.98249279188164C515.4583333333334,129.98249279188164,539.1666666666666,23.2724149434207,562.875,23.2724149434207C586.5833333333334,23.2724149434207,610.2916666666666,53.6005700527309,634,83.9287251620411"
+                        d="M65,48.787215407603554C88.70833333333333,52.08354278566151,112.41666666666667,55.37987016371946,136.125,
+                        155.37987016371946C159.83333333333334,55.37987016371946,183.54166666666666,55.31375355528897,207.25,
+                        5.31375355528897C230.95833333333334,55.31375355528897,254.66666666666666,63.1456317307987,278.375,
+                        78.80938808181816C302.0833333333333,94.47314443283761,325.7916666666667,159.37017169008817,349.5,
+                        159.37017169008817C373.2083333333333,159.37017169008817,396.9166666666667,99.76602814025466,420.625,99.76602814025466C444.3333333333333,99.76602814025466,468.0416666666667,129.98249279188164,491.75,129.98249279188164C515.4583333333334,129.98249279188164,539.1666666666666,23.2724149434207,562.875,23.2724149434207C586.5833333333334,23.2724149434207,610.2916666666666,53.6005700527309,634,83.9287251620411"
                       ></path>
                     </g>
                   </svg>
