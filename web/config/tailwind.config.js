@@ -51,11 +51,6 @@ module.exports = {
       },
       //https://uicolors.app/create
       colors: {
-        dark: "#000000",
-        primary: "#1D2026", //"#14213d",
-        secondary: "#EF4135",
-        accent: "#fca311", // EF4135
-        text: "ffffff",
         pea: {
           50: "#f1fcf5",
           100: "#e0f8e8",

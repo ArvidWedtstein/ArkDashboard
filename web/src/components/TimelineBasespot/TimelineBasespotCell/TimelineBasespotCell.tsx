@@ -69,18 +69,18 @@ export const QUERY = gql`
   }
 `;
 
-export const afterQuery = (data) => {
-  return data.timelineBasespot.basespot_id !== null
-    ? {
-      ...data,
-      timelineBasespot: {
-        ...data.timelineBasespot,
-        latitude: data.timelineBasespot.basespot.latitude,
-        longitude: data.timelineBasespot.basespot.longitude,
-      },
-    }
-    : data;
-};
+// export const afterQuery = (data) => {
+//   return data.timelineBasespot.basespot_id !== null
+//     ? {
+//       ...data,
+//       timelineBasespot: {
+//         ...data.timelineBasespot,
+//         latitude: data.timelineBasespot.basespot.latitude,
+//         longitude: data.timelineBasespot.basespot.longitude,
+//       },
+//     }
+//     : data;
+// };
 
 export const Loading = () => <div>Loading...</div>;
 

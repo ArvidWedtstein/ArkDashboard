@@ -134,6 +134,12 @@ a {
   @apply rounded-lg py-3 px-8 text-base;
 }
 
+.rw-button:has(.rw-button-icon) {
+  @apply inline-flex items-center justify-center;
+}
+.rw-button .rw-button-icon {
+  @apply ml-2 w-5 text-xl leading-5;
+}
 /*
 // ----------------------------
 // Button Variants
@@ -156,7 +162,7 @@ a {
   @apply border border-stone-700 dark:border-gray-500;
 }
 .rw-button.rw-button-gray-outline:hover {
-  @apply border-stone-800 dark:border-stone-600;
+  @apply border-stone-800 ring-1 ring-stone-700 dark:border-stone-600 dark:ring-stone-500;
 }
 .rw-button.rw-button-gray-outline:focus {
   @apply outline-none ring-4 ring-stone-300 dark:ring-stone-800;
@@ -167,7 +173,7 @@ a {
   @apply border border-red-700 text-red-700 dark:border-red-500 dark:text-red-500;
 }
 .rw-button.rw-button-red-outline:hover {
-  @apply border-red-800 dark:border-red-600;
+  @apply border-red-800 ring-1 ring-red-500 dark:border-red-500 dark:ring-red-600;
 }
 .rw-button.rw-button-red-outline:focus {
   @apply outline-none ring-4 ring-red-300 dark:ring-red-800;
@@ -228,12 +234,6 @@ a {
   @apply outline-none ring-4 ring-gray-300 dark:ring-zinc-800;
 }
 
-.rw-button.rw-button-icon {
-  @apply inline-flex items-center;
-}
-.rw-button-icon {
-  @apply mr-1 text-xl leading-5;
-}
 .rw-button-group {
   @apply my-3 flex justify-center rounded-md;
 }

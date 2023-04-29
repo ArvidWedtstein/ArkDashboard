@@ -42,7 +42,7 @@ interface Props {
 }
 
 const TimelineBasespot = ({ timelineBasespot }: Props) => {
-  const { isAuthenticated, currentUser } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [deleteTimelineBasespot] = useMutation(
     DELETE_TIMELINE_BASESPOT_MUTATION,
     {
@@ -79,6 +79,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
     }
   };
   const [images, setImages] = useState([]);
+  const [grid, setGrid] = useState([]);
   const [isComponentVisible, setIsComponentVisible] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(null);
   useEffect(() => {
@@ -91,6 +92,22 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
           setImages(data);
         }
       });
+    if (grid.length < 9) {
+      for (let i = 0; i < 9; i++) {
+        const date = new Date(new Date().setDate(1));
+        date.setMonth(date.getMonth() - i);
+        const monthName = date.toLocaleString("default", { month: "short" });
+
+        setGrid((prev) => [
+          ...prev,
+          {
+            label: monthName,
+            value: [0, 300, 1000, 500, 600, 2000, 800, 1200, 2500][i],
+          },
+        ]);
+      }
+      setGrid((prev) => prev.reverse());
+    }
   }, []);
 
   return (
@@ -106,27 +123,26 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
           <div className="flex h-full flex-col p-4">
             <div className="">
               <div className="flex items-center">
-                <div className="font-bold">Your Work Summary</div>
+                {/* <div className="font-bold">Your Work Summary</div> */}
                 <div className="flex-grow"></div>
-                <div className="ml-2">Last 9 Months</div>
+                <div className="ml-2">Last {grid.length} Months</div>
               </div>
-              <div className="ml-5 font-bold">Nov - July</div>
+              {grid.length > 0 && (
+                <div className="ml-5 font-bold capitalize">
+                  {grid[0].label} - {grid[grid.length - 1].label}
+                </div>
+              )}
             </div>
             <div className="flex-grow">
               <div className="recharts-responsive-container h-full w-full">
-                <div className="recharts-wrapper relative h-[240px] w-[639px]">
+                <div className="recharts-wrapper relative h-[300px] w-[700px]">
                   <svg
                     className="recharts-surface"
-                    width="639"
-                    height="240"
-                    viewBox="0 0 639 240"
+                    width="700"
+                    height="300"
+                    viewBox="0 0 700 300"
                     version="1.1"
                   >
-                    <defs>
-                      <clipPath id="recharts3-clip">
-                        <rect x="65" y="5" height="200" width="569"></rect>
-                      </clipPath>
-                    </defs>
                     <defs>
                       <linearGradient
                         id="paint0_linear"
@@ -135,389 +151,157 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                         x2="1"
                         y2="0"
                       >
-                        <stop stop-color="#6B8DE3"></stop>
-                        <stop offset="1" stop-color="#7D1C8D"></stop>
+                        <stop stopColor="#6B8DE3"></stop>
+                        <stop offset="1" stopColor="#7D1C8D"></stop>
+                      </linearGradient>
+                      <linearGradient
+                        id="line_linear_gradient"
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="0"
+                      >
+                        <stop stopColor="#5bcd85"></stop>
+                        <stop offset="1" stopColor="#34b364"></stop>
                       </linearGradient>
                     </defs>
                     <g className="recharts-cartesian-grid">
                       <g className="recharts-cartesian-grid-vertical">
-                        {/* Vertical Lines */}
-                        <line
-                          stroke-width="6"
-                          stroke="#252525"
-                          fill="none"
-                          x="65"
-                          y="5"
-                          width="569"
-                          height="200"
-                          x1="65"
-                          y1="5"
-                          x2="65"
-                          y2="205"
-                        ></line>
-                        <line
-                          stroke-width="6"
-                          stroke="#252525"
-                          fill="none"
-                          x="65"
-                          y="5"
-                          width="569"
-                          height="200"
-                          x1="136.125"
-                          y1="5"
-                          x2="136.125"
-                          y2="205"
-                        ></line>
-                        <line
-                          stroke-width="6"
-                          stroke="#252525"
-                          fill="none"
-                          x="65"
-                          y="5"
-                          width="569"
-                          height="200"
-                          x1="207.25"
-                          y1="5"
-                          x2="207.25"
-                          y2="205"
-                        ></line>
-                        <line
-                          stroke-width="6"
-                          stroke="#252525"
-                          fill="none"
-                          x="65"
-                          y="5"
-                          width="569"
-                          height="200"
-                          x1="278.375"
-                          y1="5"
-                          x2="278.375"
-                          y2="205"
-                        ></line>
-                        <line
-                          stroke-width="6"
-                          stroke="#252525"
-                          fill="none"
-                          x="65"
-                          y="5"
-                          width="569"
-                          height="200"
-                          x1="349.5"
-                          y1="5"
-                          x2="349.5"
-                          y2="205"
-                        ></line>
-                        <line
-                          stroke-width="6"
-                          stroke="#252525"
-                          fill="none"
-                          x="65"
-                          y="5"
-                          width="569"
-                          height="200"
-                          x1="420.625"
-                          y1="5"
-                          x2="420.625"
-                          y2="205"
-                        ></line>
-                        <line
-                          stroke-width="6"
-                          stroke="#252525"
-                          fill="none"
-                          x="65"
-                          y="5"
-                          width="569"
-                          height="200"
-                          x1="491.75"
-                          y1="5"
-                          x2="491.75"
-                          y2="205"
-                        ></line>
-                        <line
-                          stroke-width="6"
-                          stroke="#252525"
-                          fill="none"
-                          x="65"
-                          y="5"
-                          width="569"
-                          height="200"
-                          x1="562.875"
-                          y1="5"
-                          x2="562.875"
-                          y2="205"
-                        ></line>
-                        <line
-                          stroke-width="6"
-                          stroke="#252525"
-                          fill="none"
-                          x="65"
-                          y="5"
-                          width="569"
-                          height="200"
-                          x1="634"
-                          y1="5"
-                          x2="634"
-                          y2="205"
-                        ></line>
+                        {grid.map((_, index) => (
+                          <line
+                            key={`gridline-${index}`}
+                            strokeWidth="6"
+                            stroke="#252525"
+                            fill="none"
+                            x={65 + 71.125 * index}
+                            y="5"
+                            width="569"
+                            height="200"
+                            x1={65 + 71.125 * index}
+                            y1="5"
+                            x2={65 + 71.125 * index}
+                            y2="205"
+                          />
+                        ))}
                       </g>
                     </g>
                     <g className="recharts-layer recharts-cartesian-axis recharts-xAxis xAxis">
                       <g className="recharts-cartesian-axis-ticks">
-                        <g className="recharts-layer recharts-cartesian-axis-tick">
-                          <text
-                            width="569"
-                            height="30"
-                            x="65"
-                            y="221"
-                            stroke="none"
-                            fill="#666"
-                            className="recharts-text recharts-cartesian-axis-tick-value"
-                            text-anchor="middle"
+                        {grid.map((month, index) => (
+                          <g
+                            className="recharts-layer recharts-cartesian-axis-tick"
+                            key={`month-${index}`}
                           >
-                            <tspan x="65" dy="0.71em">
-                              Nov
-                            </tspan>
-                          </text>
-                        </g>
-                        <g className="recharts-layer recharts-cartesian-axis-tick">
-                          <text
-                            width="569"
-                            height="30"
-                            x="136.125"
-                            y="221"
-                            stroke="none"
-                            fill="#666"
-                            className="recharts-text recharts-cartesian-axis-tick-value"
-                            text-anchor="middle"
-                          >
-                            <tspan x="136.125" dy="0.71em">
-                              Dec
-                            </tspan>
-                          </text>
-                        </g>
-                        <g className="recharts-layer recharts-cartesian-axis-tick">
-                          <text
-                            width="569"
-                            height="30"
-                            x="207.25"
-                            y="221"
-                            stroke="none"
-                            fill="#666"
-                            className="recharts-text recharts-cartesian-axis-tick-value"
-                            text-anchor="middle"
-                          >
-                            <tspan x="207.25" dy="0.71em">
-                              Jan
-                            </tspan>
-                          </text>
-                        </g>
-                        <g className="recharts-layer recharts-cartesian-axis-tick">
-                          <text
-                            width="569"
-                            height="30"
-                            x="278.375"
-                            y="221"
-                            stroke="none"
-                            fill="#666"
-                            className="recharts-text recharts-cartesian-axis-tick-value"
-                            text-anchor="middle"
-                          >
-                            <tspan x="278.375" dy="0.71em">
-                              Feb
-                            </tspan>
-                          </text>
-                        </g>
-                        <g className="recharts-layer recharts-cartesian-axis-tick">
-                          <text
-                            width="569"
-                            height="30"
-                            x="349.5"
-                            y="221"
-                            stroke="none"
-                            fill="#666"
-                            className="recharts-text recharts-cartesian-axis-tick-value"
-                            text-anchor="middle"
-                          >
-                            <tspan x="349.5" dy="0.71em">
-                              Mar
-                            </tspan>
-                          </text>
-                        </g>
-                        <g className="recharts-layer recharts-cartesian-axis-tick">
-                          <text
-                            width="569"
-                            height="30"
-                            x="420.625"
-                            y="221"
-                            stroke="none"
-                            fill="#666"
-                            className="recharts-text recharts-cartesian-axis-tick-value"
-                            text-anchor="middle"
-                          >
-                            <tspan x="420.625" dy="0.71em">
-                              Apr
-                            </tspan>
-                          </text>
-                        </g>
-                        <g className="recharts-layer recharts-cartesian-axis-tick">
-                          <text
-                            width="569"
-                            height="30"
-                            x="491.75"
-                            y="221"
-                            stroke="none"
-                            fill="#666"
-                            className="recharts-text recharts-cartesian-axis-tick-value"
-                            text-anchor="middle"
-                          >
-                            <tspan x="491.75" dy="0.71em">
-                              May
-                            </tspan>
-                          </text>
-                        </g>
-                        <g className="recharts-layer recharts-cartesian-axis-tick">
-                          <text
-                            width="569"
-                            height="30"
-                            x="562.875"
-                            y="221"
-                            stroke="none"
-                            fill="#666"
-                            className="recharts-text recharts-cartesian-axis-tick-value"
-                            text-anchor="middle"
-                          >
-                            <tspan x="562.875" dy="0.71em">
-                              June
-                            </tspan>
-                          </text>
-                        </g>
-                        <g className="recharts-layer recharts-cartesian-axis-tick">
-                          <text
-                            width="569"
-                            height="30"
-                            x="624.7734375"
-                            y="221"
-                            stroke="none"
-                            fill="#666"
-                            className="recharts-text recharts-cartesian-axis-tick-value"
-                            text-anchor="middle"
-                          >
-                            <tspan x="624.7734375" dy="0.71em">
-                              July
-                            </tspan>
-                          </text>
-                        </g>
+                            <text
+                              width="569"
+                              height="30"
+                              x={65 + 71.125 * index}
+                              y="221"
+                              stroke="none"
+                              fill="#666"
+                              className="recharts-text recharts-cartesian-axis-tick-value capitalize"
+                              textAnchor="middle"
+                            >
+                              <tspan x={65 + 71.125 * index} dy="0.71em">
+                                {month.label}
+                              </tspan>
+                            </text>
+                          </g>
+                        ))}
                       </g>
                     </g>
                     <g className="recharts-layer recharts-cartesian-axis recharts-yAxis yAxis">
                       <g className="recharts-cartesian-axis-ticks">
-                        <g className="recharts-layer recharts-cartesian-axis-tick">
-                          <text
-                            width="60"
-                            height="200"
-                            x="49"
-                            y="205"
-                            stroke="none"
-                            fill="#666"
-                            className="recharts-text recharts-cartesian-axis-tick-value"
-                            text-anchor="end"
+                        {[0, 650, 1300, 1950, 2600].map((tick, index) => (
+                          <g
+                            className="recharts-layer recharts-cartesian-axis-tick"
+                            key={`value-${index}`}
                           >
-                            <tspan x="49" dy="0.355em">
-                              0
-                            </tspan>
-                          </text>
-                        </g>
-                        <g className="recharts-layer recharts-cartesian-axis-tick">
-                          <text
-                            width="60"
-                            height="200"
-                            x="49"
-                            y="155"
-                            stroke="none"
-                            fill="#666"
-                            className="recharts-text recharts-cartesian-axis-tick-value"
-                            text-anchor="end"
-                          >
-                            <tspan x="49" dy="0.355em">
-                              650
-                            </tspan>
-                          </text>
-                        </g>
-                        <g className="recharts-layer recharts-cartesian-axis-tick">
-                          <text
-                            width="60"
-                            height="200"
-                            x="49"
-                            y="105"
-                            stroke="none"
-                            fill="#666"
-                            className="recharts-text recharts-cartesian-axis-tick-value"
-                            text-anchor="end"
-                          >
-                            <tspan x="49" dy="0.355em">
-                              1300
-                            </tspan>
-                          </text>
-                        </g>
-                        <g className="recharts-layer recharts-cartesian-axis-tick">
-                          <text
-                            width="60"
-                            height="200"
-                            x="49"
-                            y="55"
-                            stroke="none"
-                            fill="#666"
-                            className="recharts-text recharts-cartesian-axis-tick-value"
-                            text-anchor="end"
-                          >
-                            <tspan x="49" dy="0.355em">
-                              1950
-                            </tspan>
-                          </text>
-                        </g>
-                        <g className="recharts-layer recharts-cartesian-axis-tick">
-                          <text
-                            width="60"
-                            height="200"
-                            x="49"
-                            y="12"
-                            stroke="none"
-                            fill="#666"
-                            className="recharts-text recharts-cartesian-axis-tick-value"
-                            text-anchor="end"
-                          >
-                            <tspan x="49" dy="0.355em">
-                              2600
-                            </tspan>
-                          </text>
-                        </g>
+                            <text
+                              width="60"
+                              height="200"
+                              x="49"
+                              y={205 - tick / 13}
+                              stroke="none"
+                              fill="#666"
+                              className="recharts-text recharts-cartesian-axis-tick-value"
+                              textAnchor="end"
+                            >
+                              <tspan x="49" dy="0.355em">
+                                {tick}
+                              </tspan>
+                            </text>
+                          </g>
+                        ))}
                       </g>
                     </g>
                     <g className="recharts-layer recharts-line">
                       <path
                         stroke="#242424"
-                        stroke-width="3"
-                        stroke-dasharray="8 8"
+                        strokeWidth="3"
+                        strokeDasharray="8 8"
                         fill="none"
-                        width="569"
-                        height="200"
+                        width="600"
+                        height="300"
                         className="recharts-curve recharts-line-curve"
-                        d="M65,48.36191760214189C88.70833333333333,64.50728197077581,112.41666666666667,80.65264633940971,136.125,80.65264633940971C159.83333333333334,80.65264633940971,183.54166666666666,11.297235679305459,207.25,11.297235679305459C230.95833333333334,11.297235679305459,254.66666666666666,60.69777480461221,278.375,84.9175159405845C302.0833333333333,109.13725707655678,325.7916666666667,156.6156824951392,349.5,156.6156824951392C373.2083333333333,156.6156824951392,396.9166666666667,67.42182793472833,420.625,67.42182793472833C444.3333333333333,67.42182793472833,468.0416666666667,183.84815615562746,491.75,183.84815615562746C515.4583333333334,183.84815615562746,539.1666666666666,84.87472003976761,562.875,84.87472003976761C586.5833333333334,84.87472003976761,610.2916666666666,121.45069886187211,634,158.0266776839766"
-                      ></path>
+                        d={grid
+                          .map(({ value }, index) => {
+                            const x = 65 + 71.125 * index;
+                            const y = 205 - value / 13;
+                            const x2 = 65 + 71.125 * index + 35.5625;
+                            const nextX = 65 + 71.125 * (index + 1);
+                            const nextY =
+                              205 -
+                              (index === grid.length - 1
+                                ? value
+                                : grid[index + 1].value) /
+                                13;
+                            const deltaX = (nextX - x) / 3;
+
+                            const y2 =
+                              nextY - (deltaX * (nextY - y)) / (nextX - x);
+
+                            return `${index === 0 ? "M" : ""}${x},${y}${
+                              index !== grid.length - 1 ? `,${x2},${y2}` : ""
+                            }`;
+                          })
+                          .join(" ")}
+                      />
                     </g>
                     <g className="recharts-layer recharts-line">
                       <path
-                        stroke="url(#paint0_linear)"
-                        stroke-width="4"
+                        // stroke="none"
+                        stroke="url(#line_linear_gradient)"
+                        strokeWidth="4"
                         fill="none"
                         width="569"
                         height="200"
                         className="recharts-curve recharts-line-curve"
-                        d="M65,48.787215407603554C88.70833333333333,52.08354278566151,112.41666666666667,55.37987016371946,136.125,
-                        155.37987016371946C159.83333333333334,55.37987016371946,183.54166666666666,55.31375355528897,207.25,
-                        5.31375355528897C230.95833333333334,55.31375355528897,254.66666666666666,63.1456317307987,278.375,
-                        78.80938808181816C302.0833333333333,94.47314443283761,325.7916666666667,159.37017169008817,349.5,
-                        159.37017169008817C373.2083333333333,159.37017169008817,396.9166666666667,99.76602814025466,420.625,99.76602814025466C444.3333333333333,99.76602814025466,468.0416666666667,129.98249279188164,491.75,129.98249279188164C515.4583333333334,129.98249279188164,539.1666666666666,23.2724149434207,562.875,23.2724149434207C586.5833333333334,23.2724149434207,610.2916666666666,53.6005700527309,634,83.9287251620411"
+                        d="M65,48.787215407603554
+                        C88.70833333333333,52.08354278566151,
+                        112.41666666666667,55.37987016371946,
+                        136.125,155.37987016371946
+                        C159.83333333333334,55.37987016371946,
+                        183.54166666666666,55.31375355528897,
+                        207.25,15.31375355528897
+                        C230.95833333333334,55.31375355528897,
+                        254.66666666666666,63.1456317307987,
+                        278.375,78.80938808181816
+                        C302.0833333333333,94.47314443283761,
+                        325.7916666666667,159.37017169008817,
+                        349.5,159.37017169008817
+                        C373.2083333333333,159.37017169008817,
+                        396.9166666666667,99.76602814025466,
+                        420.625,99.76602814025466
+                        C444.3333333333333,99.76602814025466,
+                        468.0416666666667,129.98249279188164,
+                        491.75,129.98249279188164
+                        C515.4583333333334,129.98249279188164,
+                        539.1666666666666,23.2724149434207,
+                        562.875,23.2724149434207
+                        C586.5833333333334,23.2724149434207,
+                        610.2916666666666,53.6005700527309,
+                        634,83.9287251620411"
                       ></path>
                     </g>
                   </svg>
@@ -593,6 +377,24 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                 >
                   Delete
                 </button>
+                {isAuthenticated &&
+                  !timelineBasespot.end_date &&
+                  !timelineBasespot.raided_by &&
+                  !timelineBasespot.raid_comment && (
+                    <button
+                      className="rw-button rw-button-red-outline"
+                      onClick={() => initRaid()}
+                    >
+                      Raid
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 576 512"
+                        className="rw-button-icon fill-current"
+                      >
+                        <path d="M285.3 247.1c-3.093-4.635-8.161-7.134-13.32-7.134c-8.739 0-15.1 7.108-15.1 16.03c0 3.05 .8717 6.133 2.693 8.859l52.37 78.56l-76.12 25.38c-6.415 2.16-10.94 8.159-10.94 15.18c0 2.758 .7104 5.498 2.109 7.946l63.1 112C293.1 509.1 298.5 512 304 512c11.25 0 15.99-9.84 15.99-16.02c0-2.691-.6807-5.416-2.114-7.915L263.6 393l77.48-25.81c1.701-.5727 10.93-4.426 10.93-15.19c0-3.121-.9093-6.205-2.685-8.873L285.3 247.1zM575.1 256c0-4.435-1.831-8.841-5.423-12l-58.6-51.87c.002-.0938 0 .0938 0 0l.0247-144.1c0-8.844-7.156-16-15.1-16L400 32c-8.844 0-15.1 7.156-15.1 16l-.0014 31.37L298.6 4c-3.016-2.656-6.797-3.997-10.58-3.997c-3.781 0-7.563 1.34-10.58 3.997l-271.1 240C1.831 247.2 .0007 251.6 .0007 256c0 8.92 7.239 15.99 16.04 15.99c3.757 0 7.52-1.313 10.54-3.993l37.42-33.02V432c0 44.13 35.89 80 79.1 80h63.1c8.844 0 15.1-7.156 15.1-16S216.8 480 208 480h-63.1c-26.47 0-47.1-21.53-47.1-48v-224c0-.377-.1895-.6914-.2148-1.062L288 37.34l192.2 169.6C480.2 207.3 479.1 207.6 479.1 208v224c0 26.47-21.53 48-47.1 48h-31.1c-8.844 0-15.1 7.156-15.1 16s7.156 16 15.1 16h31.1c44.11 0 79.1-35.88 79.1-80V234.1L549.4 268C552.5 270.7 556.2 272 559.1 272C568.7 272 575.1 264.9 575.1 256zM479.1 164.1l-63.1-56.47V64h63.1V164.1z" />
+                      </svg>
+                    </button>
+                  )}
               </div>
             </div>
             {images.length > 0 && (
@@ -816,27 +618,6 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
             </div>
           </div>
         </section>
-
-        {isAuthenticated &&
-          !timelineBasespot.end_date &&
-          !timelineBasespot.raided_by &&
-          !timelineBasespot.raid_comment && (
-            <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
-              <button
-                className="rw-button rw-button-red-outline rw-button-large m-3"
-                onClick={() => initRaid()}
-              >
-                Raid
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 576 512"
-                  className="fill-current"
-                >
-                  <path d="M285.3 247.1c-3.093-4.635-8.161-7.134-13.32-7.134c-8.739 0-15.1 7.108-15.1 16.03c0 3.05 .8717 6.133 2.693 8.859l52.37 78.56l-76.12 25.38c-6.415 2.16-10.94 8.159-10.94 15.18c0 2.758 .7104 5.498 2.109 7.946l63.1 112C293.1 509.1 298.5 512 304 512c11.25 0 15.99-9.84 15.99-16.02c0-2.691-.6807-5.416-2.114-7.915L263.6 393l77.48-25.81c1.701-.5727 10.93-4.426 10.93-15.19c0-3.121-.9093-6.205-2.685-8.873L285.3 247.1zM575.1 256c0-4.435-1.831-8.841-5.423-12l-58.6-51.87c.002-.0938 0 .0938 0 0l.0247-144.1c0-8.844-7.156-16-15.1-16L400 32c-8.844 0-15.1 7.156-15.1 16l-.0014 31.37L298.6 4c-3.016-2.656-6.797-3.997-10.58-3.997c-3.781 0-7.563 1.34-10.58 3.997l-271.1 240C1.831 247.2 .0007 251.6 .0007 256c0 8.92 7.239 15.99 16.04 15.99c3.757 0 7.52-1.313 10.54-3.993l37.42-33.02V432c0 44.13 35.89 80 79.1 80h63.1c8.844 0 15.1-7.156 15.1-16S216.8 480 208 480h-63.1c-26.47 0-47.1-21.53-47.1-48v-224c0-.377-.1895-.6914-.2148-1.062L288 37.34l192.2 169.6C480.2 207.3 479.1 207.6 479.1 208v224c0 26.47-21.53 48-47.1 48h-31.1c-8.844 0-15.1 7.156-15.1 16s7.156 16 15.1 16h31.1c44.11 0 79.1-35.88 79.1-80V234.1L549.4 268C552.5 270.7 556.2 272 559.1 272C568.7 272 575.1 264.9 575.1 256zM479.1 164.1l-63.1-56.47V64h63.1V164.1z" />
-                </svg>
-              </button>
-            </section>
-          )}
 
         {timelineBasespot.TimelineBasespotDino.length > 0 && (
           <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
