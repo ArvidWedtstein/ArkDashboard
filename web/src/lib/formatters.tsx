@@ -42,8 +42,7 @@ export const nmbFormat = Intl.NumberFormat("en", {
 export const formatNumberWithThousandSeparator = (num: number): string => {
   const formattedNum = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return formattedNum;
-}
-
+};
 
 export const truncate = (value: string | number, maxlength: number = 150) => {
   let output = value?.toString() ?? "";
@@ -134,7 +133,20 @@ export const dynamicSort = (property: string) => {
     return result * sortOrder;
   };
 };
-
+/**
+ *
+ * @param a bytes
+ * @param b decimals
+ * @returns formatted byte number
+ */
+export const formatBytes = (a, b = 2) => {
+  if (!+a) return "0 Bytes";
+  const c = 0 > b ? 0 : b,
+    d = Math.floor(Math.log(a) / Math.log(1024));
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+  }`;
+};
 /**
  *
  * @param objects
@@ -180,10 +192,10 @@ export const getBaseMaterials = (
     // TODO: Replace this shit
     let c =
       item.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0 &&
-        item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-          .Item_ItemRecipe_crafting_stationToItem != null
+      item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
+        .Item_ItemRecipe_crafting_stationToItem != null
         ? item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-          .Item_ItemRecipe_crafting_stationToItem.id
+            .Item_ItemRecipe_crafting_stationToItem.id
         : null;
 
     // Group by crafting_station somehow

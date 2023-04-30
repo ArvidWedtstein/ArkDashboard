@@ -3,12 +3,19 @@ import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "src/App";
+import Counter from "src/components/Util/Counter/Counter";
 import { Map } from "src/components/Util/Map/Map";
 import { Modal, RefModal } from "src/components/Util/Modal/Modal";
 
-import { getDateDiff, nmbFormat, timeTag, truncate } from "src/lib/formatters";
+import {
+  formatBytes,
+  getDateDiff,
+  nmbFormat,
+  timeTag,
+  truncate,
+} from "src/lib/formatters";
 
 import type {
   DeleteTimelineBasespotMutationVariables,
@@ -79,7 +86,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
     }
   };
   const [images, setImages] = useState([]);
-  const [grid, setGrid] = useState([]);
+
   const [isComponentVisible, setIsComponentVisible] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(null);
   useEffect(() => {
@@ -92,22 +99,6 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
           setImages(data);
         }
       });
-    if (grid.length < 9) {
-      for (let i = 0; i < 9; i++) {
-        const date = new Date(new Date().setDate(1));
-        date.setMonth(date.getMonth() - i);
-        const monthName = date.toLocaleString("default", { month: "short" });
-
-        setGrid((prev) => [
-          ...prev,
-          {
-            label: monthName,
-            value: [0, 300, 1000, 500, 600, 2000, 800, 1200, 2500][i],
-          },
-        ]);
-      }
-      setGrid((prev) => prev.reverse());
-    }
   }, []);
 
   return (
@@ -118,199 +109,6 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
         setIsOpen={(open) => setIsComponentVisible(open)}
         image={currentModalImage}
       />
-      <div className="w-fit p-2 text-white">
-        <div className="h-60 rounded-lg sm:h-80">
-          <div className="flex h-full flex-col p-4">
-            <div className="">
-              <div className="flex items-center">
-                {/* <div className="font-bold">Your Work Summary</div> */}
-                <div className="flex-grow"></div>
-                <div className="ml-2">Last {grid.length} Months</div>
-              </div>
-              {grid.length > 0 && (
-                <div className="ml-5 font-bold capitalize">
-                  {grid[0].label} - {grid[grid.length - 1].label}
-                </div>
-              )}
-            </div>
-            <div className="flex-grow">
-              <div className="recharts-responsive-container h-full w-full">
-                <div className="recharts-wrapper relative h-[300px] w-[700px]">
-                  <svg
-                    className="recharts-surface"
-                    width="700"
-                    height="300"
-                    viewBox="0 0 700 300"
-                    version="1.1"
-                  >
-                    <defs>
-                      <linearGradient
-                        id="paint0_linear"
-                        x1="0"
-                        y1="0"
-                        x2="1"
-                        y2="0"
-                      >
-                        <stop stopColor="#6B8DE3"></stop>
-                        <stop offset="1" stopColor="#7D1C8D"></stop>
-                      </linearGradient>
-                      <linearGradient
-                        id="line_linear_gradient"
-                        x1="0"
-                        y1="0"
-                        x2="1"
-                        y2="0"
-                      >
-                        <stop stopColor="#5bcd85"></stop>
-                        <stop offset="1" stopColor="#34b364"></stop>
-                      </linearGradient>
-                    </defs>
-                    <g className="recharts-cartesian-grid">
-                      <g className="recharts-cartesian-grid-vertical">
-                        {grid.map((_, index) => (
-                          <line
-                            key={`gridline-${index}`}
-                            strokeWidth="6"
-                            stroke="#252525"
-                            fill="none"
-                            x={65 + 71.125 * index}
-                            y="5"
-                            width="569"
-                            height="200"
-                            x1={65 + 71.125 * index}
-                            y1="5"
-                            x2={65 + 71.125 * index}
-                            y2="205"
-                          />
-                        ))}
-                      </g>
-                    </g>
-                    <g className="recharts-layer recharts-cartesian-axis recharts-xAxis xAxis">
-                      <g className="recharts-cartesian-axis-ticks">
-                        {grid.map((month, index) => (
-                          <g
-                            className="recharts-layer recharts-cartesian-axis-tick"
-                            key={`month-${index}`}
-                          >
-                            <text
-                              width="569"
-                              height="30"
-                              x={65 + 71.125 * index}
-                              y="221"
-                              stroke="none"
-                              fill="#666"
-                              className="recharts-text recharts-cartesian-axis-tick-value capitalize"
-                              textAnchor="middle"
-                            >
-                              <tspan x={65 + 71.125 * index} dy="0.71em">
-                                {month.label}
-                              </tspan>
-                            </text>
-                          </g>
-                        ))}
-                      </g>
-                    </g>
-                    <g className="recharts-layer recharts-cartesian-axis recharts-yAxis yAxis">
-                      <g className="recharts-cartesian-axis-ticks">
-                        {[0, 650, 1300, 1950, 2600].map((tick, index) => (
-                          <g
-                            className="recharts-layer recharts-cartesian-axis-tick"
-                            key={`value-${index}`}
-                          >
-                            <text
-                              width="60"
-                              height="200"
-                              x="49"
-                              y={205 - tick / 13}
-                              stroke="none"
-                              fill="#666"
-                              className="recharts-text recharts-cartesian-axis-tick-value"
-                              textAnchor="end"
-                            >
-                              <tspan x="49" dy="0.355em">
-                                {tick}
-                              </tspan>
-                            </text>
-                          </g>
-                        ))}
-                      </g>
-                    </g>
-                    <g className="recharts-layer recharts-line">
-                      <path
-                        stroke="#242424"
-                        strokeWidth="3"
-                        strokeDasharray="8 8"
-                        fill="none"
-                        width="600"
-                        height="300"
-                        className="recharts-curve recharts-line-curve"
-                        d={grid
-                          .map(({ value }, index) => {
-                            const x = 65 + 71.125 * index;
-                            const y = 205 - value / 13;
-                            const x2 = 65 + 71.125 * index + 35.5625;
-                            const nextX = 65 + 71.125 * (index + 1);
-                            const nextY =
-                              205 -
-                              (index === grid.length - 1
-                                ? value
-                                : grid[index + 1].value) /
-                                13;
-                            const deltaX = (nextX - x) / 3;
-
-                            const y2 =
-                              nextY - (deltaX * (nextY - y)) / (nextX - x);
-
-                            return `${index === 0 ? "M" : ""}${x},${y}${
-                              index !== grid.length - 1 ? `,${x2},${y2}` : ""
-                            }`;
-                          })
-                          .join(" ")}
-                      />
-                    </g>
-                    <g className="recharts-layer recharts-line">
-                      <path
-                        // stroke="none"
-                        stroke="url(#line_linear_gradient)"
-                        strokeWidth="4"
-                        fill="none"
-                        width="569"
-                        height="200"
-                        className="recharts-curve recharts-line-curve"
-                        d="M65,48.787215407603554
-                        C88.70833333333333,52.08354278566151,
-                        112.41666666666667,55.37987016371946,
-                        136.125,155.37987016371946
-                        C159.83333333333334,55.37987016371946,
-                        183.54166666666666,55.31375355528897,
-                        207.25,15.31375355528897
-                        C230.95833333333334,55.31375355528897,
-                        254.66666666666666,63.1456317307987,
-                        278.375,78.80938808181816
-                        C302.0833333333333,94.47314443283761,
-                        325.7916666666667,159.37017169008817,
-                        349.5,159.37017169008817
-                        C373.2083333333333,159.37017169008817,
-                        396.9166666666667,99.76602814025466,
-                        420.625,99.76602814025466
-                        C444.3333333333333,99.76602814025466,
-                        468.0416666666667,129.98249279188164,
-                        491.75,129.98249279188164
-                        C515.4583333333334,129.98249279188164,
-                        539.1666666666666,23.2724149434207,
-                        562.875,23.2724149434207
-                        C586.5833333333334,23.2724149434207,
-                        610.2916666666666,53.6005700527309,
-                        634,83.9287251620411"
-                      ></path>
-                    </g>
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <Modal
         isOpen={isRaided}
         onClose={() => setIsRaided(false)}
@@ -408,6 +206,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
             )}
           </div>
         </section>
+
         <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
           <div className="container mx-auto flex flex-wrap px-5 py-12">
             <div className="mb-10 w-full overflow-hidden text-sm lg:mb-0 lg:w-1/2">
@@ -476,13 +275,6 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                 ]}
                 interactive={true}
               />
-              {/* <Map
-                className="h-full w-full object-cover object-center"
-                map={timelineBasespot.map.toString()}
-                size={{ width: 500, height: 500 }}
-                pos={[timelineBasespot.location as any]}
-                interactive={true}
-              /> */}
             </div>
             <div className="-mb-10 flex flex-col flex-wrap text-center lg:w-1/2 lg:py-6 lg:pl-12 lg:text-left">
               <div className="mb-10 flex flex-col items-center lg:items-start">
@@ -578,7 +370,66 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                 Images
               </h1>
             </div>
-            <div className="-m-4 flex flex-wrap">
+
+            <div className="flex flex-wrap gap-5">
+              {images.map((img, i) => {
+                return (
+                  <div
+                    className={clsx("block", {
+                      "basis-1/2": i % 4 === 0,
+                      "basis-[23%]": i % 4 !== 0,
+                    })}
+                  >
+                    <div className="flex h-full justify-between">
+                      <button
+                        className={clsx(
+                          "group relative flex h-auto w-full overflow-hidden rounded-xl"
+                        )}
+                        onClick={() => {
+                          setCurrentModalImage(
+                            `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineBasespot.id}/${img.name}`
+                          );
+                          setIsComponentVisible(true);
+                          setIsRaided(false);
+                        }}
+                      >
+                        <img
+                          className="h-full w-full object-cover transition-all duration-200 ease-in group-hover:scale-125"
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineBasespot.id}/${img.name}`}
+                          alt=""
+                        />
+                        <div
+                          className="absolute flex h-full w-full flex-col items-end justify-end p-3"
+                          style={{
+                            background:
+                              "linear-gradient(0deg, #001022cc 0%, #f0f4fd33 90%)",
+                          }}
+                        >
+                          <div className="flex w-full justify-between text-left">
+                            <div className="w-full">
+                              <p className="m-0 overflow-hidden text-ellipsis whitespace-nowrap text-xs text-white">
+                                {img.name}
+                              </p>
+                              <p className="m-0 overflow-hidden text-ellipsis whitespace-nowrap text-xs text-white">
+                                {formatBytes(img.metadata.size)}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <span className="absolute right-3 top-3 z-10 rounded-[10px] bg-[#8b9ca380] py-1 px-3 text-white">
+                          {new Date(img.updated_at).toLocaleTimeString("de", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* <div className="-m-4 flex flex-wrap">
               {images.map((img, i) => (
                 <div key={`img${i}`} className="p-4 md:w-1/3">
                   <div className="flex h-full flex-col rounded-lg bg-gray-100 p-0 dark:bg-gray-600">
@@ -615,7 +466,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
         </section>
 

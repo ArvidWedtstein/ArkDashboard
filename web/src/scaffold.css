@@ -499,3 +499,12 @@ a {
     transform: scale(1);
   }
 }
+
+@keyframes fillProgress {
+  0% {
+    transform: scale(1, 0);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
