@@ -35,6 +35,13 @@ export const QUERY = gql`
         latitude
         longitude
       }
+      TimelineBasespotRaid {
+        tribe_name
+        base_survived
+        raid_comment
+        raid_start
+        raid_end
+      }
       TimelineBasespotDino {
         name
         birth_date

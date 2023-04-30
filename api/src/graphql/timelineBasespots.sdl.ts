@@ -25,6 +25,7 @@ export const schema = gql`
     Map: Map
     timeline: Timeline!
     TimelineBasespotDino: [TimelineBasespotDino]!
+    TimelineBasespotRaid: [TimelineBasespotRaid]!
   }
 
   type Query {
