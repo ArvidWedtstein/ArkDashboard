@@ -542,10 +542,12 @@ export const pluralize = (count: number, noun: string, suffix = "s"): string =>
  */
 export const getDateDiff = (date1: Date, date2: Date) => {
   const diff = Math.abs(date1.getTime() - date2.getTime());
+  const years = Math.round(diff / (1000 * 3600 * 24 * 365));
   const days = Math.floor(diff / (1000 * 3600 * 24));
   const hours = Math.floor((diff / (1000 * 3600)) % 24);
   const minutes = Math.floor((diff / 1000 / 60) % 60);
   return {
+    years,
     days,
     hours,
     minutes,

@@ -14,7 +14,6 @@ export const QUERY = gql`
       timeline_id
       start_date
       end_date
-      basespot_id
       tribe_name
       map
       server
@@ -31,6 +30,7 @@ export const QUERY = gql`
         name
       }
       basespot {
+        id
         name
         latitude
         longitude

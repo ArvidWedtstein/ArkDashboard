@@ -7,7 +7,9 @@ import type {
 import { db } from "src/lib/db";
 
 export const timelineBasespots: QueryResolvers["timelineBasespots"] = () => {
-  return db.timelineBasespot.findMany();
+  return db.timelineBasespot.findMany({
+    orderBy: { start_date: "desc" },
+  });
 };
 
 export const timelineBasespot: QueryResolvers["timelineBasespot"] = ({

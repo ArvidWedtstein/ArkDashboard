@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { QUERY } from "src/components/TimelineBasespot/TimelineBasespotsCell";
 import {
   arrRandNoRep,
+  getDateDiff,
   jsonTruncate,
   timeTag,
   truncate,
@@ -276,13 +277,13 @@ const TimelineBasespotsList = ({
   return (
     <div>
       <section className="relative m-auto flex h-full w-full px-10 ">
-        <div className="flex flex-wrap items-center justify-center">
-          <div className="h-fit w-full p-10 md:h-[auto] md:w-[55%]">
-            <div className="grid grid-cols-1 grid-rows-1 ">
+        <div className="flex w-full flex-wrap items-center justify-center">
+          <div className="relative h-fit w-full p-10 md:h-fit md:w-[55%]">
+            <div className="grid grid-cols-1 grid-rows-1">
               {timelineBasespots.map((timelineBasespot, index) => (
                 <div
                   key={`basespot-image-${index}`}
-                  className={clsx("transition-all duration-500", {
+                  className={clsx("block w-full transition-all duration-500", {
                     block: isActive === index,
                     hidden: isActive !== index,
                   })}
@@ -310,7 +311,16 @@ const TimelineBasespotsList = ({
                 <br />
               </h2>
               <p className="mt-4 text-base font-light leading-6 text-gray-800 dark:text-stone-400">
-                Basespots over the last {10} years
+                Basespots over the last{" "}
+                {
+                  getDateDiff(
+                    new Date(timelineBasespots[0].start_date),
+                    new Date(
+                      timelineBasespots[timelineBasespots.length - 1].start_date
+                    )
+                  ).years
+                }{" "}
+                years
               </p>
             </div>
             <div className="rw-segment max-h-[300px] overflow-y-auto scroll-smooth transition-all duration-300">
@@ -351,7 +361,11 @@ const TimelineBasespotsList = ({
                       )}
                     >
                       <h3 className={clsx("text-xl")}>
-                        {timelineBasespot.tribe_name}
+                        {timelineBasespot.tribe_name} -{" "}
+                        {new Date(timelineBasespot.start_date).toLocaleString(
+                          "default",
+                          { month: "short", year: "2-digit" }
+                        )}
                       </h3>
                     </div>
 
@@ -365,8 +379,18 @@ const TimelineBasespotsList = ({
                       )}
                     >
                       <p className="mt-3 text-base font-light leading-6 text-[#3c4043] dark:text-stone-400">
-                        S{timelineBasespot.season} {timelineBasespot.cluster}{" "}
-                        {timelineBasespot.region}, {timelineBasespot.server}
+                        {timelineBasespot.season && (
+                          <abbr title={`Season ${timelineBasespot.season}`}>
+                            S{timelineBasespot.season}
+                          </abbr>
+                        )}
+                        {` ${timelineBasespot.cluster} ${timelineBasespot.region}`}
+
+                        {(timelineBasespot.cluster ||
+                          timelineBasespot.region ||
+                          timelineBasespot.season) &&
+                          ", "}
+                        {timelineBasespot.server}
                       </p>
                     </div>
                   </div>
