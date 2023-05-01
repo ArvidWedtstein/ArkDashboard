@@ -14,6 +14,7 @@ import {
   formatBytes,
   getDateDiff,
   nmbFormat,
+  pluralize,
   timeTag,
   truncate,
 } from "src/lib/formatters";
@@ -261,7 +262,12 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
               id="raid-heading"
               className="title-font mt-8 text-center text-xl font-medium text-gray-900 dark:text-neutral-200 sm:text-3xl"
             >
-              Raids
+              {pluralize(
+                timelineBasespot.TimelineBasespotRaid.length,
+                "Raid",
+                "s",
+                false
+              )}
             </h1>
             <Slideshow
               className="mb-6"

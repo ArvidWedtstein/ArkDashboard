@@ -529,10 +529,15 @@ export const singularize = (word: string) => {
  * @param {number} count - The number of items.
  * @param {string} noun - The noun to be pluralized.
  * @param {string} [suffix='s'] - The suffix to be added to the noun.
+ * @param {boolean} [includeCount=true] - The suffix to be added to the noun.
  * @return {string} - The pluralized string.
  */
-export const pluralize = (count: number, noun: string, suffix = "s"): string =>
-  `${count} ${noun}${count !== 1 ? suffix : ""}`;
+export const pluralize = (
+  count: number,
+  noun: string,
+  suffix = "s",
+  includeCount: boolean = true
+): string => `${includeCount ? count : ""} ${noun}${count !== 1 ? suffix : ""}`;
 
 /**
  * @description Returns the difference between two dates
