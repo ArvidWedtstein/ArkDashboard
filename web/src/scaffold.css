@@ -138,7 +138,7 @@ a {
   @apply inline-flex items-center justify-center;
 }
 .rw-button .rw-button-icon {
-  @apply ml-2 w-5 text-xl leading-5;
+  @apply ml-2 w-5 fill-current text-xl leading-5;
 }
 /*
 // ----------------------------

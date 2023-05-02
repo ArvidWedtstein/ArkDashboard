@@ -12,11 +12,11 @@ const MainLayout = ({ children }: LayoutProps) => {
   const { loading } = usePageLoadingContext();
   return (
     // <div className="overflow-hidden h-[100vh]">
-    <div className="flex  w-full flex-col overflow-hidden">
+    <div className="flex w-full flex-col">
       {/* <SkipNavLink contentId="main-content"></SkipNavLink> */}
       <Navbar />
       <Toaster toastOptions={{ className: "rw-toast", duration: 6000 }} />
-      <div className="flex w-full flex-col overflow-hidden sm:flex-row">
+      <div className="flex w-full flex-col sm:flex-row">
         <Sidebar />
         <SkipNavContent id="main-content" />
         <main className="overflow-y-auto sm:w-full">
