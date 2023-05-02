@@ -1,5 +1,5 @@
 import { useLazyQuery } from "@apollo/client";
-import { Form, SearchField, Submit } from "@redwoodjs/forms";
+import { Form, Label, SearchField, SelectField, Submit } from "@redwoodjs/forms";
 import { Link, Redirect, routes, navigate, parseSearch, useParams } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
@@ -42,7 +42,7 @@ const ItemsList = ({ itemsPage }: FindItems) => {
   //     deleteItem({ variables: { id } });
   //   }
   // };
-  let { search } = useParams();
+  let { search, category, type } = useParams();
   const onSubmit = ((e) => {
     navigate(routes.items(parseSearch(e)))
   })
@@ -53,6 +53,99 @@ const ItemsList = ({ itemsPage }: FindItems) => {
       <Form className="w-auto" onSubmit={onSubmit}>
         <nav className="flex flex-row space-x-2 justify-center">
           <div className="rw-button-group !space-x-0 w-full">
+            <Label name="category" className="sr-only">
+              Choose a category
+            </Label>
+            <SelectField
+              name="category"
+              className="rw-input !rounded-l-lg mt-0"
+              defaultValue={category}
+              validation={{
+                required: false,
+                shouldUnregister: true,
+                validate: {
+                  matchesInitialValue: (value) => {
+                    return (
+                      value !== 'Choose a category' ||
+                      'Select an Option'
+                    )
+                  },
+                },
+              }}
+            >
+              <option value="">Choose a category</option>
+              <option value="resource">Resources</option>
+              <option value="structure">Structures</option>
+              <option value="armor">Armor</option>
+              <option value="weapon">Weapons</option>
+              <option value="consumable">Consumable</option>
+              <option value="tool">Tools</option>
+              <option value="other">Other</option>
+            </SelectField>
+            <SelectField
+              name="type"
+              className="rw-input mt-0"
+              defaultValue={type}
+              validation={{
+                deps: ['category'],
+                required: false,
+                shouldUnregister: true,
+                validate: {
+                  matchesInitialValue: (value) => {
+                    return (
+                      value !== 'Choose a type' ||
+                      'Select an Option'
+                    )
+                  },
+                },
+              }}
+            >
+              <option value="">Choose a type</option>
+              <optgroup label="Structure" disabled color="red">
+                <option value="tek">Tek</option>
+                <option value="building">Building</option>
+                <option value="crafting">Crafting</option>
+                <option value="electrical">Electrical</option>
+              </optgroup>
+              <optgroup label="Armor">
+                <option value="tek">Tek</option>
+                <option value="riot">Riot</option>
+                <option value="flak">Flak</option>
+                <option value="hazard">Hazard</option>
+                <option value="scuba">Scuba</option>
+                <option value="fur">Fur</option>
+                <option value="ghillie">Ghillie</option>
+                <option value="chitin">Chitin</option>
+                <option value="desert">Desert</option>
+                <option value="hide">Hide</option>
+                <option value="cloth">Cloth</option>
+                <option value="saddle">Saddles</option>
+                <option value="attachment">Attachment</option>
+              </optgroup>
+              <optgroup label="Weapons">
+                <option value="explosive">Explosive</option>
+                <option value="ammunition">Ammunition</option>
+                <option value="arrow">Arrow</option>
+                <option value="tool">Tools</option>
+                <option value="attachment">Attachment</option>
+                <option value="shield">Shields</option>
+              </optgroup>
+              <optgroup label="Resources">
+
+              </optgroup>
+              <optgroup label="Consumables">
+                <option value="egg">Egg</option>
+              </optgroup>
+              <option value="resource">Resources</option>
+              <option value="tool">Tools</option>
+              <optgroup label="Other">
+                <option value="navigation">Navigation</option>
+                <option value="coloring">Coloring</option>
+                <option value="artifact">Artifacts</option>
+                <option value="null">Other</option>
+
+              </optgroup>
+            </SelectField>
             <SearchField
               name="search"
               className="rw-input mt-0 w-full"
