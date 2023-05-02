@@ -48,14 +48,36 @@ interface TimelineBasespotFormProps {
   loading: boolean;
 }
 
+
 const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
   let { isAuthenticated, client: supabase } = useAuth();
   let [basespots, setBasespots] = useState([]);
   let [selectedBasespot, setSelectedBasespot] = useState(null);
-  const formMethods = useForm<FormTimelineBasespot>();
-  const { setValue, control, watch } = formMethods;
+  const formMethods = useForm<FormTimelineBasespot & { "TimelineBasespotRaid.upsert": any[] }>({
+    defaultValues: {
+      ...props.timelineBasespot,
+      "TimelineBasespotRaid.upsert": []
+    },
+  });
+  const { setValue, control, watch, register } = formMethods;
+
+  const {
+    fields: raidFields,
+    append: appendRaid,
+    remove: removeRaid,
+  } = useFieldArray<any>({
+    control,
+    name: "TimelineBasespotRaid.upsert",
+  });
 
   const onSubmit = (data: FormTimelineBasespot) => {
+
+    data.TimelineBasespotRaid["upsert"] = data.TimelineBasespotRaid["upsert"].map((u, i) => ({
+      create: { ...u },
+      update: { ...u },
+      where: { id: props.timelineBasespot?.TimelineBasespotRaid[i]?.id || "00000000000000000000000000000000" }
+    }));
+
     if (selectedBasespot) {
       data.map = selectedBasespot?.map;
 
@@ -97,7 +119,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
   const map: any = watch("map");
   return (
     <div className="rw-form-wrapper">
-      <Form<FormTimelineBasespot>
+      <Form<FormTimelineBasespot & { "TimelineBasespotRaid.upsert": any[] }>
         onSubmit={onSubmit}
         formMethods={formMethods}
         error={props.error}
@@ -402,9 +424,65 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         {(true || !props.timelineBasespot?.end_date) && (
           <fieldset className="rw-form-group">
-            <legend>Raid Info</legend>
-            <div>
-              <div>
+            <legend>Raids</legend>
+            {/* TODO: add rest of raid input fields */}
+            {raidFields.map((raid, index) => (
+              <div
+                className="rw-button-group !mt-0 justify-start"
+                role="group"
+                key={`raid-${index}`}
+              >
+                <div>
+                  <Label
+                    name={`TimelineBasespotRaid.upsert.${index}.tribe_name`}
+                    className="rw-label"
+                    errorClassName="rw-label rw-label-error"
+                  >
+                    Raided by
+                  </Label>
+
+                  <TextField
+                    {...register(`TimelineBasespotRaid.upsert.${index}.tribe_name`, { required: true })}
+                    className="rw-input !rounded-l-lg !rounded-r-none"
+                    defaultValue={raid.tribe_name}
+                  />
+                </div>
+                <div className="!ml-0">
+                  <Label
+                    name={`TimelineBasespotRaid.upsert.${index}.raid_comment`}
+                    className="rw-label"
+                    errorClassName="rw-label rw-label-error"
+                  >
+                    Raid Comment
+                  </Label>
+
+                  <TextField
+                    {...register(`TimelineBasespotRaid.upsert.${index}.raid_comment`, { required: false })}
+                    className="rw-input !rounded-r-none"
+                    defaultValue={raid.raid_comment}
+                  />
+                </div>
+                <div className="!ml-0 place-self-end">
+                  <button
+                    type="button"
+                    className="rw-button rw-button-red rounded-none !rounded-r-md !ml-0 !mt-0"
+                    onClick={() => removeRaid(index)}
+                  >
+                    Remove Raid
+                  </button>
+                </div>
+              </div>
+            ))}
+            <div className="rw-button-group justify-start">
+              <button
+                type="button"
+                className="rw-button rw-button-gray"
+                onClick={() => appendRaid({ raid_start: new Date(), raid_end: '', tribe_name: '', raid_comment: '', attacker_players: '', base_survived: false, defenders: '' })}
+              >
+                Add Raid
+              </button>
+            </div>
+            {/* <div>
                 <Label
                   name="raided_by"
                   className="rw-label"
@@ -442,8 +520,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                 />
 
                 <FieldError name="raid_comment" className="rw-field-error" />
-              </div>
-            </div>
+              </div> */}
           </fieldset>
         )}
 
@@ -673,6 +750,10 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           <Submit disabled={props.loading} className="rw-button rw-button-blue">
             Save
           </Submit>
+
+          {/* <button className="rw-button rw-button-gray" onClick={props.onCancel}>
+            Cancel
+          </button> */}
         </div>
       </Form>
     </div>

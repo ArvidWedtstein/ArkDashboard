@@ -4,11 +4,9 @@ import {
   FieldError,
   Label,
   TextField,
-  TextAreaField,
   Submit,
   SelectField,
   ColorField,
-  CheckboxField,
   useFieldArray,
   useForm,
   NumberField,
@@ -17,10 +15,9 @@ import {
 import type {
   EditItemById,
   UpdateItemInput,
-  UpdateItemRecipeInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import { useReducer, useState } from "react";
+import { useState } from "react";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import Lookup from "src/components/Util/Lookup/Lookup";
 import arkitems from "../../../../public/arkitems.json";

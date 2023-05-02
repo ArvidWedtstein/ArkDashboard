@@ -53,6 +53,7 @@ export const schema = gql`
     raid_comment: String
     latitude: Float
     longitude: Float
+    TimelineBasespotRaid: JSON
   }
 
   input UpdateTimelineBasespotInput {
@@ -75,6 +76,7 @@ export const schema = gql`
     raid_comment: String
     latitude: Float
     longitude: Float
+    TimelineBasespotRaid: JSON
   }
   input RaidTimelineBasespotInput {
     end_date: DateTime

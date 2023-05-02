@@ -21,7 +21,6 @@ import { truncate } from "src/lib/formatters";
 import { useCellCacheContext, useQuery } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useLazyQuery } from "@apollo/client";
-import Table from "src/components/Util/Table/Table";
 
 type FormDino = NonNullable<EditDinoById["dino"]>;
 
@@ -150,7 +149,7 @@ const DinoForm = (props: DinoFormProps) => {
     data.eats = eats.map((f) => f.id.toString());
     data.drops = ["12"]
     console.log(data);
-    delete data.immobilized_by
+    // delete data.immobilized_by
     // Test Dino Object
     // const d = {
     //   name: "test",

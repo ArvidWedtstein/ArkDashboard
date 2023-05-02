@@ -27,8 +27,14 @@ export const QUERY = gql`
       longitude
       players
       created_by
-      raided_by
-      raid_comment
+      TimelineBasespotRaid {
+        id
+        raid_start
+        raid_end
+        raid_comment
+        defenders
+        attacker_players
+      }
       TimelineBasespotDino {
         id
         name
@@ -83,8 +89,14 @@ const UPDATE_TIMELINE_BASESPOT_MUTATION = gql`
       longitude
       players
       created_by
-      raided_by
-      raid_comment
+      TimelineBasespotRaid {
+        id
+        raid_start
+        raid_end
+        raid_comment
+        defenders
+        attacker_players
+      }
       TimelineBasespotDino {
         name
         birth_date

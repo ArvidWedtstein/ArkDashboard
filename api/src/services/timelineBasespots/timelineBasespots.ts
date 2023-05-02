@@ -23,6 +23,9 @@ export const timelineBasespot: QueryResolvers["timelineBasespot"] = ({
 export const createTimelineBasespot: MutationResolvers["createTimelineBasespot"] =
   ({ input }) => {
     return db.timelineBasespot.create({
+      include: {
+        TimelineBasespotRaid: true,
+      }
       data: input,
     });
   };
@@ -30,6 +33,9 @@ export const createTimelineBasespot: MutationResolvers["createTimelineBasespot"]
 export const updateTimelineBasespot: MutationResolvers["updateTimelineBasespot"] =
   ({ id, input }) => {
     return db.timelineBasespot.update({
+      include: {
+        TimelineBasespotRaid: true,
+      }
       data: input,
       where: { id },
     });
