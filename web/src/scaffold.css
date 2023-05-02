@@ -365,7 +365,7 @@ a {
   @apply bg-red-600 text-white;
 }
 .rw-text-center {
-  @apply text-center;
+  @apply text-center text-black dark:text-white;
 }
 .rw-login-container {
   @apply mx-auto my-16 flex w-96 flex-wrap items-center justify-center;

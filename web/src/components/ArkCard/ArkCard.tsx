@@ -70,6 +70,7 @@ const ArkCard: React.FC<IArkCard> = React.memo<IArkCard>(
                   src={icon.src}
                   alt={icon.alt ?? "icon"}
                   title={icon.alt ?? "icon"}
+                  loading="lazy"
                   className="lg:object-fit h-full w-full rounded-2xl object-scale-down"
                 />
               </div>

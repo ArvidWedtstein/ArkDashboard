@@ -129,6 +129,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
               <div className="flex h-full w-full flex-col items-start justify-between justify-items-stretch">
                 <div className="relative mb-6 h-32 w-32 rounded-full border bg-gradient-to-br from-zinc-700 to-zinc-700">
                   <ImageContainer
+                    loading="lazy"
                     className="h-auto max-h-full"
                     src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
                     onError={(e) => {

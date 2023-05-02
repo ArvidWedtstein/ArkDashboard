@@ -90,18 +90,18 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
   const [currentMap, setCurrentMap] = useState(map || null);
 
   return (
-    <div className="h-[80vh]">
+    <div className="">
       <header
         className="flex flex-col justify-between w-full min-h-[200px] p-12 bg-center bg-cover bg-no-repeat rounded-2xl text-white"
         style={{ backgroundImage: 'url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg)' }}
       >
         <div className="flex justify-between pb-5">
-          <div className="text-xl font-bold uppercase tracking-[0.4rem] opacity-90">basespots</div>
+          {/* <div className="text-xl font-bold uppercase tracking-[0.4rem] opacity-90">basespots</div> */}
           <div className="flex items-center opacity-50 text-sm">
-            <p><span className="inline-block pb-1" id="sinceData">today</span></p>
+            {/* <p><span className="inline-block pb-1" id="sinceData">today</span></p>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" className="w-5 ml-3 fill-current">
               <path className="d" d="M15,0C6.75,0,0,6.75,0,15s6.75,15,15,15,15-6.75,15-15S23.25,0,15,0Zm7.35,16.65h-7.35c-.83,0-1.5-.67-1.5-1.5V7.8c0-.9,.6-1.5,1.5-1.5s1.5,.6,1.5,1.5v5.85h5.85c.9,0,1.5,.6,1.5,1.5s-.6,1.5-1.5,1.5Z" />
-            </svg>
+            </svg> */}
           </div>
         </div>
         <div className="pt-12">
@@ -114,7 +114,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
             ))}
           </div>
           <h1 className="my-5 text-5xl font-bold opacity-90">Basespots!</h1>
-          <p className="w-1/2 mt-3 opacity-75 leading-7">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus imperdiet ut quam sit amet vehicula.</p>
+          <p className="w-1/2 mt-3 opacity-75 leading-7">Here you'll find various basespots</p>
         </div>
       </header>
       <div className="flex items-center my-4">

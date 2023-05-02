@@ -137,7 +137,7 @@ const LootcratesList = ({ lootcratesByMap: lootcrates }: FindLootcrates) => {
         {daLootcrates.map((lootcrate, i) => (
           <ArkCard
             key={`lootcrate-${i}`}
-            className="border-t-2"
+            className="border-t-2 "
             style={{
               borderColor: lootcrate.color ? lootcrate.color : "white",
             }}

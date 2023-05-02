@@ -13,10 +13,17 @@ export const lootcrates: QueryResolvers["lootcrates"] = () => {
 // TODO: Make a query for getting lootcrates that contains a specific item
 
 export const lootcratesByMap = ({ map }: { map?: string }) => {
-  return map
+  return !!map
     ? db.lootcrate.findMany({
         orderBy: { created_at: "desc" },
-        where: { Map: { name: map.toString() } },
+        where: {
+          Map: {
+            name: {
+              contains: map,
+              mode: "insensitive",
+            },
+          },
+        },
       })
     : db.lootcrate.findMany();
 };

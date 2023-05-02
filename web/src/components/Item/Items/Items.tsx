@@ -21,42 +21,41 @@ const DELETE_ITEM_MUTATION = gql`
 `;
 
 const ItemsList = ({ itemsPage }: FindItems) => {
-  const [deleteItem] = useMutation(DELETE_ITEM_MUTATION, {
-    onCompleted: () => {
-      toast.success("Item deleted");
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    // This refetches the query on the list page. Read more about other ways to
-    // update the cache over here:
-    // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
-    refetchQueries: [{ query: QUERY }],
-    awaitRefetchQueries: true,
-  });
+  // const [deleteItem] = useMutation(DELETE_ITEM_MUTATION, {
+  //   onCompleted: () => {
+  //     toast.success("Item deleted");
+  //   },
+  //   onError: (error) => {
+  //     toast.error(error.message);
+  //   },
+  //   // This refetches the query on the list page. Read more about other ways to
+  //   // update the cache over here:
+  //   // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
+  //   refetchQueries: [{ query: QUERY }],
+  //   awaitRefetchQueries: true,
+  // });
 
 
 
-  const onDeleteClick = (id: DeleteItemMutationVariables["id"]) => {
-    if (confirm("Are you sure you want to delete item " + id + "?")) {
-      deleteItem({ variables: { id } });
-    }
-  };
+  // const onDeleteClick = (id: DeleteItemMutationVariables["id"]) => {
+  //   if (confirm("Are you sure you want to delete item " + id + "?")) {
+  //     deleteItem({ variables: { id } });
+  //   }
+  // };
   let { search } = useParams();
   const onSubmit = ((e) => {
     navigate(routes.items(parseSearch(e)))
   })
   const [view, setView] = useState("grid");
   // const groupedItems = useMemo(() => groupBy(itemsPage.items, "category"), [itemsPage.items])
-  // console.log(groupedItems)
   return (
     <div className="rw-segment overflow-hidden">
       <Form className="w-auto" onSubmit={onSubmit}>
         <nav className="flex flex-row space-x-2 justify-center">
-          <div className="rw-button-group !space-x-0">
+          <div className="rw-button-group !space-x-0 w-full">
             <SearchField
               name="search"
-              className="rw-input mt-0"
+              className="rw-input mt-0 w-full"
               placeholder="Search..."
               defaultValue={search}
             />
@@ -117,10 +116,29 @@ const ItemsList = ({ itemsPage }: FindItems) => {
             view === "grid",
         })}
       >
+        {/* {Object.entries(groupedItems).map(([key, items], i) => (
+          <details key={`item-${i}`} className="border border-gray-800 dark:border-gray-500 text-white">
+            <summary>{key}</summary>
+            {items.map((item, i) => (
+              <Link to={routes.item({ id: item.id.toString() })} key={`item-${i}`}>
+                <ArkCard
+                  className="border border-gray-800 dark:border-gray-500 " // bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-500 to-zinc-900
+                  title={item.name}
+                  subtitle={item.type}
+                  content={view === "list" ? item.description : ""}
+                  icon={{
+                    src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                    alt: `${item.name}`,
+                  }}
+                />
+              </Link>
+            ))}
+          </details>
+        ))} */}
         {itemsPage.items.map((item, i) => (
           <Link to={routes.item({ id: item.id.toString() })} key={`item-${i}`}>
             <ArkCard
-              className="border border-gray-800 dark:border-gray-500"
+              className="border border-gray-800 dark:border-gray-500 " // bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-500 to-zinc-900
               title={item.name}
               subtitle={item.type}
               content={view === "list" ? item.description : ""}

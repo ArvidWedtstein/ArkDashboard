@@ -32,7 +32,7 @@ const ImageContainer = ({
   } = props
   const ref = useRef(null)
   const [isVisible, setIsVisible] = useState(false)
-
+  // const [imageLoaded, setImageLoaded] = useState(false);
   useIntersectionObserver({
     target: ref,
     onIntersect: ([{ isIntersecting }], observerElement) => {
@@ -52,9 +52,23 @@ const ImageContainer = ({
       className={clsx("relative overflow-hidden transition-opacity duration-300 ease-linear", className)}
       style={{ paddingBottom: `${aspectRatio}%` }}
     >
+      {/* {!imageLoaded && (
+        <img
+          src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiTw9vKUkfzdUkGVByistee-qWWG21sxiU8IT8cSjfBw&s`}
+          alt="loading placeholder"
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+        />
+      )} */}
       {isVisible && (
         <figure className="max-w-lg">
-          <img className="h-auto max-w-full rounded-lg" src={src} alt={alt} {...props} />
+          <img
+            className="h-auto max-w-full rounded-lg transition-all duration-1000"
+            // onLoad={() => setImageLoaded(true)}
+            src={src}
+            alt={alt}
+            {...props}
+          // style={{ opacity: imageLoaded ? 1 : 0 }}
+          />
           {!!caption && <figcaption className="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">{caption}</figcaption>}
         </figure>
       )}
