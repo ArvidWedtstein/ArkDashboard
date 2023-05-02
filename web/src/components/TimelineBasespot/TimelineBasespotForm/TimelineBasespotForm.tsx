@@ -29,7 +29,7 @@ import { routes } from "@redwoodjs/router";
 
 const formatDatetime = (value) => {
   if (value) {
-    return value.replace(/:\d{2}\.\d{3}\w/, "");
+    return value.toString().replace(/:\d{2}\.\d{3}\w/, "");
   }
 };
 
@@ -427,57 +427,101 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
             <legend>Raids</legend>
             {/* TODO: add rest of raid input fields */}
             {raidFields.map((raid, index) => (
-              <div
-                className="rw-button-group !mt-0 justify-start"
-                role="group"
-                key={`raid-${index}`}
-              >
+              <>
+                <div
+                  className="rw-button-group !mt-0 justify-start"
+                  role="group"
+                  key={`raid-${index}`}
+                >
+                  <div>
+                    <Label
+                      name={`TimelineBasespotRaid.upsert.${index}.tribe_name`}
+                      className="rw-label"
+                      errorClassName="rw-label rw-label-error"
+                    >
+                      Raided by
+                    </Label>
+
+                    <TextField
+                      {...register(`TimelineBasespotRaid.upsert.${index}.tribe_name`, { required: true })}
+                      className="rw-input !rounded-l-lg !rounded-r-none"
+                      defaultValue={raid.tribe_name}
+                    />
+                  </div>
+                  <div className="!ml-0">
+                    <Label
+                      name={`TimelineBasespotRaid.upsert.${index}.raid_comment`}
+                      className="rw-label"
+                      errorClassName="rw-label rw-label-error"
+                    >
+                      Raid Comment
+                    </Label>
+
+                    <TextField
+                      {...register(`TimelineBasespotRaid.upsert.${index}.raid_comment`, { required: false })}
+                      className="rw-input !rounded-r-none"
+                      defaultValue={raid.raid_comment}
+                    />
+                  </div>
+                  <div className="!ml-0 place-self-end">
+                    <button
+                      type="button"
+                      className="rw-button rw-button-red rounded-none !rounded-r-md !ml-0 !mt-0"
+                      onClick={() => removeRaid(index)}
+                    >
+                      Remove Raid
+                    </button>
+                  </div>
+                </div>
                 <div>
-                  <Label
-                    name={`TimelineBasespotRaid.upsert.${index}.tribe_name`}
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Raided by
-                  </Label>
+                  <div>
+                    <Label
+                      name={`TimelineBasespotRaid.upsert.${index}.raid_start`}
+                      className="rw-label"
+                      errorClassName="rw-label rw-label-error"
+                    >
+                      Raid Start
+                    </Label>
 
-                  <TextField
-                    {...register(`TimelineBasespotRaid.upsert.${index}.tribe_name`, { required: true })}
-                    className="rw-input !rounded-l-lg !rounded-r-none"
-                    defaultValue={raid.tribe_name}
-                  />
-                </div>
-                <div className="!ml-0">
-                  <Label
-                    name={`TimelineBasespotRaid.upsert.${index}.raid_comment`}
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Raid Comment
-                  </Label>
+                    <DatetimeLocalField
+                      {...register(`TimelineBasespotRaid.upsert.${index}.raid_start`, { required: true, valueAsDate: true })}
+                      defaultValue={
+                        raid.raid_start
+                      }
+                      errorClassName="rw-input rw-input-error"
+                      onChange={(e) => {
+                        console.log(e);
 
-                  <TextField
-                    {...register(`TimelineBasespotRaid.upsert.${index}.raid_comment`, { required: false })}
-                    className="rw-input !rounded-r-none"
-                    defaultValue={raid.raid_comment}
-                  />
+                      }}
+                      className="rw-input"
+                    />
+                  </div>
+                  <div>
+                    <Label
+                      name={`TimelineBasespotRaid.upsert.${index}.raid_end`}
+                      className="rw-label"
+                      errorClassName="rw-label rw-label-error"
+                    >
+                      Raid End
+                    </Label>
+
+                    <DatetimeLocalField
+                      {...register(`TimelineBasespotRaid.upsert.${index}.raid_end`, { required: true, valueAsDate: true })}
+                      defaultValue={raid.raid_end}
+                      errorClassName="rw-input rw-input-error"
+                      className="rw-input"
+                    />
+                  </div>
                 </div>
-                <div className="!ml-0 place-self-end">
-                  <button
-                    type="button"
-                    className="rw-button rw-button-red rounded-none !rounded-r-md !ml-0 !mt-0"
-                    onClick={() => removeRaid(index)}
-                  >
-                    Remove Raid
-                  </button>
-                </div>
-              </div>
+              </>
             ))}
             <div className="rw-button-group justify-start">
               <button
                 type="button"
                 className="rw-button rw-button-gray"
-                onClick={() => appendRaid({ raid_start: new Date(), raid_end: '', tribe_name: '', raid_comment: '', attacker_players: '', base_survived: false, defenders: '' })}
+                onClick={() => appendRaid({
+                  raid_start: formatDatetime(new Date().toISOString()), raid_end: '', tribe_name: '', raid_comment: '', attacker_players: '', base_survived: false, defenders: ''
+                })}
               >
                 Add Raid
               </button>
