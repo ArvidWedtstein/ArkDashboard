@@ -30,7 +30,7 @@ const DELETE_LOOTCRATE_MUTATION = gql`
   }
 `;
 
-const LootcratesList = ({ lootcrates }: FindLootcrates) => {
+const LootcratesList = ({ lootcratesByMap: lootcrates }: FindLootcrates) => {
   const [deleteLootcrate] = useMutation(DELETE_LOOTCRATE_MUTATION, {
     onCompleted: () => {
       toast.success("Lootcrate deleted");
@@ -75,7 +75,7 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
       setCategoryItems(
         removeDuplicates(
           filteredCrates
-            .map((crate) => crate?.sets)
+            .map((crate) => crate?.LootcrateSet)
             .flat()
             .map((set: any) => set?.name)
         )
@@ -85,7 +85,7 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
     if (filters.category) {
       filteredCrates = filteredCrates.map((crate) => ({
         ...crate,
-        sets: (crate?.sets as any[]).filter(
+        sets: (crate?.LootcrateSet).filter(
           (set) => set.name == filters.category
         ),
       }));
@@ -153,8 +153,8 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
             subtitle={lootcrate.Map.name}
             ring={
               lootcrate?.level_requirement &&
-                lootcrate.level_requirement?.min > 0
-                ? `Lvl ${lootcrate.level_requirement.min}`
+                lootcrate.level_requirement["min"] > 0
+                ? `Lvl ${lootcrate.level_requirement["min"]}`
                 : null
             }
             button={{

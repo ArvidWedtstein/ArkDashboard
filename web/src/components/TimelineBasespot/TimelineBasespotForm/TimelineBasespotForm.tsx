@@ -485,14 +485,9 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
                     <DatetimeLocalField
                       {...register(`TimelineBasespotRaid.upsert.${index}.raid_start`, { required: true, valueAsDate: true })}
-                      defaultValue={
-                        raid.raid_start
-                      }
+                      defaultValue={formatDatetime(raid.raid_start)}
                       errorClassName="rw-input rw-input-error"
-                      onChange={(e) => {
-                        console.log(e);
-
-                      }}
+                      emptyAs={null}
                       className="rw-input"
                     />
                   </div>
@@ -507,7 +502,8 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
                     <DatetimeLocalField
                       {...register(`TimelineBasespotRaid.upsert.${index}.raid_end`, { required: true, valueAsDate: true })}
-                      defaultValue={raid.raid_end}
+                      defaultValue={formatDatetime(raid.raid_end)}
+                      emptyAs={null}
                       errorClassName="rw-input rw-input-error"
                       className="rw-input"
                     />
@@ -520,7 +516,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                 type="button"
                 className="rw-button rw-button-gray"
                 onClick={() => appendRaid({
-                  raid_start: formatDatetime(new Date().toISOString()), raid_end: '', tribe_name: '', raid_comment: '', attacker_players: '', base_survived: false, defenders: ''
+                  raid_start: new Date().toISOString(), raid_end: '', tribe_name: '', raid_comment: '', attacker_players: '', base_survived: false, defenders: ''
                 })}
               >
                 Add Raid

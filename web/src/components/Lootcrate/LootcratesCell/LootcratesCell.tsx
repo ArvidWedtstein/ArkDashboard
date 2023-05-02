@@ -23,6 +23,10 @@ export const QUERY = gql`
       Map {
         name
       }
+      LootcrateSet {
+        id
+        name
+      }
     }
   }
 `;
@@ -74,6 +78,6 @@ export const Failure = ({ error, errorCode }: CellFailureProps) => (
   </div>
 );
 
-export const Success = ({ lootcrates }: CellSuccessProps<FindLootcrates>) => {
-  return <Lootcrates lootcrates={lootcrates} />;
+export const Success = ({ lootcratesByMap }: CellSuccessProps<FindLootcrates>) => {
+  return <Lootcrates lootcratesByMap={lootcratesByMap} />;
 };
