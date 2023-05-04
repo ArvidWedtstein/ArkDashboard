@@ -16,7 +16,6 @@ const Pagination = ({
   // const items = [];
   let params = useParams();
   const { page } = params
-
   // const addSearchParams = (url: any, params: any = {}) =>
   //   new URL(
   //     `${url.origin}${url.pathname}?${new URLSearchParams([
@@ -52,8 +51,9 @@ const Pagination = ({
   const getPaginationGroup = useCallback(() => {
     const paginationGroup = [];
     let pages = Math.round(count / itemsPerPage);
+
     if (pages <= pageLimit) {
-      for (let i = 1; i <= pages + 1; i++) {
+      for (let i = 1; i <= pages; i++) {
         paginationGroup.push(i);
       }
     } else {
@@ -75,7 +75,7 @@ const Pagination = ({
     }
 
     return paginationGroup;
-  }, [itemsPerPage, count, page]);
+  }, [itemsPerPage, count, page, route]);
 
 
   type direction = "next" | "prev";
@@ -102,9 +102,10 @@ const Pagination = ({
           <ul className="list-style-none mt-5 flex w-full justify-end space-x-2">
             <li className="">
               <Link
-                className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200 aria-disabled:pointer-events-none"
                 to={routes[route]({ ...params, page: changePage("prev") })}
                 aria-label="Previous"
+                aria-disabled={count / itemsPerPage <= 1}
               >
                 <span aria-hidden="true" className="sr-only">Previous</span>
                 <svg
@@ -136,9 +137,10 @@ const Pagination = ({
             ))}
             <li className="">
               <Link
-                className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200 aria-disabled:pointer-events-none"
                 to={routes[route]({ ...params, page: changePage("next") })}
                 aria-label="Next"
+                aria-disabled={count / itemsPerPage <= 1}
               >
                 <span aria-hidden="true" className="sr-only">Next</span>
                 <svg

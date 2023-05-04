@@ -9,32 +9,51 @@ import { db } from "src/lib/db";
 export const itemsPage = ({
   page = 1,
   search = "",
+  category = "",
+  type = "",
   items_per_page = 36,
 }: {
   page: number;
   search?: string;
+  category?: string;
+  type?: string;
   items_per_page?: number;
 }) => {
   const offset = (page - 1) * items_per_page;
+  console.log(category);
   return {
     items: db.item.findMany({
       take: items_per_page,
       skip: offset,
       orderBy: { name: "asc" },
       where: {
-        OR: [
+        AND: [
           { name: { startsWith: search, mode: "insensitive" } },
-          { category: { contains: search, mode: "insensitive" } },
-          { type: { contains: search, mode: "insensitive" } },
+          category
+            ? { category: { contains: category, mode: "insensitive" } }
+            : {},
+          type ? { type: { contains: type, mode: "insensitive" } } : {},
         ],
       },
     }),
+    // categories: db.item.findMany({
+    //   select: { category: true },
+    //   distinct: ["category"],
+    //   orderBy: { category: "asc" },
+    // }),
+    // types: db.item.findMany({
+    //   select: { type: true },
+    //   distinct: ["type"],
+    //   orderBy: { type: "asc" },
+    // }),
     count: db.item.count({
       where: {
-        OR: [
+        AND: [
           { name: { startsWith: search, mode: "insensitive" } },
-          { category: { contains: search, mode: "insensitive" } },
-          { type: { contains: search, mode: "insensitive" } },
+          category
+            ? { category: { contains: category, mode: "insensitive" } }
+            : {},
+          type ? { type: { contains: type, mode: "insensitive" } } : {},
         ],
       },
     }),

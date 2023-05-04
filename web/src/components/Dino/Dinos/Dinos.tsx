@@ -52,7 +52,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
 
   let { search, category } = useParams();
   const onSubmit = ((e) => {
-    navigate(routes.dinos(parseSearch(e)))
+    navigate(routes.dinos({ ...parseSearch(Object.fromEntries(Object.entries(e).filter(([_, v]) => v != "")) as any), page: 1 }))
   })
   const types = {
     boss: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/5/50/Cowardice.png",

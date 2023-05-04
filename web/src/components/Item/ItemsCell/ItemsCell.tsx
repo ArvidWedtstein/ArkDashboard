@@ -7,8 +7,8 @@ import Items from "src/components/Item/Items";
 import Pagination from "src/components/Util/Pagination/Pagination";
 
 export const QUERY = gql`
-  query FindItems($page: Int, $search: String) {
-    itemsPage(page: $page, search: $search) {
+  query FindItems($page: Int, $search: String, $category: String, $type: String) {
+    itemsPage(page: $page, search: $search, category: $category, type: $type) {
       items {
         id
         created_at
@@ -30,9 +30,9 @@ export const QUERY = gql`
     }
   }
 `;
-export const beforeQuery = ({ page, search }) => {
+export const beforeQuery = ({ page, search, category, type }) => {
   page = parseInt(page) ? parseInt(page, 10) : 1;
-  return { variables: { page, search } };
+  return { variables: { page, search, category, type } };
 };
 
 export const Loading = () => (

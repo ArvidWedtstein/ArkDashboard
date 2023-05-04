@@ -32,7 +32,12 @@ export const schema = gql`
   type Query {
     items: [Item!]! @skipAuth
     item(id: BigInt!): Item @skipAuth
-    itemsPage(page: Int, search: String): ItemsPage @skipAuth
+    itemsPage(
+      page: Int
+      search: String
+      category: String
+      type: String
+    ): ItemsPage @skipAuth
     itemsByCategory(category: String!): ItemsPage @skipAuth
   }
 

@@ -158,8 +158,8 @@ const Sidebar = memo(({ }) => {
   ];
   return (
     <nav className="h-screen sticky top-0 z-10 rounded-r-xl flex flex-row items-center justify-between border-gray-700 px-10 py-2 dark:border-gray-200 max-sm:border-b sm:flex-col sm:justify-start sm:border-r sm:py-10 sm:px-2">
-      {navigation.map((item) => (
-        <aside className="flex dark:text-[#ffffffcc] text-black justify-start items-center self-start sm:flex-row flex-col transition-all mx-2">
+      {navigation.map((item, i) => (
+        <aside className="flex dark:text-[#ffffffcc] text-black justify-start items-center self-start sm:flex-row flex-col transition-all mx-2" key={`sidebar-item-${i}`}>
           {/* <NavLink
             key={item.name}
             to={item.href}

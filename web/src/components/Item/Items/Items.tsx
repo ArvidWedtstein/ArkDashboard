@@ -1,6 +1,6 @@
 import { useLazyQuery } from "@apollo/client";
-import { Form, Label, SearchField, SelectField, Submit } from "@redwoodjs/forms";
-import { Link, Redirect, routes, navigate, parseSearch, useParams } from "@redwoodjs/router";
+import { Form, Label, SearchField, SelectField, Submit, useForm } from "@redwoodjs/forms";
+import { Link, routes, navigate, parseSearch, useParams } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
@@ -20,6 +20,11 @@ const DELETE_ITEM_MUTATION = gql`
   }
 `;
 
+type FormSearch = {
+  search: string;
+  category: string;
+  type: string;
+}
 const ItemsList = ({ itemsPage }: FindItems) => {
   // const [deleteItem] = useMutation(DELETE_ITEM_MUTATION, {
   //   onCompleted: () => {
@@ -42,9 +47,34 @@ const ItemsList = ({ itemsPage }: FindItems) => {
   //     deleteItem({ variables: { id } });
   //   }
   // };
+
+
   let { search, category, type } = useParams();
+  const [types, setTypes] = useState([]);
+  useEffect(() => {
+    switch (category) {
+      case "structure":
+        setTypes(["Tek", "Building", "Crafting", "Electrical"])
+        break;
+      case "armor":
+        setTypes(["Tek", "Riot", "Flak", "Hazard", "Scuba", "Fur", "Ghillie", "Chitin", "Desert", "Hide", "Cloth", "Saddle", "Attachment"])
+        break;
+      case "weapon":
+        setTypes(["Explosive", "Ammunition", "Arrow", "Tool", "Attachment", "Shield", "Melee", "Gun"])
+        break;
+      case "consumable":
+        setTypes(["Food", "Drink", "Medical", "Ammo", "Egg", "Resource", "Artifact", "Trophy", "Skin", "Token", "Other"])
+        break;
+      case "tool":
+        setTypes(["Tool", "Attachment"])
+        break;
+      default:
+        setTypes([])
+        break;
+    }
+  }, [category])
   const onSubmit = ((e) => {
-    navigate(routes.items(parseSearch(e)))
+    navigate(routes.items({ ...parseSearch(Object.fromEntries(Object.entries(e).filter(([_, v]) => v != "")) as any), page: 1 }))
   })
   const [view, setView] = useState("grid");
   // const groupedItems = useMemo(() => groupBy(itemsPage.items, "category"), [itemsPage.items])
@@ -60,6 +90,28 @@ const ItemsList = ({ itemsPage }: FindItems) => {
               name="category"
               className="rw-input !rounded-l-lg mt-0"
               defaultValue={category}
+              onChange={(e) => {
+                switch (e.target.value) {
+                  case "structure":
+                    setTypes(["Tek", "Building", "Crafting", "Electrical"])
+                    break;
+                  case "armor":
+                    setTypes(["Tek", "Riot", "Flak", "Hazard", "Scuba", "Fur", "Ghillie", "Chitin", "Desert", "Hide", "Cloth", "Saddle", "Attachment"])
+                    break;
+                  case "weapon":
+                    setTypes(["Explosive", "Ammunition", "Arrow", "Tool", "Attachment", "Shield", "Melee", "Gun"])
+                    break;
+                  case "consumable":
+                    setTypes(["Food", "Drink", "Medical", "Ammo", "Egg", "Resource", "Artifact", "Trophy", "Skin", "Token", "Other"])
+                    break;
+                  case "tool":
+                    setTypes(["Tool", "Attachment"])
+                    break;
+                  default:
+                    setTypes([])
+                    break;
+                }
+              }}
               validation={{
                 required: false,
                 shouldUnregister: true,
@@ -82,32 +134,38 @@ const ItemsList = ({ itemsPage }: FindItems) => {
               <option value="tool">Tools</option>
               <option value="other">Other</option>
             </SelectField>
-            <SelectField
-              name="type"
-              className="rw-input mt-0"
-              defaultValue={type}
-              validation={{
-                deps: ['category'],
-                required: false,
-                shouldUnregister: true,
-                validate: {
-                  matchesInitialValue: (value) => {
-                    return (
-                      value !== 'Choose a type' ||
-                      'Select an Option'
-                    )
+            {types.length > 0 && (
+              <SelectField
+                name="type"
+                className="rw-input mt-0"
+                defaultValue={type}
+                validation={{
+                  deps: ['category'],
+                  required: false,
+                  shouldUnregister: true,
+                  validate: {
+                    matchesInitialValue: (value) => {
+                      return (
+                        value !== 'Choose a type' ||
+                        'Select an Option'
+                      )
+                    },
                   },
-                },
-              }}
-            >
-              <option value="">Choose a type</option>
-              <optgroup label="Structure" disabled color="red">
+                }}
+              >
+                <option value="">Choose a type</option>
+                {types.map((type) => (
+                  <option key={type} value={type.toLowerCase().toString()} >
+                    {type}
+                  </option>
+                ))}
+                {/* <optgroup label="Structure" className={clsx({ hidden: category !== "structure" })}>
                 <option value="tek">Tek</option>
                 <option value="building">Building</option>
                 <option value="crafting">Crafting</option>
                 <option value="electrical">Electrical</option>
               </optgroup>
-              <optgroup label="Armor">
+              <optgroup label="Armor" className={clsx({ hidden: category !== "armor" })}>
                 <option value="tek">Tek</option>
                 <option value="riot">Riot</option>
                 <option value="flak">Flak</option>
@@ -120,32 +178,32 @@ const ItemsList = ({ itemsPage }: FindItems) => {
                 <option value="hide">Hide</option>
                 <option value="cloth">Cloth</option>
                 <option value="saddle">Saddles</option>
-                <option value="attachment">Attachment</option>
+                <option value="attachment">Attachments</option>
               </optgroup>
-              <optgroup label="Weapons">
+              <optgroup label="Weapons" className={clsx({ hidden: category !== "weapon" })}>
                 <option value="explosive">Explosive</option>
                 <option value="ammunition">Ammunition</option>
                 <option value="arrow">Arrow</option>
                 <option value="tool">Tools</option>
                 <option value="attachment">Attachment</option>
+                <option value="gun">Gun</option>
                 <option value="shield">Shields</option>
               </optgroup>
-              <optgroup label="Resources">
-
+              <optgroup label="Resources" className={clsx({ hidden: category !== "resource" })}>
+                <option value="resource">Resources</option>
               </optgroup>
-              <optgroup label="Consumables">
+              <optgroup label="Consumables" className={clsx({ hidden: category !== "consumable" })}>
                 <option value="egg">Egg</option>
               </optgroup>
-              <option value="resource">Resources</option>
-              <option value="tool">Tools</option>
-              <optgroup label="Other">
+              <option value="tool" className={clsx({ hidden: category !== "tool" })}>Tools</option>
+              <optgroup label="Other" className={clsx({ hidden: category !== "other" })}>
                 <option value="navigation">Navigation</option>
                 <option value="coloring">Coloring</option>
                 <option value="artifact">Artifacts</option>
                 <option value="null">Other</option>
-
-              </optgroup>
-            </SelectField>
+              </optgroup> */}
+              </SelectField>
+            )}
             <SearchField
               name="search"
               className="rw-input mt-0 w-full"
@@ -153,7 +211,10 @@ const ItemsList = ({ itemsPage }: FindItems) => {
               defaultValue={search}
             />
             <Submit className="rw-button rw-button-gray rounded-l-none">
-              Search
+              <span className="sr-only">Search</span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="rw-button-icon !ml-0">
+                <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
+              </svg>
             </Submit>
           </div>
           <div className="rw-button-group">
@@ -202,6 +263,7 @@ const ItemsList = ({ itemsPage }: FindItems) => {
           </div>
         </nav>
       </Form>
+
       <div
         className={clsx("grid gap-4 overflow-y-hidden", {
           "grid-cols-1": view === "list",
@@ -209,25 +271,6 @@ const ItemsList = ({ itemsPage }: FindItems) => {
             view === "grid",
         })}
       >
-        {/* {Object.entries(groupedItems).map(([key, items], i) => (
-          <details key={`item-${i}`} className="border border-gray-800 dark:border-gray-500 text-white">
-            <summary>{key}</summary>
-            {items.map((item, i) => (
-              <Link to={routes.item({ id: item.id.toString() })} key={`item-${i}`}>
-                <ArkCard
-                  className="border border-gray-800 dark:border-gray-500 " // bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-500 to-zinc-900
-                  title={item.name}
-                  subtitle={item.type}
-                  content={view === "list" ? item.description : ""}
-                  icon={{
-                    src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                    alt: `${item.name}`,
-                  }}
-                />
-              </Link>
-            ))}
-          </details>
-        ))} */}
         {itemsPage.items.map((item, i) => (
           <Link to={routes.item({ id: item.id.toString() })} key={`item-${i}`}>
             <ArkCard
