@@ -1,4 +1,4 @@
-import { useLazyQuery } from "@apollo/client";
+
 import { Form, Label, SearchField, SelectField, Submit, useForm } from "@redwoodjs/forms";
 import { Link, routes, navigate, parseSearch, useParams } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
@@ -20,12 +20,9 @@ const DELETE_ITEM_MUTATION = gql`
   }
 `;
 
-type FormSearch = {
-  search: string;
-  category: string;
-  type: string;
-}
-const ItemsList = ({ itemsPage }: FindItems) => {
+const ItemsList = ({ itemsPage, loading = false }: FindItems & {
+  loading?: boolean
+}) => {
   // const [deleteItem] = useMutation(DELETE_ITEM_MUTATION, {
   //   onCompleted: () => {
   //     toast.success("Item deleted");
@@ -105,7 +102,7 @@ const ItemsList = ({ itemsPage }: FindItems) => {
                     setTypes(["Food", "Drink", "Medical", "Ammo", "Egg", "Resource", "Artifact", "Trophy", "Skin", "Token", "Other"])
                     break;
                   case "tool":
-                    setTypes(["Tool", "Attachment"])
+                    setTypes(["Attachment"])
                     break;
                   default:
                     setTypes([])
@@ -210,7 +207,7 @@ const ItemsList = ({ itemsPage }: FindItems) => {
               placeholder="Search..."
               defaultValue={search}
             />
-            <Submit className="rw-button rw-button-gray rounded-l-none">
+            <Submit className="rw-button rw-button-gray rounded-l-none" disabled={loading}>
               <span className="sr-only">Search</span>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="rw-button-icon !ml-0">
                 <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
@@ -286,6 +283,31 @@ const ItemsList = ({ itemsPage }: FindItems) => {
           </Link>
         ))}
       </div>
+      {(!loading && itemsPage.items.length === 0 && itemsPage.count === 0) && (
+        <div className="w-full rw-text-center">
+          {"No items yet. "}
+          <Link to={routes.newItem()} className="rw-link">
+            {"Create one?"}
+          </Link>
+        </div>
+      )}
+      {loading === true && (
+        <div className="border-pea-300 mx-auto w-full rounded-md border p-4 shadow">
+          <div className="flex animate-pulse space-x-4">
+            <div className="bg-pea-600 h-10 w-10 rounded-full"></div>
+            <div className="flex-1 space-y-6 py-1">
+              <div className="bg-pea-600 h-2 rounded"></div>
+              <div className="space-y-3">
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-pea-600 col-span-2 h-2 rounded"></div>
+                  <div className="bg-pea-600 col-span-1 h-2 rounded"></div>
+                </div>
+                <div className="bg-pea-600 h-2 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
