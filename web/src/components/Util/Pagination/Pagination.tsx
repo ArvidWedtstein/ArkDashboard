@@ -15,7 +15,7 @@ const Pagination = ({
 }) => {
   // const items = [];
   let params = useParams();
-  const { page } = params
+  const { page = "1" } = params
   // const addSearchParams = (url: any, params: any = {}) =>
   //   new URL(
   //     `${url.origin}${url.pathname}?${new URLSearchParams([
