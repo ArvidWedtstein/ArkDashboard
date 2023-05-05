@@ -3,7 +3,6 @@ export const schema = gql`
     id: BigInt!
     created_at: DateTime
     name: String
-    loot_crates: JSON
     oil_veins: JSON
     water_veins: JSON
     wyvern_nests: JSON
@@ -15,13 +14,13 @@ export const schema = gql`
     drake_nests: JSON
     glitches: JSON
     magmasaur_nests: JSON
-    poison_trees: JSON
     mutagen_bulbs: JSON
-    carniflora: JSON
     notes: JSON
     img: String
     Basespot: [Basespot]!
     Lootcrate: [Lootcrate]!
+    MapCoordinate: [MapCoordinate]!
+    MapNote: [MapNote]!
     TimelineBasespot: [TimelineBasespot]!
   }
 
@@ -33,7 +32,6 @@ export const schema = gql`
   input CreateMapInput {
     created_at: DateTime
     name: String
-    loot_crates: JSON
     oil_veins: JSON
     water_veins: JSON
     wyvern_nests: JSON
@@ -45,9 +43,7 @@ export const schema = gql`
     drake_nests: JSON
     glitches: JSON
     magmasaur_nests: JSON
-    poison_trees: JSON
     mutagen_bulbs: JSON
-    carniflora: JSON
     notes: JSON
     img: String
   }
@@ -55,7 +51,6 @@ export const schema = gql`
   input UpdateMapInput {
     created_at: DateTime
     name: String
-    loot_crates: JSON
     oil_veins: JSON
     water_veins: JSON
     wyvern_nests: JSON
@@ -67,9 +62,7 @@ export const schema = gql`
     drake_nests: JSON
     glitches: JSON
     magmasaur_nests: JSON
-    poison_trees: JSON
     mutagen_bulbs: JSON
-    carniflora: JSON
     notes: JSON
     img: String
   }
