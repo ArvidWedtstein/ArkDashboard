@@ -29,7 +29,7 @@ import { routes } from "@redwoodjs/router";
 
 const formatDatetime = (value) => {
   if (value) {
-    return value.replace(/:\d{2}\.\d{3}\w/, "");
+    return value.toString().replace(/:\d{2}\.\d{3}\w/, "");
   }
 };
 
@@ -38,6 +38,7 @@ type FormTimelineBasespot = NonNullable<
 >;
 
 interface TimelineBasespotFormProps {
+  id?: string;
   timelineBasespot?: EditTimelineBasespotById["timelineBasespot"];
   onSave: (
     data: UpdateTimelineBasespotInput,
@@ -47,14 +48,36 @@ interface TimelineBasespotFormProps {
   loading: boolean;
 }
 
+
 const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
   let { isAuthenticated, client: supabase } = useAuth();
   let [basespots, setBasespots] = useState([]);
   let [selectedBasespot, setSelectedBasespot] = useState(null);
-  const formMethods = useForm<FormTimelineBasespot>();
-  const { setValue, control, watch } = formMethods;
+  const formMethods = useForm<FormTimelineBasespot & { "TimelineBasespotRaid.upsert": any[] }>({
+    defaultValues: {
+      ...props.timelineBasespot,
+      "TimelineBasespotRaid.upsert": []
+    },
+  });
+  const { setValue, control, watch, register } = formMethods;
+
+  const {
+    fields: raidFields,
+    append: appendRaid,
+    remove: removeRaid,
+  } = useFieldArray<any>({
+    control,
+    name: "TimelineBasespotRaid.upsert",
+  });
 
   const onSubmit = (data: FormTimelineBasespot) => {
+
+    data.TimelineBasespotRaid["upsert"] = data.TimelineBasespotRaid["upsert"].map((u, i) => ({
+      create: { ...u },
+      update: { ...u },
+      where: { id: props.timelineBasespot?.TimelineBasespotRaid[i]?.id || "00000000000000000000000000000000" }
+    }));
+
     if (selectedBasespot) {
       data.map = selectedBasespot?.map;
 
@@ -96,7 +119,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
   const map: any = watch("map");
   return (
     <div className="rw-form-wrapper">
-      <Form<FormTimelineBasespot>
+      <Form<FormTimelineBasespot & { "TimelineBasespotRaid.upsert": any[] }>
         onSubmit={onSubmit}
         formMethods={formMethods}
         error={props.error}
@@ -118,7 +141,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         <TextField
           name="timeline_id"
-          defaultValue={props.timelineBasespot?.timeline_id}
+          defaultValue={props?.id || props.timelineBasespot?.timeline_id}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ required: true }}
@@ -215,15 +238,12 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         <Lookup
           defaultValue={props.timelineBasespot?.basespot_id}
-          // options={
-          //   props.timelineBasespot?.map ? basespots.filter((b) => b.Mmp === map).map((b) => ({
-          //     label: b.name,
-          //     value: b.id,
-          //   }) : basespots.map((b) => ({
-          //     label: b.name,
-          //     value: b.id,
-          //   })
-          // }
+          options={
+            basespots.filter((b) => b.map === map).map((b) => ({
+              label: b.name,
+              value: b.id,
+            }))
+          }
           onSelect={(e) => setSelectedBasespot(e)}
           name="basespot_id"
         />
@@ -232,9 +252,12 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         <MapPicker
           map={map || props.timelineBasespot?.map}
-          valueProp={{
+          valueProp={selectedBasespot !== null ? { latitude: basespots.find((b) => b.id === selectedBasespot.value).latitude, longitude: basespots.find((b) => b.id === selectedBasespot.value).longitude, } : {
             latitude: props.timelineBasespot?.latitude,
             longitude: props.timelineBasespot?.latitude,
+          }}
+          validation={{
+            disabled: selectedBasespot !== null
           }}
           onChanges={(e) => {
             formMethods.setValue("latitude", e.latitude);
@@ -401,9 +424,105 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         {(true || !props.timelineBasespot?.end_date) && (
           <fieldset className="rw-form-group">
-            <legend>Raid Info</legend>
-            <div>
-              <div>
+            <legend>Raids</legend>
+            {/* TODO: add rest of raid input fields */}
+            {raidFields.map((raid, index) => (
+              <>
+                <div
+                  className="rw-button-group !mt-0 justify-start"
+                  role="group"
+                  key={`raid-${index}`}
+                >
+                  <div>
+                    <Label
+                      name={`TimelineBasespotRaid.upsert.${index}.tribe_name`}
+                      className="rw-label"
+                      errorClassName="rw-label rw-label-error"
+                    >
+                      Raided by
+                    </Label>
+
+                    <TextField
+                      {...register(`TimelineBasespotRaid.upsert.${index}.tribe_name`, { required: true })}
+                      className="rw-input !rounded-l-lg !rounded-r-none"
+                      defaultValue={raid.tribe_name}
+                    />
+                  </div>
+                  <div className="!ml-0">
+                    <Label
+                      name={`TimelineBasespotRaid.upsert.${index}.raid_comment`}
+                      className="rw-label"
+                      errorClassName="rw-label rw-label-error"
+                    >
+                      Raid Comment
+                    </Label>
+
+                    <TextField
+                      {...register(`TimelineBasespotRaid.upsert.${index}.raid_comment`, { required: false })}
+                      className="rw-input !rounded-r-none"
+                      defaultValue={raid.raid_comment}
+                    />
+                  </div>
+                  <div className="!ml-0 place-self-end">
+                    <button
+                      type="button"
+                      className="rw-button rw-button-red rounded-none !rounded-r-md !ml-0 !mt-0"
+                      onClick={() => removeRaid(index)}
+                    >
+                      Remove Raid
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <Label
+                      name={`TimelineBasespotRaid.upsert.${index}.raid_start`}
+                      className="rw-label"
+                      errorClassName="rw-label rw-label-error"
+                    >
+                      Raid Start
+                    </Label>
+
+                    <DatetimeLocalField
+                      {...register(`TimelineBasespotRaid.upsert.${index}.raid_start`, { required: true, valueAsDate: true })}
+                      defaultValue={formatDatetime(raid.raid_start)}
+                      errorClassName="rw-input rw-input-error"
+                      emptyAs={null}
+                      className="rw-input"
+                    />
+                  </div>
+                  <div>
+                    <Label
+                      name={`TimelineBasespotRaid.upsert.${index}.raid_end`}
+                      className="rw-label"
+                      errorClassName="rw-label rw-label-error"
+                    >
+                      Raid End
+                    </Label>
+
+                    <DatetimeLocalField
+                      {...register(`TimelineBasespotRaid.upsert.${index}.raid_end`, { required: true, valueAsDate: true })}
+                      defaultValue={formatDatetime(raid.raid_end)}
+                      emptyAs={null}
+                      errorClassName="rw-input rw-input-error"
+                      className="rw-input"
+                    />
+                  </div>
+                </div>
+              </>
+            ))}
+            <div className="rw-button-group justify-start">
+              <button
+                type="button"
+                className="rw-button rw-button-gray"
+                onClick={() => appendRaid({
+                  raid_start: new Date().toISOString(), raid_end: '', tribe_name: '', raid_comment: '', attacker_players: '', base_survived: false, defenders: ''
+                })}
+              >
+                Add Raid
+              </button>
+            </div>
+            {/* <div>
                 <Label
                   name="raided_by"
                   className="rw-label"
@@ -435,14 +554,13 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
                 <TextAreaField
                   name="raid_comment"
-                  defaultValue={props.timelineBasespot?.raidcomment}
+                  defaultValue={props.timelineBasespot?.raid_comment}
                   className="rw-input"
                   errorClassName="rw-input rw-input-error"
                 />
 
                 <FieldError name="raid_comment" className="rw-field-error" />
-              </div>
-            </div>
+              </div> */}
           </fieldset>
         )}
 
@@ -469,8 +587,8 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                                 "invert(95%) sepia(69%) saturate(911%) hue-rotate(157deg) brightness(100%) contrast(103%)",
                             }}
                             className="h-full w-full object-cover object-center p-2"
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
-                            alt=""
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.Dino.icon}`}
+                            alt="s"
                           />
                         </div>
                         <div className="flex flex-col items-start justify-start leading-snug">
@@ -672,6 +790,10 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           <Submit disabled={props.loading} className="rw-button rw-button-blue">
             Save
           </Submit>
+
+          {/* <button className="rw-button rw-button-gray" onClick={props.onCancel}>
+            Cancel
+          </button> */}
         </div>
       </Form>
     </div>

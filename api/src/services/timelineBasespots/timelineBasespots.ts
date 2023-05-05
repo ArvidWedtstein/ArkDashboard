@@ -8,7 +8,7 @@ import { db } from "src/lib/db";
 
 export const timelineBasespots: QueryResolvers["timelineBasespots"] = () => {
   return db.timelineBasespot.findMany({
-    orderBy: { start_date: "asc" },
+    orderBy: { start_date: "desc" },
   });
 };
 
@@ -23,6 +23,9 @@ export const timelineBasespot: QueryResolvers["timelineBasespot"] = ({
 export const createTimelineBasespot: MutationResolvers["createTimelineBasespot"] =
   ({ input }) => {
     return db.timelineBasespot.create({
+      include: {
+        TimelineBasespotRaid: true,
+      },
       data: input,
     });
   };
@@ -41,7 +44,6 @@ export const deleteTimelineBasespot: MutationResolvers["deleteTimelineBasespot"]
       where: { id },
     });
   };
-
 export const raidTimelineBasespot: MutationResolvers["raidTimelineBasespot"] =
   ({ id, input }) => {
     // db.timelineBasespotDino.update({
@@ -83,5 +85,10 @@ export const TimelineBasespot: TimelineBasespotRelationResolvers = {
     return db.timelineBasespot
       .findUnique({ where: { id: root?.id } })
       .TimelineBasespotDino();
+  },
+  TimelineBasespotRaid: (_obj, { root }) => {
+    return db.timelineBasespot
+      .findUnique({ where: { id: root?.id } })
+      .TimelineBasespotRaid();
   },
 };

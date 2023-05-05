@@ -8,19 +8,55 @@ import { db } from "src/lib/db";
 
 export const itemsPage = ({
   page = 1,
+  search = "",
+  category = "",
+  type = "",
   items_per_page = 36,
 }: {
   page: number;
+  search?: string;
+  category?: string;
+  type?: string;
   items_per_page?: number;
 }) => {
   const offset = (page - 1) * items_per_page;
+  console.log(category);
   return {
     items: db.item.findMany({
       take: items_per_page,
       skip: offset,
       orderBy: { name: "asc" },
+      where: {
+        AND: [
+          { name: { startsWith: search, mode: "insensitive" } },
+          category
+            ? { category: { contains: category, mode: "insensitive" } }
+            : {},
+          type ? { type: { contains: type, mode: "insensitive" } } : {},
+        ],
+      },
     }),
-    count: db.item.count(),
+    // categories: db.item.findMany({
+    //   select: { category: true },
+    //   distinct: ["category"],
+    //   orderBy: { category: "asc" },
+    // }),
+    // types: db.item.findMany({
+    //   select: { type: true },
+    //   distinct: ["type"],
+    //   orderBy: { type: "asc" },
+    // }),
+    count: db.item.count({
+      where: {
+        AND: [
+          { name: { startsWith: search, mode: "insensitive" } },
+          category
+            ? { category: { contains: category, mode: "insensitive" } }
+            : {},
+          type ? { type: { contains: type, mode: "insensitive" } } : {},
+        ],
+      },
+    }),
   };
 };
 
@@ -50,12 +86,18 @@ export const item: QueryResolvers["item"] = ({ id }) => {
 
 export const createItem: MutationResolvers["createItem"] = ({ input }) => {
   return db.item.create({
+    include: {
+      ItemRecipe_ItemRecipe_crafted_item_idToItem: true,
+    },
     data: input,
   });
 };
-
+// https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#connect-or-create-a-record
 export const updateItem: MutationResolvers["updateItem"] = ({ id, input }) => {
   return db.item.update({
+    include: {
+      ItemRecipe_ItemRecipe_crafted_item_idToItem: true,
+    },
     data: input,
     where: { id },
   });

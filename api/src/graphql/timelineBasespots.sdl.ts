@@ -25,6 +25,7 @@ export const schema = gql`
     Map: Map
     timeline: Timeline!
     TimelineBasespotDino: [TimelineBasespotDino]!
+    TimelineBasespotRaid: [TimelineBasespotRaid]!
   }
 
   type Query {
@@ -52,6 +53,7 @@ export const schema = gql`
     raid_comment: String
     latitude: Float
     longitude: Float
+    TimelineBasespotRaid: JSON
   }
 
   input UpdateTimelineBasespotInput {
@@ -74,6 +76,7 @@ export const schema = gql`
     raid_comment: String
     latitude: Float
     longitude: Float
+    TimelineBasespotRaid: JSON
   }
   input RaidTimelineBasespotInput {
     end_date: DateTime

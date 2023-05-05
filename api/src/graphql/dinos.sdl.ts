@@ -3,21 +3,18 @@ export const schema = gql`
     id: String!
     created_at: DateTime
     name: String!
-    synonyms: [String]!
+    synonyms: String
     description: String
     taming_notice: String
     can_destroy: [String]!
-    immobilized_by: [String]!
     base_stats: JSON
-    gather_eff: JSON
     exp_per_kill: Float
     fits_through: [String]!
     egg_min: Float
     egg_max: Float
     tdps: Float
     eats: [String]!
-    maturation_time: String
-    weight_reduction: JSON
+    maturation_time: Float
     incubation_time: Float
     affinity_needed: Float
     aff_inc: Float
@@ -28,7 +25,7 @@ export const schema = gql`
     food_consumption_mult: Float
     disable_ko: Boolean
     violent_tame: Boolean
-    taming_bonus_attr: Float
+    taming_ineffectiveness: Float
     disable_food: Boolean
     disable_mult: Boolean
     admin_note: String
@@ -50,6 +47,11 @@ export const schema = gql`
     saddle_id: BigInt
     icon: String
     image: String
+    multipliers: JSON
+    baby_food_consumption_mult: Float
+    gestation_time: Float
+    mating_cooldown_min: BigInt
+    mating_cooldown_max: BigInt
     Item: Item
     DinoStat: [DinoStat]!
     TimelineBasespotDino: [TimelineBasespotDino]!
@@ -62,27 +64,24 @@ export const schema = gql`
   type Query {
     dinos: [Dino!]! @skipAuth
     dino(id: String!): Dino @skipAuth
-    dinosPage(page: Int): DinosPage @skipAuth
+    dinosPage(page: Int, search: String, category: String): DinosPage @skipAuth
   }
 
   input CreateDinoInput {
     created_at: DateTime
     name: String!
-    synonyms: [String]!
+    synonyms: String
     description: String
     taming_notice: String
     can_destroy: [String]!
-    immobilized_by: [String]!
     base_stats: JSON
-    gather_eff: JSON
     exp_per_kill: Float
     fits_through: [String]!
     egg_min: Float
     egg_max: Float
     tdps: Float
     eats: [String]!
-    maturation_time: String
-    weight_reduction: JSON
+    maturation_time: Float
     incubation_time: Float
     affinity_needed: Float
     aff_inc: Float
@@ -93,7 +92,7 @@ export const schema = gql`
     food_consumption_mult: Float
     disable_ko: Boolean
     violent_tame: Boolean
-    taming_bonus_attr: Float
+    taming_ineffectiveness: Float
     disable_food: Boolean
     disable_mult: Boolean
     admin_note: String
@@ -115,27 +114,29 @@ export const schema = gql`
     saddle_id: BigInt
     icon: String
     image: String
+    multipliers: JSON
+    baby_food_consumption_mult: Float
+    gestation_time: Float
+    mating_cooldown_min: BigInt
+    mating_cooldown_max: BigInt
     DinoStat: JSON
   }
 
   input UpdateDinoInput {
     created_at: DateTime
     name: String
-    synonyms: [String]!
+    synonyms: String
     description: String
     taming_notice: String
     can_destroy: [String]!
-    immobilized_by: [String]!
     base_stats: JSON
-    gather_eff: JSON
     exp_per_kill: Float
     fits_through: [String]!
     egg_min: Float
     egg_max: Float
     tdps: Float
     eats: [String]!
-    maturation_time: String
-    weight_reduction: JSON
+    maturation_time: Float
     incubation_time: Float
     affinity_needed: Float
     aff_inc: Float
@@ -146,7 +147,7 @@ export const schema = gql`
     food_consumption_mult: Float
     disable_ko: Boolean
     violent_tame: Boolean
-    taming_bonus_attr: Float
+    taming_ineffectiveness: Float
     disable_food: Boolean
     disable_mult: Boolean
     admin_note: String
@@ -168,7 +169,11 @@ export const schema = gql`
     saddle_id: BigInt
     icon: String
     image: String
-    DinoStat: JSON
+    multipliers: JSON
+    baby_food_consumption_mult: Float
+    gestation_time: Float
+    mating_cooldown_min: BigInt
+    mating_cooldown_max: BigInt
   }
 
   type Mutation {

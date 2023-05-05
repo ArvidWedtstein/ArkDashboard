@@ -1,6 +1,8 @@
 import { parseJWT, Decoded, DbAuthSession } from "@redwoodjs/api";
 import { AuthenticationError, ForbiddenError } from "@redwoodjs/graphql-server";
 import { db } from "./db";
+import type { Profile as PrismaUser } from "@prisma/client";
+import { Context } from "@redwoodjs/graphql-server/dist/functions/types";
 /**
  * Represents the user attributes returned by the decoding the
  * Authentication provider's JWT together with an optional list of roles.
@@ -35,24 +37,22 @@ type RedwoodUser = Record<string, any> & {
  *   context information about the invocation such as IP Address
  * @returns RedwoodUser
  */
+
 export const getCurrentUser = async (
   decoded: Decoded
 ): Promise<RedwoodUser | null> => {
   try {
-    if (!decoded) {
-      return null;
-    }
+    // const currentUser =
+    //   await db.$queryRaw`SELECT * FROM auth."users" WHERE id::text = ${decoded.sub};`;
 
-    const { roles, appMetaData } = parseJWT({ decoded });
     const { sub, role } = decoded;
-
     let user = await db.profile.findUnique({
+      // include: { role_profile_role_idTorole: true },
       where: { id: sub.toString() },
     });
-
     if (user) {
       let role_id = user.role_id;
-      return await { id: sub, ...user, role, roles: [role_id], ...decoded };
+      return { id: sub, ...user, role, roles: [role_id], ...decoded };
     }
 
     return { ...decoded };

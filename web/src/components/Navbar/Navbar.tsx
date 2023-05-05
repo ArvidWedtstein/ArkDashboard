@@ -12,13 +12,13 @@ import {
 
 const Navbar = () => {
   const { currentUser, isAuthenticated } = useAuth();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const [title, setTitle] = useState(pathname.split("/")[1]);
 
   useRouterState();
 
   useEffect(() => {
-    setTitle(capitalize(pathname.split("/")[1]));
+    setTitle(pathname.split("/")[1]);
   }, [pathname]);
 
   const { ref, isComponentVisible, setIsComponentVisible } =
@@ -33,16 +33,16 @@ const Navbar = () => {
       <div className="relative flex w-full items-center justify-between py-4 px-6">
         <div className="flex flex-grow items-center">
           <span className=" relative h-1 w-6 rounded bg-[#1f1c2e] dark:bg-white"></span>
-          <p className="mx-8 text-xl font-semibold leading-6 dark:text-white">
+          <p className="mx-8 text-xl font-semibold capitalize leading-6 dark:text-white">
             <span className={`lg:inline-block ${!!title ? "hidden" : ""}`}>
               ArkDashboard
             </span>
             {title && <span className="mx-2 hidden lg:inline-block"> - </span>}
             {title ? `${title}` : ""}
           </p>
-          <div className="hidden h-10 w-full max-w-md items-center justify-between overflow-hidden rounded-3xl bg-gray-300 pr-3 text-[#1f1c2e] dark:bg-gray-700 dark:text-[#ffffffcc] md:flex">
+          <div className="hidden h-10 w-full max-w-md items-center justify-between overflow-hidden rounded-3xl bg-gray-300 pr-3 text-[#1f1c2e] dark:bg-zinc-700 dark:text-[#ffffffcc] md:flex">
             <input
-              className="h-full flex-1 border-none bg-gray-300 px-5 text-base text-black outline-none placeholder:text-[#1f1c2e] placeholder:opacity-60 dark:bg-gray-700 dark:text-white dark:placeholder:text-[#ffffffcc]"
+              className="h-full flex-1 border-none bg-gray-300 px-5 text-base text-black outline-none placeholder:text-[#1f1c2e] placeholder:opacity-60 dark:bg-zinc-700 dark:text-white dark:placeholder:text-[#ffffffcc]"
               type="text"
               placeholder="Search"
               id="search"
@@ -80,14 +80,14 @@ const Navbar = () => {
                       ""
                     )
                   )}`
-                ]()}
+                ](search ? { id: new URLSearchParams(search).get("id") } : {})}
                 title={`New ${singularize(
                   capitalizeSentence(title.split("-").join(" ")).replace(
                     " ",
                     ""
                   )
                 )}`}
-                className="flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
+                className="flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

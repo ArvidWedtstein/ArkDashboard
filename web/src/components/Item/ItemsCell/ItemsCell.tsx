@@ -1,38 +1,14 @@
-import type { FindItems } from "types/graphql";
+import type { FindItems, FindItemsVariables } from "types/graphql";
 
 import { Link, routes } from "@redwoodjs/router";
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Items from "src/components/Item/Items";
 import Pagination from "src/components/Util/Pagination/Pagination";
-import argitems from "../../../../public/arkitems.json";
 
-// export const QUERY = gql`
-//   query FindItems {
-//     items {
-//       id
-//       created_at
-//       name
-//       description
-//       image
-//       max_stack
-//       weight
-//       engram_points
-//       crafting_time
-//       req_level
-//       yields
-//       recipe
-//       stats
-//       color
-//       crafted_in
-//       effects
-//       type
-//     }
-//   }
-// `
 export const QUERY = gql`
-  query FindItems($page: Int) {
-    itemsPage(page: $page) {
+  query FindItems($page: Int, $search: String, $category: String, $type: String) {
+    itemsPage(page: $page, search: $search, category: $category, type: $type) {
       items {
         id
         created_at
@@ -47,7 +23,6 @@ export const QUERY = gql`
         yields
         stats
         color
-        crafted_in
         category
         type
       }
@@ -55,42 +30,45 @@ export const QUERY = gql`
     }
   }
 `;
-export const beforeQuery = ({ page }) => {
+export const beforeQuery = ({ page, search, category, type }) => {
   page = parseInt(page) ? parseInt(page, 10) : 1;
-
-  return { variables: { page } };
+  // to prevent caching: { variables: { page, search, category, type }, fetchPolicy: 'no-cache', pollInterval: 2500 }
+  return { variables: { page, search, category, type }, fetchPolicy: 'cache-and-network' };
 };
 
+
 export const Loading = () => (
-  <div className="border-pea-300 mx-auto w-full rounded-md border p-4 shadow">
-    <div className="flex animate-pulse space-x-4">
-      <div className="bg-pea-600 h-10 w-10 rounded-full"></div>
-      <div className="flex-1 space-y-6 py-1">
-        <div className="bg-pea-600 h-2 rounded"></div>
-        <div className="space-y-3">
-          <div className="grid grid-cols-3 gap-4">
-            <div className="bg-pea-600 col-span-2 h-2 rounded"></div>
-            <div className="bg-pea-600 col-span-1 h-2 rounded"></div>
-          </div>
-          <div className="bg-pea-600 h-2 rounded"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <Items loading={true} itemsPage={{ count: 0, items: [] }} />
+  // <div className="border-pea-300 mx-auto w-full rounded-md border p-4 shadow">
+  //   <div className="flex animate-pulse space-x-4">
+  //     <div className="bg-pea-600 h-10 w-10 rounded-full"></div>
+  //     <div className="flex-1 space-y-6 py-1">
+  //       <div className="bg-pea-600 h-2 rounded"></div>
+  //       <div className="space-y-3">
+  //         <div className="grid grid-cols-3 gap-4">
+  //           <div className="bg-pea-600 col-span-2 h-2 rounded"></div>
+  //           <div className="bg-pea-600 col-span-1 h-2 rounded"></div>
+  //         </div>
+  //         <div className="bg-pea-600 h-2 rounded"></div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // </div>
 );
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">
-      {"No items yet. "}
-      <Link to={routes.newItem()} className="rw-link">
-        {"Create one?"}
-      </Link>
-    </div>
+    <Items itemsPage={{ count: 0, items: [] }} />
+    // <div className="rw-text-center">
+    //   {"No items yet. "}
+    //   <Link to={routes.newItem()} className="rw-link">
+    //     {"Create one?"}
+    //   </Link>
+    // </div>
   );
 };
 
-export const Failure = ({ error }: CellFailureProps) => (
+export const Failure = ({ error, variables }: CellFailureProps<FindItemsVariables>) => (
   <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
     <svg
       className="h-12 w-12 fill-current"
@@ -103,23 +81,22 @@ export const Failure = ({ error }: CellFailureProps) => (
       <p className="text-lg font-bold leading-snug">
         Some unexpected shit happend
       </p>
+      {/* <p className="text-lg font-bold leading-snug">
+       Couldn't load data for {variables.category} on page {variables.page}
+      </p> */}
       <p className="text-sm">{error?.message}</p>
     </div>
   </div>
 );
 
 export const Success = ({ itemsPage }: CellSuccessProps<FindItems>) => {
+
   return itemsPage.count > 0 ? (
     <>
       <Items itemsPage={itemsPage} />
-      <Pagination count={itemsPage.count} route={"items"} />
+      <Pagination count={itemsPage.count} route={"items"} itemsPerPage={36} />
     </>
   ) : (
     Empty()
   );
 };
-
-// export const Success = ({ items }: CellSuccessProps<FindItems>) => {
-
-//   return <Items items={items} />
-// }

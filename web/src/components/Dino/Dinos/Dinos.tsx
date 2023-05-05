@@ -1,4 +1,4 @@
-import { Link, routes } from "@redwoodjs/router";
+import { Link, navigate, parseSearch, routes, useParams } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import {
@@ -7,7 +7,9 @@ import {
   FormError,
   Label,
   RWGqlError,
+  SearchField,
   SelectField,
+  Submit,
   TextField,
 } from "@redwoodjs/forms";
 import { useEffect, useMemo, useState } from "react";
@@ -15,6 +17,8 @@ import { useEffect, useMemo, useState } from "react";
 import { QUERY } from "src/components/Dino/DinosCell";
 import debounce from "lodash.debounce";
 import type { DeleteDinoMutationVariables, FindDinos } from "types/graphql";
+import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
+import { replaceParams } from "@redwoodjs/router/dist/util";
 
 const DELETE_DINO_MUTATION = gql`
   mutation DeleteDinoMutation($id: String!) {
@@ -45,22 +49,11 @@ const DinosList = ({ dinosPage }: FindDinos) => {
       deleteDino({ variables: { id } });
     }
   };
-  // const { dinos } = dinosPage;
-  const [dinos, setDinos] = useState([]);
-  const [search, setSearch] = useState("");
-  useEffect(() => {
-    setDinos(dinosPage.dinos);
-  }, [dinosPage.dinos]);
-  const handlechange = (e) => {
-    setSearch(e.target.value);
-  };
-  const handleSelect = (e) => {
-    const value = e.target.value;
-    if (!value) return setDinos(dinosPage.dinos);
-    setDinos(
-      dinosPage.dinos.filter((d) => (d.type ? d.type.includes(value) : ""))
-    );
-  };
+
+  let { search, category } = useParams();
+  const onSubmit = ((e) => {
+    navigate(routes.dinos({ ...parseSearch(Object.fromEntries(Object.entries(e).filter(([_, v]) => v != "")) as any), page: 1 }))
+  })
   const types = {
     boss: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/5/50/Cowardice.png",
     flyer:
@@ -72,43 +65,61 @@ const DinosList = ({ dinosPage }: FindDinos) => {
     water:
       "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/9/9d/Water.png",
   };
-  const debouncedChangeHandler = useMemo(() => debounce(handlechange, 500), []);
+  // const debouncedChangeHandler = useMemo(() => debounce(handlechange, 500), []);
   return (
     <section className="">
-      <Form className="my-4 flex">
-        <label htmlFor="category" className="sr-only">
-          Choose a category
-        </label>
-        <SelectField
-          name="category"
-          className="rw-input z-10 inline-flex flex-shrink-0 items-center rounded-none rounded-l-lg"
-          onChange={handleSelect}
-          defaultValue={"default"}
-        >
-          <option value="default">Choose a category</option>
-          <option value="boss">Boss</option>
-          <option value="flyer">Flyer</option>
-          <option value="water">Water</option>
-          <option value="amphibious">Amphibious</option>
-          <option value="ground">Ground</option>
-        </SelectField>
+      <Form className="my-4 flex w-auto" onSubmit={onSubmit}>
+        <nav className="flex flex-row space-x-2 justify-center w-full">
+          <div className="rw-button-group !space-x-0 !w-full">
+            <Label name="category" className="sr-only">
+              Choose a category
+            </Label>
+            <SelectField
+              name="category"
+              className="rw-input !rounded-l-lg mt-0"
+              defaultValue={category}
+              validation={{
+                required: false,
+                shouldUnregister: true,
+                validate: {
+                  matchesInitialValue: (value) => {
+                    return (
+                      value !== 'Choose a category' ||
+                      'Select an Option'
+                    )
+                  },
+                },
+              }}
+            >
+              <option value="">Choose a category</option>
+              <option value="boss">Boss</option>
+              <option value="flyer">Flyer</option>
+              <option value="water">Water</option>
+              <option value="amphibious">Amphibious</option>
+              <option value="ground">Ground</option>
+            </SelectField>
 
-        <label htmlFor="dino" className="sr-only">
-          Search for dino
-        </label>
-        <TextField
-          name="dino"
-          className="rw-input w-full rounded-none !rounded-r-lg"
-          placeholder="Search for dino"
-          onInput={(event) => {
-            debouncedChangeHandler(event);
-          }}
-        />
+            <Label name="search" className="sr-only">
+              Search for dino
+            </Label>
+            <SearchField
+              name="search"
+              className="rw-input mt-0 !w-full"
+              placeholder="Search..."
+              defaultValue={search}
+              validation={{
+                shouldUnregister: true,
+              }}
+            />
+            <Submit className="rw-button rw-button-gray rounded-l-none">
+              Search
+            </Submit>
+          </div>
+        </nav>
       </Form>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-5">
-        {dinos
-          .filter((d) => d.name.toLowerCase().includes(search.toLowerCase()))
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-5">
+        {dinosPage.dinos
           .map((dino) => (
             <Link
               key={`dino-${dino.id}`}
@@ -117,7 +128,8 @@ const DinosList = ({ dinosPage }: FindDinos) => {
             >
               <div className="flex h-full w-full flex-col items-start justify-between justify-items-stretch">
                 <div className="relative mb-6 h-32 w-32 rounded-full border bg-gradient-to-br from-zinc-700 to-zinc-700">
-                  <img
+                  <ImageContainer
+                    loading="lazy"
                     className="h-auto max-h-full"
                     src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
                     onError={(e) => {
@@ -127,10 +139,23 @@ const DinosList = ({ dinosPage }: FindDinos) => {
                         "justify-end"
                       );
                     }}
-                    // sizes="1rem"
-                    // src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/render/image/public/arkimages/dodo.png?width=500&quality=75`}
-                    // onLoad={() => console.log(`loaded ${dino.name}`)}
+                  // caption={dino.name}
+                  // sizes="1rem"
+                  // src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/render/image/public/arkimages/dodo.png?width=500&quality=75`}
+                  // onLoad={() => console.log(`loaded ${dino.name}`)}
                   />
+                  {/* <img
+                    className="h-auto max-h-full"
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
+                    onError={(e) => {
+                      e.currentTarget.parentElement.hidden = true;
+                      e.currentTarget.parentElement.parentElement.classList.replace(
+                        "justify-between",
+                        "justify-end"
+                      );
+                    }}
+
+                  /> */}
                 </div>
                 <p className="tracking-wide subpixel-antialiased">
                   {dino.name}

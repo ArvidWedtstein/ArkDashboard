@@ -28,10 +28,16 @@ export const schema = gql`
     items: [Item!]!
     count: Int!
   }
+
   type Query {
     items: [Item!]! @skipAuth
     item(id: BigInt!): Item @skipAuth
-    itemsPage(page: Int): ItemsPage @skipAuth
+    itemsPage(
+      page: Int
+      search: String
+      category: String
+      type: String
+    ): ItemsPage @skipAuth
     itemsByCategory(category: String!): ItemsPage @skipAuth
   }
 
@@ -48,9 +54,9 @@ export const schema = gql`
     yields: Float
     stats: JSON
     color: String
-    crafted_in: [String]!
     type: String
     category: String!
+    ItemRecipe_ItemRecipe_crafted_item_idToItem: JSON
   }
 
   input UpdateItemInput {
@@ -66,9 +72,9 @@ export const schema = gql`
     yields: Float
     stats: JSON
     color: String
-    crafted_in: [String]!
     type: String
     category: String
+    ItemRecipe_ItemRecipe_crafted_item_idToItem: JSON
   }
 
   type Mutation {

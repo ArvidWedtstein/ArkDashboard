@@ -14,7 +14,6 @@ export const QUERY = gql`
       timeline_id
       start_date
       end_date
-      basespot_id
       tribe_name
       map
       server
@@ -31,9 +30,17 @@ export const QUERY = gql`
         name
       }
       basespot {
+        id
         name
         latitude
         longitude
+      }
+      TimelineBasespotRaid {
+        tribe_name
+        base_survived
+        raid_comment
+        raid_start
+        raid_end
       }
       TimelineBasespotDino {
         name
@@ -62,24 +69,25 @@ export const QUERY = gql`
         Dino {
           name
           base_stats
+          icon
         }
       }
     }
   }
 `;
 
-export const afterQuery = (data) => {
-  return data.timelineBasespot.basespot_id !== null
-    ? {
-      ...data,
-      timelineBasespot: {
-        ...data.timelineBasespot,
-        latitude: data.timelineBasespot.basespot.latitude,
-        longitude: data.timelineBasespot.basespot.longitude,
-      },
-    }
-    : data;
-};
+// export const afterQuery = (data) => {
+//   return data.timelineBasespot.basespot_id !== null
+//     ? {
+//       ...data,
+//       timelineBasespot: {
+//         ...data.timelineBasespot,
+//         latitude: data.timelineBasespot.basespot.latitude,
+//         longitude: data.timelineBasespot.basespot.longitude,
+//       },
+//     }
+//     : data;
+// };
 
 export const Loading = () => <div>Loading...</div>;
 

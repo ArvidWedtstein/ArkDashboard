@@ -1,4 +1,5 @@
-const { items } = require("./web/public/arkitems.json");
+// const dino = require("./web/public/arkdinos.json");
+const dino = require("./values.json");
 // const d = require("./web/public/maps.json");
 // const d2 = require("./web/public/f.json");
 // const lootcrates = require("./web/public/lootcratesItemId.json");
@@ -8,15 +9,40 @@ const { items } = require("./web/public/arkitems.json");
 // let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
 console.time("normal");
 
-// const crates = lootcrates.lootCrates.map((x) => {
-//   x.sets.forEach((y) => {
-//     y.entries.forEach((z) => {
-//       if (z.items.length == 2 && isNaN(z.items[0][0])) {
-//         z.items = [z.items];
-//       }
-//     });
-//   });
-//   return x;
+const dinos = dino.species.map((x) => {
+  return `
+  UPDATE public."Dino"
+  SET taming_ineffectiveness = ${x?.taming?.tamingIneffectiveness || 0},
+  baby_food_consumption_mult = ${x?.taming?.babyFoodConsumptionMult || 0},
+  gestation_time = ${x?.breeding?.gestationTime || 0},
+  maturation_time = ${x?.breeding?.maturationTime || "maturation_time"},
+  incubation_time = ${x?.breeding?.incubationTime || "incubation_time"},
+  mating_cooldown_min = ${x?.breeding?.matingCooldownMin || 0},
+  mating_cooldown_max = ${x?.breeding?.matingCooldownMax || 0},
+  egg_min = ${x?.breeding?.eggTempMin || "egg_min"},
+  egg_max = ${x?.breeding?.eggTempMax || "egg_max"}
+  WHERE name LIKE '${x.name}';`;
+
+  return {
+    name: x.name,
+    taming_ineffectiveness: x?.taming?.tamingIneffectiveness || 0,
+    baby_food_consumption_mult: x?.taming?.babyFoodConsumptionMult || 0,
+    gestation_time: x?.breeding?.gestationTime || 0,
+    maturation_time: x?.breeding?.maturationTime || 0,
+    incubation_time: x?.breeding?.incubationTime || 0,
+    mating_cooldown_min: x?.breeding?.matingCooldownMin || 0,
+    mating_cooldown_max: x?.breeding?.matingCooldownMax || 0,
+    egg_min: x?.breeding?.eggTempMin || 0,
+    egg_max: x?.breeding?.eggTempMax || 0,
+  };
+});
+// const crates = Object.entries(dino).map(([k, v]) => {
+//   let d = v.mult
+//     ? `UPDATE public."Dino" SET multipliers = '[${JSON.stringify(
+//         v.mult || ""
+//       )}]' WHERE name LIKE '${v.name}';`
+//     : "";
+//   return d;
 // });
 
 // For downloading images
@@ -79,19 +105,19 @@ let map = {
 //   return "";
 //   // return `INSERT INTO public."DinoEffWeight" ("dino_id", "item_id", "value", "is_gather_eff")`;
 // });
-const dd = items
-  .filter((x) => x.name.includes("Saddle"))
-  .map((x) => {
-    return `
-  UPDATE public."Item"
-  SET type = '${x.type}'
-  WHERE id = ${x.id};`;
-  });
+// const dd = items
+//   .filter((x) => x.name.includes("Saddle"))
+//   .map((x) => {
+//     return `
+//   UPDATE public."Item"
+//   SET type = '${x.type}'
+//   WHERE id = ${x.id};`;
+//   });
 require("fs").writeFile(
   `insert.txt`,
   [
     // `INSERT INTO public."Item" ("crafted_item_id", "item_id", "amount") VALUES`,
-    ...dd,
+    ...dinos,
   ].join("\n"),
   (error) => {
     if (error) {
@@ -99,7 +125,6 @@ require("fs").writeFile(
     }
   }
 );
-return;
 return;
 console.timeEnd("normal");
 const g = {

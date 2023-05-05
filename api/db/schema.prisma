@@ -34,6 +34,7 @@ model TimelineBasespot {
   Map                  Map?                   @relation(fields: [map], references: [id], onDelete: NoAction, onUpdate: NoAction)
   timeline             Timeline               @relation(fields: [timeline_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   TimelineBasespotDino TimelineBasespotDino[]
+  TimelineBasespotRaid TimelineBasespotRaid[]
 }
 
 model Basespot {
@@ -77,7 +78,7 @@ model Profile {
 }
 
 model Role {
-  id                               String       @id(map: "roles_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                               String       @id(map: "roles_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name                             String
   created_by                       String?      @db.Uuid
   permissions                      permission[]
@@ -86,7 +87,7 @@ model Role {
 }
 
 model Timeline {
-  id               String             @id(map: "timeline_pkey") @unique(map: "timeline_id_key") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id               String             @id(map: "timeline_pkey") @unique(map: "timeline_id_key") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at       DateTime?          @default(now()) @db.Timestamptz(6)
   updated_at       DateTime?          @db.Timestamptz(6)
   created_by       String             @db.Uuid
@@ -106,7 +107,7 @@ model Tribe {
 }
 
 model Message {
-  id         String    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   profile_id String    @default(dbgenerated("auth.uid()")) @db.Uuid
   content    String
   created_at DateTime? @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
@@ -114,24 +115,21 @@ model Message {
 }
 
 model Dino {
-  id                             String                 @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                             String                 @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at                     DateTime?              @default(now()) @db.Timestamptz(6)
   name                           String
   synonyms                       String?
   description                    String?
   taming_notice                  String?
   can_destroy                    String[]
-  immobilized_by                 String[]
   base_stats                     Json?
-  gather_eff                     Json?
   exp_per_kill                   Float?                 @default(0)
   fits_through                   String[]
   egg_min                        Float?                 @default(0)
   egg_max                        Float?                 @default(0)
   tdps                           Float?                 @default(0)
   eats                           String[]
-  maturation_time                String?                @default("0")
-  weight_reduction               Json?
+  maturation_time                Float?                 @default(0)
   incubation_time                Float?                 @default(0)
   affinity_needed                Float?                 @default(0)
   aff_inc                        Float?                 @default(0)
@@ -142,14 +140,14 @@ model Dino {
   food_consumption_mult          Float?                 @default(0)
   disable_ko                     Boolean?               @default(false)
   violent_tame                   Boolean?               @default(false)
-  taming_bonus_attr              Float?                 @default(0)
+  taming_ineffectiveness         Float?                 @default(0)
   disable_food                   Boolean?               @default(false)
   disable_mult                   Boolean?               @default(false)
   admin_note                     String?
   base_points                    Float?
   non_violent_food_affinity_mult Float?
-  non_violent_food_rate_mult     Float?
-  taming_interval                Float?
+  non_violent_food_rate_mult     Float?                 @default(0)
+  taming_interval                Float?                 @default(0)
   base_taming_time               Float?
   disable_tame                   Boolean?               @default(false)
   x_variant                      Boolean?               @default(false)
@@ -164,6 +162,11 @@ model Dino {
   saddle_id                      BigInt?
   icon                           String?
   image                          String?
+  multipliers                    Json?
+  baby_food_consumption_mult     Float?                 @default(0)
+  gestation_time                 Float?                 @default(0)
+  mating_cooldown_min            BigInt?                @default(0)
+  mating_cooldown_max            BigInt?                @default(0)
   Item                           Item?                  @relation(fields: [saddle_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   DinoStat                       DinoStat[]
   TimelineBasespotDino           TimelineBasespotDino[]
@@ -197,33 +200,19 @@ model Item {
 }
 
 model Map {
-  id                BigInt             @id @default(autoincrement())
-  created_at        DateTime?          @default(now()) @db.Timestamptz(6)
-  name              String?
-  loot_crates       Json?
-  oil_veins         Json?
-  water_veins       Json?
-  wyvern_nests      Json?
-  ice_wyvern_nests  Json?
-  gas_veins         Json?
-  deinonychus_nests Json?
-  charge_nodes      Json?
-  plant_z_nodes     Json?
-  drake_nests       Json?
-  glitches          Json?
-  magmasaur_nests   Json?
-  poison_trees      Json?
-  mutagen_bulbs     Json?
-  carniflora        Json?
-  notes             Json?
-  img               String?
-  Basespot          Basespot[]
-  Lootcrate         Lootcrate[]
-  TimelineBasespot  TimelineBasespot[]
+  id               BigInt             @id @default(autoincrement())
+  created_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  name             String?
+  img              String?
+  Basespot         Basespot[]
+  Lootcrate        Lootcrate[]
+  MapCoordinate    MapCoordinate[]
+  MapNote          MapNote[]
+  TimelineBasespot TimelineBasespot[]
 }
 
 model Lootcrate {
-  id                 String         @id(map: "Lootcrates_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                 String         @id(map: "Lootcrates_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at         DateTime?      @default(now()) @db.Timestamptz(6)
   updated_at         DateTime?      @default(now()) @db.Timestamptz(6)
   blueprint          String
@@ -240,7 +229,7 @@ model Lootcrate {
 }
 
 model LootcrateSet {
-  id                String              @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at        DateTime?           @default(now()) @db.Timestamptz(6)
   lootcrate_id      String              @db.Uuid
   name              String?
@@ -252,7 +241,7 @@ model LootcrateSet {
 }
 
 model LootcrateSetEntry {
-  id                    String                  @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                    String                  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at            DateTime?               @default(now()) @db.Timestamptz(6)
   set_id                String                  @db.Uuid
   name                  String?
@@ -264,7 +253,7 @@ model LootcrateSetEntry {
 }
 
 model DinoStat {
-  id         String       @id(map: "DinoEffWeight_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id         String       @id(map: "DinoEffWeight_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at DateTime?    @default(now()) @db.Timestamptz(6)
   updated_at DateTime?    @default(now()) @db.Timestamptz(6)
   dino_id    String       @db.Uuid
@@ -279,7 +268,7 @@ model DinoStat {
 }
 
 model ItemRecipe {
-  id                                     String    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                                     String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at                             DateTime? @default(now()) @db.Timestamptz(6)
   updated_at                             DateTime? @default(now()) @db.Timestamptz(6)
   item_id                                BigInt
@@ -295,7 +284,7 @@ model ItemRecipe {
 }
 
 model LootcrateSetEntryItem {
-  id                String            @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at        DateTime?         @default(now()) @db.Timestamptz(6)
   updated_at        DateTime?         @default(now()) @db.Timestamptz(6)
   entry_id          String            @db.Uuid
@@ -306,7 +295,7 @@ model LootcrateSetEntryItem {
 }
 
 model TimelineBasespotDino {
-  id                  String           @id(map: "TimelineDino_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                  String           @id(map: "TimelineDino_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at          DateTime?        @default(now()) @db.Timestamptz(6)
   updated_at          DateTime?        @default(now()) @db.Timestamptz(6)
   timelinebasespot_id BigInt
@@ -336,6 +325,49 @@ model TimelineBasespotDino {
   wild_torpor         Float?           @default(0)
   Dino                Dino             @relation(fields: [dino_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   TimelineBasespot    TimelineBasespot @relation(fields: [timelinebasespot_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model TimelineBasespotRaid {
+  id                  String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at          DateTime         @unique @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime?        @default(now()) @db.Timestamptz(6)
+  timelinebasespot_id BigInt
+  raid_start          DateTime?        @default(now()) @db.Timestamptz(6)
+  raid_end            DateTime?        @db.Timestamptz(6)
+  raid_comment        String?
+  attacker_players    String?
+  tribe_name          String?
+  base_survived       Boolean          @default(false)
+  defenders           String?
+  TimelineBasespot    TimelineBasespot @relation(fields: [timelinebasespot_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model MapCoordinate {
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+  latitude   Float?
+  longitude  Float?
+  x          Float?
+  y          Float?
+  z          Float?
+  type       String?
+  map_id     BigInt
+  Map        Map       @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model MapNote {
+  id         String    @id(map: "MapNotes_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+  map_id     BigInt
+  latitude   Float     @default(0)
+  longitude  Float     @default(0)
+  x          Float?
+  y          Float?
+  z          Float?
+  note_index BigInt?
+  Map        Map       @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum permission {
@@ -372,4 +404,5 @@ enum dinostattype {
   immobilized_by
   fits_through
   drops
+  saddle
 }

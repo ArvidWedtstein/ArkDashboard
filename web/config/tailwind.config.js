@@ -19,6 +19,8 @@ module.exports = {
         "fly-out": "flyOut 0.3s ease-out",
         "pop-up":
           "popUp 0.5s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
+        "fill-up":
+          "fillProgess 2s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
       },
       boxShadow: {
         boxContent:
@@ -51,11 +53,6 @@ module.exports = {
       },
       //https://uicolors.app/create
       colors: {
-        dark: "#000000",
-        primary: "#1D2026", //"#14213d",
-        secondary: "#EF4135",
-        accent: "#fca311", // EF4135
-        text: "ffffff",
         pea: {
           50: "#f1fcf5",
           100: "#e0f8e8",

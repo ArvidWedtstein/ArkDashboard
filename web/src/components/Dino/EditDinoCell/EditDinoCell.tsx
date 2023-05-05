@@ -17,9 +17,7 @@ export const QUERY = gql`
       description
       taming_notice
       can_destroy
-      immobilized_by
       base_stats
-      gather_eff
       exp_per_kill
       fits_through
       egg_min
@@ -27,7 +25,6 @@ export const QUERY = gql`
       tdps
       eats
       maturation_time
-      weight_reduction
       incubation_time
       affinity_needed
       aff_inc
@@ -38,7 +35,7 @@ export const QUERY = gql`
       food_consumption_mult
       disable_ko
       violent_tame
-      taming_bonus_attr
+      taming_ineffectiveness
       disable_food
       disable_mult
       admin_note
@@ -82,9 +79,7 @@ const UPDATE_DINO_MUTATION = gql`
       description
       taming_notice
       can_destroy
-      immobilized_by
       base_stats
-      gather_eff
       exp_per_kill
       fits_through
       egg_min
@@ -92,7 +87,6 @@ const UPDATE_DINO_MUTATION = gql`
       tdps
       eats
       maturation_time
-      weight_reduction
       incubation_time
       affinity_needed
       aff_inc
@@ -103,7 +97,7 @@ const UPDATE_DINO_MUTATION = gql`
       food_consumption_mult
       disable_ko
       violent_tame
-      taming_bonus_attr
+      taming_ineffectiveness
       disable_food
       disable_mult
       admin_note

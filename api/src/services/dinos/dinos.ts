@@ -11,9 +11,13 @@ export const dinos: QueryResolvers["dinos"] = () => {
 };
 export const dinosPage = ({
   page = 1,
+  search = "",
+  category = "",
   dinos_per_page = 36,
 }: {
   page: number;
+  search?: string;
+  category?: string;
   dinos_per_page?: number;
 }) => {
   const offset = (page - 1) * dinos_per_page;
@@ -22,47 +26,41 @@ export const dinosPage = ({
       take: dinos_per_page,
       skip: offset,
       orderBy: { name: "asc" },
+      where: {
+        OR: [
+          { name: { contains: search, mode: "insensitive" } },
+          { synonyms: { contains: search, mode: "insensitive" } },
+          category ? { type: { has: category } } : {},
+        ],
+      },
     }),
-    count: db.dino.count(),
+    count: db.dino.count({
+      where: {
+        OR: [
+          { name: { startsWith: search, mode: "insensitive" } },
+          { synonyms: { contains: search, mode: "insensitive" } },
+          category ? { type: { has: category } } : {},
+        ],
+      },
+    }),
   };
 };
+
 export const dino: QueryResolvers["dino"] = ({ id }) => {
   return db.dino.findUnique({
     where: { id },
   });
 };
 
-export const createDino:
-  | MutationResolvers["createDino"]
-  | MutationResolvers["createDinoStat"] = ({ input }) => {
-  // input.DinoStat = [
-  //   {
-  //     type: "gather_efficiency",
-  //     value: 1,
-  //     item_id: 8,
-  //   },
-  // ];
-
+export const createDino: MutationResolvers["createDino"] = ({ input }) => {
   return db.dino.create({
-    // data: input,
-    data: {
-      ...input,
-      DinoStat: {
-        create: input?.DinoStat,
-      },
-    },
+    data: input,
   });
 };
 
 export const updateDino: MutationResolvers["updateDino"] = ({ id, input }) => {
   return db.dino.update({
     data: input,
-    // data: {
-    //   ...input,
-    //   DinoStat: {
-    //     connect: { id: input.DinoStat?.connect?.id },
-    //   },
-    // },
     where: { id },
   });
 };

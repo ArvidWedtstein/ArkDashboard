@@ -21,7 +21,6 @@ import { truncate } from "src/lib/formatters";
 import { useCellCacheContext, useQuery } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useLazyQuery } from "@apollo/client";
-import Table from "src/components/Util/Table/Table";
 
 type FormDino = NonNullable<EditDinoById["dino"]>;
 
@@ -49,9 +48,8 @@ const ITEMQUERY = gql`
   }
 `;
 const DinoForm = (props: DinoFormProps) => {
-
   const [loadItems, { called, loading, data }] = useLazyQuery(ITEMQUERY, {
-    variables: { category: 'Resource' },
+    variables: { category: "Resource" },
     // onCompleted: (data) => {
     //   console.log(data);
     //   toast.success('Items loaded');
@@ -59,7 +57,7 @@ const DinoForm = (props: DinoFormProps) => {
     onError: (error) => {
       console.log(error);
       toast.error(error.message);
-    }
+    },
   });
 
   useEffect(() => {
@@ -119,7 +117,7 @@ const DinoForm = (props: DinoFormProps) => {
   const { register, control } = useForm({
     defaultValues: {
       attack: [],
-      DinoStat: [],
+      "DinoStat.create": [],
       wr: [],
     },
   });
@@ -129,7 +127,7 @@ const DinoForm = (props: DinoFormProps) => {
     remove: removeStat,
   } = useFieldArray({
     control,
-    name: "DinoStat", // the name of the field array in your form data
+    name: "DinoStat.create", // the name of the field array in your form data
   });
 
   const {
@@ -149,12 +147,14 @@ const DinoForm = (props: DinoFormProps) => {
 
   const onSubmit = (data: FormDino) => {
     data.eats = eats.map((f) => f.id.toString());
-    console.log(data)
+    data.drops = ["12"]
+    console.log(data);
+    // delete data.immobilized_by
     // Test Dino Object
     // const d = {
     //   name: "test",
     //   description: "test",
-    //   synonyms: ["test"],
+    //   synonyms: "test",
     //   can_destroy: ["t"],
     //   fits_through: ["381"],
     //   immobilized_by: ["t"],
@@ -162,13 +162,13 @@ const DinoForm = (props: DinoFormProps) => {
     //   drops: ["11"],
     //   type: ["Ground"],
     //   eats: ["11"],
-    //   DinoStat: [
-    //     {
-    //       type: "gather_efficiency",
-    //       value: 5,
-    //       item_id: 8,
-    //     },
-    //   ],
+    //   // DinoStat: [
+    //   //   {
+    //   //     type: "gather_efficiency",
+    //   //     value: 5,
+    //   //     item_id: 8,
+    //   //   },
+    //   // ],
     // };
     // props.onSave(d, props?.dino?.id);
     props.onSave(data, props?.dino?.id);
@@ -321,7 +321,7 @@ const DinoForm = (props: DinoFormProps) => {
           <div>
             <div>
               <Label
-                name="gather_eff"
+                name="DinoStat.create.0.item_id"
                 className="rw-label"
                 errorClassName="rw-label rw-label-error"
               >
@@ -330,59 +330,63 @@ const DinoForm = (props: DinoFormProps) => {
 
               {statFields
                 // .filter((ge) => ge.type === "gather_efficiency")
-                .map((ge, index) => (
-                  ge.type === "gather_efficiency" && (<div
-                    className="rw-button-group justify-start"
-                    role="group"
-                    key={`ge-${index}`}
-                  >
-                    <Lookup
-                      {...register(`DinoStat.${index}.item_id`, {
-                        required: true,
-                      })}
-                      className="!mt-0 !rounded-none !rounded-l-md"
-                      options={data.itemsByCategory.items.map((item) => (
-                        {
-                          type: item.type,
-                          label: item.name,
-                          value: item.id,
-                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                        }
-                      ))}
-                      search={true}
-                      defaultValue={ge.item_id}
-                      filterFn={(item, search) => {
-                        return item.label
-                          .toLowerCase()
-                          .includes(search.toLowerCase());
-                      }}
-                    />
-                    <NumberField
-                      {...register(`DinoStat.${index}.value`, {
-                        required: true,
-                        min: 0,
-                        max: 5,
-                        valueAsNumber: true,
-                      })}
-                      className="rw-input mt-0 max-w-[7rem]"
-                      defaultValue={ge.value}
-                    />
-                    <TextField
-                      {...register(`DinoStat.${index}.type`, {
-                        required: false,
-                      } as const)}
-                      className="rw-input mt-0 hidden max-w-[7rem]"
-                      defaultValue={ge.type}
-                    />
-                    <button
-                      type="button"
-                      className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
-                      onClick={() => removeStat(index)}
-                    >
-                      Remove
-                    </button>
-                  </div>)
-                ))}
+                .map(
+                  (ge, index) =>
+                    ge.type === "gather_efficiency" && (
+                      <div
+                        className="rw-button-group justify-start"
+                        role="group"
+                        key={`ge-${index}`}
+                      >
+                        <Lookup
+                          {...register(`DinoStat.create.${index}.item_id`, {
+                            required: true,
+                          })}
+                          className="!mt-0 !rounded-none !rounded-l-md"
+                          options={data.itemsByCategory.items.map((item) => ({
+                            type: item.type,
+                            label: item.name,
+                            value: item.id,
+                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                          }))}
+                          search={true}
+                          defaultValue={ge.item_id}
+                          filterFn={(item, search) => {
+                            return item.label
+                              .toLowerCase()
+                              .includes(search.toLowerCase());
+                          }}
+                        />
+                        <NumberField
+                          {...register(`DinoStat.create.${index}.value`, {
+                            required: true,
+                            min: 0,
+                            max: 5,
+                            valueAsNumber: true,
+                          })}
+                          className="rw-input mt-0 max-w-[7rem]"
+                          defaultValue={ge.value}
+                        />
+                        <TextField
+                          {...register(`DinoStat.create.${index}.type`, {
+                            required: false,
+                          } as const)}
+                          className="rw-input mt-0 hidden max-w-[7rem]"
+                          defaultValue={ge.type}
+                        />
+                        <button
+                          type="button"
+                          className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
+                          onClick={() => removeStat(index)}
+                        >
+                          Remove
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="rw-button-icon">
+                            <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+                          </svg>
+                        </button>
+                      </div>
+                    )
+                )}
               <div className="rw-button-group justify-start">
                 <button
                   type="button"
@@ -399,7 +403,7 @@ const DinoForm = (props: DinoFormProps) => {
                 </button>
               </div>
 
-              <FieldError name="gather_eff" className="rw-field-error" />
+              <FieldError name="DinoStat.create.0.item_id" className="rw-field-error" />
             </div>
             <div>
               <Label
@@ -412,55 +416,59 @@ const DinoForm = (props: DinoFormProps) => {
 
               {statFields
                 // .filter((stat) => stat.type === "weight_reduction")
-                .map((wr, index) => (
-                  wr.type === "weight_reduction" && (<div
-                    className="rw-button-group justify-start"
-                    role="group"
-                    key={`wr-${index}`}
-                  >
-                    <Lookup
-                      {...register(`DinoStat.${index}.item_id`)}
-                      className="!mt-0 !rounded-none !rounded-l-md"
-                      options={data.itemsByCategory.items.map((item) => (
-                        {
-                          type: item.type,
-                          label: item.name,
-                          value: item.id,
-                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                        }
-                      ))}
-                      search={true}
-                      defaultValue={wr.item_id}
-                      filterFn={(item, search) => {
-                        return item.label
-                          .toLowerCase()
-                          .includes(search.toLowerCase());
-                      }}
-                    />
-                    <NumberField
-                      {...register(`DinoStat.${index}.value`, {
-                        required: true,
-                        min: 0,
-                        max: 100,
-                        valueAsNumber: true,
-                      })}
-                      className="rw-input mt-0 max-w-[7rem]"
-                      defaultValue={wr.value}
-                    />
-                    <TextField
-                      {...register(`DinoStat.${index}.type`)}
-                      className="rw-input mt-0 hidden max-w-[7rem]"
-                      defaultValue={wr.type}
-                    />
-                    <button
-                      type="button"
-                      className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
-                      onClick={() => removeStat(index)}
-                    >
-                      Remove
-                    </button>
-                  </div>)
-                ))}
+                .map(
+                  (wr, index) =>
+                    wr.type === "weight_reduction" && (
+                      <div
+                        className="rw-button-group justify-start"
+                        role="group"
+                        key={`wr-${index}`}
+                      >
+                        <Lookup
+                          {...register(`DinoStat.create.${index}.item_id`)}
+                          className="!mt-0 !rounded-none !rounded-l-md"
+                          options={data.itemsByCategory.items.map((item) => ({
+                            type: item.type,
+                            label: item.name,
+                            value: item.id,
+                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                          }))}
+                          search={true}
+                          defaultValue={wr.item_id}
+                          filterFn={(item, search) => {
+                            return item.label
+                              .toLowerCase()
+                              .includes(search.toLowerCase());
+                          }}
+                        />
+                        <NumberField
+                          {...register(`DinoStat.create.${index}.value`, {
+                            required: true,
+                            min: 0,
+                            max: 100,
+                            valueAsNumber: true,
+                          })}
+                          className="rw-input mt-0 max-w-[7rem]"
+                          defaultValue={wr.value}
+                        />
+                        <TextField
+                          {...register(`DinoStat.create.${index}.type`)}
+                          className="rw-input mt-0 hidden max-w-[7rem]"
+                          defaultValue={wr.type}
+                        />
+                        <button
+                          type="button"
+                          className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
+                          onClick={() => removeStat(index)}
+                        >
+                          Remove
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="rw-button-icon">
+                            <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+                          </svg>
+                        </button>
+                      </div>
+                    )
+                )}
               <div className="rw-button-group justify-start">
                 <button
                   type="button"
@@ -553,22 +561,26 @@ const DinoForm = (props: DinoFormProps) => {
                   {
                     value: "t",
                     label: "Thatch",
-                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/thatch-wall.png",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/thatch-wall.png",
                   },
                   {
                     value: "w",
                     label: "Wood",
-                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/wooden-wall.png",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/wooden-wall.png",
                   },
                   {
                     value: "a",
                     label: "Adobe",
-                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/adobe-wall.png",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/adobe-wall.png",
                   },
                   {
                     value: "s",
                     label: "Stone",
-                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-wall.png",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-wall.png",
                   },
                   {
                     value: "g",
@@ -579,12 +591,14 @@ const DinoForm = (props: DinoFormProps) => {
                   {
                     value: "m",
                     label: "Metal",
-                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/metal-wall.png",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/metal-wall.png",
                   },
                   {
                     value: "tk",
                     label: "Tek",
-                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/tek-wall.png",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/tek-wall.png",
                   },
                 ]}
               />
@@ -594,7 +608,8 @@ const DinoForm = (props: DinoFormProps) => {
           </div>
           <div>
             <div>
-              <Label
+              {/* TODO: fix */}
+              {/* <Label
                 name="immobilized_by"
                 className="rw-label"
                 errorClassName="rw-label rw-label-error"
@@ -604,22 +619,27 @@ const DinoForm = (props: DinoFormProps) => {
 
               <CheckboxGroup
                 name="immobilized_by"
-                defaultValue={props.dino?.immobilized_by}
+                defaultValue={props.dino?.DinoStat.filter(
+                  (d) => d.type === "immobilized_by"
+                ).map((d) => d.item_id.toString())}
                 options={[
                   {
                     value: "733",
                     label: "Lasso",
-                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/lasso.png",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/lasso.png",
                   },
                   {
                     value: "1040",
                     label: "Bola",
-                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bola.png",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bola.png",
                   },
                   {
                     value: "725",
                     label: "Chain Bola",
-                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/chain-bola.png",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/chain-bola.png",
                   },
                   {
                     value: "785",
@@ -636,7 +656,8 @@ const DinoForm = (props: DinoFormProps) => {
                   {
                     value: "383",
                     label: "Bear Trap",
-                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bear-trap.png",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bear-trap.png",
                   },
                   {
                     value: "384",
@@ -647,7 +668,7 @@ const DinoForm = (props: DinoFormProps) => {
                 ]}
               />
 
-              <FieldError name="immobilized_by" className="rw-field-error" />
+              <FieldError name="immobilized_by" className="rw-field-error" /> */}
             </div>
           </div>
           <div>
@@ -685,7 +706,8 @@ const DinoForm = (props: DinoFormProps) => {
                   {
                     value: "da86d88a-3171-4fc9-b96d-79e8f59f1601",
                     label: "Griffin",
-                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_griffin.png",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_griffin.png",
                   },
                   {
                     value: "147922ce-912d-4ab6-b4b6-712a42a9d939",
@@ -708,12 +730,14 @@ const DinoForm = (props: DinoFormProps) => {
                   {
                     value: "7aec6bf6-357e-44ec-8647-3943ca34e666",
                     label: "Wyvern",
-                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_wyvern.png",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_wyvern.png",
                   },
                   {
                     value: "2b938227-61c2-4230-b7da-5d4d55f639ae",
                     label: "Quetzal",
-                    image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_quetzal.png",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_quetzal.png",
                   },
                   {
                     value: "b1d6f790-d15c-4813-a6c8-9e6f62fafb52",
@@ -794,7 +818,6 @@ const DinoForm = (props: DinoFormProps) => {
                 errorClassName="rw-input rw-input-error"
               />
 
-
               <FieldError name="ridable" className="rw-field-error" />
             </div>
           </div>
@@ -820,14 +843,16 @@ const DinoForm = (props: DinoFormProps) => {
 
               <Lookup
                 name="saddle_id"
-                options={data ? data.itemsByCategory.items.map((item) => (
-                  {
-                    type: item.type,
-                    label: item.name,
-                    value: item.id,
-                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                  }
-                )) : []}
+                options={
+                  data
+                    ? data.itemsByCategory.items.map((item) => ({
+                      type: item.type,
+                      label: item.name,
+                      value: item.id,
+                      image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                    }))
+                    : []
+                }
                 search={true}
                 defaultValue={props.dino?.saddle_id}
                 filterFn={(item, search) => {
@@ -837,16 +862,11 @@ const DinoForm = (props: DinoFormProps) => {
                 }}
               />
 
-              <FieldError
-                name="saddle_id"
-                className="rw-field-error"
-              />
+              <FieldError name="saddle_id" className="rw-field-error" />
               {/* )} */}
-
             </div>
           </div>
         </details>
-
 
         <Label
           name="base_stats"
@@ -945,66 +965,65 @@ const DinoForm = (props: DinoFormProps) => {
 
               {statFields
                 // .filter((ge) => ge.type === "drops")
-                .map((dr, index) => (
-                  dr.type === "drops" && (
-                    <div
-                      className="rw-button-group justify-start !mt-0"
-                      role="group"
-                      key={`drops-${index}`}
-                    >
-                      <Lookup
-                        {...register(`DinoStat.${index}.item_id`, {
-                          required: true,
-                        })}
-                        className="!mt-0 !rounded-none !rounded-l-md"
-                        options={data ? data.itemsByCategory.items.map((item) => (
-                          {
-                            type: item.type,
-                            label: item.name,
-                            value: item.id,
-                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                          }
-                        )) : []}
-                        search={true}
-                        defaultValue={dr.item_id}
-                        filterFn={(item, search) => {
-                          return item.label
-                            .toLowerCase()
-                            .includes(search.toLowerCase());
-                        }}
-                      />
-                      <TextField
-                        {...register(`DinoStat.${index}.value`, {
-                          required: false,
-                        })}
-                        emptyAs={null}
-                        className="rw-input mt-0 hidden max-w-[7rem]"
-                        defaultValue={dr.value}
-                      />
-                      <TextField
-                        {...register(`DinoStat.${index}.type`, {
-                          required: false,
-                        } as const)}
-                        className="rw-input mt-0 hidden max-w-[7rem]"
-                        defaultValue={dr.type}
-                      />
-                      <button
-                        type="button"
-                        title="Close"
-                        className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
-                        onClick={() => removeStat(index)}
+                .map(
+                  (dr, index) =>
+                    dr.type === "drops" && (
+                      <div
+                        className="rw-button-group !mt-0 justify-start"
+                        role="group"
+                        key={`drops-${index}`}
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 320 512"
-                          className="rw-button-icon w-4 fill-current"
+                        <Lookup
+                          {...register(`DinoStat.create.${index}.item_id`, {
+                            required: true,
+                          })}
+                          className="!mt-0 !rounded-none !rounded-l-md"
+                          options={
+                            data
+                              ? data.itemsByCategory.items.map((item) => ({
+                                type: item.type,
+                                label: item.name,
+                                value: item.id,
+                                image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                              }))
+                              : []
+                          }
+                          search={true}
+                          defaultValue={dr.item_id}
+                          filterFn={(item, search) => {
+                            return item.label
+                              .toLowerCase()
+                              .includes(search.toLowerCase());
+                          }}
+                        />
+                        <TextField
+                          {...register(`DinoStat.create.${index}.value`, {
+                            required: false,
+                          })}
+                          emptyAs={null}
+                          className="rw-input mt-0 hidden max-w-[7rem]"
+                          defaultValue={dr.value}
+                        />
+                        <TextField
+                          {...register(`DinoStat.create.${index}.type`, {
+                            required: false,
+                          } as const)}
+                          className="rw-input mt-0 hidden max-w-[7rem]"
+                          defaultValue={dr.type}
+                        />
+                        <button
+                          type="button"
+                          title="Close"
+                          className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
+                          onClick={() => removeStat(index)}
                         >
-                          <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
-                        </svg>
-                      </button>
-                    </div>
-                  )
-                ))}
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="rw-button-icon">
+                            <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+                          </svg>
+                        </button>
+                      </div>
+                    )
+                )}
               <div className="rw-button-group justify-start">
                 <button
                   type="button"
@@ -1292,7 +1311,7 @@ const DinoForm = (props: DinoFormProps) => {
             </div>
             <div>
               <Label
-                name="taming_bonus_attr"
+                name="taming_ineffectiveness"
                 className="rw-label"
                 errorClassName="rw-label rw-label-error"
               >
@@ -1300,15 +1319,15 @@ const DinoForm = (props: DinoFormProps) => {
               </Label>
 
               <TextField
-                name="taming_bonus_attr"
-                defaultValue={props.dino?.taming_bonus_attr}
+                name="taming_ineffectiveness"
+                defaultValue={props.dino?.taming_ineffectiveness}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
                 emptyAs={0}
                 validation={{ valueAsNumber: true }}
               />
 
-              <FieldError name="taming_bonus_attr" className="rw-field-error" />
+              <FieldError name="taming_ineffectiveness" className="rw-field-error" />
             </div>
           </div>
         </details>
@@ -1730,8 +1749,6 @@ const DinoForm = (props: DinoFormProps) => {
 
         <FieldError name="base_points" className="rw-field-error" />
 
-
-
         <Label
           name="x_variant"
           className="rw-label"
@@ -1804,6 +1821,9 @@ const DinoForm = (props: DinoFormProps) => {
               onClick={() => removeAttack(index)}
             >
               Remove
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="rw-button-icon">
+                <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+              </svg>
             </button>
           </div>
         ))}
@@ -1835,7 +1855,6 @@ const DinoForm = (props: DinoFormProps) => {
         /> */}
 
         <FieldError name="attack" className="rw-field-error" />
-
 
         <Label
           name="type"

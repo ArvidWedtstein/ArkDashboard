@@ -20,17 +20,20 @@ interface MapPickerProps extends Omit<InputFieldProps, "name"> {
   onChanges?: (value: { latitude: number; longitude: number }) => void;
 }
 
-const MapPicker = (props: MapPickerProps) => {
-  let {
-    className,
-    style,
-    map = "theisland",
-    valueProp = {
-      latitude: 0,
-      longitude: 0,
-    },
-    onChanges,
-  } = props;
+const MapPicker = ({
+  className,
+  style,
+  map = "theisland",
+  valueProp = {
+    latitude: 0,
+    longitude: 0,
+  },
+  onChanges,
+  validation = {
+    disabled: false
+  }
+}: MapPickerProps) => {
+
   const maps = {
     theisland:
       "https://ark.gamepedia.com/media/thumb/3/3e/The_Island_Map.jpg/600px-The_Island_Map.jpg",
@@ -83,8 +86,7 @@ const MapPicker = (props: MapPickerProps) => {
       circle.setAttributeNS(
         null,
         "transform",
-        `translate(${5 * valueProp.longitude + 500 / 100}, ${
-          5 * valueProp.latitude
+        `translate(${5 * valueProp.longitude + 500 / 100}, ${5 * valueProp.latitude
         })`
       );
       svgRef.current.querySelector(
@@ -92,7 +94,7 @@ const MapPicker = (props: MapPickerProps) => {
       ).innerHTML = `${valueProp.latitude}, ${valueProp.longitude}`;
       setPos(valueProp);
     }
-  }, []);
+  }, [valueProp]);
 
   const updatePosition = useCallback(
     (evt) => {
@@ -110,9 +112,8 @@ const MapPicker = (props: MapPickerProps) => {
         `translate(${cursorpt.x}, ${cursorpt.y})`
       );
 
-      svgRef.current.querySelector("text#coords").innerHTML = `${
-        Math.round(((cursorpt.y - 5) / 5) * 100) / 100
-      }, ${Math.round(((cursorpt.x - 5) / 5) * 100) / 100}`;
+      svgRef.current.querySelector("text#coords").innerHTML = `${Math.round(((cursorpt.y - 5) / 5) * 100) / 100
+        }, ${Math.round(((cursorpt.x - 5) / 5) * 100) / 100}`;
 
       setPos({
         latitude: Math.round(((cursorpt.y - 5) / 5) * 100) / 100,
@@ -136,7 +137,7 @@ const MapPicker = (props: MapPickerProps) => {
         height={500}
         viewBox={`0 0 ${500} ${500}`}
         xmlns="http://www.w3.org/2000/svg"
-        onClick={updatePosition}
+        onClick={!validation.disabled ? updatePosition : () => { }}
         ref={svgRef}
       >
         <image

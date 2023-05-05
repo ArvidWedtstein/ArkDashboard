@@ -1,6 +1,5 @@
-import clsx from 'clsx';
-import React, { useState, useEffect, useRef } from 'react';
-
+import clsx from "clsx";
+import React, { useState, useEffect, useRef } from "react";
 
 const Counter = ({ startNum, endNum, duration = 1000, className = "" }) => {
   const [count, setCount] = useState(startNum);
@@ -18,7 +17,7 @@ const Counter = ({ startNum, endNum, duration = 1000, className = "" }) => {
 
     // Add the animation class when the count value changes
     if (countValueRef.current) {
-      countValueRef.current.classList.add('animate-countup');
+      countValueRef.current.classList.add("animate-countup");
     }
   }, [startNum, endNum, duration]);
 
@@ -26,22 +25,24 @@ const Counter = ({ startNum, endNum, duration = 1000, className = "" }) => {
     // Remove the animation class when the count value animation completes
     const onAnimationEnd = () => {
       if (countValueRef.current) {
-        countValueRef.current.classList.remove('animate-countup');
+        countValueRef.current.classList.remove("animate-countup");
       }
     };
-    countValueRef.current?.addEventListener('animationend', onAnimationEnd);
+    countValueRef.current?.addEventListener("animationend", onAnimationEnd);
 
     return () => {
-      countValueRef.current?.removeEventListener('animationend', onAnimationEnd);
+      countValueRef.current?.removeEventListener(
+        "animationend",
+        onAnimationEnd
+      );
     };
   }, [count]);
 
   return (
-
     <div
       ref={countValueRef}
       className={clsx(className, {
-        'animate-countup': endNum !== count,
+        "animate-countup": endNum !== count,
       })}
     >
       {count}
@@ -51,6 +52,5 @@ const Counter = ({ startNum, endNum, duration = 1000, className = "" }) => {
     </div>
   );
 };
-
 
 export default Counter;

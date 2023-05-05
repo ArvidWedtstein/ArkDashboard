@@ -305,7 +305,7 @@ To make the integration even more seamless, Redwood augments Jest with database 
 - [x] Add a map system
 - [ ] Testing
 - [ ] Github CI Testing
-- [ ] Fix readme
+- [x] Fix readme
 
 <!--https://redwoodjs.com/docs/how-to/test-in-github-actions-->
 

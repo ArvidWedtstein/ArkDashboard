@@ -26,9 +26,7 @@ describe('dinos', () => {
     const result = await createDino({
       input: {
         name: 'String',
-        synonyms: 'String',
         can_destroy: 'String',
-        immobilized_by: 'String',
         fits_through: 'String',
         eats: 'String',
         drops: 'String',
@@ -38,9 +36,7 @@ describe('dinos', () => {
     })
 
     expect(result.name).toEqual('String')
-    expect(result.synonyms).toEqual('String')
     expect(result.can_destroy).toEqual('String')
-    expect(result.immobilized_by).toEqual('String')
     expect(result.fits_through).toEqual('String')
     expect(result.eats).toEqual('String')
     expect(result.drops).toEqual('String')

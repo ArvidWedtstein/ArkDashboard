@@ -7,8 +7,8 @@ import Dinos from "src/components/Dino/Dinos";
 import Pagination from "src/components/Util/Pagination/Pagination";
 // query FindDinos($page: Int) {
 export const QUERY = gql`
-  query FindDinos($page: Int) {
-    dinosPage(page: $page) {
+  query FindDinos($page: Int, $search: String, $category: String) {
+    dinosPage(page: $page, search: $search, category: $category) {
       dinos {
         id
         created_at
@@ -17,9 +17,7 @@ export const QUERY = gql`
         description
         taming_notice
         can_destroy
-        immobilized_by
         base_stats
-        gather_eff
         exp_per_kill
         fits_through
         egg_min
@@ -27,7 +25,6 @@ export const QUERY = gql`
         tdps
         eats
         maturation_time
-        weight_reduction
         incubation_time
         affinity_needed
         aff_inc
@@ -38,7 +35,7 @@ export const QUERY = gql`
         food_consumption_mult
         disable_ko
         violent_tame
-        taming_bonus_attr
+        taming_ineffectiveness
         disable_food
         disable_mult
         admin_note
@@ -65,9 +62,9 @@ export const QUERY = gql`
   }
 `;
 
-export const beforeQuery = ({ page }) => {
+export const beforeQuery = ({ page, search, category }) => {
   page = parseInt(page) ? parseInt(page, 10) : 1;
-  return { variables: { page } };
+  return { variables: { page, search, category } };
 };
 
 export const Loading = () => (

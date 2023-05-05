@@ -42,6 +42,12 @@ export const Map: MapRelationResolvers = {
   Lootcrate: (_obj, { root }) => {
     return db.map.findUnique({ where: { id: root?.id } }).Lootcrate()
   },
+  MapCoordinate: (_obj, { root }) => {
+    return db.map.findUnique({ where: { id: root?.id } }).MapCoordinate()
+  },
+  MapNote: (_obj, { root }) => {
+    return db.map.findUnique({ where: { id: root?.id } }).MapNote()
+  },
   TimelineBasespot: (_obj, { root }) => {
     return db.map.findUnique({ where: { id: root?.id } }).TimelineBasespot()
   },

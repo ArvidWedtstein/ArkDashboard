@@ -1,4 +1,5 @@
 import type { APIGatewayProxyEvent, Context } from "aws-lambda";
+import type { Profile as PrismaUser } from "@prisma/client";
 
 import {
   DbAuthHandler,
@@ -11,35 +12,36 @@ export const handler = async (
   event: APIGatewayProxyEvent,
   context: Context
 ) => {
-  const forgotPasswordOptions: DbAuthHandlerOptions["forgotPassword"] = {
-    // handler() is invoked after verifying that a user was found with the given
-    // username. This is where you can send the user an email with a link to
-    // reset their password. With the default dbAuth routes and field names, the
-    // URL to reset the password will be:
-    //
-    // https://example.com/reset-password?resetToken=${user.resetToken}
-    //
-    // Whatever is returned from this function will be returned from
-    // the `forgotPassword()` function that is destructured from `useAuth()`
-    // You could use this return value to, for example, show the email
-    // address in a toast message so the user will know it worked and where
-    // to look for the email.
-    handler: (user) => {
-      return user;
-    },
+  const forgotPasswordOptions: DbAuthHandlerOptions<PrismaUser>["forgotPassword"] =
+    {
+      // handler() is invoked after verifying that a user was found with the given
+      // username. This is where you can send the user an email with a link to
+      // reset their password. With the default dbAuth routes and field names, the
+      // URL to reset the password will be:
+      //
+      // https://example.com/reset-password?resetToken=${user.resetToken}
+      //
+      // Whatever is returned from this function will be returned from
+      // the `forgotPassword()` function that is destructured from `useAuth()`
+      // You could use this return value to, for example, show the email
+      // address in a toast message so the user will know it worked and where
+      // to look for the email.
+      handler: (user) => {
+        return user;
+      },
 
-    // How long the resetToken is valid for, in seconds (default is 24 hours)
-    expires: 60 * 60 * 24,
+      // How long the resetToken is valid for, in seconds (default is 24 hours)
+      expires: 60 * 60 * 24,
 
-    errors: {
-      // for security reasons you may want to be vague here rather than expose
-      // the fact that the email address wasn't found (prevents fishing for
-      // valid email addresses)
-      usernameNotFound: "Username not found",
-      // if the user somehow gets around client validation
-      usernameRequired: "Username is required",
-    },
-  };
+      errors: {
+        // for security reasons you may want to be vague here rather than expose
+        // the fact that the email address wasn't found (prevents fishing for
+        // valid email addresses)
+        usernameNotFound: "Username not found",
+        // if the user somehow gets around client validation
+        usernameRequired: "Username is required",
+      },
+    };
 
   const loginOptions: DbAuthHandlerOptions["login"] = {
     // handler() is called after finding the user that matches the
@@ -136,7 +138,7 @@ export const handler = async (
       return true;
     },
     handler: ({ username, hashedPassword, salt, userAttributes }) => {
-      return db.users.create({
+      return db.user.create({
         data: {
           email: username,
           hashedPassword: hashedPassword,

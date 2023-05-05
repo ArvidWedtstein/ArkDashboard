@@ -10,14 +10,9 @@ export const QUERY = gql`
     timelines {
       id
       created_at
-      updated_at
-      created_by
       Profile {
         id
         full_name
-      }
-      TimelineBasespot {
-        id
       }
     }
   }

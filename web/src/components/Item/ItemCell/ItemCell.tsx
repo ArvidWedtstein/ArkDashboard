@@ -20,8 +20,17 @@ export const QUERY = gql`
       yields
       stats
       color
-      crafted_in
       type
+      LootcrateSetEntryItem {
+        LootcrateSetEntry {
+          LootcrateSet {
+            Lootcrate {
+              id
+              name
+            }
+          }
+        }
+      }
       DinoStat {
         Dino {
           id

@@ -134,6 +134,12 @@ a {
   @apply rounded-lg py-3 px-8 text-base;
 }
 
+.rw-button:has(.rw-button-icon) {
+  @apply inline-flex items-center justify-center;
+}
+.rw-button .rw-button-icon {
+  @apply ml-2 w-5 fill-current text-xl leading-5;
+}
 /*
 // ----------------------------
 // Button Variants
@@ -156,7 +162,7 @@ a {
   @apply border border-stone-700 dark:border-gray-500;
 }
 .rw-button.rw-button-gray-outline:hover {
-  @apply border-stone-800 dark:border-stone-600;
+  @apply border-stone-800 ring-1 ring-stone-700 dark:border-stone-600 dark:ring-stone-500;
 }
 .rw-button.rw-button-gray-outline:focus {
   @apply outline-none ring-4 ring-stone-300 dark:ring-stone-800;
@@ -167,7 +173,7 @@ a {
   @apply border border-red-700 text-red-700 dark:border-red-500 dark:text-red-500;
 }
 .rw-button.rw-button-red-outline:hover {
-  @apply border-red-800 dark:border-red-600;
+  @apply border-red-800 ring-1 ring-red-500 dark:border-red-500 dark:ring-red-600;
 }
 .rw-button.rw-button-red-outline:focus {
   @apply outline-none ring-4 ring-red-300 dark:ring-red-800;
@@ -228,12 +234,6 @@ a {
   @apply outline-none ring-4 ring-gray-300 dark:ring-zinc-800;
 }
 
-.rw-button.rw-button-icon {
-  @apply inline-flex items-center;
-}
-.rw-button-icon {
-  @apply mr-1 text-xl leading-5;
-}
 .rw-button-group {
   @apply my-3 flex justify-center rounded-md;
 }
@@ -258,7 +258,7 @@ a {
 .rw-input {
   /* @apply block mt-2 w-full p-2 bg-white border border-gray-200 rounded outline-none; */
   /* old color style dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-300 dark:focus:ring-stone-200 */
-  @apply mt-1 block rounded-lg border border-gray-300 bg-gray-200 px-4 py-2.5 text-sm text-gray-900 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 disabled:cursor-not-allowed contrast-more:border-black contrast-more:placeholder-black dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white dark:contrast-more:placeholder-white;
+  @apply mt-1 block rounded-lg border border-gray-500 bg-zinc-300 px-4 py-2.5 text-sm text-gray-900 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 disabled:cursor-not-allowed disabled:text-gray-400 contrast-more:border-black contrast-more:placeholder-black dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white dark:contrast-more:placeholder-white;
 }
 .rw-input option {
   @apply appearance-none border-b border-black focus:outline-none dark:border-white;
@@ -365,7 +365,7 @@ a {
   @apply bg-red-600 text-white;
 }
 .rw-text-center {
-  @apply text-center;
+  @apply text-center text-black dark:text-white;
 }
 .rw-login-container {
   @apply mx-auto my-16 flex w-96 flex-wrap items-center justify-center;
@@ -386,9 +386,6 @@ a {
   @apply opacity-40 brightness-[1.4] contrast-0 hue-rotate-[116deg] saturate-[.28] sepia;
 }
 
-.rw-check-input {
-  @apply absolute hidden overflow-hidden;
-}
 .rw-check-input:checked + .rw-check-tile {
   @apply border-pea-500 text-pea-500 shadow-lg;
 }
@@ -398,9 +395,7 @@ a {
 .rw-check-input:checked + .rw-check-tile span {
   @apply text-black dark:text-white;
 }
-.rw-check-tile {
-  @apply relative flex h-28 w-28 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-zinc-500 bg-zinc-600 shadow transition-all duration-150;
-}
+
 .rw-check-tile:hover::before:not(.disabled) {
   @apply scale-100 stroke-stone-100 text-stone-600 opacity-100 dark:text-stone-100;
 }
@@ -502,5 +497,14 @@ a {
   }
   to {
     transform: scale(1);
+  }
+}
+
+@keyframes fillProgress {
+  0% {
+    transform: scale(1, 0);
+  }
+  100% {
+    transform: scale(1, 1);
   }
 }

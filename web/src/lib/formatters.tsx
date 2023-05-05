@@ -42,8 +42,7 @@ export const nmbFormat = Intl.NumberFormat("en", {
 export const formatNumberWithThousandSeparator = (num: number): string => {
   const formattedNum = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return formattedNum;
-}
-
+};
 
 export const truncate = (value: string | number, maxlength: number = 150) => {
   let output = value?.toString() ?? "";
@@ -134,7 +133,20 @@ export const dynamicSort = (property: string) => {
     return result * sortOrder;
   };
 };
-
+/**
+ *
+ * @param a bytes
+ * @param b decimals
+ * @returns formatted byte number
+ */
+export const formatBytes = (a, b = 2) => {
+  if (!+a) return "0 Bytes";
+  const c = 0 > b ? 0 : b,
+    d = Math.floor(Math.log(a) / Math.log(1024));
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+  }`;
+};
 /**
  *
  * @param objects
@@ -180,10 +192,10 @@ export const getBaseMaterials = (
     // TODO: Replace this shit
     let c =
       item.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0 &&
-        item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-          .Item_ItemRecipe_crafting_stationToItem != null
+      item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
+        .Item_ItemRecipe_crafting_stationToItem != null
         ? item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-          .Item_ItemRecipe_crafting_stationToItem.id
+            .Item_ItemRecipe_crafting_stationToItem.id
         : null;
 
     // Group by crafting_station somehow
@@ -517,10 +529,15 @@ export const singularize = (word: string) => {
  * @param {number} count - The number of items.
  * @param {string} noun - The noun to be pluralized.
  * @param {string} [suffix='s'] - The suffix to be added to the noun.
+ * @param {boolean} [includeCount=true] - The suffix to be added to the noun.
  * @return {string} - The pluralized string.
  */
-export const pluralize = (count: number, noun: string, suffix = "s"): string =>
-  `${count} ${noun}${count !== 1 ? suffix : ""}`;
+export const pluralize = (
+  count: number,
+  noun: string,
+  suffix = "s",
+  includeCount: boolean = true
+): string => `${includeCount ? count : ""} ${noun}${count !== 1 ? suffix : ""}`;
 
 /**
  * @description Returns the difference between two dates
@@ -530,10 +547,12 @@ export const pluralize = (count: number, noun: string, suffix = "s"): string =>
  */
 export const getDateDiff = (date1: Date, date2: Date) => {
   const diff = Math.abs(date1.getTime() - date2.getTime());
+  const years = Math.round(diff / (1000 * 3600 * 24 * 365));
   const days = Math.floor(diff / (1000 * 3600 * 24));
   const hours = Math.floor((diff / (1000 * 3600)) % 24);
   const minutes = Math.floor((diff / 1000 / 60) % 60);
   return {
+    years,
     days,
     hours,
     minutes,

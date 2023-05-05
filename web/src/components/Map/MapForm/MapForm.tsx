@@ -112,22 +112,7 @@ const MapForm = (props: MapFormProps) => {
   // <DeepPartial<FormMap>>
   const { register, control, setValue } = useForm();
 
-  const { fields: crateFields, append: appendCrate, remove: removeCrate } = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormContext)
-    name: 'loot_crates', // the name of the field array in your form data
-  });
-  const { fields: oilFields, append: appendOil, remove: removeOil } = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormContext)
-    name: 'oil_veins', // the name of the field array in your form data
-  });
-  const { fields: waterFields, append: appendWater, remove: removeWater } = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormContext)
-    name: 'water_veins', // the name of the field array in your form data
-  });
-  const { fields: wyvernNestFields, append: appendWyvernNest, remove: removeWyvernNest } = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormContext)
-    name: 'wyvern_nests', // the name of the field array in your form data
-  });
+
 
   const onSubmit = (data: FormMap) => {
     props.onSave(data, props?.map?.id)
@@ -177,8 +162,6 @@ const MapForm = (props: MapFormProps) => {
 
         <FieldError name="img" className="rw-field-error" />
 
-        <MapInput name="loot_crates" register={register} control={control} />
-
         <MapInput name="oil_veins" register={register} control={control} />
 
         <MapInput name="water_veins" register={register} control={control} />
@@ -201,11 +184,7 @@ const MapForm = (props: MapFormProps) => {
 
         <MapInput name="magmasaur_nests" register={register} control={control} />
 
-        <MapInput name="poison_trees" register={register} control={control} />
-
         <MapInput name="mutagen_bulbs" register={register} control={control} />
-
-        <MapInput name="carniflora" register={register} control={control} />
 
         <MapInput name="notes" register={register} control={control} />
 

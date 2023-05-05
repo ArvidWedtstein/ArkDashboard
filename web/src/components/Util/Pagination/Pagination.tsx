@@ -1,6 +1,6 @@
 import { Link, routes, useParams } from "@redwoodjs/router";
 import clsx from "clsx";
-import { useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 
 const Pagination = ({
   count,
@@ -13,9 +13,16 @@ const Pagination = ({
   itemsPerPage?: number;
   pageLimit?: number;
 }) => {
-  const items = [];
-  let { page } = useParams();
-
+  // const items = [];
+  let params = useParams();
+  const { page = "1" } = params
+  // const addSearchParams = (url: any, params: any = {}) =>
+  //   new URL(
+  //     `${url.origin}${url.pathname}?${new URLSearchParams([
+  //       ...Array.from(url?.searchParams?.entries()),
+  //       ...Object.entries(params),
+  //     ])}`
+  //   );
 
   // useEffect(() => {
   //   if (!!!page || isNaN(parseInt(page))) {
@@ -41,9 +48,10 @@ const Pagination = ({
   // }, [pageLimit]);
 
 
-  const getPaginationGroup = () => {
+  const getPaginationGroup = useCallback(() => {
     const paginationGroup = [];
     let pages = Math.round(count / itemsPerPage);
+
     if (pages <= pageLimit) {
       for (let i = 1; i <= pages; i++) {
         paginationGroup.push(i);
@@ -67,21 +75,25 @@ const Pagination = ({
     }
 
     return paginationGroup;
-  };
+  }, [itemsPerPage, count, page, route]);
 
 
   type direction = "next" | "prev";
-  const changePage = (dir: direction): number => {
+  const changePage = useCallback((dir: direction): number => {
+
     if (!!!page || isNaN(parseInt(page))) return 1;
     if (dir === "prev") {
       return parseInt(page) - (parseInt(page) > 1 ? 1 : 0);
     } else {
+      // console.log('next', page, itemsPerPage, Math.ceil(count / itemsPerPage))
+      // console.log(parseInt(page) +
+      //   (parseInt(page) <= Math.ceil(count / itemsPerPage) ? 1 : 0))
       return (
         parseInt(page) +
         (parseInt(page) < Math.ceil(count / itemsPerPage) ? 1 : 0)
       );
     }
-  };
+  }, [page]);
 
   return (
     <>
@@ -90,9 +102,10 @@ const Pagination = ({
           <ul className="list-style-none mt-5 flex w-full justify-end space-x-2">
             <li className="">
               <Link
-                className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200"
-                to={routes[route]({ page: changePage("prev") })}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200 aria-disabled:pointer-events-none aria-disabled:hidden"
+                to={routes[route]({ ...params, page: changePage("prev") })}
                 aria-label="Previous"
+                aria-disabled={count / itemsPerPage <= 1}
               >
                 <span aria-hidden="true" className="sr-only">Previous</span>
                 <svg
@@ -108,11 +121,10 @@ const Pagination = ({
                 </svg>
               </Link>
             </li>
-            {/* {items} */}
             {getPaginationGroup().map((item, index) => (
-              <li key={index}>
+              <li key={`page-${index}`}>
                 <Link
-                  to={routes[route]({ page: index + 1 })}
+                  to={routes[route]({ ...params, page: index + 1 })}
                   className={clsx("inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200", {
                     "border-2 border-gray-800 outline dark:border-stone-200": parseInt(page) === index + 1,
                     "border-gray-500 dark:border-gray-200": parseInt(page) !== index + 1,
@@ -125,9 +137,10 @@ const Pagination = ({
             ))}
             <li className="">
               <Link
-                className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200"
-                to={routes[route]({ page: changePage("next") })}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200 aria-disabled:pointer-events-none aria-disabled:hidden"
+                to={routes[route]({ ...params, page: changePage("next") })}
                 aria-label="Next"
+                aria-disabled={count / itemsPerPage <= 1}
               >
                 <span aria-hidden="true" className="sr-only">Next</span>
                 <svg

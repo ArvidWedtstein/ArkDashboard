@@ -3,22 +3,34 @@ import useComponentVisible from "src/components/useComponentVisible";
 
 type iModal = {
   isOpen: boolean;
-  setIsOpen?: (open: boolean) => void;
+  setIsOpen?: (open: boolean) => void; // not used
   image?: string;
   title?: string;
-  content?: string;
+  content?: string | React.ReactNode;
+  actions?: React.ReactNode;
+  form?: React.ReactNode;
+  formSubmit?: (formData) => void;
   onClose?: () => void;
 };
-export const RefModal = (({ isOpen, onClose, image, title, content }: iModal) => {
-  const { ref: modalRef, isComponentVisible, setIsComponentVisible } =
-    useComponentVisible(isOpen);
+export const RefModal = ({
+  isOpen,
+  onClose,
+  image,
+  title,
+  content,
+}: iModal) => {
+  const {
+    ref: modalRef,
+    isComponentVisible,
+    setIsComponentVisible,
+  } = useComponentVisible(isOpen);
   useEffect(() => {
     setIsComponentVisible(isOpen);
   }, [isOpen, onClose]);
 
   useEffect(() => {
     if (isComponentVisible) {
-      onClose()
+      onClose();
     }
     // if (modalRef.current) setIsComponentVisible(!isComponentVisible);
   }, [modalRef]);
@@ -29,14 +41,15 @@ export const RefModal = (({ isOpen, onClose, image, title, content }: iModal) =>
       role="dialog"
       aria-modal="true"
       aria-hidden={isComponentVisible ? "false" : "true"}
-      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 backdrop:bg-gray-50 md:inset-0 md:h-full ${isComponentVisible === true ? "block" : "hidden"
-        }`}
+      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 backdrop:bg-gray-50 md:inset-0 md:h-full ${
+        isComponentVisible === true ? "block" : "hidden"
+      }`}
     >
       <div
         ref={modalRef}
-        className=" max-h-full relative top-1/2 left-1/2 w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2"
+        className=" relative top-1/2 left-1/2 max-h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2"
       >
-        <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
+        <div className="relative rounded-lg bg-white shadow dark:bg-zinc-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
             {title && (
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -47,7 +60,7 @@ export const RefModal = (({ isOpen, onClose, image, title, content }: iModal) =>
               type="button"
               className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
               onClick={() => {
-                onClose()
+                onClose();
               }}
             >
               <svg
@@ -68,28 +81,48 @@ export const RefModal = (({ isOpen, onClose, image, title, content }: iModal) =>
           </div>
           <div className="space-y-6 p-6">
             {image && <img src={image} className="w-full rounded" />}
-            {content && (
-              <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                {content}
-              </p>
-            )}
+            {content &&
+              (typeof content == "string" ? (
+                <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                  {content}
+                </p>
+              ) : (
+                content
+              ))}
           </div>
         </div>
       </div>
     </div>
   ) : null;
-});
+};
 
-export const Modal = ({ isOpen, setIsOpen, image, title, content }: iModal) => {
+export const Modal = ({
+  isOpen,
+  onClose,
+  image,
+  title,
+  content,
+  actions,
+  form,
+  formSubmit,
+}: iModal) => {
   return (
     <div
       tabIndex={-1}
       aria-hidden={isOpen ? "false" : "true"}
-      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full ${isOpen ? "block" : "hidden"
-        }`}
+      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full ${
+        isOpen ? "block" : "hidden"
+      }`}
     >
       <div className="relative top-1/2 left-1/2 h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2">
-        <div className="relative rounded-lg bg-white shadow dark:bg-gray-700">
+        <form
+          onSubmit={(e) => {
+            formSubmit && formSubmit(e);
+            e.currentTarget.reset();
+          }}
+          className="relative rounded-lg bg-white shadow dark:bg-zinc-700"
+        >
+          {/* <div className="relative rounded-lg bg-white shadow dark:bg-gray-700"> */}
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
             {title && (
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -100,7 +133,7 @@ export const Modal = ({ isOpen, setIsOpen, image, title, content }: iModal) => {
               type="button"
               className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
               onClick={() => {
-                setIsOpen(false);
+                onClose();
               }}
             >
               <svg
@@ -121,29 +154,34 @@ export const Modal = ({ isOpen, setIsOpen, image, title, content }: iModal) => {
           </div>
           <div className="space-y-6 p-6">
             {image && <img src={image} className="w-full rounded" />}
-            {content && (
-              <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                {content}
-              </p>
-            )}
+            {content &&
+              (typeof content == "string" ? (
+                <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                  {content}
+                </p>
+              ) : (
+                content
+              ))}
+            {form && formSubmit && form}
           </div>
-          {/* <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
+          <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
             <button
-              data-modal-toggle="defaultModal"
-              type="button"
-              className="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              className="rw-button rw-button-blue"
+              onClick={() => onClose()}
+              type={form && formSubmit ? "submit" : "button"}
             >
-              I accept
+              {form && formSubmit ? "Submit" : "OK"}
             </button>
             <button
               data-modal-toggle="defaultModal"
+              onClick={() => onClose()}
               type="button"
-              className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-600"
+              className="rw-button rw-button-red-outline"
             >
-              Decline
+              Cancel
             </button>
-          </div> */}
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   );

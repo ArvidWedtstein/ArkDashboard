@@ -13,34 +13,15 @@ const CREATE_ITEM_MUTATION = gql`
     }
   }
 `
-const CREATE_ITEM_RECIPE_MUTATION = gql`
-  mutation CreateItemRecipeMutation($input: CreateItemRecipeInput!) {
-    createItemRecipe(input: $input) {
-      id
-    }
-  }
-`
+
 
 const NewItem = () => {
   const [createItem, { loading, error }] = useMutation(
     CREATE_ITEM_MUTATION,
     {
       onCompleted: (data) => {
-        console.log(data)
         toast.success('Item created')
         navigate(routes.items())
-      },
-      onError: (error) => {
-        toast.error(error.message)
-      },
-    }
-  )
-  const [createItemRecipe, { loading: rLoading, error: rError }] = useMutation(
-    CREATE_ITEM_RECIPE_MUTATION,
-    {
-      onCompleted: (data) => {
-        console.log(data)
-        toast.success('Item Recipe created')
       },
       onError: (error) => {
         toast.error(error.message)
@@ -51,9 +32,7 @@ const NewItem = () => {
 
   const onSave = async (input: CreateItemInput) => {
     try {
-      // delete input.category
-      // const d = await createItem({ variables: { input } })
-      console.log(input)
+
       createItem({ variables: { input } })
       // console.log(d)
     } catch (error) {

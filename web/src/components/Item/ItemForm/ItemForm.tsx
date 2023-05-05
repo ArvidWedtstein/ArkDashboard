@@ -4,18 +4,20 @@ import {
   FieldError,
   Label,
   TextField,
-  TextAreaField,
   Submit,
   SelectField,
   ColorField,
-  CheckboxField,
   useFieldArray,
   useForm,
+  NumberField,
 } from "@redwoodjs/forms";
 
-import type { EditItemById, UpdateItemInput } from "types/graphql";
+import type {
+  EditItemById,
+  UpdateItemInput,
+} from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import { useReducer, useState } from "react";
+import { useState } from "react";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import Lookup from "src/components/Util/Lookup/Lookup";
 import arkitems from "../../../../public/arkitems.json";
@@ -24,16 +26,18 @@ type FormItem = NonNullable<EditItemById["item"]>;
 
 interface ItemFormProps {
   item?: EditItemById["item"];
-  onSave: (data: UpdateItemInput, id?: FormItem["id"]) => void;
+  onSave: (data: any | UpdateItemInput, id?: FormItem["id"]) => void;
   error: RWGqlError;
   loading: boolean;
 }
 
 const ItemForm = (props: ItemFormProps) => {
   const onSubmit = (data: FormItem) => {
-    // delete data["craftable"];
-
-    console.log(data);
+    data.ItemRecipe_ItemRecipe_crafted_item_idToItem["upsert"] = data.ItemRecipe_ItemRecipe_crafted_item_idToItem["upsert"].map((u, i) => ({
+      create: { ...u },
+      update: { ...u },
+      where: { id: props.item?.ItemRecipe_ItemRecipe_crafted_item_idToItem[i]?.id || "00000000000000000000000000000000" }
+    }));
 
     props.onSave(data, props?.item?.id);
   };
@@ -43,7 +47,7 @@ const ItemForm = (props: ItemFormProps) => {
   const { register, control } = useForm({
     defaultValues: {
       stats: [],
-      recipe: [],
+      "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert": props.item.ItemRecipe_ItemRecipe_crafted_item_idToItem || [],
     },
   });
   const {
@@ -60,65 +64,8 @@ const ItemForm = (props: ItemFormProps) => {
     remove: removeRecipe,
   } = useFieldArray({
     control,
-    name: "recipe", // the name of the field array in your form data
+    name: "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert", // the name of the field array in your form data
   });
-
-  const reducer = (state, action) => {
-    const { type, item, id, amount = 1 } = action;
-    switch (type) {
-      case "UPDATE_AMOUNT": {
-        const itemIndex = state.findIndex((i) => i.id === item.id);
-
-        if (itemIndex === -1) {
-          return [...state, { ...item, amount }];
-        }
-
-        return state.map((i, index) => {
-          if (index === itemIndex) {
-            return { ...i, amount: i.amount + amount };
-          }
-          return i;
-        });
-      }
-
-      case "ADD": {
-        const exists = state.some((i) => i.id === item.id);
-
-        if (exists) {
-          return state.map((i) => {
-            if (i.id === item.id) {
-              return { ...i, amount: i.amount + 1 };
-            }
-            return i;
-          });
-        }
-
-        return [...state, item];
-      }
-
-      case "REMOVE": {
-        return state.filter((i) => i.id !== id);
-      }
-
-      case "RESET": {
-        return [];
-      }
-
-      default: {
-        return state;
-      }
-    }
-  };
-
-  // let [recipe, setRecipe] = useReducer(
-  //   reducer,
-  //   props.item?.recipe
-  //     ? (props.item?.recipe as any[]).map((f) => {
-  //       let i = arkitems.items.find((i) => i.id === f.itemId);
-  //       return { ...i, amount: f.count };
-  //     })
-  //     : []
-  // );
 
   return (
     <div className="rw-form-wrapper">
@@ -384,106 +331,6 @@ const ItemForm = (props: ItemFormProps) => {
             <div>
               <div>
                 <Label
-                  name="crafted_in"
-                  className="rw-label"
-                  errorClassName="rw-label rw-label-error"
-                >
-                  Crafted in
-                </Label>
-
-                <CheckboxGroup
-                  name="crafted_in"
-                  defaultValue={props.item?.crafted_in}
-                  options={[
-                    {
-                      value: "606",
-                      label: "Beer Barrel",
-                      image:
-                        "https://arkids.net/image/item/120/beer-barrel.png",
-                    },
-                    {
-                      value: "39",
-                      label: "Campfire",
-                      image: "https://arkids.net/image/item/120/campfire.png",
-                    },
-                    {
-                      value: "607",
-                      label: "Chemistry Bench",
-                      image:
-                        "https://arkids.net/image/item/120/chemistry-bench.png",
-                    },
-                    {
-                      value: "128",
-                      label: "Cooking Pot",
-                      image:
-                        "https://arkids.net/image/item/120/cooking-pot.png",
-                    },
-                    {
-                      value: "127",
-                      label: "Compost Bin",
-                      image:
-                        "https://arkids.net/image/item/120/compost-bin.png",
-                    },
-                    {
-                      value: "185",
-                      label: "Fabricator",
-                      image: "https://arkids.net/image/item/120/fabricator.png",
-                    },
-                    {
-                      value: "601",
-                      label: "Industrial Cooker",
-                      image:
-                        "https://arkids.net/image/item/120/industrial-cooker.png",
-                    },
-                    {
-                      value: "600",
-                      label: "Industrial Forge",
-                      image:
-                        "https://arkids.net/image/item/120/industrial-forge.png",
-                    },
-                    {
-                      value: "360",
-                      label: "Industrial Grill",
-                      image:
-                        "https://arkids.net/image/item/120/industrial-grill.png",
-                    },
-                    {
-                      value: "618",
-                      label: "Industrial Grinder",
-                      image:
-                        "https://arkids.net/image/item/120/industrial-grinder.png",
-                    },
-                    {
-                      value: "107",
-                      label: "Mortar And Pestle",
-                      image:
-                        "https://arkids.net/image/item/120/mortar-and-pestle.png",
-                    },
-                    {
-                      value: "126",
-                      label: "Refining Forge",
-                      image:
-                        "https://arkids.net/image/item/120/refining-forge.png",
-                    },
-                    {
-                      value: "129",
-                      label: "Smithy",
-                      image: "https://arkids.net/image/item/120/smithy.png",
-                    },
-                    {
-                      value: "609",
-                      label: "Tek Replicator",
-                      image:
-                        "https://arkids.net/image/item/120/tek-replicator.png",
-                    },
-                  ]}
-                />
-                <FieldError name="crafted_in" className="rw-field-error" />
-              </div>
-            </div>
-            <div>
-              <div>
-                <Label
                   name="recipe"
                   className="rw-label"
                   errorClassName="rw-label rw-label-error"
@@ -491,97 +338,99 @@ const ItemForm = (props: ItemFormProps) => {
                   Recipe
                 </Label>
 
-                {recipeFields.map((recipe, index) => (
+                {recipeFields.map((recipe: any, index) => (
                   <div
                     className="rounded-md bg-zinc-800 p-3"
                     key={`recipe-${index}`}
                   >
+                    <p>{recipe.crafting_station}</p>
                     <CheckboxGroup
-                      defaultValue={recipe.crafting_station}
-                      validation={{ single: true }}
+                      defaultValue={[recipe?.crafting_station?.toString()]}
+                      validation={{ single: true, valueAsNumber: true }}
+                      name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.crafting_station`}
                       options={[
                         {
-                          value: "606",
+                          value: 606,
                           label: "Beer Barrel",
                           image:
-                            "https://arkids.net/image/item/120/beer-barrel.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/beer-barrel.png",
                         },
                         {
-                          value: "39",
+                          value: 39,
                           label: "Campfire",
                           image:
-                            "https://arkids.net/image/item/120/campfire.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/campfire.png",
                         },
                         {
-                          value: "607",
+                          value: 607,
                           label: "Chemistry Bench",
                           image:
-                            "https://arkids.net/image/item/120/chemistry-bench.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/chemistry-bench.png",
                         },
                         {
-                          value: "128",
+                          value: 128,
                           label: "Cooking Pot",
                           image:
-                            "https://arkids.net/image/item/120/cooking-pot.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/cooking-pot.png",
                         },
                         {
-                          value: "127",
+                          value: 127,
                           label: "Compost Bin",
                           image:
-                            "https://arkids.net/image/item/120/compost-bin.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/compost-bin.png",
                         },
                         {
-                          value: "185",
+                          value: 185,
                           label: "Fabricator",
                           image:
-                            "https://arkids.net/image/item/120/fabricator.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/fabricator.png",
                         },
                         {
-                          value: "601",
+                          value: 601,
                           label: "Industrial Cooker",
                           image:
-                            "https://arkids.net/image/item/120/industrial-cooker.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-cooker.png",
                         },
                         {
-                          value: "600",
+                          value: 600,
                           label: "Industrial Forge",
                           image:
-                            "https://arkids.net/image/item/120/industrial-forge.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-forge.png",
                         },
                         {
-                          value: "360",
+                          value: 360,
                           label: "Industrial Grill",
                           image:
-                            "https://arkids.net/image/item/120/industrial-grill.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-grill.png",
                         },
                         {
-                          value: "618",
+                          value: 618,
                           label: "Industrial Grinder",
                           image:
-                            "https://arkids.net/image/item/120/industrial-grinder.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-grinder.png",
                         },
                         {
-                          value: "107",
+                          value: 107,
                           label: "Mortar And Pestle",
                           image:
-                            "https://arkids.net/image/item/120/mortar-and-pestle.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/mortar-and-pestle.png",
                         },
                         {
-                          value: "126",
+                          value: 125,
                           label: "Refining Forge",
                           image:
-                            "https://arkids.net/image/item/120/refining-forge.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/refining-forge.png",
                         },
                         {
-                          value: "129",
+                          value: 126,
                           label: "Smithy",
-                          image: "https://arkids.net/image/item/120/smithy.png",
+                          image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/smithy.png",
                         },
                         {
-                          value: "609",
+                          value: 652,
                           label: "Tek Replicator",
                           image:
-                            "https://arkids.net/image/item/120/tek-replicator.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/tek-replicator.png",
                         },
                       ]}
                     />
@@ -590,8 +439,15 @@ const ItemForm = (props: ItemFormProps) => {
                       role="group"
                       key={`recipe-${index}`}
                     >
+                      {/* TODO: replace with items from db */}
                       <Lookup
-                        {...register(`recipe.${index}.item_id`)}
+                        // {...register(
+                        //   `ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.item_id`,
+                        //   {
+                        //     required: true,
+                        //   }
+                        // )}
+                        name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.item_id`}
                         group={"type"}
                         options={arkitems.items
                           .filter((f) =>
@@ -607,7 +463,7 @@ const ItemForm = (props: ItemFormProps) => {
                           .map((item) => {
                             return {
                               type: item.type,
-                              label: item.name,
+                              label: item.name || "",
                               value: item.id,
                               image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
                             };
@@ -616,19 +472,34 @@ const ItemForm = (props: ItemFormProps) => {
                         className="!mt-0 !rounded-none !rounded-l-md"
                         defaultValue={recipe.item_id}
                         filterFn={(item, search) => {
+                          if (!search) return true
                           return item.label
                             .toLowerCase()
                             .includes(search.toLowerCase());
                         }}
                       />
-                      <input
-                        {...register(`recipe.${index}.amount`, {
-                          required: true,
-                        })}
-                        type="number"
+                      <NumberField
                         className="rw-input mt-0"
                         defaultValue={recipe.amount}
+                        {...register(
+                          `ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.amount`,
+                          {
+                            required: true,
+                          }
+                        )}
                       />
+                      <NumberField
+                        className="rw-input mt-0"
+                        defaultValue={recipe.yields}
+                        {...register(
+                          `ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.yields`,
+                          {
+                            required: true,
+                          }
+                        )}
+                      />
+                      <FieldError name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.yields`} className="rw-field-error" />
+
                       <button
                         type="button"
                         className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
@@ -645,9 +516,10 @@ const ItemForm = (props: ItemFormProps) => {
                     className="rw-button rw-button-gray"
                     onClick={() =>
                       appendRecipe({
-                        item_id: 7,
+                        item_id: 1,
                         amount: 1,
-                        crafting_station: "129",
+                        crafting_station: 126,
+                        yields: 1,
                       })
                     }
                   >
@@ -657,7 +529,7 @@ const ItemForm = (props: ItemFormProps) => {
 
                 {/* <Lookup
                   items={arkitems.items.filter((item) => item.type === 'Resource').map((item) => ({
-                    ...item, image: `https://arkids.net/image/item/120/${item.name
+                    ...item, image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.name
                       .replaceAll(" ", "-")
                       .replace("plant-species-y", "plant-species-y-trap")}.png`
                   }))}
@@ -754,6 +626,7 @@ const ItemForm = (props: ItemFormProps) => {
             required: false,
           }}
         >
+          <option>Other</option>
           <option>Saddle</option>
           <option>Structure</option>
           <option>Weapon</option>
@@ -767,7 +640,6 @@ const ItemForm = (props: ItemFormProps) => {
           <option>Armor</option>
           <option>Egg</option>
           <option>Attachment</option>
-          <option>Other</option>
         </SelectField>
 
         <FieldError name="category" className="rw-field-error" />

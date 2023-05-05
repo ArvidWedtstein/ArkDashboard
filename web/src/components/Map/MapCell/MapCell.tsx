@@ -10,23 +10,17 @@ export const QUERY = gql`
       id
       created_at
       name
-      loot_crates
-      oil_veins
-      water_veins
-      wyvern_nests
-      ice_wyvern_nests
-      gas_veins
-      deinonychus_nests
-      charge_nodes
-      plant_z_nodes
-      drake_nests
-      glitches
-      magmasaur_nests
-      poison_trees
-      mutagen_bulbs
-      carniflora
-      notes
       img
+      MapCoordinate {
+        latitude
+        longitude
+        type
+      }
+      MapNote {
+        latitude
+        longitude
+        note_index
+      }
       Lootcrate {
         id
         name
@@ -36,6 +30,7 @@ export const QUERY = gql`
     }
   }
 `;
+
 
 export const Loading = () => <div>Loading...</div>;
 

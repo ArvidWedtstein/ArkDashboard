@@ -2,12 +2,12 @@ import clsx from "clsx";
 import React, { useState } from "react";
 interface ITabs {
   tabs:
-    | {
-        title: string;
-        content: string | React.ReactNode;
-      }[]
-    | any[];
-  tabClassName?: React.ClassAttributes<HTMLButtonElement>;
+  | {
+    title: string;
+    content: string | React.ReactNode;
+  }[]
+  | any[];
+  tabClassName?: React.ClassAttributes<HTMLButtonElement> | string;
 }
 const Tabs = ({ tabs, tabClassName }: ITabs) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -24,7 +24,7 @@ const Tabs = ({ tabs, tabClassName }: ITabs) => {
               <button
                 onClick={() => setActiveTab(index)}
                 className={clsx(
-                  "mx-2 w-full rounded-t-lg border-b-2 py-4 focus:outline-none",
+                  "w-full rounded-t-lg border-b-2 py-4 focus:outline-none",
                   {
                     "border-pea-600 text-pea-600 dark:text-pea-500 dark:border-pea-500 font-medium":
                       activeTab === index,
@@ -49,7 +49,7 @@ const Tabs = ({ tabs, tabClassName }: ITabs) => {
           </div>
         ))}
       </div>
-    </div>
+    </div >
   );
 };
 
