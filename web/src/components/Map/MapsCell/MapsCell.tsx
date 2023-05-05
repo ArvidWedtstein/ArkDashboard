@@ -11,7 +11,6 @@ export const QUERY = gql`
       id
       created_at
       name
-      loot_crates
       oil_veins
       water_veins
       wyvern_nests
@@ -23,9 +22,7 @@ export const QUERY = gql`
       drake_nests
       glitches
       magmasaur_nests
-      poison_trees
       mutagen_bulbs
-      carniflora
       notes
       img
     }
