@@ -200,28 +200,15 @@ model Item {
 }
 
 model Map {
-  id                BigInt             @id @default(autoincrement())
-  created_at        DateTime?          @default(now()) @db.Timestamptz(6)
-  name              String?
-  oil_veins         Json?
-  water_veins       Json?
-  wyvern_nests      Json?
-  ice_wyvern_nests  Json?
-  gas_veins         Json?
-  deinonychus_nests Json?
-  charge_nodes      Json?
-  plant_z_nodes     Json?
-  drake_nests       Json?
-  glitches          Json?
-  magmasaur_nests   Json?
-  mutagen_bulbs     Json?
-  notes             Json?
-  img               String?
-  Basespot          Basespot[]
-  Lootcrate         Lootcrate[]
-  MapCoordinate     MapCoordinate[]
-  MapNote           MapNote[]
-  TimelineBasespot  TimelineBasespot[]
+  id               BigInt             @id @default(autoincrement())
+  created_at       DateTime?          @default(now()) @db.Timestamptz(6)
+  name             String?
+  img              String?
+  Basespot         Basespot[]
+  Lootcrate        Lootcrate[]
+  MapCoordinate    MapCoordinate[]
+  MapNote          MapNote[]
+  TimelineBasespot TimelineBasespot[]
 }
 
 model Lootcrate {
