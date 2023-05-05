@@ -195,7 +195,7 @@ const Sidebar = memo(({ }) => {
                   singularize(item.href.split("?")[0]) ===
                   singularize(`/${pathname.split("/")[1]}`),
               },
-              // item.color
+              item.color
             )}
           >
             {Icon(item.name)} <span className="sr-only">{item.name}</span>

@@ -4,7 +4,7 @@ import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
 import LineChart from "src/components/Util/LineChart/LineChart";
 
-import { getWordType } from "src/lib/formatters";
+import { getWordType, truncate } from "src/lib/formatters";
 
 import type { DeleteItemMutationVariables, FindItemById } from "types/graphql";
 
@@ -57,7 +57,7 @@ const Item = ({ item }: Props) => {
             <p className="mt-2">{item.description}</p>
           </div>
           <div className="flex flex-col">
-            <div className="py-4 px-8 text-sm font-light text-white">
+            <div className="py-4 px-8 text-sm font-normal text-white">
               <div className="mr-4 mb-4 inline-block">
                 <strong>Max Stack:</strong> {item.max_stack}
               </div>
@@ -93,6 +93,16 @@ const Item = ({ item }: Props) => {
                   <div className="mr-4 mb-4 inline-block">
                     <strong>Required level:</strong> {item.req_level}
                   </div>
+                  <br />
+                  {item.LootcrateSetEntryItem.length > 0 && (
+                    <div className="mr-4 mb-4 inline-block">
+                      <strong>Found in:</strong> {item?.LootcrateSetEntryItem.map((g) => (
+                        <>
+                          {<Link to={routes.lootcrate({ id: g.LootcrateSetEntry.LootcrateSet.Lootcrate.id.toString() })}>{g.LootcrateSetEntry.LootcrateSet.Lootcrate.name}</Link>}, {" "}
+                        </>
+                      ))}
+                    </div>
+                  )}
                 </>
               )}
             </div>
@@ -216,7 +226,7 @@ const Item = ({ item }: Props) => {
         </Link>
         <button
           type="button"
-          className="rw-button rw-button-red"
+          className="rw-button rw-button-red inline-flex"
           onClick={() => onDeleteClick(item.id)}
         >
           Delete

@@ -245,7 +245,7 @@ const ItemsList = ({ itemsPage, loading = false }: FindItems & {
         })}
       >
         {itemsPage.items.map((item, i) => (
-          <Link to={routes.item({ id: item.id.toString() })} key={`item-${i}`}>
+          <Link to={routes.item({ id: item.id.toString() })} key={`item-${i}`} className="border border-transparent transition rounded-3xl hover:border-pea-500">
             <ArkCard
               className="border border-gray-800 dark:border-gray-500 " // bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-500 to-zinc-900
               title={item.name}

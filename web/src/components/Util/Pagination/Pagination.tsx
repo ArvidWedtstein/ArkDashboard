@@ -102,7 +102,7 @@ const Pagination = ({
           <ul className="list-style-none mt-5 flex w-full justify-end space-x-2">
             <li className="">
               <Link
-                className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200 aria-disabled:pointer-events-none"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200 aria-disabled:pointer-events-none aria-disabled:hidden"
                 to={routes[route]({ ...params, page: changePage("prev") })}
                 aria-label="Previous"
                 aria-disabled={count / itemsPerPage <= 1}
@@ -137,7 +137,7 @@ const Pagination = ({
             ))}
             <li className="">
               <Link
-                className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200 aria-disabled:pointer-events-none"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 dark:text-stone-200 aria-disabled:pointer-events-none aria-disabled:hidden"
                 to={routes[route]({ ...params, page: changePage("next") })}
                 aria-label="Next"
                 aria-disabled={count / itemsPerPage <= 1}
