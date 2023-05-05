@@ -47,7 +47,7 @@ const Map = ({ map }: Props) => {
 
   const [mapData, setMapData] = useState([]);
   const [categories, setCategories] = useState({
-    mutagen_bulbs: {
+    mutagen_bulb: {
       active: false,
       color: "#0284c7",
       icon: (
@@ -75,7 +75,7 @@ const Map = ({ map }: Props) => {
         </svg>
       ),
     },
-    loot_crates: {
+    loot_crate: {
       active: false,
       color: "#ea580c",
       icon: (
@@ -89,7 +89,7 @@ const Map = ({ map }: Props) => {
         </svg>
       ),
     },
-    deinonychus_nests: {
+    deinonychus_nest: {
       active: false,
       color: "#1c1917",
       icon: (
@@ -108,7 +108,7 @@ const Map = ({ map }: Props) => {
         </svg>
       ),
     },
-    wyvern_nests: {
+    wyvern_nest: {
       active: false,
       color: "#bbf7d0",
       icon: (
@@ -124,7 +124,7 @@ const Map = ({ map }: Props) => {
         </svg>
       ),
     },
-    ice_wyvern_nests: {
+    ice_wyvern_nest: {
       active: false,
       color: "#22d3ee",
       icon: (
@@ -141,7 +141,7 @@ const Map = ({ map }: Props) => {
         </svg>
       ),
     },
-    oil_veins: {
+    oil_vein: {
       active: false,
       color: "#171717",
       icon: (
@@ -154,7 +154,7 @@ const Map = ({ map }: Props) => {
         </svg>
       ),
     },
-    water_veins: {
+    water_vein: {
       active: false,
       color: "#3b82f6",
       icon: (
@@ -168,7 +168,7 @@ const Map = ({ map }: Props) => {
         </svg>
       ),
     },
-    gas_veins: {
+    gas_vein: {
       active: false,
       color: "#eab308",
       icon: (
@@ -182,7 +182,7 @@ const Map = ({ map }: Props) => {
         </svg>
       ),
     },
-    charge_nodes: {
+    charge_node: {
       active: false,
       color: "#16a34a",
       icon: (
@@ -201,7 +201,7 @@ const Map = ({ map }: Props) => {
         </svg>
       ),
     },
-    plant_z_nodes: {
+    plant_z_node: {
       active: false,
       color: "#a3e635",
       icon: (
@@ -215,7 +215,7 @@ const Map = ({ map }: Props) => {
         </svg>
       ),
     },
-    drake_nests: {
+    drake_nest: {
       active: false,
       color: "#525252",
       icon: (
@@ -231,7 +231,7 @@ const Map = ({ map }: Props) => {
         </svg>
       ),
     },
-    magmasaur_nests: {
+    magmasaur_nest: {
       active: false,
       color: "#b91c1c",
       icon: (
@@ -245,7 +245,7 @@ const Map = ({ map }: Props) => {
         </svg>
       ),
     },
-    glitches: {
+    glitch: {
       active: false,
       color: "#7e22ce",
       icon: (
@@ -266,16 +266,14 @@ const Map = ({ map }: Props) => {
       const category = e;
       const color = categories[category].color;
 
-      const dataToAdd = map[category]
-        ? map[category].flat().map((item) => {
+      const dataToAdd = map.MapCoordinate.filter((t) => t.type === category)
+        ? map.MapCoordinate.filter((t) => t.type === category).flat().map((item) => {
           return {
             ...item,
             category,
             color,
-            name: `${item.note
-              ? item.note
-              : capitalizeSentence(category.replaceAll("_", " "))
-              }\n${item.lat}, ${item.lon || item.long}`,
+            name: `${capitalizeSentence(category.replaceAll("_", " "))
+              }\n${item.latitude}, ${item.longitude}`,
           };
         })
         : [];
@@ -311,7 +309,7 @@ const Map = ({ map }: Props) => {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
             <CheckboxGroup
               options={Object.entries(categories)
-                .filter((c) => map[c[0]] != null)
+                .filter((c) => map.MapCoordinate.filter((d) => d.type === c[0]) != null && map.MapCoordinate.filter((d) => d.type === c[0]))
                 .map((category) => {
                   return {
                     label: capitalizeSentence(category[0].replaceAll("_", " ")),
@@ -335,13 +333,13 @@ const Map = ({ map }: Props) => {
               path={{
                 color: "#0000ff",
                 coords: noterun.map((b) => {
-                  if (map.notes) {
-                    let note = (map?.notes as any[]).find(
-                      (j) => j.noteIndex === b
+                  if (map.MapNote && map.MapNote.length > 0) {
+                    let note = (map?.MapNote).find(
+                      (j) => j.note_index === b
                     );
                     return {
-                      lat: note.lat,
-                      lon: note.lon || note.long,
+                      lat: note.latitude,
+                      lon: note.longitude,
                     };
                   }
                 }),
@@ -366,12 +364,12 @@ const Map = ({ map }: Props) => {
               title={lootcrate.name}
               ring={
                 lootcrate?.level_requirement &&
-                  lootcrate.level_requirement?.min > 0 ? (
+                  lootcrate.level_requirement["min"] > 0 ? (
                   <button
-                    title={`You need to be lvl ${lootcrate.level_requirement.min} to open this crate`}
+                    title={`You need to be lvl ${lootcrate.level_requirement["min"]} to open this crate`}
                     className="relative flex items-center justify-center space-x-2 rounded-full bg-gray-600 px-4 py-2.5 text-gray-100 shadow-sm ring-1 ring-green-500"
                   >
-                    <span>Lvl {lootcrate.level_requirement.min}</span>
+                    <span>Lvl {lootcrate.level_requirement["min"]}</span>
                     <i className="fa-solid fa-circle my-auto ml-2 animate-pulse text-green-500"></i>
                   </button>
                 ) : null

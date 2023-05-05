@@ -11,18 +11,18 @@ export const QUERY = gql`
       id
       created_at
       name
-      oil_veins
-      water_veins
-      wyvern_nests
-      ice_wyvern_nests
-      gas_veins
-      deinonychus_nests
-      charge_nodes
-      plant_z_nodes
-      drake_nests
-      glitches
-      magmasaur_nests
-      mutagen_bulbs
+      # oil_veins
+      # water_veins
+      # wyvern_nests
+      # ice_wyvern_nests
+      # gas_veins
+      # deinonychus_nests
+      # charge_nodes
+      # plant_z_nodes
+      # drake_nests
+      # glitches
+      # magmasaur_nests
+      # mutagen_bulbs
       notes
       img
     }
