@@ -60,10 +60,19 @@ const ItemsList = ({ itemsPage, loading = false }: FindItems & {
         setTypes(["Explosive", "Ammunition", "Arrow", "Tool", "Attachment", "Shield", "Melee", "Gun", "Other"])
         break;
       case "consumable":
-        setTypes(["Food", "Dish", "Drug", "Egg", "Other"])
+        setTypes(["Dish", "Drug", "Egg", "Food", "Fungus", "Meat", "Plant", "Seed", "Tool", "Other"])
         break;
       case "tool":
         setTypes([])
+        break;
+      case 'other':
+        setTypes(["Navigation", "Other", "Artifact", "Tool", "Coloring", "Utility"])
+        break;
+      case 'resource':
+        setTypes([])
+        break;
+      case 'fertilizer':
+        setTypes(["Feces"])
         break;
       default:
         setTypes([])
@@ -99,10 +108,19 @@ const ItemsList = ({ itemsPage, loading = false }: FindItems & {
                     setTypes(["Explosive", "Ammunition", "Arrow", "Tool", "Attachment", "Shield", "Melee", "Gun", "Other"])
                     break;
                   case "consumable":
-                    setTypes(["Food", "Dish", "Drug", "Egg", "Other"])
+                    setTypes(["Dish", "Drug", "Egg", "Food", "Fungus", "Meat", "Plant", "Seed", "Tool", "Other"])
                     break;
                   case "tool":
                     setTypes([])
+                    break;
+                  case 'other':
+                    setTypes(["Navigation", "Other", "Artifact", "Tool", "Coloring", "Utility"])
+                    break;
+                  case 'resource':
+                    setTypes([])
+                    break;
+                  case 'fertilizer':
+                    setTypes(["Feces"])
                     break;
                   default:
                     setTypes([])
@@ -129,6 +147,7 @@ const ItemsList = ({ itemsPage, loading = false }: FindItems & {
               <option value="weapon">Weapons</option>
               <option value="consumable">Consumable</option>
               <option value="tool">Tools</option>
+              <option value="fertilizer">Fertilizer</option>
               <option value="other">Other</option>
             </SelectField>
             {types.length > 0 && (
@@ -156,49 +175,6 @@ const ItemsList = ({ itemsPage, loading = false }: FindItems & {
                     {type}
                   </option>
                 ))}
-                {/* <optgroup label="Structure" className={clsx({ hidden: category !== "structure" })}>
-                <option value="tek">Tek</option>
-                <option value="building">Building</option>
-                <option value="crafting">Crafting</option>
-                <option value="electrical">Electrical</option>
-              </optgroup>
-              <optgroup label="Armor" className={clsx({ hidden: category !== "armor" })}>
-                <option value="tek">Tek</option>
-                <option value="riot">Riot</option>
-                <option value="flak">Flak</option>
-                <option value="hazard">Hazard</option>
-                <option value="scuba">Scuba</option>
-                <option value="fur">Fur</option>
-                <option value="ghillie">Ghillie</option>
-                <option value="chitin">Chitin</option>
-                <option value="desert">Desert</option>
-                <option value="hide">Hide</option>
-                <option value="cloth">Cloth</option>
-                <option value="saddle">Saddles</option>
-                <option value="attachment">Attachments</option>
-              </optgroup>
-              <optgroup label="Weapons" className={clsx({ hidden: category !== "weapon" })}>
-                <option value="explosive">Explosive</option>
-                <option value="ammunition">Ammunition</option>
-                <option value="arrow">Arrow</option>
-                <option value="tool">Tools</option>
-                <option value="attachment">Attachment</option>
-                <option value="gun">Gun</option>
-                <option value="shield">Shields</option>
-              </optgroup>
-              <optgroup label="Resources" className={clsx({ hidden: category !== "resource" })}>
-                <option value="resource">Resources</option>
-              </optgroup>
-              <optgroup label="Consumables" className={clsx({ hidden: category !== "consumable" })}>
-                <option value="egg">Egg</option>
-              </optgroup>
-              <option value="tool" className={clsx({ hidden: category !== "tool" })}>Tools</option>
-              <optgroup label="Other" className={clsx({ hidden: category !== "other" })}>
-                <option value="navigation">Navigation</option>
-                <option value="coloring">Coloring</option>
-                <option value="artifact">Artifacts</option>
-                <option value="null">Other</option>
-              </optgroup> */}
               </SelectField>
             )}
             <SearchField
