@@ -31,7 +31,6 @@ export const QUERY = gql`
   }
 `;
 
-
 export const Loading = () => <div>Loading...</div>;
 
 export const Empty = () => <div>Map not found</div>;

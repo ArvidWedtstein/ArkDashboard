@@ -1,6 +1,7 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
+import clsx from "clsx";
 import { useCallback, useMemo, useState } from "react";
 import ArkCard from "src/components/ArkCard/ArkCard";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
@@ -267,15 +268,18 @@ const Map = ({ map }: Props) => {
       const color = categories[category].color;
 
       const dataToAdd = map.MapCoordinate.filter((t) => t.type === category)
-        ? map.MapCoordinate.filter((t) => t.type === category).flat().map((item) => {
-          return {
-            ...item,
-            category,
-            color,
-            name: `${capitalizeSentence(category.replaceAll("_", " "))
-              }\n${item.latitude}, ${item.longitude}`,
-          };
-        })
+        ? map.MapCoordinate.filter((t) => t.type === category)
+            .flat()
+            .map((item) => {
+              return {
+                ...item,
+                category,
+                color,
+                name: `${capitalizeSentence(category.replaceAll("_", " "))}\n${
+                  item.latitude
+                }, ${item.longitude}`,
+              };
+            })
         : [];
 
       setCategories((prevState) => ({
@@ -306,10 +310,14 @@ const Map = ({ map }: Props) => {
           </h2>
         </header>
         <div className="rw-segment-main">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+          <div className="grid grid-flow-row gap-4 md:grid-cols-2">
             <CheckboxGroup
               options={Object.entries(categories)
-                .filter((c) => map.MapCoordinate.filter((d) => d.type === c[0]) != null && map.MapCoordinate.filter((d) => d.type === c[0]))
+                .filter(
+                  (c) =>
+                    map.MapCoordinate.filter((d) => d.type === c[0]) != null &&
+                    map.MapCoordinate.filter((d) => d.type === c[0])
+                )
                 .map((category) => {
                   return {
                     label: capitalizeSentence(category[0].replaceAll("_", " ")),
@@ -327,16 +335,19 @@ const Map = ({ map }: Props) => {
 
             <MapComp
               interactive={true}
+              className="col-span-1 w-auto"
               map={map.name.replace(" ", "")}
               size={{ width: 500, height: 500 }}
-              pos={mapData}
+              pos={mapData.map((d) => ({
+                lat: d.latitude,
+                lon: d.longitude,
+                ...d,
+              }))}
               path={{
                 color: "#0000ff",
                 coords: noterun.map((b) => {
                   if (map.MapNote && map.MapNote.length > 0) {
-                    let note = (map?.MapNote).find(
-                      (j) => j.note_index === b
-                    );
+                    let note = (map?.MapNote).find((j) => j.note_index === b);
                     return {
                       lat: note.latitude,
                       lon: note.longitude,
@@ -345,6 +356,28 @@ const Map = ({ map }: Props) => {
                 }),
               }}
             />
+
+            <ul className="rw-segment max-h-44 overflow-auto rounded-lg border border-gray-200 bg-stone-300 text-sm font-medium text-gray-900 dark:border-zinc-500 dark:bg-zinc-600 dark:text-white">
+              {mapData.map((d, i) => (
+                <li
+                  key={`point-${i}`}
+                  className="w-full border-b border-gray-200 first:rounded-t-lg last:rounded-b-lg last:border-none dark:border-zinc-500"
+                >
+                  <button
+                    onClick={(e) => {
+                      let d: SVGCircleElement = document.getElementById(
+                        `map-pos-${i}`
+                      ) as any;
+                      d.setAttribute("fill", "antiquewhite");
+                    }}
+                    className={"w-full border-l-2 px-4 py-2"}
+                    style={{ borderLeftColor: d.color }}
+                  >
+                    {d.name.split("\n")[0]} - {d.latitude}, {d.longitude}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>
@@ -364,7 +397,7 @@ const Map = ({ map }: Props) => {
               title={lootcrate.name}
               ring={
                 lootcrate?.level_requirement &&
-                  lootcrate.level_requirement["min"] > 0 ? (
+                lootcrate.level_requirement["min"] > 0 ? (
                   <button
                     title={`You need to be lvl ${lootcrate.level_requirement["min"]} to open this crate`}
                     className="relative flex items-center justify-center space-x-2 rounded-full bg-gray-600 px-4 py-2.5 text-gray-100 shadow-sm ring-1 ring-green-500"

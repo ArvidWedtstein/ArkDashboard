@@ -146,6 +146,11 @@ export const Map = ({
     if (!interactive) return;
     if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
       document.body.style.overflow = "auto";
+      setScale(1);
+      setTranslate((prevState) => ({
+        x: 0,
+        y: 0,
+      }));
     }
   };
 
@@ -154,7 +159,7 @@ export const Map = ({
   }`;
 
   const imageTransform = `scale(${scale})`;
-
+  console.log(pos);
   return (
     <svg
       ref={svgRef}
@@ -163,7 +168,7 @@ export const Map = ({
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
       tabIndex={0}
-      className={className}
+      className={"relative " + className}
       width={size.width}
       height={size.height}
       viewBox={viewBox}
@@ -189,6 +194,7 @@ export const Map = ({
         <circle
           style={{ transform: imageTransform }}
           key={"map-pos-" + i}
+          id={"map-pos-" + i}
           fill={p.color || "red"}
           cy={(size.height / 100) * p.lat + size.height / 100}
           cx={(size.width / 100) * p.lon + size.width / 100}
