@@ -365,10 +365,16 @@ const Map = ({ map }: Props) => {
                 >
                   <button
                     onClick={(e) => {
-                      let d: SVGCircleElement = document.getElementById(
+                      let c: SVGCircleElement = document.getElementById(
                         `map-pos-${i}`
                       ) as any;
-                      d.setAttribute("fill", "antiquewhite");
+                      c.setAttribute("fill", "antiquewhite");
+
+                      setTimeout(() => {
+                        c.setAttribute("fill", d.color);
+                      }, 3000);
+
+                      // TODO: set to original color after leave
                     }}
                     className={"w-full border-l-2 px-4 py-2"}
                     style={{ borderLeftColor: d.color }}
