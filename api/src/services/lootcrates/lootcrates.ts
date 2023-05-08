@@ -17,12 +17,23 @@ export const lootcratesByMap = ({ map }: { map?: string }) => {
     ? db.lootcrate.findMany({
         orderBy: { created_at: "desc" },
         where: {
-          Map: {
-            name: {
-              contains: map,
-              mode: "insensitive",
+          OR: [
+            {
+              Map: {
+                name: {
+                  contains: map,
+                  mode: "insensitive",
+                },
+              },
             },
-          },
+            {
+              Map: {
+                id: {
+                  equals: parseInt(map),
+                },
+              },
+            },
+          ],
         },
       })
     : db.lootcrate.findMany();

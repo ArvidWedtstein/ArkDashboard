@@ -21,11 +21,20 @@ export const QUERY = gql`
       set_qty
       color
       Map {
+        id
         name
       }
       LootcrateSet {
         id
         name
+        LootcrateSetEntry {
+          LootcrateSetEntryItem {
+            Item {
+              id
+              name
+            }
+          }
+        }
       }
     }
   }
@@ -33,8 +42,6 @@ export const QUERY = gql`
 
 
 export const beforeQuery = ({ map }: { map: string }) => {
-
-  console.log("beforeQuery", { variables: { map } })
   return { variables: { map } };
 };
 

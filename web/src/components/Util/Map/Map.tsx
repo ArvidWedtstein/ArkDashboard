@@ -64,9 +64,8 @@ export const Map = ({
     let pathString = "";
     coordinates.forEach((coordinate, index) => {
       const command = index === 0 ? "M" : "L";
-      pathString += `${command}${
-        (size.height / 100) * coordinate.lon + size.width / 100
-      } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
+      pathString += `${command}${(size.height / 100) * coordinate.lon + size.width / 100
+        } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
     });
     return pathString;
   };
@@ -154,12 +153,11 @@ export const Map = ({
     }
   };
 
-  const viewBox = `${-translate.x} ${-translate.y} ${size.width} ${
-    size.height
-  }`;
+  const viewBox = `${-translate.x} ${-translate.y} ${size.width} ${size.height
+    }`;
 
   const imageTransform = `scale(${scale})`;
-  console.log(pos);
+
   return (
     <svg
       ref={svgRef}
@@ -179,6 +177,7 @@ export const Map = ({
         style={{ pointerEvents: "none", transform: imageTransform }}
         height={size.height}
         width={size.width}
+        xlinkHref="planetmap"
       />
       {!maps[map.toLowerCase()] && (
         <text
@@ -190,6 +189,7 @@ export const Map = ({
           {map} map not found
         </text>
       )}
+
       {pos?.map((p, i) => (
         <circle
           style={{ transform: imageTransform }}

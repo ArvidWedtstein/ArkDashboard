@@ -1,4 +1,4 @@
-import { Link, routes } from "@redwoodjs/router";
+import { Link, navigate, parseSearch, routes } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useCallback, useMemo, useState } from "react";
@@ -7,13 +7,8 @@ import ArkCard from "src/components/ArkCard/ArkCard";
 import { QUERY } from "src/components/Lootcrate/LootcratesCell";
 import Lookup from "src/components/Util/Lookup/Lookup";
 import Tabs from "src/components/Util/Tabs/Tabs";
-import items from "../../../../public/arkitems.json";
 import {
-  checkboxInputTag,
-  jsonTruncate,
   removeDuplicates,
-  timeTag,
-  truncate,
 } from "src/lib/formatters";
 
 import type {
@@ -21,47 +16,41 @@ import type {
   FindLootcrates,
 } from "types/graphql";
 import { useParams } from "@redwoodjs/router";
+import { Form, Label, SearchField, SelectField, Submit } from "@redwoodjs/forms";
 
-const DELETE_LOOTCRATE_MUTATION = gql`
-  mutation DeleteLootcrateMutation($id: String!) {
-    deleteLootcrate(id: $id) {
-      id
-    }
-  }
-`;
+// const DELETE_LOOTCRATE_MUTATION = gql`
+//   mutation DeleteLootcrateMutation($id: String!) {
+//     deleteLootcrate(id: $id) {
+//       id
+//     }
+//   }
+// `;
 
 const LootcratesList = ({ lootcratesByMap: lootcrates }: FindLootcrates) => {
-  const [deleteLootcrate] = useMutation(DELETE_LOOTCRATE_MUTATION, {
-    onCompleted: () => {
-      toast.success("Lootcrate deleted");
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    // This refetches the query on the list page. Read more about other ways to
-    // update the cache over here:
-    // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
-    refetchQueries: [{ query: QUERY }],
-    awaitRefetchQueries: true,
-  });
+  // const [deleteLootcrate] = useMutation(DELETE_LOOTCRATE_MUTATION, {
+  //   onCompleted: () => {
+  //     toast.success("Lootcrate deleted");
+  //   },
+  //   onError: (error) => {
+  //     toast.error(error.message);
+  //   },
+  //   // This refetches the query on the list page. Read more about other ways to
+  //   // update the cache over here:
+  //   // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
+  //   refetchQueries: [{ query: QUERY }],
+  //   awaitRefetchQueries: true,
+  // });
 
-  const onDeleteClick = (id: DeleteLootcrateMutationVariables["id"]) => {
-    if (confirm("Are you sure you want to delete lootcrate " + id + "?")) {
-      deleteLootcrate({ variables: { id } });
-    }
-  };
+  // const onDeleteClick = (id: DeleteLootcrateMutationVariables["id"]) => {
+  //   if (confirm("Are you sure you want to delete lootcrate " + id + "?")) {
+  //     deleteLootcrate({ variables: { id } });
+  //   }
+  // };
 
-  let { map } = useParams();
-  const [filters, setFilters] = useState({ map: map || "", category: "" });
+  let { map, category, search } = useParams();
+  const [filters, setFilters] = useState({ map: map || "", category: category || "", search: search || "" });
   const [categoryItems, setCategoryItems] = useState([]);
-  const getItem = useCallback(
-    (id) => {
-      return !id || isNaN(id)
-        ? null
-        : items.items.find((g) => g.id.toString() === id.toString());
-    },
-    [items.items]
-  );
+
 
   const daLootcrates = useMemo(() => {
     let filteredCrates = lootcrates;
@@ -70,7 +59,7 @@ const LootcratesList = ({ lootcratesByMap: lootcrates }: FindLootcrates) => {
       filteredCrates = filteredCrates.filter(
         (crate) =>
           crate?.Map &&
-          crate.Map.name.toLowerCase().includes(filters.map.toLowerCase())
+          crate.Map.id === parseInt(filters.map)
       );
       setCategoryItems(
         removeDuplicates(
@@ -91,48 +80,86 @@ const LootcratesList = ({ lootcratesByMap: lootcrates }: FindLootcrates) => {
       }));
     }
 
+    if (filters.search) {
+      filteredCrates = filteredCrates.filter(
+        (crate) =>
+          crate?.name?.toLowerCase().includes(filters.search.toLowerCase()) ||
+          crate?.LootcrateSet?.some((set) => set?.LootcrateSetEntry.some((entry) => entry?.LootcrateSetEntryItem.some((item) => item.Item.name.toLowerCase().includes(filters.search.toLowerCase()))))
+      );
+    }
     return filteredCrates;
-  }, [filters]);
+  }, [filters, map, search]);
 
-  const setCurrentMap = useCallback((map) => {
-    setFilters({ ...filters, map });
+  const onSubmit = useCallback((data) => {
+    // setFilters({ ...filters, ...data });
+    navigate(routes.lootcrates({ ...parseSearch(Object.fromEntries(Object.entries(data).filter(([_, v]) => v != "" && v != undefined)) as any) }))
   }, []);
 
-  const setCurrentCategory = useCallback((category) => {
-    setFilters({ ...filters, category });
-  }, []);
-
-  const mapImages = [
-    "The Island",
-    "The Center",
-    "Scorched Earth",
-    "Ragnarok",
-    "Aberration",
-    "Extinction",
-    "Valguero",
-    "Genesis",
-    "Crystal Isles",
-    "Fjordur",
-    "Lost Island",
-    "Genesis 2",
-  ];
   // https://ark.wiki.gg/wiki/Coordinates
   return (
     <div className="m-3">
-      <Lookup
-        options={mapImages.map((k) => ({
-          label: k,
-          value: k,
-        }))}
-        onSelect={(e) => setCurrentMap(e.name)}
-      />
-      <Lookup
-        options={categoryItems.map((k) => ({
-          label: k,
-          value: k,
-        }))}
-        onSelect={(e) => setCurrentCategory(e.name)}
-      />
+      <Form className="flex w-auto" onSubmit={onSubmit}>
+        <nav className="flex flex-row space-x-2 justify-center w-full">
+          <div className="rw-button-group !space-x-0 !w-full">
+            <Label name="map" className="sr-only">
+              Choose a Map
+            </Label>
+            <Lookup
+              name="map"
+              className="rw-input !rounded-l-lg !rounded-none mt-0"
+              options={[
+                { label: "Valguero", value: 1 },
+                { label: "The Island", value: 2 },
+                { label: "The Center", value: 3 },
+                { label: "Ragnarok", value: 4 },
+                { label: "Abberation", value: 5 },
+                { label: "Extinction", value: 6 },
+                { label: "Scorched Earth", value: 7 },
+                { label: "Genesis", value: 8 },
+                { label: "Genesis 2", value: 9 },
+                { label: "Crystal Isles", value: 10 },
+                { label: "Fjordur", value: 11 },
+                { label: "Lost Island", value: 12 },
+              ]}
+              // options={data?.maps.map((map) => ({
+              //   label: map.name,
+              //   value: map.id,
+              // }))}
+              placeholder="Choose Map"
+              defaultValue={map}
+            // onSelect={(e) => setCurrentMap(e.value ? e.value : null)}
+            />
+            <Lookup
+              name="category"
+              className="rw-input !rounded-none mt-0"
+              options={categoryItems.map((k) => ({
+                label: k,
+                value: k,
+              }))}
+            // onSelect={(e) => setCurrentCategory(e.name)}
+            />
+
+            <Label name="search" className="sr-only">
+              Search for item
+            </Label>
+            <SearchField
+              name="search"
+              className="rw-input mt-0 !w-full"
+              placeholder="Search..."
+              defaultValue={search}
+              validation={{
+                shouldUnregister: true,
+              }}
+            />
+            <Submit className="rw-button rw-button-gray rounded-l-none">
+              Search
+            </Submit>
+          </div>
+        </nav>
+      </Form>
+
+      {search && <p className="dark:text-white">Lootcrates with {search}</p>}
+
       <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {daLootcrates.map((lootcrate, i) => (
           <ArkCard
