@@ -13,6 +13,7 @@ export const QUERY = gql`
       Profile {
         id
         full_name
+        username
       }
     }
   }

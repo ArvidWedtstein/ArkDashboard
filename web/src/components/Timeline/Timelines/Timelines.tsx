@@ -1,6 +1,7 @@
 import { Link, navigate, routes } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
+import { useEffect, useState } from "react";
 
 import { QUERY } from "src/components/Timeline/TimelinesCell";
 import { ContextMenu } from "src/components/Util/ContextMenu/ContextMenu";
@@ -20,45 +21,46 @@ const DELETE_TIMELINE_MUTATION = gql`
 `;
 
 const TimelinesList = ({ timelines }: FindTimelines) => {
-  const [deleteTimeline] = useMutation(DELETE_TIMELINE_MUTATION, {
-    onCompleted: () => {
-      toast.success("Timeline deleted");
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    // This refetches the query on the list page. Read more about other ways to
-    // update the cache over here:
-    // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
-    refetchQueries: [{ query: QUERY }],
-    awaitRefetchQueries: false,
-  });
+  // const [deleteTimeline] = useMutation(DELETE_TIMELINE_MUTATION, {
+  //   onCompleted: () => {
+  //     toast.success("Timeline deleted");
+  //   },
+  //   onError: (error) => {
+  //     toast.error(error.message);
+  //   },
+  //   // This refetches the query on the list page. Read more about other ways to
+  //   // update the cache over here:
+  //   // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
+  //   refetchQueries: [{ query: QUERY }],
+  //   awaitRefetchQueries: false,
+  // });
 
-  const onDeleteClick = (id: DeleteTimelineMutationVariables["id"]) => {
-    if (confirm("Are you sure you want to delete timeline " + id + "?")) {
-      deleteTimeline({ variables: { id } });
-    }
-  };
+  // const onDeleteClick = (id: DeleteTimelineMutationVariables["id"]) => {
+  //   if (confirm("Are you sure you want to delete timeline " + id + "?")) {
+  //     deleteTimeline({ variables: { id } });
+  //   }
+  // };
+
 
   return (
     <div className="rw-segment rw-table-wrapper-responsive">
       <div className="mt-10 w-full">
-        <div className="flex bg-transparent">
+        <div className="flex bg-transparent gap-2 my-3">
           {timelines.map(({ id, created_at, Profile }) => (
             <div
               key={id}
               className="border-pea-500 relative mr-[1px] flex h-64 w-fit min-w-fit max-w-[100px] border p-6"
             >
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0 w-[160px] overflow-hidden relative">
                 <img
-                  className="-bottom-8 left-8 h-full w-[160px] flex-shrink-0 rounded object-cover shadow transition-all ease-in-out hover:scale-105 hover:transform"
+                  className="-bottom-8 left-8 h-full flex-shrink-0 rounded object-cover shadow transition-all ease-in-out hover:scale-105 hover:transform"
                   src="https://pbs.twimg.com/media/E0AsojmVgAIKg-_?format=jpg&name=4096x4096"
                   alt=""
                 />
               </div>
               <div className="book-content overflow-hidden px-5 text-left text-white">
                 <div className="overflow-hidden text-ellipsis whitespace-nowrap font-semibold text-white">
-                  My Timeline 1
+                  <Link to={routes.profile({ id: Profile.id.toString() })}>{Profile.username}</Link>'s Timeline
                 </div>
                 <div className="mt-1 overflow-hidden text-ellipsis whitespace-nowrap text-xs">
                   by {Profile.full_name}
@@ -91,7 +93,7 @@ const TimelinesList = ({ timelines }: FindTimelines) => {
           ))}
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

@@ -29,30 +29,30 @@ const DELETE_TIMELINE_BASESPOT_MUTATION = gql`
 const TimelineBasespotsList = ({
   timelineBasespots,
 }: FindTimelineBasespots) => {
-  const [deleteTimelineBasespot] = useMutation(
-    DELETE_TIMELINE_BASESPOT_MUTATION,
-    {
-      onCompleted: () => {
-        toast.success("TimelineBasespot deleted");
-      },
-      onError: (error) => {
-        toast.error(error.message);
-      },
-      // This refetches the query on the list page. Read more about other ways to
-      // update the cache over here:
-      // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
-      refetchQueries: [{ query: QUERY }],
-      awaitRefetchQueries: true,
-    }
-  );
+  // const [deleteTimelineBasespot] = useMutation(
+  //   DELETE_TIMELINE_BASESPOT_MUTATION,
+  //   {
+  //     onCompleted: () => {
+  //       toast.success("TimelineBasespot deleted");
+  //     },
+  //     onError: (error) => {
+  //       toast.error(error.message);
+  //     },
+  //     // This refetches the query on the list page. Read more about other ways to
+  //     // update the cache over here:
+  //     // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
+  //     refetchQueries: [{ query: QUERY }],
+  //     awaitRefetchQueries: true,
+  //   }
+  // );
 
-  const onDeleteClick = (id: DeleteTimelineBasespotMutationVariables["id"]) => {
-    if (
-      confirm("Are you sure you want to delete timelineBasespot " + id + "?")
-    ) {
-      deleteTimelineBasespot({ variables: { id } });
-    }
-  };
+  // const onDeleteClick = (id: DeleteTimelineBasespotMutationVariables["id"]) => {
+  //   if (
+  //     confirm("Are you sure you want to delete timelineBasespot " + id + "?")
+  //   ) {
+  //     deleteTimelineBasespot({ variables: { id } });
+  //   }
+  // };
   const [grid, setGrid] = useState([]);
   useEffect(() => {
     if (grid.length < 9) {
@@ -66,6 +66,7 @@ const TimelineBasespotsList = ({
           {
             label: monthName,
             value: [650, 2350, 1000, 1350, 600, 1650, 2600, 650, 1950][i],
+            date: date
           },
         ]);
       }
@@ -122,6 +123,7 @@ const TimelineBasespotsList = ({
 
     return generateSmoothLine(points);
   }, [grid]);
+
   const mapImages = {
     2: [
       "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
@@ -274,6 +276,10 @@ const TimelineBasespotsList = ({
 
     return;
   }, []);
+  function monthDiff(dateFrom, dateTo) {
+    return Math.abs(dateTo.getMonth() - dateFrom.getMonth() +
+      (12 * (dateTo.getFullYear() - dateFrom.getFullYear())))
+  }
   return (
     <div>
       <section className="relative m-auto flex h-full w-full px-10 ">
@@ -324,9 +330,9 @@ const TimelineBasespotsList = ({
               </p>
             </div>
             <div className="rw-segment max-h-[300px] overflow-y-auto scroll-smooth transition-all duration-300">
-              {timelineBasespots.map((timelineBasespot, index) => (
+              {timelineBasespots.map(({ tribe_name, start_date, season, cluster, region, server }, index) => (
                 <div
-                  key={`basespot-${index}`}
+                  key={`timelinebasespot-${index}`}
                   className="pl-4 transition-all duration-300"
                   onClick={(e) => setActive(e, index)}
                 >
@@ -355,17 +361,33 @@ const TimelineBasespotsList = ({
                       className={clsx(
                         "cursor-pointer transition-all duration-300 ease-linear hover:opacity-100",
                         {
-                          "text-[#3c4043] opacity-60": isActive !== index,
+                          "text-gray-400 opacity-60": isActive !== index,
                           "text-white opacity-100": isActive === index,
                         }
                       )}
                     >
-                      <h3 className={clsx("text-xl")}>
-                        {timelineBasespot.tribe_name} -{" "}
-                        {new Date(timelineBasespot.start_date).toLocaleString(
-                          "default",
-                          { month: "short", year: "2-digit" }
-                        )}
+                      <h3 className="text-xl inline-flex w-full justify-between items-center">
+                        <span>{tribe_name} -{" "}
+                          {new Date(start_date).toLocaleString(
+                            "default",
+                            { month: "short", year: "2-digit" }
+                          )}
+                        </span>
+                        <div className="self-end inline-flex space-x-1">
+                          <span className="">
+                            S{season || "?"}
+                          </span>
+                          <img
+                            src={
+                              servers[
+                              server
+                                .toLowerCase()
+                                .replaceAll(" ", "")
+                              ]
+                            }
+                            className="w-8 rounded-full"
+                          />
+                        </div>
                       </h3>
                     </div>
 
@@ -379,18 +401,18 @@ const TimelineBasespotsList = ({
                       )}
                     >
                       <p className="mt-3 text-base font-light leading-6 text-[#3c4043] dark:text-stone-400">
-                        {timelineBasespot.season && (
-                          <abbr title={`Season ${timelineBasespot.season}`}>
-                            S{timelineBasespot.season}
+                        {season && (
+                          <abbr title={`Season ${season}`}>
+                            S{season}
                           </abbr>
                         )}
-                        {` ${timelineBasespot.cluster} ${timelineBasespot.region}`}
+                        {` ${cluster || ""} ${region || ""}`}
 
-                        {(timelineBasespot.cluster ||
-                          timelineBasespot.region ||
-                          timelineBasespot.season) &&
+                        {(cluster ||
+                          region ||
+                          season) &&
                           ", "}
-                        {timelineBasespot.server}
+                        {server}
                       </p>
                     </div>
                   </div>
@@ -400,108 +422,49 @@ const TimelineBasespotsList = ({
           </div>
         </div>
       </section>
-      {/* <div className="rw-segment relative">
-        <section className="rw-segment h-[40rem]">
-          <div
-            ref={imgTrack}
-            style={{ transform: "translate(0%, -50%)" }}
-            className="absolute left-1/2 top-1/2 flex h-full min-w-[100vw] cursor-grab touch-pan-x select-none flex-row items-stretch space-x-3 overflow-x-auto p-3 will-change-scroll"
-            id="image-track"
-            data-mouse-down-at="0"
-            data-prev-percentage="0"
-            onMouseDown={handleOnDown}
-            onMouseUp={handleOnUp}
-            onMouseMove={handleOnMove}
-            onMouseLeave={handleOnUp}
-            onTouchStart={(e) => handleOnDown(e.touches[0])}
-            onTouchEnd={handleOnUp}
-            onTouchMove={(e) => handleOnMove(e.touches[0])}
-            onTouchCancel={handleOnUp}
-            onScroll={handleScroll}
-          >
-            {timelineBasespots.length > 0 &&
-              timelineBasespots.map((timelineBasespot, i) => (
-                <div
-                  key={i}
-                  aria-controls={`tab-${i}`}
-                  className="image relative flex min-w-[50vmin] flex-1 flex-col rounded object-cover transition-all duration-300 after:absolute after:left-0 after:top-0 after:block after:h-full after:w-full after:rounded after:bg-gradient-to-b after:from-transparent after:to-black after:content-['']"
-                  draggable="false"
-                  style={{
-                    backgroundImage: `url(${arrRandNoRep(
-                      mapImages[timelineBasespot.map]
-                    )})`,
-                    backgroundSize: "cover",
-                    objectPosition: "100% center",
-                  }}
-                >
-                  <div className="z-10 flex h-full flex-col items-start justify-end px-8 py-4 text-stone-200">
-                    <p className="text-xl font-bold uppercase">
-                      {timelineBasespot.tribe_name}
-                    </p>
-                    <p className="text-base font-light">
-                      {timelineBasespot.Map.name}{" "}
-                      {timelineBasespot.basespot_id
-                        ? `- ${timelineBasespot.basespot.name}`
-                        : ""}
-                    </p>
-                    <hr className="my-2 h-[1px] w-full rounded border-0 bg-gray-100 dark:bg-stone-200" />
-                    <div className="flex w-full flex-row items-center justify-between space-x-6 overflow-y-hidden">
-                      <div className="flex flex-col items-start">
-                        <p className="text-md font-light">
-                          {new Date(
-                            timelineBasespot.start_date
-                          ).toLocaleDateString("no-NO", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
-                        </p>
-                        <p className="text-xl font-normal">Started</p>
-                      </div>
-                      <div className="flex flex-col items-start">
-                        <p className="text-md font-light">
-                          {timelineBasespot.season
-                            ? `Season ${timelineBasespot.season}`
-                            : "ㅤ"}
-                        </p>
-                        <p className="text-xl font-normal">
-                          {timelineBasespot.server}
-                          <img
-                            src={
-                              servers[
-                                timelineBasespot.server
-                                  .toLowerCase()
-                                  .replaceAll(" ", "")
-                              ]
-                            }
-                            className="ml-1 inline-block h-6 w-6 rounded-full"
-                          />
-                          {timelineBasespot.cluster && (
-                            <span className="ml-2 rounded bg-gray-100 px-2.5 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
-                              {timelineBasespot.cluster}
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                      <button
-                        onClick={() =>
-                          navigate(
-                            routes.timelineBasespot({
-                              id: timelineBasespot.id.toString(),
-                            })
-                          )
-                        }
-                        className="rw-button rw-button-gray-outline !mr-2"
-                      >
-                        View
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </section>
-      </div> */}
+
+      <table className="table table-auto text-white rounded-lg">
+        <tbody className="text-center rounded-lg">
+          {Object.keys(servers).map((server, i) => (
+            <tr className="table-row p-2 first:border-t first:rounded-lg" key={server}>
+              <td className="!text-left min-w-fit table-cell py-2 px-4 border-l border-b !rounded-lg border-white font-bold">
+                {server}
+              </td>
+
+              {grid.length > 0 && timelineBasespots.map((timelineBasespot, index) => {
+                for (let i = 0; i < grid.length; i++) {
+
+                  if (new Date(timelineBasespot.start_date) < grid[0].date || new Date(timelineBasespot.start_date) > grid[grid.length - 1].date) {
+                    // return (
+                    //   <td key={index} className="py-2 px-4 border-l border-b border-white last:border-r">
+                    //   </td>
+                    // );
+                    return;
+                  }
+                  if (timelineBasespot.server.toLowerCase().replaceAll(' ', '') !== server) {
+                    return (
+                      <td key={index} className="py-2 px-4 border-l border-b border-white last:border-r">
+                      </td>
+                    )
+                  }
+                  return (
+                    <td key={index} className="py-2 px-4 border-l border-b border-white last:border-r" colSpan={monthDiff(new Date(timelineBasespot.start_date), new Date(timelineBasespot.end_date || timelineBasespot.start_date)) + 1}>
+                      {timelineBasespot.id || 's'}
+                    </td>
+                  )
+                }
+              })}
+            </tr>
+          ))}
+          <tr className="table-row p-2 last:border-t">
+            <td className="py-2 px-4 border-l border-white last:border-r border-opacity-50"></td>
+            {grid.map((m) => (
+              <td className="py-2 px-4 border-l border-white last:border-r border-opacity-50 text-opacity-50"><span>{m.label}</span></td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+
       {/* <div className="w-fit p-2 text-white">
         <div className="h-60 rounded-lg sm:h-80">
           <div className="flex h-full flex-col p-4">
@@ -552,7 +515,7 @@ const TimelineBasespotsList = ({
                       <g className="recharts-cartesian-grid-vertical">
                         {grid.map((_, index) => (
                           <line
-                            key={`gridline-${index}`}
+                            key={`gridline - ${ index }`}
                             strokeWidth="6"
                             stroke="#252525"
                             fill="none"
@@ -573,7 +536,7 @@ const TimelineBasespotsList = ({
                         {grid.map((month, index) => (
                           <g
                             className="recharts-layer recharts-cartesian-axis-tick"
-                            key={`month-${index}`}
+                            key={`month - ${ index }`}
                           >
                             <text
                               width="569"
@@ -598,7 +561,7 @@ const TimelineBasespotsList = ({
                         {[0, 650, 1300, 1950, 2600].map((tick, index) => (
                           <g
                             className="recharts-layer recharts-cartesian-axis-tick"
-                            key={`value-${index}`}
+                            key={`value - ${ index }`}
                           >
                             <text
                               width="60"
@@ -642,31 +605,31 @@ const TimelineBasespotsList = ({
                         strokeLinejoin="round"
                         className="recharts-curve recharts-line-curve"
                         d={path}
-                        // d="M65,48.787215407603554
-                        // C88.70833333333333,52.08354278566151,
-                        // 112.41666666666667,55.37987016371946,
-                        // 136.125,155.37987016371946
-                        // C159.83333333333334,55.37987016371946,
-                        // 183.54166666666666,55.31375355528897,
-                        // 207.25,15.31375355528897
-                        // C230.95833333333334,55.31375355528897,
-                        // 254.66666666666666,63.1456317307987,
-                        // 278.375,78.80938808181816
-                        // C302.0833333333333,94.47314443283761,
-                        // 325.7916666666667,159.37017169008817,
-                        // 349.5,159.37017169008817
-                        // C373.2083333333333,159.37017169008817,
-                        // 396.9166666666667,99.76602814025466,
-                        // 420.625,99.76602814025466
-                        // C444.3333333333333,99.76602814025466,
-                        // 468.0416666666667,129.98249279188164,
-                        // 491.75,129.98249279188164
-                        // C515.4583333333334,129.98249279188164,
-                        // 539.1666666666666,23.2724149434207,
-                        // 562.875,23.2724149434207
-                        // C586.5833333333334,23.2724149434207,
-                        // 610.2916666666666,53.6005700527309,
-                        // 634,183.9287251620411"
+                      //   d="M65,48.787215407603554
+                      // C88.70833333333333,52.08354278566151,
+                      // 112.41666666666667,55.37987016371946,
+                      // 136.125,155.37987016371946
+                      // C159.83333333333334,55.37987016371946,
+                      // 183.54166666666666,55.31375355528897,
+                      // 207.25,15.31375355528897
+                      // C230.95833333333334,55.31375355528897,
+                      // 254.66666666666666,63.1456317307987,
+                      // 278.375,78.80938808181816
+                      // C302.0833333333333,94.47314443283761,
+                      // 325.7916666666667,159.37017169008817,
+                      // 349.5,159.37017169008817
+                      // C373.2083333333333,159.37017169008817,
+                      // 396.9166666666667,99.76602814025466,
+                      // 420.625,99.76602814025466
+                      // C444.3333333333333,99.76602814025466,
+                      // 468.0416666666667,129.98249279188164,
+                      // 491.75,129.98249279188164
+                      // C515.4583333333334,129.98249279188164,
+                      // 539.1666666666666,23.2724149434207,
+                      // 562.875,23.2724149434207
+                      // C586.5833333333334,23.2724149434207,
+                      // 610.2916666666666,53.6005700527309,
+                      // 634,183.9287251620411"
                       />
                     </g>
                   </svg>
@@ -676,6 +639,110 @@ const TimelineBasespotsList = ({
           </div>
         </div>
       </div> */}
+      {/* <div className="rw-segment relative">
+        <section className="rw-segment h-[40rem]">
+          <div
+            ref={imgTrack}
+            style={{ transform: "translate(0%, -50%)" }}
+            className="absolute left-1/2 top-1/2 flex h-full min-w-[100vw] cursor-grab touch-pan-x select-none flex-row items-stretch space-x-3 overflow-x-auto p-3 will-change-scroll"
+            id="image-track"
+            data-mouse-down-at="0"
+            data-prev-percentage="0"
+            onMouseDown={handleOnDown}
+            onMouseUp={handleOnUp}
+            onMouseMove={handleOnMove}
+            onMouseLeave={handleOnUp}
+            onTouchStart={(e) => handleOnDown(e.touches[0])}
+            onTouchEnd={handleOnUp}
+            onTouchMove={(e) => handleOnMove(e.touches[0])}
+            onTouchCancel={handleOnUp}
+            onScroll={handleScroll}
+          >
+            {timelineBasespots.length > 0 &&
+              timelineBasespots.map((timelineBasespot, i) => (
+                <div
+                  key={i}
+                  aria-controls={`tab - ${ i }`}
+                  className="image relative flex min-w-[50vmin] flex-1 flex-col rounded object-cover transition-all duration-300 after:absolute after:left-0 after:top-0 after:block after:h-full after:w-full after:rounded after:bg-gradient-to-b after:from-transparent after:to-black after:content-['']"
+                  draggable="false"
+                  style={{
+                    backgroundImage: `url(${
+                        arrRandNoRep(
+                          mapImages[timelineBasespot.map]
+                    )})`,
+                      backgroundSize: "cover",
+                      objectPosition: "100% center",
+                  }}
+                >
+                      <div className="z-10 flex h-full flex-col items-start justify-end px-8 py-4 text-stone-200">
+                        <p className="text-xl font-bold uppercase">
+                          {timelineBasespot.tribe_name}
+                        </p>
+                        <p className="text-base font-light">
+                          {timelineBasespot.Map.name}{" "}
+                          {timelineBasespot.basespot_id
+                            ? `- ${timelineBasespot.basespot.name}`
+                            : ""}
+                        </p>
+                        <hr className="my-2 h-[1px] w-full rounded border-0 bg-gray-100 dark:bg-stone-200" />
+                        <div className="flex w-full flex-row items-center justify-between space-x-6 overflow-y-hidden">
+                          <div className="flex flex-col items-start">
+                            <p className="text-md font-light">
+                              {new Date(
+                                timelineBasespot.start_date
+                              ).toLocaleDateString("no-NO", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              })}
+                            </p>
+                            <p className="text-xl font-normal">Started</p>
+                          </div>
+                          <div className="flex flex-col items-start">
+                            <p className="text-md font-light">
+                              {timelineBasespot.season
+                                ? `Season ${timelineBasespot.season}`
+                                : "ㅤ"}
+                            </p>
+                            <p className="text-xl font-normal">
+                              {timelineBasespot.server}
+                              <img
+                                src={
+                                  servers[
+                                  timelineBasespot.server
+                                    .toLowerCase()
+                                    .replaceAll(" ", "")
+                                  ]
+                                }
+                                className="ml-1 inline-block h-6 w-6 rounded-full"
+                              />
+                              {timelineBasespot.cluster && (
+                                <span className="ml-2 rounded bg-gray-100 px-2.5 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                  {timelineBasespot.cluster}
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() =>
+                              navigate(
+                                routes.timelineBasespot({
+                                  id: timelineBasespot.id.toString(),
+                                })
+                              )
+                            }
+                            className="rw-button rw-button-gray-outline !mr-2"
+                          >
+                            View
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div >
+        </section>
+      </div> */}
+
     </div>
   );
 };
