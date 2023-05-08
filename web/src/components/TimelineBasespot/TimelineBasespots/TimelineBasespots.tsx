@@ -8,6 +8,7 @@ import { QUERY } from "src/components/TimelineBasespot/TimelineBasespotsCell";
 import {
   arrRandNoRep,
   getDateDiff,
+  groupBy,
   jsonTruncate,
   timeTag,
   truncate,
@@ -25,6 +26,82 @@ const DELETE_TIMELINE_BASESPOT_MUTATION = gql`
     }
   }
 `;
+const Timeline = () => {
+  const events = [
+    {
+      id: 1,
+      date: "2023-01-05",
+      title: "Event 1",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    },
+    {
+      id: 2,
+      date: "2023-01-15",
+      title: "Event 2",
+      description: "Pellentesque ac justo vel diam scelerisque tempor.",
+    },
+    {
+      id: 4,
+      date: "2023-03-01",
+      title: "Event 4",
+      description: "Quisque eget massa eu augue faucibus euismod.",
+    },
+    {
+      id: 5,
+      date: "2023-03-15",
+      title: "Event 5",
+      description: "Fusce fermentum mauris eget convallis consequat.",
+    },
+  ];
+
+  // Get the last 3 months
+  const today = new Date();
+  const lastThreeMonths = [];
+  for (let i = 5; i >= 0; i--) {
+    const month = new Date(today.getFullYear(), today.getMonth() - i, 1);
+    lastThreeMonths.push(month.toISOString().substring(0, 7));
+  }
+
+  // Group events by month
+  const groupedEvents = events.reduce((acc, event) => {
+    const month = event.date.substring(0, 7);
+    if (!acc[month]) {
+      acc[month] = [];
+    }
+    acc[month].push(event);
+    return acc;
+  }, {});
+
+  return (
+    <table className="timeline-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          {lastThreeMonths.map((month) => (
+            <th key={month}>{month}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Event</td>
+          {lastThreeMonths.map((month) => (
+            <td key={month}>
+              {groupedEvents[month] &&
+                groupedEvents[month].map((event) => (
+                  <div key={event.id}>
+                    <div>{event.date}</div>
+                    <div>{event.title}</div>
+                    <div>{event.description}</div>
+                  </div>
+                ))}
+            </td>
+          ))}
+        </tr>
+      </tbody>
+    </table>
+  );
+};
 
 const TimelineBasespotsList = ({
   timelineBasespots,
@@ -59,14 +136,17 @@ const TimelineBasespotsList = ({
       for (let i = 0; i < 9; i++) {
         const date = new Date(new Date().setDate(1));
         date.setMonth(date.getMonth() - i);
-        const monthName = date.toLocaleString("default", { month: "short" });
+        const monthName = date.toLocaleString("default", {
+          month: "short",
+          year: "numeric",
+        });
 
         setGrid((prev) => [
           ...prev,
           {
             label: monthName,
+            date,
             value: [650, 2350, 1000, 1350, 600, 1650, 2600, 650, 1950][i],
-            date: date
           },
         ]);
       }
@@ -110,6 +190,19 @@ const TimelineBasespotsList = ({
       return path;
     };
   }, []);
+
+  const groupedEvents = timelineBasespots.reduce((acc, event) => {
+    const month = new Date(event.start_date).toLocaleString("default", {
+      month: "short",
+      year: "numeric",
+    });
+    console.log(month);
+    if (!acc[month]) {
+      acc[month] = [];
+    }
+    acc[month].push(event);
+    return acc;
+  }, {});
   const path = useMemo(() => {
     if (grid.length === 0) return "";
 
@@ -277,8 +370,11 @@ const TimelineBasespotsList = ({
     return;
   }, []);
   function monthDiff(dateFrom, dateTo) {
-    return Math.abs(dateTo.getMonth() - dateFrom.getMonth() +
-      (12 * (dateTo.getFullYear() - dateFrom.getFullYear())))
+    return Math.abs(
+      dateTo.getMonth() -
+        dateFrom.getMonth() +
+        12 * (dateTo.getFullYear() - dateFrom.getFullYear())
+    );
   }
   return (
     <div>
@@ -330,141 +426,152 @@ const TimelineBasespotsList = ({
               </p>
             </div>
             <div className="rw-segment max-h-[300px] overflow-y-auto scroll-smooth transition-all duration-300">
-              {timelineBasespots.map(({ tribe_name, start_date, season, cluster, region, server }, index) => (
-                <div
-                  key={`timelinebasespot-${index}`}
-                  className="pl-4 transition-all duration-300"
-                  onClick={(e) => setActive(e, index)}
-                >
-                  <div className="relative my-10 min-h-[28px] pr-5">
-                    <div
-                      className={clsx(
-                        "absolute top-0 -left-4 inline-block h-full w-1 overflow-hidden rounded-sm will-change-transform",
-                        {
-                          "bg-gray-500 ": isActive !== index,
-                        }
-                      )}
-                    >
+              {timelineBasespots.map(
+                (
+                  { tribe_name, start_date, season, cluster, region, server },
+                  index
+                ) => (
+                  <div
+                    key={`timelinebasespot-${index}`}
+                    className="pl-4 transition-all duration-300"
+                    onClick={(e) => setActive(e, index)}
+                  >
+                    <div className="relative my-10 min-h-[28px] pr-5">
                       <div
                         className={clsx(
-                          "absolute top-0 left-0 inline-block h-full w-full origin-top scale-x-100 transform transition-transform duration-300 ease-linear",
+                          "absolute top-0 -left-4 inline-block h-full w-1 overflow-hidden rounded-sm will-change-transform",
                           {
-                            "animate-fill-up bg-pea-500 scale-y-100":
-                              isActive === index,
-                            "scale-y-0": isActive !== index,
+                            "bg-gray-500 ": isActive !== index,
                           }
                         )}
-                      ></div>
-                    </div>
-
-                    <div
-                      className={clsx(
-                        "cursor-pointer transition-all duration-300 ease-linear hover:opacity-100",
-                        {
-                          "text-gray-400 opacity-60": isActive !== index,
-                          "text-white opacity-100": isActive === index,
-                        }
-                      )}
-                    >
-                      <h3 className="text-xl inline-flex w-full justify-between items-center">
-                        <span>{tribe_name} -{" "}
-                          {new Date(start_date).toLocaleString(
-                            "default",
-                            { month: "short", year: "2-digit" }
-                          )}
-                        </span>
-                        <div className="self-end inline-flex space-x-1">
-                          <span className="">
-                            S{season || "?"}
-                          </span>
-                          <img
-                            src={
-                              servers[
-                              server
-                                .toLowerCase()
-                                .replaceAll(" ", "")
-                              ]
+                      >
+                        <div
+                          className={clsx(
+                            "absolute top-0 left-0 inline-block h-full w-full origin-top scale-x-100 transform transition-transform duration-300 ease-linear",
+                            {
+                              "animate-fill-up bg-pea-500 scale-y-100":
+                                isActive === index,
+                              "scale-y-0": isActive !== index,
                             }
-                            className="w-8 rounded-full"
-                          />
-                        </div>
-                      </h3>
-                    </div>
+                          )}
+                        ></div>
+                      </div>
 
-                    <div
-                      className={clsx(
-                        "origin-top overflow-hidden transition-all duration-300 ease-in will-change-transform",
-                        {
-                          "animate-fade-in !h-full": isActive === index,
-                          "!h-0": isActive !== index,
-                        }
-                      )}
-                    >
-                      <p className="mt-3 text-base font-light leading-6 text-[#3c4043] dark:text-stone-400">
-                        {season && (
-                          <abbr title={`Season ${season}`}>
-                            S{season}
-                          </abbr>
+                      <div
+                        className={clsx(
+                          "cursor-pointer transition-all duration-300 ease-linear hover:opacity-100",
+                          {
+                            "text-gray-400 opacity-60": isActive !== index,
+                            "text-white opacity-100": isActive === index,
+                          }
                         )}
-                        {` ${cluster || ""} ${region || ""}`}
+                      >
+                        <h3 className="inline-flex w-full items-center justify-between text-xl">
+                          <span>
+                            {tribe_name} -{" "}
+                            {new Date(start_date).toLocaleString("default", {
+                              month: "short",
+                              year: "2-digit",
+                            })}
+                          </span>
+                          <div className="inline-flex space-x-1 self-end">
+                            <span className="">S{season || "?"}</span>
+                            <img
+                              src={
+                                servers[
+                                  server.toLowerCase().replaceAll(" ", "")
+                                ]
+                              }
+                              className="w-8 rounded-full"
+                            />
+                          </div>
+                        </h3>
+                      </div>
 
-                        {(cluster ||
-                          region ||
-                          season) &&
-                          ", "}
-                        {server}
-                      </p>
+                      <div
+                        className={clsx(
+                          "origin-top overflow-hidden transition-all duration-300 ease-in will-change-transform",
+                          {
+                            "animate-fade-in !h-full": isActive === index,
+                            "!h-0": isActive !== index,
+                          }
+                        )}
+                      >
+                        <p className="mt-3 text-base font-light leading-6 text-[#3c4043] dark:text-stone-400">
+                          {season && (
+                            <abbr title={`Season ${season}`}>S{season}</abbr>
+                          )}
+                          {` ${cluster || ""} ${region || ""}`}
+
+                          {(cluster || region || season) && ", "}
+                          {server}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              )}
             </div>
           </div>
         </div>
       </section>
 
-      <table className="table table-auto text-white rounded-lg">
-        <tbody className="text-center rounded-lg">
-          {Object.keys(servers).map((server, i) => (
-            <tr className="table-row p-2 first:border-t first:rounded-lg" key={server}>
-              <td className="!text-left min-w-fit table-cell py-2 px-4 border-l border-b !rounded-lg border-white font-bold">
+      <table className="table table-auto rounded-lg text-white">
+        <colgroup>
+          <col span={2} className="bg-yellow-600" />
+          <col className="bg-red-500" />
+        </colgroup>
+        <tbody className="rounded-lg text-center">
+          {Object.keys(servers).map((server, idx) => (
+            <tr className="table-row p-2 first:border-t" key={server}>
+              <td className="table-cell min-w-fit border-l border-b border-white py-2 px-4 !text-left font-bold">
                 {server}
               </td>
 
-              {grid.length > 0 && timelineBasespots.map((timelineBasespot, index) => {
-                for (let i = 0; i < grid.length; i++) {
-
-                  if (new Date(timelineBasespot.start_date) < grid[0].date || new Date(timelineBasespot.start_date) > grid[grid.length - 1].date) {
-                    // return (
-                    //   <td key={index} className="py-2 px-4 border-l border-b border-white last:border-r">
-                    //   </td>
-                    // );
-                    return;
-                  }
-                  if (timelineBasespot.server.toLowerCase().replaceAll(' ', '') !== server) {
-                    return (
-                      <td key={index} className="py-2 px-4 border-l border-b border-white last:border-r">
-                      </td>
-                    )
-                  }
-                  return (
-                    <td key={index} className="py-2 px-4 border-l border-b border-white last:border-r" colSpan={monthDiff(new Date(timelineBasespot.start_date), new Date(timelineBasespot.end_date || timelineBasespot.start_date)) + 1}>
-                      {timelineBasespot.id || 's'}
-                    </td>
-                  )
-                }
-              })}
+              {grid.map((m) => (
+                <td
+                  className="table-cell border-l border-b border-white py-2 px-4 last:border-r"
+                  // colSpan={
+                  //   groupedEvents[m.label] &&
+                  //   groupedEvents[m.label].filter(
+                  //     (d) =>
+                  //       d.server.toLowerCase().replaceAll(" ", "") === server
+                  //   ).length
+                  // }
+                >
+                  {groupedEvents[m.label] ? (
+                    <div className="flex flex-col items-center justify-between">
+                      {groupedEvents[m.label]
+                        .filter(
+                          (d) =>
+                            d.server.toLowerCase().replaceAll(" ", "") ===
+                            server
+                        )
+                        .map((event) => (
+                          <div key={event.id} className="">
+                            <div>{event.id}</div>
+                          </div>
+                        ))}
+                    </div>
+                  ) : (
+                    <td className=""></td>
+                  )}
+                </td>
+              ))}
             </tr>
           ))}
           <tr className="table-row p-2 last:border-t">
-            <td className="py-2 px-4 border-l border-white last:border-r border-opacity-50"></td>
+            <td className="border-l border-white border-opacity-50 py-2 px-4 last:border-r"></td>
             {grid.map((m) => (
-              <td className="py-2 px-4 border-l border-white last:border-r border-opacity-50 text-opacity-50"><span>{m.label}</span></td>
+              <td className="border-l border-white border-opacity-50 py-2 px-4 text-opacity-50 last:border-r">
+                <span>{m.label}</span>
+              </td>
             ))}
           </tr>
         </tbody>
       </table>
 
+      <Timeline />
       {/* <div className="w-fit p-2 text-white">
         <div className="h-60 rounded-lg sm:h-80">
           <div className="flex h-full flex-col p-4">
@@ -742,7 +849,6 @@ const TimelineBasespotsList = ({
                 </div >
         </section>
       </div> */}
-
     </div>
   );
 };
