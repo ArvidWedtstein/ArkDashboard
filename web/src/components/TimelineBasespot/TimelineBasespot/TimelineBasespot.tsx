@@ -454,7 +454,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
           <div className="container mx-auto px-5 py-24">
             <div className="mb-20 flex w-full flex-col text-center">
               <h2 className="title-font text-pea-500 mb-1 text-xs font-medium tracking-widest">
-                Images & Screenshots taken during this basespot season
+                Images & Screenshots taken during this base
               </h2>
               <h1 className="title-font text-2xl font-medium text-gray-900 dark:text-neutral-200 sm:text-3xl">
                 Images
