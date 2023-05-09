@@ -23,8 +23,6 @@ import clsx from "clsx";
 import Table from "src/components/Util/Table/Table";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import Counter from "src/components/Util/Counter/Counter";
-import Tabs from "src/components/Util/Tabs/Tabs";
-import { PieChart } from "src/components/Util/PieChart/PieChart";
 
 const DELETE_DINO_MUTATION = gql`
   mutation DeleteDinoMutation($id: String!) {
@@ -33,17 +31,6 @@ const DELETE_DINO_MUTATION = gql`
     }
   }
 `;
-
-// type DinoStat = {
-//   fits_through: {
-//     item_id: number;
-//     value?: number;
-//     rank?: number;
-//     type: string;
-
-//   }[];
-// }
-// type DinoExtend = FindDinoById["dino"] & DinoStat
 
 interface Props {
   dino: NonNullable<FindDinoById["dino"]>;
@@ -102,21 +89,21 @@ const Dino = ({ dino }: Props) => {
   }, [maturation, setMaturation]);
 
   const [baseStats, setBaseStats] = useState(
-    dino?.base_points && Object.entries(dino?.base_stats).map(([key, value]: any) => {
-      return {
-        stat: key,
-        base: (typeof value === "object" ? value.b || 0 : value) || 0,
-        increasePerLevelWild: value.w || 0,
-        increasePerLevelTamed: value.t || 0,
-        total: 0,
-        points: 0,
-      };
-    })
+    dino?.base_points &&
+      Object.entries(dino?.base_stats).map(([key, value]: any) => {
+        return {
+          stat: key,
+          base: (typeof value === "object" ? value.b || 0 : value) || 0,
+          increasePerLevelWild: value.w || 0,
+          increasePerLevelTamed: value.t || 0,
+          total: 0,
+          points: 0,
+        };
+      })
   );
 
   const onAdd = useCallback(
     (id) => {
-      console.log(baseStats);
       setBaseStats(
         baseStats.map((stat) => {
           if (stat.stat === id) {
@@ -486,8 +473,8 @@ const Dino = ({ dino }: Props) => {
           foodSecondsPer = foodValue / foodConsumption;
           foodSeconds = Math.ceil(
             Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
-            foodSecondsPer +
-            (typeof interval1 === "number" ? interval1 : 0)
+              foodSecondsPer +
+              (typeof interval1 === "number" ? interval1 : 0)
           );
         } else {
           foodSecondsPer = 0;
@@ -579,11 +566,11 @@ const Dino = ({ dino }: Props) => {
         numNeeded = dino.violent_tame
           ? Math.ceil(affinityLeft / affinityVal / tamingMultiplier)
           : Math.ceil(
-            affinityLeft /
-            affinityVal /
-            tamingMultiplier /
-            dino.non_violent_food_rate_mult
-          );
+              affinityLeft /
+                affinityVal /
+                tamingMultiplier /
+                dino.non_violent_food_rate_mult
+            );
 
         numToUse = numNeeded >= food.use ? food.use : numNeeded;
         tooMuchFood = numNeeded >= food.use ? false : true;
@@ -591,10 +578,10 @@ const Dino = ({ dino }: Props) => {
         affinityLeft = dino.violent_tame
           ? affinityLeft - numToUse * affinityVal * tamingMultiplier
           : affinityLeft -
-          numToUse *
-          affinityVal *
-          tamingMultiplier *
-          dino.non_violent_food_rate_mult;
+            numToUse *
+              affinityVal *
+              tamingMultiplier *
+              dino.non_violent_food_rate_mult;
 
         totalFood += numToUse * foodVal;
 
@@ -602,14 +589,14 @@ const Dino = ({ dino }: Props) => {
         while (i <= numToUse) {
           effectiveness -= dino.violent_tame
             ? (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
-            affinityVal /
-            tamingMultiplier /
-            100
+              affinityVal /
+              tamingMultiplier /
+              100
             : (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
-            affinityVal /
-            tamingMultiplier /
-            dino.non_violent_food_rate_mult /
-            100;
+              affinityVal /
+              tamingMultiplier /
+              dino.non_violent_food_rate_mult /
+              100;
 
           totalSecs =
             numUsedTotal == 1
@@ -638,18 +625,17 @@ const Dino = ({ dino }: Props) => {
       tamingFood.forEach((food: any) => {
         numNeeded = Math.ceil(
           affinityLeft /
-          food?.stats.find((f) => f.id === 15)?.value /
-          tamingMultiplier
+            food?.stats.find((f) => f.id === 15)?.value /
+            tamingMultiplier
         );
         neededValues[food.id] = numNeeded;
         neededValuesSecs[food.id] = Math.ceil(
           (numNeeded * food.stats.find((f: any) => f.id === 8)?.value) /
-          foodConsumption +
-          totalSecs
+            foodConsumption +
+            totalSecs
         );
       });
     }
-    console.log(neededValues);
     let percentLeft = affinityLeft / affinityNeeded;
     let percentTamed = 1 - percentLeft;
     let totalTorpor =
@@ -664,7 +650,7 @@ const Dino = ({ dino }: Props) => {
           [`${name}Min`]: Math.max(
             Math.ceil(
               (totalSecs * torporDepletionPS - totalTorpor) /
-              (stats.torpor + torporDepletionPS * stats.secs)
+                (stats.torpor + torporDepletionPS * stats.secs)
             ),
             0
           ),
@@ -808,8 +794,8 @@ const Dino = ({ dino }: Props) => {
                     Math.ceil((totalDamage - baseHealth) / incPerLevel),
                     0
                   )
-                  ? 0
-                  : calculatePropability(
+                ? 0
+                : calculatePropability(
                     dinoLevel - 1,
                     numStats,
                     Math.max(
@@ -834,13 +820,13 @@ const Dino = ({ dino }: Props) => {
                   totalDamage < baseHealth
                     ? 100
                     : calculatePropability(
-                      dinoLevel - 1,
-                      numStats,
-                      Math.max(
-                        Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                        0
-                      )
-                    );
+                        dinoLevel - 1,
+                        numStats,
+                        Math.max(
+                          Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                          0
+                        )
+                      );
 
                 const chanceOfDeath = Math.round(100 - propsurvival);
                 hitboxes[i].chanceOfDeath = chanceOfDeath;
@@ -949,89 +935,88 @@ const Dino = ({ dino }: Props) => {
       ]}
         tabClassName="" /> */}
 
-      {!!dino.maturation_time && dino.maturation_time != 0 && (dino.incubation_time || dino.base_points) && (
-        <section className="my-3 rounded-md p-4">
-          <p className="my-3 text-center text-sm">{dino.name} breeding:</p>
-          <Form className="my-6 mx-auto flex justify-center">
-            <NumberField
-              name="matPerc"
-              id="matPerc"
-              className="rw-input w-20 rounded-none rounded-l-lg"
-              placeholder="Maturation Percent"
-              defaultValue={0}
-              min={0}
-              max={100}
-              onInput={debounce((event) => {
-                setMaturation(
-                  parseInt(event.target ? event.target["value"] : 0)
-                );
-              }, 300)}
-            />
-            <label
-              htmlFor="matPerc"
-              className="rw-input rounded-none rounded-r-lg"
-            >
-              %
-            </label>
-          </Form>
-          {/* Mating internal: 24h - 48h * matingIntervalMultiplier */}
+      {!!dino.maturation_time &&
+        dino.maturation_time != 0 &&
+        (dino.incubation_time || dino.base_points) && (
+          <section className="my-3 rounded-md p-4">
+            <p className="my-3 text-center text-sm">{dino.name} breeding:</p>
+            <Form className="my-6 mx-auto flex justify-center">
+              <NumberField
+                name="matPerc"
+                id="matPerc"
+                className="rw-input w-20 rounded-none rounded-l-lg"
+                placeholder="Maturation Percent"
+                defaultValue={0}
+                min={0}
+                max={100}
+                onInput={debounce((event) => {
+                  setMaturation(
+                    parseInt(event.target ? event.target["value"] : 0)
+                  );
+                }, 300)}
+              />
+              <label
+                htmlFor="matPerc"
+                className="rw-input rounded-none rounded-r-lg"
+              >
+                %
+              </label>
+            </Form>
+            {/* Mating internal: 24h - 48h * matingIntervalMultiplier */}
 
-          <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
-            {[
-              {
-                name: "Incubation",
-                time: dino.incubation_time / settings.hatchMultiplier,
-              },
-              { name: "Baby", time: (dino.maturation_time * 1) / 10 },
-              {
-                name: "Juvenile",
-                time:
-                  (dino?.maturation_time * 1) / 2 -
-                  (dino?.maturation_time * 1) / 10,
-              },
-              {
-                name: "Adolescent",
-                time:
-                  (dino?.maturation_time * settings.matureMultiplier) /
-                  2,
-              },
-              {
-                name: "Total",
-                time:
-                  dino?.maturation_time * settings.matureMultiplier,
-              },
-            ].map(({ name, time }, i) => (
-              <>
-                <li
-                  className={clsx(`flex items-center space-x-2.5`, {
-                    "text-black dark:text-gray-400 [&>*]:border-gray-500 [&>*]:fill-gray-500 [&>*]:dark:border-gray-400 [&>*]:dark:fill-gray-400":
-                      calcMaturationPercent() < time,
-                    "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500 [&>*]:dark:fill-pea-500 [&>*]:fill-pea-600":
-                      calcMaturationPercent() >= time,
-                  })}
-                >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
-                    {i + 1}
-                  </span>
-                  <span>
-                    <h3 className="font-medium leading-tight">{name}</h3>
-                    <p className="text-sm">{timeFormatL(time)}</p>
-                  </span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className={clsx(`h-6 w-6`, {
-                      hidden: i === 4,
+            <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
+              {[
+                {
+                  name: "Incubation",
+                  time: dino.incubation_time / settings.hatchMultiplier,
+                },
+                { name: "Baby", time: (dino.maturation_time * 1) / 10 },
+                {
+                  name: "Juvenile",
+                  time:
+                    (dino?.maturation_time * 1) / 2 -
+                    (dino?.maturation_time * 1) / 10,
+                },
+                {
+                  name: "Adolescent",
+                  time: (dino?.maturation_time * settings.matureMultiplier) / 2,
+                },
+                {
+                  name: "Total",
+                  time: dino?.maturation_time * settings.matureMultiplier,
+                },
+              ].map(({ name, time }, i) => (
+                <>
+                  <li
+                    className={clsx(`flex items-center space-x-2.5`, {
+                      "text-black dark:text-gray-400 [&>*]:border-gray-500 [&>*]:fill-gray-500 [&>*]:dark:border-gray-400 [&>*]:dark:fill-gray-400":
+                        calcMaturationPercent() < time,
+                      "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500 [&>*]:dark:fill-pea-500 [&>*]:fill-pea-600":
+                        calcMaturationPercent() >= time,
                     })}
-                    viewBox="0 0 256 512"
                   >
-                    <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
-                  </svg>
-                </li>
-              </>
-            ))}
-          </ol>
-        </section>
-      )}
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
+                      {i + 1}
+                    </span>
+                    <span>
+                      <h3 className="font-medium leading-tight">{name}</h3>
+                      <p className="text-sm">{timeFormatL(time)}</p>
+                    </span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={clsx(`h-6 w-6`, {
+                        hidden: i === 4,
+                      })}
+                      viewBox="0 0 256 512"
+                    >
+                      <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                    </svg>
+                  </li>
+                </>
+              ))}
+            </ol>
+          </section>
+        )}
 
       {dino.egg_min &&
         dino.egg_max &&
@@ -1118,7 +1103,8 @@ const Dino = ({ dino }: Props) => {
               {
                 value: "e85015a5-8694-44e6-81d3-9e1fdd06061d",
                 label: "Pteranodon",
-                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_pteranodon.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_pteranodon.png",
               },
               {
                 value: "1e7966e7-d63d-483d-a541-1a6d8cf739c8",
@@ -1129,22 +1115,26 @@ const Dino = ({ dino }: Props) => {
               {
                 value: "b8e304b3-ab46-4232-9226-c713e5a0d22c",
                 label: "Tapejara",
-                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_tapejara.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_tapejara.png",
               },
               {
                 value: "da86d88a-3171-4fc9-b96d-79e8f59f1601",
                 label: "Griffin",
-                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_griffin.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_griffin.png",
               },
               {
                 value: "147922ce-912d-4ab6-b4b6-712a42a9d939",
                 label: "Desmodus",
-                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_desmodus.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_desmodus.png",
               },
               {
                 value: "28971d02-8375-4bf5-af20-6acb20bf7a76",
                 label: "Argentavis",
-                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_argentavis.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_argentavis.png",
               },
               {
                 value: "f924e5d6-832a-4fb3-abc0-2fa42481cee1",
@@ -1155,32 +1145,38 @@ const Dino = ({ dino }: Props) => {
               {
                 value: "7aec6bf6-357e-44ec-8647-3943ca34e666",
                 label: "Wyvern",
-                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_wyvern.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_wyvern.png",
               },
               {
                 value: "2b938227-61c2-4230-b7da-5d4d55f639ae",
                 label: "Quetzal",
-                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_quetzal.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_quetzal.png",
               },
               {
                 value: "b1d6f790-d15c-4813-a6c8-9e6f62fafb52",
                 label: "Tusoteuthis",
-                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_tusoteuthis.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_tusoteuthis.png",
               },
               {
                 value: "d670e948-055e-45e1-adf3-e56d63236238",
                 label: "Karkinos",
-                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_karkinos.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_karkinos.png",
               },
               {
                 value: "52156470-6075-487b-a042-2f1d0d88536c",
                 label: "Kaprosuchus",
-                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_kaprosuchus.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_kaprosuchus.png",
               },
               {
                 value: "f723f861-0aa3-40b5-b2d4-6c48ec0ca683",
                 label: "Procoptodon",
-                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_procoptodon.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_procoptodon.png",
               },
               {
                 value: "human",
@@ -1210,7 +1206,8 @@ const Dino = ({ dino }: Props) => {
               {
                 value: "322",
                 label: "Doorframe",
-                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-doorframe.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-doorframe.png",
               },
               {
                 value: "1066",
@@ -1233,7 +1230,8 @@ const Dino = ({ dino }: Props) => {
               {
                 value: "316",
                 label: "Hatchframe",
-                image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-hatchframe.png",
+                image:
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-hatchframe.png",
               },
               {
                 value: "619",
@@ -1334,7 +1332,11 @@ const Dino = ({ dino }: Props) => {
                   field: "Item",
                   label: "Name",
                   valueFormatter: ({ value }) => {
-                    return <p>{value.name}</p>;
+                    return (
+                      <Link to={routes.item({ id: value.id })}>
+                        {value.name}
+                      </Link>
+                    );
                   },
                 },
                 {
@@ -1398,7 +1400,11 @@ const Dino = ({ dino }: Props) => {
                   field: "Item",
                   label: "",
                   valueFormatter: ({ value }) => {
-                    return <p>{value.name}</p>;
+                    return (
+                      <Link to={routes.item({ id: value.id })}>
+                        {value.name}
+                      </Link>
+                    );
                   },
                 },
                 {
@@ -1456,7 +1462,9 @@ const Dino = ({ dino }: Props) => {
                         src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${value.image}`}
                         className="h-8 w-8 self-start"
                       />
-                      <p>{value.name}</p>
+                      <Link to={routes.item({ id: value.id })}>
+                        {value.name}
+                      </Link>
                     </div>
                   );
                 },
@@ -1481,7 +1489,9 @@ const Dino = ({ dino }: Props) => {
                         src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${value.image}`}
                         className="h-8 w-8 self-end"
                       />
-                      <p>{value.name}</p>
+                      <Link to={routes.item({ id: value.id })}>
+                        {value.name}
+                      </Link>
                     </div>
                   );
                 },
@@ -1560,8 +1570,8 @@ const Dino = ({ dino }: Props) => {
                 selectedFood
                   ? selectedFood.toString()
                   : dino.DinoStat.filter(
-                    (f) => f.type === "food"
-                  )[0].Item.id.toString(),
+                      (f) => f.type === "food"
+                    )[0].Item.id.toString(),
               ]}
               validation={{
                 single: true,
@@ -1578,96 +1588,6 @@ const Dino = ({ dino }: Props) => {
               }}
             />
 
-            {/* <Table
-              rows={tamingFood}
-              columns={[
-                {
-                  field: "name",
-                  label: "Food",
-                  bold: true,
-                  sortable: true,
-                  renderCell: ({ row }) => {
-                    return (
-                      <button className="flex flex-row content-center items-center align-middle" onClick={() => setSelectedFood(row.id)}>
-                        <img
-                          className="w-6 h-6 mr-2"
-                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
-                          alt={row.name}
-                        />
-                        <span>{row.name}</span>
-                      </button>
-                    );
-                  },
-                },
-                {
-                  field: "use",
-                  label: "Use",
-                  bold: true,
-                  renderCell: ({ row }) => {
-                    return (
-                      <div
-                        className="flex flex-row items-center rw-button-group justify-start"
-                        key={`${row.use}+${Math.random()}`}
-                      >
-                        <button
-                          type="button"
-                          disabled={row.use <= 0}
-                          className="rw-button"
-                        >
-                          -
-                        </button>
-                        <p
-                          defaultValue={row.use}
-                          className="rw-input w-20 p-3 text-center"
-                        >
-                          {row.use}/{row.max}
-                        </p>
-                        <button
-                          type="button"
-                          disabled={row.use >= row.max}
-                          className="rw-button"
-                        >
-                          +
-                        </button>
-                      </div>
-                    );
-                  },
-                },
-                {
-                  field: "seconds",
-                  label: "Time",
-                  numeric: true,
-                  className: "text-center",
-                  valueFormatter: ({ value }) => {
-                    let minutes = Math.floor(value / 60);
-                    let remainingSeconds =
-                      value % 60 < 10 ? `0${value % 60}` : value % 60;
-                    return `${minutes}:${remainingSeconds}`;
-                  },
-                },
-                {
-                  field: "results",
-                  label: "Effectiveness",
-                  renderCell: ({ value }) => {
-                    return (
-                      <div className="block">
-                        <div className="my-2 h-1 overflow-hidden rounded-md bg-white">
-                          <span
-                            className="bg-pea-500 block h-1 w-full rounded-md"
-                            style={{
-                              width: `${value ? value.effectiveness : 0}%`,
-                            }}
-                          ></span>
-                        </div>
-                        <p className="text-xs">
-                          {(value ? value.effectiveness : 0).toFixed(2)}%
-                        </p>
-                      </div>
-                    );
-                  },
-                },
-              ]}
-            /> */}
             {tameData && (
               <>
                 <p className="my-3 text-center text-base dark:text-gray-200">
@@ -1753,45 +1673,45 @@ const Dino = ({ dino }: Props) => {
                       tameData["bioMin"] !== 0 ||
                       tameData["narcoticsMin"] !== 0 ||
                       tameData["ascerbicMin"] !== 0) && (
-                        <>
-                          <div className="flex flex-col items-center">
-                            <img
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcoberry.png`}
-                              alt=""
-                              className="w-12"
-                            />
-                            <p>{tameData["narcoberriesMin"]}</p>
-                            <p className="text-xs">Narcoberries</p>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <img
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bio-toxin.png`}
-                              alt=""
-                              className="w-12"
-                            />
-                            <p>{tameData["bioMin"]}</p>
-                            <p className="text-xs">Bio Toxin</p>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <img
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcotic.png`}
-                              alt=""
-                              className="w-12"
-                            />
-                            <p>{tameData["narcoticsMin"]}</p>
-                            <p className="text-xs">Narcotics</p>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <img
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/ascerbic-mushroom.png`}
-                              alt=""
-                              className="w-12"
-                            />
-                            <p>{tameData["ascerbicMin"]}</p>
-                            <p className="text-xs">Ascerbic Mushroom</p>
-                          </div>
-                        </>
-                      )}
+                      <>
+                        <div className="flex flex-col items-center">
+                          <img
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcoberry.png`}
+                            alt=""
+                            className="w-12"
+                          />
+                          <p>{tameData["narcoberriesMin"]}</p>
+                          <p className="text-xs">Narcoberries</p>
+                        </div>
+                        <div className="flex flex-col items-center">
+                          <img
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bio-toxin.png`}
+                            alt=""
+                            className="w-12"
+                          />
+                          <p>{tameData["bioMin"]}</p>
+                          <p className="text-xs">Bio Toxin</p>
+                        </div>
+                        <div className="flex flex-col items-center">
+                          <img
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcotic.png`}
+                            alt=""
+                            className="w-12"
+                          />
+                          <p>{tameData["narcoticsMin"]}</p>
+                          <p className="text-xs">Narcotics</p>
+                        </div>
+                        <div className="flex flex-col items-center">
+                          <img
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/ascerbic-mushroom.png`}
+                            alt=""
+                            className="w-12"
+                          />
+                          <p>{tameData["ascerbicMin"]}</p>
+                          <p className="text-xs">Ascerbic Mushroom</p>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </section>
 
@@ -1873,10 +1793,13 @@ const Dino = ({ dino }: Props) => {
                     </div>
                   </>
                 )}
-
+                <label htmlFor="sec_between_hits" className="rw-label">
+                  Seconds between hits
+                </label>
                 <input
                   type="number"
                   inputMode="numeric"
+                  id="sec_between_hits"
                   name="sec_between_hits"
                   className="rw-input"
                   placeholder="Seconds between hits"
@@ -2103,7 +2026,7 @@ const Dino = ({ dino }: Props) => {
                     <button
                       disabled={
                         baseStats.find((s) => s.stat === row.stat)?.points <=
-                        0 || row.stat === "t"
+                          0 || row.stat === "t"
                       }
                       className="rw-button rw-button-small rw-button-red-outline disabled:bg-slate-500 disabled:text-white"
                       onClick={() => onRemove(row.stat)}
@@ -2120,7 +2043,7 @@ const Dino = ({ dino }: Props) => {
                         baseStats
                           .map((b) => b.points)
                           .reduce((a: any, b: any): any => a + b, 0) >=
-                        dinoLevel || row.stat === "t"
+                          dinoLevel || row.stat === "t"
                       }
                       className="rw-button rw-button-small rw-button-green-outline disabled:bg-slate-500 disabled:text-white"
                       onClick={() => onAdd(row.stat)}
@@ -2155,12 +2078,12 @@ const Dino = ({ dino }: Props) => {
                           {!value[label]
                             ? "-"
                             : truncate(
-                              (useFoundationUnit
-                                ? Number(value[label] / 300)
-                                : Number(value[label])
-                              ).toFixed(2),
-                              6
-                            )}
+                                (useFoundationUnit
+                                  ? Number(value[label] / 300)
+                                  : Number(value[label])
+                                ).toFixed(2),
+                                6
+                              )}
                         </p>
                       ))}
                       <p className="w-20">
@@ -2200,7 +2123,11 @@ const Dino = ({ dino }: Props) => {
           onClick={() => onDeleteClick(dino.id)}
         >
           Delete
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="rw-button-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 448 512"
+            className="rw-button-icon"
+          >
             <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
           </svg>
         </button>
