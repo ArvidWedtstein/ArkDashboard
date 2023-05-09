@@ -1,4 +1,5 @@
-import { Link, navigate, routes, useParams } from "@redwoodjs/router";
+import { set } from "@redwoodjs/forms";
+import { Link, back, navigate, routes, useParams } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
@@ -26,82 +27,8 @@ const DELETE_TIMELINE_BASESPOT_MUTATION = gql`
     }
   }
 `;
-const Timeline = () => {
-  const events = [
-    {
-      id: 1,
-      date: "2023-01-05",
-      title: "Event 1",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    },
-    {
-      id: 2,
-      date: "2023-01-15",
-      title: "Event 2",
-      description: "Pellentesque ac justo vel diam scelerisque tempor.",
-    },
-    {
-      id: 4,
-      date: "2023-03-01",
-      title: "Event 4",
-      description: "Quisque eget massa eu augue faucibus euismod.",
-    },
-    {
-      id: 5,
-      date: "2023-03-15",
-      title: "Event 5",
-      description: "Fusce fermentum mauris eget convallis consequat.",
-    },
-  ];
 
-  // Get the last 3 months
-  const today = new Date();
-  const lastThreeMonths = [];
-  for (let i = 5; i >= 0; i--) {
-    const month = new Date(today.getFullYear(), today.getMonth() - i, 1);
-    lastThreeMonths.push(month.toISOString().substring(0, 7));
-  }
 
-  // Group events by month
-  const groupedEvents = events.reduce((acc, event) => {
-    const month = event.date.substring(0, 7);
-    if (!acc[month]) {
-      acc[month] = [];
-    }
-    acc[month].push(event);
-    return acc;
-  }, {});
-
-  return (
-    <table className="timeline-table">
-      <thead>
-        <tr>
-          <th>Date</th>
-          {lastThreeMonths.map((month) => (
-            <th key={month}>{month}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Event</td>
-          {lastThreeMonths.map((month) => (
-            <td key={month}>
-              {groupedEvents[month] &&
-                groupedEvents[month].map((event) => (
-                  <div key={event.id}>
-                    <div>{event.date}</div>
-                    <div>{event.title}</div>
-                    <div>{event.description}</div>
-                  </div>
-                ))}
-            </td>
-          ))}
-        </tr>
-      </tbody>
-    </table>
-  );
-};
 
 const TimelineBasespotsList = ({
   timelineBasespots,
@@ -154,68 +81,19 @@ const TimelineBasespotsList = ({
     }
   }, []);
 
-  const generateSmoothLine = useMemo(() => {
-    return function (coords) {
-      if (coords.length < 2) {
-        return "";
-      }
-
-      let path = `M${coords[0].x},${coords[0].y}`;
-
-      for (let i = 0; i < coords.length - 1; i++) {
-        let p0 = i > 0 ? coords[i - 1] : coords[i];
-        let p1 = coords[i];
-        let p2 = coords[i + 1];
-        let p3 = i < coords.length - 2 ? coords[i + 2] : p2;
-
-        for (let t = 0; t < 1; t += 0.1) {
-          let x =
-            0.5 *
-            (2 * p1.x +
-              (-p0.x + p2.x) * t +
-              (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * t * t +
-              (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * t * t * t);
-          let y =
-            0.5 *
-            (2 * p1.y +
-              (-p0.y + p2.y) * t +
-              (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t * t +
-              (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t * t * t);
-          path += `L${x},${y}`;
-        }
-      }
-
-      path += `L${coords[coords.length - 1].x},${coords[coords.length - 1].y}`;
-
-      return path;
-    };
-  }, []);
 
   const groupedEvents = timelineBasespots.reduce((acc, event) => {
     const month = new Date(event.start_date).toLocaleString("default", {
       month: "short",
       year: "numeric",
     });
-    console.log(month);
     if (!acc[month]) {
       acc[month] = [];
     }
     acc[month].push(event);
     return acc;
   }, {});
-  const path = useMemo(() => {
-    if (grid.length === 0) return "";
 
-    const xGap = 71.125;
-    const xOffset = 65;
-
-    const points = [];
-    for (let i = 0; i < grid.length; i++) {
-      points.push({ x: xOffset + i * xGap, y: 220 - grid[i].value / 13 });
-    }
-
-    return generateSmoothLine(points);
-  }, [grid]);
 
   const mapImages = {
     2: [
@@ -276,86 +154,13 @@ const TimelineBasespotsList = ({
     ],
   };
   const servers = {
-    eliteark:
+    "Elite Ark":
       "https://eliteark.com/wp-content/uploads/2022/06/cropped-0_ark-logo.thumb_.png.36427f75c51aff4ecec55bba50fd194d.png",
-    bloodyark:
+    "Bloody Ark":
       "https://preview.redd.it/cdje2wcsmr521.png?width=313&format=png&auto=webp&s=bf1e8347b8dcd066bcf3aace6a461b61e804570b",
-    arkosic:
+    "Arkosic":
       "https://steamuserimages-a.akamaihd.net/ugc/2023839858710970915/3E075CEE248A0C9F9069EC7D12894F597E74A2CF/?imw=200&imh=200&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true",
   };
-
-  // const imgTrack = useRef(null);
-  // const handleOnDown = useCallback((e) => {
-  //   imgTrack.current.dataset.mouseDownAt = parseFloat(e.clientX);
-  // }, []);
-
-  // const handleOnUp = useCallback(() => {
-  //   imgTrack.current.dataset.mouseDownAt = "0";
-  //   imgTrack.current.dataset.prevPercentage =
-  //     imgTrack.current.dataset.percentage;
-  // }, []);
-
-  // const handleOnMove = (e) => {
-  //   if (imgTrack.current.dataset.mouseDownAt === "0") return;
-  //   const mouseDelta =
-  //       parseFloat(imgTrack.current.dataset.mouseDownAt) -
-  //       parseFloat(e.clientX),
-  //     maxDelta = Number(imgTrack.current.clientWidth) / 2;
-
-  //   const percentage = (Number(mouseDelta) / Number(maxDelta)) * -100,
-  //     nextPercentageUnconstrained =
-  //       parseFloat(imgTrack.current.dataset.prevPercentage) + percentage,
-  //     nextPercentage = Math.max(Math.min(nextPercentageUnconstrained, 0), -100);
-
-  //   imgTrack.current.dataset.percentage = nextPercentage;
-
-  //   imgTrack.current.animate(
-  //     {
-  //       transform: `translate(${nextPercentage}%, -50%)`,
-  //     },
-  //     { duration: 1200, fill: "forwards" }
-  //   );
-
-  //   for (const image of imgTrack.current.getElementsByClassName("image")) {
-  //     image.animate(
-  //       {
-  //         backgroundPosition: `${100 + nextPercentage}% center`,
-  //       },
-  //       { duration: 1200, fill: "forwards" }
-  //     );
-  //   }
-  // };
-
-  // const handleScroll = (e) => {
-  //   if (imgTrack.current.dataset.mouseDownAt === "0") return;
-  //   const mouseDelta =
-  //       parseFloat(imgTrack.current.dataset.mouseDownAt) -
-  //       parseFloat(e.delta[0]),
-  //     maxDelta = Number(imgTrack.current.clientWidth) / 2;
-
-  //   const percentage = (Number(mouseDelta) / Number(maxDelta)) * -100,
-  //     nextPercentageUnconstrained =
-  //       parseFloat(imgTrack.current.dataset.prevPercentage) + percentage,
-  //     nextPercentage = Math.max(Math.min(nextPercentageUnconstrained, 0), -100);
-
-  //   imgTrack.current.dataset.percentage = nextPercentage;
-
-  //   imgTrack.current.animate(
-  //     {
-  //       transform: `translate(${nextPercentage}%, -50%)`,
-  //     },
-  //     { duration: 1200, fill: "forwards" }
-  //   );
-
-  //   for (const image of imgTrack.current.getElementsByClassName("image")) {
-  //     image.animate(
-  //       {
-  //         backgroundPosition: `${100 + nextPercentage}% center`,
-  //       },
-  //       { duration: 1200, fill: "forwards" }
-  //     );
-  //   }
-  // };
 
   const [isActive, setIsActive] = useState(0);
 
@@ -368,14 +173,73 @@ const TimelineBasespotsList = ({
     setIsActive(index);
 
     return;
-  }, []);
-  function monthDiff(dateFrom, dateTo) {
-    return Math.abs(
-      dateTo.getMonth() -
-        dateFrom.getMonth() +
-        12 * (dateTo.getFullYear() - dateFrom.getFullYear())
+  }, [isActive, setIsActive]);
+
+
+
+  const getEventCellStyle = (day, server) => {
+    const colors = [
+      "#FFB6C1",
+      "#FFC0CB",
+      "#FF69B4",
+      "#FF1493",
+      "#DB7093",
+      "#C71585",
+      "#E6E6FA",
+      "#D8BFD8",
+      "#DDA0DD",
+      "#DA70D6",
+      "#EE82EE",
+      "#FF00FF",
+      "#BA55D3",
+      "#9370DB",
+      "#663399",
+    ];
+    const event = timelineBasespots.find(
+      (event) => {
+        const startDate = new Date(event.start_date);
+        const endDate = new Date(event.end_date);
+
+
+        return new Date(startDate).toLocaleString('default', { year: 'numeric', month: 'numeric' }) <= new Date(day).toLocaleString('default', { year: 'numeric', month: 'numeric' }) && new Date(day).toLocaleString('default', { year: 'numeric', month: 'numeric' }) <= new Date(endDate).toLocaleString('default', { year: 'numeric', month: 'numeric' }) && event.server === server;
+      }
     );
-  }
+
+    if (event) {
+      const { id, start_date, end_date } = event;
+      const startDay = new Date(start_date).getMonth();
+      const endDay = new Date(end_date).getMonth();
+      const daysSpan = endDay - startDay + 1;
+      const mineStart = startDay === day.getMonth();
+      const mineEnd = endDay === day.getMonth();
+
+      const style = {
+        background: colors[id % colors.length],
+        borderLeft: mineStart && timelineBasespots.indexOf(event) === isActive ? '1px solid #fff' : 0,
+        borderRight: mineEnd && timelineBasespots.indexOf(event) === isActive ? '1px solid #fff' : 0,
+        borderTop: (mineEnd || mineStart) && timelineBasespots.indexOf(event) === isActive ? '1px solid #fff' : 0,
+        borderBottom: (mineEnd || mineStart) && timelineBasespots.indexOf(event) === isActive ? '1px solid #fff' : 0,
+
+        borderTopLeftRadius: mineStart ? '0.25rem' : 0,
+        borderBottomLeftRadius: mineStart ? '0.25rem' : 0,
+        borderTopRightRadius: mineEnd ? '0.25rem' : 0,
+        borderBottomRightRadius: mineEnd ? '0.25rem' : 0,
+        marginTop: '3px',
+        gridColumnStart: mineStart ? 'auto' : 'span 1',
+        gridColumnEnd: mineEnd ? 'auto' : `span ${daysSpan}`,
+      };
+
+      return {
+        style,
+        onClick: (e) => {
+          setIsActive(timelineBasespots.indexOf(event));
+          // navigate(routes.timelineBasespot({ id: id.toString() }));
+        },
+      };
+    }
+
+    return null;
+  };
   return (
     <div>
       <section className="relative m-auto flex h-full w-full px-10 ">
@@ -478,9 +342,7 @@ const TimelineBasespotsList = ({
                             <span className="">S{season || "?"}</span>
                             <img
                               src={
-                                servers[
-                                  server.toLowerCase().replaceAll(" ", "")
-                                ]
+                                servers[server]
                               }
                               className="w-8 rounded-full"
                             />
@@ -516,339 +378,69 @@ const TimelineBasespotsList = ({
         </div>
       </section>
 
-      <table className="table table-auto rounded-lg text-white">
-        <colgroup>
-          <col span={2} className="bg-yellow-600" />
-          <col className="bg-red-500" />
-        </colgroup>
-        <tbody className="rounded-lg text-center">
-          {Object.keys(servers).map((server, idx) => (
-            <tr className="table-row p-2 first:border-t" key={server}>
-              <td className="table-cell min-w-fit border-l border-b border-white py-2 px-4 !text-left font-bold">
-                {server}
-              </td>
+      <div className="rw-table-wrapper-responsive">
+        <table className="w-full mx-auto text-sm table-auto">
+          <tbody className="rounded-lg text-center">
+            {Object.keys(servers).map((server) => (
+              <tr className="table-row" key={server}>
+                <td className="table-cell min-w-fit font-bold px-3 py-2 dark:text-white text-gray-800">
+                  {server}
+                </td>
+                {grid.map((m) => {
+                  const events = groupedEvents[m.label] || [];
+                  const filteredEvents = events.filter((d) => d.server === server);
 
-              {grid.map((m) => (
-                <td
-                  className="table-cell border-l border-b border-white py-2 px-4 last:border-r"
-                  // colSpan={
-                  //   groupedEvents[m.label] &&
-                  //   groupedEvents[m.label].filter(
-                  //     (d) =>
-                  //       d.server.toLowerCase().replaceAll(" ", "") === server
-                  //   ).length
-                  // }
-                >
-                  {groupedEvents[m.label] ? (
-                    <div className="flex flex-col items-center justify-between">
-                      {groupedEvents[m.label]
-                        .filter(
-                          (d) =>
-                            d.server.toLowerCase().replaceAll(" ", "") ===
-                            server
-                        )
-                        .map((event) => (
-                          <div key={event.id} className="">
-                            <div>{event.id}</div>
+                  return (
+                    <td
+                      className="table-cell border-l border-black dark:border-stone-300 px-3 py-2 dark:text-white text-gray-800"
+                      key={m.label}
+                    >
+                      {filteredEvents.length > 0 ? (
+                        <div className="flex flex-col">
+                          {filteredEvents.map((event) => {
+                            const shouldRenderEvent =
+                              new Date(event.start_date).getMonth() <= new Date(m.date).getMonth() &&
+                              new Date(m.date).getMonth() <= new Date(event.end_date).getMonth();
+
+                            if (shouldRenderEvent) {
+
+                              return (
+                                <div key={event.id} className="relative">
+                                  <div className="h-auto -mx-3 text-white cursor-pointer text-left pl-1" {...getEventCellStyle(m.date, server)} title={`${event.server} Season ${event.season}`}>
+                                    <Link to={routes.timelineBasespot({ id: event.id.toString() })}>{`${event.server} S${event.season ? event.season : '?'}`}</Link>
+                                  </div>
+                                </div>
+                              );
+                            }
+
+                            return null;
+                          })}
+                        </div>
+                      ) : (
+                        <div className="flex flex-col">
+                          <div className="">
+                            <div className="h-fit -mx-3 text-transparent" {...getEventCellStyle(m.date, server)}>
+                              -
+                            </div>
                           </div>
-                        ))}
-                    </div>
-                  ) : (
-                    <td className=""></td>
-                  )}
+                        </div>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+            <tr className="table-row p-2 last:border-t">
+              <td className="border-l border-black dark:border-stone-300 px-3 py-2 dark:text-white text-gray-800"></td>
+              {grid.map((m) => (
+                <td className="border-l border-black dark:border-stone-300 text-opacity-50  px-3 py-2 dark:text-white text-gray-800" key={m.label}>
+                  <span>{m.label}</span>
                 </td>
               ))}
             </tr>
-          ))}
-          <tr className="table-row p-2 last:border-t">
-            <td className="border-l border-white border-opacity-50 py-2 px-4 last:border-r"></td>
-            {grid.map((m) => (
-              <td className="border-l border-white border-opacity-50 py-2 px-4 text-opacity-50 last:border-r">
-                <span>{m.label}</span>
-              </td>
-            ))}
-          </tr>
-        </tbody>
-      </table>
-
-      <Timeline />
-      {/* <div className="w-fit p-2 text-white">
-        <div className="h-60 rounded-lg sm:h-80">
-          <div className="flex h-full flex-col p-4">
-            <div className="">
-              <div className="flex items-center">
-                <div className="flex-grow"></div>
-                <div className="ml-2">Last {grid.length} Months</div>
-              </div>
-              {grid.length > 0 && (
-                <div className="ml-5 font-bold capitalize">
-                  {grid[0].label} - {grid[grid.length - 1].label}
-                </div>
-              )}
-            </div>
-            <div className="flex-grow">
-              <div className="recharts-responsive-container h-full w-full">
-                <div className="recharts-wrapper relative h-[300px] w-[700px]">
-                  <svg
-                    className="recharts-surface"
-                    width="700"
-                    height="300"
-                    viewBox="0 0 700 300"
-                    version="1.1"
-                  >
-                    <defs>
-                      <linearGradient
-                        id="paint0_linear"
-                        x1="0"
-                        y1="0"
-                        x2="1"
-                        y2="0"
-                      >
-                        <stop stopColor="#6B8DE3"></stop>
-                        <stop offset="1" stopColor="#7D1C8D"></stop>
-                      </linearGradient>
-                      <linearGradient
-                        id="line_linear_gradient"
-                        x1="0"
-                        y1="0"
-                        x2="1"
-                        y2="0"
-                      >
-                        <stop stopColor="#5bcd85"></stop>
-                        <stop offset="1" stopColor="#34b364"></stop>
-                      </linearGradient>
-                    </defs>
-                    <g className="recharts-cartesian-grid">
-                      <g className="recharts-cartesian-grid-vertical">
-                        {grid.map((_, index) => (
-                          <line
-                            key={`gridline - ${ index }`}
-                            strokeWidth="6"
-                            stroke="#252525"
-                            fill="none"
-                            x={65 + 71.125 * index}
-                            y="5"
-                            width="569"
-                            height="200"
-                            x1={65 + 71.125 * index}
-                            y1="5"
-                            x2={65 + 71.125 * index}
-                            y2="220"
-                          />
-                        ))}
-                      </g>
-                    </g>
-                    <g className="recharts-layer recharts-cartesian-axis recharts-xAxis xAxis">
-                      <g className="recharts-cartesian-axis-ticks">
-                        {grid.map((month, index) => (
-                          <g
-                            className="recharts-layer recharts-cartesian-axis-tick"
-                            key={`month - ${ index }`}
-                          >
-                            <text
-                              width="569"
-                              height="30"
-                              x={65 + 71.125 * index}
-                              y="230"
-                              stroke="none"
-                              fill="#666"
-                              className="recharts-text recharts-cartesian-axis-tick-value capitalize"
-                              textAnchor="middle"
-                            >
-                              <tspan x={65 + 71.125 * index} dy="0.71em">
-                                {month.label}
-                              </tspan>
-                            </text>
-                          </g>
-                        ))}
-                      </g>
-                    </g>
-                    <g className="recharts-layer recharts-cartesian-axis recharts-yAxis yAxis">
-                      <g className="recharts-cartesian-axis-ticks">
-                        {[0, 650, 1300, 1950, 2600].map((tick, index) => (
-                          <g
-                            className="recharts-layer recharts-cartesian-axis-tick"
-                            key={`value - ${ index }`}
-                          >
-                            <text
-                              width="60"
-                              height="200"
-                              x="49"
-                              y={220 - tick / 13}
-                              stroke="none"
-                              fill="#666"
-                              className="recharts-text recharts-cartesian-axis-tick-value"
-                              textAnchor="end"
-                            >
-                              <tspan x="49" dy="0.355em">
-                                {tick}
-                              </tspan>
-                            </text>
-                          </g>
-                        ))}
-                      </g>
-                    </g>
-                    <g className="recharts-layer recharts-line">
-                      <path
-                        stroke="#dddddd"
-                        strokeWidth="3"
-                        strokeDasharray="8 8"
-                        fill="none"
-                        width="600"
-                        height="300"
-                        className="recharts-curve recharts-line-curve z-0"
-                        d={path}
-                      />
-                    </g>
-                    <g className="recharts-layer recharts-line">
-                      <path
-                        // stroke="none"
-                        stroke="url(#line_linear_gradient)"
-                        strokeWidth="4"
-                        fill="none"
-                        width="600"
-                        height="300"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="recharts-curve recharts-line-curve"
-                        d={path}
-                      //   d="M65,48.787215407603554
-                      // C88.70833333333333,52.08354278566151,
-                      // 112.41666666666667,55.37987016371946,
-                      // 136.125,155.37987016371946
-                      // C159.83333333333334,55.37987016371946,
-                      // 183.54166666666666,55.31375355528897,
-                      // 207.25,15.31375355528897
-                      // C230.95833333333334,55.31375355528897,
-                      // 254.66666666666666,63.1456317307987,
-                      // 278.375,78.80938808181816
-                      // C302.0833333333333,94.47314443283761,
-                      // 325.7916666666667,159.37017169008817,
-                      // 349.5,159.37017169008817
-                      // C373.2083333333333,159.37017169008817,
-                      // 396.9166666666667,99.76602814025466,
-                      // 420.625,99.76602814025466
-                      // C444.3333333333333,99.76602814025466,
-                      // 468.0416666666667,129.98249279188164,
-                      // 491.75,129.98249279188164
-                      // C515.4583333333334,129.98249279188164,
-                      // 539.1666666666666,23.2724149434207,
-                      // 562.875,23.2724149434207
-                      // C586.5833333333334,23.2724149434207,
-                      // 610.2916666666666,53.6005700527309,
-                      // 634,183.9287251620411"
-                      />
-                    </g>
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
-      {/* <div className="rw-segment relative">
-        <section className="rw-segment h-[40rem]">
-          <div
-            ref={imgTrack}
-            style={{ transform: "translate(0%, -50%)" }}
-            className="absolute left-1/2 top-1/2 flex h-full min-w-[100vw] cursor-grab touch-pan-x select-none flex-row items-stretch space-x-3 overflow-x-auto p-3 will-change-scroll"
-            id="image-track"
-            data-mouse-down-at="0"
-            data-prev-percentage="0"
-            onMouseDown={handleOnDown}
-            onMouseUp={handleOnUp}
-            onMouseMove={handleOnMove}
-            onMouseLeave={handleOnUp}
-            onTouchStart={(e) => handleOnDown(e.touches[0])}
-            onTouchEnd={handleOnUp}
-            onTouchMove={(e) => handleOnMove(e.touches[0])}
-            onTouchCancel={handleOnUp}
-            onScroll={handleScroll}
-          >
-            {timelineBasespots.length > 0 &&
-              timelineBasespots.map((timelineBasespot, i) => (
-                <div
-                  key={i}
-                  aria-controls={`tab - ${ i }`}
-                  className="image relative flex min-w-[50vmin] flex-1 flex-col rounded object-cover transition-all duration-300 after:absolute after:left-0 after:top-0 after:block after:h-full after:w-full after:rounded after:bg-gradient-to-b after:from-transparent after:to-black after:content-['']"
-                  draggable="false"
-                  style={{
-                    backgroundImage: `url(${
-                        arrRandNoRep(
-                          mapImages[timelineBasespot.map]
-                    )})`,
-                      backgroundSize: "cover",
-                      objectPosition: "100% center",
-                  }}
-                >
-                      <div className="z-10 flex h-full flex-col items-start justify-end px-8 py-4 text-stone-200">
-                        <p className="text-xl font-bold uppercase">
-                          {timelineBasespot.tribe_name}
-                        </p>
-                        <p className="text-base font-light">
-                          {timelineBasespot.Map.name}{" "}
-                          {timelineBasespot.basespot_id
-                            ? `- ${timelineBasespot.basespot.name}`
-                            : ""}
-                        </p>
-                        <hr className="my-2 h-[1px] w-full rounded border-0 bg-gray-100 dark:bg-stone-200" />
-                        <div className="flex w-full flex-row items-center justify-between space-x-6 overflow-y-hidden">
-                          <div className="flex flex-col items-start">
-                            <p className="text-md font-light">
-                              {new Date(
-                                timelineBasespot.start_date
-                              ).toLocaleDateString("no-NO", {
-                                month: "short",
-                                day: "numeric",
-                                year: "numeric",
-                              })}
-                            </p>
-                            <p className="text-xl font-normal">Started</p>
-                          </div>
-                          <div className="flex flex-col items-start">
-                            <p className="text-md font-light">
-                              {timelineBasespot.season
-                                ? `Season ${timelineBasespot.season}`
-                                : "ㅤ"}
-                            </p>
-                            <p className="text-xl font-normal">
-                              {timelineBasespot.server}
-                              <img
-                                src={
-                                  servers[
-                                  timelineBasespot.server
-                                    .toLowerCase()
-                                    .replaceAll(" ", "")
-                                  ]
-                                }
-                                className="ml-1 inline-block h-6 w-6 rounded-full"
-                              />
-                              {timelineBasespot.cluster && (
-                                <span className="ml-2 rounded bg-gray-100 px-2.5 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
-                                  {timelineBasespot.cluster}
-                                </span>
-                              )}
-                            </p>
-                          </div>
-                          <button
-                            onClick={() =>
-                              navigate(
-                                routes.timelineBasespot({
-                                  id: timelineBasespot.id.toString(),
-                                })
-                              )
-                            }
-                            className="rw-button rw-button-gray-outline !mr-2"
-                          >
-                            View
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div >
-        </section>
-      </div> */}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

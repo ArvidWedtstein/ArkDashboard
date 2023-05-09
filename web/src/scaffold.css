@@ -307,21 +307,21 @@ a {
 }
 .rw-table th,
 .rw-table td {
-  @apply p-3;
+  @apply px-3 py-2;
 }
 .rw-table td {
-  @apply bg-white text-gray-900;
+  @apply bg-white text-gray-900 dark:bg-zinc-600 dark:text-gray-800;
 }
 .rw-table tr:nth-child(odd) td,
 .rw-table tr:nth-child(odd) th {
-  @apply bg-gray-50;
+  @apply bg-gray-50 dark:bg-zinc-400;
 }
 .rw-table tr:nth-child(even) td,
 .rw-table tr:nth-child(even) th {
-  @apply bg-white;
+  @apply bg-white dark:bg-zinc-300;
 }
 .rw-table thead tr {
-  @apply bg-gray-200 text-gray-600;
+  @apply bg-gray-200 text-gray-600 dark:bg-zinc-600;
 }
 .rw-table th {
   @apply text-left font-semibold;
@@ -338,7 +338,7 @@ a {
   }
 }
 .rw-table tbody tr {
-  @apply border-t border-gray-200;
+  @apply border-t border-gray-200 dark:border-zinc-300;
 }
 .rw-table input {
   @apply ml-0;
@@ -364,6 +364,7 @@ a {
 .rw-table-actions .rw-button-red:hover {
   @apply bg-red-600 text-white;
 }
+
 .rw-text-center {
   @apply text-center text-black dark:text-white;
 }
