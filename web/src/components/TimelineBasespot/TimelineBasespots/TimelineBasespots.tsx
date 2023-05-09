@@ -10,6 +10,7 @@ import {
   arrRandNoRep,
   getDateDiff,
   groupBy,
+  isDate,
   jsonTruncate,
   timeTag,
   truncate,
@@ -58,6 +59,7 @@ const TimelineBasespotsList = ({
   //   }
   // };
   const [grid, setGrid] = useState([]);
+  const [radio, changeRadio] = useState('server');
   useEffect(() => {
     if (grid.length < 9) {
       for (let i = 0; i < 9; i++) {
@@ -68,32 +70,32 @@ const TimelineBasespotsList = ({
           year: "numeric",
         });
 
-        setGrid((prev) => [
-          ...prev,
-          {
-            label: monthName,
-            date,
-            value: [650, 2350, 1000, 1350, 600, 1650, 2600, 650, 1950][i],
-          },
-        ]);
+        grid.push({
+          label: monthName,
+          date,
+        });
       }
       setGrid((prev) => prev.reverse());
     }
   }, []);
 
 
-  const groupedEvents = timelineBasespots.reduce((acc, event) => {
-    const month = new Date(event.start_date).toLocaleString("default", {
-      month: "short",
-      year: "numeric",
-    });
-    if (!acc[month]) {
-      acc[month] = [];
-    }
-    acc[month].push(event);
-    return acc;
-  }, {});
+  const groupedEvents = useMemo(() => {
+    return timelineBasespots.reduce((acc, x) => {
+      let keyValue = new Date(x.start_date).toLocaleString("default", {
+        month: "short",
+        year: "numeric",
+      });
 
+
+      acc[keyValue] = acc[keyValue] ? [...acc[keyValue], x] : [x];
+      return acc;
+    }, {});
+  }, [timelineBasespots]);
+
+  const setRadio = useCallback((e) => {
+    changeRadio(e);
+  }, [radio])
 
   const mapImages = {
     2: [
@@ -201,11 +203,11 @@ const TimelineBasespotsList = ({
         const endDate = new Date(event.end_date);
 
 
-        return new Date(startDate).toLocaleString('default', { year: 'numeric', month: 'numeric' }) <= new Date(day).toLocaleString('default', { year: 'numeric', month: 'numeric' }) && new Date(day).toLocaleString('default', { year: 'numeric', month: 'numeric' }) <= new Date(endDate).toLocaleString('default', { year: 'numeric', month: 'numeric' }) && event.server === server;
+        return new Date(startDate).toLocaleString('default', { year: 'numeric', month: 'numeric' }) <= new Date(day).toLocaleString('default', { year: 'numeric', month: 'numeric' }) && new Date(day).toLocaleString('default', { year: 'numeric', month: 'numeric' }) <= new Date(endDate).toLocaleString('default', { year: 'numeric', month: 'numeric' }) && event[radio] === server;
       }
     );
 
-    if (event) {
+    if (event && event != null) {
       const { id, start_date, end_date } = event;
       const startDay = new Date(start_date).getMonth();
       const endDay = new Date(end_date).getMonth();
@@ -332,11 +334,7 @@ const TimelineBasespotsList = ({
                       >
                         <h3 className="inline-flex w-full items-center justify-between text-xl">
                           <span>
-                            {tribe_name} -{" "}
-                            {new Date(start_date).toLocaleString("default", {
-                              month: "short",
-                              year: "2-digit",
-                            })}
+                            {tribe_name}
                           </span>
                           <div className="inline-flex space-x-1 self-end">
                             <span className="">S{season || "?"}</span>
@@ -379,16 +377,24 @@ const TimelineBasespotsList = ({
       </section>
 
       <div className="rw-table-wrapper-responsive">
+        <select className="rw-input" onChange={(e) => setRadio(e.currentTarget.value)} defaultValue={'server'}>
+          <option value="server">Server</option>
+          <option value="season">Season</option>
+          <option value="cluster">Cluster</option>
+          <option value="region">Region</option>
+        </select>
+
+
         <table className="w-full mx-auto text-sm table-auto">
           <tbody className="rounded-lg text-center">
-            {Object.keys(servers).map((server) => (
-              <tr className="table-row" key={server}>
+            {Object.keys(groupBy(timelineBasespots, radio)).map((server) => (
+              <tr className="table-row border-b dark:border-opacity-50 border-black dark:border-stone-300" key={server}>
                 <td className="table-cell min-w-fit font-bold px-3 py-2 dark:text-white text-gray-800">
                   {server}
                 </td>
                 {grid.map((m) => {
                   const events = groupedEvents[m.label] || [];
-                  const filteredEvents = events.filter((d) => d.server === server);
+                  const filteredEvents = events.filter((d) => d[radio] === server);
 
                   return (
                     <td
