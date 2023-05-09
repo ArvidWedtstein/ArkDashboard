@@ -622,7 +622,8 @@ export const clamp = (
   );
 };
 
-type Colors = "red" | "purple" | "blue" | "green" | "slate" | "stone" | "gray";
+
+type Colors = "red" | "purple" | "blue" | "green" | "slate" | "stone" | "gray" | "lime" | "neutral" | "zinc" | "orange" | "amber" | "yellow" | "pea";
 type Luminance = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 export type BgColor = `bg-${Colors}-${Luminance}`;
 export type TextColor = `text-${Colors}-${Luminance}`;

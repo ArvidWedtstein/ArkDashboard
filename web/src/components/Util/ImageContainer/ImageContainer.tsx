@@ -32,7 +32,8 @@ const ImageContainer = ({
   } = props
   const ref = useRef(null)
   const [isVisible, setIsVisible] = useState(false)
-  // const [imageLoaded, setImageLoaded] = useState(false);
+
+
   useIntersectionObserver({
     target: ref,
     onIntersect: ([{ isIntersecting }], observerElement) => {
@@ -43,14 +44,14 @@ const ImageContainer = ({
     }
   })
 
-  const aspectRatio = (width / height) * 100
+  // const aspectRatio = (width / height) * 100
 
   return (
     <div
       key={key}
       ref={ref}
       className={clsx("relative overflow-hidden transition-opacity duration-300 ease-linear", className)}
-      style={{ paddingBottom: `${aspectRatio}%` }}
+    // style={{ paddingBottom: `${aspectRatio}%` }}
     >
       {/* {!imageLoaded && (
         <img
@@ -60,7 +61,7 @@ const ImageContainer = ({
         />
       )} */}
       {isVisible && (
-        <figure className="max-w-lg">
+        <figure className="max-w-3xl">
           <img
             className="h-auto max-w-full rounded-lg transition-all duration-1000"
             // onLoad={() => setImageLoaded(true)}

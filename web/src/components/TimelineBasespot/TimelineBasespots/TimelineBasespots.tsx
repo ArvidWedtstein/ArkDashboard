@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { QUERY } from "src/components/TimelineBasespot/TimelineBasespotsCell";
+import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
 import {
   arrRandNoRep,
   getDateDiff,
@@ -217,8 +218,8 @@ const TimelineBasespotsList = ({
 
       const style = {
         background: colors[id % colors.length],
-        borderLeft: mineStart && timelineBasespots.indexOf(event) === isActive ? '1px solid #fff' : 0,
-        borderRight: mineEnd && timelineBasespots.indexOf(event) === isActive ? '1px solid #fff' : 0,
+        borderLeft: mineStart && timelineBasespots.indexOf(event) === isActive ? '1px solid #fff' : mineEnd && !mineStart ? `3px solid ${colors[id % colors.length]}` : 0,
+        borderRight: mineEnd && timelineBasespots.indexOf(event) === isActive ? '1px solid #fff' : mineStart && !mineEnd ? `3px solid ${colors[id % colors.length]}` : 0,
         borderTop: (mineEnd || mineStart) && timelineBasespots.indexOf(event) === isActive ? '1px solid #fff' : 0,
         borderBottom: (mineEnd || mineStart) && timelineBasespots.indexOf(event) === isActive ? '1px solid #fff' : 0,
 
@@ -256,17 +257,17 @@ const TimelineBasespotsList = ({
                     hidden: isActive !== index,
                   })}
                 >
-                  <img
+                  <ImageContainer
                     className={clsx(
-                      "block w-full transition-opacity duration-300 ease-in-out",
+                      "block !w-full transition-opacity duration-300 ease-in-out rounded-lg motion-reduce:transition-none motion-reduce:transform-none",
                       {
                         "animate-fade-in opacity-100": isActive === index,
                         "opacity-0": isActive !== index,
                       }
                     )}
                     src={arrRandNoRep(mapImages[timelineBasespot.map])}
-                    alt=""
                   />
+                  <Link to={routes.timelineBasespot({ id: timelineBasespot.id.toString() })} className="float-right transition mt-2 rw-button rw-button-green-outline" onClick={(e) => { }}>View</Link>
                 </div>
               ))}
             </div>
@@ -399,10 +400,10 @@ const TimelineBasespotsList = ({
                   return (
                     <td
                       className="table-cell border-l border-black dark:border-stone-300 px-3 py-2 dark:text-white text-gray-800"
-                      key={m.label}
+                      key={m.label + '-' + server}
                     >
                       {filteredEvents.length > 0 ? (
-                        <div className="flex flex-col">
+                        <div className="flex flex-col z-10">
                           {filteredEvents.map((event) => {
                             const shouldRenderEvent =
                               new Date(event.start_date).getMonth() <= new Date(m.date).getMonth() &&
@@ -412,8 +413,8 @@ const TimelineBasespotsList = ({
 
                               return (
                                 <div key={event.id} className="relative">
-                                  <div className="h-auto -mx-3 text-white cursor-pointer text-left pl-1" {...getEventCellStyle(m.date, server)} title={`${event.server} Season ${event.season}`}>
-                                    <Link to={routes.timelineBasespot({ id: event.id.toString() })}>{`${event.server} S${event.season ? event.season : '?'}`}</Link>
+                                  <div className="h-auto -mx-3 text-white cursor-pointer text-left" {...getEventCellStyle(m.date, server)} title={`${event.server} Season ${event.season}`}>
+                                    <Link className="ml-1" to={routes.timelineBasespot({ id: event.id.toString() })}>{`${event.server} S${event.season ? event.season : '?'}`}</Link>
                                   </div>
                                 </div>
                               );

@@ -36,6 +36,7 @@ export const QUERY = gql`
         longitude
       }
       TimelineBasespotRaid {
+        id
         tribe_name
         base_survived
         raid_comment
