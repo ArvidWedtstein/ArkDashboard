@@ -1718,7 +1718,7 @@ const Dino = ({ dino }: Props) => {
                 {calcWeapons && tameData && (
                   <>
                     <p className="mt-3 text-lg">Knock Out</p>
-                    <div className="max-w-screen relative flex flex-row gap-2 overflow-x-auto rounded-md py-3 text-center">
+                    <div className="max-w-screen rw-segment relative flex flex-row gap-2 overflow-x-auto rounded-md py-3 text-center">
                       {calcWeapons.map((weapon, i) => (
                         <div
                           key={`weapon-${i}`}
@@ -1737,7 +1737,12 @@ const Dino = ({ dino }: Props) => {
                             className="h-16 w-16"
                             src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${weapon.image}`}
                           />
-                          <p className="w-full">{weapon.name}</p>
+                          <Link
+                            to={routes.item({ id: weapon.id })}
+                            className="w-full"
+                          >
+                            {weapon.name}
+                          </Link>
                           {weapon.isPossible ? (
                             <Counter
                               startNum={0}

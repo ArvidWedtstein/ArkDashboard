@@ -38,7 +38,7 @@ a {
   height: initial;
 }
 .rw-segment::-webkit-scrollbar-track {
-  @apply rounded-t-none rounded-b-[10px] border-0 border-t border-solid border-gray-200 bg-transparent p-[2px];
+  @apply rounded-t-none rounded-b-[10px]  bg-transparent p-[2px];
 }
 .rw-segment::-webkit-scrollbar-thumb {
   @apply rounded-full border-[3px] border-solid border-transparent bg-zinc-400 bg-clip-content;
@@ -122,6 +122,9 @@ a {
 .rw-button[disabled]:hover {
   @apply ring-0;
 }
+.rw-button:focus {
+  @apply outline-none ring-4;
+}
 /*
 // ----------------------------
 // Button Sizes
@@ -165,7 +168,7 @@ a {
   @apply border-stone-800 ring-1 ring-stone-700 dark:border-stone-600 dark:ring-stone-500;
 }
 .rw-button.rw-button-gray-outline:focus {
-  @apply outline-none ring-4 ring-stone-300 dark:ring-stone-800;
+  @apply ring-stone-300 dark:ring-stone-800;
 }
 
 /* Red Outline Button */
@@ -176,7 +179,7 @@ a {
   @apply border-red-800 ring-1 ring-red-500 dark:border-red-500 dark:ring-red-600;
 }
 .rw-button.rw-button-red-outline:focus {
-  @apply outline-none ring-4 ring-red-300 dark:ring-red-800;
+  @apply ring-red-300 dark:ring-red-800;
 }
 
 /* Green Button */
@@ -187,7 +190,7 @@ a {
   @apply bg-pea-600;
 }
 .rw-button.rw-button-green:focus {
-  @apply ring-pea-300 dark:ring-pea-800 outline-none ring-4;
+  @apply ring-pea-300 dark:ring-pea-800;
 }
 
 /* Blue Button */
@@ -198,7 +201,7 @@ a {
   @apply bg-blue-600;
 }
 .rw-button.rw-button-blue:focus {
-  @apply outline-none ring-4 ring-blue-300 dark:ring-blue-800;
+  @apply ring-blue-300 dark:ring-blue-800;
 }
 
 /* Red Button */
@@ -209,7 +212,7 @@ a {
   @apply bg-red-700 text-white;
 }
 .rw-button.rw-button-red:focus {
-  @apply outline-none ring-4 ring-red-300 dark:ring-red-800;
+  @apply ring-red-300 dark:ring-red-800;
 }
 
 /* Yellow Button */
@@ -220,7 +223,7 @@ a {
   @apply bg-yellow-600 text-white;
 }
 .rw-button.rw-button-yellow:focus {
-  @apply outline-none ring-4 ring-yellow-300 dark:ring-yellow-800;
+  @apply ring-yellow-300 dark:ring-yellow-800;
 }
 
 /* Gray Button */
@@ -231,7 +234,7 @@ a {
   @apply border-gray-500 bg-gray-500 ring ring-gray-200 dark:border-zinc-600 dark:bg-zinc-700 dark:ring-zinc-600;
 }
 .rw-button.rw-button-gray:focus {
-  @apply outline-none ring-4 ring-gray-300 dark:ring-zinc-800;
+  @apply ring-gray-300 dark:ring-zinc-800;
 }
 
 .rw-button-group {

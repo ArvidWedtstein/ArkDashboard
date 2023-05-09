@@ -255,16 +255,16 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
             onClick={clear}
             className="rw-button rw-button-red inline-flex items-center rounded-none first:rounded-l-lg last:rounded-r-lg"
           >
+            Clear
             <svg
               xmlns="http://www.w3.org/2000/svg"
               aria-hidden="true"
-              className="mr-2 h-4 w-4 fill-current"
+              className="rw-button-icon"
               fill="currentColor"
               viewBox="0 0 352 512"
             >
               <path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" />
             </svg>
-            Clear
           </button>
         </div>
       </div>
