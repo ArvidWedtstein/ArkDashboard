@@ -3,7 +3,7 @@ import { Link, back, navigate, routes, useParams } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { QUERY } from "src/components/TimelineBasespot/TimelineBasespotsCell";
 import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
@@ -30,37 +30,11 @@ const DELETE_TIMELINE_BASESPOT_MUTATION = gql`
   }
 `;
 
-
-
 const TimelineBasespotsList = ({
   timelineBasespots,
 }: FindTimelineBasespots) => {
-  // const [deleteTimelineBasespot] = useMutation(
-  //   DELETE_TIMELINE_BASESPOT_MUTATION,
-  //   {
-  //     onCompleted: () => {
-  //       toast.success("TimelineBasespot deleted");
-  //     },
-  //     onError: (error) => {
-  //       toast.error(error.message);
-  //     },
-  //     // This refetches the query on the list page. Read more about other ways to
-  //     // update the cache over here:
-  //     // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
-  //     refetchQueries: [{ query: QUERY }],
-  //     awaitRefetchQueries: true,
-  //   }
-  // );
-
-  // const onDeleteClick = (id: DeleteTimelineBasespotMutationVariables["id"]) => {
-  //   if (
-  //     confirm("Are you sure you want to delete timelineBasespot " + id + "?")
-  //   ) {
-  //     deleteTimelineBasespot({ variables: { id } });
-  //   }
-  // };
   const [grid, setGrid] = useState([]);
-  const [radio, changeRadio] = useState('server');
+  const [radio, changeRadio] = useState("server");
   useEffect(() => {
     if (grid.length < 9) {
       for (let i = 0; i < 9; i++) {
@@ -80,7 +54,6 @@ const TimelineBasespotsList = ({
     }
   }, []);
 
-
   const groupedEvents = useMemo(() => {
     return timelineBasespots.reduce((acc, x) => {
       let keyValue = new Date(x.start_date).toLocaleString("default", {
@@ -88,15 +61,17 @@ const TimelineBasespotsList = ({
         year: "numeric",
       });
 
-
       acc[keyValue] = acc[keyValue] ? [...acc[keyValue], x] : [x];
       return acc;
     }, {});
   }, [timelineBasespots]);
 
-  const setRadio = useCallback((e) => {
-    changeRadio(e);
-  }, [radio])
+  const setRadio = useCallback(
+    (e) => {
+      changeRadio(e);
+    },
+    [radio]
+  );
 
   const mapImages = {
     2: [
@@ -161,24 +136,25 @@ const TimelineBasespotsList = ({
       "https://eliteark.com/wp-content/uploads/2022/06/cropped-0_ark-logo.thumb_.png.36427f75c51aff4ecec55bba50fd194d.png",
     "Bloody Ark":
       "https://preview.redd.it/cdje2wcsmr521.png?width=313&format=png&auto=webp&s=bf1e8347b8dcd066bcf3aace6a461b61e804570b",
-    "Arkosic":
+    Arkosic:
       "https://steamuserimages-a.akamaihd.net/ugc/2023839858710970915/3E075CEE248A0C9F9069EC7D12894F597E74A2CF/?imw=200&imh=200&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true",
   };
 
   const [isActive, setIsActive] = useState(0);
 
-  const setActive = useCallback((e, index) => {
-    e.currentTarget.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      inline: "nearest",
-    });
-    setIsActive(index);
+  const setActive = useCallback(
+    (e, index) => {
+      e.currentTarget.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+      setIsActive(index);
 
-    return;
-  }, [isActive, setIsActive]);
-
-
+      return;
+    },
+    [isActive, setIsActive]
+  );
 
   const getEventCellStyle = (day, server) => {
     const colors = [
@@ -198,15 +174,30 @@ const TimelineBasespotsList = ({
       "#9370DB",
       "#663399",
     ];
-    const event = timelineBasespots.find(
-      (event) => {
-        const startDate = new Date(event.start_date);
-        const endDate = new Date(event.end_date);
+    const event = timelineBasespots.find((event) => {
+      const startDate = new Date(event.start_date);
+      const endDate = new Date(event.end_date);
 
-
-        return new Date(startDate).toLocaleString('default', { year: 'numeric', month: 'numeric' }) <= new Date(day).toLocaleString('default', { year: 'numeric', month: 'numeric' }) && new Date(day).toLocaleString('default', { year: 'numeric', month: 'numeric' }) <= new Date(endDate).toLocaleString('default', { year: 'numeric', month: 'numeric' }) && event[radio] === server;
-      }
-    );
+      return (
+        new Date(startDate).toLocaleString("default", {
+          year: "numeric",
+          month: "numeric",
+        }) <=
+          new Date(day).toLocaleString("default", {
+            year: "numeric",
+            month: "numeric",
+          }) &&
+        new Date(day).toLocaleString("default", {
+          year: "numeric",
+          month: "numeric",
+        }) <=
+          new Date(endDate).toLocaleString("default", {
+            year: "numeric",
+            month: "numeric",
+          }) &&
+        event[radio] === server
+      );
+    });
 
     if (event && event != null) {
       const { id, start_date, end_date } = event;
@@ -218,18 +209,36 @@ const TimelineBasespotsList = ({
 
       const style = {
         background: colors[id % colors.length],
-        borderLeft: mineStart && timelineBasespots.indexOf(event) === isActive ? '1px solid #fff' : mineEnd && !mineStart ? `3px solid ${colors[id % colors.length]}` : 0,
-        borderRight: mineEnd && timelineBasespots.indexOf(event) === isActive ? '1px solid #fff' : mineStart && !mineEnd ? `3px solid ${colors[id % colors.length]}` : 0,
-        borderTop: (mineEnd || mineStart) && timelineBasespots.indexOf(event) === isActive ? '1px solid #fff' : 0,
-        borderBottom: (mineEnd || mineStart) && timelineBasespots.indexOf(event) === isActive ? '1px solid #fff' : 0,
+        borderLeft:
+          mineStart && timelineBasespots.indexOf(event) === isActive
+            ? "1px solid #fff"
+            : mineEnd && !mineStart
+            ? `3px solid ${colors[id % colors.length]}`
+            : 0,
+        borderRight:
+          mineEnd && timelineBasespots.indexOf(event) === isActive
+            ? "1px solid #fff"
+            : mineStart && !mineEnd
+            ? `3px solid ${colors[id % colors.length]}`
+            : 0,
+        borderTop:
+          (mineEnd || mineStart) &&
+          timelineBasespots.indexOf(event) === isActive
+            ? "1px solid #fff"
+            : 0,
+        borderBottom:
+          (mineEnd || mineStart) &&
+          timelineBasespots.indexOf(event) === isActive
+            ? "1px solid #fff"
+            : 0,
 
-        borderTopLeftRadius: mineStart ? '0.25rem' : 0,
-        borderBottomLeftRadius: mineStart ? '0.25rem' : 0,
-        borderTopRightRadius: mineEnd ? '0.25rem' : 0,
-        borderBottomRightRadius: mineEnd ? '0.25rem' : 0,
-        marginTop: '3px',
-        gridColumnStart: mineStart ? 'auto' : 'span 1',
-        gridColumnEnd: mineEnd ? 'auto' : `span ${daysSpan}`,
+        borderTopLeftRadius: mineStart ? "0.25rem" : 0,
+        borderBottomLeftRadius: mineStart ? "0.25rem" : 0,
+        borderTopRightRadius: mineEnd ? "0.25rem" : 0,
+        borderBottomRightRadius: mineEnd ? "0.25rem" : 0,
+        marginTop: "3px",
+        gridColumnStart: mineStart ? "auto" : "span 1",
+        gridColumnEnd: mineEnd ? "auto" : `span ${daysSpan}`,
       };
 
       return {
@@ -259,7 +268,7 @@ const TimelineBasespotsList = ({
                 >
                   <ImageContainer
                     className={clsx(
-                      "block !w-full transition-opacity duration-300 ease-in-out rounded-lg motion-reduce:transition-none motion-reduce:transform-none",
+                      "block !w-full rounded-lg transition-opacity duration-300 ease-in-out motion-reduce:transform-none motion-reduce:transition-none",
                       {
                         "animate-fade-in opacity-100": isActive === index,
                         "opacity-0": isActive !== index,
@@ -267,7 +276,15 @@ const TimelineBasespotsList = ({
                     )}
                     src={arrRandNoRep(mapImages[timelineBasespot.map])}
                   />
-                  <Link to={routes.timelineBasespot({ id: timelineBasespot.id.toString() })} className="float-right transition mt-2 rw-button rw-button-green-outline" onClick={(e) => { }}>View</Link>
+                  <Link
+                    to={routes.timelineBasespot({
+                      id: timelineBasespot.id.toString(),
+                    })}
+                    className="rw-button rw-button-green-outline float-right mt-2 transition"
+                    onClick={(e) => {}}
+                  >
+                    View
+                  </Link>
                 </div>
               ))}
             </div>
@@ -334,15 +351,11 @@ const TimelineBasespotsList = ({
                         )}
                       >
                         <h3 className="inline-flex w-full items-center justify-between text-xl">
-                          <span>
-                            {tribe_name}
-                          </span>
+                          <span>{tribe_name}</span>
                           <div className="inline-flex space-x-1 self-end">
                             <span className="">S{season || "?"}</span>
                             <img
-                              src={
-                                servers[server]
-                              }
+                              src={servers[server]}
                               className="w-8 rounded-full"
                             />
                           </div>
@@ -378,43 +391,63 @@ const TimelineBasespotsList = ({
       </section>
 
       <div className="rw-table-wrapper-responsive">
-        <select className="rw-input" onChange={(e) => setRadio(e.currentTarget.value)} defaultValue={'server'}>
+        <select
+          className="rw-input"
+          onChange={(e) => setRadio(e.currentTarget.value)}
+          defaultValue={"server"}
+        >
           <option value="server">Server</option>
           <option value="season">Season</option>
           <option value="cluster">Cluster</option>
           <option value="region">Region</option>
         </select>
 
-
-        <table className="w-full mx-auto text-sm table-auto">
+        <table className="mx-auto w-full table-auto text-sm">
           <tbody className="rounded-lg text-center">
             {Object.keys(groupBy(timelineBasespots, radio)).map((server) => (
-              <tr className="table-row border-b dark:border-opacity-50 border-black dark:border-stone-300" key={server}>
-                <td className="table-cell min-w-fit font-bold px-3 py-2 dark:text-white text-gray-800">
+              <tr
+                className="table-row border-b border-black dark:border-stone-300 dark:border-opacity-50"
+                key={server}
+              >
+                <td className="table-cell min-w-fit px-3 py-2 font-bold text-gray-800 dark:text-white">
                   {server}
                 </td>
                 {grid.map((m) => {
                   const events = groupedEvents[m.label] || [];
-                  const filteredEvents = events.filter((d) => d[radio] === server);
+                  const filteredEvents = events.filter(
+                    (d) => d[radio] === server
+                  );
 
                   return (
                     <td
-                      className="table-cell border-l border-black dark:border-stone-300 px-3 py-2 dark:text-white text-gray-800"
-                      key={m.label + '-' + server}
+                      className="table-cell border-l border-black px-3 py-2 text-gray-800 dark:border-stone-300 dark:text-white"
+                      key={m.label + "-" + server}
                     >
                       {filteredEvents.length > 0 ? (
-                        <div className="flex flex-col z-10">
+                        <div className="z-10 flex flex-col">
                           {filteredEvents.map((event) => {
                             const shouldRenderEvent =
-                              new Date(event.start_date).getMonth() <= new Date(m.date).getMonth() &&
-                              new Date(m.date).getMonth() <= new Date(event.end_date).getMonth();
+                              new Date(event.start_date).getMonth() <=
+                                new Date(m.date).getMonth() &&
+                              new Date(m.date).getMonth() <=
+                                new Date(event.end_date).getMonth();
 
                             if (shouldRenderEvent) {
-
                               return (
                                 <div key={event.id} className="relative">
-                                  <div className="h-auto -mx-3 text-white cursor-pointer text-left" {...getEventCellStyle(m.date, server)} title={`${event.server} Season ${event.season}`}>
-                                    <Link className="ml-1" to={routes.timelineBasespot({ id: event.id.toString() })}>{`${event.server} S${event.season ? event.season : '?'}`}</Link>
+                                  <div
+                                    className="-mx-3 h-auto cursor-pointer text-left text-white"
+                                    {...getEventCellStyle(m.date, server)}
+                                    title={`${event.server} Season ${event.season}`}
+                                  >
+                                    <Link
+                                      className="ml-1"
+                                      to={routes.timelineBasespot({
+                                        id: event.id.toString(),
+                                      })}
+                                    >{`${event.server} S${
+                                      event.season ? event.season : "?"
+                                    }`}</Link>
                                   </div>
                                 </div>
                               );
@@ -426,7 +459,10 @@ const TimelineBasespotsList = ({
                       ) : (
                         <div className="flex flex-col">
                           <div className="">
-                            <div className="h-fit -mx-3 text-transparent" {...getEventCellStyle(m.date, server)}>
+                            <div
+                              className="-mx-3 h-fit text-transparent"
+                              {...getEventCellStyle(m.date, server)}
+                            >
                               -
                             </div>
                           </div>
@@ -438,9 +474,12 @@ const TimelineBasespotsList = ({
               </tr>
             ))}
             <tr className="table-row p-2 last:border-t">
-              <td className="border-l border-black dark:border-stone-300 px-3 py-2 dark:text-white text-gray-800"></td>
+              <td className="border-l border-black px-3 py-2 text-gray-800 dark:border-stone-300 dark:text-white"></td>
               {grid.map((m) => (
-                <td className="border-l border-black dark:border-stone-300 text-opacity-50  px-3 py-2 dark:text-white text-gray-800" key={m.label}>
+                <td
+                  className="border-l border-black px-3 py-2  text-gray-800 text-opacity-50 dark:border-stone-300 dark:text-white"
+                  key={m.label}
+                >
                   <span>{m.label}</span>
                 </td>
               ))}
