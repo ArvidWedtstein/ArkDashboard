@@ -4,7 +4,7 @@ import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
 import LineChart from "src/components/Util/LineChart/LineChart";
 
-import { getWordType, truncate } from "src/lib/formatters";
+import { getWordType, groupBy, truncate } from "src/lib/formatters";
 
 import type { DeleteItemMutationVariables, FindItemById } from "types/graphql";
 
@@ -39,8 +39,8 @@ const Item = ({ item }: Props) => {
 
   return (
     <>
-      <div className="rw-segment">
-        <section className="my-3 grid grid-cols-2 rounded-md bg-stone-200 p-4 text-gray-700 dark:bg-zinc-600 dark:text-white">
+      <div className="rw-segment text-gray-700 dark:text-white">
+        <section className="my-3 grid grid-cols-2 rounded-md bg-stone-200 p-4 dark:bg-zinc-600">
           <div className="">
             <img
               className="w-auto max-w-6xl"
@@ -101,6 +101,7 @@ const Item = ({ item }: Props) => {
                         <>
                           {
                             <Link
+                              key={`lootcrate-${g.LootcrateSetEntry.LootcrateSet.Lootcrate.id}`}
                               to={routes.lootcrate({
                                 id: g.LootcrateSetEntry.LootcrateSet.Lootcrate.id.toString(),
                               })}
@@ -119,10 +120,10 @@ const Item = ({ item }: Props) => {
           </div>
         </section>
 
-        <section className="my-3 grid grid-cols-2 gap-4 rounded-md text-gray-700 dark:text-white">
+        <section className="my-3 grid grid-cols-2 gap-4 rounded-md">
           {item.DinoStat &&
             item.DinoStat.filter((g) => g.type === "gather_efficiency").length >
-              0 && (
+            0 && (
               <div className="rounded-md bg-stone-200 p-4 dark:bg-zinc-600">
                 <p className="my-1 text-lg">Gather Efficiency</p>
                 <div className="flex flex-col">
@@ -170,7 +171,7 @@ const Item = ({ item }: Props) => {
 
           {item.DinoStat &&
             item.DinoStat.filter((g) => g.type === "weight_reduction").length >
-              0 && (
+            0 && (
               <div className="rounded-md bg-stone-200 p-4 dark:bg-zinc-600">
                 <p className="my-1 text-lg">Weight Reduction</p>
                 <div className="flex flex-col">
@@ -226,6 +227,11 @@ const Item = ({ item }: Props) => {
               </div>
             )}
         </section>
+
+        <section className="my-3 grid grid-cols-2 gap-4 rounded-md">
+          {JSON.stringify(groupBy(item.ItemRecipe_ItemRecipe_crafted_item_idToItem, 'Item_ItemRecipe_crafting_stationToItem'))}
+        </section>
+
       </div>
       <nav className="rw-button-group">
         <Link

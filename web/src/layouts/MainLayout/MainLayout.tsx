@@ -10,6 +10,7 @@ type LayoutProps = {
 
 const MainLayout = ({ children }: LayoutProps) => {
   const { loading } = usePageLoadingContext();
+
   return (
     // <div className="overflow-hidden h-[100vh]">
     <div className="flex w-full flex-col">

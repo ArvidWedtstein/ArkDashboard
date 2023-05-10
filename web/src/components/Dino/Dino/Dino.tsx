@@ -37,6 +37,7 @@ interface Props {
 }
 
 const Dino = ({ dino }: Props) => {
+
   const [deleteDino] = useMutation(DELETE_DINO_MUTATION, {
     onCompleted: () => {
       toast.success("Dino deleted");

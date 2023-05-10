@@ -60,6 +60,8 @@ export const itemsPage = ({
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment      <-- Necessary for my ESLint setup
+// @ts-ignore: Unreachable code error
 export const itemsByCategory: QueryResolvers["itemsByCategory"] = ({
   category,
 }: {

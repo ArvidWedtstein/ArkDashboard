@@ -140,6 +140,9 @@ a {
 .rw-button:has(.rw-button-icon) {
   @apply inline-flex items-center justify-center;
 }
+.rw-button:not(:empty) {
+  @apply inline-flex items-center justify-center;
+}
 .rw-button .rw-button-icon {
   @apply ml-2 w-5 fill-current text-xl leading-5;
 }
