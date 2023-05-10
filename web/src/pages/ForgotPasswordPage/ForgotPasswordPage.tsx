@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react'
 
-import { useAuth } from '@redwoodjs/auth'
 import { Form, Label, TextField, Submit, FieldError } from '@redwoodjs/forms'
 import { navigate, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 import { toast, Toaster } from '@redwoodjs/web/toast'
+import { useAuth } from 'src/auth'
 
 const ForgotPasswordPage = () => {
   const { isAuthenticated, forgotPassword } = useAuth()
@@ -23,8 +23,8 @@ const ForgotPasswordPage = () => {
   const onSubmit = async (data: { username: string }) => {
     const response = await forgotPassword(data.username)
 
-    if (response.error) {
-      toast.error(response.error)
+    if (response) {
+      toast.error(response?.error)
     } else {
       // The function `forgotPassword.handler` in api/src/functions/auth.js has
       // been invoked, let the user know how to get the link to reset their
