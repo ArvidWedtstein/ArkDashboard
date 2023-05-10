@@ -18,7 +18,6 @@ const Navbar = () => {
 
   useEffect(() => {
     setTitle(pathname.split("/")[1]);
-    console.log(currentUser)
   }, [pathname]);
 
   const { ref, isComponentVisible, setIsComponentVisible } =

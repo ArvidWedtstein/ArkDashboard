@@ -110,7 +110,6 @@ export const hasRole = async (role_id: AllowedRoles): Promise<boolean> => {
       let userRole = await db.role.findUnique({
         where: { id: currentUserRoles },
       });
-      console.log(userRole);
       return role_id === userRole.name;
     }
     //  else if (Array.isArray(currentUserRoles)) {
