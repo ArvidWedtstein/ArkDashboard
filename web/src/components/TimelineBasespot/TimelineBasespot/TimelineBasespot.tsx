@@ -3,10 +3,9 @@ import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "src/App";
-import Counter from "src/components/Util/Counter/Counter";
-import { Map } from "src/components/Util/Map/Map";
+import Map from "src/components/Util/Map/Map";
 import { Modal, RefModal } from "src/components/Util/Modal/Modal";
 import Slideshow from "src/components/Util/Slideshow/Slideshow";
 
@@ -323,9 +322,8 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                             {timeTag(raid_start)} - {timeTag(raid_end)}
                           </p>
                           <p className="text-gray-500">
-                            {`Base ${
-                              base_survived ? "survived" : "did not survive"
-                            }`}
+                            {`Base ${base_survived ? "survived" : "did not survive"
+                              }`}
                           </p>
                         </div>
                       </div>
@@ -526,15 +524,15 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           timeStyle: "short",
                         }) === "Invalid Date"
                           ? new Date(img.created_at).toLocaleString("de", {
-                              dateStyle: "medium",
-                              timeStyle: "short",
-                            })
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          })
                           : convertToDate(
-                              img.name.replace("_1.jpg", "")
-                            ).toLocaleString("de", {
-                              dateStyle: "medium",
-                              timeStyle: "short",
-                            })}
+                            img.name.replace("_1.jpg", "")
+                          ).toLocaleString("de", {
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          })}
                       </span>
                     </button>
                   </div>
@@ -609,9 +607,9 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {nmbFormat(
                               dino.wild_stamina *
-                                dino.Dino.base_stats["s"]["w"] +
-                                dino.stamina * dino.Dino.base_stats["s"]["t"] +
-                                dino.Dino.base_stats["s"]["b"]
+                              dino.Dino.base_stats["s"]["w"] +
+                              dino.stamina * dino.Dino.base_stats["s"]["t"] +
+                              dino.Dino.base_stats["s"]["b"]
                             )}
                           </span>
                         </p>
@@ -627,9 +625,9 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {nmbFormat(
                               dino.wild_weight *
-                                dino.Dino.base_stats["w"]["w"] +
-                                dino.weight * dino.Dino.base_stats["w"]["t"] +
-                                dino.Dino.base_stats["w"]["b"]
+                              dino.Dino.base_stats["w"]["w"] +
+                              dino.weight * dino.Dino.base_stats["w"]["t"] +
+                              dino.Dino.base_stats["w"]["b"]
                             )}
                           </span>
                         </p>
@@ -645,9 +643,9 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {nmbFormat(
                               dino.wild_oxygen *
-                                dino.Dino.base_stats["o"]["w"] +
-                                dino.oxygen * dino.Dino.base_stats["o"]["t"] +
-                                dino.Dino.base_stats["o"]["b"]
+                              dino.Dino.base_stats["o"]["w"] +
+                              dino.oxygen * dino.Dino.base_stats["o"]["t"] +
+                              dino.Dino.base_stats["o"]["b"]
                             )}
                           </span>
                         </p>
@@ -664,7 +662,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                             {dino.wild_melee_damage *
                               dino.Dino.base_stats["d"]["w"] +
                               dino.melee_damage *
-                                dino.Dino.base_stats["d"]["t"] +
+                              dino.Dino.base_stats["d"]["t"] +
                               dino.Dino.base_stats["d"]["b"]}
                             %
                           </span>
@@ -681,8 +679,8 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {nmbFormat(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                                dino.food * dino.Dino.base_stats["f"]["t"] +
-                                dino.Dino.base_stats["f"]["b"]
+                              dino.food * dino.Dino.base_stats["f"]["t"] +
+                              dino.Dino.base_stats["f"]["b"]
                             )}
                           </span>
                         </p>
@@ -698,10 +696,10 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {nmbFormat(
                               dino.wild_movement_speed *
-                                dino.Dino.base_stats["m"]["w"] +
-                                dino.movement_speed *
-                                  dino.Dino.base_stats["m"]["t"] +
-                                dino.Dino.base_stats["m"]["b"]
+                              dino.Dino.base_stats["m"]["w"] +
+                              dino.movement_speed *
+                              dino.Dino.base_stats["m"]["t"] +
+                              dino.Dino.base_stats["m"]["b"]
                             )}
                             %
                           </span>
@@ -716,16 +714,16 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span className="absolute w-full items-center text-base font-semibold">
                             {nmbFormat(
                               dino.wild_health *
-                                dino.Dino.base_stats["h"]["w"] +
-                                dino.health * dino.Dino.base_stats["h"]["t"] +
-                                dino.Dino.base_stats["h"]["b"]
+                              dino.Dino.base_stats["h"]["w"] +
+                              dino.health * dino.Dino.base_stats["h"]["t"] +
+                              dino.Dino.base_stats["h"]["b"]
                             )}
                             /
                             {nmbFormat(
                               dino.wild_health *
-                                dino.Dino.base_stats["h"]["w"] +
-                                dino.health * dino.Dino.base_stats["h"]["t"] +
-                                dino.Dino.base_stats["h"]["b"]
+                              dino.Dino.base_stats["h"]["w"] +
+                              dino.health * dino.Dino.base_stats["h"]["t"] +
+                              dino.Dino.base_stats["h"]["b"]
                             )}{" "}
                             Health ({dino.wild_health}-{dino.health})
                           </span>
@@ -737,14 +735,14 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span className="absolute w-full items-center text-base font-semibold">
                             {nmbFormat(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                                dino.food * dino.Dino.base_stats["f"]["t"] +
-                                dino.Dino.base_stats["f"]["b"]
+                              dino.food * dino.Dino.base_stats["f"]["t"] +
+                              dino.Dino.base_stats["f"]["b"]
                             )}
                             /
                             {nmbFormat(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                                dino.food * dino.Dino.base_stats["f"]["t"] +
-                                dino.Dino.base_stats["f"]["b"]
+                              dino.food * dino.Dino.base_stats["f"]["t"] +
+                              dino.Dino.base_stats["f"]["b"]
                             )}{" "}
                             Food ({dino.wild_food}-{dino.food})
                           </span>
@@ -756,16 +754,16 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span className="absolute w-full items-center text-base font-semibold">
                             {nmbFormat(
                               dino.wild_torpor *
-                                dino.Dino.base_stats["t"]["w"] +
-                                dino.torpor * dino.Dino.base_stats["t"]["t"] +
-                                dino.Dino.base_stats["t"]["b"]
+                              dino.Dino.base_stats["t"]["w"] +
+                              dino.torpor * dino.Dino.base_stats["t"]["t"] +
+                              dino.Dino.base_stats["t"]["b"]
                             )}
                             /
                             {nmbFormat(
                               dino.wild_torpor *
-                                dino.Dino.base_stats["t"]["w"] +
-                                dino.torpor * dino.Dino.base_stats["t"]["t"] +
-                                dino.Dino.base_stats["t"]["b"]
+                              dino.Dino.base_stats["t"]["w"] +
+                              dino.torpor * dino.Dino.base_stats["t"]["t"] +
+                              dino.Dino.base_stats["t"]["b"]
                             )}{" "}
                             Torpor ({dino.wild_torpor}-{dino.torpor})
                           </span>

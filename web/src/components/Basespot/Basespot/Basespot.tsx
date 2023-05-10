@@ -3,7 +3,7 @@ import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useEffect, useState } from "react";
-import { Map } from "src/components/Util/Map/Map";
+import Map from "src/components/Util/Map/Map";
 
 import { timeTag } from "src/lib/formatters";
 
@@ -70,10 +70,9 @@ const Basespot = ({ basespot }: Props) => {
         <header
           className="flex min-h-[200px] w-full flex-col justify-between rounded-2xl bg-cover bg-center bg-no-repeat p-12 text-white ring-1 ring-black dark:ring-white"
           style={{
-            backgroundImage: `url(${
-              baseUrl ||
+            backgroundImage: `url(${baseUrl ||
               "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s"
-            })`,
+              })`,
           }}
         >
           <div className="flex justify-between pb-5">
