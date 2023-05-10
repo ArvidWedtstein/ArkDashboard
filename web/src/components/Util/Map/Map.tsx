@@ -65,7 +65,6 @@ const Map = ({
     "11": "https://ark.wiki.gg/images/7/75/Fjordur_Map.jpg",
     "12": "https://ark.wiki.gg/images/1/1e/Lost_Island_Map.jpg",
   };
-  console.log('unessesary rerender ')
   const svgRef = useRef(null);
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });

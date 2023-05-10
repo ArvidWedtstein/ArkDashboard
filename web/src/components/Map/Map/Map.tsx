@@ -299,42 +299,7 @@ const Map = ({ map }: Props) => {
     },
     [categories, mapData, setCategories, setMapData]
   );
-  // const setCategory = useCallback(
-  //   (e, checked) => {
-  //     const category = e;
-  //     const color = categories[category].color;
 
-  //     const dataToAdd = map.MapCoordinate.some(({ type }) => type === category)
-  //       ? map.MapCoordinate.filter((t) => t.type === category)
-  //         .flat()
-  //         .map((item) => {
-  //           return {
-  //             ...item,
-  //             category,
-  //             color,
-  //             name: `${capitalizeSentence(category.replaceAll("_", " "))}\n${item.latitude
-  //               }, ${item.longitude}`,
-  //           };
-  //         })
-  //       : category === 'notes' ? map.MapNote : [];
-
-  //     setCategories((prevState) => ({
-  //       ...prevState,
-  //       [category]: {
-  //         ...prevState[category],
-  //         active: checked,
-  //       },
-  //     }));
-  //     if (checked) {
-  //       setMapData((prevState) => [...prevState, ...dataToAdd]);
-  //     } else {
-  //       setMapData((prevState) =>
-  //         prevState.filter((item) => item.category !== category)
-  //       );
-  //     }
-  //   },
-  //   [categories, mapData, setCategories, setMapData]
-  // );
 
   let noterun = []; //[57, 520, 242, 241, 201, 79, 238, 143, 301, 283, 284, 60]; The Island noterun
   return (
