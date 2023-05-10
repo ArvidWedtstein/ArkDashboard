@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@redwoodjs/api": "3.8.0",
-    "@redwoodjs/graphql-server": "3.8.0",
-    "@redwoodjs/record": "^3.8.0",
+    "@redwoodjs/api": "^5.1.2",
+    "@redwoodjs/auth-supabase-api": "5.1.2",
+    "@redwoodjs/graphql-server": "^5.1.2",
+    "@redwoodjs/record": "^5.1.2",
     "jsonwebtoken": "^9.0.0"
   }
 }

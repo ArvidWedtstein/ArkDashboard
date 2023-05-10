@@ -13,7 +13,8 @@
     ]
   },
   "devDependencies": {
-    "@redwoodjs/core": "3.8.0",
+    "@redwoodjs/auth-supabase-setup": "5.1.2",
+    "@redwoodjs/core": "^5.1.2",
     "prettier-plugin-tailwindcss": "^0.2.1"
   },
   "eslintConfig": {
@@ -21,7 +22,7 @@
     "root": true
   },
   "engines": {
-    "node": ">=14.19 <=16.x",
+    "node": ">=14.19 <=19.x",
     "yarn": ">=1.15"
   },
   "prisma": {
@@ -29,6 +30,7 @@
   },
   "packageManager": "yarn@3.3.0",
   "dependencies": {
-    "clsx": "^1.2.1"
+    "clsx": "^1.2.1",
+    "react-dom": "^18.2.0"
   }
 }

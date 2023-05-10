@@ -1,8 +1,8 @@
-import { useAuth } from "@redwoodjs/auth";
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useEffect, useState } from "react";
+import { useAuth } from "src/auth";
 import Map from "src/components/Util/Map/Map";
 
 import { timeTag } from "src/lib/formatters";

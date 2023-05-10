@@ -18,7 +18,6 @@ import type {
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import Lookup from "src/components/Util/Lookup/Lookup";
-import { useAuth } from "@redwoodjs/auth";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
@@ -26,6 +25,7 @@ import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import { nmbFormat, timeTag, truncate } from "src/lib/formatters";
 import { Link } from "@redwoodjs/router";
 import { routes } from "@redwoodjs/router";
+import { useAuth } from "src/auth";
 
 const formatDatetime = (value) => {
   if (value) {
@@ -50,7 +50,7 @@ interface TimelineBasespotFormProps {
 
 
 const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
-  let { isAuthenticated, client: supabase } = useAuth();
+  let { client: supabase } = useAuth();
   let [basespots, setBasespots] = useState([]);
   let [selectedBasespot, setSelectedBasespot] = useState(null);
   const formMethods = useForm<FormTimelineBasespot & { "TimelineBasespotRaid.upsert": any[] }>({

@@ -1,3 +1,4 @@
+import { authDecoder } from "@redwoodjs/auth-supabase-api";
 import { createGraphQLHandler } from "@redwoodjs/graphql-server";
 
 import directives from "src/directives/**/*.{js,ts}";
@@ -23,6 +24,7 @@ const setIpAddress = async ({ event, context }) => {
 };
 export const handler = createGraphQLHandler({
   getCurrentUser,
+  authDecoder,
   loggerConfig: {
     logger,
     options: {

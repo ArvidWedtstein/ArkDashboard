@@ -1,4 +1,4 @@
-import { parseJWT, Decoded, DbAuthSession } from "@redwoodjs/api";
+import { parseJWT, Decoded } from "@redwoodjs/api";
 import { AuthenticationError, ForbiddenError } from "@redwoodjs/graphql-server";
 import { db } from "./db";
 import type { Profile as PrismaUser } from "@prisma/client";
@@ -44,7 +44,6 @@ export const getCurrentUser = async (
   try {
     // const currentUser =
     //   await db.$queryRaw`SELECT * FROM auth."users" WHERE id::text = ${decoded.sub};`;
-
     const { sub, role } = decoded;
     let user = await db.profile.findUnique({
       // include: { role_profile_role_idTorole: true },
@@ -58,7 +57,7 @@ export const getCurrentUser = async (
     return { ...decoded };
   } catch (error) {
     console.log("GetCurrentUserError: ", error);
-    return { ...decoded };
+    return { id: decoded.sub.toString(), ...decoded };
   }
 };
 

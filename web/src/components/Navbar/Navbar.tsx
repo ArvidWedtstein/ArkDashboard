@@ -1,14 +1,13 @@
-import { useAuth } from "@redwoodjs/auth";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useComponentVisible from "../useComponentVisible";
 import Avatar from "../Avatar/Avatar";
-import { Link, routes, useLocation, AvailableRoutes } from "@redwoodjs/router";
+import { Link, routes, useLocation } from "@redwoodjs/router";
 import { useRouterState } from "@redwoodjs/router/dist/router-context";
 import {
-  capitalize,
   capitalizeSentence,
   singularize,
 } from "src/lib/formatters";
+import { useAuth } from "src/auth";
 
 const Navbar = () => {
   const { currentUser, isAuthenticated } = useAuth();
@@ -19,6 +18,7 @@ const Navbar = () => {
 
   useEffect(() => {
     setTitle(pathname.split("/")[1]);
+    console.log(currentUser)
   }, [pathname]);
 
   const { ref, isComponentVisible, setIsComponentVisible } =
@@ -68,9 +68,9 @@ const Navbar = () => {
         <div className="flex items-center space-x-2">
           {isAuthenticated &&
             routes[
-              `new${singularize(
-                capitalizeSentence(title.split("-").join(" ")).replace(" ", "")
-              )}`
+            `new${singularize(
+              capitalizeSentence(title.split("-").join(" ")).replace(" ", "")
+            )}`
             ] !== undefined && (
               <Link
                 to={routes[
@@ -133,7 +133,7 @@ const Navbar = () => {
                     <li>
                       <Link
                         to={routes.profile({
-                          id: currentUser?.id || currentUser.sub,
+                          id: currentUser?.id || currentUser.sub as any,
                         })}
                         className={
                           "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"

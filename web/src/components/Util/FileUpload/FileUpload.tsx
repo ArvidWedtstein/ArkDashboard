@@ -1,6 +1,6 @@
-import { useAuth } from "@redwoodjs/auth";
 import clsx from "clsx";
 import { useRef, useState } from "react";
+import { useAuth } from "src/auth";
 import { pluralize } from "src/lib/formatters";
 
 interface IFileUploadProps {

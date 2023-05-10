@@ -20,7 +20,7 @@ export const itemsPage = ({
   items_per_page?: number;
 }) => {
   const offset = (page - 1) * items_per_page;
-  console.log(category);
+
   return {
     items: db.item.findMany({
       take: items_per_page,

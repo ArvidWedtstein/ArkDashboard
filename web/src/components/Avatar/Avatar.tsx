@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "@redwoodjs/auth";
 import clsx from "clsx";
+import { useAuth } from "src/auth";
 
 const Avatar = ({
   url,

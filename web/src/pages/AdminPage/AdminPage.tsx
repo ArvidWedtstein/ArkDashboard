@@ -1,5 +1,3 @@
-import { useAuth } from "@redwoodjs/auth";
-import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import StatCard from "src/components/Util/StatCard/StatCard";
 import UserCard from "src/components/Util/UserCard/UserCard";

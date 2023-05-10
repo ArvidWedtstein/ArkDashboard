@@ -1,10 +1,9 @@
-import { useAuth } from "@redwoodjs/auth";
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { supabase } from "src/App";
+import { useAuth } from "src/auth";
 import Map from "src/components/Util/Map/Map";
 import { Modal, RefModal } from "src/components/Util/Modal/Modal";
 import Slideshow from "src/components/Util/Slideshow/Slideshow";
@@ -50,7 +49,8 @@ interface Props {
 }
 
 const TimelineBasespot = ({ timelineBasespot }: Props) => {
-  const { isAuthenticated } = useAuth();
+
+  const { isAuthenticated, client: supabase } = useAuth();
   const [deleteTimelineBasespot] = useMutation(
     DELETE_TIMELINE_BASESPOT_MUTATION,
     {
