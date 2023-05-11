@@ -21,6 +21,7 @@ export const QUERY = gql`
       stats
       color
       type
+      category
       LootcrateSetEntryItem {
         LootcrateSetEntry {
           LootcrateSet {
@@ -45,10 +46,12 @@ export const QUERY = gql`
         Item_ItemRecipe_crafting_stationToItem {
           id
           name
+          image
         }
         Item_ItemRecipe_item_idToItem {
           id
           name
+          image
         }
       }
     }

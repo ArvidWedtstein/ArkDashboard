@@ -579,12 +579,33 @@ export const removeDuplicates = (arr: Array<any>): Array<any> => {
  * @return {Object} - An object where each key is a unique value of the provided key and the value is an array of elements that have that key value.
  */
 export const groupBy = (xs: Array<any>, key: string) => {
-  return xs.reduce((acc, x) => {
-    const keyValue = x[key];
-    acc[keyValue] = acc[keyValue] ? [...acc[keyValue], x] : [x];
+  const nestedKeys = key.split('.');
+
+  return xs.reduce((acc, obj) => {
+    let groupKey = obj;
+    for (const nestedKey of nestedKeys) {
+      groupKey = groupKey[nestedKey];
+    }
+
+    if (!acc.hasOwnProperty(groupKey)) {
+      acc[groupKey] = [];
+    }
+
+    acc[groupKey].push(obj);
     return acc;
   }, {});
 };
+
+export const groupByObject = (arr: Array<any>, key: string): [group_object: any, grouped_items: any[]] => {
+  return arr.reduce((acc, obj) => {
+    const Thekey = JSON.stringify(obj[key]);
+    if (!acc[Thekey]) {
+      acc[Thekey] = [];
+    }
+    acc[Thekey].push(obj);
+    return acc;
+  }, {});
+}
 
 /**
  * @description debounce function for search fields

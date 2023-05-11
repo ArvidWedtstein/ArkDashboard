@@ -7,15 +7,14 @@ import { emitLogLevels, handlePrismaLogging } from "@redwoodjs/api/logger";
 
 import { logger } from "./logger";
 
-/*
- * Instance of the Prisma Client
- */
-
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Unreachable code error
 BigInt.prototype.toJSON = function (): string {
   return this.toString();
 };
+/*
+ * Instance of the Prisma Client
+ */
 export const db = new PrismaClient({
   log: emitLogLevels(["info", "warn", "error", "query"]),
 });
