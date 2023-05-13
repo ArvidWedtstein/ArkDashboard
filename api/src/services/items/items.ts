@@ -64,15 +64,20 @@ export const itemsPage = ({
 // @ts-ignore: Unreachable code error
 export const itemsByCategory: QueryResolvers["itemsByCategory"] = ({
   category,
+  type,
 }: {
   category: string;
+  type?: string;
 }) => {
+  const categories = category.split(",");
   return {
     items: db.item.findMany({
-      where: { category: category },
+      where: { category: { in: categories, mode: "insensitive" } },
       orderBy: { created_at: "desc" },
     }),
-    count: db.item.count({ where: { type: category } }),
+    count: db.item.count({
+      where: { category: { in: categories, mode: "insensitive" } },
+    }),
   };
 };
 

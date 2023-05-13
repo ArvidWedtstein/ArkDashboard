@@ -12,15 +12,12 @@ import {
   NumberField,
 } from "@redwoodjs/forms";
 
-import type {
-  EditItemById,
-  UpdateItemInput,
-} from "types/graphql";
+import type { EditItemById, UpdateItemInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import Lookup from "src/components/Util/Lookup/Lookup";
-import arkitems from "../../../../public/arkitems.json";
+import { useLazyQuery } from "@apollo/client";
 
 type FormItem = NonNullable<EditItemById["item"]>;
 
@@ -31,13 +28,54 @@ interface ItemFormProps {
   loading: boolean;
 }
 
+const ITEMQUERY = gql`
+  query FindItemsByCategory($category: String!) {
+    itemsByCategory(category: $category) {
+      items {
+        id
+        name
+        description
+        image
+        color
+        type
+        category
+      }
+      count
+    }
+  }
+`;
 const ItemForm = (props: ItemFormProps) => {
+  const [loadItems, { called, loading, data }] = useLazyQuery(ITEMQUERY, {
+    variables: {
+      category: "Resource,Consumable,Structure,Armor,Weapon,Other,Tool",
+    },
+    onCompleted: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  useEffect(() => {
+    if (!called && !loading) {
+      loadItems();
+    }
+  }, []);
+
   const onSubmit = (data: FormItem) => {
-    data.ItemRecipe_ItemRecipe_crafted_item_idToItem["upsert"] = data.ItemRecipe_ItemRecipe_crafted_item_idToItem["upsert"].map((u, i) => ({
-      create: { ...u },
-      update: { ...u },
-      where: { id: props.item?.ItemRecipe_ItemRecipe_crafted_item_idToItem[i]?.id || "00000000000000000000000000000000" }
-    }));
+    data.ItemRecipe_ItemRecipe_crafted_item_idToItem["upsert"] =
+      data.ItemRecipe_ItemRecipe_crafted_item_idToItem["upsert"].map(
+        (u, i) => ({
+          create: { ...u },
+          update: { ...u },
+          where: {
+            id:
+              props.item?.ItemRecipe_ItemRecipe_crafted_item_idToItem[i]?.id ||
+              "00000000000000000000000000000000",
+          },
+        })
+      );
 
     props.onSave(data, props?.item?.id);
   };
@@ -47,7 +85,8 @@ const ItemForm = (props: ItemFormProps) => {
   const { register, control } = useForm({
     defaultValues: {
       stats: [],
-      "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert": props.item.ItemRecipe_ItemRecipe_crafted_item_idToItem || [],
+      "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert":
+        props?.item?.ItemRecipe_ItemRecipe_crafted_item_idToItem || [],
     },
   });
   const {
@@ -424,7 +463,8 @@ const ItemForm = (props: ItemFormProps) => {
                         {
                           value: 126,
                           label: "Smithy",
-                          image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/smithy.png",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/smithy.png",
                         },
                         {
                           value: 652,
@@ -448,31 +488,38 @@ const ItemForm = (props: ItemFormProps) => {
                         //   }
                         // )}
                         name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.item_id`}
-                        group={"type"}
-                        options={arkitems.items
-                          .filter((f) =>
-                            [
-                              "Consumable",
-                              "Resource",
-                              "Other",
-                              "Structure",
-                              "Building",
-                              "Tool",
-                            ].includes(f.type)
-                          )
-                          .map((item) => {
-                            return {
-                              type: item.type,
-                              label: item.name || "",
-                              value: item.id,
-                              image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                            };
-                          })}
+                        group={"category"}
+                        // options={arkitems.items
+                        //   .filter((f) =>
+                        //     [
+                        //       "Consumable",
+                        //       "Resource",
+                        //       "Other",
+                        //       "Structure",
+                        //       "Building",
+                        //       "Tool",
+                        //     ].includes(f.type)
+                        //   )
+                        //   .map((item) => {
+                        //     return {
+                        //       type: item.type,
+                        //       label: item.name || "",
+                        //       value: item.id,
+                        //       image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                        //     };
+                        //   })}
+                        options={data.itemsByCategory.items.map((item) => ({
+                          category: item.category,
+                          type: item.type,
+                          label: item.name,
+                          value: item.id,
+                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                        }))}
                         search={true}
                         className="!mt-0 !rounded-none !rounded-l-md"
                         defaultValue={recipe.item_id}
                         filterFn={(item, search) => {
-                          if (!search) return true
+                          if (!search) return true;
                           return item.label
                             .toLowerCase()
                             .includes(search.toLowerCase());
@@ -498,7 +545,10 @@ const ItemForm = (props: ItemFormProps) => {
                           }
                         )}
                       />
-                      <FieldError name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.yields`} className="rw-field-error" />
+                      <FieldError
+                        name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.yields`}
+                        className="rw-field-error"
+                      />
 
                       <button
                         type="button"
@@ -610,7 +660,7 @@ const ItemForm = (props: ItemFormProps) => {
         )}
 
         <Label
-          name="type"
+          name="category"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
@@ -623,26 +673,112 @@ const ItemForm = (props: ItemFormProps) => {
           defaultValue={props.item?.category}
           errorClassName="rw-input rw-input-error"
           validation={{
-            required: false,
+            required: true,
           }}
         >
-          <option>Other</option>
-          <option>Saddle</option>
-          <option>Structure</option>
-          <option>Weapon</option>
-          <option>Resource</option>
-          <option>Tool</option>
-          <option>Ammunition</option>
-          <option>Consumable</option>
-          <option>Tek</option>
-          <option>Building</option>
-          <option>Crafting</option>
           <option>Armor</option>
-          <option>Egg</option>
-          <option>Attachment</option>
+          <option>Consumable</option>
+          <option>Fertilizer</option>
+          <option>Other</option>
+          <option>Resource</option>
+          <option>Structure</option>
+          <option>Tool</option>
+          <option>Weapon</option>
         </SelectField>
 
         <FieldError name="category" className="rw-field-error" />
+
+        <Label
+          name="type"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Type
+        </Label>
+
+        <SelectField
+          name="type"
+          className="rw-input"
+          defaultValue={props.item?.type}
+          errorClassName="rw-input rw-input-error"
+          validation={{
+            required: false,
+          }}
+        >
+          <optgroup label="Armor">
+            <option>Attachment</option>
+            <option>Chitin</option>
+            <option>Cloth</option>
+            <option>Flak</option>
+            <option>Fur</option>
+            <option>Ghillie</option>
+            <option>Hazard</option>
+            <option>Hide</option>
+            <option>Riot</option>
+            <option>Saddle</option>
+            <option>Scuba</option>
+            <option>Tek</option>
+            <option value={null}>Other</option>
+          </optgroup>
+          <optgroup label="Consumable">
+            <option>Dish</option>
+            <option>Drug</option>
+            <option>Egg</option>
+            <option>Food</option>
+            <option>Fungus</option>
+            <option>Meat</option>
+            <option>Other</option>
+            <option>Plant</option>
+            <option>Seed</option>
+            <option>Tool</option>
+          </optgroup>
+          <optgroup label="Fertilizer">
+            <option>Feces</option>
+          </optgroup>
+          <optgroup label="Other">
+            <option>Artifact</option>
+            <option>Coloring</option>
+            <option>Navigation</option>
+            <option>Other</option>
+            <option>Tool</option>
+            <option>Utility</option>
+          </optgroup>
+          <optgroup label="Resource">
+            <option>Other</option>
+          </optgroup>
+          <optgroup label="Structure">
+            <option>Adobe</option>
+            <option>Building</option>
+            <option>Crafting</option>
+            <option>Electrical</option>
+            <option>Elevator</option>
+            <option>Greenhouse</option>
+            <option>Metal</option>
+            <option>Stone</option>
+            <option>Tek</option>
+            <option>Thatch</option>
+            <option>Utility</option>
+            <option>Vehicle</option>
+            <option>Wood</option>
+            <option value={null}>Other</option>
+          </optgroup>
+          <optgroup label="Tool">
+            <option value={null}>Other</option>
+          </optgroup>
+          <optgroup label="Weapon">
+            <option>Ammunition</option>
+            <option>Arrow</option>
+            <option>Attachment</option>
+            <option>Explosive</option>
+            <option>Gun</option>
+            <option>Other</option>
+            <option>Shield</option>
+            <option>Tool</option>
+            <option value={null}>Other stuff</option>
+          </optgroup>
+        </SelectField>
+
+        <FieldError name="type" className="rw-field-error" />
 
         <Label
           name="stats"

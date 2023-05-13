@@ -15,10 +15,8 @@ import { useEffect, useMemo, useState } from "react";
 import type { EditDinoById, UpdateDinoInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import Lookup from "src/components/Util/Lookup/Lookup";
-import arkitems from "../../../../public/arkitems.json";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { truncate } from "src/lib/formatters";
-import { useCellCacheContext, useQuery } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useLazyQuery } from "@apollo/client";
 
@@ -49,11 +47,11 @@ const ITEMQUERY = gql`
 `;
 const DinoForm = (props: DinoFormProps) => {
   const [loadItems, { called, loading, data }] = useLazyQuery(ITEMQUERY, {
-    variables: { category: "Resource" },
-    // onCompleted: (data) => {
-    //   console.log(data);
-    //   toast.success('Items loaded');
-    // },
+    variables: { category: "Resource,Consumable" },
+    onCompleted: (data) => {
+      console.log(data);
+      toast.success("Items loaded");
+    },
     onError: (error) => {
       console.log(error);
       toast.error(error.message);
@@ -61,13 +59,14 @@ const DinoForm = (props: DinoFormProps) => {
   });
 
   useEffect(() => {
-    if (!called) {
+    if (!called && !loading) {
       loadItems();
     }
   }, []);
 
   // https://www.apollographql.com/docs/react/api/react/hooks/#uselazyquery
 
+  // TODO: fix this
   const [basestat, setBasestat] = useState({
     d: { b: 100, t: 2.5, w: 5.8, a: [{ b: 60 }] },
     f: { b: 2000, t: 10, w: 200 },
@@ -147,7 +146,7 @@ const DinoForm = (props: DinoFormProps) => {
 
   const onSubmit = (data: FormDino) => {
     data.eats = eats.map((f) => f.id.toString());
-    data.drops = ["12"]
+    data.drops = ["12"];
     console.log(data);
     // delete data.immobilized_by
     // Test Dino Object
@@ -343,12 +342,14 @@ const DinoForm = (props: DinoFormProps) => {
                             required: true,
                           })}
                           className="!mt-0 !rounded-none !rounded-l-md"
-                          options={data.itemsByCategory.items.map((item) => ({
-                            type: item.type,
-                            label: item.name,
-                            value: item.id,
-                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                          }))}
+                          options={data.itemsByCategory.items
+                            .filter((i) => i.category === "Resource")
+                            .map((item) => ({
+                              type: item.type,
+                              label: item.name,
+                              value: item.id,
+                              image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                            }))}
                           search={true}
                           defaultValue={ge.item_id}
                           filterFn={(item, search) => {
@@ -380,7 +381,11 @@ const DinoForm = (props: DinoFormProps) => {
                           onClick={() => removeStat(index)}
                         >
                           Remove
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="rw-button-icon">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 448 512"
+                            className="rw-button-icon"
+                          >
                             <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
                           </svg>
                         </button>
@@ -403,7 +408,10 @@ const DinoForm = (props: DinoFormProps) => {
                 </button>
               </div>
 
-              <FieldError name="DinoStat.create.0.item_id" className="rw-field-error" />
+              <FieldError
+                name="DinoStat.create.0.item_id"
+                className="rw-field-error"
+              />
             </div>
             <div>
               <Label
@@ -427,12 +435,14 @@ const DinoForm = (props: DinoFormProps) => {
                         <Lookup
                           {...register(`DinoStat.create.${index}.item_id`)}
                           className="!mt-0 !rounded-none !rounded-l-md"
-                          options={data.itemsByCategory.items.map((item) => ({
-                            type: item.type,
-                            label: item.name,
-                            value: item.id,
-                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                          }))}
+                          options={data.itemsByCategory.items
+                            .filter((i) => i.category === "Resource")
+                            .map((item) => ({
+                              type: item.type,
+                              label: item.name,
+                              value: item.id,
+                              image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                            }))}
                           search={true}
                           defaultValue={wr.item_id}
                           filterFn={(item, search) => {
@@ -462,7 +472,11 @@ const DinoForm = (props: DinoFormProps) => {
                           onClick={() => removeStat(index)}
                         >
                           Remove
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="rw-button-icon">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 448 512"
+                            className="rw-button-icon"
+                          >
                             <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
                           </svg>
                         </button>
@@ -845,12 +859,14 @@ const DinoForm = (props: DinoFormProps) => {
                 name="saddle_id"
                 options={
                   data
-                    ? data.itemsByCategory.items.map((item) => ({
-                      type: item.type,
-                      label: item.name,
-                      value: item.id,
-                      image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                    }))
+                    ? data.itemsByCategory.items
+                        .filter((i) => i.category === "Saddle")
+                        .map((item) => ({
+                          type: item.type,
+                          label: item.name,
+                          value: item.id,
+                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                        }))
                     : []
                 }
                 search={true}
@@ -980,12 +996,14 @@ const DinoForm = (props: DinoFormProps) => {
                           className="!mt-0 !rounded-none !rounded-l-md"
                           options={
                             data
-                              ? data.itemsByCategory.items.map((item) => ({
-                                type: item.type,
-                                label: item.name,
-                                value: item.id,
-                                image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                              }))
+                              ? data.itemsByCategory.items
+                                  .filter((i) => i.category === "Resource")
+                                  .map((item) => ({
+                                    type: item.type,
+                                    label: item.name,
+                                    value: item.id,
+                                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                                  }))
                               : []
                           }
                           search={true}
@@ -1017,7 +1035,11 @@ const DinoForm = (props: DinoFormProps) => {
                           className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
                           onClick={() => removeStat(index)}
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="rw-button-icon">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 448 512"
+                            className="rw-button-icon"
+                          >
                             <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
                           </svg>
                         </button>
@@ -1327,7 +1349,10 @@ const DinoForm = (props: DinoFormProps) => {
                 validation={{ valueAsNumber: true }}
               />
 
-              <FieldError name="taming_ineffectiveness" className="rw-field-error" />
+              <FieldError
+                name="taming_ineffectiveness"
+                className="rw-field-error"
+              />
             </div>
           </div>
         </details>
@@ -1493,13 +1518,18 @@ const DinoForm = (props: DinoFormProps) => {
               </Label>
 
               <Lookup
-                options={arkitems.items
-                  .filter((item) => item.type === "Consumable")
-                  .map((item) => ({
-                    value: item.id,
-                    label: item.name,
-                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                  }))}
+                options={
+                  data
+                    ? data.itemsByCategory.items
+                        .filter((i) => i.category === "Consumable")
+                        .map((item) => ({
+                          type: item.type,
+                          label: item.name,
+                          value: item.id,
+                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                        }))
+                    : []
+                }
                 search={true}
                 name="eats"
                 onSelect={(e) => {
@@ -1821,7 +1851,11 @@ const DinoForm = (props: DinoFormProps) => {
               onClick={() => removeAttack(index)}
             >
               Remove
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="rw-button-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                className="rw-button-icon"
+              >
                 <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
               </svg>
             </button>

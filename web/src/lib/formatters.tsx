@@ -1,7 +1,6 @@
 import React from "react";
 
 import humanize from "humanize-string";
-import prices from "../../public/arkitems.json";
 
 export const formatEnum = (values: string | string[] | null | undefined) => {
   let output = "";
@@ -143,8 +142,9 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-    }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+  }`;
 };
 /**
  *
@@ -191,10 +191,10 @@ export const getBaseMaterials = (
     // TODO: Replace this shit
     let c =
       item.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0 &&
-        item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-          .Item_ItemRecipe_crafting_stationToItem != null
+      item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
+        .Item_ItemRecipe_crafting_stationToItem != null
         ? item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-          .Item_ItemRecipe_crafting_stationToItem.id
+            .Item_ItemRecipe_crafting_stationToItem.id
         : null;
 
     // Group by crafting_station somehow
@@ -579,7 +579,7 @@ export const removeDuplicates = (arr: Array<any>): Array<any> => {
  * @return {Object} - An object where each key is a unique value of the provided key and the value is an array of elements that have that key value.
  */
 export const groupBy = (xs: Array<any>, key: string) => {
-  const nestedKeys = key.split('.');
+  const nestedKeys = key.split(".");
 
   return xs.reduce((acc, obj) => {
     let groupKey = obj;
@@ -596,7 +596,10 @@ export const groupBy = (xs: Array<any>, key: string) => {
   }, {});
 };
 
-export const groupByObject = (arr: Array<any>, key: string): [group_object: any, grouped_items: any[]] => {
+export const groupByObject = (
+  arr: Array<any>,
+  key: string
+): [group_object: any, grouped_items: any[]] => {
   return arr.reduce((acc, obj) => {
     const Thekey = JSON.stringify(obj[key]);
     if (!acc[Thekey]) {
@@ -605,7 +608,7 @@ export const groupByObject = (arr: Array<any>, key: string): [group_object: any,
     acc[Thekey].push(obj);
     return acc;
   }, {});
-}
+};
 
 /**
  * @description debounce function for search fields
@@ -643,8 +646,21 @@ export const clamp = (
   );
 };
 
-
-type Colors = "red" | "purple" | "blue" | "green" | "slate" | "stone" | "gray" | "lime" | "neutral" | "zinc" | "orange" | "amber" | "yellow" | "pea";
+type Colors =
+  | "red"
+  | "purple"
+  | "blue"
+  | "green"
+  | "slate"
+  | "stone"
+  | "gray"
+  | "lime"
+  | "neutral"
+  | "zinc"
+  | "orange"
+  | "amber"
+  | "yellow"
+  | "pea";
 type Luminance = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 export type BgColor = `bg-${Colors}-${Luminance}`;
 export type TextColor = `text-${Colors}-${Luminance}`;
