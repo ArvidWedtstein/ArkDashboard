@@ -479,7 +479,7 @@ const ItemForm = (props: ItemFormProps) => {
                       role="group"
                       key={`recipe-${index}`}
                     >
-                      {/* TODO: replace with items from db */}
+                      {/* TODO: Group By crafting station */}
                       <Lookup
                         // {...register(
                         //   `ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.item_id`,
