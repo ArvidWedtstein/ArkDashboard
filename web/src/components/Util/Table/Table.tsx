@@ -5,9 +5,11 @@ import {
   formatNumberWithThousandSeparator,
   isUUID,
   nmbFormat,
+  pluralize,
   truncate,
 } from "src/lib/formatters";
 import clsx from "clsx";
+import { ContextMenu } from "../ContextMenu/ContextMenu";
 interface Row {
   index: number;
 }
@@ -133,9 +135,10 @@ const Table = ({
     const { column, operator, value } = filter;
     const rowValue = row[column];
 
+    if (value === "" || rowValue == undefined) return true;
     switch (operator) {
       case "=":
-        return rowValue === value;
+        return rowValue == value;
       case "!=":
         return rowValue !== value;
       case ">":
@@ -243,7 +246,10 @@ const Table = ({
     return (
       <th
         key={`headcell-${columnIndex}-${label}`}
-        className={clsx("px-3 py-3", other.className)}
+        className={clsx(
+          "px-3 py-3 first:rounded-tl-lg last:rounded-tr-lg",
+          other.className
+        )}
         scope="col"
       >
         {other.sortable ? (
@@ -514,18 +520,17 @@ const Table = ({
     );
   };
 
-  const addFilter = (e) => {
-    e.preventDefault();
-    const formdata = new FormData(e.currentTarget);
+  const addFilter = () => {
     setFilters([
       ...filters,
       {
-        column: formdata.get("column").toString(),
-        operator: formdata.get("operator").toString(),
-        value: formdata.get("value").toString(),
+        column: columns[0].field.toString(),
+        operator: "=",
+        value: "",
       },
     ]);
   };
+
   return (
     <div
       className={clsx(
@@ -533,132 +538,35 @@ const Table = ({
         className
       )}
     >
-      {search && (
-        <div className="flex items-center justify-between pb-4">
-          <label htmlFor="table-search" className="sr-only">
-            Search
-          </label>
-          <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg
-                className="h-5 w-5 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
+      {(search || filter) && (
+        <div className="m-1 flex items-center justify-start space-x-3 pb-4">
+          {filter && (
+            <details className="relative">
+              <summary
+                className={clsx("rw-button rw-button-gray", {
+                  "!text-pea-400": filters.length > 0,
+                })}
               >
-                <path
-                  fillRule="evenodd"
-                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </div>
-            <input
-              id="table-search"
-              onChange={handleSearch}
-              className="block w-80 rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              placeholder="Search for items"
-            />
-          </div>
-        </div>
-      )}
-      <table className="relative mr-auto w-full table-auto text-left text-sm text-gray-700 dark:text-stone-300">
-        {(!!caption || filter) && (
-          <caption className="bg-zinc-200 p-5 text-left text-lg font-semibold text-gray-900 dark:bg-zinc-800 dark:text-white">
-            {!!caption && (
-              <>
-                {caption.title}
-                {caption.content && (
-                  <div className="mt-1 text-sm font-normal">
-                    {caption.content}
-                  </div>
-                )}
-              </>
-            )}
-            {filter && (
-              <details>
-                <summary className="rw-button rw-button-gray rw-button-small">
-                  Filter
-                </summary>
-                <fieldset className="w-fit rounded border p-2">
-                  {filters.map((filter, index) => (
-                    <div
-                      className="rw-button-group justify-start"
-                      key={`filter-${index}`}
-                    >
-                      <select
-                        name="column"
-                        id="column"
-                        className="rw-input rw-input-small !rounded-r-none"
-                        value={filter.column}
-                        onChange={(e) => {
-                          const newFilters = [...filters];
-                          newFilters[index].column = e.target.value;
-                          setFilters(newFilters);
-                        }}
-                      >
-                        {columns.map((column, index) => (
-                          <option key={`column-${index}`} value={column.field}>
-                            {column.label}
-                          </option>
-                        ))}
-                      </select>
-
-                      <select
-                        name="operator"
-                        id="operator"
-                        className="rw-input rw-input-small !rounded-l-none !rounded-r-none"
-                        value={filter.operator}
-                        onChange={(e) => {
-                          const newFilters = [...filters];
-                          newFilters[index].operator = e.target.value;
-                          setFilters(newFilters);
-                        }}
-                      >
-                        <option value="=">=</option>
-                        <option value="!=">!=</option>
-                        <option value=">">&gt;</option>
-                        <option value=">=">&gt;=</option>
-                        <option value="<">&lt;</option>
-                        <option value="<=">&lt;=</option>
-                        <option value="like">like</option>
-                        <option value="ilike">ilike</option>
-                        <option value="in">in</option>
-                        <option value="not_in">not in</option>
-                      </select>
-
-                      <input
-                        type="text"
-                        name="value"
-                        className="rw-input rw-input-small !rounded-none"
-                        value={filter.value}
-                        onChange={(e) => {
-                          const newFilters = [...filters];
-                          newFilters[index].value = e.target.value;
-                          setFilters(newFilters);
-                        }}
-                      />
-                      <button
-                        className="rw-button rw-button-gray rw-button-small !ml-0 !rounded-l-none"
-                        onClick={() => {
-                          const newFilters = [...filters];
-                          newFilters.splice(index, 1);
-                          setFilters(newFilters);
-                        }}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  ))}
-                  <hr />
-                  <form
+                {filters.length > 0
+                  ? `Filtered by ${pluralize(filters.length, "rule")}`
+                  : "Filter"}
+              </summary>
+              <div className="absolute z-10 min-w-max rounded border bg-zinc-700 p-2">
+                {filters.map((filter, index) => (
+                  <div
                     className="rw-button-group justify-start"
-                    onSubmit={addFilter}
+                    key={`filter-${index}`}
                   >
                     <select
                       name="column"
+                      id="column"
                       className="rw-input rw-input-small !rounded-r-none"
+                      value={filter.column}
+                      onChange={(e) => {
+                        const newFilters = [...filters];
+                        newFilters[index].column = e.target.value;
+                        setFilters(newFilters);
+                      }}
                     >
                       {columns.map((column, index) => (
                         <option key={`column-${index}`} value={column.field}>
@@ -669,7 +577,14 @@ const Table = ({
 
                     <select
                       name="operator"
+                      id="operator"
                       className="rw-input rw-input-small !rounded-l-none !rounded-r-none"
+                      value={filter.operator}
+                      onChange={(e) => {
+                        const newFilters = [...filters];
+                        newFilters[index].operator = e.target.value;
+                        setFilters(newFilters);
+                      }}
                     >
                       <option value="=">=</option>
                       <option value="!=">!=</option>
@@ -687,16 +602,82 @@ const Table = ({
                       type="text"
                       name="value"
                       className="rw-input rw-input-small !rounded-none"
+                      value={filter.value}
+                      onChange={(e) => {
+                        const newFilters = [...filters];
+                        newFilters[index].value = e.target.value;
+                        setFilters(newFilters);
+                      }}
                     />
                     <button
-                      type="submit"
-                      className="rw-button rw-button-small rw-button-gray !ml-0 !rounded-l-none"
+                      className="rw-button rw-button-gray rw-button-small !ml-0 !rounded-l-none"
+                      onClick={() => {
+                        const newFilters = [...filters];
+                        newFilters.splice(index, 1);
+                        setFilters(newFilters);
+                      }}
                     >
-                      Add
+                      Remove
                     </button>
-                  </form>
-                </fieldset>
-              </details>
+                  </div>
+                ))}
+                {filters.length === 0 && (
+                  <p className="m-1 text-base text-stone-400">
+                    No filters applied to this view
+                    <br />
+                    <span className="text-xs text-stone-500">
+                      Add a filter below to filter the view
+                    </span>
+                  </p>
+                )}
+                <hr />
+                <button
+                  type="button"
+                  className="rw-button rw-button-small rw-button-gray-outline"
+                  onClick={() => addFilter()}
+                >
+                  Add Filter
+                </button>
+              </div>
+            </details>
+          )}
+          {search && (
+            <div className="relative">
+              <label htmlFor="table-search" className="sr-only">
+                Search
+              </label>
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg
+                  className="h-5 w-5 text-gray-500 dark:text-gray-400"
+                  aria-hidden="true"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+              </div>
+              <input
+                id="table-search"
+                onChange={handleSearch}
+                className="rw-input block w-80 rounded-lg pl-10"
+                placeholder="Search for items"
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      <table className="relative mr-auto w-full table-auto text-left text-sm text-gray-700 dark:text-stone-300">
+        {!!caption && (
+          <caption className="bg-zinc-200 p-5 text-left text-lg font-semibold text-gray-900 dark:bg-zinc-800 dark:text-white">
+            {caption.title}
+            {caption.content && (
+              <div className="mt-1 text-sm font-normal">{caption.content}</div>
             )}
           </caption>
         )}
@@ -711,7 +692,7 @@ const Table = ({
                   ...other,
                 });
               })}
-              {renderActions && <th></th>}
+              {renderActions && <th className="last:rounded-tr-lg"></th>}
             </tr>
           </thead>
         )}

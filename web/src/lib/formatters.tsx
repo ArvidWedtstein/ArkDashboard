@@ -437,6 +437,7 @@ export const timeFormatL = (seconds, onlyLast = false) => {
  * Capitalizes the first letter of a given string.
  * @param {string} string - The input string to be capitalized.
  * @returns {string} - The capitalized string.
+ * @deprecated Use the `capitalize` tailwind method instead.
  */
 export const capitalize = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
