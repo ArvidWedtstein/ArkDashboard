@@ -489,25 +489,6 @@ const ItemForm = (props: ItemFormProps) => {
                         // )}
                         name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.item_id`}
                         group={"category"}
-                        // options={arkitems.items
-                        //   .filter((f) =>
-                        //     [
-                        //       "Consumable",
-                        //       "Resource",
-                        //       "Other",
-                        //       "Structure",
-                        //       "Building",
-                        //       "Tool",
-                        //     ].includes(f.type)
-                        //   )
-                        //   .map((item) => {
-                        //     return {
-                        //       type: item.type,
-                        //       label: item.name || "",
-                        //       value: item.id,
-                        //       image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                        //     };
-                        //   })}
                         options={data.itemsByCategory.items.map((item) => ({
                           category: item.category,
                           type: item.type,

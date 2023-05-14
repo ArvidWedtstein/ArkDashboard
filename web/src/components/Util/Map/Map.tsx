@@ -1,12 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-
-const drawSvgPath = (coordinates: { lat: number; lon: number }[], size): string => {
+const drawSvgPath = (
+  coordinates: { lat: number; lon: number }[],
+  size
+): string => {
   let pathString = "";
   coordinates.forEach((coordinate, index) => {
     const command = index === 0 ? "M" : "L";
-    pathString += `${command}${(size.height / 100) * coordinate.lon + size.width / 100
-      } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
+    pathString += `${command}${
+      (size.height / 100) * coordinate.lon + size.width / 100
+    } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
   });
   return pathString;
 };
@@ -74,7 +77,8 @@ const Map = ({
     if (interactive && svgElement) {
       const { width, height } = svgElement.getBoundingClientRect();
       const maxScale = Math.max(width / 500, height / 500);
-      setScale(maxScale);
+      // setScale(maxScale);
+      setScale(1);
     }
   }, []);
 
@@ -82,12 +86,13 @@ const Map = ({
     if (!interactive) return;
     if (!shiftKey) return;
     const delta = deltaY > 0 ? -0.1 : 0.1;
+
     const maxScale = Math.max(scale, 1);
     const minScale = Math.min(
       1,
       Math.min(
-        600 / svgRef.current.clientWidth,
-        450 / svgRef.current.clientHeight
+        500 / svgRef.current.clientWidth,
+        500 / svgRef.current.clientHeight
       )
     );
     const newScale = Math.max(minScale, Math.min(maxScale + delta, 5));
@@ -152,8 +157,9 @@ const Map = ({
     }
   }, []);
 
-  const viewBox = `${-translate.x} ${-translate.y} ${size.width} ${size.height
-    }`;
+  const viewBox = `${-translate.x} ${-translate.y} ${size.width} ${
+    size.height
+  }`;
 
   const imageTransform = `scale(${scale})`;
 

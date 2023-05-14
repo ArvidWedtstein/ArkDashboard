@@ -30,17 +30,20 @@ a {
   /* @apply mx-4 pb-4; */
   @apply pb-4;
 }
+
 .rw-segment {
   @apply w-full overflow-hidden; /*  rounded-lg border border-gray-200  */
   scrollbar-color: theme("colors.zinc.400") transparent;
+  scroll-behavior: smooth;
 }
 .rw-segment::-webkit-scrollbar {
   height: initial;
 }
 .rw-segment::-webkit-scrollbar-track {
-  @apply rounded-t-none rounded-b-[10px]  bg-transparent p-[2px];
+  @apply rounded-t-none rounded-b-[10px] bg-transparent p-[2px];
 }
-.rw-segment::-webkit-scrollbar-thumb {
+.rw-segment::-webkit-scrollbar-thumb,
+.rw-segment::-webkit-scrollbar-button {
   @apply rounded-full border-[3px] border-solid border-transparent bg-zinc-400 bg-clip-content;
 }
 .rw-segment-header {
@@ -244,7 +247,7 @@ a {
   @apply my-3 flex justify-center rounded-md;
 }
 .rw-button-group .rw-input {
-  @apply rounded-none first:rounded-l-md last:rounded-r-md;
+  @apply mt-0 rounded-none first:rounded-l-md last:rounded-r-md;
 }
 .rw-button-group .rw-button {
   @apply mx-1;
@@ -265,6 +268,9 @@ a {
   /* @apply block mt-2 w-full p-2 bg-white border border-gray-200 rounded outline-none; */
   /* old color style dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-300 dark:focus:ring-stone-200 */
   @apply mt-1 block rounded-lg border border-gray-500 bg-zinc-300 px-4 py-2.5 text-sm text-gray-900 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 disabled:cursor-not-allowed disabled:text-gray-400 contrast-more:border-black contrast-more:placeholder-black dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white dark:contrast-more:placeholder-white;
+}
+.rw-input.rw-input-small {
+  @apply py-1 px-2 text-xs;
 }
 .rw-input option {
   @apply appearance-none border-b border-black focus:outline-none dark:border-white;

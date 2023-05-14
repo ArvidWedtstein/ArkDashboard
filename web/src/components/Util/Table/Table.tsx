@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { debounce, dynamicSort, formatNumberWithThousandSeparator, isUUID, nmbFormat, truncate } from "src/lib/formatters";
+import {
+  debounce,
+  dynamicSort,
+  formatNumberWithThousandSeparator,
+  isUUID,
+  nmbFormat,
+  truncate,
+} from "src/lib/formatters";
 import clsx from "clsx";
 interface Row {
   index: number;
@@ -7,14 +14,14 @@ interface Row {
 interface GridCell<V> {
   columnIndex: number;
   rowIndex: number;
-  field: ColumnData['field'];
+  field: ColumnData["field"];
   value: V;
   row?: V | ThisType<Row>;
 }
 
 interface ColumnData<V = any, F = V> {
   field: string;
-  label: string
+  label: string;
   numeric?: boolean;
   className?: string;
   bold?: boolean;
@@ -95,6 +102,13 @@ const Table = ({
     column: "",
     direction: "asc",
   });
+  const [filters, setFilters] = useState([
+    {
+      column: "",
+      operator: "",
+      value: "",
+    },
+  ]);
 
   const sortRows = useCallback(
     (e) => {
@@ -115,15 +129,72 @@ const Table = ({
     return data;
   };
 
+  const applyFilter = (filter, row) => {
+    const { column, operator, value } = filter;
+    const rowValue = row[column];
+
+    switch (operator) {
+      case "=":
+        return rowValue === value;
+      case "!=":
+        return rowValue !== value;
+      case ">":
+        return rowValue > value;
+      case "<":
+        return rowValue < value;
+      case ">=":
+        return rowValue >= value;
+      case "<=":
+        return rowValue <= value;
+      case "like":
+        return rowValue.includes(value);
+      case "ilike":
+        return !rowValue.includes(value);
+      case "in":
+        return value.includes(rowValue);
+      case "not_in":
+        return !value.includes(rowValue);
+      default:
+        return true;
+    }
+  };
+  const filterData = (data) => {
+    if (filters.length === 0) {
+      return data;
+    }
+
+    const filterLookup = {};
+    filters.forEach((filter) => {
+      const { column } = filter;
+      if (!filterLookup[column]) {
+        filterLookup[column] = [];
+      }
+      filterLookup[column].push(filter);
+    });
+
+    return data.filter((row) => {
+      for (const column in filterLookup) {
+        const filters = filterLookup[column];
+        if (filters.some((filter) => !applyFilter(filter, row))) {
+          return false;
+        }
+      }
+      return true;
+    });
+  };
+
   const SortedFilteredData = useMemo(() => {
     if (!dataRows?.length) return dataRows;
 
-    const filteredData = dataRows.filter(row => {
-      const rowString = Object.values(row)
-        .join(" ")
-        .toLowerCase();
+    let filteredData = dataRows.filter((row) => {
+      const rowString = Object.values(row).join(" ").toLowerCase();
+
       return rowString.includes(searchTerm.toLowerCase());
     });
+
+    if (filter) {
+      filteredData = filterData(filteredData);
+    }
 
     if (pagination) {
       const startIndex = (currentPage - 1) * rowsPerPage;
@@ -132,7 +203,7 @@ const Table = ({
       return sortedData.slice(startIndex, endIndex);
     }
     return sortData(filteredData, sort.column, sort.direction);
-  }, [sort, searchTerm, dataRows, currentPage, pagination]);
+  }, [sort, searchTerm, dataRows, currentPage, pagination, filters]);
 
   useEffect(() => {
     if (select) {
@@ -167,7 +238,6 @@ const Table = ({
     }
     setSelectedRows(rows.filter((row) => row.checked === true));
   };
-
 
   const headerRenderer = ({ label, columnIndex, ...other }) => {
     return (
@@ -218,7 +288,7 @@ const Table = ({
     // px-6 py-4
     const className = clsx(other.className, "px-3 py-2", {
       "font-bold": other.bold,
-      "truncate": !renderCell && !other.valueFormatter,
+      truncate: !renderCell && !other.valueFormatter,
     });
 
     if (other.numeric) {
@@ -226,22 +296,23 @@ const Table = ({
     }
     const key = `cell-${rowIndex}-${columnIndex}`;
 
-    const valueFormatter = other.valueFormatter ? other.valueFormatter({
-      value: cellData,
-      row: rowData,
-      columnIndex,
-    }) : cellData;
+    const valueFormatter = other.valueFormatter
+      ? other.valueFormatter({
+          value: cellData,
+          row: rowData,
+          columnIndex,
+        })
+      : cellData;
 
     let content = renderCell
       ? renderCell({
-        columnIndex,
-        rowIndex,
-        value: valueFormatter,
-        field: other.field,
-        row: rowData,
-      })
+          columnIndex,
+          rowIndex,
+          value: valueFormatter,
+          field: other.field,
+          row: rowData,
+        })
       : valueFormatter;
-
 
     return (
       <td key={key} className={className}>
@@ -278,20 +349,34 @@ const Table = ({
     );
   };
 
-
   // TODO: Fix summary for vertical table
   const tableFooter = () => {
     let total = 0;
-    const columnData = useMemo(() => columns.map(({ field, ...other }) => ({ field, numeric: other.numeric })), [columns]);
+    const columnData = useMemo(
+      () =>
+        columns.map(({ field, ...other }) => ({
+          field,
+          numeric: other.numeric,
+        })),
+      [columns]
+    );
     return (
       <tfoot>
         <tr className="bg-gray-400 font-semibold text-gray-900 dark:bg-gray-700 dark:text-white">
           {select && !vertical && <td className="p-4"></td>}
           {!vertical &&
             columnData.map(({ field, numeric }, index) => {
-              const sum = numeric ? SortedFilteredData.filter((r, i) => (select && selectedRows.length > 0) ? rows.map((d: any, k) => {
-                return d.checked ? k : -1
-              }).includes(i) : true).reduce((a, b) => a + parseInt(b[field]), 0) : '';
+              const sum = numeric
+                ? SortedFilteredData.filter((r, i) =>
+                    select && selectedRows.length > 0
+                      ? rows
+                          .map((d: any, k) => {
+                            return d.checked ? k : -1;
+                          })
+                          .includes(i)
+                      : true
+                  ).reduce((a, b) => a + parseInt(b[field]), 0)
+                : "";
               total += numeric ? sum : 0;
               return (
                 <th
@@ -301,8 +386,7 @@ const Table = ({
                   {numeric ? sum : index === 0 ? "Total" : ""}
                 </th>
               );
-            })
-          }
+            })}
           {renderActions && <th></th>}
         </tr>
       </tfoot>
@@ -311,113 +395,137 @@ const Table = ({
 
   const tablePagination = () => {
     const totalRows = dataRows.length || rows.length;
-    const lastRowIndex = currentPage * rowsPerPage > totalRows ? totalRows : currentPage * rowsPerPage;
+    const lastRowIndex =
+      currentPage * rowsPerPage > totalRows
+        ? totalRows
+        : currentPage * rowsPerPage;
     const firstRowIndex = currentPage * rowsPerPage - rowsPerPage;
 
-    const changePage = useCallback((dir: "next" | "prev") => {
-      if (dir === "prev" && currentPage > 1) {
-        setCurrentPage(currentPage - 1);
-      } else if (dir === "next" && currentPage < Math.ceil(totalRows / rowsPerPage)) {
-        setCurrentPage(currentPage + 1);
-      }
-    }, [currentPage, dataRows.length, rowsPerPage]);
-    return useMemo(() => (
-      <nav
-        className="flex items-center justify-between pt-4"
-        aria-label="Table navigation"
-      >
-        <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-          Showing{" "}
-          <span className="font-semibold text-gray-900 dark:text-white">
-            {firstRowIndex + 1}-{lastRowIndex}
-          </span>{" "}
-          of{" "}
-          <span className="font-semibold text-gray-900 dark:text-white">
-            {totalRows}
+    const changePage = useCallback(
+      (dir: "next" | "prev") => {
+        if (dir === "prev" && currentPage > 1) {
+          setCurrentPage(currentPage - 1);
+        } else if (
+          dir === "next" &&
+          currentPage < Math.ceil(totalRows / rowsPerPage)
+        ) {
+          setCurrentPage(currentPage + 1);
+        }
+      },
+      [currentPage, dataRows.length, rowsPerPage]
+    );
+    return useMemo(
+      () => (
+        <nav
+          className="flex items-center justify-between pt-4"
+          aria-label="Table navigation"
+        >
+          <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+            Showing{" "}
+            <span className="font-semibold text-gray-900 dark:text-white">
+              {firstRowIndex + 1}-{lastRowIndex}
+            </span>{" "}
+            of{" "}
+            <span className="font-semibold text-gray-900 dark:text-white">
+              {totalRows}
+            </span>
           </span>
-        </span>
-        <ul className="inline-flex items-center -space-x-px text-gray-500 dark:text-gray-400">
-          <li>
-            <button
-              type="button"
-              disabled={currentPage === 1}
-              onClick={() => changePage("prev")}
-              className="ml-0 block rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-white"
-            >
-              <span className="sr-only">Previous</span>
-              <svg
-                className="h-5 w-5"
-                aria-hidden="true"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
-          </li>
-
-          {currentPage > 1 && (
+          <ul className="inline-flex items-center -space-x-px text-gray-500 dark:text-gray-400">
             <li>
               <button
                 type="button"
+                disabled={currentPage === 1}
                 onClick={() => changePage("prev")}
-                className="block border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-white"
+                className="ml-0 block rounded-l-lg border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-white"
               >
-                {currentPage - 1}
+                <span className="sr-only">Previous</span>
+                <svg
+                  className="h-5 w-5"
+                  aria-hidden="true"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
               </button>
             </li>
-          )}
-          <li>
-            <button
-              type="button"
-              className="block border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:hover:bg-zinc-700 font-bold text-lg dark:hover:text-stone-300 dark:text-white text-black"
-            >
-              {currentPage}
-            </button>
-          </li>
-          {currentPage < Math.ceil(dataRows.length / rowsPerPage) && (
+
+            {currentPage > 1 && (
+              <li>
+                <button
+                  type="button"
+                  onClick={() => changePage("prev")}
+                  className="block border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-white"
+                >
+                  {currentPage - 1}
+                </button>
+              </li>
+            )}
+            <li>
+              <button
+                type="button"
+                className="block border border-gray-300 bg-white px-3 py-2 text-lg font-bold leading-tight text-black hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:text-white dark:hover:bg-zinc-700 dark:hover:text-stone-300"
+              >
+                {currentPage}
+              </button>
+            </li>
+            {currentPage < Math.ceil(dataRows.length / rowsPerPage) && (
+              <li>
+                <button
+                  type="button"
+                  onClick={() => changePage("next")}
+                  className="block border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-white"
+                >
+                  {currentPage + 1}
+                </button>
+              </li>
+            )}
             <li>
               <button
                 type="button"
                 onClick={() => changePage("next")}
-                className="block border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-white"
+                className="block rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600  dark:hover:bg-zinc-700 dark:hover:text-white"
               >
-                {currentPage + 1}
+                <span className="sr-only">Next</span>
+                <svg
+                  className="h-5 w-5"
+                  aria-hidden="true"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
               </button>
             </li>
-          )}
-          <li>
-            <button
-              type="button"
-              onClick={() => changePage("next")}
-              className="block rounded-r-lg border border-gray-300 bg-white px-3 py-2 leading-tight hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600  dark:hover:bg-zinc-700 dark:hover:text-white"
-            >
-              <span className="sr-only">Next</span>
-              <svg
-                className="h-5 w-5"
-                aria-hidden="true"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </button>
-          </li>
-        </ul>
-      </nav>
-    ), [currentPage]);
+          </ul>
+        </nav>
+      ),
+      [currentPage]
+    );
   };
 
+  const addFilter = (e) => {
+    e.preventDefault();
+    const formdata = new FormData(e.currentTarget);
+    setFilters([
+      ...filters,
+      {
+        column: formdata.get("column").toString(),
+        operator: formdata.get("operator").toString(),
+        value: formdata.get("value").toString(),
+      },
+    ]);
+  };
   return (
     <div
       className={clsx(
@@ -456,13 +564,139 @@ const Table = ({
         </div>
       )}
       <table className="relative mr-auto w-full table-auto text-left text-sm text-gray-700 dark:text-stone-300">
-        {!!caption && (
+        {(!!caption || filter) && (
           <caption className="bg-zinc-200 p-5 text-left text-lg font-semibold text-gray-900 dark:bg-zinc-800 dark:text-white">
-            {caption.title}
-            {caption.content && (
-              <div className="mt-1 text-sm font-normal">
-                {caption.content}
-              </div>
+            {!!caption && (
+              <>
+                {caption.title}
+                {caption.content && (
+                  <div className="mt-1 text-sm font-normal">
+                    {caption.content}
+                  </div>
+                )}
+              </>
+            )}
+            {filter && (
+              <details>
+                <summary className="rw-button rw-button-gray rw-button-small">
+                  Filter
+                </summary>
+                <fieldset className="w-fit rounded border p-2">
+                  {filters.map((filter, index) => (
+                    <div
+                      className="rw-button-group justify-start"
+                      key={`filter-${index}`}
+                    >
+                      <select
+                        name="column"
+                        id="column"
+                        className="rw-input rw-input-small !rounded-r-none"
+                        value={filter.column}
+                        onChange={(e) => {
+                          const newFilters = [...filters];
+                          newFilters[index].column = e.target.value;
+                          setFilters(newFilters);
+                        }}
+                      >
+                        {columns.map((column, index) => (
+                          <option key={`column-${index}`} value={column.field}>
+                            {column.label}
+                          </option>
+                        ))}
+                      </select>
+
+                      <select
+                        name="operator"
+                        id="operator"
+                        className="rw-input rw-input-small !rounded-l-none !rounded-r-none"
+                        value={filter.operator}
+                        onChange={(e) => {
+                          const newFilters = [...filters];
+                          newFilters[index].operator = e.target.value;
+                          setFilters(newFilters);
+                        }}
+                      >
+                        <option value="=">=</option>
+                        <option value="!=">!=</option>
+                        <option value=">">&gt;</option>
+                        <option value=">=">&gt;=</option>
+                        <option value="<">&lt;</option>
+                        <option value="<=">&lt;=</option>
+                        <option value="like">like</option>
+                        <option value="ilike">ilike</option>
+                        <option value="in">in</option>
+                        <option value="not_in">not in</option>
+                      </select>
+
+                      <input
+                        type="text"
+                        name="value"
+                        className="rw-input rw-input-small !rounded-none"
+                        value={filter.value}
+                        onChange={(e) => {
+                          const newFilters = [...filters];
+                          newFilters[index].value = e.target.value;
+                          setFilters(newFilters);
+                        }}
+                      />
+                      <button
+                        className="rw-button rw-button-gray rw-button-small !ml-0 !rounded-l-none"
+                        onClick={() => {
+                          const newFilters = [...filters];
+                          newFilters.splice(index, 1);
+                          setFilters(newFilters);
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                  <hr />
+                  <form
+                    className="rw-button-group justify-start"
+                    onSubmit={addFilter}
+                  >
+                    <select
+                      name="column"
+                      className="rw-input rw-input-small !rounded-r-none"
+                    >
+                      {columns.map((column, index) => (
+                        <option key={`column-${index}`} value={column.field}>
+                          {column.label}
+                        </option>
+                      ))}
+                    </select>
+
+                    <select
+                      name="operator"
+                      className="rw-input rw-input-small !rounded-l-none !rounded-r-none"
+                    >
+                      <option value="=">=</option>
+                      <option value="!=">!=</option>
+                      <option value=">">&gt;</option>
+                      <option value=">=">&gt;=</option>
+                      <option value="<">&lt;</option>
+                      <option value="<=">&lt;=</option>
+                      <option value="like">like</option>
+                      <option value="ilike">ilike</option>
+                      <option value="in">in</option>
+                      <option value="not_in">not in</option>
+                    </select>
+
+                    <input
+                      type="text"
+                      name="value"
+                      className="rw-input rw-input-small !rounded-none"
+                    />
+                    <button
+                      type="submit"
+                      className="rw-button rw-button-small rw-button-gray !ml-0 !rounded-l-none"
+                    >
+                      Add
+                    </button>
+                  </form>
+                </fieldset>
+              </details>
             )}
           </caption>
         )}
@@ -482,62 +716,62 @@ const Table = ({
           </thead>
         )}
         <tbody className="divide-y divide-gray-400 bg-zinc-300 dark:divide-gray-800 dark:bg-zinc-600">
-
           {vertical
             ? columns.map(({ field, ...other }, index) => {
-              return (
-                <tr
-                  key={`row-${index}`}
-                  className={clsx("bg-zinc-300 dark:bg-zinc-600", {
-                    "hover:bg-gray-50 dark:hover:bg-zinc-700": hover,
-                  })}
-                  onClick={() => onRowClick && onRowClick({ index: index })}
-                >
-                  {header &&
-                    headerRenderer({
-                      label: other.label,
-                      columnIndex: index,
-                      ...other,
+                return (
+                  <tr
+                    key={`row-${index}`}
+                    className={clsx("bg-zinc-300 dark:bg-zinc-600", {
+                      "hover:bg-gray-50 dark:hover:bg-zinc-700": hover,
                     })}
-                  {SortedFilteredData.map((datarow, rowIndex) => cellRenderer({
-                    rowData: datarow,
-                    cellData: datarow[field],
-                    columnIndex: index,
-                    rowIndex,
-                    renderCell: other.renderCell,
-                    field,
-                    ...other,
-                  })
-                  )}
-                </tr>
-              );
-            })
+                    onClick={() => onRowClick && onRowClick({ index: index })}
+                  >
+                    {header &&
+                      headerRenderer({
+                        label: other.label,
+                        columnIndex: index,
+                        ...other,
+                      })}
+                    {SortedFilteredData.map((datarow, rowIndex) =>
+                      cellRenderer({
+                        rowData: datarow,
+                        cellData: datarow[field],
+                        columnIndex: index,
+                        rowIndex,
+                        renderCell: other.renderCell,
+                        field,
+                        ...other,
+                      })
+                    )}
+                  </tr>
+                );
+              })
             : dataRows &&
-            SortedFilteredData.map((datarow, i) => {
-              return (
-                <tr
-                  key={`row-${i}`}
-                  className={clsx("relative", {
-                    "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
-                  })}
-                  onClick={() => onRowClick && onRowClick({ index: i })}
-                >
-                  {select && tableSelect({ row: i })}
-                  {columns.map(({ field, ...other }, index) => {
-                    return cellRenderer({
-                      rowData: datarow,
-                      cellData: datarow[field],
-                      columnIndex: index,
-                      rowIndex: i,
-                      renderCell: other.renderCell,
-                      field,
-                      ...other,
-                    });
-                  })}
-                  {renderActions && <td>{renderActions(datarow)}</td>}
-                </tr>
-              );
-            })}
+              SortedFilteredData.map((datarow, i) => {
+                return (
+                  <tr
+                    key={`row-${i}`}
+                    className={clsx("relative", {
+                      "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
+                    })}
+                    onClick={() => onRowClick && onRowClick({ index: i })}
+                  >
+                    {select && tableSelect({ row: i })}
+                    {columns.map(({ field, ...other }, index) => {
+                      return cellRenderer({
+                        rowData: datarow,
+                        cellData: datarow[field],
+                        columnIndex: index,
+                        rowIndex: i,
+                        renderCell: other.renderCell,
+                        field,
+                        ...other,
+                      });
+                    })}
+                    {renderActions && <td>{renderActions(datarow)}</td>}
+                  </tr>
+                );
+              })}
           {(dataRows === null || dataRows.length === 0) && (
             <tr className="w-full">
               <td className="p-4 text-center" colSpan={100}>
