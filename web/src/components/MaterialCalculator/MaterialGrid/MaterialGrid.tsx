@@ -13,30 +13,50 @@ import Lookup from "src/components/Util/Lookup/Lookup";
 import {
   formatNumberWithThousandSeparator,
   getBaseMaterials,
-  groupBy,
   timeFormatL,
 } from "src/lib/formatters";
 import debounce from "lodash.debounce";
 import Table from "src/components/Util/Table/Table";
+import { useLazyQuery } from "@apollo/client";
 interface MaterialGridProps {
   items: any;
   error?: RWGqlError;
 }
+
+export const QUERY = gql`
+  query FindItemById($id: BigInt!) {
+    item: item(id: $id) {
+      id
+      name
+      image
+      crafting_time
+      category
+      ItemRecipe_ItemRecipe_crafted_item_idToItem {
+        amount
+        yields
+        Item_ItemRecipe_crafting_stationToItem {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
 export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
   const items = useMemo(() => {
     return arkitems.map((v) => ({ ...v, amount: 1 * v.yields }));
   }, []);
   const formMethods = useForm();
 
+
   const reducer = (state, action) => {
     switch (action.type) {
       case "ADD_AMOUNT_BY_NUM": {
         let itemIndex = state.findIndex((item) => item.id === action.item.id);
-        console.log(itemIndex)
         if (itemIndex !== -1) {
           return state.map((item, i) => {
             if (i === itemIndex) {
-              return { ...item, amount: item.amount + action.index };
+              return { ...item, amount: item.amount + (action.index || 1) };
             }
             return item;
           });
@@ -72,9 +92,25 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
         });
       }
       case "ADD": {
+        // const [loadItem, { called, loading, error: queryerror, data: itemdata }] = useLazyQuery(QUERY, {
+        //   variables: { id: parseInt(action.item.id) },
+        //   onCompleted: (data) => {
+        //     console.log('qeuery data', data)
+        //   },
+        //   onError: (error) => {
+        //     console.log(error);
+        //   }
+        // });
         const itemIndex = state.findIndex(
           (item) => parseInt(item.id) === parseInt(action.item.id)
         );
+
+        // loadItem({ variables: { id: parseInt(action.item.id) } });
+
+        // if (called && !loading && !queryerror) {
+
+        //   console.log('qeuery data', itemdata)
+        // }
 
         if (itemIndex !== -1) {
           return state.map((item, i) => {
