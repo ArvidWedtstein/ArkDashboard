@@ -23,26 +23,60 @@ import { MaterialGrid } from "../MaterialGrid/MaterialGrid";
 //    }
 //  `
 
+
 export const QUERY = gql`
-  query FindItemsMats {
+# fragment itemRecipe on ItemRecipe {
+#   id
+#   amount
+#   Item_ItemRecipe_crafting_stationToItem {
+#     id
+#     name
+#   }
+# }
+# fragment item on Item {
+#   id
+#   name
+#   image
+#   max_stack
+#   weight
+#   crafting_time
+#   yields
+#   stats
+#   category
+#   ItemRecipe_ItemRecipe_crafted_item_idToItem {
+#     ...itemRecipe
+#     Item_ItemRecipe_crafting_stationToItem {
+#       id
+#       name
+#     }
+#   }
+# }
+
+# fragment itemRecursive on Item {
+#   ...item
+#   ItemRecipe_ItemRecipe_crafted_item_idToItem {
+#     ...itemRecipe
+#     Item_ItemRecipe_item_idToItem {
+#       ...item # recursive
+#     }
+#   }
+# }
+
+#   query FindItemsMats {
+#     items {
+#       ...itemRecursive
+#   }
+# }
+query FindItemsMats {
     items {
       id
-      created_at
       name
-      description
       image
-      max_stack
-      weight
-      engram_points
       crafting_time
-      req_level
-      yields
-      stats
-      color
-      crafted_in
       category
       ItemRecipe_ItemRecipe_crafted_item_idToItem {
         amount
+        yields
         Item_ItemRecipe_crafting_stationToItem {
           id
           name
@@ -51,11 +85,11 @@ export const QUERY = gql`
           id
           name
           image
-          yields
           category
           crafting_time
           ItemRecipe_ItemRecipe_crafted_item_idToItem {
             amount
+            yields
             Item_ItemRecipe_crafting_stationToItem {
               id
               name
@@ -64,11 +98,11 @@ export const QUERY = gql`
               id
               name
               image
-              yields
               category
               crafting_time
               ItemRecipe_ItemRecipe_crafted_item_idToItem {
                 amount
+                yields
                 Item_ItemRecipe_crafting_stationToItem {
                   id
                   name
@@ -77,11 +111,11 @@ export const QUERY = gql`
                   id
                   name
                   image
-                  yields
                   category
                   crafting_time
                   ItemRecipe_ItemRecipe_crafted_item_idToItem {
                     amount
+                    yields
                     Item_ItemRecipe_crafting_stationToItem {
                       id
                       name
@@ -90,7 +124,6 @@ export const QUERY = gql`
                       id
                       name
                       image
-                      yields
                       category
                       crafting_time
                     }
@@ -104,6 +137,7 @@ export const QUERY = gql`
     }
   }
 `;
+
 export const Loading = () => (
   <div className="flex h-full w-full items-center justify-center bg-transparent">
     <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>

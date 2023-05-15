@@ -142,9 +142,8 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
-    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-  }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+    }`;
 };
 /**
  *
@@ -191,10 +190,10 @@ export const getBaseMaterials = (
     // TODO: Replace this shit
     let c =
       item.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0 &&
-      item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-        .Item_ItemRecipe_crafting_stationToItem != null
+        item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
+          .Item_ItemRecipe_crafting_stationToItem != null
         ? item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-            .Item_ItemRecipe_crafting_stationToItem.id
+          .Item_ItemRecipe_crafting_stationToItem.id
         : null;
 
     // Group by crafting_station somehow
@@ -202,8 +201,8 @@ export const getBaseMaterials = (
       f.Item_ItemRecipe_crafting_stationToItem
         ? f.Item_ItemRecipe_crafting_stationToItem.id === c
         : true
-    ).forEach(({ Item_ItemRecipe_item_idToItem, amount: recipeAmount }) => {
-      let count = (recipeAmount * amount) / item.yields;
+    ).forEach(({ Item_ItemRecipe_item_idToItem, amount: recipeAmount, yields }) => {
+      let count = (recipeAmount * amount) / (yields ? yields : 1);
       if (
         !firstRecipeOnly ||
         !Item_ItemRecipe_item_idToItem?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
@@ -228,7 +227,7 @@ export const getBaseMaterials = (
       } else {
         findBaseMaterials2(
           Item_ItemRecipe_item_idToItem,
-          count * Item_ItemRecipe_item_idToItem.yields
+          count * (Item_ItemRecipe_item_idToItem.yields || 1)
         );
       }
     });

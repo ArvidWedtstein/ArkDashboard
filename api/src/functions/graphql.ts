@@ -23,17 +23,23 @@ const setIpAddress = async ({ event, context }) => {
   return context;
 };
 export const handler = createGraphQLHandler({
-  getCurrentUser,
   authDecoder,
+  getCurrentUser,
   loggerConfig: {
     logger,
     options: {
-      operationName: true,
+      operationName: false,
+      // level: 'info
     },
   },
   directives,
   sdls,
   services,
+  armorConfig: {
+    maxDepth: {
+      n: 10,
+    },
+  },
   context: setIpAddress,
   onException: () => {
     // Disconnect from your database with an unhandled exception.
