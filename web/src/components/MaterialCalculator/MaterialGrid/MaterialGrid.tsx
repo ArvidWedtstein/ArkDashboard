@@ -108,11 +108,12 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
         if (itemIndex !== -1) {
           return state.map((item, i) =>
             i === itemIndex
-              ? { ...item, amount: item.amount + (action.index || 1) * (item.yields || 1) }
+              ? { ...item, amount: item.amount + (action.index || 1) * (item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0].yields || 1) }
+              // ? { ...item, amount: item.amount + (action.index || 1) * (item.yields || 1) }
               : item
           );
         }
-        return [...state, { ...action.item, amount: (action.index || 1) * (action.item.yields || 1) }];
+        return [...state, { ...action.item, amount: (action.index || 1) * (action.item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0].yields || 1) }];
       }
       case "CHANGE_AMOUNT": {
         const itemIndex = action.item;
@@ -127,14 +128,16 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
       case "ADD_AMOUNT": {
         return state.map((item, i) =>
           i === action.index
-            ? { ...item, amount: item.amount + 1 * (item.yields || 1) }
+            ? { ...item, amount: item.amount + 1 * (item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0].yields || 1) }
+            // ? { ...item, amount: item.amount + 1 * (item.yields || 1) }
             : item
         );
       }
       case "REMOVE_AMOUNT": {
         return state.map((item, i) =>
           i === action.index
-            ? { ...item, amount: item.amount - 1 * (item.yields || 1) }
+            ? { ...item, amount: item.amount - 1 * (item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0].yields || 1) }
+            // ? { ...item, amount: item.amount - 1 * (item.yields || 1) }
             : item
         );
       }
@@ -146,11 +149,12 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
         if (itemIndex !== -1) {
           return state.map((item, i) =>
             i === itemIndex
-              ? { ...item, amount: (item.amount || 0) + 1 * item.yields }
+              ? { ...item, amount: (item.amount || 0) + 1 * (item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0].yields || 1) }
+              // ? { ...item, amount: (item.amount || 0) + 1 * item.yields }
               : item
           );
         }
-        return [...state, { ...action.item, amount: 1 * action.item.yields || 1 }];
+        return [...state, { ...action.item, amount: 1 * (item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0].yields || 1) }];
       }
       case "REMOVE": {
         return state.filter((_, i) => i !== action.index);
