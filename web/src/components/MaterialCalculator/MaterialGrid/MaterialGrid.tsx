@@ -70,6 +70,21 @@ export const QUERY = gql`
                   image
                   category
                   crafting_time
+                  ItemRecipe_ItemRecipe_crafted_item_idToItem {
+                    amount
+                    yields
+                    Item_ItemRecipe_crafting_stationToItem {
+                      id
+                      name
+                    }
+                    Item_ItemRecipe_item_idToItem {
+                      id
+                      name
+                      image
+                      category
+                      crafting_time
+                    }
+                  }
                 }
               }
             }
@@ -292,8 +307,8 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
       </Label>
 
       <div className="relative rw-button-group justify-start space-x-3 !mt-0" role="group">
-        {/* TODO: fix search */}
         <Lookup
+          className="first:rounded-md"
           options={items.map((item) => {
             return {
               category: item.category,
@@ -303,9 +318,12 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
             };
           })}
           group={"category"}
+          filterFn={(item, searchTerm) => {
+            return item.label.toLowerCase().includes(searchTerm.toLowerCase());
+          }}
           search={true}
           name="itemId"
-          onSelect={({ value }) => onAdd({ itemId: value })} // TODO: replace with item id
+          onSelect={({ value }) => onAdd({ itemId: value })}
         />
         <button
           data-testid="turrettowerbtn"
@@ -331,20 +349,22 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
           Clear
           <svg
             xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 384 512"
             aria-hidden="true"
             className="rw-button-icon"
             fill="currentColor"
-            viewBox="0 0 352 512"
           >
-            <path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" />
+            <path d="M380.2 453.7c5.703 6.75 4.859 16.84-1.891 22.56C375.3 478.7 371.7 480 368 480c-4.547 0-9.063-1.938-12.23-5.657L192 280.8l-163.8 193.6C25.05 478.1 20.53 480 15.98 480c-3.641 0-7.313-1.25-10.31-3.781c-6.75-5.719-7.594-15.81-1.891-22.56l167.2-197.7L3.781 58.32c-5.703-6.75-4.859-16.84 1.891-22.56c6.75-5.688 16.83-4.813 22.55 1.875L192 231.2l163.8-193.6c5.703-6.688 15.8-7.563 22.55-1.875c6.75 5.719 7.594 15.81 1.891 22.56l-167.2 197.7L380.2 453.7z" />
           </svg>
         </button>
       </div>
-      <FieldError name="itemName" className="rw-field-error" />
+      <FieldError name="itemId" className="rw-field-error" />
 
-      {loading && <div className="animate-fade-in flex h-full w-full items-center justify-center bg-transparent mt-3">
-        <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>
+      {loading && <div className="m-16 flex items-center justify-center text-white">
+        <p className="mr-4">LOADING</p>
+        <div className="dot-revolution"></div>
       </div>}
+
       {item.length > 0 && (
         <>
           <Table
