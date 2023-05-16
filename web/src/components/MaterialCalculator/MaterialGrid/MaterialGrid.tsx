@@ -24,8 +24,8 @@ interface MaterialGridProps {
 }
 
 export const QUERY = gql`
-  query FindItemById($id: BigInt!) {
-    item: item(id: $id) {
+  query FindItemsByIds($id: [BigInt!]!) {
+    itemsByIds: itemsByIds(id: $id) {
       id
       name
       image
@@ -38,6 +38,43 @@ export const QUERY = gql`
           id
           name
         }
+        Item_ItemRecipe_item_idToItem {
+          id
+          name
+          image
+          category
+          crafting_time
+          ItemRecipe_ItemRecipe_crafted_item_idToItem {
+            amount
+            yields
+            Item_ItemRecipe_crafting_stationToItem {
+              id
+              name
+            }
+            Item_ItemRecipe_item_idToItem {
+              id
+              name
+              image
+              category
+              crafting_time
+              ItemRecipe_ItemRecipe_crafted_item_idToItem {
+                amount
+                yields
+                Item_ItemRecipe_crafting_stationToItem {
+                  id
+                  name
+                }
+                Item_ItemRecipe_item_idToItem {
+                  id
+                  name
+                  image
+                  category
+                  crafting_time
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -49,76 +86,69 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
   const formMethods = useForm();
 
 
+  const [loadItem, { loading, variables }] = useLazyQuery(QUERY, {
+    onCompleted: (data) => {
+      if (Object.keys(variables).includes('amount')) {
+        data.itemsByIds.forEach((item) => {
+          setItem({ type: "ADD_AMOUNT_BY_NUM", item, index: variables.amount[item.id] });
+        });
+      } else {
+        setItem({ type: "ADD", item: data.itemsByIds[0] });
+      }
+    },
+    onError: (error) => {
+      console.log(error);
+    }
+  });
+
   const reducer = (state, action) => {
     switch (action.type) {
       case "ADD_AMOUNT_BY_NUM": {
         let itemIndex = state.findIndex((item) => item.id === action.item.id);
         if (itemIndex !== -1) {
-          return state.map((item, i) => {
-            if (i === itemIndex) {
-              return { ...item, amount: item.amount + (action.index || 1) };
-            }
-            return item;
-          });
+          return state.map((item, i) =>
+            i === itemIndex
+              ? { ...item, amount: item.amount + (action.index || 1) * (item.yields || 1) }
+              : item
+          );
         }
-        return [...state, { ...action.item, amount: (action.index || 1) }];
+        return [...state, { ...action.item, amount: (action.index || 1) * (action.item.yields || 1) }];
       }
       case "CHANGE_AMOUNT": {
-        let itemIndex = action.item;
+        const itemIndex = action.item;
         if (itemIndex !== -1) {
-          return state.map((item, i) => {
-            if (i == itemIndex) {
-              return { ...item, amount: action.index };
-            }
-            return item;
-          });
+          return state.map((item, i) =>
+            i === itemIndex ? { ...item, amount: action.index } : item
+          );
         }
         return [...state, { ...action.item, amount: action.index }];
+
       }
       case "ADD_AMOUNT": {
-        return state.map((item, i) => {
-          if (i === action.index) {
-            return { ...item, amount: item.amount + 1 * item.yields };
-          }
-          return item;
-        });
+        return state.map((item, i) =>
+          i === action.index
+            ? { ...item, amount: item.amount + 1 * (item.yields || 1) }
+            : item
+        );
       }
       case "REMOVE_AMOUNT": {
-        return state.map((item, i) => {
-          if (i === action.index) {
-            return { ...item, amount: item.amount - 1 * item.yields };
-          }
-          return item;
-        });
+        return state.map((item, i) =>
+          i === action.index
+            ? { ...item, amount: item.amount - 1 * (item.yields || 1) }
+            : item
+        );
       }
       case "ADD": {
-        // const [loadItem, { called, loading, error: queryerror, data: itemdata }] = useLazyQuery(QUERY, {
-        //   variables: { id: parseInt(action.item.id) },
-        //   onCompleted: (data) => {
-        //     console.log('qeuery data', data)
-        //   },
-        //   onError: (error) => {
-        //     console.log(error);
-        //   }
-        // });
         const itemIndex = state.findIndex(
           (item) => parseInt(item.id) === parseInt(action.item.id)
         );
 
-        // loadItem({ variables: { id: parseInt(action.item.id) } });
-
-        // if (called && !loading && !queryerror) {
-
-        //   console.log('qeuery data', itemdata)
-        // }
-
         if (itemIndex !== -1) {
-          return state.map((item, i) => {
-            if (i === itemIndex) {
-              return { ...item, amount: (item?.amount || 0) + 1 * item.yields };
-            }
-            return item;
-          });
+          return state.map((item, i) =>
+            i === itemIndex
+              ? { ...item, amount: (item.amount || 0) + 1 * item.yields }
+              : item
+          );
         }
         return [...state, { ...action.item, amount: 1 * action.item.yields || 1 }];
       }
@@ -137,23 +167,20 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
   let [item, setItem] = useReducer(reducer, []);
 
   const onAdd = ({ itemId }) => {
-    // TODO: optimize this. items gets looped through twice
-    let itemfound = items.find(
-      (item) => item.id === itemId
-    );
+    if (!itemId) return;
+    loadItem({ variables: { id: [parseInt(itemId)] } });
     formMethods.reset();
-    if (itemfound) setItem({ type: "ADD", item: itemfound });
   };
 
   const onRemove = (index) => {
-    setItem({ type: "REMOVE", index: index });
+    setItem({ type: "REMOVE", index });
   };
 
   const onAddAmount = (index) => {
-    setItem({ type: "ADD_AMOUNT", index: index });
+    setItem({ type: "ADD_AMOUNT", index });
   };
   const onRemoveAmount = (index) => {
-    setItem({ type: "REMOVE_AMOUNT", index: index });
+    setItem({ type: "REMOVE_AMOUNT", index });
   };
   const onChangeAmount = debounce((index, amount) => {
     setItem({ type: "CHANGE_AMOUNT", item: index, index: amount });
@@ -218,14 +245,16 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
       686: 60,
       770: 1464,
     };
-    for (const [key, value] of Object.entries(towerItems)) {
-      let itemfound = items.find(
-        (item) => parseInt(item.id.toString()) === parseInt(key)
-      );
-      if (itemfound) {
-        setItem({ type: "ADD_AMOUNT_BY_NUM", item: itemfound, index: value });
-      }
-    }
+
+    loadItem({ variables: { id: Object.keys(towerItems), amount: towerItems } })
+    // for (const [key, value] of Object.entries(towerItems)) {
+    //   let itemfound = items.find(
+    //     (item) => parseInt(item.id.toString()) === parseInt(key)
+    //   );
+    //   if (itemfound) {
+    //     setItem({ type: "ADD_AMOUNT_BY_NUM", item: itemfound, index: value });
+    //   }
+    // }
   }, []);
 
   const mergeItemRecipe = useCallback(getBaseMaterials, [item]);
@@ -241,7 +270,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
     },
     [viewBaseMaterials]
   );
-  console.log("items", getBaseMaterials(true, ...item))
+
   return (
     <Form onSubmit={onAdd} error={error}>
       <FormError
@@ -309,6 +338,9 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
       </div>
       <FieldError name="itemName" className="rw-field-error" />
 
+      {loading && <div className="animate-fade-in flex h-full w-full items-center justify-center bg-transparent mt-3">
+        <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>
+      </div>}
       {item.length > 0 && (
         <>
           <Table
@@ -366,7 +398,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
             rows={item}
             className="animate-fade-in my-4 whitespace-nowrap"
             summary={true}
-            hover={true}
+            hover={false}
             columns={[
               {
                 field: "name",
@@ -407,12 +439,6 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                       >
                         -
                       </button>
-                      {/* <p
-                        defaultValue={row.amount}
-                        className="rw-input w-16 p-3 text-center"
-                      >
-                        {row.amount}
-                      </p> */}
                       <input
                         defaultValue={row.amount}
                         className="rw-input w-16 p-3 text-center"

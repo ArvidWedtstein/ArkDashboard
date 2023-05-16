@@ -252,6 +252,7 @@ a {
 .rw-button-group .rw-button {
   @apply mx-1;
 }
+
 .rw-form-wrapper .rw-button-group {
   @apply mt-8;
 }

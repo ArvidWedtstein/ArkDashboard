@@ -130,7 +130,7 @@ const Table = ({
     return data;
   };
 
-  const applyFilter = (filter, row) => {
+  const applyFilter = useCallback((filter, row) => {
     const { column, operator, value } = filter;
     const rowValue = row[column];
 
@@ -159,7 +159,8 @@ const Table = ({
       default:
         return true;
     }
-  };
+  }, []);
+
   const filterData = (data) => {
     if (filters.length === 0) {
       return data;

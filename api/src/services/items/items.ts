@@ -36,16 +36,6 @@ export const itemsPage = ({
         ],
       },
     }),
-    // categories: db.item.findMany({
-    //   select: { category: true },
-    //   distinct: ["category"],
-    //   orderBy: { category: "asc" },
-    // }),
-    // types: db.item.findMany({
-    //   select: { type: true },
-    //   distinct: ["type"],
-    //   orderBy: { type: "asc" },
-    // }),
     count: db.item.count({
       where: {
         AND: [
@@ -88,6 +78,12 @@ export const items: QueryResolvers["items"] = () => {
 export const item: QueryResolvers["item"] = ({ id }) => {
   return db.item.findUnique({
     where: { id },
+  });
+};
+
+export const itemsByIds = ({ id }: { id: number[] }) => {
+  return db.item.findMany({
+    where: { id: { in: id } },
   });
 };
 
