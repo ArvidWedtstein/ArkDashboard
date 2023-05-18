@@ -2,7 +2,6 @@ import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "src/auth";
 import type { FindTribes } from "types/graphql";
-import DataTable from "src/components/Util/DataTable/DataTable";
 const HomePage = () => {
   const { isAuthenticated } = useAuth();
   // if (document.addEventListener) {
@@ -64,21 +63,6 @@ const HomePage = () => {
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
-
-        <DataTable<FindTribes>
-          QUERY={gql`
-            query {
-              tribes {
-                id
-                name
-                description
-                created_at
-                updated_at
-                created_by
-              }
-            }
-          `}
-        />
       </div>
     </>
   );

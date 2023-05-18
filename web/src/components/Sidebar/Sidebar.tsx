@@ -84,25 +84,33 @@ const Icon = (icon: string) => {
       </svg>
     ),
     maps: (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="h-5 w-5 fill-current stroke-current">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 576 512"
+        className="h-5 w-5 fill-current stroke-current"
+      >
         <path d="M568.1 34.76c-4.406-2.969-9.982-3.554-14.94-1.616L409.6 90.67L179 32.51C175.9 31.67 172.5 31.89 169.5 33.01l-159.1 59.44C4.141 94.79 0 100.8 0 107.4v356.5c0 5.344 2.672 10.35 7.109 13.32s9.972 3.553 14.89 1.521l152.3-63.08l222.1 63.62C397.9 479.8 399.4 480 400.9 480c1.906 0 3.797-.3438 5.594-1l159.1-59.44C571.9 417.2 576 411.3 576 404.6V48.01C576 42.69 573.4 37.76 568.1 34.76zM192 68.79l192 48.42v325.3L192 387.6V68.79zM32 118.5l128-47.79v316.3l-128 53.02V118.5zM544 393.5l-128 47.8V122.4c.1914-.0684 .4043 .0391 .5938-.0371L544 71.61V393.5z" />
       </svg>
     ),
     lootcrates: (
       <>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="h-5 w-5 fill-current stroke-current">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 576 512"
+          className="h-5 w-5 fill-current stroke-current"
+        >
           <path d="M448 32H128C57.31 32 0 89.31 0 160v256c0 35.35 28.65 64 64 64h448c35.35 0 64-28.65 64-64V160C576 89.31 518.7 32 448 32zM96 448H64c-17.64 0-32-14.36-32-32V288h64V448zM96 256H32V160c0-41.66 26.84-76.85 64-90.1V256zM448 448H128V288h64v48C192 362.5 213.5 384 240 384h96c26.5 0 48-21.5 48-48V288h64V448zM224 336v-128C224 199.1 231.1 192 240 192h96C344.9 192 352 199.1 352 208v128c0 8.875-7.125 16-16 16h-96C231.1 352 224 344.9 224 336zM448 256h-64V208C384 181.5 362.5 160 336 160h-96C213.5 160 192 181.5 192 208V256H128V64h320V256zM544 416c0 17.64-14.36 32-32 32h-32V288h64V416zM544 256h-64V69.9C517.2 83.15 544 118.3 544 160V256zM288 320c8.875 0 16-7.125 16-16v-64C304 231.1 296.9 224 288 224S272 231.1 272 240v64C272 312.9 279.1 320 288 320z" />
         </svg>
         {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="h-5 w-5 fill-current stroke-current ml-1">
           <path d="M488.2 59.1C478.1 99.6 441.7 128 400 128s-78.1-28.4-88.2-68.9L303 24.2C298.8 7.1 281.4-3.3 264.2 1S236.7 22.6 241 39.8l8.7 34.9c11 44 40.2 79.6 78.3 99.6V480c0 17.7 14.3 32 32 32s32-14.3 32-32V352h16V480c0 17.7 14.3 32 32 32s32-14.3 32-32V174.3c38.1-20 67.3-55.6 78.3-99.6L559 39.8c4.3-17.1-6.1-34.5-23.3-38.8S501.2 7.1 497 24.2l-8.7 34.9zM400 96a48 48 0 1 0 0-96 48 48 0 1 0 0 96zM80 96A48 48 0 1 0 80 0a48 48 0 1 0 0 96zm-8 32c-35.3 0-64 28.7-64 64v96l0 .6V480c0 17.7 14.3 32 32 32s32-14.3 32-32V352H88V480c0 17.7 14.3 32 32 32s32-14.3 32-32V252.7l13 20.5c5.9 9.2 16.1 14.9 27 14.9h48c17.7 0 32-14.3 32-32s-14.3-32-32-32H209.6l-37.4-58.9C157.6 142 132.1 128 104.7 128H72z" />
         </svg> */}
       </>
-    )
+    ),
   };
   return icons[icon.toLowerCase()] || null;
 };
 
-const Sidebar = memo(({ }) => {
+const Sidebar = memo(({}) => {
   const { pathname } = useLocation();
   const navigation = [
     {
@@ -157,9 +165,12 @@ const Sidebar = memo(({ }) => {
     // }
   ];
   return (
-    <nav className="h-screen sticky top-0 z-10 rounded-r-xl flex flex-row items-center justify-between border-gray-700 px-10 py-2 dark:border-gray-200 max-sm:border-b sm:flex-col sm:justify-start sm:border-r sm:py-10 sm:px-2">
+    <nav className="sticky top-0 z-10 flex h-fit flex-row items-center justify-between rounded-r-xl border-gray-700 px-10 py-2 dark:border-gray-200 max-sm:border-b sm:flex-col sm:justify-start sm:border-r sm:py-10 sm:px-2">
       {navigation.map((item, i) => (
-        <aside className="flex dark:text-[#ffffffcc] text-black justify-start items-center self-start sm:flex-row flex-col transition-all mx-2" key={`sidebar-item-${i}`}>
+        <aside
+          className="mx-2 flex flex-col items-center justify-start self-start text-black transition-all dark:text-[#ffffffcc] sm:flex-row"
+          key={`sidebar-item-${i}`}
+        >
           {/* <NavLink
             key={item.name}
             to={item.href}

@@ -234,13 +234,13 @@ a {
 
 /* Gray Button */
 .rw-button.rw-button-gray {
-  @apply border-gray-300 bg-gray-50 text-gray-700 dark:border-zinc-500 dark:bg-zinc-700 dark:text-stone-300;
+  @apply border-gray-300 bg-gray-50 text-gray-700 dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-300;
 }
 .rw-button.rw-button-gray:hover {
-  @apply border-gray-500 bg-gray-500 text-gray-900 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white;
+  @apply border-gray-500 bg-gray-500 text-gray-900 dark:border-zinc-600 dark:bg-zinc-600 dark:text-white;
 }
 .rw-button.rw-button-gray:focus {
-  @apply ring ring-gray-300 dark:ring-zinc-600;
+  @apply ring ring-gray-300 dark:ring-zinc-700;
 }
 
 .rw-button-group {
