@@ -10,7 +10,7 @@ import {
 import { useAuth } from "src/auth";
 
 const Navbar = () => {
-  const { currentUser, isAuthenticated } = useAuth();
+  const { currentUser, isAuthenticated, loading, logOut } = useAuth();
   const { pathname, search } = useLocation();
   const [title, setTitle] = useState(pathname.split("/")[1]);
 
@@ -142,12 +142,13 @@ const Navbar = () => {
                       </Link>
                     </li>
                     <li>
-                      <a
-                        href="#"
+                      <button
+                        type="button"
+                        onClick={logOut}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
                       >
                         Sign out
-                      </a>
+                      </button>
                     </li>
                   </>
                 ) : (
