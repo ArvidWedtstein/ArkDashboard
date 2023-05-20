@@ -88,7 +88,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
   const [currentMap, setCurrentMap] = useState(map || null);
 
   return (
-    <div className="">
+    <div className="-m-3">
       <header
         className="flex min-h-[200px] w-full flex-col justify-between rounded-2xl bg-cover bg-center bg-no-repeat p-12 text-white"
         style={{
@@ -168,7 +168,11 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
               title={basespot.name}
               subtitle={basespot.Map.name.split(/(?=[A-Z])/).join(" ")}
               content={basespot.description}
-              ring={`${basespot.estimated_for_players} players`}
+              ring={
+                parseInt(basespot.estimated_for_players) > 0
+                  ? `Est. ${basespot.estimated_for_players} players`
+                  : ""
+              }
               image={{
                 src: mapImages[
                   basespot.Map.name.toLowerCase().replaceAll(" ", "")
