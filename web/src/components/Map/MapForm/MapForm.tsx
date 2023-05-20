@@ -12,8 +12,8 @@ import {
 } from '@redwoodjs/forms'
 
 import type { EditMapById, UpdateMapInput } from 'types/graphql'
-import type { Control, FieldValues, RWGqlError, UseFieldArrayReturn, UseFormRegister } from '@redwoodjs/forms'
-import { Map } from 'src/components/Util/Map/Map'
+import type { Control, FieldValues, RWGqlError, UseFormRegister } from '@redwoodjs/forms'
+import Map from 'src/components/Util/Map/Map'
 
 
 
@@ -108,7 +108,7 @@ const MapInput = ({ name, control, register }: MapInputProps) => {
   )
 }
 const MapForm = (props: MapFormProps) => {
-
+  // TODO: Fix inputs
   // <DeepPartial<FormMap>>
   const { register, control, setValue } = useForm();
 

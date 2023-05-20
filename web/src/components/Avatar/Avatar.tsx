@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "@redwoodjs/auth";
 import clsx from "clsx";
+import { useAuth } from "src/auth";
+import { PingAlert } from "../Util/PingAlert/PingAlert";
 
 const Avatar = ({
   url,
@@ -111,6 +112,7 @@ const Avatar = ({
         className={clsx(`relative h-full w-full rounded-full border-none border-[#f8f8f8] flex items-center justify-center`, className)}
       >
         {avatarUrl ? (
+
           <div
             className="h-full w-full rounded-full bg-cover bg-center bg-no-repeat"
             id="imagePreview"
@@ -119,7 +121,10 @@ const Avatar = ({
               height: size,
               width: size,
             }}
-          ></div>
+          >
+            {/* <PingAlert color={`bg-lime-500`} /> */}
+          </div>
+
         ) : (
           <svg
             xmlns="http://www.w3.org/2000/svg"

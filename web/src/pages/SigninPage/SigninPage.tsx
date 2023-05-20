@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useAuth } from "@redwoodjs/auth";
 import {
   Form,
   Label,
@@ -7,12 +6,12 @@ import {
   PasswordField,
   Submit,
   FieldError,
-  EmailField,
 } from "@redwoodjs/forms";
 import { Link, navigate, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { toast, Toaster } from "@redwoodjs/web/toast";
 import { RouteFocus } from "@redwoodjs/router";
+import { useAuth } from "src/auth";
 
 const WELCOME_MESSAGE = "Welcome back!";
 const REDIRECT = routes.home();
@@ -35,11 +34,12 @@ const SigninPage = () => {
     try {
       const response = await logIn({
         // provider: "discord",
+        authMethod: 'password',
         ...data,
       });
 
       if (response?.error) {
-        toast.error(response);
+        toast.error(response.error.message);
       } else {
         toast.success(WELCOME_MESSAGE);
         navigate(REDIRECT);

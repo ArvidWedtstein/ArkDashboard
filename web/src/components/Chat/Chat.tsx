@@ -1,15 +1,12 @@
-import { useAuth } from "@redwoodjs/auth";
 import { Form, TextField, useForm } from "@redwoodjs/forms";
 import {
   Dispatch,
   SetStateAction,
-  useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
-import { supabase } from "src/App";
+import { useAuth } from "src/auth";
 import { timeTag } from "src/lib/formatters";
 
 // type IMessage = {
@@ -44,7 +41,7 @@ const Message = ({
   profile: Profile;
   setProfileCache: Dispatch<SetStateAction<ProfileCache>>;
 }) => {
-  const { currentUser } = useAuth();
+  const { currentUser, client: supabase } = useAuth();
   let userId = currentUser?.id;
 
   useEffect(() => {
@@ -106,7 +103,7 @@ const Message = ({
   );
 };
 const Chat = () => {
-  const { isAuthenticated, currentUser } = useAuth();
+  const { isAuthenticated, currentUser, client: supabase } = useAuth();
   const [profileCache, setProfileCache] = useState({});
   const [messages, setMessages] = useState<any[]>([]); //<Message[]>
   const messagesRef = useRef<HTMLDivElement>(null);

@@ -189,6 +189,7 @@ model Item {
   crafted_in                                   String[]
   type                                         String?
   category                                     String                  @default("'Other'::text")
+  health                                       Float?                  @default(0)
   Dino                                         Dino[]
   DinoStat                                     DinoStat[]
   ItemRecipe_ItemRecipe_crafted_item_idToItem  ItemRecipe[]            @relation("ItemRecipe_crafted_item_idToItem")

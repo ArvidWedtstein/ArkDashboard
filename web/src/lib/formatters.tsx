@@ -1,7 +1,6 @@
 import React from "react";
 
 import humanize from "humanize-string";
-import prices from "../../public/arkitems.json";
 
 export const formatEnum = (values: string | string[] | null | undefined) => {
   let output = "";
@@ -143,9 +142,8 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
-    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-  }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+    }`;
 };
 /**
  *
@@ -192,10 +190,10 @@ export const getBaseMaterials = (
     // TODO: Replace this shit
     let c =
       item.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0 &&
-      item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-        .Item_ItemRecipe_crafting_stationToItem != null
+        item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
+          .Item_ItemRecipe_crafting_stationToItem != null
         ? item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-            .Item_ItemRecipe_crafting_stationToItem.id
+          .Item_ItemRecipe_crafting_stationToItem.id
         : null;
 
     // Group by crafting_station somehow
@@ -203,8 +201,8 @@ export const getBaseMaterials = (
       f.Item_ItemRecipe_crafting_stationToItem
         ? f.Item_ItemRecipe_crafting_stationToItem.id === c
         : true
-    ).forEach(({ Item_ItemRecipe_item_idToItem, amount: recipeAmount }) => {
-      let count = (recipeAmount * amount) / item.yields;
+    ).forEach(({ Item_ItemRecipe_item_idToItem, amount: recipeAmount, yields }) => {
+      let count = (recipeAmount * amount) / (yields ? yields : 1);
       if (
         !firstRecipeOnly ||
         !Item_ItemRecipe_item_idToItem?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
@@ -229,7 +227,7 @@ export const getBaseMaterials = (
       } else {
         findBaseMaterials2(
           Item_ItemRecipe_item_idToItem,
-          count * Item_ItemRecipe_item_idToItem.yields
+          count * (Item_ItemRecipe_item_idToItem.yields || 1)
         );
       }
     });
@@ -438,6 +436,7 @@ export const timeFormatL = (seconds, onlyLast = false) => {
  * Capitalizes the first letter of a given string.
  * @param {string} string - The input string to be capitalized.
  * @returns {string} - The capitalized string.
+ * @deprecated Use the `capitalize` tailwind method instead.
  */
 export const capitalize = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -548,11 +547,13 @@ export const pluralize = (
 export const getDateDiff = (date1: Date, date2: Date) => {
   const diff = Math.abs(date1.getTime() - date2.getTime());
   const years = Math.round(diff / (1000 * 3600 * 24 * 365));
+  const months = Math.round(diff / (1000 * 3600 * 24 * 30));
   const days = Math.floor(diff / (1000 * 3600 * 24));
   const hours = Math.floor((diff / (1000 * 3600)) % 24);
   const minutes = Math.floor((diff / 1000 / 60) % 60);
   return {
     years,
+    months,
     days,
     hours,
     minutes,
@@ -578,9 +579,33 @@ export const removeDuplicates = (arr: Array<any>): Array<any> => {
  * @return {Object} - An object where each key is a unique value of the provided key and the value is an array of elements that have that key value.
  */
 export const groupBy = (xs: Array<any>, key: string) => {
-  return xs.reduce((acc, x) => {
-    const keyValue = x[key];
-    acc[keyValue] = acc[keyValue] ? [...acc[keyValue], x] : [x];
+  const nestedKeys = key.split(".");
+
+  return xs.reduce((acc, obj) => {
+    let groupKey = obj;
+    for (const nestedKey of nestedKeys) {
+      groupKey = groupKey[nestedKey];
+    }
+
+    if (!acc.hasOwnProperty(groupKey)) {
+      acc[groupKey] = [];
+    }
+
+    acc[groupKey].push(obj);
+    return acc;
+  }, {});
+};
+
+export const groupByObject = (
+  arr: Array<any>,
+  key: string
+): [group_object: any, grouped_items: any[]] => {
+  return arr.reduce((acc, obj) => {
+    const Thekey = JSON.stringify(obj[key]);
+    if (!acc[Thekey]) {
+      acc[Thekey] = [];
+    }
+    acc[Thekey].push(obj);
     return acc;
   }, {});
 };
@@ -621,7 +646,21 @@ export const clamp = (
   );
 };
 
-type Colors = "red" | "purple" | "blue" | "green" | "slate" | "stone" | "gray";
+type Colors =
+  | "red"
+  | "purple"
+  | "blue"
+  | "green"
+  | "slate"
+  | "stone"
+  | "gray"
+  | "lime"
+  | "neutral"
+  | "zinc"
+  | "orange"
+  | "amber"
+  | "yellow"
+  | "pea";
 type Luminance = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 export type BgColor = `bg-${Colors}-${Luminance}`;
 export type TextColor = `text-${Colors}-${Luminance}`;

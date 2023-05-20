@@ -12,13 +12,16 @@ export const QUERY = gql`
       updated_at
       blueprint
       name
-      map
       level_requirement
       decay_time
       no_repeat_in_sets
       quality_multiplier
       set_qty
       color
+      Map {
+        id
+        name
+      }
       LootcrateSet {
         id
         name

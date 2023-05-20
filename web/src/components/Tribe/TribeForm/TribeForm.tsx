@@ -11,7 +11,7 @@ import {
 
 import type { EditTribeById, UpdateTribeInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import { useAuth } from "@redwoodjs/auth";
+import { useAuth } from "src/auth";
 
 const formatDatetime = (value) => {
   if (value) {
@@ -31,7 +31,7 @@ const TribeForm = (props: TribeFormProps) => {
   const { currentUser } = useAuth();
   const onSubmit = (data: FormTribe) => {
     data.created_by =
-      props.tribe?.created_by || currentUser?.sub;
+      props.tribe?.created_by || currentUser?.sub.toString();
     props.onSave(data, props?.tribe?.id);
   };
 

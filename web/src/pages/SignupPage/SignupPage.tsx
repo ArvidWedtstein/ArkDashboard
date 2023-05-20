@@ -1,6 +1,5 @@
 import { useRef } from 'react'
 import { useEffect } from 'react'
-import { useAuth } from '@redwoodjs/auth'
 import {
   Form,
   Label,
@@ -13,6 +12,7 @@ import {
 import { Link, navigate, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 import { toast, Toaster } from '@redwoodjs/web/toast'
+import { useAuth } from 'src/auth'
 
 const SignupPage = () => {
   const { isAuthenticated, signUp, client } = useAuth()
@@ -26,7 +26,6 @@ const SignupPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      console.log(data)
       const response = await signUp({
         email: data.email,
         password: data.password,

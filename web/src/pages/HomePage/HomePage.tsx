@@ -1,17 +1,24 @@
-import { useAuth } from "@redwoodjs/auth";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
+import { useAuth } from "src/auth";
+import type { FindTribes } from "types/graphql";
 const HomePage = () => {
-  const { isAuthenticated, client: supabase } = useAuth();
+  const { isAuthenticated } = useAuth();
   // if (document.addEventListener) {
   //   document.addEventListener('contextmenu', function (e) {
   //     alert("You've tried to open context menu");
   //     e.preventDefault();
   //   }, false);
   // }
-  // supabase.auth.onAuthStateChange((event, session) => {
-  //   console.log(event, session)
-  // })
+  // useEffect(() => {
+  //   const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+  //     console.log(event, session)
+  //   })
+
+  //   return () => {
+  //     subscription.unsubscribe()
+  //   }
+  // }, [supabase])
 
   return (
     <>
@@ -54,7 +61,6 @@ const HomePage = () => {
           </div>
         </div>
         {/* {isAuthenticated && <Chat />} */}
-
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
       </div>

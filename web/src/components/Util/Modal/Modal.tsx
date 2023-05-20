@@ -1,3 +1,4 @@
+import { Form } from "@redwoodjs/forms";
 import { useEffect } from "react";
 import useComponentVisible from "src/components/useComponentVisible";
 
@@ -42,12 +43,12 @@ export const RefModal = ({
       aria-modal="true"
       aria-hidden={isComponentVisible ? "false" : "true"}
       className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 backdrop:bg-gray-50 md:inset-0 md:h-full ${
-        isComponentVisible === true ? "block" : "hidden"
+        isComponentVisible === true ? "animate-pop-up block" : "hidden"
       }`}
     >
       <div
         ref={modalRef}
-        className=" relative top-1/2 left-1/2 max-h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2"
+        className="relative top-1/2 left-1/2 max-h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2"
       >
         <div className="relative rounded-lg bg-white shadow dark:bg-zinc-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
@@ -115,7 +116,7 @@ export const Modal = ({
       }`}
     >
       <div className="relative top-1/2 left-1/2 h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2">
-        <form
+        <Form
           onSubmit={(e) => {
             formSubmit && formSubmit(e);
             e.currentTarget.reset();
@@ -181,7 +182,7 @@ export const Modal = ({
               Cancel
             </button>
           </div>
-        </form>
+        </Form>
       </div>
     </div>
   );

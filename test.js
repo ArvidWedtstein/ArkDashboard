@@ -1,4 +1,3 @@
-// const dino = require("./web/public/arkdinos.json");
 const dino = require("./values.json");
 // const d = require("./web/public/maps.json");
 // const d2 = require("./web/public/f.json");

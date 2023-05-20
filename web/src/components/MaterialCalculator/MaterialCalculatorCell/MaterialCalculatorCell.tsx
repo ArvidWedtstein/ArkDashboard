@@ -23,90 +23,86 @@ import { MaterialGrid } from "../MaterialGrid/MaterialGrid";
 //    }
 //  `
 
+// Query from ItemRecipe directly instead?
 export const QUERY = gql`
   query FindItemsMats {
     items {
       id
-      created_at
       name
-      description
       image
-      max_stack
-      weight
-      engram_points
       crafting_time
-      req_level
-      yields
-      stats
-      color
-      crafted_in
       category
+      type
       ItemRecipe_ItemRecipe_crafted_item_idToItem {
-        amount
-        Item_ItemRecipe_crafting_stationToItem {
-          id
-          name
-        }
-        Item_ItemRecipe_item_idToItem {
-          id
-          name
-          image
-          yields
-          category
-          crafting_time
-          ItemRecipe_ItemRecipe_crafted_item_idToItem {
-            amount
-            Item_ItemRecipe_crafting_stationToItem {
-              id
-              name
-            }
-            Item_ItemRecipe_item_idToItem {
-              id
-              name
-              image
-              yields
-              category
-              crafting_time
-              ItemRecipe_ItemRecipe_crafted_item_idToItem {
-                amount
-                Item_ItemRecipe_crafting_stationToItem {
-                  id
-                  name
-                }
-                Item_ItemRecipe_item_idToItem {
-                  id
-                  name
-                  image
-                  yields
-                  category
-                  crafting_time
-                  ItemRecipe_ItemRecipe_crafted_item_idToItem {
-                    amount
-                    Item_ItemRecipe_crafting_stationToItem {
-                      id
-                      name
-                    }
-                    Item_ItemRecipe_item_idToItem {
-                      id
-                      name
-                      image
-                      yields
-                      category
-                      crafting_time
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+        yields
       }
     }
   }
 `;
+
+// amount
+// Item_ItemRecipe_crafting_stationToItem {
+//   id
+//   name
+// }
+// Item_ItemRecipe_item_idToItem {
+//   id
+//   name
+//   image
+//   category
+//   crafting_time
+//   ItemRecipe_ItemRecipe_crafted_item_idToItem {
+//     amount
+//     yields
+//     Item_ItemRecipe_crafting_stationToItem {
+//       id
+//       name
+//     }
+//     Item_ItemRecipe_item_idToItem {
+//       id
+//       name
+//       image
+//       category
+//       crafting_time
+//       ItemRecipe_ItemRecipe_crafted_item_idToItem {
+//         amount
+//         yields
+//         Item_ItemRecipe_crafting_stationToItem {
+//           id
+//           name
+//         }
+//         Item_ItemRecipe_item_idToItem {
+//           id
+//           name
+//           image
+//           category
+//           crafting_time
+//           ItemRecipe_ItemRecipe_crafted_item_idToItem {
+//             amount
+//             yields
+//             Item_ItemRecipe_crafting_stationToItem {
+//               id
+//               name
+//             }
+//             Item_ItemRecipe_item_idToItem {
+//               id
+//               name
+//               image
+//               category
+//               crafting_time
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
 export const Loading = () => (
   <div className="flex h-full w-full items-center justify-center bg-transparent">
     <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>
+    <p className="text-black dark:text-white">
+      This may take some time, please wait...
+    </p>
   </div>
 );
 

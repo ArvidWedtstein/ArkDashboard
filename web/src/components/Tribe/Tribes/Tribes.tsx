@@ -83,7 +83,7 @@ const TribesList = ({ tribes }: FindTribes) => {
           </div>
         </div>
         <div
-          className="flex items-start rounded-xl bg-white p-4 shadow-lg dark:bg-zinc-700 hover:ring-1 hover:ring-pea-400"
+          className="hover:ring-pea-400 flex items-start rounded-xl bg-white p-4 shadow-lg hover:ring-1 dark:bg-zinc-700"
           onClick={pickRandomTribe}
         >
           <div className="dark:border-pea-400 border-pea-100 bg-pea-50 flex h-12 w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800">
@@ -102,6 +102,7 @@ const TribesList = ({ tribes }: FindTribes) => {
       </div>
       <Table
         className="m-4"
+        filter={true}
         columns={[
           {
             field: "name",
@@ -135,7 +136,7 @@ const TribesList = ({ tribes }: FindTribes) => {
                   <div className="text-base">{value.full_name}</div>
                 </div>
               </div>
-            )
+            ),
           },
         ]}
         rows={tribes}

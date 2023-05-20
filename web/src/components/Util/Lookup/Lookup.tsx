@@ -52,6 +52,9 @@ const Lookup = ({
     ) : options
     const sorted = sortFn ? filtered.sort(sortFn) : filtered
     const grouped = !!group ? groupBy(sorted, group) : sorted
+    if (Object.keys(grouped).length === 1) {
+      setOpenIndexes([0])
+    }
     setFilteredOptions(grouped);
   }, [options, searchTerm, filterFn, sortFn])
 

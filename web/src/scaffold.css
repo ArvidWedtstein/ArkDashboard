@@ -30,17 +30,20 @@ a {
   /* @apply mx-4 pb-4; */
   @apply pb-4;
 }
+
 .rw-segment {
   @apply w-full overflow-hidden; /*  rounded-lg border border-gray-200  */
   scrollbar-color: theme("colors.zinc.400") transparent;
+  scroll-behavior: smooth;
 }
 .rw-segment::-webkit-scrollbar {
   height: initial;
 }
 .rw-segment::-webkit-scrollbar-track {
-  @apply rounded-t-none rounded-b-[10px] border-0 border-t border-solid border-gray-200 bg-transparent p-[2px];
+  @apply rounded-t-none rounded-b-[10px] bg-transparent p-[2px];
 }
-.rw-segment::-webkit-scrollbar-thumb {
+.rw-segment::-webkit-scrollbar-thumb,
+.rw-segment::-webkit-scrollbar-button {
   @apply rounded-full border-[3px] border-solid border-transparent bg-zinc-400 bg-clip-content;
 }
 .rw-segment-header {
@@ -122,6 +125,9 @@ a {
 .rw-button[disabled]:hover {
   @apply ring-0;
 }
+.rw-button:focus {
+  @apply outline-none ring-4;
+}
 /*
 // ----------------------------
 // Button Sizes
@@ -135,6 +141,9 @@ a {
 }
 
 .rw-button:has(.rw-button-icon) {
+  @apply inline-flex items-center justify-center;
+}
+.rw-button:not(:empty) {
   @apply inline-flex items-center justify-center;
 }
 .rw-button .rw-button-icon {
@@ -165,7 +174,7 @@ a {
   @apply border-stone-800 ring-1 ring-stone-700 dark:border-stone-600 dark:ring-stone-500;
 }
 .rw-button.rw-button-gray-outline:focus {
-  @apply outline-none ring-4 ring-stone-300 dark:ring-stone-800;
+  @apply ring-stone-300 dark:ring-stone-800;
 }
 
 /* Red Outline Button */
@@ -176,7 +185,7 @@ a {
   @apply border-red-800 ring-1 ring-red-500 dark:border-red-500 dark:ring-red-600;
 }
 .rw-button.rw-button-red-outline:focus {
-  @apply outline-none ring-4 ring-red-300 dark:ring-red-800;
+  @apply ring-red-300 dark:ring-red-800;
 }
 
 /* Green Button */
@@ -187,7 +196,7 @@ a {
   @apply bg-pea-600;
 }
 .rw-button.rw-button-green:focus {
-  @apply ring-pea-300 dark:ring-pea-800 outline-none ring-4;
+  @apply ring-pea-300 dark:ring-pea-800;
 }
 
 /* Blue Button */
@@ -198,7 +207,7 @@ a {
   @apply bg-blue-600;
 }
 .rw-button.rw-button-blue:focus {
-  @apply outline-none ring-4 ring-blue-300 dark:ring-blue-800;
+  @apply ring-blue-300 dark:ring-blue-800;
 }
 
 /* Red Button */
@@ -209,7 +218,7 @@ a {
   @apply bg-red-700 text-white;
 }
 .rw-button.rw-button-red:focus {
-  @apply outline-none ring-4 ring-red-300 dark:ring-red-800;
+  @apply ring-red-300 dark:ring-red-800;
 }
 
 /* Yellow Button */
@@ -220,29 +229,30 @@ a {
   @apply bg-yellow-600 text-white;
 }
 .rw-button.rw-button-yellow:focus {
-  @apply outline-none ring-4 ring-yellow-300 dark:ring-yellow-800;
+  @apply ring-yellow-300 dark:ring-yellow-800;
 }
 
 /* Gray Button */
 .rw-button.rw-button-gray {
-  @apply border-gray-300 bg-gray-50 text-gray-900 dark:border-zinc-500 dark:bg-zinc-700 dark:text-stone-200;
+  @apply border-gray-300 bg-gray-50 text-gray-700 dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-300;
 }
 .rw-button.rw-button-gray:hover {
-  @apply border-gray-500 bg-gray-500 ring ring-gray-200 dark:border-zinc-600 dark:bg-zinc-700 dark:ring-zinc-600;
+  @apply border-gray-500 bg-gray-500 text-gray-900 dark:border-zinc-600 dark:bg-zinc-600 dark:text-white;
 }
 .rw-button.rw-button-gray:focus {
-  @apply outline-none ring-4 ring-gray-300 dark:ring-zinc-800;
+  @apply ring ring-gray-300 dark:ring-zinc-700;
 }
 
 .rw-button-group {
   @apply my-3 flex justify-center rounded-md;
 }
 .rw-button-group .rw-input {
-  @apply rounded-none first:rounded-l-md last:rounded-r-md;
+  @apply mt-0 rounded-none first:rounded-l-md last:rounded-r-md;
 }
 .rw-button-group .rw-button {
   @apply mx-1;
 }
+
 .rw-form-wrapper .rw-button-group {
   @apply mt-8;
 }
@@ -259,6 +269,9 @@ a {
   /* @apply block mt-2 w-full p-2 bg-white border border-gray-200 rounded outline-none; */
   /* old color style dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-gray-300 dark:focus:ring-stone-200 */
   @apply mt-1 block rounded-lg border border-gray-500 bg-zinc-300 px-4 py-2.5 text-sm text-gray-900 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 disabled:cursor-not-allowed disabled:text-gray-400 contrast-more:border-black contrast-more:placeholder-black dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white dark:contrast-more:placeholder-white;
+}
+.rw-input.rw-input-small {
+  @apply py-1 px-2 text-xs;
 }
 .rw-input option {
   @apply appearance-none border-b border-black focus:outline-none dark:border-white;
@@ -307,21 +320,21 @@ a {
 }
 .rw-table th,
 .rw-table td {
-  @apply p-3;
+  @apply px-3 py-2;
 }
 .rw-table td {
-  @apply bg-white text-gray-900;
+  @apply bg-white text-gray-900 dark:bg-zinc-600 dark:text-gray-800;
 }
 .rw-table tr:nth-child(odd) td,
 .rw-table tr:nth-child(odd) th {
-  @apply bg-gray-50;
+  @apply bg-gray-50 dark:bg-zinc-400;
 }
 .rw-table tr:nth-child(even) td,
 .rw-table tr:nth-child(even) th {
-  @apply bg-white;
+  @apply bg-white dark:bg-zinc-300;
 }
 .rw-table thead tr {
-  @apply bg-gray-200 text-gray-600;
+  @apply bg-gray-200 text-gray-600 dark:bg-zinc-600;
 }
 .rw-table th {
   @apply text-left font-semibold;
@@ -338,7 +351,7 @@ a {
   }
 }
 .rw-table tbody tr {
-  @apply border-t border-gray-200;
+  @apply border-t border-gray-200 dark:border-zinc-300;
 }
 .rw-table input {
   @apply ml-0;
@@ -364,6 +377,7 @@ a {
 .rw-table-actions .rw-button-red:hover {
   @apply bg-red-600 text-white;
 }
+
 .rw-text-center {
   @apply text-center text-black dark:text-white;
 }

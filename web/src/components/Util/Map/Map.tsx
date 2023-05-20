@@ -1,6 +1,18 @@
-import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
+const drawSvgPath = (
+  coordinates: { lat: number; lon: number }[],
+  size
+): string => {
+  let pathString = "";
+  coordinates.forEach((coordinate, index) => {
+    const command = index === 0 ? "M" : "L";
+    pathString += `${command}${
+      (size.height / 100) * coordinate.lon + size.width / 100
+    } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
+  });
+  return pathString;
+};
 interface Props {
   map: string;
   size?: { width: number; height: number };
@@ -9,7 +21,7 @@ interface Props {
   path?: { color?: string; coords: { lat: number; lon: number }[] };
   interactive?: boolean;
 }
-export const Map = ({
+const Map = ({
   map,
   size = { width: 500, height: 500 },
   pos,
@@ -60,44 +72,35 @@ export const Map = ({
   const [scale, setScale] = useState(1);
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
 
-  const drawSvgPath = (coordinates: { lat: number; lon: number }[]): string => {
-    let pathString = "";
-    coordinates.forEach((coordinate, index) => {
-      const command = index === 0 ? "M" : "L";
-      pathString += `${command}${
-        (size.height / 100) * coordinate.lon + size.width / 100
-      } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
-    });
-    return pathString;
-  };
-
   useEffect(() => {
     const svgElement = svgRef.current;
     if (interactive && svgElement) {
       const { width, height } = svgElement.getBoundingClientRect();
       const maxScale = Math.max(width / 500, height / 500);
-      setScale(maxScale);
+      // setScale(maxScale);
+      setScale(1);
     }
   }, []);
 
-  const handleWheel = (event) => {
+  const handleWheel = useCallback(({ shiftKey, clientX, clientY, deltaY }) => {
     if (!interactive) return;
-    if (!event.shiftKey) return;
-    const delta = event.deltaY > 0 ? -0.1 : 0.1;
+    if (!shiftKey) return;
+    const delta = deltaY > 0 ? -0.1 : 0.1;
+
     const maxScale = Math.max(scale, 1);
     const minScale = Math.min(
       1,
       Math.min(
-        600 / svgRef.current.clientWidth,
-        450 / svgRef.current.clientHeight
+        500 / svgRef.current.clientWidth,
+        500 / svgRef.current.clientHeight
       )
     );
     const newScale = Math.max(minScale, Math.min(maxScale + delta, 5));
     const svgElement = svgRef.current;
     if (svgElement) {
       const { left, top } = svgElement.getBoundingClientRect();
-      const mouseX = event.clientX - left;
-      const mouseY = event.clientY - top;
+      const mouseX = clientX - left;
+      const mouseY = clientY - top;
       const scaleDiff = newScale / scale;
       const newTranslate = {
         x: mouseX - scaleDiff * (mouseX - translate.x),
@@ -106,9 +109,9 @@ export const Map = ({
       setTranslate(newTranslate);
       setScale(newScale);
     }
-  };
+  }, []);
 
-  const handleMouseDown = (event) => {
+  const handleMouseDown = useCallback((event) => {
     if (!interactive) return;
     if (event.button !== 0) return;
     if (!event.shiftKey) return;
@@ -133,21 +136,26 @@ export const Map = ({
     };
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
-  };
+  }, []);
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = useCallback((event) => {
     if (!interactive) return;
     if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
       document.body.style.overflow = "hidden";
     }
-  };
+  }, []);
 
-  const handleKeyUp = (event) => {
+  const handleKeyUp = useCallback((event) => {
     if (!interactive) return;
     if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
       document.body.style.overflow = "auto";
+      setScale(1);
+      setTranslate((prevState) => ({
+        x: 0,
+        y: 0,
+      }));
     }
-  };
+  }, []);
 
   const viewBox = `${-translate.x} ${-translate.y} ${size.width} ${
     size.height
@@ -163,7 +171,7 @@ export const Map = ({
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
       tabIndex={0}
-      className={className}
+      className={"relative " + className}
       width={size.width}
       height={size.height}
       viewBox={viewBox}
@@ -174,6 +182,7 @@ export const Map = ({
         style={{ pointerEvents: "none", transform: imageTransform }}
         height={size.height}
         width={size.width}
+        xlinkHref="planetmap"
       />
       {!maps[map.toLowerCase()] && (
         <text
@@ -185,10 +194,12 @@ export const Map = ({
           {map} map not found
         </text>
       )}
+
       {pos?.map((p, i) => (
         <circle
           style={{ transform: imageTransform }}
           key={"map-pos-" + i}
+          id={"map-pos-" + i}
           fill={p.color || "red"}
           cy={(size.height / 100) * p.lat + size.height / 100}
           cx={(size.width / 100) * p.lon + size.width / 100}
@@ -201,7 +212,7 @@ export const Map = ({
       {path?.coords && (
         <path
           style={{ pointerEvents: "none", transform: imageTransform }}
-          d={drawSvgPath(path.coords)}
+          d={drawSvgPath(path.coords, size)}
           stroke={path.color || "red"}
           strokeWidth="2"
           fill="none"
@@ -210,3 +221,5 @@ export const Map = ({
     </svg>
   );
 };
+
+export default Map;

@@ -10,6 +10,7 @@ type LayoutProps = {
 
 const MainLayout = ({ children }: LayoutProps) => {
   const { loading } = usePageLoadingContext();
+
   return (
     // <div className="overflow-hidden h-[100vh]">
     <div className="flex w-full flex-col">
@@ -19,7 +20,7 @@ const MainLayout = ({ children }: LayoutProps) => {
       <div className="flex w-full flex-col sm:flex-row">
         <Sidebar />
         <SkipNavContent id="main-content" />
-        <main className="overflow-y-auto sm:w-full">
+        <main className="overflow-y-auto sm:w-full ">
           {loading && (
             <div className="z-50 flex h-full w-full items-center justify-center">
               <div className="h-32 w-32 animate-spin rounded-full border-t-2 border-b-2 border-gray-900"></div>

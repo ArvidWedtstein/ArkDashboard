@@ -1,13 +1,15 @@
+import { Form, TextField } from "@redwoodjs/forms";
+import { Link, routes, navigate } from "@redwoodjs/router";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
+import Avatar from "src/components/Avatar/Avatar";
 
-import { Form, TextField } from '@redwoodjs/forms'
-import { Link, routes, navigate } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
-import Avatar from 'src/components/Avatar/Avatar'
+import { formatEnum, timeTag } from "src/lib/formatters";
 
-import { formatEnum, timeTag, } from 'src/lib/formatters'
-
-import type { DeleteProfileMutationVariables, FindProfileById } from 'types/graphql'
+import type {
+  DeleteProfileMutationVariables,
+  FindProfileById,
+} from "types/graphql";
 
 const DELETE_PROFILE_MUTATION = gql`
   mutation DeleteProfileMutation($id: String!) {
@@ -15,28 +17,28 @@ const DELETE_PROFILE_MUTATION = gql`
       id
     }
   }
-`
+`;
 
 interface Props {
-  profile: NonNullable<FindProfileById['profile']>
+  profile: NonNullable<FindProfileById["profile"]>;
 }
 
 const Profile = ({ profile }: Props) => {
   const [deleteProfile] = useMutation(DELETE_PROFILE_MUTATION, {
     onCompleted: () => {
-      toast.success('Profile deleted')
-      navigate(routes.profiles())
+      toast.success("Profile deleted");
+      navigate(routes.profiles());
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error(error.message);
     },
-  })
+  });
 
-  const onDeleteClick = (id: DeleteProfileMutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete profile ' + id + '?')) {
-      deleteProfile({ variables: { id } })
+  const onDeleteClick = (id: DeleteProfileMutationVariables["id"]) => {
+    if (confirm("Are you sure you want to delete profile " + id + "?")) {
+      deleteProfile({ variables: { id } });
     }
-  }
+  };
 
   return (
     <>
@@ -55,7 +57,8 @@ const Profile = ({ profile }: Props) => {
             ></span>
           </div>
         </section>
-        <section className="bg-blueGray-200 relative -mt-32 py-16">¨
+        <section className="bg-blueGray-200 relative -mt-32 py-16">
+          ¨
           <div className="container-fluid mx-auto px-4">
             <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded-lg bg-white shadow-xl">
               <div className="px-6">
@@ -96,7 +99,9 @@ const Profile = ({ profile }: Props) => {
                         <span className="text-blueGray-600 block text-xl font-bold uppercase tracking-wide">
                           0
                         </span>
-                        <span className="text-blueGray-400 text-sm">Friends</span>
+                        <span className="text-blueGray-400 text-sm">
+                          Friends
+                        </span>
                       </div>
                       <div className="mr-4 p-3 text-center">
                         <span className="text-blueGray-600 block text-xl font-bold uppercase tracking-wide">
@@ -110,42 +115,83 @@ const Profile = ({ profile }: Props) => {
                         <span className="text-blueGray-600 block text-xl font-bold uppercase tracking-wide">
                           {/* {tribescreated} */}0
                         </span>
-                        <span className="text-blueGray-400 text-sm">Tribes</span>
+                        <span className="text-blueGray-400 text-sm">
+                          Tribes
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="mt-12 text-center">
                   <form className="w-full max-w-lg">
-                    <div className="flex flex-wrap -mx-3 mb-6">
-                      <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-full-name">
+                    <div className="-mx-3 mb-6 flex flex-wrap">
+                      <div className="mb-6 w-full px-3 md:mb-0 md:w-1/2">
+                        <label
+                          className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700"
+                          htmlFor="grid-full-name"
+                        >
                           Full Name
                         </label>
-                        <input disabled className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-full-name" type="text" placeholder="Ola Nordmann" value={profile.full_name} />
+                        <input
+                          disabled
+                          className="mb-3 block w-full appearance-none rounded border border-gray-200 bg-gray-200 py-3 px-4 leading-tight text-gray-700 focus:bg-white focus:outline-none"
+                          id="grid-full-name"
+                          type="text"
+                          placeholder="Ola Nordmann"
+                          value={profile.full_name}
+                        />
                       </div>
                     </div>
-                    <div className="flex flex-wrap -mx-3 mb-6">
+                    <div className="-mx-3 mb-6 flex flex-wrap">
                       <div className="w-full px-3">
-                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-bio">
+                        <label
+                          className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700"
+                          htmlFor="grid-bio"
+                        >
                           Biography
                         </label>
-                        <input disabled className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-bio" type="text" value={profile.biography} />
-                        <p className="text-gray-600 text-xs italic">Write whatever nonsense you'd like</p>
+                        <input
+                          disabled
+                          className="mb-3 block w-full appearance-none rounded border border-gray-200 bg-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
+                          id="grid-bio"
+                          type="text"
+                          value={profile.biography}
+                        />
+                        <p className="text-xs italic text-gray-600">
+                          Write whatever nonsense you'd like
+                        </p>
                       </div>
                     </div>
-                    <div className="flex flex-wrap -mx-3 mb-2">
-                      <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-website">
+                    <div className="-mx-3 mb-2 flex flex-wrap">
+                      <div className="mb-6 w-full px-3 md:mb-0 md:w-1/2">
+                        <label
+                          className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700"
+                          htmlFor="grid-website"
+                        >
                           Website
                         </label>
-                        <input disabled value={profile.website} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" />
+                        <input
+                          disabled
+                          value={profile.website}
+                          className="block w-full appearance-none rounded border border-gray-200 bg-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
+                          id="grid-city"
+                          type="text"
+                        />
                       </div>
-                      <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                        <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-username">
+                      <div className="mb-6 w-full px-3 md:mb-0 md:w-1/2">
+                        <label
+                          className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700"
+                          htmlFor="grid-username"
+                        >
                           Username
                         </label>
-                        <input disabled className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="text" value={profile.username} />
+                        <input
+                          disabled
+                          className="block w-full appearance-none rounded border border-gray-200 bg-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
+                          id="grid-zip"
+                          type="text"
+                          value={profile.username}
+                        />
                       </div>
                     </div>
                   </form>
@@ -171,15 +217,13 @@ const Profile = ({ profile }: Props) => {
         </button>
       </nav>
     </>
-  )
-}
+  );
+};
 
-export default Profile
-
+export default Profile;
 
 // import { useState, useEffect } from "react";
 
-// import { useAuth } from "@redwoodjs/auth";
 // import Avatar from "../Avatar/Avatar";
 // import { toast } from "@redwoodjs/web/dist/toast";
 // import StatCard from "../StatCard/StatCard";

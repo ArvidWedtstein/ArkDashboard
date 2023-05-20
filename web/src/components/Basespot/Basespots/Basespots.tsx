@@ -22,8 +22,6 @@ const DELETE_BASESPOT_MUTATION = gql`
   }
 `;
 
-
-
 const BasespotsList = ({ basespotPage }: FindBasespots) => {
   const [deleteBasespot] = useMutation(DELETE_BASESPOT_MUTATION, {
     onCompleted: () => {
@@ -90,14 +88,17 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
   const [currentMap, setCurrentMap] = useState(map || null);
 
   return (
-    <div className="">
+    <div className="-m-3">
       <header
-        className="flex flex-col justify-between w-full min-h-[200px] p-12 bg-center bg-cover bg-no-repeat rounded-2xl text-white"
-        style={{ backgroundImage: 'url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg)' }}
+        className="flex min-h-[200px] w-full flex-col justify-between rounded-2xl bg-cover bg-center bg-no-repeat p-12 text-white"
+        style={{
+          backgroundImage:
+            "url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg)",
+        }}
       >
         <div className="flex justify-between pb-5">
           {/* <div className="text-xl font-bold uppercase tracking-[0.4rem] opacity-90">basespots</div> */}
-          <div className="flex items-center opacity-50 text-sm">
+          <div className="flex items-center text-sm opacity-50">
             {/* <p><span className="inline-block pb-1" id="sinceData">today</span></p>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" className="w-5 ml-3 fill-current">
               <path className="d" d="M15,0C6.75,0,0,6.75,0,15s6.75,15,15,15,15-6.75,15-15S23.25,0,15,0Zm7.35,16.65h-7.35c-.83,0-1.5-.67-1.5-1.5V7.8c0-.9,.6-1.5,1.5-1.5s1.5,.6,1.5,1.5v5.85h5.85c.9,0,1.5,.6,1.5,1.5s-.6,1.5-1.5,1.5Z" />
@@ -105,19 +106,30 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
           </div>
         </div>
         <div className="pt-12">
-          <div className="flex items-center opacity-75 mb-3 [&>span:not(:last-child)]:after:content-[','] space-x-1">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" className="w-5 mr-3 fill-current ">
-              <path className="d" d="M19.22,9.66L10.77,1.21c-.74-.74-1.86-1.21-2.97-1.21H1.67C.75,0,0,.75,0,1.67V7.8c0,1.11,.46,2.23,1.3,2.97l8.45,8.46c1,1,2.62,1,3.62,0l5.94-5.95c.93-.93,.93-2.6-.09-3.62ZM6.96,6.35c-.59,.59-1.56,.59-2.15,0-.59-.59-.59-1.56,0-2.15,.59-.59,1.56-.59,2.15,0,.59,.59,.59,1.56,0,2.15Z" />
+          <div className="mb-3 flex items-center space-x-1 opacity-75 [&>span:not(:last-child)]:after:content-[',']">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              className="mr-3 w-5 fill-current "
+            >
+              <path
+                className="d"
+                d="M19.22,9.66L10.77,1.21c-.74-.74-1.86-1.21-2.97-1.21H1.67C.75,0,0,.75,0,1.67V7.8c0,1.11,.46,2.23,1.3,2.97l8.45,8.46c1,1,2.62,1,3.62,0l5.94-5.95c.93-.93,.93-2.6-.09-3.62ZM6.96,6.35c-.59,.59-1.56,.59-2.15,0-.59-.59-.59-1.56,0-2.15,.59-.59,1.56-.59,2.15,0,.59,.59,.59,1.56,0,2.15Z"
+              />
             </svg>
             {["Deez", "Nuts"].map((tag) => (
-              <span className="text-sm" key={tag}>{tag}</span>
+              <span className="text-sm" key={tag}>
+                {tag}
+              </span>
             ))}
           </div>
           <h1 className="my-5 text-5xl font-bold opacity-90">Basespots!</h1>
-          <p className="w-1/2 mt-3 opacity-75 leading-7">Here you'll find various basespots</p>
+          <p className="mt-3 w-1/2 leading-7 opacity-75">
+            Here you'll find various basespots
+          </p>
         </div>
       </header>
-      <div className="flex items-center my-4">
+      <div className="my-4 flex items-center">
         <Lookup
           options={[
             { label: "Valguero", value: 1 },
@@ -156,7 +168,11 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
               title={basespot.name}
               subtitle={basespot.Map.name.split(/(?=[A-Z])/).join(" ")}
               content={basespot.description}
-              ring={`${basespot.estimated_for_players} players`}
+              ring={
+                parseInt(basespot.estimated_for_players) > 0
+                  ? `Est. ${basespot.estimated_for_players} players`
+                  : ""
+              }
               image={{
                 src: mapImages[
                   basespot.Map.name.toLowerCase().replaceAll(" ", "")
@@ -171,7 +187,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
             />
           ))}
       </div>
-    </div >
+    </div>
   );
 };
 

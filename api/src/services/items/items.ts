@@ -20,7 +20,7 @@ export const itemsPage = ({
   items_per_page?: number;
 }) => {
   const offset = (page - 1) * items_per_page;
-  console.log(category);
+
   return {
     items: db.item.findMany({
       take: items_per_page,
@@ -36,16 +36,6 @@ export const itemsPage = ({
         ],
       },
     }),
-    // categories: db.item.findMany({
-    //   select: { category: true },
-    //   distinct: ["category"],
-    //   orderBy: { category: "asc" },
-    // }),
-    // types: db.item.findMany({
-    //   select: { type: true },
-    //   distinct: ["type"],
-    //   orderBy: { type: "asc" },
-    // }),
     count: db.item.count({
       where: {
         AND: [
@@ -60,17 +50,24 @@ export const itemsPage = ({
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment      <-- Necessary for my ESLint setup
+// @ts-ignore: Unreachable code error
 export const itemsByCategory: QueryResolvers["itemsByCategory"] = ({
   category,
+  type,
 }: {
   category: string;
+  type?: string;
 }) => {
+  const categories = category.split(",");
   return {
     items: db.item.findMany({
-      where: { category: category },
+      where: { category: { in: categories, mode: "insensitive" } },
       orderBy: { created_at: "desc" },
     }),
-    count: db.item.count({ where: { type: category } }),
+    count: db.item.count({
+      where: { category: { in: categories, mode: "insensitive" } },
+    }),
   };
 };
 
@@ -81,6 +78,12 @@ export const items: QueryResolvers["items"] = () => {
 export const item: QueryResolvers["item"] = ({ id }) => {
   return db.item.findUnique({
     where: { id },
+  });
+};
+
+export const itemsByIds = ({ id }: { id: number[] }) => {
+  return db.item.findMany({
+    where: { id: { in: id } },
   });
 };
 

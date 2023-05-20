@@ -21,6 +21,7 @@ export const QUERY = gql`
       stats
       color
       type
+      category
       LootcrateSetEntryItem {
         LootcrateSetEntry {
           LootcrateSet {
@@ -39,6 +40,19 @@ export const QUERY = gql`
         value
         rank
         type
+      }
+      ItemRecipe_ItemRecipe_crafted_item_idToItem {
+        amount
+        Item_ItemRecipe_crafting_stationToItem {
+          id
+          name
+          image
+        }
+        Item_ItemRecipe_item_idToItem {
+          id
+          name
+          image
+        }
       }
     }
   }

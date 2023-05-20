@@ -44,10 +44,10 @@ const Lootcrate = ({ lootcrate }: Props) => {
       <div className="rw-segment">
         <header className="rw-segment-header">
           <h2 className="rw-heading rw-heading-secondary">
-            Lootcrate {lootcrate.id} Detail
+            {lootcrate.name} on <Link to={routes.map({ id: lootcrate.Map.id })}>{lootcrate.Map.name}</Link>
           </h2>
         </header>
-        <table className="rw-table">
+        {/* <table className="rw-table">
           <tbody>
             <tr>
               <th>Id</th>
@@ -98,23 +98,9 @@ const Lootcrate = ({ lootcrate }: Props) => {
               <td>{lootcrate.color}</td>
             </tr>
           </tbody>
-        </table>
+  </table> */}
       </div>
-      <nav className="rw-button-group">
-        <Link
-          to={routes.editLootcrate({ id: lootcrate.id })}
-          className="rw-button rw-button-blue"
-        >
-          Edit
-        </Link>
-        <button
-          type="button"
-          className="rw-button rw-button-red"
-          onClick={() => onDeleteClick(lootcrate.id)}
-        >
-          Delete
-        </button>
-      </nav>
+
       <div className="w-full space-y-2">
         <Tabs
           tabs={lootcrate.LootcrateSet.map((s, l) => {
@@ -169,6 +155,21 @@ const Lootcrate = ({ lootcrate }: Props) => {
           })}
         />
       </div>
+      <nav className="rw-button-group">
+        <Link
+          to={routes.editLootcrate({ id: lootcrate.id })}
+          className="rw-button rw-button-blue"
+        >
+          Edit
+        </Link>
+        <button
+          type="button"
+          className="rw-button rw-button-red"
+          onClick={() => onDeleteClick(lootcrate.id)}
+        >
+          Delete
+        </button>
+      </nav>
     </>
   );
 };
