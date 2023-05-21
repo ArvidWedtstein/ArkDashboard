@@ -186,24 +186,34 @@ export const getBaseMaterials = (
       return;
     }
 
-    if (!firstRecipeOnly && item.type === "Resource") {
-      return;
-    }
+    // if (!firstRecipeOnly) {
+    //   return;
+    // }
     // TODO: Replace this shit
+    // Rewrite so that all items are queried once, and then get recipe from each of those items instead
+
     let c =
-      item.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0 &&
-      item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-        .Item_ItemRecipe_crafting_stationToItem != null
+      item?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
+      item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0
         ? item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-            .Item_ItemRecipe_crafting_stationToItem.id
+            ?.Item_ItemRecipe_crafting_stationToItem.id
         : null;
 
     // Group by crafting_station somehow
-    item.ItemRecipe_ItemRecipe_crafted_item_idToItem.filter((f) =>
-      f.Item_ItemRecipe_crafting_stationToItem
-        ? f.Item_ItemRecipe_crafting_stationToItem.id === c
-        : true
-    ).forEach(
+    // item.ItemRecipe_ItemRecipe_crafted_item_idToItem.filter((f) =>
+    //   f.Item_ItemRecipe_crafting_stationToItem
+    //      ? crafting_stations.includes(
+    //           f.Item_ItemRecipe_crafting_stationToItem.id
+    //          )
+    //     : true
+    const craft =
+      item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.filter((f) =>
+        f.Item_ItemRecipe_crafting_stationToItem
+          ? f.Item_ItemRecipe_crafting_stationToItem?.id === c
+          : true
+      ) || null;
+
+    craft.forEach(
       ({ Item_ItemRecipe_item_idToItem, amount: recipeAmount, yields }) => {
         let count = (recipeAmount * amount) / (yields ? yields : 1);
         if (
@@ -237,112 +247,12 @@ export const getBaseMaterials = (
     );
   };
 
-  /**
-   * Recursive function to find the base materials required to produce an object.
-   *
-   * @param {number} itemId - The unique identifier for the object.
-   * @param {number} amount - The number of objects required.
-   */
-  // const findBaseMaterials = (itemId: number, amount: number) => {
-  //   let recipe = prices.items.find((r) => r.id === itemId);
-
-  //   if (!recipe?.recipe || recipe.recipe.length === 0) {
-  //     return;
-  //   }
-
-  //   if (!firstRecipeOnly && recipe.type === "Resource") {
-  //     return;
-  //   }
-
-  //   recipe.recipe.forEach(({ itemId, count: recipeCount }) => {
-  //     let recipeItem = prices.items.find((r) => r.id === itemId);
-  //     let count = (recipeCount * amount) / recipe.yields;
-  //     if (
-  //       !firstRecipeOnly ||
-  //       !recipeItem?.recipe ||
-  //       !recipeItem?.recipe.length
-  //     ) {
-  //       let material = materials.find((m) => m.id === itemId);
-  //       if (material) {
-  //         material.amount += count;
-  //       } else {
-  //         materials.push({ ...recipeItem, amount: count });
-  //       }
-  //     } else {
-  //       findBaseMaterials(recipeItem.id, count * recipeItem.yields);
-  //     }
-  //   });
-  // };
-  // objects.forEach(({ itemId, amount }) => {
-  //   findBaseMaterials(itemId, amount);
-  // });
   objects.forEach((item) => {
     findBaseMaterials2(item, item.amount);
   });
 
   return materials;
 };
-
-// function getResourcesForCrafting(itemId: number, amount: number) {
-//   const itemToCraft = prices.items.find((item) => item.id === itemId);
-//   const resources = new Map<number, number>();
-
-//   if (!itemToCraft) {
-//     throw new Error(`Item with itemId ${itemId} not found.`);
-//   }
-
-//   for (const recipeItem of itemToCraft.recipe) {
-//     const requiredAmount = recipeItem.count * amount;
-//     let availableAmount = itemToCraft.max_stack * requiredAmount;
-
-//     if (recipeItem.itemId === itemToCraft.id) {
-//       availableAmount -= requiredAmount;
-//     }
-
-//     if (availableAmount < requiredAmount) {
-//       const ingredientItem = prices.items.find(
-//         (item) => item.id === recipeItem.itemId
-//       );
-
-//       if (!ingredientItem) {
-//         throw new Error(`Item with itemId ${recipeItem.itemId} not found.`);
-//       }
-
-//       const remainingAmount = requiredAmount - availableAmount;
-//       const additionalResources = getResourcesForCrafting(
-//         recipeItem.itemId,
-//         Math.ceil(remainingAmount / ingredientItem.yields)
-//       );
-
-//       for (const [itemId, amount] of additionalResources) {
-//         if (resources.has(itemId)) {
-//           resources.set(itemId, resources.get(itemId)! + amount);
-//         } else {
-//           resources.set(itemId, amount);
-//         }
-//       }
-
-//       if (resources.has(recipeItem.itemId)) {
-//         resources.set(
-//           recipeItem.itemId,
-//           resources.get(recipeItem.itemId)! + requiredAmount
-//         );
-//       } else {
-//         resources.set(recipeItem.itemId, requiredAmount);
-//       }
-//     } else {
-//       if (resources.has(recipeItem.itemId)) {
-//         resources.set(
-//           recipeItem.itemId,
-//           resources.get(recipeItem.itemId)! + requiredAmount
-//         );
-//       } else {
-//         resources.set(recipeItem.itemId, requiredAmount);
-//       }
-//     }
-//   }
-//   return Array.from(resources);
-// }
 
 interface Coordinate {
   lat: number;

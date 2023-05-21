@@ -99,9 +99,7 @@ const QUERY = gql`
 export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
   const items = useMemo(() => {
     return arkitems
-      .filter(
-        (i) => !["Resource"].includes(i.category) && !["Meat"].includes(i.type)
-      )
+      .filter((i) => ![""].includes(i.category) && !["Meat"].includes(i.type))
       .map((v) => ({ ...v, amount: 1 * v.yields }));
   }, []);
   const formMethods = useForm();

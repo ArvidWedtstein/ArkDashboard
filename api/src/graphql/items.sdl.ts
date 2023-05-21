@@ -13,9 +13,9 @@ export const schema = gql`
     yields: Float
     stats: JSON
     color: String
-    crafted_in: [String]!
     type: String
     category: String!
+    health: Float
     Dino: [Dino]!
     DinoStat: [DinoStat]!
     ItemRecipe_ItemRecipe_crafted_item_idToItem: [ItemRecipe]!
@@ -28,7 +28,6 @@ export const schema = gql`
     items: [Item!]!
     count: Int!
   }
-
   type Query {
     items: [Item!]! @skipAuth
     item(id: BigInt!): Item @skipAuth
@@ -57,6 +56,7 @@ export const schema = gql`
     color: String
     type: String
     category: String!
+    health: Float
     ItemRecipe_ItemRecipe_crafted_item_idToItem: JSON
   }
 
@@ -75,6 +75,7 @@ export const schema = gql`
     color: String
     type: String
     category: String
+    health: Float
     ItemRecipe_ItemRecipe_crafted_item_idToItem: JSON
   }
 
