@@ -3,6 +3,7 @@ import {
   NavLink,
   routes,
   useLocation,
+  useMatch,
   useParams,
 } from "@redwoodjs/router";
 import clsx from "clsx";
@@ -111,95 +112,87 @@ const Icon = (icon: string) => {
 };
 
 const Sidebar = memo(({}) => {
-  const { pathname } = useLocation();
   const navigation = [
     {
       name: "Home",
       href: routes.home(),
-      color: "ring-pea-500 bg-pea-500",
+      color: "!ring-pea-400 !bg-pea-500",
     },
     {
       name: "Basespot",
       href: routes.basespots({ page: 1 }),
-      color: "ring-blue-500 bg-blue-500",
+      color: "!ring-blue-400 !bg-blue-500",
     },
     {
       name: "Calculator",
       href: routes.materialCalculator(),
-      color: "ring-red-500 bg-red-500",
+      color: "!ring-red-400 !bg-red-500",
     },
     {
       name: "GTW",
       href: routes.gtw(),
-      color: "ring-lime-300 bg-lime-500",
+      color: "!ring-lime-400 !bg-lime-500",
     },
     {
       name: "Tribes",
       href: routes.tribes(),
-      color: "ring-emerald-300 bg-emerald-500",
+      color: "!ring-emerald-400 !bg-emerald-500",
     },
     {
       name: "Story",
       href: routes.timelines(),
-      color: "ring-sky-200 bg-sky-400",
+      color: "!ring-sky-200 !bg-sky-400",
     },
     {
       name: "Dinos",
       href: routes.dinos({ category: "ground" }),
-      color: "ring-indigo-300 bg-indigo-500",
+      color: "!ring-indigo-400 !bg-indigo-500",
     },
     {
       name: "Items",
       href: routes.items(),
-      color: "ring-teal-500 bg-teal-700",
+      color: "!ring-teal-500 !bg-teal-700",
     },
     {
       name: "Maps",
       href: routes.maps(),
-      color: "ring-amber-300 bg-amber-500",
+      color: "!ring-amber-400 !bg-amber-500",
     },
-    // {
-    //   name: "Lootcrates",
-    //   href: routes.lootcrates(),
-    //   color: "ring-teal-500 bg-teal-700",
-    // }
   ];
+
   return (
     <nav className="sticky top-0 z-10 flex h-fit flex-row items-center justify-between rounded-r-xl border-gray-700 px-10 py-2 dark:border-gray-200 max-sm:border-b sm:flex-col sm:justify-start sm:border-r sm:py-10 sm:px-2">
-      {navigation.map((item, i) => (
+      {navigation.map((item, index) => (
+        <aside
+          className="mx-2 flex flex-col items-center justify-start self-start text-black transition-all dark:text-[#ffffffcc] sm:flex-row"
+          key={`sidebar-item-${index}`}
+        >
+          <NavLink
+            to={item.href}
+            title={item.name}
+            activeClassName={`text-white ring-2 ${item.color}`}
+            matchSubPaths={false}
+            className="mr-2 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-stone-300 outline-none ring-1 ring-transparent hover:text-gray-900 hover:ring-stone-400 focus:ring-stone-400 dark:bg-zinc-700 dark:hover:text-white dark:hover:ring-white dark:focus:ring-white sm:my-2"
+          >
+            {Icon(item.name)} <span className="sr-only">{item.name}</span>
+          </NavLink>
+          <span className="text-sm">{item.name}</span>
+        </aside>
+      ))}
+      {/* {navigation.map((item, i) => (
         <aside
           className="mx-2 flex flex-col items-center justify-start self-start text-black transition-all dark:text-[#ffffffcc] sm:flex-row"
           key={`sidebar-item-${i}`}
         >
-          {/* <NavLink
-            key={item.name}
-            to={item.href}
-            title={item.name}
-            activeClassName={`text-white ring-2 ${item.color}`}
-            className={clsx(
-              "mx-2 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl outline-none ring-1 ring-transparent duration-100 hover:text-gray-900 dark:hover:text-white sm:my-4",
-              {
-                "bg-stone-300 text-black hover:ring-stone-400 focus:ring-stone-400 focus-visible:ring-white dark:bg-[#c3cff433] dark:text-[#ffffffcc] dark:hover:ring-white dark:focus:ring-white":
-                  singularize(item.href.split("?")[0]) !==
-                  singularize(`/${pathname.split("/")[1]}`),
-                "text-white ring-2":
-                  singularize(item.href.split("?")[0]) ===
-                  singularize(`/${pathname.split("/")[1]}`),
-              },
-              item.color
-            )}
-          >
-            {Icon(item.name)} <span className="sr-only">{item.name}</span>
-          </NavLink> */}
           <NavLink
             key={item.name}
             to={item.href}
             title={item.name}
             activeClassName={`text-white ring-2 ${item.color}`}
             className={clsx(
-              "mr-2 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md outline-none ring-1 ring-transparent hover:text-gray-900 dark:hover:text-white sm:my-2",
+              `mr-2 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md outline-none ring-1 ring-transparent hover:text-gray-900 dark:hover:text-white sm:my-2`,
               {
-                "bg-stone-300 text-black hover:ring-stone-400 focus:ring-stone-400 focus-visible:ring-white dark:bg-[#c3cff433] dark:text-[#ffffffcc] dark:hover:ring-white dark:focus:ring-white":
+                "bg-stone-300 text-black hover:ring-stone-400 focus:ring-stone-400  focus-visible:ring-white dark:bg-[#c3cff433] dark:text-[#ffffffcc] dark:hover:ring-white dark:focus:ring-white":
                   singularize(item.href.split("?")[0]) !==
                   singularize(`/${pathname.split("/")[1]}`),
                 "text-white ring-2":
@@ -213,7 +206,7 @@ const Sidebar = memo(({}) => {
           </NavLink>
           <span className="text-sm">{item.name}</span>
         </aside>
-      ))}
+      ))} */}
     </nav>
   );
 });

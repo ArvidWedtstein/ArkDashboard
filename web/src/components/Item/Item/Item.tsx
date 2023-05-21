@@ -310,7 +310,12 @@ const Item = ({ item }: Props) => {
                 id: string;
                 name: string;
                 image: string;
-              } = JSON.parse(crafting_station);
+              } = JSON.parse(crafting_station) || {
+                id: "",
+                name: "Inventory",
+                image: "Inventory.png",
+              };
+
               return {
                 title: (
                   <p className="inline-flex items-center justify-center">

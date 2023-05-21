@@ -13,11 +13,11 @@ import ScaffoldLayout from "src/layouts/ScaffoldLayout";
 
 import MainLayout from "./layouts/MainLayout/MainLayout";
 
-import { useAuth } from './auth'
+import { useAuth } from "./auth";
 
 const Routes = () => {
   return (
-    <Router useAuth={useAuth} pageLoadingDelay={500}>
+    <Router useAuth={useAuth} pageLoadingDelay={0}>
       <Set wrap={MainLayout}>
         {/*whileLoadingPage*/}
 
