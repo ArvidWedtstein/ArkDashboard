@@ -24,14 +24,13 @@ interface MaterialGridProps {
   error?: RWGqlError;
 }
 
-export const QUERY = gql`
+const QUERY = gql`
   query FindItemsByIds($id: [BigInt!]!) {
     itemsByIds: itemsByIds(id: $id) {
       id
       name
       image
       crafting_time
-      category
       ItemRecipe_ItemRecipe_crafted_item_idToItem {
         amount
         yields
@@ -40,12 +39,10 @@ export const QUERY = gql`
           name
           image
         }
-
         Item_ItemRecipe_item_idToItem {
           id
           name
           image
-          category
           crafting_time
           ItemRecipe_ItemRecipe_crafted_item_idToItem {
             amount
@@ -59,7 +56,7 @@ export const QUERY = gql`
               id
               name
               image
-              category
+
               crafting_time
               ItemRecipe_ItemRecipe_crafted_item_idToItem {
                 amount
@@ -73,21 +70,19 @@ export const QUERY = gql`
                   id
                   name
                   image
-                  category
                   crafting_time
                   ItemRecipe_ItemRecipe_crafted_item_idToItem {
                     amount
                     yields
-                    Item_ItemRecipe_crafting_stationToItem {
-                      id
-                      name
-                    }
                     Item_ItemRecipe_item_idToItem {
                       id
                       name
                       image
-                      category
                       crafting_time
+                    }
+                    Item_ItemRecipe_crafting_stationToItem {
+                      id
+                      name
                     }
                   }
                 }
@@ -99,6 +94,8 @@ export const QUERY = gql`
     }
   }
 `;
+8;
+
 export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
   const items = useMemo(() => {
     return arkitems
@@ -108,6 +105,14 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
       .map((v) => ({ ...v, amount: 1 * v.yields }));
   }, []);
   const formMethods = useForm();
+
+  const [viewBaseMaterials, setViewBaseMaterials] = useState(false);
+  const toggleBaseMaterials = useCallback(
+    (e) => {
+      setViewBaseMaterials(e.currentTarget.checked);
+    },
+    [viewBaseMaterials]
+  );
 
   const [loadItem, { loading, variables }] = useLazyQuery(QUERY, {
     onCompleted: (data) => {
@@ -337,14 +342,6 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
     setItem({ type: "RESET" });
   };
 
-  const [viewBaseMaterials, setViewBaseMaterials] = useState(false);
-  const toggleBaseMaterials = useCallback(
-    (e) => {
-      setViewBaseMaterials(e.currentTarget.checked);
-    },
-    [viewBaseMaterials]
-  );
-
   const [search, setSearch] = useState("");
 
   return (
@@ -442,14 +439,12 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
               ))}
             {Object.entries(
               groupBy(
-                items,
-                // .filter(
-                //   (items) =>
-                //     items?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
-                //     items?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length >
-                //       0 &&
-                //     items.name.toLowerCase().includes(search.toLowerCase())
-                // )
+                items.filter((item) =>
+                  // item?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
+                  // item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length >
+                  //   0 &&
+                  item.name.toLowerCase().includes(search.toLowerCase())
+                ),
                 "category"
               )
             ).map(([category, categoryitems]: any) => (
@@ -458,14 +453,13 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                   open={
                     Object.values(
                       groupBy(
-                        items.filter(
-                          (items) =>
-                            items?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
-                            items?.ItemRecipe_ItemRecipe_crafted_item_idToItem
-                              .length > 0 &&
-                            items.name
-                              .toLowerCase()
-                              .includes(search.toLowerCase())
+                        items.filter((items) =>
+                          // items?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
+                          // items?.ItemRecipe_ItemRecipe_crafted_item_idToItem
+                          //   .length > 0 &&
+                          items.name
+                            .toLowerCase()
+                            .includes(search.toLowerCase())
                         ),
                         "category"
                       )
@@ -489,14 +483,13 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                   <ul className="py-2">
                     {Object.values(
                       groupBy(
-                        items.filter(
-                          (items) =>
-                            items?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
-                            items?.ItemRecipe_ItemRecipe_crafted_item_idToItem
-                              .length > 0 &&
-                            items.name
-                              .toLowerCase()
-                              .includes(search.toLowerCase())
+                        items.filter((items) =>
+                          // items?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
+                          // items?.ItemRecipe_ItemRecipe_crafted_item_idToItem
+                          //   .length > 0 &&
+                          items.name
+                            .toLowerCase()
+                            .includes(search.toLowerCase())
                         ),
                         "category"
                       )
