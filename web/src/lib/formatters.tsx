@@ -200,12 +200,83 @@ export const getBaseMaterials = (
         : null;
 
     // Group by crafting_station somehow
-    // item.ItemRecipe_ItemRecipe_crafted_item_idToItem.filter((f) =>
-    //   f.Item_ItemRecipe_crafting_stationToItem
-    //      ? crafting_stations.includes(
-    //           f.Item_ItemRecipe_crafting_stationToItem.id
-    //          )
-    //     : true
+    const craft =
+      item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.filter((f) =>
+        f.Item_ItemRecipe_crafting_stationToItem
+          ? f.Item_ItemRecipe_crafting_stationToItem?.id === c
+          : true
+      ) || null;
+
+    craft.forEach(
+      ({ Item_ItemRecipe_item_idToItem, amount: recipeAmount, yields }) => {
+        let count = (recipeAmount * amount) / (yields ? yields : 1);
+        if (
+          !firstRecipeOnly ||
+          !Item_ItemRecipe_item_idToItem?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
+          !Item_ItemRecipe_item_idToItem
+            ?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length
+        ) {
+          let material = materials.find(
+            (m) => m.id === Item_ItemRecipe_item_idToItem.id
+          );
+          if (material) {
+            material.amount += count;
+            material.crafting_time +=
+              count * Item_ItemRecipe_item_idToItem.crafting_time || 0;
+          } else {
+            materials.push({
+              ...Item_ItemRecipe_item_idToItem,
+              amount: count,
+              crafting_time:
+                count * Item_ItemRecipe_item_idToItem.crafting_time || 0,
+            });
+          }
+        } else {
+          findBaseMaterials2(
+            Item_ItemRecipe_item_idToItem,
+            count * (Item_ItemRecipe_item_idToItem.yields || 1)
+          );
+        }
+      }
+    );
+  };
+
+  objects.forEach((item) => {
+    findBaseMaterials2(item, item.amount);
+  });
+
+  return materials;
+};
+
+export const getBaseMaterialsNew = (
+  firstRecipeOnly: boolean = false,
+  // crafting_stations?: any[],
+  ...objects: Array<any>
+) => {
+  let materials = [];
+
+  const findBaseMaterials2 = (item, amount) => {
+    if (
+      !item?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
+      item.ItemRecipe_ItemRecipe_crafted_item_idToItem.length === 0
+    ) {
+      return;
+    }
+
+    // if (!firstRecipeOnly) {
+    //   return;
+    // }
+    // TODO: Replace this shit
+    // Rewrite so that all items are queried once, and then get recipe from each of those items instead
+
+    let c =
+      item?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
+      item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0
+        ? item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
+            ?.Item_ItemRecipe_crafting_stationToItem.id
+        : null;
+
+    // Group by crafting_station somehow
     const craft =
       item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.filter((f) =>
         f.Item_ItemRecipe_crafting_stationToItem
