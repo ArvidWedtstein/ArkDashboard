@@ -138,10 +138,11 @@ const Item = ({ item }: Props) => {
               </div>
               <br />
               <div className="mb-4 inline-block">
-                {(item.stats as any[]).map(({ id, value }) => {
-                  if (!ItemStats[id]) return <></>;
+                {(item.stats as any[]).map(({ id, value }, i) => {
+                  if (!ItemStats[id])
+                    return <div key={`${id}${value}${i}`}></div>;
                   return (
-                    <p>
+                    <p key={`${id}${value}${i}`}>
                       <strong>{ItemStats[id].name}</strong>: {value}
                     </p>
                   );
@@ -161,19 +162,15 @@ const Item = ({ item }: Props) => {
                       {/* TODO: Select Distinct lootcrates */}
                       <strong>Found in:</strong>{" "}
                       {item?.LootcrateSetEntryItem.slice(0, 5).map((g) => (
-                        <>
-                          {
-                            <Link
-                              key={`lootcrate-${g.LootcrateSetEntry.LootcrateSet.Lootcrate.id}`}
-                              to={routes.lootcrate({
-                                id: g.LootcrateSetEntry.LootcrateSet.Lootcrate.id.toString(),
-                              })}
-                            >
-                              {g.LootcrateSetEntry.LootcrateSet.Lootcrate.name}
-                            </Link>
-                          }
-                          ,{" "}
-                        </>
+                        <Link
+                          key={`lootcrate-${g.LootcrateSetEntry.LootcrateSet.Lootcrate.id}`}
+                          to={routes.lootcrate({
+                            id: g.LootcrateSetEntry.LootcrateSet.Lootcrate.id.toString(),
+                          })}
+                          className="mr-2 text-sm"
+                        >
+                          {g.LootcrateSetEntry.LootcrateSet.Lootcrate.name}
+                        </Link>
                       ))}
                     </div>
                   )}
@@ -193,8 +190,11 @@ const Item = ({ item }: Props) => {
                   {item.DinoStat.filter((g) => g.type === "gather_efficiency")
                     .sort((a, b) => b.value - a.value)
                     .slice(0, 10)
-                    .map((eff) => (
-                      <div className="flex items-center">
+                    .map((eff, i) => (
+                      <div
+                        className="flex items-center"
+                        key={`gather-efficiency-${i}`}
+                      >
                         <Link
                           to={routes.dino({ id: eff.Dino.id })}
                           className="mr-2 w-40 text-sm"
@@ -206,8 +206,9 @@ const Item = ({ item }: Props) => {
                           className="flex h-2 w-32 flex-row divide-x divide-black rounded-full bg-gray-300"
                           title={eff.value.toString()}
                         >
-                          {Array.from(Array(5)).map((_, i) => (
+                          {Array.from(Array(5)).map((_, j) => (
                             <div
+                              key={`dinostat-${i}-${j}`}
                               className={clsx(
                                 `h-full w-1/5 first:rounded-l-full last:rounded-r-full`,
                                 {
@@ -241,8 +242,11 @@ const Item = ({ item }: Props) => {
                   {item.DinoStat.filter((g) => g.type === "weight_reduction")
                     .sort((a, b) => b.value - a.value)
                     .slice(0, 10)
-                    .map((wr) => (
-                      <div className="flex items-center">
+                    .map((wr, i) => (
+                      <div
+                        className="flex items-center"
+                        key={`weight-reduction-${i}`}
+                      >
                         <Link
                           to={routes.dino({ id: wr.Dino.id })}
                           className="mr-2 w-20 text-sm"
@@ -278,8 +282,9 @@ const Item = ({ item }: Props) => {
                   {item.DinoStat.filter((g) => g.type === "drops")
                     .sort((a, b) => b.value - a.value)
                     .slice(0, 10)
-                    .map((d) => (
+                    .map((d, i) => (
                       <Link
+                        key={`drops-${i}`}
                         to={routes.dino({ id: d.Dino.id })}
                         className="mr-2 w-20 text-sm"
                       >
@@ -318,7 +323,10 @@ const Item = ({ item }: Props) => {
 
               return {
                 title: (
-                  <p className="inline-flex items-center justify-center">
+                  <p
+                    className="inline-flex items-center justify-center"
+                    key={`recipe-${id}`}
+                  >
                     <img
                       src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
                       className="w-8"
@@ -362,15 +370,21 @@ const Item = ({ item }: Props) => {
                         </h1>
                         <ul className="space-y-1 text-xs">
                           {items.map(
-                            ({
-                              Item_ItemRecipe_item_idToItem: {
-                                name,
-                                id,
-                                image,
+                            (
+                              {
+                                Item_ItemRecipe_item_idToItem: {
+                                  name,
+                                  id,
+                                  image,
+                                },
+                                amount,
                               },
-                              amount,
-                            }) => (
-                              <li className="flex flex-row items-center justify-start">
+                              i
+                            ) => (
+                              <li
+                                className="flex flex-row items-center justify-start"
+                                key={`${id}-${i}`}
+                              >
                                 <Link
                                   className="inline-flex items-center justify-center space-x-1"
                                   to={routes.item({ id })}
