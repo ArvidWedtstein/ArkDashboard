@@ -17,7 +17,6 @@ import { MaterialGrid } from "../MaterialGrid/MaterialGrid";
 //        yields
 //        stats
 //        color
-//        crafted_in
 //        type
 //      }
 //    }
@@ -33,13 +32,21 @@ export const QUERY = gql`
       crafting_time
       category
       type
+      ItemRecipe_ItemRecipe_crafted_item_idToItem {
+        yields
+        amount
+        Item_ItemRecipe_crafting_stationToItem {
+          id
+          name
+        }
+        Item_ItemRecipe_item_idToItem {
+          id
+        }
+      }
     }
   }
 `;
-// ItemRecipe_ItemRecipe_crafted_item_idToItem {
-//   yields
-// }
-// amount
+
 // Item_ItemRecipe_crafting_stationToItem {
 //   id
 //   name
