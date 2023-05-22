@@ -2,9 +2,9 @@ import type {
   QueryResolvers,
   MutationResolvers,
   ItemRelationResolvers,
-} from 'types/graphql'
+} from "types/graphql";
 
-import { db } from 'src/lib/db'
+import { db } from "src/lib/db";
 
 export const itemsPage = ({
   page = 1,
@@ -70,81 +70,84 @@ export const itemsByCategory: QueryResolvers["itemsByCategory"] = ({
     }),
   };
 };
+export const itemsByIds = ({ id }: { id: number[] }) => {
+  return db.item.findMany({
+    where: { id: { in: id } },
+  });
+};
+export const items: QueryResolvers["items"] = () => {
+  return db.item.findMany();
+};
 
-export const items: QueryResolvers['items'] = () => {
-  return db.item.findMany()
-}
-
-export const item: QueryResolvers['item'] = ({ id }) => {
+export const item: QueryResolvers["item"] = ({ id }) => {
   return db.item.findUnique({
     where: { id },
-  })
-}
+  });
+};
 
-export const createItem: MutationResolvers['createItem'] = ({ input }) => {
+export const createItem: MutationResolvers["createItem"] = ({ input }) => {
   return db.item.create({
     include: {
       ItemRecipe_ItemRecipe_crafted_item_idToItem: true,
     },
     data: input,
-  })
-}
+  });
+};
 
-export const updateItem: MutationResolvers['updateItem'] = ({ id, input }) => {
+export const updateItem: MutationResolvers["updateItem"] = ({ id, input }) => {
   return db.item.update({
-    return db.item.update({
-      include: {
-        ItemRecipe_ItemRecipe_crafted_item_idToItem: true,
-      },
+    include: {
+      ItemRecipe_ItemRecipe_crafted_item_idToItem: true,
+    },
     data: input,
     where: { id },
-  })
-}
+  });
+};
 
-export const deleteItem: MutationResolvers['deleteItem'] = ({ id }) => {
+export const deleteItem: MutationResolvers["deleteItem"] = ({ id }) => {
   return db.item.delete({
     where: { id },
-  })
-}
+  });
+};
 
 export const Item: ItemRelationResolvers = {
   Dino: (_obj, { root }) => {
-    return db.item.findUnique({ where: { id: root?.id } }).Dino()
+    return db.item.findUnique({ where: { id: root?.id } }).Dino();
   },
   DinoStat: (_obj, { root }) => {
-    return db.item.findUnique({ where: { id: root?.id } }).DinoStat()
+    return db.item.findUnique({ where: { id: root?.id } }).DinoStat();
   },
   ItemRec_ItemRec_crafted_item_idToItem: (_obj, { root }) => {
     return db.item
       .findUnique({ where: { id: root?.id } })
-      .ItemRec_ItemRec_crafted_item_idToItem()
+      .ItemRec_ItemRec_crafted_item_idToItem();
   },
   ItemRec_ItemRec_crafting_station_idToItem: (_obj, { root }) => {
     return db.item
       .findUnique({ where: { id: root?.id } })
-      .ItemRec_ItemRec_crafting_station_idToItem()
+      .ItemRec_ItemRec_crafting_station_idToItem();
   },
   ItemRecipe_ItemRecipe_crafted_item_idToItem: (_obj, { root }) => {
     return db.item
       .findUnique({ where: { id: root?.id } })
-      .ItemRecipe_ItemRecipe_crafted_item_idToItem()
+      .ItemRecipe_ItemRecipe_crafted_item_idToItem();
   },
   ItemRecipe_ItemRecipe_crafting_stationToItem: (_obj, { root }) => {
     return db.item
       .findUnique({ where: { id: root?.id } })
-      .ItemRecipe_ItemRecipe_crafting_stationToItem()
+      .ItemRecipe_ItemRecipe_crafting_stationToItem();
   },
   ItemRecipe_ItemRecipe_item_idToItem: (_obj, { root }) => {
     return db.item
       .findUnique({ where: { id: root?.id } })
-      .ItemRecipe_ItemRecipe_item_idToItem()
+      .ItemRecipe_ItemRecipe_item_idToItem();
   },
   ItemRecipeItem: (_obj, { root }) => {
-    return db.item.findUnique({ where: { id: root?.id } }).ItemRecipeItem()
+    return db.item.findUnique({ where: { id: root?.id } }).ItemRecipeItem();
   },
   LootcrateSetEntryItem: (_obj, { root }) => {
     return db.item
       .findUnique({ where: { id: root?.id } })
-      .LootcrateSetEntryItem()
+      .LootcrateSetEntryItem();
   },
-}
+};

@@ -23,6 +23,7 @@ import { useLazyQuery } from "@apollo/client";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 interface MaterialGridProps {
   items: any;
+  testitems: any;
   error?: RWGqlError;
 }
 
@@ -96,14 +97,35 @@ interface MaterialGridProps {
 //     }
 //   }
 // `;
+const QUERY = gql`
+  query FindItemRecipesByIds($item_recipe_id: [String!]!) {
+    itemRecipesByIds: itemRecipesByIds(item_recipe_id: $item_recipe_id) {
+      item_recipe_id
+      amount
+      item_id
+      Item {
+        id
+        name
+        image
+        category
+      }
+    }
+  }
+`;
 
 
-export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
+export const MaterialGrid = ({ error, items: arkitems, testitems }: MaterialGridProps) => {
   const items = useMemo(() => {
-    return arkitems
+
+    return Object.values(groupBy(testitems, "crafted_item_id")).map((g) => g[0])
       .filter((i) => ![""].includes(i.category) && !["Meat"].includes(i.type))
-      .map((v) => ({ ...v, amount: 1 * v.yields }));
-  }, []);
+      .map((v) => {
+        return { ...v, recipe_id: v.id, ...v.Item_ItemRec_crafted_item_idToItem, amount: 1 * (v.yields || 1) }
+      });
+    // return arkitems
+    //   .filter((i) => ![""].includes(i.category) && !["Meat"].includes(i.type))
+    //   .map((v) => ({ ...v, amount: 1 * v.yields }));
+  }, []); //recipe_id: v.item_recipe_id,
 
   const [viewBaseMaterials, setViewBaseMaterials] = useState(false);
   const [craftingStations, setCraftingStations] = useState([]);
@@ -114,6 +136,26 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
     [viewBaseMaterials]
   );
 
+  const [loadItem, { loading, variables }] = useLazyQuery(QUERY, {
+    onCompleted: (data) => {
+      console.log(data)
+      // if (Object.keys(variables).includes("amount")) {
+      //   data.itemRecipesByIds.forEach((item) => {
+      //     setItem({
+      //       type: "ADD_AMOUNT_BY_NUM",
+      //       item,
+      //       index: variables.amount[item.id],
+      //     });
+      //   });
+      // } else {
+      //   setItem({ type: "ADD", item: data.itemsByIds[0] });
+      // }
+    },
+    onError: (error) => {
+      console.log(error);
+      console.log(variables)
+    },
+  });
   // const [loadItem, { loading, variables }] = useLazyQuery(QUERY, {
   //   onCompleted: (data) => {
   //     if (Object.keys(variables).includes("amount")) {
@@ -133,13 +175,121 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
   //   },
   // });
 
+  // const reducer = (state, action) => {
+  //   switch (action.type) {
+  //     case "ADD_AMOUNT_BY_NUM": {
+  //       let itemIndex = state.findIndex((item) => item.id === action.item.id);
+  //       const { yields } = item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
+  //         return craftingStations.includes(parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id))
+  //       }) || { yields: 1 }
+  //       if (itemIndex !== -1) {
+  //         return state.map((item, i) =>
+  //           i === itemIndex
+  //             ? {
+  //               ...item,
+  //               amount:
+  //                 item.amount +
+  //                 (action.index || 1) *
+  //                 yields,
+  //             }
+  //             : item
+  //         );
+  //       }
+  //       return [
+  //         ...state,
+  //         {
+  //           ...action.item,
+  //           amount:
+  //             (action.index || 1) *
+  //             yields,
+  //         },
+  //       ];
+  //     }
+  //     case "CHANGE_AMOUNT": {
+  //       const itemIndex = action.item;
+  //       if (itemIndex !== -1) {
+  //         return state.map((item, i) =>
+  //           i === itemIndex ? { ...item, amount: action.index } : item
+  //         );
+  //       }
+  //       return [...state, { ...action.item, amount: action.index }];
+  //     }
+  //     case "ADD_AMOUNT": {
+  //       return state.map((item, i) => {
+  //         const { yields } = item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
+  //           return craftingStations.includes(parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id))
+  //         }) || { yields: 1 }
+  //         return i === action.index
+  //           ? {
+  //             ...item,
+  //             amount:
+  //               parseInt(item.amount) +
+  //               parseInt(yields),
+  //           }
+  //           : item
+  //       }
+  //       );
+  //     }
+  //     case "REMOVE_AMOUNT": {
+  //       return state.map((item, i) => {
+  //         const { yields } = item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
+  //           return craftingStations.includes(parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id))
+  //         }) || { yields: 1 }
+  //         return i === action.index
+  //           ? {
+  //             ...item,
+  //             amount:
+  //               item.amount -
+  //               yields,
+  //           }
+  //           : item
+  //       }
+  //       );
+  //     }
+  //     case "ADD": {
+  //       const itemIndex = state.findIndex(
+  //         (item) => parseInt(item.id) === parseInt(action.item.id)
+  //       );
+  //       const { yields } = item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
+  //         return craftingStations.includes(parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id))
+  //       }) || { yields: 1 }
+  //       if (itemIndex !== -1) {
+  //         return state.map((item, i) =>
+  //           i === itemIndex
+  //             ? {
+  //               ...item,
+  //               amount:
+  //                 parseInt(item.amount || 0) +
+  //                 yields,
+  //             }
+  //             : item
+  //         );
+  //       }
+  //       return [
+  //         ...state,
+  //         {
+  //           ...action.item,
+  //           amount:
+  //             yields,
+  //         },
+  //       ];
+  //     }
+  //     case "REMOVE": {
+  //       return state.filter((_, i) => i !== action.index);
+  //     }
+  //     case "RESET": {
+  //       return [];
+  //     }
+  //     default: {
+  //       return state;
+  //     }
+  //   }
+  // };
   const reducer = (state, action) => {
     switch (action.type) {
       case "ADD_AMOUNT_BY_NUM": {
         let itemIndex = state.findIndex((item) => item.id === action.item.id);
-        const { yields } = item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
-          return craftingStations.includes(parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id))
-        }) || { yields: 1 }
+        const yields = action.item.yields || 1;
         if (itemIndex !== -1) {
           return state.map((item, i) =>
             i === itemIndex
@@ -174,9 +324,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
       }
       case "ADD_AMOUNT": {
         return state.map((item, i) => {
-          const { yields } = item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
-            return craftingStations.includes(parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id))
-          }) || { yields: 1 }
+          const yields = item?.yields || 1;
           return i === action.index
             ? {
               ...item,
@@ -190,9 +338,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
       }
       case "REMOVE_AMOUNT": {
         return state.map((item, i) => {
-          const { yields } = item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
-            return craftingStations.includes(parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id))
-          }) || { yields: 1 }
+          const yields = item?.yields || 1;
           return i === action.index
             ? {
               ...item,
@@ -208,9 +354,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
         const itemIndex = state.findIndex(
           (item) => parseInt(item.id) === parseInt(action.item.id)
         );
-        const { yields } = item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
-          return craftingStations.includes(parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id))
-        }) || { yields: 1 }
+        const yields = action.item.yields || 1;
         if (itemIndex !== -1) {
           return state.map((item, i) =>
             i === itemIndex
@@ -248,8 +392,10 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
 
   const onAdd = ({ itemId }) => {
     if (!itemId) return;
-    // loadItem({ variables: { id: [parseInt(itemId)] } });
+    // let testitm = testitems.find((item) => parseInt(item.crafted_item_id) === parseInt(itemId));
     let itm = items.find((item) => parseInt(item.id) === parseInt(itemId));
+    loadItem({ variables: { recipe_item_id: [itm.recipe_id] } });
+
     setItem({ type: "ADD", item: itm });
   };
 
@@ -448,9 +594,6 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
             {Object.entries(
               groupBy(
                 items.filter((item) =>
-                  item?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
-                  item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length >
-                  0 &&
                   item.name.toLowerCase().includes(search.toLowerCase())
                 ),
                 "category"
@@ -462,9 +605,6 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                     Object.values(
                       groupBy(
                         items.filter((items) =>
-                          // items?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
-                          // items?.ItemRecipe_ItemRecipe_crafted_item_idToItem
-                          //   .length > 0 &&
                           items.name
                             .toLowerCase()
                             .includes(search.toLowerCase())
@@ -491,9 +631,6 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                     {Object.values(
                       groupBy(
                         items.filter((items) =>
-                          // items?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
-                          // items?.ItemRecipe_ItemRecipe_crafted_item_idToItem
-                          //   .length > 0 &&
                           items.name
                             .toLowerCase()
                             .includes(search.toLowerCase())
@@ -763,7 +900,7 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
             },
           ]}
         />
-
+        <pre className="text-white">{JSON.stringify(item, null, 2)}</pre>
         <Table
           rows={item}
           className="animate-fade-in my-4 whitespace-nowrap"
