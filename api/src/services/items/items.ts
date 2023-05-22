@@ -70,7 +70,11 @@ export const itemsByCategory: QueryResolvers["itemsByCategory"] = ({
     }),
   };
 };
-
+export const itemsByIds = ({ id }: { id: number[] }) => {
+  return db.item.findMany({
+    where: { id: { in: id } },
+  });
+};
 export const items: QueryResolvers["items"] = () => {
   return db.item.findMany();
 };
@@ -78,12 +82,6 @@ export const items: QueryResolvers["items"] = () => {
 export const item: QueryResolvers["item"] = ({ id }) => {
   return db.item.findUnique({
     where: { id },
-  });
-};
-
-export const itemsByIds = ({ id }: { id: number[] }) => {
-  return db.item.findMany({
-    where: { id: { in: id } },
   });
 };
 
@@ -95,7 +93,7 @@ export const createItem: MutationResolvers["createItem"] = ({ input }) => {
     data: input,
   });
 };
-// https://www.prisma.io/docs/concepts/components/prisma-client/relation-queries#connect-or-create-a-record
+
 export const updateItem: MutationResolvers["updateItem"] = ({ id, input }) => {
   return db.item.update({
     include: {
@@ -119,6 +117,16 @@ export const Item: ItemRelationResolvers = {
   DinoStat: (_obj, { root }) => {
     return db.item.findUnique({ where: { id: root?.id } }).DinoStat();
   },
+  ItemRec_ItemRec_crafted_item_idToItem: (_obj, { root }) => {
+    return db.item
+      .findUnique({ where: { id: root?.id } })
+      .ItemRec_ItemRec_crafted_item_idToItem();
+  },
+  ItemRec_ItemRec_crafting_station_idToItem: (_obj, { root }) => {
+    return db.item
+      .findUnique({ where: { id: root?.id } })
+      .ItemRec_ItemRec_crafting_station_idToItem();
+  },
   ItemRecipe_ItemRecipe_crafted_item_idToItem: (_obj, { root }) => {
     return db.item
       .findUnique({ where: { id: root?.id } })
@@ -133,6 +141,9 @@ export const Item: ItemRelationResolvers = {
     return db.item
       .findUnique({ where: { id: root?.id } })
       .ItemRecipe_ItemRecipe_item_idToItem();
+  },
+  ItemRecipeItem: (_obj, { root }) => {
+    return db.item.findUnique({ where: { id: root?.id } }).ItemRecipeItem();
   },
   LootcrateSetEntryItem: (_obj, { root }) => {
     return db.item

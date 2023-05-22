@@ -17,7 +17,6 @@ import { MaterialGrid } from "../MaterialGrid/MaterialGrid";
 //        yields
 //        stats
 //        color
-//        crafted_in
 //        type
 //      }
 //    }
@@ -35,65 +34,42 @@ export const QUERY = gql`
       type
       ItemRecipe_ItemRecipe_crafted_item_idToItem {
         yields
+        amount
+        Item_ItemRecipe_crafting_stationToItem {
+          id
+          name
+        }
+        Item_ItemRecipe_item_idToItem {
+          id
+        }
       }
     }
   }
 `;
 
-// amount
-// Item_ItemRecipe_crafting_stationToItem {
+// itemRecs {
 //   id
-//   name
-// }
-// Item_ItemRecipe_item_idToItem {
-//   id
-//   name
-//   image
-//   category
+//   created_at
+//   updated_at
+//   crafted_item_id
+//   crafting_station_id
 //   crafting_time
-//   ItemRecipe_ItemRecipe_crafted_item_idToItem {
+//   yields
+//   Item_ItemRec_crafted_item_idToItem {
+//     id
+//     name
+//     image
+//     crafting_time
+//     category
+//     type
+//   }
+//   ItemRecipeItem {
+//     id
 //     amount
-//     yields
-//     Item_ItemRecipe_crafting_stationToItem {
-//       id
-//       name
-//     }
-//     Item_ItemRecipe_item_idToItem {
+//     Item {
 //       id
 //       name
 //       image
-//       category
-//       crafting_time
-//       ItemRecipe_ItemRecipe_crafted_item_idToItem {
-//         amount
-//         yields
-//         Item_ItemRecipe_crafting_stationToItem {
-//           id
-//           name
-//         }
-//         Item_ItemRecipe_item_idToItem {
-//           id
-//           name
-//           image
-//           category
-//           crafting_time
-//           ItemRecipe_ItemRecipe_crafted_item_idToItem {
-//             amount
-//             yields
-//             Item_ItemRecipe_crafting_stationToItem {
-//               id
-//               name
-//             }
-//             Item_ItemRecipe_item_idToItem {
-//               id
-//               name
-//               image
-//               category
-//               crafting_time
-//             }
-//           }
-//         }
-//       }
 //     }
 //   }
 // }

@@ -8,150 +8,207 @@ import {
   RWGqlError,
   SearchField,
 } from "@redwoodjs/forms";
-import { useCallback, useMemo, useReducer, useState } from "react";
-import { useForm } from "react-hook-form";
+import {
+  useCallback,
+  useMemo,
+  useReducer,
+  useState,
+  useTransition,
+} from "react";
+
 import {
   formatNumberWithThousandSeparator,
   getBaseMaterials,
+  getBaseMaterialsNew,
   groupBy,
-  groupByObject,
   timeFormatL,
 } from "src/lib/formatters";
 import debounce from "lodash.debounce";
 import Table from "src/components/Util/Table/Table";
 import { useLazyQuery } from "@apollo/client";
+import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 interface MaterialGridProps {
   items: any;
+  // testitems: any;
   error?: RWGqlError;
 }
 
-export const QUERY = gql`
-  query FindItemsByIds($id: [BigInt!]!) {
-    itemsByIds: itemsByIds(id: $id) {
-      id
-      name
-      image
-      crafting_time
-      category
-      ItemRecipe_ItemRecipe_crafted_item_idToItem {
-        amount
-        yields
-        Item_ItemRecipe_crafting_stationToItem {
-          id
-          name
-          image
-        }
+// const QUERY = gql`
+//   query FindItemsByIds($id: [BigInt!]!) {
+//     itemsByIds: itemsByIds(id: $id) {
+//       id
+//       name
+//       image
+//       crafting_time
+//       ItemRecipe_ItemRecipe_crafted_item_idToItem {
+//         amount
+//         yields
+//         Item_ItemRecipe_crafting_stationToItem {
+//           id
+//           name
+//           image
+//         }
+//         Item_ItemRecipe_item_idToItem {
+//           id
+//           name
+//           image
+//           crafting_time
+//           ItemRecipe_ItemRecipe_crafted_item_idToItem {
+//             amount
+//             yields
+//             Item_ItemRecipe_crafting_stationToItem {
+//               id
+//               name
+//               image
+//             }
+//             Item_ItemRecipe_item_idToItem {
+//               id
+//               name
+//               image
 
-        Item_ItemRecipe_item_idToItem {
-          id
-          name
-          image
-          category
-          crafting_time
-          ItemRecipe_ItemRecipe_crafted_item_idToItem {
-            amount
-            yields
-            Item_ItemRecipe_crafting_stationToItem {
-              id
-              name
-              image
-            }
-            Item_ItemRecipe_item_idToItem {
-              id
-              name
-              image
-              category
-              crafting_time
-              ItemRecipe_ItemRecipe_crafted_item_idToItem {
-                amount
-                yields
-                Item_ItemRecipe_crafting_stationToItem {
-                  id
-                  name
-                  image
-                }
-                Item_ItemRecipe_item_idToItem {
-                  id
-                  name
-                  image
-                  category
-                  crafting_time
-                  ItemRecipe_ItemRecipe_crafted_item_idToItem {
-                    amount
-                    yields
-                    Item_ItemRecipe_crafting_stationToItem {
-                      id
-                      name
-                    }
-                    Item_ItemRecipe_item_idToItem {
-                      id
-                      name
-                      image
-                      category
-                      crafting_time
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+//               crafting_time
+//               ItemRecipe_ItemRecipe_crafted_item_idToItem {
+//                 amount
+//                 yields
+//                 Item_ItemRecipe_crafting_stationToItem {
+//                   id
+//                   name
+//                   image
+//                 }
+//                 Item_ItemRecipe_item_idToItem {
+//                   id
+//                   name
+//                   image
+//                   crafting_time
+//                   ItemRecipe_ItemRecipe_crafted_item_idToItem {
+//                     amount
+//                     yields
+//                     Item_ItemRecipe_item_idToItem {
+//                       id
+//                       name
+//                       image
+//                       crafting_time
+//                     }
+//                     Item_ItemRecipe_crafting_stationToItem {
+//                       id
+//                       name
+//                     }
+//                   }
+//                 }
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// `;
+const QUERY = gql`
+  query FindItemRecipesByIds($item_recipe_id: [String!]!) {
+    itemRecipesByIds: itemRecipesByIds(item_recipe_id: $item_recipe_id) {
+      item_recipe_id
+      amount
+      item_id
+      Item {
+        id
+        name
+        image
+        category
       }
     }
   }
 `;
-export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
-  const items = useMemo(() => {
-    return arkitems.map((v) => ({ ...v, amount: 1 * v.yields }));
-  }, []);
-  const formMethods = useForm();
 
-  const [loadItem, { loading, variables }] = useLazyQuery(QUERY, {
-    onCompleted: (data) => {
-      if (Object.keys(variables).includes("amount")) {
-        data.itemsByIds.forEach((item) => {
-          setItem({
-            type: "ADD_AMOUNT_BY_NUM",
-            item,
-            index: variables.amount[item.id],
-          });
-        });
-      } else {
-        setItem({ type: "ADD", item: data.itemsByIds[0] });
-      }
+export const MaterialGrid = ({
+  error,
+  items: arkitems,
+}: // testitems,
+MaterialGridProps) => {
+  const [craftingStations, setCraftingStations] = useState([]);
+  const items = useMemo(() => {
+    return arkitems
+      .filter((i) => ![""].includes(i.category) && !["Meat"].includes(i.type))
+      .map((v) => ({ ...v, amount: 1 * v.yields }));
+    // console.log(groupBy(testitems, "crafted_item_id"));
+    // return Object.values(groupBy(testitems, "crafted_item_id"))
+    //   .map((g) => g[0])
+    //   .filter((i) => ![""].includes(i.category) && !["Meat"].includes(i.type))
+    //   .map((v) => {
+    //     return {
+    //       ...v,
+    //       recipe_id: v.id,
+    //       ...v.Item_ItemRec_crafted_item_idToItem,
+    //       amount: 1 * (v.yields || 1),
+    //     };
+    //   });
+  }, []);
+
+  // const itemSelect = useMemo(() => {
+  //   return Object.values(groupBy(testitems, "crafted_item_id"))
+  //     .map((g) => g[0])
+  //     .filter((i) => ![""].includes(i.category) && !["Meat"].includes(i.type))
+  //     .map((v) => {
+  //       return {
+  //         ...v,
+  //         recipe_id: v.id,
+  //         ...v.Item_ItemRec_crafted_item_idToItem,
+  //         amount: 1 * (v.yields || 1),
+  //       };
+  //     });
+  // }, []);
+
+  const [viewBaseMaterials, setViewBaseMaterials] = useState(false);
+  const toggleBaseMaterials = useCallback(
+    (e) => {
+      setViewBaseMaterials(e.currentTarget.checked);
     },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
+    [viewBaseMaterials]
+  );
+
+  // const [loadItem, { loading, variables }] = useLazyQuery(QUERY, {
+  //   onCompleted: (data) => {
+  //     if (Object.keys(variables).includes("amount")) {
+  //       data.itemsByIds.forEach((item) => {
+  //         setItem({
+  //           type: "ADD_AMOUNT_BY_NUM",
+  //           item,
+  //           index: variables.amount[item.id],
+  //         });
+  //       });
+  //     } else {
+  //       setItem({ type: "ADD", item: data.itemsByIds[0] });
+  //     }
+  //   },
+  //   onError: (error) => {
+  //     console.log(error);
+  //   },
+  // });
 
   const reducer = (state, action) => {
     switch (action.type) {
       case "ADD_AMOUNT_BY_NUM": {
         let itemIndex = state.findIndex((item) => item.id === action.item.id);
+        const { yields } =
+          item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
+            return craftingStations.includes(
+              parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id)
+            );
+          }) || { yields: 1 };
         if (itemIndex !== -1) {
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                ...item,
-                amount:
-                  item.amount +
-                  (action.index || 1) *
-                  (item?.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-                    .yields || 1),
-              }
-              :
-              item
+                  ...item,
+                  amount: item.amount + (action.index || 1) * yields,
+                }
+              : item
           );
         }
         return [
           ...state,
           {
             ...action.item,
-            amount:
-              (action.index || 1) *
-              (action.item?.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-                .yields || 1),
+            amount: (action.index || 1) * yields,
           },
         ];
       }
@@ -165,63 +222,62 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
         return [...state, { ...action.item, amount: action.index }];
       }
       case "ADD_AMOUNT": {
-        return state.map((item, i) =>
-          i === action.index
+        return state.map((item, i) => {
+          const { yields } =
+            item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
+              return craftingStations.includes(
+                parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id)
+              );
+            }) || { yields: 1 };
+          return i === action.index
             ? {
-              ...item,
-              amount:
-                item.amount +
-                1 *
-                (item?.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-                  .yields || 1),
-            }
-            :
-            item
-        );
+                ...item,
+                amount: parseInt(item.amount) + parseInt(yields),
+              }
+            : item;
+        });
       }
       case "REMOVE_AMOUNT": {
-        return state.map((item, i) =>
-          i === action.index
+        return state.map((item, i) => {
+          const { yields } =
+            item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
+              return craftingStations.includes(
+                parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id)
+              );
+            }) || { yields: 1 };
+          return i === action.index
             ? {
-              ...item,
-              amount:
-                item.amount -
-                1 *
-                (item?.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-                  .yields || 1),
-            }
-            :
-            item
-        );
+                ...item,
+                amount: item.amount - yields,
+              }
+            : item;
+        });
       }
       case "ADD": {
         const itemIndex = state.findIndex(
           (item) => parseInt(item.id) === parseInt(action.item.id)
         );
-
+        const { yields } =
+          item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
+            return craftingStations.includes(
+              parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id)
+            );
+          }) || { yields: 1 };
         if (itemIndex !== -1) {
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                ...item,
-                amount:
-                  (item.amount || 0) +
-                  1 *
-                  (item?.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-                    .yields || 1),
-              }
-              :
-              item
+                  ...item,
+                  amount: parseInt(item.amount || 0) + yields,
+                }
+              : item
           );
         }
         return [
           ...state,
           {
             ...action.item,
-            amount:
-              1 *
-              (item?.ItemRecipe_ItemRecipe_crafted_item_idToItem[0].yields ||
-                1),
+            amount: yields,
           },
         ];
       }
@@ -236,13 +292,104 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
       }
     }
   };
+  // const reducer = (state, action) => {
+  //   switch (action.type) {
+  //     case "ADD_AMOUNT_BY_NUM": {
+  //       let itemIndex = state.findIndex((item) => item.id === action.item.id);
+  //       const yields = action.item.yields || 1;
+  //       if (itemIndex !== -1) {
+  //         return state.map((item, i) =>
+  //           i === itemIndex
+  //             ? {
+  //                 ...item,
+  //                 amount: item.amount + (action.index || 1) * yields,
+  //               }
+  //             : item
+  //         );
+  //       }
+  //       return [
+  //         ...state,
+  //         {
+  //           ...action.item,
+  //           amount: (action.index || 1) * yields,
+  //         },
+  //       ];
+  //     }
+  //     case "CHANGE_AMOUNT": {
+  //       const itemIndex = action.item;
+  //       if (itemIndex !== -1) {
+  //         return state.map((item, i) =>
+  //           i === itemIndex ? { ...item, amount: action.index } : item
+  //         );
+  //       }
+  //       return [...state, { ...action.item, amount: action.index }];
+  //     }
+  //     case "ADD_AMOUNT": {
+  //       return state.map((item, i) => {
+  //         const yields = item?.yields || 1;
+  //         return i === action.index
+  //           ? {
+  //               ...item,
+  //               amount: parseInt(item.amount) + parseInt(yields),
+  //             }
+  //           : item;
+  //       });
+  //     }
+  //     case "REMOVE_AMOUNT": {
+  //       return state.map((item, i) => {
+  //         const yields = item?.yields || 1;
+  //         return i === action.index
+  //           ? {
+  //               ...item,
+  //               amount: item.amount - yields,
+  //             }
+  //           : item;
+  //       });
+  //     }
+  //     case "ADD": {
+  //       const itemIndex = state.findIndex(
+  //         (item) => parseInt(item.id) === parseInt(action.item.id)
+  //       );
+  //       const yields = action.item.yields || 1;
+  //       if (itemIndex !== -1) {
+  //         return state.map((item, i) =>
+  //           i === itemIndex
+  //             ? {
+  //                 ...item,
+  //                 amount: parseInt(item.amount || 0) + yields,
+  //               }
+  //             : item
+  //         );
+  //       }
+  //       return [
+  //         ...state,
+  //         {
+  //           ...action.item,
+  //           amount: yields,
+  //         },
+  //       ];
+  //     }
+  //     case "REMOVE": {
+  //       return state.filter((_, i) => i !== action.index);
+  //     }
+  //     case "RESET": {
+  //       return [];
+  //     }
+  //     default: {
+  //       return state;
+  //     }
+  //   }
+  // };
 
   let [item, setItem] = useReducer(reducer, []);
 
   const onAdd = ({ itemId }) => {
     if (!itemId) return;
-    loadItem({ variables: { id: [parseInt(itemId)] } });
-    formMethods.reset();
+    // let testitm = testitems.find((item) => parseInt(item.crafted_item_id) === parseInt(itemId));
+    let itm = items.find((item) => parseInt(item.id) === parseInt(itemId));
+    // loadItem({ variables: { item_recipe_id: [itm.recipe_id] } });
+
+    setItem({ type: "ADD", item: itm });
   };
 
   const onRemove = (index) => {
@@ -319,32 +466,28 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
       770: 1464,
     };
 
-    loadItem({
-      variables: { id: Object.keys(towerItems), amount: towerItems },
-    });
-    // for (const [key, value] of Object.entries(towerItems)) {
-    //   let itemfound = items.find(
-    //     (item) => parseInt(item.id.toString()) === parseInt(key)
-    //   );
-    //   if (itemfound) {
-    //     setItem({ type: "ADD_AMOUNT_BY_NUM", item: itemfound, index: value });
-    //   }
-    // }
+    // loadItem({
+    //   variables: { id: Object.keys(towerItems), amount: towerItems },
+    // });
+    for (const [key, value] of Object.entries(towerItems)) {
+      let itemfound = items.find(
+        (item) => parseInt(item.id.toString()) === parseInt(key)
+      );
+      if (itemfound) {
+        setItem({ type: "ADD_AMOUNT_BY_NUM", item: itemfound, index: value });
+      }
+    }
   }, []);
 
-  const mergeItemRecipe = useCallback(getBaseMaterials, [item]);
+  // const mergeItemRecipe = useCallback(getBaseMaterials, [item]);
+  const mergeItemRecipe = useCallback(getBaseMaterialsNew, [
+    item,
+    craftingStations,
+  ]);
 
   const clear = () => {
     setItem({ type: "RESET" });
   };
-
-  const [viewBaseMaterials, setViewBaseMaterials] = useState(false);
-  const toggleBaseMaterials = useCallback(
-    (e) => {
-      setViewBaseMaterials(e.currentTarget.checked);
-    },
-    [viewBaseMaterials]
-  );
 
   const [search, setSearch] = useState("");
 
@@ -398,7 +541,6 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
         <div className="relative max-h-[36rem] w-fit max-w-[14rem] overflow-y-auto rounded-lg border border-gray-200 bg-stone-200 px-3 py-4 text-gray-900 will-change-scroll dark:border-zinc-700 dark:bg-zinc-600 dark:text-white">
           <ul className="relative space-y-2 font-medium">
             <li>
-              {/*  className="sticky top-0 dark:bg-zinc-600" */}
               <Label
                 name="search"
                 className="sr-only mb-2 text-sm text-gray-900 dark:text-white"
@@ -443,12 +585,8 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
               ))}
             {Object.entries(
               groupBy(
-                items.filter(
-                  (items) =>
-                    items?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
-                    items?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length >
-                    0 &&
-                    items.name.toLowerCase().includes(search.toLowerCase())
+                items.filter((item) =>
+                  item.name.toLowerCase().includes(search.toLowerCase())
                 ),
                 "category"
               )
@@ -458,14 +596,10 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                   open={
                     Object.values(
                       groupBy(
-                        items.filter(
-                          (items) =>
-                            items?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
-                            items?.ItemRecipe_ItemRecipe_crafted_item_idToItem
-                              .length > 0 &&
-                            items.name
-                              .toLowerCase()
-                              .includes(search.toLowerCase())
+                        items.filter((items) =>
+                          items.name
+                            .toLowerCase()
+                            .includes(search.toLowerCase())
                         ),
                         "category"
                       )
@@ -474,7 +608,6 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                 >
                   <summary className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
                     <svg
-                      aria-hidden="true"
                       className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
                       fill="currentColor"
                       viewBox="0 0 20 20"
@@ -489,40 +622,36 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                   <ul className="py-2">
                     {Object.values(
                       groupBy(
-                        items.filter(
-                          (items) =>
-                            items?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
-                            items?.ItemRecipe_ItemRecipe_crafted_item_idToItem
-                              .length > 0 &&
-                            items.name
-                              .toLowerCase()
-                              .includes(search.toLowerCase())
+                        items.filter((items) =>
+                          items.name
+                            .toLowerCase()
+                            .includes(search.toLowerCase())
                         ),
                         "category"
                       )
                     ).length === 1 || categoryitems.every((item) => !item.type)
                       ? categoryitems.map((item) => (
-                        <li key={`${category}-null-${item.id}`}>
-                          <button
-                            type="button"
-                            className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                            onClick={() => onAdd({ itemId: item.id })}
-                          >
-                            <img
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
-                              alt={item.name}
-                              className="mr-2 h-5 w-5"
-                            />
-                            {item.name}
-                          </button>
-                        </li>
-                      ))
+                          <li key={`${category}-${item.type}-${item.id}`}>
+                            <button
+                              type="button"
+                              className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                              onClick={() => onAdd({ itemId: item.id })}
+                            >
+                              <img
+                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+                                alt={item.name}
+                                className="mr-2 h-5 w-5"
+                              />
+                              {item.name}
+                            </button>
+                          </li>
+                        ))
                       : Object.entries(groupBy(categoryitems, "type")).map(
-                        ([type, typeitems]: any) => (
-                          <li key={`${category}-${type}`}>
-                            <details className="">
-                              <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                                {/* <svg
+                          ([type, typeitems]: any) => (
+                            <li key={`${category}-${type}`}>
+                              <details className="">
+                                <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+                                  {/* <svg
                                     aria-hidden="true"
                                     className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                     fill="currentColor"
@@ -532,36 +661,36 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
                                     <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                                     <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                                   </svg> */}
-                                <span className="ml-2">{type}</span>
-                                <span className="text-pea-800 dark:bg-pea-900 dark:text-pea-300 bg-pea-100 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full p-3 text-sm">
-                                  {typeitems.length}
-                                </span>
-                              </summary>
+                                  <span className="ml-2">{type}</span>
+                                  <span className="text-pea-800 dark:bg-pea-900 dark:text-pea-300 bg-pea-100 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full p-3 text-sm">
+                                    {typeitems.length}
+                                  </span>
+                                </summary>
 
-                              <ul className="py-2">
-                                {typeitems.map((item) => (
-                                  <li key={`${category}-${type}-${item.id}`}>
-                                    <button
-                                      type="button"
-                                      className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                      onClick={() =>
-                                        onAdd({ itemId: item.id })
-                                      }
-                                    >
-                                      <img
-                                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
-                                        alt={item.name}
-                                        className="mr-2 h-5 w-5"
-                                      />
-                                      {item.name}
-                                    </button>
-                                  </li>
-                                ))}
-                              </ul>
-                            </details>
-                          </li>
-                        )
-                      )}
+                                <ul className="py-2">
+                                  {typeitems.map((item) => (
+                                    <li key={`${category}-${type}-${item.id}`}>
+                                      <button
+                                        type="button"
+                                        className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                                        onClick={() =>
+                                          onAdd({ itemId: item.id })
+                                        }
+                                      >
+                                        <img
+                                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+                                          alt={item.name}
+                                          className="mr-2 h-5 w-5"
+                                        />
+                                        {item.name}
+                                      </button>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </details>
+                            </li>
+                          )
+                        )}
                   </ul>
                 </details>
               </li>
@@ -570,231 +699,383 @@ export const MaterialGrid = ({ error, items: arkitems }: MaterialGridProps) => {
         </div>
       </div>
       <div className="w-full">
-        {loading && (
+        {/* <Table
+          vertical={true}
+          header={false}
+          rows={mergeItemRecipe(viewBaseMaterials, arkitems, craftingStations, ...item)}
+          className="animate-fade-in my-4"
+          caption={{
+            title: "Item",
+            content: (
+              <div className="flex items-center">
+                <CheckboxField
+                  name="flexCheckDefault"
+                  className="rw-input inline-block"
+                  onChange={toggleBaseMaterials}
+                />
+                <label className="inline-block" htmlFor="flexCheckDefault">
+                  Base materials
+                </label>
+              </div>
+            ),
+          }}
+          columns={[
+            {
+              field: "name",
+              label: "Name",
+              className: "text-center",
+            },
+            {
+              field: "amount",
+              label: "Amount",
+              className: "text-center",
+              numeric: true,
+              renderCell: ({ value, row }) => {
+                return (
+                  <div className="flex flex-col items-center justify-center">
+                    <img
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
+                      className="h-6 w-6"
+                    />
+                    <span className="text-sm">
+                      {formatNumberWithThousandSeparator(value)}
+                    </span>
+                    <span className="sr-only">{value}</span>
+                  </div>
+                );
+              },
+            },
+          ]}
+        /> */}
+        <Table
+          vertical={true}
+          header={false}
+          rows={getBaseMaterialsNew(
+            viewBaseMaterials,
+            arkitems,
+            craftingStations,
+            ...item
+          )}
+          className="animate-fade-in my-4"
+          caption={{
+            title: "Item",
+            content: (
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center">
+                  <CheckboxField
+                    name="togglebasematerials"
+                    className="rw-input inline-block"
+                    onChange={toggleBaseMaterials}
+                  />
+                  <label className="inline-block" htmlFor="togglebasematerials">
+                    Base materials
+                  </label>
+                </div>
+                <div>
+                  <CheckboxGroup
+                    defaultValue={craftingStations.map((d) => d.toString())}
+                    validation={{ single: false, valueAsNumber: true }}
+                    onChange={debounce((_, n) => {
+                      setCraftingStations(n.map((g) => parseInt(g)));
+                    }, 500)}
+                    options={[
+                      {
+                        value: 39,
+                        label: "Campfire",
+                        image:
+                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/campfire.png",
+                      },
+                      {
+                        value: 128,
+                        label: "Cooking Pot",
+                        image:
+                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/cooking-pot.png",
+                      },
+                      {
+                        value: 601,
+                        label: "Industrial Cooker",
+                        image:
+                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-cooker.png",
+                      },
+                      {
+                        value: 107,
+                        label: "Mortar And Pestle",
+                        image:
+                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/mortar-and-pestle.png",
+                      },
+                      {
+                        value: 607,
+                        label: "Chemistry Bench",
+                        image:
+                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/chemistry-bench.png",
+                      },
+                      {
+                        value: 125,
+                        label: "Refining Forge",
+                        image:
+                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/refining-forge.png",
+                      },
+                      {
+                        value: 600,
+                        label: "Industrial Forge",
+                        image:
+                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-forge.png",
+                      },
+                      {
+                        value: 606,
+                        label: "Beer Barrel",
+                        image:
+                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/beer-barrel.png",
+                      },
+                      {
+                        value: 127,
+                        label: "Compost Bin",
+                        image:
+                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/compost-bin.png",
+                      },
+                      {
+                        value: 185,
+                        label: "Fabricator",
+                        image:
+                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/fabricator.png",
+                      },
+                      {
+                        value: 360,
+                        label: "Industrial Grill",
+                        image:
+                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-grill.png",
+                      },
+                      {
+                        value: 618,
+                        label: "Industrial Grinder",
+                        image:
+                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-grinder.png",
+                      },
+                      {
+                        value: 126,
+                        label: "Smithy",
+                        image:
+                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/smithy.png",
+                      },
+                      {
+                        value: 652,
+                        label: "Tek Replicator",
+                        image:
+                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/tek-replicator.png",
+                      },
+                    ]}
+                  />
+                </div>
+              </div>
+            ),
+          }}
+          columns={[
+            {
+              field: "name",
+              label: "Name",
+              className: "text-center",
+            },
+            {
+              field: "amount",
+              label: "Amount",
+              className: "text-center",
+              numeric: true,
+              renderCell: ({ value, row }) => {
+                return (
+                  <div className="flex flex-col items-center justify-center">
+                    <img
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
+                      className="h-6 w-6"
+                    />
+                    <span className="text-sm">
+                      {formatNumberWithThousandSeparator(value)}
+                    </span>
+                    <span className="sr-only">{value}</span>
+                  </div>
+                );
+              },
+            },
+          ]}
+        />
+        {/* <pre className="text-white">{JSON.stringify(item, null, 2)}</pre> */}
+        <Table
+          rows={item}
+          className="animate-fade-in my-4 whitespace-nowrap"
+          summary={true}
+          hover={false}
+          columns={[
+            // {
+            //   field: "ItemRecipe_ItemRecipe_crafted_item_idToItem",
+            //   label: "Crafted In",
+            //   renderCell: ({ row, rowIndex, value }) => {
+            //     return (
+            //       <>
+            //         {Object.entries(
+            //           groupByObject(
+            //             value
+            //               .filter((f) => f != null)
+            //               .filter(
+            //                 (f) =>
+            //                   f.Item_ItemRecipe_crafting_stationToItem !=
+            //                   null
+            //               ),
+            //             "Item_ItemRecipe_crafting_stationToItem"
+            //           )
+            //         ).map(([crafting_station, values]) => {
+            //           return (
+            //             <img
+            //               className="inline-flex w-6"
+            //               src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${
+            //                 JSON.parse(crafting_station).image
+            //               }`}
+            //             />
+            //           );
+            //         })}
+            //       </>
+            //     );
+            //   },
+            // },
+            {
+              field: "name",
+              label: "Name",
+              className: "w-0",
+              renderCell: ({ row, rowIndex }) => {
+                return (
+                  <button
+                    type="button"
+                    onClick={() => onRemove(rowIndex)}
+                    className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-red-500"
+                    title={`Remove ${row.name}`}
+                  >
+                    <ImageField
+                      className="h-8 w-8"
+                      name="itemimage"
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
+                    />
+                  </button>
+                );
+              },
+            },
+            {
+              field: "amount",
+              label: "Amount",
+              numeric: true,
+              className: "w-0 text-center",
+              renderCell: ({ row, rowIndex }) => {
+                return (
+                  <div
+                    className="flex flex-row items-center"
+                    key={`${row.id}+${Math.random()}`}
+                  >
+                    <button
+                      type="button"
+                      className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
+                      onClick={() => onRemoveAmount(rowIndex)}
+                    >
+                      -
+                    </button>
+                    <input
+                      defaultValue={row.amount}
+                      className="rw-input w-16 p-3 text-center"
+                      onChange={(e) => {
+                        onChangeAmount(rowIndex, e.target.value);
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
+                      onClick={() => onAddAmount(rowIndex)}
+                    >
+                      +
+                    </button>
+                  </div>
+                );
+              },
+            },
+            // ...mergeItemRecipe(
+            //   false,
+            //   ...item
+            // ).map((i) => {
+            //   return {
+            //     field: i.id,
+            //     label: i.name,
+            //     numeric: true,
+            //     valueFormatter: ({ row }) => {
+            //       const itm = mergeItemRecipe(false, {
+            //         ...row,
+            //       }).filter((v) => v.id === i.id);
+            //       return itm && itm.length > 0 ? itm[0] : null;
+            //     },
+            //     renderCell: ({ value, rowIndex }) => {
+            //       return (value && isNaN(value)) ? (
+            //         <div
+            //           className="min-w-16 flex w-10 flex-col items-center justify-center"
+            //           id={`${value.id}-${rowIndex}`}
+            //           key={`${value.id}-${rowIndex}`}
+            //         >
+            //           <img
+            //             src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${value.image}`}
+            //             className="h-6 w-6"
+            //             title={value.name}
+            //             alt={value.name}
+            //           />
+            //           <span className="text-sm text-black dark:text-white">
+            //             {formatNumberWithThousandSeparator(value.amount)}
+            //           </span>
+            //         </div>
+            //       ) : (
+            //         <p></p>
+            //       );
+            //     }
+            //   }
+            // }),
+            {
+              field: "crafting_time",
+              label: "Time",
+              numeric: false,
+              className: "w-0 text-center",
+              valueFormatter: ({ value, row }) => {
+                return value * row.amount;
+              },
+              renderCell: ({ value }) => <p>{timeFormatL(value)}</p>,
+            },
+            {
+              field: "ItemRecipe_ItemRecipe_crafted_item_idToItem",
+              label: "Ingredients",
+              numeric: false,
+              className: "text-center flex flex-row justify-start items-center",
+              renderCell: ({ row, value }) => {
+                return mergeItemRecipe(false, arkitems, craftingStations, {
+                  ...row,
+                })
+                  .sort((a, b) => a.id - b.id)
+                  .map((itm, i) => (
+                    <div
+                      className="min-w-16 ml-2 flex w-10 flex-col items-center justify-center"
+                      id={`${itm.id}-${i * Math.random()}${i}`}
+                      key={`${itm.id}-${i * Math.random()}${i}`}
+                    >
+                      <img
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${itm.image}`}
+                        className="h-6 w-6"
+                        title={itm.name}
+                        alt={itm.name}
+                      />
+                      <span className="text-sm text-black dark:text-white">
+                        {formatNumberWithThousandSeparator(itm.amount)}
+                      </span>
+                    </div>
+                  ));
+              },
+            },
+          ]}
+        />
+        {/* {loading && (
           <div className="m-16 flex items-center justify-center text-white">
             <p className="mr-4">LOADING</p>
             <div className="dot-revolution"></div>
           </div>
-        )}
-        {item.length > 0 && ( // true
-          <>
-            <Table
-              vertical={true}
-              header={false}
-              rows={mergeItemRecipe(viewBaseMaterials, ...item)}
-              className="animate-fade-in my-4"
-              caption={{
-                title: "Item",
-                content: (
-                  <div className="flex items-center">
-                    <CheckboxField
-                      name="flexCheckDefault"
-                      className="rw-input inline-block"
-                      onChange={toggleBaseMaterials}
-                    />
-                    <label className="inline-block" htmlFor="flexCheckDefault">
-                      Base materials
-                    </label>
-                  </div>
-                ),
-              }}
-              columns={[
-                {
-                  field: "name",
-                  label: "Name",
-                  className: "text-center",
-                },
-                {
-                  field: "amount",
-                  label: "Amount",
-                  className: "text-center",
-                  numeric: true,
-                  renderCell: ({ value, row }) => {
-                    return (
-                      <div className="flex flex-col items-center justify-center">
-                        <img
-                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
-                          className="h-6 w-6"
-                        />
-                        <span className="text-sm">
-                          {formatNumberWithThousandSeparator(value)}
-                        </span>
-                        <span className="sr-only">{value}</span>
-                      </div>
-                    );
-                  },
-                },
-              ]}
-            />
-            <Table
-              rows={item}
-              className="animate-fade-in my-4 whitespace-nowrap"
-              summary={true}
-              hover={false}
-              columns={[
-                {
-                  field: "ItemRecipe_ItemRecipe_crafted_item_idToItem",
-                  label: "Crafted In",
-                  renderCell: ({ row, rowIndex, value }) => {
-                    console.log(row);
-                    return (
-                      <>
-                        {Object.entries(
-                          groupByObject(
-                            value
-                              .filter((f) => f != null)
-                              .filter(
-                                (f) =>
-                                  f.Item_ItemRecipe_crafting_stationToItem !=
-                                  null
-                              ),
-                            "Item_ItemRecipe_crafting_stationToItem"
-                          )
-                        ).map(([crafting_station, values]) => {
-                          return <p>{JSON.parse(crafting_station).name}</p>;
-                        })}
-                      </>
-                    );
-                  },
-                },
-                {
-                  field: "name",
-                  label: "Name",
-                  className: "w-0",
-                  renderCell: ({ row, rowIndex }) => {
-                    return (
-                      <button
-                        type="button"
-                        onClick={() => onRemove(rowIndex)}
-                        className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-red-500"
-                        title={`Remove ${row.name}`}
-                      >
-                        <ImageField
-                          className="h-8 w-8"
-                          name="itemimage"
-                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
-                        />
-                      </button>
-                    );
-                  },
-                },
-                {
-                  field: "amount",
-                  label: "Amount",
-                  numeric: true,
-                  className: "w-0 text-center",
-                  renderCell: ({ row, rowIndex }) => {
-                    return (
-                      <div
-                        className="flex flex-row items-center"
-                        key={`${row.id}+${Math.random()}`}
-                      >
-                        <button
-                          type="button"
-                          className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
-                          onClick={() => onRemoveAmount(rowIndex)}
-                        >
-                          -
-                        </button>
-                        <input
-                          defaultValue={row.amount}
-                          className="rw-input w-16 p-3 text-center"
-                          onChange={(e) => {
-                            onChangeAmount(rowIndex, e.target.value);
-                          }}
-                        />
-                        <button
-                          type="button"
-                          className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
-                          onClick={() => onAddAmount(rowIndex)}
-                        >
-                          +
-                        </button>
-                      </div>
-                    );
-                  },
-                },
-                // ...mergeItemRecipe(
-                //   false,
-                //   ...item
-                // ).map((i) => {
-                //   return {
-                //     field: i.id,
-                //     label: i.name,
-                //     numeric: true,
-                //     valueFormatter: ({ row }) => {
-                //       const itm = mergeItemRecipe(false, {
-                //         ...row,
-                //       }).filter((v) => v.id === i.id);
-                //       return itm && itm.length > 0 ? itm[0] : null;
-                //     },
-                //     renderCell: ({ value, rowIndex }) => {
-                //       return (value && isNaN(value)) ? (
-                //         <div
-                //           className="min-w-16 flex w-10 flex-col items-center justify-center"
-                //           id={`${value.id}-${rowIndex}`}
-                //           key={`${value.id}-${rowIndex}`}
-                //         >
-                //           <img
-                //             src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${value.image}`}
-                //             className="h-6 w-6"
-                //             title={value.name}
-                //             alt={value.name}
-                //           />
-                //           <span className="text-sm text-black dark:text-white">
-                //             {formatNumberWithThousandSeparator(value.amount)}
-                //           </span>
-                //         </div>
-                //       ) : (
-                //         <p></p>
-                //       );
-                //     }
-                //   }
-                // }),
-                {
-                  field: "crafting_time",
-                  label: "Time",
-                  numeric: false,
-                  className: "w-0 text-center",
-                  valueFormatter: ({ value, row }) => {
-                    return value * row.amount;
-                  },
-                  renderCell: ({ value }) => <p>{timeFormatL(value)}</p>,
-                },
-                {
-                  field: "ItemRecipe_ItemRecipe_crafted_item_idToItem",
-                  label: "Ingredients",
-                  numeric: false,
-                  className:
-                    "text-center flex flex-row justify-start items-center",
-                  renderCell: ({ row, value }) => {
-                    return mergeItemRecipe(false, {
-                      ...row,
-                    })
-                      .sort((a, b) => a.id - b.id)
-                      .map((itm, i) => (
-                        <div
-                          className="min-w-16 ml-2 flex w-10 flex-col items-center justify-center"
-                          id={`${itm.id}-${i * Math.random()}${i}`}
-                          key={`${itm.id}-${i * Math.random()}${i}`}
-                        >
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${itm.image}`}
-                            className="h-6 w-6"
-                            title={itm.name}
-                            alt={itm.name}
-                          />
-                          <span className="text-sm text-black dark:text-white">
-                            {formatNumberWithThousandSeparator(itm.amount)}
-                          </span>
-                        </div>
-                      ));
-                  },
-                },
-              ]}
-            />
-          </>
-        )}
+        )} */}
       </div>
     </Form>
   );

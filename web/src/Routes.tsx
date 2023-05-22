@@ -13,11 +13,11 @@ import ScaffoldLayout from "src/layouts/ScaffoldLayout";
 
 import MainLayout from "./layouts/MainLayout/MainLayout";
 
-import { useAuth } from './auth'
+import { useAuth } from "./auth";
 
 const Routes = () => {
   return (
-    <Router useAuth={useAuth} pageLoadingDelay={500}>
+    <Router useAuth={useAuth} pageLoadingDelay={0}>
       <Set wrap={MainLayout}>
         {/*whileLoadingPage*/}
 
@@ -71,6 +71,12 @@ const Routes = () => {
             name="timelineBasespotDinos"
           /> */}
         </Set>
+        {/* <Set wrap={ScaffoldLayout} title="ItemRecs" titleTo="itemRecs" buttonLabel="New ItemRec" buttonTo="newItemRec">
+          <Route path="/item-recs/new" page={ItemRecNewItemRecPage} name="newItemRec" />
+          <Route path="/item-recs/{id}/edit" page={ItemRecEditItemRecPage} name="editItemRec" />
+          <Route path="/item-recs/{id}" page={ItemRecItemRecPage} name="itemRec" />
+          <Route path="/item-recs" page={ItemRecItemRecsPage} name="itemRecs" />
+        </Set> */}
         <Set
           wrap={ScaffoldLayout}
           title="Lootcrates"

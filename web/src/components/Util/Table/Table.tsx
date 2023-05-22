@@ -33,7 +33,7 @@ interface ColumnData<V = any, F = V> {
    * @param {GridValueFormatterParams<V>} params Object containing parameters for the formatter.
    * @returns {F} The formatted value.
    */
-  valueFormatter?: (params: any) => F; // add functionality for value formatting
+  valueFormatter?: ({ value, row }: { value: any; row: any }) => F; // add functionality for value formatting
   /**
    * Allows to override the component rendered as cell for this column.
    * @param {GridCell} params Object containing parameters for the renderer.
@@ -304,7 +304,8 @@ const Table = ({
 
     const valueFormatter = other.valueFormatter
       ? other.valueFormatter({
-          value: isNaN(cellData) ? cellData?.amount : cellData,
+          // value: isNaN(cellData) ? cellData?.amount : cellData,
+          value: cellData,
           row: rowData,
           columnIndex,
         })

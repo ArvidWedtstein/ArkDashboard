@@ -7,7 +7,12 @@ import Items from "src/components/Item/Items";
 import Pagination from "src/components/Util/Pagination/Pagination";
 
 export const QUERY = gql`
-  query FindItems($page: Int, $search: String, $category: String, $type: String) {
+  query FindItems(
+    $page: Int
+    $search: String
+    $category: String
+    $type: String
+  ) {
     itemsPage(page: $page, search: $search, category: $category, type: $type) {
       items {
         id
@@ -33,9 +38,11 @@ export const QUERY = gql`
 export const beforeQuery = ({ page, search, category, type }) => {
   page = parseInt(page) ? parseInt(page, 10) : 1;
   // to prevent caching: { variables: { page, search, category, type }, fetchPolicy: 'no-cache', pollInterval: 2500 }
-  return { variables: { page, search, category, type }, fetchPolicy: 'cache-and-network' };
+  return {
+    variables: { page, search, category, type },
+    fetchPolicy: "cache-and-network",
+  };
 };
-
 
 export const Loading = () => (
   <Items loading={true} itemsPage={{ count: 0, items: [] }} />
@@ -68,7 +75,7 @@ export const Empty = () => {
   );
 };
 
-export const Failure = ({ error, variables }: CellFailureProps<FindItemsVariables>) => (
+export const Failure = ({ error }: CellFailureProps<FindItemsVariables>) => (
   <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
     <svg
       className="h-12 w-12 fill-current"
@@ -90,7 +97,6 @@ export const Failure = ({ error, variables }: CellFailureProps<FindItemsVariable
 );
 
 export const Success = ({ itemsPage }: CellSuccessProps<FindItems>) => {
-
   return itemsPage.count > 0 ? (
     <>
       <Items itemsPage={itemsPage} />

@@ -24,11 +24,10 @@ describe('items', () => {
 
   scenario('creates a item', async () => {
     const result = await createItem({
-      input: { name: 'String', crafted_in: 'String' },
+      input: { name: 'String' },
     })
 
     expect(result.name).toEqual('String')
-    expect(result.crafted_in).toEqual('String')
   })
 
   scenario('updates a item', async (scenario: StandardScenario) => {

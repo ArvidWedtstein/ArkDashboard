@@ -1,26 +1,25 @@
-import clsx from "clsx"
-import { useRef, useState } from "react"
-import useIntersectionObserver from "src/components/useIntersectionObserver"
+import clsx from "clsx";
+import { useRef, useState } from "react";
+import useIntersectionObserver from "src/components/useIntersectionObserver";
 
-interface ImageContainerProps extends React.ImgHTMLAttributes<HTMLImageElement> {
-  src: string
-  alt?: string
-  caption?: string
-  className?: string
+interface ImageContainerProps
+  extends React.ImgHTMLAttributes<HTMLImageElement> {
+  src: string;
+  alt?: string;
+  caption?: string;
+  className?: string;
   /**
    * @default 500
    */
-  width?: number
+  width?: number;
   /**
    * @default 500
    *
    */
-  height?: number
-  key?: any
+  height?: number;
+  key?: any;
 }
-const ImageContainer = ({
-  ...props
-}: ImageContainerProps) => {
+const ImageContainer = ({ ...props }: ImageContainerProps) => {
   const {
     src,
     alt,
@@ -28,21 +27,20 @@ const ImageContainer = ({
     className,
     width = 500,
     height = 500,
-    key
-  } = props
-  const ref = useRef(null)
-  const [isVisible, setIsVisible] = useState(false)
-
+    key,
+  } = props;
+  const ref = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useIntersectionObserver({
     target: ref,
     onIntersect: ([{ isIntersecting }], observerElement) => {
       if (isIntersecting) {
-        setIsVisible(true)
-        observerElement.unobserve(ref.current)
+        setIsVisible(true);
+        observerElement.unobserve(ref.current);
       }
-    }
-  })
+    },
+  });
 
   // const aspectRatio = (width / height) * 100
 
@@ -50,8 +48,11 @@ const ImageContainer = ({
     <div
       key={key}
       ref={ref}
-      className={clsx("relative overflow-hidden transition-opacity duration-300 ease-linear", className)}
-    // style={{ paddingBottom: `${aspectRatio}%` }}
+      className={clsx(
+        "relative overflow-hidden transition-opacity duration-300 ease-linear",
+        className
+      )}
+      // style={{ paddingBottom: `${aspectRatio}%` }}
     >
       {/* {!imageLoaded && (
         <img
@@ -68,13 +69,17 @@ const ImageContainer = ({
             src={src}
             alt={alt}
             {...props}
-          // style={{ opacity: imageLoaded ? 1 : 0 }}
+            // style={{ opacity: imageLoaded ? 1 : 0 }}
           />
-          {!!caption && <figcaption className="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">{caption}</figcaption>}
+          {!!caption && (
+            <figcaption className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
+              {caption}
+            </figcaption>
+          )}
         </figure>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ImageContainer
+export default ImageContainer;

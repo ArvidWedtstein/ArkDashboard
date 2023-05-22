@@ -142,8 +142,9 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-    }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+  }`;
 };
 /**
  *
@@ -172,11 +173,12 @@ export const combineBySummingKeys = (...objects: object[]) => {
  */
 export const getBaseMaterials = (
   firstRecipeOnly: boolean = false,
+  // crafting_stations?: any[],
   ...objects: Array<any>
 ) => {
   let materials = [];
 
-  const findBaseMaterials2 = (item, amount) => {
+  const findBaseMaterials = (item, amount) => {
     if (
       !item?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
       item.ItemRecipe_ItemRecipe_crafted_item_idToItem.length === 0
@@ -184,161 +186,242 @@ export const getBaseMaterials = (
       return;
     }
 
-    if (!firstRecipeOnly && item.type === "Resource") {
-      return;
-    }
     // TODO: Replace this shit
+    // Rewrite so that all items are queried once, and then get recipe from each of those items instead
+
     let c =
-      item.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0 &&
-        item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-          .Item_ItemRecipe_crafting_stationToItem != null
+      item?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
+      item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0
         ? item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-          .Item_ItemRecipe_crafting_stationToItem.id
+            ?.Item_ItemRecipe_crafting_stationToItem.id
         : null;
 
     // Group by crafting_station somehow
-    item.ItemRecipe_ItemRecipe_crafted_item_idToItem.filter((f) =>
-      f.Item_ItemRecipe_crafting_stationToItem
-        ? f.Item_ItemRecipe_crafting_stationToItem.id === c
-        : true
-    ).forEach(({ Item_ItemRecipe_item_idToItem, amount: recipeAmount, yields }) => {
-      let count = (recipeAmount * amount) / (yields ? yields : 1);
-      if (
-        !firstRecipeOnly ||
-        !Item_ItemRecipe_item_idToItem?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
-        !Item_ItemRecipe_item_idToItem
-          ?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length
-      ) {
-        let material = materials.find(
-          (m) => m.id === Item_ItemRecipe_item_idToItem.id
-        );
-        if (material) {
-          material.amount += count;
-          material.crafting_time +=
-            count * Item_ItemRecipe_item_idToItem.crafting_time || 0;
+    const craft =
+      item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.filter((f) =>
+        f.Item_ItemRecipe_crafting_stationToItem
+          ? f.Item_ItemRecipe_crafting_stationToItem?.id === c
+          : true
+      ) || null;
+
+    craft.forEach(
+      ({ Item_ItemRecipe_item_idToItem, amount: recipeAmount, yields }) => {
+        let count = (recipeAmount * amount) / (yields ? yields : 1);
+        if (
+          !firstRecipeOnly ||
+          !Item_ItemRecipe_item_idToItem?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
+          !Item_ItemRecipe_item_idToItem
+            ?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length
+        ) {
+          let material = materials.find(
+            (m) => m.id === Item_ItemRecipe_item_idToItem.id
+          );
+          if (material) {
+            material.amount += count;
+            material.crafting_time +=
+              count * Item_ItemRecipe_item_idToItem.crafting_time || 0;
+          } else {
+            materials.push({
+              ...Item_ItemRecipe_item_idToItem,
+              amount: count,
+              crafting_time:
+                count * Item_ItemRecipe_item_idToItem.crafting_time || 0,
+            });
+          }
         } else {
-          materials.push({
-            ...Item_ItemRecipe_item_idToItem,
-            amount: count,
-            crafting_time:
-              count * Item_ItemRecipe_item_idToItem.crafting_time || 0,
-          });
+          findBaseMaterials(
+            Item_ItemRecipe_item_idToItem,
+            count * (Item_ItemRecipe_item_idToItem.yields || 1)
+          );
         }
-      } else {
-        findBaseMaterials2(
-          Item_ItemRecipe_item_idToItem,
-          count * (Item_ItemRecipe_item_idToItem.yields || 1)
-        );
       }
-    });
+    );
   };
 
-  /**
-   * Recursive function to find the base materials required to produce an object.
-   *
-   * @param {number} itemId - The unique identifier for the object.
-   * @param {number} amount - The number of objects required.
-   */
-  // const findBaseMaterials = (itemId: number, amount: number) => {
-  //   let recipe = prices.items.find((r) => r.id === itemId);
-
-  //   if (!recipe?.recipe || recipe.recipe.length === 0) {
-  //     return;
-  //   }
-
-  //   if (!firstRecipeOnly && recipe.type === "Resource") {
-  //     return;
-  //   }
-
-  //   recipe.recipe.forEach(({ itemId, count: recipeCount }) => {
-  //     let recipeItem = prices.items.find((r) => r.id === itemId);
-  //     let count = (recipeCount * amount) / recipe.yields;
-  //     if (
-  //       !firstRecipeOnly ||
-  //       !recipeItem?.recipe ||
-  //       !recipeItem?.recipe.length
-  //     ) {
-  //       let material = materials.find((m) => m.id === itemId);
-  //       if (material) {
-  //         material.amount += count;
-  //       } else {
-  //         materials.push({ ...recipeItem, amount: count });
-  //       }
-  //     } else {
-  //       findBaseMaterials(recipeItem.id, count * recipeItem.yields);
-  //     }
-  //   });
-  // };
-  // objects.forEach(({ itemId, amount }) => {
-  //   findBaseMaterials(itemId, amount);
-  // });
   objects.forEach((item) => {
-    findBaseMaterials2(item, item.amount);
+    findBaseMaterials(item, item.amount);
   });
 
   return materials;
 };
 
-// function getResourcesForCrafting(itemId: number, amount: number) {
-//   const itemToCraft = prices.items.find((item) => item.id === itemId);
-//   const resources = new Map<number, number>();
+export const getBaseMaterialsNew = (
+  baseMaterials: boolean = false,
+  items: any[],
+  crafting_stations?: any[],
+  ...objects: Array<any>
+) => {
+  let materials = [];
 
-//   if (!itemToCraft) {
-//     throw new Error(`Item with itemId ${itemId} not found.`);
-//   }
+  // const findBaseMaterials = (item, amount) => {
+  //   console.log(item);
+  //   // If has no crafting recipe, return
+  //   if (!item?.ItemRecipeItem || item.ItemRecipeItem.length === 0) {
+  //     return;
+  //   }
 
-//   for (const recipeItem of itemToCraft.recipe) {
-//     const requiredAmount = recipeItem.count * amount;
-//     let availableAmount = itemToCraft.max_stack * requiredAmount;
+  //   // Get item by crafting station
+  //   // TODO: Get default crafting station if none is specified
+  //   // let craftitems = item.ItemRecipeItem.filter(
+  //   //   (i) => {
+  //   //     return i?.Item_ItemRecipe_crafting_stationToItem
+  //   //       ? crafting_stations.includes(
+  //   //           parseInt(i.Item_ItemRecipe_crafting_stationToItem.id)
+  //   //         )
+  //   //       : true;
+  //   //   }
+  //   // );
 
-//     if (recipeItem.itemId === itemToCraft.id) {
-//       availableAmount -= requiredAmount;
-//     }
+  //   // Go through each crafting station? For crafting time reduction osv..
+  //   // 128 - cooking pot
+  //   // 601 - ind cook
+  //   //
+  //   // 107 - mortar and pestle
+  //   // 607 - chem bench
+  //   //
+  //   // 125 - refining forge
+  //   // 600 - ind forge
+  //   //
+  //   // 39 - campfire
+  //   // 360 - ind grill
+  //   //
+  //   // 618 - ind grinder
+  //   // 126 - smithy
+  //   // 606 - beer barrel
+  //   // 652 - tek replicator
+  //   // 185 - fabricator
+  //   // 525 - Castoroides Saddle
+  //   // 572 - Thorny Dragon Saddle
+  //   // 214 - Argentavis Saddle
+  //   // 800 - Desmodus Saddle
+  //   // 531 - Equus Saddle
 
-//     if (availableAmount < requiredAmount) {
-//       const ingredientItem = prices.items.find(
-//         (item) => item.id === recipeItem.itemId
-//       );
+  //   // Loop through each recipe grouped on crafting station
+  //   item.ItemRecipeItem.forEach(({ Item, amount: recipeAmount, yields }) => {
+  //     // Multiply amount with recipe amount (and divide by yields?)
+  //     let count = (recipeAmount * amount) / (yields || 1);
+  //     let newRecipe = items.find((i) => i.id === Item.id);
 
-//       if (!ingredientItem) {
-//         throw new Error(`Item with itemId ${recipeItem.itemId} not found.`);
-//       }
+  //     const { yields: newitmyields } =
+  //       newRecipe?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
+  //         return crafting_stations.includes(
+  //           parseInt(f?.Item_ItemRecipe_crafting_stationToItem?.id)
+  //         );
+  //       }) || { yields: 1 };
+  //     console.log(yields, newitmyields, newRecipe);
+  //     // If no more recipes, add to materials or is base material
+  //     if (
+  //       !baseMaterials ||
+  //       !newRecipe?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
+  //       !newRecipe?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length
+  //     ) {
+  //       let material = materials.find((m) => m.id === newRecipe.id);
+  //       if (material) {
+  //         material.amount += count;
+  //         material.crafting_time += count * (newRecipe.crafting_time || 1);
+  //       } else {
+  //         materials.push({
+  //           ...newRecipe,
+  //           amount: Math.round(count),
+  //           crafting_time: count * (newRecipe.crafting_time || 1),
+  //         });
+  //       }
+  //     } else {
+  //       findBaseMaterials(newRecipe, count);
+  //     }
+  //   });
+  // };
 
-//       const remainingAmount = requiredAmount - availableAmount;
-//       const additionalResources = getResourcesForCrafting(
-//         recipeItem.itemId,
-//         Math.ceil(remainingAmount / ingredientItem.yields)
-//       );
+  const findBaseMaterials = (item, amount) => {
+    // If has no crafting recipe, return
+    if (
+      !item?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
+      item.ItemRecipe_ItemRecipe_crafted_item_idToItem.length === 0
+    ) {
+      return;
+    }
 
-//       for (const [itemId, amount] of additionalResources) {
-//         if (resources.has(itemId)) {
-//           resources.set(itemId, resources.get(itemId)! + amount);
-//         } else {
-//           resources.set(itemId, amount);
-//         }
-//       }
+    // Get item by crafting station
+    // TODO: Get default crafting station if none is specified
+    let craftitems = item.ItemRecipe_ItemRecipe_crafted_item_idToItem.filter(
+      (i) => {
+        return i?.Item_ItemRecipe_crafting_stationToItem
+          ? crafting_stations.includes(
+              parseInt(i.Item_ItemRecipe_crafting_stationToItem.id)
+            )
+          : true;
+      }
+    );
 
-//       if (resources.has(recipeItem.itemId)) {
-//         resources.set(
-//           recipeItem.itemId,
-//           resources.get(recipeItem.itemId)! + requiredAmount
-//         );
-//       } else {
-//         resources.set(recipeItem.itemId, requiredAmount);
-//       }
-//     } else {
-//       if (resources.has(recipeItem.itemId)) {
-//         resources.set(
-//           recipeItem.itemId,
-//           resources.get(recipeItem.itemId)! + requiredAmount
-//         );
-//       } else {
-//         resources.set(recipeItem.itemId, requiredAmount);
-//       }
-//     }
-//   }
-//   return Array.from(resources);
-// }
+    // Go through each crafting station? For crafting time reduction osv..
+    // 128 - cooking pot
+    // 601 - ind cook
+    //
+    // 107 - mortar and pestle
+    // 607 - chem bench
+    //
+    // 125 - refining forge
+    // 600 - ind forge
+    //
+    // 39 - campfire
+    // 360 - ind grill
+    //
+    // 618 - ind grinder
+    // 126 - smithy
+    // 606 - beer barrel
+    // 652 - tek replicator
+    // 185 - fabricator
+    // 525 - Castoroides Saddle
+    // 572 - Thorny Dragon Saddle
+    // 214 - Argentavis Saddle
+    // 800 - Desmodus Saddle
+    // 531 - Equus Saddle
+
+    // Loop through each recipe grouped on crafting station
+    craftitems.forEach(
+      ({ Item_ItemRecipe_item_idToItem, amount: recipeAmount, yields }) => {
+        // Multiply amount with recipe amount (and divide by yields?)
+        let count = (recipeAmount * amount) / (yields || 1);
+        let newRecipe = items.find(
+          (i) => i.id === Item_ItemRecipe_item_idToItem.id
+        );
+
+        const { yields: newitmyields } =
+          newRecipe?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
+            return crafting_stations.includes(
+              parseInt(f?.Item_ItemRecipe_crafting_stationToItem?.id)
+            );
+          }) || { yields: 1 };
+        // If no more recipes, add to materials or is base material
+        if (
+          !baseMaterials ||
+          !newRecipe?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
+          !newRecipe?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length
+        ) {
+          let material = materials.find((m) => m.id === newRecipe.id);
+          if (material) {
+            material.amount += count;
+            material.crafting_time += count * (newRecipe.crafting_time || 1);
+          } else {
+            materials.push({
+              ...newRecipe,
+              amount: Math.round(count),
+              crafting_time: count * (newRecipe.crafting_time || 1),
+            });
+          }
+        } else {
+          findBaseMaterials(newRecipe, count);
+        }
+      }
+    );
+  };
+
+  objects.forEach((item) => {
+    findBaseMaterials(item, item.amount);
+  });
+
+  return materials;
+};
 
 interface Coordinate {
   lat: number;

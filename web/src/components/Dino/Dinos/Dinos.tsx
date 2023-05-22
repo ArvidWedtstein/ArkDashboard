@@ -18,12 +18,10 @@ import {
   Submit,
   TextField,
 } from "@redwoodjs/forms";
-import { useEffect, useMemo, useState } from "react";
 
 import { QUERY } from "src/components/Dino/DinosCell";
 import type { DeleteDinoMutationVariables, FindDinos } from "types/graphql";
 import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
-import { replaceParams } from "@redwoodjs/router/dist/util";
 
 const DELETE_DINO_MUTATION = gql`
   mutation DeleteDinoMutation($id: String!) {
@@ -35,25 +33,25 @@ const DELETE_DINO_MUTATION = gql`
 
 // const DinosList = ({ dinos }: FindDinos) => {
 const DinosList = ({ dinosPage }: FindDinos) => {
-  const [deleteDino] = useMutation(DELETE_DINO_MUTATION, {
-    onCompleted: () => {
-      toast.success("Dino deleted");
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    // This refetches the query on the list page. Read more about other ways to
-    // update the cache over here:
-    // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
-    refetchQueries: [{ query: QUERY }],
-    awaitRefetchQueries: true,
-  });
+  // const [deleteDino] = useMutation(DELETE_DINO_MUTATION, {
+  //   onCompleted: () => {
+  //     toast.success("Dino deleted");
+  //   },
+  //   onError: (error) => {
+  //     toast.error(error.message);
+  //   },
+  //   // This refetches the query on the list page. Read more about other ways to
+  //   // update the cache over here:
+  //   // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
+  //   refetchQueries: [{ query: QUERY }],
+  //   awaitRefetchQueries: true,
+  // });
 
-  const onDeleteClick = (id: DeleteDinoMutationVariables["id"]) => {
-    if (confirm("Are you sure you want to delete dino " + id + "?")) {
-      deleteDino({ variables: { id } });
-    }
-  };
+  // const onDeleteClick = (id: DeleteDinoMutationVariables["id"]) => {
+  //   if (confirm("Are you sure you want to delete dino " + id + "?")) {
+  //     deleteDino({ variables: { id } });
+  //   }
+  // };
 
   let { search, category } = useParams();
   const onSubmit = (e) => {
