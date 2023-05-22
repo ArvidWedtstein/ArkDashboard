@@ -7,9 +7,9 @@
 // 'src/pages/HomePage/HomePage.js'         -> HomePage
 // 'src/pages/Admin/BooksPage/BooksPage.js' -> AdminBooksPage
 
-import { Set, Router, Route } from '@redwoodjs/router'
+import { Set, Router, Route } from "@redwoodjs/router";
 
-import ScaffoldLayout from 'src/layouts/ScaffoldLayout';
+import ScaffoldLayout from "src/layouts/ScaffoldLayout";
 
 import MainLayout from "./layouts/MainLayout/MainLayout";
 
@@ -71,12 +71,12 @@ const Routes = () => {
             name="timelineBasespotDinos"
           /> */}
         </Set>
-        <Set wrap={ScaffoldLayout} title="ItemRecs" titleTo="itemRecs" buttonLabel="New ItemRec" buttonTo="newItemRec">
+        {/* <Set wrap={ScaffoldLayout} title="ItemRecs" titleTo="itemRecs" buttonLabel="New ItemRec" buttonTo="newItemRec">
           <Route path="/item-recs/new" page={ItemRecNewItemRecPage} name="newItemRec" />
           <Route path="/item-recs/{id}/edit" page={ItemRecEditItemRecPage} name="editItemRec" />
           <Route path="/item-recs/{id}" page={ItemRecItemRecPage} name="itemRec" />
           <Route path="/item-recs" page={ItemRecItemRecsPage} name="itemRecs" />
-        </Set>
+        </Set> */}
         <Set
           wrap={ScaffoldLayout}
           title="Lootcrates"
