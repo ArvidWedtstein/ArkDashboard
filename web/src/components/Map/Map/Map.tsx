@@ -6,9 +6,7 @@ import ArkCard from "src/components/ArkCard/ArkCard";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import MapComp from "src/components/Util/Map/Map";
 
-import {
-  capitalizeSentence,
-} from "src/lib/formatters";
+import { capitalizeSentence } from "src/lib/formatters";
 
 import type { DeleteMapMutationVariables, FindMapById } from "types/graphql";
 
@@ -264,7 +262,7 @@ const Map = ({ map }: Props) => {
 
       let dataToAdd = [];
 
-      if (category === 'notes') {
+      if (category === "notes") {
         dataToAdd = map.MapNote;
       } else {
         for (const coordinate of map.MapCoordinate) {
@@ -278,7 +276,9 @@ const Map = ({ map }: Props) => {
         ...item,
         category,
         color,
-        name: `${category.replaceAll("_", " ")}\n${item.latitude}, ${item.longitude}`,
+        name: `${category.replaceAll("_", " ")}\n${item.latitude}, ${
+          item.longitude
+        }`,
       }));
 
       setCategories((prevState) => ({
@@ -299,7 +299,6 @@ const Map = ({ map }: Props) => {
     },
     [categories, mapData, setCategories, setMapData]
   );
-
 
   let noterun = []; //[57, 520, 242, 241, 201, 79, 238, 143, 301, 283, 284, 60]; The Island noterun
   return (
@@ -377,10 +376,13 @@ const Map = ({ map }: Props) => {
 
                       // TODO: set to original color after leave
                     }}
-                    className={"w-full border-l-2 px-4 py-2 text-left capitalize"}
+                    className={
+                      "w-full border-l-2 px-4 py-2 text-left capitalize"
+                    }
                     style={{ borderLeftColor: d.color }}
                   >
-                    {d?.name ? d.name.split("\n")[0] : ''} - {d.latitude}, {d.longitude}
+                    {d?.name ? d.name.split("\n")[0] : ""} - {d.latitude},{" "}
+                    {d.longitude}
                   </button>
                 </li>
               ))}
@@ -404,7 +406,7 @@ const Map = ({ map }: Props) => {
               title={lootcrate.name}
               ring={
                 lootcrate?.level_requirement &&
-                  lootcrate.level_requirement["min"] > 0 ? (
+                lootcrate.level_requirement["min"] > 0 ? (
                   <button
                     title={`You need to be lvl ${lootcrate.level_requirement["min"]} to open this crate`}
                     className="relative flex items-center justify-center space-x-2 rounded-full bg-gray-600 px-4 py-2.5 text-gray-100 shadow-sm ring-1 ring-green-500"

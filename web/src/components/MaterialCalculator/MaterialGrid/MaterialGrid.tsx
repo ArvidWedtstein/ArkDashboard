@@ -124,7 +124,7 @@ export const MaterialGrid = ({
   items: arkitems,
 }: // testitems,
 MaterialGridProps) => {
-  const [craftingStations, setCraftingStations] = useState([]);
+  const [craftingStations, setCraftingStations] = useState([39, 126, 185, 607]);
   const items = useMemo(() => {
     return arkitems
       .filter((i) => ![""].includes(i.category) && !["Meat"].includes(i.type))
@@ -566,7 +566,7 @@ MaterialGridProps) => {
                   </svg>
                 </div>
                 <SearchField
-                  className="rw-input w-full pl-10 focus:bg-zinc-700 dark:bg-zinc-700"
+                  className="rw-input w-full pl-10 dark:bg-zinc-700 dark:focus:bg-zinc-700"
                   name="search"
                   defaultValue={search}
                   placeholder="Search..."

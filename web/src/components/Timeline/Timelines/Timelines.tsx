@@ -41,32 +41,34 @@ const TimelinesList = ({ timelines }: FindTimelines) => {
   //   }
   // };
 
-
   return (
     <div className="rw-segment rw-table-wrapper-responsive">
       <div className="mt-10 w-full">
-        <div className="flex bg-transparent gap-2 my-3">
+        <div className="my-3 flex gap-2 bg-transparent">
           {timelines.map(({ id, created_at, Profile }) => (
             <div
               key={id}
-              className="border-pea-500 relative mr-[1px] flex h-64 w-fit min-w-fit max-w-[100px] border p-6"
+              className="border-pea-500 relative mr-[1px] flex h-64 w-fit min-w-fit max-w-[100px] rounded-md border p-6"
             >
-              <div className="flex-shrink-0 w-[160px] overflow-hidden relative">
+              <div className="relative w-[160px] flex-shrink-0 overflow-hidden">
                 <img
-                  className="-bottom-8 left-8 h-full flex-shrink-0 rounded object-cover shadow transition-all ease-in-out hover:scale-105 hover:transform"
+                  className="-bottom-8 left-8 h-full flex-shrink-0 rounded-md object-cover shadow transition-all ease-in-out hover:scale-105 hover:transform"
                   src="https://pbs.twimg.com/media/E0AsojmVgAIKg-_?format=jpg&name=4096x4096"
                   alt=""
                 />
               </div>
-              <div className="book-content overflow-hidden px-5 text-left text-white">
-                <div className="overflow-hidden text-ellipsis whitespace-nowrap font-semibold text-white">
-                  <Link to={routes.profile({ id: Profile.id.toString() })}>{Profile.username}</Link>'s Timeline
+              <div className="book-content overflow-hidden px-5 text-left text-gray-900 dark:text-white">
+                <div className="overflow-hidden text-ellipsis whitespace-nowrap font-semibold">
+                  <Link to={routes.profile({ id: Profile.id.toString() })}>
+                    {Profile.username}
+                  </Link>
+                  's Timeline
                 </div>
                 <div className="mt-1 overflow-hidden text-ellipsis whitespace-nowrap text-xs">
                   by {Profile.full_name}
                 </div>
                 <div className="rate">
-                  <span className="mt-2 whitespace-nowrap align-sub text-xs text-white">
+                  <span className="mt-2 whitespace-nowrap align-sub text-xs">
                     Created {timeTag(created_at)}
                     {/* {pluralize(TimelineBasespot.length, "basespot")} */}
                   </span>
@@ -93,7 +95,7 @@ const TimelinesList = ({ timelines }: FindTimelines) => {
           ))}
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 

@@ -48,15 +48,16 @@ interface TimelineBasespotFormProps {
   loading: boolean;
 }
 
-
 const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
   let { client: supabase } = useAuth();
   let [basespots, setBasespots] = useState([]);
   let [selectedBasespot, setSelectedBasespot] = useState(null);
-  const formMethods = useForm<FormTimelineBasespot & { "TimelineBasespotRaid.upsert": any[] }>({
+  const formMethods = useForm<
+    FormTimelineBasespot & { "TimelineBasespotRaid.upsert": any[] }
+  >({
     defaultValues: {
       ...props.timelineBasespot,
-      "TimelineBasespotRaid.upsert": []
+      "TimelineBasespotRaid.upsert": [],
     },
   });
   const { setValue, control, watch, register } = formMethods;
@@ -71,11 +72,16 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
   });
 
   const onSubmit = (data: FormTimelineBasespot) => {
-
-    data.TimelineBasespotRaid["upsert"] = data.TimelineBasespotRaid["upsert"].map((u, i) => ({
+    data.TimelineBasespotRaid["upsert"] = data.TimelineBasespotRaid[
+      "upsert"
+    ].map((u, i) => ({
       create: { ...u },
       update: { ...u },
-      where: { id: props.timelineBasespot?.TimelineBasespotRaid[i]?.id || "00000000000000000000000000000000" }
+      where: {
+        id:
+          props.timelineBasespot?.TimelineBasespotRaid[i]?.id ||
+          "00000000000000000000000000000000",
+      },
     }));
 
     if (selectedBasespot) {
@@ -102,10 +108,10 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
   useEffect(() => {
     getBasespots();
 
-    props?.timelineBasespot?.basespot_id
+    basespots.length > 0 && props?.timelineBasespot?.basespot_id
       ? setSelectedBasespot(
-        basespots.find((b) => b.id === props?.timelineBasespot?.basespot_id)
-      )
+          basespots.find((b) => b.id === props?.timelineBasespot?.basespot_id)
+        )
       : null;
   }, []);
 
@@ -114,7 +120,6 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
       formMethods.setValue("basespot_id", selectedBasespot.value as any);
     }
   }, [selectedBasespot, setSelectedBasespot]);
-
 
   const map: any = watch("map");
   return (
@@ -163,7 +168,9 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
               <DatetimeLocalField
                 name="start_date"
-                defaultValue={formatDatetime(props.timelineBasespot?.start_date)}
+                defaultValue={formatDatetime(
+                  props.timelineBasespot?.start_date
+                )}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
                 emptyAs={null}
@@ -238,12 +245,12 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         <Lookup
           defaultValue={props.timelineBasespot?.basespot_id}
-          options={
-            basespots.filter((b) => b.map === map).map((b) => ({
+          options={basespots
+            .filter((b) => b.map === map)
+            .map((b) => ({
               label: b.name,
               value: b.id,
-            }))
-          }
+            }))}
           onSelect={(e) => setSelectedBasespot(e)}
           name="basespot_id"
         />
@@ -252,12 +259,23 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         <MapPicker
           map={map || props.timelineBasespot?.map}
-          valueProp={selectedBasespot !== null ? { latitude: basespots.find((b) => b.id === selectedBasespot.value).latitude, longitude: basespots.find((b) => b.id === selectedBasespot.value).longitude, } : {
-            latitude: props.timelineBasespot?.latitude,
-            longitude: props.timelineBasespot?.latitude,
-          }}
+          valueProp={
+            selectedBasespot !== null
+              ? {
+                  latitude: basespots.find(
+                    (b) => b.id === selectedBasespot.value
+                  ).latitude,
+                  longitude: basespots.find(
+                    (b) => b.id === selectedBasespot.value
+                  ).longitude,
+                }
+              : {
+                  latitude: props.timelineBasespot?.latitude,
+                  longitude: props.timelineBasespot?.latitude,
+                }
+          }
           validation={{
-            disabled: selectedBasespot !== null
+            disabled: selectedBasespot !== null,
           }}
           onChanges={(e) => {
             formMethods.setValue("latitude", e.latitude);
@@ -380,7 +398,6 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         <FieldError name="latitude" className="rw-field-error" />
 
-
         <Label
           name="longitude"
           className="rw-label"
@@ -415,7 +432,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           validation={{
             required: false,
             setValueAs: (e) =>
-              e.length > 0 ? e.split(",").map((s) => s.trim()) : null,
+              !!!e && e.length > 0 ? e.split(",").map((s) => s.trim()) : null,
           }}
         />
         <p className="rw-helper-text">Player names, comma seperated</p>
@@ -443,7 +460,10 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                     </Label>
 
                     <TextField
-                      {...register(`TimelineBasespotRaid.upsert.${index}.tribe_name`, { required: true })}
+                      {...register(
+                        `TimelineBasespotRaid.upsert.${index}.tribe_name`,
+                        { required: true }
+                      )}
                       className="rw-input !rounded-l-lg !rounded-r-none"
                       defaultValue={raid.tribe_name}
                     />
@@ -458,7 +478,10 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                     </Label>
 
                     <TextField
-                      {...register(`TimelineBasespotRaid.upsert.${index}.raid_comment`, { required: false })}
+                      {...register(
+                        `TimelineBasespotRaid.upsert.${index}.raid_comment`,
+                        { required: false }
+                      )}
                       className="rw-input !rounded-r-none"
                       defaultValue={raid.raid_comment}
                     />
@@ -466,7 +489,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                   <div className="!ml-0 place-self-end">
                     <button
                       type="button"
-                      className="rw-button rw-button-red rounded-none !rounded-r-md !ml-0 !mt-0"
+                      className="rw-button rw-button-red !ml-0 !mt-0 rounded-none !rounded-r-md"
                       onClick={() => removeRaid(index)}
                     >
                       Remove Raid
@@ -484,7 +507,10 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                     </Label>
 
                     <DatetimeLocalField
-                      {...register(`TimelineBasespotRaid.upsert.${index}.raid_start`, { required: true, valueAsDate: true })}
+                      {...register(
+                        `TimelineBasespotRaid.upsert.${index}.raid_start`,
+                        { required: true, valueAsDate: true }
+                      )}
                       defaultValue={formatDatetime(raid.raid_start)}
                       errorClassName="rw-input rw-input-error"
                       emptyAs={null}
@@ -501,7 +527,10 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                     </Label>
 
                     <DatetimeLocalField
-                      {...register(`TimelineBasespotRaid.upsert.${index}.raid_end`, { required: true, valueAsDate: true })}
+                      {...register(
+                        `TimelineBasespotRaid.upsert.${index}.raid_end`,
+                        { required: true, valueAsDate: true }
+                      )}
                       defaultValue={formatDatetime(raid.raid_end)}
                       emptyAs={null}
                       errorClassName="rw-input rw-input-error"
@@ -515,9 +544,17 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
               <button
                 type="button"
                 className="rw-button rw-button-gray"
-                onClick={() => appendRaid({
-                  raid_start: new Date().toISOString(), raid_end: '', tribe_name: '', raid_comment: '', attacker_players: '', base_survived: false, defenders: ''
-                })}
+                onClick={() =>
+                  appendRaid({
+                    raid_start: new Date().toISOString(),
+                    raid_end: "",
+                    tribe_name: "",
+                    raid_comment: "",
+                    attacker_players: "",
+                    base_survived: false,
+                    defenders: "",
+                  })
+                }
               >
                 Add Raid
               </button>
@@ -577,7 +614,13 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
             <div>
               <div className="flex flex-wrap">
                 {props.timelineBasespot.TimelineBasespotDino.map((dino, i) => (
-                  <Link className="w-1/3 max-w-3xl p-2" key={`dino-${i}`} to={routes.editTimelineBasespotDino({ id: dino.id.toString() })}>
+                  <Link
+                    className="w-1/3 max-w-3xl p-2"
+                    key={`dino-${i}`}
+                    to={routes.editTimelineBasespotDino({
+                      id: dino.id.toString(),
+                    })}
+                  >
                     <div className="border border-[#97FBFF] bg-[#0D2836] p-4">
                       <div className="flex flex-row space-x-3">
                         <div className="h-28 w-28 overflow-hidden border border-[#97FBFF]">
@@ -608,7 +651,11 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                             className="font-semibold text-green-500"
                             title={dino.death_cause}
                           >
-                            {dino.birth_date != null && dino.death_date != null ? `${timeTag(dino.birth_date)} - ${timeTag(dino.death_date)}` : props.timelineBasespot.tribe_name}
+                            {dino.birth_date != null && dino.death_date != null
+                              ? `${timeTag(dino.birth_date)} - ${timeTag(
+                                  dino.death_date
+                                )}`
+                              : props.timelineBasespot.tribe_name}
                           </p>
                           <p className="font-semibold text-green-500">
                             Tamed ({dino.level_wild})
@@ -624,9 +671,10 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                           />
                           <span>
                             {nmbFormat(
-                              dino.wild_stamina * dino.Dino.base_stats["s"]["w"] +
-                              dino.stamina * dino.Dino.base_stats["s"]["t"] +
-                              dino.Dino.base_stats["s"]["b"]
+                              dino.wild_stamina *
+                                dino.Dino.base_stats["s"]["w"] +
+                                dino.stamina * dino.Dino.base_stats["s"]["t"] +
+                                dino.Dino.base_stats["s"]["b"]
                             )}
                           </span>
                         </p>
@@ -641,9 +689,10 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                           />
                           <span>
                             {nmbFormat(
-                              dino.wild_weight * dino.Dino.base_stats["w"]["w"] +
-                              dino.weight * dino.Dino.base_stats["w"]["t"] +
-                              dino.Dino.base_stats["w"]["b"]
+                              dino.wild_weight *
+                                dino.Dino.base_stats["w"]["w"] +
+                                dino.weight * dino.Dino.base_stats["w"]["t"] +
+                                dino.Dino.base_stats["w"]["b"]
                             )}
                           </span>
                         </p>
@@ -658,9 +707,10 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                           />
                           <span>
                             {nmbFormat(
-                              dino.wild_oxygen * dino.Dino.base_stats["o"]["w"] +
-                              dino.oxygen * dino.Dino.base_stats["o"]["t"] +
-                              dino.Dino.base_stats["o"]["b"]
+                              dino.wild_oxygen *
+                                dino.Dino.base_stats["o"]["w"] +
+                                dino.oxygen * dino.Dino.base_stats["o"]["t"] +
+                                dino.Dino.base_stats["o"]["b"]
                             )}
                           </span>
                         </p>
@@ -676,7 +726,8 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                           <span>
                             {dino.wild_melee_damage *
                               dino.Dino.base_stats["d"]["w"] +
-                              dino.melee_damage * dino.Dino.base_stats["d"]["t"] +
+                              dino.melee_damage *
+                                dino.Dino.base_stats["d"]["t"] +
                               dino.Dino.base_stats["d"]["b"]}
                             %
                           </span>
@@ -693,8 +744,8 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                           <span>
                             {nmbFormat(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                              dino.food * dino.Dino.base_stats["f"]["t"] +
-                              dino.Dino.base_stats["f"]["b"]
+                                dino.food * dino.Dino.base_stats["f"]["t"] +
+                                dino.Dino.base_stats["f"]["b"]
                             )}
                           </span>
                         </p>
@@ -710,10 +761,10 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                           <span>
                             {nmbFormat(
                               dino.wild_movement_speed *
-                              dino.Dino.base_stats["m"]["w"] +
-                              dino.movement_speed *
-                              dino.Dino.base_stats["m"]["t"] +
-                              dino.Dino.base_stats["m"]["b"]
+                                dino.Dino.base_stats["m"]["w"] +
+                                dino.movement_speed *
+                                  dino.Dino.base_stats["m"]["t"] +
+                                dino.Dino.base_stats["m"]["b"]
                             )}
                             %
                           </span>
@@ -727,15 +778,17 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                           <div className="h-full w-full bg-gradient-to-t from-[#A30100] to-red-500"></div>
                           <span className="absolute w-full items-center text-base font-semibold">
                             {nmbFormat(
-                              dino.wild_health * dino.Dino.base_stats["h"]["w"] +
-                              dino.health * dino.Dino.base_stats["h"]["t"] +
-                              dino.Dino.base_stats["h"]["b"]
+                              dino.wild_health *
+                                dino.Dino.base_stats["h"]["w"] +
+                                dino.health * dino.Dino.base_stats["h"]["t"] +
+                                dino.Dino.base_stats["h"]["b"]
                             )}
                             /
                             {nmbFormat(
-                              dino.wild_health * dino.Dino.base_stats["h"]["w"] +
-                              dino.health * dino.Dino.base_stats["h"]["t"] +
-                              dino.Dino.base_stats["h"]["b"]
+                              dino.wild_health *
+                                dino.Dino.base_stats["h"]["w"] +
+                                dino.health * dino.Dino.base_stats["h"]["t"] +
+                                dino.Dino.base_stats["h"]["b"]
                             )}{" "}
                             Health ({dino.wild_health}-{dino.health})
                           </span>
@@ -747,14 +800,14 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                           <span className="absolute w-full items-center text-base font-semibold">
                             {nmbFormat(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                              dino.food * dino.Dino.base_stats["f"]["t"] +
-                              dino.Dino.base_stats["f"]["b"]
+                                dino.food * dino.Dino.base_stats["f"]["t"] +
+                                dino.Dino.base_stats["f"]["b"]
                             )}
                             /
                             {nmbFormat(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                              dino.food * dino.Dino.base_stats["f"]["t"] +
-                              dino.Dino.base_stats["f"]["b"]
+                                dino.food * dino.Dino.base_stats["f"]["t"] +
+                                dino.Dino.base_stats["f"]["b"]
                             )}{" "}
                             Food ({dino.wild_food}-{dino.food})
                           </span>
@@ -765,15 +818,17 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                           <div className="h-full w-full bg-gradient-to-t from-[#A340B7] to-fuchsia-500"></div>
                           <span className="absolute w-full items-center text-base font-semibold">
                             {nmbFormat(
-                              dino.wild_torpor * dino.Dino.base_stats["t"]["w"] +
-                              dino.torpor * dino.Dino.base_stats["t"]["t"] +
-                              dino.Dino.base_stats["t"]["b"]
+                              dino.wild_torpor *
+                                dino.Dino.base_stats["t"]["w"] +
+                                dino.torpor * dino.Dino.base_stats["t"]["t"] +
+                                dino.Dino.base_stats["t"]["b"]
                             )}
                             /
                             {nmbFormat(
-                              dino.wild_torpor * dino.Dino.base_stats["t"]["w"] +
-                              dino.torpor * dino.Dino.base_stats["t"]["t"] +
-                              dino.Dino.base_stats["t"]["b"]
+                              dino.wild_torpor *
+                                dino.Dino.base_stats["t"]["w"] +
+                                dino.torpor * dino.Dino.base_stats["t"]["t"] +
+                                dino.Dino.base_stats["t"]["b"]
                             )}{" "}
                             Torpor ({dino.wild_torpor}-{dino.torpor})
                           </span>
@@ -784,7 +839,8 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                 ))}
               </div>
             </div>
-          </fieldset>)}
+          </fieldset>
+        )}
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">

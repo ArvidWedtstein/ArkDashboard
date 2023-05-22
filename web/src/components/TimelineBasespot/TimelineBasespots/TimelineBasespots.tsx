@@ -325,7 +325,7 @@ const TimelineBasespotsList = ({
                         className={clsx(
                           "absolute top-0 -left-4 inline-block h-full w-1 overflow-hidden rounded-sm will-change-transform",
                           {
-                            "bg-gray-500 ": isActive !== index,
+                            "bg-gray-500": isActive !== index,
                           }
                         )}
                       >
@@ -345,8 +345,10 @@ const TimelineBasespotsList = ({
                         className={clsx(
                           "cursor-pointer transition-all duration-300 ease-linear hover:opacity-100",
                           {
-                            "text-gray-400 opacity-60": isActive !== index,
-                            "text-white opacity-100": isActive === index,
+                            "text-gray-600 opacity-60 dark:text-gray-400":
+                              isActive !== index,
+                            "text-gray-900 opacity-100 dark:text-white":
+                              isActive === index,
                           }
                         )}
                       >
@@ -390,7 +392,7 @@ const TimelineBasespotsList = ({
         </div>
       </section>
 
-      <div className="rw-table-wrapper-responsive">
+      {/* <div className="rw-table-wrapper-responsive">
         <select
           className="rw-input"
           onChange={(e) => setRadio(e.currentTarget.value)}
@@ -486,7 +488,7 @@ const TimelineBasespotsList = ({
             </tr>
           </tbody>
         </table>
-      </div>
+      </div> */}
     </div>
   );
 };

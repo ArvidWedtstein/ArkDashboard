@@ -15,8 +15,8 @@ export const schema = gql`
   }
 
   type Query {
-    timelineBasespotRaids: [TimelineBasespotRaid!]! @requireAuth
-    timelineBasespotRaid(id: String!): TimelineBasespotRaid @requireAuth
+    timelineBasespotRaids: [TimelineBasespotRaid!]! @skipAuth
+    timelineBasespotRaid(id: String!): TimelineBasespotRaid @skipAuth
   }
 
   input CreateTimelineBasespotRaidInput {
@@ -55,4 +55,4 @@ export const schema = gql`
     ): TimelineBasespotRaid! @requireAuth
     deleteTimelineBasespotRaid(id: String!): TimelineBasespotRaid! @requireAuth
   }
-`
+`;

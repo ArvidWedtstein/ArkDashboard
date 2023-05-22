@@ -14,8 +14,8 @@ export const schema = gql`
   }
 
   type Query {
-    mapNotes: [MapNote!]! @requireAuth
-    mapNote(id: String!): MapNote @requireAuth
+    mapNotes: [MapNote!]! @skipAuth
+    mapNote(id: String!): MapNote @skipAuth
   }
 
   input CreateMapNoteInput {
@@ -48,4 +48,4 @@ export const schema = gql`
       @requireAuth
     deleteMapNote(id: String!): MapNote! @requireAuth
   }
-`
+`;

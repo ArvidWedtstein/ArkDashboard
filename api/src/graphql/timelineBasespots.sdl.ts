@@ -29,8 +29,8 @@ export const schema = gql`
   }
 
   type Query {
-    timelineBasespots: [TimelineBasespot!]! @requireAuth
-    timelineBasespot(id: BigInt!): TimelineBasespot @requireAuth
+    timelineBasespots: [TimelineBasespot!]! @skipAuth
+    timelineBasespot(id: BigInt!): TimelineBasespot @skipAuth
   }
 
   input CreateTimelineBasespotInput {

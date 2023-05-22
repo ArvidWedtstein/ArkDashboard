@@ -22,8 +22,8 @@ export const schema = gql`
   }
 
   type Query {
-    dinoStats: [DinoStat!]! @requireAuth
-    dinoStat(id: String!): DinoStat @requireAuth
+    dinoStats: [DinoStat!]! @skipAuth
+    dinoStat(id: String!): DinoStat @skipAuth
   }
 
   input CreateDinoStatInput {
@@ -52,4 +52,4 @@ export const schema = gql`
       @requireAuth
     deleteDinoStat(id: String!): DinoStat! @requireAuth
   }
-`
+`;
