@@ -11,8 +11,8 @@ export const schema = gql`
   }
 
   type Query {
-    lootcrateSetEntryItems: [LootcrateSetEntryItem!]! @requireAuth
-    lootcrateSetEntryItem(id: String!): LootcrateSetEntryItem @requireAuth
+    lootcrateSetEntryItems: [LootcrateSetEntryItem!]! @skipAuth
+    lootcrateSetEntryItem(id: String!): LootcrateSetEntryItem @skipAuth
   }
 
   input CreateLootcrateSetEntryItemInput {
@@ -42,4 +42,4 @@ export const schema = gql`
     deleteLootcrateSetEntryItem(id: String!): LootcrateSetEntryItem!
       @requireAuth
   }
-`
+`;

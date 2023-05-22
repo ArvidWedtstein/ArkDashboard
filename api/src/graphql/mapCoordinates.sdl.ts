@@ -14,8 +14,8 @@ export const schema = gql`
   }
 
   type Query {
-    mapCoordinates: [MapCoordinate!]! @requireAuth
-    mapCoordinate(id: String!): MapCoordinate @requireAuth
+    mapCoordinates: [MapCoordinate!]! @skipAuth
+    mapCoordinate(id: String!): MapCoordinate @skipAuth
   }
 
   input CreateMapCoordinateInput {
@@ -51,4 +51,4 @@ export const schema = gql`
     ): MapCoordinate! @requireAuth
     deleteMapCoordinate(id: String!): MapCoordinate! @requireAuth
   }
-`
+`;

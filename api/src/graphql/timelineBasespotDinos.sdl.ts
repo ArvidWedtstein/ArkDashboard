@@ -33,8 +33,8 @@ export const schema = gql`
   }
 
   type Query {
-    timelineBasespotDinos: [TimelineBasespotDino!]! @requireAuth
-    timelineBasespotDino(id: String!): TimelineBasespotDino @requireAuth
+    timelineBasespotDinos: [TimelineBasespotDino!]! @skipAuth
+    timelineBasespotDino(id: String!): TimelineBasespotDino @skipAuth
   }
 
   input CreateTimelineBasespotDinoInput {
@@ -107,4 +107,4 @@ export const schema = gql`
     ): TimelineBasespotDino! @requireAuth
     deleteTimelineBasespotDino(id: String!): TimelineBasespotDino! @requireAuth
   }
-`
+`;

@@ -12,8 +12,8 @@ export const schema = gql`
   }
 
   type Query {
-    lootcrateSets: [LootcrateSet!]! @requireAuth
-    lootcrateSet(id: String!): LootcrateSet @requireAuth
+    lootcrateSets: [LootcrateSet!]! @skipAuth
+    lootcrateSet(id: String!): LootcrateSet @skipAuth
   }
 
   input CreateLootcrateSetInput {
@@ -43,4 +43,4 @@ export const schema = gql`
     ): LootcrateSet! @requireAuth
     deleteLootcrateSet(id: String!): LootcrateSet! @requireAuth
   }
-`
+`;
