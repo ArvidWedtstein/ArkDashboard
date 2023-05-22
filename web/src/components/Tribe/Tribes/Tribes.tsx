@@ -56,7 +56,7 @@ const TribesList = ({ tribes }: FindTribes) => {
   return (
     <div className="relative">
       <div className="m-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <div className="flex items-start rounded-xl bg-white p-4 shadow-lg dark:bg-zinc-700">
+        <div className="flex items-start rounded-xl bg-stone-300 p-4 shadow-lg dark:bg-zinc-700">
           <div className="border-pea-100 bg-pea-50 dark:border-pea-400 flex h-12 w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -83,7 +83,7 @@ const TribesList = ({ tribes }: FindTribes) => {
           </div>
         </div>
         <div
-          className="hover:ring-pea-400 flex items-start rounded-xl bg-white p-4 shadow-lg hover:ring-1 dark:bg-zinc-700"
+          className="hover:ring-pea-400 flex items-start rounded-xl bg-stone-300 p-4 shadow-lg hover:ring-1 dark:bg-zinc-700"
           onClick={pickRandomTribe}
         >
           <div className="dark:border-pea-400 border-pea-100 bg-pea-50 flex h-12 w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800">

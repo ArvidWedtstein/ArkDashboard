@@ -271,6 +271,7 @@ const MapsList = ({ maps }: FindMaps) => {
           className="hover:no-underline"
         >
           <ArkCard
+            className="!dark:text-white !text-white"
             title={map.name}
             image={{
               src: mapImages[map.name.replace(" ", "")],
@@ -280,7 +281,7 @@ const MapsList = ({ maps }: FindMaps) => {
             subtitle={
               <div className="flex flex-row gap-1">
                 {Object.entries(map).map(([key, value]) => {
-                  if (!value || (value as any[]).length == 0 || !mapData[key]) {
+                  if (!value || (value as any).length == 0 || !mapData[key]) {
                     return;
                   }
                   return (
