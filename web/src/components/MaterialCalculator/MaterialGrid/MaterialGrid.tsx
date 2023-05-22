@@ -900,7 +900,7 @@ export const MaterialGrid = ({ error, items: arkitems, testitems }: MaterialGrid
             },
           ]}
         />
-        <pre className="text-white">{JSON.stringify(item, null, 2)}</pre>
+        {/* <pre className="text-white">{JSON.stringify(item, null, 2)}</pre> */}
         <Table
           rows={item}
           className="animate-fade-in my-4 whitespace-nowrap"
