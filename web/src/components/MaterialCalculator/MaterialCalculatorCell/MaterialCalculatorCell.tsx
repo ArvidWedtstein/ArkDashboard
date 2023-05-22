@@ -74,7 +74,7 @@ export const QUERY = gql`
 //   }
 // }
 export const Loading = () => (
-  <div className="flex h-full w-full items-center justify-center bg-transparent">
+  <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-transparent">
     <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>
     <p className="text-black dark:text-white">
       This may take some time, please wait...
