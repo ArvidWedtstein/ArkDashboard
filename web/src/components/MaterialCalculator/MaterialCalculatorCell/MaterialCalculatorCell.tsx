@@ -44,27 +44,35 @@ export const QUERY = gql`
         }
       }
     }
-    itemRecs {
-      id
-      created_at
-      updated_at
-      crafted_item_id
-      crafting_station_id
-      crafting_time
-      yields
-      Item_ItemRec_crafted_item_idToItem {
-        id
-        name
-        image
-        crafting_time
-        category
-        type
-      }
-    }
   }
 `;
 
-
+// itemRecs {
+//   id
+//   created_at
+//   updated_at
+//   crafted_item_id
+//   crafting_station_id
+//   crafting_time
+//   yields
+//   Item_ItemRec_crafted_item_idToItem {
+//     id
+//     name
+//     image
+//     crafting_time
+//     category
+//     type
+//   }
+//   ItemRecipeItem {
+//     id
+//     amount
+//     Item {
+//       id
+//       name
+//       image
+//     }
+//   }
+// }
 export const Loading = () => (
   <div className="flex h-full w-full items-center justify-center bg-transparent">
     <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>
@@ -94,10 +102,10 @@ export const Failure = ({ error }: CellFailureProps) => (
   </div>
 );
 
-export const Success = ({ items, itemRecs }) => {
+export const Success = ({ items }) => {
   return (
     <div className="rw-form-wrapper container-xl mx-auto">
-      <MaterialGrid testitems={itemRecs} items={items} />
+      <MaterialGrid items={items} />
     </div>
   );
 };
