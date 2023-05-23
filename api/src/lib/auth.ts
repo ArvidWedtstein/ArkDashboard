@@ -15,6 +15,7 @@ type RedwoodUser = Record<string, any> & {
   email?: string;
   role_id?: string;
   avatar_url?: string;
+  permissions?: string[];
 };
 
 /**
@@ -45,29 +46,23 @@ export const getCurrentUser = async (
 ): Promise<RedwoodUser | null> => {
   try {
     const { roles } = parseJWT({ decoded });
-    // const currentUser =
-    //   await db.$queryRaw`SELECT * FROM auth."users" WHERE id::text = ${decoded.sub};`;
     const { sub, role } = decoded;
     let user = await db.profile.findUnique({
-      // include: { role_profile_role_idTorole: true },
+      include: { role_profile_role_idTorole: true },
       where: { id: sub.toString() },
     });
-    if (user) {
-      let role_id = user.role_id;
-      return {
-        id: sub as string,
-        role_id,
-        avatar_url: user.avatar_url,
-        username: user.username,
-        role,
-        roles: [role_id, ...roles],
-        ...decoded,
-      };
-    }
-
-    return { ...decoded, roles };
+    return {
+      id: sub as string,
+      avatar_url: user.avatar_url,
+      username: user.username,
+      permissions: user?.role_profile_role_idTorole?.permissions || [],
+      roles: [user.role_id, ...roles],
+      ...decoded,
+      // email: "",
+    };
   } catch (error) {
-    return { id: decoded.sub.toString(), ...decoded };
+    console.log(error);
+    return { id: decoded.sub.toString(), ...decoded, error };
   }
 };
 

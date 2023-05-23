@@ -11,6 +11,7 @@ import {
 import type { EditTribeById, UpdateTribeInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { useAuth } from "src/auth";
+import { permission } from ".prisma/client";
 const formatDatetime = (value) => {
   if (value) {
     return value.replace(/:\d{2}\.\d{3}\w/, "");
@@ -28,11 +29,12 @@ interface TribeFormProps {
 const TribeForm = (props: TribeFormProps) => {
   const { currentUser, hasRole } = useAuth();
 
-
   const onSubmit = (data: FormTribe) => {
-    if (hasRole('f0c1b8e9-5f27-4430-ad8f-5349f83339c0')) {
-      data.created_by =
-        props.tribe?.created_by || currentUser?.sub.toString();
+    if (
+      hasRole("f0c1b8e9-5f27-4430-ad8f-5349f83339c0") &&
+      currentUser.permissions.includes("update_tribe" as permission)
+    ) {
+      data.created_by = props.tribe?.created_by || currentUser?.sub.toString();
       props.onSave(data, props?.tribe?.id);
     }
   };

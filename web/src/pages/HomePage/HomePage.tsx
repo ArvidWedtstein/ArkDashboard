@@ -3,7 +3,7 @@ import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "src/auth";
 import type { FindTribes } from "types/graphql";
 const HomePage = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, currentUser } = useAuth();
   // if (document.addEventListener) {
   //   document.addEventListener('contextmenu', function (e) {
   //     alert("You've tried to open context menu");
@@ -23,10 +23,6 @@ const HomePage = () => {
   return (
     <>
       <MetaTags title="Home" description="Home page" />
-
-      <RouteAnnouncement>
-        <h1>Welcome to my site!</h1>
-      </RouteAnnouncement>
       <div className="container-xl p-3 pt-0 text-center">
         <div
           className="relative overflow-hidden rounded-md bg-cover bg-no-repeat"
