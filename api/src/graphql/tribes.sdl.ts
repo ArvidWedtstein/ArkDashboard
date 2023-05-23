@@ -37,7 +37,7 @@ export const schema = gql`
     createTribe(input: CreateTribeInput!): Tribe! @requireAuth
     updateTribe(id: Int!, input: UpdateTribeInput!): Tribe!
       @requireAuth
-      @hasPermission(permission: "gamedata_as")
+      @hasPermission(permission: "tribe_update")
     deleteTribe(id: Int!): Tribe! @requireAuth
   }
 `;

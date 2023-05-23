@@ -140,7 +140,7 @@ const Navbar = () => {
                       <button
                         type="button"
                         onClick={logOut}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                        className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200"
                       >
                         Sign out
                       </button>

@@ -1,4 +1,4 @@
-import { Link, routes } from "@redwoodjs/router";
+import { Link, RouteAnnouncement, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "src/auth";
 import type { FindTribes } from "types/graphql";
@@ -23,12 +23,14 @@ const HomePage = () => {
   return (
     <>
       <MetaTags title="Home" description="Home page" />
+
+      <RouteAnnouncement>
+        <h1>Welcome to my site!</h1>
+      </RouteAnnouncement>
       <div className="container-xl p-3 pt-0 text-center">
         <div
           className="relative overflow-hidden rounded-md bg-cover bg-no-repeat"
           style={{
-            imageResolution: "10dpi",
-            imageRendering: "auto",
             backgroundPosition: "50%",
             backgroundImage:
               "url('https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj')",

@@ -44,6 +44,7 @@ export const getCurrentUser = async (
   decoded: Decoded
 ): Promise<RedwoodUser | null> => {
   try {
+    const { roles } = parseJWT({ decoded });
     // const currentUser =
     //   await db.$queryRaw`SELECT * FROM auth."users" WHERE id::text = ${decoded.sub};`;
     const { sub, role } = decoded;
@@ -53,10 +54,18 @@ export const getCurrentUser = async (
     });
     if (user) {
       let role_id = user.role_id;
-      return { id: sub, ...user, role, roles: [role_id], ...decoded };
+      return {
+        id: sub as string,
+        role_id,
+        avatar_url: user.avatar_url,
+        username: user.username,
+        role,
+        roles: [role_id, ...roles],
+        ...decoded,
+      };
     }
 
-    return { ...decoded };
+    return { ...decoded, roles };
   } catch (error) {
     return { id: decoded.sub.toString(), ...decoded };
   }
@@ -192,6 +201,8 @@ export const hasPermission = async ({
 }: {
   permission: permission;
 }) => {
+  const t = db.$queryRaw`SELECT * FROM auth."roles" WHERE id::text = ${context.currentUser?.role_id};`;
+  console.log(t);
   if (!permission) {
     throw new AuthenticationError(
       "You don't have the required permission to do that."
