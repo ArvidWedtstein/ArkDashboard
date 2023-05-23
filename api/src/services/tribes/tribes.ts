@@ -39,7 +39,6 @@ export const updateTribe: MutationResolvers["updateTribe"] = ({
   id,
   input,
 }) => {
-  hasPermission({ permission: "tribe_update" });
   validate(input.name, "name", {
     presence: true,
     length: { minimum: 2, maximum: 100 },

@@ -97,7 +97,7 @@ const TribesList = ({ tribes }: FindTribes) => {
             </svg>
           </div>
           <div className="ml-4 text-black dark:text-white">
-            <button className="">Pick random tribe name</button>
+            <span className="">Pick random tribe name</span>
           </div>
         </button>
       </div>

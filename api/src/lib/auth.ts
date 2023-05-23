@@ -173,7 +173,7 @@ export const requireAuth = async ({ roles }: { roles?: AllowedRoles } = {}) => {
  */
 export const hasPerm = async (permission: permission) => {
   const userRole = await db.role.findUnique({
-    where: { id: context.currentUser?.role_id },
+    where: { id: context.currentUser.roles[0] },
   });
   return userRole?.permissions.some((d) => d.includes(permission));
 };
@@ -196,18 +196,20 @@ export const hasPermission = async ({
 }: {
   permission: permission;
 }) => {
-  const t = db.$queryRaw`SELECT * FROM auth."roles" WHERE id::text = ${context.currentUser?.role_id};`;
-  console.log(t);
   if (!permission) {
     throw new AuthenticationError(
       "You don't have the required permission to do that."
     );
   }
+
   if (!isAuthenticated()) {
     throw new AuthenticationError("You don't have permission to do that.");
   }
-
-  if (!hasPerm(permission)) {
+  console.log(context.currentUser);
+  if (
+    !context.currentUser.permissions?.some((d) => d.includes(permission)) ||
+    !hasPerm(permission)
+  ) {
     throw new ForbiddenError(
       `Your gallimimus outran the authorization process. Slow down!`
     );

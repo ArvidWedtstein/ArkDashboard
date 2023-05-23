@@ -30,13 +30,13 @@ const TribeForm = (props: TribeFormProps) => {
   const { currentUser, hasRole } = useAuth();
 
   const onSubmit = (data: FormTribe) => {
-    if (
-      hasRole("f0c1b8e9-5f27-4430-ad8f-5349f83339c0") &&
-      currentUser.permissions.includes("update_tribe" as permission)
-    ) {
-      data.created_by = props.tribe?.created_by || currentUser?.sub.toString();
-      props.onSave(data, props?.tribe?.id);
-    }
+    // if (
+    //   hasRole("f0c1b8e9-5f27-4430-ad8f-5349f83339c0") &&
+    //   currentUser.permissions.includes("tribe_update" as permission)
+    // ) {
+    data.created_by = props.tribe?.created_by || currentUser?.sub.toString();
+    props.onSave(data, props?.tribe?.id);
+    // }
   };
 
   return (
