@@ -7,11 +7,29 @@ import {
   DbAuthHandlerOptions,
 } from "@redwoodjs/api";
 import { db } from "src/lib/db";
+import { AuthenticationError, ForbiddenError } from "@redwoodjs/graphql-server";
 
 export const handler = async (
   event: APIGatewayProxyEvent,
   context: Context
 ) => {
+  // try {
+
+  // } catch (e) {
+  //   if (e instanceof AuthenticationError) {
+  //     return {
+  //       statusCode: 401,
+  //     }
+  //   } else if (e instanceof ForbiddenError) {
+  //     return {
+  //       statusCode: 403,
+  //     }
+  //   } else {
+  //     return {
+  //       statusCode: 400,
+  //     }
+  //   }
+  // }
   const forgotPasswordOptions: DbAuthHandlerOptions<PrismaUser>["forgotPassword"] =
     {
       // handler() is invoked after verifying that a user was found with the given

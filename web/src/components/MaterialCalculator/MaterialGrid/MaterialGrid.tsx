@@ -13,7 +13,6 @@ import {
   useMemo,
   useReducer,
   useState,
-  useTransition,
 } from "react";
 
 import {
@@ -29,7 +28,7 @@ import { useLazyQuery } from "@apollo/client";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 interface MaterialGridProps {
   items: any;
-  // testitems: any;
+  testitems?: any;
   error?: RWGqlError;
 }
 
@@ -103,59 +102,39 @@ interface MaterialGridProps {
 //     }
 //   }
 // `;
-const QUERY = gql`
-  query FindItemRecipesByIds($item_recipe_id: [String!]!) {
-    itemRecipesByIds: itemRecipesByIds(item_recipe_id: $item_recipe_id) {
-      item_recipe_id
-      amount
-      item_id
-      Item {
-        id
-        name
-        image
-        category
-      }
-    }
-  }
-`;
+
 
 export const MaterialGrid = ({
   error,
   items: arkitems,
-}: // testitems,
-MaterialGridProps) => {
-  const [craftingStations, setCraftingStations] = useState([39, 126, 185, 607]);
+  testitems,
+}: MaterialGridProps) => {
+  const [craftingStations, setCraftingStations] = useState([39, 126, 185, 607, 606, 360]);
   const items = useMemo(() => {
     return arkitems
       .filter((i) => ![""].includes(i.category) && !["Meat"].includes(i.type))
-      .map((v) => ({ ...v, amount: 1 * v.yields }));
-    // console.log(groupBy(testitems, "crafted_item_id"));
-    // return Object.values(groupBy(testitems, "crafted_item_id"))
-    //   .map((g) => g[0])
-    //   .filter((i) => ![""].includes(i.category) && !["Meat"].includes(i.type))
-    //   .map((v) => {
-    //     return {
-    //       ...v,
-    //       recipe_id: v.id,
-    //       ...v.Item_ItemRec_crafted_item_idToItem,
-    //       amount: 1 * (v.yields || 1),
-    //     };
-    //   });
+      .map((v) => ({ ...v }));
+
   }, []);
 
-  // const itemSelect = useMemo(() => {
-  //   return Object.values(groupBy(testitems, "crafted_item_id"))
-  //     .map((g) => g[0])
-  //     .filter((i) => ![""].includes(i.category) && !["Meat"].includes(i.type))
-  //     .map((v) => {
-  //       return {
-  //         ...v,
-  //         recipe_id: v.id,
-  //         ...v.Item_ItemRec_crafted_item_idToItem,
-  //         amount: 1 * (v.yields || 1),
-  //       };
-  //     });
-  // }, []);
+  const items2 = useMemo(() => {
+    const craftedItems = groupBy(testitems, "crafted_item_id");
+    const craftingStations = {};
+
+    for (const [key, value] of Object.entries(craftedItems)) {
+      craftingStations[key] = groupBy(value as any, "crafting_station_id");
+    }
+
+    const result = [];
+
+    for (const v of Object.values(craftingStations)) {
+      const craftingStation = Object.values(Object.values(v)[0])[0];
+      result.push(craftingStation);
+    }
+
+    return result;
+  }, []);
+
 
   const [viewBaseMaterials, setViewBaseMaterials] = useState(false);
   const toggleBaseMaterials = useCallback(
@@ -188,19 +167,20 @@ MaterialGridProps) => {
     switch (action.type) {
       case "ADD_AMOUNT_BY_NUM": {
         let itemIndex = state.findIndex((item) => item.id === action.item.id);
-        const { yields } =
-          item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
-            return craftingStations.includes(
-              parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id)
-            );
-          }) || { yields: 1 };
+        // const { yields } =
+        //   item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
+        //     return craftingStations.includes(
+        //       parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id)
+        //     );
+        //   }) || { yields: 1 };
+        const yields = action.item?.yields || 1;
         if (itemIndex !== -1) {
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                  ...item,
-                  amount: item.amount + (action.index || 1) * yields,
-                }
+                ...item,
+                amount: item.amount + (action.index || 1) * yields,
+              }
               : item
           );
         }
@@ -223,33 +203,36 @@ MaterialGridProps) => {
       }
       case "ADD_AMOUNT": {
         return state.map((item, i) => {
-          const { yields } =
-            item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
-              return craftingStations.includes(
-                parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id)
-              );
-            }) || { yields: 1 };
+          // const { yields } =
+          //   item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
+          //     return craftingStations.includes(
+          //       parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id)
+          //     );
+          //   }) || { yields: 1 };
+
+          const yields = item?.yields || 1;
           return i === action.index
             ? {
-                ...item,
-                amount: parseInt(item.amount) + parseInt(yields),
-              }
+              ...item,
+              amount: parseInt(item.amount) + parseInt(yields),
+            }
             : item;
         });
       }
       case "REMOVE_AMOUNT": {
         return state.map((item, i) => {
-          const { yields } =
-            item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
-              return craftingStations.includes(
-                parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id)
-              );
-            }) || { yields: 1 };
+          // const { yields } =
+          //   item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
+          //     return craftingStations.includes(
+          //       parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id)
+          //     );
+          //   }) || { yields: 1 };
+          const yields = item?.yields || 1;
           return i === action.index
             ? {
-                ...item,
-                amount: item.amount - yields,
-              }
+              ...item,
+              amount: item.amount - yields,
+            }
             : item;
         });
       }
@@ -257,19 +240,20 @@ MaterialGridProps) => {
         const itemIndex = state.findIndex(
           (item) => parseInt(item.id) === parseInt(action.item.id)
         );
-        const { yields } =
-          item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
-            return craftingStations.includes(
-              parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id)
-            );
-          }) || { yields: 1 };
+        // const { yields } =
+        //   action.item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
+        //     return craftingStations.includes(
+        //       parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id)
+        //     );
+        //   }) || { yields: 1 };
+        const yields = action.item?.yields || 1;
         if (itemIndex !== -1) {
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                  ...item,
-                  amount: parseInt(item.amount || 0) + yields,
-                }
+                ...item,
+                amount: parseInt(item.amount || 0) + yields,
+              }
               : item
           );
         }
@@ -292,104 +276,15 @@ MaterialGridProps) => {
       }
     }
   };
-  // const reducer = (state, action) => {
-  //   switch (action.type) {
-  //     case "ADD_AMOUNT_BY_NUM": {
-  //       let itemIndex = state.findIndex((item) => item.id === action.item.id);
-  //       const yields = action.item.yields || 1;
-  //       if (itemIndex !== -1) {
-  //         return state.map((item, i) =>
-  //           i === itemIndex
-  //             ? {
-  //                 ...item,
-  //                 amount: item.amount + (action.index || 1) * yields,
-  //               }
-  //             : item
-  //         );
-  //       }
-  //       return [
-  //         ...state,
-  //         {
-  //           ...action.item,
-  //           amount: (action.index || 1) * yields,
-  //         },
-  //       ];
-  //     }
-  //     case "CHANGE_AMOUNT": {
-  //       const itemIndex = action.item;
-  //       if (itemIndex !== -1) {
-  //         return state.map((item, i) =>
-  //           i === itemIndex ? { ...item, amount: action.index } : item
-  //         );
-  //       }
-  //       return [...state, { ...action.item, amount: action.index }];
-  //     }
-  //     case "ADD_AMOUNT": {
-  //       return state.map((item, i) => {
-  //         const yields = item?.yields || 1;
-  //         return i === action.index
-  //           ? {
-  //               ...item,
-  //               amount: parseInt(item.amount) + parseInt(yields),
-  //             }
-  //           : item;
-  //       });
-  //     }
-  //     case "REMOVE_AMOUNT": {
-  //       return state.map((item, i) => {
-  //         const yields = item?.yields || 1;
-  //         return i === action.index
-  //           ? {
-  //               ...item,
-  //               amount: item.amount - yields,
-  //             }
-  //           : item;
-  //       });
-  //     }
-  //     case "ADD": {
-  //       const itemIndex = state.findIndex(
-  //         (item) => parseInt(item.id) === parseInt(action.item.id)
-  //       );
-  //       const yields = action.item.yields || 1;
-  //       if (itemIndex !== -1) {
-  //         return state.map((item, i) =>
-  //           i === itemIndex
-  //             ? {
-  //                 ...item,
-  //                 amount: parseInt(item.amount || 0) + yields,
-  //               }
-  //             : item
-  //         );
-  //       }
-  //       return [
-  //         ...state,
-  //         {
-  //           ...action.item,
-  //           amount: yields,
-  //         },
-  //       ];
-  //     }
-  //     case "REMOVE": {
-  //       return state.filter((_, i) => i !== action.index);
-  //     }
-  //     case "RESET": {
-  //       return [];
-  //     }
-  //     default: {
-  //       return state;
-  //     }
-  //   }
-  // };
 
   let [item, setItem] = useReducer(reducer, []);
 
   const onAdd = ({ itemId }) => {
     if (!itemId) return;
-    // let testitm = testitems.find((item) => parseInt(item.crafted_item_id) === parseInt(itemId));
-    let itm = items.find((item) => parseInt(item.id) === parseInt(itemId));
+    let item = items2.find((item) => parseInt(item.crafted_item_id) === parseInt(itemId));
     // loadItem({ variables: { item_recipe_id: [itm.recipe_id] } });
-
-    setItem({ type: "ADD", item: itm });
+    console.log(item)
+    setItem({ type: "ADD", item: item });
   };
 
   const onRemove = (index) => {
@@ -470,9 +365,10 @@ MaterialGridProps) => {
     //   variables: { id: Object.keys(towerItems), amount: towerItems },
     // });
     for (const [key, value] of Object.entries(towerItems)) {
-      let itemfound = items.find(
-        (item) => parseInt(item.id.toString()) === parseInt(key)
-      );
+      // let itemfound = items.find(
+      //   (item) => parseInt(item.id.toString()) === parseInt(key)
+      // );
+      let itemfound = items2.find((item) => parseInt(item.crafted_item_id) === parseInt(key));
       if (itemfound) {
         setItem({ type: "ADD_AMOUNT_BY_NUM", item: itemfound, index: value });
       }
@@ -577,15 +473,15 @@ MaterialGridProps) => {
                 />
               </div>
             </li>
-            {!items ||
-              (items.length < 1 && (
+            {!items2 ||
+              (items2.length < 1 && (
                 <li className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
                   No items found
                 </li>
               ))}
             {Object.entries(
               groupBy(
-                items.filter((item) =>
+                items2.map((f) => f.Item_ItemRec_crafted_item_idToItem).filter((item) =>
                   item.name.toLowerCase().includes(search.toLowerCase())
                 ),
                 "category"
@@ -596,8 +492,8 @@ MaterialGridProps) => {
                   open={
                     Object.values(
                       groupBy(
-                        items.filter((items) =>
-                          items.name
+                        items2.map((f) => f.Item_ItemRec_crafted_item_idToItem).filter((item) =>
+                          item.name
                             .toLowerCase()
                             .includes(search.toLowerCase())
                         ),
@@ -622,8 +518,8 @@ MaterialGridProps) => {
                   <ul className="py-2">
                     {Object.values(
                       groupBy(
-                        items.filter((items) =>
-                          items.name
+                        items2.map((f) => f.Item_ItemRec_crafted_item_idToItem).filter((item) =>
+                          item.name
                             .toLowerCase()
                             .includes(search.toLowerCase())
                         ),
@@ -631,27 +527,27 @@ MaterialGridProps) => {
                       )
                     ).length === 1 || categoryitems.every((item) => !item.type)
                       ? categoryitems.map((item) => (
-                          <li key={`${category}-${item.type}-${item.id}`}>
-                            <button
-                              type="button"
-                              className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                              onClick={() => onAdd({ itemId: item.id })}
-                            >
-                              <img
-                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
-                                alt={item.name}
-                                className="mr-2 h-5 w-5"
-                              />
-                              {item.name}
-                            </button>
-                          </li>
-                        ))
+                        <li key={`${category}-${item.type}-${item.id}`}>
+                          <button
+                            type="button"
+                            className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                            onClick={() => onAdd({ itemId: item.id })}
+                          >
+                            <img
+                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+                              alt={item.name}
+                              className="mr-2 h-5 w-5"
+                            />
+                            {item.name}
+                          </button>
+                        </li>
+                      ))
                       : Object.entries(groupBy(categoryitems, "type")).map(
-                          ([type, typeitems]: any) => (
-                            <li key={`${category}-${type}`}>
-                              <details className="">
-                                <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                                  {/* <svg
+                        ([type, typeitems]: any) => (
+                          <li key={`${category}-${type}`}>
+                            <details className="">
+                              <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+                                {/* <svg
                                     aria-hidden="true"
                                     className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                     fill="currentColor"
@@ -661,36 +557,37 @@ MaterialGridProps) => {
                                     <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                                     <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                                   </svg> */}
-                                  <span className="ml-2">{type}</span>
-                                  <span className="text-pea-800 dark:bg-pea-900 dark:text-pea-300 bg-pea-100 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full p-3 text-sm">
-                                    {typeitems.length}
-                                  </span>
-                                </summary>
+                                <span className="ml-2">{type}</span>
+                                <span className="text-pea-800 dark:bg-pea-900 dark:text-pea-300 bg-pea-100 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full p-3 text-sm">
+                                  {typeitems.length}
+                                </span>
+                              </summary>
 
-                                <ul className="py-2">
-                                  {typeitems.map((item) => (
-                                    <li key={`${category}-${type}-${item.id}`}>
-                                      <button
-                                        type="button"
-                                        className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                        onClick={() =>
-                                          onAdd({ itemId: item.id })
-                                        }
-                                      >
-                                        <img
-                                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
-                                          alt={item.name}
-                                          className="mr-2 h-5 w-5"
-                                        />
-                                        {item.name}
-                                      </button>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </details>
-                            </li>
-                          )
-                        )}
+                              <ul className="py-2">
+                                {typeitems.map((item) => (
+                                  <li key={`${category}-${type}-${item.id}`}>
+                                    <button
+                                      type="button"
+                                      className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                                      onClick={() =>
+                                        onAdd({ itemId: item.id })
+
+                                      }
+                                    >
+                                      <img
+                                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+                                        alt={item.name}
+                                        className="mr-2 h-5 w-5"
+                                      />
+                                      {item.name}
+                                    </button>
+                                  </li>
+                                ))}
+                              </ul>
+                            </details>
+                          </li>
+                        )
+                      )}
                   </ul>
                 </details>
               </li>
@@ -699,7 +596,7 @@ MaterialGridProps) => {
         </div>
       </div>
       <div className="w-full">
-        {/* <Table
+        <Table
           vertical={true}
           header={false}
           rows={mergeItemRecipe(viewBaseMaterials, arkitems, craftingStations, ...item)}
@@ -746,8 +643,8 @@ MaterialGridProps) => {
               },
             },
           ]}
-        /> */}
-        <Table
+        />
+        {/* <Table
           vertical={true}
           header={false}
           rows={getBaseMaterialsNew(
@@ -896,7 +793,7 @@ MaterialGridProps) => {
               },
             },
           ]}
-        />
+        /> */}
         {/* <pre className="text-white">{JSON.stringify(item, null, 2)}</pre> */}
         <Table
           rows={item}
@@ -936,61 +833,60 @@ MaterialGridProps) => {
             //   },
             // },
             {
-              field: "name",
+              field: "Item_ItemRec_crafted_item_idToItem",
               label: "Name",
               className: "w-0",
-              renderCell: ({ row, rowIndex }) => {
+              renderCell: ({ rowIndex, value: { name, image } }) => {
                 return (
                   <button
                     type="button"
                     onClick={() => onRemove(rowIndex)}
                     className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-red-500"
-                    title={`Remove ${row.name}`}
+                    title={`Remove ${name}`}
                   >
                     <ImageField
                       className="h-8 w-8"
                       name="itemimage"
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
                     />
                   </button>
                 );
-              },
+              }
             },
             {
               field: "amount",
               label: "Amount",
               numeric: true,
               className: "w-0 text-center",
-              renderCell: ({ row, rowIndex }) => {
-                return (
-                  <div
-                    className="flex flex-row items-center"
-                    key={`${row.id}+${Math.random()}`}
+              renderCell: ({ rowIndex, value }) => (
+                <div
+                  className="flex flex-row items-center"
+                  key={`${rowIndex}+${Math.random()}`}
+                >
+                  <button
+                    type="button"
+                    className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
+                    onClick={() => onRemoveAmount(rowIndex)}
                   >
-                    <button
-                      type="button"
-                      className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
-                      onClick={() => onRemoveAmount(rowIndex)}
-                    >
-                      -
-                    </button>
-                    <input
-                      defaultValue={row.amount}
-                      className="rw-input w-16 p-3 text-center"
-                      onChange={(e) => {
-                        onChangeAmount(rowIndex, e.target.value);
-                      }}
-                    />
-                    <button
-                      type="button"
-                      className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
-                      onClick={() => onAddAmount(rowIndex)}
-                    >
-                      +
-                    </button>
-                  </div>
-                );
-              },
+                    -
+                  </button>
+                  <input
+                    type="text"
+                    defaultValue={value}
+                    className="rw-input w-16 p-3 text-center"
+                    onChange={(e) => {
+                      onChangeAmount(rowIndex, e.target.value);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
+                    onClick={() => onAddAmount(rowIndex)}
+                  >
+                    +
+                  </button>
+                </div>
+              )
             },
             // ...mergeItemRecipe(
             //   false,
@@ -1045,6 +941,7 @@ MaterialGridProps) => {
               numeric: false,
               className: "text-center flex flex-row justify-start items-center",
               renderCell: ({ row, value }) => {
+                // console.log(row)
                 return mergeItemRecipe(false, arkitems, craftingStations, {
                   ...row,
                 })

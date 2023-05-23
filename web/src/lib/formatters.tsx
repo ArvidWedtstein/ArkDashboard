@@ -142,9 +142,8 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
-    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-  }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+    }`;
 };
 /**
  *
@@ -191,9 +190,9 @@ export const getBaseMaterials = (
 
     let c =
       item?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
-      item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0
+        item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0
         ? item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-            ?.Item_ItemRecipe_crafting_stationToItem.id
+          ?.Item_ItemRecipe_crafting_stationToItem.id
         : null;
 
     // Group by crafting_station somehow
@@ -335,23 +334,24 @@ export const getBaseMaterialsNew = (
   const findBaseMaterials = (item, amount) => {
     // If has no crafting recipe, return
     if (
-      !item?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
-      item.ItemRecipe_ItemRecipe_crafted_item_idToItem.length === 0
+      !item?.ItemRecipeItem ||
+      item.ItemRecipeItem.length === 0 ||
+      !item.ItemRecipe_ItemRecipe_crafted_item_idToItem
     ) {
       return;
     }
 
     // Get item by crafting station
     // TODO: Get default crafting station if none is specified
-    let craftitems = item.ItemRecipe_ItemRecipe_crafted_item_idToItem.filter(
-      (i) => {
-        return i?.Item_ItemRecipe_crafting_stationToItem
-          ? crafting_stations.includes(
-              parseInt(i.Item_ItemRecipe_crafting_stationToItem.id)
-            )
-          : true;
-      }
-    );
+    // let craftitems = item.ItemRecipe_ItemRecipe_crafted_item_idToItem.filter(
+    //   (i) => {
+    //     return i?.Item_ItemRecipe_crafting_stationToItem
+    //       ? crafting_stations.includes(
+    //         parseInt(i.Item_ItemRecipe_crafting_stationToItem.id)
+    //       )
+    //       : true;
+    //   }
+    // );
 
     // Go through each crafting station? For crafting time reduction osv..
     // 128 - cooking pot
@@ -378,20 +378,16 @@ export const getBaseMaterialsNew = (
     // 531 - Equus Saddle
 
     // Loop through each recipe grouped on crafting station
-    craftitems.forEach(
-      ({ Item_ItemRecipe_item_idToItem, amount: recipeAmount, yields }) => {
+    item.ItemRecipeItem.forEach(
+      ({ Item, amount: recipeAmount, yields }) => {
         // Multiply amount with recipe amount (and divide by yields?)
         let count = (recipeAmount * amount) / (yields || 1);
         let newRecipe = items.find(
-          (i) => i.id === Item_ItemRecipe_item_idToItem.id
+          (i) => i.id === Item.id
         );
+        console.log(Item, yields, newRecipe)
 
-        const { yields: newitmyields } =
-          newRecipe?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
-            return crafting_stations.includes(
-              parseInt(f?.Item_ItemRecipe_crafting_stationToItem?.id)
-            );
-          }) || { yields: 1 };
+
         // If no more recipes, add to materials or is base material
         if (
           !baseMaterials ||

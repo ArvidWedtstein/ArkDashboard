@@ -3,6 +3,8 @@ import { AuthenticationError, ForbiddenError } from "@redwoodjs/graphql-server";
 import { db } from "./db";
 import type { Profile as PrismaUser } from "@prisma/client";
 import { Context } from "@redwoodjs/graphql-server/dist/functions/types";
+import { permission } from "types/graphql";
+import { logger } from "./logger";
 /**
  * Represents the user attributes returned by the decoding the
  * Authentication provider's JWT together with an optional list of roles.
@@ -56,7 +58,6 @@ export const getCurrentUser = async (
 
     return { ...decoded };
   } catch (error) {
-    console.log("GetCurrentUserError: ", error);
     return { id: decoded.sub.toString(), ...decoded };
   }
 };
@@ -92,7 +93,7 @@ type AllowedRoles = string | string[] | undefined;
  * @returns {boolean} - Returns true if the currentUser is logged in and assigned one of the given roles,
  * or when no roles are provided to check against. Otherwise returns false.
  */
-export const hasRole = async (role_id: AllowedRoles): Promise<boolean> => {
+export const hasRole = (role_id: AllowedRoles): boolean => {
   if (!isAuthenticated()) {
     return false;
   }
@@ -107,10 +108,10 @@ export const hasRole = async (role_id: AllowedRoles): Promise<boolean> => {
       if (uuidCheck.test(role_id)) {
         return currentUserRoles === role_id;
       }
-      let userRole = await db.role.findUnique({
+      let userRole: any = db.role.findUnique({
         where: { id: currentUserRoles },
       });
-      return role_id === userRole.name;
+      return role_id === userRole?.name;
     }
     //  else if (Array.isArray(currentUserRoles)) {
     //   // roles to check is a string, currentUser.roles is an array
@@ -148,12 +149,61 @@ export const hasRole = async (role_id: AllowedRoles): Promise<boolean> => {
  *
  * @see https://github.com/redwoodjs/redwood/tree/main/packages/auth for examples
  */
-export const requireAuth = ({ roles }: { roles?: AllowedRoles } = {}) => {
+export const requireAuth = async ({ roles }: { roles?: AllowedRoles } = {}) => {
   if (!isAuthenticated()) {
     throw new AuthenticationError("You don't have permission to do that.");
   }
 
   if (roles && !hasRole(roles)) {
-    throw new ForbiddenError("You don't have access to do that.");
+    throw new AuthenticationError("You don't have access to do that.");
+  }
+};
+
+/**
+ * Checks if the currentUser is authenticated (and assigned one of the given permissions)
+ *
+ * @param permission: {@link permission} - Checks if the currentUser is assigned one of these roles
+ *
+ * @returns {boolean} - Returns true if the currentUser is logged in and assigned one of the given permisson,
+ * or when no permissons are provided to check against. Otherwise returns false.
+ */
+export const hasPerm = async (permission: permission) => {
+  const userRole = await db.role.findUnique({
+    where: { id: context.currentUser?.role_id },
+  });
+  return userRole?.permissions.some((d) => d.includes(permission));
+};
+
+/**
+ * Use hasPermission in your services to check that a user has permission,
+ * error if they're not.
+ *
+ * @param permission?: {@link Permission} - When checking role membership, these roles grant access.
+ *
+ * @returns - If the currentUser has permission (and assigned one of the given permissions)
+ *
+ * @throws {@link AuthenticationError} - If the currentUser is not authenticated
+ * @throws {@link ForbiddenError} - If the currentUser is not allowed due to role permissions
+ *
+ * @see https://github.com/redwoodjs/redwood/tree/main/packages/auth for examples
+ */
+export const hasPermission = async ({
+  permission,
+}: {
+  permission: permission;
+}) => {
+  if (!permission) {
+    throw new AuthenticationError(
+      "You don't have the required permission to do that."
+    );
+  }
+  if (!isAuthenticated()) {
+    throw new AuthenticationError("You don't have permission to do that.");
+  }
+
+  if (!hasPerm(permission)) {
+    throw new ForbiddenError(
+      `Your gallimimus outran the authorization process. Slow down!`
+    );
   }
 };

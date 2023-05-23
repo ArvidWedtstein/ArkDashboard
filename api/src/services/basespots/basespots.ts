@@ -5,6 +5,7 @@ import type {
 } from "types/graphql";
 
 import { db } from "src/lib/db";
+import { requireAuth } from "src/lib/auth";
 
 const POSTS_PER_PAGE = 6;
 export const basespotPage: QueryResolvers["basespotPage"] = ({
@@ -36,6 +37,7 @@ export const basespot: QueryResolvers["basespot"] = ({ id }) => {
 export const createBasespot: MutationResolvers["createBasespot"] = ({
   input,
 }) => {
+  requireAuth({ roles: "f0c1b8e9-5f27-4430-ad8f-5349f83339c0" });
   return db.basespot.create({
     data: input,
   });
@@ -45,6 +47,8 @@ export const updateBasespot: MutationResolvers["updateBasespot"] = ({
   id,
   input,
 }) => {
+  requireAuth({ roles: "f0c1b8e9-5f27-4430-ad8f-5349f83339c0" });
+
   return db.basespot.update({
     data: input,
     where: { id },
@@ -52,6 +56,7 @@ export const updateBasespot: MutationResolvers["updateBasespot"] = ({
 };
 
 export const deleteBasespot: MutationResolvers["deleteBasespot"] = ({ id }) => {
+  requireAuth({ roles: "f0c1b8e9-5f27-4430-ad8f-5349f83339c0" });
   return db.basespot.delete({
     where: { id },
   });
