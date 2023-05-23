@@ -119,7 +119,7 @@ const Navbar = () => {
                 className="h-5 w-5 rounded-full text-[#1f1c2e] dark:text-white md:h-8 md:w-8"
               />
               <span className="text-base font-bold text-[#1f1c2e] dark:text-white">
-                {currentUser ? currentUser.email.split("@")[0] : ""}
+                {currentUser ? currentUser?.username : ""}
               </span>
             </button>
             {isComponentVisible && (
@@ -140,7 +140,7 @@ const Navbar = () => {
                       <button
                         type="button"
                         onClick={logOut}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                        className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-200"
                       >
                         Sign out
                       </button>

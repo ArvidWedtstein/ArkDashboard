@@ -39,9 +39,14 @@ export const schema = gql`
   }
 
   type Mutation {
-    createItemRecipe(input: CreateItemRecipeInput!): ItemRecipe! @requireAuth
+    createItemRecipe(input: CreateItemRecipeInput!): ItemRecipe!
+      @requireAuth
+      @hasPermission(permission: "gamedata_create")
     updateItemRecipe(id: String!, input: UpdateItemRecipeInput!): ItemRecipe!
       @requireAuth
-    deleteItemRecipe(id: String!): ItemRecipe! @requireAuth
+      @hasPermission(permission: "gamedata_update")
+    deleteItemRecipe(id: String!): ItemRecipe!
+      @requireAuth
+      @hasPermission(permission: "gamedata_delete")
   }
 `;

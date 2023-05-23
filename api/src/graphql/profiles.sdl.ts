@@ -57,9 +57,14 @@ export const schema = gql`
   }
 
   type Mutation {
-    createProfile(input: CreateProfileInput!): Profile! @requireAuth
+    createProfile(input: CreateProfileInput!): Profile!
+      @requireAuth
+      @hasPermission(permission: "user_create")
     updateProfile(id: String!, input: UpdateProfileInput!): Profile!
       @requireAuth
-    deleteProfile(id: String!): Profile! @requireAuth
+      @hasPermission(permission: "user_update")
+    deleteProfile(id: String!): Profile!
+      @requireAuth
+      @hasPermission(permission: "user_delete")
   }
-`
+`;

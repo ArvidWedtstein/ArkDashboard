@@ -5,6 +5,7 @@ import type {
 } from "types/graphql";
 
 import { db } from "src/lib/db";
+import { validate, validateWithSync } from "@redwoodjs/api";
 
 export const itemsPage = ({
   page = 1,
@@ -20,7 +21,13 @@ export const itemsPage = ({
   items_per_page?: number;
 }) => {
   const offset = (page - 1) * items_per_page;
-
+  // validateWithSync(() => {
+  //   if (
+  //     !context.currentUser.permissions.some((d) => d.includes("items:read"))
+  //   ) {
+  //     throw "Your gallimimus outran the authorization process. Slow down!";
+  //   }
+  // });
   return {
     items: db.item.findMany({
       take: items_per_page,

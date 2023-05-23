@@ -34,10 +34,12 @@ export const schema = gql`
   }
 
   type Mutation {
-    createTribe(input: CreateTribeInput!): Tribe! @requireAuth
+    createTribe(input: CreateTribeInput!): Tribe!
+      @requireAuth
+      @hasPermission(permission: "tribe_create")
     updateTribe(id: Int!, input: UpdateTribeInput!): Tribe!
       @requireAuth
-      @hasPermission(permission: "gamedata_as")
+      @hasPermission(permission: "tribe_update")
     deleteTribe(id: Int!): Tribe! @requireAuth
   }
 `;

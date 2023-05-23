@@ -1,4 +1,4 @@
-import { parseJWT, Decoded } from "@redwoodjs/api";
+import { parseJWT, Decoded, CustomValidationError } from "@redwoodjs/api";
 import { AuthenticationError, ForbiddenError } from "@redwoodjs/graphql-server";
 import { db } from "./db";
 import type { Profile as PrismaUser } from "@prisma/client";
@@ -15,6 +15,7 @@ type RedwoodUser = Record<string, any> & {
   email?: string;
   role_id?: string;
   avatar_url?: string;
+  permissions?: string[];
 };
 
 /**
@@ -44,21 +45,24 @@ export const getCurrentUser = async (
   decoded: Decoded
 ): Promise<RedwoodUser | null> => {
   try {
-    // const currentUser =
-    //   await db.$queryRaw`SELECT * FROM auth."users" WHERE id::text = ${decoded.sub};`;
+    const { roles } = parseJWT({ decoded });
     const { sub, role } = decoded;
     let user = await db.profile.findUnique({
-      // include: { role_profile_role_idTorole: true },
+      include: { role_profile_role_idTorole: true },
       where: { id: sub.toString() },
     });
-    if (user) {
-      let role_id = user.role_id;
-      return { id: sub, ...user, role, roles: [role_id], ...decoded };
-    }
-
-    return { ...decoded };
+    return {
+      id: sub as string,
+      avatar_url: user.avatar_url,
+      username: user.username,
+      permissions: user?.role_profile_role_idTorole?.permissions || [],
+      roles: [user.role_id, ...roles],
+      ...decoded,
+      // email: "",
+    };
   } catch (error) {
-    return { id: decoded.sub.toString(), ...decoded };
+    console.log(error);
+    return { id: decoded.sub.toString(), ...decoded, error };
   }
 };
 
@@ -169,7 +173,7 @@ export const requireAuth = async ({ roles }: { roles?: AllowedRoles } = {}) => {
  */
 export const hasPerm = async (permission: permission) => {
   const userRole = await db.role.findUnique({
-    where: { id: context.currentUser?.role_id },
+    where: { id: context.currentUser.roles[0] },
   });
   return userRole?.permissions.some((d) => d.includes(permission));
 };
@@ -197,13 +201,17 @@ export const hasPermission = async ({
       "You don't have the required permission to do that."
     );
   }
+
   if (!isAuthenticated()) {
     throw new AuthenticationError("You don't have permission to do that.");
   }
 
-  if (!hasPerm(permission)) {
-    throw new ForbiddenError(
-      `Your gallimimus outran the authorization process. Slow down!`
+  if (
+    !context.currentUser.permissions?.some((d) => d.includes(permission))
+    // || !hasPerm(permission)
+  ) {
+    throw new AuthenticationError(
+      "Your gallimimus outran the authorization process. Slow down!"
     );
   }
 };

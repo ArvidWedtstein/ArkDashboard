@@ -100,11 +100,17 @@ export const schema = gql`
   type Mutation {
     createTimelineBasespotDino(
       input: CreateTimelineBasespotDinoInput!
-    ): TimelineBasespotDino! @requireAuth
+    ): TimelineBasespotDino!
+      @requireAuth
+      @hasPermission(permission: "timeline_create")
     updateTimelineBasespotDino(
       id: String!
       input: UpdateTimelineBasespotDinoInput!
-    ): TimelineBasespotDino! @requireAuth
-    deleteTimelineBasespotDino(id: String!): TimelineBasespotDino! @requireAuth
+    ): TimelineBasespotDino!
+      @requireAuth
+      @hasPermission(permission: "timeline_update")
+    deleteTimelineBasespotDino(id: String!): TimelineBasespotDino!
+      @requireAuth
+      @hasPermission(permission: "timeline_delete")
   }
 `;

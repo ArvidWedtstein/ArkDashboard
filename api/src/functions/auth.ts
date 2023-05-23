@@ -1,13 +1,9 @@
 import type { APIGatewayProxyEvent, Context } from "aws-lambda";
 import type { Profile as PrismaUser } from "@prisma/client";
 
-import {
-  DbAuthHandler,
-  PasswordValidationError,
-  DbAuthHandlerOptions,
-} from "@redwoodjs/api";
 import { db } from "src/lib/db";
 import { AuthenticationError, ForbiddenError } from "@redwoodjs/graphql-server";
+import { CustomValidationError } from "@redwoodjs/api";
 
 export const handler = async (
   event: APIGatewayProxyEvent,
@@ -30,38 +26,38 @@ export const handler = async (
   //     }
   //   }
   // }
-  const forgotPasswordOptions: DbAuthHandlerOptions<PrismaUser>["forgotPassword"] =
-    {
-      // handler() is invoked after verifying that a user was found with the given
-      // username. This is where you can send the user an email with a link to
-      // reset their password. With the default dbAuth routes and field names, the
-      // URL to reset the password will be:
-      //
-      // https://example.com/reset-password?resetToken=${user.resetToken}
-      //
-      // Whatever is returned from this function will be returned from
-      // the `forgotPassword()` function that is destructured from `useAuth()`
-      // You could use this return value to, for example, show the email
-      // address in a toast message so the user will know it worked and where
-      // to look for the email.
-      handler: (user) => {
-        return user;
-      },
 
-      // How long the resetToken is valid for, in seconds (default is 24 hours)
-      expires: 60 * 60 * 24,
+  const forgotPasswordOptions = {
+    // handler() is invoked after verifying that a user was found with the given
+    // username. This is where you can send the user an email with a link to
+    // reset their password. With the default dbAuth routes and field names, the
+    // URL to reset the password will be:
+    //
+    // https://example.com/reset-password?resetToken=${user.resetToken}
+    //
+    // Whatever is returned from this function will be returned from
+    // the `forgotPassword()` function that is destructured from `useAuth()`
+    // You could use this return value to, for example, show the email
+    // address in a toast message so the user will know it worked and where
+    // to look for the email.
+    handler: (user) => {
+      return user;
+    },
 
-      errors: {
-        // for security reasons you may want to be vague here rather than expose
-        // the fact that the email address wasn't found (prevents fishing for
-        // valid email addresses)
-        usernameNotFound: "Username not found",
-        // if the user somehow gets around client validation
-        usernameRequired: "Username is required",
-      },
-    };
+    // How long the resetToken is valid for, in seconds (default is 24 hours)
+    expires: 60 * 60 * 24,
 
-  const loginOptions: DbAuthHandlerOptions["login"] = {
+    errors: {
+      // for security reasons you may want to be vague here rather than expose
+      // the fact that the email address wasn't found (prevents fishing for
+      // valid email addresses)
+      usernameNotFound: "Username not found",
+      // if the user somehow gets around client validation
+      usernameRequired: "Username is required",
+    },
+  };
+
+  const loginOptions = {
     // handler() is called after finding the user that matches the
     // username/password provided at login, but before actually considering them
     // logged in. The `user` argument will be the user in the database that
@@ -95,7 +91,7 @@ export const handler = async (
     expires: 60 * 60 * 24 * 365 * 10,
   };
 
-  const resetPasswordOptions: DbAuthHandlerOptions["resetPassword"] = {
+  const resetPasswordOptions = {
     // handler() is invoked after the password has been successfully updated in
     // the database. Returning anything truthy will automatically logs the user
     // in. Return `false` otherwise, and in the Reset Password page redirect the
@@ -119,7 +115,7 @@ export const handler = async (
     },
   };
 
-  const signupOptions: DbAuthHandlerOptions["signup"] = {
+  const signupOptions = {
     // Whatever you want to happen to your data on new user signup. Redwood will
     // check for duplicate usernames before calling this handler. At a minimum
     // you need to save the `username`, `hashedPassword` and `salt` to your
@@ -142,13 +138,13 @@ export const handler = async (
 
     passwordValidation: (password) => {
       if (password.length < 8) {
-        throw new PasswordValidationError(
+        throw new CustomValidationError(
           "Password must be at least 8 characters"
         );
       }
 
       if (!password.match(/[A-Z]/)) {
-        throw new PasswordValidationError(
+        throw new CustomValidationError(
           "Password must contain at least one capital letter"
         );
       }
@@ -156,14 +152,14 @@ export const handler = async (
       return true;
     },
     handler: ({ username, hashedPassword, salt, userAttributes }) => {
-      return db.user.create({
-        data: {
-          email: username,
-          hashedPassword: hashedPassword,
-          // salt: salt,
-          // name: userAttributes.name
-        },
-      });
+      // return db.user.create({
+      //   data: {
+      //     email: username,
+      //     hashedPassword: hashedPassword,
+      //     // salt: salt,
+      //     // name: userAttributes.name
+      //   },
+      // });
     },
 
     errors: {
@@ -173,70 +169,70 @@ export const handler = async (
     },
   };
 
-  const authHandler = new DbAuthHandler(event, context, {
-    // Provide prisma db client
-    db: db,
+  // const authHandler = new DbAuthHandler(event, context, {
+  //   // Provide prisma db client
+  //   db: db,
 
-    // The name of the property you'd call on `db` to access your user table.
-    // ie. if your Prisma model is named `User` this value would be `user`, as in `db.user`
-    authModelAccessor: "profile",
+  //   // The name of the property you'd call on `db` to access your user table.
+  //   // ie. if your Prisma model is named `User` this value would be `user`, as in `db.user`
+  //   authModelAccessor: "profile",
 
-    // The name of the property you'd call on `db` to access your user credentials table.
-    // ie. if your Prisma model is named `UserCredential` this value would be `userCredential`, as in `db.userCredential`
+  //   // The name of the property you'd call on `db` to access your user credentials table.
+  //   // ie. if your Prisma model is named `UserCredential` this value would be `userCredential`, as in `db.userCredential`
 
-    // A map of what dbAuth calls a field to what your database calls it.
-    // `id` is whatever column you use to uniquely identify a user (probably
-    // something like `id` or `userId` or even `email`)
-    authFields: {
-      id: "id",
-      username: "email",
-      hashedPassword: "hashedPassword",
-      salt: "salt",
-      resetToken: "resetToken",
-      resetTokenExpiresAt: "resetTokenExpiresAt",
-      challenge: "webAuthnChallenge",
-    },
+  //   // A map of what dbAuth calls a field to what your database calls it.
+  //   // `id` is whatever column you use to uniquely identify a user (probably
+  //   // something like `id` or `userId` or even `email`)
+  //   authFields: {
+  //     id: "id",
+  //     username: "email",
+  //     hashedPassword: "hashedPassword",
+  //     salt: "salt",
+  //     resetToken: "resetToken",
+  //     resetTokenExpiresAt: "resetTokenExpiresAt",
+  //     challenge: "webAuthnChallenge",
+  //   },
 
-    // Specifies attributes on the cookie that dbAuth sets in order to remember
-    // who is logged in. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#restrict_access_to_cookies
-    cookie: {
-      HttpOnly: false,
-      Path: "/",
-      SameSite: "Strict",
-      Secure: process.env.NODE_ENV !== "development" ? true : false,
+  //   // Specifies attributes on the cookie that dbAuth sets in order to remember
+  //   // who is logged in. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#restrict_access_to_cookies
+  //   cookie: {
+  //     HttpOnly: false,
+  //     Path: "/",
+  //     SameSite: "Strict",
+  //     Secure: process.env.NODE_ENV !== "development" ? true : false,
 
-      // If you need to allow other domains (besides the api side) access to
-      // the dbAuth session cookie:
-      // Domain: 'example.com',
-    },
+  //     // If you need to allow other domains (besides the api side) access to
+  //     // the dbAuth session cookie:
+  //     // Domain: 'example.com',
+  //   },
 
-    forgotPassword: forgotPasswordOptions,
-    login: loginOptions,
-    resetPassword: resetPasswordOptions,
-    signup: signupOptions,
+  //   forgotPassword: forgotPasswordOptions,
+  //   login: loginOptions,
+  //   resetPassword: resetPasswordOptions,
+  //   signup: signupOptions,
 
-    // See https://redwoodjs.com/docs/authentication/dbauth#webauthn for options
-    webAuthn: {
-      enabled: false,
-      expires: 60 * 60 * 14,
-      name: "Webauthn Test",
-      domain:
-        process.env.NODE_ENV === "development" ? "localhost" : "netlify.app",
-      origin:
-        process.env.NODE_ENV === "development"
-          ? "http://localhost:8910"
-          : "https://arkdashboard.netlify.app/",
-      type: "platform",
-      timeout: 60000,
-      credentialFields: {
-        id: "id",
-        userId: "userId",
-        publicKey: "publicKey",
-        transports: "transports",
-        counter: "counter",
-      },
-    },
-  });
+  //   // See https://redwoodjs.com/docs/authentication/dbauth#webauthn for options
+  //   webAuthn: {
+  //     enabled: false,
+  //     expires: 60 * 60 * 14,
+  //     name: "Webauthn Test",
+  //     domain:
+  //       process.env.NODE_ENV === "development" ? "localhost" : "netlify.app",
+  //     origin:
+  //       process.env.NODE_ENV === "development"
+  //         ? "http://localhost:8910"
+  //         : "https://arkdashboard.netlify.app/",
+  //     type: "platform",
+  //     timeout: 60000,
+  //     credentialFields: {
+  //       id: "id",
+  //       userId: "userId",
+  //       publicKey: "publicKey",
+  //       transports: "transports",
+  //       counter: "counter",
+  //     },
+  //   },
+  // });
 
-  return await authHandler.invoke();
+  // return await authHandler.invoke();
 };

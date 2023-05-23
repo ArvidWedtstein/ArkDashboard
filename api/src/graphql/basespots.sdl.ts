@@ -60,10 +60,14 @@ export const schema = gql`
   }
 
   type Mutation {
-    createBasespot(input: CreateBasespotInput!): Basespot! @requireAuth
+    createBasespot(input: CreateBasespotInput!): Basespot!
+      @requireAuth
+      @hasPermission(permission: "basespot_create")
     updateBasespot(id: BigInt!, input: UpdateBasespotInput!): Basespot!
       @requireAuth
       @hasPermission(permission: "basespot_update")
-    deleteBasespot(id: BigInt!): Basespot! @requireAuth
+    deleteBasespot(id: BigInt!): Basespot!
+      @requireAuth
+      @hasPermission(permission: "basespot_delete")
   }
 `;

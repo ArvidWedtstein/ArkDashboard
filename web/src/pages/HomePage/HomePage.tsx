@@ -1,9 +1,9 @@
-import { Link, routes } from "@redwoodjs/router";
+import { Link, RouteAnnouncement, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "src/auth";
 import type { FindTribes } from "types/graphql";
 const HomePage = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, currentUser } = useAuth();
   // if (document.addEventListener) {
   //   document.addEventListener('contextmenu', function (e) {
   //     alert("You've tried to open context menu");
@@ -27,8 +27,6 @@ const HomePage = () => {
         <div
           className="relative overflow-hidden rounded-md bg-cover bg-no-repeat"
           style={{
-            imageResolution: "10dpi",
-            imageRendering: "auto",
             backgroundPosition: "50%",
             backgroundImage:
               "url('https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj')",

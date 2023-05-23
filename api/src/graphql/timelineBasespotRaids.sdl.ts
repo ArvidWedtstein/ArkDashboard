@@ -48,11 +48,17 @@ export const schema = gql`
   type Mutation {
     createTimelineBasespotRaid(
       input: CreateTimelineBasespotRaidInput!
-    ): TimelineBasespotRaid! @requireAuth
+    ): TimelineBasespotRaid!
+      @requireAuth
+      @hasPermission(permission: "timeline_create")
     updateTimelineBasespotRaid(
       id: String!
       input: UpdateTimelineBasespotRaidInput!
-    ): TimelineBasespotRaid! @requireAuth
-    deleteTimelineBasespotRaid(id: String!): TimelineBasespotRaid! @requireAuth
+    ): TimelineBasespotRaid!
+      @requireAuth
+      @hasPermission(permission: "timeline_update")
+    deleteTimelineBasespotRaid(id: String!): TimelineBasespotRaid!
+      @requireAuth
+      @hasPermission(permission: "timeline_delete")
   }
 `;

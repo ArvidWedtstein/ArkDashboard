@@ -177,8 +177,14 @@ export const schema = gql`
   }
 
   type Mutation {
-    createDino(input: CreateDinoInput!): Dino! @requireAuth
-    updateDino(id: String!, input: UpdateDinoInput!): Dino! @requireAuth
-    deleteDino(id: String!): Dino! @requireAuth
+    createDino(input: CreateDinoInput!): Dino!
+      @requireAuth
+      @hasPermission(permission: "gamedata_create")
+    updateDino(id: String!, input: UpdateDinoInput!): Dino!
+      @requireAuth
+      @hasPermission(permission: "gamedata_update")
+    deleteDino(id: String!): Dino!
+      @requireAuth
+      @hasPermission(permission: "gamedata_delete")
   }
 `;

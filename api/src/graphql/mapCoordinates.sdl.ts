@@ -45,10 +45,13 @@ export const schema = gql`
   type Mutation {
     createMapCoordinate(input: CreateMapCoordinateInput!): MapCoordinate!
       @requireAuth
+      @hasPermission(permission: "gamedata_create")
     updateMapCoordinate(
       id: String!
       input: UpdateMapCoordinateInput!
-    ): MapCoordinate! @requireAuth
-    deleteMapCoordinate(id: String!): MapCoordinate! @requireAuth
+    ): MapCoordinate! @requireAuth @hasPermission(permission: "gamedata_update")
+    deleteMapCoordinate(id: String!): MapCoordinate!
+      @requireAuth
+      @hasPermission(permission: "gamedata_delete")
   }
 `;

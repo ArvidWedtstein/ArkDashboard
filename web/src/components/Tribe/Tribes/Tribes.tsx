@@ -82,8 +82,9 @@ const TribesList = ({ tribes }: FindTribes) => {
             </p>
           </div>
         </div>
-        <div
-          className="hover:ring-pea-400 flex items-start rounded-xl bg-stone-300 p-4 shadow-lg hover:ring-1 dark:bg-zinc-700"
+
+        <button
+          className="hover:ring-pea-400 focus:ring-pea-400 flex items-start rounded-xl bg-stone-300 p-4 shadow-lg hover:ring-1 dark:bg-zinc-700"
           onClick={pickRandomTribe}
         >
           <div className="dark:border-pea-400 border-pea-100 bg-pea-50 flex h-12 w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800">
@@ -96,9 +97,9 @@ const TribesList = ({ tribes }: FindTribes) => {
             </svg>
           </div>
           <div className="ml-4 text-black dark:text-white">
-            <button className="">Pick random tribe name</button>
+            <span className="">Pick random tribe name</span>
           </div>
-        </div>
+        </button>
       </div>
       <Table
         className="m-4"
