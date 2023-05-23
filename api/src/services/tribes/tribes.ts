@@ -6,6 +6,7 @@ import type {
 
 import { db } from "src/lib/db";
 import { validate, validateUniqueness } from "@redwoodjs/api";
+import { hasPermission } from "src/lib/auth";
 
 export const tribes: QueryResolvers["tribes"] = () => {
   return db.tribe.findMany();
@@ -38,6 +39,7 @@ export const updateTribe: MutationResolvers["updateTribe"] = ({
   id,
   input,
 }) => {
+  hasPermission({ permission: "tribe_update" });
   return db.tribe.update({
     data: input,
     where: { id },

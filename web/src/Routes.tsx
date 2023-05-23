@@ -7,7 +7,7 @@
 // 'src/pages/HomePage/HomePage.js'         -> HomePage
 // 'src/pages/Admin/BooksPage/BooksPage.js' -> AdminBooksPage
 
-import { Set, Router, Route } from "@redwoodjs/router";
+import { Set, Router, Route, Private } from "@redwoodjs/router";
 
 import ScaffoldLayout from "src/layouts/ScaffoldLayout";
 
@@ -124,12 +124,14 @@ const Routes = () => {
           buttonLabel="New Item"
           buttonTo="newItem"
         >
-          <Route path="/items/new" page={ItemNewItemPage} name="newItem" />
-          <Route
-            path="/items/{id}/edit"
-            page={ItemEditItemPage}
-            name="editItem"
-          />
+          <Private unauthenticated="home" roles='f0c1b8e9-5f27-4430-ad8f-5349f83339c0'>
+            <Route path="/items/new" page={ItemNewItemPage} name="newItem" />
+            <Route
+              path="/items/{id}/edit"
+              page={ItemEditItemPage}
+              name="editItem"
+            />
+          </Private>
           <Route path="/items/{id}" page={ItemItemPage} name="item" />
           <Route path="/items" page={ItemItemsPage} name="items" />
         </Set>
@@ -180,13 +182,15 @@ const Routes = () => {
           buttonLabel="New Tribe"
           buttonTo="newTribe"
         >
-          <Route path="/tribes/new" page={TribeNewTribePage} name="newTribe" />
-          <Route
-            path="/tribes/{id:Int}/edit"
-            page={TribeEditTribePage}
-            name="editTribe"
-          />
-          <Route path="/tribes/{id:Int}" page={TribeTribePage} name="tribe" />
+          <Private unauthenticated="forbidden" roles='f0c1b8e9-5f27-4430-ad8f-5349f83339c0'>
+            <Route path="/tribes/new" page={TribeNewTribePage} name="newTribe" />
+            <Route
+              path="/tribes/{id:Int}/edit"
+              page={TribeEditTribePage}
+              name="editTribe"
+            />
+            <Route path="/tribes/{id:Int}" page={TribeTribePage} name="tribe" />
+          </Private>
           <Route path="/tribes" page={TribeTribesPage} name="tribes" />
         </Set>
         <Set

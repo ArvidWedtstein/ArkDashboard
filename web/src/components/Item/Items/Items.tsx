@@ -200,7 +200,7 @@ const ItemsList = ({
       })
     );
   };
-  const [view, setView] = useState("grid");
+  const [view, setView] = useState<"grid" | "list">("grid");
   // const groupedItems = useMemo(() => groupBy(itemsPage.items, "category"), [itemsPage.items])
   return (
     <div className="rw-segment overflow-hidden">
