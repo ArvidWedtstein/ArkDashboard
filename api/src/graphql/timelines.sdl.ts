@@ -26,9 +26,14 @@ export const schema = gql`
   }
 
   type Mutation {
-    createTimeline(input: CreateTimelineInput!): Timeline! @requireAuth
+    createTimeline(input: CreateTimelineInput!): Timeline!
+      @requireAuth
+      @hasPermission(permission: "timeline_create")
     updateTimeline(id: String!, input: UpdateTimelineInput!): Timeline!
       @requireAuth
-    deleteTimeline(id: String!): Timeline! @requireAuth
+      @hasPermission(permission: "timeline_update")
+    deleteTimeline(id: String!): Timeline!
+      @requireAuth
+      @hasPermission(permission: "timeline_delete")
   }
 `;

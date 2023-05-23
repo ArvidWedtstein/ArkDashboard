@@ -36,9 +36,14 @@ export const schema = gql`
   }
 
   type Mutation {
-    createItemRec(input: CreateItemRecInput!): ItemRec! @requireAuth
+    createItemRec(input: CreateItemRecInput!): ItemRec!
+      @requireAuth
+      @hasPermission(permission: "gamedata_create")
     updateItemRec(id: String!, input: UpdateItemRecInput!): ItemRec!
       @requireAuth
-    deleteItemRec(id: String!): ItemRec! @requireAuth
+      @hasPermission(permission: "gamedata_update")
+    deleteItemRec(id: String!): ItemRec!
+      @requireAuth
+      @hasPermission(permission: "gamedata_delete")
   }
-`
+`;

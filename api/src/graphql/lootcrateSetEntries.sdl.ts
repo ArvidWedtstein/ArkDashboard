@@ -37,11 +37,17 @@ export const schema = gql`
   type Mutation {
     createLootcrateSetEntry(
       input: CreateLootcrateSetEntryInput!
-    ): LootcrateSetEntry! @requireAuth
+    ): LootcrateSetEntry!
+      @requireAuth
+      @hasPermission(permission: "gamedata_create")
     updateLootcrateSetEntry(
       id: String!
       input: UpdateLootcrateSetEntryInput!
-    ): LootcrateSetEntry! @requireAuth
-    deleteLootcrateSetEntry(id: String!): LootcrateSetEntry! @requireAuth
+    ): LootcrateSetEntry!
+      @requireAuth
+      @hasPermission(permission: "gamedata_update")
+    deleteLootcrateSetEntry(id: String!): LootcrateSetEntry!
+      @requireAuth
+      @hasPermission(permission: "gamedata_delete")
   }
-`
+`;

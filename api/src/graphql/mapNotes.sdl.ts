@@ -43,9 +43,14 @@ export const schema = gql`
   }
 
   type Mutation {
-    createMapNote(input: CreateMapNoteInput!): MapNote! @requireAuth
+    createMapNote(input: CreateMapNoteInput!): MapNote!
+      @requireAuth
+      @hasPermission(permission: "gamedata_create")
     updateMapNote(id: String!, input: UpdateMapNoteInput!): MapNote!
       @requireAuth
-    deleteMapNote(id: String!): MapNote! @requireAuth
+      @hasPermission(permission: "gamedata_update")
+    deleteMapNote(id: String!): MapNote!
+      @requireAuth
+      @hasPermission(permission: "gamedata_delete")
   }
 `;

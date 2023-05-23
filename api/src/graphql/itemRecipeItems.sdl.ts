@@ -35,10 +35,15 @@ export const schema = gql`
   type Mutation {
     createItemRecipeItem(input: CreateItemRecipeItemInput!): ItemRecipeItem!
       @requireAuth
+      @hasPermission(permission: "gamedata_create")
     updateItemRecipeItem(
       id: String!
       input: UpdateItemRecipeItemInput!
-    ): ItemRecipeItem! @requireAuth
-    deleteItemRecipeItem(id: String!): ItemRecipeItem! @requireAuth
+    ): ItemRecipeItem!
+      @requireAuth
+      @hasPermission(permission: "gamedata_update")
+    deleteItemRecipeItem(id: String!): ItemRecipeItem!
+      @requireAuth
+      @hasPermission(permission: "gamedata_delete")
   }
 `;

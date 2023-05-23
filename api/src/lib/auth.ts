@@ -1,4 +1,4 @@
-import { parseJWT, Decoded } from "@redwoodjs/api";
+import { parseJWT, Decoded, CustomValidationError } from "@redwoodjs/api";
 import { AuthenticationError, ForbiddenError } from "@redwoodjs/graphql-server";
 import { db } from "./db";
 import type { Profile as PrismaUser } from "@prisma/client";
@@ -205,13 +205,13 @@ export const hasPermission = async ({
   if (!isAuthenticated()) {
     throw new AuthenticationError("You don't have permission to do that.");
   }
-  console.log(context.currentUser);
+
   if (
-    !context.currentUser.permissions?.some((d) => d.includes(permission)) ||
-    !hasPerm(permission)
+    !context.currentUser.permissions?.some((d) => d.includes(permission))
+    // || !hasPerm(permission)
   ) {
-    throw new ForbiddenError(
-      `Your gallimimus outran the authorization process. Slow down!`
+    throw new AuthenticationError(
+      "Your gallimimus outran the authorization process. Slow down!"
     );
   }
 };

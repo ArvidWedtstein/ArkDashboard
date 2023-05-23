@@ -82,8 +82,14 @@ export const schema = gql`
   }
 
   type Mutation {
-    createItem(input: CreateItemInput!): Item! @requireAuth
-    updateItem(id: BigInt!, input: UpdateItemInput!): Item! @requireAuth
-    deleteItem(id: BigInt!): Item! @requireAuth
+    createItem(input: CreateItemInput!): Item!
+      @requireAuth
+      @hasPermission(permission: "gamedata_create")
+    updateItem(id: BigInt!, input: UpdateItemInput!): Item!
+      @requireAuth
+      @hasPermission(permission: "gamedata_update")
+    deleteItem(id: BigInt!): Item!
+      @requireAuth
+      @hasPermission(permission: "gamedata_delete")
   }
 `;
