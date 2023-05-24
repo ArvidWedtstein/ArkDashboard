@@ -81,7 +81,7 @@ export const updateProfile: MutationResolvers["updateProfile"] = ({
   });
   return validateUniqueness(
     "profile",
-    { username: input.username },
+    { username: input.username, $self: { id } },
     { message: "That username is already taken" },
     () => {
       return db.profile.update({

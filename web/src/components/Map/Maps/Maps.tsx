@@ -262,46 +262,49 @@ const MapsList = ({ maps }: FindMaps) => {
   };
 
   return (
-    <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {maps.map((map) => (
-        <Link
-          key={map.id}
-          to={routes.map({ id: map.id.toString() })}
-          className="hover:no-underline"
-        >
-          <ArkCard
-            className="!dark:text-white !text-white"
-            title={map.name}
-            image={{
-              src: mapImages[map.name.replace(" ", "")],
-              alt: map.name,
-              position: `center`,
-            }}
-            subtitle={
-              <div className="flex flex-row gap-1">
-                {Object.entries(map).map(([key, value]) => {
-                  if (!value || (value as any).length == 0 || !mapData[key]) {
-                    return;
-                  }
-                  return (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 576 512"
-                      aria-hidden="true"
-                      fill="currentColor"
-                      className="h-4 w-4 fill-current"
-                    >
-                      <title>{key}</title>
-                      <g width={100}>{mapData[key].icon}</g>
-                    </svg>
-                  );
-                })}
-              </div>
-            }
-            icon={{ src: map.img }}
-          />
-        </Link>
-      ))}
+    <div>
+      <p className="text-center text-xl dark:text-white text-gray-900 before:content-['-\00a0'] after:content-['\00a0-']">Ark Maps</p>
+      <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {maps.map((map) => (
+          <Link
+            key={map.id}
+            to={routes.map({ id: map.id.toString() })}
+            className="hover:no-underline hover:ring-1 hover:ring-pea-500 hover:rounded-3xl"
+          >
+            <ArkCard
+              className="!dark:text-white !text-white"
+              title={map.name}
+              image={{
+                src: mapImages[map.name.replace(" ", "")],
+                alt: map.name,
+                position: `center`,
+              }}
+              subtitle={
+                <div className="flex flex-row gap-1">
+                  {Object.entries(map).map(([key, value]) => {
+                    if (!value || (value as any).length == 0 || !mapData[key]) {
+                      return;
+                    }
+                    return (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 576 512"
+                        aria-hidden="true"
+                        fill="currentColor"
+                        className="h-4 w-4 fill-current"
+                      >
+                        <title>{key}</title>
+                        <g width={100}>{mapData[key].icon}</g>
+                      </svg>
+                    );
+                  })}
+                </div>
+              }
+              icon={{ src: map.img }}
+            />
+          </Link>
+        ))}
+      </div>
     </div>
   );
 };
