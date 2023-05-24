@@ -13,8 +13,8 @@ export const schema = gql`
   }
 
   type Query {
-    itemRecs: [ItemRec!]! @requireAuth
-    itemRec(id: String!): ItemRec @requireAuth
+    itemRecs: [ItemRec!]! @skipAuth
+    itemRec(id: String!): ItemRec @skipAuth
   }
 
   input CreateItemRecInput {

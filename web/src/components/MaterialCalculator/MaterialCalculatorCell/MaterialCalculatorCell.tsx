@@ -1,49 +1,30 @@
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import { MaterialGrid } from "../MaterialGrid/MaterialGrid";
-
-// export const QUERY = gql`
-//    query {
-//      items {
-//        id
-//        created_at
-//        name
-//        description
-//        image
-//        max_stack
-//        weight
-//        engram_points
-//        crafting_time
-//        req_level
-//        yields
-//        stats
-//        color
-//        type
-//      }
-//    }
-//  `
+import { FindItemsMats } from "types/graphql";
 
 // Query from ItemRecipe directly instead?
+
+// items {
+//   id
+//   name
+//   image
+//   crafting_time
+//   category
+//   type
+//   ItemRecipe_ItemRecipe_crafted_item_idToItem {
+//     yields
+//     amount
+//     Item_ItemRecipe_crafting_stationToItem {
+//       id
+//       name
+//     }
+//     Item_ItemRecipe_item_idToItem {
+//       id
+//     }
+//   }
+// }
 export const QUERY = gql`
   query FindItemsMats {
-    items {
-      id
-      name
-      image
-      crafting_time
-      category
-      type
-      ItemRecipe_ItemRecipe_crafted_item_idToItem {
-        yields
-        amount
-        Item_ItemRecipe_crafting_stationToItem {
-          id
-          name
-        }
-        Item_ItemRecipe_item_idToItem {
-          id
-        }
-      }
-    }
     itemRecs {
       id
       crafted_item_id
@@ -60,13 +41,6 @@ export const QUERY = gql`
       ItemRecipeItem {
         id
         amount
-        ItemRec {
-          id
-          yields
-          crafted_item_id
-          crafting_station_id
-          crafting_time
-        }
         Item {
           id
           name
@@ -76,7 +50,6 @@ export const QUERY = gql`
     }
   }
 `;
-
 
 export const Loading = () => (
   <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-transparent">
@@ -89,10 +62,11 @@ export const Loading = () => (
 
 export const Empty = () => <div>Empty</div>;
 
-export const Failure = ({ error }: CellFailureProps) => (
+export const Failure = ({ error, queryResult, updating }: CellFailureProps) => (
   <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
     <svg
-      className="h-12 w-12 fill-current"
+      className="h-12 w-12"
+      fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
     >
@@ -103,14 +77,15 @@ export const Failure = ({ error }: CellFailureProps) => (
         Some unexpected shit happend
       </p>
       <p className="text-sm">{error?.message}</p>
+      <p className="text-sm">{JSON.stringify(queryResult)}</p>
     </div>
   </div>
 );
 
-export const Success = ({ items, itemRecs }) => {
+export const Success = ({ itemRecs }: CellSuccessProps<FindItemsMats>) => {
   return (
     <div className="rw-form-wrapper container-xl mx-auto">
-      <MaterialGrid items={items} testitems={itemRecs} />
+      <MaterialGrid itemRecs={itemRecs} />
     </div>
   );
 };

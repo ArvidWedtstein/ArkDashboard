@@ -6,6 +6,13 @@ import type {
 
 import { db } from "src/lib/db";
 
+// export const itemRecsByCraftingStation: QueryResolvers["itemRecsByCraftingStation"] =
+//   ({ ids }) => {
+//     return db.itemRec.findMany({
+//       where: { crafting_station_id: { in: ids } },
+//     });
+//   };
+
 export const itemRecs: QueryResolvers["itemRecs"] = () => {
   return db.itemRec.findMany();
 };

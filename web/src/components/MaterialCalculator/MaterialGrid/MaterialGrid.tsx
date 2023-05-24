@@ -8,16 +8,10 @@ import {
   RWGqlError,
   SearchField,
 } from "@redwoodjs/forms";
-import {
-  useCallback,
-  useMemo,
-  useReducer,
-  useState,
-} from "react";
+import { useCallback, useMemo, useReducer, useState } from "react";
 
 import {
   formatNumberWithThousandSeparator,
-  getBaseMaterials,
   getBaseMaterialsNew,
   groupBy,
   timeFormatL,
@@ -26,115 +20,46 @@ import debounce from "lodash.debounce";
 import Table from "src/components/Util/Table/Table";
 import { useLazyQuery } from "@apollo/client";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
+import { FindItemsMats } from "types/graphql";
 interface MaterialGridProps {
-  items: any;
-  testitems?: any;
+  itemRecs: any[];
   error?: RWGqlError;
 }
 
-// const QUERY = gql`
-//   query FindItemsByIds($id: [BigInt!]!) {
-//     itemsByIds: itemsByIds(id: $id) {
-//       id
-//       name
-//       image
-//       crafting_time
-//       ItemRecipe_ItemRecipe_crafted_item_idToItem {
-//         amount
-//         yields
-//         Item_ItemRecipe_crafting_stationToItem {
-//           id
-//           name
-//           image
-//         }
-//         Item_ItemRecipe_item_idToItem {
-//           id
-//           name
-//           image
-//           crafting_time
-//           ItemRecipe_ItemRecipe_crafted_item_idToItem {
-//             amount
-//             yields
-//             Item_ItemRecipe_crafting_stationToItem {
-//               id
-//               name
-//               image
-//             }
-//             Item_ItemRecipe_item_idToItem {
-//               id
-//               name
-//               image
+export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
+  const [search, setSearch] = useState("");
+  const [craftingStations, setCraftingStations] = useState<any>([]);
 
-//               crafting_time
-//               ItemRecipe_ItemRecipe_crafted_item_idToItem {
-//                 amount
-//                 yields
-//                 Item_ItemRecipe_crafting_stationToItem {
-//                   id
-//                   name
-//                   image
-//                 }
-//                 Item_ItemRecipe_item_idToItem {
-//                   id
-//                   name
-//                   image
-//                   crafting_time
-//                   ItemRecipe_ItemRecipe_crafted_item_idToItem {
-//                     amount
-//                     yields
-//                     Item_ItemRecipe_item_idToItem {
-//                       id
-//                       name
-//                       image
-//                       crafting_time
-//                     }
-//                     Item_ItemRecipe_crafting_stationToItem {
-//                       id
-//                       name
-//                     }
-//                   }
-//                 }
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-// `;
-
-
-export const MaterialGrid = ({
-  error,
-  items: arkitems,
-  testitems,
-}: MaterialGridProps) => {
-  const [craftingStations, setCraftingStations] = useState([39, 126, 185, 607, 606, 360]);
-  // const items = useMemo(() => {
-  //   return arkitems
-  //     .filter((i) => ![""].includes(i.category) && !["Meat"].includes(i.type))
-  //     .map((v) => ({ ...v }));
-
-  // }, []);
-
-  const items2 = useMemo(() => {
-    const craftedItems = groupBy(testitems, "crafted_item_id");
-    const craftingStations = {};
+  const items = useMemo(() => {
+    const craftedItems = groupBy(itemRecs, "crafted_item_id");
+    const craftingStation = {};
 
     for (const [key, value] of Object.entries(craftedItems)) {
-      craftingStations[key] = groupBy(value as any, "crafting_station_id");
+      craftingStation[key] = groupBy(value as any, "crafting_station_id");
     }
-
     const result = [];
-
-    for (const v of Object.values(craftingStations)) {
+    console.log(craftingStations);
+    for (const v of Object.values(craftingStation)) {
+      // console.log(
+      //   Object.keys(v).some((f) => craftingStations.includes(parseInt(f)))
+      // );
       const craftingStation = Object.values(Object.values(v)[0])[0];
       result.push(craftingStation);
     }
 
     return result;
-  }, []);
+  }, [craftingStations]);
 
+  const categories = useMemo(() => {
+    return groupBy(
+      items
+        .map((f) => f.Item_ItemRec_crafted_item_idToItem)
+        .filter((item) =>
+          item.name.toLowerCase().includes(search.toLowerCase())
+        ),
+      "category"
+    );
+  }, [items, search]);
 
   const [viewBaseMaterials, setViewBaseMaterials] = useState(false);
   const toggleBaseMaterials = useCallback(
@@ -178,9 +103,9 @@ export const MaterialGrid = ({
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                ...item,
-                amount: item.amount + (action.index || 1) * yields,
-              }
+                  ...item,
+                  amount: item.amount + (action.index || 1) * yields,
+                }
               : item
           );
         }
@@ -213,9 +138,9 @@ export const MaterialGrid = ({
           const yields = item?.yields || 1;
           return i === action.index
             ? {
-              ...item,
-              amount: parseInt(item.amount) + parseInt(yields),
-            }
+                ...item,
+                amount: parseInt(item.amount) + parseInt(yields),
+              }
             : item;
         });
       }
@@ -230,9 +155,9 @@ export const MaterialGrid = ({
           const yields = item?.yields || 1;
           return i === action.index
             ? {
-              ...item,
-              amount: item.amount - yields,
-            }
+                ...item,
+                amount: item.amount - yields,
+              }
             : item;
         });
       }
@@ -251,9 +176,9 @@ export const MaterialGrid = ({
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                ...item,
-                amount: parseInt(item.amount || 0) + yields,
-              }
+                  ...item,
+                  amount: parseInt(item.amount || 0) + yields,
+                }
               : item
           );
         }
@@ -281,7 +206,9 @@ export const MaterialGrid = ({
 
   const onAdd = ({ itemId }) => {
     if (!itemId) return;
-    let item = items2.find((item) => parseInt(item.crafted_item_id) === parseInt(itemId));
+    let item = items.find(
+      (item) => parseInt(item.crafted_item_id) === parseInt(itemId)
+    );
     // loadItem({ variables: { item_recipe_id: [itm.recipe_id] } });
     // console.log(item)
     setItem({ type: "ADD", item: item });
@@ -365,27 +292,20 @@ export const MaterialGrid = ({
     //   variables: { id: Object.keys(towerItems), amount: towerItems },
     // });
     for (const [key, value] of Object.entries(towerItems)) {
-      // let itemfound = items.find(
-      //   (item) => parseInt(item.id.toString()) === parseInt(key)
-      // );
-      let itemfound = items2.find((item) => parseInt(item.crafted_item_id) === parseInt(key));
+      let itemfound = items.find(
+        (item) => parseInt(item.crafted_item_id) === parseInt(key)
+      );
       if (itemfound) {
         setItem({ type: "ADD_AMOUNT_BY_NUM", item: itemfound, index: value });
       }
     }
   }, []);
 
-  // const mergeItemRecipe = useCallback(getBaseMaterials, [item]);
-  const mergeItemRecipe = useCallback(getBaseMaterialsNew, [
-    item,
-    craftingStations,
-  ]);
+  const mergeItemRecipe = useCallback(getBaseMaterialsNew, [item]);
 
   const clear = () => {
     setItem({ type: "RESET" });
   };
-
-  const [search, setSearch] = useState("");
 
   return (
     <Form
@@ -473,81 +393,56 @@ export const MaterialGrid = ({
                 />
               </div>
             </li>
-            {!items2 ||
-              (items2.length < 1 && (
+            {!items ||
+              (items.length < 1 && (
                 <li className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
                   No items found
                 </li>
               ))}
-            {Object.entries(
-              groupBy(
-                items2.map((f) => f.Item_ItemRec_crafted_item_idToItem).filter((item) =>
-                  item.name.toLowerCase().includes(search.toLowerCase())
-                ),
-                "category"
-              )
-            ).map(([category, categoryitems]: any) => (
-              <li key={category}>
-                <details
-                  open={
-                    Object.values(
-                      groupBy(
-                        items2.map((f) => f.Item_ItemRec_crafted_item_idToItem).filter((item) =>
-                          item.name
-                            .toLowerCase()
-                            .includes(search.toLowerCase())
-                        ),
-                        "category"
-                      )
-                    ).length === 1
-                  }
-                >
-                  <summary className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                    <svg
-                      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                      <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                    </svg>
-                    <span className="ml-2">{category}</span>
-                  </summary>
+            {Object.entries(categories).map(
+              ([category, categoryitems]: any) => (
+                <li key={category}>
+                  <details open={Object.values(categories).length === 1}>
+                    <summary className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+                      <svg
+                        className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                        <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                      </svg>
+                      <span className="ml-2">{category}</span>
+                    </summary>
 
-                  <ul className="py-2">
-                    {Object.values(
-                      groupBy(
-                        items2.map((f) => f.Item_ItemRec_crafted_item_idToItem).filter((item) =>
-                          item.name
-                            .toLowerCase()
-                            .includes(search.toLowerCase())
-                        ),
-                        "category"
-                      )
-                    ).length === 1 || categoryitems.every((item) => !item.type)
-                      ? categoryitems.map((item) => (
-                        <li key={`${category}-${item.type}-${item.id}`}>
-                          <button
-                            type="button"
-                            className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                            onClick={() => onAdd({ itemId: item.id })}
-                          >
-                            <img
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
-                              alt={item.name}
-                              className="mr-2 h-5 w-5"
-                            />
-                            {item.name}
-                          </button>
-                        </li>
-                      ))
-                      : Object.entries(groupBy(categoryitems, "type")).map(
-                        ([type, typeitems]: any) => (
-                          <li key={`${category}-${type}`}>
-                            <details className="">
-                              <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                                {/* <svg
+                    <ul className="py-2">
+                      {Object.values(categories).length === 1 ||
+                      categoryitems.every((item, i, a) => {
+                        return !item.type;
+                      })
+                        ? categoryitems.map((item) => (
+                            <li key={`${category}-${item.type}-${item.id}`}>
+                              <button
+                                type="button"
+                                className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                                onClick={() => onAdd({ itemId: item.id })}
+                              >
+                                <img
+                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+                                  alt={item.name}
+                                  className="mr-2 h-5 w-5"
+                                />
+                                {item.name}
+                              </button>
+                            </li>
+                          ))
+                        : Object.entries(groupBy(categoryitems, "type")).map(
+                            ([type, typeitems]: any) => (
+                              <li key={`${category}-${type}`}>
+                                <details className="">
+                                  <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+                                    {/* <svg
                                     aria-hidden="true"
                                     className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                     fill="currentColor"
@@ -557,41 +452,43 @@ export const MaterialGrid = ({
                                     <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                                     <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                                   </svg> */}
-                                <span className="ml-2">{type}</span>
-                                <span className="text-pea-800 dark:bg-pea-900 dark:text-pea-300 bg-pea-100 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full p-3 text-sm">
-                                  {typeitems.length}
-                                </span>
-                              </summary>
+                                    <span className="ml-2">{type}</span>
+                                    <span className="text-pea-800 dark:bg-pea-900 dark:text-pea-300 bg-pea-100 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full p-3 text-sm">
+                                      {typeitems.length}
+                                    </span>
+                                  </summary>
 
-                              <ul className="py-2">
-                                {typeitems.map((item) => (
-                                  <li key={`${category}-${type}-${item.id}`}>
-                                    <button
-                                      type="button"
-                                      className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                      onClick={() =>
-                                        onAdd({ itemId: item.id })
-
-                                      }
-                                    >
-                                      <img
-                                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
-                                        alt={item.name}
-                                        className="mr-2 h-5 w-5"
-                                      />
-                                      {item.name}
-                                    </button>
-                                  </li>
-                                ))}
-                              </ul>
-                            </details>
-                          </li>
-                        )
-                      )}
-                  </ul>
-                </details>
-              </li>
-            ))}
+                                  <ul className="py-2">
+                                    {typeitems.map((item) => (
+                                      <li
+                                        key={`${category}-${type}-${item.id}`}
+                                      >
+                                        <button
+                                          type="button"
+                                          className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                                          onClick={() =>
+                                            onAdd({ itemId: item.id })
+                                          }
+                                        >
+                                          <img
+                                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+                                            alt={item.name}
+                                            className="mr-2 h-5 w-5"
+                                          />
+                                          {item.name}
+                                        </button>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </details>
+                              </li>
+                            )
+                          )}
+                    </ul>
+                  </details>
+                </li>
+              )
+            )}
           </ul>
         </div>
       </div>
@@ -599,7 +496,7 @@ export const MaterialGrid = ({
         <Table
           vertical={true}
           header={false}
-          rows={mergeItemRecipe(viewBaseMaterials, items2, ...item)}
+          rows={mergeItemRecipe(viewBaseMaterials, items, ...item)}
           className="animate-fade-in my-4"
           caption={{
             title: "Item",
@@ -618,9 +515,10 @@ export const MaterialGrid = ({
           }}
           columns={[
             {
-              field: "name",
+              field: "Item_ItemRec_crafted_item_idToItem",
               label: "Name",
               className: "text-center",
+              valueFormatter: ({ value }) => value.name,
             },
             {
               field: "amount",
@@ -631,7 +529,7 @@ export const MaterialGrid = ({
                 return (
                   <div className="flex flex-col items-center justify-center">
                     <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.Item_ItemRec_crafted_item_idToItem.image}`}
                       className="h-6 w-6"
                     />
                     <span className="text-sm">
@@ -644,7 +542,56 @@ export const MaterialGrid = ({
             },
           ]}
         />
-        {/* <pre className="text-white">{JSON.stringify(item, null, 2)}</pre> */}
+        {/* <pre className="text-white">
+          {JSON.stringify(
+            mergeItemRecipe(viewBaseMaterials, items, ...item),
+            null,
+            2
+          )}
+        </pre> */}
+
+        <CheckboxGroup
+          defaultValue={craftingStations.map((station) => station.toString())}
+          validation={{ single: true, valueAsNumber: true }}
+          onChange={(_, i) => {
+            setCraftingStations((prev) => [...prev, ...i.map(Number)]);
+          }}
+          options={[
+            {
+              value: 107,
+              label: "Mortar And Pestle",
+              image:
+                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/mortar-and-pestle.png",
+            },
+            {
+              value: 607,
+              label: "Chemistry Bench",
+              image:
+                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/chemistry-bench.png",
+            },
+          ]}
+        />
+        <CheckboxGroup
+          defaultValue={craftingStations.map((station) => station.toString())}
+          validation={{ single: true, valueAsNumber: true }}
+          onChange={(_, i) => {
+            setCraftingStations((prev) => [...prev, ...i.map(Number)]);
+          }}
+          options={[
+            {
+              value: 600,
+              label: "Industrial Forge",
+              image:
+                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-forge.png",
+            },
+            {
+              value: 125,
+              label: "Refining Forge",
+              image:
+                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/refining-forge.png",
+            },
+          ]}
+        />
         <Table
           rows={item}
           className="animate-fade-in my-4 whitespace-nowrap"
@@ -701,7 +648,7 @@ export const MaterialGrid = ({
                     />
                   </button>
                 );
-              }
+              },
             },
             {
               field: "amount",
@@ -736,7 +683,7 @@ export const MaterialGrid = ({
                     +
                   </button>
                 </div>
-              )
+              ),
             },
             // ...mergeItemRecipe(
             //   false,
@@ -792,30 +739,45 @@ export const MaterialGrid = ({
               numeric: false,
               className: "text-center flex flex-row justify-start items-center",
               renderCell: ({ row, value }) => {
-                // console.log(mergeItemRecipe(false, items2, {
-                //   ...row,
-                // }))
-                return mergeItemRecipe(false, items2, {
+                // console.log(
+                //   "MERGEITEM",
+                //   mergeItemRecipe(false, items, {
+                //     ...row,
+                //   })
+                // );
+                return mergeItemRecipe(false, items, {
                   ...row,
                 })
-                  .sort((a, b) => a.id - b.id)
-                  .map((itm, i) => (
-                    <div
-                      className="min-w-16 ml-2 flex w-10 flex-col items-center justify-center"
-                      id={`${itm.id}-${i * Math.random()}${i}`}
-                      key={`${itm.id}-${i * Math.random()}${i}`}
-                    >
-                      <img
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${itm.image}`}
-                        className="h-6 w-6"
-                        title={itm.name}
-                        alt={itm.name}
-                      />
-                      <span className="text-sm text-black dark:text-white">
-                        {formatNumberWithThousandSeparator(itm.amount)}
-                      </span>
-                    </div>
-                  ));
+                  .sort(
+                    (a, b) =>
+                      a.Item_ItemRec_crafted_item_idToItem.id -
+                      b.Item_ItemRec_crafted_item_idToItem.id
+                  )
+                  .map(
+                    (
+                      {
+                        Item_ItemRec_crafted_item_idToItem: { id, name, image },
+                        amount,
+                      },
+                      i
+                    ) => (
+                      <div
+                        className="min-w-16 ml-2 flex w-10 flex-col items-center justify-center"
+                        id={`${id}-${i * Math.random()}${i}`}
+                        key={`${id}-${i * Math.random()}${i}`}
+                      >
+                        <img
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
+                          className="h-6 w-6"
+                          title={name}
+                          alt={name}
+                        />
+                        <span className="text-sm text-black dark:text-white">
+                          {formatNumberWithThousandSeparator(amount)}
+                        </span>
+                      </div>
+                    )
+                  );
               },
             },
           ]}
