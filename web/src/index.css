@@ -13,8 +13,6 @@
  * END --- SETUP TAILWINDCSS EDIT
  */
 body {
-  /* @apply bg-white dark:bg-[#252636]; */
-  /* @apply font-poppins bg-white dark:bg-[#1D2026]; */
   @apply font-poppins bg-white dark:bg-neutral-900;
 }
 /* @font-face {

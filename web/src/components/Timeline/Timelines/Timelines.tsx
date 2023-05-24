@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 import { QUERY } from "src/components/Timeline/TimelinesCell";
 import { ContextMenu } from "src/components/Util/ContextMenu/ContextMenu";
-import { pluralize, timeTag, truncate } from "src/lib/formatters";
+import { timeTag } from "src/lib/formatters";
 
 import type {
   DeleteTimelineMutationVariables,

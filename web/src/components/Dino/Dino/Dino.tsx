@@ -2096,7 +2096,7 @@ const Dino = ({ dino }: Props) => {
                       <p className="w-14">{stat}</p>
                       {["base", "sprint"].map((label, d) => (
                         <p
-                          className="rw-input w-20"
+                          className="rw-input w-20 truncate"
                           key={`${label}${d}${index}`}
                         >
                           {!value[label]

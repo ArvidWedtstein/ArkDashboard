@@ -5,6 +5,7 @@ import { useAuth } from "src/auth";
 interface AvatarProps {
   url: string;
   size: number;
+  // sizes?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   onUpload?: (path: string) => void;
   className?: string;
   storage?: string;
@@ -14,6 +15,7 @@ const Avatar = memo<AvatarProps>(
   ({
     url,
     size,
+    // sizes,
     onUpload,
     className = "",
     storage = "avatars",
@@ -21,42 +23,27 @@ const Avatar = memo<AvatarProps>(
   }: AvatarProps) => {
     const { client: supabase } = useAuth();
 
-    const [avatarUrl, setAvatarUrl] = useState(null);
+    // const [avatarUrl, setAvatarUrl] = useState(null);
     const [uploading, setUploading] = useState(false);
 
-    useEffect(() => {
-      if (!!url) {
-        downloadImage(url);
-      }
-    }, [url]);
+    // useEffect(() => {
+    //   if (!!url) {
+    //     downloadImage(url);
+    //   }
+    // }, [url]);
 
-    const downloadImage = async (path) => {
-      try {
-        const { data, error } = await supabase.storage
-          .from(storage)
-          .download(path);
-        if (error) throw error;
-        if (data) setAvatarUrl(URL.createObjectURL(data));
-      } catch (error) {
-        console.log("Error downloading image: ", error.message);
-      }
-    };
-    // async function downloadImage2(path) {
+    // const downloadImage = async (path) => {
     //   try {
     //     const { data, error } = await supabase.storage
     //       .from(storage)
     //       .download(path);
-    //     if (error) {
-    //       throw error;
-    //     }
-    //     if (data) {
-    //       const url = URL.createObjectURL(data);
-    //       setAvatarUrl(url);
-    //     }
+    //     if (error) throw error;
+    //     if (data) setAvatarUrl(URL.createObjectURL(data));
     //   } catch (error) {
     //     console.log("Error downloading image: ", error.message);
     //   }
-    // }
+    // };
+
 
     const uploadAvatar = async (event) => {
       try {
@@ -115,29 +102,14 @@ const Avatar = memo<AvatarProps>(
             className
           )}
         >
-          {avatarUrl ? (
-            <div
-              className="h-full w-full rounded-full bg-cover bg-center bg-no-repeat"
-              id="imagePreview"
-              style={{
-                backgroundImage: `url(${avatarUrl})`,
-                height: size,
-                width: size,
-              }}
-            >
-              {/* <PingAlert color={`bg-lime-500`} /> */}
-            </div>
+          {url ? (
+            <img className="w-full h-full rounded-full" id="imagePreview" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${url}`} alt={'avatar'} />
           ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              stroke="currentColor"
-              className="h-6 w-6"
-              fill="currentColor"
-              // style={{ height: size, width: size }}
-              viewBox="0 0 448 512"
-            >
-              <path d="M224 256c70.7 0 128-57.31 128-128s-57.3-128-128-128C153.3 0 96 57.31 96 128S153.3 256 224 256zM224 32c52.94 0 96 43.06 96 96c0 52.93-43.06 96-96 96S128 180.9 128 128C128 75.06 171.1 32 224 32zM274.7 304H173.3C77.61 304 0 381.6 0 477.3c0 19.14 15.52 34.67 34.66 34.67h378.7C432.5 512 448 496.5 448 477.3C448 381.6 370.4 304 274.7 304zM413.3 480H34.66C33.2 480 32 478.8 32 477.3C32 399.4 95.4 336 173.3 336h101.3C352.6 336 416 399.4 416 477.3C416 478.8 414.8 480 413.3 480z" />
-            </svg>
+            <div className="relative w-8 h-8 overflow-hidden bg-zinc-100 rounded-full dark:bg-zinc-600">
+              <svg className="absolute w-10 h-10 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+              </svg>
+            </div>
           )}
         </div>
       </div>

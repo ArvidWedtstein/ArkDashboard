@@ -40,183 +40,120 @@ const Profile = ({ profile }: Props) => {
     }
   };
 
+
   return (
-    <>
-      <main className="">
-        <section className="relative h-[200px]">
-          <div
-            className="absolute top-0 h-full w-full bg-cover bg-center"
-            style={{
-              backgroundImage:
-                "url('https://c4.wallpaperflare.com/wallpaper/506/22/433/ark-ark-survival-evolved-cherry-blossom-video-games-wallpaper-preview.jpg')",
-            }}
-          >
-            <span
-              id="blackOverlay"
-              className="absolute left-0 h-full w-full bg-black opacity-50"
-            ></span>
-          </div>
-        </section>
-        <section className="bg-blueGray-200 relative -mt-32 py-16">
-          ¨
-          <div className="container-fluid mx-auto px-4">
-            <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded-lg bg-white shadow-xl">
-              <div className="px-6">
-                <div className="flex flex-wrap justify-center">
-                  <div className="flex w-full justify-center px-4 lg:order-2 lg:w-3/12">
-                    <div className="relative">
-                      <Avatar
-                        className="absolute -mt-20 h-auto rounded-full border-none align-middle shadow-xl"
-                        url={profile.avatar_url}
-                        size={200}
-                        editable={false}
-                      />
-                    </div>
+    <div className="">
+      <section className="relative h-[200px]">
+        <div
+          className="absolute top-0 h-full w-full bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://c4.wallpaperflare.com/wallpaper/506/22/433/ark-ark-survival-evolved-cherry-blossom-video-games-wallpaper-preview.jpg')",
+          }}
+        >
+          <span
+            id="blackOverlay"
+            className="absolute left-0 h-full w-full bg-black opacity-50"
+          ></span>
+        </div>
+      </section>
+      <section className="relative -mt-32 py-16">
+        <div className="container-fluid mx-auto px-4">
+          <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded-lg dark:bg-zinc-500 bg-white shadow-xl">
+            <div className="px-6">
+              <div className="flex flex-wrap justify-center">
+                <div className="flex w-full justify-center px-4 lg:order-2 lg:w-3/12">
+                  <div className="relative">
+                    <Avatar
+                      className="absolute -mt-20 h-auto rounded-full border-none align-middle shadow-xl"
+                      url={profile.avatar_url}
+                      size={200}
+                      editable={false}
+                    />
                   </div>
-                  <div className="w-full px-4 lg:order-3 lg:w-4/12 lg:self-center lg:text-right">
-                    <div className="mt-32 py-6 px-3 sm:mt-0">
-                      {/* <button
-                        className="mb-1 rounded bg-blue-500 px-4 py-2 text-xs font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-md focus:outline-none active:bg-blue-600 sm:mr-2"
-                        onClick={() =>
-                          updateProfile({
-                            username,
-                            website,
-                            avatar_url,
-                            firstname,
-                            lastname,
-                            biography,
-                          })
-                        }
-                        disabled={loading}
-                      >
-                        {loading ? "Loading ..." : "Update"}
-                      </button> */}
-                    </div>
+                </div>
+                <div className="w-full px-4 lg:order-3 lg:w-4/12 lg:self-center lg:text-right">
+                  <div className="mt-32 py-6 px-3 sm:mt-0">
+
                   </div>
-                  <div className="w-full px-4 lg:order-1 lg:w-4/12">
-                    <div className="flex justify-center py-4 pt-8 lg:pt-4">
-                      <div className="mr-4 p-3 text-center">
-                        <span className="text-blueGray-600 block text-xl font-bold uppercase tracking-wide">
-                          0
-                        </span>
-                        <span className="text-blueGray-400 text-sm">
-                          Friends
-                        </span>
-                      </div>
-                      <div className="mr-4 p-3 text-center">
-                        <span className="text-blueGray-600 block text-xl font-bold uppercase tracking-wide">
-                          0
-                        </span>
-                        <span className="text-blueGray-400 text-sm">
-                          Basespots
-                        </span>
-                      </div>
-                      <div className="p-3 text-center lg:mr-4">
-                        <span className="text-blueGray-600 block text-xl font-bold uppercase tracking-wide">
-                          {/* {tribescreated} */}0
-                        </span>
-                        <span className="text-blueGray-400 text-sm">
-                          Tribes
-                        </span>
-                      </div>
+                </div>
+                <div className="w-full px-4 lg:order-1 lg:w-4/12">
+                  <div className="flex justify-center py-4 pt-8 lg:pt-4">
+                    <div className="mr-4 p-3 text-center">
+                      <span className="text-gray-800 dark:text-stone-100 block text-xl font-bold uppercase tracking-wide">
+                        0
+                      </span>
+                      <span className="text-sm text-gray-600 dark:text-stone-300">
+                        Friends
+                      </span>
+                    </div>
+                    <div className="mr-4 p-3 text-center">
+                      <span className="text-gray-800 dark:text-stone-100 block text-xl font-bold uppercase tracking-wide">
+                        {(new Date().getFullYear() - new Date(profile.created_at).getFullYear() + (new Date().getMonth() - new Date(profile.created_at).getMonth()) / 12).toPrecision(1)}
+                      </span>
+                      <span className="text-sm text-gray-600 dark:text-stone-300">
+                        Years Active
+                      </span>
+                    </div>
+                    <div className="p-3 text-center lg:mr-4">
+                      <span className="text-gray-800 dark:text-stone-100 block text-xl font-bold uppercase tracking-wide">
+                        {/* {tribescreated} */}0
+                      </span>
+                      <span className="text-gray-600 text-sm dark:text-stone-300">
+                        Tribes
+                      </span>
                     </div>
                   </div>
                 </div>
-                <div className="mt-12 text-center">
-                  <form className="w-full max-w-lg">
-                    <div className="-mx-3 mb-6 flex flex-wrap">
-                      <div className="mb-6 w-full px-3 md:mb-0 md:w-1/2">
-                        <label
-                          className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700"
-                          htmlFor="grid-full-name"
-                        >
-                          Full Name
-                        </label>
-                        <input
-                          disabled
-                          className="mb-3 block w-full appearance-none rounded border border-gray-200 bg-gray-200 py-3 px-4 leading-tight text-gray-700 focus:bg-white focus:outline-none"
-                          id="grid-full-name"
-                          type="text"
-                          placeholder="Ola Nordmann"
-                          value={profile.full_name}
-                        />
-                      </div>
-                    </div>
-                    <div className="-mx-3 mb-6 flex flex-wrap">
-                      <div className="w-full px-3">
-                        <label
-                          className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700"
-                          htmlFor="grid-bio"
-                        >
-                          Biography
-                        </label>
-                        <input
-                          disabled
-                          className="mb-3 block w-full appearance-none rounded border border-gray-200 bg-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
-                          id="grid-bio"
-                          type="text"
-                          value={profile.biography}
-                        />
-                        <p className="text-xs italic text-gray-600">
-                          Write whatever nonsense you'd like
-                        </p>
-                      </div>
-                    </div>
-                    <div className="-mx-3 mb-2 flex flex-wrap">
-                      <div className="mb-6 w-full px-3 md:mb-0 md:w-1/2">
-                        <label
-                          className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700"
-                          htmlFor="grid-website"
-                        >
-                          Website
-                        </label>
-                        <input
-                          disabled
-                          value={profile.website}
-                          className="block w-full appearance-none rounded border border-gray-200 bg-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
-                          id="grid-city"
-                          type="text"
-                        />
-                      </div>
-                      <div className="mb-6 w-full px-3 md:mb-0 md:w-1/2">
-                        <label
-                          className="mb-2 block text-xs font-bold uppercase tracking-wide text-gray-700"
-                          htmlFor="grid-username"
-                        >
-                          Username
-                        </label>
-                        <input
-                          disabled
-                          className="block w-full appearance-none rounded border border-gray-200 bg-gray-200 py-3 px-4 leading-tight text-gray-700 focus:border-gray-500 focus:bg-white focus:outline-none"
-                          id="grid-zip"
-                          type="text"
-                          value={profile.username}
-                        />
-                      </div>
-                    </div>
-                  </form>
+              </div>
+
+              <div className="w-full my-6 text-center flex flex-wrap flex-col text-gray-800 dark:text-stone-100">
+                <div>
+                  <p className="tracking-wide text-xl font-medium">
+                    {profile.full_name}
+                  </p>
+                  <p className="tracking-wide text-sm">@{profile.username}</p>
+                  <span className="text-base font-normal">Peasant</span>
+                </div>
+
+                <hr className="my-6 border-gray-600 dark:border-stone-300" />
+                <div className="">
+                  <p
+                    className="mb-2 block text-xs font-bold uppercase tracking-wide "
+                  >
+                    Biography
+                  </p>
+
+                  <span className="">{profile.biography}</span>
+                </div>
+
+                <div className="mt-6">
+                  <p className="mb-2 block text-xs font-bold uppercase tracking-wide">
+                    Website
+                  </p>
+                  <span className="">{profile.website}</span>
                 </div>
               </div>
             </div>
           </div>
-        </section>
-      </main>
-      <nav className="rw-button-group">
-        <Link
-          to={routes.editProfile({ id: profile.id })}
-          className="rw-button rw-button-blue"
-        >
-          Edit
-        </Link>
-        <button
-          type="button"
-          className="rw-button rw-button-red"
-          onClick={() => onDeleteClick(profile.id)}
-        >
-          Delete
-        </button>
-      </nav>
-    </>
+          <nav className="rw-button-group">
+            <Link
+              to={routes.editProfile({ id: profile.id })}
+              className="rw-button rw-button-blue"
+            >
+              Edit
+            </Link>
+            <button
+              type="button"
+              className="rw-button rw-button-red"
+              onClick={() => onDeleteClick(profile.id)}
+            >
+              Delete
+            </button>
+          </nav>
+        </div>
+      </section>
+    </div>
   );
 };
 

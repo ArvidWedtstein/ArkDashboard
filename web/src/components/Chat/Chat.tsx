@@ -172,41 +172,72 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-    const subscription = supabase
-      .from("Message")
-      .on("INSERT", (payload) => {
-        if (messagesRef.current) {
-          messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+    const subscription = supabase.channel("supabase_realtime").on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'message' }, (payload) => {
+      if (messagesRef.current) {
+        messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+      }
+      if (messages.length > 0) {
+        if (messages[messages.length - 1].profile_id === payload.new.profile_id) {
+          setMessages((prev) => ([
+            ...prev.slice(0, -1),
+            {
+              id: [...prev[prev.length - 1].id, payload.new.id],
+              content: [...prev[prev.length - 1].content, payload.new.content],
+              profile_id: payload.new.profile_id,
+              created_at: payload.new.created_at,
+            }
+          ]))
+          return
         }
-        if (messages.length > 0) {
-          if (messages[messages.length - 1].profile_id === payload.new.profile_id) {
-            setMessages((prev) => ([
-              ...prev.slice(0, -1),
-              {
-                id: [...prev[prev.length - 1].id, payload.new.id],
-                content: [...prev[prev.length - 1].content, payload.new.content],
-                profile_id: payload.new.profile_id,
-                created_at: payload.new.created_at,
-              }
-            ]))
-            return
-          }
-        } else {
-          setMessages((prev) => ([...prev, {
-            id: [payload.new.id],
-            content: [payload.new.content],
-            profile_id: payload.new.profile_id,
-            created_at: payload.new.created_at,
-          }]))
-        }
+      } else {
+        setMessages((prev) => ([...prev, {
+          id: [payload.new.id],
+          content: [payload.new.content],
+          profile_id: payload.new.profile_id,
+          created_at: payload.new.created_at,
+        }]))
+      }
 
-        // groupMessage();
-        // setMessages((prev) => ([...prev, payload.new]))
-      })
-      .subscribe();
+      // groupMessage();
+      // setMessages((prev) => ([...prev, payload.new]))
+    });
+    subscription.subscribe();
+    // const subscription = supabase
+    //   .from("Message")
+    //   .on("INSERT", (payload) => {
+    //     if (messagesRef.current) {
+    //       messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+    //     }
+    //     if (messages.length > 0) {
+    //       if (messages[messages.length - 1].profile_id === payload.new.profile_id) {
+    //         setMessages((prev) => ([
+    //           ...prev.slice(0, -1),
+    //           {
+    //             id: [...prev[prev.length - 1].id, payload.new.id],
+    //             content: [...prev[prev.length - 1].content, payload.new.content],
+    //             profile_id: payload.new.profile_id,
+    //             created_at: payload.new.created_at,
+    //           }
+    //         ]))
+    //         return
+    //       }
+    //     } else {
+    //       setMessages((prev) => ([...prev, {
+    //         id: [payload.new.id],
+    //         content: [payload.new.content],
+    //         profile_id: payload.new.profile_id,
+    //         created_at: payload.new.created_at,
+    //       }]))
+    //     }
+
+    //     // groupMessage();
+    //     // setMessages((prev) => ([...prev, payload.new]))
+    //   })
+    //   .subscribe();
 
     return () => {
-      supabase.removeSubscription(subscription);
+      // supabase.removeSubscription(subscription);
+      subscription.unsubscribe();
     };
   }, []);
   const handleSubmit = async (data) => {
