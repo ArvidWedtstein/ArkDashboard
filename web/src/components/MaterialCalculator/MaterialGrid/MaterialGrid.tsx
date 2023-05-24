@@ -110,12 +110,12 @@ export const MaterialGrid = ({
   testitems,
 }: MaterialGridProps) => {
   const [craftingStations, setCraftingStations] = useState([39, 126, 185, 607, 606, 360]);
-  const items = useMemo(() => {
-    return arkitems
-      .filter((i) => ![""].includes(i.category) && !["Meat"].includes(i.type))
-      .map((v) => ({ ...v }));
+  // const items = useMemo(() => {
+  //   return arkitems
+  //     .filter((i) => ![""].includes(i.category) && !["Meat"].includes(i.type))
+  //     .map((v) => ({ ...v }));
 
-  }, []);
+  // }, []);
 
   const items2 = useMemo(() => {
     const craftedItems = groupBy(testitems, "crafted_item_id");
@@ -283,7 +283,7 @@ export const MaterialGrid = ({
     if (!itemId) return;
     let item = items2.find((item) => parseInt(item.crafted_item_id) === parseInt(itemId));
     // loadItem({ variables: { item_recipe_id: [itm.recipe_id] } });
-    console.log(item)
+    // console.log(item)
     setItem({ type: "ADD", item: item });
   };
 
@@ -599,7 +599,7 @@ export const MaterialGrid = ({
         <Table
           vertical={true}
           header={false}
-          rows={mergeItemRecipe(viewBaseMaterials, arkitems, craftingStations, ...item)}
+          rows={mergeItemRecipe(viewBaseMaterials, items2, ...item)}
           className="animate-fade-in my-4"
           caption={{
             title: "Item",
@@ -644,156 +644,6 @@ export const MaterialGrid = ({
             },
           ]}
         />
-        {/* <Table
-          vertical={true}
-          header={false}
-          rows={getBaseMaterialsNew(
-            viewBaseMaterials,
-            arkitems,
-            craftingStations,
-            ...item
-          )}
-          className="animate-fade-in my-4"
-          caption={{
-            title: "Item",
-            content: (
-              <div className="flex flex-col gap-3">
-                <div className="flex items-center">
-                  <CheckboxField
-                    name="togglebasematerials"
-                    className="rw-input inline-block"
-                    onChange={toggleBaseMaterials}
-                  />
-                  <label className="inline-block" htmlFor="togglebasematerials">
-                    Base materials
-                  </label>
-                </div>
-                <div>
-                  <CheckboxGroup
-                    defaultValue={craftingStations.map((d) => d.toString())}
-                    validation={{ single: false, valueAsNumber: true }}
-                    onChange={debounce((_, n) => {
-                      setCraftingStations(n.map((g) => parseInt(g)));
-                    }, 500)}
-                    options={[
-                      {
-                        value: 39,
-                        label: "Campfire",
-                        image:
-                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/campfire.png",
-                      },
-                      {
-                        value: 128,
-                        label: "Cooking Pot",
-                        image:
-                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/cooking-pot.png",
-                      },
-                      {
-                        value: 601,
-                        label: "Industrial Cooker",
-                        image:
-                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-cooker.png",
-                      },
-                      {
-                        value: 107,
-                        label: "Mortar And Pestle",
-                        image:
-                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/mortar-and-pestle.png",
-                      },
-                      {
-                        value: 607,
-                        label: "Chemistry Bench",
-                        image:
-                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/chemistry-bench.png",
-                      },
-                      {
-                        value: 125,
-                        label: "Refining Forge",
-                        image:
-                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/refining-forge.png",
-                      },
-                      {
-                        value: 600,
-                        label: "Industrial Forge",
-                        image:
-                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-forge.png",
-                      },
-                      {
-                        value: 606,
-                        label: "Beer Barrel",
-                        image:
-                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/beer-barrel.png",
-                      },
-                      {
-                        value: 127,
-                        label: "Compost Bin",
-                        image:
-                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/compost-bin.png",
-                      },
-                      {
-                        value: 185,
-                        label: "Fabricator",
-                        image:
-                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/fabricator.png",
-                      },
-                      {
-                        value: 360,
-                        label: "Industrial Grill",
-                        image:
-                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-grill.png",
-                      },
-                      {
-                        value: 618,
-                        label: "Industrial Grinder",
-                        image:
-                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-grinder.png",
-                      },
-                      {
-                        value: 126,
-                        label: "Smithy",
-                        image:
-                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/smithy.png",
-                      },
-                      {
-                        value: 652,
-                        label: "Tek Replicator",
-                        image:
-                          "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/tek-replicator.png",
-                      },
-                    ]}
-                  />
-                </div>
-              </div>
-            ),
-          }}
-          columns={[
-            {
-              field: "name",
-              label: "Name",
-              className: "text-center",
-            },
-            {
-              field: "amount",
-              label: "Amount",
-              className: "text-center",
-              numeric: true,
-              renderCell: ({ value, row }) => {
-                return (
-                  <div className="flex flex-col items-center justify-center">
-                    <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.image}`}
-                      className="h-6 w-6"
-                    />
-                    <span className="text-sm">
-                      {formatNumberWithThousandSeparator(value)}
-                    </span>
-                    <span className="sr-only">{value}</span>
-                  </div>
-                );
-              },
-            },
-          ]}
-        /> */}
         {/* <pre className="text-white">{JSON.stringify(item, null, 2)}</pre> */}
         <Table
           rows={item}
@@ -936,13 +786,16 @@ export const MaterialGrid = ({
               renderCell: ({ value }) => <p>{timeFormatL(value)}</p>,
             },
             {
-              field: "ItemRecipe_ItemRecipe_crafted_item_idToItem",
+              // field: "ItemRecipe_ItemRecipe_crafted_item_idToItem",
+              field: "Item_ItemRec_crafted_item_idToItem",
               label: "Ingredients",
               numeric: false,
               className: "text-center flex flex-row justify-start items-center",
               renderCell: ({ row, value }) => {
-                // console.log(row)
-                return mergeItemRecipe(false, arkitems, craftingStations, {
+                // console.log(mergeItemRecipe(false, items2, {
+                //   ...row,
+                // }))
+                return mergeItemRecipe(false, items2, {
                   ...row,
                 })
                   .sort((a, b) => a.id - b.id)

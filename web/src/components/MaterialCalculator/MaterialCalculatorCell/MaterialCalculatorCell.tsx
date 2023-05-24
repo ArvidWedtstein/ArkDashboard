@@ -46,8 +46,6 @@ export const QUERY = gql`
     }
     itemRecs {
       id
-      created_at
-      updated_at
       crafted_item_id
       crafting_station_id
       crafting_time
@@ -56,7 +54,6 @@ export const QUERY = gql`
         id
         name
         image
-        crafting_time
         category
         type
       }
@@ -66,6 +63,8 @@ export const QUERY = gql`
         ItemRec {
           id
           yields
+          crafted_item_id
+          crafting_station_id
           crafting_time
         }
         Item {

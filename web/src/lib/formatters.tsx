@@ -247,7 +247,7 @@ export const getBaseMaterials = (
 export const getBaseMaterialsNew = (
   baseMaterials: boolean = false,
   items: any[],
-  crafting_stations?: any[],
+  // crafting_stations?: any[],
   ...objects: Array<any>
 ) => {
   let materials = [];
@@ -335,8 +335,9 @@ export const getBaseMaterialsNew = (
     // If has no crafting recipe, return
     if (
       !item?.ItemRecipeItem ||
-      item.ItemRecipeItem.length === 0 ||
-      !item.ItemRecipe_ItemRecipe_crafted_item_idToItem
+      item.ItemRecipeItem.length === 0
+      // !item.ItemRecipe_ItemRecipe_crafted_item_idToItem
+      // !item.Item_ItemRec_crafted_item_idToItem
     ) {
       return;
     }
@@ -376,31 +377,39 @@ export const getBaseMaterialsNew = (
     // 214 - Argentavis Saddle
     // 800 - Desmodus Saddle
     // 531 - Equus Saddle
-
     // Loop through each recipe grouped on crafting station
     item.ItemRecipeItem.forEach(
       ({ Item, amount: recipeAmount, yields }) => {
         // Multiply amount with recipe amount (and divide by yields?)
         let count = (recipeAmount * amount) / (yields || 1);
+
+        // let newRecipe = items.find(
+        //   (i) => i.id === Item.id
+        // );
+        console.log(Item)
         let newRecipe = items.find(
-          (i) => i.id === Item.id
+          (i) => i.crafted_item_id === Item.id
         );
-        console.log(Item, yields, newRecipe)
+        // console.log("RECIPE", newRecipe)
 
 
         // If no more recipes, add to materials or is base material
         if (
+          // !newRecipe?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
+          // !newRecipe?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length
           !baseMaterials ||
-          !newRecipe?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
-          !newRecipe?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length
+          !newRecipe?.Item_ItemRec_crafted_item_idToItem ||
+          !newRecipe?.ItemRecipeItem.length
         ) {
-          let material = materials.find((m) => m.id === newRecipe.id);
+          // let material = materials.find((m) => m.id === newRecipe.id);
+          let material = materials.find((m) => m.id === newRecipe.crafted_item_id);
+          console.log(materials)
           if (material) {
             material.amount += count;
             material.crafting_time += count * (newRecipe.crafting_time || 1);
           } else {
             materials.push({
-              ...newRecipe,
+              ...newRecipe.Item_ItemRec_crafted_item_idToItem,
               amount: Math.round(count),
               crafting_time: count * (newRecipe.crafting_time || 1),
             });
