@@ -5,7 +5,7 @@ import type {
 } from "types/graphql";
 
 import { db } from "src/lib/db";
-import { validate, validateWith, validateWithSync } from "@redwoodjs/api";
+import { validate, validateUniqueness, validateWithSync } from "@redwoodjs/api";
 import { hasPermission } from "src/lib/auth";
 
 export const profiles: QueryResolvers["profiles"] = () => {
@@ -41,10 +41,16 @@ export const createProfile: MutationResolvers["createProfile"] = ({
       throw "Only Admins can summon new Admins";
     }
   });
-
-  return db.profile.create({
-    data: input,
-  });
+  return validateUniqueness(
+    "profile",
+    { username: input.username },
+    { message: "That username is already taken" },
+    () => {
+      return db.profile.create({
+        data: input,
+      });
+    }
+  );
 };
 
 export const updateProfile: MutationResolvers["updateProfile"] = ({
@@ -73,11 +79,17 @@ export const updateProfile: MutationResolvers["updateProfile"] = ({
       message: "You are not allowed to change your own role",
     },
   });
-
-  return db.profile.update({
-    data: input,
-    where: { id },
-  });
+  return validateUniqueness(
+    "profile",
+    { username: input.username },
+    { message: "That username is already taken" },
+    () => {
+      return db.profile.update({
+        data: input,
+        where: { id },
+      });
+    }
+  );
 };
 
 export const deleteProfile: MutationResolvers["deleteProfile"] = ({ id }) => {
