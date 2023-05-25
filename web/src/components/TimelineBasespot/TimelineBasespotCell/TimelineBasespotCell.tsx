@@ -3,7 +3,6 @@ import type { FindTimelineBasespotById } from "types/graphql";
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import TimelineBasespot from "src/components/TimelineBasespot/TimelineBasespot";
-import { supabase } from "src/App";
 
 export const QUERY = gql`
   query FindTimelineBasespotById($id: BigInt!) {
@@ -90,7 +89,9 @@ export const QUERY = gql`
 //     : data;
 // };
 
-export const Loading = () => <div>Loading...</div>;
+export const Loading = () => (
+  <div className="text-black dark:text-white">Loading...</div>
+);
 
 export const Empty = () => <div>TimelineBasespot not found</div>;
 

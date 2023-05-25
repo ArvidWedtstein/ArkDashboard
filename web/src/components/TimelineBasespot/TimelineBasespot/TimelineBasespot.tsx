@@ -53,7 +53,13 @@ interface Props {
 }
 
 const TimelineBasespot = ({ timelineBasespot }: Props) => {
-  const { isAuthenticated, client: supabase, hasRole, error: authError, currentUser } = useAuth();
+  const {
+    isAuthenticated,
+    client: supabase,
+    hasRole,
+    error: authError,
+    currentUser,
+  } = useAuth();
   const [deleteTimelineBasespot] = useMutation(
     DELETE_TIMELINE_BASESPOT_MUTATION,
     {
@@ -335,33 +341,44 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
               <div className="mt-2 flex justify-center space-x-2">
                 {isAuthenticated && (
                   <>
-                    {hasRole('timeline_update') || currentUser.permissions.some((p) => p === 'timeline_update') && (
-                      <Link
-                        to={routes.editTimelineBasespot({
-                          id: timelineBasespot.id.toString(),
-                        })}
-                        className="rw-button rw-button-gray-outline"
-                      >
-                        Edit
-                      </Link>
-                    )}
-                    {hasRole('timeline_delete') || currentUser.permissions.some((p) => p === 'timeline_delete') && (
-                      <button
-                        onClick={() => onDeleteClick(timelineBasespot.id)}
-                        className="rw-button rw-button-red-outline"
-                      >
-                        Delete
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 448 512"
-                          className="rw-button-icon"
+                    {hasRole("timeline_update") ||
+                      (currentUser.permissions.some(
+                        (p) => p === "timeline_update"
+                      ) && (
+                        <Link
+                          to={routes.editTimelineBasespot({
+                            id: timelineBasespot.id.toString(),
+                          })}
+                          className="rw-button rw-button-gray-outline"
                         >
-                          <path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
-                        </svg>
-                      </button>)}
-                    {(!timelineBasespot.TimelineBasespotRaid.find(
+                          Edit
+                        </Link>
+                      ))}
+                    {hasRole("timeline_delete") ||
+                      (currentUser.permissions.some(
+                        (p) => p === "timeline_delete"
+                      ) && (
+                        <button
+                          onClick={() => onDeleteClick(timelineBasespot.id)}
+                          className="rw-button rw-button-red-outline"
+                        >
+                          Delete
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 448 512"
+                            className="rw-button-icon"
+                          >
+                            <path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
+                          </svg>
+                        </button>
+                      ))}
+                    {!timelineBasespot.TimelineBasespotRaid.find(
                       (f) => f.base_survived === false
-                    ) && !timelineBasespot.end_date && currentUser.permissions.some((p) => p === 'timeline_update')) && (
+                    ) &&
+                      !timelineBasespot.end_date &&
+                      currentUser.permissions.some(
+                        (p) => p === "timeline_update"
+                      ) && (
                         <button
                           className="rw-button rw-button-red-outline"
                           onClick={() => initRaid()}
@@ -486,8 +503,9 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                             {timeTag(raid_start)} - {timeTag(raid_end)}
                           </p>
                           <p className="text-gray-500">
-                            {`Base ${base_survived ? "survived" : "did not survive"
-                              }`}
+                            {`Base ${
+                              base_survived ? "survived" : "did not survive"
+                            }`}
                           </p>
                         </div>
                       </div>
@@ -638,7 +656,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                         "group relative flex h-auto w-full overflow-hidden rounded-xl"
                       )}
                       onClick={() => {
-                        console.log('onCLigg')
+                        console.log("onCLigg");
                         setCurrentModalImage(
                           `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineBasespot.id}/${img.name}`
                         );
@@ -689,15 +707,15 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           timeStyle: "short",
                         }) === "Invalid Date"
                           ? new Date(img.created_at).toLocaleString("de", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })
                           : convertToDate(
-                            img.name.replace("_1.jpg", "")
-                          ).toLocaleString("de", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })}
+                              img.name.replace("_1.jpg", "")
+                            ).toLocaleString("de", {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })}
                       </span>
                     </button>
                   </div>
@@ -772,9 +790,9 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {nmbFormat(
                               dino.wild_stamina *
-                              dino.Dino.base_stats["s"]["w"] +
-                              dino.stamina * dino.Dino.base_stats["s"]["t"] +
-                              dino.Dino.base_stats["s"]["b"]
+                                dino.Dino.base_stats["s"]["w"] +
+                                dino.stamina * dino.Dino.base_stats["s"]["t"] +
+                                dino.Dino.base_stats["s"]["b"]
                             )}
                           </span>
                         </p>
@@ -790,9 +808,9 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {nmbFormat(
                               dino.wild_weight *
-                              dino.Dino.base_stats["w"]["w"] +
-                              dino.weight * dino.Dino.base_stats["w"]["t"] +
-                              dino.Dino.base_stats["w"]["b"]
+                                dino.Dino.base_stats["w"]["w"] +
+                                dino.weight * dino.Dino.base_stats["w"]["t"] +
+                                dino.Dino.base_stats["w"]["b"]
                             )}
                           </span>
                         </p>
@@ -808,9 +826,9 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {nmbFormat(
                               dino.wild_oxygen *
-                              dino.Dino.base_stats["o"]["w"] +
-                              dino.oxygen * dino.Dino.base_stats["o"]["t"] +
-                              dino.Dino.base_stats["o"]["b"]
+                                dino.Dino.base_stats["o"]["w"] +
+                                dino.oxygen * dino.Dino.base_stats["o"]["t"] +
+                                dino.Dino.base_stats["o"]["b"]
                             )}
                           </span>
                         </p>
@@ -827,7 +845,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                             {dino.wild_melee_damage *
                               dino.Dino.base_stats["d"]["w"] +
                               dino.melee_damage *
-                              dino.Dino.base_stats["d"]["t"] +
+                                dino.Dino.base_stats["d"]["t"] +
                               dino.Dino.base_stats["d"]["b"]}
                             %
                           </span>
@@ -844,8 +862,8 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {nmbFormat(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                              dino.food * dino.Dino.base_stats["f"]["t"] +
-                              dino.Dino.base_stats["f"]["b"]
+                                dino.food * dino.Dino.base_stats["f"]["t"] +
+                                dino.Dino.base_stats["f"]["b"]
                             )}
                           </span>
                         </p>
@@ -861,10 +879,10 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {nmbFormat(
                               dino.wild_movement_speed *
-                              dino.Dino.base_stats["m"]["w"] +
-                              dino.movement_speed *
-                              dino.Dino.base_stats["m"]["t"] +
-                              dino.Dino.base_stats["m"]["b"]
+                                dino.Dino.base_stats["m"]["w"] +
+                                dino.movement_speed *
+                                  dino.Dino.base_stats["m"]["t"] +
+                                dino.Dino.base_stats["m"]["b"]
                             )}
                             %
                           </span>
@@ -879,16 +897,16 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span className="absolute w-full items-center text-base font-semibold">
                             {nmbFormat(
                               dino.wild_health *
-                              dino.Dino.base_stats["h"]["w"] +
-                              dino.health * dino.Dino.base_stats["h"]["t"] +
-                              dino.Dino.base_stats["h"]["b"]
+                                dino.Dino.base_stats["h"]["w"] +
+                                dino.health * dino.Dino.base_stats["h"]["t"] +
+                                dino.Dino.base_stats["h"]["b"]
                             )}
                             /
                             {nmbFormat(
                               dino.wild_health *
-                              dino.Dino.base_stats["h"]["w"] +
-                              dino.health * dino.Dino.base_stats["h"]["t"] +
-                              dino.Dino.base_stats["h"]["b"]
+                                dino.Dino.base_stats["h"]["w"] +
+                                dino.health * dino.Dino.base_stats["h"]["t"] +
+                                dino.Dino.base_stats["h"]["b"]
                             )}{" "}
                             Health ({dino.wild_health}-{dino.health})
                           </span>
@@ -900,14 +918,14 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span className="absolute w-full items-center text-base font-semibold">
                             {nmbFormat(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                              dino.food * dino.Dino.base_stats["f"]["t"] +
-                              dino.Dino.base_stats["f"]["b"]
+                                dino.food * dino.Dino.base_stats["f"]["t"] +
+                                dino.Dino.base_stats["f"]["b"]
                             )}
                             /
                             {nmbFormat(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                              dino.food * dino.Dino.base_stats["f"]["t"] +
-                              dino.Dino.base_stats["f"]["b"]
+                                dino.food * dino.Dino.base_stats["f"]["t"] +
+                                dino.Dino.base_stats["f"]["b"]
                             )}{" "}
                             Food ({dino.wild_food}-{dino.food})
                           </span>
@@ -919,16 +937,16 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span className="absolute w-full items-center text-base font-semibold">
                             {nmbFormat(
                               dino.wild_torpor *
-                              dino.Dino.base_stats["t"]["w"] +
-                              dino.torpor * dino.Dino.base_stats["t"]["t"] +
-                              dino.Dino.base_stats["t"]["b"]
+                                dino.Dino.base_stats["t"]["w"] +
+                                dino.torpor * dino.Dino.base_stats["t"]["t"] +
+                                dino.Dino.base_stats["t"]["b"]
                             )}
                             /
                             {nmbFormat(
                               dino.wild_torpor *
-                              dino.Dino.base_stats["t"]["w"] +
-                              dino.torpor * dino.Dino.base_stats["t"]["t"] +
-                              dino.Dino.base_stats["t"]["b"]
+                                dino.Dino.base_stats["t"]["w"] +
+                                dino.torpor * dino.Dino.base_stats["t"]["t"] +
+                                dino.Dino.base_stats["t"]["b"]
                             )}{" "}
                             Torpor ({dino.wild_torpor}-{dino.torpor})
                           </span>
