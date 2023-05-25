@@ -5,7 +5,7 @@ import MaterialCalculatorCell from 'src/components/MaterialCalculator/MaterialCa
 const MaterialCalculatorPage = () => {
   return (
     <>
-      <MetaTags title="MaterialCalculator" description="MaterialCalculator page" />
+      <MetaTags title="MaterialCalculator" description="Ark Survival Evolved Material Calculator" />
       <div className="rounded-lg">
         <div className="p-4 rounded-b-lg">
           <MaterialCalculatorCell />
