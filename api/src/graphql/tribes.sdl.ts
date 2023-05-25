@@ -41,6 +41,8 @@ export const schema = gql`
     updateTribe(id: Int!, input: UpdateTribeInput!): Tribe!
       @requireAuth
       @hasPermission(permission: "tribe_update")
-    deleteTribe(id: Int!): Tribe! @requireAuth
+    deleteTribe(id: Int!): Tribe!
+      @requireAuth
+      @hasPermission(permission: "tribe_delete")
   }
 `;
