@@ -56,7 +56,11 @@ export const getCurrentUser = async (
     return {
       ...user,
       permissions: user?.role_profile_role_idTorole?.permissions || [],
-      roles: [...parseJWT({ decoded: decoded }).roles, user.role_id],
+      roles: [
+        ...parseJWT({ decoded: decoded }).roles,
+        user.role_id,
+        user?.role_profile_role_idTorole?.permissions,
+      ],
       user_metadata: {
         roles: [user.role_id],
       },
