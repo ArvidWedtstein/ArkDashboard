@@ -28,13 +28,13 @@ export const handler = createGraphQLHandler({
   loggerConfig: {
     logger,
     options: {
-      operationName: false,
+      // operationName: false,
       // level: 'info
       // data: true,
       // tracing: true,
     },
   },
-  // defaultError: "An bruh moment occurred",
+  defaultError: "An bruh moment occurred",
   directives,
   sdls,
   services,

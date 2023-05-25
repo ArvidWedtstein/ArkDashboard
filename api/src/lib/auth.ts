@@ -1,4 +1,4 @@
-import { parseJWT, Decoded, CustomValidationError } from "@redwoodjs/api";
+import { parseJWT, Decoded } from "@redwoodjs/api";
 import {
   AuthenticationError,
   ForbiddenError,
