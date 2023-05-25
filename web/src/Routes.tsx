@@ -20,8 +20,6 @@ const Routes = () => {
     <Router useAuth={useAuth} pageLoadingDelay={0}>
       <Set wrap={MainLayout}>
         {/*whileLoadingPage*/}
-
-        <Route path="/dino-stats" page={DinoStatsPage} name="dinoStats" />
         <Route
           path="/material-calculator"
           page={MaterialCalculatorPage}
@@ -60,12 +58,12 @@ const Routes = () => {
             page={TimelineBasespotDinoEditTimelineBasespotDinoPage}
             name="editTimelineBasespotDino"
           />
-          {/* <Route
+          <Route
             path="/timeline-basespot-dinos/{id}"
             page={TimelineBasespotDinoTimelineBasespotDinoPage}
             name="timelineBasespotDino"
           />
-          <Route
+          {/*<Route
             path="/timeline-basespot-dinos"
             page={TimelineBasespotDinoTimelineBasespotDinosPage}
             name="timelineBasespotDinos"

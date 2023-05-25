@@ -34,14 +34,15 @@ export const handler = createGraphQLHandler({
       // tracing: true,
     },
   },
-  defaultError: "An bruh moment occurred",
+  // defaultError: "An bruh moment occurred",
   directives,
   sdls,
   services,
   armorConfig: {
     maxDepth: {
-      n: 5,
+      n: 6,
     },
+    // logErrors: true,
   },
   context: setIpAddress,
   onException: () => {

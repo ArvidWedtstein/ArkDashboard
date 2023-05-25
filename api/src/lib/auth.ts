@@ -62,7 +62,7 @@ export const getCurrentUser = async (
       },
     };
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return {
       id: decoded.sub.toString(),
       roles: parseJWT({ decoded: decoded }).roles,

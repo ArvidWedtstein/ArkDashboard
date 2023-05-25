@@ -19,8 +19,6 @@ export const QUERY = gql`
       weight
       engram_points
       crafting_time
-      req_level
-      yields
       stats
       color
       category
@@ -47,8 +45,6 @@ const UPDATE_ITEM_MUTATION = gql`
       weight
       engram_points
       crafting_time
-      req_level
-      yields
       stats
       color
       category

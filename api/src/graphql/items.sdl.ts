@@ -9,8 +9,6 @@ export const schema = gql`
     weight: Float
     engram_points: Float
     crafting_time: Float
-    req_level: BigInt
-    yields: Float
     stats: JSON
     color: String
     type: String
@@ -52,8 +50,6 @@ export const schema = gql`
     weight: Float
     engram_points: Float
     crafting_time: Float
-    req_level: BigInt
-    yields: Float
     stats: JSON
     color: String
     type: String
@@ -71,8 +67,6 @@ export const schema = gql`
     weight: Float
     engram_points: Float
     crafting_time: Float
-    req_level: BigInt
-    yields: Float
     stats: JSON
     color: String
     type: String
