@@ -1,4 +1,5 @@
 import { Form } from "@redwoodjs/forms";
+import clsx from "clsx";
 import { useEffect } from "react";
 import useComponentVisible from "src/components/useComponentVisible";
 
@@ -25,26 +26,30 @@ export const RefModal = ({
     isComponentVisible,
     setIsComponentVisible,
   } = useComponentVisible(isOpen);
-  useEffect(() => {
-    setIsComponentVisible(isOpen);
-  }, [isOpen, onClose]);
+  // useEffect(() => {
+  //   console.log(isOpen)
+  //   setIsComponentVisible(isOpen);
+  // }, [isOpen, onClose]);
 
-  useEffect(() => {
-    if (isComponentVisible) {
-      onClose();
-    }
-    // if (modalRef.current) setIsComponentVisible(!isComponentVisible);
-  }, [modalRef]);
+  // useEffect(() => {
+  //   // if (isComponentVisible) {
+  //   //   console.log("modalRef", modalRef);
+  //   //   onClose();
+  //   // }
+  //   console.log("modalRef", modalRef)
+  //   if (modalRef.current) setIsComponentVisible(!isComponentVisible);
+  // }, [modalRef]);
 
-  return true ? (
+  return (
     <div
       tabIndex={-1}
       role="dialog"
       aria-modal="true"
-      aria-hidden={isComponentVisible ? "false" : "true"}
-      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 backdrop:bg-gray-50 md:inset-0 md:h-full ${
-        isComponentVisible === true ? "animate-pop-up block" : "hidden"
-      }`}
+      aria-hidden={isOpen ? "false" : "true"}
+      className={clsx(`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 backdrop:bg-gray-50 md:inset-0 md:h-full`, {
+        "animate-pop-up block": isOpen === true,
+        "hidden": isOpen === false
+      })}
     >
       <div
         ref={modalRef}
@@ -61,11 +66,12 @@ export const RefModal = ({
               type="button"
               className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
               onClick={() => {
+                setIsComponentVisible(false);
                 onClose();
               }}
             >
               <svg
-                aria-hidden={isComponentVisible ? "false" : "true"}
+                aria-hidden={isOpen ? "false" : "true"}
                 className="h-5 w-5"
                 fill="currentColor"
                 viewBox="0 0 20 20"
@@ -94,7 +100,7 @@ export const RefModal = ({
         </div>
       </div>
     </div>
-  ) : null;
+  );
 };
 
 export const Modal = ({
@@ -111,9 +117,8 @@ export const Modal = ({
     <div
       tabIndex={-1}
       aria-hidden={isOpen ? "false" : "true"}
-      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full ${
-        isOpen ? "block" : "hidden"
-      }`}
+      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full ${isOpen ? "block" : "hidden"
+        }`}
     >
       <div className="relative top-1/2 left-1/2 h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2">
         <Form
