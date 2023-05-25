@@ -4,11 +4,13 @@ import type { Profile as PrismaUser } from "@prisma/client";
 import { db } from "src/lib/db";
 import { AuthenticationError, ForbiddenError } from "@redwoodjs/graphql-server";
 import { CustomValidationError } from "@redwoodjs/api";
+import { logger } from "src/lib/logger";
 
 export const handler = async (
   event: APIGatewayProxyEvent,
   context: Context
 ) => {
+  // logger.warn("auth.ts handler called");
   // try {
 
   // } catch (e) {

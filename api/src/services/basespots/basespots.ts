@@ -9,7 +9,7 @@ import { requireAuth } from "src/lib/auth";
 
 const POSTS_PER_PAGE = 6;
 export const basespotPage: QueryResolvers["basespotPage"] = ({
-  page = 1,
+  page,
 }: {
   page: number;
 }) => {

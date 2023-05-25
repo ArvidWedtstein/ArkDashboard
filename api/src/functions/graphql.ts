@@ -21,6 +21,7 @@ const setIpAddress = async ({ event, context }) => {
   context.ipAddress = ipAddress({ event });
   return context;
 };
+
 export const handler = createGraphQLHandler({
   authDecoder,
   getCurrentUser,
@@ -29,14 +30,17 @@ export const handler = createGraphQLHandler({
     options: {
       operationName: false,
       // level: 'info
+      // data: true,
+      // tracing: true,
     },
   },
+  // defaultError: "An bruh moment occurred",
   directives,
   sdls,
   services,
   armorConfig: {
     maxDepth: {
-      n: 10,
+      n: 5,
     },
   },
   context: setIpAddress,

@@ -182,15 +182,14 @@ const Routes = () => {
           buttonLabel="New Tribe"
           buttonTo="newTribe"
         >
-          <Private unauthenticated="forbidden" roles='f0c1b8e9-5f27-4430-ad8f-5349f83339c0'>
-            <Route path="/tribes/new" page={TribeNewTribePage} name="newTribe" />
-            <Route
-              path="/tribes/{id:Int}/edit"
-              page={TribeEditTribePage}
-              name="editTribe"
-            />
-            <Route path="/tribes/{id:Int}" page={TribeTribePage} name="tribe" />
-          </Private>
+
+          <Route path="/tribes/new" page={TribeNewTribePage} name="newTribe" />
+          <Route
+            path="/tribes/{id:Int}/edit"
+            page={TribeEditTribePage}
+            name="editTribe"
+          />
+          <Route path="/tribes/{id:Int}" page={TribeTribePage} name="tribe" />
           <Route path="/tribes" page={TribeTribesPage} name="tribes" />
         </Set>
         <Set

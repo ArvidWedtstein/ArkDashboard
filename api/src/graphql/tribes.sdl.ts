@@ -12,6 +12,7 @@ export const schema = gql`
 
   type Query {
     tribes: [Tribe!]! @skipAuth
+    # @requireAuth(roles: "697b7d70-bab3-4ff9-9c3e-f30b058b621c")
     tribe(id: Int!): Tribe @skipAuth
   }
 
