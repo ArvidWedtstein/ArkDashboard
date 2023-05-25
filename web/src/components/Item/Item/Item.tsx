@@ -154,7 +154,7 @@ const Item = ({ item }: Props) => {
                   <br />
 
                   <div className="mr-4 mb-4 inline-block">
-                    <strong>Required level:</strong> {item.req_level}
+                    {/* <strong>Required level:</strong> {item.req_level} */}
                   </div>
                   <br />
                   {item.LootcrateSetEntryItem.length > 0 && (

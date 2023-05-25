@@ -162,6 +162,7 @@ const TimelineBasespotsList = ({
       });
     return () => {};
   }, [timelineBasespots]);
+
   const setActive = useCallback(
     async (e, index) => {
       e.currentTarget.scrollIntoView({
@@ -169,6 +170,7 @@ const TimelineBasespotsList = ({
         block: "center",
         inline: "nearest",
       });
+      // https://codepen.io/kevinpowell/pen/NWOgVga
       setIsActive(index);
 
       // const images = await getAllImages(timelineBasespots[index].id.toString());
@@ -291,7 +293,7 @@ const TimelineBasespotsList = ({
                 >
                   <ImageContainer
                     className={clsx(
-                      "block !w-full rounded-lg transition-opacity duration-150 ease-in-out motion-reduce:transform-none motion-reduce:transition-none",
+                      "block w-80 rounded-lg transition-opacity duration-150 ease-in-out motion-reduce:transform-none motion-reduce:transition-none",
                       {
                         "animate-fade-in opacity-100": isActive === index,
                         "opacity-0": isActive !== index,
@@ -307,13 +309,19 @@ const TimelineBasespotsList = ({
                         )
                       )?.name
                     }`}
-                    // src={
-                    //   images.map(
-                    //     (i) =>
-                    //       `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineBasespot.id}/${i.name}`
-                    //   )[random(0, images.length - 1)]
-                    // }
                   />
+                  {/* <img
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${
+                      arrRandNoRep(
+                        images?.filter(
+                          (img) =>
+                            img.path_tokens[0] ===
+                            timelineBasespot.id.toString()
+                        )
+                      )?.name
+                    }`}
+                    className="threedimimg"
+                  /> */}
                   <Link
                     to={routes.timelineBasespot({
                       id: timelineBasespot.id.toString(),
