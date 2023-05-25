@@ -20,8 +20,6 @@ const Routes = () => {
     <Router useAuth={useAuth} pageLoadingDelay={0}>
       <Set wrap={MainLayout}>
         {/*whileLoadingPage*/}
-
-        <Route path="/dino-stats" page={DinoStatsPage} name="dinoStats" />
         <Route
           path="/material-calculator"
           page={MaterialCalculatorPage}
@@ -60,12 +58,12 @@ const Routes = () => {
             page={TimelineBasespotDinoEditTimelineBasespotDinoPage}
             name="editTimelineBasespotDino"
           />
-          {/* <Route
+          <Route
             path="/timeline-basespot-dinos/{id}"
             page={TimelineBasespotDinoTimelineBasespotDinoPage}
             name="timelineBasespotDino"
           />
-          <Route
+          {/*<Route
             path="/timeline-basespot-dinos"
             page={TimelineBasespotDinoTimelineBasespotDinosPage}
             name="timelineBasespotDinos"
@@ -182,15 +180,14 @@ const Routes = () => {
           buttonLabel="New Tribe"
           buttonTo="newTribe"
         >
-          <Private unauthenticated="forbidden" roles='f0c1b8e9-5f27-4430-ad8f-5349f83339c0'>
-            <Route path="/tribes/new" page={TribeNewTribePage} name="newTribe" />
-            <Route
-              path="/tribes/{id:Int}/edit"
-              page={TribeEditTribePage}
-              name="editTribe"
-            />
-            <Route path="/tribes/{id:Int}" page={TribeTribePage} name="tribe" />
-          </Private>
+
+          <Route path="/tribes/new" page={TribeNewTribePage} name="newTribe" />
+          <Route
+            path="/tribes/{id:Int}/edit"
+            page={TribeEditTribePage}
+            name="editTribe"
+          />
+          <Route path="/tribes/{id:Int}" page={TribeTribePage} name="tribe" />
           <Route path="/tribes" page={TribeTribesPage} name="tribes" />
         </Set>
         <Set

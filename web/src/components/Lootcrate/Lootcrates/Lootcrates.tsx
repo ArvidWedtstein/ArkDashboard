@@ -18,39 +18,11 @@ import type {
 import { useParams } from "@redwoodjs/router";
 import { Form, Label, SearchField, SelectField, Submit } from "@redwoodjs/forms";
 
-// const DELETE_LOOTCRATE_MUTATION = gql`
-//   mutation DeleteLootcrateMutation($id: String!) {
-//     deleteLootcrate(id: $id) {
-//       id
-//     }
-//   }
-// `;
-
 const LootcratesList = ({ lootcratesByMap: lootcrates }: FindLootcrates) => {
-  // const [deleteLootcrate] = useMutation(DELETE_LOOTCRATE_MUTATION, {
-  //   onCompleted: () => {
-  //     toast.success("Lootcrate deleted");
-  //   },
-  //   onError: (error) => {
-  //     toast.error(error.message);
-  //   },
-  //   // This refetches the query on the list page. Read more about other ways to
-  //   // update the cache over here:
-  //   // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
-  //   refetchQueries: [{ query: QUERY }],
-  //   awaitRefetchQueries: true,
-  // });
-
-  // const onDeleteClick = (id: DeleteLootcrateMutationVariables["id"]) => {
-  //   if (confirm("Are you sure you want to delete lootcrate " + id + "?")) {
-  //     deleteLootcrate({ variables: { id } });
-  //   }
-  // };
 
   let { map, category, search } = useParams();
   const [filters, setFilters] = useState({ map: map || "", category: category || "", search: search || "" });
   const [categoryItems, setCategoryItems] = useState([]);
-
 
   const daLootcrates = useMemo(() => {
     let filteredCrates = lootcrates;

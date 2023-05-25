@@ -24,8 +24,6 @@ export const QUERY = gql`
         weight
         engram_points
         crafting_time
-        req_level
-        yields
         stats
         color
         category

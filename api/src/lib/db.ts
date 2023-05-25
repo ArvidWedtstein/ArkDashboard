@@ -9,15 +9,18 @@ import { logger } from "./logger";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: Unreachable code error
-// BigInt.prototype.toJSON = function (): string {
-//   return this.toString();
-// };
+
+BigInt.prototype.toJSON = function () {
+  const int = Number.parseInt(this.toString());
+  return int ?? this.toString();
+};
 /*
  * Instance of the Prisma Client
  */
 export const db = new PrismaClient({
-  errorFormat: "pretty",
-  log: emitLogLevels(["info", "warn", "error"]),
+  // errorFormat: "minimal",
+  // errorFormat: "pretty",
+  log: emitLogLevels(["info", "warn", "error"]), // [{ emit: 'stdout', level: 'warn' }, { emit: 'stdout', level: 'error' }, { emit: 'stdout', level: 'info' }]
 });
 
 handlePrismaLogging({

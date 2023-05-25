@@ -5,7 +5,8 @@ import type {
 } from "types/graphql";
 
 import { db } from "src/lib/db";
-import { validate, validateWith } from "@redwoodjs/api";
+import { validate, validateUniqueness, validateWithSync } from "@redwoodjs/api";
+import { hasPermission } from "src/lib/auth";
 
 export const profiles: QueryResolvers["profiles"] = () => {
   return db.profile.findMany();
@@ -22,7 +23,7 @@ export const createProfile: MutationResolvers["createProfile"] = ({
 }) => {
   validate(input.full_name, "Full Name", {
     presence: true,
-    excludes: {
+    exclusion: {
       in: ["Admin", "Owner"],
       message: "That name is reserved, sorry!",
     },
@@ -32,7 +33,7 @@ export const createProfile: MutationResolvers["createProfile"] = ({
       message: "Name can only contain letters",
     },
   });
-  validateWith(() => {
+  validateWithSync(() => {
     if (
       input.role_id === "f0c1b8e9-5f27-4430-ad8f-5349f83339c0" &&
       !(context.currentUser.role_id === "f0c1b8e9-5f27-4430-ad8f-5349f83339c0")
@@ -40,20 +41,55 @@ export const createProfile: MutationResolvers["createProfile"] = ({
       throw "Only Admins can summon new Admins";
     }
   });
-
-  return db.profile.create({
-    data: input,
-  });
+  return validateUniqueness(
+    "profile",
+    { username: input.username },
+    { message: "That username is already taken" },
+    () => {
+      return db.profile.create({
+        data: input,
+      });
+    }
+  );
 };
 
 export const updateProfile: MutationResolvers["updateProfile"] = ({
   id,
   input,
 }) => {
-  return db.profile.update({
-    data: input,
-    where: { id },
+  validateWithSync(() => {
+    if (
+      id !== context.currentUser.id &&
+      !hasPermission({ permission: "user_update" })
+    ) {
+      throw new Error("You are not allowed to update other users");
+    }
   });
+
+  validate(input.role_id, "role_id", {
+    custom: {
+      with: () => {
+        if (
+          input.role_id !== context.currentUser.role_id &&
+          !hasPermission({ permission: "user_update" })
+        ) {
+          throw new Error("You are not allowed to change your own role");
+        }
+      },
+      message: "You are not allowed to change your own role",
+    },
+  });
+  return validateUniqueness(
+    "profile",
+    { username: input.username, $self: { id } },
+    { message: "That username is already taken" },
+    () => {
+      return db.profile.update({
+        data: input,
+        where: { id },
+      });
+    }
+  );
 };
 
 export const deleteProfile: MutationResolvers["deleteProfile"] = ({ id }) => {

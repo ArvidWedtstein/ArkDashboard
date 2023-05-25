@@ -1,5 +1,9 @@
-import { parseJWT, Decoded, CustomValidationError } from "@redwoodjs/api";
-import { AuthenticationError, ForbiddenError } from "@redwoodjs/graphql-server";
+import { parseJWT, Decoded } from "@redwoodjs/api";
+import {
+  AuthenticationError,
+  ForbiddenError,
+  RedwoodGraphQLError,
+} from "@redwoodjs/graphql-server";
 import { db } from "./db";
 import type { Profile as PrismaUser } from "@prisma/client";
 import { Context } from "@redwoodjs/graphql-server/dist/functions/types";
@@ -45,24 +49,27 @@ export const getCurrentUser = async (
   decoded: Decoded
 ): Promise<RedwoodUser | null> => {
   try {
-    const { roles } = parseJWT({ decoded });
-    const { sub, role } = decoded;
-    let user = await db.profile.findUnique({
+    const user = await db.profile.findUnique({
       include: { role_profile_role_idTorole: true },
-      where: { id: sub.toString() },
+      where: { id: decoded.sub.toString() },
     });
     return {
-      id: sub as string,
-      avatar_url: user.avatar_url,
-      username: user.username,
+      ...user,
       permissions: user?.role_profile_role_idTorole?.permissions || [],
-      roles: [user.role_id, ...roles],
-      ...decoded,
-      // email: "",
+      roles: [...parseJWT({ decoded: decoded }).roles, user.role_id],
+      user_metadata: {
+        roles: [user.role_id],
+      },
     };
   } catch (error) {
-    console.log(error);
-    return { id: decoded.sub.toString(), ...decoded, error };
+    // console.log(error);
+    return {
+      id: decoded.sub.toString(),
+      roles: parseJWT({ decoded: decoded }).roles,
+      user_metadata: {
+        roles: parseJWT({ decoded: decoded }).roles,
+      },
+    };
   }
 };
 
@@ -106,7 +113,7 @@ export const hasRole = (role_id: AllowedRoles): boolean => {
     /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
 
   const currentUserRoles = context.currentUser?.role_id;
-
+  // logger.warn("TEST", { currentUserRoles, role_id });
   if (typeof role_id === "string") {
     if (typeof currentUserRoles === "string") {
       if (uuidCheck.test(role_id)) {
@@ -135,7 +142,6 @@ export const hasRole = (role_id: AllowedRoles): boolean => {
     }
   }
 
-  // roles not found
   return false;
 };
 
@@ -159,7 +165,10 @@ export const requireAuth = async ({ roles }: { roles?: AllowedRoles } = {}) => {
   }
 
   if (roles && !hasRole(roles)) {
-    throw new AuthenticationError("You don't have access to do that.");
+    throw new ForbiddenError("You don't have access to do that.");
+    // throw new RedwoodGraphQLError("The error message", {
+    //   code: "YOUR_INTERNAL_CODE",
+    // });
   }
 };
 

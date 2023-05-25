@@ -7,14 +7,15 @@ export const schema = gql`
     crafting_station_id: BigInt
     crafting_time: Float
     yields: Float!
+    required_level: BigInt
     Item_ItemRec_crafted_item_idToItem: Item!
     Item_ItemRec_crafting_station_idToItem: Item
     ItemRecipeItem: [ItemRecipeItem]!
   }
 
   type Query {
-    itemRecs: [ItemRec!]! @requireAuth
-    itemRec(id: String!): ItemRec @requireAuth
+    itemRecs: [ItemRec!]! @skipAuth
+    itemRec(id: String!): ItemRec @skipAuth
   }
 
   input CreateItemRecInput {
@@ -24,6 +25,7 @@ export const schema = gql`
     crafting_station_id: BigInt
     crafting_time: Float
     yields: Float!
+    required_level: BigInt
   }
 
   input UpdateItemRecInput {
@@ -33,6 +35,7 @@ export const schema = gql`
     crafting_station_id: BigInt
     crafting_time: Float
     yields: Float
+    required_level: BigInt
   }
 
   type Mutation {

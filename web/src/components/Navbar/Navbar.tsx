@@ -32,9 +32,9 @@ const Navbar = () => {
   const profileId = (currentUser?.id || currentUser?.sub || "") as string;
   const newRoute =
     routes[
-      `new${singularize(
-        capitalizeSentence(title.split("-").join(" ")).replace(" ", "")
-      )}`
+    `new${singularize(
+      capitalizeSentence(title.split("-").join(" ")).replace(" ", "")
+    )}`
     ];
   const showNewButton = isAuthenticated && newRoute;
   return (
@@ -113,14 +113,19 @@ const Navbar = () => {
               className="flex items-center space-x-3 border-l-2 border-l-[#c4c4c4] bg-transparent p-0 pl-2 outline-none"
             >
               <span className="sr-only">Open user menu</span>
-              <Avatar
-                url={currentUser?.avatar_url || ""}
-                size={30}
-                className="h-5 w-5 rounded-full text-[#1f1c2e] dark:text-white md:h-8 md:w-8"
-              />
-              <span className="text-base font-bold text-[#1f1c2e] dark:text-white">
-                {currentUser ? currentUser?.username : ""}
-              </span>
+              <div className="flex items-center space-x-4">
+                <Avatar
+                  url={currentUser?.avatar_url || ""}
+                  size={30}
+                  className="h-8 w-8 rounded-full text-[#1f1c2e] dark:text-white md:h-8 md:w-8"
+                />
+                {(currentUser && currentUser.username != null) && (
+                  <div className="hidden sm:block font-medium text-base text-[#1f1c2e] dark:text-white">
+                    <div>{currentUser?.username as string || ''}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">{currentUser?.role_profile_role_idTorole["name"].toString()}</div>
+                  </div>
+                )}
+              </div>
             </button>
             {isComponentVisible && (
               <ul className="absolute right-0 z-40 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">

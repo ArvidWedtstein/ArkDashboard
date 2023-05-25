@@ -276,9 +276,8 @@ const Map = ({ map }: Props) => {
         ...item,
         category,
         color,
-        name: `${category.replaceAll("_", " ")}\n${item.latitude}, ${
-          item.longitude
-        }`,
+        name: `${category.replaceAll("_", " ")}\n${item.latitude}, ${item.longitude
+          }`,
       }));
 
       setCategories((prevState) => ({
@@ -391,11 +390,11 @@ const Map = ({ map }: Props) => {
         </div>
       </div>
       <section className="rw-segment-header rw-heading rw-heading-secondary">
-        <Link to={routes.basespots({ map: map.name })}>Basespots</Link>
+        <Link className="after:content-['_↗']" to={routes.basespots({ map: map.name })}>Basespots</Link>
       </section>
 
       <section className="rw-segment-header rw-heading rw-heading-secondary">
-        <Link to={routes.lootcrates({ map: map.id })}>Lootcrates</Link>
+        <Link className="after:content-['_↗']" to={routes.lootcrates({ map: map.id })}>Lootcrates</Link>
         <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4">
           {map.Lootcrate.map((lootcrate, i) => (
             <ArkCard
@@ -406,7 +405,7 @@ const Map = ({ map }: Props) => {
               title={lootcrate.name}
               ring={
                 lootcrate?.level_requirement &&
-                lootcrate.level_requirement["min"] > 0 ? (
+                  lootcrate.level_requirement["min"] > 0 ? (
                   <button
                     title={`You need to be lvl ${lootcrate.level_requirement["min"]} to open this crate`}
                     className="relative flex items-center justify-center space-x-2 rounded-full bg-gray-600 px-4 py-2.5 text-gray-100 shadow-sm ring-1 ring-green-500"

@@ -17,7 +17,7 @@ const MainLayout = ({ children }: LayoutProps) => {
       {/* <SkipNavLink contentId="main-content"></SkipNavLink> */}
       <Navbar />
       <Toaster toastOptions={{ className: "rw-toast", duration: 6000 }} />
-      <div className="flex w-full flex-col sm:flex-row">
+      <div className="flex w-full flex-col sm:flex-row overflow-x-hidden sm:overflow-x-auto">
         <Sidebar />
         <SkipNavContent id="main-content" />
         <main className="overflow-y-auto sm:w-full ">

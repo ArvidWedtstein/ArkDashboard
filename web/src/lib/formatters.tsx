@@ -142,8 +142,9 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-    }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+  }`;
 };
 /**
  *
@@ -190,9 +191,9 @@ export const getBaseMaterials = (
 
     let c =
       item?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
-        item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0
+      item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0
         ? item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-          ?.Item_ItemRecipe_crafting_stationToItem.id
+            ?.Item_ItemRecipe_crafting_stationToItem.id
         : null;
 
     // Group by crafting_station somehow
@@ -247,111 +248,16 @@ export const getBaseMaterials = (
 export const getBaseMaterialsNew = (
   baseMaterials: boolean = false,
   items: any[],
-  crafting_stations?: any[],
+  // crafting_stations?: any[],
   ...objects: Array<any>
 ) => {
   let materials = [];
 
-  // const findBaseMaterials = (item, amount) => {
-  //   console.log(item);
-  //   // If has no crafting recipe, return
-  //   if (!item?.ItemRecipeItem || item.ItemRecipeItem.length === 0) {
-  //     return;
-  //   }
-
-  //   // Get item by crafting station
-  //   // TODO: Get default crafting station if none is specified
-  //   // let craftitems = item.ItemRecipeItem.filter(
-  //   //   (i) => {
-  //   //     return i?.Item_ItemRecipe_crafting_stationToItem
-  //   //       ? crafting_stations.includes(
-  //   //           parseInt(i.Item_ItemRecipe_crafting_stationToItem.id)
-  //   //         )
-  //   //       : true;
-  //   //   }
-  //   // );
-
-  //   // Go through each crafting station? For crafting time reduction osv..
-  //   // 128 - cooking pot
-  //   // 601 - ind cook
-  //   //
-  //   // 107 - mortar and pestle
-  //   // 607 - chem bench
-  //   //
-  //   // 125 - refining forge
-  //   // 600 - ind forge
-  //   //
-  //   // 39 - campfire
-  //   // 360 - ind grill
-  //   //
-  //   // 618 - ind grinder
-  //   // 126 - smithy
-  //   // 606 - beer barrel
-  //   // 652 - tek replicator
-  //   // 185 - fabricator
-  //   // 525 - Castoroides Saddle
-  //   // 572 - Thorny Dragon Saddle
-  //   // 214 - Argentavis Saddle
-  //   // 800 - Desmodus Saddle
-  //   // 531 - Equus Saddle
-
-  //   // Loop through each recipe grouped on crafting station
-  //   item.ItemRecipeItem.forEach(({ Item, amount: recipeAmount, yields }) => {
-  //     // Multiply amount with recipe amount (and divide by yields?)
-  //     let count = (recipeAmount * amount) / (yields || 1);
-  //     let newRecipe = items.find((i) => i.id === Item.id);
-
-  //     const { yields: newitmyields } =
-  //       newRecipe?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
-  //         return crafting_stations.includes(
-  //           parseInt(f?.Item_ItemRecipe_crafting_stationToItem?.id)
-  //         );
-  //       }) || { yields: 1 };
-  //     console.log(yields, newitmyields, newRecipe);
-  //     // If no more recipes, add to materials or is base material
-  //     if (
-  //       !baseMaterials ||
-  //       !newRecipe?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
-  //       !newRecipe?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length
-  //     ) {
-  //       let material = materials.find((m) => m.id === newRecipe.id);
-  //       if (material) {
-  //         material.amount += count;
-  //         material.crafting_time += count * (newRecipe.crafting_time || 1);
-  //       } else {
-  //         materials.push({
-  //           ...newRecipe,
-  //           amount: Math.round(count),
-  //           crafting_time: count * (newRecipe.crafting_time || 1),
-  //         });
-  //       }
-  //     } else {
-  //       findBaseMaterials(newRecipe, count);
-  //     }
-  //   });
-  // };
-
-  const findBaseMaterials = (item, amount) => {
+  const findBaseMaterials = (item, amount, yields = 1) => {
     // If has no crafting recipe, return
-    if (
-      !item?.ItemRecipeItem ||
-      item.ItemRecipeItem.length === 0 ||
-      !item.ItemRecipe_ItemRecipe_crafted_item_idToItem
-    ) {
+    if (!item?.ItemRecipeItem || item.ItemRecipeItem.length === 0) {
       return;
     }
-
-    // Get item by crafting station
-    // TODO: Get default crafting station if none is specified
-    // let craftitems = item.ItemRecipe_ItemRecipe_crafted_item_idToItem.filter(
-    //   (i) => {
-    //     return i?.Item_ItemRecipe_crafting_stationToItem
-    //       ? crafting_stations.includes(
-    //         parseInt(i.Item_ItemRecipe_crafting_stationToItem.id)
-    //       )
-    //       : true;
-    //   }
-    // );
 
     // Go through each crafting station? For crafting time reduction osv..
     // 128 - cooking pot
@@ -376,44 +282,40 @@ export const getBaseMaterialsNew = (
     // 214 - Argentavis Saddle
     // 800 - Desmodus Saddle
     // 531 - Equus Saddle
-
     // Loop through each recipe grouped on crafting station
-    item.ItemRecipeItem.forEach(
-      ({ Item, amount: recipeAmount, yields }) => {
-        // Multiply amount with recipe amount (and divide by yields?)
-        let count = (recipeAmount * amount) / (yields || 1);
-        let newRecipe = items.find(
-          (i) => i.id === Item.id
-        );
-        console.log(Item, yields, newRecipe)
+    const recipeItems = item.ItemRecipeItem;
+    for (const { Item, amount: recipeAmount } of recipeItems) {
+      try {
+        let newRecipe = items.find((i) => i.crafted_item_id === Item.id);
 
+        if (!baseMaterials || !newRecipe?.ItemRecipeItem?.length || !Item) {
+          const materialId = newRecipe ? newRecipe.crafted_item_id : Item.id;
+          let material = materials.find(
+            (m) => m.Item_ItemRec_crafted_item_idToItem.id === materialId
+          );
 
-        // If no more recipes, add to materials or is base material
-        if (
-          !baseMaterials ||
-          !newRecipe?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
-          !newRecipe?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length
-        ) {
-          let material = materials.find((m) => m.id === newRecipe.id);
+          const count = (recipeAmount * amount) / yields;
+
           if (material) {
             material.amount += count;
-            material.crafting_time += count * (newRecipe.crafting_time || 1);
+            material.crafting_time += count * (newRecipe?.crafting_time || 1);
           } else {
-            materials.push({
-              ...newRecipe,
-              amount: Math.round(count),
-              crafting_time: count * (newRecipe.crafting_time || 1),
-            });
+            material = {
+              ...(newRecipe || { Item_ItemRec_crafted_item_idToItem: Item }),
+              amount: count,
+              crafting_time: count * (newRecipe?.crafting_time || 1),
+            };
+            materials.push(material);
           }
-        } else {
-          findBaseMaterials(newRecipe, count);
+        } else if (newRecipe) {
+          findBaseMaterials(newRecipe, recipeAmount * amount, newRecipe.yields);
         }
-      }
-    );
+      } catch (error) {}
+    }
   };
 
   objects.forEach((item) => {
-    findBaseMaterials(item, item.amount);
+    findBaseMaterials(item, item.amount, item.yields);
   });
 
   return materials;
