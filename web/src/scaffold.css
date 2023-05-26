@@ -290,6 +290,9 @@ a {
 .rw-input[type="checkbox"] {
   @apply ml-0 mr-1 h-6 w-6 cursor-pointer appearance-none rounded bg-contain bg-center bg-no-repeat p-2 transition duration-200 focus:outline-none;
 }
+.rw-input.rw-input-small[type="checkbox"] {
+  @apply h-4 w-4 p-1;
+}
 .rw-checkbox:checked,
 .rw-input[type="checkbox"]:checked {
   background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='%23ffffff' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
@@ -525,48 +528,4 @@ a {
   100% {
     transform: scale(1, 1);
   }
-}
-@property --_l {
-  syntax: "<length>";
-  initial-value: 0px;
-  inherits: true;
-}
-@property --_r {
-  syntax: "<length>";
-  initial-value: 0px;
-  inherits: true;
-}
-
-.threedimimg {
-  --d: 9px; /* the depth */
-  --a: 10deg; /* the angle */
-
-  /* the below value is based on the depth and the angle.
-     the formula is a bit difficult to express so we update it manually
-  */
-  --x: 10px;
-
-  width: 250px; /* control the size */
-  aspect-ratio: 1.1; /* you can use 1 as ratio but I found 1.1 a little better */
-  object-fit: cover;
-  padding-block: var(--d);
-  transform: perspective(400px) rotateY(calc(var(--_i, 1) * var(--a)));
-  outline: var(--d) solid #0008;
-  outline-offset: calc(-1 * var(--d));
-  --_d: calc(100% - var(--d));
-  --_l: 0px;
-  --_r: 0px;
-  clip-path: polygon(
-    var(--_l) calc(var(--_d) - var(--x)),
-    var(--_l) calc(var(--d) + var(--x)),
-    var(--d) var(--d),
-    var(--_d) var(--d),
-    calc(var(--_d) + var(--_r)) calc(var(--d) + var(--x)),
-    calc(var(--_d) + var(--_r)) calc(var(--_d) - var(--x)),
-    var(--_d) var(--_d),
-    var(--d) var(--_d)
-  );
-  transition: transform 0.3s, --_r 0.15s, --_l 0.15s 0.15s;
-  transition-timing-function: linear;
-  cursor: pointer;
 }

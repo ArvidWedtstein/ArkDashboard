@@ -24,7 +24,12 @@ const HomePage = () => {
 
   return (
     <>
-      <MetaTags title="Home" description="Home page" ogContentUrl="https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj" ogType="website" />
+      <MetaTags
+        title="Home"
+        description="Home page"
+        ogContentUrl="https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj"
+        ogType="website"
+      />
       <div className="container-xl p-3 pt-0 text-center">
         <div
           className="relative overflow-hidden rounded-md bg-cover bg-no-repeat"
@@ -84,17 +89,20 @@ const HomePage = () => {
             {
               field: "name",
               label: "Name",
-            }, {
+            },
+            {
               field: "description",
               label: "Description",
-            }, {
+            },
+            {
               field: "created_by",
               label: "Created By",
-            }
+            },
           ]}
         />
 
         <NewTable
+          // selectable
           rows={[
             {
               name: "test1",
@@ -116,13 +124,15 @@ const HomePage = () => {
             {
               field: "name",
               headerName: "Name",
-            }, {
+            },
+            {
               field: "description",
               headerName: "Description",
-            }, {
+            },
+            {
               field: "created_by",
               headerName: "Created By",
-            }
+            },
           ]}
         />
         {/* {isAuthenticated && <Chat />} */}

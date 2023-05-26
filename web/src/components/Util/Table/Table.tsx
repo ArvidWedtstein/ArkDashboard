@@ -302,23 +302,23 @@ const Table = ({
 
     const valueFormatter = other.valueFormatter
       ? other.valueFormatter({
-        // value: isNaN(cellData) ? cellData?.amount : cellData,
-        value: cellData,
-        row: rowData,
-        columnIndex,
-      })
+          // value: isNaN(cellData) ? cellData?.amount : cellData,
+          value: cellData,
+          row: rowData,
+          columnIndex,
+        })
       : isNaN(cellData)
-        ? cellData?.amount || cellData
-        : cellData;
+      ? cellData?.amount || cellData
+      : cellData;
 
     let content = renderCell
       ? renderCell({
-        columnIndex,
-        rowIndex,
-        value: valueFormatter,
-        field: other.field,
-        row: rowData,
-      })
+          columnIndex,
+          rowIndex,
+          value: valueFormatter,
+          field: other.field,
+          row: rowData,
+        })
       : valueFormatter;
 
     return (
@@ -356,7 +356,6 @@ const Table = ({
     );
   };
 
-
   const tableFooter = () => {
     let total = 0;
 
@@ -382,38 +381,38 @@ const Table = ({
               ({ field, numeric, className, valueFormatter }, index) => {
                 const sum = numeric
                   ? SortedFilteredData.filter((r, i) =>
-                    select && selectedRows.length > 0
-                      ? rows
-                        .map((d: any, k) => {
-                          return d.checked ? k : -1;
-                        })
-                        .includes(i)
-                      : true
-                  ).reduce((a, b) => {
-                    const cellData = b[field];
-                    const valueFormatted = valueFormatter
-                      ? valueFormatter({ value: cellData, row: b })
-                      : cellData;
+                      select && selectedRows.length > 0
+                        ? rows
+                            .map((d: any, k) => {
+                              return d.checked ? k : -1;
+                            })
+                            .includes(i)
+                        : true
+                    ).reduce((a, b) => {
+                      const cellData = b[field];
+                      const valueFormatted = valueFormatter
+                        ? valueFormatter({ value: cellData, row: b })
+                        : cellData;
 
-                    return (
-                      a +
-                      parseInt(
-                        isNaN(valueFormatted)
-                          ? valueFormatted?.amount
-                          : valueFormatted
-                      )
-                    );
-                  }, 0)
+                      return (
+                        a +
+                        parseInt(
+                          isNaN(valueFormatted)
+                            ? valueFormatted?.amount
+                            : valueFormatted
+                        )
+                      );
+                    }, 0)
                   : // ? SortedFilteredData.filter((r, i) =>
-                  //   select && selectedRows.length > 0
-                  //     ? rows
-                  //       .map((d: any, k) => {
-                  //         return d.checked ? k : -1;
-                  //       })
-                  //       .includes(i)
-                  //     : true
-                  // ).reduce((a, b) => a + parseInt(b[field]), 0)
-                  0;
+                    //   select && selectedRows.length > 0
+                    //     ? rows
+                    //       .map((d: any, k) => {
+                    //         return d.checked ? k : -1;
+                    //       })
+                    //       .includes(i)
+                    //     : true
+                    // ).reduce((a, b) => a + parseInt(b[field]), 0)
+                    0;
 
                 total += numeric ? sum : 0;
                 return (
@@ -736,59 +735,60 @@ const Table = ({
         <tbody className="divide-y divide-gray-400 bg-zinc-300 dark:divide-gray-800 dark:bg-zinc-600">
           {vertical
             ? columns.map(({ field, ...other }, index) => {
-              return (
-                <tr
-                  key={`row-${index}`}
-                  className={clsx("bg-zinc-300 dark:bg-zinc-600", {
-                    "hover:bg-gray-50 dark:hover:bg-zinc-700": hover,
-                  })}
-                  onClick={() => onRowClick && onRowClick({ index: index })}
-                >
-                  {header &&
-                    headerRenderer({
-                      label: other.label,
-                      columnIndex: index,
-                      ...other,
+                return (
+                  <tr
+                    key={`row-${index}`}
+                    className={clsx("bg-zinc-300 dark:bg-zinc-600", {
+                      "hover:bg-gray-50 dark:hover:bg-zinc-700": hover,
                     })}
-                  {SortedFilteredData.map((datarow, rowIndex) =>
-                    cellRenderer({
-                      rowData: datarow,
-                      cellData: datarow[field],
-                      columnIndex: index,
-                      rowIndex,
-                      renderCell: other.renderCell,
-                      field,
-                      ...other,
-                    })
-                  )}
-                </tr>
-              );
-            })
+                    onClick={() => onRowClick && onRowClick({ index: index })}
+                  >
+                    {header &&
+                      headerRenderer({
+                        label: other.label,
+                        columnIndex: index,
+                        ...other,
+                      })}
+                    {SortedFilteredData.map((datarow, rowIndex) =>
+                      cellRenderer({
+                        rowData: datarow,
+                        cellData: datarow[field],
+                        columnIndex: index,
+                        rowIndex,
+                        renderCell: other.renderCell,
+                        field,
+                        ...other,
+                      })
+                    )}
+                  </tr>
+                );
+              })
             : dataRows &&
-            SortedFilteredData.map((datarow, i) => {
-              return (
-                <tr
-                  key={`row-${i}`}
-                  className={clsx("relative", {
-                    "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
-                  })}
-                  onClick={() => onRowClick && onRowClick({ index: i })}
-                >
-                  {select && tableSelect({ row: i })}
-                  {columns.map(({ field, ...other }, index) => cellRenderer({
-                    rowData: datarow,
-                    cellData: datarow[field],
-                    columnIndex: index,
-                    rowIndex: i,
-                    renderCell: other.renderCell,
-                    field,
-                    ...other,
-                  })
-                  )}
-                  {renderActions && <td>{renderActions(datarow)}</td>}
-                </tr>
-              );
-            })}
+              SortedFilteredData.map((datarow, i) => {
+                return (
+                  <tr
+                    key={`row-${i}`}
+                    className={clsx("relative", {
+                      "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
+                    })}
+                    onClick={() => onRowClick && onRowClick({ index: i })}
+                  >
+                    {select && tableSelect({ row: i })}
+                    {columns.map(({ field, ...other }, index) =>
+                      cellRenderer({
+                        rowData: datarow,
+                        cellData: datarow[field],
+                        columnIndex: index,
+                        rowIndex: i,
+                        renderCell: other.renderCell,
+                        field,
+                        ...other,
+                      })
+                    )}
+                    {renderActions && <td>{renderActions(datarow)}</td>}
+                  </tr>
+                );
+              })}
           {(dataRows === null || dataRows.length === 0) && (
             <tr className="w-full">
               <td className="p-4 text-center" colSpan={100}>
