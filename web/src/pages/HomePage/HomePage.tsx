@@ -1,6 +1,8 @@
 import { Link, RouteAnnouncement, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "src/auth";
+import NewTable from "src/components/Util/NewTable/NewTable";
+import Table from "src/components/Util/Table/Table";
 import type { FindTribes } from "types/graphql";
 const HomePage = () => {
   const { isAuthenticated, currentUser } = useAuth();
@@ -58,6 +60,71 @@ const HomePage = () => {
             </div>
           </div>
         </div>
+
+        <Table
+          filter={true}
+          rows={[
+            {
+              name: "test1",
+              description: "test3",
+              created_by: "test3",
+            },
+            {
+              name: "test2",
+              description: "test3",
+              created_by: "test3",
+            },
+            {
+              name: "test3",
+              description: "test3",
+              created_by: "test3",
+            },
+          ]}
+          columns={[
+            {
+              field: "name",
+              label: "Name",
+            }, {
+              field: "description",
+              label: "Description",
+            }, {
+              field: "created_by",
+              label: "Created By",
+            }
+          ]}
+        />
+
+        <NewTable
+          rows={[
+            {
+              name: "test1",
+              description: "test3",
+              created_by: "test3",
+            },
+            {
+              name: "test2",
+              description: "test3",
+              created_by: "test3",
+            },
+            {
+              name: "test3",
+              description: "test3",
+              created_by: "test3",
+            },
+          ]}
+          columns={[
+            {
+              field: "name",
+              headerName: "Name",
+            }, {
+              field: "description",
+              headerName: "Description",
+            }, {
+              field: "created_by",
+              headerName: "Created By",
+            }
+          ]}
+        />
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}

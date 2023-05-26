@@ -166,13 +166,13 @@ a {
 
 /* Gray Outline Button */
 .rw-button.rw-button-gray-outline {
-  @apply border border-stone-700 dark:border-gray-500;
+  @apply border border-stone-700 transition dark:border-gray-500;
 }
 .rw-button.rw-button-gray-outline:hover {
   @apply border-stone-800 ring-1 ring-stone-700 dark:border-stone-600 dark:ring-stone-500;
 }
 .rw-button.rw-button-gray-outline:focus {
-  @apply ring-stone-300 dark:ring-stone-800;
+  @apply border-stone-700 ring-1 ring-stone-400 dark:border-stone-500 dark:ring-stone-400;
 }
 
 /* Red Outline Button */
@@ -244,11 +244,14 @@ a {
 .rw-button-group {
   @apply my-3 flex justify-center rounded-md;
 }
+.rw-button-group .rw-button:first-child {
+  @apply rounded-l-md !rounded-r-none;
+}
+.rw-button-group .rw-button:last-child {
+  @apply rounded-r-md !rounded-l-none;
+}
 .rw-button-group .rw-input {
   @apply mt-0 rounded-none first:rounded-l-md last:rounded-r-md;
-}
-.rw-button-group .rw-button {
-  @apply mx-1;
 }
 
 .rw-form-wrapper .rw-button-group {
