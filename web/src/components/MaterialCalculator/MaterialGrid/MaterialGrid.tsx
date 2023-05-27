@@ -17,7 +17,6 @@ import {
 } from "src/lib/formatters";
 import debounce from "lodash.debounce";
 import Table from "src/components/Util/Table/Table";
-import { useLazyQuery } from "@apollo/client";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 
 interface MaterialGridProps {

@@ -1,10 +1,21 @@
 import { ButtonField, Form, SelectField, TextField } from "@redwoodjs/forms";
 import clsx from "clsx";
-import { useMemo, useState } from "react";
+import {
+  ReactElement,
+  TableHTMLAttributes,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
 import useComponentVisible from "src/components/useComponentVisible";
 
 interface GridRowData {
   [key: string]: any;
+}
+interface Filter {
+  column: string;
+  operator: string;
+  value: string;
 }
 interface GridValueGetterParams {
   row: GridRowData;
@@ -12,50 +23,46 @@ interface GridValueGetterParams {
   value: any;
   field: string;
 }
+interface Row {
+  id: string;
+  [key: string]: any;
+  variant?:
+    | "dark"
+    | "light"
+    | "warning"
+    | "danger"
+    | "success"
+    | "secondary"
+    | "primary"
+    | "default";
+}
 interface Column {
   field: string;
   headerName?: string;
   width?: number;
   type?: "number" | "string" | "boolean" | "date" | "dateTime" | "progress";
   sortable?: boolean;
+  // filter?: Filter;
   valueGetter?: (params: GridValueGetterParams) => any;
-  variant?:
-    | "dark"
-    | "light"
-    | "warning"
-    | "danger"
-    | "success"
-    | "secondary"
-    | "primary"
-    | "default";
 }
 interface GridCellParams {
   value: any;
   field: string;
-  row: GridRowData;
+  row: Row;
   column: Column;
-  width?: number;
-  variant?:
-    | "dark"
-    | "light"
-    | "warning"
-    | "danger"
-    | "success"
-    | "secondary"
-    | "primary"
-    | "default";
+  selected: boolean;
 }
-interface Filter {
-  column: string;
-  operator: string;
-  value: string;
-}
-interface NewTableProps {
+interface ITableProps {
   rows: GridRowData[];
   columns: Column[];
   disabled?: boolean;
   filterable?: boolean;
   selectable?: boolean;
+  header?: ReactElement | string;
+  /**
+   * Callback function that is fired when a row is selected
+   */
+  onSelectRow?: (selectedRows: GridRowData[]) => void;
 }
 
 /**
@@ -76,18 +83,77 @@ const NewTable = ({
   disabled,
   filterable,
   selectable,
-}: NewTableProps) => {
+  onSelectRow,
+}: ITableProps) => {
+  // const data = useMemo(() => {
+  //   return rows;
+  // }, [rows]);
+  const cols = useMemo(() => {
+    return columns;
+  }, [columns]);
   const [filters, setFilters] = useState<Filter[]>([]);
+  const [selected, setSelected] = useState<GridRowData[]>([]);
 
-  const data = useMemo(() => {
-    return rows;
-  }, [rows]);
+  enum DataActionKind {
+    FILTER = "FILTER",
+    SORT = "SORT",
+    SELECT = "SELECT",
+    SELECT_ALL = "SELECT_ALL",
+  }
+  interface DataAction {
+    type: DataActionKind;
+    payload: any;
+  }
+  const [data, dispatch] = useReducer((state, action: DataAction) => {
+    const { type, payload } = action;
+    switch (type) {
+      case DataActionKind.FILTER: {
+        return state;
+      }
+      case DataActionKind.SORT: {
+        return state;
+      }
+      case DataActionKind.SELECT: {
+        console.log(type, payload);
+        return state.map((row, i) => {
+          if (`row-${i}` !== payload.row.id) {
+            return row;
+          }
+          return { ...row, selected: payload.checked };
+        });
+      }
+      case DataActionKind.SELECT_ALL: {
+        return state.map((row) => {
+          return { ...row, selected: payload.checked };
+        });
+      }
+      default: {
+        return state;
+      }
+    }
+  }, rows);
 
   const { isComponentVisible, setIsComponentVisible, ref } =
     useComponentVisible(false);
 
   const addFilter = (e) => {
     setFilters([...filters, e]);
+  };
+
+  const handleRowClick = (row) => {
+    const isSelected = selected.includes(row);
+    let updatedSelectedRows = [];
+
+    if (isSelected) {
+      updatedSelectedRows = selected.filter(
+        (selectedRow) => selectedRow !== row
+      );
+    } else {
+      updatedSelectedRows = [...selected, row];
+    }
+
+    setSelected(updatedSelectedRows);
+    onSelectRow && onSelectRow(updatedSelectedRows);
   };
   return (
     <>
@@ -217,10 +283,18 @@ const NewTable = ({
                 <input
                   type="checkbox"
                   className="rw-input rw-input-small rw-checkbox"
+                  onChange={(e) => {
+                    dispatch({
+                      type: DataActionKind.SELECT_ALL,
+                      payload: {
+                        checked: e.target.checked,
+                      },
+                    });
+                  }}
                 />
               </th>
             )}
-            {columns.map((column, index) => (
+            {cols.map((column, index) => (
               <th
                 key={index}
                 className="border-b border-zinc-500 px-6 py-3 dark:border-zinc-700"
@@ -239,10 +313,20 @@ const NewTable = ({
                     type="checkbox"
                     className="rw-input rw-input-small rw-checkbox"
                     name={`select-${index}`}
+                    checked={row.selected}
+                    onChange={(e) => {
+                      dispatch({
+                        type: DataActionKind.SELECT,
+                        payload: {
+                          row: { ...row, id: `row-${index}` },
+                          checked: e.target.checked,
+                        },
+                      });
+                    }}
                   />
                 </td>
               )}
-              {columns.map((column, index) => (
+              {cols.map((column, index) => (
                 <td key={index} className="whitespace-nowrap px-6 py-4">
                   {column.valueGetter
                     ? column.valueGetter({

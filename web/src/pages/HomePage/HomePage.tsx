@@ -102,7 +102,7 @@ const HomePage = () => {
         />
 
         <NewTable
-          // selectable
+          selectable
           rows={[
             {
               name: "test1",
