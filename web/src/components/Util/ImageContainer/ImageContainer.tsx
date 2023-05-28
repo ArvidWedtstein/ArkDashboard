@@ -69,6 +69,10 @@ const ImageContainer = ({ ...props }: ImageContainerProps) => {
             src={src}
             alt={alt}
             {...props}
+            onError={(e) => {
+              e.currentTarget.src =
+                "https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj";
+            }}
             // style={{ opacity: imageLoaded ? 1 : 0 }}
           />
           {!!caption && (

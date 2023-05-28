@@ -291,6 +291,25 @@ const TimelineBasespotsList = ({
                     hidden: isActive !== index,
                   })}
                 >
+                  {/* <img
+                    // src={mapImages[timelineBasespot.map][0]}
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${
+                      arrRandNoRep(
+                        images?.filter(
+                          (img) =>
+                            img.path_tokens[0] ===
+                            timelineBasespot.id.toString()
+                        )
+                      )?.name
+                    }`}
+                    className={clsx(
+                      "block w-80 rounded-lg transition-opacity duration-150 ease-in-out motion-reduce:transform-none motion-reduce:transition-none",
+                      {
+                        "animate-fade-in opacity-100": isActive === index,
+                        "opacity-0": isActive !== index,
+                      }
+                    )}
+                  /> */}
                   <ImageContainer
                     className={clsx(
                       "block w-80 rounded-lg transition-opacity duration-150 ease-in-out motion-reduce:transform-none motion-reduce:transition-none",
@@ -310,27 +329,16 @@ const TimelineBasespotsList = ({
                       )?.name
                     }`}
                   />
-                  {/* <img
-                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${
-                      arrRandNoRep(
-                        images?.filter(
-                          (img) =>
-                            img.path_tokens[0] ===
-                            timelineBasespot.id.toString()
-                        )
-                      )?.name
-                    }`}
-                    className="threedimimg"
-                  /> */}
-                  <Link
-                    to={routes.timelineBasespot({
-                      id: timelineBasespot.id.toString(),
-                    })}
-                    className="rw-button rw-button-green-outline float-right mt-2 transition"
-                    onClick={(e) => {}}
-                  >
-                    View
-                  </Link>
+                  {new Date(timelineBasespot.start_date) < new Date() && (
+                    <Link
+                      to={routes.timelineBasespot({
+                        id: timelineBasespot.id.toString(),
+                      })}
+                      className="rw-button rw-button-green-outline float-right mt-2 transition"
+                    >
+                      View
+                    </Link>
+                  )}
                 </div>
               ))}
             </div>
@@ -366,6 +374,11 @@ const TimelineBasespotsList = ({
                     className="pl-4 transition-all duration-300"
                     onClick={(e) => setActive(e, index)}
                   >
+                    {new Date(start_date) > new Date() && (
+                      <span className="text-xl text-gray-900 dark:text-white">
+                        - Upcomming
+                      </span>
+                    )}
                     <div className="relative my-10 min-h-[28px] pr-5">
                       <div
                         className={clsx(
@@ -428,6 +441,11 @@ const TimelineBasespotsList = ({
                           {(cluster || region || season) && ", "}
                           {server}
                         </p>
+                        <span className="text-[#3c4043] dark:text-stone-400">
+                          {new Date(start_date).toLocaleDateString("no-NO", {
+                            dateStyle: "short",
+                          })}
+                        </span>
                       </div>
                     </div>
                   </div>

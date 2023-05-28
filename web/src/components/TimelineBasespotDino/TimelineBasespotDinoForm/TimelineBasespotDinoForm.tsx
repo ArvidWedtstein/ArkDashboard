@@ -32,6 +32,7 @@ interface TimelineBasespotDinoFormProps {
     data: UpdateTimelineBasespotDinoInput,
     id?: FormTimelineBasespotDino["id"]
   ) => void;
+  id?: string;
   error: RWGqlError;
   loading: boolean;
 }
@@ -61,7 +62,9 @@ const TimelineBasespotDinoForm = (props: TimelineBasespotDinoFormProps) => {
 
         <TextField
           name="timelinebasespot_id"
-          defaultValue={props.timelineBasespotDino?.timelinebasespot_id}
+          defaultValue={
+            props.timelineBasespotDino?.timelinebasespot_id || props.id
+          }
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ required: true }}

@@ -112,7 +112,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
       .then(({ data, error }) => {
         if (error) throw error;
         if (data) {
-          setImages(data);
+          setImages(data.filter((f) => f.name !== ".emptyFolderPlaceholder"));
         }
       });
   }, []);
@@ -375,6 +375,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                     {!timelineBasespot.TimelineBasespotRaid.find(
                       (f) => f.base_survived === false
                     ) &&
+                      new Date(timelineBasespot.start_date) < new Date() &&
                       !timelineBasespot.end_date &&
                       currentUser.permissions.some(
                         (p) => p === "timeline_update"
@@ -393,6 +394,14 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           </svg>
                         </button>
                       )}
+                    <Link
+                      to={routes.newTimelineBasespotDino({
+                        id: timelineBasespot.id,
+                      })}
+                      className="rw-button rw-button-green-outline"
+                    >
+                      Add New Dino
+                    </Link>
                   </>
                 )}
               </div>
@@ -520,18 +529,20 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
         <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
           <div className="container mx-auto flex flex-wrap px-5 py-12">
             <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
-              <Map
-                className="h-full w-full object-cover object-center"
-                map={timelineBasespot.map.toString()}
-                size={{ width: 500, height: 500 }}
-                pos={[
-                  {
-                    lat: timelineBasespot.latitude,
-                    lon: timelineBasespot.longitude,
-                  } as any,
-                ]}
-                interactive={true}
-              />
+              {timelineBasespot.map && (
+                <Map
+                  className="h-full w-full object-cover object-center"
+                  map={timelineBasespot?.map.toString()}
+                  size={{ width: 500, height: 500 }}
+                  pos={[
+                    {
+                      lat: timelineBasespot.latitude,
+                      lon: timelineBasespot.longitude,
+                    } as any,
+                  ]}
+                  interactive={true}
+                />
+              )}
             </div>
             <div className="-mb-10 flex flex-col flex-wrap text-center lg:w-1/2 lg:py-6 lg:pl-12 lg:text-left">
               <div className="mb-10 flex flex-col items-center lg:items-start">
@@ -681,9 +692,11 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                             <p className="m-0 overflow-hidden text-ellipsis whitespace-nowrap text-xs text-white">
                               {img.name}
                             </p>
-                            <p className="m-0 overflow-hidden text-ellipsis whitespace-nowrap text-xs text-white">
-                              {formatBytes(img.metadata.size)}
-                            </p>
+                            {img.metadata?.size && (
+                              <p className="m-0 overflow-hidden text-ellipsis whitespace-nowrap text-xs text-white">
+                                {formatBytes(img.metadata.size)}
+                              </p>
+                            )}
                           </div>
                         </div>
                       </div>

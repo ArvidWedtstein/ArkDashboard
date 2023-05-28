@@ -37,13 +37,16 @@ const SigninPage = () => {
         // provider: "discord",
         authMethod: "password",
         ...data,
+        options: {
+          redirectTo: window.history.back(),
+        },
       });
 
       if (response?.error) {
         toast.error(response.error.message);
       } else {
         toast.success(WELCOME_MESSAGE);
-        navigate(REDIRECT);
+        // navigate(REDIRECT);
       }
     } catch (error) {
       toast.error(error.message);
