@@ -66,35 +66,38 @@ const HomePage = () => {
           </div>
         </div>
 
-        <Table
+        {/* <Table
           filter={true}
           rows={[
             {
               name: "test1",
               description: "test3",
-              created_by: "test3",
+              created_by: "Ole",
             },
             {
               name: "test2",
               description: "test3",
-              created_by: "test3",
+              created_by: "Per",
             },
             {
               name: "test3",
               description: "test3",
-              created_by: "test3",
+              created_by: "Jens",
             },
           ]}
           columns={[
             {
+              sortable: true,
               field: "name",
               label: "Name",
             },
             {
+              sortable: true,
               field: "description",
               label: "Description",
             },
             {
+              sortable: true,
               field: "created_by",
               label: "Created By",
             },
@@ -106,35 +109,38 @@ const HomePage = () => {
           rows={[
             {
               name: "test1",
-              description: "test3",
-              created_by: "test3",
+              description: "test1",
+              created_by: "Ole",
             },
             {
               name: "test2",
-              description: "test3",
-              created_by: "test3",
+              description: "test2",
+              created_by: "Per",
             },
             {
               name: "test3",
               description: "test3",
-              created_by: "test3",
+              created_by: "Jens",
             },
           ]}
           columns={[
             {
               field: "name",
               headerName: "Name",
+              sortable: true,
             },
             {
               field: "description",
               headerName: "Description",
+              sortable: true,
             },
             {
               field: "created_by",
               headerName: "Created By",
+              sortable: true,
             },
           ]}
-        />
+        /> */}
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
