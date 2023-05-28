@@ -33,7 +33,6 @@ const NewTimelineBasespotDino = ({ id }) => {
   const onSave = (input: CreateTimelineBasespotDinoInput) => {
     createTimelineBasespotDino({ variables: { input } });
   };
-  console.log(id);
   return (
     <div className="rw-segment">
       <header className="rw-segment-header">

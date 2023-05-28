@@ -76,6 +76,7 @@ const TimelineBasespotDinoForm = (props: TimelineBasespotDinoFormProps) => {
           <legend>Dino</legend>
           <div>
             <div>
+              {/* TODO: Insert dino lookup */}
               <Label
                 name="dino_id"
                 className="rw-label"
