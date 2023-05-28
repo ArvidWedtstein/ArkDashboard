@@ -1,90 +1,85 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from "react";
 
-import { Form, Label, TextField, Submit, FieldError } from '@redwoodjs/forms'
-import { navigate, routes } from '@redwoodjs/router'
-import { MetaTags } from '@redwoodjs/web'
-import { toast, Toaster } from '@redwoodjs/web/toast'
-import { useAuth } from 'src/auth'
+import { Form, Label, TextField, Submit, FieldError } from "@redwoodjs/forms";
+import { navigate, routes } from "@redwoodjs/router";
+import { MetaTags } from "@redwoodjs/web";
+import { toast, Toaster } from "@redwoodjs/web/toast";
+import { useAuth } from "src/auth";
 
 const ForgotPasswordPage = () => {
-  const { isAuthenticated, forgotPassword } = useAuth()
+  const { isAuthenticated, forgotPassword } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(routes.home())
+      navigate(routes.home());
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated]);
 
-  const usernameRef = useRef<HTMLInputElement>(null)
+  const emailRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
-    usernameRef?.current?.focus()
-  }, [])
+    emailRef?.current?.focus();
+  }, []);
 
   const onSubmit = async (data: { username: string }) => {
-    const response = await forgotPassword(data.username)
+    const response = await forgotPassword(data.username);
 
-    if (response) {
-      toast.error(response?.error)
+    if ((response as any)?.error) {
+      toast.error((response as any)?.error);
     } else {
       // The function `forgotPassword.handler` in api/src/functions/auth.js has
       // been invoked, let the user know how to get the link to reset their
       // password (sent in email, perhaps?)
       toast.success(
-        'A link to reset your password was sent to ' + response.email
-      )
-      navigate(routes.signin())
+        "A link to reset your password was sent to " + (response as any)?.email
+      );
+      navigate(routes.signin());
     }
-  }
+  };
 
   return (
     <>
-      <MetaTags title="Forgot Password" />
+      <MetaTags title="I Forgot Password at home bro" />
+      <div className="flex w-full flex-col items-center justify-center">
+        <div className="rw-segment flex w-full flex-col items-center justify-center">
+          <header className="rw-segment-header text-center">
+            <h2 className="rw-heading rw-heading-secondary">Forgot Password</h2>
+          </header>
 
-      <main className="rw-main">
-        <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
-        <div className="rw-scaffold rw-login-container">
-          <div className="rw-segment">
-            <header className="rw-segment-header">
-              <h2 className="rw-heading rw-heading-secondary">
-                Forgot Password
-              </h2>
-            </header>
+          <h3 className="my-3 max-w-sm text-center text-gray-900 dark:text-stone-300">
+            Attention survivor: Your password has escaped and is hiding in the
+            jungles of your memory. We'll equip you with the tools to track it
+            down!
+          </h3>
 
-            <div className="rw-segment-main">
-              <div className="rw-form-wrapper">
-                <Form onSubmit={onSubmit} className="rw-form-wrapper">
-                  <div className="text-left">
-                    <Label
-                      name="username"
-                      className="rw-label"
-                      errorClassName="rw-label rw-label-error"
-                    >
-                      Email
-                    </Label>
-                    <TextField
-                      name="username"
-                      className="rw-input"
-                      errorClassName="rw-input rw-input-error"
-                      ref={usernameRef}
-                      validation={{
-                        required: true,
-                      }}
-                    />
+          <Form
+            onSubmit={onSubmit}
+            className="rw-form-wrapper rw-segment-main text-center"
+          >
+            <Label
+              name="email"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Your Email plz
+            </Label>
+            <TextField
+              name="email"
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              ref={emailRef}
+              validation={{
+                required: true,
+              }}
+            />
 
-                    <FieldError name="username" className="rw-field-error" />
-                  </div>
+            <FieldError name="email" className="rw-field-error" />
 
-                  <div className="rw-button-group">
-                    <Submit className="rw-button rw-button-blue">Submit</Submit>
-                  </div>
-                </Form>
-              </div>
-            </div>
-          </div>
+            <Submit className="rw-button rw-button-blue my-3">Submit</Submit>
+          </Form>
         </div>
-      </main>
+      </div>
     </>
-  )
-}
+  );
+};
 
-export default ForgotPasswordPage
+export default ForgotPasswordPage;
