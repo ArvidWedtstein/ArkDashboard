@@ -309,7 +309,7 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
         titleClassName="rw-form-error-title"
         listClassName="rw-form-error-list"
       />
-      <div className="mt-4 flex flex-col space-y-3">
+      <div className="flex flex-col space-y-3">
         <div className="rw-button-group !m-0">
           <input
             name="ammoperturret"
@@ -497,7 +497,7 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
           vertical={true}
           header={false}
           rows={mergeItemRecipe(viewBaseMaterials, items, ...item)}
-          className="animate-fade-in my-4"
+          className="animate-fade-in"
           caption={{
             title: "Item",
             content: (
