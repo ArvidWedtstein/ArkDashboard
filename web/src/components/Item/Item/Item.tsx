@@ -102,8 +102,8 @@ const Item = ({ item }: Props) => {
 
   return (
     <>
-      <div className="rw-segment text-gray-700 dark:text-white">
-        <section className="my-3 grid w-fit grid-flow-col rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
+      <div className="rw-segment grid grid-cols-2 gap-3 text-gray-700 dark:text-white">
+        <section className="col-span-2 grid w-fit grid-flow-col rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
           <div className="">
             <img
               className="w-auto max-w-6xl"
@@ -197,109 +197,109 @@ const Item = ({ item }: Props) => {
           </div>
         </section>
 
-        <section className="my-3 grid grid-cols-2 gap-4 rounded-lg">
-          {item.DinoStat &&
-            item.DinoStat.filter((g) => g.type === "gather_efficiency").length >
-              0 && (
-              <div className="rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
-                <p className="my-1 text-lg">Gather Efficiency</p>
-                <div className="flex flex-col">
-                  {item.DinoStat.filter((g) => g.type === "gather_efficiency")
-                    .sort((a, b) => b.value - a.value)
-                    .slice(0, 10)
-                    .map((eff, i) => (
-                      <div
-                        className="flex items-center"
-                        key={`gather-efficiency-${i}`}
+        {item.DinoStat &&
+          item.DinoStat.filter((g) => g.type === "gather_efficiency").length >
+            0 && (
+            <section className="rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
+              <p className="my-1 text-lg">Gather Efficiency</p>
+              <div className="flex flex-col">
+                {item.DinoStat.filter((g) => g.type === "gather_efficiency")
+                  .sort((a, b) => b.value - a.value)
+                  .slice(0, 10)
+                  .map((eff, i) => (
+                    <div
+                      className="flex items-center"
+                      key={`gather-efficiency-${i}`}
+                    >
+                      <Link
+                        to={routes.dino({ id: eff.Dino.id })}
+                        className="mr-2 w-40 text-sm"
                       >
-                        <Link
-                          to={routes.dino({ id: eff.Dino.id })}
-                          className="mr-2 w-40 text-sm"
-                        >
-                          {eff.Dino.name}
-                        </Link>
+                        {eff.Dino.name}
+                      </Link>
 
-                        <div
-                          className="flex h-2 w-32 flex-row divide-x divide-black rounded-full bg-stone-300"
-                          title={Math.round(Number(eff.value)).toString()}
-                        >
-                          {Array.from(Array(5)).map((_, j) => (
-                            <div
-                              key={`dinostat-${i}-${j}`}
-                              className={clsx(
-                                `h-full w-1/5 first:rounded-l-full last:rounded-r-full`,
-                                {
-                                  "bg-transparent ": Math.round(eff.value) < i,
-                                  "[&:nth-child(1)]:bg-red-500":
-                                    j === 0 && eff.value >= j + 1,
-                                  "[&:nth-child(2)]:bg-orange-500":
-                                    j === 1 && eff.value >= j + 1,
-                                  "[&:nth-child(3)]:bg-yellow-500":
-                                    j === 2 && eff.value >= j + 1,
-                                  "[&:nth-child(4)]:bg-lime-500":
-                                    j === 3 && eff.value >= j + 1,
-                                  "[&:nth-child(5)]:bg-green-500":
-                                    j === 4 && eff.value >= j + 1,
-                                }
-                              )}
-                            ></div>
-                          ))}
-                        </div>
-                        <p
-                          className="ml-2 w-40 text-sm"
-                          title={eff.value.toString()}
-                        >
-                          #{eff.rank}
-                        </p>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            )}
-
-          {item.DinoStat &&
-            item.DinoStat.filter((g) => g.type === "weight_reduction").length >
-              0 && (
-              <div className="rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
-                <p className="my-1 text-lg">Weight Reduction</p>
-                <div className="flex flex-col">
-                  {item.DinoStat.filter((g) => g.type === "weight_reduction")
-                    .sort((a, b) => b.value - a.value)
-                    .slice(0, 10)
-                    .map((wr, i) => (
                       <div
-                        className="flex items-center"
-                        key={`weight-reduction-${i}`}
+                        className="flex h-2 w-32 flex-row divide-x divide-black rounded-full bg-stone-300"
+                        title={eff.value.toString()}
                       >
-                        <Link
-                          to={routes.dino({ id: wr.Dino.id })}
-                          className="mr-2 w-20 text-sm"
-                        >
-                          {wr.Dino.name}
-                        </Link>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 512 512"
-                          className="inline-block w-4 fill-current"
-                        >
-                          <path d="M510.3 445.9L437.3 153.8C433.5 138.5 420.8 128 406.4 128H346.1c3.625-9.1 5.875-20.75 5.875-32c0-53-42.1-96-96-96S159.1 43 159.1 96c0 11.25 2.25 22 5.875 32H105.6c-14.38 0-27.13 10.5-30.88 25.75l-73.01 292.1C-6.641 479.1 16.36 512 47.99 512h416C495.6 512 518.6 479.1 510.3 445.9zM256 128C238.4 128 223.1 113.6 223.1 96S238.4 64 256 64c17.63 0 32 14.38 32 32S273.6 128 256 128z" />
-                        </svg>
-                        <p className="text-pea-500 mx-1">{wr.value}%</p>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 320 512"
-                          className="text-pea-500 inline-block w-4 fill-current"
-                        >
-                          <path d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z" />
-                        </svg>
+                        {Array.from(Array(5)).map((_, j) => (
+                          <div
+                            key={`dinostat-${i}-${j}`}
+                            className={clsx(
+                              `h-full w-1/5 first:rounded-l-full last:rounded-r-full`,
+                              {
+                                "bg-transparent ": Math.round(eff.value) < i,
+                                "[&:nth-child(1)]:bg-red-500":
+                                  j === 0 && Math.round(eff.value) >= j + 1,
+                                "[&:nth-child(2)]:bg-orange-500":
+                                  j === 1 && Math.round(eff.value) >= j + 1,
+                                "[&:nth-child(3)]:bg-yellow-500":
+                                  j === 2 && Math.round(eff.value) >= j + 1,
+                                "[&:nth-child(4)]:bg-lime-500":
+                                  j === 3 && Math.round(eff.value) >= j + 1,
+                                "[&:nth-child(5)]:bg-green-500":
+                                  j === 4 && Math.round(eff.value) >= j + 1,
+                              }
+                            )}
+                          ></div>
+                        ))}
                       </div>
-                    ))}
-                </div>
+                      <p
+                        className="ml-2 w-40 text-sm"
+                        title={eff.value.toString()}
+                      >
+                        #{eff.rank}
+                      </p>
+                    </div>
+                  ))}
               </div>
-            )}
+            </section>
+          )}
 
-          {item.DinoStat &&
-            item.DinoStat.filter((g) => g.type === "drops").length > 0 && (
+        {item.DinoStat &&
+          item.DinoStat.filter((g) => g.type === "weight_reduction").length >
+            0 && (
+            <section className="rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
+              <p className="my-1 text-lg">Weight Reduction</p>
+              <div className="flex flex-col">
+                {item.DinoStat.filter((g) => g.type === "weight_reduction")
+                  .sort((a, b) => b.value - a.value)
+                  .slice(0, 10)
+                  .map((wr, i) => (
+                    <div
+                      className="flex items-center"
+                      key={`weight-reduction-${i}`}
+                    >
+                      <Link
+                        to={routes.dino({ id: wr.Dino.id })}
+                        className="mr-2 w-20 text-sm"
+                      >
+                        {wr.Dino.name}
+                      </Link>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 512 512"
+                        className="inline-block w-4 fill-current"
+                      >
+                        <path d="M510.3 445.9L437.3 153.8C433.5 138.5 420.8 128 406.4 128H346.1c3.625-9.1 5.875-20.75 5.875-32c0-53-42.1-96-96-96S159.1 43 159.1 96c0 11.25 2.25 22 5.875 32H105.6c-14.38 0-27.13 10.5-30.88 25.75l-73.01 292.1C-6.641 479.1 16.36 512 47.99 512h416C495.6 512 518.6 479.1 510.3 445.9zM256 128C238.4 128 223.1 113.6 223.1 96S238.4 64 256 64c17.63 0 32 14.38 32 32S273.6 128 256 128z" />
+                      </svg>
+                      <p className="text-pea-500 mx-1">{wr.value}%</p>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 320 512"
+                        className="text-pea-500 inline-block w-4 fill-current"
+                      >
+                        <path d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z" />
+                      </svg>
+                    </div>
+                  ))}
+              </div>
+            </section>
+          )}
+
+        {item.DinoStat &&
+          item.DinoStat.filter((g) => g.type === "drops").length > 0 && (
+            <section className="rounded-lg">
               <div className="w-fit rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
                 <p className="my-1 text-lg">Dinos that drop {item.name}</p>
                 <div className="flex flex-col">
@@ -317,10 +317,10 @@ const Item = ({ item }: Props) => {
                     ))}
                 </div>
               </div>
-            )}
-        </section>
+            </section>
+          )}
 
-        <section className="my-3 w-fit rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
+        <section className="col-span-1 rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
           <p className="mb-1 text-lg">{item.name} can be crafted in:</p>
           <Tabs
             // tabClassName={`bg-[#0D2836] text-[#97FBFF] border !border-[#60728F]`}
