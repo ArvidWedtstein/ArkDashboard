@@ -43,7 +43,6 @@ describe('timelineBasespots', () => {
       input: {
         timeline_id: scenario.timelineBasespot.two.timeline_id,
         tribe_name: 'String',
-        players: 'String',
       },
     })
 
@@ -51,7 +50,6 @@ describe('timelineBasespots', () => {
       scenario.timelineBasespot.two.timeline_id
     )
     expect(result.tribe_name).toEqual('String')
-    expect(result.players).toEqual('String')
   })
 
   scenario('updates a timelineBasespot', async (scenario: StandardScenario) => {

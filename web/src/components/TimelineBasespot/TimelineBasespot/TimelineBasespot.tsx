@@ -60,24 +60,13 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
     error: authError,
     currentUser,
   } = useAuth();
+
   const [deleteTimelineBasespot] = useMutation(
     DELETE_TIMELINE_BASESPOT_MUTATION,
     {
       onCompleted: () => {
         toast.success("TimelineBasespot deleted");
         navigate(routes.timelineBasespots());
-      },
-      onError: (error) => {
-        toast.error(error.message);
-      },
-    }
-  );
-
-  const [createTimelineBasespot, { loading, error }] = useMutation(
-    CREATE_TIMELINE_BASESPOT_RAID_MUTATION,
-    {
-      onCompleted: () => {
-        toast.success("TimelineBasespot raid initiated");
       },
       onError: (error) => {
         toast.error(error.message);
@@ -93,6 +82,18 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
     }
   };
 
+  const [createTimelineBasespotRaid, { loading, error }] = useMutation(
+    CREATE_TIMELINE_BASESPOT_RAID_MUTATION,
+    {
+      onCompleted: () => {
+        toast.success("TimelineBasespot raid initiated");
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    }
+  );
+
   const [isRaided, setIsRaided] = useState(false);
   const initRaid = () => {
     if (confirm("Are you sure you are being raided?")) {
@@ -100,6 +101,12 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
       setIsComponentVisible(false);
     }
   };
+
+  const formatter = new Intl.ListFormat("en", {
+    style: "long",
+    type: "conjunction",
+  });
+
   const [images, setImages] = useState([]);
 
   const [isComponentVisible, setIsComponentVisible] = useState(false);
@@ -306,7 +313,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
         formSubmit={(data) => {
           data.preventDefault();
           const formData = new FormData(data.currentTarget);
-          createTimelineBasespot({
+          createTimelineBasespotRaid({
             variables: {
               input: {
                 raid_start: formData.get("raid_start") || new Date(),
@@ -565,12 +572,12 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                     Coordinates
                   </h2>
                   <p className="text-base leading-relaxed">
-                    Our base
-                    {timelineBasespot.TimelineBasespotRaid.find(
+                    Our base{" "}
+                    {timelineBasespot.TimelineBasespotRaid.some(
                       (f) => !f.base_survived
                     )
-                      ? " was "
-                      : " is "}
+                      ? "was "
+                      : "is "}
                     located at: {timelineBasespot.latitude}{" "}
                     <abbr title="Latitude">Lat</abbr>,{" "}
                     {timelineBasespot.longitude}{" "}
@@ -629,12 +636,20 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                   <h2 className="title-font mb-3 text-lg font-medium text-gray-900 dark:text-neutral-200">
                     Players
                   </h2>
-                  <p className="text-base leading-relaxed">
-                    This time{" "}
+                  {/* <p className="text-base leading-relaxed">
                     {timelineBasespot.players.length < 3
                       ? timelineBasespot.players.join(" and ")
                       : timelineBasespot.players.join(", ")}{" "}
                     played
+                  </p> */}
+                  <p className="text-base leading-relaxed">
+                    {timelineBasespot.TimelineBasespotPerson.length > 0
+                      ? formatter.format(
+                          timelineBasespot.TimelineBasespotPerson.map(
+                            (p) => p.ingame_name
+                          )
+                        )
+                      : "none"}
                   </p>
                 </div>
               </div>

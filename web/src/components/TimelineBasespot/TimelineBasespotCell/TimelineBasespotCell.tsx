@@ -8,8 +8,6 @@ export const QUERY = gql`
   query FindTimelineBasespotById($id: BigInt!) {
     timelineBasespot: timelineBasespot(id: $id) {
       id
-      created_at
-      updated_at
       timeline_id
       start_date
       end_date
@@ -21,8 +19,6 @@ export const QUERY = gql`
       cluster
       latitude
       longitude
-      players
-      created_by
       Map {
         name
       }
@@ -39,6 +35,10 @@ export const QUERY = gql`
         raid_comment
         raid_start
         raid_end
+      }
+      TimelineBasespotPerson {
+        id
+        ingame_name
       }
       TimelineBasespotDino {
         name

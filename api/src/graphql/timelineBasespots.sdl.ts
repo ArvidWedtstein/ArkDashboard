@@ -13,7 +13,6 @@ export const schema = gql`
     region: String
     season: String
     cluster: String
-    players: [String]!
     created_by: String
     latitude: Float
     longitude: Float
@@ -22,6 +21,7 @@ export const schema = gql`
     Map: Map
     timeline: Timeline!
     TimelineBasespotDino: [TimelineBasespotDino]!
+    TimelineBasespotPerson: [TimelineBasespotPerson]!
     TimelineBasespotRaid: [TimelineBasespotRaid]!
   }
 
@@ -43,7 +43,6 @@ export const schema = gql`
     region: String
     season: String
     cluster: String
-    players: [String]!
     created_by: String
     latitude: Float
     longitude: Float
@@ -62,7 +61,6 @@ export const schema = gql`
     region: String
     season: String
     cluster: String
-    players: [String]!
     created_by: String
     latitude: Float
     longitude: Float
@@ -74,7 +72,6 @@ export const schema = gql`
     ): TimelineBasespot!
       @requireAuth
       @hasPermission(permission: "timeline_create")
-
     updateTimelineBasespot(
       id: BigInt!
       input: UpdateTimelineBasespotInput!

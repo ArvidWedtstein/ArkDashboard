@@ -220,8 +220,8 @@ a {
 .rw-button-group .rw-button:last-child {
   @apply rounded-r-md !rounded-l-none;
 }
-.rw-button-group:only-child {
-  @apply rounded-md;
+.rw-button-group > .rw-button:only-child {
+  @apply !rounded-md;
 }
 .rw-button-group .rw-input {
   @apply mt-0 rounded-none first:rounded-l-md last:rounded-r-md;

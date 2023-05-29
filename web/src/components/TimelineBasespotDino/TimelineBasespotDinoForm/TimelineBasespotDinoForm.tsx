@@ -113,23 +113,24 @@ const TimelineBasespotDinoForm = (props: TimelineBasespotDinoFormProps) => {
               >
                 Dino id
               </Label>
-              {/*
+
               <Lookup
                 name="dino_id"
-                options={data.map((dino) => ({
+                defaultValue={props.timelineBasespotDino?.dino_id}
+                options={data.dinos.map((dino) => ({
                   label: dino.name,
                   value: dino.id,
-                  image: dino.icon,
+                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.icon}`,
                 }))}
-              /> */}
+              />
 
-              <TextField
+              {/* <TextField
                 name="dino_id"
                 defaultValue={props.timelineBasespotDino?.dino_id}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
                 validation={{ required: true }}
-              />
+              /> */}
 
               <FieldError name="dino_id" className="rw-field-error" />
             </div>

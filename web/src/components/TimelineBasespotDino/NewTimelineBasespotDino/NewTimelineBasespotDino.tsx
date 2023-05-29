@@ -22,7 +22,8 @@ const NewTimelineBasespotDino = ({ id }) => {
     {
       onCompleted: () => {
         toast.success("TimelineBasespotDino created");
-        navigate(routes.timelineBasespotDinos());
+        // navigate(routes.timelineBasespotDinos());
+        window.history.back();
       },
       onError: (error) => {
         toast.error(error.message);
