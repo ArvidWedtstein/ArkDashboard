@@ -15,6 +15,9 @@ import type {
   UpdateTimelineBasespotDinoInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
+import Lookup from "src/components/Util/Lookup/Lookup";
+import { useLazyQuery } from "@apollo/client";
+import { useEffect } from "react";
 
 const formatDatetime = (value) => {
   if (value) {
@@ -25,7 +28,18 @@ const formatDatetime = (value) => {
 type FormTimelineBasespotDino = NonNullable<
   EditTimelineBasespotDinoById["timelineBasespotDino"]
 >;
-
+const DINOQUERY = gql`
+  query FindDinosTimelineBasespotDino {
+    dinos {
+      id
+      name
+      synonyms
+      type
+      icon
+      image
+    }
+  }
+`;
 interface TimelineBasespotDinoFormProps {
   timelineBasespotDino?: EditTimelineBasespotDinoById["timelineBasespotDino"];
   onSave: (
@@ -38,6 +52,21 @@ interface TimelineBasespotDinoFormProps {
 }
 
 const TimelineBasespotDinoForm = (props: TimelineBasespotDinoFormProps) => {
+  const [loadItems, { called, loading, data }] = useLazyQuery(DINOQUERY, {
+    onCompleted: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  useEffect(() => {
+    if (!called && !loading) {
+      loadItems();
+    }
+  }, []);
+
   const onSubmit = (data: FormTimelineBasespotDino) => {
     props.onSave(data, props?.timelineBasespotDino?.id);
   };
@@ -84,6 +113,15 @@ const TimelineBasespotDinoForm = (props: TimelineBasespotDinoFormProps) => {
               >
                 Dino id
               </Label>
+              {/*
+              <Lookup
+                name="dino_id"
+                options={data.map((dino) => ({
+                  label: dino.name,
+                  value: dino.id,
+                  image: dino.icon,
+                }))}
+              /> */}
 
               <TextField
                 name="dino_id"

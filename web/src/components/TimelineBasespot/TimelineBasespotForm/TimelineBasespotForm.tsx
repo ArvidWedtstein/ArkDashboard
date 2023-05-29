@@ -90,8 +90,9 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
       data.longitude = selectedBasespot?.longitude;
     }
     formMethods.reset();
-    console.log(data);
+
     if (currentUser.permissions.some((p) => p === "timeline_update")) {
+      data.created_by = currentUser.id;
       props.onSave(data, props?.timelineBasespot?.id);
     }
   };

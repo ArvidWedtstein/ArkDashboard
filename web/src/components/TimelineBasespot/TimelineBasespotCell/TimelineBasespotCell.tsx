@@ -23,8 +23,6 @@ export const QUERY = gql`
       longitude
       players
       created_by
-      raided_by
-      raid_comment
       Map {
         name
       }
