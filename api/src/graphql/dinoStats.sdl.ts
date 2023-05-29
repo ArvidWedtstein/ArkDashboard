@@ -7,7 +7,7 @@ export const schema = gql`
     item_id: BigInt!
     value: Float
     rank: BigInt
-    type: dinostattype
+    type: dinostattype!
     Dino: Dino!
     Item: Item!
   }
@@ -19,6 +19,7 @@ export const schema = gql`
     immobilized_by
     fits_through
     drops
+    saddle
   }
 
   type Query {
@@ -33,7 +34,7 @@ export const schema = gql`
     item_id: BigInt!
     value: Float
     rank: BigInt
-    type: dinostattype
+    type: dinostattype!
   }
 
   input UpdateDinoStatInput {

@@ -94,18 +94,12 @@ export const item: QueryResolvers["item"] = ({ id }) => {
 
 export const createItem: MutationResolvers["createItem"] = ({ input }) => {
   return db.item.create({
-    include: {
-      ItemRecipe_ItemRecipe_crafted_item_idToItem: true,
-    },
     data: input,
   });
 };
 
 export const updateItem: MutationResolvers["updateItem"] = ({ id, input }) => {
   return db.item.update({
-    include: {
-      ItemRecipe_ItemRecipe_crafted_item_idToItem: true,
-    },
     data: input,
     where: { id },
   });

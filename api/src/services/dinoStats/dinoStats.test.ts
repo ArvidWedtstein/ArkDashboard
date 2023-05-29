@@ -33,11 +33,13 @@ describe('dinoStats', () => {
       input: {
         dino_id: scenario.dinoStat.two.dino_id,
         item_id: scenario.dinoStat.two.item_id,
+        type: 'food',
       },
     })
 
     expect(result.dino_id).toEqual(scenario.dinoStat.two.dino_id)
     expect(result.item_id).toEqual(scenario.dinoStat.two.item_id)
+    expect(result.type).toEqual('food')
   })
 
   scenario('updates a dinoStat', async (scenario: StandardScenario) => {
@@ -46,10 +48,10 @@ describe('dinoStats', () => {
     })) as DinoStat
     const result = await updateDinoStat({
       id: original.id,
-      input: { dino_id: scenario.dinoStat.two.dino_id },
+      input: { type: 'saddle' },
     })
 
-    expect(result.dino_id).toEqual(scenario.dinoStat.two.dino_id)
+    expect(result.type).toEqual('saddle')
   })
 
   scenario('deletes a dinoStat', async (scenario: StandardScenario) => {

@@ -863,8 +863,9 @@ const Dino = ({ dino }: Props) => {
     });
   }, [dinoLevel, secondsBetweenHits, dinoXVariant, weaponDamage]);
 
+  console.log(dino.DinoStat.find((f) => f.type === "saddle"));
   return (
-    <article className="grid grid-cols-1 text-black dark:text-white md:grid-cols-2">
+    <article className="grid grid-cols-1 gap-3 text-black dark:text-white md:grid-cols-2">
       <section className="col-span-2 grid grid-cols-1 md:grid-cols-2">
         <img
           src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
@@ -916,7 +917,7 @@ const Dino = ({ dino }: Props) => {
       {!!dino.maturation_time &&
         dino.maturation_time != 0 &&
         (dino.incubation_time || dino.base_points) && (
-          <section className="col-span-2 rounded-md p-4">
+          <section className="col-span-2 rounded-md">
             <p className="my-3 text-center text-sm">{dino.name} breeding:</p>
             <Form className="my-6 mx-auto flex justify-center">
               <NumberField
@@ -1806,45 +1807,52 @@ const Dino = ({ dino }: Props) => {
         </section>
       </section>
 
-      {dino?.DinoStat.some((d) => d.type.toString() == "saddle") && (
-        <>
-          <p className="my-3 text-lg dark:text-gray-200">Saddle</p>
-          <details className="group w-fit rounded-md bg-zinc-300 p-2 dark:bg-zinc-600">
-            <summary className="flex h-16 min-w-[4rem] place-content-center place-items-center gap-2 border text-center text-sm transition-all dark:text-gray-200">
-              <img
-                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/any-hat.png`}
-                alt={dino.name}
-                className="h-8 w-8 transform group-open:scale-125"
-              />
-              <span className="animate-fade-in hidden group-open:block">
-                {/* {dino.Item.name} */}
-                Saddle
-              </span>
-            </summary>
-
-            {/* <ul className="rounded-md">
-              <li className="animate-fade-in flex h-16 place-content-start place-items-center border border-stone-400 px-2">
-                <p>Crafted in: </p>
-                <Link
-                  className="inline-flex items-center space-x-2"
-                  to={routes.item({
-                    id: dino?.Item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0].Item_ItemRecipe_crafting_stationToItem.id.toString(),
-                  })}
-                >
+      {dino?.DinoStat.some((d) => d.type == "saddle") && (
+        <section className="col-span-2">
+          <p className="text-lg dark:text-gray-200">Saddle</p>
+          <div className="flex flex-row">
+            {dino.DinoStat.filter((d) => d.type === "saddle").map((s) => (
+              <details
+                className="group w-fit rounded-md bg-zinc-300 p-2 dark:bg-zinc-600"
+                key={`saddle-${s.item_id}`}
+              >
+                <summary className="flex h-16 min-w-[4rem] place-content-center place-items-center gap-2 border text-center text-sm transition-all dark:text-gray-200">
                   <img
-                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.Item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0].Item_ItemRecipe_crafting_stationToItem.image}`}
-                    alt={"Crafting Station"}
-                    className="h-8 w-8"
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${s.Item.image}`}
+                    alt={dino.name}
+                    className="h-8 w-8 transform group-open:scale-125"
                   />
-                  <span>
-                    {
-                      dino.Item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-                        .Item_ItemRecipe_crafting_stationToItem.name
-                    }
+                  <span className="animate-fade-in mr-2 hidden group-open:block">
+                    {s.Item.name}
                   </span>
-                </Link>
-              </li>
-              {dino?.Item.ItemRecipe_ItemRecipe_crafted_item_idToItem.map(
+                </summary>
+
+                <ul className="rounded-md">
+                  {dino?.DinoStat.filter(
+                    (d) => d.type == "saddle"
+                  )[0].Item.ItemRec_ItemRec_crafted_item_idToItem.map((d) => (
+                    <li className="animate-fade-in flex h-16 place-content-start place-items-center border border-stone-400 px-2">
+                      <p>Crafted in:</p>
+                      <Link
+                        className="inline-flex items-center space-x-2"
+                        to={routes.item({
+                          id: d.crafting_station_id.toString(),
+                        })}
+                      >
+                        <img
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${d.Item_ItemRec_crafting_station_idToItem.image}`}
+                          alt={"Crafting Station"}
+                          className="h-8 w-8"
+                        />
+                        <span>
+                          {d.Item_ItemRec_crafting_station_idToItem.name}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                  {/* {dino?.DinoStat.find((d) => d.type == "saddle")?.Item
+                        .ItemRec_ItemRec_crafted_item_idToItem[0]
+                        .Item_ItemRec_crafting_station_idToItem.name.map(
                 ({ amount, Item_ItemRecipe_item_idToItem }, i) => (
                   <li
                     key={`recipe-${i}`}
@@ -1866,10 +1874,12 @@ const Dino = ({ dino }: Props) => {
                     </Link>
                   </li>
                 )
-              )}
-            </ul> */}
-          </details>
-        </>
+              )} */}
+                </ul>
+              </details>
+            ))}
+          </div>
+        </section>
       )}
 
       {dino && baseStats && (
@@ -2103,7 +2113,7 @@ const Dino = ({ dino }: Props) => {
         </>
       )}
 
-      <nav className="rw-button-group">
+      <nav className="rw-button-group col-span-2">
         <Link
           to={routes.editDino({ id: dino.id })}
           className="rw-button rw-button-blue"
