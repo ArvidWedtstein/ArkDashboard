@@ -7,8 +7,8 @@ import Item from "src/components/Item/Item";
 export const QUERY = gql`
   query FindItemById($id: BigInt!) {
     item: item(id: $id) {
-      id
       created_at
+      id
       name
       description
       image
@@ -22,10 +22,13 @@ export const QUERY = gql`
       category
       LootcrateSetEntryItem {
         LootcrateSetEntry {
+          id
           LootcrateSet {
+            id
             Lootcrate {
               id
               name
+              color
             }
           }
         }
@@ -38,6 +41,27 @@ export const QUERY = gql`
         value
         rank
         type
+      }
+      ItemRec_ItemRec_crafted_item_idToItem {
+        id
+        crafted_item_id
+        crafting_station_id
+        crafting_time
+        yields
+        Item_ItemRec_crafting_station_idToItem {
+          id
+          name
+          image
+        }
+        ItemRecipeItem {
+          id
+          amount
+          Item {
+            id
+            name
+            image
+          }
+        }
       }
       ItemRecipe_ItemRecipe_crafted_item_idToItem {
         amount

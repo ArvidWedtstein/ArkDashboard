@@ -1,6 +1,7 @@
 import { SkipNavContent } from "@redwoodjs/router";
 import { Link, routes, usePageLoadingContext } from "@redwoodjs/router";
 import { Toaster } from "@redwoodjs/web/toast";
+import Footer from "src/components/Footer/Footer";
 import Navbar from "src/components/Navbar/Navbar";
 import Sidebar from "src/components/Sidebar/Sidebar";
 
@@ -17,7 +18,7 @@ const MainLayout = ({ children }: LayoutProps) => {
       {/* <SkipNavLink contentId="main-content"></SkipNavLink> */}
       <Navbar />
       <Toaster toastOptions={{ className: "rw-toast", duration: 6000 }} />
-      <div className="flex w-full flex-col sm:flex-row overflow-x-hidden sm:overflow-x-auto">
+      <div className="flex h-screen w-full flex-col overflow-x-hidden sm:flex-row sm:overflow-x-auto">
         <Sidebar />
         <SkipNavContent id="main-content" />
         <main className="overflow-y-auto sm:w-full ">
@@ -29,6 +30,7 @@ const MainLayout = ({ children }: LayoutProps) => {
           {children}
         </main>
       </div>
+      <Footer />
     </div>
   );
 };

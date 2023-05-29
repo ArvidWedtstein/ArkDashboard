@@ -148,7 +148,6 @@ const Item = ({ item }: Props) => {
                   );
                 })}
               </div>
-
               {item.crafting_time && (
                 <>
                   <br />
@@ -158,20 +157,38 @@ const Item = ({ item }: Props) => {
                   </div>
                   <br />
                   {item.LootcrateSetEntryItem.length > 0 && (
-                    <div className="mr-4 mb-4 inline-block">
-                      {/* TODO: Select Distinct lootcrates */}
+                    <div className="mr-4 mb-4 flex flex-wrap gap-1">
                       <strong>Found in:</strong>{" "}
-                      {item?.LootcrateSetEntryItem.slice(0, 5).map((g) => (
-                        <Link
-                          key={`lootcrate-${g.LootcrateSetEntry.LootcrateSet.Lootcrate.id}`}
-                          to={routes.lootcrate({
-                            id: g.LootcrateSetEntry.LootcrateSet.Lootcrate.id.toString(),
-                          })}
-                          className="mr-2 text-sm"
-                        >
-                          {g.LootcrateSetEntry.LootcrateSet.Lootcrate.name}
-                        </Link>
-                      ))}
+                      {item?.LootcrateSetEntryItem.filter(
+                        (value, index, self) =>
+                          index ===
+                          self.findIndex(
+                            (t) =>
+                              t.LootcrateSetEntry.LootcrateSet.Lootcrate.id ===
+                                value.LootcrateSetEntry.LootcrateSet.Lootcrate
+                                  .id &&
+                              t.LootcrateSetEntry.LootcrateSet.Lootcrate.id ===
+                                value.LootcrateSetEntry.LootcrateSet.Lootcrate
+                                  .id
+                          )
+                      )
+                        .slice(0, 5)
+                        .map((g) => (
+                          <Link
+                            key={`lootcrate-${g.LootcrateSetEntry.id}-${g.LootcrateSetEntry.LootcrateSet.Lootcrate.id}`}
+                            to={routes.lootcrate({
+                              id: g.LootcrateSetEntry.LootcrateSet.Lootcrate.id.toString(),
+                            })}
+                            className="rounded border px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:text-white"
+                            style={{
+                              borderColor:
+                                g.LootcrateSetEntry.LootcrateSet.Lootcrate
+                                  .color,
+                            }}
+                          >
+                            {g.LootcrateSetEntry.LootcrateSet.Lootcrate.name}
+                          </Link>
+                        ))}
                     </div>
                   )}
                 </>
@@ -204,7 +221,7 @@ const Item = ({ item }: Props) => {
 
                         <div
                           className="flex h-2 w-32 flex-row divide-x divide-black rounded-full bg-stone-300"
-                          title={eff.value.toString()}
+                          title={Math.round(Number(eff.value)).toString()}
                         >
                           {Array.from(Array(5)).map((_, j) => (
                             <div
@@ -212,10 +229,17 @@ const Item = ({ item }: Props) => {
                               className={clsx(
                                 `h-full w-1/5 first:rounded-l-full last:rounded-r-full`,
                                 {
-                                  "bg-transparent":
-                                    Math.round(eff.value) < i + 1,
-                                  "[&:nth-child(1)]:bg-red-500 [&:nth-child(2)]:bg-orange-500 [&:nth-child(3)]:bg-yellow-500 [&:nth-child(4)]:bg-lime-500 [&:nth-child(5)]:bg-green-500":
-                                    Math.round(eff.value) >= i + 1,
+                                  "bg-transparent ": Math.round(eff.value) < i,
+                                  "[&:nth-child(1)]:bg-red-500":
+                                    j === 0 && eff.value >= j + 1,
+                                  "[&:nth-child(2)]:bg-orange-500":
+                                    j === 1 && eff.value >= j + 1,
+                                  "[&:nth-child(3)]:bg-yellow-500":
+                                    j === 2 && eff.value >= j + 1,
+                                  "[&:nth-child(4)]:bg-lime-500":
+                                    j === 3 && eff.value >= j + 1,
+                                  "[&:nth-child(5)]:bg-green-500":
+                                    j === 4 && eff.value >= j + 1,
                                 }
                               )}
                             ></div>
@@ -299,53 +323,44 @@ const Item = ({ item }: Props) => {
         <section className="my-3 w-fit rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
           <p className="mb-1 text-lg">{item.name} can be crafted in:</p>
           <Tabs
-            tabClassName={`bg-[#0D2836] text-[#97FBFF] border !border-[#60728F]`}
-            tabs={Object.entries(
-              groupByObject(
-                item.ItemRecipe_ItemRecipe_crafted_item_idToItem,
-                "Item_ItemRecipe_crafting_stationToItem"
-              )
-            ).map(([crafting_station, items]) => {
-              const {
+            // tabClassName={`bg-[#0D2836] text-[#97FBFF] border !border-[#60728F]`}
+            tabs={item.ItemRec_ItemRec_crafted_item_idToItem.map(
+              ({
                 id,
-                name,
-                image,
-              }: {
-                __typename: string;
-                id: string;
-                name: string;
-                image: string;
-              } = JSON.parse(crafting_station) || {
-                id: "",
-                name: "Inventory",
-                image: "Inventory.png",
-              };
-
-              return {
+                Item_ItemRec_crafting_station_idToItem,
+                ItemRecipeItem,
+                yields,
+              }) => ({
                 title: (
                   <p
-                    className="inline-flex items-center justify-center"
+                    className="inline-flex items-center justify-center px-2"
                     key={`recipe-${id}`}
                   >
                     <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRec_crafting_station_idToItem.image}`}
                       className="w-8"
                     />
-                    <span>{name}</span>
+                    <span>{Item_ItemRec_crafting_station_idToItem.name}</span>
                   </p>
                 ),
                 content: (
                   <div className="">
                     <div className="flex flex-row space-x-[0.1rem]">
-                      <div className="border border-[#60728F] bg-[#0D2836] p-2 text-[#97FBFF]">
+                      {/* <div className="border border-[#60728F] bg-[#0D2836] p-2 text-[#97FBFF]"> */}
+                      <div className="">
                         <h1 className="mb-1 text-sm uppercase">
                           Engram / Engram: {item.name} / {item.type}
                         </h1>
                         <div className="flex flex-row space-x-2 text-xs">
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
-                            className="h-24 w-24 border border-[#11667B] bg-[#5C666D] p-1"
-                          />
+                          <div className="relative">
+                            <img
+                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+                              className="h-24 w-24 border border-[#11667B] bg-[#5C666D] p-1"
+                            />
+                            <div className="bg-pea-500 absolute -top-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white text-xs font-bold text-white dark:border-gray-900">
+                              {yields}
+                            </div>
+                          </div>
                           <div className="flex flex-col justify-between">
                             <p>{item.description}</p>
                             <p className="justify-self-end">
@@ -364,30 +379,21 @@ const Item = ({ item }: Props) => {
                           </div>
                         </div>
                       </div>
-                      <div className="border border-[#60728F] bg-[#0D2836] p-2 text-[#97FBFF]">
+                      {/* <div className="border border-[#60728F] bg-[#0D2836] p-2 text-[#97FBFF]"> */}
+                      <div className="">
                         <h1 className="mb-1 text-sm uppercase">
                           Crafting Requirements
                         </h1>
                         <ul className="space-y-1 text-xs">
-                          {items.map(
-                            (
-                              {
-                                Item_ItemRecipe_item_idToItem: {
-                                  name,
-                                  id,
-                                  image,
-                                },
-                                amount,
-                              },
-                              i
-                            ) => (
+                          {ItemRecipeItem.map(
+                            ({ Item: { name, id, image }, amount }, i) => (
                               <li
                                 className="flex flex-row items-center justify-start"
                                 key={`${id}-${i}`}
                               >
                                 <Link
                                   className="inline-flex items-center justify-center space-x-1"
-                                  to={routes.item({ id })}
+                                  to={routes.item({ id: id.toString() })}
                                 >
                                   <img
                                     src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
@@ -404,8 +410,8 @@ const Item = ({ item }: Props) => {
                     </div>
                   </div>
                 ),
-              };
-            })}
+              })
+            )}
           />
         </section>
       </div>
