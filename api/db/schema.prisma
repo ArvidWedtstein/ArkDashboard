@@ -74,6 +74,7 @@ model Profile {
   TimelineBasespot              TimelineBasespot[]
   TimelineBasespotPerson        TimelineBasespotPerson[]
   Tribe                         Tribe[]
+  UserRecipe                    UserRecipe[]
 }
 
 model Role {
@@ -369,17 +370,18 @@ model MapNote {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model ItemRec {
-  id                                     String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  created_at                             DateTime         @default(now()) @db.Timestamptz(6)
-  updated_at                             DateTime?        @default(now()) @db.Timestamptz(6)
+  id                                     String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at                             DateTime               @default(now()) @db.Timestamptz(6)
+  updated_at                             DateTime?              @default(now()) @db.Timestamptz(6)
   crafted_item_id                        BigInt
   crafting_station_id                    BigInt?
-  crafting_time                          Float?           @default(1)
-  yields                                 Float            @default(1)
+  crafting_time                          Float?                 @default(1)
+  yields                                 Float                  @default(1)
   required_level                         BigInt?
-  Item_ItemRec_crafted_item_idToItem     Item             @relation("ItemRec_crafted_item_idToItem", fields: [crafted_item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Item_ItemRec_crafting_station_idToItem Item?            @relation("ItemRec_crafting_station_idToItem", fields: [crafting_station_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Item_ItemRec_crafted_item_idToItem     Item                   @relation("ItemRec_crafted_item_idToItem", fields: [crafted_item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Item_ItemRec_crafting_station_idToItem Item?                  @relation("ItemRec_crafting_station_idToItem", fields: [crafting_station_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   ItemRecipeItem                         ItemRecipeItem[]
+  UserRecipeItemRecipe                   UserRecipeItemRecipe[]
 
   @@unique([crafted_item_id, crafting_station_id])
 }
@@ -412,6 +414,29 @@ model TimelineBasespotPerson {
   Profile             Profile?         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([timelinebasespot_id, user_id, ingame_name])
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model UserRecipe {
+  id                   String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at           DateTime               @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime?              @db.Timestamptz(6)
+  user_id              String                 @db.Uuid
+  private              Boolean                @default(true)
+  Profile              Profile                @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  UserRecipeItemRecipe UserRecipeItemRecipe[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model UserRecipeItemRecipe {
+  id             String     @id(map: "UserRecipeItemRecipie_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at     DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime?  @db.Timestamptz(6)
+  user_recipe_id String     @db.Uuid
+  item_recipe_id String     @db.Uuid
+  ItemRec        ItemRec    @relation(fields: [item_recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  UserRecipe     UserRecipe @relation(fields: [user_recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum permission {
