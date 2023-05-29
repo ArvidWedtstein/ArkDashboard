@@ -1172,7 +1172,7 @@ const Dino = ({ dino }: Props) => {
       )}
 
       {dino?.DinoStat.some((d) => d.type == "fits_through") && (
-        <section className="col-span-1 md:col-span-2">
+        <section className="col-span-2">
           <h3 className="font-medium leading-tight">Fits Through</h3>
           <CheckboxGroup
             defaultValue={dino.DinoStat.filter(
@@ -1222,9 +1222,10 @@ const Dino = ({ dino }: Props) => {
       )}
 
       {dino.can_destroy && (
-        <section className="col-span-1 md:col-span-2">
+        <section className="col-span-2">
           <h3 className="font-medium leading-tight">Can Destroy</h3>
           <Table
+            className="max-w-fit"
             rows={[
               combineBySummingKeys(
                 {
@@ -1282,7 +1283,7 @@ const Dino = ({ dino }: Props) => {
 
       {dino?.DinoStat &&
         dino?.DinoStat.some((d) => d.type == "gather_efficiency") && (
-          <section className="col-span-1 space-y-2">
+          <section className="col-span-2 space-y-2 md:col-span-1">
             <h4>Gather Efficiency</h4>
             <Table
               className="min-w-fit"
@@ -1356,11 +1357,11 @@ const Dino = ({ dino }: Props) => {
         )}
 
       {dino.DinoStat.some((d) => d.type == "weight_reduction") && (
-        <section className="space-y-2">
+        <section className="col-span-2 space-y-2 md:col-span-1">
           <h4>Weight Reduction</h4>
           <Table
-            className="w-fit"
-            header={false}
+            className="min-w-fit"
+            header={true}
             rows={dino.DinoStat.filter(
               (d) => d.type == "weight_reduction"
             ).sort((a, b) => b.value - a.value)}
@@ -1379,7 +1380,7 @@ const Dino = ({ dino }: Props) => {
               },
               {
                 field: "Item",
-                label: "",
+                label: "Name",
                 valueFormatter: ({ value }) => {
                   return (
                     <Link to={routes.item({ id: value.id })}>{value.name}</Link>
@@ -1388,7 +1389,7 @@ const Dino = ({ dino }: Props) => {
               },
               {
                 field: "value",
-                label: "",
+                label: "Value",
                 valueFormatter: ({ value }) => (
                   <div className="flex items-center">
                     <svg
@@ -1411,7 +1412,7 @@ const Dino = ({ dino }: Props) => {
               },
               {
                 field: "rank",
-                label: "",
+                label: "Rank",
                 valueFormatter: ({ value }) => {
                   return value <= 10 && <p>#{value}</p>;
                 },
@@ -1421,7 +1422,7 @@ const Dino = ({ dino }: Props) => {
         </section>
       )}
 
-      <section className="col-span-1 flex flex-wrap gap-3">
+      <section className="col-span-2 flex flex-wrap gap-3 md:col-span-1">
         <div className="space-y-2">
           <h4>Drops</h4>
           <Table
@@ -1483,7 +1484,7 @@ const Dino = ({ dino }: Props) => {
         </div>
       </section>
 
-      <section className="col-span-1 border-t border-gray-700 pt-3 dark:border-white md:col-span-2">
+      <section className="col-span-2 border-t border-gray-700 pt-3 dark:border-white">
         <h3 className="text-xl font-medium leading-tight">Taming</h3>
         <p>{dino?.taming_notice}</p>
         <div>

@@ -69,7 +69,7 @@ const CheckboxGroup = ({
   );
 
   return (
-    <div className="mt-1 flex h-fit flex-wrap gap-3">
+    <div className="mt-1 flex h-fit flex-wrap gap-1 md:gap-3">
       {memoizedOptions.map(({ label, image, value: optValue }) => (
         <label key={label} aria-details={`Item: ${optValue}`}>
           <input
