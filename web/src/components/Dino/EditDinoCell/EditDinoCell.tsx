@@ -49,12 +49,9 @@ export const QUERY = gql`
       attack
       mounted_weaponry
       ridable
-      flyer_dino
-      water_dino
       movement
       type
       carryable_by
-      saddle_id
       DinoStat {
         item_id
         Item {
@@ -111,8 +108,6 @@ const UPDATE_DINO_MUTATION = gql`
       attack
       mounted_weaponry
       ridable
-      flyer_dino
-      water_dino
       movement
       type
       carryable_by

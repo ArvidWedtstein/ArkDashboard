@@ -154,12 +154,9 @@ model Dino {
   attack                         Json?
   mounted_weaponry               Boolean?               @default(false)
   ridable                        Boolean?               @default(false)
-  flyer_dino                     Boolean?               @default(false)
-  water_dino                     Boolean?               @default(false)
   movement                       Json?                  @default("null")
   type                           String[]
   carryable_by                   String[]
-  saddle_id                      BigInt?
   icon                           String?
   image                          String?
   multipliers                    Json?
@@ -167,7 +164,6 @@ model Dino {
   gestation_time                 Float?                 @default(0)
   mating_cooldown_min            BigInt?                @default(0)
   mating_cooldown_max            BigInt?                @default(0)
-  Item                           Item?                  @relation(fields: [saddle_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   DinoStat                       DinoStat[]
   TimelineBasespotDino           TimelineBasespotDino[]
 }
@@ -187,7 +183,6 @@ model Item {
   type                                         String?
   category                                     String                  @default("'Other'::text")
   health                                       Float?                  @default(0)
-  Dino                                         Dino[]
   DinoStat                                     DinoStat[]
   ItemRec_ItemRec_crafted_item_idToItem        ItemRec[]               @relation("ItemRec_crafted_item_idToItem")
   ItemRec_ItemRec_crafting_station_idToItem    ItemRec[]               @relation("ItemRec_crafting_station_idToItem")
