@@ -5,6 +5,7 @@ import useIntersectionObserver from "src/components/useIntersectionObserver";
 interface ImageContainerProps
   extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
+  defaultsrc?: string;
   alt?: string;
   caption?: string | ReactNode;
   className?: string;
@@ -22,6 +23,7 @@ interface ImageContainerProps
 const ImageContainer = ({ ...props }: ImageContainerProps) => {
   const {
     src,
+    defaultsrc,
     alt,
     caption,
     className,
@@ -70,8 +72,7 @@ const ImageContainer = ({ ...props }: ImageContainerProps) => {
             alt={alt}
             {...props}
             onError={(e) => {
-              e.currentTarget.src =
-                "https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj";
+              if (defaultsrc) e.currentTarget.src = defaultsrc;
             }}
             // style={{ opacity: imageLoaded ? 1 : 0 }}
           />

@@ -8,6 +8,7 @@ import {
   FieldError,
   Submit,
   EmailField,
+  CheckboxField,
 } from "@redwoodjs/forms";
 import { Link, navigate, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
@@ -125,6 +126,22 @@ const SignupPage = () => {
               }}
             />
             <FieldError name="password" className="rw-field-error" />
+
+            {/* TODO: add terms  */}
+            {/* <Label
+              name="terms"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              I agree with the{" "}
+              <a
+                href="#"
+                className="text-blue-600 hover:underline dark:text-blue-500"
+              >
+                terms and conditions
+              </a>
+            </Label>
+            <CheckboxField name="terms" className="rw-input" /> */}
 
             <Submit className="rw-button rw-button-blue my-3">Sign Up</Submit>
 
