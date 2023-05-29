@@ -12,6 +12,7 @@ import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useAuth } from "src/auth";
+import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
 import Map from "src/components/Util/Map/Map";
 import { Modal, RefModal } from "src/components/Util/Modal/Modal";
 import Slideshow from "src/components/Util/Slideshow/Slideshow";
@@ -196,23 +197,6 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
               <div>
                 <div>
                   <Label
-                    name="raided_by"
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Raided by
-                  </Label>
-
-                  <TextField
-                    name="raided_by"
-                    className="rw-input"
-                    errorClassName="rw-input rw-input-error"
-                  />
-
-                  <FieldError name="raided_by" className="rw-field-error" />
-                </div>
-                <div>
-                  <Label
                     name="raid_comment"
                     className="rw-label"
                     errorClassName="rw-label rw-label-error"
@@ -282,7 +266,9 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                     className="rw-input"
                     errorClassName="rw-input rw-input-error"
                   />
-                  <p className="rw-helper-text">Name of tribe who survived</p>
+                  <p className="rw-helper-text">
+                    Name of tribe who started the raid
+                  </p>
 
                   <FieldError name="tribe_name" className="rw-field-error" />
                 </div>
@@ -319,7 +305,6 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                 raid_start: formData.get("raid_start") || new Date(),
                 raid_end: convertToDate(formData.get("raid_end")),
                 raid_comment: formData.get("raid_comment"),
-                raided_by: formData.get("raided_by"),
                 attacker_players: formData.get("attacker_players"),
                 base_survived: formData.get("base_survived"),
                 tribe_name: formData.get("tribe_name"),
@@ -332,98 +317,95 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
       />
 
       <div className="m-2 block rounded-md text-white">
-        <section className="body-font">
-          <div className="container mx-auto flex flex-col items-center px-5 py-12 md:flex-row">
-            <div className="mb-16 flex flex-col items-center text-center md:mb-0 md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24">
-              <h1 className="title-font mb-4 text-3xl font-medium text-gray-900 dark:text-zinc-200 sm:text-4xl">
-                {timelineBasespot.tribe_name}
-              </h1>
-              <p className="leading-relaxed">
-                This time we played on{" "}
-                {timelineBasespot.server && timelineBasespot.server}
-                {timelineBasespot.cluster &&
-                  `, ${timelineBasespot.cluster}`}{" "}
-                {timelineBasespot.season &&
-                  `, Season ${timelineBasespot.season}`}
-              </p>
-              <div className="mt-2 flex justify-center space-x-2">
-                {isAuthenticated && (
-                  <>
-                    {hasRole("timeline_update") ||
-                      (currentUser.permissions.some(
-                        (p) => p === "timeline_update"
-                      ) && (
-                        <Link
-                          to={routes.editTimelineBasespot({
-                            id: timelineBasespot.id.toString(),
-                          })}
-                          className="rw-button rw-button-gray-outline"
+        <section className="body-font container mx-auto flex flex-col items-center px-5 py-12 md:flex-row">
+          <div className="mb-16 flex flex-col items-center text-center md:mb-0 md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24">
+            <h1 className="title-font mb-4 text-3xl font-medium text-gray-900 dark:text-zinc-200 sm:text-4xl">
+              {timelineBasespot.tribe_name}
+            </h1>
+            <p className="leading-relaxed">
+              This time we played on
+              {` ${timelineBasespot?.server} ${timelineBasespot?.cluster} Season ${timelineBasespot.season}`}
+            </p>
+            <div className="mt-2 flex justify-center space-x-2">
+              {isAuthenticated && (
+                <>
+                  {hasRole("timeline_update") ||
+                    (currentUser.permissions.some(
+                      (p) => p === "timeline_update"
+                    ) && (
+                      <Link
+                        to={routes.editTimelineBasespot({
+                          id: timelineBasespot.id.toString(),
+                        })}
+                        className="rw-button rw-button-gray-outline"
+                      >
+                        Edit
+                      </Link>
+                    ))}
+                  {hasRole("timeline_delete") ||
+                    (currentUser.permissions.some(
+                      (p) => p === "timeline_delete"
+                    ) && (
+                      <button
+                        onClick={() => onDeleteClick(timelineBasespot.id)}
+                        className="rw-button rw-button-red-outline"
+                      >
+                        Delete
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 448 512"
+                          className="rw-button-icon"
                         >
-                          Edit
-                        </Link>
-                      ))}
-                    {hasRole("timeline_delete") ||
-                      (currentUser.permissions.some(
-                        (p) => p === "timeline_delete"
-                      ) && (
-                        <button
-                          onClick={() => onDeleteClick(timelineBasespot.id)}
-                          className="rw-button rw-button-red-outline"
+                          <path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
+                        </svg>
+                      </button>
+                    ))}
+                  {(!timelineBasespot.TimelineBasespotRaid.find(
+                    (f) => f.base_survived === false
+                  ) &&
+                    new Date(timelineBasespot.start_date) < new Date() &&
+                    !timelineBasespot.end_date &&
+                    timelineBasespot.TimelineBasespotPerson.some(
+                      (p) => p.user_id === currentUser.id
+                    )) ||
+                    (currentUser.permissions.some(
+                      (p) => p === "timeline_update"
+                    ) && (
+                      <button
+                        className="rw-button rw-button-red-outline"
+                        onClick={() => initRaid()}
+                      >
+                        Raid
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 576 512"
+                          className="rw-button-icon"
                         >
-                          Delete
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                            className="rw-button-icon"
-                          >
-                            <path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
-                          </svg>
-                        </button>
-                      ))}
-                    {!timelineBasespot.TimelineBasespotRaid.find(
-                      (f) => f.base_survived === false
-                    ) &&
-                      new Date(timelineBasespot.start_date) < new Date() &&
-                      !timelineBasespot.end_date &&
-                      currentUser.permissions.some(
-                        (p) => p === "timeline_update"
-                      ) && (
-                        <button
-                          className="rw-button rw-button-red-outline"
-                          onClick={() => initRaid()}
-                        >
-                          Raid
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 576 512"
-                            className="rw-button-icon"
-                          >
-                            <path d="M285.3 247.1c-3.093-4.635-8.161-7.134-13.32-7.134c-8.739 0-15.1 7.108-15.1 16.03c0 3.05 .8717 6.133 2.693 8.859l52.37 78.56l-76.12 25.38c-6.415 2.16-10.94 8.159-10.94 15.18c0 2.758 .7104 5.498 2.109 7.946l63.1 112C293.1 509.1 298.5 512 304 512c11.25 0 15.99-9.84 15.99-16.02c0-2.691-.6807-5.416-2.114-7.915L263.6 393l77.48-25.81c1.701-.5727 10.93-4.426 10.93-15.19c0-3.121-.9093-6.205-2.685-8.873L285.3 247.1zM575.1 256c0-4.435-1.831-8.841-5.423-12l-58.6-51.87c.002-.0938 0 .0938 0 0l.0247-144.1c0-8.844-7.156-16-15.1-16L400 32c-8.844 0-15.1 7.156-15.1 16l-.0014 31.37L298.6 4c-3.016-2.656-6.797-3.997-10.58-3.997c-3.781 0-7.563 1.34-10.58 3.997l-271.1 240C1.831 247.2 .0007 251.6 .0007 256c0 8.92 7.239 15.99 16.04 15.99c3.757 0 7.52-1.313 10.54-3.993l37.42-33.02V432c0 44.13 35.89 80 79.1 80h63.1c8.844 0 15.1-7.156 15.1-16S216.8 480 208 480h-63.1c-26.47 0-47.1-21.53-47.1-48v-224c0-.377-.1895-.6914-.2148-1.062L288 37.34l192.2 169.6C480.2 207.3 479.1 207.6 479.1 208v224c0 26.47-21.53 48-47.1 48h-31.1c-8.844 0-15.1 7.156-15.1 16s7.156 16 15.1 16h31.1c44.11 0 79.1-35.88 79.1-80V234.1L549.4 268C552.5 270.7 556.2 272 559.1 272C568.7 272 575.1 264.9 575.1 256zM479.1 164.1l-63.1-56.47V64h63.1V164.1z" />
-                          </svg>
-                        </button>
-                      )}
-                    <Link
-                      to={routes.newTimelineBasespotDino({
-                        id: timelineBasespot.id,
-                      })}
-                      className="rw-button rw-button-green-outline"
-                    >
-                      Add New Dino
-                    </Link>
-                  </>
-                )}
-              </div>
+                          <path d="M285.3 247.1c-3.093-4.635-8.161-7.134-13.32-7.134c-8.739 0-15.1 7.108-15.1 16.03c0 3.05 .8717 6.133 2.693 8.859l52.37 78.56l-76.12 25.38c-6.415 2.16-10.94 8.159-10.94 15.18c0 2.758 .7104 5.498 2.109 7.946l63.1 112C293.1 509.1 298.5 512 304 512c11.25 0 15.99-9.84 15.99-16.02c0-2.691-.6807-5.416-2.114-7.915L263.6 393l77.48-25.81c1.701-.5727 10.93-4.426 10.93-15.19c0-3.121-.9093-6.205-2.685-8.873L285.3 247.1zM575.1 256c0-4.435-1.831-8.841-5.423-12l-58.6-51.87c.002-.0938 0 .0938 0 0l.0247-144.1c0-8.844-7.156-16-15.1-16L400 32c-8.844 0-15.1 7.156-15.1 16l-.0014 31.37L298.6 4c-3.016-2.656-6.797-3.997-10.58-3.997c-3.781 0-7.563 1.34-10.58 3.997l-271.1 240C1.831 247.2 .0007 251.6 .0007 256c0 8.92 7.239 15.99 16.04 15.99c3.757 0 7.52-1.313 10.54-3.993l37.42-33.02V432c0 44.13 35.89 80 79.1 80h63.1c8.844 0 15.1-7.156 15.1-16S216.8 480 208 480h-63.1c-26.47 0-47.1-21.53-47.1-48v-224c0-.377-.1895-.6914-.2148-1.062L288 37.34l192.2 169.6C480.2 207.3 479.1 207.6 479.1 208v224c0 26.47-21.53 48-47.1 48h-31.1c-8.844 0-15.1 7.156-15.1 16s7.156 16 15.1 16h31.1c44.11 0 79.1-35.88 79.1-80V234.1L549.4 268C552.5 270.7 556.2 272 559.1 272C568.7 272 575.1 264.9 575.1 256zM479.1 164.1l-63.1-56.47V64h63.1V164.1z" />
+                        </svg>
+                      </button>
+                    ))}
+                  <Link
+                    to={routes.newTimelineBasespotDino({
+                      id: timelineBasespot.id,
+                    })}
+                    className="rw-button rw-button-green-outline"
+                  >
+                    + Dino
+                  </Link>
+                </>
+              )}
             </div>
-            {images.length > 0 && (
-              <div className="w-5/6 md:w-1/2 lg:w-full lg:max-w-lg">
-                <img
-                  className="rounded-lg object-cover object-center"
-                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineBasespot.id}/${images[0].name}`}
-                  alt={timelineBasespot.tribe_name}
-                />
-              </div>
-            )}
           </div>
+          {images.length > 0 && (
+            <div className="w-5/6 md:w-1/2 lg:w-full lg:max-w-lg">
+              <ImageContainer
+                className="rounded-lg object-cover object-center"
+                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineBasespot.id}/${images[0].name}`}
+                caption={timeTag(timelineBasespot.start_date)}
+              />
+            </div>
+          )}
         </section>
 
         <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
@@ -473,17 +455,14 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
               controls={true}
               autoPlay={false}
               slides={timelineBasespot.TimelineBasespotRaid.map(
-                (
-                  {
-                    id,
-                    raid_comment,
-                    raid_start,
-                    raid_end,
-                    tribe_name,
-                    base_survived,
-                  },
-                  index
-                ) => {
+                ({
+                  id,
+                  raid_comment,
+                  raid_start,
+                  raid_end,
+                  tribe_name,
+                  base_survived,
+                }) => {
                   return {
                     tabColor: `bg-pea-500`,
                     content: (
@@ -546,7 +525,8 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                     {
                       lat: timelineBasespot.latitude,
                       lon: timelineBasespot.longitude,
-                    } as any,
+                      name: timelineBasespot?.basespot?.name,
+                    },
                   ]}
                   interactive={true}
                 />
@@ -581,7 +561,12 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                     located at: {timelineBasespot.latitude}{" "}
                     <abbr title="Latitude">Lat</abbr>,{" "}
                     {timelineBasespot.longitude}{" "}
-                    <abbr title="Longitude">Lon</abbr>
+                    <abbr title="Longitude">Lon</abbr> on the map{" "}
+                    <Link
+                      to={routes.map({ id: timelineBasespot.map.toString() })}
+                    >
+                      {timelineBasespot?.Map?.name}
+                    </Link>
                   </p>
                 </div>
               </div>
@@ -636,17 +621,19 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                   <h2 className="title-font mb-3 text-lg font-medium text-gray-900 dark:text-neutral-200">
                     Players
                   </h2>
-                  {/* <p className="text-base leading-relaxed">
-                    {timelineBasespot.players.length < 3
-                      ? timelineBasespot.players.join(" and ")
-                      : timelineBasespot.players.join(", ")}{" "}
-                    played
-                  </p> */}
                   <p className="text-base leading-relaxed">
                     {timelineBasespot.TimelineBasespotPerson.length > 0
                       ? formatter.format(
                           timelineBasespot.TimelineBasespotPerson.map(
-                            (p) => p.ingame_name
+                            (p) =>
+                              // p.user_id ? (
+                              //   <Link to={routes.profile({ id: p.user_id })}>
+                              //     {p.ingame_name}
+                              //   </Link>
+                              // ) : (
+                              //   p.ingame_name
+                              // )
+                              p.ingame_name
                           )
                         )
                       : "none"}
@@ -683,7 +670,6 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                         "group relative flex h-auto w-full overflow-hidden rounded-xl"
                       )}
                       onClick={() => {
-                        console.log("onCLigg");
                         setCurrentModalImage(
                           `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineBasespot.id}/${img.name}`
                         );

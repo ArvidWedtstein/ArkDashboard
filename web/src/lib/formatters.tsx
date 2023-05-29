@@ -39,7 +39,9 @@ export const nmbFormat = Intl.NumberFormat("en", {
 }).format;
 
 export const formatNumberWithThousandSeparator = (num: number): string => {
-  const formattedNum = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const formattedNum = Math.round(num)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return formattedNum;
 };
 
@@ -172,87 +174,12 @@ export const combineBySummingKeys = (...objects: object[]) => {
  * @returns {Array<any>} An array of objects representing the base materials required.
  */
 export const getBaseMaterials = (
-  firstRecipeOnly: boolean = false,
-  // crafting_stations?: any[],
-  ...objects: Array<any>
-) => {
-  let materials = [];
-
-  const findBaseMaterials = (item, amount) => {
-    if (
-      !item?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
-      item.ItemRecipe_ItemRecipe_crafted_item_idToItem.length === 0
-    ) {
-      return;
-    }
-
-    // TODO: Replace this shit
-    // Rewrite so that all items are queried once, and then get recipe from each of those items instead
-
-    let c =
-      item?.ItemRecipe_ItemRecipe_crafted_item_idToItem &&
-      item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0
-        ? item.ItemRecipe_ItemRecipe_crafted_item_idToItem[0]
-            ?.Item_ItemRecipe_crafting_stationToItem.id
-        : null;
-
-    // Group by crafting_station somehow
-    const craft =
-      item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.filter((f) =>
-        f.Item_ItemRecipe_crafting_stationToItem
-          ? f.Item_ItemRecipe_crafting_stationToItem?.id === c
-          : true
-      ) || null;
-
-    craft.forEach(
-      ({ Item_ItemRecipe_item_idToItem, amount: recipeAmount, yields }) => {
-        let count = (recipeAmount * amount) / (yields ? yields : 1);
-        if (
-          !firstRecipeOnly ||
-          !Item_ItemRecipe_item_idToItem?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
-          !Item_ItemRecipe_item_idToItem
-            ?.ItemRecipe_ItemRecipe_crafted_item_idToItem.length
-        ) {
-          let material = materials.find(
-            (m) => m.id === Item_ItemRecipe_item_idToItem.id
-          );
-          if (material) {
-            material.amount += count;
-            material.crafting_time +=
-              count * Item_ItemRecipe_item_idToItem.crafting_time || 0;
-          } else {
-            materials.push({
-              ...Item_ItemRecipe_item_idToItem,
-              amount: count,
-              crafting_time:
-                count * Item_ItemRecipe_item_idToItem.crafting_time || 0,
-            });
-          }
-        } else {
-          findBaseMaterials(
-            Item_ItemRecipe_item_idToItem,
-            count * (Item_ItemRecipe_item_idToItem.yields || 1)
-          );
-        }
-      }
-    );
-  };
-
-  objects.forEach((item) => {
-    findBaseMaterials(item, item.amount);
-  });
-
-  return materials;
-};
-
-export const getBaseMaterialsNew = (
   baseMaterials: boolean = false,
   items: any[],
   // crafting_stations?: any[],
   ...objects: Array<any>
 ) => {
   let materials = [];
-
   const findBaseMaterials = (item, amount, yields = 1) => {
     // If has no crafting recipe, return
     if (!item?.ItemRecipeItem || item.ItemRecipeItem.length === 0) {
@@ -298,7 +225,7 @@ export const getBaseMaterialsNew = (
 
           if (material) {
             material.amount += count;
-            material.crafting_time += count * (newRecipe?.crafting_time || 1);
+            // material.crafting_time += count * (newRecipe?.crafting_time || 1);
           } else {
             material = {
               ...(newRecipe || { Item_ItemRec_crafted_item_idToItem: Item }),
@@ -317,7 +244,7 @@ export const getBaseMaterialsNew = (
   objects.forEach((item) => {
     findBaseMaterials(item, item.amount, item.yields);
   });
-
+  // console.log(materials);
   return materials;
 };
 
@@ -382,11 +309,11 @@ export const distance = (
  * @return {string} The formatted string representation.
  */
 export const timeFormatL = (seconds, onlyLast = false) => {
-  var time = "";
-  var days = Math.floor(seconds / 86400);
-  var hours = Math.floor((seconds % 86400) / 3600);
-  var minutes = Math.floor((seconds % 3600) / 60);
-  var sec = seconds % 60;
+  let time = "";
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const sec = seconds % 60;
 
   if (days > 0) {
     time += `${days}d `;
@@ -400,16 +327,16 @@ export const timeFormatL = (seconds, onlyLast = false) => {
       return time.trim().split(" ").pop();
     }
   }
+
   if (minutes > 0) {
     time += `${minutes}m `;
     if (onlyLast) {
-      return time.trim().split(" ").pop();
+      // return time.trim().split(" ").pop();
     }
   }
   if (sec > 0 || time === "") {
     time += `${Math.round(sec)}s`;
   }
-
   return time.trim();
 };
 

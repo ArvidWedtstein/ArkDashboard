@@ -92,16 +92,16 @@ const Dino = ({ dino }: Props) => {
 
   const [baseStats, setBaseStats] = useState(
     dino?.base_points &&
-    Object.entries(dino?.base_stats).map(([key, value]: any) => {
-      return {
-        stat: key,
-        base: (typeof value === "object" ? value.b || 0 : value) || 0,
-        increasePerLevelWild: value.w || 0,
-        increasePerLevelTamed: value.t || 0,
-        total: 0,
-        points: 0,
-      };
-    })
+      Object.entries(dino?.base_stats).map(([key, value]: any) => {
+        return {
+          stat: key,
+          base: (typeof value === "object" ? value.b || 0 : value) || 0,
+          increasePerLevelWild: value.w || 0,
+          increasePerLevelTamed: value.t || 0,
+          total: 0,
+          points: 0,
+        };
+      })
   );
 
   const onAdd = useCallback(
@@ -477,8 +477,8 @@ const Dino = ({ dino }: Props) => {
           foodSecondsPer = foodValue / foodConsumption;
           foodSeconds = Math.ceil(
             Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
-            foodSecondsPer +
-            (typeof interval1 === "number" ? interval1 : 0)
+              foodSecondsPer +
+              (typeof interval1 === "number" ? interval1 : 0)
           );
         } else {
           foodSecondsPer = 0;
@@ -570,11 +570,11 @@ const Dino = ({ dino }: Props) => {
         numNeeded = dino.violent_tame
           ? Math.ceil(affinityLeft / affinityVal / tamingMultiplier)
           : Math.ceil(
-            affinityLeft /
-            affinityVal /
-            tamingMultiplier /
-            dino.non_violent_food_rate_mult
-          );
+              affinityLeft /
+                affinityVal /
+                tamingMultiplier /
+                dino.non_violent_food_rate_mult
+            );
 
         numToUse = numNeeded >= food.use ? food.use : numNeeded;
         tooMuchFood = numNeeded >= food.use ? false : true;
@@ -582,10 +582,10 @@ const Dino = ({ dino }: Props) => {
         affinityLeft = dino.violent_tame
           ? affinityLeft - numToUse * affinityVal * tamingMultiplier
           : affinityLeft -
-          numToUse *
-          affinityVal *
-          tamingMultiplier *
-          dino.non_violent_food_rate_mult;
+            numToUse *
+              affinityVal *
+              tamingMultiplier *
+              dino.non_violent_food_rate_mult;
 
         totalFood += numToUse * foodVal;
 
@@ -593,14 +593,14 @@ const Dino = ({ dino }: Props) => {
         while (i <= numToUse) {
           effectiveness -= dino.violent_tame
             ? (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
-            affinityVal /
-            tamingMultiplier /
-            100
+              affinityVal /
+              tamingMultiplier /
+              100
             : (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
-            affinityVal /
-            tamingMultiplier /
-            dino.non_violent_food_rate_mult /
-            100;
+              affinityVal /
+              tamingMultiplier /
+              dino.non_violent_food_rate_mult /
+              100;
 
           totalSecs =
             numUsedTotal == 1
@@ -629,14 +629,14 @@ const Dino = ({ dino }: Props) => {
       tamingFood.forEach((food: any) => {
         numNeeded = Math.ceil(
           affinityLeft /
-          food?.stats.find((f) => f.id === 15)?.value /
-          tamingMultiplier
+            food?.stats.find((f) => f.id === 15)?.value /
+            tamingMultiplier
         );
         neededValues[food.id] = numNeeded;
         neededValuesSecs[food.id] = Math.ceil(
           (numNeeded * food.stats.find((f: any) => f.id === 8)?.value) /
-          foodConsumption +
-          totalSecs
+            foodConsumption +
+            totalSecs
         );
       });
     }
@@ -654,7 +654,7 @@ const Dino = ({ dino }: Props) => {
           [`${name}Min`]: Math.max(
             Math.ceil(
               (totalSecs * torporDepletionPS - totalTorpor) /
-              (stats.torpor + torporDepletionPS * stats.secs)
+                (stats.torpor + torporDepletionPS * stats.secs)
             ),
             0
           ),
@@ -798,8 +798,8 @@ const Dino = ({ dino }: Props) => {
                     Math.ceil((totalDamage - baseHealth) / incPerLevel),
                     0
                   )
-                  ? 0
-                  : calculatePropability(
+                ? 0
+                : calculatePropability(
                     dinoLevel - 1,
                     numStats,
                     Math.max(
@@ -824,13 +824,13 @@ const Dino = ({ dino }: Props) => {
                   totalDamage < baseHealth
                     ? 100
                     : calculatePropability(
-                      dinoLevel - 1,
-                      numStats,
-                      Math.max(
-                        Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                        0
-                      )
-                    );
+                        dinoLevel - 1,
+                        numStats,
+                        Math.max(
+                          Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                          0
+                        )
+                      );
 
                 const chanceOfDeath = Math.round(100 - propsurvival);
                 hitboxes[i].chanceOfDeath = chanceOfDeath;
@@ -1588,8 +1588,8 @@ const Dino = ({ dino }: Props) => {
                 selectedFood
                   ? selectedFood.toString()
                   : dino.DinoStat.filter(
-                    (f) => f.type === "food"
-                  )[0].Item.id.toString(),
+                      (f) => f.type === "food"
+                    )[0].Item.id.toString(),
               ]}
               validation={{
                 single: true,
@@ -1691,45 +1691,45 @@ const Dino = ({ dino }: Props) => {
                       tameData["bioMin"] !== 0 ||
                       tameData["narcoticsMin"] !== 0 ||
                       tameData["ascerbicMin"] !== 0) && (
-                        <>
-                          <div className="flex flex-col items-center">
-                            <img
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcoberry.png`}
-                              alt=""
-                              className="w-12"
-                            />
-                            <p>{tameData["narcoberriesMin"]}</p>
-                            <p className="text-xs">Narcoberries</p>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <img
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bio-toxin.png`}
-                              alt=""
-                              className="w-12"
-                            />
-                            <p>{tameData["bioMin"]}</p>
-                            <p className="text-xs">Bio Toxin</p>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <img
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcotic.png`}
-                              alt=""
-                              className="w-12"
-                            />
-                            <p>{tameData["narcoticsMin"]}</p>
-                            <p className="text-xs">Narcotics</p>
-                          </div>
-                          <div className="flex flex-col items-center">
-                            <img
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/ascerbic-mushroom.png`}
-                              alt=""
-                              className="w-12"
-                            />
-                            <p>{tameData["ascerbicMin"]}</p>
-                            <p className="text-xs">Ascerbic Mushroom</p>
-                          </div>
-                        </>
-                      )}
+                      <>
+                        <div className="flex flex-col items-center">
+                          <img
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcoberry.png`}
+                            alt=""
+                            className="w-12"
+                          />
+                          <p>{tameData["narcoberriesMin"]}</p>
+                          <p className="text-xs">Narcoberries</p>
+                        </div>
+                        <div className="flex flex-col items-center">
+                          <img
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bio-toxin.png`}
+                            alt=""
+                            className="w-12"
+                          />
+                          <p>{tameData["bioMin"]}</p>
+                          <p className="text-xs">Bio Toxin</p>
+                        </div>
+                        <div className="flex flex-col items-center">
+                          <img
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcotic.png`}
+                            alt=""
+                            className="w-12"
+                          />
+                          <p>{tameData["narcoticsMin"]}</p>
+                          <p className="text-xs">Narcotics</p>
+                        </div>
+                        <div className="flex flex-col items-center">
+                          <img
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/ascerbic-mushroom.png`}
+                            alt=""
+                            className="w-12"
+                          />
+                          <p>{tameData["ascerbicMin"]}</p>
+                          <p className="text-xs">Ascerbic Mushroom</p>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </section>
 
@@ -1838,7 +1838,7 @@ const Dino = ({ dino }: Props) => {
         </article>
       </section>
 
-      {dino?.Item && (
+      {/* {dino?.Item && (
         <>
           <p className="my-3 text-lg dark:text-gray-200">Saddle</p>
           <details className="group w-fit rounded-md bg-zinc-300 p-2 dark:bg-zinc-600">
@@ -1901,7 +1901,7 @@ const Dino = ({ dino }: Props) => {
             </ul>
           </details>
         </>
-      )}
+      )} */}
 
       {dino && baseStats && (
         <>
@@ -2050,7 +2050,7 @@ const Dino = ({ dino }: Props) => {
                     <button
                       disabled={
                         baseStats.find((s) => s.stat === row.stat)?.points <=
-                        0 || row.stat === "t"
+                          0 || row.stat === "t"
                       }
                       className="rw-button rw-button-small rw-button-red-outline disabled:bg-slate-500 disabled:text-white"
                       onClick={() => onRemove(row.stat)}
@@ -2067,7 +2067,7 @@ const Dino = ({ dino }: Props) => {
                         baseStats
                           .map((b) => b.points)
                           .reduce((a: any, b: any): any => a + b, 0) >=
-                        dinoLevel || row.stat === "t"
+                          dinoLevel || row.stat === "t"
                       }
                       className="rw-button rw-button-small rw-button-green-outline disabled:bg-slate-500 disabled:text-white"
                       onClick={() => onAdd(row.stat)}
@@ -2102,12 +2102,12 @@ const Dino = ({ dino }: Props) => {
                           {!value[label]
                             ? "-"
                             : truncate(
-                              (useFoundationUnit
-                                ? Number(value[label] / 300)
-                                : Number(value[label])
-                              ).toFixed(2),
-                              6
-                            )}
+                                (useFoundationUnit
+                                  ? Number(value[label] / 300)
+                                  : Number(value[label])
+                                ).toFixed(2),
+                                6
+                              )}
                         </p>
                       ))}
                       <p className="w-20">

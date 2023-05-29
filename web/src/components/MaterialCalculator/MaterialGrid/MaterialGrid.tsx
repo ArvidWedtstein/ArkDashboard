@@ -7,17 +7,19 @@ import {
   RWGqlError,
   SearchField,
 } from "@redwoodjs/forms";
-import { useCallback, useMemo, useReducer, useState } from "react";
+import { useCallback, useMemo, useReducer, useRef, useState } from "react";
 
 import {
+  combineBySummingKeys,
   formatNumberWithThousandSeparator,
-  getBaseMaterialsNew,
+  getBaseMaterials,
   groupBy,
   timeFormatL,
+  timeTag,
 } from "src/lib/formatters";
 import debounce from "lodash.debounce";
 import Table from "src/components/Util/Table/Table";
-import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
+import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
 
 interface MaterialGridProps {
   itemRecs: any[];
@@ -26,38 +28,8 @@ interface MaterialGridProps {
 
 export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
   const [search, setSearch] = useState("");
-  const [craftingStations, setCraftingStations] = useState<any>([]);
-
-  const items = useMemo(() => {
-    const craftedItems = groupBy(itemRecs, "crafted_item_id");
-    const craftingStation = {};
-
-    for (const [key, value] of Object.entries(craftedItems)) {
-      craftingStation[key] = groupBy(value as any, "crafting_station_id");
-    }
-    const result = [];
-    console.log(craftingStations);
-    for (const v of Object.values(craftingStation)) {
-      // console.log(
-      //   Object.keys(v).some((f) => craftingStations.includes(parseInt(f)))
-      // );
-      const craftingStation = Object.values(Object.values(v)[0])[0];
-      result.push(craftingStation);
-    }
-
-    return result;
-  }, [craftingStations]);
-
-  const categories = useMemo(() => {
-    return groupBy(
-      items
-        .map((f) => f.Item_ItemRec_crafted_item_idToItem)
-        .filter((item) =>
-          item.name.toLowerCase().includes(search.toLowerCase())
-        ),
-      "category"
-    );
-  }, [items, search]);
+  const [craftingStations, setCraftingStations] = useState<any>([107, 125]);
+  const ammoRefCurrent = useRef(null);
 
   const [viewBaseMaterials, setViewBaseMaterials] = useState(false);
   const toggleBaseMaterials = useCallback(
@@ -67,35 +39,10 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
     [viewBaseMaterials]
   );
 
-  // const [loadItem, { loading, variables }] = useLazyQuery(QUERY, {
-  //   onCompleted: (data) => {
-  //     if (Object.keys(variables).includes("amount")) {
-  //       data.itemsByIds.forEach((item) => {
-  //         setItem({
-  //           type: "ADD_AMOUNT_BY_NUM",
-  //           item,
-  //           index: variables.amount[item.id],
-  //         });
-  //       });
-  //     } else {
-  //       setItem({ type: "ADD", item: data.itemsByIds[0] });
-  //     }
-  //   },
-  //   onError: (error) => {
-  //     console.log(error);
-  //   },
-  // });
-
   const reducer = (state, action) => {
     switch (action.type) {
       case "ADD_AMOUNT_BY_NUM": {
         let itemIndex = state.findIndex((item) => item.id === action.item.id);
-        // const { yields } =
-        //   item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
-        //     return craftingStations.includes(
-        //       parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id)
-        //     );
-        //   }) || { yields: 1 };
         const yields = action.item?.yields || 1;
         if (itemIndex !== -1) {
           return state.map((item, i) =>
@@ -126,13 +73,6 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
       }
       case "ADD_AMOUNT": {
         return state.map((item, i) => {
-          // const { yields } =
-          //   item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
-          //     return craftingStations.includes(
-          //       parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id)
-          //     );
-          //   }) || { yields: 1 };
-
           const yields = item?.yields || 1;
           return i === action.index
             ? {
@@ -144,12 +84,6 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
       }
       case "REMOVE_AMOUNT": {
         return state.map((item, i) => {
-          // const { yields } =
-          //   item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
-          //     return craftingStations.includes(
-          //       parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id)
-          //     );
-          //   }) || { yields: 1 };
           const yields = item?.yields || 1;
           return i === action.index
             ? {
@@ -163,12 +97,6 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
         const itemIndex = state.findIndex(
           (item) => parseInt(item.id) === parseInt(action.item.id)
         );
-        // const { yields } =
-        //   action.item?.ItemRecipe_ItemRecipe_crafted_item_idToItem.find((f) => {
-        //     return craftingStations.includes(
-        //       parseInt(f.Item_ItemRecipe_crafting_stationToItem?.id)
-        //     );
-        //   }) || { yields: 1 };
         const yields = action.item?.yields || 1;
         if (itemIndex !== -1) {
           return state.map((item, i) =>
@@ -191,6 +119,9 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
       case "REMOVE": {
         return state.filter((_, i) => i !== action.index);
       }
+      case "REMOVE_BY_ID": {
+        return state.filter((itm, i) => itm.id !== action.id);
+      }
       case "RESET": {
         return [];
       }
@@ -202,13 +133,68 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
 
   let [item, setItem] = useReducer(reducer, []);
 
+  const items = useMemo(() => {
+    const craftedItems = groupBy(itemRecs, "crafted_item_id");
+    const craftingStation = {};
+
+    for (const [key, value] of Object.entries(craftedItems)) {
+      craftingStation[key] = groupBy(value as any, "crafting_station_id");
+    }
+    const result = [];
+    for (const v of Object.values(craftingStation)) {
+      if (
+        Object.keys(v).some((f) => [107, 607, 125, 600].includes(Number(f)))
+      ) {
+        const t = Object.entries(v)
+          .filter(([k, _]) => {
+            return craftingStations.includes(Number(k));
+          })
+          .map(([_, v]) => {
+            return Object.values(v)[0];
+          });
+        t[0] && result.push(t[0]);
+      } else {
+        const craftingStation = Object.values(Object.values(v)[0])[0];
+        result.push(craftingStation);
+      }
+    }
+    item.forEach((item) => {
+      setItem({ type: "REMOVE_BY_ID", id: item.id });
+      let itemfound = result.find(
+        (item2) =>
+          parseInt(item2.crafted_item_id) === parseInt(item.crafted_item_id)
+      );
+      if (itemfound) {
+        setItem({
+          type: "ADD_AMOUNT_BY_NUM",
+          item: itemfound,
+          index: item.amount / itemfound.yields,
+        });
+      }
+    });
+
+    return result;
+  }, [craftingStations]);
+
+  const categories = useMemo(() => {
+    return groupBy(
+      items
+        .map((f) => f.Item_ItemRec_crafted_item_idToItem)
+        .filter((item) =>
+          item.name.toLowerCase().includes(search.toLowerCase())
+        ),
+      "category"
+    );
+  }, [items, search]);
+
   const onAdd = ({ itemId }) => {
     if (!itemId) return;
     let item = items.find(
       (item) => parseInt(item.crafted_item_id) === parseInt(itemId)
     );
+
     // loadItem({ variables: { item_recipe_id: [itm.recipe_id] } });
-    // console.log(item)
+
     setItem({ type: "ADD", item: item });
   };
 
@@ -286,9 +272,11 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
       770: 1464,
     };
 
-    // loadItem({
-    //   variables: { id: Object.keys(towerItems), amount: towerItems },
-    // });
+    if (ammoRefCurrent.current.value && ammoRefCurrent.current.value > 0) {
+      towerItems[246] =
+        parseInt(ammoRefCurrent.current.value) * towerItems[686];
+    }
+
     for (const [key, value] of Object.entries(towerItems)) {
       let itemfound = items.find(
         (item) => parseInt(item.crafted_item_id) === parseInt(key)
@@ -299,7 +287,10 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
     }
   }, []);
 
-  const mergeItemRecipe = useCallback(getBaseMaterialsNew, [item]);
+  const mergeItemRecipe = useCallback(getBaseMaterials, [
+    item,
+    craftingStations,
+  ]);
 
   const clear = () => {
     setItem({ type: "RESET" });
@@ -319,22 +310,32 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
         listClassName="rw-form-error-list"
       />
       <div className="mt-4 flex flex-col space-y-3">
-        <button
-          data-testid="turrettowerbtn"
-          type="button"
-          onClick={addTurretTower}
-          className="rw-button rw-button-gray"
-        >
-          Turret Tower
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="rw-button-icon"
-            fill="currentColor"
-            viewBox="0 0 512 512"
+        <div className="rw-button-group !m-0">
+          <input
+            name="ammoperturret"
+            className="rw-input w-32 min-w-0"
+            placeholder="Ammo per turret"
+            title="Ammo Per Turret"
+            ref={ammoRefCurrent}
+          />
+          <button
+            data-testid="turrettowerbtn"
+            type="button"
+            onClick={addTurretTower}
+            className="rw-button rw-button-gray p-2"
           >
-            <path d="M207.1 64C207.1 99.35 179.3 128 143.1 128C108.7 128 79.1 99.35 79.1 64C79.1 28.65 108.7 0 143.1 0C179.3 0 207.1 28.65 207.1 64zM143.1 16C117.5 16 95.1 37.49 95.1 64C95.1 90.51 117.5 112 143.1 112C170.5 112 191.1 90.51 191.1 64C191.1 37.49 170.5 16 143.1 16zM15.06 315.8C12.98 319.7 8.129 321.1 4.232 319.1C.3354 316.1-1.136 312.1 .9453 308.2L50.75 214.1C68.83 181.1 104.1 160 142.5 160H145.5C183.9 160 219.2 181.1 237.3 214.1L287.1 308.2C289.1 312.1 287.7 316.1 283.8 319.1C279.9 321.1 275 319.7 272.9 315.8L223.1 222.5C207.8 193.9 178 175.1 145.5 175.1H142.5C110 175.1 80.16 193.9 64.86 222.5L15.06 315.8zM72 280C76.42 280 80 283.6 80 288V476C80 487 88.95 496 99.1 496C111 496 119.1 487 119.1 476V392C119.1 378.7 130.7 368 143.1 368C157.3 368 168 378.7 168 392V476C168 487 176.1 496 187.1 496C199 496 207.1 487 207.1 476V288C207.1 283.6 211.6 280 215.1 280C220.4 280 223.1 283.6 223.1 288V476C223.1 495.9 207.9 512 187.1 512C168.1 512 152 495.9 152 476V392C152 387.6 148.4 384 143.1 384C139.6 384 135.1 387.6 135.1 392V476C135.1 495.9 119.9 512 99.1 512C80.12 512 64 495.9 64 476V288C64 283.6 67.58 280 72 280V280zM438 400L471.9 490.4C475.8 500.8 468.1 512 456.9 512H384C375.2 512 368 504.8 368 496V400H352C334.3 400 320 385.7 320 368V224C320 206.3 334.3 192 352 192H368V160C368 148.2 374.4 137.8 384 132.3V16H376C371.6 16 368 12.42 368 8C368 3.582 371.6 0 376 0H416C424.8 0 432 7.164 432 16V132.3C441.6 137.8 448 148.2 448 160V269.3L464 264V208C464 199.2 471.2 192 480 192H496C504.8 192 512 199.2 512 208V292.5C512 299.4 507.6 305.5 501.1 307.6L448 325.3V352H496C504.8 352 512 359.2 512 368V384C512 392.8 504.8 400 496 400L438 400zM416 141.5V16H400V141.5L392 146.1C387.2 148.9 384 154.1 384 160V384H496V368H432V160C432 154.1 428.8 148.9 423.1 146.1L416 141.5zM456.9 496L420.9 400H384V496H456.9zM448 308.5L496 292.5V208H480V275.5L448 286.2V308.5zM336 224V368C336 376.8 343.2 384 352 384H368V208H352C343.2 208 336 215.2 336 224z" />
-          </svg>
-        </button>
+            Turret Tower
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="rw-button-icon pointer-events-none"
+              fill="currentColor"
+              viewBox="0 0 512 512"
+            >
+              <path d="M207.1 64C207.1 99.35 179.3 128 143.1 128C108.7 128 79.1 99.35 79.1 64C79.1 28.65 108.7 0 143.1 0C179.3 0 207.1 28.65 207.1 64zM143.1 16C117.5 16 95.1 37.49 95.1 64C95.1 90.51 117.5 112 143.1 112C170.5 112 191.1 90.51 191.1 64C191.1 37.49 170.5 16 143.1 16zM15.06 315.8C12.98 319.7 8.129 321.1 4.232 319.1C.3354 316.1-1.136 312.1 .9453 308.2L50.75 214.1C68.83 181.1 104.1 160 142.5 160H145.5C183.9 160 219.2 181.1 237.3 214.1L287.1 308.2C289.1 312.1 287.7 316.1 283.8 319.1C279.9 321.1 275 319.7 272.9 315.8L223.1 222.5C207.8 193.9 178 175.1 145.5 175.1H142.5C110 175.1 80.16 193.9 64.86 222.5L15.06 315.8zM72 280C76.42 280 80 283.6 80 288V476C80 487 88.95 496 99.1 496C111 496 119.1 487 119.1 476V392C119.1 378.7 130.7 368 143.1 368C157.3 368 168 378.7 168 392V476C168 487 176.1 496 187.1 496C199 496 207.1 487 207.1 476V288C207.1 283.6 211.6 280 215.1 280C220.4 280 223.1 283.6 223.1 288V476C223.1 495.9 207.9 512 187.1 512C168.1 512 152 495.9 152 476V392C152 387.6 148.4 384 143.1 384C139.6 384 135.1 387.6 135.1 392V476C135.1 495.9 119.9 512 99.1 512C80.12 512 64 495.9 64 476V288C64 283.6 67.58 280 72 280V280zM438 400L471.9 490.4C475.8 500.8 468.1 512 456.9 512H384C375.2 512 368 504.8 368 496V400H352C334.3 400 320 385.7 320 368V224C320 206.3 334.3 192 352 192H368V160C368 148.2 374.4 137.8 384 132.3V16H376C371.6 16 368 12.42 368 8C368 3.582 371.6 0 376 0H416C424.8 0 432 7.164 432 16V132.3C441.6 137.8 448 148.2 448 160V269.3L464 264V208C464 199.2 471.2 192 480 192H496C504.8 192 512 199.2 512 208V292.5C512 299.4 507.6 305.5 501.1 307.6L448 325.3V352H496C504.8 352 512 359.2 512 368V384C512 392.8 504.8 400 496 400L438 400zM416 141.5V16H400V141.5L392 146.1C387.2 148.9 384 154.1 384 160V384H496V368H432V160C432 154.1 428.8 148.9 423.1 146.1L416 141.5zM456.9 496L420.9 400H384V496H456.9zM448 308.5L496 292.5V208H480V275.5L448 286.2V308.5zM336 224V368C336 376.8 343.2 384 352 384H368V208H352C343.2 208 336 215.2 336 224z" />
+            </svg>
+          </button>
+        </div>
+
         <button
           type="button"
           onClick={clear}
@@ -539,95 +540,59 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
                 );
               },
             },
+            {
+              field: "crafting_time",
+              label: "Crafting Time",
+              className: "text-center",
+              valueFormatter: ({ value }) => {
+                return `${timeFormatL(value)}`;
+              },
+            },
           ]}
         />
-        {/* <pre className="text-white">
-          {JSON.stringify(
-            mergeItemRecipe(viewBaseMaterials, items, ...item),
-            null,
-            2
-          )}
-        </pre> */}
 
-        <CheckboxGroup
-          defaultValue={craftingStations.map((station) => station.toString())}
-          validation={{ single: true, valueAsNumber: true }}
-          onChange={(_, i) => {
-            setCraftingStations((prev) => [...prev, ...i.map(Number)]);
+        <ToggleButton
+          offLabel="Mortar And Pestle"
+          onLabel="Chemistry Bench"
+          checked={craftingStations.includes(607)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              return setCraftingStations((prev) => [
+                ...prev.filter((h) => h !== 107),
+                607,
+              ]);
+            }
+            return setCraftingStations((prev) => [
+              ...prev.filter((h) => h !== 607),
+              107,
+            ]);
           }}
-          options={[
-            {
-              value: 107,
-              label: "Mortar And Pestle",
-              image:
-                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/mortar-and-pestle.png",
-            },
-            {
-              value: 607,
-              label: "Chemistry Bench",
-              image:
-                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/chemistry-bench.png",
-            },
-          ]}
         />
-        <CheckboxGroup
-          defaultValue={craftingStations.map((station) => station.toString())}
-          validation={{ single: true, valueAsNumber: true }}
-          onChange={(_, i) => {
-            setCraftingStations((prev) => [...prev, ...i.map(Number)]);
+
+        <ToggleButton
+          offLabel="Refining Forge"
+          onLabel="Industrial Forge"
+          checked={craftingStations.includes(600)}
+          onChange={(e) => {
+            if (e.target.checked) {
+              return setCraftingStations((prev) => [
+                ...prev.filter((h) => h !== 125),
+                600,
+              ]);
+            }
+            return setCraftingStations((prev) => [
+              ...prev.filter((h) => h !== 600),
+              125,
+            ]);
           }}
-          options={[
-            {
-              value: 600,
-              label: "Industrial Forge",
-              image:
-                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-forge.png",
-            },
-            {
-              value: 125,
-              label: "Refining Forge",
-              image:
-                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/refining-forge.png",
-            },
-          ]}
         />
+
         <Table
           rows={item}
           className="animate-fade-in my-4 whitespace-nowrap"
           summary={true}
           hover={false}
           columns={[
-            // {
-            //   field: "ItemRecipe_ItemRecipe_crafted_item_idToItem",
-            //   label: "Crafted In",
-            //   renderCell: ({ row, rowIndex, value }) => {
-            //     return (
-            //       <>
-            //         {Object.entries(
-            //           groupByObject(
-            //             value
-            //               .filter((f) => f != null)
-            //               .filter(
-            //                 (f) =>
-            //                   f.Item_ItemRecipe_crafting_stationToItem !=
-            //                   null
-            //               ),
-            //             "Item_ItemRecipe_crafting_stationToItem"
-            //           )
-            //         ).map(([crafting_station, values]) => {
-            //           return (
-            //             <img
-            //               className="inline-flex w-6"
-            //               src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${
-            //                 JSON.parse(crafting_station).image
-            //               }`}
-            //             />
-            //           );
-            //         })}
-            //       </>
-            //     );
-            //   },
-            // },
             {
               field: "Item_ItemRec_crafted_item_idToItem",
               label: "Name",
@@ -723,13 +688,12 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
             // }),
             {
               field: "crafting_time",
-              label: "Time",
+              label: "Time pr item",
               numeric: false,
               className: "w-0 text-center",
-              valueFormatter: ({ value, row }) => {
-                return value * row.amount;
+              valueFormatter: ({ row, value }) => {
+                return `${timeFormatL(value * row.amount, true)}`;
               },
-              renderCell: ({ value }) => <p>{timeFormatL(value)}</p>,
             },
             {
               // field: "ItemRecipe_ItemRecipe_crafted_item_idToItem",
@@ -737,13 +701,7 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
               label: "Ingredients",
               numeric: false,
               className: "text-center flex flex-row justify-start items-center",
-              renderCell: ({ row, value }) => {
-                // console.log(
-                //   "MERGEITEM",
-                //   mergeItemRecipe(false, items, {
-                //     ...row,
-                //   })
-                // );
+              renderCell: ({ row }) => {
                 return mergeItemRecipe(false, items, {
                   ...row,
                 })
@@ -761,7 +719,7 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
                       i
                     ) => (
                       <div
-                        className="min-w-16 ml-2 flex w-10 flex-col items-center justify-center"
+                        className="min-w-16 ml-2 flex min-w-[3rem] flex-col items-center justify-center"
                         id={`${id}-${i * Math.random()}${i}`}
                         key={`${id}-${i * Math.random()}${i}`}
                       >

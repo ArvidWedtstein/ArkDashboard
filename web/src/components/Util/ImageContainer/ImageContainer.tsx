@@ -1,12 +1,12 @@
 import clsx from "clsx";
-import { useRef, useState } from "react";
+import { ReactNode, useRef, useState } from "react";
 import useIntersectionObserver from "src/components/useIntersectionObserver";
 
 interface ImageContainerProps
   extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
   alt?: string;
-  caption?: string;
+  caption?: string | ReactNode;
   className?: string;
   /**
    * @default 500
