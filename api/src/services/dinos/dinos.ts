@@ -30,8 +30,8 @@ export const dinosPage = ({
         OR: [
           { name: { contains: search, mode: "insensitive" } },
           { synonyms: { contains: search, mode: "insensitive" } },
-          category ? { type: { has: category } } : {},
         ],
+        AND: [category ? { type: { has: category } } : {}],
       },
     }),
     count: db.dino.count({

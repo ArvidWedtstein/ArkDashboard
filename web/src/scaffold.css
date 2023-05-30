@@ -308,14 +308,14 @@ a {
 .rw-table td {
   @apply bg-white text-gray-900 dark:bg-zinc-600 dark:text-gray-800;
 }
-.rw-table tr:nth-child(odd) td,
+/* .rw-table tr:nth-child(odd) td,
 .rw-table tr:nth-child(odd) th {
   @apply bg-gray-50 dark:bg-zinc-400;
 }
 .rw-table tr:nth-child(even) td,
 .rw-table tr:nth-child(even) th {
   @apply bg-white dark:bg-zinc-300;
-}
+} */
 .rw-table thead tr {
   @apply bg-gray-200 text-gray-600 dark:bg-zinc-600;
 }
@@ -359,6 +359,12 @@ a {
 }
 .rw-table-actions .rw-button-red:hover {
   @apply bg-red-600 text-white;
+}
+.rw-pagination-item {
+  @apply border border-gray-300 bg-zinc-400 px-3 py-2 text-gray-500 hover:bg-zinc-300 hover:text-gray-700 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-600 dark:hover:text-white;
+}
+.rw-pagination-item-active {
+  @apply border border-gray-300 bg-zinc-300 px-3 py-2 text-gray-700 hover:bg-zinc-300 hover:text-gray-700 dark:border-zinc-600 dark:bg-zinc-500 dark:text-white dark:hover:bg-zinc-600 dark:hover:text-white;
 }
 
 .rw-text-center {

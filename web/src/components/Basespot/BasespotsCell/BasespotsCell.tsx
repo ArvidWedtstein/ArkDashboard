@@ -6,28 +6,9 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import Basespots from "src/components/Basespot/Basespots";
 import Pagination from "src/components/Util/Pagination/Pagination";
 
-// export const QUERY = gql`
-//   query FindBasespots {
-//     basespots {
-//       id
-//       name
-//       description
-//       latitude
-//       longitude
-//       image
-//       created_at
-//       map
-//       estimated_for_players
-//       defense_images
-//       created_by
-//       turretsetup_image
-//       updated_at
-//     }
-//   }
-// `;
 export const QUERY = gql`
-  query FindBasespots($page: Int) {
-    basespotPage(page: $page) {
+  query FindBasespots($page: Int, $map: Int) {
+    basespotPage(page: $page, map: $map) {
       basespots {
         id
         name
@@ -48,10 +29,9 @@ export const QUERY = gql`
   }
 `;
 
-export const beforeQuery = ({ page }) => {
+export const beforeQuery = ({ page, map }) => {
   page = parseInt(page) ? parseInt(page, 10) : 1;
-
-  return { variables: { page } };
+  return { variables: { page, map: parseInt(map) } };
 };
 
 // export const Loading = () => {
@@ -102,7 +82,7 @@ export const Empty = () => {
 };
 
 export const Failure = ({ error }: CellFailureProps) => {
-  console.warn(error.name, error.message)
+  console.warn(error.name, error.message);
   return (
     <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
       <svg
@@ -136,7 +116,7 @@ export const Success = ({ basespotPage }: CellSuccessProps<FindBasespots>) => {
           <Pagination count={basespotPage.count} route={"basespots"} />
         </>
       ) : (
-        Empty()
+        <Basespots basespotPage={basespotPage} />
       )}
     </>
   );
