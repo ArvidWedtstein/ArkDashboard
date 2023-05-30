@@ -1,32 +1,9 @@
-.rw-scaffold {
-  @apply bg-white text-gray-600;
-}
-.rw-scaffold h1,
-.rw-scaffold h2 {
-  @apply m-0;
-}
 a {
   @apply font-medium text-blue-600 hover:underline dark:text-blue-500;
-}
-.rw-scaffold a {
-  @apply bg-transparent;
-}
-.rw-scaffold ul {
-  @apply m-0 p-0;
-}
-.rw-scaffold input::-ms-input-placeholder,
-.rw-scaffold input::-webkit-input-placeholder,
-.rw-scaffold input:-moz-placeholder,
-.rw-scaffold input::placeholder {
-  @apply text-gray-500;
 }
 
 .rw-header {
   @apply flex justify-between py-4 px-8;
-}
-.rw-main {
-  /* @apply mx-4 pb-4; */
-  @apply pb-4;
 }
 
 .rw-segment {
@@ -56,12 +33,7 @@ a {
 .rw-link:hover {
   @apply text-blue-500;
 }
-.rw-forgot-link {
-  @apply mt-1 text-right text-xs text-gray-400 underline;
-}
-.rw-forgot-link:hover {
-  @apply text-blue-500;
-}
+
 .rw-heading {
   @apply font-semibold;
 }
@@ -112,9 +84,7 @@ a {
 .rw-button-ark {
   @apply bg-[#11667B] px-6 py-1 uppercase outline outline-1 outline-offset-1 outline-[#11667B] transition-colors duration-150 hover:outline-2 hover:outline-offset-0;
 }
-/* .rw-button:hover {
-  @apply bg-gray-500 text-white;
-} */
+
 .rw-button.disabled,
 .rw-button[disabled] {
   @apply cursor-not-allowed opacity-50;
@@ -166,13 +136,13 @@ a {
 
 /* Gray Outline Button */
 .rw-button.rw-button-gray-outline {
-  @apply border border-stone-700 dark:border-gray-500;
+  @apply border border-stone-700 transition dark:border-gray-500;
 }
 .rw-button.rw-button-gray-outline:hover {
   @apply border-stone-800 ring-1 ring-stone-700 dark:border-stone-600 dark:ring-stone-500;
 }
 .rw-button.rw-button-gray-outline:focus {
-  @apply ring-stone-300 dark:ring-stone-800;
+  @apply border-stone-700 ring-1 ring-stone-400 dark:border-stone-500 dark:ring-stone-400;
 }
 
 /* Red Outline Button */
@@ -244,11 +214,20 @@ a {
 .rw-button-group {
   @apply my-3 flex justify-center rounded-md;
 }
+.rw-button-group .rw-button:first-child,
+.rw-button-group .rw-input:first-child {
+  @apply rounded-l-md !rounded-r-none;
+}
+.rw-button-group .rw-button:last-child,
+.rw-button-group .rw-input:last-child {
+  @apply rounded-r-md !rounded-l-none;
+}
+.rw-button-group > .rw-button:only-child,
+.rw-button-group > .rw-input:only-child {
+  @apply !rounded-md;
+}
 .rw-button-group .rw-input {
   @apply mt-0 rounded-none first:rounded-l-md last:rounded-r-md;
-}
-.rw-button-group .rw-button {
-  @apply mx-1;
 }
 
 .rw-form-wrapper .rw-button-group {
@@ -286,6 +265,9 @@ a {
 .rw-checkbox,
 .rw-input[type="checkbox"] {
   @apply ml-0 mr-1 h-6 w-6 cursor-pointer appearance-none rounded bg-contain bg-center bg-no-repeat p-2 transition duration-200 focus:outline-none;
+}
+.rw-input.rw-input-small[type="checkbox"] {
+  @apply h-4 w-4 p-1;
 }
 .rw-checkbox:checked,
 .rw-input[type="checkbox"]:checked {
@@ -382,21 +364,7 @@ a {
 .rw-text-center {
   @apply text-center text-black dark:text-white;
 }
-.rw-login-container {
-  @apply mx-auto my-16 flex w-96 flex-wrap items-center justify-center;
-}
-.rw-login-container .rw-form-wrapper {
-  @apply w-full text-center;
-}
-.rw-login-link {
-  @apply mt-4 w-full text-center text-sm text-gray-600;
-}
-.rw-webauthn-wrapper {
-  @apply mx-4 mt-6 leading-6;
-}
-.rw-webauthn-wrapper h2 {
-  @apply mb-4 text-xl font-bold;
-}
+
 .rw-img-disable img {
   @apply opacity-40 brightness-[1.4] contrast-0 hue-rotate-[116deg] saturate-[.28] sepia;
 }
@@ -416,23 +384,6 @@ a {
 }
 .rw-check-tile::before {
   @apply absolute top-1 left-1 block h-5 w-5 scale-0 transform rounded-full border bg-[url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='192'%20height='192'%20fill='%23FF0000'%20viewBox='0%200%20256%20256'%3E%3Crect%20width='256'%20height='256'%20fill='none'%3E%3C/rect%3E%3Cpolyline%20points='216%2072.005%20104%20184%2048%20128.005'%20fill='none'%20stroke='%23ffffff'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='32'%3E%3C/polyline%3E%3C/svg%3E")] bg-[length:12px_12px] bg-center bg-no-repeat opacity-0 transition-all duration-150 ease-in content-[''];
-}
-
-.rw-image-overlay {
-  position: absolute;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    0deg,
-    rgba(0, 16, 34, 0.8) 0%,
-    rgba(240, 244, 253, 0.2) 90%
-  );
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: flex-end;
 }
 
 .dot-revolution {

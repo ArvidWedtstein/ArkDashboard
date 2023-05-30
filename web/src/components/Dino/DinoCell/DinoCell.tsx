@@ -50,24 +50,6 @@ export const QUERY = gql`
       image
       icon
       multipliers
-      Item {
-        id
-        name
-        image
-        ItemRecipe_ItemRecipe_crafted_item_idToItem {
-          amount
-          Item_ItemRecipe_item_idToItem {
-            id
-            name
-            image
-          }
-          Item_ItemRecipe_crafting_stationToItem {
-            id
-            name
-            image
-          }
-        }
-      }
       DinoStat {
         item_id
         Item {
@@ -75,6 +57,15 @@ export const QUERY = gql`
           id
           image
           stats
+          ItemRec_ItemRec_crafted_item_idToItem {
+            id
+            yields
+            crafting_station_id
+            Item_ItemRec_crafting_station_idToItem {
+              name
+              image
+            }
+          }
         }
         value
         rank

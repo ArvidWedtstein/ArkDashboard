@@ -49,8 +49,6 @@ export const QUERY = gql`
         attack
         mounted_weaponry
         ridable
-        flyer_dino
-        water_dino
         movement
         type
         carryable_by

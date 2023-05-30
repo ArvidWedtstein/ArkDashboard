@@ -5,46 +5,36 @@ export const standard = defineScenario<Prisma.DinoStatCreateArgs>({
   dinoStat: {
     one: {
       data: {
+        type: 'food',
         Dino: {
           create: {
             name: 'String',
-            synonyms: 'String',
             can_destroy: 'String',
-            immobilized_by: 'String',
             fits_through: 'String',
             eats: 'String',
             drops: 'String',
-            method: 'String',
-            knockout: 'String',
             type: 'String',
             carryable_by: 'String',
           },
         },
-        Item: {
-          create: { name: 'String', crafted_in: 'String', effects: 'String' },
-        },
+        Item: { create: { name: 'String' } },
       },
     },
     two: {
       data: {
+        type: 'food',
         Dino: {
           create: {
             name: 'String',
-            synonyms: 'String',
             can_destroy: 'String',
-            immobilized_by: 'String',
             fits_through: 'String',
             eats: 'String',
             drops: 'String',
-            method: 'String',
-            knockout: 'String',
             type: 'String',
             carryable_by: 'String',
           },
         },
-        Item: {
-          create: { name: 'String', crafted_in: 'String', effects: 'String' },
-        },
+        Item: { create: { name: 'String' } },
       },
     },
   },

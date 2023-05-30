@@ -28,7 +28,7 @@ const ScaffoldLayout = ({ children }: LayoutProps) => {
     //       <div className="rw-button-icon">+</div> {buttonLabel}
     //     </Link>}
     //   </header>
-    //   <main className="rw-main">{children}</main>
+    //   <main className="p-4">{children}</main>
     // </div>
   );
 };

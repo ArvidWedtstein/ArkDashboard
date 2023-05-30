@@ -113,6 +113,11 @@ export const Profile: ProfileRelationResolvers = {
   other_Profile: (_obj, { root }) => {
     return db.profile.findUnique({ where: { id: root?.id } }).other_Profile();
   },
+  Role_Role_created_byToProfile: (_obj, { root }) => {
+    return db.profile
+      .findUnique({ where: { id: root?.id } })
+      .Role_Role_created_byToProfile();
+  },
   Timeline: (_obj, { root }) => {
     return db.profile.findUnique({ where: { id: root?.id } }).Timeline();
   },
@@ -121,7 +126,15 @@ export const Profile: ProfileRelationResolvers = {
       .findUnique({ where: { id: root?.id } })
       .TimelineBasespot();
   },
+  TimelineBasespotPerson: (_obj, { root }) => {
+    return db.profile
+      .findUnique({ where: { id: root?.id } })
+      .TimelineBasespotPerson();
+  },
   Tribe: (_obj, { root }) => {
     return db.profile.findUnique({ where: { id: root?.id } }).Tribe();
+  },
+  UserRecipe: (_obj, { root }) => {
+    return db.profile.findUnique({ where: { id: root?.id } }).UserRecipe();
   },
 };

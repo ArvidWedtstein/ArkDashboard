@@ -25,21 +25,23 @@ const Routes = () => {
           page={MaterialCalculatorPage}
           name="materialCalculator"
         />
-        <Route
-          path="/reset-password"
-          page={ResetPasswordPage}
-          name="resetPassword"
-        />
+
         <Route path="/gtw" page={GTWPage} name="gtw" />
+
+        <Route path="/admin" page={AdminPage} name="admin" />
+        <Route path="/" page={HomePage} name="home" />
+        <Route path="/signin" page={SigninPage} name="signin" />
+        <Route path="/signup" page={SignupPage} name="signup" />
         <Route
           path="/forgot-password"
           page={ForgotPasswordPage}
           name="forgotPassword"
         />
-        <Route path="/admin" page={AdminPage} name="admin" />
-        <Route path="/" page={HomePage} name="home" />
-        <Route path="/signin" page={SigninPage} name="signin" />
-        <Route path="/signup" page={SignupPage} name="signup" />
+        <Route
+          path="/reset-password"
+          page={ResetPasswordPage}
+          name="resetPassword"
+        />
         <Route notfound page={NotFoundPage} />
         <Set
           wrap={ScaffoldLayout}
@@ -122,7 +124,10 @@ const Routes = () => {
           buttonLabel="New Item"
           buttonTo="newItem"
         >
-          <Private unauthenticated="home" roles='f0c1b8e9-5f27-4430-ad8f-5349f83339c0'>
+          <Private
+            unauthenticated="home"
+            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
+          >
             <Route path="/items/new" page={ItemNewItemPage} name="newItem" />
             <Route
               path="/items/{id}/edit"
@@ -180,7 +185,6 @@ const Routes = () => {
           buttonLabel="New Tribe"
           buttonTo="newTribe"
         >
-
           <Route path="/tribes/new" page={TribeNewTribePage} name="newTribe" />
           <Route
             path="/tribes/{id:Int}/edit"

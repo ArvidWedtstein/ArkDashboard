@@ -13,11 +13,7 @@ export const schema = gql`
     region: String
     season: String
     cluster: String
-    location: JSON
-    players: [String]!
     created_by: String
-    raided_by: String
-    raid_comment: String
     latitude: Float
     longitude: Float
     basespot: Basespot
@@ -25,12 +21,13 @@ export const schema = gql`
     Map: Map
     timeline: Timeline!
     TimelineBasespotDino: [TimelineBasespotDino]!
+    TimelineBasespotPerson: [TimelineBasespotPerson]!
     TimelineBasespotRaid: [TimelineBasespotRaid]!
   }
 
   type Query {
     timelineBasespots: [TimelineBasespot!]! @skipAuth
-    timelineBasespot(id: BigInt!): TimelineBasespot @skipAuth
+    timelineBasespot(id: BigInt!): TimelineBasespot @requireAuth
   }
 
   input CreateTimelineBasespotInput {
@@ -46,14 +43,9 @@ export const schema = gql`
     region: String
     season: String
     cluster: String
-    location: JSON
-    players: [String]!
     created_by: String
-    raided_by: String
-    raid_comment: String
     latitude: Float
     longitude: Float
-    TimelineBasespotRaid: JSON
   }
 
   input UpdateTimelineBasespotInput {
@@ -69,20 +61,11 @@ export const schema = gql`
     region: String
     season: String
     cluster: String
-    location: JSON
-    players: [String]!
     created_by: String
-    raided_by: String
-    raid_comment: String
     latitude: Float
     longitude: Float
-    TimelineBasespotRaid: JSON
   }
-  input RaidTimelineBasespotInput {
-    end_date: DateTime
-    raided_by: String
-    raid_comment: String
-  }
+
   type Mutation {
     createTimelineBasespot(
       input: CreateTimelineBasespotInput!
@@ -95,12 +78,6 @@ export const schema = gql`
     ): TimelineBasespot!
       @requireAuth
       @hasPermission(permission: "timeline_update")
-    raidTimelineBasespot(
-      id: BigInt!
-      input: RaidTimelineBasespotInput!
-    ): TimelineBasespot!
-      @requireAuth
-      @hasPermission(permission: "timeline_create")
     deleteTimelineBasespot(id: BigInt!): TimelineBasespot!
       @requireAuth
       @hasPermission(permission: "timeline_delete")

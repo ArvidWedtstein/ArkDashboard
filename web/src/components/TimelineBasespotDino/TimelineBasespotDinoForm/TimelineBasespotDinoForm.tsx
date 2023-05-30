@@ -15,6 +15,9 @@ import type {
   UpdateTimelineBasespotDinoInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
+import Lookup from "src/components/Util/Lookup/Lookup";
+import { useLazyQuery } from "@apollo/client";
+import { useEffect } from "react";
 
 const formatDatetime = (value) => {
   if (value) {
@@ -25,18 +28,45 @@ const formatDatetime = (value) => {
 type FormTimelineBasespotDino = NonNullable<
   EditTimelineBasespotDinoById["timelineBasespotDino"]
 >;
-
+const DINOQUERY = gql`
+  query FindDinosTimelineBasespotDino {
+    dinos {
+      id
+      name
+      synonyms
+      type
+      icon
+      image
+    }
+  }
+`;
 interface TimelineBasespotDinoFormProps {
   timelineBasespotDino?: EditTimelineBasespotDinoById["timelineBasespotDino"];
   onSave: (
     data: UpdateTimelineBasespotDinoInput,
     id?: FormTimelineBasespotDino["id"]
   ) => void;
+  id?: string;
   error: RWGqlError;
   loading: boolean;
 }
 
 const TimelineBasespotDinoForm = (props: TimelineBasespotDinoFormProps) => {
+  const [loadItems, { called, loading, data }] = useLazyQuery(DINOQUERY, {
+    onCompleted: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  useEffect(() => {
+    if (!called && !loading) {
+      loadItems();
+    }
+  }, []);
+
   const onSubmit = (data: FormTimelineBasespotDino) => {
     props.onSave(data, props?.timelineBasespotDino?.id);
   };
@@ -61,7 +91,9 @@ const TimelineBasespotDinoForm = (props: TimelineBasespotDinoFormProps) => {
 
         <TextField
           name="timelinebasespot_id"
-          defaultValue={props.timelineBasespotDino?.timelinebasespot_id}
+          defaultValue={
+            props.timelineBasespotDino?.timelinebasespot_id || props.id
+          }
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ required: true }}
@@ -73,6 +105,7 @@ const TimelineBasespotDinoForm = (props: TimelineBasespotDinoFormProps) => {
           <legend>Dino</legend>
           <div>
             <div>
+              {/* TODO: Insert dino lookup */}
               <Label
                 name="dino_id"
                 className="rw-label"
@@ -81,13 +114,23 @@ const TimelineBasespotDinoForm = (props: TimelineBasespotDinoFormProps) => {
                 Dino id
               </Label>
 
-              <TextField
+              <Lookup
+                name="dino_id"
+                defaultValue={props.timelineBasespotDino?.dino_id}
+                options={data.dinos.map((dino) => ({
+                  label: dino.name,
+                  value: dino.id,
+                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.icon}`,
+                }))}
+              />
+
+              {/* <TextField
                 name="dino_id"
                 defaultValue={props.timelineBasespotDino?.dino_id}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
                 validation={{ required: true }}
-              />
+              /> */}
 
               <FieldError name="dino_id" className="rw-field-error" />
             </div>

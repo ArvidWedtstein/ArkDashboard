@@ -135,12 +135,14 @@ const DinosList = ({ dinosPage }: FindDinos) => {
             className="flex h-auto w-auto max-w-xs flex-row items-start justify-start rounded-md bg-zinc-600 p-4 text-center text-white"
           >
             <div className="flex h-full w-full flex-col items-start justify-between justify-items-stretch">
-              <div className="relative mb-6 h-32 w-32 rounded-full border bg-gradient-to-br from-zinc-700 to-zinc-700">
+              <div className="relative mb-3 h-32 w-32 rounded-full border bg-gradient-to-br from-zinc-700 to-zinc-700">
                 <ImageContainer
                   loading="lazy"
+                  defaultsrc="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/any-hat.png"
                   className="h-auto max-h-full"
                   src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
                   onError={(e) => {
+                    e.currentTarget.src = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/any-hat.png`;
                     e.currentTarget.parentElement.hidden = true;
                     e.currentTarget.parentElement.parentElement.classList.replace(
                       "justify-between",

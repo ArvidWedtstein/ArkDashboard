@@ -2,76 +2,61 @@ import { set } from "@redwoodjs/forms";
 import { Link, back, navigate, routes, useParams } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
+import { createClient } from "@supabase/supabase-js";
 import clsx from "clsx";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useAuth } from "src/auth";
 
-import { QUERY } from "src/components/TimelineBasespot/TimelineBasespotsCell";
 import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
-import {
-  arrRandNoRep,
-  getDateDiff,
-  groupBy,
-  isDate,
-  jsonTruncate,
-  timeTag,
-  truncate,
-} from "src/lib/formatters";
+import { arrRandNoRep, getDateDiff, random } from "src/lib/formatters";
 
 import type {
   DeleteTimelineBasespotMutationVariables,
   FindTimelineBasespots,
 } from "types/graphql";
 
-const DELETE_TIMELINE_BASESPOT_MUTATION = gql`
-  mutation DeleteTimelineBasespotMutation($id: BigInt!) {
-    deleteTimelineBasespot(id: $id) {
-      id
-    }
-  }
-`;
-
 const TimelineBasespotsList = ({
   timelineBasespots,
 }: FindTimelineBasespots) => {
-  const [grid, setGrid] = useState([]);
-  const [radio, changeRadio] = useState("server");
-  useEffect(() => {
-    if (grid.length < 9) {
-      for (let i = 0; i < 9; i++) {
-        const date = new Date(new Date().setDate(1));
-        date.setMonth(date.getMonth() - i);
-        const monthName = date.toLocaleString("default", {
-          month: "short",
-          year: "numeric",
-        });
+  // const [grid, setGrid] = useState([]);
+  // const [radio, changeRadio] = useState("server");
+  // useEffect(() => {
+  //   if (grid.length < 9) {
+  //     for (let i = 0; i < 9; i++) {
+  //       const date = new Date(new Date().setDate(1));
+  //       date.setMonth(date.getMonth() - i);
+  //       const monthName = date.toLocaleString("default", {
+  //         month: "short",
+  //         year: "numeric",
+  //       });
 
-        grid.push({
-          label: monthName,
-          date,
-        });
-      }
-      setGrid((prev) => prev.reverse());
-    }
-  }, []);
+  //       grid.push({
+  //         label: monthName,
+  //         date,
+  //       });
+  //     }
+  //     setGrid((prev) => prev.reverse());
+  //   }
+  // }, []);
 
-  const groupedEvents = useMemo(() => {
-    return timelineBasespots.reduce((acc, x) => {
-      let keyValue = new Date(x.start_date).toLocaleString("default", {
-        month: "short",
-        year: "numeric",
-      });
+  // const groupedEvents = useMemo(() => {
+  //   return timelineBasespots.reduce((acc, x) => {
+  //     let keyValue = new Date(x.start_date).toLocaleString("default", {
+  //       month: "short",
+  //       year: "numeric",
+  //     });
 
-      acc[keyValue] = acc[keyValue] ? [...acc[keyValue], x] : [x];
-      return acc;
-    }, {});
-  }, [timelineBasespots]);
+  //     acc[keyValue] = acc[keyValue] ? [...acc[keyValue], x] : [x];
+  //     return acc;
+  //   }, {});
+  // }, [timelineBasespots]);
 
-  const setRadio = useCallback(
-    (e) => {
-      changeRadio(e);
-    },
-    [radio]
-  );
+  // const setRadio = useCallback(
+  //   (e) => {
+  //     changeRadio(e);
+  //   },
+  //   [radio]
+  // );
 
   const mapImages = {
     2: [
@@ -139,125 +124,165 @@ const TimelineBasespotsList = ({
     Arkosic:
       "https://steamuserimages-a.akamaihd.net/ugc/2023839858710970915/3E075CEE248A0C9F9069EC7D12894F597E74A2CF/?imw=200&imh=200&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true",
   };
-
+  const supabaseClient = createClient(
+    process.env.SUPABASE_URL as string,
+    process.env.SUPABASE_KEY as string,
+    {
+      db: {
+        schema: "storage",
+      },
+    }
+  );
   const [isActive, setIsActive] = useState(0);
+  const [images, setImages] = useState([]);
+  const { client } = useAuth();
+  async function getAllImages(folder = "") {
+    try {
+      const { data, error } = await client.storage
+        .from("timelineimages")
+        .list(folder);
+
+      if (error) {
+        throw error;
+      }
+      return data;
+    } catch (error) {
+      // Handle the error here
+      console.error(error);
+      return [];
+    }
+  }
+  useEffect(() => {
+    supabaseClient
+      .from("objects")
+      .select("name, path_tokens")
+      .like("bucket_id", `timelineimages`)
+      .then((data) => {
+        setImages(data.data);
+      });
+    return () => {};
+  }, [timelineBasespots]);
 
   const setActive = useCallback(
-    (e, index) => {
+    async (e, index) => {
       e.currentTarget.scrollIntoView({
         behavior: "smooth",
         block: "center",
         inline: "nearest",
       });
+      // https://codepen.io/kevinpowell/pen/NWOgVga
       setIsActive(index);
 
+      // const images = await getAllImages(timelineBasespots[index].id.toString());
+
+      // setImages(images);
       return;
     },
     [isActive, setIsActive]
   );
 
-  const getEventCellStyle = (day, server) => {
-    const colors = [
-      "#FFB6C1",
-      "#FFC0CB",
-      "#FF69B4",
-      "#FF1493",
-      "#DB7093",
-      "#C71585",
-      "#E6E6FA",
-      "#D8BFD8",
-      "#DDA0DD",
-      "#DA70D6",
-      "#EE82EE",
-      "#FF00FF",
-      "#BA55D3",
-      "#9370DB",
-      "#663399",
-    ];
-    const event = timelineBasespots.find((event) => {
-      const startDate = new Date(event.start_date);
-      const endDate = new Date(event.end_date);
+  // const getEventCellStyle = (day, server) => {
+  //   const colors = [
+  //     "#FFB6C1",
+  //     "#FFC0CB",
+  //     "#FF69B4",
+  //     "#FF1493",
+  //     "#DB7093",
+  //     "#C71585",
+  //     "#E6E6FA",
+  //     "#D8BFD8",
+  //     "#DDA0DD",
+  //     "#DA70D6",
+  //     "#EE82EE",
+  //     "#FF00FF",
+  //     "#BA55D3",
+  //     "#9370DB",
+  //     "#663399",
+  //   ];
+  // const event = timelineBasespots.find((event) => {
+  //   const startDate = new Date(event.start_date);
+  //   const endDate = new Date(event.end_date);
 
-      return (
-        new Date(startDate).toLocaleString("default", {
-          year: "numeric",
-          month: "numeric",
-        }) <=
-          new Date(day).toLocaleString("default", {
-            year: "numeric",
-            month: "numeric",
-          }) &&
-        new Date(day).toLocaleString("default", {
-          year: "numeric",
-          month: "numeric",
-        }) <=
-          new Date(endDate).toLocaleString("default", {
-            year: "numeric",
-            month: "numeric",
-          }) &&
-        event[radio] === server
-      );
-    });
+  //   return (
+  //     new Date(startDate).toLocaleString("default", {
+  //       year: "numeric",
+  //       month: "numeric",
+  //     }) <=
+  //       new Date(day).toLocaleString("default", {
+  //         year: "numeric",
+  //         month: "numeric",
+  //       }) &&
+  //     new Date(day).toLocaleString("default", {
+  //       year: "numeric",
+  //       month: "numeric",
+  //     }) <=
+  //       new Date(endDate).toLocaleString("default", {
+  //         year: "numeric",
+  //         month: "numeric",
+  //       }) &&
+  //     event[radio] === server
+  //   );
+  // });
 
-    if (event && event != null) {
-      const { id, start_date, end_date } = event;
-      const startDay = new Date(start_date).getMonth();
-      const endDay = new Date(end_date).getMonth();
-      const daysSpan = endDay - startDay + 1;
-      const mineStart = startDay === day.getMonth();
-      const mineEnd = endDay === day.getMonth();
+  //   if (event && event != null) {
+  //     const { id, start_date, end_date } = event;
+  //     const startDay = new Date(start_date).getMonth();
+  //     const endDay = new Date(end_date).getMonth();
+  //     const daysSpan = endDay - startDay + 1;
+  //     const mineStart = startDay === day.getMonth();
+  //     const mineEnd = endDay === day.getMonth();
 
-      const style = {
-        background: colors[id % colors.length],
-        borderLeft:
-          mineStart && timelineBasespots.indexOf(event) === isActive
-            ? "1px solid #fff"
-            : mineEnd && !mineStart
-            ? `3px solid ${colors[id % colors.length]}`
-            : 0,
-        borderRight:
-          mineEnd && timelineBasespots.indexOf(event) === isActive
-            ? "1px solid #fff"
-            : mineStart && !mineEnd
-            ? `3px solid ${colors[id % colors.length]}`
-            : 0,
-        borderTop:
-          (mineEnd || mineStart) &&
-          timelineBasespots.indexOf(event) === isActive
-            ? "1px solid #fff"
-            : 0,
-        borderBottom:
-          (mineEnd || mineStart) &&
-          timelineBasespots.indexOf(event) === isActive
-            ? "1px solid #fff"
-            : 0,
+  //     const style = {
+  //       background: colors[id % colors.length],
+  //       borderLeft:
+  //         mineStart && timelineBasespots.indexOf(event) === isActive
+  //           ? "1px solid #fff"
+  //           : mineEnd && !mineStart
+  //           ? `3px solid ${colors[id % colors.length]}`
+  //           : 0,
+  //       borderRight:
+  //         mineEnd && timelineBasespots.indexOf(event) === isActive
+  //           ? "1px solid #fff"
+  //           : mineStart && !mineEnd
+  //           ? `3px solid ${colors[id % colors.length]}`
+  //           : 0,
+  //       borderTop:
+  //         (mineEnd || mineStart) &&
+  //         timelineBasespots.indexOf(event) === isActive
+  //           ? "1px solid #fff"
+  //           : 0,
+  //       borderBottom:
+  //         (mineEnd || mineStart) &&
+  //         timelineBasespots.indexOf(event) === isActive
+  //           ? "1px solid #fff"
+  //           : 0,
 
-        borderTopLeftRadius: mineStart ? "0.25rem" : 0,
-        borderBottomLeftRadius: mineStart ? "0.25rem" : 0,
-        borderTopRightRadius: mineEnd ? "0.25rem" : 0,
-        borderBottomRightRadius: mineEnd ? "0.25rem" : 0,
-        marginTop: "3px",
-        gridColumnStart: mineStart ? "auto" : "span 1",
-        gridColumnEnd: mineEnd ? "auto" : `span ${daysSpan}`,
-      };
+  //       borderTopLeftRadius: mineStart ? "0.25rem" : 0,
+  //       borderBottomLeftRadius: mineStart ? "0.25rem" : 0,
+  //       borderTopRightRadius: mineEnd ? "0.25rem" : 0,
+  //       borderBottomRightRadius: mineEnd ? "0.25rem" : 0,
+  //       marginTop: "3px",
+  //       gridColumnStart: mineStart ? "auto" : "span 1",
+  //       gridColumnEnd: mineEnd ? "auto" : `span ${daysSpan}`,
+  //     };
 
-      return {
-        style,
-        onClick: (e) => {
-          setIsActive(timelineBasespots.indexOf(event));
-          // navigate(routes.timelineBasespot({ id: id.toString() }));
-        },
-      };
-    }
+  //     return {
+  //       style,
+  //       onClick: (e) => {
+  //         setIsActive(timelineBasespots.indexOf(event));
+  //         // navigate(routes.timelineBasespot({ id: id.toString() }));
+  //       },
+  //     };
+  //   }
 
-    return null;
-  };
+  //   return null;
+  // };
   return (
     <div>
-      <section className="relative m-auto flex h-full w-full px-10 ">
+      <section className="relative m-auto flex h-full w-full scroll-smooth px-10">
         <div className="flex w-full flex-wrap items-center justify-center">
           <div className="relative h-fit w-full p-10 md:h-fit md:w-[55%]">
-            <div className="grid grid-cols-1 grid-rows-1">
+            <div className="grid grid-cols-1 grid-rows-1 scroll-smooth">
               {timelineBasespots.map((timelineBasespot, index) => (
                 <div
                   key={`basespot-image-${index}`}
@@ -266,25 +291,54 @@ const TimelineBasespotsList = ({
                     hidden: isActive !== index,
                   })}
                 >
-                  <ImageContainer
+                  {/* <img
+                    // src={mapImages[timelineBasespot.map][0]}
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${
+                      arrRandNoRep(
+                        images?.filter(
+                          (img) =>
+                            img.path_tokens[0] ===
+                            timelineBasespot.id.toString()
+                        )
+                      )?.name
+                    }`}
                     className={clsx(
-                      "block !w-full rounded-lg transition-opacity duration-300 ease-in-out motion-reduce:transform-none motion-reduce:transition-none",
+                      "block w-80 rounded-lg transition-opacity duration-150 ease-in-out motion-reduce:transform-none motion-reduce:transition-none",
                       {
                         "animate-fade-in opacity-100": isActive === index,
                         "opacity-0": isActive !== index,
                       }
                     )}
-                    src={arrRandNoRep(mapImages[timelineBasespot.map])}
+                  /> */}
+                  <ImageContainer
+                    className={clsx(
+                      "block w-80 rounded-lg transition-opacity duration-150 ease-in-out motion-reduce:transform-none motion-reduce:transition-none",
+                      {
+                        "animate-fade-in opacity-100": isActive === index,
+                        "opacity-0": isActive !== index,
+                      }
+                    )}
+                    // src={arrRandNoRep(mapImages[timelineBasespot.map])}
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${
+                      arrRandNoRep(
+                        images?.filter(
+                          (img) =>
+                            img.path_tokens[0] ===
+                            timelineBasespot.id.toString()
+                        )
+                      )?.name
+                    }`}
                   />
-                  <Link
-                    to={routes.timelineBasespot({
-                      id: timelineBasespot.id.toString(),
-                    })}
-                    className="rw-button rw-button-green-outline float-right mt-2 transition"
-                    onClick={(e) => {}}
-                  >
-                    View
-                  </Link>
+                  {new Date(timelineBasespot.start_date) < new Date() && (
+                    <Link
+                      to={routes.timelineBasespot({
+                        id: timelineBasespot.id.toString(),
+                      })}
+                      className="rw-button rw-button-green-outline float-right mt-2 transition"
+                    >
+                      View
+                    </Link>
+                  )}
                 </div>
               ))}
             </div>
@@ -320,6 +374,11 @@ const TimelineBasespotsList = ({
                     className="pl-4 transition-all duration-300"
                     onClick={(e) => setActive(e, index)}
                   >
+                    {new Date(start_date) > new Date() && (
+                      <span className="text-xl text-gray-900 dark:text-white">
+                        - Upcomming
+                      </span>
+                    )}
                     <div className="relative my-10 min-h-[28px] pr-5">
                       <div
                         className={clsx(
@@ -382,6 +441,11 @@ const TimelineBasespotsList = ({
                           {(cluster || region || season) && ", "}
                           {server}
                         </p>
+                        <span className="text-[#3c4043] dark:text-stone-400">
+                          {new Date(start_date).toLocaleDateString("no-NO", {
+                            dateStyle: "short",
+                          })}
+                        </span>
                       </div>
                     </div>
                   </div>

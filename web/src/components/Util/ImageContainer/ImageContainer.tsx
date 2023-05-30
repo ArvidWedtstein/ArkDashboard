@@ -1,12 +1,13 @@
 import clsx from "clsx";
-import { useRef, useState } from "react";
+import { ReactNode, useRef, useState } from "react";
 import useIntersectionObserver from "src/components/useIntersectionObserver";
 
 interface ImageContainerProps
   extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
+  defaultsrc?: string;
   alt?: string;
-  caption?: string;
+  caption?: string | ReactNode;
   className?: string;
   /**
    * @default 500
@@ -22,6 +23,7 @@ interface ImageContainerProps
 const ImageContainer = ({ ...props }: ImageContainerProps) => {
   const {
     src,
+    defaultsrc,
     alt,
     caption,
     className,
@@ -69,6 +71,9 @@ const ImageContainer = ({ ...props }: ImageContainerProps) => {
             src={src}
             alt={alt}
             {...props}
+            onError={(e) => {
+              if (defaultsrc) e.currentTarget.src = defaultsrc;
+            }}
             // style={{ opacity: imageLoaded ? 1 : 0 }}
           />
           {!!caption && (

@@ -23,9 +23,6 @@ export const timelineBasespot: QueryResolvers["timelineBasespot"] = ({
 export const createTimelineBasespot: MutationResolvers["createTimelineBasespot"] =
   ({ input }) => {
     return db.timelineBasespot.create({
-      include: {
-        TimelineBasespotRaid: true,
-      },
       data: input,
     });
   };
@@ -44,24 +41,7 @@ export const deleteTimelineBasespot: MutationResolvers["deleteTimelineBasespot"]
       where: { id },
     });
   };
-export const raidTimelineBasespot: MutationResolvers["raidTimelineBasespot"] =
-  ({ id, input }) => {
-    // db.timelineBasespotDino.update({
-    //   data: {
-    //     death_date: new Date(),
-    //   },
-    //   where: { timelinebasespot_id: id },
-    // });
-    return db.timelineBasespot.update({
-      data: {
-        id,
-        end_date: input.end_date || new Date(),
-        raid_comment: input.raid_comment,
-        raided_by: input.raided_by,
-      },
-      where: { id },
-    });
-  };
+
 export const TimelineBasespot: TimelineBasespotRelationResolvers = {
   basespot: (_obj, { root }) => {
     return db.timelineBasespot
@@ -85,6 +65,11 @@ export const TimelineBasespot: TimelineBasespotRelationResolvers = {
     return db.timelineBasespot
       .findUnique({ where: { id: root?.id } })
       .TimelineBasespotDino();
+  },
+  TimelineBasespotPerson: (_obj, { root }) => {
+    return db.timelineBasespot
+      .findUnique({ where: { id: root?.id } })
+      .TimelineBasespotPerson();
   },
   TimelineBasespotRaid: (_obj, { root }) => {
     return db.timelineBasespot

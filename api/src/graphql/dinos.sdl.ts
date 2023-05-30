@@ -39,12 +39,9 @@ export const schema = gql`
     attack: JSON
     mounted_weaponry: Boolean
     ridable: Boolean
-    flyer_dino: Boolean
-    water_dino: Boolean
     movement: JSON
     type: [String]!
     carryable_by: [String]!
-    saddle_id: BigInt
     icon: String
     image: String
     multipliers: JSON
@@ -52,7 +49,6 @@ export const schema = gql`
     gestation_time: Float
     mating_cooldown_min: BigInt
     mating_cooldown_max: BigInt
-    Item: Item
     DinoStat: [DinoStat]!
     TimelineBasespotDino: [TimelineBasespotDino]!
   }
@@ -106,12 +102,9 @@ export const schema = gql`
     attack: JSON
     mounted_weaponry: Boolean
     ridable: Boolean
-    flyer_dino: Boolean
-    water_dino: Boolean
     movement: JSON
     type: [String]!
     carryable_by: [String]!
-    saddle_id: BigInt
     icon: String
     image: String
     multipliers: JSON
@@ -119,7 +112,6 @@ export const schema = gql`
     gestation_time: Float
     mating_cooldown_min: BigInt
     mating_cooldown_max: BigInt
-    DinoStat: JSON
   }
 
   input UpdateDinoInput {
@@ -161,12 +153,9 @@ export const schema = gql`
     attack: JSON
     mounted_weaponry: Boolean
     ridable: Boolean
-    flyer_dino: Boolean
-    water_dino: Boolean
     movement: JSON
     type: [String]!
     carryable_by: [String]!
-    saddle_id: BigInt
     icon: String
     image: String
     multipliers: JSON
