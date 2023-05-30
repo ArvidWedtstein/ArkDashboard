@@ -1,7 +1,8 @@
 import clsx from "clsx";
 
 interface ToggleButtonProps {
-  checked: boolean;
+  checked?: boolean;
+  defaultChecked?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onLabel?: string;
   offLabel?: string;
@@ -9,30 +10,32 @@ interface ToggleButtonProps {
   disabled?: boolean;
 }
 const ToggleButton = ({
+  disabled,
   checked,
   onChange,
   onLabel,
   offLabel,
-  className,
-  disabled,
+  className = "",
+  ...props
 }: ToggleButtonProps) => {
   return (
     <label
       className={clsx(
         "relative my-1 flex cursor-pointer items-center justify-start",
-        className
+        className.toString()
       )}
     >
       <input
-        disabled={disabled}
         type="checkbox"
-        checked={checked || false}
+        checked={checked}
+        {...props}
+        readOnly={!onChange && checked != null}
         className="peer sr-only"
         onChange={onChange}
       />
       <div className="rw-toggle peer-focus:ring-pea-300 dark:peer-focus:ring-pea-800 peer-checked:bg-pea-600 peer peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4"></div>
       <span className="ml-3 inline-flex space-x-1 text-sm font-medium text-gray-600 dark:text-white">
-        <span
+        {offLabel && (<span
           className={
             !checked
               ? disabled
@@ -42,9 +45,9 @@ const ToggleButton = ({
           }
         >
           {offLabel}
-        </span>
-        <span>/</span>
-        <span
+        </span>)}
+        {(offLabel && onLabel) && <span>/</span>}
+        {onLabel && (<span
           className={
             checked
               ? disabled
@@ -54,7 +57,7 @@ const ToggleButton = ({
           }
         >
           {onLabel}
-        </span>
+        </span>)}
       </span>
     </label>
   );

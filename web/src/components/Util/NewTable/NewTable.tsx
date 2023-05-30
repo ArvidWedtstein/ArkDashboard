@@ -1,8 +1,8 @@
-import { ButtonField, Form, SelectField, TextField } from "@redwoodjs/forms";
+import { ButtonField, Form, SelectField, TextField, useForm } from "@redwoodjs/forms";
+import { toast } from "@redwoodjs/web/dist/toast";
 import clsx from "clsx";
 import {
   ReactElement,
-  TableHTMLAttributes,
   useEffect,
   useMemo,
   useReducer,
@@ -28,14 +28,14 @@ interface Row {
   id: string;
   [key: string]: any;
   variant?:
-    | "dark"
-    | "light"
-    | "warning"
-    | "danger"
-    | "success"
-    | "secondary"
-    | "primary"
-    | "default";
+  | "dark"
+  | "light"
+  | "warning"
+  | "danger"
+  | "success"
+  | "secondary"
+  | "primary"
+  | "default";
 }
 interface Column {
   field: string;
@@ -44,10 +44,9 @@ interface Column {
    * Not implemented yet
    */
   width?: number;
-  // type?: "number" | "string" | "boolean" | "date" | "dateTime" | "progress";
+  type?: "number" | "string" | "boolean" | "date" | "dateTime" | "progress";
   align?: "left" | "center" | "right";
   sortable?: boolean;
-  // filter?: Filter;
   valueGetter?: (params: GridValueGetterParams) => any;
 }
 interface GridCellParams {
@@ -63,6 +62,14 @@ interface ITableProps {
   disabled?: boolean;
   filterable?: boolean;
   selectable?: boolean;
+  pagination?: {
+    /**
+     * The total number of rows displayed per page
+     */
+    pageSize?: number;
+    pageSizeOptions?: number[];
+    page?: number;
+  }
   header?: ReactElement | string;
   /**
    * Callback function that is fired when a row is selected
@@ -85,10 +92,11 @@ interface ITableProps {
 const NewTable = ({
   columns,
   rows,
-  disabled,
   filterable,
   selectable,
   onSelectRow,
+  header,
+  pagination,
 }: ITableProps) => {
   const cols = useMemo(() => {
     return columns;
@@ -101,115 +109,132 @@ const NewTable = ({
     SELECT = "SELECT",
     SELECT_ALL = "SELECT_ALL",
     SET = "SET",
+    SET_PAGE = "SET_PAGE",
   }
   interface DataAction {
     type: DataActionKind;
+    state?: 'add' | 'remove' | 'set';
     payload: any;
   }
-  const [data, dispatch] = useReducer((state, action: DataAction) => {
+  let [data, dispatch] = useReducer((state, action: DataAction) => {
     const { type, payload } = action;
     switch (type) {
       case DataActionKind.SET: {
         const newState = state.map((row, i) => {
+          if (state === payload) {
+            return state;
+          }
           const updatedRow = payload.find((r) => row.id === r.id);
           if (updatedRow) {
             return { ...row, ...updatedRow };
           }
           return row;
         });
-        return newState;
+        return { ...newState, ...payload }
+        // return newState;
       }
       case DataActionKind.FILTER: {
-        console.log("FILTER", payload);
-        const filter = state
+        const newFilters = action.state === 'add' ? [...filters, payload] : filters.filter((f) => f !== payload);
+        if (action.state === 'add') {
+          if (!filters.find((f) => f.column === payload.column && f.operator === payload.operator && f.value === payload.value)) {
+            setFilters([...filters, payload]);
+          }
+        } else if (action.state === 'remove') {
+          setFilters(filters.filter((f) => f !== payload));
+        }
+        // const newFilters = (prevState) => {
+        //   if (action.state === 'add') {
+        //     if (!prevState.find((f) => f.column === payload.column && f.operator === payload.operator && f.value === payload.value)) {
+        //       return [...prevState, payload];
+        //     }
+        //   } else if (action.state === 'remove') {
+        //     return prevState.filter((f) => f !== payload);
+        //   }
+        //   return prevState;
+        // };
+
+        // setFilters(newFilters);
+
+        return rows
           .filter((row) => {
-            if (!payload) {
+            if (newFilters.length === 0) {
               return true;
             }
-            switch (payload.operator) {
-              case "=": {
-                return row[payload.column] === payload.value;
-              }
-              case "!=": {
-                return row[payload.column] !== payload.value;
-              }
-              case ">": {
-                return row[payload.column] > payload.value;
-              }
-              case ">=": {
-                return row[payload.column] >= payload.value;
-              }
-              case "<": {
-                return row[payload.column] < payload.value;
-              }
-              case "<=": {
-                return row[payload.column] <= payload.value;
-              }
-              case "like": {
-                return row[payload.column].includes(payload.value);
-              }
-              case "ilike": {
-                return row[payload.column]
-
-                  .toLowerCase()
-                  .includes(payload.value.toLowerCase());
-              }
-              case "in": {
-                return payload.value.includes(row[payload.column]);
-              }
-              case "not_in": {
-                return !payload.value.includes(row[payload.column]);
-              }
-              default: {
+            return newFilters.map((filter) => {
+              if (!filter) {
                 return true;
               }
-            }
+              switch (filter.operator) {
+                case "=": {
+                  return row[filter.column] === filter.value;
+                }
+                case "!=": {
+                  return row[filter.column] !== filter.value;
+                }
+                case ">": {
+                  return row[filter.column] > filter.value;
+                }
+                case ">=": {
+                  return row[filter.column] >= filter.value;
+                }
+                case "<": {
+                  return row[filter.column] < filter.value;
+                }
+                case "<=": {
+                  return row[filter.column] <= filter.value;
+                }
+                case "like": {
+                  return row[filter.column].includes(filter.value);
+                }
+                case "ilike": {
+                  return row[filter.column]
+                    .toLowerCase()
+                    .includes(filter.value.toLowerCase());
+                }
+                case "in": {
+                  return filter.value.includes(row[filter.column]);
+                }
+                case "not_in": {
+                  return !filter.value.includes(row[filter.column]);
+                }
+                default: {
+                  return true;
+                }
+              }
+            })
+              .reduce((acc, curr) => acc && curr, true);
           })
-          .map((row) => ({
-            ...row,
-          }));
-        return filter;
       }
       case DataActionKind.SORT: {
-        const sort = state
-          .sort((a, b) => {
-            if (payload.direction === "asc") {
-              if (a[payload.column.field] < b[payload.column.field]) {
-                return -1;
-              }
-              if (a[payload.column.field] > b[payload.column.field]) {
-                return 1;
-              }
-              return 0;
-            } else {
-              if (a[payload.column.field] > b[payload.column.field]) {
-                return -1;
-              }
-              if (a[payload.column.field] < b[payload.column.field]) {
-                return 1;
-              }
-              return 0;
-            }
-          })
-          .map((row) => ({
-            ...row,
-            sorted_on: payload.column.field,
-            sort_direction: payload.direction,
-          }));
-        return sort;
+        const collator = new Intl.Collator(undefined, { numeric: true });
+
+        const sort = state.sort((a, b) => {
+          const aValue = a[payload.column.field];
+          const bValue = b[payload.column.field];
+          return payload.direction === 'asc'
+            ? collator.compare(aValue, bValue)
+            : collator.compare(bValue, aValue);
+        });
+        return sort.map((f) => ({ ...f, sorted_on: payload.column.field, sort_direction: payload.direction }));
       }
       case DataActionKind.SELECT: {
-        return state.map((row, i) => {
-          if (`row-${i}` !== payload.row.id) {
-            return row;
+        return state.map((row) => {
+          if (row.id === payload.row.id) {
+            return { ...row, selected: payload.checked };
           }
-          return { ...row, selected: payload.checked };
+          return row;
         });
       }
       case DataActionKind.SELECT_ALL: {
         return state.map((row) => {
           return { ...row, selected: payload.checked };
         });
+      }
+      case DataActionKind.SET_PAGE: {
+        pagination.page = payload.page;
+
+        // return state.map((f) => ({ ...f, page: payload.page, pageSize: payload.pageSize }))
+        return state
       }
       default: {
         return state;
@@ -218,85 +243,126 @@ const NewTable = ({
   }, rows);
 
   useEffect(() => {
-    return dispatch({
-      type: DataActionKind.SET,
-      payload: rows.map((row, i) => ({ ...row, id: `row-${i}` })),
-    });
+    data = rows.map((row, i) => ({ ...row, id: `row-${i}`, selected: false, sorted_on: '', sort_direction: '' }));
+    return
   }, [rows]);
 
+  const formMethods = useForm()
   const { isComponentVisible, setIsComponentVisible, ref } =
     useComponentVisible(false);
 
-  const addFilter = (e) => {
-    setFilters([...filters, e]);
-  };
-
   return (
     <>
-      <p className="text-white">{JSON.stringify(data, null, 2)}</p>
-      <table className="relative w-full table-auto text-left text-sm text-gray-700 dark:text-stone-300">
-        {/* TODO: Toolbar over table instead? */}
-        <caption className="table-caption h-fit py-3 text-left text-lg font-semibold text-gray-900 dark:text-white">
-          <div className="flex w-full space-x-3 ">
-            <div className="relative w-fit" ref={ref}>
-              <button
-                className="rw-button rw-button-gray-outline relative inline-block"
-                onClick={() => setIsComponentVisible(!isComponentVisible)}
-              >
-                <span className="sr-only">Filter</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 640 512"
-                  className="pointer-events-none w-6"
-                  fill="currentColor"
-                  stroke="currentColor"
+      <table className="relative w-full table-fixed text-left text-sm text-gray-700 dark:text-stone-300">
+        {(filterable || selectable) && (
+          <caption className="table-caption h-fit py-3 text-left text-lg font-semibold text-gray-900 dark:text-white">
+            <div className="flex w-full space-x-3 ">
+              <div className="relative w-fit" ref={ref}>
+                <button
+                  className="rw-button rw-button-gray-outline relative inline-block"
+                  onClick={() => setIsComponentVisible(!isComponentVisible)}
                 >
-                  {filters.length > 0 ? (
-                    <path d="M479.3 32H32.7C5.213 32-9.965 63.28 7.375 84.19L192 306.8V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C286.5 478.6 291.3 480 295.9 480C308.3 480 320 470.2 320 455.1V306.8l184.6-222.6C521.1 63.28 506.8 32 479.3 32zM295.4 286.4L288 295.3v145.3l-64-44.79V295.3L32.7 64h446.6l.6934-.2422L295.4 286.4z" />
-                  ) : (
-                    <path d="M352 440.6l-64-44.79V312.3L256 287V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C350.5 478.6 355.3 480 359.9 480C372.3 480 384 470.2 384 455.1v-67.91l-32-25.27V440.6zM543.3 64l.6934-.2422l-144.1 173.8l25.12 19.84l143.6-173.2C585.1 63.28 570.8 32 543.3 32H139.6l40.53 32H543.3zM633.9 483.4L25.92 3.42c-6.938-5.453-17-4.25-22.48 2.641c-5.469 6.938-4.281 17 2.641 22.48l608 480C617 510.9 620.5 512 623.1 512c4.734 0 9.422-2.094 12.58-6.078C642 498.1 640.8 488.9 633.9 483.4z" />
+                  <span className="sr-only">Filter</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 640 512"
+                    className="pointer-events-none w-6"
+                    fill="currentColor"
+                    stroke="currentColor"
+                  >
+                    {filters.length > 0 ? (
+                      <path d="M479.3 32H32.7C5.213 32-9.965 63.28 7.375 84.19L192 306.8V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C286.5 478.6 291.3 480 295.9 480C308.3 480 320 470.2 320 455.1V306.8l184.6-222.6C521.1 63.28 506.8 32 479.3 32zM295.4 286.4L288 295.3v145.3l-64-44.79V295.3L32.7 64h446.6l.6934-.2422L295.4 286.4z" />
+                    ) : (
+                      <path d="M352 440.6l-64-44.79V312.3L256 287V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C350.5 478.6 355.3 480 359.9 480C372.3 480 384 470.2 384 455.1v-67.91l-32-25.27V440.6zM543.3 64l.6934-.2422l-144.1 173.8l25.12 19.84l143.6-173.2C585.1 63.28 570.8 32 543.3 32H139.6l40.53 32H543.3zM633.9 483.4L25.92 3.42c-6.938-5.453-17-4.25-22.48 2.641c-5.469 6.938-4.281 17 2.641 22.48l608 480C617 510.9 620.5 512 623.1 512c4.734 0 9.422-2.094 12.58-6.078C642 498.1 640.8 488.9 633.9 483.4z" />
+                    )}
+                  </svg>
+                  {filters.length > 0 && <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -right-2 dark:border-gray-900">{filters.length}</div>}
+                </button>
+                <dialog
+                  className={clsx(
+                    `m-1 rounded border bg-black p-3 z-10`,
                   )}
-                </svg>
-              </button>
-              <div
-                className={clsx(
-                  `absolute z-10 m-1 flex origin-top flex-col rounded border bg-black p-3`,
-                  {
-                    block: isComponentVisible,
-                    hidden: !isComponentVisible,
-                  }
-                )}
-              >
-                <Form
-                  className=""
-                  config={{ mode: "onBlur" }}
-                  onSubmit={(e) => {
-                    dispatch({
-                      type: DataActionKind.FILTER,
-                      payload: e,
-                    });
-                  }}
+                  open={isComponentVisible}
+                  onClose={() => setIsComponentVisible(false)}
                 >
-                  {filters.map(({ column, operator, value }, index) => (
-                    <div
-                      className="rw-button-group justify-start"
-                      key={`filter-${index}`}
-                    >
-                      <select
+                  <Form
+                    className="flex flex-col"
+                    formMethods={formMethods}
+                    method="dialog"
+                    onSubmit={(e) => {
+                      formMethods.reset();
+                      dispatch({
+                        type: DataActionKind.FILTER,
+                        state: 'add',
+                        payload: e,
+                      });
+                    }}
+                  >
+                    {filters.map(({ column, operator, value }, index) => (
+                      <div
+                        className="rw-button-group justify-start my-1"
+                        key={`filter-${index}`}
+                      >
+                        <select
+                          name="column"
+                          className="rw-input rw-input-small"
+                          defaultValue={column}
+                        >
+                          {columns.map((column, idx) => (
+                            <option key={`filter-${index}-column-${idx}`}>
+                              {column.field}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          name="operator"
+                          className="rw-input rw-input-small"
+                          defaultValue={operator}
+                        >
+                          <option value="=">=</option>
+                          <option value="!=">!=</option>
+                          <option value=">">&gt;</option>
+                          <option value=">=">&gt;=</option>
+                          <option value="<">&lt;</option>
+                          <option value="<=">&lt;=</option>
+                          <option value="like">like</option>
+                          <option value="ilike">ilike</option>
+                          <option value="in">in</option>
+                          <option value="not_in">not in</option>
+                        </select>
+                        <input
+                          name="value"
+                          className="rw-input rw-input-small"
+                          defaultValue={value}
+                        />
+                        <button
+                          className="rw-button rw-button-small rw-button-red"
+                          onClick={() => {
+                            dispatch({
+                              type: DataActionKind.FILTER,
+                              state: 'remove',
+                              payload: filters[index],
+                            })
+                          }}
+                        >
+                          -
+                        </button>
+                      </div>
+                    ))}
+                    <div className="rw-button-group justify-start">
+                      <SelectField
                         name="column"
                         className="rw-input rw-input-small"
-                        defaultValue={column}
                       >
-                        {columns.map((column, idx) => (
-                          <option key={`filter-${index}-column-${idx}`}>
+                        {columns.map((column, index) => (
+                          <option key={`column-option-${index}`}>
                             {column.field}
                           </option>
                         ))}
-                      </select>
-                      <select
+                      </SelectField>
+                      <SelectField
                         name="operator"
                         className="rw-input rw-input-small"
-                        defaultValue={operator}
                       >
                         <option value="=">=</option>
                         <option value="!=">!=</option>
@@ -308,86 +374,54 @@ const NewTable = ({
                         <option value="ilike">ilike</option>
                         <option value="in">in</option>
                         <option value="not_in">not in</option>
-                      </select>
-                      <input
+                      </SelectField>
+                      <TextField
                         name="value"
                         className="rw-input rw-input-small"
-                        defaultValue={value}
                       />
-                      <button
-                        className="rw-button rw-button-small rw-button-red"
-                        type="button"
-                        onClick={() => {
-                          setFilters(
-                            filters.filter((f, i) => f !== filters[index])
-                          );
-                        }}
-                      >
-                        -
+                      <button className="rw-button rw-button-small rw-button-green">
+                        +
                       </button>
                     </div>
-                  ))}
-                  <div className="rw-button-group justify-start">
-                    <SelectField
-                      name="column"
-                      className="rw-input rw-input-small"
-                    >
-                      {columns.map((column, index) => (
-                        <option key={`column-option-${index}`}>
-                          {column.field}
-                        </option>
-                      ))}
-                    </SelectField>
-                    <SelectField
-                      name="operator"
-                      className="rw-input rw-input-small"
-                    >
-                      <option value="=">=</option>
-                      <option value="!=">!=</option>
-                      <option value=">">&gt;</option>
-                      <option value=">=">&gt;=</option>
-                      <option value="<">&lt;</option>
-                      <option value="<=">&lt;=</option>
-                      <option value="like">like</option>
-                      <option value="ilike">ilike</option>
-                      <option value="in">in</option>
-                      <option value="not_in">not in</option>
-                    </SelectField>
-                    <TextField
-                      name="value"
-                      className="rw-input rw-input-small"
-                    />
-                    <button className="rw-button rw-button-small rw-button-green">
-                      +
-                    </button>
-                  </div>
-                </Form>
+                    <div className="rw-button-group justify-end">
+                      <button className="rw-button rw-button-small rw-button-gray" value="cancel" formMethod="dialog" onClick={() => setIsComponentVisible(false)}>Cancel</button>
+                      <button className="rw-button rw-button-small rw-button-green" id="confirmBtn" formMethod="dialog" onClick={() => setIsComponentVisible(false)}>Confirm</button>
+                    </div>
+                  </Form>
+                </dialog>
               </div>
+              {selectable && (
+                <button className="rw-button rw-button-gray-outline" title="Export" onClick={() => {
+                  const selectedRows = data.filter((row) => row.selected);
+                  navigator.clipboard.writeText(selectedRows.map((row) => {
+                    return Object.entries(row).map(([key, value]) => {
+                      return `${key}: ${value}`
+                    }).join(', ')
+                  }).join(", "));
+                  toast.success("Copied to clipboard");
+                }}>
+                  <span className="sr-only">Export</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="pointer-events-none h-5"
+                    viewBox="0 0 576 512"
+                    fill="currentColor"
+                    stroke="currentColor"
+                  >
+                    <path d="M208 112c-4.094 0-8.188 1.562-11.31 4.688c-6.25 6.25-6.25 16.38 0 22.62l80 80c6.25 6.25 16.38 6.25 22.62 0l80-80c6.25-6.25 6.25-16.38 0-22.62s-16.38-6.25-22.62 0L304 169.4V16C304 7.156 296.8 0 288 0S272 7.156 272 16v153.4L219.3 116.7C216.2 113.6 212.1 112 208 112zM512 0h-144C359.2 0 352 7.162 352 16C352 24.84 359.2 32 368 32H512c17.67 0 32 14.33 32 32v192H32V64c0-17.67 14.33-32 32-32h144C216.8 32 224 24.84 224 16C224 7.162 216.8 0 208 0H64C28.65 0 0 28.65 0 64v288c0 35.35 28.65 64 64 64h149.7l-19.2 64H144C135.2 480 128 487.2 128 496S135.2 512 144 512h288c8.836 0 16-7.164 16-16S440.8 480 432 480h-50.49l-19.2-64H512c35.35 0 64-28.65 64-64V64C576 28.65 547.3 0 512 0zM227.9 480l19.2-64h81.79l19.2 64H227.9zM544 352c0 17.64-14.36 32-32 32H64c-17.64 0-32-14.36-32-32V288h512V352z" />
+                  </svg>
+                </button>
+              )}
             </div>
-            {selectable && (
-              <button className="rw-button rw-button-gray-outline">
-                <span className="sr-only">Export</span>
-                {/* TODO: insert light icon here instead */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 512 512"
-                  className="pointer-events-none h-5"
-                  fill="currentColor"
-                  stroke="currentColor"
-                >
-                  <path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V274.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32zM64 352c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V416c0-35.3-28.7-64-64-64H346.5l-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352H64zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z" />
-                </svg>
-              </button>
-            )}
-          </div>
-        </caption>
-        <thead className="bg-zinc-400 text-sm uppercase text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
-          <tr>
+          </caption>
+        )}
+        <thead className="relative rounded-t-lg">
+          <tr className="bg-zinc-400 text-sm text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300 truncate uppercase" role="rowgroup">
             {selectable && (
               <th className="w-0 px-3 py-2 sm:py-3 sm:px-4" abbr="checkbox">
                 <input
                   type="checkbox"
-                  className="rw-input rw-input-small rw-checkbox"
+                  className="rw-input rw-checkbox"
                   onChange={(e) => {
                     dispatch({
                       type: DataActionKind.SELECT_ALL,
@@ -402,7 +436,8 @@ const NewTable = ({
             {cols.map((column, index) => (
               <th
                 key={index}
-                className="line-clamp-1 table-cell border-b border-zinc-500 px-3 py-3 dark:border-zinc-700 sm:px-6"
+                scope="col"
+                className="line-clamp-1 border-b border-zinc-500 px-3 py-3 dark:border-zinc-700 sm:px-6"
                 align={column.align}
                 aria-sort="none"
                 onClick={(e) => {
@@ -412,8 +447,8 @@ const NewTable = ({
                       payload: {
                         column,
                         direction:
-                          data[0].sorted_on === column.field
-                            ? data[0].sort_direction === "asc"
+                          data.some((r) => r.sorted_on === column.field)
+                            ? data.some((r) => r.sort_direction === "asc")
                               ? "desc"
                               : "asc"
                             : "asc",
@@ -423,14 +458,14 @@ const NewTable = ({
                 }}
               >
                 {column.headerName}
-                <svg
+                {column.sortable && (<svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="ml-1 inline-flex h-3 w-3"
                   fill="currentColor"
                   viewBox="0 0 320 512"
                 >
-                  {data[0].sorted_on === column.field ? (
-                    data[0].sort_direction === "asc" ? (
+                  {data && data.some((r) => r.sorted_on === column.field) ? (
+                    data.some((r) => r.sort_direction === "asc") ? (
                       <path d="M182.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8H288c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z" />
                     ) : (
                       <path d="M182.6 470.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-9.2-9.2-11.9-22.9-6.9-34.9s16.6-19.8 29.6-19.8H288c12.9 0 24.6 7.8 29.6 19.8s2.2 25.7-6.9 34.9l-128 128z" />
@@ -438,19 +473,19 @@ const NewTable = ({
                   ) : (
                     <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z" />
                   )}
-                </svg>
+                </svg>)}
               </th>
             ))}
           </tr>
         </thead>
         <tbody className="divide-y divide-zinc-500 dark:divide-zinc-700">
-          {data.map((row, index) => (
-            <tr key={index} className="bg-zinc-100 dark:bg-zinc-800">
-              {selectable && (
-                <td className="!w-0 px-3 py-2 sm:px-4 sm:py-4">
+          {(data && (pagination ? data.slice(((pagination.page || 1) - 1) * pagination.pageSize, (pagination.page || 1) * pagination.pageSize) : data)).map((row, index) => (
+            <tr key={`row-${index}`} className="bg-zinc-100 dark:bg-zinc-800 w-full">
+              {(selectable && !!selectable) && (
+                <th className="w-0 px-3 py-2 sm:px-4 sm:py-4">
                   <input
                     type="checkbox"
-                    className="rw-input rw-input-small rw-checkbox"
+                    className="rw-input rw-checkbox"
                     name={`select-${index}`}
                     checked={row.selected || false}
                     onChange={(e) => {
@@ -463,27 +498,107 @@ const NewTable = ({
                       });
                     }}
                   />
-                </td>
+                </th>
               )}
-              {columns.map((column, index) => (
+              {cols.map((column, idx) => (
                 <td
-                  key={index}
+                  key={`row-${index}-cell-${idx}`}
                   className="whitespace-nowrap px-3 py-2 sm:py-4 sm:px-6"
                   align={column.align}
                 >
                   {column.valueGetter
                     ? column.valueGetter({
-                        row,
-                        column,
-                        value: row[column.field],
-                        field: column.field,
-                      })
-                    : row[column.field]}
+                      row,
+                      column,
+                      value: row[column.field],
+                      field: column.field,
+                    })
+                    : row[column.field].toString()}
                 </td>
               ))}
             </tr>
           ))}
         </tbody>
+        <tfoot>
+          <tr className="bg-gray-400 font-semibold text-gray-900 dark:bg-zinc-700 dark:text-white">
+            {selectable && <td className="p-4"></td>}
+            {cols.map(
+              (column, index) => {
+                const { field, valueGetter, align, width, type } = column;
+                if (type !== 'number') {
+                  return <th key={`footer-${index}`} className="px-3 py-3 sm:px-6"></th>
+                }
+
+                const sum = (pagination ? data.slice(((pagination.page || 1) - 1) * pagination.pageSize, (pagination.page || 1) * pagination.pageSize).filter((d) =>
+                  selectable && data.filter((d) => d.selected).length > 0 ? d.selected : true
+                ) : data.filter((d) =>
+                  selectable && data.filter((d) => d.selected).length > 0 ? d.selected : true
+                )).reduce((a, b) => {
+                  return (
+                    a +
+                    parseInt(
+                      b[field] || 0
+                    )
+                  )
+                }, 0)
+
+                return (
+                  <th
+                    key={`footer-${index}-${field}`}
+                    align={align}
+                    className={"px-3 py-3 sm:px-6"}
+                  >
+                    {valueGetter ? valueGetter({ row: {}, column, value: sum, field }) : sum}
+                  </th>
+                );
+              }
+            )}
+          </tr>
+          {pagination && (
+            <tr>
+              <td className="p-2 dark:bg-zinc-700 bg-gray-400 w-full rounded-b-lg" colSpan={cols.length + (selectable ? 1 : 0)}>
+                <div className="flex justify-end items-center space-x-2">
+                  <button className="rw-button rw-button-small rw-button-gray !rounded-full" onClick={() => {
+                    dispatch({
+                      type: DataActionKind.SET_PAGE,
+                      payload: {
+                        page: pagination.page ? pagination.page - 1 : 1,
+                        pageSize: pagination.pageSize,
+                      },
+                    });
+                  }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" fill="currentColor" className="h-5">
+                      <path d="M234.8 36.25c3.438 3.141 5.156 7.438 5.156 11.75c0 3.891-1.406 7.781-4.25 10.86L53.77 256l181.1 197.1c6 6.5 5.625 16.64-.9062 22.61c-6.5 6-16.59 5.594-22.59-.8906l-192-208c-5.688-6.156-5.688-15.56 0-21.72l192-208C218.2 30.66 228.3 30.25 234.8 36.25z" />
+                    </svg>
+                  </button>
+                  <button className="rw-button rw-button-small rw-button-gray !rounded-full" onClick={() => {
+                    dispatch({
+                      type: DataActionKind.SET_PAGE,
+                      payload: {
+                        page: pagination.page ? pagination.page + 1 : 1,
+                        pageSize: pagination.pageSize,
+                      },
+                    });
+                  }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" fill="currentColor" className="h-5">
+                      <path d="M85.14 475.8c-3.438-3.141-5.156-7.438-5.156-11.75c0-3.891 1.406-7.781 4.25-10.86l181.1-197.1L84.23 58.86c-6-6.5-5.625-16.64 .9062-22.61c6.5-6 16.59-5.594 22.59 .8906l192 208c5.688 6.156 5.688 15.56 0 21.72l-192 208C101.7 481.3 91.64 481.8 85.14 475.8z" />
+                    </svg>
+                  </button>
+                  <span className="text-sm font-normal text-gray-500 dark:text-gray-400 space-x-1">
+                    <span>Showing</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">
+                      {((pagination.page || 1) * pagination.pageSize - pagination.pageSize) + 1}-{(pagination.page || 1) * pagination.pageSize > rows.length ? rows.length : (pagination.page || 1) * pagination.pageSize}
+                    </span>
+                    <span>of</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">
+                      {rows.length}
+                    </span>
+                  </span>
+                </div>
+              </td>
+            </tr>
+          )}
+        </tfoot>
       </table>
     </>
   );

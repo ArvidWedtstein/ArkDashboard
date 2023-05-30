@@ -1,9 +1,10 @@
-import { Link, RouteAnnouncement, routes } from "@redwoodjs/router";
+import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "src/auth";
 import NewTable from "src/components/Util/NewTable/NewTable";
 import Table from "src/components/Util/Table/Table";
-import type { FindTribes } from "types/graphql";
+import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
+import { Profiler } from 'react'
 const HomePage = () => {
   const { isAuthenticated, currentUser } = useAuth();
   // if (document.addEventListener) {
@@ -66,23 +67,66 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* <Table
+        <Table
           filter={true}
+          summary={true}
+          select={true}
+          rowsPerPage={5}
+          pagination={true}
           rows={[
             {
               name: "test1",
-              description: "test3",
+              description: 36,
               created_by: "Ole",
+              actions: false,
             },
             {
               name: "test2",
-              description: "test3",
+              description: 1,
               created_by: "Per",
+              actions: true,
             },
             {
               name: "test3",
-              description: "test3",
+              description: 45,
               created_by: "Jens",
+              actions: true
+            },
+            {
+              name: "test1",
+              description: 36,
+              created_by: "Ole",
+              actions: false,
+            },
+            {
+              name: "test2",
+              description: 1,
+              created_by: "Per",
+              actions: true,
+            },
+            {
+              name: "test3",
+              description: 45,
+              created_by: "Jens",
+              actions: false,
+            },
+            {
+              name: "test1",
+              description: 36,
+              created_by: "Ole",
+              actions: false,
+            },
+            {
+              name: "test2",
+              description: 1,
+              created_by: "Per",
+              actions: true
+            },
+            {
+              name: "test3",
+              description: 45,
+              created_by: "Peder",
+              actions: false,
             },
           ]}
           columns={[
@@ -95,6 +139,7 @@ const HomePage = () => {
               sortable: true,
               field: "description",
               label: "Description",
+              numeric: true,
             },
             {
               sortable: true,
@@ -104,23 +149,69 @@ const HomePage = () => {
           ]}
         />
 
+
+
         <NewTable
           selectable
+          filterable
+          pagination={{
+            pageSize: 5,
+            pageSizeOptions: [5, 10, 25, 50, 100],
+          }}
           rows={[
             {
               name: "test1",
-              description: "test1",
+              description: 36,
               created_by: "Ole",
+              actions: false,
             },
             {
               name: "test2",
-              description: "test2",
+              description: 1,
               created_by: "Per",
+              actions: true,
             },
             {
               name: "test3",
-              description: "test3",
+              description: 45,
               created_by: "Jens",
+              actions: true
+            },
+            {
+              name: "test1",
+              description: 36,
+              created_by: "Ole",
+              actions: false,
+            },
+            {
+              name: "test2",
+              description: 1,
+              created_by: "Per",
+              actions: true,
+            },
+            {
+              name: "test3",
+              description: 45,
+              created_by: "Jens",
+              actions: false,
+            },
+            {
+              name: "test1",
+              description: 36,
+              created_by: "Ole",
+              actions: false,
+            },
+            {
+              name: "test2",
+              description: 1,
+              created_by: "Per",
+              actions: true
+            },
+            {
+              name: "test3",
+              description: 45,
+              created_by: "Peder",
+              actions: false,
             },
           ]}
           columns={[
@@ -132,6 +223,7 @@ const HomePage = () => {
             {
               field: "description",
               headerName: "Description",
+              type: "number",
               sortable: true,
             },
             {
@@ -140,7 +232,8 @@ const HomePage = () => {
               sortable: true,
             },
           ]}
-        /> */}
+        />
+
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
