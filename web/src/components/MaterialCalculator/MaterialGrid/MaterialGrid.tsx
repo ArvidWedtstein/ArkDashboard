@@ -194,7 +194,6 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
     );
 
     // loadItem({ variables: { item_recipe_id: [itm.recipe_id] } });
-
     setItem({ type: "ADD", item: item });
   };
 
@@ -299,7 +298,7 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
   return (
     <Form
       onSubmit={onAdd}
-      config={{ mode: "onBlur" }}
+      // config={{ mode: "onBlur" }}
       error={error}
       className="flex h-full w-full space-x-3 sm:flex-row"
     >
@@ -601,13 +600,14 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
                 return (
                   <button
                     type="button"
-                    onClick={() => onRemove(rowIndex)}
+                    onClick={() => {
+                      setItem({ type: "REMOVE", index: rowIndex });
+                    }}
                     className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-red-500"
                     title={`Remove ${name}`}
                   >
-                    <ImageField
+                    <img
                       className="h-8 w-8"
-                      name="itemimage"
                       src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
                     />
                   </button>

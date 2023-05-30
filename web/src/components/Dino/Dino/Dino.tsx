@@ -16,7 +16,13 @@ import {
   debounce,
   clamp,
 } from "src/lib/formatters";
-import { useCallback, useMemo, useState, useTransition } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useTransition,
+} from "react";
 
 import type { DeleteDinoMutationVariables, FindDinoById } from "types/graphql";
 import clsx from "clsx";
@@ -403,6 +409,18 @@ const Dino = ({ dino }: Props) => {
   }
   // Calculate stats off offstring
   // Value = (BaseStat × ( 1 + LevelWild × IncreaseWild) + TamingBonusAdd × TamingBonusAddModifier) × (1 + TamingEffectiveness × TamingBonusMult × TamingBonusMultModifier)
+  useEffect(() => {
+    setDinoLevel(100);
+    setDinoXVariant(false);
+    if (!selectedFood)
+      startTransition(() =>
+        setSelectedFood(
+          dino.DinoStat.filter((f) => f.type === "food") &&
+            dino?.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
+        )
+      );
+  }, []);
+
   const calculateDino = (e) => {
     const { level, x_variant } = e;
     if (!level) return null;
@@ -413,7 +431,8 @@ const Dino = ({ dino }: Props) => {
     if (!selectedFood)
       startTransition(() =>
         setSelectedFood(
-          dino.DinoStat.filter((f) => f.type === "food")[0].Item.id
+          dino.DinoStat.filter((f) => f.type === "food") &&
+            dino.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
         )
       );
   };
@@ -433,7 +452,8 @@ const Dino = ({ dino }: Props) => {
       : settings.tamingMultiplier * 4;
     if (!selectedFood)
       setSelectedFood(
-        dino.DinoStat.filter((f) => f.type === "food")[0].Item.id
+        dino.DinoStat.filter((f) => f.type === "food") &&
+          dino.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
       );
 
     return dino.DinoStat.filter(
@@ -863,7 +883,6 @@ const Dino = ({ dino }: Props) => {
     });
   }, [dinoLevel, secondsBetweenHits, dinoXVariant, weaponDamage]);
 
-  console.log(dino.DinoStat.find((f) => f.type === "saddle"));
   return (
     <article className="grid grid-cols-1 gap-3 text-black dark:text-white md:grid-cols-2">
       <section className="col-span-2 grid grid-cols-1 md:grid-cols-2">
@@ -1557,9 +1576,10 @@ const Dino = ({ dino }: Props) => {
               defaultValue={[
                 selectedFood
                   ? selectedFood.toString()
-                  : dino.DinoStat.filter(
+                  : dino?.DinoStat.filter((f) => f.type === "food") &&
+                    dino?.DinoStat.filter(
                       (f) => f.type === "food"
-                    )[0].Item.id.toString(),
+                    )[0]?.Item.id.toString(),
               ]}
               validation={{
                 single: true,
@@ -1751,9 +1771,11 @@ const Dino = ({ dino }: Props) => {
                           )}
                           {weapon.hitboxes.length > 0 && (
                             <span className="rounded bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-500 dark:bg-blue-900 dark:text-blue-300">
-                              {weapon.hitboxes.map(
-                                (h) => `${h.name} - ${h.multiplier}x`
-                              )}
+                              {weapon.hitboxes.map((h) => (
+                                <span
+                                  key={`hitbox-${h.name}`}
+                                >{`${h.name} - ${h.multiplier}x`}</span>
+                              ))}
                             </span>
                           )}
                           <div className="rw-button-group max-w-full">

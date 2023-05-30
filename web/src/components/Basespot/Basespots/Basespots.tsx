@@ -1,4 +1,6 @@
 import { useLazyQuery } from "@apollo/client";
+import { Form, Submit } from "@redwoodjs/forms";
+import { navigate, parseSearch } from "@redwoodjs/router";
 import { Link, routes, useParams } from "@redwoodjs/router";
 import { useMutation, useQuery } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
@@ -14,36 +16,7 @@ import type {
   FindBasespots,
 } from "types/graphql";
 
-const DELETE_BASESPOT_MUTATION = gql`
-  mutation DeleteBasespotMutation($id: BigInt!) {
-    deleteBasespot(id: $id) {
-      id
-    }
-  }
-`;
-
 const BasespotsList = ({ basespotPage }: FindBasespots) => {
-  const [deleteBasespot] = useMutation(DELETE_BASESPOT_MUTATION, {
-    onCompleted: () => {
-      toast.success("Basespot deleted");
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    // This refetches the query on the list page. Read more about other ways to
-    // update the cache over here:
-    // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
-    refetchQueries: [{ query: QUERY }],
-    awaitRefetchQueries: true,
-  });
-
-  const onDeleteClick = (id: DeleteBasespotMutationVariables["id"]) => {
-    if (confirm("Are you sure you want to delete basespot " + id + "?")) {
-      deleteBasespot({ variables: { id } });
-    }
-  };
-
-  let { map } = useParams();
   let basespots = basespotPage.basespots;
 
   // const [loadMaps, { called, loading, error, data }] = useLazyQuery(MAPQUERY, {
@@ -59,6 +32,19 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
   // useEffect(() => {
   //   loadMaps();
   // }, []);
+  let { search, map } = useParams();
+  const onSearch = (e) => {
+    navigate(
+      routes.basespots({
+        ...parseSearch(
+          Object.fromEntries(
+            Object.entries(e).filter(([_, v]) => v != "")
+          ) as any
+        ),
+        page: 1,
+      })
+    );
+  };
 
   const mapImages = {
     theisland:
@@ -96,15 +82,6 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
             "url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg)",
         }}
       >
-        <div className="flex justify-between pb-5">
-          {/* <div className="text-xl font-bold uppercase tracking-[0.4rem] opacity-90">basespots</div> */}
-          <div className="flex items-center text-sm opacity-50">
-            {/* <p><span className="inline-block pb-1" id="sinceData">today</span></p>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" className="w-5 ml-3 fill-current">
-              <path className="d" d="M15,0C6.75,0,0,6.75,0,15s6.75,15,15,15,15-6.75,15-15S23.25,0,15,0Zm7.35,16.65h-7.35c-.83,0-1.5-.67-1.5-1.5V7.8c0-.9,.6-1.5,1.5-1.5s1.5,.6,1.5,1.5v5.85h5.85c.9,0,1.5,.6,1.5,1.5s-.6,1.5-1.5,1.5Z" />
-            </svg> */}
-          </div>
-        </div>
         <div className="pt-12">
           <div className="mb-3 flex items-center space-x-1 opacity-75 [&>span:not(:last-child)]:after:content-[',']">
             <svg
@@ -129,7 +106,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
           </p>
         </div>
       </header>
-      <div className="my-4 flex items-center">
+      <div className="my-4 flex items-center justify-start">
         <Lookup
           options={[
             { label: "Valguero", value: 1 },
@@ -150,18 +127,17 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
           //   value: map.id,
           // }))}
           placeholder="Choose Map"
-          defaultValue={currentMap}
-          onSelect={(e) => setCurrentMap(e.value ? e.value : null)}
+          defaultValue={map}
+          onSelect={(e) => onSearch(e.value ? { map: e.value.toString() } : {})}
         />
-        {/* TODO: add search here */}
       </div>
       <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {basespots
-          .filter((spot) =>
-            currentMap != null
-              ? spot.map.toString() === currentMap.toString()
-              : true
-          )
+          // .filter((spot) =>
+          //   currentMap != null
+          //     ? spot.map.toString() === currentMap.toString()
+          //     : true
+          // )
           .map((basespot, i) => (
             <ArkCard
               key={`${basespot.id}-${i}`}

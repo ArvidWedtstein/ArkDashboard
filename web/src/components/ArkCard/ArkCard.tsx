@@ -83,7 +83,7 @@ const ArkCard = memo<IArkCard>(
                   <h2
                     className={clsx("flex-auto text-lg font-medium", {
                       "text-gray-50": image && typeof image !== "string",
-                      "text-gray-600 dark:text-gray-50": !image,
+                      "text-gray-200 dark:text-gray-50": !image,
                     })}
                   >
                     {title}
@@ -95,7 +95,7 @@ const ArkCard = memo<IArkCard>(
                 {(title || subtitle) && !ring && !button && (
                   <div className="my-2 border-t border-gray-700 p-4 dark:border-gray-300"></div>
                 )}
-                <div className="mt-6 flex flex-1 items-center text-sm text-gray-500 dark:text-gray-200">
+                <div className="mt-6 flex flex-1 items-center text-sm text-gray-200 dark:text-gray-200">
                   {typeof content === "string" ? <p>{content}</p> : content}
                 </div>
                 {(title || subtitle || content) && (ring || button) && (
@@ -103,7 +103,7 @@ const ArkCard = memo<IArkCard>(
                 )}
                 <div className="flex items-center justify-between text-sm font-light">
                   {ring && typeof ring === "string" ? (
-                    <button className="relative flex items-center justify-center space-x-2 rounded-full bg-stone-300 px-4 py-2.5 text-gray-700 shadow-sm ring-1 ring-green-500 dark:bg-zinc-600 dark:text-gray-100">
+                    <button className="relative flex items-center justify-center space-x-2 rounded-full bg-stone-300 px-4 py-2.5 text-gray-300 shadow-sm ring-1 ring-green-500 dark:bg-zinc-600 dark:text-gray-100">
                       <span>{ring}</span>
                       <i className="fa-solid fa-circle my-auto ml-2 animate-pulse text-green-500"></i>
                     </button>

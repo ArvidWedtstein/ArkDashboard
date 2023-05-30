@@ -768,7 +768,7 @@ const Table = ({
                 return (
                   <tr
                     key={`row-${i}`}
-                    className={clsx("relative", {
+                    className={clsx({
                       "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
                     })}
                     onClick={() => onRowClick && onRowClick({ index: i })}

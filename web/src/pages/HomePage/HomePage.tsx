@@ -4,7 +4,7 @@ import { useAuth } from "src/auth";
 import NewTable from "src/components/Util/NewTable/NewTable";
 import Table from "src/components/Util/Table/Table";
 import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
-import { Profiler } from 'react'
+import { Profiler } from "react";
 const HomePage = () => {
   const { isAuthenticated, currentUser } = useAuth();
   // if (document.addEventListener) {
@@ -90,7 +90,7 @@ const HomePage = () => {
               name: "test3",
               description: 45,
               created_by: "Jens",
-              actions: true
+              actions: true,
             },
             {
               name: "test1",
@@ -120,7 +120,7 @@ const HomePage = () => {
               name: "test2",
               description: 1,
               created_by: "Per",
-              actions: true
+              actions: true,
             },
             {
               name: "test3",
@@ -149,12 +149,11 @@ const HomePage = () => {
           ]}
         />
 
-
-
         <NewTable
           selectable
           filterable
           pagination={{
+            page: 1,
             pageSize: 5,
             pageSizeOptions: [5, 10, 25, 50, 100],
           }}
@@ -175,7 +174,7 @@ const HomePage = () => {
               name: "test3",
               description: 45,
               created_by: "Jens",
-              actions: true
+              actions: true,
             },
             {
               name: "test1",
@@ -205,7 +204,7 @@ const HomePage = () => {
               name: "test2",
               description: 1,
               created_by: "Per",
-              actions: true
+              actions: true,
             },
             {
               name: "test3",

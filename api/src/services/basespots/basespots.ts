@@ -10,8 +10,10 @@ import { requireAuth } from "src/lib/auth";
 const POSTS_PER_PAGE = 6;
 export const basespotPage: QueryResolvers["basespotPage"] = ({
   page,
+  map,
 }: {
   page: number;
+  map?: number;
 }) => {
   const offset = (page - 1) * POSTS_PER_PAGE;
   return {
@@ -19,8 +21,11 @@ export const basespotPage: QueryResolvers["basespotPage"] = ({
       take: POSTS_PER_PAGE,
       skip: offset,
       orderBy: { created_at: "desc" },
+      where: map ? { map: map } : {},
     }),
-    count: db.basespot.count(),
+    count: db.basespot.count({
+      where: map ? { map: map } : {},
+    }),
   };
 };
 

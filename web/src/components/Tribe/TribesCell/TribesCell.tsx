@@ -17,6 +17,7 @@ export const QUERY = gql`
       created_by
       updated_by
       Profile {
+        id
         full_name
         avatar_url
       }
@@ -60,7 +61,6 @@ export const Failure = ({ error }: CellFailureProps) => (
       </div>
     </div>
   </section>
-
 );
 
 export const Success = ({ tribes }: CellSuccessProps<FindTribes>) => {

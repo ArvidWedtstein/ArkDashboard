@@ -92,7 +92,6 @@ const DinosList = ({ dinosPage }: FindDinos) => {
               defaultValue={category}
               validation={{
                 required: false,
-                shouldUnregister: true,
                 validate: {
                   matchesInitialValue: (value) => {
                     return value !== "Choose a category" || "Select an Option";
@@ -116,9 +115,6 @@ const DinosList = ({ dinosPage }: FindDinos) => {
               className="rw-input mt-0 !w-full"
               placeholder="Search..."
               defaultValue={search}
-              validation={{
-                shouldUnregister: true,
-              }}
             />
             <Submit className="rw-button rw-button-gray rounded-l-none">
               Search
@@ -136,7 +132,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
           >
             <div className="flex h-full w-full flex-col items-start justify-between justify-items-stretch">
               <div className="relative mb-3 h-32 w-32 rounded-full border bg-gradient-to-br from-zinc-700 to-zinc-700">
-                <ImageContainer
+                {/* <ImageContainer
                   loading="lazy"
                   defaultsrc="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/any-hat.png"
                   className="h-auto max-h-full"
@@ -153,19 +149,19 @@ const DinosList = ({ dinosPage }: FindDinos) => {
                   // sizes="1rem"
                   // src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/render/image/public/arkimages/dodo.png?width=500&quality=75`}
                   // onLoad={() => console.log(`loaded ${dino.name}`)}
+                /> */}
+                <img
+                  className="h-auto max-h-full"
+                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
+                  onError={(e) => {
+                    e.currentTarget.src = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/any-hat.png`;
+                    // e.currentTarget.parentElement.hidden = true;
+                    e.currentTarget.parentElement.parentElement.classList.replace(
+                      "justify-between",
+                      "justify-end"
+                    );
+                  }}
                 />
-                {/* <img
-                    className="h-auto max-h-full"
-                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
-                    onError={(e) => {
-                      e.currentTarget.parentElement.hidden = true;
-                      e.currentTarget.parentElement.parentElement.classList.replace(
-                        "justify-between",
-                        "justify-end"
-                      );
-                    }}
-
-                  /> */}
               </div>
               <p className="tracking-wide subpixel-antialiased">{dino.name}</p>
             </div>
