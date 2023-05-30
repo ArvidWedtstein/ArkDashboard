@@ -445,15 +445,27 @@ const NewTable = ({
                       data.rows.filter((row) => row.selected).length === 0
                     }
                     onClick={() => {
-                      const selectedRows = data.rows.filter(
-                        (row) => row.selected
-                      );
                       navigator.clipboard.writeText(
-                        selectedRows
+                        data.rows
+                          .filter((row) => row.selected)
                           .map((row) => {
                             return Object.entries(row)
                               .map(([key, value]) => {
-                                return `${key}: ${value}`;
+                                if (cols.some((col) => col.field === key)) {
+                                  const col = cols.find(
+                                    (col) => col.field === key
+                                  );
+                                  return `${key}: ${
+                                    col.valueGetter
+                                      ? col.valueGetter({
+                                          row,
+                                          column: col,
+                                          value,
+                                          field: key,
+                                        })
+                                      : value
+                                  }`;
+                                }
                               })
                               .join(", ");
                           })
