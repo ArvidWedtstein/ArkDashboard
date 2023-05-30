@@ -710,6 +710,7 @@ const NewTable = ({
                           });
                         }, 500)();
                       }}
+                      defaultValue={pagination.pageSize}
                     >
                       {pagination.pageSizeOptions?.map((option) => (
                         <option>{option}</option>
@@ -750,27 +751,25 @@ const NewTable = ({
                       {Array.from(
                         Array(Math.ceil(data.rows.length / data.pageSize))
                       ).map((i, idx) => (
-                        <>
-                          <button
-                            key={`table-pagination-button-${idx}`}
-                            id={`table-pagination-button-${idx}`}
-                            className={clsx({
-                              "rw-pagination-item": data.page !== idx + 1,
-                              "rw-pagination-item-active": data.page == idx + 1,
-                            })}
-                            onClick={() => {
-                              dispatch({
-                                type: DataActionKind.SET_PAGE,
-                                payload: {
-                                  page: idx + 1,
-                                  pageSize: data.pageSize,
-                                },
-                              });
-                            }}
-                          >
-                            {idx + 1}
-                          </button>
-                        </>
+                        <button
+                          key={`table-pagination-button-${idx}`}
+                          id={`table-pagination-button-${idx}`}
+                          className={clsx({
+                            "rw-pagination-item": data.page !== idx + 1,
+                            "rw-pagination-item-active": data.page == idx + 1,
+                          })}
+                          onClick={() => {
+                            dispatch({
+                              type: DataActionKind.SET_PAGE,
+                              payload: {
+                                page: idx + 1,
+                                pageSize: data.pageSize,
+                              },
+                            });
+                          }}
+                        >
+                          {idx + 1}
+                        </button>
                       ))}
                       <button
                         className="rw-pagination-item"
