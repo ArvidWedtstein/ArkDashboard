@@ -6,10 +6,10 @@ import type {
 
 import { db } from "src/lib/db";
 import { validate, validateUniqueness } from "@redwoodjs/api";
-import { hasPermission } from "src/lib/auth";
-
 export const tribes: QueryResolvers["tribes"] = () => {
-  return db.tribe.findMany();
+  return db.tribe.findMany({
+    orderBy: { created_at: "desc" },
+  });
 };
 
 export const tribe: QueryResolvers["tribe"] = ({ id }) => {

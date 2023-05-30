@@ -6,8 +6,16 @@ import {
   useForm,
 } from "@redwoodjs/forms";
 import { toast } from "@redwoodjs/web/dist/toast";
+import { GenericTable } from "@supabase/supabase-js/dist/module/lib/types";
 import clsx from "clsx";
-import { ReactElement, useEffect, useMemo, useReducer, useState } from "react";
+import {
+  ReactElement,
+  TableHTMLAttributes,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
 import useComponentVisible from "src/components/useComponentVisible";
 
 interface GridRowData {
@@ -24,19 +32,19 @@ interface GridValueGetterParams {
   value: any;
   field: string;
 }
-interface Row {
-  id: string;
-  [key: string]: any;
-  variant?:
-    | "dark"
-    | "light"
-    | "warning"
-    | "danger"
-    | "success"
-    | "secondary"
-    | "primary"
-    | "default";
-}
+// interface Row {
+//   id: string;
+//   [key: string]: any;
+//   variant?:
+//     | "dark"
+//     | "light"
+//     | "warning"
+//     | "danger"
+//     | "success"
+//     | "secondary"
+//     | "primary"
+//     | "default";
+// }
 interface Column {
   field: string;
   headerName?: string;
@@ -49,13 +57,13 @@ interface Column {
   sortable?: boolean;
   valueGetter?: (params: GridValueGetterParams) => any;
 }
-interface GridCellParams {
-  value: any;
-  field: string;
-  row: Row;
-  column: Column;
-  selected: boolean;
-}
+// interface GridCellParams {
+//   value: any;
+//   field: string;
+//   row: Row;
+//   column: Column;
+//   selected: boolean;
+// }
 interface ITableProps {
   rows: GridRowData[];
   columns: Column[];
@@ -72,6 +80,7 @@ interface ITableProps {
     page?: number;
   };
   header?: ReactElement | string;
+  className?: React.HTMLAttributes<GenericTable> | string;
   /**
    * Callback function that is fired when a row is selected
    */
@@ -99,6 +108,7 @@ const NewTable = ({
   header,
   pagination,
   summary,
+  className,
 }: ITableProps) => {
   const cols = useMemo(() => {
     return columns;
@@ -230,7 +240,6 @@ const NewTable = ({
           return {
             ...state,
             rows: state.rows.map((row, i) => {
-              console.log(row);
               if (row.id === payload.row.id) {
                 return { ...row, selected: payload.checked };
               }
@@ -250,11 +259,6 @@ const NewTable = ({
           if (!pagination) {
             return state;
           }
-          console.log({
-            ...state,
-            page: payload.page,
-            pageSize: payload.pageSize,
-          });
           return {
             ...state,
             page: payload.page,
@@ -272,16 +276,16 @@ const NewTable = ({
     }
   );
 
-  useEffect(() => {
-    // data = rows.map((row, i) => ({
-    //   ...row,
-    //   id: `row-${i}`,
-    //   selected: false,
-    //   sorted_on: "",
-    //   sort_direction: "",
-    // }));
-    return;
-  }, [rows]);
+  // useEffect(() => {
+  //   // data = rows.map((row, i) => ({
+  //   //   ...row,
+  //   //   id: `row-${i}`,
+  //   //   selected: false,
+  //   //   sorted_on: "",
+  //   //   sort_direction: "",
+  //   // }));
+  //   return;
+  // }, [rows]);
 
   const formMethods = useForm();
   const { isComponentVisible, setIsComponentVisible, ref } =
@@ -289,7 +293,7 @@ const NewTable = ({
 
   return (
     <>
-      <div className="relative overflow-x-auto">
+      <div className={clsx("relative overflow-x-auto", className)}>
         <table className="mr-auto w-full table-auto text-left text-sm text-gray-700 dark:text-stone-300">
           {(filterable || selectable) && (
             <caption className="table-caption h-fit py-3 text-left text-lg font-semibold">
@@ -427,6 +431,7 @@ const NewTable = ({
                           className="rw-button rw-button-small rw-button-gray"
                           value="cancel"
                           formMethod="dialog"
+                          type="button"
                           onClick={() => setIsComponentVisible(false)}
                         >
                           Cancel
@@ -435,6 +440,7 @@ const NewTable = ({
                           className="rw-button rw-button-small rw-button-green"
                           id="confirmBtn"
                           formMethod="dialog"
+                          type="button"
                           onClick={() => setIsComponentVisible(false)}
                         >
                           Confirm
@@ -480,7 +486,7 @@ const NewTable = ({
               </div>
             </caption>
           )}
-          <thead className="!rounded-t-lg bg-zinc-400 text-xs uppercase text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300">
+          <thead className="!rounded-t-lg bg-zinc-400 text-xs uppercase text-zinc-700 dark:bg-zinc-700  dark:text-zinc-300">
             <tr>
               {selectable && (
                 <th
@@ -562,7 +568,7 @@ const NewTable = ({
                   )
                 : data.rows)
             ).map((row, index) => (
-              <tr key={`row-${index}`}>
+              <tr key={`row-${index}`} className="animate-fade-in">
                 {selectable && !!selectable && (
                   <td
                     className={clsx("w-4 p-2 sm:p-4", {
@@ -611,6 +617,18 @@ const NewTable = ({
                           ).length -
                             1 &&
                         !summary,
+                      "rounded-bl-lg":
+                        idx === 0 &&
+                        index ===
+                          (pagination
+                            ? data.rows.slice(
+                                (data.page - 1) * data.pageSize,
+                                data.page * data.pageSize
+                              )
+                            : data.rows
+                          ).length -
+                            1 &&
+                        !summary,
                     })}
                     align={column.align}
                     scope="row"
@@ -622,7 +640,7 @@ const NewTable = ({
                           value: row[column.field],
                           field: column.field,
                         })
-                      : row[column.field].toString()}
+                      : row[column.field]}
                   </td>
                 ))}
               </tr>
@@ -688,13 +706,13 @@ const NewTable = ({
                     <nav aria-label="Page navigation">
                       <div className="rw-button-group m-0 leading-tight">
                         <button
-                          className="rounded-l-lg border border-gray-300 bg-zinc-400 px-3 py-2 text-gray-500 hover:bg-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-600 dark:hover:text-white"
+                          className="rw-pagination-item"
                           onClick={() => {
                             dispatch({
                               type: DataActionKind.SET_PAGE,
                               payload: {
-                                page: pagination.page ? pagination.page - 1 : 1,
-                                pageSize: pagination.pageSize,
+                                page: data.page > 1 ? data.page - 1 : 1,
+                                pageSize: data.pageSize,
                               },
                             });
                           }}
@@ -708,31 +726,52 @@ const NewTable = ({
                             xmlns="http://www.w3.org/2000/svg"
                           >
                             <path
-                              fill-rule="evenodd"
+                              fillRule="evenodd"
                               d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                              clip-rule="evenodd"
+                              clipRule="evenodd"
                             ></path>
                           </svg>
                         </button>
-                        <button
-                          className={clsx({
-                            "rw-pagination-item": pagination.page === 1,
-                          })}
-                        >
-                          1
-                        </button>
-                        <button className="rw-pagination-item">2</button>
-                        <button className="rw-pagination-item">3</button>
-                        <button className="rw-pagination-item">4</button>
-                        <button className="rw-pagination-item">5</button>
+                        {Array.from(
+                          Array(Math.ceil(data.rows.length / data.pageSize))
+                        ).map((i, idx) => (
+                          <>
+                            <button
+                              key={`table-pagination-button-${idx}`}
+                              id={`table-pagination-button-${idx}`}
+                              className={clsx({
+                                "rw-pagination-item": data.page !== idx + 1,
+                                "rw-pagination-item-active":
+                                  data.page == idx + 1,
+                              })}
+                              onClick={() => {
+                                dispatch({
+                                  type: DataActionKind.SET_PAGE,
+                                  payload: {
+                                    page: idx + 1,
+                                    pageSize: data.pageSize,
+                                  },
+                                });
+                              }}
+                            >
+                              {idx + 1}
+                            </button>
+                          </>
+                        ))}
                         <button
                           className="rw-pagination-item"
                           onClick={() => {
                             dispatch({
                               type: DataActionKind.SET_PAGE,
                               payload: {
-                                page: pagination.page ? pagination.page + 1 : 1,
-                                pageSize: pagination.pageSize,
+                                page:
+                                  data.page <
+                                  Math.ceil(data.rows.length / data.pageSize)
+                                    ? data.page + 1
+                                    : Math.ceil(
+                                        data.rows.length / data.pageSize
+                                      ),
+                                pageSize: data.pageSize,
                               },
                             });
                           }}
@@ -748,65 +787,19 @@ const NewTable = ({
                             <path
                               fill-rule="evenodd"
                               d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                              clip-rule="evenodd"
+                              clipRule="evenodd"
                             ></path>
                           </svg>
                         </button>
                       </div>
                     </nav>
-                    {/* <button
-                      className="rw-button rw-button-small rw-button-gray !rounded-full"
-                      onClick={() => {
-                        dispatch({
-                          type: DataActionKind.SET_PAGE,
-                          payload: {
-                            page: pagination.page ? pagination.page - 1 : 1,
-                            pageSize: pagination.pageSize,
-                          },
-                        });
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 320 512"
-                        fill="currentColor"
-                        className="h-5"
-                      >
-                        <path d="M234.8 36.25c3.438 3.141 5.156 7.438 5.156 11.75c0 3.891-1.406 7.781-4.25 10.86L53.77 256l181.1 197.1c6 6.5 5.625 16.64-.9062 22.61c-6.5 6-16.59 5.594-22.59-.8906l-192-208c-5.688-6.156-5.688-15.56 0-21.72l192-208C218.2 30.66 228.3 30.25 234.8 36.25z" />
-                      </svg>
-                    </button>
-                    <button
-                      className="rw-button rw-button-small rw-button-gray !rounded-full"
-                      onClick={() => {
-                        dispatch({
-                          type: DataActionKind.SET_PAGE,
-                          payload: {
-                            page: pagination.page ? pagination.page + 1 : 1,
-                            pageSize: pagination.pageSize,
-                          },
-                        });
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 320 512"
-                        fill="currentColor"
-                        className="h-5"
-                      >
-                        <path d="M85.14 475.8c-3.438-3.141-5.156-7.438-5.156-11.75c0-3.891 1.406-7.781 4.25-10.86l181.1-197.1L84.23 58.86c-6-6.5-5.625-16.64 .9062-22.61c6.5-6 16.59-5.594 22.59 .8906l192 208c5.688 6.156 5.688 15.56 0 21.72l-192 208C101.7 481.3 91.64 481.8 85.14 475.8z" />
-                      </svg>
-                    </button> */}
                     <span className="space-x-1 text-sm font-normal text-gray-500 dark:text-gray-400">
                       <span>Showing</span>
                       <span className="font-semibold text-gray-900 dark:text-white">
-                        {(pagination.page || 1) * pagination.pageSize -
-                          pagination.pageSize +
-                          1}
-                        -
-                        {(pagination.page || 1) * pagination.pageSize >
-                        rows.length
+                        {(data.page || 1) * data.pageSize - data.pageSize + 1}-
+                        {(data.page || 1) * data.pageSize > rows.length
                           ? rows.length
-                          : (pagination.page || 1) * pagination.pageSize}
+                          : (data.page || 1) * data.pageSize}
                       </span>
                       <span>of</span>
                       <span className="font-semibold text-gray-900 dark:text-white">
