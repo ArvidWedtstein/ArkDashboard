@@ -1,21 +1,8 @@
-import {
-  ButtonField,
-  Form,
-  SelectField,
-  TextField,
-  useForm,
-} from "@redwoodjs/forms";
+import { Form, SelectField, TextField, useForm } from "@redwoodjs/forms";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { GenericTable } from "@supabase/supabase-js/dist/module/lib/types";
 import clsx from "clsx";
-import {
-  ReactElement,
-  TableHTMLAttributes,
-  useEffect,
-  useMemo,
-  useReducer,
-  useState,
-} from "react";
+import { ReactElement, useMemo, useReducer, useState } from "react";
 import useComponentVisible from "src/components/useComponentVisible";
 
 interface GridRowData {
@@ -240,7 +227,7 @@ const NewTable = ({
           return {
             ...state,
             rows: state.rows.map((row, i) => {
-              if (row.id === payload.row.id) {
+              if (row.tableId === payload.row.tableId) {
                 return { ...row, selected: payload.checked };
               }
               return row;
@@ -251,7 +238,7 @@ const NewTable = ({
           return {
             ...state,
             rows: state.rows.map((row) => {
-              return { ...row, selected: payload.checked };
+              return { ...row, selected: payload.checked || false };
             }),
           };
         }
@@ -453,6 +440,9 @@ const NewTable = ({
                   <button
                     className="rw-button rw-button-gray-outline"
                     title="Export"
+                    disabled={
+                      data.rows.filter((row) => row.selected).length === 0
+                    }
                     onClick={() => {
                       const selectedRows = data.rows.filter(
                         (row) => row.selected
@@ -593,7 +583,7 @@ const NewTable = ({
                         dispatch({
                           type: DataActionKind.SELECT,
                           payload: {
-                            row: { ...row, id: row.tableId },
+                            row: { ...row, tableId: row.tableId },
                             checked: e.target.checked,
                           },
                         });
@@ -628,7 +618,8 @@ const NewTable = ({
                             : data.rows
                           ).length -
                             1 &&
-                        !summary,
+                        !summary &&
+                        !selectable,
                     })}
                     align={column.align}
                     scope="row"

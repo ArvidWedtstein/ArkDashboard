@@ -111,6 +111,7 @@ const TribesList = ({ tribes }: FindTribes) => {
       </div>
 
       <NewTable
+        selectable
         className="px-4"
         pagination={{
           page: 1,
@@ -233,6 +234,8 @@ const TribesList = ({ tribes }: FindTribes) => {
       <Table
         className="m-4"
         filter={true}
+        select={true}
+        search={true}
         columns={[
           {
             field: "name",
