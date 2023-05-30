@@ -4,6 +4,7 @@ import { GenericTable } from "@supabase/supabase-js/dist/module/lib/types";
 import clsx from "clsx";
 import { ReactElement, useMemo, useReducer, useState } from "react";
 import useComponentVisible from "src/components/useComponentVisible";
+import { debounce } from "src/lib/formatters";
 
 interface GridRowData {
   [key: string]: any;
@@ -694,95 +695,114 @@ const NewTable = ({
                 {selectable && <td></td>}
                 <td className="w-full p-2" colSpan={cols.length}>
                   <div className="flex items-center justify-end space-x-2">
-                    <nav aria-label="Page navigation">
-                      <div className="rw-button-group m-0 leading-tight">
-                        <button
-                          className="rw-pagination-item"
-                          onClick={() => {
-                            dispatch({
-                              type: DataActionKind.SET_PAGE,
-                              payload: {
-                                page: data.page > 1 ? data.page - 1 : 1,
-                                pageSize: data.pageSize,
-                              },
-                            });
-                          }}
+                    {/* TODO: add rows per page dropdown/select */}
+                    Rows per page &nbsp;
+                    <select
+                      className="rw-input rw-input-small"
+                      onChange={(e) => {
+                        debounce(() => {
+                          dispatch({
+                            type: DataActionKind.SET_PAGE,
+                            payload: {
+                              page: 1,
+                              pageSize: parseInt(e.target.value),
+                            },
+                          });
+                        }, 500)();
+                      }}
+                    >
+                      {pagination.pageSizeOptions?.map((option) => (
+                        <option>{option}</option>
+                      ))}
+                    </select>
+                    <nav
+                      className="rw-button-group m-0 leading-tight"
+                      aria-label="Page navigation"
+                    >
+                      <button
+                        className="rw-pagination-item"
+                        onClick={() => {
+                          dispatch({
+                            type: DataActionKind.SET_PAGE,
+                            payload: {
+                              page: data.page > 1 ? data.page - 1 : 1,
+                              pageSize: data.pageSize,
+                            },
+                          });
+                        }}
+                      >
+                        <span className="sr-only">Previous</span>
+                        <svg
+                          aria-hidden="true"
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
                         >
-                          <span className="sr-only">Previous</span>
-                          <svg
-                            aria-hidden="true"
-                            className="h-5 w-5"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
+                          <path
+                            fillRule="evenodd"
+                            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          ></path>
+                        </svg>
+                      </button>
+                      {/* TODO: limit pages */}
+                      {Array.from(
+                        Array(Math.ceil(data.rows.length / data.pageSize))
+                      ).map((i, idx) => (
+                        <>
+                          <button
+                            key={`table-pagination-button-${idx}`}
+                            id={`table-pagination-button-${idx}`}
+                            className={clsx({
+                              "rw-pagination-item": data.page !== idx + 1,
+                              "rw-pagination-item-active": data.page == idx + 1,
+                            })}
+                            onClick={() => {
+                              dispatch({
+                                type: DataActionKind.SET_PAGE,
+                                payload: {
+                                  page: idx + 1,
+                                  pageSize: data.pageSize,
+                                },
+                              });
+                            }}
                           >
-                            <path
-                              fillRule="evenodd"
-                              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            ></path>
-                          </svg>
-                        </button>
-                        {Array.from(
-                          Array(Math.ceil(data.rows.length / data.pageSize))
-                        ).map((i, idx) => (
-                          <>
-                            <button
-                              key={`table-pagination-button-${idx}`}
-                              id={`table-pagination-button-${idx}`}
-                              className={clsx({
-                                "rw-pagination-item": data.page !== idx + 1,
-                                "rw-pagination-item-active":
-                                  data.page == idx + 1,
-                              })}
-                              onClick={() => {
-                                dispatch({
-                                  type: DataActionKind.SET_PAGE,
-                                  payload: {
-                                    page: idx + 1,
-                                    pageSize: data.pageSize,
-                                  },
-                                });
-                              }}
-                            >
-                              {idx + 1}
-                            </button>
-                          </>
-                        ))}
-                        <button
-                          className="rw-pagination-item"
-                          onClick={() => {
-                            dispatch({
-                              type: DataActionKind.SET_PAGE,
-                              payload: {
-                                page:
-                                  data.page <
-                                  Math.ceil(data.rows.length / data.pageSize)
-                                    ? data.page + 1
-                                    : Math.ceil(
-                                        data.rows.length / data.pageSize
-                                      ),
-                                pageSize: data.pageSize,
-                              },
-                            });
-                          }}
+                            {idx + 1}
+                          </button>
+                        </>
+                      ))}
+                      <button
+                        className="rw-pagination-item"
+                        onClick={() => {
+                          dispatch({
+                            type: DataActionKind.SET_PAGE,
+                            payload: {
+                              page:
+                                data.page <
+                                Math.ceil(data.rows.length / data.pageSize)
+                                  ? data.page + 1
+                                  : Math.ceil(data.rows.length / data.pageSize),
+                              pageSize: data.pageSize,
+                            },
+                          });
+                        }}
+                      >
+                        <span className="sr-only">Next</span>
+                        <svg
+                          aria-hidden="true"
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
                         >
-                          <span className="sr-only">Next</span>
-                          <svg
-                            aria-hidden="true"
-                            className="h-5 w-5"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                              clipRule="evenodd"
-                            ></path>
-                          </svg>
-                        </button>
-                      </div>
+                          <path
+                            fill-rule="evenodd"
+                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                            clipRule="evenodd"
+                          ></path>
+                        </svg>
+                      </button>
                     </nav>
                     <span className="space-x-1 text-sm font-normal text-gray-500 dark:text-gray-400">
                       <span>Showing</span>
