@@ -4,7 +4,8 @@ import { useAuth } from "src/auth";
 import NewTable from "src/components/Util/NewTable/NewTable";
 import Table from "src/components/Util/Table/Table";
 import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
-import { Profiler } from "react";
+import { Profiler, useState } from "react";
+import { debounce } from "src/lib/formatters";
 const HomePage = () => {
   const { isAuthenticated, currentUser } = useAuth();
   // if (document.addEventListener) {
@@ -22,6 +23,8 @@ const HomePage = () => {
   //     subscription.unsubscribe()
   //   }
   // }, [supabase])
+
+  const [tblInput, setTblInput] = useState([])
 
   return (
     <>
@@ -71,64 +74,9 @@ const HomePage = () => {
           filter={true}
           summary={true}
           select={true}
-          rowsPerPage={5}
+          rowsPerPage={10}
           pagination={true}
-          rows={[
-            {
-              name: "test1",
-              description: 36,
-              created_by: "Ole",
-              actions: false,
-            },
-            {
-              name: "test2",
-              description: 1,
-              created_by: "Per",
-              actions: true,
-            },
-            {
-              name: "test3",
-              description: 45,
-              created_by: "Jens",
-              actions: true,
-            },
-            {
-              name: "test1",
-              description: 36,
-              created_by: "Ole",
-              actions: false,
-            },
-            {
-              name: "test2",
-              description: 1,
-              created_by: "Per",
-              actions: true,
-            },
-            {
-              name: "test3",
-              description: 45,
-              created_by: "Jens",
-              actions: false,
-            },
-            {
-              name: "test1",
-              description: 36,
-              created_by: "Ole",
-              actions: false,
-            },
-            {
-              name: "test2",
-              description: 1,
-              created_by: "Per",
-              actions: true,
-            },
-            {
-              name: "test3",
-              description: 45,
-              created_by: "Peder",
-              actions: false,
-            },
-          ]}
+          rows={tblInput}
           columns={[
             {
               sortable: true,
@@ -154,65 +102,10 @@ const HomePage = () => {
           filterable
           pagination={{
             page: 1,
-            pageSize: 5,
-            pageSizeOptions: [5, 10, 25, 50, 100],
+            pageSize: 10,
+            pageSizeOptions: [5, 10, 25],
           }}
-          rows={[
-            {
-              name: "test1",
-              description: 36,
-              created_by: "Ole",
-              actions: false,
-            },
-            {
-              name: "test2",
-              description: 1,
-              created_by: "Per",
-              actions: true,
-            },
-            {
-              name: "test3",
-              description: 45,
-              created_by: "Jens",
-              actions: true,
-            },
-            {
-              name: "test1",
-              description: 36,
-              created_by: "Ole",
-              actions: false,
-            },
-            {
-              name: "test2",
-              description: 1,
-              created_by: "Per",
-              actions: true,
-            },
-            {
-              name: "test3",
-              description: 45,
-              created_by: "Jens",
-              actions: false,
-            },
-            {
-              name: "test1",
-              description: 36,
-              created_by: "Ole",
-              actions: false,
-            },
-            {
-              name: "test2",
-              description: 1,
-              created_by: "Per",
-              actions: true,
-            },
-            {
-              name: "test3",
-              description: 45,
-              created_by: "Peder",
-              actions: false,
-            },
-          ]}
+          rows={tblInput}
           columns={[
             {
               field: "name",
@@ -233,10 +126,66 @@ const HomePage = () => {
           ]}
         />
 
+        <textarea className="rw-input" rows={30} defaultValue={JSON.stringify([
+          {
+            name: "test1",
+            description: 36,
+            created_by: "Ole",
+          },
+          {
+            name: "test2",
+            description: 1,
+            created_by: "Per",
+          },
+          {
+            name: "test3",
+            description: 45,
+            created_by: "Jens",
+          },
+          {
+            name: "test1",
+            description: 36,
+            created_by: "Ole",
+          },
+          {
+            name: "test2",
+            description: 1,
+            created_by: "Per",
+          },
+          {
+            name: "test3",
+            description: 45,
+            created_by: "Jens",
+          },
+          {
+            name: "test1",
+            description: 36,
+            created_by: "Ole",
+          },
+          {
+            name: "test2",
+            description: 1,
+            created_by: "Per",
+          },
+          {
+            name: "test3",
+            description: 45,
+            created_by: "Peder",
+          },
+        ])}
+          onInput={(event) => {
+            debounce(() => {
+              setTblInput(JSON.parse(event.target.value))
+            }, 300)()
+          }}
+        >
+
+        </textarea>
+
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
-      </div>
+      </div >
     </>
   );
 };

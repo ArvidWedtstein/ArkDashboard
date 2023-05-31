@@ -2,7 +2,7 @@ import { Form, SelectField, TextField, useForm } from "@redwoodjs/forms";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { GenericTable } from "@supabase/supabase-js/dist/module/lib/types";
 import clsx from "clsx";
-import { ReactElement, useMemo, useReducer, useState } from "react";
+import { ReactElement, memo, useEffect, useMemo, useReducer, useState } from "react";
 import useComponentVisible from "src/components/useComponentVisible";
 import { debounce } from "src/lib/formatters";
 
@@ -20,19 +20,7 @@ interface GridValueGetterParams {
   value: any;
   field: string;
 }
-// interface Row {
-//   id: string;
-//   [key: string]: any;
-//   variant?:
-//     | "dark"
-//     | "light"
-//     | "warning"
-//     | "danger"
-//     | "success"
-//     | "secondary"
-//     | "primary"
-//     | "default";
-// }
+
 interface Column {
   field: string;
   headerName?: string;
@@ -45,13 +33,7 @@ interface Column {
   sortable?: boolean;
   valueGetter?: (params: GridValueGetterParams) => any;
 }
-// interface GridCellParams {
-//   value: any;
-//   field: string;
-//   row: Row;
-//   column: Column;
-//   selected: boolean;
-// }
+
 interface ITableProps {
   rows: GridRowData[];
   columns: Column[];
@@ -64,7 +46,21 @@ interface ITableProps {
      * The total number of rows displayed per page
      */
     pageSize?: number;
+    /**
+     * The Options for rows displayed per page
+     */
     pageSizeOptions?: number[];
+    /**
+     * The current page number
+     * @default 1
+     * @type number
+     * @example
+     * ```jsx
+     * <NewTable pagination={{ page: 1 }} />
+     * ```
+     *
+     *
+      */
     page?: number;
   };
   header?: ReactElement | string;
@@ -82,9 +78,6 @@ interface ITableProps {
  * @example Displaying a validation error message with `<FieldError>`
 
  * ```jsx
- * <form onSubmit={handleSubmit(onSubmit)}>
- *   <input {...register("firstName", { required: true })} />
- *   {errors.firstName?.type === 'required' && "First name is required"}
  * ```
  */
 const NewTable = ({
@@ -101,7 +94,6 @@ const NewTable = ({
   const cols = useMemo(() => {
     return columns;
   }, [columns]);
-  const [filters, setFilters] = useState<Filter[]>([]);
 
   enum DataActionKind {
     FILTER = "FILTER",
@@ -116,95 +108,87 @@ const NewTable = ({
     state?: "add" | "remove" | "set";
     payload: any;
   }
+
   let [data, dispatch] = useReducer(
     (state, action: DataAction) => {
       const { type, payload } = action;
       switch (type) {
         case DataActionKind.SET: {
-          const newState = state.map((row, i) => {
-            if (state === payload) {
-              return state;
-            }
-            const updatedRow = payload.find((r) => row.id === r.id);
-            if (updatedRow) {
-              return { ...row, ...updatedRow };
-            }
-            return row;
-          });
-          return { ...newState, ...payload };
-          // return newState;
+          return {
+            ...state,
+            rows: payload,
+            page_rows: pagination ? payload.slice(
+              (pagination.page - 1) * pagination.pageSize,
+              pagination.page * pagination.pageSize
+            ) : [],
+            showing_rows: pagination && `${(pagination.page) * (pagination.pageSize) - (pagination.pageSize) + 1}-${pagination.page * pagination.pageSize > payload.length ? payload.length : pagination.page * pagination.pageSize}`,
+          };
         }
         case DataActionKind.FILTER: {
-          const newFilters =
+          const newFilters: Filter[] =
             action.state === "add"
-              ? [...filters, payload]
-              : filters.filter((f) => f !== payload);
-          if (action.state === "add") {
-            if (
-              !filters.find(
-                (f) =>
-                  f.column === payload.column &&
-                  f.operator === payload.operator &&
-                  f.value === payload.value
-              )
-            ) {
-              setFilters([...filters, payload]);
-            }
-          } else if (action.state === "remove") {
-            setFilters(filters.filter((f) => f !== payload));
-          }
+              ? [...state.filters, payload]
+              : state.filters.filter((f) => f !== payload);
 
-          return {
-            rows: rows.filter((row) => {
-              if (newFilters.length === 0) {
-                return true;
-              }
-              return newFilters
-                .map((filter) => {
-                  if (!filter) {
+          const filteredRows = rows.filter((row) => {
+            if (newFilters.length === 0) {
+              return true;
+            }
+            return newFilters
+              .map((filter) => {
+                let colData = row[filter.column]
+                if (typeof row[filter.column] === 'object') {
+                  colData = Object.values(row[filter.column]).join(', ');
+                }
+                switch (filter.operator) {
+                  case "=": {
+                    return colData === filter.value;
+                  }
+                  case "!=": {
+                    return colData !== filter.value;
+                  }
+                  case ">": {
+                    return colData > filter.value;
+                  }
+                  case ">=": {
+                    return colData >= filter.value;
+                  }
+                  case "<": {
+                    return colData < filter.value;
+                  }
+                  case "<=": {
+                    return colData <= filter.value;
+                  }
+                  case "like": {
+                    return colData.includes(filter.value);
+                  }
+                  case "ilike": {
+                    return colData
+                      .toLowerCase()
+                      .includes(filter.value.toLowerCase());
+                  }
+                  case "in": {
+                    return filter.value.includes(colData);
+                  }
+                  case "not_in": {
+                    return !filter.value.includes(colData);
+                  }
+                  default: {
                     return true;
                   }
-                  switch (filter.operator) {
-                    case "=": {
-                      return row[filter.column] === filter.value;
-                    }
-                    case "!=": {
-                      return row[filter.column] !== filter.value;
-                    }
-                    case ">": {
-                      return row[filter.column] > filter.value;
-                    }
-                    case ">=": {
-                      return row[filter.column] >= filter.value;
-                    }
-                    case "<": {
-                      return row[filter.column] < filter.value;
-                    }
-                    case "<=": {
-                      return row[filter.column] <= filter.value;
-                    }
-                    case "like": {
-                      return row[filter.column].includes(filter.value);
-                    }
-                    case "ilike": {
-                      return row[filter.column]
-                        .toLowerCase()
-                        .includes(filter.value.toLowerCase());
-                    }
-                    case "in": {
-                      return filter.value.includes(row[filter.column]);
-                    }
-                    case "not_in": {
-                      return !filter.value.includes(row[filter.column]);
-                    }
-                    default: {
-                      return true;
-                    }
-                  }
-                })
-                .reduce((acc, curr) => acc && curr, true);
-            }),
+                }
+              })
+              .reduce((acc, curr) => acc && curr, true);
+          })
+          return {
             ...state,
+            page_rows: pagination ? filteredRows.slice(
+              (pagination.page - 1) * pagination.pageSize,
+              pagination.page * pagination.pageSize
+            ) : [],
+            showing_rows: pagination && `${(pagination.page) * (pagination.pageSize) - (pagination.pageSize) + 1}-${pagination.page * pagination.pageSize > filteredRows.length ? filteredRows.length : pagination.page * pagination.pageSize}`,
+            rows: filteredRows,
+            filters: newFilters,
           };
         }
         case DataActionKind.SORT: {
@@ -218,8 +202,12 @@ const NewTable = ({
               : collator.compare(bValue, aValue);
           });
           return {
-            rows: sort,
             ...state,
+            rows: sort,
+            page_rows: pagination ? sort.slice(
+              (pagination.page - 1) * pagination.pageSize,
+              pagination.page * pagination.pageSize
+            ) : [],
             sorted_on: payload.column.field,
             sort_direction: payload.direction,
           };
@@ -247,33 +235,48 @@ const NewTable = ({
           if (!pagination) {
             return state;
           }
+          const { pageSize, page } = payload;
           return {
             ...state,
-            page: payload.page,
-            pageSize: payload.pageSize,
+            page_rows: state.rows.slice(
+              (page - 1) * pageSize,
+              page * pageSize
+            ),
+            showing_rows: `${(page) * (pageSize) - (pageSize) + 1}-${page * pageSize > rows.length ? rows.length : page * pageSize}`,
+            page,
+            pageSize,
           };
         }
         default: {
+          return state;
         }
       }
     },
     {
       rows: rows.map((row, i) => ({ ...row, tableId: `row-${i}` })),
+      page_rows: pagination ? rows.map((row, i) => ({ ...row, tableId: `row-${i}` })).slice(
+        (pagination.page - 1) * pagination.pageSize,
+        pagination.page * pagination.pageSize
+      ) : [],
       ...pagination,
+      showing_rows: pagination && `${(pagination.page) * (pagination.pageSize) - (pagination.pageSize) + 1}-${pagination.page * pagination.pageSize > rows.length ? rows.length : pagination.page * pagination.pageSize}`,
       filters: [],
+      sorted_on: '',
+      sort_direction: '',
     }
   );
-
-  // useEffect(() => {
-  //   // data = rows.map((row, i) => ({
-  //   //   ...row,
-  //   //   id: `row-${i}`,
-  //   //   selected: false,
-  //   //   sorted_on: "",
-  //   //   sort_direction: "",
-  //   // }));
-  //   return;
-  // }, [rows]);
+  useEffect(() => {
+    return () => {
+      dispatch({
+        type: DataActionKind.SET,
+        payload: rows.map((row, i) => ({
+          ...row,
+          id: `row-${i}`,
+          selected: false,
+        })),
+      });
+    };
+  }, [rows]);
 
   const formMethods = useForm();
   const { isComponentVisible, setIsComponentVisible, ref } =
@@ -282,7 +285,7 @@ const NewTable = ({
   return (
     <>
       <div className={clsx("relative overflow-x-auto", className)}>
-        <table className="mr-auto w-full table-auto text-left text-sm text-gray-700 dark:text-stone-300">
+        <table className="mr-auto w-full table-auto text-left text-sm text-gray-700 dark:text-stone-300 rounded-lg">
           {(filterable || selectable) && (
             <caption className="table-caption h-fit py-3 text-left text-lg font-semibold">
               <div className="flex w-full space-x-3">
@@ -299,15 +302,15 @@ const NewTable = ({
                       fill="currentColor"
                       stroke="currentColor"
                     >
-                      {filters.length > 0 ? (
+                      {data.filters.length > 0 ? (
                         <path d="M479.3 32H32.7C5.213 32-9.965 63.28 7.375 84.19L192 306.8V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C286.5 478.6 291.3 480 295.9 480C308.3 480 320 470.2 320 455.1V306.8l184.6-222.6C521.1 63.28 506.8 32 479.3 32zM295.4 286.4L288 295.3v145.3l-64-44.79V295.3L32.7 64h446.6l.6934-.2422L295.4 286.4z" />
                       ) : (
                         <path d="M352 440.6l-64-44.79V312.3L256 287V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C350.5 478.6 355.3 480 359.9 480C372.3 480 384 470.2 384 455.1v-67.91l-32-25.27V440.6zM543.3 64l.6934-.2422l-144.1 173.8l25.12 19.84l143.6-173.2C585.1 63.28 570.8 32 543.3 32H139.6l40.53 32H543.3zM633.9 483.4L25.92 3.42c-6.938-5.453-17-4.25-22.48 2.641c-5.469 6.938-4.281 17 2.641 22.48l608 480C617 510.9 620.5 512 623.1 512c4.734 0 9.422-2.094 12.58-6.078C642 498.1 640.8 488.9 633.9 483.4z" />
                       )}
                     </svg>
-                    {filters.length > 0 && (
+                    {data.filters.length > 0 && (
                       <div className="absolute -top-2 -right-2 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-red-500 text-xs font-bold text-white dark:border-gray-900">
-                        {filters.length}
+                        {data.filters.length}
                       </div>
                     )}
                   </button>
@@ -329,7 +332,7 @@ const NewTable = ({
                         });
                       }}
                     >
-                      {filters.map(({ column, operator, value }, index) => (
+                      {data.filters.map(({ column, operator, value }, index) => (
                         <div
                           className="rw-button-group my-1 justify-start"
                           key={`filter-${index}`}
@@ -372,7 +375,7 @@ const NewTable = ({
                               dispatch({
                                 type: DataActionKind.FILTER,
                                 state: "remove",
-                                payload: filters[index],
+                                payload: data.filters[index],
                               });
                             }}
                           >
@@ -455,16 +458,15 @@ const NewTable = ({
                                   const col = cols.find(
                                     (col) => col.field === key
                                   );
-                                  return `${key}: ${
-                                    col.valueGetter
-                                      ? col.valueGetter({
-                                          row,
-                                          column: col,
-                                          value,
-                                          field: key,
-                                        })
-                                      : value
-                                  }`;
+                                  return `${key}: ${col.valueGetter
+                                    ? col.valueGetter({
+                                      row,
+                                      column: col,
+                                      value,
+                                      field: key,
+                                    })
+                                    : value
+                                    }`;
                                 }
                               })
                               .join(", ");
@@ -489,16 +491,17 @@ const NewTable = ({
               </div>
             </caption>
           )}
-          <thead className="!rounded-t-lg bg-zinc-400 text-xs uppercase text-zinc-700 dark:bg-zinc-700  dark:text-zinc-300">
+          <thead className="!rounded-t-lg text-xs uppercase text-zinc-700  dark:text-zinc-300">
             <tr>
               {selectable && (
                 <th
-                  className="px-3 py-2 first:rounded-tl-lg last:rounded-tr-lg sm:py-3 sm:px-4"
+                  className="px-3 py-2 first:rounded-tl-lg last:rounded-tr-lg sm:py-3 sm:px-4 dark:bg-zinc-700 bg-zinc-400"
                   abbr="checkbox"
                 >
                   <input
                     type="checkbox"
                     className="rw-input rw-checkbox m-0"
+                    defaultChecked={false}
                     onChange={(e) => {
                       dispatch({
                         type: DataActionKind.SELECT_ALL,
@@ -514,7 +517,7 @@ const NewTable = ({
                 <th
                   key={index}
                   scope="col"
-                  className="line-clamp-1 p-3 first:rounded-tl-lg last:rounded-tr-lg sm:px-4"
+                  className="line-clamp-1 p-3 first:rounded-tl-lg text-sm last:rounded-tr-lg sm:px-4 dark:bg-zinc-700 bg-zinc-400"
                   align={column.align}
                   aria-sort="none"
                   onClick={(e) => {
@@ -559,39 +562,28 @@ const NewTable = ({
           </thead>
           <tbody
             className={
-              "divide-y divide-zinc-500 bg-zinc-100 dark:divide-zinc-700 dark:bg-zinc-800"
+              "divide-y divide-zinc-500 dark:divide-zinc-600"
             }
           >
             {(
               data &&
-              (pagination
-                ? data.rows.slice(
-                    (data.page - 1) * data.pageSize,
-                    data.page * data.pageSize
-                  )
-                : data.rows)
+              (pagination ? data.page_rows : data.rows)
             ).map((row, index) => (
-              <tr key={`row-${index}`} className="animate-fade-in">
+              <tr key={`row-${index}`} className="animate-fade-in divide-x divide-zinc-500 dark:divide-zinc-600">
                 {selectable && !!selectable && (
                   <td
-                    className={clsx("w-4 p-2 sm:p-4", {
+                    className={clsx("w-4 p-2 sm:p-4 bg-zinc-100 dark:bg-zinc-800", {
                       "rounded-bl-lg":
                         index ===
-                          (pagination
-                            ? data.rows.slice(
-                                (data.page - 1) * data.pageSize,
-                                data.page * data.pageSize
-                              )
-                            : data.rows
-                          ).length -
-                            1 && !summary,
+                        (pagination ? data.page_rows : data.rows).length -
+                        1 && !summary,
                     })}
                   >
                     <input
                       type="checkbox"
                       className="rw-input rw-checkbox m-0"
                       name={`select-${index}`}
-                      checked={row.selected}
+                      defaultChecked={row.selected}
                       onChange={(e) => {
                         dispatch({
                           type: DataActionKind.SELECT,
@@ -607,30 +599,20 @@ const NewTable = ({
                 {cols.map((column, idx) => (
                   <td
                     key={`row-${index}-cell-${idx}`}
-                    className={clsx("px-3 py-2 sm:p-4", {
+                    className={clsx("px-3 py-2 sm:p-4 bg-zinc-100 dark:bg-zinc-800", {
                       "rounded-br-lg":
                         idx === cols.length - 1 &&
                         index ===
-                          (pagination
-                            ? data.rows.slice(
-                                (data.page - 1) * data.pageSize,
-                                data.page * data.pageSize
-                              )
-                            : data.rows
-                          ).length -
-                            1 &&
+                        (pagination ? data.page_rows : data.rows)
+                          .length -
+                        1 &&
                         !summary,
                       "rounded-bl-lg":
                         idx === 0 &&
                         index ===
-                          (pagination
-                            ? data.rows.slice(
-                                (data.page - 1) * data.pageSize,
-                                data.page * data.pageSize
-                              )
-                            : data.rows
-                          ).length -
-                            1 &&
+                        (pagination ? data.page_rows : data.rows)
+                          .length -
+                        1 &&
                         !summary &&
                         !selectable,
                     })}
@@ -639,11 +621,11 @@ const NewTable = ({
                   >
                     {column.valueGetter
                       ? column.valueGetter({
-                          row,
-                          column,
-                          value: row[column.field],
-                          field: column.field,
-                        })
+                        row,
+                        column,
+                        value: row[column.field],
+                        field: column.field,
+                      })
                       : row[column.field]}
                   </td>
                 ))}
@@ -666,24 +648,12 @@ const NewTable = ({
                   }
 
                   const sum = (
-                    pagination
-                      ? data.rows
-                          .slice(
-                            (pagination.page - 1) * pagination.pageSize,
-                            pagination.page * pagination.pageSize
-                          )
-                          .filter((d) =>
-                            selectable &&
-                            data.rows.filter((d) => d.selected).length > 0
-                              ? d.selected
-                              : true
-                          )
-                      : data.rows.filter((d) =>
-                          selectable &&
-                          data.rows.filter((d) => d.selected).length > 0
-                            ? d.selected
-                            : true
-                        )
+                    data.rows.filter((d) =>
+                      selectable &&
+                        data.rows.filter((d) => d.selected).length > 0
+                        ? d.selected
+                        : true
+                    )
                   ).reduce((a, b) => {
                     return a + parseInt(b[field] || 0);
                   }, 0);
@@ -702,12 +672,12 @@ const NewTable = ({
                 })}
               </tr>
             )}
+
             {pagination && (
               <tr>
                 {selectable && <td></td>}
                 <td className="w-full p-2" colSpan={cols.length}>
                   <div className="flex items-center justify-end space-x-2">
-                    {/* TODO: add rows per page dropdown/select */}
                     Rows per page &nbsp;
                     <select
                       className="rw-input rw-input-small"
@@ -722,10 +692,10 @@ const NewTable = ({
                           });
                         }, 500)();
                       }}
-                      defaultValue={pagination.pageSize}
+                      defaultValue={data.pageSize}
                     >
-                      {pagination.pageSizeOptions?.map((option) => (
-                        <option>{option}</option>
+                      {data.pageSizeOptions?.map((option) => (
+                        <option key={`rows-per-page-${option}`}>{option}</option>
                       ))}
                     </select>
                     <nav
@@ -765,7 +735,6 @@ const NewTable = ({
                       ).map((i, idx) => (
                         <button
                           key={`table-pagination-button-${idx}`}
-                          id={`table-pagination-button-${idx}`}
                           className={clsx({
                             "rw-pagination-item": data.page !== idx + 1,
                             "rw-pagination-item-active": data.page == idx + 1,
@@ -791,7 +760,7 @@ const NewTable = ({
                             payload: {
                               page:
                                 data.page <
-                                Math.ceil(data.rows.length / data.pageSize)
+                                  Math.ceil(data.rows.length / data.pageSize)
                                   ? data.page + 1
                                   : Math.ceil(data.rows.length / data.pageSize),
                               pageSize: data.pageSize,
@@ -808,7 +777,7 @@ const NewTable = ({
                           xmlns="http://www.w3.org/2000/svg"
                         >
                           <path
-                            fill-rule="evenodd"
+                            fillRule="evenodd"
                             d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
                             clipRule="evenodd"
                           ></path>
@@ -818,14 +787,11 @@ const NewTable = ({
                     <span className="space-x-1 text-sm font-normal text-gray-500 dark:text-gray-400">
                       <span>Showing</span>
                       <span className="font-semibold text-gray-900 dark:text-white">
-                        {(data.page || 1) * data.pageSize - data.pageSize + 1}-
-                        {(data.page || 1) * data.pageSize > rows.length
-                          ? rows.length
-                          : (data.page || 1) * data.pageSize}
+                        {data.showing_rows}
                       </span>
                       <span>of</span>
                       <span className="font-semibold text-gray-900 dark:text-white">
-                        {rows.length}
+                        {data.rows.length}
                       </span>
                     </span>
                   </div>
