@@ -100,6 +100,7 @@ const HomePage = () => {
         <NewTable
           selectable
           filterable
+          search
           pagination={{
             page: 1,
             pageSize: 10,
@@ -175,7 +176,12 @@ const HomePage = () => {
         ])}
           onInput={(event) => {
             debounce(() => {
-              setTblInput(JSON.parse(event.target.value))
+              try {
+                setTblInput(JSON.parse((event.target as any)?.value))
+              } catch (e) {
+                console.log(e)
+              }
+
             }, 300)()
           }}
         >

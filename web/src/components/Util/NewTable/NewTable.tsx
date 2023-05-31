@@ -28,9 +28,15 @@ interface Column {
    * Not implemented yet
    */
   width?: number;
-  type?: "number" | "string" | "boolean" | "date" | "dateTime" | "progress";
+  type?: "number" | "string" | "boolean" | "date" | "dateTime" | "progress" | "image";
   align?: "left" | "center" | "right";
   sortable?: boolean;
+  /**
+   * If column should be fixed when scrolling horizontally
+   *
+   * Not implemented yet
+   */
+  fixed?: boolean;
   valueGetter?: (params: GridValueGetterParams) => any;
 }
 
@@ -41,6 +47,7 @@ interface ITableProps {
   filterable?: boolean;
   selectable?: boolean;
   summary?: boolean;
+  search?: boolean;
   pagination?: {
     /**
      * The total number of rows displayed per page
@@ -87,6 +94,7 @@ const NewTable = ({
   selectable,
   onSelectRow,
   header,
+  search,
   pagination,
   summary,
   className,
@@ -221,17 +229,28 @@ const NewTable = ({
               }
               return row;
             }),
+            page_rows: pagination ? state.page_rows.map((row) => {
+              if (row.tableId === payload.row.tableId) {
+                return { ...row, selected: payload.checked };
+              }
+              return row;
+            }) : [],
           };
         }
         case DataActionKind.SELECT_ALL: {
+          const allSelected = state.rows.map((row) => {
+            return { ...row, selected: payload.checked || false };
+          })
           return {
             ...state,
-            rows: state.rows.map((row) => {
+            rows: allSelected,
+            page_rows: pagination ? state.page_rows.map((row) => {
               return { ...row, selected: payload.checked || false };
-            }),
-          };
+            }) : [],
+          }
         }
         case DataActionKind.SET_PAGE: {
+          // TODO: set rows by page instead of slicing them by page?
           if (!pagination) {
             return state;
           }
@@ -271,7 +290,7 @@ const NewTable = ({
         type: DataActionKind.SET,
         payload: rows.map((row, i) => ({
           ...row,
-          id: `row-${i}`,
+          tableId: `row-${i}`,
           selected: false,
         })),
       });
@@ -286,9 +305,9 @@ const NewTable = ({
     <>
       <div className={clsx("relative overflow-x-auto", className)}>
         <table className="mr-auto w-full table-auto text-left text-sm text-gray-700 dark:text-stone-300 rounded-lg">
-          {(filterable || selectable) && (
+          {(filterable || selectable || search) && (
             <caption className="table-caption h-fit py-3 text-left text-lg font-semibold">
-              <div className="flex w-full space-x-3">
+              <div className="flex w-full space-x-3 justify-start items-center m-0">
                 <div className="relative w-fit" ref={ref}>
                   <button
                     className="rw-button rw-button-gray-outline relative inline-block"
@@ -315,7 +334,7 @@ const NewTable = ({
                     )}
                   </button>
                   <dialog
-                    className={clsx(`z-10 m-1 rounded border bg-black p-3`)}
+                    className={`z-10 m-1 rounded border bg-black p-3`}
                     open={isComponentVisible}
                     onClose={() => setIsComponentVisible(false)}
                   >
@@ -488,6 +507,12 @@ const NewTable = ({
                     </svg>
                   </button>
                 )}
+                {search && (
+                  <input
+                    className="rw-input m-0"
+                    title="Search"
+                  />
+                )}
               </div>
             </caption>
           )}
@@ -583,7 +608,8 @@ const NewTable = ({
                       type="checkbox"
                       className="rw-input rw-checkbox m-0"
                       name={`select-${index}`}
-                      defaultChecked={row.selected}
+                      checked={row.selected}
+                      // defaultChecked={row.selected}
                       onChange={(e) => {
                         dispatch({
                           type: DataActionKind.SELECT,
@@ -599,7 +625,7 @@ const NewTable = ({
                 {cols.map((column, idx) => (
                   <td
                     key={`row-${index}-cell-${idx}`}
-                    className={clsx("px-3 py-2 sm:p-4 bg-zinc-100 dark:bg-zinc-800", {
+                    className={clsx("px-3 py-2 sm:p-4 bg-zinc-100 dark:bg-zinc-800 relative", {
                       "rounded-br-lg":
                         idx === cols.length - 1 &&
                         index ===
@@ -806,3 +832,6 @@ const NewTable = ({
 };
 
 export default NewTable;
+
+
+
