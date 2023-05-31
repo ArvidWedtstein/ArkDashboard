@@ -95,9 +95,9 @@ const Table = ({
 }: TableProps) => {
   const datarows = useMemo(() => {
     return dataRows.map((row, index) => {
-      return { ...row, tableId: index };
-    })
-  }, [dataRows])
+      return { ...row, tableId: index, selected: false };
+    });
+  }, [dataRows]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rows, setRows] = useState<any[]>([]);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
@@ -251,7 +251,7 @@ const Table = ({
       <th
         key={`headcell-${columnIndex}-${label}`}
         className={clsx(
-          "px-3 py-3 first:rounded-tl-lg last:rounded-tr-lg bg-zinc-400 dark:bg-zinc-700",
+          "bg-zinc-400 px-3 py-3 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-700",
           other.className
         )}
         scope="col"
@@ -308,23 +308,23 @@ const Table = ({
 
     const valueFormatter = other.valueFormatter
       ? other.valueFormatter({
-        // value: isNaN(cellData) ? cellData?.amount : cellData,
-        value: cellData,
-        row: rowData,
-        columnIndex,
-      })
+          // value: isNaN(cellData) ? cellData?.amount : cellData,
+          value: cellData,
+          row: rowData,
+          columnIndex,
+        })
       : isNaN(cellData)
-        ? cellData?.amount || cellData
-        : cellData;
+      ? cellData?.amount || cellData
+      : cellData;
 
     let content = renderCell
       ? renderCell({
-        columnIndex,
-        rowIndex,
-        value: valueFormatter,
-        field: other.field,
-        row: rowData,
-      })
+          columnIndex,
+          rowIndex,
+          value: valueFormatter,
+          field: other.field,
+          row: rowData,
+        })
       : valueFormatter;
 
     return (
@@ -342,9 +342,12 @@ const Table = ({
     row: number;
   }) => {
     return (
-      <td className={clsx("w-4 p-4", {
-        "bg-zinc-400 dark:bg-zinc-700 first:rounded-tl-lg": header,
-      })} scope="col">
+      <td
+        className={clsx("w-4 p-4", {
+          "bg-zinc-400 first:rounded-tl-lg dark:bg-zinc-700": header,
+        })}
+        scope="col"
+      >
         <div className="flex items-center">
           <input
             id={header ? "checkbox-all-select" : `checkbox-row-${row}`}
@@ -389,38 +392,38 @@ const Table = ({
               ({ field, numeric, className, valueFormatter }, index) => {
                 const sum = numeric
                   ? SortedFilteredData.filter((r, i) =>
-                    select && selectedRows.length > 0
-                      ? rows
-                        .map((d: any, k) => {
-                          return d.checked ? k : -1;
-                        })
-                        .includes(i)
-                      : true
-                  ).reduce((a, b) => {
-                    const cellData = b[field];
-                    const valueFormatted = valueFormatter
-                      ? valueFormatter({ value: cellData, row: b })
-                      : cellData;
+                      select && selectedRows.length > 0
+                        ? rows
+                            .map((d: any, k) => {
+                              return d.checked ? k : -1;
+                            })
+                            .includes(i)
+                        : true
+                    ).reduce((a, b) => {
+                      const cellData = b[field];
+                      const valueFormatted = valueFormatter
+                        ? valueFormatter({ value: cellData, row: b })
+                        : cellData;
 
-                    return (
-                      a +
-                      parseInt(
-                        isNaN(valueFormatted)
-                          ? valueFormatted?.amount
-                          : valueFormatted
-                      )
-                    );
-                  }, 0)
+                      return (
+                        a +
+                        parseInt(
+                          isNaN(valueFormatted)
+                            ? valueFormatted?.amount
+                            : valueFormatted
+                        )
+                      );
+                    }, 0)
                   : // ? SortedFilteredData.filter((r, i) =>
-                  //   select && selectedRows.length > 0
-                  //     ? rows
-                  //       .map((d: any, k) => {
-                  //         return d.checked ? k : -1;
-                  //       })
-                  //       .includes(i)
-                  //     : true
-                  // ).reduce((a, b) => a + parseInt(b[field]), 0)
-                  0;
+                    //   select && selectedRows.length > 0
+                    //     ? rows
+                    //       .map((d: any, k) => {
+                    //         return d.checked ? k : -1;
+                    //       })
+                    //       .includes(i)
+                    //     : true
+                    // ).reduce((a, b) => a + parseInt(b[field]), 0)
+                    0;
 
                 total += numeric ? sum : 0;
                 return (
@@ -579,11 +582,14 @@ const Table = ({
     useComponentVisible(false);
 
   const FilterDialog = () => {
-    if (!filter) return <></>
-
+    if (!filter) return <></>;
 
     return (
-      <dialog className="absolute z-10 min-w-max rounded border bg-zinc-700 p-2" open={isComponentVisible} onClose={() => setIsComponentVisible(false)}>
+      <dialog
+        className="absolute z-10 min-w-max rounded border bg-zinc-700 p-2"
+        open={isComponentVisible}
+        onClose={() => setIsComponentVisible(false)}
+      >
         {filters.map((filter, index) => (
           <div
             className="rw-button-group justify-start"
@@ -671,8 +677,8 @@ const Table = ({
           Add Filter
         </button>
       </dialog>
-    )
-  }
+    );
+  };
 
   return (
     <div
@@ -696,94 +702,6 @@ const Table = ({
                   : "Filter"}
               </button>
               {FilterDialog()}
-              {/* <div className="absolute z-10 min-w-max rounded border bg-zinc-700 p-2">
-                {filters.map((filter, index) => (
-                  <div
-                    className="rw-button-group justify-start"
-                    key={`filter-${index}`}
-                  >
-                    <select
-                      name="column"
-                      id="column"
-                      className="rw-input rw-input-small !rounded-r-none"
-                      value={filter.column}
-                      onChange={(e) => {
-                        const newFilters = [...filters];
-                        newFilters[index].column = e.target.value;
-                        setFilters(newFilters);
-                      }}
-                    >
-                      {columns.map((column, index) => (
-                        <option key={`column-${index}`} value={column.field}>
-                          {column.label}
-                        </option>
-                      ))}
-                    </select>
-
-                    <select
-                      name="operator"
-                      id="operator"
-                      className="rw-input rw-input-small !rounded-l-none !rounded-r-none"
-                      value={filter.operator}
-                      onChange={(e) => {
-                        const newFilters = [...filters];
-                        newFilters[index].operator = e.target.value;
-                        setFilters(newFilters);
-                      }}
-                    >
-                      <option value="=">=</option>
-                      <option value="!=">!=</option>
-                      <option value=">">&gt;</option>
-                      <option value=">=">&gt;=</option>
-                      <option value="<">&lt;</option>
-                      <option value="<=">&lt;=</option>
-                      <option value="like">like</option>
-                      <option value="ilike">ilike</option>
-                      <option value="in">in</option>
-                      <option value="not_in">not in</option>
-                    </select>
-
-                    <input
-                      type="text"
-                      name="value"
-                      className="rw-input rw-input-small !rounded-none"
-                      value={filter.value}
-                      onChange={(e) => {
-                        const newFilters = [...filters];
-                        newFilters[index].value = e.target.value;
-                        setFilters(newFilters);
-                      }}
-                    />
-                    <button
-                      className="rw-button rw-button-gray rw-button-small !ml-0 !rounded-l-none"
-                      onClick={() => {
-                        const newFilters = [...filters];
-                        newFilters.splice(index, 1);
-                        setFilters(newFilters);
-                      }}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
-                {filters.length === 0 && (
-                  <p className="m-1 text-base text-stone-400">
-                    No filters applied to this view
-                    <br />
-                    <span className="text-xs text-stone-500">
-                      Add a filter below to filter the view
-                    </span>
-                  </p>
-                )}
-                <hr />
-                <button
-                  type="button"
-                  className="rw-button rw-button-small rw-button-gray-outline"
-                  onClick={() => addFilter()}
-                >
-                  Add Filter
-                </button>
-              </div> */}
             </div>
           )}
           {search && (
@@ -827,7 +745,7 @@ const Table = ({
           </caption>
         )}
         {!vertical && header && (
-          <thead className="text-sm uppercase text-zinc-700  dark:text-zinc-300 rounded-t-lg">
+          <thead className="rounded-t-lg text-sm uppercase  text-zinc-700 dark:text-zinc-300">
             <tr className="table-row rounded-t-lg">
               {select && tableSelect({ header: true, row: 0 })}
               {columns.map(({ ...other }, index) => {
@@ -844,60 +762,60 @@ const Table = ({
         <tbody className="divide-y divide-gray-400 bg-zinc-300 dark:divide-gray-800 dark:bg-zinc-600">
           {vertical
             ? columns.map(({ field, ...other }, index) => {
-              return (
-                <tr
-                  key={`row-${index}`}
-                  className={clsx("bg-zinc-300 dark:bg-zinc-600", {
-                    "hover:bg-gray-50 dark:hover:bg-zinc-700": hover,
-                  })}
-                  onClick={() => onRowClick && onRowClick({ index: index })}
-                >
-                  {header &&
-                    headerRenderer({
-                      label: other.label,
-                      columnIndex: index,
-                      ...other,
+                return (
+                  <tr
+                    key={`row-${index}`}
+                    className={clsx("bg-zinc-300 dark:bg-zinc-600", {
+                      "hover:bg-gray-50 dark:hover:bg-zinc-700": hover,
                     })}
-                  {SortedFilteredData.map((datarow, rowIndex) =>
-                    cellRenderer({
-                      rowData: datarow,
-                      cellData: datarow[field],
-                      columnIndex: index,
-                      rowIndex,
-                      renderCell: other.renderCell,
-                      field,
-                      ...other,
-                    })
-                  )}
-                </tr>
-              );
-            })
+                    onClick={() => onRowClick && onRowClick({ index: index })}
+                  >
+                    {header &&
+                      headerRenderer({
+                        label: other.label,
+                        columnIndex: index,
+                        ...other,
+                      })}
+                    {SortedFilteredData.map((datarow, rowIndex) =>
+                      cellRenderer({
+                        rowData: datarow,
+                        cellData: datarow[field],
+                        columnIndex: index,
+                        rowIndex,
+                        renderCell: other.renderCell,
+                        field,
+                        ...other,
+                      })
+                    )}
+                  </tr>
+                );
+              })
             : dataRows &&
-            SortedFilteredData.map((datarow, i) => {
-              return (
-                <tr
-                  key={`row-${i}`}
-                  className={clsx({
-                    "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
-                  })}
-                  onClick={() => onRowClick && onRowClick({ index: i })}
-                >
-                  {select && tableSelect({ row: i })}
-                  {columns.map(({ field, ...other }, index) =>
-                    cellRenderer({
-                      rowData: datarow,
-                      cellData: datarow[field],
-                      columnIndex: index,
-                      rowIndex: i,
-                      renderCell: other.renderCell,
-                      field,
-                      ...other,
-                    })
-                  )}
-                  {renderActions && <td>{renderActions(datarow)}</td>}
-                </tr>
-              );
-            })}
+              SortedFilteredData.map((datarow, i) => {
+                return (
+                  <tr
+                    key={`row-${i}`}
+                    className={clsx({
+                      "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
+                    })}
+                    onClick={() => onRowClick && onRowClick({ index: i })}
+                  >
+                    {select && tableSelect({ row: i })}
+                    {columns.map(({ field, ...other }, index) =>
+                      cellRenderer({
+                        rowData: datarow,
+                        cellData: datarow[field],
+                        columnIndex: index,
+                        rowIndex: i,
+                        renderCell: other.renderCell,
+                        field,
+                        ...other,
+                      })
+                    )}
+                    {renderActions && <td>{renderActions(datarow)}</td>}
+                  </tr>
+                );
+              })}
           {(dataRows === null || dataRows.length === 0) && (
             <tr className="w-full">
               <td className="p-4 text-center" colSpan={100}>
@@ -916,8 +834,6 @@ const Table = ({
 };
 
 export default Table;
-
-
 
 // interface Row {
 //   index: number;
@@ -1491,7 +1407,6 @@ export default Table;
 
 //   const FilterDialog = () => {
 //     if (!filter) return <></>
-
 
 //     return (
 //       <dialog className="absolute z-10 min-w-max rounded border bg-zinc-700 p-2" open={isComponentVisible} onClose={() => setIsComponentVisible(false)}>

@@ -3,8 +3,7 @@ import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "src/auth";
 import NewTable from "src/components/Util/NewTable/NewTable";
 import Table from "src/components/Util/Table/Table";
-import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
-import { Profiler, useState } from "react";
+import { useState } from "react";
 import { debounce } from "src/lib/formatters";
 const HomePage = () => {
   const { isAuthenticated, currentUser } = useAuth();
@@ -24,7 +23,63 @@ const HomePage = () => {
   //   }
   // }, [supabase])
 
-  const [tblInput, setTblInput] = useState([])
+  const tblInput = [
+    {
+      name: "teeeeeeeeest",
+      description: 36,
+      created_by: "Ole",
+    },
+    {
+      name: "teeeeeeeeest",
+      description: 36,
+      created_by: "Ole",
+    },
+    {
+      name: "teeeeeeeeest",
+      description: 36,
+      created_by: "Ole",
+    },
+    {
+      name: "test2",
+      description: 1,
+      created_by: "Per",
+    },
+    {
+      name: "test3",
+      description: 45,
+      created_by: "Jens",
+    },
+    {
+      name: "test1",
+      description: 36,
+      created_by: "Ole",
+    },
+    {
+      name: "test2",
+      description: 1,
+      created_by: "Per",
+    },
+    {
+      name: "test3",
+      description: 45,
+      created_by: "Jens",
+    },
+    {
+      name: "test1",
+      description: 36,
+      created_by: "Ole",
+    },
+    {
+      name: "test2",
+      description: 1,
+      created_by: "Per",
+    },
+    {
+      name: "test3",
+      description: 45,
+      created_by: "Peder",
+    },
+  ];
 
   return (
     <>
@@ -99,6 +154,7 @@ const HomePage = () => {
 
         <NewTable
           selectable
+          // header={"s"}
           filterable
           search
           pagination={{
@@ -127,71 +183,10 @@ const HomePage = () => {
           ]}
         />
 
-        <textarea className="rw-input" rows={30} defaultValue={JSON.stringify([
-          {
-            name: "test1",
-            description: 36,
-            created_by: "Ole",
-          },
-          {
-            name: "test2",
-            description: 1,
-            created_by: "Per",
-          },
-          {
-            name: "test3",
-            description: 45,
-            created_by: "Jens",
-          },
-          {
-            name: "test1",
-            description: 36,
-            created_by: "Ole",
-          },
-          {
-            name: "test2",
-            description: 1,
-            created_by: "Per",
-          },
-          {
-            name: "test3",
-            description: 45,
-            created_by: "Jens",
-          },
-          {
-            name: "test1",
-            description: 36,
-            created_by: "Ole",
-          },
-          {
-            name: "test2",
-            description: 1,
-            created_by: "Per",
-          },
-          {
-            name: "test3",
-            description: 45,
-            created_by: "Peder",
-          },
-        ])}
-          onInput={(event) => {
-            debounce(() => {
-              try {
-                setTblInput(JSON.parse((event.target as any)?.value))
-              } catch (e) {
-                console.log(e)
-              }
-
-            }, 300)()
-          }}
-        >
-
-        </textarea>
-
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
-      </div >
+      </div>
     </>
   );
 };

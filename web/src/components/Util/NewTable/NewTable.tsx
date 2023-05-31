@@ -2,7 +2,14 @@ import { Form, SelectField, TextField, useForm } from "@redwoodjs/forms";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { GenericTable } from "@supabase/supabase-js/dist/module/lib/types";
 import clsx from "clsx";
-import { ReactElement, memo, useEffect, useMemo, useReducer, useState } from "react";
+import {
+  ReactElement,
+  memo,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
 import useComponentVisible from "src/components/useComponentVisible";
 import { debounce } from "src/lib/formatters";
 
@@ -28,7 +35,14 @@ interface Column {
    * Not implemented yet
    */
   width?: number;
-  type?: "number" | "string" | "boolean" | "date" | "dateTime" | "progress" | "image";
+  type?:
+    | "number"
+    | "string"
+    | "boolean"
+    | "date"
+    | "dateTime"
+    | "progress"
+    | "image";
   align?: "left" | "center" | "right";
   sortable?: boolean;
   /**
@@ -67,7 +81,7 @@ interface ITableProps {
      * ```
      *
      *
-      */
+     */
     page?: number;
   };
   header?: ReactElement | string;
@@ -125,11 +139,21 @@ const NewTable = ({
           return {
             ...state,
             rows: payload,
-            page_rows: pagination ? payload.slice(
-              (pagination.page - 1) * pagination.pageSize,
-              pagination.page * pagination.pageSize
-            ) : [],
-            showing_rows: pagination && `${(pagination.page) * (pagination.pageSize) - (pagination.pageSize) + 1}-${pagination.page * pagination.pageSize > payload.length ? payload.length : pagination.page * pagination.pageSize}`,
+            page_rows: pagination
+              ? payload.slice(
+                  (pagination.page - 1) * pagination.pageSize,
+                  pagination.page * pagination.pageSize
+                )
+              : [],
+            showing_rows:
+              pagination &&
+              `${
+                pagination.page * pagination.pageSize - pagination.pageSize + 1
+              }-${
+                pagination.page * pagination.pageSize > payload.length
+                  ? payload.length
+                  : pagination.page * pagination.pageSize
+              }`,
           };
         }
         case DataActionKind.FILTER: {
@@ -142,11 +166,12 @@ const NewTable = ({
             if (newFilters.length === 0) {
               return true;
             }
+
             return newFilters
               .map((filter) => {
-                let colData = row[filter.column]
-                if (typeof row[filter.column] === 'object') {
-                  colData = Object.values(row[filter.column]).join(', ');
+                let colData = row[filter.column];
+                if (typeof row[filter.column] === "object") {
+                  colData = Object.values(row[filter.column]).join(", ");
                 }
                 switch (filter.operator) {
                   case "=": {
@@ -187,14 +212,24 @@ const NewTable = ({
                 }
               })
               .reduce((acc, curr) => acc && curr, true);
-          })
+          });
           return {
             ...state,
-            page_rows: pagination ? filteredRows.slice(
-              (pagination.page - 1) * pagination.pageSize,
-              pagination.page * pagination.pageSize
-            ) : [],
-            showing_rows: pagination && `${(pagination.page) * (pagination.pageSize) - (pagination.pageSize) + 1}-${pagination.page * pagination.pageSize > filteredRows.length ? filteredRows.length : pagination.page * pagination.pageSize}`,
+            page_rows: pagination
+              ? filteredRows.slice(
+                  (pagination.page - 1) * pagination.pageSize,
+                  pagination.page * pagination.pageSize
+                )
+              : [],
+            showing_rows:
+              pagination &&
+              `${
+                pagination.page * pagination.pageSize - pagination.pageSize + 1
+              }-${
+                pagination.page * pagination.pageSize > filteredRows.length
+                  ? filteredRows.length
+                  : pagination.page * pagination.pageSize
+              }`,
             rows: filteredRows,
             filters: newFilters,
           };
@@ -212,10 +247,12 @@ const NewTable = ({
           return {
             ...state,
             rows: sort,
-            page_rows: pagination ? sort.slice(
-              (pagination.page - 1) * pagination.pageSize,
-              pagination.page * pagination.pageSize
-            ) : [],
+            page_rows: pagination
+              ? sort.slice(
+                  (pagination.page - 1) * pagination.pageSize,
+                  pagination.page * pagination.pageSize
+                )
+              : [],
             sorted_on: payload.column.field,
             sort_direction: payload.direction,
           };
@@ -229,25 +266,29 @@ const NewTable = ({
               }
               return row;
             }),
-            page_rows: pagination ? state.page_rows.map((row) => {
-              if (row.tableId === payload.row.tableId) {
-                return { ...row, selected: payload.checked };
-              }
-              return row;
-            }) : [],
+            page_rows: pagination
+              ? state.page_rows.map((row) => {
+                  if (row.tableId === payload.row.tableId) {
+                    return { ...row, selected: payload.checked };
+                  }
+                  return row;
+                })
+              : [],
           };
         }
         case DataActionKind.SELECT_ALL: {
           const allSelected = state.rows.map((row) => {
             return { ...row, selected: payload.checked || false };
-          })
+          });
           return {
             ...state,
             rows: allSelected,
-            page_rows: pagination ? state.page_rows.map((row) => {
-              return { ...row, selected: payload.checked || false };
-            }) : [],
-          }
+            page_rows: pagination
+              ? state.page_rows.map((row) => {
+                  return { ...row, selected: payload.checked || false };
+                })
+              : [],
+          };
         }
         case DataActionKind.SET_PAGE: {
           // TODO: set rows by page instead of slicing them by page?
@@ -257,11 +298,10 @@ const NewTable = ({
           const { pageSize, page } = payload;
           return {
             ...state,
-            page_rows: state.rows.slice(
-              (page - 1) * pageSize,
-              page * pageSize
-            ),
-            showing_rows: `${(page) * (pageSize) - (pageSize) + 1}-${page * pageSize > rows.length ? rows.length : page * pageSize}`,
+            page_rows: state.rows.slice((page - 1) * pageSize, page * pageSize),
+            showing_rows: `${page * pageSize - pageSize + 1}-${
+              page * pageSize > rows.length ? rows.length : page * pageSize
+            }`,
             page,
             pageSize,
           };
@@ -273,15 +313,25 @@ const NewTable = ({
     },
     {
       rows: rows.map((row, i) => ({ ...row, tableId: `row-${i}` })),
-      page_rows: pagination ? rows.map((row, i) => ({ ...row, tableId: `row-${i}` })).slice(
-        (pagination.page - 1) * pagination.pageSize,
-        pagination.page * pagination.pageSize
-      ) : [],
+      page_rows: pagination
+        ? rows
+            .map((row, i) => ({ ...row, tableId: `row-${i}` }))
+            .slice(
+              (pagination.page - 1) * pagination.pageSize,
+              pagination.page * pagination.pageSize
+            )
+        : [],
       ...pagination,
-      showing_rows: pagination && `${(pagination.page) * (pagination.pageSize) - (pagination.pageSize) + 1}-${pagination.page * pagination.pageSize > rows.length ? rows.length : pagination.page * pagination.pageSize}`,
+      showing_rows:
+        pagination &&
+        `${pagination.page * pagination.pageSize - pagination.pageSize + 1}-${
+          pagination.page * pagination.pageSize > rows.length
+            ? rows.length
+            : pagination.page * pagination.pageSize
+        }`,
       filters: [],
-      sorted_on: '',
-      sort_direction: '',
+      sorted_on: "",
+      sort_direction: "",
     }
   );
   useEffect(() => {
@@ -304,10 +354,10 @@ const NewTable = ({
   return (
     <>
       <div className={clsx("relative overflow-x-auto", className)}>
-        <table className="mr-auto w-full table-auto text-left text-sm text-gray-700 dark:text-stone-300 rounded-lg">
+        <table className="mr-auto w-full table-auto rounded-lg text-left text-sm text-gray-700 dark:text-stone-300">
           {(filterable || selectable || search) && (
             <caption className="table-caption h-fit py-3 text-left text-lg font-semibold">
-              <div className="flex w-full space-x-3 justify-start items-center m-0">
+              <div className="m-0 flex w-full items-center justify-start space-x-3">
                 <div className="relative w-fit" ref={ref}>
                   <button
                     className="rw-button rw-button-gray-outline relative inline-block"
@@ -351,57 +401,59 @@ const NewTable = ({
                         });
                       }}
                     >
-                      {data.filters.map(({ column, operator, value }, index) => (
-                        <div
-                          className="rw-button-group my-1 justify-start"
-                          key={`filter-${index}`}
-                        >
-                          <select
-                            name="column"
-                            className="rw-input rw-input-small"
-                            defaultValue={column}
+                      {data.filters.map(
+                        ({ column, operator, value }, index) => (
+                          <div
+                            className="rw-button-group my-1 justify-start"
+                            key={`filter-${index}`}
                           >
-                            {columns.map((column, idx) => (
-                              <option key={`filter-${index}-column-${idx}`}>
-                                {column.field}
-                              </option>
-                            ))}
-                          </select>
-                          <select
-                            name="operator"
-                            className="rw-input rw-input-small"
-                            defaultValue={operator}
-                          >
-                            <option value="=">=</option>
-                            <option value="!=">!=</option>
-                            <option value=">">&gt;</option>
-                            <option value=">=">&gt;=</option>
-                            <option value="<">&lt;</option>
-                            <option value="<=">&lt;=</option>
-                            <option value="like">like</option>
-                            <option value="ilike">ilike</option>
-                            <option value="in">in</option>
-                            <option value="not_in">not in</option>
-                          </select>
-                          <input
-                            name="value"
-                            className="rw-input rw-input-small"
-                            defaultValue={value}
-                          />
-                          <button
-                            className="rw-button rw-button-small rw-button-red"
-                            onClick={() => {
-                              dispatch({
-                                type: DataActionKind.FILTER,
-                                state: "remove",
-                                payload: data.filters[index],
-                              });
-                            }}
-                          >
-                            -
-                          </button>
-                        </div>
-                      ))}
+                            <select
+                              name="column"
+                              className="rw-input rw-input-small"
+                              defaultValue={column}
+                            >
+                              {columns.map((column, idx) => (
+                                <option key={`filter-${index}-column-${idx}`}>
+                                  {column.field}
+                                </option>
+                              ))}
+                            </select>
+                            <select
+                              name="operator"
+                              className="rw-input rw-input-small"
+                              defaultValue={operator}
+                            >
+                              <option value="=">=</option>
+                              <option value="!=">!=</option>
+                              <option value=">">&gt;</option>
+                              <option value=">=">&gt;=</option>
+                              <option value="<">&lt;</option>
+                              <option value="<=">&lt;=</option>
+                              <option value="like">like</option>
+                              <option value="ilike">ilike</option>
+                              <option value="in">in</option>
+                              <option value="not_in">not in</option>
+                            </select>
+                            <input
+                              name="value"
+                              className="rw-input rw-input-small"
+                              defaultValue={value}
+                            />
+                            <button
+                              className="rw-button rw-button-small rw-button-red"
+                              onClick={() => {
+                                dispatch({
+                                  type: DataActionKind.FILTER,
+                                  state: "remove",
+                                  payload: data.filters[index],
+                                });
+                              }}
+                            >
+                              -
+                            </button>
+                          </div>
+                        )
+                      )}
                       <div className="rw-button-group justify-start">
                         <SelectField
                           name="column"
@@ -477,15 +529,16 @@ const NewTable = ({
                                   const col = cols.find(
                                     (col) => col.field === key
                                   );
-                                  return `${key}: ${col.valueGetter
-                                    ? col.valueGetter({
-                                      row,
-                                      column: col,
-                                      value,
-                                      field: key,
-                                    })
-                                    : value
-                                    }`;
+                                  return `${key}: ${
+                                    col.valueGetter
+                                      ? col.valueGetter({
+                                          row,
+                                          column: col,
+                                          value,
+                                          field: key,
+                                        })
+                                      : value
+                                  }`;
                                 }
                               })
                               .join(", ");
@@ -507,20 +560,15 @@ const NewTable = ({
                     </svg>
                   </button>
                 )}
-                {search && (
-                  <input
-                    className="rw-input m-0"
-                    title="Search"
-                  />
-                )}
+                {search && <input className="rw-input m-0" title="Search" />}
               </div>
             </caption>
           )}
-          <thead className="!rounded-t-lg text-xs uppercase text-zinc-700  dark:text-zinc-300">
+          <thead className="!rounded-t-lg text-xs uppercase text-zinc-700 dark:text-zinc-300">
             <tr>
               {selectable && (
                 <th
-                  className="px-3 py-2 first:rounded-tl-lg last:rounded-tr-lg sm:py-3 sm:px-4 dark:bg-zinc-700 bg-zinc-400"
+                  className="bg-zinc-400 px-3 py-2 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-700 sm:py-3 sm:px-4"
                   abbr="checkbox"
                 >
                   <input
@@ -542,7 +590,7 @@ const NewTable = ({
                 <th
                   key={index}
                   scope="col"
-                  className="line-clamp-1 p-3 first:rounded-tl-lg text-sm last:rounded-tr-lg sm:px-4 dark:bg-zinc-700 bg-zinc-400"
+                  className="line-clamp-1 bg-zinc-400 p-3 text-sm first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-700 sm:px-4"
                   align={column.align}
                   aria-sort="none"
                   onClick={(e) => {
@@ -585,78 +633,82 @@ const NewTable = ({
               ))}
             </tr>
           </thead>
-          <tbody
-            className={
-              "divide-y divide-zinc-500 dark:divide-zinc-600"
-            }
-          >
-            {(
-              data &&
-              (pagination ? data.page_rows : data.rows)
-            ).map((row, index) => (
-              <tr key={`row-${index}`} className="animate-fade-in divide-x divide-zinc-500 dark:divide-zinc-600">
-                {selectable && !!selectable && (
-                  <td
-                    className={clsx("w-4 p-2 sm:p-4 bg-zinc-100 dark:bg-zinc-800", {
-                      "rounded-bl-lg":
-                        index ===
-                        (pagination ? data.page_rows : data.rows).length -
-                        1 && !summary,
-                    })}
-                  >
-                    <input
-                      type="checkbox"
-                      className="rw-input rw-checkbox m-0"
-                      name={`select-${index}`}
-                      checked={row.selected}
-                      // defaultChecked={row.selected}
-                      onChange={(e) => {
-                        dispatch({
-                          type: DataActionKind.SELECT,
-                          payload: {
-                            row: { ...row, tableId: row.tableId },
-                            checked: e.target.checked,
-                          },
-                        });
-                      }}
-                    />
-                  </td>
-                )}
-                {cols.map((column, idx) => (
-                  <td
-                    key={`row-${index}-cell-${idx}`}
-                    className={clsx("px-3 py-2 sm:p-4 bg-zinc-100 dark:bg-zinc-800 relative", {
-                      "rounded-br-lg":
-                        idx === cols.length - 1 &&
-                        index ===
-                        (pagination ? data.page_rows : data.rows)
-                          .length -
-                        1 &&
-                        !summary,
-                      "rounded-bl-lg":
-                        idx === 0 &&
-                        index ===
-                        (pagination ? data.page_rows : data.rows)
-                          .length -
-                        1 &&
-                        !summary &&
-                        !selectable,
-                    })}
-                    align={column.align}
-                    scope="row"
-                  >
-                    {column.valueGetter
-                      ? column.valueGetter({
-                        row,
-                        column,
-                        value: row[column.field],
-                        field: column.field,
-                      })
-                      : row[column.field]}
-                  </td>
-                ))}
-              </tr>
-            ))}
+          <tbody className={"divide-y divide-zinc-500 dark:divide-zinc-600"}>
+            {(data && (pagination ? data.page_rows : data.rows)).map(
+              (row, index) => (
+                <tr
+                  key={`row-${index}`}
+                  className={clsx("animate-fade-in", {
+                    "divide-x divide-zinc-500 dark:divide-zinc-600": header,
+                  })}
+                >
+                  {selectable && !!selectable && (
+                    <td
+                      className={clsx(
+                        "w-4 bg-zinc-100 p-2 dark:bg-zinc-800 sm:p-4",
+                        {
+                          "rounded-bl-lg":
+                            index ===
+                              (pagination ? data.page_rows : data.rows).length -
+                                1 && !summary,
+                        }
+                      )}
+                    >
+                      <input
+                        type="checkbox"
+                        className="rw-input rw-checkbox m-0"
+                        name={`select-${index}`}
+                        checked={row.selected}
+                        // defaultChecked={row.selected}
+                        onChange={(e) => {
+                          dispatch({
+                            type: DataActionKind.SELECT,
+                            payload: {
+                              row: { ...row, tableId: row.tableId },
+                              checked: e.target.checked,
+                            },
+                          });
+                        }}
+                      />
+                    </td>
+                  )}
+                  {cols.map((column, idx) => (
+                    <td
+                      key={`row-${index}-cell-${idx}`}
+                      className={clsx(
+                        "relative bg-zinc-100 px-3 py-2 dark:bg-zinc-800 sm:p-4",
+                        {
+                          "rounded-br-lg":
+                            idx === cols.length - 1 &&
+                            index ===
+                              (pagination ? data.page_rows : data.rows).length -
+                                1 &&
+                            !summary,
+                          "rounded-bl-lg":
+                            idx === 0 &&
+                            index ===
+                              (pagination ? data.page_rows : data.rows).length -
+                                1 &&
+                            !summary &&
+                            !selectable,
+                        }
+                      )}
+                      align={column.align}
+                      scope="row"
+                    >
+                      {column.valueGetter
+                        ? column.valueGetter({
+                            row,
+                            column,
+                            value: row[column.field],
+                            field: column.field,
+                          })
+                        : row[column.field]}
+                    </td>
+                  ))}
+                </tr>
+              )
+            )}
           </tbody>
           <tfoot>
             {summary && (
@@ -673,16 +725,16 @@ const NewTable = ({
                     );
                   }
 
-                  const sum = (
-                    data.rows.filter((d) =>
+                  const sum = data.rows
+                    .filter((d) =>
                       selectable &&
-                        data.rows.filter((d) => d.selected).length > 0
+                      data.rows.filter((d) => d.selected).length > 0
                         ? d.selected
                         : true
                     )
-                  ).reduce((a, b) => {
-                    return a + parseInt(b[field] || 0);
-                  }, 0);
+                    .reduce((a, b) => {
+                      return a + parseInt(b[field] || 0);
+                    }, 0);
 
                   return (
                     <th
@@ -721,7 +773,9 @@ const NewTable = ({
                       defaultValue={data.pageSize}
                     >
                       {data.pageSizeOptions?.map((option) => (
-                        <option key={`rows-per-page-${option}`}>{option}</option>
+                        <option key={`rows-per-page-${option}`}>
+                          {option}
+                        </option>
                       ))}
                     </select>
                     <nav
@@ -786,7 +840,7 @@ const NewTable = ({
                             payload: {
                               page:
                                 data.page <
-                                  Math.ceil(data.rows.length / data.pageSize)
+                                Math.ceil(data.rows.length / data.pageSize)
                                   ? data.page + 1
                                   : Math.ceil(data.rows.length / data.pageSize),
                               pageSize: data.pageSize,
@@ -832,6 +886,3 @@ const NewTable = ({
 };
 
 export default NewTable;
-
-
-
