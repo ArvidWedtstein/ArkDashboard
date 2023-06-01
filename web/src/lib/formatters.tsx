@@ -34,16 +34,14 @@ export const jsonDisplay = (obj: unknown) => {
   );
 };
 
-export const nmbFormat = Intl.NumberFormat("en", {
-  notation: "compact",
-}).format;
 
-export const formatNumberWithThousandSeparator = (num: number): string => {
-  const formattedNum = Math.round(num)
-    .toString()
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return formattedNum;
-};
+export const formatNumber = (num: number, options?: Intl.NumberFormatOptions): string => {
+  return new Intl.NumberFormat('en-GB', options).format(num)
+  // const formattedNum = Math.round(num)
+  //   .toString()
+  //   .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  // return formattedNum;
+}
 
 export const truncate = (value: string | number, maxlength: number = 150) => {
   let output = value?.toString() ?? "";
@@ -59,20 +57,27 @@ export const jsonTruncate = (obj: unknown, maxlength: number = 150) => {
   return truncate(JSON.stringify(obj, null, 2), maxlength);
 };
 
-export const timeTag = (dateTime?: string | Date) => {
-  let output: string | JSX.Element = "";
-
-  if (dateTime) {
-    output = (
-      <time dateTime={dateTime.toString()} title={dateTime.toString()}>
-        {new Date(dateTime).toLocaleString("en-GB", {
-          timeStyle: "short",
-          dateStyle: "long",
-        })}
-      </time>
-    );
+/**
+ * Renders a formatted time tag element.
+ *
+ * @param dateTime - The date and time value to format and display.
+ * @returns The formatted time tag element or an empty string if `dateTime` is not provided.
+ */
+export const timeTag = (dateTime?: string | Date): string | React.ReactNode => {
+  if (!dateTime) {
+    return '';
   }
-  return output;
+
+  const formattedDateTime = new Date(dateTime).toLocaleString('en-GB', {
+    timeStyle: 'short',
+    dateStyle: 'long',
+  });
+
+  return (
+    <time dateTime={dateTime.toString()} title={dateTime.toString()}>
+      {formattedDateTime}
+    </time>
+  );
 };
 
 export const checkboxInputTag = (checked: boolean) => {
@@ -126,7 +131,7 @@ export const isDate = (dateString: any): boolean => {
  */
 export const dynamicSort = (property: string) => {
   const sortOrder = property[0] === "-" ? -1 : 1;
-  const sortKey = property[0] === "-" ? property.substr(1) : property;
+  const sortKey = property[0] === "-" ? property.substring(1) : property;
 
   return (a: any, b: any) => {
     const result =
@@ -144,10 +149,21 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
-    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-  }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+    }`;
 };
+
+
+/**
+ * Capitalizes the first letter of a given string.
+ * @param {string} string - The input string to be capitalized.
+ * @returns {string} - The capitalized string.
+ * @deprecated Use the `capitalize` tailwind method instead.
+ */
+export const capitalize = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 /**
  *
  * @param objects
@@ -237,7 +253,7 @@ export const getBaseMaterials = (
         } else if (newRecipe) {
           findBaseMaterials(newRecipe, recipeAmount * amount, newRecipe.yields);
         }
-      } catch (error) {}
+      } catch (error) { }
     }
   };
 
@@ -340,15 +356,6 @@ export const timeFormatL = (seconds, onlyLast = false) => {
   return time.trim();
 };
 
-/**
- * Capitalizes the first letter of a given string.
- * @param {string} string - The input string to be capitalized.
- * @returns {string} - The capitalized string.
- * @deprecated Use the `capitalize` tailwind method instead.
- */
-export const capitalize = (string: string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-};
 
 /**
  * @description Returns the start and end date of the current week
@@ -371,6 +378,12 @@ export const getWeekDates = (): [Date, Date] => {
 
   return [start, end];
 };
+
+export const rtf = new Intl.RelativeTimeFormat("en", {
+  localeMatcher: "best fit", // other values: "lookup"
+  numeric: "always", // other values: "auto"
+  style: "long", // other values: "short" or "narrow"
+}).format;
 
 /**
  * Determines the type of a word based on regular expressions.
@@ -468,6 +481,167 @@ export const getDateDiff = (date1: Date, date2: Date) => {
     dateString: `${days} days, ${hours} hours, ${minutes} minutes`,
   };
 };
+
+export const generatePDF = () => {
+  // Create an array to store PDF content
+  var content = [];
+
+  // Add PDF header
+  content.push("%PDF-1.3");
+
+  // Define a function to generate PDF object numbers
+  var generateObjectNumber = function () {
+    var objectNumber = content.length / 2 + 1;
+    return Math.floor(objectNumber);
+  };
+
+  // Add PDF content
+  var objectNumber = generateObjectNumber();
+  content.push("1 0 obj");
+  content.push("<< /Type /Catalog /Pages 2 0 R >>");
+  content.push("endobj");
+
+  objectNumber = generateObjectNumber();
+  content.push("2 0 obj");
+  content.push("<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
+  content.push("endobj");
+
+  objectNumber = generateObjectNumber();
+  content.push("3 0 obj");
+  content.push(
+    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>"
+  );
+  content.push("endobj");
+
+  objectNumber = generateObjectNumber();
+  content.push("4 0 obj");
+  content.push("<< /Length 66 >>");
+  content.push("stream");
+  content.push("BT");
+  content.push("/F1 12 Tf");
+  content.push("72 720 Td");
+
+  // Define table properties
+  var tableX = 72;
+  var tableY = 700;
+  var cellPadding = 10;
+  var tableWidth = 400;
+  var tableHeight = 300;
+
+  // Generate table content
+  // const crafts = mergeItemRecipe(viewBaseMaterials, items, ...item);
+  const crafts = []
+  crafts.forEach((item, i) => {
+    for (let col = 0; col < 3; col++) {
+      var cellX = tableX + col * (tableWidth / 3);
+      var cellY = tableY - i * (tableHeight / crafts.length);
+
+      // Line start
+      content.push(
+        cellX + " " + (cellY + 5 - tableHeight / crafts.length) + " m"
+      );
+
+      // Line end
+      content.push(
+        cellX +
+        tableWidth / crafts.length +
+        " " +
+        (cellY + 5 - tableHeight / crafts.length) +
+        " l"
+      );
+      content.push("S");
+
+      // Add table cell content
+      var textX = cellX + cellPadding;
+      var textY = cellY - cellPadding;
+      content.push("BT");
+
+      content.push("1 0 0 rg"); // Set font color to red (R: 1, G: 0, B: 0)
+      content.push("/F1 12 Tf");
+
+      if (i === 0) {
+        content.push(
+          cellX + " " + (cellY + 30 - tableHeight / crafts.length) + " m"
+        );
+
+        // Line end
+        content.push(
+          cellX +
+          tableWidth / crafts.length +
+          " " +
+          (cellY + 30 - tableHeight / crafts.length) +
+          " l"
+        );
+        content.push("S");
+        content.push(textX + " " + (textY + 20) + " Td");
+        switch (col) {
+          case 0:
+            content.push(`(Name) Tj`);
+            break;
+          case 1:
+            content.push(`(Amount) Tj`);
+            break;
+          case 2:
+            content.push(`(Time) Tj`);
+            break;
+        }
+        content.push("ET");
+      }
+      content.push("BT");
+      // content.push("/F1 12 Tf");
+      content.push(textX + " " + textY + " Td");
+      switch (col) {
+        case 0:
+          content.push("0 0 0 rg");
+          content.push(
+            `(${item.Item_ItemRec_crafted_item_idToItem.name}) Tj`
+          );
+          break;
+        case 1:
+          content.push("0 0 0 rg");
+          content.push(`(${item.amount * item.yields}) Tj`);
+          break;
+        case 2:
+          content.push("0 0 0 rg");
+          content.push(`(${item.crafting_time}s) Tj`);
+          break;
+      }
+
+      content.push("ET");
+    }
+  });
+
+  content.push("ET");
+  content.push("endstream");
+  content.push("endobj");
+
+  // Add PDF trailer
+  var xrefOffset = content.join("\n").length;
+  content.push("xref");
+  content.push("0 " + (content.length / 2 + 1));
+  content.push("0000000000 65535 f ");
+  content.push("0000000009 00000 n ");
+  content.push("trailer");
+  content.push("<< /Size " + (content.length / 2 + 1) + " /Root 1 0 R >>");
+  content.push("startxref");
+  content.push(xrefOffset);
+  content.push("%%EOF");
+
+  // Join all PDF content into a string
+  var pdfContent = content.join("\n");
+
+  // Create a data URI for the PDF
+  var dataURI = "data:application/pdf;base64," + btoa(pdfContent);
+
+  // Open the PDF in a new window
+  var win = window.open();
+  win.document.write(
+    '<iframe src="' +
+    dataURI +
+    '" style="width:100%; height:100%;" frameborder="0"></iframe>'
+  );
+}
+
 
 /**
  * Removes duplicates from an array and returns a new array.

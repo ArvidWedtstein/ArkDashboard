@@ -10,8 +10,7 @@ import {
 import { useCallback, useMemo, useReducer, useRef, useState } from "react";
 
 import {
-  combineBySummingKeys,
-  formatNumberWithThousandSeparator,
+  formatNumber,
   getBaseMaterials,
   groupBy,
   timeFormatL,
@@ -20,6 +19,7 @@ import {
 import debounce from "lodash.debounce";
 import Table from "src/components/Util/Table/Table";
 import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
+
 
 interface MaterialGridProps {
   itemRecs: any[];
@@ -48,9 +48,9 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                  ...item,
-                  amount: item.amount + (action.index || 1) * yields,
-                }
+                ...item,
+                amount: item.amount + (action.index || 1) * yields,
+              }
               : item
           );
         }
@@ -76,9 +76,9 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
           const yields = item?.yields || 1;
           return i === action.index
             ? {
-                ...item,
-                amount: parseInt(item.amount) + parseInt(yields),
-              }
+              ...item,
+              amount: parseInt(item.amount) + parseInt(yields),
+            }
             : item;
         });
       }
@@ -87,9 +87,9 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
           const yields = item?.yields || 1;
           return i === action.index
             ? {
-                ...item,
-                amount: item.amount - yields,
-              }
+              ...item,
+              amount: item.amount - yields,
+            }
             : item;
         });
       }
@@ -102,9 +102,9 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                  ...item,
-                  amount: parseInt(item.amount || 0) + yields,
-                }
+                ...item,
+                amount: parseInt(item.amount || 0) + yields,
+              }
               : item
           );
         }
@@ -291,164 +291,6 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
     setItem({ type: "RESET" });
   };
 
-  // function generatePDF() {
-  //   // Create an array to store PDF content
-  //   var content = [];
-
-  //   // Add PDF header
-  //   content.push("%PDF-1.3");
-
-  //   // Define a function to generate PDF object numbers
-  //   var generateObjectNumber = function () {
-  //     var objectNumber = content.length / 2 + 1;
-  //     return Math.floor(objectNumber);
-  //   };
-
-  //   // Add PDF content
-  //   var objectNumber = generateObjectNumber();
-  //   content.push("1 0 obj");
-  //   content.push("<< /Type /Catalog /Pages 2 0 R >>");
-  //   content.push("endobj");
-
-  //   objectNumber = generateObjectNumber();
-  //   content.push("2 0 obj");
-  //   content.push("<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
-  //   content.push("endobj");
-
-  //   objectNumber = generateObjectNumber();
-  //   content.push("3 0 obj");
-  //   content.push(
-  //     "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>"
-  //   );
-  //   content.push("endobj");
-
-  //   objectNumber = generateObjectNumber();
-  //   content.push("4 0 obj");
-  //   content.push("<< /Length 66 >>");
-  //   content.push("stream");
-  //   content.push("BT");
-  //   content.push("/F1 12 Tf");
-  //   content.push("72 720 Td");
-
-  //   // Define table properties
-  //   var tableX = 72;
-  //   var tableY = 700;
-  //   var cellPadding = 10;
-  //   var tableWidth = 400;
-  //   var tableHeight = 300;
-
-  //   // Generate table content
-  //   const crafts = mergeItemRecipe(viewBaseMaterials, items, ...item);
-  //   crafts.forEach((item, i) => {
-  //     for (let col = 0; col < 3; col++) {
-  //       var cellX = tableX + col * (tableWidth / 3);
-  //       var cellY = tableY - i * (tableHeight / crafts.length);
-
-  //       // Line start
-  //       content.push(
-  //         cellX + " " + (cellY + 5 - tableHeight / crafts.length) + " m"
-  //       );
-
-  //       // Line end
-  //       content.push(
-  //         cellX +
-  //           tableWidth / crafts.length +
-  //           " " +
-  //           (cellY + 5 - tableHeight / crafts.length) +
-  //           " l"
-  //       );
-  //       content.push("S");
-
-  //       // Add table cell content
-  //       var textX = cellX + cellPadding;
-  //       var textY = cellY - cellPadding;
-  //       content.push("BT");
-
-  //       content.push("1 0 0 rg"); // Set font color to red (R: 1, G: 0, B: 0)
-  //       content.push("/F1 12 Tf");
-
-  //       if (i === 0) {
-  //         content.push(
-  //           cellX + " " + (cellY + 30 - tableHeight / crafts.length) + " m"
-  //         );
-
-  //         // Line end
-  //         content.push(
-  //           cellX +
-  //             tableWidth / crafts.length +
-  //             " " +
-  //             (cellY + 30 - tableHeight / crafts.length) +
-  //             " l"
-  //         );
-  //         content.push("S");
-  //         content.push(textX + " " + (textY + 20) + " Td");
-  //         switch (col) {
-  //           case 0:
-  //             content.push(`(Name) Tj`);
-  //             break;
-  //           case 1:
-  //             content.push(`(Amount) Tj`);
-  //             break;
-  //           case 2:
-  //             content.push(`(Time) Tj`);
-  //             break;
-  //         }
-  //         content.push("ET");
-  //       }
-  //       content.push("BT");
-  //       // content.push("/F1 12 Tf");
-  //       content.push(textX + " " + textY + " Td");
-  //       switch (col) {
-  //         case 0:
-  //           content.push("0 0 0 rg");
-  //           content.push(
-  //             `(${item.Item_ItemRec_crafted_item_idToItem.name}) Tj`
-  //           );
-  //           break;
-  //         case 1:
-  //           content.push("0 0 0 rg");
-  //           content.push(`(${item.amount * item.yields}) Tj`);
-  //           break;
-  //         case 2:
-  //           content.push("0 0 0 rg");
-  //           content.push(`(${item.crafting_time}s) Tj`);
-  //           break;
-  //       }
-
-  //       content.push("ET");
-  //     }
-  //   });
-
-  //   content.push("ET");
-  //   content.push("endstream");
-  //   content.push("endobj");
-
-  //   // Add PDF trailer
-  //   var xrefOffset = content.join("\n").length;
-  //   content.push("xref");
-  //   content.push("0 " + (content.length / 2 + 1));
-  //   content.push("0000000000 65535 f ");
-  //   content.push("0000000009 00000 n ");
-  //   content.push("trailer");
-  //   content.push("<< /Size " + (content.length / 2 + 1) + " /Root 1 0 R >>");
-  //   content.push("startxref");
-  //   content.push(xrefOffset);
-  //   content.push("%%EOF");
-
-  //   // Join all PDF content into a string
-  //   var pdfContent = content.join("\n");
-
-  //   // Create a data URI for the PDF
-  //   var dataURI = "data:application/pdf;base64," + btoa(pdfContent);
-
-  //   // Open the PDF in a new window
-  //   var win = window.open();
-  //   win.document.write(
-  //     '<iframe src="' +
-  //       dataURI +
-  //       '" style="width:100%; height:100%;" frameborder="0"></iframe>'
-  //   );
-  // }
   return (
     <Form
       onSubmit={onAdd}
@@ -571,31 +413,31 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
 
                     <ul className="py-2">
                       {Object.values(categories).length === 1 ||
-                      categoryitems.every((item, i, a) => {
-                        return !item.type;
-                      })
+                        categoryitems.every((item, i, a) => {
+                          return !item.type;
+                        })
                         ? categoryitems.map((item) => (
-                            <li key={`${category}-${item.type}-${item.id}`}>
-                              <button
-                                type="button"
-                                className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                onClick={() => onAdd({ itemId: item.id })}
-                              >
-                                <img
-                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
-                                  alt={item.name}
-                                  className="mr-2 h-5 w-5"
-                                />
-                                {item.name}
-                              </button>
-                            </li>
-                          ))
+                          <li key={`${category}-${item.type}-${item.id}`}>
+                            <button
+                              type="button"
+                              className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                              onClick={() => onAdd({ itemId: item.id })}
+                            >
+                              <img
+                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+                                alt={item.name}
+                                className="mr-2 h-5 w-5"
+                              />
+                              {item.name}
+                            </button>
+                          </li>
+                        ))
                         : Object.entries(groupBy(categoryitems, "type")).map(
-                            ([type, typeitems]: any) => (
-                              <li key={`${category}-${type}`}>
-                                <details className="">
-                                  <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                                    {/* <svg
+                          ([type, typeitems]: any) => (
+                            <li key={`${category}-${type}`}>
+                              <details className="">
+                                <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+                                  {/* <svg
                                     aria-hidden="true"
                                     className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                     fill="currentColor"
@@ -605,38 +447,38 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
                                     <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                                     <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                                   </svg> */}
-                                    <span className="ml-2">{type}</span>
-                                    <span className="text-pea-800 dark:bg-pea-900 dark:text-pea-300 bg-pea-100 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full p-3 text-sm">
-                                      {typeitems.length}
-                                    </span>
-                                  </summary>
+                                  <span className="ml-2">{type}</span>
+                                  <span className="text-pea-800 dark:bg-pea-900 dark:text-pea-300 bg-pea-100 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full p-3 text-sm">
+                                    {typeitems.length}
+                                  </span>
+                                </summary>
 
-                                  <ul className="py-2">
-                                    {typeitems.map((item) => (
-                                      <li
-                                        key={`${category}-${type}-${item.id}`}
+                                <ul className="py-2">
+                                  {typeitems.map((item) => (
+                                    <li
+                                      key={`${category}-${type}-${item.id}`}
+                                    >
+                                      <button
+                                        type="button"
+                                        className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                                        onClick={() =>
+                                          onAdd({ itemId: item.id })
+                                        }
                                       >
-                                        <button
-                                          type="button"
-                                          className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                          onClick={() =>
-                                            onAdd({ itemId: item.id })
-                                          }
-                                        >
-                                          <img
-                                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
-                                            alt={item.name}
-                                            className="mr-2 h-5 w-5"
-                                          />
-                                          {item.name}
-                                        </button>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </details>
-                              </li>
-                            )
-                          )}
+                                        <img
+                                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+                                          alt={item.name}
+                                          className="mr-2 h-5 w-5"
+                                        />
+                                        {item.name}
+                                      </button>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </details>
+                            </li>
+                          )
+                        )}
                     </ul>
                   </details>
                 </li>
@@ -647,9 +489,8 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
       </div>
       <div className="w-full">
         <Table
-          vertical={true}
-          header={false}
-          rows={mergeItemRecipe(viewBaseMaterials, items, ...item)}
+          header={true}
+          rows={mergeItemRecipe(viewBaseMaterials, items, ...item).slice(0, 1)}
           className="animate-fade-in"
           caption={{
             title: "Item",
@@ -667,40 +508,29 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
             ),
           }}
           columns={[
-            {
-              field: "Item_ItemRec_crafted_item_idToItem",
-              label: "Name",
-              className: "text-center",
-              valueFormatter: ({ value }) => value.name,
-            },
-            {
-              field: "amount",
-              label: "Amount",
-              className: "text-center",
-              numeric: true,
-              renderCell: ({ value, row }) => {
+            ...mergeItemRecipe(
+              viewBaseMaterials,
+              items,
+              ...item
+            ).map(({ Item_ItemRec_crafted_item_idToItem, amount }) => ({
+
+              field: Item_ItemRec_crafted_item_idToItem.id,
+              label: Item_ItemRec_crafted_item_idToItem.name,
+              className: "w-0 text-center",
+              renderCell: ({ rowIndex }) => {
                 return (
-                  <div className="flex flex-col items-center justify-center">
+                  <div className="flex flex-col items-center justify-center" key={`${Item_ItemRec_crafted_item_idToItem.id}-${rowIndex}`}>
                     <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${row.Item_ItemRec_crafted_item_idToItem.image}`}
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRec_crafted_item_idToItem.image}`}
                       className="h-6 w-6"
                     />
                     <span className="text-sm">
-                      {formatNumberWithThousandSeparator(value)}
+                      {formatNumber(amount)}
                     </span>
-                    <span className="sr-only">{value}</span>
                   </div>
-                );
-              },
-            },
-            {
-              field: "crafting_time",
-              label: "Crafting Time",
-              className: "text-center",
-              valueFormatter: ({ value }) => {
-                return `${timeFormatL(value)}`;
-              },
-            },
+                )
+              }
+            })),
           ]}
         />
 
@@ -810,43 +640,6 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
                 </div>
               ),
             },
-            // ...mergeItemRecipe(
-            //   false,
-            //   ...item
-            // ).map((i) => {
-            //   return {
-            //     field: i.id,
-            //     label: i.name,
-            //     numeric: true,
-            //     valueFormatter: ({ row }) => {
-            //       const itm = mergeItemRecipe(false, {
-            //         ...row,
-            //       }).filter((v) => v.id === i.id);
-            //       return itm && itm.length > 0 ? itm[0] : null;
-            //     },
-            //     renderCell: ({ value, rowIndex }) => {
-            //       return (value && isNaN(value)) ? (
-            //         <div
-            //           className="min-w-16 flex w-10 flex-col items-center justify-center"
-            //           id={`${value.id}-${rowIndex}`}
-            //           key={`${value.id}-${rowIndex}`}
-            //         >
-            //           <img
-            //             src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${value.image}`}
-            //             className="h-6 w-6"
-            //             title={value.name}
-            //             alt={value.name}
-            //           />
-            //           <span className="text-sm text-black dark:text-white">
-            //             {formatNumberWithThousandSeparator(value.amount)}
-            //           </span>
-            //         </div>
-            //       ) : (
-            //         <p></p>
-            //       );
-            //     }
-            //   }
-            // }),
             {
               field: "crafting_time",
               label: "Time pr item",
@@ -857,7 +650,6 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
               },
             },
             {
-              // field: "ItemRecipe_ItemRecipe_crafted_item_idToItem",
               field: "Item_ItemRec_crafted_item_idToItem",
               label: "Ingredients",
               numeric: false,
@@ -891,7 +683,7 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
                           alt={name}
                         />
                         <span className="text-sm text-black dark:text-white">
-                          {formatNumberWithThousandSeparator(amount)}
+                          {formatNumber(amount)}
                         </span>
                       </div>
                     )

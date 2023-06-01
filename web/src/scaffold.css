@@ -360,7 +360,9 @@ a {
 .rw-table-actions .rw-button-red:hover {
   @apply bg-red-600 text-white;
 }
-.rw-pagination-item {
+
+.rw-pagination-item,
+.rw-pagination-item[type="button"] {
   @apply border border-gray-300 bg-zinc-400 px-3 py-2 text-gray-500 hover:bg-zinc-300 hover:text-gray-700 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-600 dark:hover:text-white;
 }
 .rw-pagination-item:first-of-type {
@@ -369,8 +371,9 @@ a {
 .rw-pagination-item:last-of-type {
   @apply rounded-r-lg;
 }
-.rw-pagination-item-active {
-  @apply border border-gray-300 bg-zinc-300 px-3 py-2 text-gray-700 hover:bg-zinc-300 hover:text-gray-700 dark:border-zinc-600 dark:bg-zinc-500 dark:text-white dark:hover:bg-zinc-600 dark:hover:text-white;
+.rw-pagination-item-active,
+.rw-pagination-item-active[type="button"] {
+  @apply border border-gray-300 bg-zinc-300 px-3 py-2 font-bold text-gray-700 hover:bg-zinc-300 hover:text-gray-700 dark:border-zinc-600 dark:bg-zinc-500 dark:text-white dark:hover:bg-zinc-600 dark:hover:text-white;
 }
 
 .rw-text-center {

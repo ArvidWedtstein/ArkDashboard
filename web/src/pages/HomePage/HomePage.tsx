@@ -155,6 +155,7 @@ const HomePage = () => {
         <NewTable
           selectable
           // header={"s"}
+          summary
           filterable
           search
           pagination={{
