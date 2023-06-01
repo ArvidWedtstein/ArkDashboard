@@ -8,6 +8,7 @@ import {
 } from "src/lib/formatters";
 import clsx from "clsx";
 import useComponentVisible from "src/components/useComponentVisible";
+import { Form, SelectField, Submit, TextField } from "@redwoodjs/forms";
 interface Row {
   index: number;
 }
@@ -69,7 +70,11 @@ interface TableProps {
   ) => void;
   page?: number;
 }
-
+interface Filter {
+  column: string;
+  operator: string;
+  value: string;
+}
 /**
  * @borrows dynamicSort and debounce from formatters.ts
  * @param param
@@ -91,27 +96,20 @@ const Table = ({
   rowsPerPage = 10,
   renderActions,
 }: TableProps) => {
-  const datarows = useMemo(() => {
-    return dataRows.map((row, index) => {
-      return { ...row, tableId: index, selected: false };
-    });
-  }, [dataRows]);
+
+
   const [currentPage, setCurrentPage] = useState(1);
   const [rows, setRows] = useState<any[]>([]);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const checkboxAllSelectRef = useRef(null);
+  const [filters, setFilters] = useState<Filter[]>([]);
   const [sort, setSort] = useState({
     column: "",
     direction: "asc",
   });
 
-  interface Filter {
-    column: string;
-    operator: string;
-    value: string;
-  }
-  const [filters, setFilters] = useState<Filter[]>([]);
+
 
   const sortRows = useCallback(
     (e) => {
@@ -187,7 +185,28 @@ const Table = ({
       return true;
     });
   };
+  const selectRow = (e) => {
+    if (e.target.id === "checkbox-all-select") {
+      const isChecked = e.target.checked;
+      rows.forEach((row) => {
+        if (row.checked !== isChecked) {
+          row.checked = isChecked;
+        }
+      });
+      setSelectedRows(rows.filter((row) => row.checked === true));
+      return;
+    }
 
+    const checkboxAllSelect = checkboxAllSelectRef.current;
+    if (!e.target.checked) {
+      checkboxAllSelect.checked = e.target.checked;
+    } else {
+      if (!rows.some((row) => !row.checked) && rows.length > 0) {
+        checkboxAllSelect.checked = true;
+      }
+    }
+    setSelectedRows(rows.filter((row) => row.checked === true));
+  };
   const SortedFilteredData = useMemo(() => {
     if (!dataRows?.length) return dataRows;
 
@@ -218,31 +237,53 @@ const Table = ({
       setRows([...daRows]);
     }
   }, []);
+  // const SortedFilteredData = useMemo(() => {
+  //   // 1. Filter
+  //   // 2. Search
+  //   // 3. Sort
+  //   // 4. Paginate
+  //   // 5. Select
+  //   if (!dataRows?.length) return [];
+
+  //   if (dataRows.some((r) => !r.hasOwnProperty("selected"))) {
+  //     dataRows = dataRows.map((r) => ({ ...r, selected: false }));
+  //   }
+
+  //   let filteredData = filterData(dataRows);
+
+  //   if (searchTerm) {
+  //     filteredData = filteredData.filter((row) => {
+  //       const rowString = Object.values(row).join(" ").toLowerCase();
+  //       return rowString.includes(searchTerm.toLowerCase());
+  //     });
+  //   }
+  //   if (sort.column) {
+  //     filteredData = sortData(filteredData, sort.column, sort.direction);
+  //   }
+
+  //   const startIndex = (currentPage - 1) * rowsPerPage;
+  //   const endIndex = startIndex + rowsPerPage;
+
+  //   // return {
+  //   //   rows: filteredData,
+  //   //   pages: filteredData.slice(startIndex, endIndex)
+  //   // }
+  //   console.log(dataRows)
+  //   return filteredData
+  // }, [sort, searchTerm, currentPage, selectRow, dataRows, pagination, filters]);
+
+  // useEffect(() => {
+  //   if (select) {
+  //     let daRows = document.querySelectorAll(
+  //       'input[type="checkbox"][id^="checkbox-row"]'
+  //     );
+  //     setRows([...daRows]);
+  //   }
+  // }, []);
 
   const handleSearch = debounce((e) => setSearchTerm(e.target.value), 500);
 
-  const selectRow = (e) => {
-    if (e.target.id === "checkbox-all-select") {
-      const isChecked = e.target.checked;
-      rows.forEach((row) => {
-        if (row.checked !== isChecked) {
-          row.checked = isChecked;
-        }
-      });
-      setSelectedRows(rows.filter((row) => row.checked === true));
-      return;
-    }
 
-    const checkboxAllSelect = checkboxAllSelectRef.current;
-    if (!e.target.checked) {
-      checkboxAllSelect.checked = e.target.checked;
-    } else {
-      if (!rows.some((row) => !row.checked) && rows.length > 0) {
-        checkboxAllSelect.checked = true;
-      }
-    }
-    setSelectedRows(rows.filter((row) => row.checked === true));
-  };
 
   const headerRenderer = ({ label, columnIndex, ...other }) => {
     return (
@@ -337,9 +378,11 @@ const Table = ({
   const tableSelect = ({
     header = false,
     row,
+    datarow,
   }: {
     header?: boolean;
     row: number;
+    datarow?: any
   }) => {
     return (
       <td
@@ -353,9 +396,10 @@ const Table = ({
           <input
             id={header ? "checkbox-all-select" : `checkbox-row-${row}`}
             ref={header ? checkboxAllSelectRef : null}
+            // checked={datarow?.selected || false}
             onChange={selectRow}
             type="checkbox"
-            className="rw-input h-4 w-4"
+            className="rw-input rw-checkbox h-4 w-4"
           />
           <label
             htmlFor={header ? "checkbox-all-select" : `checkbox-row-${row}`}
@@ -386,7 +430,7 @@ const Table = ({
     );
     return (
       <tfoot>
-        <tr className="ont-semibold text-gray-900  dark:text-white rounded-b-lg">
+        <tr className="font-semibold text-gray-900  dark:text-white rounded-b-lg">
           {select && <td className="p-4 first:rounded-bl-lg bg-zinc-400 dark:bg-zinc-700"></td>}
           {
             columnData.map(
@@ -440,12 +484,58 @@ const Table = ({
   };
 
   const tablePagination = () => {
-    const totalRows = dataRows.length || rows.length;
+    const totalRows = SortedFilteredData.length || rows.length;
     const lastRowIndex =
       currentPage * rowsPerPage > totalRows
         ? totalRows
         : currentPage * rowsPerPage;
     const firstRowIndex = currentPage * rowsPerPage - rowsPerPage;
+    const totalPageCount = Math.ceil(totalRows / rowsPerPage);
+
+    const paginationRange = () => {
+      const siblingCount = 1;
+
+      const range = (start, end) => {
+        const result = [];
+        for (let i = start; i <= end; i++) {
+          result.push(i);
+        }
+        return result;
+      };
+
+      if (totalPageCount <= siblingCount + 5) {
+        return range(1, totalPageCount);
+      }
+
+      const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
+      const rightSiblingIndex = Math.min(currentPage + siblingCount, totalPageCount);
+
+      const shouldShowLeftDots = leftSiblingIndex > 2;
+      const shouldShowRightDots = rightSiblingIndex < totalPageCount - 2;
+
+      const result = [];
+
+      if (shouldShowLeftDots) {
+        result.push(1);
+        if (leftSiblingIndex > 3) {
+          result.push("...");
+        }
+      }
+
+      for (let i = leftSiblingIndex; i <= rightSiblingIndex; i++) {
+        result.push(i);
+      }
+
+      if (shouldShowRightDots) {
+        if (rightSiblingIndex < totalPageCount - 2) {
+          result.push("...");
+        }
+        result.push(totalPageCount);
+      }
+
+      return result;
+    };
+
 
     const changePage = useCallback(
       (dir: "next" | "prev") => {
@@ -453,7 +543,7 @@ const Table = ({
           setCurrentPage(currentPage - 1);
         } else if (
           dir === "next" &&
-          currentPage < Math.ceil(totalRows / rowsPerPage)
+          currentPage < totalPageCount
         ) {
           setCurrentPage(currentPage + 1);
         }
@@ -463,19 +553,8 @@ const Table = ({
     return useMemo(
       () => (
         <nav
-          className="flex items-center justify-between pt-4"
-          aria-label="Table navigation"
+          className="flex items-center justify-end pt-4"
         >
-          <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-            Showing{" "}
-            <span className="font-semibold text-gray-900 dark:text-white">
-              {firstRowIndex + 1}-{lastRowIndex}
-            </span>{" "}
-            of{" "}
-            <span className="font-semibold text-gray-900 dark:text-white">
-              {totalRows}
-            </span>
-          </span>
           <nav
             className="rw-button-group m-0 leading-tight"
             aria-label="Page navigation"
@@ -501,33 +580,22 @@ const Table = ({
                 />
               </svg>
             </button>
-            {currentPage > 1 && (
+            {paginationRange().map((page, index) => (
               <button
+                key={`page-${index}`}
                 type="button"
-                onClick={() => changePage("prev")}
-                className="rw-pagination-item"
+                disabled={isNaN(page)}
+                onClick={() => setCurrentPage(isNaN(page) ? 1 : page)}
+                className={clsx("rw-pagination-item", {
+                  "rw-pagination-item-active": currentPage === page,
+                })}
               >
-                {currentPage - 1}
+                {page}
               </button>
-            )}
+            ))}
             <button
               type="button"
-              // className="block border border-gray-300 bg-white px-3 py-2 text-lg font-bold leading-tight text-black hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-zinc-600 dark:text-white dark:hover:bg-zinc-700 dark:hover:text-stone-300"
-              className="rw-pagination-item-active"
-            >
-              {currentPage}
-            </button>
-            {currentPage < Math.ceil(dataRows.length / rowsPerPage) && (
-              <button
-                type="button"
-                onClick={() => changePage("next")}
-                className="rw-pagination-item"
-              >
-                {currentPage + 1}
-              </button>
-            )}
-            <button
-              type="button"
+              disabled={currentPage === totalPageCount}
               onClick={() => changePage("next")}
               className="rw-pagination-item"
             >
@@ -547,124 +615,33 @@ const Table = ({
               </svg>
             </button>
           </nav>
+          <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+            Showing{" "}
+            <span className="font-semibold text-gray-900 dark:text-white">
+              {firstRowIndex + 1}-{lastRowIndex}
+            </span>{" "}
+            of{" "}
+            <span className="font-semibold text-gray-900 dark:text-white">
+              {totalRows}
+            </span>
+          </span>
         </nav>
       ),
-      [currentPage]
+      [currentPage, filters]
     );
   };
 
-  const addFilter = () => {
-    setFilters([
-      ...filters,
-      {
-        column: columns[0].field.toString(),
-        operator: "=",
-        value: "",
-      },
-    ]);
+  const addFilter = (e?) => {
+    console.log(e)
+    setFilters((prev) => [...prev, {
+      column: e.column,
+      operator: e.operator,
+      value: e.value,
+    }])
   };
 
   const { isComponentVisible, setIsComponentVisible, ref } =
     useComponentVisible(false);
-
-  const FilterDialog = () => {
-    if (!filter) return <></>;
-
-    return (
-      <dialog
-        className="absolute z-10 min-w-max rounded border bg-zinc-700 p-2"
-        open={isComponentVisible}
-        onClose={() => setIsComponentVisible(false)}
-      >
-        {filters.map((filter, index) => (
-          <div
-            className="rw-button-group justify-start"
-            key={`filter-${index}`}
-          >
-            <select
-              name="column"
-              id="column"
-              className="rw-input rw-input-small !rounded-r-none"
-              value={filter.column}
-              onChange={(e) => {
-                const newFilters = [...filters];
-                newFilters[index].column = e.target.value;
-                setFilters(newFilters);
-              }}
-            >
-              {columns.map((column, index) => (
-                <option key={`column-${index}`} value={column.field}>
-                  {column.label}
-                </option>
-              ))}
-            </select>
-
-            <select
-              name="operator"
-              id="operator"
-              className="rw-input rw-input-small !rounded-l-none !rounded-r-none"
-              value={filter.operator}
-              onChange={(e) => {
-                const newFilters = [...filters];
-                newFilters[index].operator = e.target.value;
-                setFilters(newFilters);
-              }}
-            >
-              <option value="=">=</option>
-              <option value="!=">!=</option>
-              <option value=">">&gt;</option>
-              <option value=">=">&gt;=</option>
-              <option value="<">&lt;</option>
-              <option value="<=">&lt;=</option>
-              <option value="like">like</option>
-              <option value="ilike">ilike</option>
-              <option value="in">in</option>
-              <option value="not_in">not in</option>
-            </select>
-
-            <input
-              type="text"
-              name="value"
-              className="rw-input rw-input-small !rounded-none"
-              value={filter.value}
-              onChange={(e) => {
-                const newFilters = [...filters];
-                newFilters[index].value = e.target.value;
-                setFilters(newFilters);
-              }}
-            />
-            <button
-              className="rw-button rw-button-gray rw-button-small !ml-0 !rounded-l-none"
-              onClick={() => {
-                const newFilters = [...filters];
-                newFilters.splice(index, 1);
-                setFilters(newFilters);
-              }}
-            >
-              Remove
-            </button>
-          </div>
-        ))}
-        {filters.length === 0 && (
-          <p className="m-1 text-base text-stone-400">
-            No filters applied to this view
-            <br />
-            <span className="text-xs text-stone-500">
-              Add a filter below to filter the view
-            </span>
-          </p>
-        )}
-        <hr />
-        <button
-          type="button"
-          className="rw-button rw-button-small rw-button-gray-outline"
-          onClick={() => addFilter()}
-        >
-          Add Filter
-        </button>
-      </dialog>
-    );
-  };
 
   return (
     <div
@@ -674,51 +651,187 @@ const Table = ({
       )}
     >
       {(search || filter) && (
-        <div className="m-1 flex items-center justify-start space-x-3 pb-4">
+        <div className="my-2 flex items-center justify-start space-x-3">
           {filter && (
-            <div className="relative" ref={ref}>
+            <div className="relative w-fit" ref={ref}>
               <button
-                className={clsx("rw-button rw-button-gray", {
-                  "!text-pea-400": filters.length > 0,
-                })}
+                className="rw-button rw-button-gray-outline m-0"
                 onClick={() => setIsComponentVisible(!isComponentVisible)}
               >
-                {filters.length > 0
-                  ? `Filtered by ${pluralize(filters.length, "rule")}`
-                  : "Filter"}
-              </button>
-              {FilterDialog()}
-            </div>
-          )}
-          {search && (
-            <div className="relative">
-              <label htmlFor="table-search" className="sr-only">
-                Search
-              </label>
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <span className="sr-only">Filter</span>
                 <svg
-                  className="h-5 w-5 text-gray-500 dark:text-gray-400"
-                  aria-hidden="true"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 640 512"
+                  className="pointer-events-none w-6"
+                  fill="currentColor"
+                  stroke="currentColor"
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                    clipRule="evenodd"
-                  ></path>
+                  {filters.length > 0 ? (
+                    <path d="M479.3 32H32.7C5.213 32-9.965 63.28 7.375 84.19L192 306.8V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C286.5 478.6 291.3 480 295.9 480C308.3 480 320 470.2 320 455.1V306.8l184.6-222.6C521.1 63.28 506.8 32 479.3 32zM295.4 286.4L288 295.3v145.3l-64-44.79V295.3L32.7 64h446.6l.6934-.2422L295.4 286.4z" />
+                  ) : (
+                    <path d="M352 440.6l-64-44.79V312.3L256 287V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C350.5 478.6 355.3 480 359.9 480C372.3 480 384 470.2 384 455.1v-67.91l-32-25.27V440.6zM543.3 64l.6934-.2422l-144.1 173.8l25.12 19.84l143.6-173.2C585.1 63.28 570.8 32 543.3 32H139.6l40.53 32H543.3zM633.9 483.4L25.92 3.42c-6.938-5.453-17-4.25-22.48 2.641c-5.469 6.938-4.281 17 2.641 22.48l608 480C617 510.9 620.5 512 623.1 512c4.734 0 9.422-2.094 12.58-6.078C642 498.1 640.8 488.9 633.9 483.4z" />
+                  )}
                 </svg>
-              </div>
-              <input
-                id="table-search"
-                onChange={handleSearch}
-                className="rw-input block w-80 rounded-lg pl-10"
-                placeholder="Search for items"
-              />
+                {filters.length > 0 && (
+                  <div className="absolute -top-2 -right-2 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-red-500 text-xs font-bold text-white dark:border-gray-900">
+                    {filters.length}
+                  </div>
+                )}
+              </button>
+              <dialog
+                className={`z-10 rounded border bg-zinc-600 dark:bg-zinc-900 p-3`}
+                open={isComponentVisible}
+                onClose={() => setIsComponentVisible(false)}
+              >
+                <Form
+                  className="flex flex-col"
+                  method="dialog"
+                  onSubmit={(e) => {
+                    addFilter(e)
+                  }}
+                >
+                  {filters.map(
+                    ({ column, operator, value }, index) => (
+                      <div
+                        className="rw-button-group my-1 justify-start"
+                        key={`filter-${index}`}
+                      >
+                        <select
+                          name="column"
+                          className="rw-input rw-input-small"
+                          defaultValue={column}
+                        >
+                          {columns.map((column, idx) => (
+                            <option key={`filter-${index}-column-${idx}`}>
+                              {column.field}
+                            </option>
+                          ))}
+                        </select>
+                        <select
+                          name="operator"
+                          className="rw-input rw-input-small"
+                          defaultValue={operator}
+                        >
+                          <option value="=">=</option>
+                          <option value="!=">!=</option>
+                          <option value=">">&gt;</option>
+                          <option value=">=">&gt;=</option>
+                          <option value="<">&lt;</option>
+                          <option value="<=">&lt;=</option>
+                          <option value="like">like</option>
+                          <option value="ilike">ilike</option>
+                          <option value="in">in</option>
+                          <option value="not_in">not in</option>
+                        </select>
+                        <input
+                          name="value"
+                          className="rw-input rw-input-small"
+                          defaultValue={value}
+                        />
+                        <button
+                          className="rw-button rw-button-small rw-button-red"
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            const newFilters = [...filters];
+                            newFilters.splice(index, 1);
+                            setFilters(newFilters);
+                          }}
+                        >
+                          -
+                        </button>
+                      </div>
+                    )
+                  )}
+                  <div className="rw-button-group justify-start">
+                    <SelectField
+                      name="column"
+                      className="rw-input rw-input-small"
+                    >
+                      {columns.map((column, index) => (
+                        <option key={`column-option-${index}`}>
+                          {column.field}
+                        </option>
+                      ))}
+                    </SelectField>
+                    <SelectField
+                      name="operator"
+                      className="rw-input rw-input-small"
+                    >
+                      <option value="=">=</option>
+                      <option value="!=">!=</option>
+                      <option value=">">&gt;</option>
+                      <option value=">=">&gt;=</option>
+                      <option value="<">&lt;</option>
+                      <option value="<=">&lt;=</option>
+                      <option value="like">like</option>
+                      <option value="ilike">ilike</option>
+                      <option value="in">in</option>
+                      <option value="not_in">not in</option>
+                    </SelectField>
+                    <TextField
+                      name="value"
+                      className="rw-input rw-input-small"
+                    />
+                    <Submit className="rw-button rw-button-small rw-button-green">
+                      +
+                    </Submit>
+                  </div>
+                  <div className="rw-button-group justify-end">
+                    <button
+                      className="rw-button rw-button-small rw-button-gray"
+                      value="cancel"
+                      formMethod="dialog"
+                      type="button"
+                      onClick={() => setIsComponentVisible(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="rw-button rw-button-small rw-button-green"
+                      id="confirmBtn"
+                      formMethod="dialog"
+                      type="button"
+                      onClick={() => setIsComponentVisible(false)}
+                    >
+                      Confirm
+                    </button>
+                  </div>
+                </Form>
+              </dialog>
             </div>
           )}
-        </div>
+          {
+            search && (
+              <div className="relative">
+                <label htmlFor="table-search" className="sr-only">
+                  Search
+                </label>
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <svg
+                    className="h-5 w-5 text-gray-500 dark:text-gray-400"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                      clipRule="evenodd"
+                    ></path>
+                  </svg>
+                </div>
+                <input
+                  id="table-search"
+                  onChange={handleSearch}
+                  className="rw-input block w-80 rounded-lg pl-10"
+                  placeholder="Search for items"
+                />
+              </div>
+            )
+          }
+        </div >
       )}
 
       <table className="relative mr-auto w-full table-auto text-left text-sm text-gray-700 dark:text-stone-300">
@@ -733,7 +846,7 @@ const Table = ({
         {header && (
           <thead className="text-sm uppercase text-zinc-700 dark:text-zinc-300">
             <tr className="table-row rounded-t-lg">
-              {select && tableSelect({ header: true, row: 0 })}
+              {select && tableSelect({ header: true, row: -1 })}
               {columns.map(({ ...other }, index) => {
                 return headerRenderer({
                   label: other.label,
@@ -756,7 +869,7 @@ const Table = ({
                   })}
                   onClick={() => onRowClick && onRowClick({ index: i })}
                 >
-                  {select && tableSelect({ row: i })}
+                  {select && tableSelect({ datarow, row: i })}
                   {columns.map(({ field, ...other }, index) =>
                     cellRenderer({
                       rowData: datarow,
@@ -785,7 +898,7 @@ const Table = ({
         {summary && tableFooter()}
       </table>
       {pagination && tablePagination()}
-    </div>
+    </div >
   );
 };
 

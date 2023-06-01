@@ -129,7 +129,7 @@ const HomePage = () => {
           filter={true}
           summary={true}
           select={true}
-          rowsPerPage={10}
+          rowsPerPage={5}
           pagination={true}
           rows={tblInput}
           columns={[
@@ -160,7 +160,7 @@ const HomePage = () => {
           search
           pagination={{
             page: 1,
-            pageSize: 10,
+            pageSize: 5,
             pageSizeOptions: [5, 10, 25],
           }}
           rows={tblInput}

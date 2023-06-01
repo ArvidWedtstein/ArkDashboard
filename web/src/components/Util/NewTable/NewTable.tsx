@@ -124,6 +124,7 @@ const NewTable = ({
     SELECT_ALL = "SELECT_ALL",
     SET = "SET",
     SET_PAGE = "SET_PAGE",
+    SEARCH = "SEARCH",
   }
   interface DataAction {
     type: DataActionKind;
@@ -135,6 +136,36 @@ const NewTable = ({
     (state, action: DataAction) => {
       const { type, payload } = action;
       switch (type) {
+        case DataActionKind.SEARCH: {
+          const filteredRows = rows.filter((row) => {
+            return Object.values(row)
+              .map((value) => {
+                if (typeof value === "string") {
+                  return value.toLowerCase().includes(payload.toLowerCase());
+                }
+                return false;
+              })
+              .reduce((acc, curr) => acc || curr, false);
+          }
+          );
+          return {
+            ...state,
+            page_rows: pagination
+              ? filteredRows.slice(
+                (pagination.page - 1) * pagination.pageSize,
+                pagination.page * pagination.pageSize
+              )
+              : [],
+            showing_rows:
+              pagination &&
+              `${pagination.page * pagination.pageSize - pagination.pageSize + 1
+              }-${pagination.page * pagination.pageSize > filteredRows.length
+                ? filteredRows.length
+                : pagination.page * pagination.pageSize
+              }`,
+            rows: filteredRows,
+          };
+        }
         case DataActionKind.SET: {
           return {
             ...state,
@@ -257,14 +288,14 @@ const NewTable = ({
           return {
             ...state,
             rows: state.rows.map((row, i) => {
-              if (row.tableId === payload.row.tableId) {
+              if (row.tableId === payload.tableId) {
                 return { ...row, selected: payload.checked };
               }
               return row;
             }),
             page_rows: pagination
               ? state.page_rows.map((row) => {
-                if (row.tableId === payload.row.tableId) {
+                if (row.tableId === payload.tableId) {
                   return { ...row, selected: payload.checked };
                 }
                 return row;
@@ -276,6 +307,7 @@ const NewTable = ({
           const allSelected = state.rows.map((row) => {
             return { ...row, selected: payload.checked || false };
           });
+          console.log('selectall', allSelected)
           return {
             ...state,
             rows: allSelected,
@@ -340,6 +372,31 @@ const NewTable = ({
       });
     };
   }, [rows]);
+
+  const selectCell = (tableId?: string) => {
+    return <th
+      className={clsx("px-3 py-2 sm:py-3 sm:px-4", {
+        "bg-zinc-400 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-700": !tableId,
+        "dark:bg-zinc-800 bg-zinc-100": tableId,
+      })}
+      abbr="checkbox"
+    >
+      <input
+        type="checkbox"
+        className="rw-input rw-checkbox m-0"
+        defaultChecked={!tableId ? (pagination ? data.page_rows : data.rows).every((row) => row.selected) : false}
+        onChange={(e) => {
+          dispatch({
+            type: !tableId ? DataActionKind.SELECT_ALL : DataActionKind.SELECT,
+            payload: {
+              checked: e.target.checked,
+              tableId,
+            },
+          });
+        }}
+      />
+    </th>
+  }
 
   const formMethods = useForm();
   const { isComponentVisible, setIsComponentVisible, ref } =
@@ -505,6 +562,7 @@ const NewTable = ({
                     </Form>
                   </dialog>
                 </div>
+
                 {selectable && (
                   <button
                     className="rw-button rw-button-gray-outline"
@@ -553,32 +611,20 @@ const NewTable = ({
                     </svg>
                   </button>
                 )}
-                {search && <input className="rw-input m-0" title="Search" />}
+                {search && <input className="rw-input m-0" onChange={(e) => {
+                  dispatch({
+                    type: DataActionKind.SEARCH,
+                    payload: e.target.value,
+                  })
+                }} title="Search" />}
               </div>
             </caption>
           )}
           <thead className="!rounded-t-lg text-xs uppercase text-zinc-700 dark:text-zinc-300">
             <tr>
-              {selectable && (
-                <th
-                  className="bg-zinc-400 px-3 py-2 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-700 sm:py-3 sm:px-4"
-                  abbr="checkbox"
-                >
-                  <input
-                    type="checkbox"
-                    className="rw-input rw-checkbox m-0"
-                    defaultChecked={false}
-                    onChange={(e) => {
-                      dispatch({
-                        type: DataActionKind.SELECT_ALL,
-                        payload: {
-                          checked: e.target.checked,
-                        },
-                      });
-                    }}
-                  />
-                </th>
-              )}
+              {selectable &&
+                selectCell()
+              }
               {cols.map((column, index) => (
                 <th
                   key={index}
@@ -635,7 +681,8 @@ const NewTable = ({
                     "divide-x divide-zinc-500 dark:divide-zinc-600": header,
                   })}
                 >
-                  {selectable && !!selectable && (
+                  {selectable && selectCell(row.tableId)}
+                  {/* {selectable && (
                     <td
                       className={clsx(
                         "w-4 bg-zinc-100 p-2 dark:bg-zinc-800 sm:p-4",
@@ -664,7 +711,7 @@ const NewTable = ({
                         }}
                       />
                     </td>
-                  )}
+                  )} */}
                   {cols.map((column, idx) => (
                     <td
                       key={`row-${index}-cell-${idx}`}
