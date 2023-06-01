@@ -484,7 +484,7 @@ const Table = ({
   };
 
   const tablePagination = () => {
-    const totalRows = SortedFilteredData.length || rows.length;
+    const totalRows = dataRows.length || rows.length;
     const lastRowIndex =
       currentPage * rowsPerPage > totalRows
         ? totalRows
