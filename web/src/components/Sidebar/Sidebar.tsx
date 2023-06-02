@@ -161,7 +161,7 @@ const Sidebar = memo(({ }) => {
   ];
 
   return (
-    <nav className="overflow-x-auto sm:overflow-visible  sticky top-0 z-10 flex h-fit flex-row items-center justify-between bg-zinc-800 rounded-r-xl border-gray-700 px-10 py-2 dark:border-gray-200 max-sm:border-b sm:bg-transparent sm:flex-col sm:justify-start sm:border-r sm:py-10 sm:px-2">
+    <nav className="overflow-x-auto sm:overflow-visible sticky top-0 z-10 flex h-fit flex-row items-center justify-between bg-zinc-800 rounded-r-xl border-gray-700 px-10 py-2 dark:border-gray-200 max-sm:border-b sm:bg-transparent sm:flex-col sm:justify-start sm:border-r sm:py-10 sm:px-2">
       {navigation.map((item, index) => (
         <aside
           className="mx-2 flex flex-col items-center justify-start self-start text-black transition-all dark:text-[#ffffffcc] sm:flex-row"

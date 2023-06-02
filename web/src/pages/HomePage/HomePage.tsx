@@ -3,8 +3,8 @@ import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "src/auth";
 import NewTable from "src/components/Util/NewTable/NewTable";
 import Table from "src/components/Util/Table/Table";
-import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
-import { Profiler } from "react";
+import { useState } from "react";
+import { debounce } from "src/lib/formatters";
 const HomePage = () => {
   const { isAuthenticated, currentUser } = useAuth();
   // if (document.addEventListener) {
@@ -22,6 +22,64 @@ const HomePage = () => {
   //     subscription.unsubscribe()
   //   }
   // }, [supabase])
+
+  const tblInput = [
+    {
+      name: "teeeeeeeeest",
+      description: 36,
+      created_by: "Ole",
+    },
+    {
+      name: "teeeeeeeeest",
+      description: 36,
+      created_by: "Ole",
+    },
+    {
+      name: "teeeeeeeeest",
+      description: 36,
+      created_by: "Ole",
+    },
+    {
+      name: "test2",
+      description: 1,
+      created_by: "Per",
+    },
+    {
+      name: "test3",
+      description: 45,
+      created_by: "Jens",
+    },
+    {
+      name: "test1",
+      description: 36,
+      created_by: "Ole",
+    },
+    {
+      name: "test2",
+      description: 1,
+      created_by: "Per",
+    },
+    {
+      name: "test3",
+      description: 45,
+      created_by: "Jens",
+    },
+    {
+      name: "test1",
+      description: 36,
+      created_by: "Ole",
+    },
+    {
+      name: "test2",
+      description: 1,
+      created_by: "Per",
+    },
+    {
+      name: "test3",
+      description: 45,
+      created_by: "Peder",
+    },
+  ];
 
   return (
     <>
@@ -67,68 +125,15 @@ const HomePage = () => {
           </div>
         </div>
 
-        <Table
+        {/* <Table
           filter={true}
           summary={true}
           select={true}
-          rowsPerPage={5}
+          hover={true}
+          search={true}
+          rowsPerPage={3}
           pagination={true}
-          rows={[
-            {
-              name: "test1",
-              description: 36,
-              created_by: "Ole",
-              actions: false,
-            },
-            {
-              name: "test2",
-              description: 1,
-              created_by: "Per",
-              actions: true,
-            },
-            {
-              name: "test3",
-              description: 45,
-              created_by: "Jens",
-              actions: true,
-            },
-            {
-              name: "test1",
-              description: 36,
-              created_by: "Ole",
-              actions: false,
-            },
-            {
-              name: "test2",
-              description: 1,
-              created_by: "Per",
-              actions: true,
-            },
-            {
-              name: "test3",
-              description: 45,
-              created_by: "Jens",
-              actions: false,
-            },
-            {
-              name: "test1",
-              description: 36,
-              created_by: "Ole",
-              actions: false,
-            },
-            {
-              name: "test2",
-              description: 1,
-              created_by: "Per",
-              actions: true,
-            },
-            {
-              name: "test3",
-              description: 45,
-              created_by: "Peder",
-              actions: false,
-            },
-          ]}
+          rows={tblInput}
           columns={[
             {
               sortable: true,
@@ -147,72 +152,20 @@ const HomePage = () => {
               label: "Created By",
             },
           ]}
-        />
+        /> */}
 
-        <NewTable
+        {/* <NewTable
           selectable
+          // header={"s"}
+          summary
           filterable
+          search
           pagination={{
             page: 1,
-            pageSize: 5,
-            pageSizeOptions: [5, 10, 25, 50, 100],
+            pageSize: 1,
+            pageSizeOptions: [1, 10, 25],
           }}
-          rows={[
-            {
-              name: "test1",
-              description: 36,
-              created_by: "Ole",
-              actions: false,
-            },
-            {
-              name: "test2",
-              description: 1,
-              created_by: "Per",
-              actions: true,
-            },
-            {
-              name: "test3",
-              description: 45,
-              created_by: "Jens",
-              actions: true,
-            },
-            {
-              name: "test1",
-              description: 36,
-              created_by: "Ole",
-              actions: false,
-            },
-            {
-              name: "test2",
-              description: 1,
-              created_by: "Per",
-              actions: true,
-            },
-            {
-              name: "test3",
-              description: 45,
-              created_by: "Jens",
-              actions: false,
-            },
-            {
-              name: "test1",
-              description: 36,
-              created_by: "Ole",
-              actions: false,
-            },
-            {
-              name: "test2",
-              description: 1,
-              created_by: "Per",
-              actions: true,
-            },
-            {
-              name: "test3",
-              description: 45,
-              created_by: "Peder",
-              actions: false,
-            },
-          ]}
+          rows={tblInput}
           columns={[
             {
               field: "name",
@@ -231,7 +184,7 @@ const HomePage = () => {
               sortable: true,
             },
           ]}
-        />
+        /> */}
 
         {/* {isAuthenticated && <Chat />} */}
 

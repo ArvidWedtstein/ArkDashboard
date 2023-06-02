@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
-import { nmbFormat, timeTag, truncate } from "src/lib/formatters";
+import { formatNumber, timeTag, truncate } from "src/lib/formatters";
 import { Link } from "@redwoodjs/router";
 import { routes } from "@redwoodjs/router";
 import { useAuth } from "src/auth";
@@ -113,8 +113,8 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
     basespots.length > 0 && props?.timelineBasespot?.basespot_id
       ? setSelectedBasespot(
-          basespots.find((b) => b.id === props?.timelineBasespot?.basespot_id)
-        )
+        basespots.find((b) => b.id === props?.timelineBasespot?.basespot_id)
+      )
       : null;
   }, []);
 
@@ -265,17 +265,17 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           valueProp={
             selectedBasespot !== null
               ? {
-                  latitude: basespots.find(
-                    (b) => b.id === selectedBasespot.value
-                  ).latitude,
-                  longitude: basespots.find(
-                    (b) => b.id === selectedBasespot.value
-                  ).longitude,
-                }
+                latitude: basespots.find(
+                  (b) => b.id === selectedBasespot.value
+                ).latitude,
+                longitude: basespots.find(
+                  (b) => b.id === selectedBasespot.value
+                ).longitude,
+              }
               : {
-                  latitude: props.timelineBasespot?.latitude,
-                  longitude: props.timelineBasespot?.latitude,
-                }
+                latitude: props.timelineBasespot?.latitude,
+                longitude: props.timelineBasespot?.latitude,
+              }
           }
           validation={{
             disabled: selectedBasespot !== null,
@@ -430,7 +430,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
           </div>
         </fieldset>
 
-        <Label
+        {/* <Label
           name="players"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
@@ -455,7 +455,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
         />
         <p className="rw-helper-text">Player names, comma seperated</p>
 
-        <FieldError name="players" className="rw-field-error" />
+        <FieldError name="players" className="rw-field-error" /> */}
 
         {/* {(true || !props.timelineBasespot?.end_date) && (
           <fieldset className="rw-form-group">
@@ -631,8 +631,8 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                           >
                             {dino.birth_date != null && dino.death_date != null
                               ? `${timeTag(dino.birth_date)} - ${timeTag(
-                                  dino.death_date
-                                )}`
+                                dino.death_date
+                              )}`
                               : props.timelineBasespot.tribe_name}
                           </p>
                           <p className="font-semibold text-green-500">
@@ -648,12 +648,12 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                             alt=""
                           />
                           <span>
-                            {nmbFormat(
+                            {formatNumber(
                               dino.wild_stamina *
-                                dino.Dino.base_stats["s"]["w"] +
-                                dino.stamina * dino.Dino.base_stats["s"]["t"] +
-                                dino.Dino.base_stats["s"]["b"]
-                            )}
+                              dino.Dino.base_stats["s"]["w"] +
+                              dino.stamina * dino.Dino.base_stats["s"]["t"] +
+                              dino.Dino.base_stats["s"]["b"]
+                              , { notation: 'compact' })}
                           </span>
                         </p>
                         <p className="text-center">
@@ -666,12 +666,12 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                             alt=""
                           />
                           <span>
-                            {nmbFormat(
+                            {formatNumber(
                               dino.wild_weight *
-                                dino.Dino.base_stats["w"]["w"] +
-                                dino.weight * dino.Dino.base_stats["w"]["t"] +
-                                dino.Dino.base_stats["w"]["b"]
-                            )}
+                              dino.Dino.base_stats["w"]["w"] +
+                              dino.weight * dino.Dino.base_stats["w"]["t"] +
+                              dino.Dino.base_stats["w"]["b"]
+                              , { notation: 'compact' })}
                           </span>
                         </p>
                         <p className="text-center">
@@ -684,12 +684,12 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                             alt=""
                           />
                           <span>
-                            {nmbFormat(
+                            {formatNumber(
                               dino.wild_oxygen *
-                                dino.Dino.base_stats["o"]["w"] +
-                                dino.oxygen * dino.Dino.base_stats["o"]["t"] +
-                                dino.Dino.base_stats["o"]["b"]
-                            )}
+                              dino.Dino.base_stats["o"]["w"] +
+                              dino.oxygen * dino.Dino.base_stats["o"]["t"] +
+                              dino.Dino.base_stats["o"]["b"]
+                              , { notation: 'compact' })}
                           </span>
                         </p>
                         <p className="text-center">
@@ -705,7 +705,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                             {dino.wild_melee_damage *
                               dino.Dino.base_stats["d"]["w"] +
                               dino.melee_damage *
-                                dino.Dino.base_stats["d"]["t"] +
+                              dino.Dino.base_stats["d"]["t"] +
                               dino.Dino.base_stats["d"]["b"]}
                             %
                           </span>
@@ -720,11 +720,11 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                             alt=""
                           />
                           <span>
-                            {nmbFormat(
+                            {formatNumber(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                                dino.food * dino.Dino.base_stats["f"]["t"] +
-                                dino.Dino.base_stats["f"]["b"]
-                            )}
+                              dino.food * dino.Dino.base_stats["f"]["t"] +
+                              dino.Dino.base_stats["f"]["b"]
+                              , { notation: 'compact' })}
                           </span>
                         </p>
                         <p className="text-center">
@@ -737,13 +737,13 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                             alt=""
                           />
                           <span>
-                            {nmbFormat(
+                            {formatNumber(
                               dino.wild_movement_speed *
-                                dino.Dino.base_stats["m"]["w"] +
-                                dino.movement_speed *
-                                  dino.Dino.base_stats["m"]["t"] +
-                                dino.Dino.base_stats["m"]["b"]
-                            )}
+                              dino.Dino.base_stats["m"]["w"] +
+                              dino.movement_speed *
+                              dino.Dino.base_stats["m"]["t"] +
+                              dino.Dino.base_stats["m"]["b"]
+                              , { notation: 'compact' })}
                             %
                           </span>
                         </p>
@@ -755,19 +755,19 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                         <div className="relative flex h-full w-full items-center border-2 border-[#0D2836]">
                           <div className="h-full w-full bg-gradient-to-t from-[#A30100] to-red-500"></div>
                           <span className="absolute w-full items-center text-base font-semibold">
-                            {nmbFormat(
+                            {formatNumber(
                               dino.wild_health *
-                                dino.Dino.base_stats["h"]["w"] +
-                                dino.health * dino.Dino.base_stats["h"]["t"] +
-                                dino.Dino.base_stats["h"]["b"]
-                            )}
+                              dino.Dino.base_stats["h"]["w"] +
+                              dino.health * dino.Dino.base_stats["h"]["t"] +
+                              dino.Dino.base_stats["h"]["b"]
+                              , { notation: 'compact' })}
                             /
-                            {nmbFormat(
+                            {formatNumber(
                               dino.wild_health *
-                                dino.Dino.base_stats["h"]["w"] +
-                                dino.health * dino.Dino.base_stats["h"]["t"] +
-                                dino.Dino.base_stats["h"]["b"]
-                            )}{" "}
+                              dino.Dino.base_stats["h"]["w"] +
+                              dino.health * dino.Dino.base_stats["h"]["t"] +
+                              dino.Dino.base_stats["h"]["b"]
+                              , { notation: 'compact' })}{" "}
                             Health ({dino.wild_health}-{dino.health})
                           </span>
                         </div>
@@ -776,17 +776,17 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                         <div className="relative flex h-full w-full items-center border-2 border-[#0D2836]">
                           <div className="h-full w-full bg-gradient-to-t from-[#009136] to-green-500"></div>
                           <span className="absolute w-full items-center text-base font-semibold">
-                            {nmbFormat(
+                            {formatNumber(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                                dino.food * dino.Dino.base_stats["f"]["t"] +
-                                dino.Dino.base_stats["f"]["b"]
-                            )}
+                              dino.food * dino.Dino.base_stats["f"]["t"] +
+                              dino.Dino.base_stats["f"]["b"]
+                              , { notation: 'compact' })}
                             /
-                            {nmbFormat(
+                            {formatNumber(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                                dino.food * dino.Dino.base_stats["f"]["t"] +
-                                dino.Dino.base_stats["f"]["b"]
-                            )}{" "}
+                              dino.food * dino.Dino.base_stats["f"]["t"] +
+                              dino.Dino.base_stats["f"]["b"]
+                              , { notation: 'compact' })}{" "}
                             Food ({dino.wild_food}-{dino.food})
                           </span>
                         </div>
@@ -795,19 +795,19 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                         <div className="relative flex h-full w-full items-center border-2 border-[#0D2836]">
                           <div className="h-full w-full bg-gradient-to-t from-[#A340B7] to-fuchsia-500"></div>
                           <span className="absolute w-full items-center text-base font-semibold">
-                            {nmbFormat(
+                            {formatNumber(
                               dino.wild_torpor *
-                                dino.Dino.base_stats["t"]["w"] +
-                                dino.torpor * dino.Dino.base_stats["t"]["t"] +
-                                dino.Dino.base_stats["t"]["b"]
-                            )}
+                              dino.Dino.base_stats["t"]["w"] +
+                              dino.torpor * dino.Dino.base_stats["t"]["t"] +
+                              dino.Dino.base_stats["t"]["b"]
+                              , { notation: 'compact' })}
                             /
-                            {nmbFormat(
+                            {formatNumber(
                               dino.wild_torpor *
-                                dino.Dino.base_stats["t"]["w"] +
-                                dino.torpor * dino.Dino.base_stats["t"]["t"] +
-                                dino.Dino.base_stats["t"]["b"]
-                            )}{" "}
+                              dino.Dino.base_stats["t"]["w"] +
+                              dino.torpor * dino.Dino.base_stats["t"]["t"] +
+                              dino.Dino.base_stats["t"]["b"]
+                              , { notation: 'compact' })}{" "}
                             Torpor ({dino.wild_torpor}-{dino.torpor})
                           </span>
                         </div>

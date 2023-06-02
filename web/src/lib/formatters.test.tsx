@@ -94,6 +94,12 @@ describe('jsonTruncate', () => {
 })
 
 describe('timeTag', () => {
+  it('should return an empty string if dateTime is not provided', () => {
+    const result = timeTag();
+    expect(result).toBe('');
+  });
+
+
   it('can take a date string', async () => {
     expect(timeTag('2021-01-01T00:00:00.000Z')).toMatchInlineSnapshot(`
       <time
@@ -105,9 +111,11 @@ describe('timeTag', () => {
     `)
   })
 
-  it('can take an empty input string', async () => {
-    expect(timeTag('')).toEqual('')
-  })
+  it('should return a formatted time tag element if dateTime is provided', () => {
+    const dateTime = '2023-05-31T12:34:56';
+    const result = timeTag(dateTime);
+    expect(result).toEqual(expect.any(Object)); // Verifying it's a React element
+  });
 })
 
 describe('jsonDisplay', () => {

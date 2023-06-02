@@ -92,19 +92,19 @@ export const ContextMenu = ({
           className="fixed flex w-60 origin-top-left flex-col rounded-lg border border-gray-300 bg-white py-4 px-2 text-sm text-gray-500 shadow-lg"
         >
           {/* TODO: Fix dark/light mode */}
-          {items.map((item, i) => (
+          {items && items.map((item, i) => (
             <div
               key={i}
               onClick={(e) => {
                 setIsComponentVisible(false);
-                item.onClick(e);
+                item?.onClick(e);
               }}
               className="flex items-center rounded py-1 px-2 hover:bg-gray-100"
             >
-              {item.icon && (
-                <div className="mr-2 w-4 text-gray-900">{item.icon}</div>
+              {item?.icon && (
+                <div className="mr-2 w-4 text-gray-900">{item?.icon}</div>
               )}
-              <div>{item.label}</div>
+              <div>{item?.label}</div>
             </div>
           ))}
         </div>
