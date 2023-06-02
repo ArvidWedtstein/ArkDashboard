@@ -125,11 +125,13 @@ const HomePage = () => {
           </div>
         </div>
 
-        <Table
+        {/* <Table
           filter={true}
           summary={true}
           select={true}
-          rowsPerPage={5}
+          hover={true}
+          search={true}
+          rowsPerPage={3}
           pagination={true}
           rows={tblInput}
           columns={[
@@ -150,9 +152,9 @@ const HomePage = () => {
               label: "Created By",
             },
           ]}
-        />
+        /> */}
 
-        <NewTable
+        {/* <NewTable
           selectable
           // header={"s"}
           summary
@@ -160,8 +162,8 @@ const HomePage = () => {
           search
           pagination={{
             page: 1,
-            pageSize: 5,
-            pageSizeOptions: [5, 10, 25],
+            pageSize: 1,
+            pageSizeOptions: [1, 10, 25],
           }}
           rows={tblInput}
           columns={[
@@ -182,7 +184,7 @@ const HomePage = () => {
               sortable: true,
             },
           ]}
-        />
+        /> */}
 
         {/* {isAuthenticated && <Chat />} */}
 

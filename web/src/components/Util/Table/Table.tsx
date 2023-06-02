@@ -3,12 +3,11 @@ import {
   debounce,
   dynamicSort,
   formatNumber,
-  pluralize,
-  truncate,
 } from "src/lib/formatters";
 import clsx from "clsx";
 import useComponentVisible from "src/components/useComponentVisible";
 import { Form, SelectField, Submit, TextField } from "@redwoodjs/forms";
+import { toast } from "@redwoodjs/web/dist/toast";
 interface Row {
   index: number;
 }
@@ -58,6 +57,10 @@ interface TableProps {
   filter?: boolean;
   header?: boolean;
   pagination?: boolean;
+  borders?: {
+    vertical?: boolean;
+    horizontal?: boolean;
+  };
   renderActions?: (row: any) => React.ReactNode;
   /**
    * Number of rows per page
@@ -93,23 +96,27 @@ const Table = ({
   header = true,
   filter = false,
   pagination = false,
+  borders = {
+    vertical: false,
+    horizontal: true,
+  },
   rowsPerPage = 10,
   renderActions,
 }: TableProps) => {
-
+  const columnData = useMemo(
+    () =>
+      columns,
+    [columns]
+  );
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [rows, setRows] = useState<any[]>([]);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const checkboxAllSelectRef = useRef(null);
   const [filters, setFilters] = useState<Filter[]>([]);
   const [sort, setSort] = useState({
     column: "",
     direction: "asc",
   });
-
-
 
   const sortRows = useCallback(
     (e) => {
@@ -185,103 +192,72 @@ const Table = ({
       return true;
     });
   };
-  const selectRow = (e) => {
-    if (e.target.id === "checkbox-all-select") {
-      const isChecked = e.target.checked;
-      rows.forEach((row) => {
-        if (row.checked !== isChecked) {
-          row.checked = isChecked;
-        }
-      });
-      setSelectedRows(rows.filter((row) => row.checked === true));
-      return;
-    }
 
-    const checkboxAllSelect = checkboxAllSelectRef.current;
-    if (!e.target.checked) {
-      checkboxAllSelect.checked = e.target.checked;
-    } else {
-      if (!rows.some((row) => !row.checked) && rows.length > 0) {
-        checkboxAllSelect.checked = true;
-      }
-    }
-    setSelectedRows(rows.filter((row) => row.checked === true));
-  };
   const SortedFilteredData = useMemo(() => {
     if (!dataRows?.length) return dataRows;
+    if (dataRows.every((r) => !r.hasOwnProperty("row_id"))) {
+      dataRows = dataRows.map((r, i) => ({ ...r, row_id: `row-${i}` }));
+    }
+    let filteredData = dataRows;
 
-    let filteredData = dataRows.filter((row) => {
-      const rowString = Object.values(row).join(" ").toLowerCase();
+    if (search) {
+      filteredData = filteredData.filter((row) => {
 
-      return rowString.includes(searchTerm.toLowerCase());
-    });
+        // Filter out columns that are not shown
+        const rowString = Object.entries(row).map(([k, v]) => columns.some((c) => c.field === k) && v).join(" ").toLowerCase();
+        // const rowString = Object.values(row).join(" ").toLowerCase();
+
+        return rowString.includes(searchTerm.toLowerCase());
+      });
+    }
 
     if (filter) {
       filteredData = filterData(filteredData);
     }
 
-    if (pagination) {
-      const startIndex = (currentPage - 1) * rowsPerPage;
-      const endIndex = startIndex + rowsPerPage;
-      const sortedData = sortData(filteredData, sort.column, sort.direction);
-      return sortedData.slice(startIndex, endIndex);
+    if (sort.column) {
+      filteredData = sortData(filteredData, sort.column, sort.direction);
     }
-    return sortData(filteredData, sort.column, sort.direction);
-  }, [sort, searchTerm, dataRows, currentPage, pagination, filters]);
 
-  useEffect(() => {
-    if (select) {
-      let daRows = document.querySelectorAll(
-        'input[type="checkbox"][id^="checkbox-row"]'
-      );
-      setRows([...daRows]);
-    }
-  }, []);
-  // const SortedFilteredData = useMemo(() => {
-  //   // 1. Filter
-  //   // 2. Search
-  //   // 3. Sort
-  //   // 4. Paginate
-  //   // 5. Select
-  //   if (!dataRows?.length) return [];
+    return filteredData
+  }, [sort, searchTerm, dataRows, pagination, filters]);
 
-  //   if (dataRows.some((r) => !r.hasOwnProperty("selected"))) {
-  //     dataRows = dataRows.map((r) => ({ ...r, selected: false }));
-  //   }
+  // TODO: Update paginateddata when filters change, search term changes
+  const PaginatedData = useMemo(() => {
+    if (!pagination) return SortedFilteredData;
 
-  //   let filteredData = filterData(dataRows);
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
 
-  //   if (searchTerm) {
-  //     filteredData = filteredData.filter((row) => {
-  //       const rowString = Object.values(row).join(" ").toLowerCase();
-  //       return rowString.includes(searchTerm.toLowerCase());
-  //     });
-  //   }
-  //   if (sort.column) {
-  //     filteredData = sortData(filteredData, sort.column, sort.direction);
-  //   }
-
-  //   const startIndex = (currentPage - 1) * rowsPerPage;
-  //   const endIndex = startIndex + rowsPerPage;
-
-  //   // return {
-  //   //   rows: filteredData,
-  //   //   pages: filteredData.slice(startIndex, endIndex)
-  //   // }
-  //   console.log(dataRows)
-  //   return filteredData
-  // }, [sort, searchTerm, currentPage, selectRow, dataRows, pagination, filters]);
-
-  // useEffect(() => {
-  //   if (select) {
-  //     let daRows = document.querySelectorAll(
-  //       'input[type="checkbox"][id^="checkbox-row"]'
-  //     );
-  //     setRows([...daRows]);
-  //   }
-  // }, []);
+    return SortedFilteredData.slice(startIndex, endIndex);
+  }, [SortedFilteredData, currentPage])
 
   const handleSearch = debounce((e) => setSearchTerm(e.target.value), 500);
+
+  const handleRowSelect = (event, id?) => {
+    if (event.target.id === "checkbox-all-select") {
+      return setSelectedRows(event.target.checked ? PaginatedData.map((row) => row.row_id) : []);
+    }
+    const selectedIndex = selectedRows.indexOf(id);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selectedRows, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selectedRows.slice(1));
+    } else if (selectedIndex === selectedRows.length - 1) {
+      newSelected = newSelected.concat(selectedRows.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selectedRows.slice(0, selectedIndex),
+        selectedRows.slice(selectedIndex + 1)
+      );
+    }
+
+    setSelectedRows(newSelected);
+  };
+
+  const isSelected = id => selectedRows.indexOf(id) !== -1;
 
 
 
@@ -291,7 +267,7 @@ const Table = ({
         key={`headcell-${columnIndex}-${label}`}
         id={`headcell-${other.field}`}
         className={clsx(
-          "bg-zinc-400 px-3 py-3 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-700",
+          "bg-zinc-400 px-3 py-3 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-800",
           other.className
         )}
         scope="col"
@@ -337,9 +313,10 @@ const Table = ({
     ...other
   }) => {
     // px-6 py-4
-    const className = clsx(other.className, "px-3 py-2", {
+    const className = clsx(other.className, "px-3 py-2 bg-zinc-100 dark:bg-zinc-600", {
       "font-bold": other.bold,
       truncate: !renderCell && !other.valueFormatter,
+      "dark:!bg-zinc-700 !bg-zinc-300": isSelected(rowData.row_id)
     });
 
     if (other.numeric && !isNaN(cellData) && !renderCell) {
@@ -369,7 +346,7 @@ const Table = ({
       : valueFormatter;
 
     return (
-      <td headers={`headcell-${other.field}`} key={key} className={clsx("bg-zinc-100 dark:bg-zinc-800", className)}>
+      <td headers={`headcell-${other.field}`} key={key} className={className}>
         {content}
       </td>
     );
@@ -384,25 +361,26 @@ const Table = ({
     row: number;
     datarow?: any
   }) => {
+
     return (
       <td
         className={clsx("w-4 p-4", {
-          "first:rounded-tl-lg bg-zinc-400 dark:bg-zinc-700": header,
-          "bg-zinc-100 dark:bg-zinc-800": !header,
+          "first:rounded-tl-lg bg-zinc-400 dark:bg-zinc-800": header,
+          "bg-zinc-100 dark:bg-zinc-600": !header,
+          "dark:!bg-zinc-700 !bg-zinc-300": !header && isSelected(datarow.row_id)
         })}
         scope="col"
       >
         <div className="flex items-center">
           <input
-            id={header ? "checkbox-all-select" : `checkbox-row-${row}`}
-            ref={header ? checkboxAllSelectRef : null}
-            // checked={datarow?.selected || false}
-            onChange={selectRow}
+            id={header ? "checkbox-all-select" : datarow.row_id}
+            checked={header ? PaginatedData.every(row => selectedRows.includes(row.row_id)) : isSelected(datarow.row_id)}
+            onChange={(e) => handleRowSelect(e, datarow?.row_id)}
             type="checkbox"
-            className="rw-input rw-checkbox h-4 w-4"
+            className="rw-input rw-checkbox m-0"
           />
           <label
-            htmlFor={header ? "checkbox-all-select" : `checkbox-row-${row}`}
+            htmlFor={header ? "checkbox-all-select" : datarow.row_id}
             className="sr-only"
           >
             checkbox
@@ -412,227 +390,233 @@ const Table = ({
     );
   };
 
-  const tableFooter = () => {
-    let total = 0;
 
-    const columnData = useMemo(
-      () =>
-        columns.map(
-          ({ field, className, valueFormatter, label, ...other }) => ({
-            field,
-            className,
-            valueFormatter,
-            label,
-            numeric: other.numeric,
-          })
-        ),
-      [columns]
-    );
-    return (
-      <tfoot>
-        <tr className="font-semibold text-gray-900  dark:text-white rounded-b-lg">
-          {select && <td className="p-4 first:rounded-bl-lg bg-zinc-400 dark:bg-zinc-700"></td>}
-          {
-            columnData.map(
-              ({ field, numeric, className, valueFormatter }, index) => {
-                const sum = numeric
-                  ? SortedFilteredData.filter((r, i) =>
-                    select && selectedRows.length > 0
-                      ? rows
-                        .map((d: any, k) => {
-                          return d.checked ? k : -1;
-                        })
-                        .includes(i)
-                      : true
-                  ).reduce((a, b) => {
-                    const cellData = b[field];
-                    const valueFormatted = valueFormatter
-                      ? valueFormatter({ value: cellData, row: b })
-                      : cellData;
-
-                    return (
-                      a +
-                      parseInt(
-                        isNaN(valueFormatted)
-                          ? valueFormatted?.amount
-                          : valueFormatted
-                      )
-                    );
-                  }, 0)
-                  :
-                  0;
-
-                total += numeric ? sum : 0;
-                return (
-                  <th
-                    key={`${index}-${field}`}
-                    className={clsx(
-                      "px-3 py-4 bg-zinc-400 dark:bg-zinc-700 last:rounded-br-lg first:rounded-bl-lg",
-                      className,
-                      numeric && "test-base"
-                    )}
-                  >
-                    {numeric ? sum : index === 0 ? "Total" : ""}
-                  </th>
-                );
-              }
-            )}
-          {renderActions && <th></th>}
-        </tr>
-      </tfoot>
-    );
+  const calculateSum = (field, valueFormatter) => {
+    return PaginatedData
+      .filter((r) => !selectedRows.length || selectedRows.includes(r.row_id))
+      .reduce((sum, row) => {
+        const cellData = row[field];
+        const valueFormatted = valueFormatter ? valueFormatter({ value: cellData, row }) : cellData;
+        const value = parseInt(isNaN(valueFormatted) ? valueFormatted?.amount : valueFormatted);
+        return sum + value;
+      }, 0);
   };
 
-  const tablePagination = () => {
-    const totalRows = dataRows.length || rows.length;
-    const lastRowIndex =
-      currentPage * rowsPerPage > totalRows
-        ? totalRows
-        : currentPage * rowsPerPage;
-    const firstRowIndex = currentPage * rowsPerPage - rowsPerPage;
-    const totalPageCount = Math.ceil(totalRows / rowsPerPage);
+  const tableFooter = () => (
+    <tfoot>
+      <tr className={clsx("font-semibold text-gray-900 dark:text-white rounded-b-lg", {
+        "divide-x divide-gray-400 dark:divide-zinc-800": borders.vertical
+      })}>
+        {select && <td className="p-4 first:rounded-bl-lg bg-zinc-400 dark:bg-zinc-800"></td>}
+        {
+          columnData.map(
+            ({ label, field, numeric, className, valueFormatter }, index) => {
+              const sum = calculateSum(field, valueFormatter);
 
-    const paginationRange = () => {
-      const siblingCount = 1;
+              const key = `${field}-${label}`; // Use a unique identifier for the key
+              return (
+                <th
+                  key={key}
+                  className={clsx(
+                    "px-3 py-4 bg-zinc-400 dark:bg-zinc-800 last:rounded-br-lg first:rounded-bl-lg",
+                    className,
+                    numeric && "test-base"
+                  )}
+                >
+                  {numeric ? sum : index === 0 ? "Total" : ""}
+                </th>
+              );
+            }
+          )}
+        {renderActions && <th></th>}
+      </tr>
+    </tfoot>
+  );
 
-      const range = (start, end) => {
-        const result = [];
-        for (let i = start; i <= end; i++) {
-          result.push(i);
-        }
-        return result;
-      };
+  const paginationRange = (currentPage, totalPageCount) => {
+    const siblingCount = 1;
 
-      if (totalPageCount <= siblingCount + 5) {
-        return range(1, totalPageCount);
-      }
-
-      const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
-      const rightSiblingIndex = Math.min(currentPage + siblingCount, totalPageCount);
-
-      const shouldShowLeftDots = leftSiblingIndex > 2;
-      const shouldShowRightDots = rightSiblingIndex < totalPageCount - 2;
-
+    const range = (start, end) => {
       const result = [];
-
-      if (shouldShowLeftDots) {
-        result.push(1);
-        if (leftSiblingIndex > 3) {
-          result.push("...");
-        }
-      }
-
-      for (let i = leftSiblingIndex; i <= rightSiblingIndex; i++) {
+      for (let i = start; i <= end; i++) {
         result.push(i);
       }
-
-      if (shouldShowRightDots) {
-        if (rightSiblingIndex < totalPageCount - 2) {
-          result.push("...");
-        }
-        result.push(totalPageCount);
-      }
-
       return result;
     };
 
+    if (totalPageCount <= siblingCount + 5) {
+      return range(1, totalPageCount);
+    }
 
-    const changePage = useCallback(
-      (dir: "next" | "prev") => {
-        if (dir === "prev" && currentPage > 1) {
-          setCurrentPage(currentPage - 1);
-        } else if (
-          dir === "next" &&
-          currentPage < totalPageCount
-        ) {
-          setCurrentPage(currentPage + 1);
-        }
-      },
-      [currentPage, dataRows.length, rowsPerPage]
-    );
-    return useMemo(
-      () => (
-        <nav
-          className="flex items-center justify-end pt-4"
+    const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
+    const rightSiblingIndex = Math.min(currentPage + siblingCount, totalPageCount);
+
+    const shouldShowLeftDots = leftSiblingIndex > 2;
+    const shouldShowRightDots = rightSiblingIndex < totalPageCount - 2;
+
+    const result = [];
+
+    if (shouldShowLeftDots) {
+      result.push(1);
+      if (leftSiblingIndex > 3) {
+        result.push("...");
+      }
+    }
+
+    for (let i = leftSiblingIndex; i <= rightSiblingIndex; i++) {
+      result.push(i);
+    }
+
+    if (shouldShowRightDots) {
+      if (rightSiblingIndex < totalPageCount - 2) {
+        result.push("...");
+      }
+      result.push(totalPageCount);
+    }
+
+    return result;
+  };
+
+  const changePage = useCallback((dir) => {
+    if (dir === "prev" && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    } else if (dir === "next" && currentPage < Math.ceil(SortedFilteredData.length / rowsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  }, [currentPage, SortedFilteredData]);
+
+  const tablePagination = () => {
+    const totalPageCount = Math.ceil(SortedFilteredData.length / rowsPerPage);
+    const startRowIndex = currentPage * rowsPerPage - rowsPerPage + 1;
+    const endRowIndex = Math.min(currentPage * rowsPerPage, SortedFilteredData.length);
+    const range = useMemo(() => paginationRange(currentPage, totalPageCount), [currentPage, totalPageCount])
+
+    const paginationButtons = range.map((page, index) => (
+      <button
+        key={`page-${index}`}
+        type="button"
+        disabled={isNaN(page)}
+        onClick={() => setCurrentPage(isNaN(page) ? 1 : page)}
+        className={clsx("rw-pagination-item", {
+          "rw-pagination-item-active": currentPage === page,
+        })}
+      >
+        {page}
+      </button>
+    ));
+
+    // TODO: Implement rowsPerPage functionality
+    return (
+      <nav
+        className="text-zinc-800 dark:text-gray-400 flex items-center text-center justify-end my-2 space-x-2 text-sm"
+      >
+        Rows per page&nbsp;
+        <select
+          disabled={dataRows.length == 0}
+          className="rw-input rw-input-small !m-0"
+          onChange={(e) => {
+            debounce(() => {
+
+            }, 500)();
+          }}
+          defaultValue={rowsPerPage}
         >
-          <nav
-            className="rw-button-group m-0 leading-tight"
-            aria-label="Page navigation"
+          <option>
+            {rowsPerPage}
+          </option>
+          <option>
+            {30}
+          </option>
+          <option>
+            {50}
+          </option>
+        </select>
+        <div
+          className="rw-button-group m-0 leading-tight"
+          aria-label="Page navigation"
+        >
+          <button
+            type="button"
+            disabled={currentPage === 1}
+            onClick={() => changePage("prev")}
+            className="rw-pagination-item"
           >
-            <button
-              type="button"
-              disabled={currentPage === 1}
-              onClick={() => changePage("prev")}
-              className="rw-pagination-item"
+            <span className="sr-only">Previous</span>
+            <svg
+              className="h-5 w-5"
+              aria-hidden="true"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <span className="sr-only">Previous</span>
-              <svg
-                className="h-5 w-5"
-                aria-hidden="true"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
-            {paginationRange().map((page, index) => (
-              <button
-                key={`page-${index}`}
-                type="button"
-                disabled={isNaN(page)}
-                onClick={() => setCurrentPage(isNaN(page) ? 1 : page)}
-                className={clsx("rw-pagination-item", {
-                  "rw-pagination-item-active": currentPage === page,
-                })}
-              >
-                {page}
-              </button>
-            ))}
-            <button
-              type="button"
-              disabled={currentPage === totalPageCount}
-              onClick={() => changePage("next")}
-              className="rw-pagination-item"
+              <path
+                fillRule="evenodd"
+                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+          {paginationButtons}
+          <button
+            type="button"
+            disabled={currentPage === totalPageCount}
+            onClick={() => changePage("next")}
+            className="rw-pagination-item"
+          >
+            <span className="sr-only">Next</span>
+            <svg
+              className="h-5 w-5"
+              aria-hidden="true"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <span className="sr-only">Next</span>
-              <svg
-                className="h-5 w-5"
-                aria-hidden="true"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </button>
-          </nav>
-          <span className="ml-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-            Showing{" "}
-            <span className="font-semibold text-gray-900 dark:text-white">
-              {firstRowIndex + 1}-{lastRowIndex}
-            </span>{" "}
-            of{" "}
-            <span className="font-semibold text-gray-900 dark:text-white">
-              {totalRows}
-            </span>
+              <path
+                fillRule="evenodd"
+                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                clipRule="evenodd"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <span className="font-normal">
+          Showing{" "}
+          <span className="font-semibold text-gray-900 dark:text-white">
+            {startRowIndex}-{endRowIndex}
+          </span>{" "}
+          of{" "}
+          <span className="font-semibold text-gray-900 dark:text-white">
+            {SortedFilteredData.length}
           </span>
-        </nav>
-      ),
-      [currentPage, filters]
-    );
+        </span>
+      </nav>
+    )
+  };
+
+  const copyToClipboard = () => {
+    const textToCopy = SortedFilteredData
+      .filter((row) => selectedRows.includes(row.row_id))
+      .map((row) => {
+        return Object.entries(row)
+          .map(([key, value]) => {
+            const col = columns.find((col) => col.field === key);
+            if (col) {
+              const formattedValue = col.valueFormatter
+                ? col.valueFormatter({ value, row })
+                : value;
+              return `${key}: ${formattedValue}`;
+            }
+          })
+          .join(", ");
+      })
+      .join(", ");
+
+    navigator.clipboard.writeText(textToCopy);
+    toast.success("Copied to clipboard");
   };
 
   const addFilter = (e?) => {
-    console.log(e)
+
     setFilters((prev) => [...prev, {
       column: e.column,
       operator: e.operator,
@@ -801,6 +785,25 @@ const Table = ({
               </dialog>
             </div>
           )}
+          {select && (
+            <button
+              className="rw-button rw-button-gray-outline"
+              title="Export"
+              disabled={selectedRows.length === 0}
+              onClick={copyToClipboard}
+            >
+              <span className="sr-only">Export</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="pointer-events-none h-5"
+                viewBox="0 0 576 512"
+                fill="currentColor"
+                stroke="currentColor"
+              >
+                <path d="M208 112c-4.094 0-8.188 1.562-11.31 4.688c-6.25 6.25-6.25 16.38 0 22.62l80 80c6.25 6.25 16.38 6.25 22.62 0l80-80c6.25-6.25 6.25-16.38 0-22.62s-16.38-6.25-22.62 0L304 169.4V16C304 7.156 296.8 0 288 0S272 7.156 272 16v153.4L219.3 116.7C216.2 113.6 212.1 112 208 112zM512 0h-144C359.2 0 352 7.162 352 16C352 24.84 359.2 32 368 32H512c17.67 0 32 14.33 32 32v192H32V64c0-17.67 14.33-32 32-32h144C216.8 32 224 24.84 224 16C224 7.162 216.8 0 208 0H64C28.65 0 0 28.65 0 64v288c0 35.35 28.65 64 64 64h149.7l-19.2 64H144C135.2 480 128 487.2 128 496S135.2 512 144 512h288c8.836 0 16-7.164 16-16S440.8 480 432 480h-50.49l-19.2-64H512c35.35 0 64-28.65 64-64V64C576 28.65 547.3 0 512 0zM227.9 480l19.2-64h81.79l19.2 64H227.9zM544 352c0 17.64-14.36 32-32 32H64c-17.64 0-32-14.36-32-32V288h512V352z" />
+              </svg>
+            </button>
+          )}
           {
             search && (
               <div className="relative">
@@ -825,13 +828,13 @@ const Table = ({
                 <input
                   id="table-search"
                   onChange={handleSearch}
-                  className="rw-input block w-80 rounded-lg pl-10"
+                  className="rw-input pl-10 m-0"
                   placeholder="Search for items"
                 />
               </div>
             )
           }
-        </div >
+        </div>
       )}
 
       <table className="relative mr-auto w-full table-auto text-left text-sm text-gray-700 dark:text-stone-300">
@@ -845,7 +848,9 @@ const Table = ({
         )}
         {header && (
           <thead className="text-sm uppercase text-zinc-700 dark:text-zinc-300">
-            <tr className="table-row rounded-t-lg">
+            <tr className={clsx("table-row rounded-t-lg", {
+              "divide-x divide-gray-400 dark:divide-zinc-800": borders.vertical
+            })}>
               {select && tableSelect({ header: true, row: -1 })}
               {columns.map(({ ...other }, index) => {
                 return headerRenderer({
@@ -858,33 +863,33 @@ const Table = ({
             </tr>
           </thead>
         )}
-        <tbody className="divide-y divide-gray-400 dark:divide-gray-800 ">
+        <tbody className={borders.horizontal && "divide-y divide-gray-400 dark:divide-zinc-800"}>
           {dataRows &&
-            SortedFilteredData.map((datarow, i) => {
-              return (
-                <tr
-                  key={`row-${i}`}
-                  className={clsx({
-                    "hover:bg-gray-50 dark:hover:bg-gray-600": hover,
-                  })}
-                  onClick={() => onRowClick && onRowClick({ index: i })}
-                >
-                  {select && tableSelect({ datarow, row: i })}
-                  {columns.map(({ field, ...other }, index) =>
-                    cellRenderer({
-                      rowData: datarow,
-                      cellData: datarow[field],
-                      columnIndex: index,
-                      rowIndex: i,
-                      renderCell: other.renderCell,
-                      field,
-                      ...other,
-                    })
-                  )}
-                  {renderActions && <td>{renderActions(datarow)}</td>}
-                </tr>
-              );
-            })}
+            PaginatedData.map((datarow, i) => (
+              <tr
+                key={datarow.row_id}
+                className={clsx({
+                  "hover:bg-gray-50 dark:hover:!bg-gray-300": hover,
+                  "divide-x divide-gray-400 dark:divide-zinc-800": borders.vertical
+                })}
+                onClick={() => onRowClick && onRowClick({ index: i })}
+              >
+                {select && tableSelect({ datarow, row: i })}
+                {columns.map(({ field, ...other }, index) =>
+                  cellRenderer({
+                    rowData: datarow,
+                    cellData: datarow[field],
+                    columnIndex: index,
+                    rowIndex: i,
+                    renderCell: other.renderCell,
+                    field,
+                    ...other,
+                  })
+                )}
+                {renderActions && <td>{renderActions(datarow)}</td>}
+              </tr>
+            )
+            )}
           {(dataRows === null || dataRows.length === 0) && (
             <tr className="w-full">
               <td headers="" className="p-4 text-center" colSpan={100}>
