@@ -34,14 +34,16 @@ export const jsonDisplay = (obj: unknown) => {
   );
 };
 
-
-export const formatNumber = (num: number, options?: Intl.NumberFormatOptions): string => {
-  return new Intl.NumberFormat('en-GB', options).format(num)
+export const formatNumber = (
+  num: number,
+  options?: Intl.NumberFormatOptions
+): string => {
+  return new Intl.NumberFormat("en-GB", options).format(num);
   // const formattedNum = Math.round(num)
   //   .toString()
   //   .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   // return formattedNum;
-}
+};
 
 export const truncate = (value: string | number, maxlength: number = 150) => {
   let output = value?.toString() ?? "";
@@ -65,12 +67,12 @@ export const jsonTruncate = (obj: unknown, maxlength: number = 150) => {
  */
 export const timeTag = (dateTime?: string | Date): string | React.ReactNode => {
   if (!dateTime) {
-    return '';
+    return "";
   }
 
-  const formattedDateTime = new Date(dateTime).toLocaleString('en-GB', {
-    timeStyle: 'short',
-    dateStyle: 'long',
+  const formattedDateTime = new Date(dateTime).toLocaleString("en-GB", {
+    timeStyle: "short",
+    dateStyle: "long",
   });
 
   return (
@@ -149,10 +151,10 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-    }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+  }`;
 };
-
 
 /**
  * Capitalizes the first letter of a given string.
@@ -253,7 +255,7 @@ export const getBaseMaterials = (
         } else if (newRecipe) {
           findBaseMaterials(newRecipe, recipeAmount * amount, newRecipe.yields);
         }
-      } catch (error) { }
+      } catch (error) {}
     }
   };
 
@@ -355,7 +357,6 @@ export const timeFormatL = (seconds, onlyLast = false) => {
   }
   return time.trim();
 };
-
 
 /**
  * @description Returns the start and end date of the current week
@@ -530,7 +531,7 @@ export const generatePDF = () => {
 
   // Generate table content
   // const crafts = mergeItemRecipe(viewBaseMaterials, items, ...item);
-  const crafts = []
+  const crafts = [];
   crafts.forEach((item, i) => {
     for (let col = 0; col < 3; col++) {
       var cellX = tableX + col * (tableWidth / 3);
@@ -544,10 +545,10 @@ export const generatePDF = () => {
       // Line end
       content.push(
         cellX +
-        tableWidth / crafts.length +
-        " " +
-        (cellY + 5 - tableHeight / crafts.length) +
-        " l"
+          tableWidth / crafts.length +
+          " " +
+          (cellY + 5 - tableHeight / crafts.length) +
+          " l"
       );
       content.push("S");
 
@@ -567,10 +568,10 @@ export const generatePDF = () => {
         // Line end
         content.push(
           cellX +
-          tableWidth / crafts.length +
-          " " +
-          (cellY + 30 - tableHeight / crafts.length) +
-          " l"
+            tableWidth / crafts.length +
+            " " +
+            (cellY + 30 - tableHeight / crafts.length) +
+            " l"
         );
         content.push("S");
         content.push(textX + " " + (textY + 20) + " Td");
@@ -593,9 +594,7 @@ export const generatePDF = () => {
       switch (col) {
         case 0:
           content.push("0 0 0 rg");
-          content.push(
-            `(${item.Item_ItemRec_crafted_item_idToItem.name}) Tj`
-          );
+          content.push(`(${item.Item_ItemRec_crafted_item_idToItem.name}) Tj`);
           break;
         case 1:
           content.push("0 0 0 rg");
@@ -637,11 +636,10 @@ export const generatePDF = () => {
   var win = window.open();
   win.document.write(
     '<iframe src="' +
-    dataURI +
-    '" style="width:100%; height:100%;" frameborder="0"></iframe>'
+      dataURI +
+      '" style="width:100%; height:100%;" frameborder="0"></iframe>'
   );
-}
-
+};
 
 /**
  * Removes duplicates from an array and returns a new array.
@@ -754,3 +752,15 @@ type Distance = 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 type Breakpoints = "xs:" | "sm:" | "md:" | "lg:" | "xl:" | "";
 type Space = `${Breakpoints}space-${"x" | "y"}-${Distance}`;
 type Padding = `${Breakpoints}p-${Distance}`;
+
+export type Enumerate<
+  N extends number,
+  Acc extends number[] = []
+> = Acc["length"] extends N
+  ? Acc[number]
+  : Enumerate<N, [...Acc, Acc["length"]]>;
+
+export type IntRange<F extends number, T extends number> = Exclude<
+  Enumerate<T>,
+  Enumerate<F>
+>;

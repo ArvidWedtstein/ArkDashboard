@@ -20,7 +20,6 @@ import debounce from "lodash.debounce";
 import Table from "src/components/Util/Table/Table";
 import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
 
-
 interface MaterialGridProps {
   itemRecs: any[];
   error?: RWGqlError;
@@ -48,9 +47,9 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                ...item,
-                amount: item.amount + (action.index || 1) * yields,
-              }
+                  ...item,
+                  amount: item.amount + (action.index || 1) * yields,
+                }
               : item
           );
         }
@@ -76,9 +75,9 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
           const yields = item?.yields || 1;
           return i === action.index
             ? {
-              ...item,
-              amount: parseInt(item.amount) + parseInt(yields),
-            }
+                ...item,
+                amount: parseInt(item.amount) + parseInt(yields),
+              }
             : item;
         });
       }
@@ -87,9 +86,9 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
           const yields = item?.yields || 1;
           return i === action.index
             ? {
-              ...item,
-              amount: item.amount - yields,
-            }
+                ...item,
+                amount: item.amount - yields,
+              }
             : item;
         });
       }
@@ -102,9 +101,9 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                ...item,
-                amount: parseInt(item.amount || 0) + yields,
-              }
+                  ...item,
+                  amount: parseInt(item.amount || 0) + yields,
+                }
               : item
           );
         }
@@ -413,31 +412,31 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
 
                     <ul className="py-2">
                       {Object.values(categories).length === 1 ||
-                        categoryitems.every((item, i, a) => {
-                          return !item.type;
-                        })
+                      categoryitems.every((item, i, a) => {
+                        return !item.type;
+                      })
                         ? categoryitems.map((item) => (
-                          <li key={`${category}-${item.type}-${item.id}`}>
-                            <button
-                              type="button"
-                              className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                              onClick={() => onAdd({ itemId: item.id })}
-                            >
-                              <img
-                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
-                                alt={item.name}
-                                className="mr-2 h-5 w-5"
-                              />
-                              {item.name}
-                            </button>
-                          </li>
-                        ))
+                            <li key={`${category}-${item.type}-${item.id}`}>
+                              <button
+                                type="button"
+                                className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                                onClick={() => onAdd({ itemId: item.id })}
+                              >
+                                <img
+                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+                                  alt={item.name}
+                                  className="mr-2 h-5 w-5"
+                                />
+                                {item.name}
+                              </button>
+                            </li>
+                          ))
                         : Object.entries(groupBy(categoryitems, "type")).map(
-                          ([type, typeitems]: any) => (
-                            <li key={`${category}-${type}`}>
-                              <details className="">
-                                <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                                  {/* <svg
+                            ([type, typeitems]: any) => (
+                              <li key={`${category}-${type}`}>
+                                <details className="">
+                                  <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+                                    {/* <svg
                                     aria-hidden="true"
                                     className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                     fill="currentColor"
@@ -447,38 +446,38 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
                                     <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                                     <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                                   </svg> */}
-                                  <span className="ml-2">{type}</span>
-                                  <span className="text-pea-800 dark:bg-pea-900 dark:text-pea-300 bg-pea-100 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full p-3 text-sm">
-                                    {typeitems.length}
-                                  </span>
-                                </summary>
+                                    <span className="ml-2">{type}</span>
+                                    <span className="text-pea-800 dark:bg-pea-900 dark:text-pea-300 bg-pea-100 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full p-3 text-sm">
+                                      {typeitems.length}
+                                    </span>
+                                  </summary>
 
-                                <ul className="py-2">
-                                  {typeitems.map((item) => (
-                                    <li
-                                      key={`${category}-${type}-${item.id}`}
-                                    >
-                                      <button
-                                        type="button"
-                                        className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                        onClick={() =>
-                                          onAdd({ itemId: item.id })
-                                        }
+                                  <ul className="py-2">
+                                    {typeitems.map((item) => (
+                                      <li
+                                        key={`${category}-${type}-${item.id}`}
                                       >
-                                        <img
-                                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
-                                          alt={item.name}
-                                          className="mr-2 h-5 w-5"
-                                        />
-                                        {item.name}
-                                      </button>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </details>
-                            </li>
-                          )
-                        )}
+                                        <button
+                                          type="button"
+                                          className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                                          onClick={() =>
+                                            onAdd({ itemId: item.id })
+                                          }
+                                        >
+                                          <img
+                                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+                                            alt={item.name}
+                                            className="mr-2 h-5 w-5"
+                                          />
+                                          {item.name}
+                                        </button>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </details>
+                              </li>
+                            )
+                          )}
                     </ul>
                   </details>
                 </li>
@@ -492,45 +491,46 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
           header={true}
           rows={mergeItemRecipe(viewBaseMaterials, items, ...item).slice(0, 1)}
           className="animate-fade-in"
-          caption={{
-            title: "Item",
-            content: (
-              <div className="flex items-center">
-                <CheckboxField
-                  name="flexCheckDefault"
-                  className="rw-input inline-block"
-                  onChange={toggleBaseMaterials}
-                />
-                <label className="inline-block" htmlFor="flexCheckDefault">
-                  Base materials
-                </label>
-              </div>
-            ),
-          }}
+          toolbar={[
+            <ToggleButton
+              className="ml-2"
+              offLabel="Materials"
+              onLabel="Base materials"
+              checked={viewBaseMaterials}
+              onChange={toggleBaseMaterials}
+            />,
+            <button
+              data-testid="turrettowerbtn"
+              type="button"
+              // onClick={() => generatePDF()}
+              title="pedo-fil"
+              className="rw-button rw-button-gray p-2"
+            >
+              PDF
+            </button>,
+          ]}
           columns={[
-            ...mergeItemRecipe(
-              viewBaseMaterials,
-              items,
-              ...item
-            ).map(({ Item_ItemRec_crafted_item_idToItem, amount }) => ({
-
-              field: Item_ItemRec_crafted_item_idToItem.id,
-              label: Item_ItemRec_crafted_item_idToItem.name,
-              className: "w-0 text-center",
-              renderCell: ({ rowIndex }) => {
-                return (
-                  <div className="flex flex-col items-center justify-center" key={`${Item_ItemRec_crafted_item_idToItem.id}-${rowIndex}`}>
-                    <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRec_crafted_item_idToItem.image}`}
-                      className="h-6 w-6"
-                    />
-                    <span className="text-sm">
-                      {formatNumber(amount)}
-                    </span>
-                  </div>
-                )
-              }
-            })),
+            ...mergeItemRecipe(viewBaseMaterials, items, ...item).map(
+              ({ Item_ItemRec_crafted_item_idToItem, amount }) => ({
+                field: Item_ItemRec_crafted_item_idToItem.id,
+                label: Item_ItemRec_crafted_item_idToItem.name,
+                className: "w-0 text-center",
+                renderCell: ({ rowIndex }) => {
+                  return (
+                    <div
+                      className="flex flex-col items-center justify-center"
+                      key={`${Item_ItemRec_crafted_item_idToItem.id}-${rowIndex}`}
+                    >
+                      <img
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRec_crafted_item_idToItem.image}`}
+                        className="h-6 w-6"
+                      />
+                      <span className="text-sm">{formatNumber(amount)}</span>
+                    </div>
+                  );
+                },
+              })
+            ),
           ]}
         />
 
@@ -569,14 +569,7 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
             ]);
           }}
         />
-        <button
-          data-testid="turrettowerbtn"
-          type="button"
-          // onClick={() => generatePDF()}
-          className="rw-button rw-button-gray p-2"
-        >
-          PDF
-        </button>
+
         <Table
           rows={item}
           className="animate-fade-in my-4 whitespace-nowrap"

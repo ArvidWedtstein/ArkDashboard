@@ -1910,59 +1910,51 @@ const Dino = ({ dino }: Props) => {
           <section className="rounded-b-md py-3">
             <Table
               rows={baseStats}
-              caption={{
-                title: "Base Stats",
-                content: (
-                  <>
-                    <div className="rw-button-group !justify-start">
-                      <button
-                        type="button"
-                        className="rw-button rw-button-gray-outline"
-                        onClick={genRandomStats}
-                      >
-                        Random
-                      </button>
-                      <button
-                        type="button"
-                        className="rw-button rw-button-gray-outline"
-                        onClick={() =>
-                          setBaseStats(
-                            baseStats.map((s) => ({
-                              ...s,
-                              points:
-                                s.stat == "t" ? 0 : Math.round(dinoLevel / 7),
-                            }))
-                          )
-                        }
-                      >
-                        Distribute Evenly
-                      </button>
-                      <button
-                        type="button"
-                        className="rw-button rw-button-red-outline"
-                        onClick={() =>
-                          setBaseStats(
-                            baseStats.map((s) => ({
-                              ...s,
-                              points: 0,
-                              total: s.base,
-                            }))
-                          )
-                        }
-                      >
-                        Clear
-                      </button>
-                    </div>
-                    <p>
-                      {dinoLevel -
-                        baseStats
-                          .map((b) => b.points)
-                          .reduce((a, b) => a + b, 0)}{" "}
-                      points wasted
-                    </p>
-                  </>
-                ),
-              }}
+              toolbar={[
+                <button
+                  type="button"
+                  className="rw-button rw-button-gray-outline"
+                  onClick={genRandomStats}
+                >
+                  Random
+                </button>,
+                <button
+                  type="button"
+                  className="rw-button rw-button-gray-outline"
+                  onClick={() =>
+                    setBaseStats(
+                      baseStats.map((s) => ({
+                        ...s,
+                        points: s.stat == "t" ? 0 : Math.round(dinoLevel / 7),
+                      }))
+                    )
+                  }
+                >
+                  Distribute Evenly
+                </button>,
+                <button
+                  type="button"
+                  className="rw-button rw-button-red-outline"
+                  onClick={() =>
+                    setBaseStats(
+                      baseStats.map((s) => ({
+                        ...s,
+                        points: 0,
+                        total: s.base,
+                      }))
+                    )
+                  }
+                >
+                  Clear
+                </button>,
+                <p>
+                  {dinoLevel -
+                    baseStats
+                      .map((b) => b.points)
+                      .reduce((a, b) => a + b, 0)}{" "}
+                  points wasted
+                </p>,
+              ]}
               columns={[
                 {
                   field: "stat",
