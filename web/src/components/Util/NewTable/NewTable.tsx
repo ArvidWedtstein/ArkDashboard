@@ -36,13 +36,13 @@ interface Column {
    */
   width?: number;
   type?:
-  | "number"
-  | "string"
-  | "boolean"
-  | "date"
-  | "dateTime"
-  | "progress"
-  | "image";
+    | "number"
+    | "string"
+    | "boolean"
+    | "date"
+    | "dateTime"
+    | "progress"
+    | "image";
   align?: "left" | "center" | "right";
   sortable?: boolean;
   /**
@@ -146,22 +146,23 @@ const NewTable = ({
                 return false;
               })
               .reduce((acc, curr) => acc || curr, false);
-          }
-          );
+          });
           return {
             ...state,
             page_rows: pagination
               ? filteredRows.slice(
-                (pagination.page - 1) * pagination.pageSize,
-                pagination.page * pagination.pageSize
-              )
+                  (pagination.page - 1) * pagination.pageSize,
+                  pagination.page * pagination.pageSize
+                )
               : [],
             showing_rows:
               pagination &&
-              `${pagination.page * pagination.pageSize - pagination.pageSize + 1
-              }-${pagination.page * pagination.pageSize > filteredRows.length
-                ? filteredRows.length
-                : pagination.page * pagination.pageSize
+              `${
+                pagination.page * pagination.pageSize - pagination.pageSize + 1
+              }-${
+                pagination.page * pagination.pageSize > filteredRows.length
+                  ? filteredRows.length
+                  : pagination.page * pagination.pageSize
               }`,
             rows: filteredRows,
           };
@@ -172,16 +173,18 @@ const NewTable = ({
             rows: payload,
             page_rows: pagination
               ? payload.slice(
-                (pagination.page - 1) * pagination.pageSize,
-                pagination.page * pagination.pageSize
-              )
+                  (pagination.page - 1) * pagination.pageSize,
+                  pagination.page * pagination.pageSize
+                )
               : [],
             showing_rows:
               pagination &&
-              `${pagination.page * pagination.pageSize - pagination.pageSize + 1
-              }-${pagination.page * pagination.pageSize > payload.length
-                ? payload.length
-                : pagination.page * pagination.pageSize
+              `${
+                pagination.page * pagination.pageSize - pagination.pageSize + 1
+              }-${
+                pagination.page * pagination.pageSize > payload.length
+                  ? payload.length
+                  : pagination.page * pagination.pageSize
               }`,
           };
         }
@@ -246,16 +249,18 @@ const NewTable = ({
             ...state,
             page_rows: pagination
               ? filteredRows.slice(
-                (pagination.page - 1) * pagination.pageSize,
-                pagination.page * pagination.pageSize
-              )
+                  (pagination.page - 1) * pagination.pageSize,
+                  pagination.page * pagination.pageSize
+                )
               : [],
             showing_rows:
               pagination &&
-              `${pagination.page * pagination.pageSize - pagination.pageSize + 1
-              }-${pagination.page * pagination.pageSize > filteredRows.length
-                ? filteredRows.length
-                : pagination.page * pagination.pageSize
+              `${
+                pagination.page * pagination.pageSize - pagination.pageSize + 1
+              }-${
+                pagination.page * pagination.pageSize > filteredRows.length
+                  ? filteredRows.length
+                  : pagination.page * pagination.pageSize
               }`,
             rows: filteredRows,
             filters: newFilters,
@@ -276,9 +281,9 @@ const NewTable = ({
             rows: sort,
             page_rows: pagination
               ? sort.slice(
-                (pagination.page - 1) * pagination.pageSize,
-                pagination.page * pagination.pageSize
-              )
+                  (pagination.page - 1) * pagination.pageSize,
+                  pagination.page * pagination.pageSize
+                )
               : [],
             sorted_on: payload.column.field,
             sort_direction: payload.direction,
@@ -295,11 +300,11 @@ const NewTable = ({
             }),
             page_rows: pagination
               ? state.page_rows.map((row) => {
-                if (row.tableId === payload.tableId) {
-                  return { ...row, selected: payload.checked };
-                }
-                return row;
-              })
+                  if (row.tableId === payload.tableId) {
+                    return { ...row, selected: payload.checked };
+                  }
+                  return row;
+                })
               : [],
           };
         }
@@ -307,14 +312,14 @@ const NewTable = ({
           const allSelected = state.rows.map((row) => {
             return { ...row, selected: payload.checked || false };
           });
-          console.log('selectall', allSelected)
+          console.log("selectall", allSelected);
           return {
             ...state,
             rows: allSelected,
             page_rows: pagination
               ? state.page_rows.map((row) => {
-                return { ...row, selected: payload.checked || false };
-              })
+                  return { ...row, selected: payload.checked || false };
+                })
               : [],
           };
         }
@@ -327,8 +332,9 @@ const NewTable = ({
           return {
             ...state,
             page_rows: state.rows.slice((page - 1) * pageSize, page * pageSize),
-            showing_rows: `${page * pageSize - pageSize + 1}-${page * pageSize > rows.length ? rows.length : page * pageSize
-              }`,
+            showing_rows: `${page * pageSize - pageSize + 1}-${
+              page * pageSize > rows.length ? rows.length : page * pageSize
+            }`,
             page,
             pageSize,
           };
@@ -339,21 +345,26 @@ const NewTable = ({
       }
     },
     {
-      rows: rows.map((row, i) => ({ ...row, tableId: `row-${i}`, selected: false })),
+      rows: rows.map((row, i) => ({
+        ...row,
+        tableId: `row-${i}`,
+        selected: false,
+      })),
       page_rows: pagination
         ? rows
-          .map((row, i) => ({ ...row, tableId: `row-${i}`, selected: false }))
-          .slice(
-            (pagination.page - 1) * pagination.pageSize,
-            pagination.page * pagination.pageSize
-          )
+            .map((row, i) => ({ ...row, tableId: `row-${i}`, selected: false }))
+            .slice(
+              (pagination.page - 1) * pagination.pageSize,
+              pagination.page * pagination.pageSize
+            )
         : [],
       ...pagination,
       showing_rows:
         pagination &&
-        `${pagination.page * pagination.pageSize - pagination.pageSize + 1}-${pagination.page * pagination.pageSize > rows.length
-          ? rows.length
-          : pagination.page * pagination.pageSize
+        `${pagination.page * pagination.pageSize - pagination.pageSize + 1}-${
+          pagination.page * pagination.pageSize > rows.length
+            ? rows.length
+            : pagination.page * pagination.pageSize
         }`,
       filters: [],
       sorted_on: "",
@@ -374,29 +385,40 @@ const NewTable = ({
   }, [rows]);
 
   const selectCell = (tableId?: string) => {
-    return <th
-      className={clsx("px-3 py-2 sm:py-3 sm:px-4", {
-        "bg-zinc-400 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-700": !tableId,
-        "dark:bg-zinc-800 bg-zinc-100": tableId,
-      })}
-      abbr="checkbox"
-    >
-      <input
-        type="checkbox"
-        className="rw-input rw-checkbox m-0"
-        defaultChecked={!tableId ? (pagination ? data.page_rows : data.rows).every((row) => row.selected) : false}
-        onChange={(e) => {
-          dispatch({
-            type: !tableId ? DataActionKind.SELECT_ALL : DataActionKind.SELECT,
-            payload: {
-              checked: e.target.checked,
-              tableId,
-            },
-          });
-        }}
-      />
-    </th>
-  }
+    return (
+      <th
+        className={clsx("px-3 py-2 sm:py-3 sm:px-4", {
+          "bg-zinc-400 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-700":
+            !tableId,
+          "bg-zinc-100 dark:bg-zinc-800": tableId,
+        })}
+        abbr="checkbox"
+      >
+        <input
+          type="checkbox"
+          className="rw-input rw-checkbox m-0"
+          defaultChecked={
+            !tableId
+              ? (pagination ? data.page_rows : data.rows).every(
+                  (row) => row.selected
+                )
+              : false
+          }
+          onChange={(e) => {
+            dispatch({
+              type: !tableId
+                ? DataActionKind.SELECT_ALL
+                : DataActionKind.SELECT,
+              payload: {
+                checked: e.target.checked,
+                tableId,
+              },
+            });
+          }}
+        />
+      </th>
+    );
+  };
 
   const formMethods = useForm();
   const { isComponentVisible, setIsComponentVisible, ref } =
@@ -581,15 +603,16 @@ const NewTable = ({
                                   const col = cols.find(
                                     (col) => col.field === key
                                   );
-                                  return `${key}: ${col.valueGetter
-                                    ? col.valueGetter({
-                                      row,
-                                      column: col,
-                                      value,
-                                      field: key,
-                                    })
-                                    : value
-                                    }`;
+                                  return `${key}: ${
+                                    col.valueGetter
+                                      ? col.valueGetter({
+                                          row,
+                                          column: col,
+                                          value,
+                                          field: key,
+                                        })
+                                      : value
+                                  }`;
                                 }
                               })
                               .join(", ");
@@ -611,20 +634,24 @@ const NewTable = ({
                     </svg>
                   </button>
                 )}
-                {search && <input className="rw-input m-0" onChange={(e) => {
-                  dispatch({
-                    type: DataActionKind.SEARCH,
-                    payload: e.target.value,
-                  })
-                }} title="Search" />}
+                {search && (
+                  <input
+                    className="rw-input m-0"
+                    onChange={(e) => {
+                      dispatch({
+                        type: DataActionKind.SEARCH,
+                        payload: e.target.value,
+                      });
+                    }}
+                    title="Search"
+                  />
+                )}
               </div>
             </caption>
           )}
           <thead className="!rounded-t-lg text-xs uppercase text-zinc-700 dark:text-zinc-300">
             <tr>
-              {selectable &&
-                selectCell()
-              }
+              {selectable && selectCell()}
               {cols.map((column, index) => (
                 <th
                   key={index}
@@ -721,14 +748,14 @@ const NewTable = ({
                           "rounded-br-lg":
                             idx === cols.length - 1 &&
                             index ===
-                            (pagination ? data.page_rows : data.rows).length -
-                            1 &&
+                              (pagination ? data.page_rows : data.rows).length -
+                                1 &&
                             !summary,
                           "rounded-bl-lg":
                             idx === 0 &&
                             index ===
-                            (pagination ? data.page_rows : data.rows).length -
-                            1 &&
+                              (pagination ? data.page_rows : data.rows).length -
+                                1 &&
                             !summary &&
                             !selectable,
                         }
@@ -738,11 +765,11 @@ const NewTable = ({
                     >
                       {column.valueGetter
                         ? column.valueGetter({
-                          row,
-                          column,
-                          value: row[column.field],
-                          field: column.field,
-                        })
+                            row,
+                            column,
+                            value: row[column.field],
+                            field: column.field,
+                          })
                         : row[column.field]}
                     </td>
                   ))}
@@ -768,7 +795,7 @@ const NewTable = ({
                   const sum = data.rows
                     .filter((d) =>
                       selectable &&
-                        data.rows.filter((d) => d.selected).length > 0
+                      data.rows.filter((d) => d.selected).length > 0
                         ? d.selected
                         : true
                     )
@@ -880,7 +907,7 @@ const NewTable = ({
                             payload: {
                               page:
                                 data.page <
-                                  Math.ceil(data.rows.length / data.pageSize)
+                                Math.ceil(data.rows.length / data.pageSize)
                                   ? data.page + 1
                                   : Math.ceil(data.rows.length / data.pageSize),
                               pageSize: data.pageSize,

@@ -118,21 +118,29 @@ const Table = ({
     direction: "asc",
   });
 
-  const sortRows = useCallback(
-    (e) => {
-      let column = e.target.id;
-      let direction = sort.direction === "asc" ? "desc" : "asc";
-      setSort({ column, direction });
-    },
-    [sort]
-  );
+  // const collator = new Intl.Collator(undefined, { numeric: true });
 
-  const sortData = (data: any[], column: string, direction: string) => {
+  //         const sort = state.rows.sort((a, b) => {
+  //           const aValue = a[payload.column.field];
+  //           const bValue = b[payload.column.field];
+  //           return payload.direction === "asc"
+  //             ? collator.compare(aValue, bValue)
+  //             : collator.compare(bValue, aValue);
+  //         });
+  const sortRows = (e) => {
+    const column = e.target.id;
+    const direction = sort.direction === "asc" ? "desc" : "asc";
+    setSort({ column, direction });
+  };
+
+  const sortData = (data: any[], column: string, direction: "asc" | "desc") => {
     if (column) {
-      data.sort(dynamicSort(column));
+      const sortedData = [...data];
+      sortedData.sort(dynamicSort(column));
       if (direction === "desc") {
-        data.reverse();
+        sortedData.reverse();
       }
+      return sortedData;
     }
     return data;
   };
