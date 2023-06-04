@@ -224,7 +224,7 @@ const Table = ({
     }
 
     if (sort.column) {
-      filteredData = sortData(filteredData, sort.column, sort.direction);
+      filteredData = sortData(filteredData, sort.column, sort.direction as any);
     }
 
     return filteredData;

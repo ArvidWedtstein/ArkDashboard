@@ -40,4 +40,4 @@ export const schema = gql`
     ): ItemRecipeItem! @requireAuth
     deleteItemRecipeItem(id: String!): ItemRecipeItem! @requireAuth
   }
-`;
+`
