@@ -1,0 +1,88 @@
+import type { EditItemRecipeById, UpdateItemRecipeInput } from 'types/graphql'
+
+import { navigate, routes } from '@redwoodjs/router'
+import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
+import { useMutation } from '@redwoodjs/web'
+import { toast } from '@redwoodjs/web/toast'
+
+import ItemRecipeForm from 'src/components/ItemRecipe/ItemRecipeForm'
+
+export const QUERY = gql`
+  query EditItemRecipeById($id: String!) {
+    itemRecipe: itemRecipe(id: $id) {
+      id
+      created_at
+      updated_at
+      crafted_item_id
+      crafting_station_id
+      crafting_time
+      yields
+      required_level
+    }
+  }
+`
+const UPDATE_ITEM_RECIPE_MUTATION = gql`
+  mutation UpdateItemRecipeMutation(
+    $id: String!
+    $input: UpdateItemRecipeInput!
+  ) {
+    updateItemRecipe(id: $id, input: $input) {
+      id
+      created_at
+      updated_at
+      crafted_item_id
+      crafting_station_id
+      crafting_time
+      yields
+      required_level
+    }
+  }
+`
+
+export const Loading = () => <div>Loading...</div>
+
+export const Failure = ({ error }: CellFailureProps) => (
+  <div className="rw-cell-error">{error?.message}</div>
+)
+
+export const Success = ({
+  itemRecipe,
+}: CellSuccessProps<EditItemRecipeById>) => {
+  const [updateItemRecipe, { loading, error }] = useMutation(
+    UPDATE_ITEM_RECIPE_MUTATION,
+    {
+      onCompleted: () => {
+        toast.success('ItemRecipe updated')
+        navigate(routes.itemRecipes())
+      },
+      onError: (error) => {
+        toast.error(error.message)
+      },
+    }
+  )
+
+  const onSave = (
+    input: UpdateItemRecipeInput,
+    id: EditItemRecipeById['itemRecipe']['id']
+  ) => {
+    updateItemRecipe({ variables: { id, input } })
+  }
+
+  return (
+    <div className="rw-segment">
+      <header className="rw-segment-header">
+        <h2 className="rw-heading rw-heading-secondary">
+          Edit ItemRecipe {itemRecipe?.id}
+        </h2>
+      </header>
+      <div className="rw-segment-main">
+        <ItemRecipeForm
+          itemRecipe={itemRecipe}
+          onSave={onSave}
+          error={error}
+          loading={loading}
+        />
+      </div>
+    </div>
+  )
+}
