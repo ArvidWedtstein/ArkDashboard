@@ -15,8 +15,8 @@ export const schema = gql`
     category: String!
     health: Float
     DinoStat: [DinoStat]!
-    ItemRec_ItemRec_crafted_item_idToItem: [ItemRec]!
-    ItemRec_ItemRec_crafting_station_idToItem: [ItemRec]!
+    ItemRecipe_ItemRecipe_crafted_item_idToItem: [ItemRecipe]!
+    ItemRecipe_ItemRecipe_crafting_station_idToItem: [ItemRecipe]!
     ItemRecipeItem: [ItemRecipeItem]!
     LootcrateSetEntryItem: [LootcrateSetEntryItem]!
   }
@@ -37,6 +37,7 @@ export const schema = gql`
     itemsByCategory(category: String!): ItemsPage @skipAuth
     itemsByIds(id: [BigInt!]!): [Item!]! @skipAuth
   }
+
   input CreateItemInput {
     created_at: DateTime
     name: String!
