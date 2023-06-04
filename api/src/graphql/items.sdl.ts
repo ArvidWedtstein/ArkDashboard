@@ -14,13 +14,9 @@ export const schema = gql`
     type: String
     category: String!
     health: Float
-    Dino: [Dino]!
     DinoStat: [DinoStat]!
     ItemRec_ItemRec_crafted_item_idToItem: [ItemRec]!
     ItemRec_ItemRec_crafting_station_idToItem: [ItemRec]!
-    ItemRecipe_ItemRecipe_crafted_item_idToItem: [ItemRecipe]!
-    ItemRecipe_ItemRecipe_crafting_stationToItem: [ItemRecipe]!
-    ItemRecipe_ItemRecipe_item_idToItem: [ItemRecipe]!
     ItemRecipeItem: [ItemRecipeItem]!
     LootcrateSetEntryItem: [LootcrateSetEntryItem]!
   }
@@ -55,7 +51,6 @@ export const schema = gql`
     type: String
     category: String!
     health: Float
-    ItemRecipe_ItemRecipe_crafted_item_idToItem: JSON
   }
 
   input UpdateItemInput {
@@ -72,7 +67,6 @@ export const schema = gql`
     type: String
     category: String
     health: Float
-    ItemRecipe_ItemRecipe_crafted_item_idToItem: JSON
   }
 
   type Mutation {

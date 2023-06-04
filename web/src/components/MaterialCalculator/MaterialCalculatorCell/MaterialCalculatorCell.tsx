@@ -2,27 +2,6 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import { MaterialGrid } from "../MaterialGrid/MaterialGrid";
 import { FindItemsMats } from "types/graphql";
 
-// Query from ItemRecipe directly instead?
-
-// items {
-//   id
-//   name
-//   image
-//   crafting_time
-//   category
-//   type
-//   ItemRecipe_ItemRecipe_crafted_item_idToItem {
-//     yields
-//     amount
-//     Item_ItemRecipe_crafting_stationToItem {
-//       id
-//       name
-//     }
-//     Item_ItemRecipe_item_idToItem {
-//       id
-//     }
-//   }
-// }
 export const QUERY = gql`
   query FindItemsMats {
     itemRecs {
