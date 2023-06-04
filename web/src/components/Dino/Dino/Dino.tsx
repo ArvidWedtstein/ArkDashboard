@@ -1853,26 +1853,28 @@ const Dino = ({ dino }: Props) => {
                 <ul className="rounded-md">
                   {dino?.DinoStat.filter(
                     (d) => d.type == "saddle"
-                  )[0].Item.ItemRec_ItemRec_crafted_item_idToItem.map((d) => (
-                    <li className="animate-fade-in flex h-16 place-content-start place-items-center border border-stone-400 px-2">
-                      <p>Crafted in:</p>
-                      <Link
-                        className="inline-flex items-center space-x-2"
-                        to={routes.item({
-                          id: d.crafting_station_id.toString(),
-                        })}
-                      >
-                        <img
-                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${d.Item_ItemRec_crafting_station_idToItem.image}`}
-                          alt={"Crafting Station"}
-                          className="h-8 w-8"
-                        />
-                        <span>
-                          {d.Item_ItemRec_crafting_station_idToItem.name}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
+                  )[0].Item.ItemRecipes_ItemRecipes_crafted_item_idToItem.map(
+                    (d) => (
+                      <li className="animate-fade-in flex h-16 place-content-start place-items-center border border-stone-400 px-2">
+                        <p>Crafted in:</p>
+                        <Link
+                          className="inline-flex items-center space-x-2"
+                          to={routes.item({
+                            id: d.crafting_station_id.toString(),
+                          })}
+                        >
+                          <img
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${d.Item_ItemRecipes_crafting_station_idToItem.image}`}
+                            alt={"Crafting Station"}
+                            className="h-8 w-8"
+                          />
+                          <span>
+                            {d.Item_ItemRecipes_crafting_station_idToItem.name}
+                          </span>
+                        </Link>
+                      </li>
+                    )
+                  )}
                   {/* {dino?.DinoStat.find((d) => d.type == "saddle")?.Item
                         .ItemRec_ItemRec_crafted_item_idToItem[0]
                         .Item_ItemRec_crafting_station_idToItem.name.map(

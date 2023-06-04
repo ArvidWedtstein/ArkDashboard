@@ -4,13 +4,13 @@ import { FindItemsMats } from "types/graphql";
 
 export const QUERY = gql`
   query FindItemsMats {
-    itemRecs {
+    itemRecipes {
       id
       crafted_item_id
       crafting_station_id
       crafting_time
       yields
-      Item_ItemRec_crafted_item_idToItem {
+      Item_ItemRecipe_crafted_item_idToItem {
         id
         name
         image
@@ -61,10 +61,10 @@ export const Failure = ({ error, queryResult, updating }: CellFailureProps) => (
   </div>
 );
 
-export const Success = ({ itemRecs }: CellSuccessProps<FindItemsMats>) => {
+export const Success = ({ itemRecipes }: CellSuccessProps<FindItemsMats>) => {
   return (
     <div className="rw-form-wrapper container-xl mx-auto">
-      <MaterialGrid itemRecs={itemRecs} />
+      <MaterialGrid itemRecs={itemRecipes} />
     </div>
   );
 };

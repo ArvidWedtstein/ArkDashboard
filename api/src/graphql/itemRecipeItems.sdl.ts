@@ -7,7 +7,7 @@ export const schema = gql`
     item_id: BigInt!
     amount: Float!
     Item: Item!
-    ItemRec: ItemRecipe!
+    ItemRecipe: ItemRecipe!
   }
 
   type Query {
@@ -40,4 +40,4 @@ export const schema = gql`
     ): ItemRecipeItem! @requireAuth
     deleteItemRecipeItem(id: String!): ItemRecipeItem! @requireAuth
   }
-`
+`;
