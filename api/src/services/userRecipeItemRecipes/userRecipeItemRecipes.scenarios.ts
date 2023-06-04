@@ -7,7 +7,9 @@ export const standard = defineScenario<Prisma.UserRecipeItemRecipeCreateArgs>({
       data: {
         ItemRec: {
           create: {
-            Item_ItemRec_crafted_item_idToItem: { create: { name: 'String' } },
+            Item_ItemRecipe_crafted_item_idToItem: {
+              create: { name: 'String' },
+            },
           },
         },
         UserRecipe: {
@@ -28,7 +30,9 @@ export const standard = defineScenario<Prisma.UserRecipeItemRecipeCreateArgs>({
       data: {
         ItemRec: {
           create: {
-            Item_ItemRec_crafted_item_idToItem: { create: { name: 'String' } },
+            Item_ItemRecipe_crafted_item_idToItem: {
+              create: { name: 'String' },
+            },
           },
         },
         UserRecipe: {

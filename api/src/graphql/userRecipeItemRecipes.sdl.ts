@@ -5,7 +5,7 @@ export const schema = gql`
     updated_at: DateTime
     user_recipe_id: String!
     item_recipe_id: String!
-    ItemRec: ItemRec!
+    ItemRec: ItemRecipe!
     UserRecipe: UserRecipe!
   }
 
