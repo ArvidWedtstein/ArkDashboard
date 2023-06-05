@@ -226,6 +226,8 @@ const Table = ({
         return value.includes(rowValue);
       case "not_in":
         return !value.includes(rowValue);
+      case "regex":
+        return new RegExp(value).test(rowValue);
       default:
         return true;
     }
@@ -788,6 +790,7 @@ const Table = ({
                       <option value="ilike">ilike</option>
                       <option value="in">in</option>
                       <option value="not_in">not in</option>
+                      <option value="regex">regex</option>
                     </select>
                     <input
                       name="value"
@@ -833,6 +836,7 @@ const Table = ({
                     <option value="ilike">ilike</option>
                     <option value="in">in</option>
                     <option value="not_in">not in</option>
+                    <option value="regex">regex</option>
                   </SelectField>
                   <TextField name="value" className="rw-input rw-input-small" />
                   <Submit className="rw-button rw-button-small rw-button-green">
