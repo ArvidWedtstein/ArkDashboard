@@ -1262,38 +1262,38 @@ const Dino = ({ dino }: Props) => {
             columns={[
               {
                 field: "t",
-                label: "Thatch",
-                renderCell: canDestroy,
+                header: "Thatch",
+                render: canDestroy,
               },
               {
                 field: "g",
-                label: "Greenhouse",
-                renderCell: canDestroy,
+                header: "Greenhouse",
+                render: canDestroy,
               },
               {
                 field: "w",
-                label: "Wood",
-                renderCell: canDestroy,
+                header: "Wood",
+                render: canDestroy,
               },
               {
                 field: "a",
-                label: "Adobe",
-                renderCell: canDestroy,
+                header: "Adobe",
+                render: canDestroy,
               },
               {
                 field: "s",
-                label: "Stone",
-                renderCell: canDestroy,
+                header: "Stone",
+                render: canDestroy,
               },
               {
                 field: "m",
-                label: "Metal",
-                renderCell: canDestroy,
+                header: "Metal",
+                render: canDestroy,
               },
               {
                 field: "tk",
-                label: "Tek",
-                renderCell: canDestroy,
+                header: "Tek",
+                render: canDestroy,
               },
             ]}
           />
@@ -1318,7 +1318,7 @@ const Dino = ({ dino }: Props) => {
               columns={[
                 {
                   field: "Item",
-                  label: "",
+                  header: "",
                   valueFormatter: ({ value }) => {
                     return (
                       value && (
@@ -1332,7 +1332,7 @@ const Dino = ({ dino }: Props) => {
                 },
                 {
                   field: "Item",
-                  label: "Name",
+                  header: "Name",
                   valueFormatter: ({ value }) => {
                     return (
                       value && (
@@ -1345,7 +1345,7 @@ const Dino = ({ dino }: Props) => {
                 },
                 {
                   field: "value",
-                  label: "Value",
+                  header: "Value",
                   sortable: true,
                   valueFormatter: (value) => (
                     <div className="flex h-2 w-32 flex-row divide-x divide-black rounded-full bg-gray-300">
@@ -1367,7 +1367,7 @@ const Dino = ({ dino }: Props) => {
                 },
                 {
                   field: "rank",
-                  label: "rank",
+                  header: "rank",
                   sortable: true,
                   valueFormatter: ({ value }) => {
                     return value <= 10 && <p>#{value}</p>;
@@ -1389,7 +1389,7 @@ const Dino = ({ dino }: Props) => {
             columns={[
               {
                 field: "Item",
-                label: "",
+                header: "",
                 valueFormatter: ({ value }) => {
                   return (
                     <img
@@ -1401,7 +1401,7 @@ const Dino = ({ dino }: Props) => {
               },
               {
                 field: "Item",
-                label: "Name",
+                header: "Name",
                 valueFormatter: ({ value }) => {
                   return (
                     <Link to={routes.item({ id: value.id })}>{value.name}</Link>
@@ -1410,7 +1410,7 @@ const Dino = ({ dino }: Props) => {
               },
               {
                 field: "value",
-                label: "Value",
+                header: "Value",
                 valueFormatter: ({ value }) => (
                   <div className="flex items-center">
                     <svg
@@ -1433,7 +1433,7 @@ const Dino = ({ dino }: Props) => {
               },
               {
                 field: "rank",
-                label: "Rank",
+                header: "Rank",
                 valueFormatter: ({ value }) => {
                   return value <= 10 && <p>#{value}</p>;
                 },
@@ -1456,7 +1456,7 @@ const Dino = ({ dino }: Props) => {
             columns={[
               {
                 field: "Item",
-                label: "",
+                header: "",
                 valueFormatter: ({ value }) => {
                   return (
                     value && (
@@ -1487,7 +1487,7 @@ const Dino = ({ dino }: Props) => {
             columns={[
               {
                 field: "Item",
-                label: "",
+                header: "",
                 valueFormatter: ({ value }) => {
                   return (
                     value && (
@@ -1859,23 +1859,23 @@ const Dino = ({ dino }: Props) => {
                 <ul className="rounded-md">
                   {dino?.DinoStat.filter(
                     (d) => d.type == "saddle"
-                  )[0].Item.ItemRecipes_ItemRecipes_crafted_item_idToItem.map(
-                    (d) => (
+                  )[0].Item.ItemRecipe_ItemRecipe_crafted_item_idToItem.map(
+                    ({ Item_ItemRecipe_crafting_station_idToItem, crafting_station_id }) => (
                       <li className="animate-fade-in flex h-16 place-content-start place-items-center border border-stone-400 px-2">
                         <p>Crafted in:</p>
                         <Link
                           className="inline-flex items-center space-x-2"
                           to={routes.item({
-                            id: d.crafting_station_id.toString(),
+                            id: crafting_station_id.toString(),
                           })}
                         >
                           <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${d.Item_ItemRecipes_crafting_station_idToItem.image}`}
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRecipe_crafting_station_idToItem.image}`}
                             alt={"Crafting Station"}
                             className="h-8 w-8"
                           />
                           <span>
-                            {d.Item_ItemRecipes_crafting_station_idToItem.name}
+                            {Item_ItemRecipe_crafting_station_idToItem.name}
                           </span>
                         </Link>
                       </li>
@@ -1966,10 +1966,10 @@ const Dino = ({ dino }: Props) => {
               columns={[
                 {
                   field: "stat",
-                  bold: true,
-                  label: "Stat",
+                  className: "font-bold",
+                  header: "Stat",
                   sortable: true,
-                  renderCell: ({ value }) => {
+                  render: ({ value }) => {
                     return (
                       <div className="inline-flex items-center space-x-2">
                         <img
@@ -2020,13 +2020,13 @@ const Dino = ({ dino }: Props) => {
                 },
                 {
                   field: "base",
-                  label: "Base (lvl 1)",
+                  header: "Base (lvl 1)",
                   numeric: true,
                   sortable: true,
                 },
                 {
                   field: "increasePerLevelWild",
-                  label: "Increase per level (wild)",
+                  header: "Increase per level (wild)",
                   numeric: true,
                   valueFormatter: ({ value }) => {
                     return value === null ? "" : `+${value}`;
@@ -2034,7 +2034,7 @@ const Dino = ({ dino }: Props) => {
                 },
                 {
                   field: "increasePerLevelTamed",
-                  label: "Increase per level (tamed)",
+                  header: "Increase per level (tamed)",
                   numeric: true,
                   valueFormatter: ({ value }) => {
                     return value === null ? "" : `+${value}%`;
@@ -2042,13 +2042,13 @@ const Dino = ({ dino }: Props) => {
                 },
                 {
                   field: "total",
-                  label: "Total",
+                  header: "Total",
                   numeric: true,
                 },
                 {
                   field: "base",
-                  label: "",
-                  renderCell: ({ row }) => {
+                  header: "",
+                  render: ({ row }) => {
                     return (
                       <nav className="flex flex-row content-center items-center space-x-2 align-middle">
                         <button
@@ -2083,39 +2083,6 @@ const Dino = ({ dino }: Props) => {
                   },
                 }
               ]}
-            // renderActions={(row) => {
-            //   return (
-            //     <nav className="flex flex-row content-center items-center space-x-2 align-middle">
-            //       <button
-            //         disabled={
-            //           baseStats.find((s) => s.stat === row.stat)?.points <=
-            //           0 || row.stat === "t"
-            //         }
-            //         className="rw-button rw-button-small rw-button-red-outline disabled:bg-slate-500 disabled:text-white"
-            //         onClick={() => onRemove(row.stat)}
-            //       >
-            //         -
-            //       </button>
-            //       <input
-            //         disabled={true}
-            //         className="rw-input max-w-[50px]"
-            //         value={baseStats.find((s) => s.stat === row.stat)?.points}
-            //       />
-            //       <button
-            //         disabled={
-            //           baseStats
-            //             .map((b) => b.points)
-            //             .reduce((a: any, b: any): any => a + b, 0) >=
-            //           dinoLevel || row.stat === "t"
-            //         }
-            //         className="rw-button rw-button-small rw-button-green-outline disabled:bg-slate-500 disabled:text-white"
-            //         onClick={() => onAdd(row.stat)}
-            //       >
-            //         +
-            //       </button>
-            //     </nav>
-            //   );
-            // }}
             />
           </section>
           {dino.movement && (

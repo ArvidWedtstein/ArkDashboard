@@ -125,67 +125,6 @@ const HomePage = () => {
           </div>
         </div>
 
-        {/* <Table
-          filter={true}
-          summary={true}
-          select={true}
-          hover={true}
-          search={true}
-          rowsPerPage={3}
-          pagination={true}
-          rows={tblInput}
-          columns={[
-            {
-              sortable: true,
-              field: "name",
-              label: "Name",
-            },
-            {
-              sortable: true,
-              field: "description",
-              label: "Description",
-              numeric: true,
-            },
-            {
-              sortable: true,
-              field: "created_by",
-              label: "Created By",
-            },
-          ]}
-        /> */}
-
-        {/* <NewTable
-          selectable
-          // header={"s"}
-          summary
-          filterable
-          search
-          pagination={{
-            page: 1,
-            pageSize: 1,
-            pageSizeOptions: [1, 10, 25],
-          }}
-          rows={tblInput}
-          columns={[
-            {
-              field: "name",
-              headerName: "Name",
-              sortable: true,
-            },
-            {
-              field: "description",
-              headerName: "Description",
-              type: "number",
-              sortable: true,
-            },
-            {
-              field: "created_by",
-              headerName: "Created By",
-              sortable: true,
-            },
-          ]}
-        /> */}
-
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}

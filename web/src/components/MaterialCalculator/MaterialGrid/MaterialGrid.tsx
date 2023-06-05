@@ -512,13 +512,13 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
             ...mergeItemRecipe(viewBaseMaterials, items, ...item).map(
               ({ Item_ItemRec_crafted_item_idToItem, amount }) => ({
                 field: Item_ItemRec_crafted_item_idToItem.id,
-                label: Item_ItemRec_crafted_item_idToItem.name,
+                header: Item_ItemRec_crafted_item_idToItem.name,
                 className: "w-0 text-center",
-                renderCell: ({ rowIndex }) => {
+                render: ({ value }) => {
                   return (
                     <div
                       className="flex flex-col items-center justify-center"
-                      key={`${Item_ItemRec_crafted_item_idToItem.id}-${rowIndex}`}
+                      key={`${value}-${Item_ItemRec_crafted_item_idToItem.id}`}
                     >
                       <img
                         src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRec_crafted_item_idToItem.image}`}
@@ -578,9 +578,9 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
           columns={[
             {
               field: "Item_ItemRec_crafted_item_idToItem",
-              label: "Name",
+              header: "Name",
               className: "w-0",
-              renderCell: ({ rowIndex, value: { name, image } }) => {
+              render: ({ rowIndex, value: { name, image } }) => {
                 return (
                   <button
                     type="button"
@@ -600,10 +600,10 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
             },
             {
               field: "amount",
-              label: "Amount",
+              header: "Amount",
               numeric: true,
               className: "w-0 text-center",
-              renderCell: ({ rowIndex, value }) => (
+              render: ({ rowIndex, value }) => (
                 <div
                   className="flex flex-row items-center"
                   key={`${rowIndex}+${Math.random()}`}
@@ -635,7 +635,7 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
             },
             {
               field: "crafting_time",
-              label: "Time pr item",
+              header: "Time pr item",
               numeric: false,
               className: "w-0 text-center",
               valueFormatter: ({ row, value }) => {
@@ -644,10 +644,10 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
             },
             {
               field: "Item_ItemRec_crafted_item_idToItem",
-              label: "Ingredients",
+              header: "Ingredients",
               numeric: false,
               className: "text-center flex flex-row justify-start items-center",
-              renderCell: ({ row }) => {
+              render: ({ row }) => {
                 return mergeItemRecipe(false, items, {
                   ...row,
                 })
