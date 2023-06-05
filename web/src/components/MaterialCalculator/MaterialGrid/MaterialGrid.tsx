@@ -292,7 +292,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   return (
     <Form
       onSubmit={onAdd}
-      // config={{ mode: "onBlur" }}
       error={error}
       className="flex h-full w-full space-x-3 sm:flex-row"
     >
@@ -347,7 +346,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           </svg>
         </button>
 
-        <div className="relative max-h-[36rem] w-fit max-w-[14rem] overflow-y-auto rounded-lg border border-gray-200 bg-stone-200 px-3 py-4 text-gray-900 will-change-scroll dark:border-zinc-700 dark:bg-zinc-600 dark:text-white">
+        <div className="relative max-h-screen w-fit max-w-[14rem] overflow-y-auto rounded-lg border border-gray-200 bg-stone-200 px-3 py-4 text-gray-900 will-change-scroll dark:border-zinc-700 dark:bg-zinc-600 dark:text-white">
           <ul className="relative space-y-2 font-medium">
             <li>
               <Label
@@ -501,7 +500,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               data-testid="turrettowerbtn"
               type="button"
               // onClick={() => generatePDF()}
-              title="pedo-fil"
+              title="generate pedo-fil"
               className="rw-button rw-button-gray p-2"
             >
               PDF
@@ -605,10 +604,11 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               render: ({ rowIndex, value }) => (
                 <div
                   className="flex flex-row items-center"
-                  key={`${rowIndex}+${Math.random()}`}
+                  key={`materialcalculator-${rowIndex}}`}
                 >
                   <button
                     type="button"
+                    disabled={value === 1}
                     className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
                     onClick={() => onRemoveAmount(rowIndex)}
                   >
@@ -617,9 +617,15 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                   <input
                     type="text"
                     defaultValue={value}
+                    // value={value}
                     className="rw-input w-16 p-3 text-center"
                     onChange={(e) => {
-                      onChangeAmount(rowIndex, e.target.value);
+                      debounce(() => {
+                        onChangeAmount(rowIndex, parseInt(e.target.value) > 0 ? e.target.value : 1);
+                        if (parseInt(e.target.value) < 1) {
+                          e.target.value = parseInt(e.target.value) > 0 ? e.target.value : "1";
+                        }
+                      }, 300)();
                     }}
                   />
                   <button

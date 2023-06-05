@@ -7,9 +7,8 @@ const drawSvgPath = (
   let pathString = "";
   coordinates.forEach((coordinate, index) => {
     const command = index === 0 ? "M" : "L";
-    pathString += `${command}${
-      (size.height / 100) * coordinate.lon + size.width / 100
-    } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
+    pathString += `${command}${(size.height / 100) * coordinate.lon + size.width / 100
+      } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
   });
   return pathString;
 };
@@ -69,120 +68,126 @@ const Map = ({
     "12": "https://ark.wiki.gg/images/1/1e/Lost_Island_Map.jpg",
   };
   const svgRef = useRef(null);
-  const [scale, setScale] = useState(1);
-  const [translate, setTranslate] = useState({ x: 0, y: 0 });
 
-  useEffect(() => {
-    const svgElement = svgRef.current;
-    if (interactive && svgElement) {
-      const { width, height } = svgElement.getBoundingClientRect();
-      const maxScale = Math.max(width / 500, height / 500);
-      // setScale(maxScale);
-      setScale(1);
-    }
-  }, []);
+  const [zoom, setZoom] = useState(1);
+  const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
 
-  const handleWheel = useCallback(({ shiftKey, clientX, clientY, deltaY }) => {
-    if (!interactive) return;
-    if (!shiftKey) return;
-    const delta = deltaY > 0 ? -0.1 : 0.1;
-
-    const maxScale = Math.max(scale, 1);
-    const minScale = Math.min(
-      1,
-      Math.min(
-        500 / svgRef.current.clientWidth,
-        500 / svgRef.current.clientHeight
-      )
-    );
-    const newScale = Math.max(minScale, Math.min(maxScale + delta, 5));
-    const svgElement = svgRef.current;
-    if (svgElement) {
-      const { left, top } = svgElement.getBoundingClientRect();
-      const mouseX = clientX - left;
-      const mouseY = clientY - top;
-      const scaleDiff = newScale / scale;
-      const newTranslate = {
-        x: mouseX - scaleDiff * (mouseX - translate.x),
-        y: mouseY - scaleDiff * (mouseY - translate.y),
-      };
-      setTranslate(newTranslate);
-      setScale(newScale);
-    }
-  }, []);
-
-  const handleMouseDown = useCallback((event) => {
-    if (!interactive) return;
-    if (event.button !== 0) return;
-    if (!event.shiftKey) return;
-    // event.preventDefault();
-    const startCoords = {
-      x: event.clientX,
-      y: event.clientY,
-    };
-    const handleMouseMove = (event) => {
-      const deltaX = event.clientX - startCoords.x;
-      const deltaY = event.clientY - startCoords.y;
-      setTranslate((prevState) => ({
-        x: prevState.x + deltaX, // / scale,
-        y: prevState.y + deltaY, // / scale,
-      }));
-      startCoords.x = event.clientX;
-      startCoords.y = event.clientY;
-    };
-    const handleMouseUp = () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  }, []);
-
-  const handleKeyDown = useCallback((event) => {
-    if (!interactive) return;
-    if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
-      document.body.style.overflow = "hidden";
-    }
-  }, []);
 
   const handleKeyUp = useCallback((event) => {
     if (!interactive) return;
     if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
-      document.body.style.overflow = "auto";
-      setScale(1);
-      setTranslate((prevState) => ({
-        x: 0,
-        y: 0,
-      }));
+      setZoom(1);
+      setPanPosition({ x: 0, y: 0 });
+      setIsDragging(false);
+      setStartPosition({ x: 0, y: 0 });
     }
   }, []);
 
-  const viewBox = `${-translate.x} ${-translate.y} ${size.width} ${
-    size.height
-  }`;
+  useEffect(() => {
+    if (!interactive) return;
+    const handleResize = () => {
+      // Reset pan position to center when the container size changes
+      const container = svgRef.current;
+      if (container) {
+        const containerWidth = container.offsetWidth;
+        const containerHeight = container.offsetHeight;
+        const imageWidth = container.scrollWidth;
+        const imageHeight = container.scrollHeight;
+        const centerX = (containerWidth - imageWidth) / 2;
+        const centerY = (containerHeight - imageHeight) / 2;
+        setPanPosition({ x: centerX, y: centerY });
+      }
+    };
 
-  const imageTransform = `scale(${scale})`;
+    const handleMouseLeave = () => {
+      setIsDragging(false);
+    };
+
+    window.addEventListener('resize', handleResize);
+    svgRef.current.addEventListener('mouseleave', handleMouseLeave);
+
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      svgRef.current.removeEventListener('mouseleave', handleMouseLeave);
+
+    };
+  }, []);
+
+  const handleWheel = (event) => {
+    event.preventDefault();
+    if (!interactive) return;
+    if (!event.shiftKey) return;
+    const scale = event.deltaY > 0 ? 0.9 : 1.1;
+    const newZoom = zoom * scale;
+    const rect = svgRef.current.getBoundingClientRect();
+    const offsetX = (event.clientX - rect.left) / zoom;
+    const offsetY = (event.clientY - rect.top) / zoom;
+    const dx = offsetX * (1 - scale);
+    const dy = offsetY * (1 - scale);
+    setZoom(newZoom);
+    setPanPosition((prevPosition) => ({
+      x: prevPosition.x - dx,
+      y: prevPosition.y - dy,
+    }));
+  };
+
+
+
+  const handleMouseDown = (event) => {
+    event.preventDefault();
+    if (!interactive) return;
+    if (!event.shiftKey) return;
+    setIsDragging(true);
+    setStartPosition({ x: event.clientX, y: event.clientY });
+  };
+
+  const handleMouseMove = (event) => {
+    if (!isDragging) return;
+    if (!interactive) return;
+    if (!event.shiftKey) return;
+    const dx = event.clientX - startPosition.x;
+    const dy = event.clientY - startPosition.y;
+    setPanPosition((prevPosition) => ({
+      x: prevPosition.x + dx / zoom,
+      y: prevPosition.y + dy / zoom,
+    }));
+    setStartPosition({ x: event.clientX, y: event.clientY });
+  };
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
 
   return (
     <svg
       ref={svgRef}
-      onWheel={handleWheel}
-      onMouseDown={handleMouseDown}
-      onKeyDown={handleKeyDown}
-      onKeyUp={handleKeyUp}
-      tabIndex={0}
-      className={"relative " + className}
-      width={size.width}
       height={size.height}
-      viewBox={viewBox}
+      width={size.width}
+      tabIndex={0}
+      className={"relative" + className}
+      cursor={interactive ? isDragging ? 'grabbing' : 'grab' : "default"}
+      viewBox={`0 0 ${size.width} ${size.height
+        }`}
+      onKeyUp={handleKeyUp}
       xmlns="http://www.w3.org/2000/svg"
     >
       <image
+        onWheel={handleWheel}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
         href={maps[map.toLowerCase()]}
-        style={{ pointerEvents: "none", transform: imageTransform }}
         height={size.height}
         width={size.width}
-        xlinkHref="planetmap"
+
+        style={{
+          width: '100%',
+          height: '100%',
+          transform: `scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`,
+          transformOrigin: 'center center',
+        }}
       />
       {!maps[map.toLowerCase()] && (
         <text
@@ -197,7 +202,13 @@ const Map = ({
 
       {pos?.map((p, i) => (
         <circle
-          style={{ transform: imageTransform }}
+          style={{
+            pointerEvents: "none",
+            width: '100%',
+            height: '100%',
+            transform: `scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`,
+            transformOrigin: 'center center',
+          }}
           key={"map-pos-" + i}
           id={"map-pos-" + i}
           fill={p.color || "red"}
@@ -211,7 +222,13 @@ const Map = ({
       ))}
       {path?.coords && (
         <path
-          style={{ pointerEvents: "none", transform: imageTransform }}
+          style={{
+            pointerEvents: "none",
+            width: '100%',
+            height: '100%',
+            transform: `scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`,
+            transformOrigin: 'center center',
+          }}
           d={drawSvgPath(path.coords, size)}
           stroke={path.color || "red"}
           strokeWidth="2"

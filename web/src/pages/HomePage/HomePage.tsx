@@ -19,63 +19,6 @@ const HomePage = () => {
   //   }
   // }, [supabase])
 
-  const tblInput = [
-    {
-      name: "teeeeeeeeest",
-      description: 36,
-      created_by: "Ole",
-    },
-    {
-      name: "teeeeeeeeest",
-      description: 36,
-      created_by: "Ole",
-    },
-    {
-      name: "teeeeeeeeest",
-      description: 36,
-      created_by: "Ole",
-    },
-    {
-      name: "test2",
-      description: 1,
-      created_by: "Per",
-    },
-    {
-      name: "test3",
-      description: 45,
-      created_by: "Jens",
-    },
-    {
-      name: "test1",
-      description: 36,
-      created_by: "Ole",
-    },
-    {
-      name: "test2",
-      description: 1,
-      created_by: "Per",
-    },
-    {
-      name: "test3",
-      description: 45,
-      created_by: "Jens",
-    },
-    {
-      name: "test1",
-      description: 36,
-      created_by: "Ole",
-    },
-    {
-      name: "test2",
-      description: 1,
-      created_by: "Per",
-    },
-    {
-      name: "test3",
-      description: 45,
-      created_by: "Peder",
-    },
-  ];
 
   return (
     <>
@@ -120,7 +63,6 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}

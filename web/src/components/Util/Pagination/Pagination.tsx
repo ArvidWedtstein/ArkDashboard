@@ -99,7 +99,71 @@ const Pagination = ({
     <>
       <div className="flex justify-center">
         <nav aria-label="Page navigation">
-          <ul className="list-style-none mt-5 flex w-full justify-end space-x-2">
+          <div className="rw-button-group mt-5 w-full">
+            <Link
+              className="rw-pagination-item"
+              to={routes[route]({ ...params, page: changePage("prev") })}
+              aria-label="Previous"
+              aria-disabled={count / itemsPerPage <= 1}
+            >
+              <span aria-hidden="true" className="sr-only">
+                Previous
+              </span>
+              <svg
+                className="h-5 w-5"
+                aria-hidden="true"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </Link>
+            {getPaginationGroup().map((item, index) => (
+              <Link
+                key={`page-${index}`}
+                to={routes[route]({ ...params, page: index + 1 })}
+                className={clsx(
+                  {
+                    "rw-pagination-item-active":
+                      parseInt(page) === index + 1,
+                    "rw-pagination-item":
+                      parseInt(page) !== index + 1,
+                  }
+                )}
+              >
+                {item}
+              </Link>
+            ))}
+            <Link
+              className="rw-pagination-item"
+              to={routes[route]({ ...params, page: changePage("next") })}
+              aria-label="Next"
+              aria-disabled={count / itemsPerPage <= 1}
+            >
+              <span aria-hidden="true" className="sr-only">
+                Next
+              </span>
+              <svg
+                className="h-5 w-5"
+                aria-hidden="true"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+            </Link>
+          </div>
+          {/* <ul className="list-style-none mt-5 flex w-full justify-end space-x-2">
             <li className="">
               <Link
                 className="inline-flex h-8 w-8 items-center justify-center rounded-md border leading-none text-gray-800 hover:border-2 aria-disabled:pointer-events-none aria-disabled:hidden dark:text-stone-200"
@@ -164,7 +228,7 @@ const Pagination = ({
                 </svg>
               </Link>
             </li>
-          </ul>
+          </ul> */}
         </nav>
       </div>
     </>
@@ -172,96 +236,3 @@ const Pagination = ({
 };
 
 export default Pagination;
-
-// export const Pagination2 = ({ data, RenderComponent, pageLimit, dataLimit }) => {
-//   let { dinos } = data;
-//   const [pages] = useState(Math.round(dinos.length / dataLimit));
-//   const [currentPage, setCurrentPage] = useState(1);
-
-//   useEffect(() => {
-//     window.scrollTo({ behavior: 'smooth', top: 0 });
-//   }, [currentPage]);
-
-//   const goToNextPage = () => {
-//     setCurrentPage((page) => page + 1);
-//   };
-
-//   const goToPreviousPage = () => {
-//     setCurrentPage((page) => page - 1);
-//   };
-
-//   const changePage = (event) => {
-//     const pageNumber = Number(event.target.textContent);
-//     setCurrentPage(pageNumber);
-//   };
-
-//   const getPaginatedData = () => {
-//     const startIndex = currentPage * dataLimit - dataLimit;
-//     const endIndex = startIndex + dataLimit;
-//     return dinos.slice(startIndex, endIndex);
-//   };
-
-//   const getPaginationGroup = () => {
-//     const paginationGroup = [];
-
-//     if (pages <= pageLimit) {
-//       for (let i = 1; i <= pages; i++) {
-//         paginationGroup.push(i);
-//       }
-//     } else {
-//       const halfPageLimit = Math.floor(pageLimit / 2);
-//       let start = currentPage - halfPageLimit;
-//       let end = currentPage + halfPageLimit;
-
-//       if (start <= 0) {
-//         start = 1;
-//         end = pageLimit;
-//       } else if (end > pages) {
-//         end = pages;
-//         start = pages - pageLimit + 1;
-//       }
-
-//       for (let i = start; i <= end; i++) {
-//         paginationGroup.push(i);
-//       }
-//     }
-
-//     return paginationGroup;
-//   };
-
-//   return (
-//     <>
-//       <div className="">
-//         {getPaginatedData().map((d, idx) => (
-//           <RenderComponent key={idx} dinosPage={{ dinos: [d] }} />
-//         ))}
-//       </div>
-
-//       <div className="flex flex-row bg-white rw-button-group">
-//         <button
-//           onClick={goToPreviousPage}
-//           className={`rw-button rw-button-gray ${currentPage === 1 ? 'disabled' : ''}`}
-//         >
-//           prev
-//         </button>
-
-//         {getPaginationGroup().map((item, index) => (
-//           <button
-//             key={index}
-//             onClick={changePage}
-//             className={`rw-button rw-button-gray ${currentPage === item ? 'rw-button-green-outline' : null}`}
-//           >
-//             <span>{item}</span>
-//           </button>
-//         ))}
-
-//         <button
-//           onClick={goToNextPage}
-//           className={`rw-button rw-button-gray ${currentPage === pages ? 'disabled' : ''}`}
-//         >
-//           next
-//         </button>
-//       </div>
-//     </>
-//   );
-// };

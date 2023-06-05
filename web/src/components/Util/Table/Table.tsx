@@ -724,7 +724,7 @@ const Table = ({
         {mergedSettings.filter && (
           <div className="relative w-fit" ref={ref}>
             <button
-              className="rw-button rw-button-gray-outline m-0"
+              className="rw-button rw-button-gray m-0"
               onClick={() => setIsComponentVisible(!isComponentVisible)}
             >
               <span className="sr-only">Filter</span>
@@ -768,6 +768,7 @@ const Table = ({
                       name="column"
                       className="rw-input rw-input-small"
                       defaultValue={column}
+                      disabled
                     >
                       {columns.map((column, idx) => (
                         <option key={`filter-${index}-column-${idx}`}>
@@ -779,6 +780,7 @@ const Table = ({
                       name="operator"
                       className="rw-input rw-input-small"
                       defaultValue={operator}
+                      disabled
                     >
                       <option value="=">=</option>
                       <option value="!=">!=</option>
@@ -796,15 +798,14 @@ const Table = ({
                       name="value"
                       className="rw-input rw-input-small"
                       defaultValue={value}
+                      readOnly
                     />
                     <button
                       className="rw-button rw-button-small rw-button-red"
                       type="button"
                       onClick={(e) => {
                         e.preventDefault();
-                        const newFilters = [...filters];
-                        newFilters.splice(index, 1);
-                        setFilters(newFilters);
+                        setFilters((prev) => prev.filter((_, idx) => idx !== index))
                       }}
                     >
                       -
@@ -869,7 +870,7 @@ const Table = ({
         )}
         {mergedSettings.select && (
           <button
-            className="rw-button rw-button-gray-outline"
+            className="rw-button rw-button-gray"
             title="Export"
             disabled={selectedRows.length === 0}
             onClick={copyToClipboard}
