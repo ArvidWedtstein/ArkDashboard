@@ -80,7 +80,7 @@ model Profile {
 }
 
 model Role {
-  id                               String       @id(map: "roles_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                               String       @id(map: "roles_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name                             String
   created_by                       String?      @db.Uuid
   permissions                      permission[]
@@ -89,7 +89,7 @@ model Role {
 }
 
 model Timeline {
-  id               String             @id(map: "timeline_pkey") @unique(map: "timeline_id_key") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id               String             @id(map: "timeline_pkey") @unique(map: "timeline_id_key") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at       DateTime?          @default(now()) @db.Timestamptz(6)
   updated_at       DateTime?          @db.Timestamptz(6)
   created_by       String             @db.Uuid
@@ -109,7 +109,7 @@ model Tribe {
 }
 
 model Message {
-  id         String    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   profile_id String    @default(dbgenerated("auth.uid()")) @db.Uuid
   content    String
   created_at DateTime? @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
@@ -117,7 +117,7 @@ model Message {
 }
 
 model Dino {
-  id                             String                 @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                             String                 @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at                     DateTime?              @default(now()) @db.Timestamptz(6)
   name                           String
   synonyms                       String?
@@ -207,7 +207,7 @@ model Map {
 }
 
 model Lootcrate {
-  id                 String         @id(map: "Lootcrates_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                 String         @id(map: "Lootcrates_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at         DateTime?      @default(now()) @db.Timestamptz(6)
   updated_at         DateTime?      @default(now()) @db.Timestamptz(6)
   blueprint          String
@@ -219,12 +219,14 @@ model Lootcrate {
   quality_multiplier Json?
   set_qty            Json?
   color              String?
+  latitude           Float?
+  longitude_         Float?         @map("longitude ")
   Map                Map            @relation(fields: [map], references: [id], onDelete: NoAction, onUpdate: NoAction)
   LootcrateSet       LootcrateSet[]
 }
 
 model LootcrateSet {
-  id                String              @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at        DateTime?           @default(now()) @db.Timestamptz(6)
   lootcrate_id      String              @db.Uuid
   name              String?
@@ -236,7 +238,7 @@ model LootcrateSet {
 }
 
 model LootcrateSetEntry {
-  id                    String                  @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                    String                  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at            DateTime?               @default(now()) @db.Timestamptz(6)
   set_id                String                  @db.Uuid
   name                  String?
@@ -248,7 +250,7 @@ model LootcrateSetEntry {
 }
 
 model DinoStat {
-  id         String       @id(map: "DinoEffWeight_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id         String       @id(map: "DinoEffWeight_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at DateTime?    @default(now()) @db.Timestamptz(6)
   updated_at DateTime?    @default(now()) @db.Timestamptz(6)
   dino_id    String       @db.Uuid
@@ -263,7 +265,7 @@ model DinoStat {
 }
 
 model LootcrateSetEntryItem {
-  id                String            @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at        DateTime?         @default(now()) @db.Timestamptz(6)
   updated_at        DateTime?         @default(now()) @db.Timestamptz(6)
   entry_id          String            @db.Uuid
@@ -274,7 +276,7 @@ model LootcrateSetEntryItem {
 }
 
 model TimelineBasespotDino {
-  id                  String           @id(map: "TimelineDino_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                  String           @id(map: "TimelineDino_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at          DateTime?        @default(now()) @db.Timestamptz(6)
   updated_at          DateTime?        @default(now()) @db.Timestamptz(6)
   timelinebasespot_id BigInt
@@ -307,7 +309,7 @@ model TimelineBasespotDino {
 }
 
 model TimelineBasespotRaid {
-  id                  String           @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                  String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at          DateTime         @unique @default(now()) @db.Timestamptz(6)
   updated_at          DateTime?        @default(now()) @db.Timestamptz(6)
   timelinebasespot_id BigInt
@@ -322,7 +324,7 @@ model TimelineBasespotRaid {
 }
 
 model MapCoordinate {
-  id         String    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   updated_at DateTime? @default(now()) @db.Timestamptz(6)
   latitude   Float?
@@ -336,7 +338,7 @@ model MapCoordinate {
 }
 
 model MapNote {
-  id         String    @id(map: "MapNotes_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id         String    @id(map: "MapNotes_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   updated_at DateTime? @default(now()) @db.Timestamptz(6)
   map_id     BigInt

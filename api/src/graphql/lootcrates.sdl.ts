@@ -12,6 +12,8 @@ export const schema = gql`
     quality_multiplier: JSON
     set_qty: JSON
     color: String
+    latitude: Float
+    longitude_: Float
     Map: Map!
     LootcrateSet: [LootcrateSet]!
   }
@@ -34,6 +36,8 @@ export const schema = gql`
     quality_multiplier: JSON
     set_qty: JSON
     color: String
+    latitude: Float
+    longitude_: Float
   }
 
   input UpdateLootcrateInput {
@@ -48,6 +52,8 @@ export const schema = gql`
     quality_multiplier: JSON
     set_qty: JSON
     color: String
+    latitude: Float
+    longitude_: Float
   }
 
   type Mutation {
