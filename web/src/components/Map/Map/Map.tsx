@@ -69,20 +69,20 @@ const Map = ({ map }: Props) => {
         </svg>
       ),
     },
-    // loot_crate: {
-    //   active: false,
-    //   color: "#ea580c",
-    //   icon: (
-    //     <svg
-    //       xmlns="http://www.w3.org/2000/svg"
-    //       viewBox="0 0 576 512"
-    //       aria-hidden="true"
-    //       className="h-12 w-12 fill-current"
-    //     >
-    //       <path d="M352 336c0 8.875-7.125 16-16 16h-96C231.1 352 224 344.9 224 336V288H128v192h320V288h-96V336zM0 128v128h96V32C43 32 0 75 0 128zM0 448c0 17.62 14.38 32 32 32h64V288H0V448zM480 32v224h96V128C576 75 533 32 480 32zM304 304v-64C304 231.1 296.9 224 288 224S272 231.1 272 240v64C272 312.9 279.1 320 288 320S304 312.9 304 304zM480 480h64c17.62 0 32-14.38 32-32V288h-96V480zM128 256h96V208C224 199.1 231.1 192 240 192h96C344.9 192 352 199.1 352 208V256h96V32H128V256z" />
-    //     </svg>
-    //   ),
-    // },
+    loot_crate: {
+      active: false,
+      color: "#ea580c",
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 576 512"
+          aria-hidden="true"
+          className="h-12 w-12 fill-current"
+        >
+          <path d="M352 336c0 8.875-7.125 16-16 16h-96C231.1 352 224 344.9 224 336V288H128v192h320V288h-96V336zM0 128v128h96V32C43 32 0 75 0 128zM0 448c0 17.62 14.38 32 32 32h64V288H0V448zM480 32v224h96V128C576 75 533 32 480 32zM304 304v-64C304 231.1 296.9 224 288 224S272 231.1 272 240v64C272 312.9 279.1 320 288 320S304 312.9 304 304zM480 480h64c17.62 0 32-14.38 32-32V288h-96V480zM128 256h96V208C224 199.1 231.1 192 240 192h96C344.9 192 352 199.1 352 208V256h96V32H128V256z" />
+        </svg>
+      ),
+    },
     deinonychus_nest: {
       active: false,
       color: "#1c1917",
@@ -299,7 +299,7 @@ const Map = ({ map }: Props) => {
     [categories, mapData, setCategories, setMapData]
   );
 
-  let noterun = []; //[57, 520, 242, 241, 201, 79, 238, 143, 301, 283, 284, 60]; The Island noterun
+  let noterun = map.id === 1 ? [57, 520, 242, 241, 201, 79, 238, 143, 301, 283, 284, 60] : [];
   return (
     <>
       <div className="rw-segment">

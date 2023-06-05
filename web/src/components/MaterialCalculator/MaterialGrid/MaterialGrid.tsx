@@ -1,8 +1,6 @@
 import {
-  CheckboxField,
   Form,
   FormError,
-  ImageField,
   Label,
   RWGqlError,
   SearchField,
@@ -14,23 +12,24 @@ import {
   getBaseMaterials,
   groupBy,
   timeFormatL,
-  timeTag,
 } from "src/lib/formatters";
 import debounce from "lodash.debounce";
 import Table from "src/components/Util/Table/Table";
 import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
+import { FindItemsMats } from "types/graphql";
 
 interface MaterialGridProps {
-  itemRecs: any[];
+  itemRecipes: NonNullable<FindItemsMats["itemRecipes"]>;
   error?: RWGqlError;
 }
 
-export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
-  const [search, setSearch] = useState("");
+export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
+  // TODO: Fix Types
+  const [search, setSearch] = useState<string>("");
   const [craftingStations, setCraftingStations] = useState<any>([107, 125]);
   const ammoRefCurrent = useRef(null);
 
-  const [viewBaseMaterials, setViewBaseMaterials] = useState(false);
+  const [viewBaseMaterials, setViewBaseMaterials] = useState<boolean>(false);
   const toggleBaseMaterials = useCallback(
     (e) => {
       setViewBaseMaterials(e.currentTarget.checked);
@@ -94,8 +93,9 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
       }
       case "ADD": {
         const itemIndex = state.findIndex(
-          (item) => parseInt(item.id) === parseInt(action.item.id)
+          (item) => item.id === action.item.id
         );
+
         const yields = action.item?.yields || 1;
         if (itemIndex !== -1) {
           return state.map((item, i) =>
@@ -133,7 +133,7 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
   let [item, setItem] = useReducer(reducer, []);
 
   const items = useMemo(() => {
-    const craftedItems = groupBy(itemRecs, "crafted_item_id");
+    const craftedItems = groupBy(itemRecipes, "crafted_item_id");
     const craftingStation = {};
 
     for (const [key, value] of Object.entries(craftedItems)) {
@@ -178,7 +178,7 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
   const categories = useMemo(() => {
     return groupBy(
       items
-        .map((f) => f.Item_ItemRec_crafted_item_idToItem)
+        .map((f) => f.Item_ItemRecipe_crafted_item_idToItem)
         .filter((item) =>
           item.name.toLowerCase().includes(search.toLowerCase())
         ),
@@ -188,12 +188,11 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
 
   const onAdd = ({ itemId }) => {
     if (!itemId) return;
-    let item = items.find(
+    let chosenItem = items.find(
       (item) => parseInt(item.crafted_item_id) === parseInt(itemId)
     );
 
-    // loadItem({ variables: { item_recipe_id: [itm.recipe_id] } });
-    setItem({ type: "ADD", item: item });
+    setItem({ type: "ADD", item: chosenItem });
   };
 
   const onAddAmount = (index) => {
@@ -510,18 +509,18 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
           ]}
           columns={[
             ...mergeItemRecipe(viewBaseMaterials, items, ...item).map(
-              ({ Item_ItemRec_crafted_item_idToItem, amount }) => ({
-                field: Item_ItemRec_crafted_item_idToItem.id,
-                header: Item_ItemRec_crafted_item_idToItem.name,
+              ({ Item_ItemRecipe_crafted_item_idToItem, amount }) => ({
+                field: Item_ItemRecipe_crafted_item_idToItem.id,
+                header: Item_ItemRecipe_crafted_item_idToItem.name,
                 className: "w-0 text-center",
                 render: ({ value }) => {
                   return (
                     <div
                       className="flex flex-col items-center justify-center"
-                      key={`${value}-${Item_ItemRec_crafted_item_idToItem.id}`}
+                      key={`${value}-${Item_ItemRecipe_crafted_item_idToItem.id}`}
                     >
                       <img
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRec_crafted_item_idToItem.image}`}
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRecipe_crafted_item_idToItem.image}`}
                         className="h-6 w-6"
                       />
                       <span className="text-sm">{formatNumber(amount)}</span>
@@ -577,7 +576,7 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
           }}
           columns={[
             {
-              field: "Item_ItemRec_crafted_item_idToItem",
+              field: "Item_ItemRecipe_crafted_item_idToItem",
               header: "Name",
               className: "w-0",
               render: ({ rowIndex, value: { name, image } }) => {
@@ -643,29 +642,28 @@ export const MaterialGrid = ({ error, itemRecs }: MaterialGridProps) => {
               },
             },
             {
-              field: "Item_ItemRec_crafted_item_idToItem",
+              field: "Item_ItemRecipe_crafted_item_idToItem",
               header: "Ingredients",
               numeric: false,
-              className: "text-center flex flex-row justify-start items-center",
               render: ({ row }) => {
                 return mergeItemRecipe(false, items, {
                   ...row,
                 })
                   .sort(
                     (a, b) =>
-                      a.Item_ItemRec_crafted_item_idToItem.id -
-                      b.Item_ItemRec_crafted_item_idToItem.id
+                      a.Item_ItemRecipe_crafted_item_idToItem.id -
+                      b.Item_ItemRecipe_crafted_item_idToItem.id
                   )
                   .map(
                     (
                       {
-                        Item_ItemRec_crafted_item_idToItem: { id, name, image },
+                        Item_ItemRecipe_crafted_item_idToItem: { id, name, image },
                         amount,
                       },
                       i
                     ) => (
                       <div
-                        className="min-w-16 ml-2 flex min-w-[3rem] flex-col items-center justify-center"
+                        className="inline-flex min-w-[3rem] flex-col items-center justify-center min-h-full"
                         id={`${id}-${i * Math.random()}${i}`}
                         key={`${id}-${i * Math.random()}${i}`}
                       >

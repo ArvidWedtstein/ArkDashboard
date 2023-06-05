@@ -41,7 +41,7 @@ export const Loading = () => (
 
 export const Empty = () => <div>Empty</div>;
 
-export const Failure = ({ error, queryResult, updating }: CellFailureProps) => (
+export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
     <svg
       className="h-12 w-12"
@@ -56,7 +56,6 @@ export const Failure = ({ error, queryResult, updating }: CellFailureProps) => (
         Some unexpected shit happend
       </p>
       <p className="text-sm">{error?.message}</p>
-      <p className="text-sm">{JSON.stringify(queryResult)}</p>
     </div>
   </div>
 );
@@ -64,7 +63,7 @@ export const Failure = ({ error, queryResult, updating }: CellFailureProps) => (
 export const Success = ({ itemRecipes }: CellSuccessProps<FindItemsMats>) => {
   return (
     <div className="rw-form-wrapper container-xl mx-auto">
-      <MaterialGrid itemRecs={itemRecipes} />
+      <MaterialGrid itemRecipes={itemRecipes} />
     </div>
   );
 };

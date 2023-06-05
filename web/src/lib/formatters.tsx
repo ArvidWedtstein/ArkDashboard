@@ -151,9 +151,8 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
-    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-  }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+    }`;
 };
 
 /**
@@ -236,7 +235,7 @@ export const getBaseMaterials = (
         if (!baseMaterials || !newRecipe?.ItemRecipeItem?.length || !Item) {
           const materialId = newRecipe ? newRecipe.crafted_item_id : Item.id;
           let material = materials.find(
-            (m) => m.Item_ItemRec_crafted_item_idToItem.id === materialId
+            (m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId
           );
 
           const count = (recipeAmount * amount) / yields;
@@ -246,7 +245,7 @@ export const getBaseMaterials = (
             // material.crafting_time += count * (newRecipe?.crafting_time || 1);
           } else {
             material = {
-              ...(newRecipe || { Item_ItemRec_crafted_item_idToItem: Item }),
+              ...(newRecipe || { Item_ItemRecipe_crafted_item_idToItem: Item }),
               amount: count,
               crafting_time: count * (newRecipe?.crafting_time || 1),
             };
@@ -255,7 +254,7 @@ export const getBaseMaterials = (
         } else if (newRecipe) {
           findBaseMaterials(newRecipe, recipeAmount * amount, newRecipe.yields);
         }
-      } catch (error) {}
+      } catch (error) { }
     }
   };
 
@@ -545,10 +544,10 @@ export const generatePDF = () => {
       // Line end
       content.push(
         cellX +
-          tableWidth / crafts.length +
-          " " +
-          (cellY + 5 - tableHeight / crafts.length) +
-          " l"
+        tableWidth / crafts.length +
+        " " +
+        (cellY + 5 - tableHeight / crafts.length) +
+        " l"
       );
       content.push("S");
 
@@ -568,10 +567,10 @@ export const generatePDF = () => {
         // Line end
         content.push(
           cellX +
-            tableWidth / crafts.length +
-            " " +
-            (cellY + 30 - tableHeight / crafts.length) +
-            " l"
+          tableWidth / crafts.length +
+          " " +
+          (cellY + 30 - tableHeight / crafts.length) +
+          " l"
         );
         content.push("S");
         content.push(textX + " " + (textY + 20) + " Td");
@@ -636,8 +635,8 @@ export const generatePDF = () => {
   var win = window.open();
   win.document.write(
     '<iframe src="' +
-      dataURI +
-      '" style="width:100%; height:100%;" frameborder="0"></iframe>'
+    dataURI +
+    '" style="width:100%; height:100%;" frameborder="0"></iframe>'
   );
 };
 
