@@ -171,6 +171,7 @@ const Table = ({
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
+  const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(mergedSettings.pagination.rowsPerPage);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filters, setFilters] = useState<Filter[]>([]);
   const [sort, setSort] = useState({
@@ -284,12 +285,11 @@ const Table = ({
     return filteredData;
   }, [sort, searchTerm, dataRows, mergedSettings.pagination, filters]);
 
-  // TODO: use current selected rowsperpage
   const PaginatedData = useMemo(() => {
     if (!mergedSettings.pagination.enabled) return SortedFilteredData;
 
-    const startIndex = (currentPage - 1) * mergedSettings.pagination.rowsPerPage;
-    const endIndex = startIndex + mergedSettings.pagination.rowsPerPage;
+    const startIndex = (currentPage - 1) * selectedPageSizeOption;
+    const endIndex = startIndex + selectedPageSizeOption;
 
     return SortedFilteredData.slice(startIndex, endIndex);
   }, [SortedFilteredData, currentPage]);
@@ -382,9 +382,8 @@ const Table = ({
       }
     );
 
-    let formattedValue = cellData;
     if (numeric && !isNaN(cellData) && !render) {
-      formattedValue = formatNumber(parseInt(cellData));
+      cellData = formatNumber(parseInt(cellData));
     }
 
     const key = `cell-${rowIndex}-${columnIndex}`;
@@ -562,7 +561,7 @@ const Table = ({
         setCurrentPage(currentPage - 1);
       } else if (
         dir === "next" &&
-        currentPage < Math.ceil(SortedFilteredData.length / mergedSettings.pagination.rowsPerPage)
+        currentPage < Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
       ) {
         setCurrentPage(currentPage + 1);
       }
@@ -571,10 +570,10 @@ const Table = ({
   );
 
   const tablePagination = () => {
-    const totalPageCount = Math.ceil(SortedFilteredData.length / mergedSettings.pagination.rowsPerPage);
-    const startRowIndex = currentPage * mergedSettings.pagination.rowsPerPage - mergedSettings.pagination.rowsPerPage + 1;
+    const totalPageCount = Math.ceil(SortedFilteredData.length / selectedPageSizeOption);
+    const startRowIndex = currentPage * selectedPageSizeOption - selectedPageSizeOption + 1;
     const endRowIndex = Math.min(
-      currentPage * mergedSettings.pagination.rowsPerPage,
+      currentPage * selectedPageSizeOption,
       SortedFilteredData.length
     );
     const range = useMemo(
@@ -596,7 +595,6 @@ const Table = ({
       </button>
     ));
 
-    // TODO: Implement rowsPerPage functionality
     return (
       <nav className="my-2 flex items-center justify-end space-x-2 text-center text-sm text-zinc-800 dark:text-gray-400">
         Rows per page&nbsp;
@@ -604,8 +602,9 @@ const Table = ({
           disabled={dataRows.length == 0}
           className="rw-input rw-input-small !m-0"
           onChange={(e) => {
-            debounce(() => { }, 500)();
+            setSelectedPageSizeOption(parseInt(e.target.value));
           }}
+          value={selectedPageSizeOption}
           defaultValue={mergedSettings.pagination.rowsPerPage}
         >
           {!mergedSettings?.pagination?.pageSizeOptions.includes(settings.pagination.rowsPerPage) && <option>{mergedSettings.pagination.rowsPerPage}</option>}
