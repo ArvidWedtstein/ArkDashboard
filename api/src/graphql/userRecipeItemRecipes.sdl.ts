@@ -5,7 +5,7 @@ export const schema = gql`
     updated_at: DateTime
     user_recipe_id: String!
     item_recipe_id: String!
-    ItemRec: ItemRecipe!
+    ItemRecipe: ItemRecipe!
     UserRecipe: UserRecipe!
   }
 
@@ -38,4 +38,4 @@ export const schema = gql`
     ): UserRecipeItemRecipe! @requireAuth
     deleteUserRecipeItemRecipe(id: String!): UserRecipeItemRecipe! @requireAuth
   }
-`
+`;
