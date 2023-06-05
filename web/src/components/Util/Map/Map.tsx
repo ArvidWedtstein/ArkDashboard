@@ -86,7 +86,7 @@ const Map = ({
   }, []);
 
   useEffect(() => {
-    if (!interactive) return;
+    if (!interactive || !svgRef.current) return;
     const handleResize = () => {
       // Reset pan position to center when the container size changes
       const container = svgRef.current;
