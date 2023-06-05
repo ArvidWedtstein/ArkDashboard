@@ -1,10 +1,6 @@
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "src/auth";
-import NewTable from "src/components/Util/NewTable/NewTable";
-import Table from "src/components/Util/Table/Table";
-import { useState } from "react";
-import { debounce } from "src/lib/formatters";
 const HomePage = () => {
   const { isAuthenticated, currentUser } = useAuth();
   // if (document.addEventListener) {
