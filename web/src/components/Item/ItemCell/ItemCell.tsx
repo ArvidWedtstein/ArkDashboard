@@ -42,13 +42,13 @@ export const QUERY = gql`
         rank
         type
       }
-      ItemRec_ItemRec_crafted_item_idToItem {
+      ItemRecipe_ItemRecipe_crafted_item_idToItem {
         id
         crafted_item_id
         crafting_station_id
         crafting_time
         yields
-        Item_ItemRec_crafting_station_idToItem {
+        Item_ItemRecipe_crafting_station_idToItem {
           id
           name
           image
@@ -61,19 +61,6 @@ export const QUERY = gql`
             name
             image
           }
-        }
-      }
-      ItemRecipe_ItemRecipe_crafted_item_idToItem {
-        amount
-        Item_ItemRecipe_crafting_stationToItem {
-          id
-          name
-          image
-        }
-        Item_ItemRecipe_item_idToItem {
-          id
-          name
-          image
         }
       }
     }

@@ -1,4 +1,8 @@
-import type { EditItemById, FindItemByIdVariables, UpdateItemInput } from "types/graphql";
+import type {
+  EditItemById,
+  FindItemByIdVariables,
+  UpdateItemInput,
+} from "types/graphql";
 
 import { navigate, routes } from "@redwoodjs/router";
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
@@ -23,13 +27,6 @@ export const QUERY = gql`
       color
       category
       type
-      ItemRecipe_ItemRecipe_crafted_item_idToItem {
-        id
-        amount
-        yields
-        crafting_station
-        item_id
-      }
     }
   }
 `;
@@ -49,13 +46,6 @@ const UPDATE_ITEM_MUTATION = gql`
       color
       category
       type
-      ItemRecipe_ItemRecipe_crafted_item_idToItem {
-        id
-        amount
-        yields
-        crafting_station
-        item_id
-      }
     }
   }
 `;
@@ -80,7 +70,9 @@ export const Failure = ({ error }: CellFailureProps) => (
   </div>
 );
 
-export const Success = ({ item }: CellSuccessProps<EditItemById, FindItemByIdVariables>) => {
+export const Success = ({
+  item,
+}: CellSuccessProps<EditItemById, FindItemByIdVariables>) => {
   const [updateItem, { loading, error }] = useMutation(UPDATE_ITEM_MUTATION, {
     onCompleted: () => {
       toast.success("Item updated");

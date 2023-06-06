@@ -20,6 +20,24 @@ export const QUERY = gql`
       role_profile_role_idTorole {
         name
       }
+      UserRecipe {
+        id
+        created_at
+        private
+        name
+        UserRecipeItemRecipe {
+          id
+          ItemRecipe {
+            id
+            yields
+            Item_ItemRecipe_crafted_item_idToItem {
+              id
+              name
+              image
+            }
+          }
+        }
+      }
     }
   }
 `

@@ -256,7 +256,7 @@ a {
 
 /* Select */
 select.rw-input.rw-input-small {
-  @apply text-base;
+  @apply text-sm;
 }
 .rw-input option {
   @apply appearance-none border-b border-black focus:outline-none dark:border-white;
@@ -274,38 +274,6 @@ select.rw-input.rw-input-small {
 .rw-input[type="checkbox"]:checked::before {
   @apply absolute top-0 left-1/2 inline translate-y-[2px] -translate-x-1/2 transform whitespace-pre content-['✓'];
 }
-
-/* const Checkbox = React.memo(({ label }: any) => {
-  const id = useId()
-  return (
-    <div className="rw-checkbox2">{label}
-      <input type="checkbox" id={id} />
-      <label htmlFor={id} className="checkmark">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-          <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
-        </svg>
-      </label>
-    </div>
-  )
-})
-.rw-checkbox2 {
-  @apply relative h-6 w-6;
-}
-.rw-checkbox2 input[type="checkbox"] {
-  @apply absolute opacity-0;
-}
-.rw-checkbox2 input[type="checkbox"]:checked + label svg {
-  @apply opacity-100;
-}
-.rw-checkbox2 label {
-  @apply relative flex h-6 w-6 cursor-pointer items-center justify-center rounded dark:bg-zinc-600;
-}
-.rw-checkbox2 label svg {
-  @apply relative m-1 h-6 w-6 fill-white opacity-0 transition duration-75 ease-in-out;
-}
-.rw-checkbox2:hover label svg {
-  @apply opacity-30;
-} */
 
 .rw-toggle {
   @apply h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] dark:border-gray-600 dark:bg-zinc-600;
@@ -347,7 +315,7 @@ select.rw-input.rw-input-small {
   @apply px-3 py-2;
 }
 .rw-table td {
-  @apply bg-white text-gray-900 dark:bg-zinc-600 dark:text-gray-800;
+  @apply bg-white text-gray-900 dark:bg-zinc-600 dark:text-stone-300;
 }
 /* .rw-table tr:nth-child(odd) td,
 .rw-table tr:nth-child(odd) th {
@@ -361,7 +329,7 @@ select.rw-input.rw-input-small {
   @apply bg-gray-200 text-gray-600 dark:bg-zinc-600;
 }
 .rw-table th {
-  @apply text-left font-semibold;
+  @apply text-left font-semibold text-black dark:text-white;
 }
 .rw-table thead th {
   @apply text-left;
@@ -404,7 +372,8 @@ select.rw-input.rw-input-small {
 
 .rw-pagination-item,
 .rw-pagination-item[type="button"] {
-  @apply border border-gray-300 bg-zinc-400 px-3 py-2 text-gray-500 hover:bg-zinc-300 hover:text-gray-700 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-opacity-70 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-600 dark:hover:text-white;
+  @apply border border-gray-400 bg-zinc-300 px-3 py-2 text-gray-500 hover:bg-zinc-200 hover:text-gray-700 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-opacity-70 dark:border-zinc-500 dark:bg-zinc-600 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-white;
+  /* @apply border border-gray-300 bg-zinc-400 px-3 py-2 text-gray-500 hover:bg-zinc-300 hover:text-gray-700 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-opacity-70 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-600 dark:hover:text-white; */
 }
 .rw-pagination-item:first-of-type {
   @apply rounded-l-lg;
@@ -414,7 +383,7 @@ select.rw-input.rw-input-small {
 }
 .rw-pagination-item-active,
 .rw-pagination-item-active[type="button"] {
-  @apply border border-gray-300 bg-zinc-300 px-3 py-2 font-bold text-gray-700 hover:bg-zinc-300 hover:text-gray-700 dark:border-zinc-600 dark:bg-zinc-500 dark:text-white dark:hover:bg-zinc-600 dark:hover:text-white;
+  @apply border border-zinc-300 bg-zinc-100 px-3 py-2 font-bold text-gray-700 hover:bg-zinc-300 hover:text-gray-700 dark:border-zinc-500 dark:bg-zinc-500 dark:text-white dark:hover:bg-zinc-600 dark:hover:text-white;
 }
 
 .rw-text-center {

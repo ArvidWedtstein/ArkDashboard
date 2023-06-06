@@ -5,36 +5,36 @@ import { toast } from '@redwoodjs/web/toast'
 import { timeTag } from 'src/lib/formatters'
 
 import type {
-  DeleteItemRecMutationVariables,
-  FindItemRecById,
+  DeleteItemRecipeMutationVariables,
+  FindItemRecipeById,
 } from 'types/graphql'
 
-const DELETE_ITEM_REC_MUTATION = gql`
-  mutation DeleteItemRecMutation($id: String!) {
-    deleteItemRec(id: $id) {
+const DELETE_ITEM_RECIPE_MUTATION = gql`
+  mutation DeleteItemRecipeMutation($id: String!) {
+    deleteItemRecipe(id: $id) {
       id
     }
   }
 `
 
 interface Props {
-  itemRec: NonNullable<FindItemRecById['itemRec']>
+  itemRecipe: NonNullable<FindItemRecipeById['itemRecipe']>
 }
 
-const ItemRec = ({ itemRec }: Props) => {
-  const [deleteItemRec] = useMutation(DELETE_ITEM_REC_MUTATION, {
+const ItemRecipe = ({ itemRecipe }: Props) => {
+  const [deleteItemRecipe] = useMutation(DELETE_ITEM_RECIPE_MUTATION, {
     onCompleted: () => {
-      toast.success('ItemRec deleted')
-      navigate(routes.itemRecs())
+      toast.success('ItemRecipe deleted')
+      navigate(routes.itemRecipes())
     },
     onError: (error) => {
       toast.error(error.message)
     },
   })
 
-  const onDeleteClick = (id: DeleteItemRecMutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete itemRec ' + id + '?')) {
-      deleteItemRec({ variables: { id } })
+  const onDeleteClick = (id: DeleteItemRecipeMutationVariables['id']) => {
+    if (confirm('Are you sure you want to delete itemRecipe ' + id + '?')) {
+      deleteItemRecipe({ variables: { id } })
     }
   }
 
@@ -43,45 +43,49 @@ const ItemRec = ({ itemRec }: Props) => {
       <div className="rw-segment">
         <header className="rw-segment-header">
           <h2 className="rw-heading rw-heading-secondary">
-            ItemRec {itemRec.id} Detail
+            ItemRecipe {itemRecipe.id} Detail
           </h2>
         </header>
         <table className="rw-table">
           <tbody>
             <tr>
               <th>Id</th>
-              <td>{itemRec.id}</td>
+              <td>{itemRecipe.id}</td>
             </tr>
             <tr>
               <th>Created at</th>
-              <td>{timeTag(itemRec.created_at)}</td>
+              <td>{timeTag(itemRecipe.created_at)}</td>
             </tr>
             <tr>
               <th>Updated at</th>
-              <td>{timeTag(itemRec.updated_at)}</td>
+              <td>{timeTag(itemRecipe.updated_at)}</td>
             </tr>
             <tr>
               <th>Crafted item id</th>
-              <td>{itemRec.crafted_item_id}</td>
+              <td>{itemRecipe.crafted_item_id}</td>
             </tr>
             <tr>
               <th>Crafting station id</th>
-              <td>{itemRec.crafting_station_id}</td>
+              <td>{itemRecipe.crafting_station_id}</td>
             </tr>
             <tr>
               <th>Crafting time</th>
-              <td>{itemRec.crafting_time}</td>
+              <td>{itemRecipe.crafting_time}</td>
             </tr>
             <tr>
               <th>Yields</th>
-              <td>{itemRec.yields}</td>
+              <td>{itemRecipe.yields}</td>
+            </tr>
+            <tr>
+              <th>Required level</th>
+              <td>{itemRecipe.required_level}</td>
             </tr>
           </tbody>
         </table>
       </div>
       <nav className="rw-button-group">
         <Link
-          to={routes.editItemRec({ id: itemRec.id })}
+          to={routes.editItemRecipe({ id: itemRecipe.id })}
           className="rw-button rw-button-blue"
         >
           Edit
@@ -89,7 +93,7 @@ const ItemRec = ({ itemRec }: Props) => {
         <button
           type="button"
           className="rw-button rw-button-red"
-          onClick={() => onDeleteClick(itemRec.id)}
+          onClick={() => onDeleteClick(itemRecipe.id)}
         >
           Delete
         </button>
@@ -98,4 +102,4 @@ const ItemRec = ({ itemRec }: Props) => {
   )
 }
 
-export default ItemRec
+export default ItemRecipe

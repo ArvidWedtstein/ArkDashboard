@@ -98,16 +98,16 @@ const Dino = ({ dino }: Props) => {
 
   const [baseStats, setBaseStats] = useState(
     dino?.base_points &&
-      Object.entries(dino?.base_stats).map(([key, value]: any) => {
-        return {
-          stat: key,
-          base: (typeof value === "object" ? value.b || 0 : value) || 0,
-          increasePerLevelWild: value.w || 0,
-          increasePerLevelTamed: value.t || 0,
-          total: 0,
-          points: 0,
-        };
-      })
+    Object.entries(dino?.base_stats).map(([key, value]: any) => {
+      return {
+        stat: key,
+        base: (typeof value === "object" ? value.b || 0 : value) || 0,
+        increasePerLevelWild: value.w || 0,
+        increasePerLevelTamed: value.t || 0,
+        total: 0,
+        points: 0,
+      };
+    })
   );
 
   const onAdd = useCallback(
@@ -416,7 +416,7 @@ const Dino = ({ dino }: Props) => {
       startTransition(() =>
         setSelectedFood(
           dino.DinoStat.filter((f) => f.type === "food") &&
-            dino?.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
+          dino?.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
         )
       );
   }, []);
@@ -432,7 +432,7 @@ const Dino = ({ dino }: Props) => {
       startTransition(() =>
         setSelectedFood(
           dino.DinoStat.filter((f) => f.type === "food") &&
-            dino.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
+          dino.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
         )
       );
   };
@@ -453,7 +453,7 @@ const Dino = ({ dino }: Props) => {
     if (!selectedFood)
       setSelectedFood(
         dino.DinoStat.filter((f) => f.type === "food") &&
-          dino.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
+        dino.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
       );
 
     return dino.DinoStat.filter(
@@ -497,8 +497,8 @@ const Dino = ({ dino }: Props) => {
           foodSecondsPer = foodValue / foodConsumption;
           foodSeconds = Math.ceil(
             Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
-              foodSecondsPer +
-              (typeof interval1 === "number" ? interval1 : 0)
+            foodSecondsPer +
+            (typeof interval1 === "number" ? interval1 : 0)
           );
         } else {
           foodSecondsPer = 0;
@@ -590,11 +590,11 @@ const Dino = ({ dino }: Props) => {
         numNeeded = dino.violent_tame
           ? Math.ceil(affinityLeft / affinityVal / tamingMultiplier)
           : Math.ceil(
-              affinityLeft /
-                affinityVal /
-                tamingMultiplier /
-                dino.non_violent_food_rate_mult
-            );
+            affinityLeft /
+            affinityVal /
+            tamingMultiplier /
+            dino.non_violent_food_rate_mult
+          );
 
         numToUse = numNeeded >= food.use ? food.use : numNeeded;
         tooMuchFood = numNeeded >= food.use ? false : true;
@@ -602,10 +602,10 @@ const Dino = ({ dino }: Props) => {
         affinityLeft = dino.violent_tame
           ? affinityLeft - numToUse * affinityVal * tamingMultiplier
           : affinityLeft -
-            numToUse *
-              affinityVal *
-              tamingMultiplier *
-              dino.non_violent_food_rate_mult;
+          numToUse *
+          affinityVal *
+          tamingMultiplier *
+          dino.non_violent_food_rate_mult;
 
         totalFood += numToUse * foodVal;
 
@@ -613,14 +613,14 @@ const Dino = ({ dino }: Props) => {
         while (i <= numToUse) {
           effectiveness -= dino.violent_tame
             ? (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
-              affinityVal /
-              tamingMultiplier /
-              100
+            affinityVal /
+            tamingMultiplier /
+            100
             : (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
-              affinityVal /
-              tamingMultiplier /
-              dino.non_violent_food_rate_mult /
-              100;
+            affinityVal /
+            tamingMultiplier /
+            dino.non_violent_food_rate_mult /
+            100;
 
           totalSecs =
             numUsedTotal == 1
@@ -649,14 +649,14 @@ const Dino = ({ dino }: Props) => {
       tamingFood.forEach((food: any) => {
         numNeeded = Math.ceil(
           affinityLeft /
-            food?.stats.find((f) => f.id === 15)?.value /
-            tamingMultiplier
+          food?.stats.find((f) => f.id === 15)?.value /
+          tamingMultiplier
         );
         neededValues[food.id] = numNeeded;
         neededValuesSecs[food.id] = Math.ceil(
           (numNeeded * food.stats.find((f: any) => f.id === 8)?.value) /
-            foodConsumption +
-            totalSecs
+          foodConsumption +
+          totalSecs
         );
       });
     }
@@ -674,7 +674,7 @@ const Dino = ({ dino }: Props) => {
           [`${name}Min`]: Math.max(
             Math.ceil(
               (totalSecs * torporDepletionPS - totalTorpor) /
-                (stats.torpor + torporDepletionPS * stats.secs)
+              (stats.torpor + torporDepletionPS * stats.secs)
             ),
             0
           ),
@@ -818,8 +818,8 @@ const Dino = ({ dino }: Props) => {
                     Math.ceil((totalDamage - baseHealth) / incPerLevel),
                     0
                   )
-                ? 0
-                : calculatePropability(
+                  ? 0
+                  : calculatePropability(
                     dinoLevel - 1,
                     numStats,
                     Math.max(
@@ -844,13 +844,13 @@ const Dino = ({ dino }: Props) => {
                   totalDamage < baseHealth
                     ? 100
                     : calculatePropability(
-                        dinoLevel - 1,
-                        numStats,
-                        Math.max(
-                          Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                          0
-                        )
-                      );
+                      dinoLevel - 1,
+                      numStats,
+                      Math.max(
+                        Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                        0
+                      )
+                    );
 
                 const chanceOfDeath = Math.round(100 - propsurvival);
                 hitboxes[i].chanceOfDeath = chanceOfDeath;
@@ -1262,38 +1262,38 @@ const Dino = ({ dino }: Props) => {
             columns={[
               {
                 field: "t",
-                label: "Thatch",
-                renderCell: canDestroy,
+                header: "Thatch",
+                render: canDestroy,
               },
               {
                 field: "g",
-                label: "Greenhouse",
-                renderCell: canDestroy,
+                header: "Greenhouse",
+                render: canDestroy,
               },
               {
                 field: "w",
-                label: "Wood",
-                renderCell: canDestroy,
+                header: "Wood",
+                render: canDestroy,
               },
               {
                 field: "a",
-                label: "Adobe",
-                renderCell: canDestroy,
+                header: "Adobe",
+                render: canDestroy,
               },
               {
                 field: "s",
-                label: "Stone",
-                renderCell: canDestroy,
+                header: "Stone",
+                render: canDestroy,
               },
               {
                 field: "m",
-                label: "Metal",
-                renderCell: canDestroy,
+                header: "Metal",
+                render: canDestroy,
               },
               {
                 field: "tk",
-                label: "Tek",
-                renderCell: canDestroy,
+                header: "Tek",
+                render: canDestroy,
               },
             ]}
           />
@@ -1306,16 +1306,19 @@ const Dino = ({ dino }: Props) => {
             <h4>Gather Efficiency</h4>
             <Table
               className="min-w-fit"
-              header={true}
-              pagination={true}
-              rowsPerPage={5}
+              settings={{
+                pagination: {
+                  enabled: true,
+                  rowsPerPage: 5
+                }
+              }}
               rows={dino.DinoStat.filter(
                 (d) => d.type == "gather_efficiency"
               ).sort((a, b) => b.value - a.value)}
               columns={[
                 {
                   field: "Item",
-                  label: "",
+                  header: "",
                   valueFormatter: ({ value }) => {
                     return (
                       value && (
@@ -1329,7 +1332,7 @@ const Dino = ({ dino }: Props) => {
                 },
                 {
                   field: "Item",
-                  label: "Name",
+                  header: "Name",
                   valueFormatter: ({ value }) => {
                     return (
                       value && (
@@ -1342,7 +1345,7 @@ const Dino = ({ dino }: Props) => {
                 },
                 {
                   field: "value",
-                  label: "Value",
+                  header: "Value",
                   sortable: true,
                   valueFormatter: (value) => (
                     <div className="flex h-2 w-32 flex-row divide-x divide-black rounded-full bg-gray-300">
@@ -1364,7 +1367,7 @@ const Dino = ({ dino }: Props) => {
                 },
                 {
                   field: "rank",
-                  label: "rank",
+                  header: "rank",
                   sortable: true,
                   valueFormatter: ({ value }) => {
                     return value <= 10 && <p>#{value}</p>;
@@ -1380,14 +1383,13 @@ const Dino = ({ dino }: Props) => {
           <h4>Weight Reduction</h4>
           <Table
             className="min-w-fit"
-            header={true}
             rows={dino.DinoStat.filter(
               (d) => d.type == "weight_reduction"
             ).sort((a, b) => b.value - a.value)}
             columns={[
               {
                 field: "Item",
-                label: "",
+                header: "",
                 valueFormatter: ({ value }) => {
                   return (
                     <img
@@ -1399,7 +1401,7 @@ const Dino = ({ dino }: Props) => {
               },
               {
                 field: "Item",
-                label: "Name",
+                header: "Name",
                 valueFormatter: ({ value }) => {
                   return (
                     <Link to={routes.item({ id: value.id })}>{value.name}</Link>
@@ -1408,7 +1410,7 @@ const Dino = ({ dino }: Props) => {
               },
               {
                 field: "value",
-                label: "Value",
+                header: "Value",
                 valueFormatter: ({ value }) => (
                   <div className="flex items-center">
                     <svg
@@ -1431,7 +1433,7 @@ const Dino = ({ dino }: Props) => {
               },
               {
                 field: "rank",
-                label: "Rank",
+                header: "Rank",
                 valueFormatter: ({ value }) => {
                   return value <= 10 && <p>#{value}</p>;
                 },
@@ -1446,13 +1448,15 @@ const Dino = ({ dino }: Props) => {
           <h4>Drops</h4>
           <Table
             className="min-w-fit"
-            header={false}
+            settings={{
+              header: false,
+              select: false,
+            }}
             rows={dino.DinoStat.filter((d) => d.type == "drops")}
-            select={false}
             columns={[
               {
                 field: "Item",
-                label: "",
+                header: "",
                 valueFormatter: ({ value }) => {
                   return (
                     value && (
@@ -1476,12 +1480,14 @@ const Dino = ({ dino }: Props) => {
           <h4>Food</h4>
           <Table
             className="min-w-fit"
-            header={false}
+            settings={{
+              header: false,
+            }}
             rows={dino.DinoStat.filter((d) => d.type == "food")}
             columns={[
               {
                 field: "Item",
-                label: "",
+                header: "",
                 valueFormatter: ({ value }) => {
                   return (
                     value && (
@@ -1577,9 +1583,9 @@ const Dino = ({ dino }: Props) => {
                 selectedFood
                   ? selectedFood.toString()
                   : dino?.DinoStat.filter((f) => f.type === "food") &&
-                    dino?.DinoStat.filter(
-                      (f) => f.type === "food"
-                    )[0]?.Item.id.toString(),
+                  dino?.DinoStat.filter(
+                    (f) => f.type === "food"
+                  )[0]?.Item.id.toString(),
               ]}
               validation={{
                 single: true,
@@ -1681,45 +1687,45 @@ const Dino = ({ dino }: Props) => {
                       tameData["bioMin"] !== 0 ||
                       tameData["narcoticsMin"] !== 0 ||
                       tameData["ascerbicMin"] !== 0) && (
-                      <>
-                        <div className="flex flex-col items-center">
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcoberry.png`}
-                            alt=""
-                            className="w-12"
-                          />
-                          <p>{tameData["narcoberriesMin"]}</p>
-                          <p className="text-xs">Narcoberries</p>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bio-toxin.png`}
-                            alt=""
-                            className="w-12"
-                          />
-                          <p>{tameData["bioMin"]}</p>
-                          <p className="text-xs">Bio Toxin</p>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcotic.png`}
-                            alt=""
-                            className="w-12"
-                          />
-                          <p>{tameData["narcoticsMin"]}</p>
-                          <p className="text-xs">Narcotics</p>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/ascerbic-mushroom.png`}
-                            alt=""
-                            className="w-12"
-                          />
-                          <p>{tameData["ascerbicMin"]}</p>
-                          <p className="text-xs">Ascerbic Mushroom</p>
-                        </div>
-                      </>
-                    )}
+                        <>
+                          <div className="flex flex-col items-center">
+                            <img
+                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcoberry.png`}
+                              alt=""
+                              className="w-12"
+                            />
+                            <p>{tameData["narcoberriesMin"]}</p>
+                            <p className="text-xs">Narcoberries</p>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <img
+                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bio-toxin.png`}
+                              alt=""
+                              className="w-12"
+                            />
+                            <p>{tameData["bioMin"]}</p>
+                            <p className="text-xs">Bio Toxin</p>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <img
+                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcotic.png`}
+                              alt=""
+                              className="w-12"
+                            />
+                            <p>{tameData["narcoticsMin"]}</p>
+                            <p className="text-xs">Narcotics</p>
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <img
+                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/ascerbic-mushroom.png`}
+                              alt=""
+                              className="w-12"
+                            />
+                            <p>{tameData["ascerbicMin"]}</p>
+                            <p className="text-xs">Ascerbic Mushroom</p>
+                          </div>
+                        </>
+                      )}
                   </div>
                 </section>
 
@@ -1853,26 +1859,28 @@ const Dino = ({ dino }: Props) => {
                 <ul className="rounded-md">
                   {dino?.DinoStat.filter(
                     (d) => d.type == "saddle"
-                  )[0].Item.ItemRec_ItemRec_crafted_item_idToItem.map((d) => (
-                    <li className="animate-fade-in flex h-16 place-content-start place-items-center border border-stone-400 px-2">
-                      <p>Crafted in:</p>
-                      <Link
-                        className="inline-flex items-center space-x-2"
-                        to={routes.item({
-                          id: d.crafting_station_id.toString(),
-                        })}
-                      >
-                        <img
-                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${d.Item_ItemRec_crafting_station_idToItem.image}`}
-                          alt={"Crafting Station"}
-                          className="h-8 w-8"
-                        />
-                        <span>
-                          {d.Item_ItemRec_crafting_station_idToItem.name}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
+                  )[0].Item.ItemRecipe_ItemRecipe_crafted_item_idToItem.map(
+                    ({ Item_ItemRecipe_crafting_station_idToItem, crafting_station_id }) => (
+                      <li className="animate-fade-in flex h-16 place-content-start place-items-center border border-stone-400 px-2">
+                        <p>Crafted in:</p>
+                        <Link
+                          className="inline-flex items-center space-x-2"
+                          to={routes.item({
+                            id: crafting_station_id.toString(),
+                          })}
+                        >
+                          <img
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRecipe_crafting_station_idToItem.image}`}
+                            alt={"Crafting Station"}
+                            className="h-8 w-8"
+                          />
+                          <span>
+                            {Item_ItemRecipe_crafting_station_idToItem.name}
+                          </span>
+                        </Link>
+                      </li>
+                    )
+                  )}
                   {/* {dino?.DinoStat.find((d) => d.type == "saddle")?.Item
                         .ItemRec_ItemRec_crafted_item_idToItem[0]
                         .Item_ItemRec_crafting_station_idToItem.name.map(
@@ -1910,66 +1918,58 @@ const Dino = ({ dino }: Props) => {
           <section className="rounded-b-md py-3">
             <Table
               rows={baseStats}
-              caption={{
-                title: "Base Stats",
-                content: (
-                  <>
-                    <div className="rw-button-group !justify-start">
-                      <button
-                        type="button"
-                        className="rw-button rw-button-gray-outline"
-                        onClick={genRandomStats}
-                      >
-                        Random
-                      </button>
-                      <button
-                        type="button"
-                        className="rw-button rw-button-gray-outline"
-                        onClick={() =>
-                          setBaseStats(
-                            baseStats.map((s) => ({
-                              ...s,
-                              points:
-                                s.stat == "t" ? 0 : Math.round(dinoLevel / 7),
-                            }))
-                          )
-                        }
-                      >
-                        Distribute Evenly
-                      </button>
-                      <button
-                        type="button"
-                        className="rw-button rw-button-red-outline"
-                        onClick={() =>
-                          setBaseStats(
-                            baseStats.map((s) => ({
-                              ...s,
-                              points: 0,
-                              total: s.base,
-                            }))
-                          )
-                        }
-                      >
-                        Clear
-                      </button>
-                    </div>
-                    <p>
-                      {dinoLevel -
-                        baseStats
-                          .map((b) => b.points)
-                          .reduce((a, b) => a + b, 0)}{" "}
-                      points wasted
-                    </p>
-                  </>
-                ),
-              }}
+              toolbar={[
+                <button
+                  type="button"
+                  className="rw-button rw-button-gray-outline"
+                  onClick={genRandomStats}
+                >
+                  Random
+                </button>,
+                <button
+                  type="button"
+                  className="rw-button rw-button-gray-outline"
+                  onClick={() =>
+                    setBaseStats(
+                      baseStats.map((s) => ({
+                        ...s,
+                        points: s.stat == "t" ? 0 : Math.round(dinoLevel / 7),
+                      }))
+                    )
+                  }
+                >
+                  Distribute Evenly
+                </button>,
+                <button
+                  type="button"
+                  className="rw-button rw-button-red-outline"
+                  onClick={() =>
+                    setBaseStats(
+                      baseStats.map((s) => ({
+                        ...s,
+                        points: 0,
+                        total: s.base,
+                      }))
+                    )
+                  }
+                >
+                  Clear
+                </button>,
+                <p>
+                  {dinoLevel -
+                    baseStats
+                      .map((b) => b.points)
+                      .reduce((a, b) => a + b, 0)}{" "}
+                  points wasted
+                </p>,
+              ]}
               columns={[
                 {
                   field: "stat",
-                  bold: true,
-                  label: "Stat",
+                  className: "font-bold",
+                  header: "Stat",
                   sortable: true,
-                  renderCell: ({ value }) => {
+                  render: ({ value }) => {
                     return (
                       <div className="inline-flex items-center space-x-2">
                         <img
@@ -2020,13 +2020,13 @@ const Dino = ({ dino }: Props) => {
                 },
                 {
                   field: "base",
-                  label: "Base (lvl 1)",
+                  header: "Base (lvl 1)",
                   numeric: true,
                   sortable: true,
                 },
                 {
                   field: "increasePerLevelWild",
-                  label: "Increase per level (wild)",
+                  header: "Increase per level (wild)",
                   numeric: true,
                   valueFormatter: ({ value }) => {
                     return value === null ? "" : `+${value}`;
@@ -2034,7 +2034,7 @@ const Dino = ({ dino }: Props) => {
                 },
                 {
                   field: "increasePerLevelTamed",
-                  label: "Increase per level (tamed)",
+                  header: "Increase per level (tamed)",
                   numeric: true,
                   valueFormatter: ({ value }) => {
                     return value === null ? "" : `+${value}%`;
@@ -2042,43 +2042,47 @@ const Dino = ({ dino }: Props) => {
                 },
                 {
                   field: "total",
-                  label: "Total",
+                  header: "Total",
                   numeric: true,
                 },
+                {
+                  field: "base",
+                  header: "",
+                  render: ({ row }) => {
+                    return (
+                      <nav className="flex flex-row content-center items-center space-x-2 align-middle">
+                        <button
+                          disabled={
+                            baseStats.find((s) => s.stat === row.stat)?.points <=
+                            0 || row.stat === "t"
+                          }
+                          className="rw-button rw-button-small rw-button-red-outline disabled:bg-slate-500 disabled:text-white"
+                          onClick={() => onRemove(row.stat)}
+                        >
+                          -
+                        </button>
+                        <input
+                          disabled={true}
+                          className="rw-input max-w-[50px]"
+                          value={baseStats.find((s) => s.stat === row.stat)?.points}
+                        />
+                        <button
+                          disabled={
+                            baseStats
+                              .map((b) => b.points)
+                              .reduce((a: any, b: any): any => a + b, 0) >=
+                            dinoLevel || row.stat === "t"
+                          }
+                          className="rw-button rw-button-small rw-button-green-outline disabled:bg-slate-500 disabled:text-white"
+                          onClick={() => onAdd(row.stat)}
+                        >
+                          +
+                        </button>
+                      </nav>
+                    )
+                  },
+                }
               ]}
-              renderActions={(row) => {
-                return (
-                  <nav className="flex flex-row content-center items-center space-x-2 align-middle">
-                    <button
-                      disabled={
-                        baseStats.find((s) => s.stat === row.stat)?.points <=
-                          0 || row.stat === "t"
-                      }
-                      className="rw-button rw-button-small rw-button-red-outline disabled:bg-slate-500 disabled:text-white"
-                      onClick={() => onRemove(row.stat)}
-                    >
-                      -
-                    </button>
-                    <input
-                      disabled={true}
-                      className="rw-input max-w-[50px]"
-                      value={baseStats.find((s) => s.stat === row.stat)?.points}
-                    />
-                    <button
-                      disabled={
-                        baseStats
-                          .map((b) => b.points)
-                          .reduce((a: any, b: any): any => a + b, 0) >=
-                          dinoLevel || row.stat === "t"
-                      }
-                      className="rw-button rw-button-small rw-button-green-outline disabled:bg-slate-500 disabled:text-white"
-                      onClick={() => onAdd(row.stat)}
-                    >
-                      +
-                    </button>
-                  </nav>
-                );
-              }}
             />
           </section>
           {dino.movement && (
@@ -2104,12 +2108,12 @@ const Dino = ({ dino }: Props) => {
                           {!value[label]
                             ? "-"
                             : truncate(
-                                (useFoundationUnit
-                                  ? Number(value[label] / 300)
-                                  : Number(value[label])
-                                ).toFixed(2),
-                                6
-                              )}
+                              (useFoundationUnit
+                                ? Number(value[label] / 300)
+                                : Number(value[label])
+                              ).toFixed(2),
+                              6
+                            )}
                         </p>
                       ))}
                       <p className="w-20">

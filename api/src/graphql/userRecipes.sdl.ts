@@ -5,6 +5,7 @@ export const schema = gql`
     updated_at: DateTime
     user_id: String!
     private: Boolean!
+    name: String
     Profile: Profile!
     UserRecipeItemRecipe: [UserRecipeItemRecipe]!
   }
@@ -12,6 +13,7 @@ export const schema = gql`
   type Query {
     userRecipes: [UserRecipe!]! @requireAuth
     userRecipe(id: String!): UserRecipe @requireAuth
+    userRecipesByID(user_id: String): [UserRecipe!]! @requireAuth
   }
 
   input CreateUserRecipeInput {
@@ -19,6 +21,7 @@ export const schema = gql`
     updated_at: DateTime
     user_id: String!
     private: Boolean!
+    name: String
   }
 
   input UpdateUserRecipeInput {
@@ -26,6 +29,7 @@ export const schema = gql`
     updated_at: DateTime
     user_id: String
     private: Boolean
+    name: String
   }
 
   type Mutation {
@@ -34,4 +38,4 @@ export const schema = gql`
       @requireAuth
     deleteUserRecipe(id: String!): UserRecipe! @requireAuth
   }
-`
+`;

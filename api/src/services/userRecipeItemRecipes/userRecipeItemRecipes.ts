@@ -42,10 +42,10 @@ export const deleteUserRecipeItemRecipe: MutationResolvers['deleteUserRecipeItem
   }
 
 export const UserRecipeItemRecipe: UserRecipeItemRecipeRelationResolvers = {
-  ItemRec: (_obj, { root }) => {
+  ItemRecipe: (_obj, { root }) => {
     return db.userRecipeItemRecipe
       .findUnique({ where: { id: root?.id } })
-      .ItemRec()
+      .ItemRecipe()
   },
   UserRecipe: (_obj, { root }) => {
     return db.userRecipeItemRecipe

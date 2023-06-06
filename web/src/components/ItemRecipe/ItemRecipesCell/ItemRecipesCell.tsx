@@ -1,13 +1,13 @@
-import type { FindItemRecs } from 'types/graphql'
+import type { FindItemRecipes } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
-import ItemRecs from 'src/components/ItemRec/ItemRecs'
+import ItemRecipes from 'src/components/ItemRecipe/ItemRecipes'
 
 export const QUERY = gql`
-  query FindItemRecs {
-    itemRecs {
+  query FindItemRecipes {
+    itemRecipes {
       id
       created_at
       updated_at
@@ -15,6 +15,7 @@ export const QUERY = gql`
       crafting_station_id
       crafting_time
       yields
+      required_level
     }
   }
 `
@@ -24,8 +25,8 @@ export const Loading = () => <div>Loading...</div>
 export const Empty = () => {
   return (
     <div className="rw-text-center">
-      {'No itemRecs yet. '}
-      <Link to={routes.newItemRec()} className="rw-link">
+      {'No itemRecipes yet. '}
+      <Link to={routes.newItemRecipe()} className="rw-link">
         {'Create one?'}
       </Link>
     </div>
@@ -36,6 +37,6 @@ export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>
 )
 
-export const Success = ({ itemRecs }: CellSuccessProps<FindItemRecs>) => {
-  return <ItemRecs itemRecs={itemRecs} />
+export const Success = ({ itemRecipes }: CellSuccessProps<FindItemRecipes>) => {
+  return <ItemRecipes itemRecipes={itemRecipes} />
 }

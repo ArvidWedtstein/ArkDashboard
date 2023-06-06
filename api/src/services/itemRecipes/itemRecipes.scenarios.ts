@@ -5,22 +5,12 @@ export const standard = defineScenario<Prisma.ItemRecipeCreateArgs>({
   itemRecipe: {
     one: {
       data: {
-        Item_ItemRecipe_crafted_item_idToItem: {
-          create: { name: 'String', crafted_in: 'String', effects: 'String' },
-        },
-        Item_ItemRecipe_item_idToItem: {
-          create: { name: 'String', crafted_in: 'String', effects: 'String' },
-        },
+        Item_ItemRecipe_crafted_item_idToItem: { create: { name: 'String' } },
       },
     },
     two: {
       data: {
-        Item_ItemRecipe_crafted_item_idToItem: {
-          create: { name: 'String', crafted_in: 'String', effects: 'String' },
-        },
-        Item_ItemRecipe_item_idToItem: {
-          create: { name: 'String', crafted_in: 'String', effects: 'String' },
-        },
+        Item_ItemRecipe_crafted_item_idToItem: { create: { name: 'String' } },
       },
     },
   },

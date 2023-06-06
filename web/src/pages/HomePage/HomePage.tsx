@@ -1,10 +1,6 @@
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "src/auth";
-import NewTable from "src/components/Util/NewTable/NewTable";
-import Table from "src/components/Util/Table/Table";
-import { useState } from "react";
-import { debounce } from "src/lib/formatters";
 const HomePage = () => {
   const { isAuthenticated, currentUser } = useAuth();
   // if (document.addEventListener) {
@@ -23,63 +19,6 @@ const HomePage = () => {
   //   }
   // }, [supabase])
 
-  const tblInput = [
-    {
-      name: "teeeeeeeeest",
-      description: 36,
-      created_by: "Ole",
-    },
-    {
-      name: "teeeeeeeeest",
-      description: 36,
-      created_by: "Ole",
-    },
-    {
-      name: "teeeeeeeeest",
-      description: 36,
-      created_by: "Ole",
-    },
-    {
-      name: "test2",
-      description: 1,
-      created_by: "Per",
-    },
-    {
-      name: "test3",
-      description: 45,
-      created_by: "Jens",
-    },
-    {
-      name: "test1",
-      description: 36,
-      created_by: "Ole",
-    },
-    {
-      name: "test2",
-      description: 1,
-      created_by: "Per",
-    },
-    {
-      name: "test3",
-      description: 45,
-      created_by: "Jens",
-    },
-    {
-      name: "test1",
-      description: 36,
-      created_by: "Ole",
-    },
-    {
-      name: "test2",
-      description: 1,
-      created_by: "Per",
-    },
-    {
-      name: "test3",
-      description: 45,
-      created_by: "Peder",
-    },
-  ];
 
   return (
     <>
@@ -124,68 +63,6 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-
-        {/* <Table
-          filter={true}
-          summary={true}
-          select={true}
-          hover={true}
-          search={true}
-          rowsPerPage={3}
-          pagination={true}
-          rows={tblInput}
-          columns={[
-            {
-              sortable: true,
-              field: "name",
-              label: "Name",
-            },
-            {
-              sortable: true,
-              field: "description",
-              label: "Description",
-              numeric: true,
-            },
-            {
-              sortable: true,
-              field: "created_by",
-              label: "Created By",
-            },
-          ]}
-        /> */}
-
-        {/* <NewTable
-          selectable
-          // header={"s"}
-          summary
-          filterable
-          search
-          pagination={{
-            page: 1,
-            pageSize: 1,
-            pageSizeOptions: [1, 10, 25],
-          }}
-          rows={tblInput}
-          columns={[
-            {
-              field: "name",
-              headerName: "Name",
-              sortable: true,
-            },
-            {
-              field: "description",
-              headerName: "Description",
-              type: "number",
-              sortable: true,
-            },
-            {
-              field: "created_by",
-              headerName: "Created By",
-              sortable: true,
-            },
-          ]}
-        /> */}
-
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}

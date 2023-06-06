@@ -71,12 +71,34 @@ const Routes = () => {
             name="timelineBasespotDinos"
           /> */}
         </Set>
-        {/* <Set wrap={ScaffoldLayout} title="ItemRecs" titleTo="itemRecs" buttonLabel="New ItemRec" buttonTo="newItemRec">
-          <Route path="/item-recs/new" page={ItemRecNewItemRecPage} name="newItemRec" />
-          <Route path="/item-recs/{id}/edit" page={ItemRecEditItemRecPage} name="editItemRec" />
-          <Route path="/item-recs/{id}" page={ItemRecItemRecPage} name="itemRec" />
-          <Route path="/item-recs" page={ItemRecItemRecsPage} name="itemRecs" />
-        </Set> */}
+        <Set
+          wrap={ScaffoldLayout}
+          title="ItemRecipes"
+          titleTo="itemRecipes"
+          buttonLabel="New ItemRecipe"
+          buttonTo="newItemRecipe"
+        >
+          <Route
+            path="/item-recipes/new"
+            page={ItemRecipeNewItemRecipePage}
+            name="newItemRecipe"
+          />
+          <Route
+            path="/item-recipes/{id}/edit"
+            page={ItemRecipeEditItemRecipePage}
+            name="editItemRecipe"
+          />
+          <Route
+            path="/item-recipes/{id}"
+            page={ItemRecipeItemRecipePage}
+            name="itemRecipe"
+          />
+          <Route
+            path="/item-recipes"
+            page={ItemRecipeItemRecipesPage}
+            name="itemRecipes"
+          />
+        </Set>
         <Set
           wrap={ScaffoldLayout}
           title="Lootcrates"

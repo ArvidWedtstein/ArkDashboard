@@ -5,11 +5,6 @@ import type {
 } from "types/graphql";
 
 import { db } from "src/lib/db";
-
-export const lootcrates: QueryResolvers["lootcrates"] = () => {
-  return db.lootcrate.findMany();
-};
-
 // TODO: Make a query for getting lootcrates that contains a specific item
 
 export const lootcratesByMap = ({ map }: { map?: string }) => {
@@ -37,6 +32,10 @@ export const lootcratesByMap = ({ map }: { map?: string }) => {
         },
       })
     : db.lootcrate.findMany();
+};
+
+export const lootcrates: QueryResolvers["lootcrates"] = () => {
+  return db.lootcrate.findMany();
 };
 
 export const lootcrate: QueryResolvers["lootcrate"] = ({ id }) => {

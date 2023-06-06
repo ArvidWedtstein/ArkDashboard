@@ -7,13 +7,12 @@ export const schema = gql`
     item_id: BigInt!
     amount: Float!
     Item: Item!
-    ItemRec: ItemRec!
+    ItemRecipe: ItemRecipe!
   }
 
   type Query {
     itemRecipeItems: [ItemRecipeItem!]! @skipAuth
     itemRecipeItem(id: String!): ItemRecipeItem @skipAuth
-    itemRecipesByIds(item_recipe_id: [String!]!): [ItemRecipeItem!]! @skipAuth
   }
 
   input CreateItemRecipeItemInput {

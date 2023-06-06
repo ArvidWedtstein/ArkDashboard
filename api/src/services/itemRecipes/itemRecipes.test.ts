@@ -33,13 +33,9 @@ describe('itemRecipes', () => {
 
   scenario('creates a itemRecipe', async (scenario: StandardScenario) => {
     const result = await createItemRecipe({
-      input: {
-        item_id: scenario.itemRecipe.two.item_id,
-        crafted_item_id: scenario.itemRecipe.two.crafted_item_id,
-      },
+      input: { crafted_item_id: scenario.itemRecipe.two.crafted_item_id },
     })
 
-    expect(result.item_id).toEqual(scenario.itemRecipe.two.item_id)
     expect(result.crafted_item_id).toEqual(
       scenario.itemRecipe.two.crafted_item_id
     )
@@ -51,10 +47,12 @@ describe('itemRecipes', () => {
     })) as ItemRecipe
     const result = await updateItemRecipe({
       id: original.id,
-      input: { crafted_item_id: scenario.itemRecipe.two.item_id },
+      input: { crafted_item_id: scenario.itemRecipe.two.crafted_item_id },
     })
 
-    expect(result.crafted_item_id).toEqual(scenario.itemRecipe.two.item_id)
+    expect(result.crafted_item_id).toEqual(
+      scenario.itemRecipe.two.crafted_item_id
+    )
   })
 
   scenario('deletes a itemRecipe', async (scenario: StandardScenario) => {

@@ -160,7 +160,7 @@ const TimelineBasespotsList = ({
       .then((data) => {
         setImages(data.data);
       });
-    return () => {};
+    return () => { };
   }, [timelineBasespots]);
 
   const setActive = useCallback(
@@ -319,17 +319,16 @@ const TimelineBasespotsList = ({
                       }
                     )}
                     // src={arrRandNoRep(mapImages[timelineBasespot.map])}
-                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${
-                      arrRandNoRep(
-                        images?.filter(
-                          (img) =>
-                            img.path_tokens[0] ===
-                            timelineBasespot.id.toString()
-                        )
-                      )?.name
-                    }`}
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${arrRandNoRep(
+                      images?.filter(
+                        (img) =>
+                          img.path_tokens[0] ===
+                          timelineBasespot.id.toString()
+                      )
+                    )?.name
+                      }`}
                   />
-                  {new Date(timelineBasespot.start_date) < new Date() && (
+                  {(new Date(timelineBasespot.start_date) < new Date() || !timelineBasespot.end_date) && (
                     <Link
                       to={routes.timelineBasespot({
                         id: timelineBasespot.id.toString(),

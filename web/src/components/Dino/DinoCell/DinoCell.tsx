@@ -57,11 +57,11 @@ export const QUERY = gql`
           id
           image
           stats
-          ItemRec_ItemRec_crafted_item_idToItem {
+          ItemRecipe_ItemRecipe_crafted_item_idToItem {
             id
             yields
             crafting_station_id
-            Item_ItemRec_crafting_station_idToItem {
+            Item_ItemRecipe_crafting_station_idToItem {
               name
               image
             }

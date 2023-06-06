@@ -2,26 +2,26 @@ import { Link, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 
-import { QUERY } from 'src/components/ItemRec/ItemRecsCell'
+import { QUERY } from 'src/components/ItemRecipe/ItemRecipesCell'
 import { timeTag, truncate } from 'src/lib/formatters'
 
 import type {
-  DeleteItemRecMutationVariables,
-  FindItemRecs,
+  DeleteItemRecipeMutationVariables,
+  FindItemRecipes,
 } from 'types/graphql'
 
-const DELETE_ITEM_REC_MUTATION = gql`
-  mutation DeleteItemRecMutation($id: String!) {
-    deleteItemRec(id: $id) {
+const DELETE_ITEM_RECIPE_MUTATION = gql`
+  mutation DeleteItemRecipeMutation($id: String!) {
+    deleteItemRecipe(id: $id) {
       id
     }
   }
 `
 
-const ItemRecsList = ({ itemRecs }: FindItemRecs) => {
-  const [deleteItemRec] = useMutation(DELETE_ITEM_REC_MUTATION, {
+const ItemRecipesList = ({ itemRecipes }: FindItemRecipes) => {
+  const [deleteItemRecipe] = useMutation(DELETE_ITEM_RECIPE_MUTATION, {
     onCompleted: () => {
-      toast.success('ItemRec deleted')
+      toast.success('ItemRecipe deleted')
     },
     onError: (error) => {
       toast.error(error.message)
@@ -33,9 +33,9 @@ const ItemRecsList = ({ itemRecs }: FindItemRecs) => {
     awaitRefetchQueries: true,
   })
 
-  const onDeleteClick = (id: DeleteItemRecMutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete itemRec ' + id + '?')) {
-      deleteItemRec({ variables: { id } })
+  const onDeleteClick = (id: DeleteItemRecipeMutationVariables['id']) => {
+    if (confirm('Are you sure you want to delete itemRecipe ' + id + '?')) {
+      deleteItemRecipe({ variables: { id } })
     }
   }
 
@@ -51,40 +51,42 @@ const ItemRecsList = ({ itemRecs }: FindItemRecs) => {
             <th>Crafting station id</th>
             <th>Crafting time</th>
             <th>Yields</th>
+            <th>Required level</th>
             <th>&nbsp;</th>
           </tr>
         </thead>
         <tbody>
-          {itemRecs.map((itemRec) => (
-            <tr key={itemRec.id}>
-              <td>{truncate(itemRec.id)}</td>
-              <td>{timeTag(itemRec.created_at)}</td>
-              <td>{timeTag(itemRec.updated_at)}</td>
-              <td>{truncate(itemRec.crafted_item_id)}</td>
-              <td>{truncate(itemRec.crafting_station_id)}</td>
-              <td>{truncate(itemRec.crafting_time)}</td>
-              <td>{truncate(itemRec.yields)}</td>
+          {itemRecipes.map((itemRecipe) => (
+            <tr key={itemRecipe.id}>
+              <td>{truncate(itemRecipe.id)}</td>
+              <td>{timeTag(itemRecipe.created_at)}</td>
+              <td>{timeTag(itemRecipe.updated_at)}</td>
+              <td>{truncate(itemRecipe.crafted_item_id)}</td>
+              <td>{truncate(itemRecipe.crafting_station_id)}</td>
+              <td>{truncate(itemRecipe.crafting_time)}</td>
+              <td>{truncate(itemRecipe.yields)}</td>
+              <td>{truncate(itemRecipe.required_level)}</td>
               <td>
                 <nav className="rw-table-actions">
                   <Link
-                    to={routes.itemRec({ id: itemRec.id })}
-                    title={'Show itemRec ' + itemRec.id + ' detail'}
+                    to={routes.itemRecipe({ id: itemRecipe.id })}
+                    title={'Show itemRecipe ' + itemRecipe.id + ' detail'}
                     className="rw-button rw-button-small"
                   >
                     Show
                   </Link>
                   <Link
-                    to={routes.editItemRec({ id: itemRec.id })}
-                    title={'Edit itemRec ' + itemRec.id}
+                    to={routes.editItemRecipe({ id: itemRecipe.id })}
+                    title={'Edit itemRecipe ' + itemRecipe.id}
                     className="rw-button rw-button-small rw-button-blue"
                   >
                     Edit
                   </Link>
                   <button
                     type="button"
-                    title={'Delete itemRec ' + itemRec.id}
+                    title={'Delete itemRecipe ' + itemRecipe.id}
                     className="rw-button rw-button-small rw-button-red"
-                    onClick={() => onDeleteClick(itemRec.id)}
+                    onClick={() => onDeleteClick(itemRecipe.id)}
                   >
                     Delete
                   </button>
@@ -98,4 +100,4 @@ const ItemRecsList = ({ itemRecs }: FindItemRecs) => {
   )
 }
 
-export default ItemRecsList
+export default ItemRecipesList

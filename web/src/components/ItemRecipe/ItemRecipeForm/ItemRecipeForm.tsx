@@ -7,26 +7,26 @@ import {
   Submit,
 } from '@redwoodjs/forms'
 
-import type { EditItemRecById, UpdateItemRecInput } from 'types/graphql'
+import type { EditItemRecipeById, UpdateItemRecipeInput } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
 
-type FormItemRec = NonNullable<EditItemRecById['itemRec']>
+type FormItemRecipe = NonNullable<EditItemRecipeById['itemRecipe']>
 
-interface ItemRecFormProps {
-  itemRec?: EditItemRecById['itemRec']
-  onSave: (data: UpdateItemRecInput, id?: FormItemRec['id']) => void
+interface ItemRecipeFormProps {
+  itemRecipe?: EditItemRecipeById['itemRecipe']
+  onSave: (data: UpdateItemRecipeInput, id?: FormItemRecipe['id']) => void
   error: RWGqlError
   loading: boolean
 }
 
-const ItemRecForm = (props: ItemRecFormProps) => {
-  const onSubmit = (data: FormItemRec) => {
-    props.onSave(data, props?.itemRec?.id)
+const ItemRecipeForm = (props: ItemRecipeFormProps) => {
+  const onSubmit = (data: FormItemRecipe) => {
+    props.onSave(data, props?.itemRecipe?.id)
   }
 
   return (
     <div className="rw-form-wrapper">
-      <Form<FormItemRec> onSubmit={onSubmit} error={props.error}>
+      <Form<FormItemRecipe> onSubmit={onSubmit} error={props.error}>
         <FormError
           error={props.error}
           wrapperClassName="rw-form-error-wrapper"
@@ -44,7 +44,7 @@ const ItemRecForm = (props: ItemRecFormProps) => {
 
         <TextField
           name="crafted_item_id"
-          defaultValue={props.itemRec?.crafted_item_id}
+          defaultValue={props.itemRecipe?.crafted_item_id}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ required: true }}
@@ -62,7 +62,7 @@ const ItemRecForm = (props: ItemRecFormProps) => {
 
         <TextField
           name="crafting_station_id"
-          defaultValue={props.itemRec?.crafting_station_id}
+          defaultValue={props.itemRecipe?.crafting_station_id}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
         />
@@ -79,7 +79,7 @@ const ItemRecForm = (props: ItemRecFormProps) => {
 
         <TextField
           name="crafting_time"
-          defaultValue={props.itemRec?.crafting_time}
+          defaultValue={props.itemRecipe?.crafting_time}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ valueAsNumber: true }}
@@ -97,13 +97,30 @@ const ItemRecForm = (props: ItemRecFormProps) => {
 
         <TextField
           name="yields"
-          defaultValue={props.itemRec?.yields}
+          defaultValue={props.itemRecipe?.yields}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ valueAsNumber: true, required: true }}
         />
 
         <FieldError name="yields" className="rw-field-error" />
+
+        <Label
+          name="required_level"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Required level
+        </Label>
+
+        <TextField
+          name="required_level"
+          defaultValue={props.itemRecipe?.required_level}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+
+        <FieldError name="required_level" className="rw-field-error" />
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">
@@ -115,4 +132,4 @@ const ItemRecForm = (props: ItemRecFormProps) => {
   )
 }
 
-export default ItemRecForm
+export default ItemRecipeForm

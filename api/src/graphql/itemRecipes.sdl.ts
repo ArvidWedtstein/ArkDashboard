@@ -1,16 +1,17 @@
 export const schema = gql`
   type ItemRecipe {
     id: String!
-    created_at: DateTime
+    created_at: DateTime!
     updated_at: DateTime
-    item_id: BigInt!
-    amount: Float!
-    yields: Float
     crafted_item_id: BigInt!
-    crafting_station: BigInt
+    crafting_station_id: BigInt
+    crafting_time: Float
+    yields: Float!
+    required_level: BigInt
     Item_ItemRecipe_crafted_item_idToItem: Item!
-    Item_ItemRecipe_crafting_stationToItem: Item
-    Item_ItemRecipe_item_idToItem: Item!
+    Item_ItemRecipe_crafting_station_idToItem: Item
+    ItemRecipeItem: [ItemRecipeItem]!
+    UserRecipeItemRecipe: [UserRecipeItemRecipe]!
   }
 
   type Query {
@@ -19,23 +20,23 @@ export const schema = gql`
   }
 
   input CreateItemRecipeInput {
-    created_at: DateTime
+    created_at: DateTime!
     updated_at: DateTime
-    item_id: BigInt!
-    amount: Float!
-    yields: Float
     crafted_item_id: BigInt!
-    crafting_station: BigInt
+    crafting_station_id: BigInt
+    crafting_time: Float
+    yields: Float!
+    required_level: BigInt
   }
 
   input UpdateItemRecipeInput {
     created_at: DateTime
     updated_at: DateTime
-    item_id: BigInt
-    amount: Float
-    yields: Float
     crafted_item_id: BigInt
-    crafting_station: BigInt
+    crafting_station_id: BigInt
+    crafting_time: Float
+    yields: Float
+    required_level: BigInt
   }
 
   type Mutation {

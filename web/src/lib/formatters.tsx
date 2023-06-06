@@ -34,14 +34,16 @@ export const jsonDisplay = (obj: unknown) => {
   );
 };
 
-
-export const formatNumber = (num: number, options?: Intl.NumberFormatOptions): string => {
-  return new Intl.NumberFormat('en-GB', options).format(num)
+export const formatNumber = (
+  num: number,
+  options?: Intl.NumberFormatOptions
+): string => {
+  return new Intl.NumberFormat("en-GB", options).format(num);
   // const formattedNum = Math.round(num)
   //   .toString()
   //   .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   // return formattedNum;
-}
+};
 
 export const truncate = (value: string | number, maxlength: number = 150) => {
   let output = value?.toString() ?? "";
@@ -57,6 +59,22 @@ export const jsonTruncate = (obj: unknown, maxlength: number = 150) => {
   return truncate(JSON.stringify(obj, null, 2), maxlength);
 };
 
+
+// const dateFormatter = new Intl.DateTimeFormat("en-GB", {
+// 	day: "2-digit",
+// 	month: "2-digit",
+// 	year: "numeric",
+// 	timeZone: "utc",
+// });
+
+// const dateTimeFormatter = new Intl.DateTimeFormat("en-GB", {
+// 	day: "2-digit",
+// 	month: "2-digit",
+// 	year: "numeric",
+// 	hour: "2-digit",
+// 	minute: "2-digit",
+// 	timeZone: "utc",
+// });
 /**
  * Renders a formatted time tag element.
  *
@@ -65,12 +83,12 @@ export const jsonTruncate = (obj: unknown, maxlength: number = 150) => {
  */
 export const timeTag = (dateTime?: string | Date): string | React.ReactNode => {
   if (!dateTime) {
-    return '';
+    return "";
   }
 
-  const formattedDateTime = new Date(dateTime).toLocaleString('en-GB', {
-    timeStyle: 'short',
-    dateStyle: 'long',
+  const formattedDateTime = new Date(dateTime).toLocaleString("en-GB", {
+    timeStyle: "short",
+    dateStyle: "long",
   });
 
   return (
@@ -153,7 +171,6 @@ export const formatBytes = (a, b = 2) => {
     }`;
 };
 
-
 /**
  * Capitalizes the first letter of a given string.
  * @param {string} string - The input string to be capitalized.
@@ -180,6 +197,52 @@ export const combineBySummingKeys = (...objects: object[]) => {
   return mergedObj;
 };
 
+// Default Turret tower calculations
+// let turretTower = {
+//   size: 14 * 14,
+//   cage_height: 22,
+//   top_turret_height: 7,
+//   total_height: 22 + 7,
+//   heavy_turrets: 60,
+//   tek_turrets: 65,
+//   hatchframe_layers: 3,
+//   turret_ring_levels: [
+//     {
+//       height: 10,
+//       hasGenerator: false,
+//     },
+//     {
+//       height: 14,
+//       hasGenerator: true,
+//     },
+//     {
+//       height: 18,
+//       hasGenerator: false,
+//     },
+//     {
+//       height: 29,
+//       hasGenerator: true,
+//     }
+//   ] // 13, 16, 19, 22?
+// }
+// const amountCenterDoorframes = turretTower.total_height * 8
+// const amountOutsideDoorframes = (Math.sqrt(turretTower.size) * 4) * turretTower.cage_height
+// const amountGiantHatchframes = (turretTower.size / 4) * (turretTower.hatchframe_layers + 1) // +1 for the top of cage
+// const amountCenterHatchframes = 8 * turretTower.turret_ring_levels.length
+// const amountTekGen = turretTower.turret_ring_levels.filter((f) => f.hasGenerator === true).length
+// let towerItems = {
+//   172: turretTower.size, // Metal Foundation
+//   621: amountGiantHatchframes + amountCenterHatchframes + amountTekGen, // Giant Metal Hatchframe
+//   622: amountTekGen, // Giant Metal Hatchframe for Tek Generator
+//   179: amountTekGen * 8, // Metal Walls to protect Tek Generator
+//   168: amountTekGen * 3, // Metal Ceiling to protect Tek Generator
+//   169: amountTekGen, // Metal Hatchframe to protect Tek Generator
+//   178: amountTekGen, // Metal Trapdoor to protect Tek Generator
+//   770: amountOutsideDoorframes + amountCenterDoorframes, // Metal Double Doorframe
+//   686: turretTower.heavy_turrets, // Heavy Turret
+//   681: turretTower.tek_turrets, // Tek Turret
+//   676: amountTekGen, // Tek Generator
+// }
 /**
  * Calculates the base materials required to produce the specified objects.
  *
@@ -234,7 +297,7 @@ export const getBaseMaterials = (
         if (!baseMaterials || !newRecipe?.ItemRecipeItem?.length || !Item) {
           const materialId = newRecipe ? newRecipe.crafted_item_id : Item.id;
           let material = materials.find(
-            (m) => m.Item_ItemRec_crafted_item_idToItem.id === materialId
+            (m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId
           );
 
           const count = (recipeAmount * amount) / yields;
@@ -244,7 +307,7 @@ export const getBaseMaterials = (
             // material.crafting_time += count * (newRecipe?.crafting_time || 1);
           } else {
             material = {
-              ...(newRecipe || { Item_ItemRec_crafted_item_idToItem: Item }),
+              ...(newRecipe || { Item_ItemRecipe_crafted_item_idToItem: Item }),
               amount: count,
               crafting_time: count * (newRecipe?.crafting_time || 1),
             };
@@ -355,7 +418,6 @@ export const timeFormatL = (seconds, onlyLast = false) => {
   }
   return time.trim();
 };
-
 
 /**
  * @description Returns the start and end date of the current week
@@ -530,7 +592,7 @@ export const generatePDF = () => {
 
   // Generate table content
   // const crafts = mergeItemRecipe(viewBaseMaterials, items, ...item);
-  const crafts = []
+  const crafts = [];
   crafts.forEach((item, i) => {
     for (let col = 0; col < 3; col++) {
       var cellX = tableX + col * (tableWidth / 3);
@@ -593,9 +655,7 @@ export const generatePDF = () => {
       switch (col) {
         case 0:
           content.push("0 0 0 rg");
-          content.push(
-            `(${item.Item_ItemRec_crafted_item_idToItem.name}) Tj`
-          );
+          content.push(`(${item.Item_ItemRec_crafted_item_idToItem.name}) Tj`);
           break;
         case 1:
           content.push("0 0 0 rg");
@@ -640,8 +700,7 @@ export const generatePDF = () => {
     dataURI +
     '" style="width:100%; height:100%;" frameborder="0"></iframe>'
   );
-}
-
+};
 
 /**
  * Removes duplicates from an array and returns a new array.
@@ -754,3 +813,15 @@ type Distance = 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 type Breakpoints = "xs:" | "sm:" | "md:" | "lg:" | "xl:" | "";
 type Space = `${Breakpoints}space-${"x" | "y"}-${Distance}`;
 type Padding = `${Breakpoints}p-${Distance}`;
+
+export type Enumerate<
+  N extends number,
+  Acc extends number[] = []
+> = Acc["length"] extends N
+  ? Acc[number]
+  : Enumerate<N, [...Acc, Acc["length"]]>;
+
+export type IntRange<F extends number, T extends number> = Exclude<
+  Enumerate<T>,
+  Enumerate<F>
+>;

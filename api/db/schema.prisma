@@ -48,6 +48,7 @@ model Basespot {
   created_by            String?            @db.Uuid
   turretsetup_image     String?
   updated_at            DateTime?          @db.Timestamptz(6)
+  Profile               Profile?           @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Map                   Map                @relation(fields: [map], references: [id], onDelete: NoAction, onUpdate: NoAction)
   TimelineBasespot      TimelineBasespot[]
 }
@@ -65,6 +66,7 @@ model Profile {
   created_at                    DateTime?                @default(now()) @db.Timestamptz(6)
   updated_by                    String?                  @db.Uuid
   steam_user_id                 String?
+  Basespot                      Basespot[]
   Message                       Message[]
   role_profile_role_idTorole    Role                     @relation("profile_role_idTorole", fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Profile                       Profile?                 @relation("ProfileToProfile", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -169,28 +171,25 @@ model Dino {
 }
 
 model Item {
-  id                                           BigInt                  @id(map: "Items_pkey") @unique @default(autoincrement())
-  created_at                                   DateTime?               @default(now()) @db.Timestamptz(6)
-  name                                         String
-  description                                  String?
-  image                                        String?
-  max_stack                                    Float?
-  weight                                       Float?                  @default(0)
-  engram_points                                Float?                  @default(0)
-  crafting_time                                Float?                  @default(0)
-  stats                                        Json?
-  color                                        String?                 @default("#ff0000")
-  type                                         String?
-  category                                     String                  @default("'Other'::text")
-  health                                       Float?                  @default(0)
-  DinoStat                                     DinoStat[]
-  ItemRec_ItemRec_crafted_item_idToItem        ItemRec[]               @relation("ItemRec_crafted_item_idToItem")
-  ItemRec_ItemRec_crafting_station_idToItem    ItemRec[]               @relation("ItemRec_crafting_station_idToItem")
-  ItemRecipe_ItemRecipe_crafted_item_idToItem  ItemRecipe[]            @relation("ItemRecipe_crafted_item_idToItem")
-  ItemRecipe_ItemRecipe_crafting_stationToItem ItemRecipe[]            @relation("ItemRecipe_crafting_stationToItem")
-  ItemRecipe_ItemRecipe_item_idToItem          ItemRecipe[]            @relation("ItemRecipe_item_idToItem")
-  ItemRecipeItem                               ItemRecipeItem[]
-  LootcrateSetEntryItem                        LootcrateSetEntryItem[]
+  id                                              BigInt                  @id(map: "Items_pkey") @unique @default(autoincrement())
+  created_at                                      DateTime?               @default(now()) @db.Timestamptz(6)
+  name                                            String
+  description                                     String?
+  image                                           String?
+  max_stack                                       Float?
+  weight                                          Float?                  @default(0)
+  engram_points                                   Float?                  @default(0)
+  crafting_time                                   Float?                  @default(0)
+  stats                                           Json?
+  color                                           String?                 @default("#ff0000")
+  type                                            String?
+  category                                        String                  @default("'Other'::text")
+  health                                          Float?                  @default(0)
+  DinoStat                                        DinoStat[]
+  ItemRecipe_ItemRecipe_crafted_item_idToItem     ItemRecipe[]            @relation("ItemRecipe_crafted_item_idToItem")
+  ItemRecipe_ItemRecipe_crafting_station_idToItem ItemRecipe[]            @relation("ItemRecipe_crafting_station_idToItem")
+  ItemRecipeItem                                  ItemRecipeItem[]
+  LootcrateSetEntryItem                           LootcrateSetEntryItem[]
 
   @@index([stats(ops: JsonbPathOps)], map: "idxginp", type: Gin)
 }
@@ -220,6 +219,8 @@ model Lootcrate {
   quality_multiplier Json?
   set_qty            Json?
   color              String?
+  latitude           Float?
+  longitude_         Float?         @map("longitude ")
   Map                Map            @relation(fields: [map], references: [id], onDelete: NoAction, onUpdate: NoAction)
   LootcrateSet       LootcrateSet[]
 }
@@ -261,23 +262,6 @@ model DinoStat {
   Item       Item         @relation(fields: [item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([dino_id, item_id, type])
-}
-
-model ItemRecipe {
-  id                                     String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  created_at                             DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at                             DateTime? @default(now()) @db.Timestamptz(6)
-  item_id                                BigInt
-  amount                                 Float     @default(1)
-  crafted_item_id                        BigInt
-  crafting_station                       BigInt?
-  yields                                 Float?    @default(1)
-  Item_ItemRecipe_crafted_item_idToItem  Item      @relation("ItemRecipe_crafted_item_idToItem", fields: [crafted_item_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  Item_ItemRecipe_crafting_stationToItem Item?     @relation("ItemRecipe_crafting_stationToItem", fields: [crafting_station], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Item_ItemRecipe_item_idToItem          Item      @relation("ItemRecipe_item_idToItem", fields: [item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@unique([item_id, crafted_item_id, crafting_station])
-  @@index([crafted_item_id], map: "idx_item_recipes_crafted_item_id")
 }
 
 model LootcrateSetEntryItem {
@@ -369,34 +353,15 @@ model MapNote {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model ItemRec {
-  id                                     String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  created_at                             DateTime               @default(now()) @db.Timestamptz(6)
-  updated_at                             DateTime?              @default(now()) @db.Timestamptz(6)
-  crafted_item_id                        BigInt
-  crafting_station_id                    BigInt?
-  crafting_time                          Float?                 @default(1)
-  yields                                 Float                  @default(1)
-  required_level                         BigInt?
-  Item_ItemRec_crafted_item_idToItem     Item                   @relation("ItemRec_crafted_item_idToItem", fields: [crafted_item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Item_ItemRec_crafting_station_idToItem Item?                  @relation("ItemRec_crafting_station_idToItem", fields: [crafting_station_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  ItemRecipeItem                         ItemRecipeItem[]
-  UserRecipeItemRecipe                   UserRecipeItemRecipe[]
-
-  @@unique([crafted_item_id, crafting_station_id])
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model ItemRecipeItem {
-  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  created_at     DateTime  @default(now()) @db.Timestamptz(6)
-  updated_at     DateTime? @default(now()) @db.Timestamptz(6)
-  item_recipe_id String    @db.Uuid
+  id             String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at     DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime?  @default(now()) @db.Timestamptz(6)
+  item_recipe_id String     @db.Uuid
   item_id        BigInt
-  amount         Float     @default(1)
-  Item           Item      @relation(fields: [item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  ItemRec        ItemRec   @relation(fields: [item_recipe_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  amount         Float      @default(1)
+  Item           Item       @relation(fields: [item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  ItemRecipe     ItemRecipe @relation(fields: [item_recipe_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([item_id, item_recipe_id])
 }
@@ -424,6 +389,7 @@ model UserRecipe {
   updated_at           DateTime?              @db.Timestamptz(6)
   user_id              String                 @db.Uuid
   private              Boolean                @default(true)
+  name                 String?
   Profile              Profile                @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   UserRecipeItemRecipe UserRecipeItemRecipe[]
 }
@@ -435,8 +401,28 @@ model UserRecipeItemRecipe {
   updated_at     DateTime?  @db.Timestamptz(6)
   user_recipe_id String     @db.Uuid
   item_recipe_id String     @db.Uuid
-  ItemRec        ItemRec    @relation(fields: [item_recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  amount         BigInt?    @default(1)
+  ItemRecipe     ItemRecipe @relation(fields: [item_recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   UserRecipe     UserRecipe @relation(fields: [user_recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model ItemRecipe {
+  id                                        String                 @id(map: "ItemRec_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at                                DateTime               @default(now()) @db.Timestamptz(6)
+  updated_at                                DateTime?              @default(now()) @db.Timestamptz(6)
+  crafted_item_id                           BigInt
+  crafting_station_id                       BigInt?
+  crafting_time                             Float?                 @default(1)
+  yields                                    Float                  @default(1)
+  required_level                            BigInt?
+  Item_ItemRecipe_crafted_item_idToItem     Item                   @relation("ItemRecipe_crafted_item_idToItem", fields: [crafted_item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Item_ItemRecipe_crafting_station_idToItem Item?                  @relation("ItemRecipe_crafting_station_idToItem", fields: [crafting_station_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  ItemRecipeItem                            ItemRecipeItem[]
+  UserRecipeItemRecipe                      UserRecipeItemRecipe[]
+
+  @@unique([crafted_item_id, crafting_station_id], map: "ItemRec_crafted_item_id_crafting_station_id_key")
 }
 
 enum permission {

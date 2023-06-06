@@ -64,18 +64,18 @@ const ItemForm = (props: ItemFormProps) => {
   }, []);
 
   const onSubmit = (data: FormItem) => {
-    data.ItemRecipe_ItemRecipe_crafted_item_idToItem["upsert"] =
-      data.ItemRecipe_ItemRecipe_crafted_item_idToItem["upsert"].map(
-        (u, i) => ({
-          create: { ...u },
-          update: { ...u },
-          where: {
-            id:
-              props.item?.ItemRecipe_ItemRecipe_crafted_item_idToItem[i]?.id ||
-              "00000000000000000000000000000000",
-          },
-        })
-      );
+    // data.ItemRecipe_ItemRecipe_crafted_item_idToItem["upsert"] =
+    //   data.ItemRecipe_ItemRecipe_crafted_item_idToItem["upsert"].map(
+    //     (u, i) => ({
+    //       create: { ...u },
+    //       update: { ...u },
+    //       where: {
+    //         id:
+    //           props.item?.ItemRecipe_ItemRecipe_crafted_item_idToItem[i]?.id ||
+    //           "00000000000000000000000000000000",
+    //       },
+    //     })
+    //   );
 
     props.onSave(data, props?.item?.id);
   };
@@ -85,8 +85,7 @@ const ItemForm = (props: ItemFormProps) => {
   const { register, control } = useForm({
     defaultValues: {
       stats: [],
-      "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert":
-        props?.item?.ItemRecipe_ItemRecipe_crafted_item_idToItem || [],
+      "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert": [], // || props?.item?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
     },
   });
   const {
