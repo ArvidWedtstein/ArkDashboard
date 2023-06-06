@@ -41,6 +41,12 @@ export const userRecipe: QueryResolvers["userRecipe"] = ({ id }) => {
 export const createUserRecipe: MutationResolvers["createUserRecipe"] = ({
   input,
 }) => {
+  validateWithSync(() => {
+    if (context.currentUser.id !== input.user_id) {
+      throw "Your gallimimus outran the authorization process. Slow down!";
+    }
+  });
+  console.log("input", input);
   return db.userRecipe.create({
     data: input,
   });
