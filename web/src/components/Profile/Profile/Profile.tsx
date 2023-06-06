@@ -138,7 +138,7 @@ const Profile = ({ profile }: Props) => {
 
           <div className="w-full flex flex-row dark:text-stone-100 gap-5">
             {profile.UserRecipe.map(({ id, created_at, private: IsPrivate, UserRecipeItemRecipe }) => (
-              <div className="p-4 bg-zinc-700 rounded-lg shadow w-1/3" key={id}>
+              <div className="p-4 bg-stone-300 dark:bg-zinc-700 rounded-lg shadow w-1/3" key={id}>
                 <div className="flex justify-between items-center mb-4">
                   <div className="p-1 w-12 h-12 rounded bg-white hover:shadow" title={`Private: ${IsPrivate}`}>
                     {IsPrivate ? (
@@ -158,8 +158,14 @@ const Profile = ({ profile }: Props) => {
                     </span>
                   </div>
                 </div>
-                {/* <p className="text-base leading-5">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Qui facere, sequi, rem, consequuntur voluptate quasi iste natus assumenda cupiditate dolorum molestias porro magnam. Voluptatibus cum quo assumenda ut quod dolore.</p> */}
-                <p className="text-base leading-5">{JSON.stringify(UserRecipeItemRecipe)}</p>
+                <div className="flex flex-wrap flex-row">
+                  {UserRecipeItemRecipe.map(({ id: userRecipeId, ItemRecipe: { id: recipeId, Item_ItemRecipe_crafted_item_idToItem: { name, image }, yields } }) => (
+                    <Link to={routes.itemRecipe({ id: recipeId })} className="rounded-lg bg-rose-600 p-2 text-center relative" title={name} key={`recipe-${userRecipeId}`}>
+                      <img className="w-10 h-10" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`} alt={name} />
+                      <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-pea-500 border-2 border-white rounded-full -top-2 -right-2 dark:border-zinc-700">{yields}</div>
+                    </Link>
+                  ))}
+                </div>
                 <div className="mt-4 inline-block float-right text-xs">
                   <span className="relative inline-block mx-1">{new Date(created_at).toLocaleString("en-GB", {
                     dateStyle: "long",

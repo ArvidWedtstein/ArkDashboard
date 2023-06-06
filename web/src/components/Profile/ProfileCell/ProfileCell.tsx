@@ -27,10 +27,13 @@ export const QUERY = gql`
         UserRecipeItemRecipe {
           id
           ItemRecipe {
+            id
+            yields
             Item_ItemRecipe_crafted_item_idToItem {
+              id
               name
+              image
             }
-
           }
         }
       }

@@ -389,6 +389,7 @@ model UserRecipe {
   updated_at           DateTime?              @db.Timestamptz(6)
   user_id              String                 @db.Uuid
   private              Boolean                @default(true)
+  name                 String?
   Profile              Profile                @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   UserRecipeItemRecipe UserRecipeItemRecipe[]
 }
@@ -400,6 +401,7 @@ model UserRecipeItemRecipe {
   updated_at     DateTime?  @db.Timestamptz(6)
   user_recipe_id String     @db.Uuid
   item_recipe_id String     @db.Uuid
+  amount         BigInt?    @default(1)
   ItemRecipe     ItemRecipe @relation(fields: [item_recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   UserRecipe     UserRecipe @relation(fields: [user_recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

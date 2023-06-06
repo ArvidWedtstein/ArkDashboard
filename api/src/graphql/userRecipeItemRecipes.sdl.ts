@@ -5,6 +5,7 @@ export const schema = gql`
     updated_at: DateTime
     user_recipe_id: String!
     item_recipe_id: String!
+    amount: BigInt
     ItemRecipe: ItemRecipe!
     UserRecipe: UserRecipe!
   }
@@ -19,6 +20,7 @@ export const schema = gql`
     updated_at: DateTime
     user_recipe_id: String!
     item_recipe_id: String!
+    amount: BigInt
   }
 
   input UpdateUserRecipeItemRecipeInput {
@@ -26,6 +28,7 @@ export const schema = gql`
     updated_at: DateTime
     user_recipe_id: String
     item_recipe_id: String
+    amount: BigInt
   }
 
   type Mutation {
@@ -38,4 +41,4 @@ export const schema = gql`
     ): UserRecipeItemRecipe! @requireAuth
     deleteUserRecipeItemRecipe(id: String!): UserRecipeItemRecipe! @requireAuth
   }
-`;
+`

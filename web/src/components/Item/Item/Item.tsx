@@ -165,11 +165,11 @@ const Item = ({ item }: Props) => {
                           self.findIndex(
                             (t) =>
                               t.LootcrateSetEntry.LootcrateSet.Lootcrate.id ===
-                                value.LootcrateSetEntry.LootcrateSet.Lootcrate
-                                  .id &&
+                              value.LootcrateSetEntry.LootcrateSet.Lootcrate
+                                .id &&
                               t.LootcrateSetEntry.LootcrateSet.Lootcrate.id ===
-                                value.LootcrateSetEntry.LootcrateSet.Lootcrate
-                                  .id
+                              value.LootcrateSetEntry.LootcrateSet.Lootcrate
+                                .id
                           )
                       )
                         .slice(0, 5)
@@ -199,7 +199,7 @@ const Item = ({ item }: Props) => {
 
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "gather_efficiency").length >
-            0 && (
+          0 && (
             <section className="rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
               <p className="my-1 text-lg">Gather Efficiency</p>
               <div className="flex flex-col">
@@ -258,7 +258,7 @@ const Item = ({ item }: Props) => {
 
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "weight_reduction").length >
-            0 && (
+          0 && (
             <section className="rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
               <p className="my-1 text-lg">Weight Reduction</p>
               <div className="flex flex-col">
@@ -324,10 +324,10 @@ const Item = ({ item }: Props) => {
           <p className="mb-1 text-lg">{item.name} can be crafted in:</p>
           <Tabs
             // tabClassName={`bg-[#0D2836] text-[#97FBFF] border !border-[#60728F]`}
-            tabs={item.ItemRec_ItemRec_crafted_item_idToItem.map(
+            tabs={item.ItemRecipe_ItemRecipe_crafted_item_idToItem.map(
               ({
                 id,
-                Item_ItemRec_crafting_station_idToItem,
+                Item_ItemRecipe_crafting_station_idToItem,
                 ItemRecipeItem,
                 yields,
               }) => ({
@@ -337,10 +337,10 @@ const Item = ({ item }: Props) => {
                     key={`recipe-${id}`}
                   >
                     <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRec_crafting_station_idToItem.image}`}
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRecipe_crafting_station_idToItem.image}`}
                       className="w-8"
                     />
-                    <span>{Item_ItemRec_crafting_station_idToItem.name}</span>
+                    <span>{Item_ItemRecipe_crafting_station_idToItem.name}</span>
                   </p>
                 ),
                 content: (

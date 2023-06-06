@@ -5,6 +5,7 @@ export const schema = gql`
     updated_at: DateTime
     user_id: String!
     private: Boolean!
+    name: String
     Profile: Profile!
     UserRecipeItemRecipe: [UserRecipeItemRecipe]!
   }
@@ -19,6 +20,7 @@ export const schema = gql`
     updated_at: DateTime
     user_id: String!
     private: Boolean!
+    name: String
   }
 
   input UpdateUserRecipeInput {
@@ -26,6 +28,7 @@ export const schema = gql`
     updated_at: DateTime
     user_id: String
     private: Boolean
+    name: String
   }
 
   type Mutation {
