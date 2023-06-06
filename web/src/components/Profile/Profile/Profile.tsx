@@ -137,7 +137,7 @@ const Profile = ({ profile }: Props) => {
 
 
           <div className="w-full flex flex-row dark:text-stone-100 gap-5">
-            {profile.UserRecipe.map(({ id, created_at, private: IsPrivate, UserRecipeItemRecipe }) => (
+            {profile.UserRecipe.map(({ id, created_at, name, private: IsPrivate, UserRecipeItemRecipe }) => (
               <div className="p-4 bg-stone-300 dark:bg-zinc-700 rounded-lg shadow w-1/3" key={id}>
                 <div className="flex justify-between items-center mb-4">
                   <div className="p-1 w-12 h-12 rounded bg-white hover:shadow" title={`Private: ${IsPrivate}`}>
@@ -152,7 +152,7 @@ const Profile = ({ profile }: Props) => {
                     )}
                   </div>
                   <div>
-                    <h3 className="font-semibold my-1">Your Custom Recipe</h3>
+                    <h3 className="font-semibold my-1">{name || "Your Custom Recipe"}</h3>
                     <span className="text-stone-300">
                       test
                     </span>

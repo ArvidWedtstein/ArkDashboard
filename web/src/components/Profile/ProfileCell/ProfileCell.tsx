@@ -24,6 +24,7 @@ export const QUERY = gql`
         id
         created_at
         private
+        name
         UserRecipeItemRecipe {
           id
           ItemRecipe {

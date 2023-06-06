@@ -315,7 +315,7 @@ select.rw-input.rw-input-small {
   @apply px-3 py-2;
 }
 .rw-table td {
-  @apply bg-white text-gray-900 dark:bg-zinc-600 dark:text-gray-800;
+  @apply bg-white text-gray-900 dark:bg-zinc-600 dark:text-stone-300;
 }
 /* .rw-table tr:nth-child(odd) td,
 .rw-table tr:nth-child(odd) th {
@@ -329,7 +329,7 @@ select.rw-input.rw-input-small {
   @apply bg-gray-200 text-gray-600 dark:bg-zinc-600;
 }
 .rw-table th {
-  @apply text-left font-semibold;
+  @apply text-left font-semibold text-black dark:text-white;
 }
 .rw-table thead th {
   @apply text-left;
