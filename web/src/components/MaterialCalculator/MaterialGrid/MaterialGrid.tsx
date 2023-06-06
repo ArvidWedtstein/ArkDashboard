@@ -17,13 +17,15 @@ import debounce from "lodash.debounce";
 import Table from "src/components/Util/Table/Table";
 import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
 import { FindItemsMats } from "types/graphql";
+import clsx from "clsx";
 
 interface MaterialGridProps {
   itemRecipes: NonNullable<FindItemsMats["itemRecipes"]>;
+  userRecipesByID?: NonNullable<FindItemsMats["userRecipesByID"]>;
   error?: RWGqlError;
 }
 
-export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
+export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGridProps) => {
   // TODO: Fix Types
   const [search, setSearch] = useState<string>("");
   const [craftingStations, setCraftingStations] = useState<any>([107, 125]);
@@ -56,7 +58,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           ...state,
           {
             ...action.item,
-            amount: (action.index || 1) * yields,
+            amount: (action.index || 1) //* yields,
           },
         ];
       }
@@ -206,51 +208,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   }, 500);
 
   const addTurretTower = useCallback(() => {
-    // let turretTower = {
-    //   size: 14 * 14,
-    //   cage_height: 22,
-    //   top_turret_height: 7,
-    //   total_height: 22 + 7,
-    //   heavy_turrets: 60,
-    //   tek_turrets: 65,
-    //   hatchframe_layers: 3,
-    //   turret_ring_levels: [
-    //     {
-    //       height: 10,
-    //       hasGenerator: false,
-    //     },
-    //     {
-    //       height: 14,
-    //       hasGenerator: true,
-    //     },
-    //     {
-    //       height: 18,
-    //       hasGenerator: false,
-    //     },
-    //     {
-    //       height: 29,
-    //       hasGenerator: true,
-    //     }
-    //   ] // 13, 16, 19, 22?
-    // }
-    // const amountCenterDoorframes = turretTower.total_height * 8
-    // const amountOutsideDoorframes = (Math.sqrt(turretTower.size) * 4) * turretTower.cage_height
-    // const amountGiantHatchframes = (turretTower.size / 4) * (turretTower.hatchframe_layers + 1) // +1 for the top of cage
-    // const amountCenterHatchframes = 8 * turretTower.turret_ring_levels.length
-    // const amountTekGen = turretTower.turret_ring_levels.filter((f) => f.hasGenerator === true).length
-    // let towerItems = {
-    //   172: turretTower.size, // Metal Foundation
-    //   621: amountGiantHatchframes + amountCenterHatchframes + amountTekGen, // Giant Metal Hatchframe
-    //   622: amountTekGen, // Giant Metal Hatchframe for Tek Generator
-    //   179: amountTekGen * 8, // Metal Walls to protect Tek Generator
-    //   168: amountTekGen * 3, // Metal Ceiling to protect Tek Generator
-    //   169: amountTekGen, // Metal Hatchframe to protect Tek Generator
-    //   178: amountTekGen, // Metal Trapdoor to protect Tek Generator
-    //   770: amountOutsideDoorframes + amountCenterDoorframes, // Metal Double Doorframe
-    //   686: turretTower.heavy_turrets, // Heavy Turret
-    //   681: turretTower.tek_turrets, // Tek Turret
-    //   676: amountTekGen, // Tek Generator
-    // }
+
     let towerItems = {
       168: 14,
       169: 2,
@@ -266,8 +224,9 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     };
 
     if (ammoRefCurrent.current.value && ammoRefCurrent.current.value > 0) {
+      console.log(towerItems[246])
       towerItems[246] =
-        parseInt(ammoRefCurrent.current.value) * towerItems[686];
+        (parseInt(ammoRefCurrent.current.value) * towerItems[686]) / 2;
     }
 
     for (const [key, value] of Object.entries(towerItems)) {
@@ -290,151 +249,200 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   };
 
   return (
-    <Form
-      onSubmit={onAdd}
-      error={error}
-      className="flex h-full w-full space-x-3 sm:flex-row"
-    >
-      <FormError
+    <div className="w-full flex flex-col gap-3 mx-1">
+      <div className="flex flex-row dark:text-stone-100 gap-5 overflow-x-auto py-3">
+        {userRecipesByID.map(({ id, created_at, name, UserRecipeItemRecipe }) => (
+          <div className={clsx("transition hover:border-pea-500 min-w-fit p-4 bg-stone-300 dark:bg-zinc-700 rounded-lg shadow w-fit border border-transparent", {
+            "!border-pea-500": false
+          })} key={id} onClick={() => {
+            UserRecipeItemRecipe.forEach(({ item_recipe_id, amount }) => {
+              let itemfound = items.find(
+                (item) => item.id === item_recipe_id
+              );
+              setItem({ type: "ADD_AMOUNT_BY_NUM", item: itemfound, index: amount });
+              // onAdd({ itemId: ItemRecipe.crafted_item_id });
+
+            });
+          }}>
+            <div className="flex justify-between items-center mb-4 space-x-3">
+              <div className="p-1 w-12 h-12 rounded bg-white hover:shadow">
+                {/* {IsPrivate ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-full h-full">
+                    <path d="M384 223.1l-32 0V127.1c0-70.59-57.41-127.1-128-127.1S96 57.41 96 127.1v95.1L64 223.1c-35.35 0-64 28.65-64 64v160c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64v-160C448 252.7 419.3 223.1 384 223.1zM128 128c0-52.94 43.06-96 96-96s96 43.06 96 96v96H128V128zM416 448c0 17.64-14.36 32-32 32H64c-17.64 0-32-14.36-32-32V288c0-17.64 14.36-32 32-32h320c17.64 0 32 14.36 32 32V448zM224 319.1c-8.844 0-16 7.156-16 16v64c0 8.844 7.156 15.1 16 15.1S240 408.8 240 400v-64C240 327.2 232.8 319.1 224 319.1z" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="w-full h-full">
+                    <path d="M448 0c-70.59 0-128 57.41-128 128v96H64C28.65 224 0 252.7 0 288v160c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V288c0-35.35-28.65-64-64-64h-32V128c0-52.94 43.06-96 96-96s96 43.06 96 96v80C544 216.8 551.2 224 560 224S576 216.8 576 208V128C576 57.41 518.6 0 448 0zM384 256c17.64 0 32 14.36 32 32v160c0 17.64-14.36 32-32 32H64c-17.64 0-32-14.36-32-32V288c0-17.64 14.36-32 32-32H384zM224 416c8.844 0 16-7.156 16-16v-64C240 327.2 232.8 320 224 320s-16 7.156-16 16v64C208 408.8 215.2 416 224 416z" />
+                  </svg>
+                )} */}
+              </div>
+              <div>
+                <h3 className="font-semibold">{name || "Your Custom Recipe"}</h3>
+              </div>
+            </div>
+            <div className="flex flex-wrap flex-row">
+              {/* {UserRecipeItemRecipe.map(({ id: userRecipeId, ItemRecipe: { id: recipeId, Item_ItemRecipe_crafted_item_idToItem: { name, image }, yields } }) => (
+                <Link to={routes.itemRecipe({ id: recipeId })} className="rounded-lg bg-rose-600 p-2 text-center relative" title={name} key={`recipe-${userRecipeId}`}>
+                  <img className="w-10 h-10" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`} alt={name} />
+                  <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-pea-500 border-2 border-white rounded-full -top-2 -right-2 dark:border-zinc-700">{yields}</div>
+                </Link>
+              ))} */}
+            </div>
+            <div className="mt-4 inline-block float-right text-xs">
+              <span className="relative inline-block mx-1">{new Date(created_at).toLocaleString("en-GB", {
+                dateStyle: "long",
+              })}</span>*<span className="relative inline-block mx-1">{new Date(created_at).toLocaleString("en-GB", {
+                timeStyle: "short",
+              })}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <Form
+        onSubmit={onAdd}
         error={error}
-        wrapperClassName="rw-form-error-wrapper"
-        titleClassName="rw-form-error-title"
-        listClassName="rw-form-error-list"
-      />
-      <div className="flex flex-col space-y-3">
-        <div className="rw-button-group !m-0">
-          <input
-            name="ammoperturret"
-            className="rw-input w-32 min-w-0"
-            placeholder="Ammo per turret"
-            title="Ammo Per Turret"
-            ref={ammoRefCurrent}
-          />
+        className="flex h-full w-full space-x-3 sm:flex-row"
+      >
+        <FormError
+          error={error}
+          wrapperClassName="rw-form-error-wrapper"
+          titleClassName="rw-form-error-title"
+          listClassName="rw-form-error-list"
+        />
+        <div className="flex flex-col space-y-3">
+          <div className="rw-button-group !m-0">
+            <input
+              name="ammoperturret"
+              className="rw-input w-32 min-w-0"
+              placeholder="Ammo per turret"
+              title="Ammo Per Turret"
+              ref={ammoRefCurrent}
+            />
+            <button
+              data-testid="turrettowerbtn"
+              type="button"
+              onClick={addTurretTower}
+              className="rw-button rw-button-gray p-2"
+            >
+              Turret Tower
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="rw-button-icon pointer-events-none"
+                fill="currentColor"
+                viewBox="0 0 512 512"
+              >
+                <path d="M207.1 64C207.1 99.35 179.3 128 143.1 128C108.7 128 79.1 99.35 79.1 64C79.1 28.65 108.7 0 143.1 0C179.3 0 207.1 28.65 207.1 64zM143.1 16C117.5 16 95.1 37.49 95.1 64C95.1 90.51 117.5 112 143.1 112C170.5 112 191.1 90.51 191.1 64C191.1 37.49 170.5 16 143.1 16zM15.06 315.8C12.98 319.7 8.129 321.1 4.232 319.1C.3354 316.1-1.136 312.1 .9453 308.2L50.75 214.1C68.83 181.1 104.1 160 142.5 160H145.5C183.9 160 219.2 181.1 237.3 214.1L287.1 308.2C289.1 312.1 287.7 316.1 283.8 319.1C279.9 321.1 275 319.7 272.9 315.8L223.1 222.5C207.8 193.9 178 175.1 145.5 175.1H142.5C110 175.1 80.16 193.9 64.86 222.5L15.06 315.8zM72 280C76.42 280 80 283.6 80 288V476C80 487 88.95 496 99.1 496C111 496 119.1 487 119.1 476V392C119.1 378.7 130.7 368 143.1 368C157.3 368 168 378.7 168 392V476C168 487 176.1 496 187.1 496C199 496 207.1 487 207.1 476V288C207.1 283.6 211.6 280 215.1 280C220.4 280 223.1 283.6 223.1 288V476C223.1 495.9 207.9 512 187.1 512C168.1 512 152 495.9 152 476V392C152 387.6 148.4 384 143.1 384C139.6 384 135.1 387.6 135.1 392V476C135.1 495.9 119.9 512 99.1 512C80.12 512 64 495.9 64 476V288C64 283.6 67.58 280 72 280V280zM438 400L471.9 490.4C475.8 500.8 468.1 512 456.9 512H384C375.2 512 368 504.8 368 496V400H352C334.3 400 320 385.7 320 368V224C320 206.3 334.3 192 352 192H368V160C368 148.2 374.4 137.8 384 132.3V16H376C371.6 16 368 12.42 368 8C368 3.582 371.6 0 376 0H416C424.8 0 432 7.164 432 16V132.3C441.6 137.8 448 148.2 448 160V269.3L464 264V208C464 199.2 471.2 192 480 192H496C504.8 192 512 199.2 512 208V292.5C512 299.4 507.6 305.5 501.1 307.6L448 325.3V352H496C504.8 352 512 359.2 512 368V384C512 392.8 504.8 400 496 400L438 400zM416 141.5V16H400V141.5L392 146.1C387.2 148.9 384 154.1 384 160V384H496V368H432V160C432 154.1 428.8 148.9 423.1 146.1L416 141.5zM456.9 496L420.9 400H384V496H456.9zM448 308.5L496 292.5V208H480V275.5L448 286.2V308.5zM336 224V368C336 376.8 343.2 384 352 384H368V208H352C343.2 208 336 215.2 336 224z" />
+              </svg>
+            </button>
+          </div>
+
           <button
-            data-testid="turrettowerbtn"
             type="button"
-            onClick={addTurretTower}
-            className="rw-button rw-button-gray p-2"
+            onClick={clear}
+            className="rw-button rw-button-red"
+            title="Clear all items"
           >
-            Turret Tower
+            Clear
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="rw-button-icon pointer-events-none"
+              viewBox="0 0 384 512"
+              aria-hidden="true"
+              className="rw-button-icon !w-4"
               fill="currentColor"
-              viewBox="0 0 512 512"
             >
-              <path d="M207.1 64C207.1 99.35 179.3 128 143.1 128C108.7 128 79.1 99.35 79.1 64C79.1 28.65 108.7 0 143.1 0C179.3 0 207.1 28.65 207.1 64zM143.1 16C117.5 16 95.1 37.49 95.1 64C95.1 90.51 117.5 112 143.1 112C170.5 112 191.1 90.51 191.1 64C191.1 37.49 170.5 16 143.1 16zM15.06 315.8C12.98 319.7 8.129 321.1 4.232 319.1C.3354 316.1-1.136 312.1 .9453 308.2L50.75 214.1C68.83 181.1 104.1 160 142.5 160H145.5C183.9 160 219.2 181.1 237.3 214.1L287.1 308.2C289.1 312.1 287.7 316.1 283.8 319.1C279.9 321.1 275 319.7 272.9 315.8L223.1 222.5C207.8 193.9 178 175.1 145.5 175.1H142.5C110 175.1 80.16 193.9 64.86 222.5L15.06 315.8zM72 280C76.42 280 80 283.6 80 288V476C80 487 88.95 496 99.1 496C111 496 119.1 487 119.1 476V392C119.1 378.7 130.7 368 143.1 368C157.3 368 168 378.7 168 392V476C168 487 176.1 496 187.1 496C199 496 207.1 487 207.1 476V288C207.1 283.6 211.6 280 215.1 280C220.4 280 223.1 283.6 223.1 288V476C223.1 495.9 207.9 512 187.1 512C168.1 512 152 495.9 152 476V392C152 387.6 148.4 384 143.1 384C139.6 384 135.1 387.6 135.1 392V476C135.1 495.9 119.9 512 99.1 512C80.12 512 64 495.9 64 476V288C64 283.6 67.58 280 72 280V280zM438 400L471.9 490.4C475.8 500.8 468.1 512 456.9 512H384C375.2 512 368 504.8 368 496V400H352C334.3 400 320 385.7 320 368V224C320 206.3 334.3 192 352 192H368V160C368 148.2 374.4 137.8 384 132.3V16H376C371.6 16 368 12.42 368 8C368 3.582 371.6 0 376 0H416C424.8 0 432 7.164 432 16V132.3C441.6 137.8 448 148.2 448 160V269.3L464 264V208C464 199.2 471.2 192 480 192H496C504.8 192 512 199.2 512 208V292.5C512 299.4 507.6 305.5 501.1 307.6L448 325.3V352H496C504.8 352 512 359.2 512 368V384C512 392.8 504.8 400 496 400L438 400zM416 141.5V16H400V141.5L392 146.1C387.2 148.9 384 154.1 384 160V384H496V368H432V160C432 154.1 428.8 148.9 423.1 146.1L416 141.5zM456.9 496L420.9 400H384V496H456.9zM448 308.5L496 292.5V208H480V275.5L448 286.2V308.5zM336 224V368C336 376.8 343.2 384 352 384H368V208H352C343.2 208 336 215.2 336 224z" />
+              <path d="M380.2 453.7c5.703 6.75 4.859 16.84-1.891 22.56C375.3 478.7 371.7 480 368 480c-4.547 0-9.063-1.938-12.23-5.657L192 280.8l-163.8 193.6C25.05 478.1 20.53 480 15.98 480c-3.641 0-7.313-1.25-10.31-3.781c-6.75-5.719-7.594-15.81-1.891-22.56l167.2-197.7L3.781 58.32c-5.703-6.75-4.859-16.84 1.891-22.56c6.75-5.688 16.83-4.813 22.55 1.875L192 231.2l163.8-193.6c5.703-6.688 15.8-7.563 22.55-1.875c6.75 5.719 7.594 15.81 1.891 22.56l-167.2 197.7L380.2 453.7z" />
             </svg>
           </button>
-        </div>
 
-        <button
-          type="button"
-          onClick={clear}
-          className="rw-button rw-button-red"
-          title="Clear all items"
-        >
-          Clear
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 384 512"
-            aria-hidden="true"
-            className="rw-button-icon !w-4"
-            fill="currentColor"
-          >
-            <path d="M380.2 453.7c5.703 6.75 4.859 16.84-1.891 22.56C375.3 478.7 371.7 480 368 480c-4.547 0-9.063-1.938-12.23-5.657L192 280.8l-163.8 193.6C25.05 478.1 20.53 480 15.98 480c-3.641 0-7.313-1.25-10.31-3.781c-6.75-5.719-7.594-15.81-1.891-22.56l167.2-197.7L3.781 58.32c-5.703-6.75-4.859-16.84 1.891-22.56c6.75-5.688 16.83-4.813 22.55 1.875L192 231.2l163.8-193.6c5.703-6.688 15.8-7.563 22.55-1.875c6.75 5.719 7.594 15.81 1.891 22.56l-167.2 197.7L380.2 453.7z" />
-          </svg>
-        </button>
-
-        <div className="relative max-h-screen w-fit max-w-[14rem] overflow-y-auto rounded-lg border border-gray-200 bg-stone-200 px-3 py-4 text-gray-900 will-change-scroll dark:border-zinc-700 dark:bg-zinc-600 dark:text-white">
-          <ul className="relative space-y-2 font-medium">
-            <li>
-              <Label
-                name="search"
-                className="sr-only mb-2 text-sm text-gray-900 dark:text-white"
-              >
-                Search
-              </Label>
-              <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <svg
-                    aria-hidden="true"
-                    className="h-5 w-5 text-gray-500 dark:text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    ></path>
-                  </svg>
-                </div>
-                <SearchField
-                  className="rw-input w-full pl-10 dark:bg-zinc-700 dark:focus:bg-zinc-700"
+          <div className="relative max-h-screen w-fit max-w-[14rem] overflow-y-auto rounded-lg border border-gray-200 bg-stone-200 px-3 py-4 text-gray-900 will-change-scroll dark:border-zinc-700 dark:bg-zinc-600 dark:text-white">
+            <ul className="relative space-y-2 font-medium">
+              <li>
+                <Label
                   name="search"
-                  defaultValue={search}
-                  placeholder="Search..."
-                  inputMode="search"
-                  onChange={debounce((e) => {
-                    setSearch(e.target.value);
-                  }, 300)}
-                />
-              </div>
-            </li>
-            {!items ||
-              (items.length < 1 && (
-                <li className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                  No items found
-                </li>
-              ))}
-            {Object.entries(categories).map(
-              ([category, categoryitems]: any) => (
-                <li key={category}>
-                  <details open={Object.values(categories).length === 1}>
-                    <summary className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                      <svg
-                        className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                        <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                      </svg>
-                      <span className="ml-2">{category}</span>
-                    </summary>
+                  className="sr-only mb-2 text-sm text-gray-900 dark:text-white"
+                >
+                  Search
+                </Label>
+                <div className="relative">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <svg
+                      aria-hidden="true"
+                      className="h-5 w-5 text-gray-500 dark:text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <SearchField
+                    className="rw-input w-full pl-10 dark:bg-zinc-700 dark:focus:bg-zinc-700"
+                    name="search"
+                    defaultValue={search}
+                    placeholder="Search..."
+                    inputMode="search"
+                    onChange={debounce((e) => {
+                      setSearch(e.target.value);
+                    }, 300)}
+                  />
+                </div>
+              </li>
+              {!items ||
+                (items.length < 1 && (
+                  <li className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+                    No items found
+                  </li>
+                ))}
+              {Object.entries(categories).map(
+                ([category, categoryitems]: any) => (
+                  <li key={category}>
+                    <details open={Object.values(categories).length === 1}>
+                      <summary className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+                        <svg
+                          className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                          <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                        </svg>
+                        <span className="ml-2">{category}</span>
+                      </summary>
 
-                    <ul className="py-2">
-                      {Object.values(categories).length === 1 ||
-                        categoryitems.every((item, i, a) => {
-                          return !item.type;
-                        })
-                        ? categoryitems.map((item) => (
-                          <li key={`${category}-${item.type}-${item.id}`}>
-                            <button
-                              type="button"
-                              className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                              onClick={() => onAdd({ itemId: item.id })}
-                            >
-                              <img
-                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
-                                alt={item.name}
-                                className="mr-2 h-5 w-5"
-                              />
-                              {item.name}
-                            </button>
-                          </li>
-                        ))
-                        : Object.entries(groupBy(categoryitems, "type")).map(
-                          ([type, typeitems]: any) => (
-                            <li key={`${category}-${type}`}>
-                              <details className="">
-                                <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                                  {/* <svg
+                      <ul className="py-2">
+                        {Object.values(categories).length === 1 ||
+                          categoryitems.every((item, i, a) => {
+                            return !item.type;
+                          })
+                          ? categoryitems.map((item) => (
+                            <li key={`${category}-${item.type}-${item.id}`}>
+                              <button
+                                type="button"
+                                className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                                onClick={() => onAdd({ itemId: item.id })}
+                              >
+                                <img
+                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+                                  alt={item.name}
+                                  className="mr-2 h-5 w-5"
+                                />
+                                {item.name}
+                              </button>
+                            </li>
+                          ))
+                          : Object.entries(groupBy(categoryitems, "type")).map(
+                            ([type, typeitems]: any) => (
+                              <li key={`${category}-${type}`}>
+                                <details className="">
+                                  <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+                                    {/* <svg
                                     aria-hidden="true"
                                     className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                     fill="currentColor"
@@ -444,258 +452,259 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                                     <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                                     <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                                   </svg> */}
-                                  <span className="ml-2">{type}</span>
-                                  <span className="text-pea-800 dark:bg-pea-900 dark:text-pea-300 bg-pea-100 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full p-3 text-sm">
-                                    {typeitems.length}
-                                  </span>
-                                </summary>
+                                    <span className="ml-2">{type}</span>
+                                    <span className="text-pea-800 dark:bg-pea-900 dark:text-pea-300 bg-pea-100 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full p-3 text-sm">
+                                      {typeitems.length}
+                                    </span>
+                                  </summary>
 
-                                <ul className="py-2">
-                                  {typeitems.map((item) => (
-                                    <li
-                                      key={`${category}-${type}-${item.id}`}
-                                    >
-                                      <button
-                                        type="button"
-                                        className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                        onClick={() =>
-                                          onAdd({ itemId: item.id })
-                                        }
+                                  <ul className="py-2">
+                                    {typeitems.map((item) => (
+                                      <li
+                                        key={`${category}-${type}-${item.id}`}
                                       >
-                                        <img
-                                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
-                                          alt={item.name}
-                                          className="mr-2 h-5 w-5"
-                                        />
-                                        {item.name}
-                                      </button>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </details>
-                            </li>
-                          )
-                        )}
-                    </ul>
-                  </details>
-                </li>
-              )
-            )}
-          </ul>
+                                        <button
+                                          type="button"
+                                          className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                                          onClick={() =>
+                                            onAdd({ itemId: item.id })
+                                          }
+                                        >
+                                          <img
+                                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+                                            alt={item.name}
+                                            className="mr-2 h-5 w-5"
+                                          />
+                                          {item.name}
+                                        </button>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </details>
+                              </li>
+                            )
+                          )}
+                      </ul>
+                    </details>
+                  </li>
+                )
+              )}
+            </ul>
+          </div>
         </div>
-      </div>
-      <div className="w-full">
-        <Table
-          rows={mergeItemRecipe(viewBaseMaterials, items, ...item).slice(0, 1)}
-          className="animate-fade-in"
-          toolbar={[
-            <ToggleButton
-              className="ml-2"
-              offLabel="Materials"
-              onLabel="Base materials"
-              checked={viewBaseMaterials}
-              onChange={toggleBaseMaterials}
-            />,
-            <button
-              data-testid="turrettowerbtn"
-              type="button"
-              // onClick={() => generatePDF()}
-              title="generate pedo-fil"
-              className="rw-button rw-button-gray p-2"
-            >
-              PDF
-            </button>,
-          ]}
-          columns={[
-            ...mergeItemRecipe(viewBaseMaterials, items, ...item).map(
-              ({ Item_ItemRecipe_crafted_item_idToItem, amount }) => ({
-                field: Item_ItemRecipe_crafted_item_idToItem.id,
-                header: Item_ItemRecipe_crafted_item_idToItem.name,
-                className: "w-0 text-center",
-                render: ({ value }) => {
-                  return (
-                    <div
-                      className="flex flex-col items-center justify-center"
-                      key={`${value}-${Item_ItemRecipe_crafted_item_idToItem.id}`}
-                    >
-                      <img
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRecipe_crafted_item_idToItem.image}`}
-                        className="h-6 w-6"
-                      />
-                      <span className="text-sm">{formatNumber(amount)}</span>
-                    </div>
-                  );
-                },
-              })
-            ),
-          ]}
-        />
-
-        <ToggleButton
-          offLabel="Mortar And Pestle"
-          onLabel="Chemistry Bench"
-          checked={craftingStations.includes(607)}
-          onChange={(e) => {
-            if (e.target.checked) {
-              return setCraftingStations((prev) => [
-                ...prev.filter((h) => h !== 107),
-                607,
-              ]);
-            }
-            return setCraftingStations((prev) => [
-              ...prev.filter((h) => h !== 607),
-              107,
-            ]);
-          }}
-        />
-
-        <ToggleButton
-          offLabel="Refining Forge"
-          onLabel="Industrial Forge"
-          checked={craftingStations.includes(600)}
-          onChange={(e) => {
-            if (e.target.checked) {
-              return setCraftingStations((prev) => [
-                ...prev.filter((h) => h !== 125),
-                600,
-              ]);
-            }
-            return setCraftingStations((prev) => [
-              ...prev.filter((h) => h !== 600),
-              125,
-            ]);
-          }}
-        />
-
-        <Table
-          rows={item}
-          className="animate-fade-in my-4 whitespace-nowrap"
-          settings={{
-            summary: true,
-          }}
-          columns={[
-            {
-              field: "Item_ItemRecipe_crafted_item_idToItem",
-              header: "Name",
-              className: "w-0",
-              render: ({ rowIndex, value: { name, image } }) => {
-                return (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setItem({ type: "REMOVE", index: rowIndex });
-                    }}
-                    className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-red-500"
-                    title={`Remove ${name}`}
-                  >
-                    <img
-                      className="h-8 w-8"
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
-                    />
-                  </button>
-                );
-              },
-            },
-            {
-              field: "amount",
-              header: "Amount",
-              numeric: true,
-              className: "w-0 text-center",
-              render: ({ rowIndex, value }) => (
-                <div
-                  className="flex flex-row items-center"
-                  key={`materialcalculator-${rowIndex}}`}
-                >
-                  <button
-                    type="button"
-                    disabled={value === 1}
-                    className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
-                    onClick={() => onRemoveAmount(rowIndex)}
-                  >
-                    -
-                  </button>
-                  <input
-                    type="text"
-                    defaultValue={value}
-                    // value={value}
-                    className="rw-input w-16 p-3 text-center"
-                    onChange={(e) => {
-                      debounce(() => {
-                        onChangeAmount(rowIndex, parseInt(e.target.value) > 0 ? e.target.value : 1);
-                        if (parseInt(e.target.value) < 1) {
-                          e.target.value = parseInt(e.target.value) > 0 ? e.target.value : "1";
-                        }
-                      }, 300)();
-                    }}
-                  />
-                  <button
-                    type="button"
-                    className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
-                    onClick={() => onAddAmount(rowIndex)}
-                  >
-                    +
-                  </button>
-                </div>
-              ),
-            },
-            {
-              field: "crafting_time",
-              header: "Time pr item",
-              numeric: false,
-              className: "w-0 text-center",
-              valueFormatter: ({ row, value }) => {
-                return `${timeFormatL(value * row.amount, true)}`;
-              },
-            },
-            {
-              field: "Item_ItemRecipe_crafted_item_idToItem",
-              header: "Ingredients",
-              numeric: false,
-              render: ({ row }) => {
-                return mergeItemRecipe(false, items, {
-                  ...row,
-                })
-                  .sort(
-                    (a, b) =>
-                      a.Item_ItemRecipe_crafted_item_idToItem.id -
-                      b.Item_ItemRecipe_crafted_item_idToItem.id
-                  )
-                  .map(
-                    (
-                      {
-                        Item_ItemRecipe_crafted_item_idToItem: { id, name, image },
-                        amount,
-                      },
-                      i
-                    ) => (
+        <div className="w-full">
+          <Table
+            rows={mergeItemRecipe(viewBaseMaterials, items, ...item).slice(0, 1)}
+            className="animate-fade-in"
+            toolbar={[
+              <ToggleButton
+                className="ml-2"
+                offLabel="Materials"
+                onLabel="Base materials"
+                checked={viewBaseMaterials}
+                onChange={toggleBaseMaterials}
+              />,
+              <button
+                data-testid="turrettowerbtn"
+                type="button"
+                // onClick={() => generatePDF()}
+                title="generate pedo-fil"
+                className="rw-button rw-button-gray p-2"
+              >
+                PDF
+              </button>,
+            ]}
+            columns={[
+              ...mergeItemRecipe(viewBaseMaterials, items, ...item).map(
+                ({ Item_ItemRecipe_crafted_item_idToItem, amount }) => ({
+                  field: Item_ItemRecipe_crafted_item_idToItem.id,
+                  header: Item_ItemRecipe_crafted_item_idToItem.name,
+                  className: "w-0 text-center",
+                  render: ({ value }) => {
+                    return (
                       <div
-                        className="inline-flex min-w-[3rem] flex-col items-center justify-center min-h-full"
-                        id={`${id}-${i * Math.random()}${i}`}
-                        key={`${id}-${i * Math.random()}${i}`}
+                        className="flex flex-col items-center justify-center"
+                        key={`${value}-${Item_ItemRecipe_crafted_item_idToItem.id}`}
                       >
                         <img
-                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRecipe_crafted_item_idToItem.image}`}
                           className="h-6 w-6"
-                          title={name}
-                          alt={name}
                         />
-                        <span className="text-sm text-black dark:text-white">
-                          {formatNumber(amount)}
-                        </span>
+                        <span className="text-sm">{formatNumber(amount)}</span>
                       </div>
-                    )
+                    );
+                  },
+                })
+              ),
+            ]}
+          />
+
+          <ToggleButton
+            offLabel="Mortar And Pestle"
+            onLabel="Chemistry Bench"
+            checked={craftingStations.includes(607)}
+            onChange={(e) => {
+              if (e.target.checked) {
+                return setCraftingStations((prev) => [
+                  ...prev.filter((h) => h !== 107),
+                  607,
+                ]);
+              }
+              return setCraftingStations((prev) => [
+                ...prev.filter((h) => h !== 607),
+                107,
+              ]);
+            }}
+          />
+
+          <ToggleButton
+            offLabel="Refining Forge"
+            onLabel="Industrial Forge"
+            checked={craftingStations.includes(600)}
+            onChange={(e) => {
+              if (e.target.checked) {
+                return setCraftingStations((prev) => [
+                  ...prev.filter((h) => h !== 125),
+                  600,
+                ]);
+              }
+              return setCraftingStations((prev) => [
+                ...prev.filter((h) => h !== 600),
+                125,
+              ]);
+            }}
+          />
+
+          <Table
+            rows={item}
+            className="animate-fade-in my-4 whitespace-nowrap"
+            settings={{
+              summary: true,
+            }}
+            columns={[
+              {
+                field: "Item_ItemRecipe_crafted_item_idToItem",
+                header: "Name",
+                className: "w-0",
+                render: ({ rowIndex, value: { name, image } }) => {
+                  return (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setItem({ type: "REMOVE", index: rowIndex });
+                      }}
+                      className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-red-500"
+                      title={`Remove ${name}`}
+                    >
+                      <img
+                        className="h-8 w-8"
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
+                      />
+                    </button>
                   );
+                },
               },
-            },
-          ]}
-        />
-        {/* {loading && (
+              {
+                field: "amount",
+                header: "Amount",
+                numeric: true,
+                className: "w-0 text-center",
+                render: ({ rowIndex, value }) => (
+                  <div
+                    className="flex flex-row items-center"
+                    key={`materialcalculator-${rowIndex}}`}
+                  >
+                    <button
+                      type="button"
+                      disabled={value === 1}
+                      className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
+                      onClick={() => onRemoveAmount(rowIndex)}
+                    >
+                      -
+                    </button>
+                    <input
+                      type="text"
+                      defaultValue={value}
+                      // value={value}
+                      className="rw-input w-16 p-3 text-center"
+                      onChange={(e) => {
+                        debounce(() => {
+                          onChangeAmount(rowIndex, parseInt(e.target.value) > 0 ? e.target.value : 1);
+                          if (parseInt(e.target.value) < 1) {
+                            e.target.value = parseInt(e.target.value) > 0 ? e.target.value : "1";
+                          }
+                        }, 300)();
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
+                      onClick={() => onAddAmount(rowIndex)}
+                    >
+                      +
+                    </button>
+                  </div>
+                ),
+              },
+              {
+                field: "crafting_time",
+                header: "Time pr item",
+                numeric: false,
+                className: "w-0 text-center",
+                valueFormatter: ({ row, value }) => {
+                  return `${timeFormatL(value * row.amount, true)}`;
+                },
+              },
+              {
+                field: "Item_ItemRecipe_crafted_item_idToItem",
+                header: "Ingredients",
+                numeric: false,
+                render: ({ row }) => {
+                  return mergeItemRecipe(false, items, {
+                    ...row,
+                  })
+                    .sort(
+                      (a, b) =>
+                        a.Item_ItemRecipe_crafted_item_idToItem.id -
+                        b.Item_ItemRecipe_crafted_item_idToItem.id
+                    )
+                    .map(
+                      (
+                        {
+                          Item_ItemRecipe_crafted_item_idToItem: { id, name, image },
+                          amount,
+                        },
+                        i
+                      ) => (
+                        <div
+                          className="inline-flex min-w-[3rem] flex-col items-center justify-center min-h-full"
+                          id={`${id}-${i * Math.random()}${i}`}
+                          key={`${id}-${i * Math.random()}${i}`}
+                        >
+                          <img
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
+                            className="h-6 w-6"
+                            title={name}
+                            alt={name}
+                          />
+                          <span className="text-sm text-black dark:text-white">
+                            {formatNumber(amount)}
+                          </span>
+                        </div>
+                      )
+                    );
+                },
+              },
+            ]}
+          />
+          {/* {loading && (
           <div className="m-16 flex items-center justify-center text-white">
             <p className="mr-4">LOADING</p>
             <div className="dot-revolution"></div>
           </div>
         )} */}
-      </div>
-    </Form>
+        </div>
+      </Form>
+    </div>
   );
 };

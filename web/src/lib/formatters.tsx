@@ -59,6 +59,22 @@ export const jsonTruncate = (obj: unknown, maxlength: number = 150) => {
   return truncate(JSON.stringify(obj, null, 2), maxlength);
 };
 
+
+// const dateFormatter = new Intl.DateTimeFormat("en-GB", {
+// 	day: "2-digit",
+// 	month: "2-digit",
+// 	year: "numeric",
+// 	timeZone: "utc",
+// });
+
+// const dateTimeFormatter = new Intl.DateTimeFormat("en-GB", {
+// 	day: "2-digit",
+// 	month: "2-digit",
+// 	year: "numeric",
+// 	hour: "2-digit",
+// 	minute: "2-digit",
+// 	timeZone: "utc",
+// });
 /**
  * Renders a formatted time tag element.
  *
@@ -181,6 +197,52 @@ export const combineBySummingKeys = (...objects: object[]) => {
   return mergedObj;
 };
 
+// Default Turret tower calculations
+// let turretTower = {
+//   size: 14 * 14,
+//   cage_height: 22,
+//   top_turret_height: 7,
+//   total_height: 22 + 7,
+//   heavy_turrets: 60,
+//   tek_turrets: 65,
+//   hatchframe_layers: 3,
+//   turret_ring_levels: [
+//     {
+//       height: 10,
+//       hasGenerator: false,
+//     },
+//     {
+//       height: 14,
+//       hasGenerator: true,
+//     },
+//     {
+//       height: 18,
+//       hasGenerator: false,
+//     },
+//     {
+//       height: 29,
+//       hasGenerator: true,
+//     }
+//   ] // 13, 16, 19, 22?
+// }
+// const amountCenterDoorframes = turretTower.total_height * 8
+// const amountOutsideDoorframes = (Math.sqrt(turretTower.size) * 4) * turretTower.cage_height
+// const amountGiantHatchframes = (turretTower.size / 4) * (turretTower.hatchframe_layers + 1) // +1 for the top of cage
+// const amountCenterHatchframes = 8 * turretTower.turret_ring_levels.length
+// const amountTekGen = turretTower.turret_ring_levels.filter((f) => f.hasGenerator === true).length
+// let towerItems = {
+//   172: turretTower.size, // Metal Foundation
+//   621: amountGiantHatchframes + amountCenterHatchframes + amountTekGen, // Giant Metal Hatchframe
+//   622: amountTekGen, // Giant Metal Hatchframe for Tek Generator
+//   179: amountTekGen * 8, // Metal Walls to protect Tek Generator
+//   168: amountTekGen * 3, // Metal Ceiling to protect Tek Generator
+//   169: amountTekGen, // Metal Hatchframe to protect Tek Generator
+//   178: amountTekGen, // Metal Trapdoor to protect Tek Generator
+//   770: amountOutsideDoorframes + amountCenterDoorframes, // Metal Double Doorframe
+//   686: turretTower.heavy_turrets, // Heavy Turret
+//   681: turretTower.tek_turrets, // Tek Turret
+//   676: amountTekGen, // Tek Generator
+// }
 /**
  * Calculates the base materials required to produce the specified objects.
  *
