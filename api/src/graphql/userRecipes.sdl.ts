@@ -13,7 +13,7 @@ export const schema = gql`
   type Query {
     userRecipes: [UserRecipe!]! @requireAuth
     userRecipe(id: String!): UserRecipe @requireAuth
-    userRecipesByID(user_id: String): [UserRecipe!]! @requireAuth
+    userRecipesByID(user_id: String): [UserRecipe!]! @skipAuth
   }
 
   input CreateUserRecipeInput {
