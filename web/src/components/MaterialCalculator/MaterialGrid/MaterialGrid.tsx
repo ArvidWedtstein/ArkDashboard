@@ -17,7 +17,6 @@ import debounce from "lodash.debounce";
 import Table from "src/components/Util/Table/Table";
 import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
 import { CreateUserRecipeInput, FindItemsMats } from "types/graphql";
-import clsx from "clsx";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useAuth } from "src/auth";
@@ -38,6 +37,16 @@ interface MaterialGridProps {
 }
 
 export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGridProps) => {
+  const categoriesIcons = {
+    "Armor": "cloth-shirt",
+    "Tool": "stone-pick",
+    "Weapon": "assault-rifle",
+    "Resource": "stone",
+    "Fertilizer": "fertilizer",
+    "Structure": "wooden-foundation",
+    "Other": "any-craftable-resource",
+    "Consumable": "any-berry-seed"
+  }
   const { currentUser, isAuthenticated } = useAuth();
   // TODO: Fix Types
   const [search, setSearch] = useState<string>("");
@@ -219,10 +228,6 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
     setItem({ type: "CHANGE_AMOUNT", item: index, index: amount });
   }, 500);
 
-  const clear = () => {
-    setItem({ type: "RESET" });
-  };
-
   const mergeItemRecipe = useCallback(getBaseMaterials, [
     item,
     craftingStations,
@@ -262,7 +267,7 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
     <div className="w-full flex flex-col gap-3 mx-1">
       <div className="flex flex-row dark:text-stone-100 gap-5 overflow-x-auto py-3">
         {userRecipesByID.map(({ id, created_at, name, UserRecipeItemRecipe }) => (
-          <div className="transition hover:border-pea-500 min-w-fit p-4 bg-stone-300 dark:bg-zinc-700 rounded-lg shadow w-fit border border-transparent" key={id} onClick={() => {
+          <div className="transition hover:border-pea-500 min-w-fit p-4 bg-zinc-300 dark:bg-zinc-700 rounded-lg shadow w-fit border border-transparent" key={id} onClick={() => {
             UserRecipeItemRecipe.forEach(({ item_recipe_id, amount }) => {
               let itemfound = items.find(
                 (item) => item.id === item_recipe_id
@@ -273,8 +278,8 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
             <div className="flex justify-between items-center mb-4 space-x-3">
               <div className="p-1 w-12 h-12 rounded bg-white">
                 {name === 'Cage Turret Tower' ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 320 336">
-                    <path fill="#000000" stroke="none"
+                  <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 320 336" fill="#000000">
+                    <path stroke="none"
                       d="
 M188.999878,270.360046
 	C156.356644,270.359344 124.213432,270.359039 92.070221,270.357910
@@ -415,7 +420,7 @@ z"/>
 
           <button
             type="button"
-            onClick={clear}
+            onClick={() => setItem({ type: "RESET" })}
             className="rw-button rw-button-red"
             title="Clear all items"
           >
@@ -431,7 +436,7 @@ z"/>
             </svg>
           </button>
 
-          <div className="relative max-h-screen w-fit max-w-[14rem] overflow-y-auto rounded-lg border border-gray-200 bg-stone-200 px-3 py-4 text-gray-900 will-change-scroll dark:border-zinc-700 dark:bg-zinc-600 dark:text-white">
+          <div className="relative max-h-screen w-fit max-w-[14rem] overflow-y-auto rounded-lg border border-gray-200 bg-zinc-300 px-3 py-4 text-gray-900 will-change-scroll dark:border-zinc-700 dark:bg-zinc-600 dark:text-white">
             <ul className="relative space-y-2 font-medium">
               <li>
                 <Label
@@ -479,17 +484,13 @@ z"/>
               {Object.entries(categories).map(
                 ([category, categoryitems]: any) => (
                   <li key={category}>
-                    <details open={Object.values(categories).length === 1}>
-                      <summary className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                        <svg
+                    <details open={Object.values(categories).length === 1} className="[&>summary:after]:open:rotate-90">
+                      <summary className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700 after:content-['>'] after:px-2 after:absolute after:right-0 after:transform after:transition-transform after:ease-in-out after:duration-150 select-none">
+                        <img
                           className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                          <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                        </svg>
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${categoriesIcons[category]}.png`}
+                          alt={``}
+                        />
                         <span className="ml-2">{category}</span>
                       </summary>
 
@@ -519,17 +520,7 @@ z"/>
                               <li key={`${category}-${type}`}>
                                 <details className="">
                                   <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                                    {/* <svg
-                                    aria-hidden="true"
-                                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                                    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                                  </svg> */}
-                                    <span className="ml-2">{type}</span>
+                                    <span className="">{type}</span>
                                     <span className="text-pea-800 dark:bg-pea-900 dark:text-pea-300 bg-pea-100 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full p-3 text-sm">
                                       {typeitems.length}
                                     </span>
@@ -575,21 +566,22 @@ z"/>
             className="animate-fade-in"
             toolbar={[
               <ToggleButton
-                className="ml-2"
+                className=""
                 offLabel="Materials"
                 onLabel="Base materials"
                 checked={viewBaseMaterials}
                 onChange={toggleBaseMaterials}
+                disabled={true}
               />,
-              <button
-                data-testid="turrettowerbtn"
-                type="button"
-                // onClick={() => generatePDF()}
-                title="generate pedo-fil"
-                className="rw-button rw-button-gray p-2"
-              >
-                PDF
-              </button>,
+              // <button
+              //   data-testid="turrettowerbtn"
+              //   type="button"
+              //   // onClick={() => generatePDF()}
+              //   title="generate pedo-fil"
+              //   className="rw-button rw-button-gray p-2"
+              // >
+              //   PDF
+              // </button>,
             ]}
             columns={[
               ...mergeItemRecipe(viewBaseMaterials, items, ...item).map(
@@ -616,45 +608,47 @@ z"/>
             ]}
           />
 
-          <ToggleButton
-            offLabel="Mortar And Pestle"
-            onLabel="Chemistry Bench"
-            checked={craftingStations.includes(607)}
-            onChange={(e) => {
-              if (e.target.checked) {
+          <div className="my-3 space-y-3">
+            <ToggleButton
+              offLabel="Mortar And Pestle"
+              onLabel="Chemistry Bench"
+              checked={craftingStations.includes(607)}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  return setCraftingStations((prev) => [
+                    ...prev.filter((h) => h !== 107),
+                    607,
+                  ]);
+                }
                 return setCraftingStations((prev) => [
-                  ...prev.filter((h) => h !== 107),
-                  607,
+                  ...prev.filter((h) => h !== 607),
+                  107,
                 ]);
-              }
-              return setCraftingStations((prev) => [
-                ...prev.filter((h) => h !== 607),
-                107,
-              ]);
-            }}
-          />
+              }}
+            />
 
-          <ToggleButton
-            offLabel="Refining Forge"
-            onLabel="Industrial Forge"
-            checked={craftingStations.includes(600)}
-            onChange={(e) => {
-              if (e.target.checked) {
+            <ToggleButton
+              offLabel="Refining Forge"
+              onLabel="Industrial Forge"
+              checked={craftingStations.includes(600)}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  return setCraftingStations((prev) => [
+                    ...prev.filter((h) => h !== 125),
+                    600,
+                  ]);
+                }
                 return setCraftingStations((prev) => [
-                  ...prev.filter((h) => h !== 125),
-                  600,
+                  ...prev.filter((h) => h !== 600),
+                  125,
                 ]);
-              }
-              return setCraftingStations((prev) => [
-                ...prev.filter((h) => h !== 600),
-                125,
-              ]);
-            }}
-          />
+              }}
+            />
+          </div>
 
           <Table
             rows={item}
-            className="animate-fade-in my-4 whitespace-nowrap"
+            className="animate-fade-in whitespace-nowrap"
             settings={{
               summary: true,
             }}
@@ -705,12 +699,10 @@ z"/>
                       // value={value}
                       className="rw-input w-16 p-3 text-center"
                       onChange={(e) => {
-                        debounce(() => {
-                          onChangeAmount(rowIndex, parseInt(e.target.value) > 0 ? e.target.value : 1);
-                          if (parseInt(e.target.value) < 1) {
-                            e.target.value = parseInt(e.target.value) > 0 ? e.target.value : "1";
-                          }
-                        }, 300)();
+                        onChangeAmount(rowIndex, parseInt(e.target.value) > 0 ? e.target.value : 1);
+                        if (parseInt(e.target.value) < 1) {
+                          e.target.value = parseInt(e.target.value) > 0 ? e.target.value : "1";
+                        }
                       }}
                     />
                     <button
@@ -726,10 +718,13 @@ z"/>
               {
                 field: "crafting_time",
                 header: "Time pr item",
-                numeric: false,
+                numeric: true,
                 className: "w-0 text-center",
                 valueFormatter: ({ row, value }) => {
-                  return `${timeFormatL(value * row.amount, true)}`;
+                  return value * row.amount;
+                },
+                render: ({ value }) => {
+                  return `${timeFormatL(value, true)}`;
                 },
               },
               {

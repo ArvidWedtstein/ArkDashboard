@@ -29,12 +29,13 @@ const ToggleButton = ({
         type="checkbox"
         checked={checked}
         {...props}
+        disabled={disabled}
         readOnly={!onChange && checked != null}
         className="peer sr-only"
         onChange={onChange}
       />
-      <div className="rw-toggle peer-focus:ring-pea-300 dark:peer-focus:ring-pea-800 peer-checked:bg-pea-600 peer peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4"></div>
-      <span className="ml-3 inline-flex space-x-1 text-sm font-medium text-gray-600 dark:text-white">
+      <div className="rw-toggle peer-disabled:after:bg-zinc-400 peer-disabled:bg-gray-200 peer-disabled:cursor-not-allowed peer-focus:ring-pea-300 dark:peer-focus:ring-pea-800 peer-checked:bg-pea-600 peer peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4"></div>
+      <span className="peer-disabled:cursor-not-allowed ml-3 inline-flex space-x-1 text-sm font-medium text-gray-600 dark:text-white">
         {offLabel && (<span
           className={
             !checked
