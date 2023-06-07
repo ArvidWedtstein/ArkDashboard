@@ -2,7 +2,42 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import { MaterialGrid } from "../MaterialGrid/MaterialGrid";
 import { FindItemsMats } from "types/graphql";
 import { useAuth } from "src/auth";
-
+// export const QUERY = gql`
+//   query FindItemsMats($user_id: String, $crafting_stations: [Int]) {
+//     itemRecipesByCraftingStations(crafting_stations: $crafting_stations) {
+//       id
+//       crafted_item_id
+//       crafting_station_id
+//       crafting_time
+//       yields
+//       Item_ItemRecipe_crafted_item_idToItem {
+//         id
+//         name
+//         image
+//         category
+//         type
+//       }
+//       ItemRecipeItem {
+//         id
+//         amount
+//         Item {
+//           id
+//           name
+//           image
+//         }
+//       }
+//     }
+//     userRecipesByID(user_id: $user_id) {
+//       id
+//       name
+//       created_at
+//       UserRecipeItemRecipe {
+//         item_recipe_id
+//         amount
+//       }
+//     }
+//   }
+// `;
 export const QUERY = gql`
   query FindItemsMats($user_id: String) {
     itemRecipes {
@@ -39,9 +74,12 @@ export const QUERY = gql`
     }
   }
 `;
+
 export const beforeQuery = () => {
   const { currentUser } = useAuth();
+  // 607, 600
   return { variables: { user_id: currentUser?.id } };
+  // return { variables: { user_id: currentUser?.id, crafting_stations: crafting_stations.split(',').map(c => parseInt(c.trim())) || [126] } };
 };
 export const Loading = () => (
   <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-transparent">
@@ -73,6 +111,8 @@ export const Failure = ({ error }: CellFailureProps) => (
   </div>
 );
 
+
+// export const Success = ({ itemRecipesByCraftingStations, userRecipesByID }: CellSuccessProps<FindItemsMats>) => {
 export const Success = ({ itemRecipes, userRecipesByID }: CellSuccessProps<FindItemsMats>) => {
   return (
     <div className="rw-form-wrapper container-xl mx-auto">

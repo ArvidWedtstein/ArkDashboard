@@ -17,6 +17,8 @@ export const schema = gql`
   type Query {
     itemRecipes: [ItemRecipe!]! @skipAuth
     itemRecipe(id: String!): ItemRecipe @skipAuth
+    itemRecipesByCraftingStations(crafting_stations: [Int]): [ItemRecipe!]!
+      @skipAuth
   }
 
   input CreateItemRecipeInput {

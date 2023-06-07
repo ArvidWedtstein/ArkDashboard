@@ -29,8 +29,35 @@ const CREATE_USERRECIPE_MUTATION = gql`
     }
   }
 `
-
+type ItemRecipe = {
+  __typename: string;
+  id: string;
+  crafted_item_id: number;
+  crafting_station_id: number;
+  crafting_time: number;
+  yields: number;
+  Item_ItemRecipe_crafted_item_idToItem: {
+    __typename: string;
+    id: number;
+    name: string;
+    image: string;
+    category: string;
+    type: string;
+  };
+  ItemRecipeItem: {
+    __typename: string;
+    id: string;
+    amount: number;
+    Item: {
+      __typename: string;
+      id: number;
+      name: string;
+      image: string;
+    };
+  }[];
+};
 interface MaterialGridProps {
+  // itemRecipes: NonNullable<FindItemsMats["itemRecipesByCraftingStations"]>;
   itemRecipes: NonNullable<FindItemsMats["itemRecipes"]>;
   userRecipesByID?: NonNullable<FindItemsMats["userRecipesByID"]>;
   error?: RWGqlError;
@@ -50,7 +77,8 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
   const { currentUser, isAuthenticated } = useAuth();
   // TODO: Fix Types
   const [search, setSearch] = useState<string>("");
-  const [craftingStations, setCraftingStations] = useState<any>([107, 125]);
+
+  const [selectedCraftingStations, selectCraftingStations] = useState<any>([107, 125]);
 
   const [viewBaseMaterials, setViewBaseMaterials] = useState<boolean>(false);
   const toggleBaseMaterials = useCallback(
@@ -109,7 +137,7 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
           return i === action.index
             ? {
               ...item,
-              amount: item.amount - yields,
+              amount: item.amount - yields < 1 ? yields : item.amount - yields,
             }
             : item;
         });
@@ -156,30 +184,33 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
   let [item, setItem] = useReducer(reducer, []);
 
   const items = useMemo(() => {
-    const craftedItems = groupBy(itemRecipes, "crafted_item_id");
-    const craftingStation = {};
+    const craftedItems: { [key: string]: ItemRecipe[] } = groupBy(itemRecipes, "crafted_item_id");
+    const craftingStations = {};
 
     for (const [key, value] of Object.entries(craftedItems)) {
-      craftingStation[key] = groupBy(value as any, "crafting_station_id");
+      craftingStations[key] = groupBy(value as any, "crafting_station_id");
     }
     const result = [];
-    for (const v of Object.values(craftingStation)) {
+    Object.values(craftingStations).forEach((v) => {
+
+      // If the item is crafted in either chem bench, mortar, refining or industral forge, we need to find the one that is selected
       if (
         Object.keys(v).some((f) => [107, 607, 125, 600].includes(Number(f)))
       ) {
         const t = Object.entries(v)
           .filter(([k, _]) => {
-            return craftingStations.includes(Number(k));
+            return selectedCraftingStations.includes(Number(k));
           })
           .map(([_, v]) => {
             return Object.values(v)[0];
           });
-        t[0] && result.push(t[0]);
+        t && t[0] && result.push(t[0]);
+        // t && t[1] && result.push(t[1]);
       } else {
         const craftingStation = Object.values(Object.values(v)[0])[0];
         result.push(craftingStation);
       }
-    }
+    });
     item.forEach((item) => {
       setItem({ type: "REMOVE_BY_ID", id: item.id });
       let itemfound = result.find(
@@ -196,11 +227,11 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
     });
 
     return result;
-  }, [craftingStations]);
+  }, [selectedCraftingStations]);
 
   const categories = useMemo(() => {
     return groupBy(
-      items
+      (items || [])
         .map((f) => f.Item_ItemRecipe_crafted_item_idToItem)
         .filter((item) =>
           item.name.toLowerCase().includes(search.toLowerCase())
@@ -230,7 +261,7 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
 
   const mergeItemRecipe = useCallback(getBaseMaterials, [
     item,
-    craftingStations,
+    selectedCraftingStations,
   ]);
 
   const [createRecipe, { loading, error: recipeError }] = useMutation(
@@ -258,7 +289,6 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
       //   amount: amount,
       // })),
     };
-    console.log(recipe, typeof recipe)
     createRecipe({ variables: { recipe } })
 
   }
@@ -496,8 +526,8 @@ z"/>
 
                       <ul className="py-2">
                         {Object.values(categories).length === 1 ||
-                          categoryitems.every((item, i, a) => {
-                            return !item.type;
+                          categoryitems.every(({ type }) => {
+                            return !type;
                           })
                           ? categoryitems.map((item) => (
                             <li key={`${category}-${item.type}-${item.id}`}>
@@ -571,7 +601,6 @@ z"/>
                 onLabel="Base materials"
                 checked={viewBaseMaterials}
                 onChange={toggleBaseMaterials}
-                disabled={true}
               />,
               // <button
               //   data-testid="turrettowerbtn"
@@ -612,15 +641,15 @@ z"/>
             <ToggleButton
               offLabel="Mortar And Pestle"
               onLabel="Chemistry Bench"
-              checked={craftingStations.includes(607)}
+              checked={selectedCraftingStations.includes(607)}
               onChange={(e) => {
                 if (e.target.checked) {
-                  return setCraftingStations((prev) => [
+                  return selectCraftingStations((prev) => [
                     ...prev.filter((h) => h !== 107),
                     607,
                   ]);
                 }
-                return setCraftingStations((prev) => [
+                return selectCraftingStations((prev) => [
                   ...prev.filter((h) => h !== 607),
                   107,
                 ]);
@@ -630,15 +659,15 @@ z"/>
             <ToggleButton
               offLabel="Refining Forge"
               onLabel="Industrial Forge"
-              checked={craftingStations.includes(600)}
+              checked={selectedCraftingStations.includes(600)}
               onChange={(e) => {
                 if (e.target.checked) {
-                  return setCraftingStations((prev) => [
+                  return selectCraftingStations((prev) => [
                     ...prev.filter((h) => h !== 125),
                     600,
                   ]);
                 }
-                return setCraftingStations((prev) => [
+                return selectCraftingStations((prev) => [
                   ...prev.filter((h) => h !== 600),
                   125,
                 ]);
