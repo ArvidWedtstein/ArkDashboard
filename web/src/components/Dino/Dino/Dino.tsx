@@ -196,7 +196,7 @@ const Dino = ({ dino }: Props) => {
         durationDevKit: 5,
         duration: 6,
         hasMultipler: true,
-        mult: ["DmgType_Projectile", "DamageType"],
+        mult: ["DmgType_Projectile", "DamageType"], // added to db
         id: 745,
         userDamage: 100,
       },
@@ -208,7 +208,7 @@ const Dino = ({ dino }: Props) => {
         durationDevKit: 5,
         duration: 6,
         hasMultipler: true,
-        mult: ["DmgType_Projectile", "DamageType"],
+        mult: ["DmgType_Projectile", "DamageType"], // added to db
         id: 748,
         userDamage: 100,
       },
@@ -219,7 +219,7 @@ const Dino = ({ dino }: Props) => {
         damage: 20,
         duration: 6,
         hasMultipler: true,
-        mult: ["DmgType_Projectile", "DamageType"],
+        mult: ["DmgType_Projectile", "DamageType"], // added to db
         id: 1038,
         userDamage: 100,
       },
@@ -230,7 +230,7 @@ const Dino = ({ dino }: Props) => {
         damage: 35,
         duration: 6,
         hasMultipler: true,
-        mult: ["DmgType_Projectile", "DamageType"],
+        mult: ["DmgType_Projectile", "DamageType"], // added to db
         id: 362,
         userDamage: 100,
       },
@@ -241,7 +241,7 @@ const Dino = ({ dino }: Props) => {
         damage: 24,
         duration: 6,
         hasMultipler: true,
-        mult: ["DmgType_Projectile", "DamageType"],
+        mult: ["DmgType_Projectile", "DamageType"], // added to db
         id: 784,
         userDamage: 100,
       },
@@ -252,7 +252,7 @@ const Dino = ({ dino }: Props) => {
         damage: 27,
         duration: 6,
         hasMultipler: true,
-        mult: ["DmgType_Projectile", "DamageType"],
+        mult: ["DmgType_Projectile", "DamageType"], // added to db
         id: 376,
         userDamage: 100,
       },

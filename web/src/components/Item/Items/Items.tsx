@@ -65,7 +65,8 @@ const ItemsList = ({
   //   { "id": 17, "name": "Weight Reduction" },
   //   { "id": 18, "name": "Fuel" },
   //   { "id": 19, "name": "Gather Efficiency" },
-  //   { "id": 20, "name": "Other" }
+  //   { "id": 20, "name": "Other" },
+  //   { "id": 21, "name": "Multipliers" }
   // ]
   let { search, category, type } = useParams();
   const [types, setTypes] = useState([]);
