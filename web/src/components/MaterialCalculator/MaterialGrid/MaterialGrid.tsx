@@ -297,14 +297,16 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
 
   return (
     <div className="w-full flex flex-col gap-3 mx-1">
-      <div className="flex flex-row dark:text-stone-100 gap-5 overflow-x-auto py-3">
+      <div className="flex flex-row dark:text-stone-100 gap-3 overflow-x-auto py-3">
         {userRecipesByID.map(({ id, created_at, name, UserRecipeItemRecipe }) => (
           <div className="transition hover:border-pea-500 min-w-fit p-4 bg-zinc-300 dark:bg-zinc-700 rounded-lg shadow w-fit border border-transparent" key={id} onClick={() => {
             UserRecipeItemRecipe.forEach(({ item_recipe_id, amount }) => {
               let itemfound = items.find(
                 (item) => item.id === item_recipe_id
               );
-              setItem({ type: "ADD_AMOUNT_BY_NUM", item: itemfound, index: amount });
+              if (itemfound) {
+                setItem({ type: "ADD_AMOUNT_BY_NUM", item: itemfound, index: amount });
+              }
             });
           }}>
             <div className="flex justify-between items-center mb-4 space-x-3">
