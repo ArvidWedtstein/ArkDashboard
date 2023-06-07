@@ -16,11 +16,11 @@ import {
 import debounce from "lodash.debounce";
 import Table from "src/components/Util/Table/Table";
 import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
-import { CreateUserRecipeInput, FindItemsMats } from "types/graphql";
+import { FindItemsMats } from "types/graphql";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useAuth } from "src/auth";
-
+import { QUERY } from "../MaterialCalculatorCell";
 
 const CREATE_USERRECIPE_MUTATION = gql`
   mutation CreateUserRecipe($input: CreateUserRecipeInput!) {
@@ -205,7 +205,6 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
             return Object.values(v)[0];
           });
         t && t[0] && result.push(t[0]);
-        // t && t[1] && result.push(t[1]);
       } else {
         const craftingStation = Object.values(Object.values(v)[0])[0];
         result.push(craftingStation);
@@ -264,33 +263,36 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
     selectedCraftingStations,
   ]);
 
-  const [createRecipe, { loading, error: recipeError }] = useMutation(
+  const [createRecipe, { loading, error: recipeError, data }] = useMutation(
     CREATE_USERRECIPE_MUTATION,
     {
-      onCompleted: () => {
+      onCompleted: (data) => {
         toast.success('Recipe created')
+        console.log(data)
       },
       onError: (error) => {
         toast.error(error.message)
       },
+      refetchQueries: [{ query: QUERY }],
+      awaitRefetchQueries: true,
     }
   )
 
   const saveRecipe = (e) => {
     e.preventDefault();
-    const recipe: CreateUserRecipeInput = {
-      name: '',
-      user_id: currentUser.id,
+    const input = {
       created_at: new Date().toISOString(),
+      user_id: currentUser.id,
       private: true,
-      updated_at: new Date().toISOString(),
-      // UserRecipeItemRecipe: item.map(({ id, amount }) => ({
-      //   item_recipe_id: id,
-      //   amount: amount,
-      // })),
+      UserRecipeItemRecipe: {
+        create: item.map((u) => ({
+          amount: u.amount,
+          item_recipe_id: u.id,
+        }))
+      }
     };
-    createRecipe({ variables: { recipe } })
-
+    createRecipe({ variables: { input } });
+    // TODO: Fetch the recipe after created and add it to the list
   }
 
   return (

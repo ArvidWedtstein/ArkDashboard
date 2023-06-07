@@ -46,7 +46,6 @@ export const createUserRecipe: MutationResolvers["createUserRecipe"] = ({
       throw "Your gallimimus outran the authorization process. Slow down!";
     }
   });
-  console.log("input", input);
   return db.userRecipe.create({
     data: input,
   });

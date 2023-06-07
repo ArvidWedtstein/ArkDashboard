@@ -605,8 +605,8 @@ const Table = ({
           onChange={(e) => {
             setSelectedPageSizeOption(parseInt(e.target.value));
           }}
-          value={selectedPageSizeOption}
-          defaultValue={mergedSettings.pagination.rowsPerPage}
+          // defaultValue={mergedSettings.pagination.rowsPerPage}
+          defaultValue={selectedPageSizeOption}
         >
           {!mergedSettings?.pagination?.pageSizeOptions.includes(settings.pagination.rowsPerPage) && <option>{mergedSettings.pagination.rowsPerPage}</option>}
           {mergedSettings?.pagination?.pageSizeOptions.map((option) => (

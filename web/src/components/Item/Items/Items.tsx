@@ -4,7 +4,6 @@ import {
   SearchField,
   SelectField,
   Submit,
-  useForm,
 } from "@redwoodjs/forms";
 import {
   Link,
@@ -15,7 +14,7 @@ import {
 } from "@redwoodjs/router";
 
 import clsx from "clsx";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import ArkCard from "src/components/ArkCard/ArkCard";
 
 import type { FindItems } from "types/graphql";

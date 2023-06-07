@@ -29,7 +29,6 @@ const NewTribe = () => {
   )
 
   const onSave = (input: CreateTribeInput) => {
-    console.log(input)
     createTribe({ variables: { input } })
   }
 

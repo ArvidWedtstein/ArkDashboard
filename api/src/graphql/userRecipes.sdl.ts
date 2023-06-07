@@ -22,6 +22,7 @@ export const schema = gql`
     user_id: String!
     private: Boolean!
     name: String
+    UserRecipeItemRecipe: JSON
   }
 
   input UpdateUserRecipeInput {
