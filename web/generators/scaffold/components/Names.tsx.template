@@ -42,8 +42,8 @@ const ${pluralPascalName}List = ({ ${pluralCamelName} }: Find${pluralPascalName}
       <Table
         columns={[
           <% columns.forEach(column => ({ %>
-            header: column.label,
-            field: column.label })) %>
+           <%  header: column.label, %>
+           <%  field: column.label })) %>
         ]}
         rows={${pluralCamelName}}
       />
