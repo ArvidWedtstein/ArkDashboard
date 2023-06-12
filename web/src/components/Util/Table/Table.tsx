@@ -171,7 +171,7 @@ const Table = ({
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
-  const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(mergedSettings.pagination.rowsPerPage);
+  const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(mergedSettings.pagination.rowsPerPage || mergedSettings.pagination.pageSizeOptions[0]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filters, setFilters] = useState<Filter[]>([]);
   const [sort, setSort] = useState({

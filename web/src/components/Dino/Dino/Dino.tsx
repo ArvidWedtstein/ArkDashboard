@@ -24,11 +24,12 @@ import {
   useTransition,
 } from "react";
 
-import type { DeleteDinoMutationVariables, FindDinoById } from "types/graphql";
+import type { DeleteDinoMutationVariables, FindDinoById, FindItems } from "types/graphql";
 import clsx from "clsx";
 import Table from "src/components/Util/Table/Table";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import Counter from "src/components/Util/Counter/Counter";
+import { useAuth } from "src/auth";
 
 const DELETE_DINO_MUTATION = gql`
   mutation DeleteDinoMutation($id: String!) {
@@ -40,9 +41,11 @@ const DELETE_DINO_MUTATION = gql`
 
 interface Props {
   dino: NonNullable<FindDinoById["dino"]>;
+  itemsByIds: NonNullable<FindDinoById["itemsByIds"]>;
 }
 
-const Dino = ({ dino }: Props) => {
+const Dino = ({ dino, itemsByIds }: Props) => {
+  const { currentUser } = useAuth();
   const [deleteDino] = useMutation(DELETE_DINO_MUTATION, {
     onCompleted: () => {
       toast.success("Dino deleted");
@@ -86,7 +89,7 @@ const Dino = ({ dino }: Props) => {
   const [maturation, setMaturation] = useState(0);
   const [selectedFood, setSelectedFood] = useState(null);
   const [secondsBetweenHits, setSecondsBetweenHits] = useState(5);
-  const [dinoLevel, setDinoLevel] = useState(0);
+  const [dinoLevel, setDinoLevel] = useState(100);
   const [dinoXVariant, setDinoXVariant] = useState(false);
   const [weaponDamage, setWeaponDamage] = useState({});
 
@@ -169,6 +172,7 @@ const Dino = ({ dino }: Props) => {
       })
     );
   };
+
   // Multipliers
   const settings = {
     harvestMultiplier: 1,
@@ -186,166 +190,20 @@ const Dino = ({ dino }: Props) => {
     babyMatureSpeedMultiplier: 1.0,
     XPMultiplier: 1.0,
   };
+
   const weapons = useMemo(() => {
-    return [
-      {
-        name: "Tranquilizer Dart",
-        image: "tranquilizer-dart.png",
-        torpor: 221,
-        damage: 26,
-        durationDevKit: 5,
-        duration: 6,
-        hasMultipler: true,
-        mult: ["DmgType_Projectile", "DamageType"], // added to db
-        id: 745,
-        userDamage: 100,
-      },
-      {
-        name: "Shocking Tranquilizer Dart",
-        image: "shocking-tranquilizer-dart.png",
-        torpor: 442,
-        damage: 26,
-        durationDevKit: 5,
-        duration: 6,
-        hasMultipler: true,
-        mult: ["DmgType_Projectile", "DamageType"], // added to db
-        id: 748,
-        userDamage: 100,
-      },
-      {
-        name: "Bow",
-        image: "tranquilizer-arrow-bow.png",
-        torpor: 90,
-        damage: 20,
-        duration: 6,
-        hasMultipler: true,
-        mult: ["DmgType_Projectile", "DamageType"], // added to db
-        id: 1038,
-        userDamage: 100,
-      },
-      {
-        name: "Crossbow",
-        image: "crossbow.png",
-        torpor: 157.5,
-        damage: 35,
-        duration: 6,
-        hasMultipler: true,
-        mult: ["DmgType_Projectile", "DamageType"], // added to db
-        id: 362,
-        userDamage: 100,
-      },
-      {
-        name: "Tek Bow",
-        image: "tek-bow.png",
-        torpor: 336,
-        damage: 24,
-        duration: 6,
-        hasMultipler: true,
-        mult: ["DmgType_Projectile", "DamageType"], // added to db
-        id: 784,
-        userDamage: 100,
-      },
-      {
-        name: "Compound Bow",
-        image: "compound-bow.png",
-        torpor: 121.5,
-        damage: 27,
-        duration: 6,
-        hasMultipler: true,
-        mult: ["DmgType_Projectile", "DamageType"], // added to db
-        id: 376,
-        userDamage: 100,
-      },
-      {
-        name: "Harpoon Launcher",
-        image: "harpoon-launcher.png",
-        torpor: 300,
-        damage: 36,
-        duration: 5,
-        hasMultipler: true,
-        mult: ["DmgType_Projectile", "DamageType"],
-        id: 731,
-        userDamage: 100,
-      },
-      {
-        name: "Fists",
-        image: "fists.png",
-        torpor: 14,
-        damage: 8,
-        hasMultipler: false,
-        usesMeleeDamage: true,
-        mult: [
-          "DmgType_Melee_Torpidity_StoneWeapon",
-          "DmgType_Melee_Torpidity",
-          "DmgType_Melee_Human",
-          "DmgType_Melee",
-          "DamageType",
-        ],
-        id: "Fists",
-        userDamage: 100,
-      },
-      {
-        name: "Slingshot",
-        image: "slingshot.png",
-        torpor: 23.8,
-        damage: 14,
-        hasMultipler: true,
-        mult: ["DmgType_StoneWeapon", "DamageType"],
-        id: 139,
-        userDamage: 100,
-      },
-      {
-        name: "Wooden Club",
-        image: "wooden-club.png",
-        torpor: 20,
-        damage: 5,
-        hasMultipler: true,
-        usesMeleeDamage: true,
-        mult: [
-          "DmgType_Melee_HighTorpidity_StoneWeapon",
-          "DmgType_Melee_Human",
-          "DmgType_StoneWeapon",
-          "DamageType",
-        ],
-        id: 434,
-        userDamage: 100,
-      },
-      {
-        name: "Boomerang",
-        image: "boomerang.png",
-        damage: 30,
-        torpor: 70.5,
-        mult: [
-          "DmgType_Melee_Torpidity_StoneWeapon",
-          "DmgType_StoneWeapon",
-          "DamageType",
-        ],
-        id: 848,
-        userDamage: 100,
-      },
-      {
-        name: "Electric Prod",
-        image: "electric-prod.png",
-        torpor: 266,
-        damage: 1,
-        hasMultipler: true,
-        mult: ["DmgType_Melee_Human", "DamageType"],
-        id: 451,
-        userDamage: 100,
-      },
-      {
-        name: "Tripwire Narcotic Trap",
-        image: "tripwire-narcotic-trap.png",
-        torpor: 240,
-        damage: 0,
-        duration: 10,
-        mult: ["DamageType"],
-        id: 1041,
-        type: "Tripwire Narcotic Trap",
-        userDamage: 100,
-      },
-    ];
-  }, [dino]);
+    return itemsByIds.filter(d => ![121, 123, 713, 719].includes(d.id)).map(w => ({
+      ...w,
+      userDamage: 100,
+      durationDevKit: 5,
+      hasMultipler: true,
+      torpor: w.torpor || (w.stats as { id: number, value: any, duration?: number }[]).find((d) => d.id === 10)?.value || 0,
+      torpor_duration: (w.stats as { id: number, value: any, duration?: number }[]).find((d) => d.id === 10)?.duration || 0,
+      damage: (w.stats as { id: number, value: any, duration?: number }[]).find((d) => d.id === 6)?.value || 0,
+      multipliers: (w.stats as { id: number, value: any, duration?: number }[]).find((d) => d.id === 21)?.value as string[]
+    }))
+  }, [dino])
+
   const nper = (n, x) => {
     let n1 = n + 1;
     let r = 1.0;
@@ -357,7 +215,6 @@ const Dino = ({ dino }: Props) => {
   };
 
   /**
-
     Calculates the cumulative probability of getting a result between the given lower and upper limits,
     based on a binomial distribution with a given number of trials and probability of success.
     @param {number} ll - Lower limit of the result
@@ -383,6 +240,7 @@ const Dino = ({ dino }: Props) => {
     pCumulative = Math.round(10000 * pCumulative) / 100;
     return pCumulative;
   }
+
   function b(p, n, x) {
     let px = Math.pow(p, x) * Math.pow(1.0 - p, n - x);
     return nper(n, x) * px;
@@ -410,7 +268,6 @@ const Dino = ({ dino }: Props) => {
   // Calculate stats off offstring
   // Value = (BaseStat × ( 1 + LevelWild × IncreaseWild) + TamingBonusAdd × TamingBonusAddModifier) × (1 + TamingEffectiveness × TamingBonusMult × TamingBonusMultModifier)
   useEffect(() => {
-    setDinoLevel(100);
     setDinoXVariant(false);
     if (!selectedFood)
       startTransition(() =>
@@ -437,6 +294,7 @@ const Dino = ({ dino }: Props) => {
       );
   };
 
+
   const tamingFood = useMemo(() => {
     if (!dino || !dinoLevel) return [];
     const affinityNeeded = dino.affinity_needed + dino.aff_inc * dinoLevel;
@@ -450,23 +308,14 @@ const Dino = ({ dino }: Props) => {
     const tamingMultiplier = dino.disable_mult
       ? 4
       : settings.tamingMultiplier * 4;
-    if (!selectedFood)
-      setSelectedFood(
-        dino.DinoStat.filter((f) => f.type === "food") &&
-        dino.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
-      );
 
     return dino.DinoStat.filter(
-      (f) =>
-        f.type === "food" &&
-        (f.Item.stats as any)?.find((s) => s.id === 8)?.value !== null
-    ).map((foodItem: any, index: number) => {
-      const foodValue = foodItem.Item.stats
-        ? foodItem.Item.stats.find((stat) => stat.id == 8)?.value
-        : 1;
-      const affinityValue =
-        foodItem.Item.stats.find((stat) => stat.id == 15)?.value || 1;
-
+      (ds) =>
+        ds.type === "food" &&
+        ds.Item.food != null
+    ).map((foodItem) => {
+      const foodValue = foodItem.Item.food;
+      const affinityValue = foodItem.Item.affinity;
       let foodMaxRaw = affinityNeeded / affinityValue / tamingMultiplier;
       let foodMax = 0;
       const isFoodSelected =
@@ -529,24 +378,11 @@ const Dino = ({ dino }: Props) => {
   const tameData = useMemo(() => {
     if (!tamingFood || tamingFood.length == 0) return null;
     let effectiveness = 100;
-    const narcotics = {
-      ascerbic: {
-        torpor: 25,
-        secs: 2,
-      },
-      bio: {
-        torpor: 80,
-        secs: 16,
-      },
-      narcotics: {
-        torpor: 40,
-        secs: 8,
-      },
-      narcoberries: {
-        torpor: 7.5,
-        secs: 3,
-      },
-    };
+
+    const narcotics = itemsByIds.filter(f => [121, 123, 713, 719].includes(f.id)).map(f => ({
+      torpor: f.torpor,
+      secs: f.torpor_duration,
+    }));
 
     let affinityNeeded = dino.affinity_needed + dino.aff_inc * dinoLevel;
     // sanguineElixir = affinityNeeded *= 0.7
@@ -574,14 +410,10 @@ const Dino = ({ dino }: Props) => {
     let numToUse = 0;
     let totalSecs = 0;
 
-    tamingFood.forEach((food: any) => {
+    tamingFood.forEach((food) => {
       if (!food) return;
-      let foodVal = food?.stats.find((f: any) => f.id === 8)
-        ? food?.stats.find((f: any) => f.id === 8)?.value
-        : 0;
-      let affinityVal = food?.stats.find((f: any) => f.id === 15)
-        ? food?.stats.find((f: any) => f.id === 15)?.value
-        : 0;
+      let foodVal = food.food;
+      let affinityVal = food.affinity;
 
       if (affinityLeft > 0) {
         if (selectedFood) {
@@ -699,185 +531,155 @@ const Dino = ({ dino }: Props) => {
     };
   }, [tamingFood]);
 
-  const calcWeapons = useMemo(() => {
-    return weapons.map((weapon: any) => {
-      // Calculate the taming time for the creature
+
+  const calculateWeapons = useMemo(() => {
+    return weapons.map(weapon => {
+      const {
+        id,
+        userDamage,
+        torpor,
+        torpor_duration,
+        multipliers,
+        damage
+      } = weapon;
+
+      type AdditionBasestat = {
+        b?: number | null;
+        s?: {
+          b?: number | null;
+        };
+        w?: {
+          b?: number | null;
+          st?: number | null;
+          sw?: number | null;
+        }
+      }
+      type Basestat = {
+        a?: AdditionBasestat[];
+        b?: number | null;
+        t?: number | null;
+        w?: number | null;
+      }
+      type BaseStats = {
+        /** Weight */
+        w?: Basestat;
+        /** Torpor */
+        t?: Basestat;
+        /** Health */
+        h?: Basestat;
+        /** Stamina */
+        s?: Basestat;
+        /** Damage */
+        d?: Basestat;
+        /** Food */
+        f?: Basestat;
+        /** Movement Speed */
+        m?: Basestat;
+        /** Oxygen */
+        o?: Basestat;
+      }
+
+      const { b: baseHealth, w: incPerLevel } = (dino?.base_stats as BaseStats).h || {};
+
       const creatureT =
         dino.base_taming_time + dino.taming_interval * (dinoLevel - 1);
 
-      // Calculate the flee threshold for the creature
       const creatureFleeThreshold =
         typeof dino.flee_threshold === "number" ? dino.flee_threshold : 0.75;
 
-      // Calculate torpor per hit for the weapon
-      let torporPerHit = weapon.torpor;
-      const weaponDuration = weapon.duration || 0;
-
-      // Calculate torpor depletion rate per second for the creature
-      let torporDeplPS;
-      if (dino.tdps) {
-        torporDeplPS =
-          dino.tdps +
-          Math.pow(dinoLevel - 1, 0.8493) / (22.39671632 / dino.tdps);
-      }
-
-      // Adjust torpor per hit based on weapon duration and torpor depletion rate
-      if (torporDeplPS && secondsBetweenHits > weaponDuration) {
-        const secsOfRegen = secondsBetweenHits - weaponDuration;
-        torporPerHit -= secsOfRegen * torporDeplPS;
-      }
-
-      // Determine if knocking out the creature with the given weapon is possible
+      let torporPerHit = torpor_duration ? torpor - (secondsBetweenHits - torpor_duration) * (dino.tdps + Math.pow(dinoLevel - 1, 0.8493) / (22.39671632 / dino.tdps)) : torpor;
       const isPossible = torporPerHit > 0;
 
-      // Calculate the number of hits required to knock out the creature
       let knockOut = creatureT / torporPerHit;
-
-      // Apply any applicable weapon and dino multipliers to the knockout time
       let totalMultipliers = 1;
 
-      if (
-        typeof weapon.mult === "object" &&
-        weapon.mult !== null &&
-        (dino.multipliers as any)?.length > 0 &&
-        typeof dino.multipliers[0] === "object"
-      ) {
-        for (const i in weapon.mult) {
-          if (typeof dino.multipliers[0][weapon.mult[i]] === "number") {
-            knockOut /= dino.multipliers[0][weapon.mult[i]];
-            totalMultipliers *= dino.multipliers[0][weapon.mult[i]];
+      if (Array.isArray(multipliers) && dino?.multipliers?.[0]) {
+        for (const multiplier of multipliers) {
+          const dinoMultiplier = dino.multipliers[0][multiplier];
+          if (typeof dinoMultiplier === "number") {
+            knockOut /= dinoMultiplier;
+            totalMultipliers *= dinoMultiplier;
           }
         }
       }
 
-      // Adjust knockout time based on melee damage multiplier
-      if (weapon.usesMeleeDamage === true) {
+      if (multipliers && multipliers.includes('DmgType_Melee_Human')) {
         knockOut /= settings.meleeMultiplier / 100;
         totalMultipliers *= settings.meleeMultiplier / 100;
       }
 
-      // Adjust knockout time for special variant creatures
-      if (dino.x_variant && dinoXVariant == true) {
+      if (dino.x_variant && dinoXVariant) {
         knockOut /= 0.4;
         totalMultipliers *= 0.4;
       }
 
-      // Adjust knockout time based on player damage multiplier
       knockOut /= settings.playerDamageMultiplier;
       totalMultipliers *= settings.playerDamageMultiplier;
 
-      // Calculate the number of hits required based on user damage per hit
-      // const numHitsRaw = knockOut / (weapon.userDamage / 100);
-      const numHitsRaw =
-        knockOut / ((weaponDamage[weapon.id] || weapon.userDamage) / 100);
+      const numHitsRaw = knockOut / ((weaponDamage[id] || userDamage) / 100);
+      const hitboxes = Object.entries(dino.hitboxes as {
+        [key: string]: number
+      }).map(([name, multiplier]) => {
+        const hitboxHits = numHitsRaw / multiplier;
+        const hitsUntilFlee = creatureFleeThreshold === 1 ? "-" : Math.max(1, Math.ceil(hitboxHits * creatureFleeThreshold));
 
-      // Calculate the number of hits required for each hitbox
-      let hitboxes = [];
-      if (dino.hitboxes !== undefined) {
-        for (const i in dino.hitboxes as any) {
-          const hitboxHits = numHitsRaw / dino.hitboxes[i];
-          let hitsUntilFlee =
-            creatureFleeThreshold === 1
-              ? "-"
-              : Math.max(1, Math.ceil(hitboxHits * creatureFleeThreshold));
-          hitboxes.push({
-            name: i,
-            multiplier: dino.hitboxes[i],
-            hitsRaw: hitboxHits,
-            hitsUntilFlee: hitsUntilFlee,
-            hits: Math.ceil(hitboxHits),
-            chanceOfDeath: 0,
-            isPossible: isPossible,
-          });
-        }
-      }
+        const totalDamage = damage * Math.ceil(hitboxHits) * totalMultipliers * ((weaponDamage[id] || userDamage) / 100) * multiplier;
+        const propsurvival = totalDamage < baseHealth ? 100 : calculatePropability(dinoLevel - 1, 7, Math.max(Math.ceil((totalDamage - baseHealth) / incPerLevel), 0));
+
+        const chanceOfDeath = Math.round(100 - propsurvival);
+
+        return {
+          name,
+          multiplier,
+          hitsRaw: hitboxHits,
+          hitsUntilFlee,
+          hits: Math.ceil(hitboxHits),
+          chanceOfDeath,
+          chanceOfDeathHigh: chanceOfDeath > 40,
+          isPossible,
+        };
+      }) || [];
+
       let bodyChanceOfDeath = 0;
       let minChanceOfDeath = 0;
-      if (dinoLevel < 2000 && isPossible) {
-        const baseStats = dino?.base_stats ? dino?.base_stats["h"] : null;
-        if (baseStats?.b && baseStats?.w) {
-          const baseHealth = baseStats.b;
-          const incPerLevel = baseStats.w;
-          if (
-            typeof weapon.damage != null &&
-            typeof baseHealth != null &&
-            typeof incPerLevel != null
-          ) {
-            let numStats = 7;
-            let totalDamage =
-              weapon.damage *
-              Math.ceil(numHitsRaw) *
-              totalMultipliers *
-              ((weaponDamage[weapon.id] || weapon.userDamage) / 100);
 
-            let propsurvival =
-              totalDamage < baseHealth
-                ? 100
-                : dinoLevel - 1 <
-                  Math.max(
-                    Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                    0
-                  )
-                  ? 0
-                  : calculatePropability(
-                    dinoLevel - 1,
-                    numStats,
-                    Math.max(
-                      Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                      0
-                    )
-                  );
+      if (isPossible) {
 
-            bodyChanceOfDeath = Math.round(100 - propsurvival);
-            minChanceOfDeath = bodyChanceOfDeath;
+        if (damage != null && baseHealth != null && incPerLevel != null) {
+          let numStats = 7;
+          let totalDamage = damage * Math.ceil(numHitsRaw) * totalMultipliers * ((weaponDamage[id] || userDamage) / 100);
 
-            if (hitboxes.length > 0) {
-              for (const i in hitboxes) {
-                totalDamage =
-                  weapon.damage *
-                  Math.ceil(hitboxes[i].hitsRaw) *
-                  totalMultipliers *
-                  ((weaponDamage[weapon.id] || weapon.userDamage) / 100) *
-                  hitboxes[i].multiplier;
+          let propsurvival = totalDamage < baseHealth ? 100 : dinoLevel - 1 < Math.max(Math.ceil((totalDamage - baseHealth) / incPerLevel), 0) ? 0 : calculatePropability(dinoLevel - 1, numStats, Math.max(Math.ceil((totalDamage - baseHealth) / incPerLevel), 0));
 
-                propsurvival =
-                  totalDamage < baseHealth
-                    ? 100
-                    : calculatePropability(
-                      dinoLevel - 1,
-                      numStats,
-                      Math.max(
-                        Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                        0
-                      )
-                    );
+          bodyChanceOfDeath = Math.round(100 - propsurvival);
+          minChanceOfDeath = bodyChanceOfDeath;
 
-                const chanceOfDeath = Math.round(100 - propsurvival);
-                hitboxes[i].chanceOfDeath = chanceOfDeath;
-                hitboxes[i].chanceOfDeathHigh = chanceOfDeath > 40;
-                minChanceOfDeath = Math.min(minChanceOfDeath, chanceOfDeath);
-              }
-            }
+          for (const hitbox of hitboxes) {
+            totalDamage = damage * Math.ceil(hitbox.hitsRaw) * totalMultipliers * ((weaponDamage[id] || userDamage) / 100) * hitbox.multiplier;
+
+            propsurvival = totalDamage < baseHealth ? 100 : calculatePropability(dinoLevel - 1, numStats, Math.max(Math.ceil((totalDamage - baseHealth) / incPerLevel), 0));
+
+            const chanceOfDeath = Math.round(100 - propsurvival);
+            hitbox.chanceOfDeath = chanceOfDeath;
+            hitbox.chanceOfDeathHigh = chanceOfDeath > 40;
+            minChanceOfDeath = Math.min(minChanceOfDeath, chanceOfDeath);
           }
         }
       }
 
-      let chanceOfDeathHigh = bodyChanceOfDeath > 40;
-      const hitsUntilFlee =
-        creatureFleeThreshold == 1
-          ? "-"
-          : Math.max(1, Math.ceil(numHitsRaw * creatureFleeThreshold));
+      const chanceOfDeathHigh = bodyChanceOfDeath > 40;
+      const hitsUntilFlee = creatureFleeThreshold == 1 ? "-" : Math.max(1, Math.ceil(numHitsRaw * creatureFleeThreshold));
 
       return {
         hits: Math.ceil(numHitsRaw),
         hitsRaw: numHitsRaw,
-        hitsUntilFlee: hitsUntilFlee,
+        hitsUntilFlee,
         chanceOfDeath: bodyChanceOfDeath,
-        chanceOfDeathHigh: chanceOfDeathHigh,
+        chanceOfDeathHigh,
         minChanceOfDeath: minChanceOfDeath || 0,
-        isPossible: isPossible,
+        isPossible,
         isRecommended: isPossible && minChanceOfDeath < 90,
-        hitboxes: hitboxes,
+        hitboxes,
         ...weapon,
       };
     });
@@ -1039,7 +841,7 @@ const Dino = ({ dino }: Props) => {
           <CheckboxGroup
             defaultValue={dino.DinoStat.filter(
               (d) => d.type == "immobilized_by"
-            ).map((item) => item?.item_id.toString())}
+            ).map((item) => item?.Item.id.toString())}
             form={false}
             options={[
               {
@@ -1196,7 +998,7 @@ const Dino = ({ dino }: Props) => {
           <CheckboxGroup
             defaultValue={dino.DinoStat.filter(
               (d) => d.type == "fits_through"
-            ).map((item) => item?.item_id.toString())}
+            ).map((item) => item?.Item.id.toString())}
             form={false}
             options={[
               {
@@ -1309,7 +1111,8 @@ const Dino = ({ dino }: Props) => {
               settings={{
                 pagination: {
                   enabled: true,
-                  rowsPerPage: 5
+                  rowsPerPage: 5,
+                  pageSizeOptions: [5, 10, 20, 50],
                 }
               }}
               rows={dino.DinoStat.filter(
@@ -1729,11 +1532,11 @@ const Dino = ({ dino }: Props) => {
                   </div>
                 </section>
 
-                {calcWeapons && tameData && (
+                {calculateWeapons && tameData && (
                   <>
                     <p className="mt-3 text-lg">Knock Out</p>
                     <div className="max-w-screen rw-segment relative flex flex-row gap-2 overflow-x-auto rounded-md py-3 text-center">
-                      {calcWeapons.map((weapon, i) => (
+                      {calculateWeapons.map((weapon, i) => (
                         <div
                           key={`weapon-${i}`}
                           className={clsx(
@@ -1752,7 +1555,7 @@ const Dino = ({ dino }: Props) => {
                             src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${weapon.image}`}
                           />
                           <Link
-                            to={routes.item({ id: weapon.id })}
+                            to={routes.item({ id: weapon.id.toString() })}
                             className="w-full"
                           >
                             {weapon.name}
@@ -1776,7 +1579,7 @@ const Dino = ({ dino }: Props) => {
                             </p>
                           )}
                           {weapon.hitboxes.length > 0 && (
-                            <span className="rounded bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-500 dark:bg-blue-900 dark:text-blue-300">
+                            <span className="rounded bg-gray-100 px-2.5 py-0.5 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
                               {weapon.hitboxes.map((h) => (
                                 <span
                                   key={`hitbox-${h.name}`}
@@ -1840,19 +1643,19 @@ const Dino = ({ dino }: Props) => {
         <section className="col-span-2">
           <p className="text-lg dark:text-gray-200">Saddle</p>
           <div className="flex flex-row">
-            {dino.DinoStat.filter((d) => d.type === "saddle").map((s) => (
+            {dino.DinoStat.filter((d) => d.type === "saddle").map(({ Item: { id, name, image } }) => (
               <details
                 className="group w-fit rounded-md bg-zinc-300 p-2 dark:bg-zinc-600"
-                key={`saddle-${s.item_id}`}
+                key={`saddle-${id}`}
               >
                 <summary className="flex h-16 min-w-[4rem] place-content-center place-items-center gap-2 border text-center text-sm transition-all dark:text-gray-200">
                   <img
-                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${s.Item.image}`}
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
                     alt={dino.name}
                     className="h-8 w-8 transform group-open:scale-125"
                   />
                   <span className="animate-fade-in mr-2 hidden group-open:block">
-                    {s.Item.name}
+                    {name}
                   </span>
                 </summary>
 
@@ -1881,31 +1684,6 @@ const Dino = ({ dino }: Props) => {
                       </li>
                     )
                   )}
-                  {/* {dino?.DinoStat.find((d) => d.type == "saddle")?.Item
-                        .ItemRec_ItemRec_crafted_item_idToItem[0]
-                        .Item_ItemRec_crafting_station_idToItem.name.map(
-                ({ amount, Item_ItemRecipe_item_idToItem }, i) => (
-                  <li
-                    key={`recipe-${i}`}
-                    className="animate-fade-in flex h-16 place-content-start place-items-center border border-stone-400 px-2"
-                  >
-                    <Link
-                      className="inline-flex items-center space-x-2"
-                      to={routes.item({
-                        id: Item_ItemRecipe_item_idToItem.id.toString(),
-                      })}
-                    >
-                      <img
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRecipe_item_idToItem.image}`}
-                        alt={Item_ItemRecipe_item_idToItem.name}
-                        className="h-8 w-8"
-                      />
-                      <span>{amount}</span>
-                      <span>{Item_ItemRecipe_item_idToItem.name}</span>
-                    </Link>
-                  </li>
-                )
-              )} */}
                 </ul>
               </details>
             ))}
@@ -2141,26 +1919,34 @@ const Dino = ({ dino }: Props) => {
       )}
 
       <nav className="rw-button-group col-span-2">
-        <Link
-          to={routes.editDino({ id: dino.id })}
-          className="rw-button rw-button-blue"
-        >
-          Edit
-        </Link>
-        <button
-          type="button"
-          className="rw-button rw-button-red"
-          onClick={() => onDeleteClick(dino.id)}
-        >
-          Delete
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 448 512"
-            className="rw-button-icon"
-          >
-            <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
-          </svg>
-        </button>
+        {
+          currentUser?.permissions.some((p) => p === "gamedata_update") && (
+            <Link
+              to={routes.editDino({ id: dino.id })}
+              className="rw-button rw-button-blue"
+            >
+              Edit
+            </Link>
+          )
+        }
+        {
+          currentUser?.permissions.some((p) => p === "gamedata_delete") && (
+            <button
+              type="button"
+              className="rw-button rw-button-red"
+              onClick={() => onDeleteClick(dino.id)}
+            >
+              Delete
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                className="rw-button-icon"
+              >
+                <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+              </svg>
+            </button>
+          )
+        }
       </nav>
     </article>
   );

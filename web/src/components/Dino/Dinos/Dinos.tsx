@@ -24,13 +24,6 @@ import type { DeleteDinoMutationVariables, FindDinos } from "types/graphql";
 import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
 
 
-const DELETE_DINO_MUTATION = gql`
-  mutation DeleteDinoMutation($id: String!) {
-    deleteDino(id: $id) {
-      id
-    }
-  }
-`;
 
 const DinosList = ({ dinosPage }: FindDinos) => {
 

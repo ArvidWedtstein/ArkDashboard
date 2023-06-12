@@ -1,4 +1,4 @@
-import type { FindDinoById, FindItems } from "types/graphql";
+import type { FindDinoById } from "types/graphql";
 
 import { CellSuccessProps, CellFailureProps, MetaTags } from "@redwoodjs/web";
 
@@ -7,7 +7,7 @@ import Dino from "src/components/Dino/Dino";
 // TODO: Optimize this query
 // Does not need to fetch every single item
 export const QUERY = gql`
-  query FindDinoById($id: String!) {
+  query FindDinoById($id: String!, $ids: [BigInt!]!) {
     dino: dino(id: $id) {
       id
       created_at
@@ -51,12 +51,13 @@ export const QUERY = gql`
       icon
       multipliers
       DinoStat {
-        item_id
         Item {
           name
           id
           image
           stats
+          food
+          affinity
           ItemRecipe_ItemRecipe_crafted_item_idToItem {
             id
             yields
@@ -72,9 +73,24 @@ export const QUERY = gql`
         type
       }
     }
+    itemsByIds(ids: $ids) {
+      id
+      name
+      image
+      stats
+      torpor
+      torpor_duration
+    }
   }
 `;
 
+
+export const beforeQuery = (props) => {
+  return {
+    variables: { id: props.id, ids: [745, 748, 1038, 362, 784, 376, 731, 1342, 139, 434, 848, 451, 1041, 121, 123, 713, 719] },
+    fetchPolicy: "cache-and-network",
+  };
+}
 export const Loading = () => (
   <div className="flex h-full w-full items-center justify-center bg-transparent">
     <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>
@@ -106,11 +122,12 @@ export const Failure = ({ error }: CellFailureProps) => {
 // CellSuccessProps<FindDinoById> & CellSuccessProps<FindItems>
 export const Success = ({
   dino,
-}: CellSuccessProps<FindDinoById> & CellSuccessProps<FindItems>) => {
+  itemsByIds
+}: CellSuccessProps<FindDinoById>) => {
   return (
     <>
       <MetaTags title={dino.name} description={dino.description} />
-      <Dino dino={dino} />
+      <Dino dino={dino} itemsByIds={itemsByIds} />
     </>
   );
 };
