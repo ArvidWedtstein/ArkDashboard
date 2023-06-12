@@ -1491,7 +1491,19 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                       tameData["narcoticsMin"] !== 0 ||
                       tameData["ascerbicMin"] !== 0) && (
                         <>
-                          <div className="flex flex-col items-center">
+                          {Object.entries(tameData).filter(([k, _]) => ["narcoberriesMin", "bioMin", "narcoticsMin", "ascerbicMin"].includes(k)).map(([k, v]) => (
+                            <div className="flex flex-col items-center">
+                              <img
+                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcoberry.png`}
+                                alt=""
+                                className="w-12"
+                              />
+                              <p>{v.toString()}</p>
+                              <p className="text-xs">Narcoberries</p>
+                            </div>
+                          )
+                          )}
+                          {/* <div className="flex flex-col items-center">
                             <img
                               src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/narcoberry.png`}
                               alt=""
@@ -1499,8 +1511,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                             />
                             <p>{tameData["narcoberriesMin"]}</p>
                             <p className="text-xs">Narcoberries</p>
-                          </div>
-                          <div className="flex flex-col items-center">
+                          </div> */}
+                          {/* <div className="flex flex-col items-center">
                             <img
                               src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bio-toxin.png`}
                               alt=""
@@ -1526,7 +1538,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                             />
                             <p>{tameData["ascerbicMin"]}</p>
                             <p className="text-xs">Ascerbic Mushroom</p>
-                          </div>
+                          </div> */}
                         </>
                       )}
                   </div>
@@ -1536,51 +1548,51 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                   <>
                     <p className="mt-3 text-lg">Knock Out</p>
                     <div className="max-w-screen rw-segment relative flex flex-row gap-2 overflow-x-auto rounded-md py-3 text-center">
-                      {calculateWeapons.map((weapon, i) => (
+                      {calculateWeapons.map(({ id, name, image, isPossible, chanceOfDeath, hits, hitboxes, userDamage, chanceOfDeathHigh }) => (
                         <div
-                          key={`weapon-${i}`}
+                          key={`weapon-${id}`}
                           className={clsx(
                             `animate-fade-in my-1 flex min-h-full min-w-[8rem] flex-1 flex-col items-center justify-between space-y-1 rounded bg-zinc-200 p-3 first:ml-1 last:mr-1 dark:bg-zinc-600`,
                             {
                               "shadow-pea-500 shadow":
-                                weapon.isPossible && weapon.chanceOfDeath < 99,
+                                isPossible && chanceOfDeath < 99,
                               "rw-img-disable text-gray-500":
-                                !weapon.isPossible ||
-                                weapon.chanceOfDeath >= 99,
+                                !isPossible ||
+                                chanceOfDeath >= 99,
                             }
                           )}
                         >
                           <img
                             className="h-16 w-16"
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${weapon.image}`}
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
                           />
                           <Link
-                            to={routes.item({ id: weapon.id.toString() })}
+                            to={routes.item({ id: id.toString() })}
                             className="w-full"
                           >
-                            {weapon.name}
+                            {name}
                           </Link>
-                          {weapon.isPossible ? (
+                          {isPossible ? (
                             <Counter
                               startNum={0}
-                              endNum={weapon.hits}
-                              duration={3000 / weapon.hits}
+                              endNum={hits}
+                              duration={3000 / hits}
                             />
                           ) : (
                             <p>Not Possible</p>
                           )}
-                          {weapon.chanceOfDeath > 0 && weapon.isPossible && (
+                          {chanceOfDeath > 0 && isPossible && (
                             <p
                               className={clsx("text-xs", {
-                                "text-red-300": weapon.chanceOfDeathHigh,
+                                "text-red-300": chanceOfDeathHigh,
                               })}
                             >
-                              {weapon.chanceOfDeath}% chance of death
+                              {chanceOfDeath}% chance of death
                             </p>
                           )}
-                          {weapon.hitboxes.length > 0 && (
+                          {hitboxes.length > 0 && (
                             <span className="rounded bg-gray-100 px-2.5 py-0.5 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
-                              {weapon.hitboxes.map((h) => (
+                              {hitboxes.map((h) => (
                                 <span
                                   key={`hitbox-${h.name}`}
                                 >{`${h.name} - ${h.multiplier}x`}</span>
@@ -1590,21 +1602,21 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           <div className="rw-button-group max-w-full">
                             <input
                               className="rw-input w-12 !p-1 text-center"
-                              defaultValue={weapon.userDamage}
+                              defaultValue={userDamage}
                               disabled={
-                                !weapon.isPossible || weapon.chanceOfDeath >= 99
+                                !isPossible || chanceOfDeath >= 99
                               }
                               onChange={debounce((e) => {
                                 setWeaponDamage({
                                   ...weaponDamage,
-                                  [weapon.id]: e.target.value,
+                                  [id]: e.target.value,
                                 });
                               }, 300)}
                             />
                             <input
                               type="readonly"
                               disabled={
-                                !weapon.isPossible || weapon.chanceOfDeath >= 99
+                                !isPossible || chanceOfDeath >= 99
                               }
                               className="rw-input !w-5 !p-1 text-center"
                               readOnly
