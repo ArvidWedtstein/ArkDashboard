@@ -20,11 +20,6 @@ import { useEffect, useRef, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
 import Lookup from "src/components/Util/Lookup/Lookup";
 
-const formatDatetime = (value) => {
-  if (value) {
-    return value.replace(/:\d{2}\.\d{3}\w/, "");
-  }
-};
 
 type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
 

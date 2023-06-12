@@ -19,6 +19,11 @@ const HomePage = () => {
   //   }
   // }, [supabase])
 
+  const formatDatetime = (value) => {
+    if (value) {
+      return value.toString().replace(/:\d{2}\.\d{3}\w/, "");
+    }
+  };
 
   return (
     <>
@@ -63,6 +68,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
+
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}

@@ -5,7 +5,7 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Dinos from "src/components/Dino/Dinos";
 import Pagination from "src/components/Util/Pagination/Pagination";
-// query FindDinos($page: Int) {
+
 export const QUERY = gql`
   query FindDinos($page: Int, $search: String, $category: String) {
     dinosPage(page: $page, search: $search, category: $category) {
