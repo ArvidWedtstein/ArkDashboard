@@ -10,6 +10,7 @@ interface CheckboxGroupProps {
     image?: string | React.ReactNode;
   }[];
   form?: boolean;
+  className?: string;
   defaultValue?: string[];
   onChange?: (name: string, value: string[]) => void;
   validation?: {
@@ -26,6 +27,7 @@ const CheckboxGroup = ({
   form = true,
   defaultValue = [],
   onChange,
+  className,
   validation = {
     single: false,
   },
@@ -69,7 +71,7 @@ const CheckboxGroup = ({
   );
 
   return (
-    <div className="mt-1 flex h-fit flex-wrap gap-1 md:gap-3">
+    <div className={clsx("mt-1 flex h-fit flex-wrap gap-1 md:gap-3", className)}>
       {memoizedOptions.map(({ label, image, value: optValue }) => (
         <label key={label} aria-details={`Item: ${optValue}`}>
           <input
@@ -83,9 +85,10 @@ const CheckboxGroup = ({
           />
           <span
             className={clsx(
-              "rw-check-tile relative flex h-28 w-28 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-zinc-500 bg-zinc-300 shadow transition-all duration-150 dark:bg-zinc-600",
+              "rw-check-tile relative flex h-28 w-28 flex-col items-center justify-center rounded-lg border-2 border-zinc-500 bg-zinc-300 shadow transition-all duration-150 dark:bg-zinc-600",
               {
                 disabled: !name && !label,
+                'cursor-pointer': name && label,
               }
             )}
           >

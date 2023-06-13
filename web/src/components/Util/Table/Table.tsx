@@ -294,7 +294,7 @@ const Table = ({
     const endIndex = startIndex + selectedPageSizeOption;
 
     return SortedFilteredData.slice(startIndex, endIndex);
-  }, [SortedFilteredData, currentPage]);
+  }, [SortedFilteredData, currentPage, selectedPageSizeOption]);
 
   const handleSearch = debounce((e) => setSearchTerm(e.target.value), 500);
 
@@ -337,7 +337,7 @@ const Table = ({
         aria-sort="none"
         scope="col"
         onClick={() => {
-          setSort((prev) => ({ column: other.field, direction: prev.direction === "asc" ? "desc" : "asc" }));
+          other.sortable && setSort((prev) => ({ column: other.field, direction: prev.direction === "asc" ? "desc" : "asc" }));
         }}
       >
         {label}
@@ -922,7 +922,7 @@ const Table = ({
       <table className="relative mr-auto w-full table-auto text-left text-sm text-zinc-700 dark:text-zinc-300">
         <thead className="text-sm uppercase">
           <tr
-            className={clsx("table-row rounded-t-lg", {
+            className={clsx("table-row", {
               "divide-x divide-gray-400 dark:divide-zinc-800": mergedSettings.borders.vertical,
               hidden: !mergedSettings.header,
             })}
@@ -938,8 +938,7 @@ const Table = ({
           </tr>
         </thead>
         <tbody
-          className={
-            mergedSettings.borders.horizontal &&
+          className={mergedSettings.borders.horizontal &&
             "divide-y divide-gray-400 dark:divide-zinc-800"
           }
         >

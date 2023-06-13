@@ -145,7 +145,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
         image={currentModalImage}
       />
 
-      {/* TODO: move */}
+      {/* TODO: move to own page? */}
       <Modal
         isOpen={isRaided}
         onClose={() => setIsRaided(false)}
