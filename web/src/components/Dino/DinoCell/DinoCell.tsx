@@ -34,6 +34,7 @@ export const QUERY = gql`
       base_points
       non_violent_food_rate_mult
       taming_interval
+      disable_tame
       base_taming_time
       x_variant
       mounted_weaponry
@@ -41,6 +42,7 @@ export const QUERY = gql`
       movement
       carryable_by
       image
+      type
       multipliers
       DinoStat {
         Item {
@@ -77,13 +79,18 @@ export const QUERY = gql`
   }
 `;
 
-
 export const beforeQuery = (props) => {
   return {
-    variables: { id: props.id, ids: [745, 748, 1038, 362, 784, 376, 731, 1342, 139, 434, 848, 451, 1041, 121, 123, 713, 719] },
+    variables: {
+      id: props.id,
+      ids: [
+        745, 748, 1038, 362, 784, 376, 731, 1342, 139, 434, 848, 451, 1041, 121,
+        123, 713, 719,
+      ],
+    },
     fetchPolicy: "cache-and-network",
   };
-}
+};
 export const Loading = () => (
   <div className="flex h-full w-full items-center justify-center bg-transparent">
     <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>
@@ -115,7 +122,7 @@ export const Failure = ({ error }: CellFailureProps) => {
 // CellSuccessProps<FindDinoById> & CellSuccessProps<FindItems>
 export const Success = ({
   dino,
-  itemsByIds
+  itemsByIds,
 }: CellSuccessProps<FindDinoById>) => {
   return (
     <>
