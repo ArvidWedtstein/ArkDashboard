@@ -1,9 +1,9 @@
-import type { FindTimelineBasespotDinos } from 'types/graphql'
+import type { FindTimelineBasespotDinos } from "types/graphql";
 
-import { Link, routes } from '@redwoodjs/router'
-import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
+import { Link, routes } from "@redwoodjs/router";
+import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
-import TimelineBasespotDinos from 'src/components/TimelineBasespotDino/TimelineBasespotDinos'
+import TimelineBasespotDinos from "src/components/TimelineBasespotDino/TimelineBasespotDinos";
 
 export const QUERY = gql`
   query FindTimelineBasespotDinos {
@@ -26,7 +26,6 @@ export const QUERY = gql`
       weight
       melee_damage
       movement_speed
-      torpor
       gender
       wild_health
       wild_stamina
@@ -35,31 +34,31 @@ export const QUERY = gql`
       wild_weight
       wild_melee_damage
       wild_movement_speed
-      wild_torpor
     }
   }
-`
+`;
 
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => <div>Loading...</div>;
 
 export const Empty = () => {
   return (
     <div className="rw-text-center">
-      {'No timelineBasespotDinos yet. '}
-      <Link
-        to={routes.newTimelineBasespotDino()}
-        className="rw-link"
-      >
-        {'Create one?'}
+      {"No timelineBasespotDinos yet. "}
+      <Link to={routes.newTimelineBasespotDino()} className="rw-link">
+        {"Create one?"}
       </Link>
     </div>
-  )
-}
+  );
+};
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>
-)
+);
 
-export const Success = ({ timelineBasespotDinos }: CellSuccessProps<FindTimelineBasespotDinos>) => {
-  return <TimelineBasespotDinos timelineBasespotDinos={timelineBasespotDinos} />
-}
+export const Success = ({
+  timelineBasespotDinos,
+}: CellSuccessProps<FindTimelineBasespotDinos>) => {
+  return (
+    <TimelineBasespotDinos timelineBasespotDinos={timelineBasespotDinos} />
+  );
+};

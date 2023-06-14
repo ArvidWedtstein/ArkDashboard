@@ -1,8 +1,8 @@
-import type { FindTimelineBasespotDinoById } from 'types/graphql'
+import type { FindTimelineBasespotDinoById } from "types/graphql";
 
-import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
+import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
-import TimelineBasespotDino from 'src/components/TimelineBasespotDino/TimelineBasespotDino'
+import TimelineBasespotDino from "src/components/TimelineBasespotDino/TimelineBasespotDino";
 
 export const QUERY = gql`
   query FindTimelineBasespotDinoById($id: String!) {
@@ -25,7 +25,6 @@ export const QUERY = gql`
       weight
       melee_damage
       movement_speed
-      torpor
       gender
       wild_health
       wild_stamina
@@ -34,19 +33,20 @@ export const QUERY = gql`
       wild_weight
       wild_melee_damage
       wild_movement_speed
-      wild_torpor
     }
   }
-`
+`;
 
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => <div>Loading...</div>;
 
-export const Empty = () => <div>TimelineBasespotDino not found</div>
+export const Empty = () => <div>TimelineBasespotDino not found</div>;
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>
-)
+);
 
-export const Success = ({ timelineBasespotDino }: CellSuccessProps<FindTimelineBasespotDinoById>) => {
-  return <TimelineBasespotDino timelineBasespotDino={timelineBasespotDino} />
-}
+export const Success = ({
+  timelineBasespotDino,
+}: CellSuccessProps<FindTimelineBasespotDinoById>) => {
+  return <TimelineBasespotDino timelineBasespotDino={timelineBasespotDino} />;
+};

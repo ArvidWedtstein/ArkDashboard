@@ -18,7 +18,6 @@ export const schema = gql`
     weight: Float
     melee_damage: Float
     movement_speed: Float
-    torpor: Float
     gender: String
     wild_health: Float
     wild_stamina: Float
@@ -27,14 +26,13 @@ export const schema = gql`
     wild_weight: Float
     wild_melee_damage: Float
     wild_movement_speed: Float
-    wild_torpor: Float
     Dino: Dino!
     TimelineBasespot: TimelineBasespot!
   }
 
   type Query {
-    timelineBasespotDinos: [TimelineBasespotDino!]! @skipAuth
-    timelineBasespotDino(id: String!): TimelineBasespotDino @skipAuth
+    timelineBasespotDinos: [TimelineBasespotDino!]! @requireAuth
+    timelineBasespotDino(id: String!): TimelineBasespotDino @requireAuth
   }
 
   input CreateTimelineBasespotDinoInput {
@@ -55,7 +53,6 @@ export const schema = gql`
     weight: Float
     melee_damage: Float
     movement_speed: Float
-    torpor: Float
     gender: String
     wild_health: Float
     wild_stamina: Float
@@ -64,7 +61,6 @@ export const schema = gql`
     wild_weight: Float
     wild_melee_damage: Float
     wild_movement_speed: Float
-    wild_torpor: Float
   }
 
   input UpdateTimelineBasespotDinoInput {
@@ -85,7 +81,6 @@ export const schema = gql`
     weight: Float
     melee_damage: Float
     movement_speed: Float
-    torpor: Float
     gender: String
     wild_health: Float
     wild_stamina: Float
@@ -94,23 +89,16 @@ export const schema = gql`
     wild_weight: Float
     wild_melee_damage: Float
     wild_movement_speed: Float
-    wild_torpor: Float
   }
 
   type Mutation {
     createTimelineBasespotDino(
       input: CreateTimelineBasespotDinoInput!
-    ): TimelineBasespotDino!
-      @requireAuth
-      @hasPermission(permission: "timeline_create")
+    ): TimelineBasespotDino! @requireAuth
     updateTimelineBasespotDino(
       id: String!
       input: UpdateTimelineBasespotDinoInput!
-    ): TimelineBasespotDino!
-      @requireAuth
-      @hasPermission(permission: "timeline_update")
-    deleteTimelineBasespotDino(id: String!): TimelineBasespotDino!
-      @requireAuth
-      @hasPermission(permission: "timeline_delete")
+    ): TimelineBasespotDino! @requireAuth
+    deleteTimelineBasespotDino(id: String!): TimelineBasespotDino! @requireAuth
   }
-`;
+`

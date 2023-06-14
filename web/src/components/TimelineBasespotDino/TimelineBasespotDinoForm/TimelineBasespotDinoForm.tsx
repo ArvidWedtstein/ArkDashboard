@@ -571,46 +571,6 @@ const TimelineBasespotDinoForm = (props: TimelineBasespotDinoFormProps) => {
               <FieldError name="movement_speed" className="rw-field-error" />
             </div>
           </div>
-          <div>
-            <div>
-              <Label
-                name="wild_torpor"
-                className="rw-label"
-                errorClassName="rw-label rw-label-error"
-              >
-                Torpor Wild
-              </Label>
-
-              <NumberField
-                name="wild_torpor"
-                defaultValue={props.timelineBasespotDino?.wild_torpor || 0}
-                className="rw-input"
-                errorClassName="rw-input rw-input-error"
-                validation={{ valueAsNumber: true }}
-              />
-
-              <FieldError name="wild_torpor" className="rw-field-error" />
-            </div>
-            <div>
-              <Label
-                name="torpor"
-                className="rw-label"
-                errorClassName="rw-label rw-label-error"
-              >
-                Torpor
-              </Label>
-
-              <NumberField
-                name="torpor"
-                defaultValue={props.timelineBasespotDino?.torpor || 0}
-                className="rw-input"
-                errorClassName="rw-input rw-input-error"
-                validation={{ valueAsNumber: true }}
-              />
-
-              <FieldError name="torpor" className="rw-field-error" />
-            </div>
-          </div>
         </fieldset>
 
         <div className="rw-button-group">

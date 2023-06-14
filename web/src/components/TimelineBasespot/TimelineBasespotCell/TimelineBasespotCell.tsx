@@ -54,7 +54,6 @@ export const QUERY = gql`
         weight
         melee_damage
         movement_speed
-        torpor
         wild_health
         wild_stamina
         wild_oxygen
@@ -62,7 +61,6 @@ export const QUERY = gql`
         wild_weight
         wild_melee_damage
         wild_movement_speed
-        wild_torpor
         gender
         Dino {
           name

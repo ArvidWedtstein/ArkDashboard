@@ -1,11 +1,13 @@
+import { Link, routes, navigate } from "@redwoodjs/router";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
 
-import { Link, routes, navigate } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
+import { timeTag } from "src/lib/formatters";
 
-import { timeTag,  } from 'src/lib/formatters'
-
-import type { DeleteTimelineBasespotDinoMutationVariables, FindTimelineBasespotDinoById } from 'types/graphql'
+import type {
+  DeleteTimelineBasespotDinoMutationVariables,
+  FindTimelineBasespotDinoById,
+} from "types/graphql";
 
 const DELETE_TIMELINE_BASESPOT_DINO_MUTATION = gql`
   mutation DeleteTimelineBasespotDinoMutation($id: String!) {
@@ -13,28 +15,39 @@ const DELETE_TIMELINE_BASESPOT_DINO_MUTATION = gql`
       id
     }
   }
-`
+`;
 
 interface Props {
-  timelineBasespotDino: NonNullable<FindTimelineBasespotDinoById['timelineBasespotDino']>
+  timelineBasespotDino: NonNullable<
+    FindTimelineBasespotDinoById["timelineBasespotDino"]
+  >;
 }
 
 const TimelineBasespotDino = ({ timelineBasespotDino }: Props) => {
-  const [deleteTimelineBasespotDino] = useMutation(DELETE_TIMELINE_BASESPOT_DINO_MUTATION, {
-    onCompleted: () => {
-      toast.success('TimelineBasespotDino deleted')
-      navigate(routes.timelineBasespotDinos())
-    },
-    onError: (error) => {
-      toast.error(error.message)
-    },
-  })
-
-  const onDeleteClick = (id: DeleteTimelineBasespotDinoMutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete timelineBasespotDino ' + id + '?')) {
-      deleteTimelineBasespotDino({ variables: { id } })
+  const [deleteTimelineBasespotDino] = useMutation(
+    DELETE_TIMELINE_BASESPOT_DINO_MUTATION,
+    {
+      onCompleted: () => {
+        toast.success("TimelineBasespotDino deleted");
+        navigate(routes.timelineBasespotDinos());
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
     }
-  }
+  );
+
+  const onDeleteClick = (
+    id: DeleteTimelineBasespotDinoMutationVariables["id"]
+  ) => {
+    if (
+      confirm(
+        "Are you sure you want to delete timelineBasespotDino " + id + "?"
+      )
+    ) {
+      deleteTimelineBasespotDino({ variables: { id } });
+    }
+  };
 
   return (
     <>
@@ -49,87 +62,106 @@ const TimelineBasespotDino = ({ timelineBasespotDino }: Props) => {
             <tr>
               <th>Id</th>
               <td>{timelineBasespotDino.id}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Created at</th>
               <td>{timeTag(timelineBasespotDino.created_at)}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Updated at</th>
               <td>{timeTag(timelineBasespotDino.updated_at)}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Timelinebasespot id</th>
               <td>{timelineBasespotDino.timelinebasespot_id}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Dino id</th>
               <td>{timelineBasespotDino.dino_id}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Name</th>
               <td>{timelineBasespotDino.name}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Birth date</th>
               <td>{timeTag(timelineBasespotDino.birth_date)}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Death date</th>
               <td>{timeTag(timelineBasespotDino.death_date)}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Death cause</th>
               <td>{timelineBasespotDino.death_cause}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Level wild</th>
               <td>{timelineBasespotDino.level_wild}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Level</th>
               <td>{timelineBasespotDino.level}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Health</th>
               <td>{timelineBasespotDino.health}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Stamina</th>
               <td>{timelineBasespotDino.stamina}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Oxygen</th>
               <td>{timelineBasespotDino.oxygen}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Food</th>
               <td>{timelineBasespotDino.food}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Weight</th>
               <td>{timelineBasespotDino.weight}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Melee damage</th>
               <td>{timelineBasespotDino.melee_damage}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Movement speed</th>
               <td>{timelineBasespotDino.movement_speed}</td>
-            </tr><tr>
-              <th>Torpor</th>
-              <td>{timelineBasespotDino.torpor}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Gender</th>
               <td>{timelineBasespotDino.gender}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Wild health</th>
               <td>{timelineBasespotDino.wild_health}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Wild stamina</th>
               <td>{timelineBasespotDino.wild_stamina}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Wild oxygen</th>
               <td>{timelineBasespotDino.wild_oxygen}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Wild food</th>
               <td>{timelineBasespotDino.wild_food}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Wild weight</th>
               <td>{timelineBasespotDino.wild_weight}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Wild melee damage</th>
               <td>{timelineBasespotDino.wild_melee_damage}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Wild movement speed</th>
               <td>{timelineBasespotDino.wild_movement_speed}</td>
-            </tr><tr>
-              <th>Wild torpor</th>
-              <td>{timelineBasespotDino.wild_torpor}</td>
             </tr>
           </tbody>
         </table>
@@ -150,7 +182,7 @@ const TimelineBasespotDino = ({ timelineBasespotDino }: Props) => {
         </button>
       </nav>
     </>
-  )
-}
+  );
+};
 
-export default TimelineBasespotDino
+export default TimelineBasespotDino;

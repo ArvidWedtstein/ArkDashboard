@@ -333,33 +333,33 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                     (currentUser.permissions.some(
                       (p) => p === "timeline_update"
                     ) && (
-                        <Link
-                          to={routes.editTimelineBasespot({
-                            id: timelineBasespot.id.toString(),
-                          })}
-                          className="rw-button rw-button-gray-outline"
-                        >
-                          Edit
-                        </Link>
-                      ))}
+                      <Link
+                        to={routes.editTimelineBasespot({
+                          id: timelineBasespot.id.toString(),
+                        })}
+                        className="rw-button rw-button-gray-outline"
+                      >
+                        Edit
+                      </Link>
+                    ))}
                   {hasRole("timeline_delete") ||
                     (currentUser.permissions.some(
                       (p) => p === "timeline_delete"
                     ) && (
-                        <button
-                          onClick={() => onDeleteClick(timelineBasespot.id)}
-                          className="rw-button rw-button-red-outline"
+                      <button
+                        onClick={() => onDeleteClick(timelineBasespot.id)}
+                        className="rw-button rw-button-red-outline"
+                      >
+                        Delete
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 448 512"
+                          className="rw-button-icon"
                         >
-                          Delete
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                            className="rw-button-icon"
-                          >
-                            <path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
-                          </svg>
-                        </button>
-                      ))}
+                          <path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
+                        </svg>
+                      </button>
+                    ))}
                   {(!timelineBasespot.TimelineBasespotRaid.find(
                     (f) => f.base_survived === false
                   ) &&
@@ -371,20 +371,20 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                     (currentUser.permissions.some(
                       (p) => p === "timeline_update"
                     ) && (
-                        <button
-                          className="rw-button rw-button-red-outline"
-                          onClick={() => initRaid()}
+                      <button
+                        className="rw-button rw-button-red-outline"
+                        onClick={() => initRaid()}
+                      >
+                        Raid
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 576 512"
+                          className="rw-button-icon"
                         >
-                          Raid
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 576 512"
-                            className="rw-button-icon"
-                          >
-                            <path d="M285.3 247.1c-3.093-4.635-8.161-7.134-13.32-7.134c-8.739 0-15.1 7.108-15.1 16.03c0 3.05 .8717 6.133 2.693 8.859l52.37 78.56l-76.12 25.38c-6.415 2.16-10.94 8.159-10.94 15.18c0 2.758 .7104 5.498 2.109 7.946l63.1 112C293.1 509.1 298.5 512 304 512c11.25 0 15.99-9.84 15.99-16.02c0-2.691-.6807-5.416-2.114-7.915L263.6 393l77.48-25.81c1.701-.5727 10.93-4.426 10.93-15.19c0-3.121-.9093-6.205-2.685-8.873L285.3 247.1zM575.1 256c0-4.435-1.831-8.841-5.423-12l-58.6-51.87c.002-.0938 0 .0938 0 0l.0247-144.1c0-8.844-7.156-16-15.1-16L400 32c-8.844 0-15.1 7.156-15.1 16l-.0014 31.37L298.6 4c-3.016-2.656-6.797-3.997-10.58-3.997c-3.781 0-7.563 1.34-10.58 3.997l-271.1 240C1.831 247.2 .0007 251.6 .0007 256c0 8.92 7.239 15.99 16.04 15.99c3.757 0 7.52-1.313 10.54-3.993l37.42-33.02V432c0 44.13 35.89 80 79.1 80h63.1c8.844 0 15.1-7.156 15.1-16S216.8 480 208 480h-63.1c-26.47 0-47.1-21.53-47.1-48v-224c0-.377-.1895-.6914-.2148-1.062L288 37.34l192.2 169.6C480.2 207.3 479.1 207.6 479.1 208v224c0 26.47-21.53 48-47.1 48h-31.1c-8.844 0-15.1 7.156-15.1 16s7.156 16 15.1 16h31.1c44.11 0 79.1-35.88 79.1-80V234.1L549.4 268C552.5 270.7 556.2 272 559.1 272C568.7 272 575.1 264.9 575.1 256zM479.1 164.1l-63.1-56.47V64h63.1V164.1z" />
-                          </svg>
-                        </button>
-                      ))}
+                          <path d="M285.3 247.1c-3.093-4.635-8.161-7.134-13.32-7.134c-8.739 0-15.1 7.108-15.1 16.03c0 3.05 .8717 6.133 2.693 8.859l52.37 78.56l-76.12 25.38c-6.415 2.16-10.94 8.159-10.94 15.18c0 2.758 .7104 5.498 2.109 7.946l63.1 112C293.1 509.1 298.5 512 304 512c11.25 0 15.99-9.84 15.99-16.02c0-2.691-.6807-5.416-2.114-7.915L263.6 393l77.48-25.81c1.701-.5727 10.93-4.426 10.93-15.19c0-3.121-.9093-6.205-2.685-8.873L285.3 247.1zM575.1 256c0-4.435-1.831-8.841-5.423-12l-58.6-51.87c.002-.0938 0 .0938 0 0l.0247-144.1c0-8.844-7.156-16-15.1-16L400 32c-8.844 0-15.1 7.156-15.1 16l-.0014 31.37L298.6 4c-3.016-2.656-6.797-3.997-10.58-3.997c-3.781 0-7.563 1.34-10.58 3.997l-271.1 240C1.831 247.2 .0007 251.6 .0007 256c0 8.92 7.239 15.99 16.04 15.99c3.757 0 7.52-1.313 10.54-3.993l37.42-33.02V432c0 44.13 35.89 80 79.1 80h63.1c8.844 0 15.1-7.156 15.1-16S216.8 480 208 480h-63.1c-26.47 0-47.1-21.53-47.1-48v-224c0-.377-.1895-.6914-.2148-1.062L288 37.34l192.2 169.6C480.2 207.3 479.1 207.6 479.1 208v224c0 26.47-21.53 48-47.1 48h-31.1c-8.844 0-15.1 7.156-15.1 16s7.156 16 15.1 16h31.1c44.11 0 79.1-35.88 79.1-80V234.1L549.4 268C552.5 270.7 556.2 272 559.1 272C568.7 272 575.1 264.9 575.1 256zM479.1 164.1l-63.1-56.47V64h63.1V164.1z" />
+                        </svg>
+                      </button>
+                    ))}
                   <Link
                     to={routes.newTimelineBasespotDino({
                       id: timelineBasespot.id,
@@ -499,8 +499,9 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                             {timeTag(raid_start)} - {timeTag(raid_end)}
                           </p>
                           <p className="text-gray-500">
-                            {`Base ${base_survived ? "survived" : "did not survive"
-                              }`}
+                            {`Base ${
+                              base_survived ? "survived" : "did not survive"
+                            }`}
                           </p>
                         </div>
                       </div>
@@ -623,18 +624,18 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                   <p className="text-base leading-relaxed">
                     {timelineBasespot.TimelineBasespotPerson.length > 0
                       ? formatter.format(
-                        timelineBasespot.TimelineBasespotPerson.map(
-                          (p) =>
-                            // p.user_id ? (
-                            //   <Link to={routes.profile({ id: p.user_id })}>
-                            //     {p.ingame_name}
-                            //   </Link>
-                            // ) : (
-                            //   p.ingame_name
-                            // )
-                            p.ingame_name
+                          timelineBasespot.TimelineBasespotPerson.map(
+                            (p) =>
+                              // p.user_id ? (
+                              //   <Link to={routes.profile({ id: p.user_id })}>
+                              //     {p.ingame_name}
+                              //   </Link>
+                              // ) : (
+                              //   p.ingame_name
+                              // )
+                              p.ingame_name
+                          )
                         )
-                      )
                       : "none"}
                   </p>
                 </div>
@@ -721,15 +722,15 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           timeStyle: "short",
                         }) === "Invalid Date"
                           ? new Date(img.created_at).toLocaleString("de", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })
                           : convertToDate(
-                            img.name.replace("_1.jpg", "")
-                          ).toLocaleString("de", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })}
+                              img.name.replace("_1.jpg", "")
+                            ).toLocaleString("de", {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })}
                       </span>
                     </button>
                   </div>
@@ -804,10 +805,11 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {formatNumber(
                               dino.wild_stamina *
-                              dino.Dino.base_stats["s"]["w"] +
-                              dino.stamina * dino.Dino.base_stats["s"]["t"] +
-                              dino.Dino.base_stats["s"]["b"]
-                              , { notation: 'compact' })}
+                                dino.Dino.base_stats["s"]["w"] +
+                                dino.stamina * dino.Dino.base_stats["s"]["t"] +
+                                dino.Dino.base_stats["s"]["b"],
+                              { notation: "compact" }
+                            )}
                           </span>
                         </p>
                         <p className="text-center">
@@ -822,10 +824,11 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {formatNumber(
                               dino.wild_weight *
-                              dino.Dino.base_stats["w"]["w"] +
-                              dino.weight * dino.Dino.base_stats["w"]["t"] +
-                              dino.Dino.base_stats["w"]["b"]
-                              , { notation: 'compact' })}
+                                dino.Dino.base_stats["w"]["w"] +
+                                dino.weight * dino.Dino.base_stats["w"]["t"] +
+                                dino.Dino.base_stats["w"]["b"],
+                              { notation: "compact" }
+                            )}
                           </span>
                         </p>
                         <p className="text-center">
@@ -840,10 +843,11 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {formatNumber(
                               dino.wild_oxygen *
-                              dino.Dino.base_stats["o"]["w"] +
-                              dino.oxygen * dino.Dino.base_stats["o"]["t"] +
-                              dino.Dino.base_stats["o"]["b"]
-                              , { notation: 'compact' })}
+                                dino.Dino.base_stats["o"]["w"] +
+                                dino.oxygen * dino.Dino.base_stats["o"]["t"] +
+                                dino.Dino.base_stats["o"]["b"],
+                              { notation: "compact" }
+                            )}
                           </span>
                         </p>
                         <p className="text-center">
@@ -859,7 +863,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                             {dino.wild_melee_damage *
                               dino.Dino.base_stats["d"]["w"] +
                               dino.melee_damage *
-                              dino.Dino.base_stats["d"]["t"] +
+                                dino.Dino.base_stats["d"]["t"] +
                               dino.Dino.base_stats["d"]["b"]}
                             %
                           </span>
@@ -876,9 +880,10 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {formatNumber(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                              dino.food * dino.Dino.base_stats["f"]["t"] +
-                              dino.Dino.base_stats["f"]["b"]
-                              , { notation: 'compact' })}
+                                dino.food * dino.Dino.base_stats["f"]["t"] +
+                                dino.Dino.base_stats["f"]["b"],
+                              { notation: "compact" }
+                            )}
                           </span>
                         </p>
                         <p className="text-center">
@@ -893,11 +898,12 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span>
                             {formatNumber(
                               dino.wild_movement_speed *
-                              dino.Dino.base_stats["m"]["w"] +
-                              dino.movement_speed *
-                              dino.Dino.base_stats["m"]["t"] +
-                              dino.Dino.base_stats["m"]["b"]
-                              , { notation: 'compact' })}
+                                dino.Dino.base_stats["m"]["w"] +
+                                dino.movement_speed *
+                                  dino.Dino.base_stats["m"]["t"] +
+                                dino.Dino.base_stats["m"]["b"],
+                              { notation: "compact" }
+                            )}
                             %
                           </span>
                         </p>
@@ -911,17 +917,19 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span className="absolute w-full items-center text-base font-semibold">
                             {formatNumber(
                               dino.wild_health *
-                              dino.Dino.base_stats["h"]["w"] +
-                              dino.health * dino.Dino.base_stats["h"]["t"] +
-                              dino.Dino.base_stats["h"]["b"]
-                              , { notation: 'compact' })}
+                                dino.Dino.base_stats["h"]["w"] +
+                                dino.health * dino.Dino.base_stats["h"]["t"] +
+                                dino.Dino.base_stats["h"]["b"],
+                              { notation: "compact" }
+                            )}
                             /
                             {formatNumber(
                               dino.wild_health *
-                              dino.Dino.base_stats["h"]["w"] +
-                              dino.health * dino.Dino.base_stats["h"]["t"] +
-                              dino.Dino.base_stats["h"]["b"]
-                              , { notation: 'compact' })}{" "}
+                                dino.Dino.base_stats["h"]["w"] +
+                                dino.health * dino.Dino.base_stats["h"]["t"] +
+                                dino.Dino.base_stats["h"]["b"],
+                              { notation: "compact" }
+                            )}{" "}
                             Health ({dino.wild_health}-{dino.health})
                           </span>
                         </div>
@@ -932,15 +940,17 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span className="absolute w-full items-center text-base font-semibold">
                             {formatNumber(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                              dino.food * dino.Dino.base_stats["f"]["t"] +
-                              dino.Dino.base_stats["f"]["b"]
-                              , { notation: 'compact' })}
+                                dino.food * dino.Dino.base_stats["f"]["t"] +
+                                dino.Dino.base_stats["f"]["b"],
+                              { notation: "compact" }
+                            )}
                             /
                             {formatNumber(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                              dino.food * dino.Dino.base_stats["f"]["t"] +
-                              dino.Dino.base_stats["f"]["b"]
-                              , { notation: 'compact' })}{" "}
+                                dino.food * dino.Dino.base_stats["f"]["t"] +
+                                dino.Dino.base_stats["f"]["b"],
+                              { notation: "compact" }
+                            )}{" "}
                             Food ({dino.wild_food}-{dino.food})
                           </span>
                         </div>
@@ -949,20 +959,20 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                         <div className="relative flex h-full w-full items-center border-2 border-[#0D2836]">
                           <div className="h-full w-full bg-gradient-to-t from-[#A340B7] to-fuchsia-500"></div>
                           <span className="absolute w-full items-center text-base font-semibold">
-                            {formatNumber(
+                            {/* {formatNumber(
                               dino.wild_torpor *
                               dino.Dino.base_stats["t"]["w"] +
                               dino.torpor * dino.Dino.base_stats["t"]["t"] +
                               dino.Dino.base_stats["t"]["b"]
-                              , { notation: 'compact' })}
-                            /
-                            {formatNumber(
+                              , { notation: 'compact' })} */}
+                            0 /
+                            {/* {formatNumber(
                               dino.wild_torpor *
                               dino.Dino.base_stats["t"]["w"] +
                               dino.torpor * dino.Dino.base_stats["t"]["t"] +
                               dino.Dino.base_stats["t"]["b"]
-                              , { notation: 'compact' })}{" "}
-                            Torpor ({dino.wild_torpor}-{dino.torpor})
+                              , { notation: 'compact' })}{" "} */}
+                            0{/* Torpor ({dino.wild_torpor}-{dino.torpor}) */}
                           </span>
                         </div>
                       </div>
