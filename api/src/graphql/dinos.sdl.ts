@@ -9,18 +9,15 @@ export const schema = gql`
     can_destroy: [String]!
     base_stats: JSON
     exp_per_kill: Float
-    fits_through: [String]!
     egg_min: Float
     egg_max: Float
     tdps: Float
-    eats: [String]!
     maturation_time: Float
     incubation_time: Float
     affinity_needed: Float
     aff_inc: Float
     flee_threshold: Float
     hitboxes: JSON
-    drops: [String]!
     food_consumption_base: Float
     food_consumption_mult: Float
     disable_ko: Boolean
@@ -52,6 +49,7 @@ export const schema = gql`
     DinoStat: [DinoStat]!
     TimelineBasespotDino: [TimelineBasespotDino]!
   }
+
   type DinosPage {
     dinos: [Dino!]!
     count: Int!
@@ -72,18 +70,15 @@ export const schema = gql`
     can_destroy: [String]!
     base_stats: JSON
     exp_per_kill: Float
-    fits_through: [String]!
     egg_min: Float
     egg_max: Float
     tdps: Float
-    eats: [String]!
     maturation_time: Float
     incubation_time: Float
     affinity_needed: Float
     aff_inc: Float
     flee_threshold: Float
     hitboxes: JSON
-    drops: [String]!
     food_consumption_base: Float
     food_consumption_mult: Float
     disable_ko: Boolean
@@ -123,18 +118,15 @@ export const schema = gql`
     can_destroy: [String]!
     base_stats: JSON
     exp_per_kill: Float
-    fits_through: [String]!
     egg_min: Float
     egg_max: Float
     tdps: Float
-    eats: [String]!
     maturation_time: Float
     incubation_time: Float
     affinity_needed: Float
     aff_inc: Float
     flee_threshold: Float
     hitboxes: JSON
-    drops: [String]!
     food_consumption_base: Float
     food_consumption_mult: Float
     disable_ko: Boolean

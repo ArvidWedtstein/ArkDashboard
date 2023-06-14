@@ -5,28 +5,18 @@ import {
   routes,
   useParams,
 } from "@redwoodjs/router";
-import { useMutation } from "@redwoodjs/web";
-import { toast } from "@redwoodjs/web/toast";
 import {
-  FieldError,
   Form,
-  FormError,
   Label,
-  RWGqlError,
   SearchField,
   SelectField,
   Submit,
   TextField,
 } from "@redwoodjs/forms";
 
-import { QUERY } from "src/components/Dino/DinosCell";
-import type { DeleteDinoMutationVariables, FindDinos } from "types/graphql";
-import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
-
-
+import type { FindDinos } from "types/graphql";
 
 const DinosList = ({ dinosPage }: FindDinos) => {
-
   let { search, category } = useParams();
   const onSubmit = (e) => {
     navigate(
@@ -97,11 +87,11 @@ const DinosList = ({ dinosPage }: FindDinos) => {
         </nav>
       </Form>
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-5 3xl:grid-cols-8">
-        {dinosPage.dinos.map((dino) => (
+      <div className="3xl:grid-cols-8 grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-5">
+        {dinosPage.dinos.map(({ id, name, type, image }) => (
           <Link
-            key={`dino-${dino.id}`}
-            to={routes.dino({ id: dino.id })}
+            key={`dino-${id}`}
+            to={routes.dino({ id: id })}
             className="flex h-auto w-auto max-w-xs flex-row items-start justify-start rounded-md bg-zinc-600 p-4 text-center text-white"
           >
             <div className="flex h-full w-full flex-col items-start justify-between justify-items-stretch">
@@ -109,7 +99,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
                 <img
                   className="h-auto max-h-full"
                   loading="lazy"
-                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${dino.image}`}
+                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
                   onError={(e) => {
                     e.currentTarget.src = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/any-hat.png`;
                     // e.currentTarget.parentElement.hidden = true;
@@ -120,13 +110,13 @@ const DinosList = ({ dinosPage }: FindDinos) => {
                   }}
                 />
               </div>
-              <p className="tracking-wide subpixel-antialiased">{dino.name}</p>
+              <p className="tracking-wide subpixel-antialiased">{name}</p>
             </div>
             <div className="flex flex-col gap-1">
-              {dino.type &&
-                dino.type.map((type) => (
+              {type &&
+                type.map((type) => (
                   <img
-                    key={`dino-${dino.id}-${type}`}
+                    key={`dino-${id}-${type}`}
                     className="w-8"
                     title={type}
                     src={types[type]}
