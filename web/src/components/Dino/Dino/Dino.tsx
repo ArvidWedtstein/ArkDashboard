@@ -1821,7 +1821,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 {
                   field: "stat",
                   className: "font-bold",
-                  header: "Stat",
                   sortable: true,
                   render: ({ value }) => (
                     <div className="inline-flex items-center space-x-2">
