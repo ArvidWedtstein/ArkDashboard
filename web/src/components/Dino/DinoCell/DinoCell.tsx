@@ -10,7 +10,6 @@ export const QUERY = gql`
   query FindDinoById($id: String!, $ids: [BigInt!]!) {
     dino: dino(id: $id) {
       id
-      created_at
       name
       synonyms
       description
@@ -29,26 +28,19 @@ export const QUERY = gql`
       hitboxes
       food_consumption_base
       food_consumption_mult
-      disable_ko
       violent_tame
       taming_ineffectiveness
-      disable_food
       disable_mult
-      admin_note
       base_points
-      non_violent_food_affinity_mult
       non_violent_food_rate_mult
       taming_interval
       base_taming_time
-      disable_tame
       x_variant
       mounted_weaponry
       ridable
       movement
-      type
       carryable_by
       image
-      icon
       multipliers
       DinoStat {
         Item {
@@ -80,6 +72,7 @@ export const QUERY = gql`
       stats
       torpor
       torpor_duration
+      damage
     }
   }
 `;

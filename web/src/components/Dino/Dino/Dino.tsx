@@ -108,23 +108,23 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
   const [baseStats, setBaseStats] = useState(
     dino?.base_points &&
-      Object.entries(dino?.base_stats).map(([key, value]: any) => ({
-        stat: {
-          s: "Stamina",
-          w: "Weight",
-          o: "Oxygen",
-          d: "Melee Damage",
-          f: "Food",
-          m: "Movement Speed",
-          t: "Torpidity",
-          h: "Health",
-        }[key],
-        base: (typeof value === "object" ? value.b || 0 : value) || 0,
-        increasePerLevelWild: value.w || 0,
-        increasePerLevelTamed: value.t || 0,
-        total: 0,
-        points: 0,
-      }))
+    Object.entries(dino?.base_stats).map(([key, value]) => ({
+      stat: {
+        s: "Stamina",
+        w: "Weight",
+        o: "Oxygen",
+        d: "Melee Damage",
+        f: "Food",
+        m: "Movement Speed",
+        t: "Torpidity",
+        h: "Health",
+      }[key],
+      base: (typeof value === "object" ? value.b || 0 : value) || 0,
+      increasePerLevelWild: value.w || 0,
+      increasePerLevelTamed: value.t || 0,
+      total: 0,
+      points: 0,
+    }))
   );
 
   const onAdd = useCallback(
@@ -161,7 +161,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
     let i =
       dinoLevel -
-      baseStats.map((b) => b.points).reduce((a: any, b: any): any => a + b, 0);
+      baseStats.map((b) => b.points).reduce((a, b) => a + b, 0);
 
     while (i > 0) {
       const stat = baseStats.filter((d) => d.stat != "t")[
@@ -214,22 +214,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           userDamage: 100,
           durationDevKit: 5,
           hasMultipler: true,
-          torpor:
-            w.torpor ||
-            (w.stats as { id: number; value: any; duration?: number }[]).find(
-              (d) => d.id === 10
-            )?.value ||
-            0,
-          torpor_duration:
-            (w.stats as { id: number; value: any; duration?: number }[]).find(
-              (d) => d.id === 10
-            )?.duration || 0,
-          damage:
-            (w.stats as { id: number; value: any; duration?: number }[]).find(
-              (d) => d.id === 6
-            )?.value || 0,
           multipliers: (
-            w.stats as { id: number; value: any; duration?: number }[]
+            w.stats as { id: number; value: number | string[]; duration?: number }[]
           ).find((d) => d.id === 21)?.value as string[],
         })),
     [dino]
@@ -303,7 +289,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       startTransition(() =>
         setSelectedFood(
           dino.DinoStat.filter((f) => f.type === "food") &&
-            dino?.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
+          dino?.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
         )
       );
   }, []);
@@ -320,7 +306,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       startTransition(() =>
         setSelectedFood(
           dino.DinoStat.filter((f) => f.type === "food") &&
-            dino.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
+          dino.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
         )
       );
   };
@@ -344,6 +330,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     ).map((foodItem) => {
       const foodValue = foodItem.Item.food;
       const affinityValue = foodItem.Item.affinity;
+
       let foodMaxRaw = affinityNeeded / affinityValue / tamingMultiplier;
       let foodMax = 0;
       const isFoodSelected =
@@ -374,8 +361,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           foodSecondsPer = foodValue / foodConsumption;
           foodSeconds = Math.ceil(
             Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
-              foodSecondsPer +
-              (typeof interval1 === "number" ? interval1 : 0)
+            foodSecondsPer +
+            (typeof interval1 === "number" ? interval1 : 0)
           );
         } else {
           foodSecondsPer = 0;
@@ -436,7 +423,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     let numNeeded = 0;
     let numToUse = 0;
     let totalSecs = 0;
-
+    // console.log(tamingFood)
     tamingFood.forEach((food) => {
       if (!food) return;
       let foodVal = food.food;
@@ -449,11 +436,11 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         numNeeded = dino.violent_tame
           ? Math.ceil(affinityLeft / affinityVal / tamingMultiplier)
           : Math.ceil(
-              affinityLeft /
-                affinityVal /
-                tamingMultiplier /
-                dino.non_violent_food_rate_mult
-            );
+            affinityLeft /
+            affinityVal /
+            tamingMultiplier /
+            dino.non_violent_food_rate_mult
+          );
 
         numToUse = numNeeded >= food.use ? food.use : numNeeded;
         tooMuchFood = numNeeded >= food.use ? false : true;
@@ -461,25 +448,26 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         affinityLeft = dino.violent_tame
           ? affinityLeft - numToUse * affinityVal * tamingMultiplier
           : affinityLeft -
-            numToUse *
-              affinityVal *
-              tamingMultiplier *
-              dino.non_violent_food_rate_mult;
+          numToUse *
+          affinityVal *
+          tamingMultiplier *
+          dino.non_violent_food_rate_mult;
 
         totalFood += numToUse * foodVal;
 
         let i = 1;
+        numToUse = numToUse < 1000 ? numToUse : 1;
         while (i <= numToUse) {
           effectiveness -= dino.violent_tame
             ? (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
-              affinityVal /
-              tamingMultiplier /
-              100
+            affinityVal /
+            tamingMultiplier /
+            100
             : (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
-              affinityVal /
-              tamingMultiplier /
-              dino.non_violent_food_rate_mult /
-              100;
+            affinityVal /
+            tamingMultiplier /
+            dino.non_violent_food_rate_mult /
+            100;
 
           totalSecs =
             numUsedTotal == 1
@@ -505,17 +493,17 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     } else {
       enoughFood = false;
 
-      tamingFood.forEach((food: any) => {
+      tamingFood.forEach((food) => {
         numNeeded = Math.ceil(
           affinityLeft /
-            food?.stats.find((f) => f.id === 15)?.value /
-            tamingMultiplier
+          food.affinity /
+          tamingMultiplier
         );
         neededValues[food.id] = numNeeded;
         neededValuesSecs[food.id] = Math.ceil(
-          (numNeeded * food.stats.find((f: any) => f.id === 8)?.value) /
-            foodConsumption +
-            totalSecs
+          (numNeeded * food.food) /
+          foodConsumption +
+          totalSecs
         );
       });
     }
@@ -532,7 +520,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         [`${name.replace(" ", "-")}Min`]: Math.max(
           Math.ceil(
             (totalSecs * torporDepletionPS - totalTorpor) /
-              (torpor + torporDepletionPS * torpor_duration)
+            (torpor + torporDepletionPS * torpor_duration)
           ),
           0
         ),
@@ -608,9 +596,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
         let torporPerHit = torpor_duration
           ? torpor -
-            (secondsBetweenHits - torpor_duration) *
-              (dino.tdps +
-                Math.pow(dinoLevel - 1, 0.8493) / (22.39671632 / dino.tdps))
+          (secondsBetweenHits - torpor_duration) *
+          (dino.tdps +
+            Math.pow(dinoLevel - 1, 0.8493) / (22.39671632 / dino.tdps))
           : torpor;
         const isPossible = torporPerHit > 0;
 
@@ -644,47 +632,47 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
         const hitboxes = dino.hitboxes
           ? Object.entries(
-              dino.hitboxes as {
-                [key: string]: number;
-              }
-            ).map(([name, multiplier]) => {
-              const hitboxHits = numHitsRaw / multiplier;
-              const hitsUntilFlee =
-                creatureFleeThreshold === 1
-                  ? "-"
-                  : Math.max(1, Math.ceil(hitboxHits * creatureFleeThreshold));
+            dino.hitboxes as {
+              [key: string]: number;
+            }
+          ).map(([name, multiplier]) => {
+            const hitboxHits = numHitsRaw / multiplier;
+            const hitsUntilFlee =
+              creatureFleeThreshold === 1
+                ? "-"
+                : Math.max(1, Math.ceil(hitboxHits * creatureFleeThreshold));
 
-              const totalDamage =
-                damage *
-                Math.ceil(hitboxHits) *
-                totalMultipliers *
-                ((weaponDamage[id] || userDamage) / 100) *
-                multiplier;
-              const propsurvival =
-                totalDamage < baseHealth
-                  ? 100
-                  : calculatePropability(
-                      dinoLevel - 1,
-                      7,
-                      Math.max(
-                        Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                        0
-                      )
-                    );
+            const totalDamage =
+              damage *
+              Math.ceil(hitboxHits) *
+              totalMultipliers *
+              ((weaponDamage[id] || userDamage) / 100) *
+              multiplier;
+            const propsurvival =
+              totalDamage < baseHealth
+                ? 100
+                : calculatePropability(
+                  dinoLevel - 1,
+                  7,
+                  Math.max(
+                    Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                    0
+                  )
+                );
 
-              const chanceOfDeath = Math.round(100 - propsurvival);
+            const chanceOfDeath = Math.round(100 - propsurvival);
 
-              return {
-                name,
-                multiplier,
-                hitsRaw: hitboxHits,
-                hitsUntilFlee,
-                hits: Math.ceil(hitboxHits),
-                chanceOfDeath,
-                chanceOfDeathHigh: chanceOfDeath > 40,
-                isPossible,
-              };
-            })
+            return {
+              name,
+              multiplier,
+              hitsRaw: hitboxHits,
+              hitsUntilFlee,
+              hits: Math.ceil(hitboxHits),
+              chanceOfDeath,
+              chanceOfDeathHigh: chanceOfDeath > 40,
+              isPossible,
+            };
+          })
           : [];
 
         let bodyChanceOfDeath = 0;
@@ -707,8 +695,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                     Math.ceil((totalDamage - baseHealth) / incPerLevel),
                     0
                   )
-                ? 0
-                : calculatePropability(
+                  ? 0
+                  : calculatePropability(
                     dinoLevel - 1,
                     numStats,
                     Math.max(
@@ -732,13 +720,13 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 totalDamage < baseHealth
                   ? 100
                   : calculatePropability(
-                      dinoLevel - 1,
-                      numStats,
-                      Math.max(
-                        Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                        0
-                      )
-                    );
+                    dinoLevel - 1,
+                    numStats,
+                    Math.max(
+                      Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                      0
+                    )
+                  );
 
               const chanceOfDeath = Math.round(100 - propsurvival);
               hitbox.chanceOfDeath = chanceOfDeath;
@@ -772,11 +760,11 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
   return (
     <article className="grid grid-cols-1 gap-3 text-black dark:text-white md:grid-cols-2">
-      <section className="col-span-2 grid grid-cols-1 md:grid-cols-2">
+      <section className="col-span-2 grid grid-cols-1 auto-cols-auto md:grid-cols-2">
         <img
-          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
+          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${dino.image}`}
           alt={dino.name}
-          className="m-4 w-full p-4"
+          className="w-fit max-h-48"
         />
         <div className="py-4 px-8 text-sm font-light">
           <div className="m-0 mb-4 text-sm">
@@ -1454,9 +1442,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 selectedFood
                   ? selectedFood.toString()
                   : dino?.DinoStat.filter((f) => f.type === "food") &&
-                    dino?.DinoStat.filter(
-                      (f) => f.type === "food"
-                    )[0]?.Item.id.toString(),
+                  dino?.DinoStat.filter(
+                    (f) => f.type === "food"
+                  )[0]?.Item.id.toString(),
               ]}
               validation={{
                 single: true,
@@ -1490,55 +1478,62 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                   With selected food:
                 </p>
                 <section className="mt-3 rounded-t-md bg-zinc-300 p-4 dark:bg-zinc-600 dark:text-white">
-                  <div className="relative my-3 grid grid-cols-4 gap-4 text-center">
-                    <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
-                      <p className="text-thin text-sm">
-                        Lvl
-                        <span className="ml-1 text-lg font-semibold">
-                          {dinoLevel}
+                  <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
+                    {[
+                      {
+                        name: "Current",
+                        sub: `Lvl ${dinoLevel}`,
+                        icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 144h-85.73l21.32-92.4c1.969-8.609-3.375-17.2-12-19.19c-8.688-2.031-17.19 3.39-19.19 11.1l-22.98 99.59H186.3l21.32-92.4c1.969-8.609-3.375-17.2-12-19.19c-8.719-2.031-17.19 3.39-19.19 11.1L153.4 144H48c-8.844 0-16 7.144-16 15.99C32 168.8 39.16 176 48 176h98.04L109.1 336H16c-8.844 0-16 7.151-16 15.99s7.156 16 16 16h85.73L80.41 460.4c-1.969 8.609 3.375 17.2 12 19.19C93.63 479.9 94.81 480 96 480c7.281 0 13.88-4.1 15.59-12.41l22.98-99.59h127.2l-21.32 92.4c-1.969 8.609 3.375 17.2 12 19.19C253.6 479.9 254.8 480 256 480c7.281 0 13.88-4.1 15.59-12.41l22.98-99.59H400c8.844 0 16-7.161 16-16s-7.156-15.99-16-15.99h-98.04l36.92-159.1H432c8.844 0 16-7.168 16-16.01C448 151.2 440.8 144 432 144zM269.1 336H141.1L178.9 176h127.2L269.1 336z" /></svg>
+                      },
+                      {
+                        name: "Taming Eff.", sub: `${(tameData.effectiveness
+                          ? tameData.effectiveness
+                          : 0
+                        ).toFixed()}%`,
+                        icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M379.3 68.69c-6.25-6.25-16.38-6.25-22.62 0l-352 352c-6.25 6.25-6.25 16.38 0 22.62C7.813 446.4 11.91 448 16 448s8.188-1.562 11.31-4.688l352-352C385.6 85.06 385.6 74.94 379.3 68.69zM64 192c35.35 0 64-28.65 64-64S99.35 64.01 64 64.01c-35.35 0-64 28.65-64 63.1S28.65 192 64 192zM64 96c17.64 0 32 14.36 32 32S81.64 160 64 160S32 145.6 32 128S46.36 96 64 96zM320 320c-35.35 0-64 28.65-64 64s28.65 64 64 64c35.35 0 64-28.65 64-64S355.3 320 320 320zM320 416c-17.64 0-32-14.36-32-32s14.36-32 32-32s32 14.36 32 32S337.6 416 320 416z" /></svg>
+                      },
+                      {
+                        name: "With Bonus",
+                        sub: `Lvl ${dinoLevel + tameData.levelsGained}`,
+                        icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M466.5 83.69l-192-80.01C268.6 1.188 262.3 0 256.1 0S243.5 1.188 237.6 3.688l-192 80.01C27.72 91.07 16 108.6 16 127.1C16 385.4 205.4 512 255.1 512C305.2 512 496 387.3 496 127.1C496 108.6 484.3 91.07 466.5 83.69zM463.9 128.3c0 225.3-166.2 351.7-207.8 351.7C213.3 479.1 48 352.2 48 128c0-6.5 3.875-12.25 9.75-14.75l192-80c1.973-.8275 4.109-1.266 6.258-1.266c2.071 0 4.154 .4072 6.117 1.266l192 80C463.3 117.1 463.9 125.8 463.9 128.3zM336 240H271.1v-64C271.1 167.2 264.8 160 256 160S240 167.2 240 176v64H175.1C167.2 240 160 247.2 160 256s7.154 16 15.1 16H240v64c0 8.836 7.154 16 15.1 16c8.838 0 15.1-7.16 15.1-16v-64h64C344.8 272 352 264.8 352 256S344.8 240 336 240z" /></svg>
+                      },
+                      {
+                        name: "Max after Taming",
+                        sub: `Lvl ${dinoLevel +
+                          tameData.levelsGained +
+                          (dinoXVariant && dino.x_variant ? 88 : 73)}`,
+                        icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M477.4 304.2l-131 21.75C336.5 303.6 314.1 288 288 288c-35.38 0-64 28.62-64 64s28.62 64 64 64c33.38 0 60.5-25.75 63.38-58.38l131.3-21.87c8.75-1.375 14.62-9.625 13.12-18.38C494.4 308.6 485.9 302.8 477.4 304.2zM288 384c-17.62 0-32-14.38-32-32s14.38-31.1 32-31.1S320 334.4 320 352S305.6 384 288 384zM288 32c-159 0-288 129-288 288c0 52.75 14.25 102.3 39 144.8c5.625 9.625 16.38 15.25 27.5 15.25h443c11.12 0 21.88-5.625 27.5-15.25C561.8 422.3 576 372.8 576 320C576 161 447 32 288 32zM509.5 448H66.75C44 409.1 32 365.2 32 320c0-141.1 114.9-256 256-256s256 114.9 256 256C544 365.2 532 409.8 509.5 448z" /></svg>
+                      },
+                    ].map(({ name, sub, icon }, i) => (
+                      <li
+                        key={`taming-stage-${i}`}
+                        className="[&:last-of-type>svg]:hidden flex items-center space-x-2.5 [&>*]:border-black [&>*]:fill-black [&>*]:dark:border-white [&>*]:dark:fill-white"
+                      >
+                        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border p-3">
+                          {icon}
                         </span>
-                      </p>
-                    </div>
-                    <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
-                      <p className="text-thin text-sm">
-                        <span className="ml-1 text-lg font-semibold">
-                          {(tameData.effectiveness
-                            ? tameData.effectiveness
-                            : 0
-                          ).toFixed(1)}
+                        <span>
+                          <h3 className="font-medium leading-tight">{name}</h3>
+                          <p className="text-sm space-x-1">
+                            <span>{sub.replace(/[0-9]/g, '')}</span>
+                            <Counter
+                              className="inline-block"
+                              startNum={0}
+                              endNum={sub.replace(/\D/g, '')}
+                              duration={500}
+                            />
+                          </p>
                         </span>
-                        %
-                      </p>
-                    </div>
-                    <div className="not-last:before:content-['>'] relative block before:absolute before:ml-auto before:w-full">
-                      <span className="text-thin text-sm">
-                        Lvl
-                        <span className="ml-1 text-lg font-semibold">
-                          <Counter
-                            startNum={0}
-                            endNum={dinoLevel + tameData.levelsGained}
-                            duration={500}
-                          />
-                        </span>
-                      </span>
-                    </div>
-                    <div className="relative block before:absolute before:ml-auto before:w-full last:before:content-['']">
-                      <p className="text-thin text-sm">
-                        Lvl
-                        <span className="ml-1 text-lg font-semibold">
-                          {dinoLevel +
-                            tameData.levelsGained +
-                            (dinoXVariant && dino.x_variant ? 88 : 73)}
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                  <div className="my-3 grid grid-cols-4 gap-4 text-center">
-                    <p className="text-thin text-xs">Current</p>
-                    <p className="text-thin text-xs">Taming Eff.</p>
-                    <p className="text-thin text-xs">With Bonus</p>
-                    <p className="text-thin text-xs">Max after taming</p>
-                  </div>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          viewBox="0 0 256 512"
+                        >
+                          <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                        </svg>
+                      </li>
+                    ))}
+                  </ol>
                 </section>
 
                 <section className="rounded-b-md bg-zinc-200 p-4 dark:bg-zinc-700 dark:text-white">
@@ -1899,8 +1894,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           disabled={
                             baseStats
                               .map((b) => b.points)
-                              .reduce((a: any, b: any): any => a + b, 0) >=
-                              dinoLevel || row.stat === "Torpidity"
+                              .reduce((a, b) => a + b, 0) >=
+                            dinoLevel || row.stat === "Torpidity"
                           }
                           className="rw-button rw-button-green-outline h-8 w-8 rounded-full p-0 !text-xl"
                           onClick={() => onAdd(row.stat)}
@@ -1938,15 +1933,14 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           {!v
                             ? "-"
                             : (useFoundationUnit
-                                ? Number(v / 300)
-                                : Number(v)
-                              ).toFixed(2)}
+                              ? Number(v / 300)
+                              : Number(v)
+                            ).toFixed(2)}
                         </p>
                       ))}
                       <abbr
-                        title={`${
-                          useFoundationUnit ? "Foundation" : `Units`
-                        } per second`}
+                        title={`${useFoundationUnit ? "Foundation" : `Units`
+                          } per second`}
                       >
                         {useFoundationUnit ? "Foundation" : `Units`}/s
                       </abbr>

@@ -29,6 +29,7 @@ type Filter = {
  */
 type TableDataRow = {
   [key: string]: any;
+  readonly row_id?: string;
 };
 
 type TableColumn = {
@@ -381,6 +382,8 @@ const Table = ({
       {
         truncate: !render && !valueFormatter,
         "dark:!bg-zinc-700 !bg-zinc-300": rowSelected,
+        "rounded-bl-lg": rowIndex === PaginatedData.length - 1 && columnIndex === 0 && !mergedSettings.select && !mergedSettings.summary,
+        "rounded-br-lg": rowIndex === PaginatedData.length - 1 && columnIndex === columns.length - 1 && !mergedSettings.summary,
       }
     );
 
@@ -420,9 +423,11 @@ const Table = ({
   const tableSelect = ({
     header = false,
     datarow,
+    rowIndex,
   }: {
     header?: boolean;
-    datarow?: any;
+    datarow?: TableDataRow | null;
+    rowIndex?: number;
   }) => {
     return (
       <td
@@ -431,6 +436,7 @@ const Table = ({
           "bg-zinc-100 dark:bg-zinc-600": !header,
           "!bg-zinc-300 dark:!bg-zinc-700":
             !header && isSelected(datarow.row_id),
+          "rounded-bl-lg": rowIndex === PaginatedData.length - 1 && !mergedSettings.summary,
         })}
         scope="col"
       >
@@ -927,7 +933,7 @@ const Table = ({
               hidden: !mergedSettings.header,
             })}
           >
-            {mergedSettings.select && tableSelect({ header: true })}
+            {mergedSettings.select && tableSelect({ header: true, rowIndex: -1 })}
             {columns.map(({ ...other }, index) =>
               headerRenderer({
                 label: other.header,
@@ -946,10 +952,9 @@ const Table = ({
             PaginatedData.map((datarow, i) => (
               <tr
                 key={datarow.row_id}
-                className={clsx("last:rounded-b-lg", {
-                  "divide-x divide-gray-400 dark:divide-zinc-800":
-                    mergedSettings.borders?.vertical,
-                })}
+                className={mergedSettings.borders.vertical ?
+                  "divide-x divide-gray-400 dark:divide-zinc-800" : ""
+                }
               >
                 {mergedSettings.select && tableSelect({ datarow })}
                 {columns.map(({ field, render, valueFormatter, className, numeric, ...other }, index) =>

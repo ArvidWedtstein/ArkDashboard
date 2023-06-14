@@ -662,7 +662,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                         <p className="inline-flex space-x-2">
                           <img
                             className="h-6 w-6"
-                            src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/6/6f/Weight.png"
+                            src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
                             alt=""
                           />
                           <span>

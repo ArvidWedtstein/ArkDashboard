@@ -765,7 +765,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                                 "invert(95%) sepia(69%) saturate(911%) hue-rotate(157deg) brightness(100%) contrast(103%)",
                             }}
                             className="h-full w-full object-cover object-center p-2"
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.Dino.icon}`}
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/DinoIcon/${dino.Dino.icon}`}
                             alt=""
                           />
                         </div>
@@ -798,7 +798,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                         <p className="inline-flex space-x-2">
                           <img
                             className="h-6 w-6"
-                            src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/8/8d/Stamina.png"
+                            src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp"
                             alt=""
                           />
                           <span>
@@ -816,7 +816,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                         <p className="inline-flex space-x-2">
                           <img
                             className="h-6 w-6"
-                            src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/6/6f/Weight.png"
+                            src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
                             alt=""
                           />
                           <span>
@@ -834,7 +834,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                         <p className="inline-flex space-x-2">
                           <img
                             className="h-6 w-6"
-                            src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/1/19/Oxygen.png"
+                            src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp"
                             alt=""
                           />
                           <span>
@@ -852,7 +852,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                         <p className="inline-flex space-x-2">
                           <img
                             className="h-6 w-6"
-                            src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/0/01/Melee_Damage.png"
+                            src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
                             alt=""
                           />
                           <span>
@@ -870,7 +870,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                         <p className="inline-flex space-x-2">
                           <img
                             className="h-6 w-6"
-                            src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/c/c6/Food.png"
+                            src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp"
                             alt=""
                           />
                           <span>
@@ -887,7 +887,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                         <p className="inline-flex space-x-2">
                           <img
                             className="h-6 w-6"
-                            src="https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/e/e1/Movement_Speed.png"
+                            src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp"
                             alt=""
                           />
                           <span>

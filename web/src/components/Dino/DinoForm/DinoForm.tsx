@@ -965,14 +965,14 @@ const DinoForm = (props: DinoFormProps) => {
                 className="h-6 w-6"
                 src={
                   {
-                    s: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/8/8d/Stamina.png",
-                    w: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/6/6f/Weight.png",
-                    o: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/1/19/Oxygen.png",
-                    d: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/0/01/Melee_Damage.png",
-                    f: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/c/c6/Food.png",
-                    m: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/e/e1/Movement_Speed.png",
-                    t: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/3/32/Torpidity.png",
-                    h: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/9/94/Health.png",
+                    s: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp",
+                    w: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp",
+                    o: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp",
+                    d: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp",
+                    f: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp",
+                    m: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp",
+                    t: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/torpidity.webp",
+                    h: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp",
                   }[stat]
                 }
                 alt=""
@@ -1042,13 +1042,13 @@ const DinoForm = (props: DinoFormProps) => {
                           options={
                             data
                               ? data.itemsByCategory.items
-                                  .filter((i) => i.category === "Resource")
-                                  .map((item) => ({
-                                    type: item.type,
-                                    label: item.name,
-                                    value: item.id,
-                                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                                  }))
+                                .filter((i) => i.category === "Resource")
+                                .map((item) => ({
+                                  type: item.type,
+                                  label: item.name,
+                                  value: item.id,
+                                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                                }))
                               : []
                           }
                           search={true}
@@ -1566,13 +1566,13 @@ const DinoForm = (props: DinoFormProps) => {
                 options={
                   data
                     ? data.itemsByCategory.items
-                        .filter((i) => i.category === "Consumable")
-                        .map((item) => ({
-                          type: item.type,
-                          label: item.name,
-                          value: item.id,
-                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                        }))
+                      .filter((i) => i.category === "Consumable")
+                      .map((item) => ({
+                        type: item.type,
+                        label: item.name,
+                        value: item.id,
+                        image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                      }))
                     : []
                 }
                 search={true}

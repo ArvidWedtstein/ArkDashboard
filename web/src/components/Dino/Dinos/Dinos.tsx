@@ -54,7 +54,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
   // const debouncedChangeHandler = useMemo(() => debounce(handlechange, 500), []);
   return (
     <section className="">
-      <Form className="my-4 flex w-auto" onSubmit={onSubmit}>
+      <Form className="flex w-auto" onSubmit={onSubmit}>
         <nav className="flex w-full flex-row justify-center space-x-2">
           <div className="rw-button-group !w-full !space-x-0">
             <Label name="category" className="sr-only">
@@ -97,7 +97,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
         </nav>
       </Form>
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-5">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-5 3xl:grid-cols-8">
         {dinosPage.dinos.map((dino) => (
           <Link
             key={`dino-${dino.id}`}
@@ -106,27 +106,10 @@ const DinosList = ({ dinosPage }: FindDinos) => {
           >
             <div className="flex h-full w-full flex-col items-start justify-between justify-items-stretch">
               <div className="relative mb-3 h-32 w-32 rounded-full border bg-gradient-to-br from-zinc-700 to-zinc-700">
-                {/* <ImageContainer
-                  loading="lazy"
-                  defaultsrc="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/any-hat.png"
-                  className="h-auto max-h-full"
-                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
-                  onError={(e) => {
-                    e.currentTarget.src = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/any-hat.png`;
-                    e.currentTarget.parentElement.hidden = true;
-                    e.currentTarget.parentElement.parentElement.classList.replace(
-                      "justify-between",
-                      "justify-end"
-                    );
-                  }}
-                  // caption={dino.name}
-                  // sizes="1rem"
-                  // src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/render/image/public/arkimages/dodo.png?width=500&quality=75`}
-                  // onLoad={() => console.log(`loaded ${dino.name}`)}
-                /> */}
                 <img
                   className="h-auto max-h-full"
-                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
+                  loading="lazy"
+                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${dino.image}`}
                   onError={(e) => {
                     e.currentTarget.src = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/any-hat.png`;
                     // e.currentTarget.parentElement.hidden = true;

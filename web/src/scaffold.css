@@ -279,6 +279,7 @@ select.rw-input.rw-input-small {
 
 /* Checkbox */
 .rw-checkbox,
+.rw-input[type="checkbox"],
 .rw-input.rw-checkbox[type="checkbox"] {
   @apply relative ml-0 mr-1 block h-6 w-6 cursor-pointer appearance-none rounded p-2 transition duration-200 focus:outline-none;
 }
@@ -406,8 +407,32 @@ select.rw-input.rw-input-small {
   @apply text-center text-black dark:text-white;
 }
 
+/* Image */
 .rw-img-disable img {
   @apply opacity-40 brightness-[1.4] contrast-0 hue-rotate-[116deg] saturate-[.28] sepia;
+}
+.rw-img-blur {
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.rw-img-blur::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  animation: pulse 2.5s infinite;
+  background-color: var(--text-color);
+}
+.rw-img-blur.loaded::before {
+  animation: none;
+  content: none;
+}
+.rw-img-blur img {
+  opacity: 0;
+  transition: opacity 250ms ease-in-out;
+}
+.rw-img-blur.loaded img {
+  opacity: 1;
 }
 
 .rw-check-input:checked + .rw-check-tile {
