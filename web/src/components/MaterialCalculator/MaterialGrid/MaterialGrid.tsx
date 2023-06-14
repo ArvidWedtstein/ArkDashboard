@@ -522,7 +522,7 @@ z"/>
                       <summary className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700 after:content-['>'] after:px-2 after:absolute after:right-0 after:transform after:transition-transform after:ease-in-out after:duration-150 select-none">
                         <img
                           className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
-                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${categoriesIcons[category]}.png`}
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[category]}.png`}
                           alt={``}
                         />
                         <span className="ml-2">{category}</span>
@@ -541,7 +541,7 @@ z"/>
                                 onClick={() => onAdd({ itemId: item.id })}
                               >
                                 <img
-                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
                                   alt={item.name}
                                   className="mr-2 h-5 w-5"
                                 />
@@ -573,7 +573,7 @@ z"/>
                                           }
                                         >
                                           <img
-                                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+                                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
                                             alt={item.name}
                                             className="mr-2 h-5 w-5"
                                           />
@@ -629,7 +629,7 @@ z"/>
                         key={`${value}-${Item_ItemRecipe_crafted_item_idToItem.id}`}
                       >
                         <img
-                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRecipe_crafted_item_idToItem.image}`}
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafted_item_idToItem.image}`}
                           className="h-6 w-6"
                         />
                         <span className="text-sm">{formatNumber(amount)}</span>
@@ -702,7 +702,7 @@ z"/>
                     >
                       <img
                         className="h-8 w-8"
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
                       />
                     </button>
                   );
@@ -787,7 +787,7 @@ z"/>
                           key={`${id}-${i * Math.random()}${i}`}
                         >
                           <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
                             className="h-6 w-6"
                             title={name}
                             alt={name}

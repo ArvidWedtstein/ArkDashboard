@@ -107,7 +107,7 @@ const Item = ({ item }: Props) => {
           <div className="">
             <img
               className="w-auto max-w-6xl"
-              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
             />
             <h4 className="my-1 font-serif text-2xl font-bold">{item.name}</h4>
             <p className="text-sm italic">
@@ -337,7 +337,7 @@ const Item = ({ item }: Props) => {
                     key={`recipe-${id}`}
                   >
                     <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRecipe_crafting_station_idToItem.image}`}
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafting_station_idToItem.image}`}
                       className="w-8"
                     />
                     <span>{Item_ItemRecipe_crafting_station_idToItem.name}</span>
@@ -354,7 +354,7 @@ const Item = ({ item }: Props) => {
                         <div className="flex flex-row space-x-2 text-xs">
                           <div className="relative">
                             <img
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
+                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
                               className="h-24 w-24 border border-[#11667B] bg-[#5C666D] p-1"
                             />
                             <div className="bg-pea-500 absolute -top-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white text-xs font-bold text-white dark:border-gray-900">
@@ -396,7 +396,7 @@ const Item = ({ item }: Props) => {
                                   to={routes.item({ id: id.toString() })}
                                 >
                                   <img
-                                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
+                                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
                                     className="w-5"
                                   />
                                   <span className="">{name}</span>

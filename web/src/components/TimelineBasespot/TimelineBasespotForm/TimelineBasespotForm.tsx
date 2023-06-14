@@ -608,7 +608,7 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
                                 "invert(95%) sepia(69%) saturate(911%) hue-rotate(157deg) brightness(100%) contrast(103%)",
                             }}
                             className="h-full w-full object-cover object-center p-2"
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.Dino.icon}`}
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/DinoIcon${dino.Dino.icon}`}
                             alt="s"
                           />
                         </div>

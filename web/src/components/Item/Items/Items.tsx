@@ -400,7 +400,7 @@ const ItemsList = ({
               subtitle={item.type}
               content={view === "list" ? item.description : ""}
               icon={{
-                src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
                 alt: `${item.name}`,
               }}
             />

@@ -120,7 +120,7 @@ const TimelineBasespotDinoForm = (props: TimelineBasespotDinoFormProps) => {
                 options={data.dinos.map((dino) => ({
                   label: dino.name,
                   value: dino.id,
-                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.icon}`,
+                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/DinoIcon${dino.icon}`,
                 }))}
               />
 

@@ -161,7 +161,7 @@ const Profile = ({ profile }: Props) => {
                 <div className="flex flex-wrap flex-row">
                   {UserRecipeItemRecipe.map(({ id: userRecipeId, ItemRecipe: { id: recipeId, Item_ItemRecipe_crafted_item_idToItem: { name, image }, yields } }) => (
                     <Link to={routes.itemRecipe({ id: recipeId })} className="rounded-lg bg-rose-600 p-2 text-center relative" title={name} key={`recipe-${userRecipeId}`}>
-                      <img className="w-10 h-10" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`} alt={name} />
+                      <img className="w-10 h-10" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`} alt={name} />
                       <div className="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-pea-500 border-2 border-white rounded-full -top-2 -right-2 dark:border-zinc-700">{yields}</div>
                     </Link>
                   ))}
