@@ -19,6 +19,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useReducer,
   useState,
   useTransition,
 } from "react";
@@ -313,7 +314,35 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         )
       );
   };
-
+  const tamingFood2 = useReducer(
+    (state, action) => {
+      switch (action.type) {
+        case "add":
+          return [...state, action.item];
+        case "remove":
+          return state.filter((_, i) => i !== action.index);
+        case "update":
+          return state.map((item, i) =>
+            i === action.index ? { ...item, ...action.item } : item
+          );
+        default:
+          return state;
+      }
+    },
+    [
+      {
+        id: 0,
+        max: 0,
+        food: 0,
+        seconds: 0,
+        secondsPer: 0,
+        percentPer: 0,
+        interval: 0,
+        interval1: 0,
+        use: 0,
+      },
+    ]
+  );
   const tamingFood = useMemo(() => {
     if (!dino || !dinoLevel) return [];
     const affinityNeeded = dino.affinity_needed + dino.aff_inc * dinoLevel;
@@ -916,43 +945,43 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 value: "733",
                 label: "Lasso",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/lasso.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/lasso.webp",
               },
               {
                 value: "1040",
                 label: "Bola",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bola.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/bola.webp",
               },
               {
                 value: "725",
                 label: "Chain Bola",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/chain-bola.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/chain-bola.webp",
               },
               {
                 value: "785",
                 label: "Net Projectile",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/net-projectile.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/net-projectile.webp",
               },
               {
                 value: "1252",
                 label: "Plant Species Y Trap",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/plant-species-y-trap.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/plant-species-y-trap.webp",
               },
               {
                 value: "383",
                 label: "Bear Trap",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/bear-trap.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/bear-trap.webp",
               },
               {
                 value: "384",
                 label: "Large Bear Trap",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/large-bear-trap.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/large-bear-trap.webp",
               },
             ]}
           />
@@ -970,79 +999,79 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 value: "e85015a5-8694-44e6-81d3-9e1fdd06061d",
                 label: "Pteranodon",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_pteranodon.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_pteranodon.webp",
               },
               {
                 value: "1e7966e7-d63d-483d-a541-1a6d8cf739c8",
                 label: "Tropeognathus",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_tropeognathus.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tropeognathus.webp",
               },
               {
                 value: "b8e304b3-ab46-4232-9226-c713e5a0d22c",
                 label: "Tapejara",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_tapejara.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tapejara.webp",
               },
               {
                 value: "da86d88a-3171-4fc9-b96d-79e8f59f1601",
                 label: "Griffin",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_griffin.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_griffin.webp",
               },
               {
                 value: "147922ce-912d-4ab6-b4b6-712a42a9d939",
                 label: "Desmodus",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_desmodus.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_desmodus.webp",
               },
               {
                 value: "28971d02-8375-4bf5-af20-6acb20bf7a76",
                 label: "Argentavis",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_argentavis.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_argentavis.webp",
               },
               {
                 value: "f924e5d6-832a-4fb3-abc0-2fa42481cee1",
                 label: "Crystal Wyvern",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_crystalwyvern.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_crystalwyvern.webp",
               },
               {
                 value: "7aec6bf6-357e-44ec-8647-3943ca34e666",
                 label: "Wyvern",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_wyvern.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_wyvern.webp",
               },
               {
                 value: "2b938227-61c2-4230-b7da-5d4d55f639ae",
                 label: "Quetzal",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_quetzal.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_quetzal.webp",
               },
               {
                 value: "b1d6f790-d15c-4813-a6c8-9e6f62fafb52",
                 label: "Tusoteuthis",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_tusoteuthis.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tusoteuthis.webp",
               },
               {
                 value: "d670e948-055e-45e1-adf3-e56d63236238",
                 label: "Karkinos",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_karkinos.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_karkinos.webp",
               },
               {
                 value: "52156470-6075-487b-a042-2f1d0d88536c",
                 label: "Kaprosuchus",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_kaprosuchus.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_kaprosuchus.webp",
               },
               {
                 value: "f723f861-0aa3-40b5-b2d4-6c48ec0ca683",
                 label: "Procoptodon",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_procoptodon.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_procoptodon.webp",
               },
               {
                 value: "human",
@@ -1053,7 +1082,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 value: "94708e56-483b-4eef-ad35-2b9ce0e9c669",
                 label: "Gigantopithecus",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_gigantopithecus.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_gigantopithecus.webp",
               },
             ]}
           />
@@ -1073,37 +1102,37 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 value: "322",
                 label: "Doorframe",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-doorframe.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-doorframe.webp",
               },
               {
                 value: "1066",
                 label: "Double Doorframe",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-double-doorframe.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-double-doorframe.webp",
               },
               {
                 value: "143",
                 label: "Dinosaur Gateway",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-dinosaur-gateway.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-dinosaur-gateway.webp",
               },
               {
                 value: "381",
                 label: "Behemoth Dino Gateway",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/behemoth-stone-dinosaur-gateway.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/behemoth-stone-dinosaur-gateway.webp",
               },
               {
                 value: "316",
                 label: "Hatchframe",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-hatchframe.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-hatchframe.webp",
               },
               {
                 value: "619",
                 label: "Giant Hatchframe",
                 image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/giant-stone-hatchframe.png",
+                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/giant-stone-hatchframe.webp",
               },
             ]}
           />
@@ -1192,7 +1221,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                   header: "",
                   render: ({ value }) => (
                     <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${value.image}`}
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value.image}`}
                       className="h-8 w-8 self-end"
                       title={value.name}
                     />
@@ -1271,7 +1300,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 header: "",
                 render: ({ value }) => (
                   <img
-                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${value.image}`}
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value.image}`}
                     className="h-8 w-8 self-end"
                   />
                 ),
@@ -1337,7 +1366,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                       render: ({ value: { id, image, name } }) => (
                         <div className="mr-3 flex flex-row items-center space-x-2">
                           <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
                             className="h-8 w-8 self-start"
                           />
                           <Link to={routes.item({ id })}>{name}</Link>
@@ -1368,7 +1397,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           className="mr-3 flex flex-row items-center space-x-2"
                         >
                           <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
                             className="h-8 w-8 self-end"
                           />
                           <span>{name}</span>
@@ -1447,10 +1476,10 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 validation={{
                   single: true,
                 }}
-                options={tamingFood.map((food) => ({
-                  value: food.id,
-                  label: `${food.name} (${food.max})`,
-                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${food.image}`,
+                options={tamingFood.map(({ id, name, max, image }) => ({
+                  value: id,
+                  label: `${name} (${max})`,
+                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`,
                 }))}
               />
 
@@ -1607,7 +1636,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           >
                             {/* https://placehold.co/100x100/png */}
                             <img
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${name
+                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${name
                                 .replace("Min", "")
                                 .toLowerCase()}.png`}
                               alt=""
@@ -1652,7 +1681,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                             >
                               <img
                                 className="h-16 w-16"
-                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
+                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
                               />
                               <Link
                                 to={routes.item({ id: id.toString() })}
@@ -1749,7 +1778,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 >
                   <summary className="flex h-16 min-w-[4rem] place-content-center place-items-center gap-2 border text-center text-sm transition-all dark:text-gray-200">
                     <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
                       alt={dino.name}
                       className="h-8 w-8 transform group-open:scale-125"
                     />
@@ -1952,38 +1981,75 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         <section className="my-3 rounded-md p-4">
           <div
             className={clsx("grid items-center gap-1", {
-              "grid-cols-4": dino.movement.toString().includes("Sprint"),
-              "grid-cols-3": !dino.movement.toString().includes("Sprint"),
+              "grid-cols-4": Object.values(dino.movement["w"]).some((d) =>
+                Object.keys(d).some((f) => f === "sprint")
+              ),
+              "grid-cols-3": !Object.values(dino.movement["w"]).some((d) =>
+                Object.keys(d).some((f) => f === "sprint")
+              ),
             })}
           >
             <p>&nbsp;</p>
             <p>Base</p>
-            {dino.movement.toString().includes("Sprint") && <p>Sprint</p>}
+            {Object.values(dino.movement["w"]).some((d) =>
+              Object.keys(d).some((f) => f === "sprint")
+            ) && <p>Sprint</p>}
             <p>&nbsp;</p>
             {Object.entries(dino.movement["w"]).map(([stat, value], index) => (
               <>
                 <p className="text-right capitalize">{stat}</p>
+
                 {Object.values(value).map((v, i) => (
-                  <p
-                    key={`movement-${stat}-${i}`}
-                    className={clsx("rw-input rounded-none", {
-                      "rounded-tl-lg": i === 0 && index === 0,
-                      "rounded-tr-lg":
-                        (i === 1 && index === 0) ||
-                        (Object.values(value).length === 1 && index === 0),
-                      "rounded-bl-lg": i === 0 && index === 1,
-                      "rounded-br-lg":
-                        (i === 1 && index === 1) ||
-                        (Object.values(value).length === 1 && index === 1),
-                    })}
-                  >
-                    {!v
-                      ? "-"
-                      : (useFoundationUnit
-                          ? Number(v / 300)
-                          : Number(v)
-                        ).toFixed(2)}
-                  </p>
+                  <>
+                    <p
+                      key={`movement-${stat}-${i}`}
+                      className={clsx("rw-input rounded-none", {
+                        "rounded-tl-lg": i === 0 && index === 0,
+                        "rounded-tr-lg":
+                          (i === 1 && index === 0) ||
+                          (!Object.values(dino.movement["w"]).some((d) =>
+                            Object.keys(d).some((f) => f === "sprint")
+                          ) &&
+                            index === 0),
+                        "rounded-bl-lg": i === 0 && index === 1,
+                        "rounded-br-lg":
+                          (i === 1 && index === 1) ||
+                          (!Object.values(dino.movement["w"]).some((d) =>
+                            Object.keys(d).some((f) => f === "sprint")
+                          ) &&
+                            index === 1),
+                      })}
+                    >
+                      {!v
+                        ? "-"
+                        : (useFoundationUnit
+                            ? Number(v / 300)
+                            : Number(v)
+                          ).toFixed(2)}
+                    </p>
+                    {Object.values(value).length < 2 && (
+                      <p
+                        className={clsx("rw-input rounded-none", {
+                          "rounded-tl-lg": i + 1 === 0 && index === 0,
+                          "rounded-tr-lg":
+                            (i === 1 && index === 0) ||
+                            (Object.values(dino.movement["w"]).some((d) =>
+                              Object.keys(d).some((f) => f === "sprint")
+                            ) &&
+                              index === 0),
+                          "rounded-bl-lg": i === 0 && index === 1,
+                          "rounded-br-lg":
+                            (i === 1 && index === 1) ||
+                            (Object.values(dino.movement["w"]).some((d) =>
+                              Object.keys(d).some((f) => f === "sprint")
+                            ) &&
+                              index === 1),
+                        })}
+                      >
+                        -
+                      </p>
+                    )}
+                  </>
                 ))}
                 <abbr
                   title={`${
