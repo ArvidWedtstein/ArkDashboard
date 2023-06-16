@@ -87,7 +87,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
         </nav>
       </Form>
 
-      <div className="3xl:grid-cols-8 grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-5">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-5 3xl:grid-cols-8">
         {dinosPage.dinos.map(({ id, name, type, image }) => (
           <Link
             key={`dino-${id}`}

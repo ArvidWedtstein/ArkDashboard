@@ -10,7 +10,7 @@ export const dinosPage: QueryResolvers["dinosPage"] = ({
   page = 1,
   search = "",
   category = "",
-  dinos_per_page = 36,
+  dinos_per_page = 35,
 }: {
   page: number;
   search?: string;
