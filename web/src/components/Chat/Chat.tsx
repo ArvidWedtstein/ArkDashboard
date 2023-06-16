@@ -37,7 +37,6 @@ const Message = ({
 }) => {
   const { currentUser, client: supabase } = useAuth();
   let userId = currentUser?.id;
-  console.log(profile);
   useEffect(() => {
     const fetchProfile = async () => {
       const { data } = await supabase

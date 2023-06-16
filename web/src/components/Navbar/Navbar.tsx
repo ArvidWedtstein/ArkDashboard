@@ -32,9 +32,9 @@ const Navbar = () => {
   const profileId = (currentUser?.id || currentUser?.sub || "") as string;
   const newRoute =
     routes[
-    `new${singularize(
-      capitalizeSentence(title.split("-").join(" ")).replace(" ", "")
-    )}`
+      `new${singularize(
+        capitalizeSentence(title.split("-").join(" ")).replace(" ", "")
+      )}`
     ];
   const showNewButton = isAuthenticated && newRoute;
   return (
@@ -79,7 +79,7 @@ const Navbar = () => {
           </div> */}
         </div>
         <div className="flex items-center space-x-2">
-          {showNewButton && (
+          {/* {showNewButton && (
             <Link
               to={newRoute(
                 search ? { id: new URLSearchParams(search).get("id") } : {}
@@ -97,7 +97,7 @@ const Navbar = () => {
                 <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
               </svg>
             </Link>
-          )}
+          )} */}
           {/* <button className="m-0 flex h-5 w-5 items-center justify-center bg-transparent p-0 text-[#1f1c2e] outline-none dark:text-white md:h-8 md:w-8">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -119,10 +119,14 @@ const Navbar = () => {
                   size={30}
                   className="h-8 w-8 rounded-full text-[#1f1c2e] dark:text-white md:h-8 md:w-8"
                 />
-                {(currentUser && currentUser.username != null) && (
-                  <div className="hidden sm:block font-medium text-base text-[#1f1c2e] dark:text-white">
-                    <div>{currentUser?.username as string || ''}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">{currentUser?.role_profile_role_idTorole["name"].toString()}</div>
+                {currentUser && currentUser.username != null && (
+                  <div className="hidden text-base font-medium text-[#1f1c2e] dark:text-white sm:block">
+                    <div>{(currentUser?.username as string) || ""}</div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      {currentUser?.role_profile_role_idTorole[
+                        "name"
+                      ].toString()}
+                    </div>
                   </div>
                 )}
               </div>
