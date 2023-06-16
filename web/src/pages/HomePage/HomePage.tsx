@@ -70,7 +70,7 @@ const HomePage = () => {
           </div>
         </div>
 
-        {isAuthenticated && <Chat />}
+        {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
       </div>
