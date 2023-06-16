@@ -20,6 +20,7 @@ export const schema = gql`
     fits_through
     drops
     saddle
+    bossrecipe
   }
 
   type Query {
