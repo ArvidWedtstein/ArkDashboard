@@ -17,7 +17,7 @@ export const schema = gql`
   }
 
   input CreateUserRecipeInput {
-    created_at: DateTime!
+    created_at: DateTime
     updated_at: DateTime
     user_id: String!
     private: Boolean!

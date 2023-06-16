@@ -67,6 +67,7 @@ export const QUERY = gql`
       id
       name
       created_at
+      private
       UserRecipeItemRecipe {
         item_recipe_id
         amount
@@ -111,12 +112,17 @@ export const Failure = ({ error }: CellFailureProps) => (
   </div>
 );
 
-
 // export const Success = ({ itemRecipesByCraftingStations, userRecipesByID }: CellSuccessProps<FindItemsMats>) => {
-export const Success = ({ itemRecipes, userRecipesByID }: CellSuccessProps<FindItemsMats>) => {
+export const Success = ({
+  itemRecipes,
+  userRecipesByID,
+}: CellSuccessProps<FindItemsMats>) => {
   return (
     <div className="rw-form-wrapper container-xl mx-auto">
-      <MaterialGrid itemRecipes={itemRecipes} userRecipesByID={userRecipesByID} />
+      <MaterialGrid
+        itemRecipes={itemRecipes}
+        userRecipesByID={userRecipesByID}
+      />
     </div>
   );
 };

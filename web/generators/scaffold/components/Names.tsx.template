@@ -39,14 +39,7 @@ const ${pluralPascalName}List = ({ ${pluralCamelName} }: Find${pluralPascalName}
 
   return (
     <div className="rw-segment rw-table-wrapper-responsive">
-      <Table
-        columns={[
-          <% columns.forEach(column => ({ %>
-           <%  header: column.label, %>
-           <%  field: column.label })) %>
-        ]}
-        rows={${pluralCamelName}}
-      />
+
       <table className="rw-table">
         <thead>
           <tr><% columns.forEach(column => { %>
