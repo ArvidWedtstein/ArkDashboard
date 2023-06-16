@@ -19,18 +19,15 @@ export const QUERY = gql`
       can_destroy
       base_stats
       exp_per_kill
-      fits_through
       egg_min
       egg_max
       tdps
-      eats
       maturation_time
       incubation_time
       affinity_needed
       aff_inc
       flee_threshold
       hitboxes
-      drops
       food_consumption_base
       food_consumption_mult
       disable_ko
@@ -78,18 +75,15 @@ const UPDATE_DINO_MUTATION = gql`
       can_destroy
       base_stats
       exp_per_kill
-      fits_through
       egg_min
       egg_max
       tdps
-      eats
       maturation_time
       incubation_time
       affinity_needed
       aff_inc
       flee_threshold
       hitboxes
-      drops
       food_consumption_base
       food_consumption_mult
       disable_ko

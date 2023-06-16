@@ -4,7 +4,6 @@ import {
   SearchField,
   SelectField,
   Submit,
-  useForm,
 } from "@redwoodjs/forms";
 import {
   Link,
@@ -15,7 +14,7 @@ import {
 } from "@redwoodjs/router";
 
 import clsx from "clsx";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import ArkCard from "src/components/ArkCard/ArkCard";
 
 import type { FindItems } from "types/graphql";
@@ -66,7 +65,8 @@ const ItemsList = ({
   //   { "id": 17, "name": "Weight Reduction" },
   //   { "id": 18, "name": "Fuel" },
   //   { "id": 19, "name": "Gather Efficiency" },
-  //   { "id": 20, "name": "Other" }
+  //   { "id": 20, "name": "Other" },
+  //   { "id": 21, "name": "Multipliers" }
   // ]
   let { search, category, type } = useParams();
   const [types, setTypes] = useState([]);
@@ -400,7 +400,7 @@ const ItemsList = ({
               subtitle={item.type}
               content={view === "list" ? item.description : ""}
               icon={{
-                src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
                 alt: `${item.name}`,
               }}
             />

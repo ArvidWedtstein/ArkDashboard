@@ -6,14 +6,11 @@ import type {
 
 import { db } from "src/lib/db";
 
-export const dinos: QueryResolvers["dinos"] = () => {
-  return db.dino.findMany();
-};
-export const dinosPage = ({
+export const dinosPage: QueryResolvers["dinosPage"] = ({
   page = 1,
   search = "",
   category = "",
-  dinos_per_page = 36,
+  dinos_per_page = 35,
 }: {
   page: number;
   search?: string;
@@ -44,6 +41,10 @@ export const dinosPage = ({
       },
     }),
   };
+};
+
+export const dinos: QueryResolvers["dinos"] = () => {
+  return db.dino.findMany();
 };
 
 export const dino: QueryResolvers["dino"] = ({ id }) => {

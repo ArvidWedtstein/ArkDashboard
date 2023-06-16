@@ -79,7 +79,7 @@ a {
 
 .rw-button {
   /* @apply flex cursor-pointer justify-center rounded border-0 bg-gray-200 py-1 px-4 text-xs font-semibold uppercase leading-loose tracking-wide text-gray-500 no-underline transition duration-100; */
-  @apply rounded-lg py-2.5 px-6 text-sm font-medium text-gray-900 transition duration-100 ease-in-out focus:outline-none dark:text-white;
+  @apply rounded-lg py-2.5 px-6 text-sm font-medium text-gray-900 transition duration-100 ease-in-out focus:outline-none disabled:pointer-events-none dark:text-white;
 }
 .rw-button-ark {
   @apply bg-[#11667B] px-6 py-1 uppercase outline outline-1 outline-offset-1 outline-[#11667B] transition-colors duration-150 hover:outline-2 hover:outline-offset-0;
@@ -122,17 +122,6 @@ a {
 // Button Variants
 // ----------------------------
 */
-/* Green Outline Button */
-.rw-button.rw-button-green-outline {
-  @apply border-pea-500 text-pea-500 border;
-  /* @apply border-pea-500 text-pea-500 rounded border-2 font-normal leading-tight transition duration-150 ease-in-out hover:bg-opacity-5; */
-}
-.rw-button.rw-button-green-outline:hover {
-  @apply bg-pea-600 text-white;
-}
-.rw-button.rw-button-green-outline:focus {
-  @apply ring-pea-800 outline-none ring-4;
-}
 
 /* Gray Outline Button */
 .rw-button.rw-button-gray-outline {
@@ -145,15 +134,26 @@ a {
   @apply border-stone-700 ring-1 ring-stone-400 dark:border-stone-500 dark:ring-stone-400;
 }
 
+/* Red Button */
+.rw-button.rw-button-red {
+  @apply bg-red-500 text-white;
+}
+.rw-button.rw-button-red:hover {
+  @apply bg-red-700 text-white;
+}
+.rw-button.rw-button-red:focus {
+  @apply ring-red-300 dark:ring-red-800;
+}
+
 /* Red Outline Button */
 .rw-button.rw-button-red-outline {
-  @apply border border-red-700 text-red-700 dark:border-red-500 dark:text-red-500;
+  @apply border border-red-500 text-red-500;
 }
 .rw-button.rw-button-red-outline:hover {
-  @apply border-red-800 ring-1 ring-red-500 dark:border-red-500 dark:ring-red-600;
+  @apply bg-red-600 text-white;
 }
 .rw-button.rw-button-red-outline:focus {
-  @apply ring-red-300 dark:ring-red-800;
+  @apply outline-none ring-4 ring-red-700;
 }
 
 /* Green Button */
@@ -167,6 +167,18 @@ a {
   @apply ring-pea-300 dark:ring-pea-800;
 }
 
+/* Green Outline Button */
+.rw-button.rw-button-green-outline {
+  @apply border-pea-500 text-pea-500 border;
+  /* @apply border-pea-500 text-pea-500 rounded border-2 font-normal leading-tight transition duration-150 ease-in-out hover:bg-opacity-5; */
+}
+.rw-button.rw-button-green-outline:hover {
+  @apply bg-pea-600 text-white;
+}
+.rw-button.rw-button-green-outline:focus {
+  @apply ring-pea-800 outline-none ring-4;
+}
+
 /* Blue Button */
 .rw-button.rw-button-blue {
   @apply bg-blue-500 text-white;
@@ -176,17 +188,6 @@ a {
 }
 .rw-button.rw-button-blue:focus {
   @apply ring-blue-300 dark:ring-blue-800;
-}
-
-/* Red Button */
-.rw-button.rw-button-red {
-  @apply bg-red-500 text-white;
-}
-.rw-button.rw-button-red:hover {
-  @apply bg-red-700 text-white;
-}
-.rw-button.rw-button-red:focus {
-  @apply ring-red-300 dark:ring-red-800;
 }
 
 /* Yellow Button */
@@ -202,7 +203,7 @@ a {
 
 /* Gray Button */
 .rw-button.rw-button-gray {
-  @apply border-gray-300 bg-zinc-300 text-gray-700 dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-300;
+  @apply border border-gray-500 bg-zinc-300 text-gray-700 dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-300;
 }
 .rw-button.rw-button-gray:hover {
   @apply border-gray-500 bg-zinc-400 text-gray-900 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white;
@@ -248,10 +249,24 @@ a {
 // ----------------------------
 */
 .rw-input {
-  @apply mt-1 block rounded-lg border border-gray-500 bg-zinc-300 px-4 py-2.5 text-sm text-gray-900 !placeholder-zinc-700 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 disabled:cursor-not-allowed disabled:text-gray-400 contrast-more:border-black contrast-more:placeholder-black dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200 dark:!placeholder-zinc-300 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white;
+  @apply block rounded-lg border border-zinc-500 bg-zinc-300 px-4 py-2.5 text-sm text-gray-900 !placeholder-zinc-700 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 disabled:cursor-not-allowed disabled:text-gray-400 contrast-more:border-black contrast-more:placeholder-black dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200 dark:!placeholder-zinc-300 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white;
 }
 .rw-input.rw-input-small {
   @apply py-1 px-2 text-xs;
+}
+
+/* Underline */
+.rw-input-underline {
+  @apply relative;
+}
+.rw-input-underline:focus-within::after {
+  @apply scale-x-100;
+}
+.rw-input-underline::before {
+  @apply pointer-events-none absolute left-0 top-0 right-0 bottom-0 rounded-lg transition-colors duration-200 ease-in-out content-['\00a0'];
+}
+.rw-input-underline::after {
+  @apply border-pea-500 pointer-events-none absolute top-0 left-0 bottom-0 right-0 block h-full w-full scale-x-0 transform rounded-lg border-b-2 transition-transform duration-200 ease-out content-[''];
 }
 
 /* Select */
@@ -264,6 +279,7 @@ select.rw-input.rw-input-small {
 
 /* Checkbox */
 .rw-checkbox,
+.rw-input[type="checkbox"],
 .rw-input.rw-checkbox[type="checkbox"] {
   @apply relative ml-0 mr-1 block h-6 w-6 cursor-pointer appearance-none rounded p-2 transition duration-200 focus:outline-none;
 }
@@ -275,8 +291,9 @@ select.rw-input.rw-input-small {
   @apply absolute top-0 left-1/2 inline translate-y-[2px] -translate-x-1/2 transform whitespace-pre content-['✓'];
 }
 
+/* Toggle */
 .rw-toggle {
-  @apply h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] dark:border-gray-600 dark:bg-zinc-600;
+  @apply h-6 w-11 rounded-full border border-gray-500 bg-zinc-300 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] dark:border-zinc-500 dark:bg-zinc-600;
 }
 
 /* Radio */
@@ -288,6 +305,25 @@ select.rw-input.rw-input-small {
 }
 .rw-check-radio-item-none {
   @apply text-gray-600;
+}
+
+/* Range */
+input[type="range"].slider::-webkit-slider-runnable-track,
+input[type="range"].slider::-moz-range-track,
+input[type="range"].slider::-ms-track {
+  @apply h-6 appearance-none;
+}
+input[type="range"].slider::-webkit-slider-thumb,
+input[type="range"].slider::-moz-range-thumb {
+  @apply pointer-events-auto h-[100px] w-6 cursor-pointer appearance-none border-none bg-transparent outline-none;
+}
+input[type="range"].slider::-ms-thumb {
+  @apply pointer-events-auto h-[100px] w-6 cursor-pointer appearance-none border-none bg-transparent outline-none;
+}
+input[type="range"].slider:active::-webkit-slider-thumb,
+input[type="range"].slider:focus::-moz-range-thumb,
+input[type="range"].slider:active::-moz-range-thumb {
+  @apply border-none bg-none outline-none;
 }
 
 /* Input Error */
@@ -390,8 +426,32 @@ select.rw-input.rw-input-small {
   @apply text-center text-black dark:text-white;
 }
 
+/* Image */
 .rw-img-disable img {
   @apply opacity-40 brightness-[1.4] contrast-0 hue-rotate-[116deg] saturate-[.28] sepia;
+}
+.rw-img-blur {
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.rw-img-blur::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  animation: pulse 2.5s infinite;
+  background-color: var(--text-color);
+}
+.rw-img-blur.loaded::before {
+  animation: none;
+  content: none;
+}
+.rw-img-blur img {
+  opacity: 0;
+  transition: opacity 250ms ease-in-out;
+}
+.rw-img-blur.loaded img {
+  opacity: 1;
 }
 
 .rw-check-input:checked + .rw-check-tile {

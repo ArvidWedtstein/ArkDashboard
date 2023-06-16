@@ -12,11 +12,6 @@ import type { EditTribeById, UpdateTribeInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { useAuth } from "src/auth";
 import { permission } from ".prisma/client";
-const formatDatetime = (value) => {
-  if (value) {
-    return value.replace(/:\d{2}\.\d{3}\w/, "");
-  }
-};
 type FormTribe = NonNullable<EditTribeById["tribe"]>;
 
 interface TribeFormProps {

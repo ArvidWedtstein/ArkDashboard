@@ -13,6 +13,8 @@ export const schema = gql`
     created_by: String
     turretsetup_image: String
     updated_at: DateTime
+    type: String
+    Profile: Profile
     Map: Map!
     TimelineBasespot: [TimelineBasespot]!
   }
@@ -42,6 +44,7 @@ export const schema = gql`
     created_by: String
     turretsetup_image: String
     updated_at: DateTime
+    type: String
   }
 
   input UpdateBasespotInput {
@@ -57,6 +60,7 @@ export const schema = gql`
     created_by: String
     turretsetup_image: String
     updated_at: DateTime
+    type: String
   }
 
   type Mutation {

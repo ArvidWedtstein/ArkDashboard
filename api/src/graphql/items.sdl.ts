@@ -14,6 +14,12 @@ export const schema = gql`
     type: String
     category: String!
     health: Float
+    food: Float
+    torpor: Float
+    visible: Boolean
+    affinity: Float
+    torpor_duration: Float
+    damage: Float
     DinoStat: [DinoStat]!
     ItemRecipe_ItemRecipe_crafted_item_idToItem: [ItemRecipe]!
     ItemRecipe_ItemRecipe_crafting_station_idToItem: [ItemRecipe]!
@@ -35,7 +41,7 @@ export const schema = gql`
       type: String
     ): ItemsPage @skipAuth
     itemsByCategory(category: String!): ItemsPage @skipAuth
-    itemsByIds(id: [BigInt!]!): [Item!]! @skipAuth
+    itemsByIds(ids: [BigInt!]!): [Item!]! @skipAuth
   }
 
   input CreateItemInput {
@@ -52,6 +58,12 @@ export const schema = gql`
     type: String
     category: String!
     health: Float
+    food: Float
+    torpor: Float
+    visible: Boolean
+    affinity: Float
+    torpor_duration: Float
+    damage: Float
   }
 
   input UpdateItemInput {
@@ -68,6 +80,12 @@ export const schema = gql`
     type: String
     category: String
     health: Float
+    food: Float
+    torpor: Float
+    visible: Boolean
+    affinity: Float
+    torpor_duration: Float
+    damage: Float
   }
 
   type Mutation {

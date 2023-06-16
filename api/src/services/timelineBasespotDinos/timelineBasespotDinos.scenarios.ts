@@ -8,22 +8,14 @@ export const standard = defineScenario<Prisma.TimelineBasespotDinoCreateArgs>({
         Dino: {
           create: {
             name: 'String',
-            synonyms: 'String',
             can_destroy: 'String',
-            immobilized_by: 'String',
-            fits_through: 'String',
-            eats: 'String',
-            drops: 'String',
-            method: 'String',
-            knockout: 'String',
             type: 'String',
             carryable_by: 'String',
           },
         },
         TimelineBasespot: {
           create: {
-            tribeName: 'String',
-            players: 'String',
+            tribe_name: 'String',
             timeline: {
               create: {
                 Profile: {
@@ -48,22 +40,14 @@ export const standard = defineScenario<Prisma.TimelineBasespotDinoCreateArgs>({
         Dino: {
           create: {
             name: 'String',
-            synonyms: 'String',
             can_destroy: 'String',
-            immobilized_by: 'String',
-            fits_through: 'String',
-            eats: 'String',
-            drops: 'String',
-            method: 'String',
-            knockout: 'String',
             type: 'String',
             carryable_by: 'String',
           },
         },
         TimelineBasespot: {
           create: {
-            tribeName: 'String',
-            players: 'String',
+            tribe_name: 'String',
             timeline: {
               create: {
                 Profile: {

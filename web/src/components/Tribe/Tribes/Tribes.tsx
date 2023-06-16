@@ -1,11 +1,10 @@
-import { Link, navigate, routes } from "@redwoodjs/router";
+import { navigate, routes } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
 
 import { QUERY } from "src/components/Tribe/TribesCell";
 import { ContextMenu } from "src/components/Util/ContextMenu/ContextMenu";
-import NewTable from "src/components/Util/NewTable/NewTable";
 import Table from "src/components/Util/Table/Table";
 import { getWeekDates, pluralize, timeTag } from "src/lib/formatters";
 

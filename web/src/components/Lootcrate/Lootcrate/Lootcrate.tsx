@@ -44,7 +44,7 @@ const Lootcrate = ({ lootcrate }: Props) => {
       <div className="rw-segment">
         <header className="rw-segment-header">
           <h2 className="rw-heading rw-heading-secondary">
-            {lootcrate.name} on <Link to={routes.map({ id: lootcrate.Map.id })}>{lootcrate.Map.name}</Link>
+            {lootcrate.name} on <Link to={routes.map({ id: lootcrate.Map.id.toString() })}>{lootcrate.Map.name}</Link>
           </h2>
         </header>
         {/* <table className="rw-table">
@@ -134,7 +134,7 @@ const Lootcrate = ({ lootcrate }: Props) => {
                                   >
                                     {itm.Item.image && (
                                       <img
-                                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${itm.Item.image}`}
+                                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.Item.image}`}
                                         className="inline-block h-6 w-6"
                                       />
                                     )}

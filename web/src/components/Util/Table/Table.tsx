@@ -2,7 +2,6 @@ import { useCallback, useMemo, useState } from "react";
 import {
   IntRange,
   debounce,
-  dynamicSort,
   formatNumber,
 } from "src/lib/formatters";
 import clsx from "clsx";
@@ -29,6 +28,7 @@ type Filter = {
  */
 type TableDataRow = {
   [key: string]: any;
+  readonly row_id?: string;
 };
 
 type TableColumn = {
@@ -171,7 +171,7 @@ const Table = ({
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
-  const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(mergedSettings.pagination.rowsPerPage);
+  const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(mergedSettings.pagination.rowsPerPage || mergedSettings.pagination.pageSizeOptions[0]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filters, setFilters] = useState<Filter[]>([]);
   const [sort, setSort] = useState({
@@ -294,7 +294,7 @@ const Table = ({
     const endIndex = startIndex + selectedPageSizeOption;
 
     return SortedFilteredData.slice(startIndex, endIndex);
-  }, [SortedFilteredData, currentPage]);
+  }, [SortedFilteredData, currentPage, selectedPageSizeOption]);
 
   const handleSearch = debounce((e) => setSearchTerm(e.target.value), 500);
 
@@ -331,13 +331,13 @@ const Table = ({
         key={`headcell-${columnIndex}-${label}`}
         id={`headcell-${other.field}`}
         className={clsx(
-          "bg-zinc-400 p-3 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-800 line-clamp-1",
+          "bg-zinc-300 p-3 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-800 line-clamp-1",
           other.className
         )}
         aria-sort="none"
         scope="col"
         onClick={() => {
-          setSort((prev) => ({ column: other.field, direction: prev.direction === "asc" ? "desc" : "asc" }));
+          other.sortable && setSort((prev) => ({ column: other.field, direction: prev.direction === "asc" ? "desc" : "asc" }));
         }}
       >
         {label}
@@ -381,6 +381,8 @@ const Table = ({
       {
         truncate: !render && !valueFormatter,
         "dark:!bg-zinc-700 !bg-zinc-300": rowSelected,
+        "rounded-bl-lg": rowIndex === PaginatedData.length - 1 && columnIndex === 0 && !mergedSettings.select && !mergedSettings.summary,
+        "rounded-br-lg": rowIndex === PaginatedData.length - 1 && columnIndex === columns.length - 1 && !mergedSettings.summary,
       }
     );
 
@@ -420,9 +422,11 @@ const Table = ({
   const tableSelect = ({
     header = false,
     datarow,
+    rowIndex,
   }: {
     header?: boolean;
-    datarow?: any;
+    datarow?: TableDataRow | null;
+    rowIndex?: number;
   }) => {
     return (
       <td
@@ -431,6 +435,7 @@ const Table = ({
           "bg-zinc-100 dark:bg-zinc-600": !header,
           "!bg-zinc-300 dark:!bg-zinc-700":
             !header && isSelected(datarow.row_id),
+          "rounded-bl-lg": rowIndex === PaginatedData.length - 1 && !mergedSettings.summary,
         })}
         scope="col"
       >
@@ -485,7 +490,7 @@ const Table = ({
         )}
       >
         {mergedSettings.select && (
-          <td className="bg-zinc-400 px-3 py-4 first:rounded-bl-lg dark:bg-zinc-800" />
+          <td className="bg-zinc-300 px-3 py-4 first:rounded-bl-lg dark:bg-zinc-800" />
         )}
         {columnData.map(
           ({ header, field, numeric, className, valueFormatter }, index) => {
@@ -496,12 +501,11 @@ const Table = ({
               <td
                 key={key}
                 className={clsx(
-                  "bg-zinc-400 px-3 py-4 first:rounded-bl-lg last:rounded-br-lg dark:bg-zinc-800",
+                  "bg-zinc-300 px-3 py-4 first:rounded-bl-lg last:rounded-br-lg dark:bg-zinc-800",
                   className,
-                  numeric && "test-base"
                 )}
               >
-                {numeric ? sum : index === 0 ? "Total" : "-"}
+                {numeric ? sum : index === 0 ? "Total" : ""}
               </td>
             );
           }
@@ -606,8 +610,8 @@ const Table = ({
           onChange={(e) => {
             setSelectedPageSizeOption(parseInt(e.target.value));
           }}
-          value={selectedPageSizeOption}
-          defaultValue={mergedSettings.pagination.rowsPerPage}
+          // defaultValue={mergedSettings.pagination.rowsPerPage}
+          defaultValue={selectedPageSizeOption}
         >
           {!mergedSettings?.pagination?.pageSizeOptions.includes(settings.pagination.rowsPerPage) && <option>{mergedSettings.pagination.rowsPerPage}</option>}
           {mergedSettings?.pagination?.pageSizeOptions.map((option) => (
@@ -720,7 +724,7 @@ const Table = ({
         className
       )}
     >
-      <div className="my-2 flex items-center justify-start space-x-3">
+      <div className="flex items-center justify-start space-x-3 [&:not(:empty)]:my-2">
         {mergedSettings.filter && (
           <div className="relative w-fit" ref={ref}>
             <button
@@ -923,12 +927,12 @@ const Table = ({
       <table className="relative mr-auto w-full table-auto text-left text-sm text-zinc-700 dark:text-zinc-300">
         <thead className="text-sm uppercase">
           <tr
-            className={clsx("table-row rounded-t-lg", {
+            className={clsx("table-row", {
               "divide-x divide-gray-400 dark:divide-zinc-800": mergedSettings.borders.vertical,
               hidden: !mergedSettings.header,
             })}
           >
-            {mergedSettings.select && tableSelect({ header: true })}
+            {mergedSettings.select && tableSelect({ header: true, rowIndex: -1 })}
             {columns.map(({ ...other }, index) =>
               headerRenderer({
                 label: other.header,
@@ -939,8 +943,7 @@ const Table = ({
           </tr>
         </thead>
         <tbody
-          className={
-            mergedSettings.borders.horizontal &&
+          className={mergedSettings.borders.horizontal &&
             "divide-y divide-gray-400 dark:divide-zinc-800"
           }
         >
@@ -948,10 +951,9 @@ const Table = ({
             PaginatedData.map((datarow, i) => (
               <tr
                 key={datarow.row_id}
-                className={clsx("last:rounded-b-lg", {
-                  "divide-x divide-gray-400 dark:divide-zinc-800":
-                    mergedSettings.borders?.vertical,
-                })}
+                className={mergedSettings.borders.vertical ?
+                  "divide-x divide-gray-400 dark:divide-zinc-800" : ""
+                }
               >
                 {mergedSettings.select && tableSelect({ datarow })}
                 {columns.map(({ field, render, valueFormatter, className, numeric, ...other }, index) =>
@@ -973,7 +975,7 @@ const Table = ({
           {(dataRows === null || dataRows.length === 0) && (
             <tr className="w-full bg-zinc-100 dark:bg-zinc-600">
               <td headers="" className="p-4 text-center" colSpan={100}>
-                <span className="px-3 py-2 text-gray-500 dark:text-gray-400">
+                <span className="px-3 py-2 text-gray-400">
                   No data found
                 </span>
               </td>

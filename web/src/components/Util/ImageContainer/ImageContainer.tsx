@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ReactNode, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import useIntersectionObserver from "src/components/useIntersectionObserver";
 
 interface ImageContainerProps
@@ -31,6 +31,32 @@ const ImageContainer = ({ ...props }: ImageContainerProps) => {
     height = 500,
     key,
   } = props;
+
+  // const [imageLoaded, setImageLoaded] = useState(false);
+  // const imageRef = useRef(null);
+
+
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     ([entry]) => {
+  //       if (entry.isIntersecting) {
+  //         setImageLoaded(true);
+  //         observer.unobserve(imageRef.current);
+  //       }
+  //     },
+  //     { threshold: 0.5 } // Adjust the threshold as per your needs
+  //   );
+
+  //   if (imageRef.current) {
+  //     observer.observe(imageRef.current);
+  //   }
+
+  //   return () => {
+  //     if (imageRef.current) {
+  //       observer.unobserve(imageRef.current);
+  //     }
+  //   };
+  // }, []);
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -54,14 +80,13 @@ const ImageContainer = ({ ...props }: ImageContainerProps) => {
         "relative overflow-hidden transition-opacity duration-300 ease-linear",
         className
       )}
-      // style={{ paddingBottom: `${aspectRatio}%` }}
+    // style={{ paddingBottom: `${aspectRatio}%` }}
     >
-      {/* {!imageLoaded && (
-        <img
-          src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiTw9vKUkfzdUkGVByistee-qWWG21sxiU8IT8cSjfBw&s`}
-          alt="loading placeholder"
-          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-        />
+      {/*
+      {imageLoaded ? (
+        <img src={src} alt={alt} ref={imageRef} />
+      ) : (
+        <img src={defaultsrc} alt="Placeholder" />
       )} */}
       {isVisible && (
         <figure className="max-w-3xl">
@@ -74,7 +99,7 @@ const ImageContainer = ({ ...props }: ImageContainerProps) => {
             onError={(e) => {
               if (defaultsrc) e.currentTarget.src = defaultsrc;
             }}
-            // style={{ opacity: imageLoaded ? 1 : 0 }}
+          // style={{ opacity: imageLoaded ? 1 : 0 }}
           />
           {!!caption && (
             <figcaption className="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">

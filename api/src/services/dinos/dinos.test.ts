@@ -27,9 +27,6 @@ describe('dinos', () => {
       input: {
         name: 'String',
         can_destroy: 'String',
-        fits_through: 'String',
-        eats: 'String',
-        drops: 'String',
         type: 'String',
         carryable_by: 'String',
       },
@@ -37,9 +34,6 @@ describe('dinos', () => {
 
     expect(result.name).toEqual('String')
     expect(result.can_destroy).toEqual('String')
-    expect(result.fits_through).toEqual('String')
-    expect(result.eats).toEqual('String')
-    expect(result.drops).toEqual('String')
     expect(result.type).toEqual('String')
     expect(result.carryable_by).toEqual('String')
   })

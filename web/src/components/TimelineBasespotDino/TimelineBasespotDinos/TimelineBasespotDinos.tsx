@@ -1,11 +1,14 @@
-import { Link, routes } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
+import { Link, routes } from "@redwoodjs/router";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
 
-import { QUERY } from 'src/components/TimelineBasespotDino/TimelineBasespotDinosCell'
-import { timeTag, truncate } from 'src/lib/formatters'
+import { QUERY } from "src/components/TimelineBasespotDino/TimelineBasespotDinosCell";
+import { timeTag, truncate } from "src/lib/formatters";
 
-import type { DeleteTimelineBasespotDinoMutationVariables, FindTimelineBasespotDinos } from 'types/graphql'
+import type {
+  DeleteTimelineBasespotDinoMutationVariables,
+  FindTimelineBasespotDinos,
+} from "types/graphql";
 
 const DELETE_TIMELINE_BASESPOT_DINO_MUTATION = gql`
   mutation DeleteTimelineBasespotDinoMutation($id: String!) {
@@ -13,28 +16,39 @@ const DELETE_TIMELINE_BASESPOT_DINO_MUTATION = gql`
       id
     }
   }
-`
+`;
 
-const TimelineBasespotDinosList = ({ timelineBasespotDinos }: FindTimelineBasespotDinos) => {
-  const [deleteTimelineBasespotDino] = useMutation(DELETE_TIMELINE_BASESPOT_DINO_MUTATION, {
-    onCompleted: () => {
-      toast.success('TimelineBasespotDino deleted')
-    },
-    onError: (error) => {
-      toast.error(error.message)
-    },
-    // This refetches the query on the list page. Read more about other ways to
-    // update the cache over here:
-    // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
-    refetchQueries: [{ query: QUERY }],
-    awaitRefetchQueries: true,
-  })
-
-  const onDeleteClick = (id: DeleteTimelineBasespotDinoMutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete timelineBasespotDino ' + id + '?')) {
-      deleteTimelineBasespotDino({ variables: { id } })
+const TimelineBasespotDinosList = ({
+  timelineBasespotDinos,
+}: FindTimelineBasespotDinos) => {
+  const [deleteTimelineBasespotDino] = useMutation(
+    DELETE_TIMELINE_BASESPOT_DINO_MUTATION,
+    {
+      onCompleted: () => {
+        toast.success("TimelineBasespotDino deleted");
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+      // This refetches the query on the list page. Read more about other ways to
+      // update the cache over here:
+      // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
+      refetchQueries: [{ query: QUERY }],
+      awaitRefetchQueries: true,
     }
-  }
+  );
+
+  const onDeleteClick = (
+    id: DeleteTimelineBasespotDinoMutationVariables["id"]
+  ) => {
+    if (
+      confirm(
+        "Are you sure you want to delete timelineBasespotDino " + id + "?"
+      )
+    ) {
+      deleteTimelineBasespotDino({ variables: { id } });
+    }
+  };
 
   return (
     <div className="rw-segment rw-table-wrapper-responsive">
@@ -93,7 +107,6 @@ const TimelineBasespotDinosList = ({ timelineBasespotDinos }: FindTimelineBasesp
               <td>{truncate(timelineBasespotDino.weight)}</td>
               <td>{truncate(timelineBasespotDino.melee_damage)}</td>
               <td>{truncate(timelineBasespotDino.movement_speed)}</td>
-              <td>{truncate(timelineBasespotDino.torpor)}</td>
               <td>{truncate(timelineBasespotDino.gender)}</td>
               <td>{truncate(timelineBasespotDino.wild_health)}</td>
               <td>{truncate(timelineBasespotDino.wild_stamina)}</td>
@@ -102,26 +115,37 @@ const TimelineBasespotDinosList = ({ timelineBasespotDinos }: FindTimelineBasesp
               <td>{truncate(timelineBasespotDino.wild_weight)}</td>
               <td>{truncate(timelineBasespotDino.wild_melee_damage)}</td>
               <td>{truncate(timelineBasespotDino.wild_movement_speed)}</td>
-              <td>{truncate(timelineBasespotDino.wild_torpor)}</td>
               <td>
                 <nav className="rw-table-actions">
                   <Link
-                    to={routes.timelineBasespotDino({ id: timelineBasespotDino.id })}
-                    title={'Show timelineBasespotDino ' + timelineBasespotDino.id + ' detail'}
+                    to={routes.timelineBasespotDino({
+                      id: timelineBasespotDino.id,
+                    })}
+                    title={
+                      "Show timelineBasespotDino " +
+                      timelineBasespotDino.id +
+                      " detail"
+                    }
                     className="rw-button rw-button-small"
                   >
                     Show
                   </Link>
                   <Link
-                    to={routes.editTimelineBasespotDino({ id: timelineBasespotDino.id })}
-                    title={'Edit timelineBasespotDino ' + timelineBasespotDino.id}
+                    to={routes.editTimelineBasespotDino({
+                      id: timelineBasespotDino.id,
+                    })}
+                    title={
+                      "Edit timelineBasespotDino " + timelineBasespotDino.id
+                    }
                     className="rw-button rw-button-small rw-button-blue"
                   >
                     Edit
                   </Link>
                   <button
                     type="button"
-                    title={'Delete timelineBasespotDino ' + timelineBasespotDino.id}
+                    title={
+                      "Delete timelineBasespotDino " + timelineBasespotDino.id
+                    }
                     className="rw-button rw-button-small rw-button-red"
                     onClick={() => onDeleteClick(timelineBasespotDino.id)}
                   >
@@ -134,7 +158,7 @@ const TimelineBasespotDinosList = ({ timelineBasespotDinos }: FindTimelineBasesp
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
-export default TimelineBasespotDinosList
+export default TimelineBasespotDinosList;

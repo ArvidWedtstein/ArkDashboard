@@ -1,11 +1,5 @@
 import { Form, TextField, useForm } from "@redwoodjs/forms";
-import {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
 import { timeTag } from "src/lib/formatters";
 
@@ -43,7 +37,7 @@ const Message = ({
 }) => {
   const { currentUser, client: supabase } = useAuth();
   let userId = currentUser?.id;
-
+  console.log(profile);
   useEffect(() => {
     const fetchProfile = async () => {
       const { data } = await supabase
@@ -66,7 +60,7 @@ const Message = ({
   }, [profile, message.profile_id]);
   return (
     <div
-      key={message.id[0]}
+      key={`${"TEST"}`}
       aria-owns={message.profile_id === userId ? "owner" : ""}
       className="group flex px-5 pt-0 pb-11 aria-[owns=owner]:flex-row-reverse"
     >
@@ -75,25 +69,26 @@ const Message = ({
         <img
           className="h-10 w-10 rounded-full object-cover"
           src={
-            `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}` ||
+            `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${profile?.avatar_url}` ||
             "https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%281%29.png"
           }
-          alt={profile.username}
-          title={profile.username}
+          alt={profile?.username || ""}
+          title={profile?.username || ""}
         />
         <div className="chat-msg-date absolute bottom-0 left-[calc(100%+12px)] whitespace-nowrap text-xs font-semibold text-[#626466] group-aria-[owns=owner]:left-auto group-aria-[owns=owner]:right-[calc(100%+12px)]">
-          {timeTag(message.created_at)}
+          {timeTag(message?.created_at)}
         </div>
       </div>
       <div className="ml-3 flex max-w-[70%] flex-col items-start group-aria-[owns=owner]:ml-0 group-aria-[owns=owner]:mr-3 group-aria-[owns=owner]:items-end">
-        {message.content.map((content, index) => (
-          <div
-            key={`${message.id[0]}-${index}`}
-            className="chat-msg-text rounded-2xl rounded-bl-none bg-[#383b40] p-4 text-sm font-medium text-[#b5b7ba] group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 group-aria-[owns=owner]:text-white [&+.chat-msg-text]:mt-3"
-          >
-            {content}
-          </div>
-        ))}
+        {message &&
+          message?.content?.map((content, index) => (
+            <div
+              key={`test-${index}`}
+              className="chat-msg-text rounded-2xl rounded-bl-none bg-[#383b40] p-4 text-sm font-medium text-[#b5b7ba] group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 group-aria-[owns=owner]:text-white [&+.chat-msg-text]:mt-3"
+            >
+              {content}
+            </div>
+          ))}
         {/* <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">{message.content}</div> */}
         {/* <div className="p-4 rounded-2xl rounded-bl-none [&+.chat-msg-text]:mt-3 font-medium text-sm text-[#b5b7ba] group-aria-[owns=owner]:text-white group-aria-[owns=owner]:rounded-br-none group-aria-[owns=owner]:rounded-bl-2xl group-aria-[owns=owner]:bg-blue-500 bg-[#383b40] chat-msg-text">
                 <img className="max-w-xs w-full" src="https://media0.giphy.com/media/yYSSBtDgbbRzq/giphy.gif?cid=ecf05e47344fb5d835f832a976d1007c241548cc4eea4e7e&rid=giphy.gif" />
@@ -172,35 +167,50 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-    const subscription = supabase.channel("supabase_realtime").on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'message' }, (payload) => {
-      if (messagesRef.current) {
-        messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
-      }
-      if (messages.length > 0) {
-        if (messages[messages.length - 1].profile_id === payload.new.profile_id) {
-          setMessages((prev) => ([
-            ...prev.slice(0, -1),
-            {
-              id: [...prev[prev.length - 1].id, payload.new.id],
-              content: [...prev[prev.length - 1].content, payload.new.content],
-              profile_id: payload.new.profile_id,
-              created_at: payload.new.created_at,
+    const subscription = supabase
+      .channel("supabase_realtime")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "Message" },
+        (payload) => {
+          if (messagesRef.current) {
+            messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+          }
+          if (messages.length > 0) {
+            if (
+              messages[messages.length - 1].profile_id ===
+              payload.new.profile_id
+            ) {
+              setMessages((prev) => [
+                ...prev.slice(0, -1),
+                {
+                  id: [...prev[prev.length - 1].id, payload.new.id],
+                  content: [
+                    ...prev[prev.length - 1].content,
+                    payload.new.content,
+                  ],
+                  profile_id: payload.new.profile_id,
+                  created_at: payload.new.created_at,
+                },
+              ]);
+              return;
             }
-          ]))
-          return
-        }
-      } else {
-        setMessages((prev) => ([...prev, {
-          id: [payload.new.id],
-          content: [payload.new.content],
-          profile_id: payload.new.profile_id,
-          created_at: payload.new.created_at,
-        }]))
-      }
+          } else {
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: [payload.new.id],
+                content: [payload.new.content],
+                profile_id: payload.new.profile_id,
+                created_at: payload.new.created_at,
+              },
+            ]);
+          }
 
-      // groupMessage();
-      // setMessages((prev) => ([...prev, payload.new]))
-    });
+          // groupMessage();
+          // setMessages((prev) => ([...prev, payload.new]))
+        }
+      );
     subscription.subscribe();
     // const subscription = supabase
     //   .from("Message")

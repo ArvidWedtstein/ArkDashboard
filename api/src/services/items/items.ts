@@ -7,7 +7,7 @@ import type {
 import { db } from "src/lib/db";
 import { validate, validateWithSync } from "@redwoodjs/api";
 
-export const itemsPage = ({
+export const itemsPage: QueryResolvers["itemsPage"] = ({
   page = 1,
   search = "",
   category = "",
@@ -77,9 +77,13 @@ export const itemsByCategory: QueryResolvers["itemsByCategory"] = ({
     }),
   };
 };
-export const itemsByIds = ({ id }: { id: number[] }) => {
+export const itemsByIds: QueryResolvers["itemsByIds"] = ({
+  ids,
+}: {
+  ids: number[];
+}) => {
   return db.item.findMany({
-    where: { id: { in: id } },
+    where: { id: { in: ids } },
   });
 };
 

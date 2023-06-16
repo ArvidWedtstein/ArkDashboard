@@ -5,54 +5,18 @@ import {
   routes,
   useParams,
 } from "@redwoodjs/router";
-import { useMutation } from "@redwoodjs/web";
-import { toast } from "@redwoodjs/web/toast";
 import {
-  FieldError,
   Form,
-  FormError,
   Label,
-  RWGqlError,
   SearchField,
   SelectField,
   Submit,
   TextField,
 } from "@redwoodjs/forms";
 
-import { QUERY } from "src/components/Dino/DinosCell";
-import type { DeleteDinoMutationVariables, FindDinos } from "types/graphql";
-import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
+import type { FindDinos } from "types/graphql";
 
-const DELETE_DINO_MUTATION = gql`
-  mutation DeleteDinoMutation($id: String!) {
-    deleteDino(id: $id) {
-      id
-    }
-  }
-`;
-
-// const DinosList = ({ dinos }: FindDinos) => {
 const DinosList = ({ dinosPage }: FindDinos) => {
-  // const [deleteDino] = useMutation(DELETE_DINO_MUTATION, {
-  //   onCompleted: () => {
-  //     toast.success("Dino deleted");
-  //   },
-  //   onError: (error) => {
-  //     toast.error(error.message);
-  //   },
-  //   // This refetches the query on the list page. Read more about other ways to
-  //   // update the cache over here:
-  //   // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
-  //   refetchQueries: [{ query: QUERY }],
-  //   awaitRefetchQueries: true,
-  // });
-
-  // const onDeleteClick = (id: DeleteDinoMutationVariables["id"]) => {
-  //   if (confirm("Are you sure you want to delete dino " + id + "?")) {
-  //     deleteDino({ variables: { id } });
-  //   }
-  // };
-
   let { search, category } = useParams();
   const onSubmit = (e) => {
     navigate(
@@ -80,7 +44,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
   // const debouncedChangeHandler = useMemo(() => debounce(handlechange, 500), []);
   return (
     <section className="">
-      <Form className="my-4 flex w-auto" onSubmit={onSubmit}>
+      <Form className="flex w-auto" onSubmit={onSubmit}>
         <nav className="flex w-full flex-row justify-center space-x-2">
           <div className="rw-button-group !w-full !space-x-0">
             <Label name="category" className="sr-only">
@@ -123,36 +87,19 @@ const DinosList = ({ dinosPage }: FindDinos) => {
         </nav>
       </Form>
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-5">
-        {dinosPage.dinos.map((dino) => (
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-5 3xl:grid-cols-8">
+        {dinosPage.dinos.map(({ id, name, type, image }) => (
           <Link
-            key={`dino-${dino.id}`}
-            to={routes.dino({ id: dino.id })}
+            key={`dino-${id}`}
+            to={routes.dino({ id: id })}
             className="flex h-auto w-auto max-w-xs flex-row items-start justify-start rounded-md bg-zinc-600 p-4 text-center text-white"
           >
             <div className="flex h-full w-full flex-col items-start justify-between justify-items-stretch">
               <div className="relative mb-3 h-32 w-32 rounded-full border bg-gradient-to-br from-zinc-700 to-zinc-700">
-                {/* <ImageContainer
-                  loading="lazy"
-                  defaultsrc="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/any-hat.png"
-                  className="h-auto max-h-full"
-                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
-                  onError={(e) => {
-                    e.currentTarget.src = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/any-hat.png`;
-                    e.currentTarget.parentElement.hidden = true;
-                    e.currentTarget.parentElement.parentElement.classList.replace(
-                      "justify-between",
-                      "justify-end"
-                    );
-                  }}
-                  // caption={dino.name}
-                  // sizes="1rem"
-                  // src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/render/image/public/arkimages/dodo.png?width=500&quality=75`}
-                  // onLoad={() => console.log(`loaded ${dino.name}`)}
-                /> */}
                 <img
                   className="h-auto max-h-full"
-                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${dino.image}`}
+                  loading="lazy"
+                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
                   onError={(e) => {
                     e.currentTarget.src = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/any-hat.png`;
                     // e.currentTarget.parentElement.hidden = true;
@@ -163,13 +110,13 @@ const DinosList = ({ dinosPage }: FindDinos) => {
                   }}
                 />
               </div>
-              <p className="tracking-wide subpixel-antialiased">{dino.name}</p>
+              <p className="tracking-wide subpixel-antialiased">{name}</p>
             </div>
             <div className="flex flex-col gap-1">
-              {dino.type &&
-                dino.type.map((type) => (
+              {type &&
+                type.map((type) => (
                   <img
-                    key={`dino-${dino.id}-${type}`}
+                    key={`dino-${id}-${type}`}
                     className="w-8"
                     title={type}
                     src={types[type]}

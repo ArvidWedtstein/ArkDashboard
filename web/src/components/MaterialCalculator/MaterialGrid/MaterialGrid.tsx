@@ -16,12 +16,12 @@ import {
 import debounce from "lodash.debounce";
 import Table from "src/components/Util/Table/Table";
 import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
-import { CreateUserRecipeInput, FindItemsMats } from "types/graphql";
-import clsx from "clsx";
+import { FindItemsMats } from "types/graphql";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useAuth } from "src/auth";
-
+import { QUERY } from "../MaterialCalculatorCell";
+import UserCard from "src/components/Util/UserCard/UserCard";
 
 const CREATE_USERRECIPE_MUTATION = gql`
   mutation CreateUserRecipe($input: CreateUserRecipeInput!) {
@@ -29,19 +29,63 @@ const CREATE_USERRECIPE_MUTATION = gql`
       id
     }
   }
-`
-
+`;
+type ItemRecipe = {
+  __typename: string;
+  id: string;
+  crafted_item_id: number;
+  crafting_station_id: number;
+  crafting_time: number;
+  yields: number;
+  Item_ItemRecipe_crafted_item_idToItem: {
+    __typename: string;
+    id: number;
+    name: string;
+    image: string;
+    category: string;
+    type: string;
+  };
+  ItemRecipeItem: {
+    __typename: string;
+    id: string;
+    amount: number;
+    Item: {
+      __typename: string;
+      id: number;
+      name: string;
+      image: string;
+    };
+  }[];
+};
 interface MaterialGridProps {
+  // itemRecipes: NonNullable<FindItemsMats["itemRecipesByCraftingStations"]>;
   itemRecipes: NonNullable<FindItemsMats["itemRecipes"]>;
   userRecipesByID?: NonNullable<FindItemsMats["userRecipesByID"]>;
   error?: RWGqlError;
 }
 
-export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGridProps) => {
+export const MaterialGrid = ({
+  error,
+  itemRecipes,
+  userRecipesByID,
+}: MaterialGridProps) => {
+  const categoriesIcons = {
+    Armor: "cloth-shirt",
+    Tool: "stone-pick",
+    Weapon: "assault-rifle",
+    Resource: "stone",
+    Fertilizer: "fertilizer",
+    Structure: "wooden-foundation",
+    Other: "any-craftable-resource",
+    Consumable: "any-berry-seed",
+  };
   const { currentUser, isAuthenticated } = useAuth();
   // TODO: Fix Types
   const [search, setSearch] = useState<string>("");
-  const [craftingStations, setCraftingStations] = useState<any>([107, 125]);
+
+  const [selectedCraftingStations, selectCraftingStations] = useState<any>([
+    107, 125,
+  ]);
 
   const [viewBaseMaterials, setViewBaseMaterials] = useState<boolean>(false);
   const toggleBaseMaterials = useCallback(
@@ -60,9 +104,9 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                ...item,
-                amount: item.amount + (action.index || 1) * yields,
-              }
+                  ...item,
+                  amount: item.amount + (action.index || 1) * yields,
+                }
               : item
           );
         }
@@ -70,7 +114,7 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
           ...state,
           {
             ...action.item,
-            amount: (action.index || 1) //* yields,
+            amount: action.index || 1, //* yields,
           },
         ];
       }
@@ -88,9 +132,9 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
           const yields = item?.yields || 1;
           return i === action.index
             ? {
-              ...item,
-              amount: parseInt(item.amount) + parseInt(yields),
-            }
+                ...item,
+                amount: parseInt(item.amount) + parseInt(yields),
+              }
             : item;
         });
       }
@@ -99,25 +143,24 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
           const yields = item?.yields || 1;
           return i === action.index
             ? {
-              ...item,
-              amount: item.amount - yields,
-            }
+                ...item,
+                amount:
+                  item.amount - yields < 1 ? yields : item.amount - yields,
+              }
             : item;
         });
       }
       case "ADD": {
-        const itemIndex = state.findIndex(
-          (item) => item.id === action.item.id
-        );
+        const itemIndex = state.findIndex((item) => item.id === action.item.id);
 
         const yields = action.item?.yields || 1;
         if (itemIndex !== -1) {
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                ...item,
-                amount: parseInt(item.amount || 0) + yields,
-              }
+                  ...item,
+                  amount: parseInt(item.amount || 0) + yields,
+                }
               : item
           );
         }
@@ -147,30 +190,34 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
   let [item, setItem] = useReducer(reducer, []);
 
   const items = useMemo(() => {
-    const craftedItems = groupBy(itemRecipes, "crafted_item_id");
-    const craftingStation = {};
+    const craftedItems: { [key: string]: ItemRecipe[] } = groupBy(
+      itemRecipes,
+      "crafted_item_id"
+    );
+    const craftingStations = {};
 
     for (const [key, value] of Object.entries(craftedItems)) {
-      craftingStation[key] = groupBy(value as any, "crafting_station_id");
+      craftingStations[key] = groupBy(value as any, "crafting_station_id");
     }
     const result = [];
-    for (const v of Object.values(craftingStation)) {
+    Object.values(craftingStations).forEach((v) => {
+      // If the item is crafted in either chem bench, mortar, refining or industral forge, we need to find the one that is selected
       if (
         Object.keys(v).some((f) => [107, 607, 125, 600].includes(Number(f)))
       ) {
         const t = Object.entries(v)
           .filter(([k, _]) => {
-            return craftingStations.includes(Number(k));
+            return selectedCraftingStations.includes(Number(k));
           })
           .map(([_, v]) => {
             return Object.values(v)[0];
           });
-        t[0] && result.push(t[0]);
+        t && t[0] && result.push(t[0]);
       } else {
         const craftingStation = Object.values(Object.values(v)[0])[0];
         result.push(craftingStation);
       }
-    }
+    });
     item.forEach((item) => {
       setItem({ type: "REMOVE_BY_ID", id: item.id });
       let itemfound = result.find(
@@ -187,11 +234,11 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
     });
 
     return result;
-  }, [craftingStations]);
+  }, [selectedCraftingStations]);
 
   const categories = useMemo(() => {
     return groupBy(
-      items
+      (items || [])
         .map((f) => f.Item_ItemRecipe_crafted_item_idToItem)
         .filter((item) =>
           item.name.toLowerCase().includes(search.toLowerCase())
@@ -219,63 +266,86 @@ export const MaterialGrid = ({ error, itemRecipes, userRecipesByID }: MaterialGr
     setItem({ type: "CHANGE_AMOUNT", item: index, index: amount });
   }, 500);
 
-  const clear = () => {
-    setItem({ type: "RESET" });
-  };
-
   const mergeItemRecipe = useCallback(getBaseMaterials, [
     item,
-    craftingStations,
+    selectedCraftingStations,
   ]);
 
-  const [createRecipe, { loading, error: recipeError }] = useMutation(
+  const [createRecipe, { loading, error: recipeError, data }] = useMutation(
     CREATE_USERRECIPE_MUTATION,
     {
-      onCompleted: () => {
-        toast.success('Recipe created')
+      onCompleted: (data) => {
+        toast.success("Recipe created");
+        console.log(data);
       },
       onError: (error) => {
-        toast.error(error.message)
+        toast.error(error.message);
       },
+      refetchQueries: [{ query: QUERY }],
+      awaitRefetchQueries: true,
     }
-  )
+  );
 
   const saveRecipe = (e) => {
     e.preventDefault();
-    const recipe: CreateUserRecipeInput = {
-      name: '',
-      user_id: currentUser.id,
+    const input = {
       created_at: new Date().toISOString(),
+      user_id: currentUser.id,
       private: true,
-      updated_at: new Date().toISOString(),
-      // UserRecipeItemRecipe: item.map(({ id, amount }) => ({
-      //   item_recipe_id: id,
-      //   amount: amount,
-      // })),
+      UserRecipeItemRecipe: {
+        create: item.map((u) => ({
+          amount: u.amount,
+          item_recipe_id: u.id,
+        })),
+      },
     };
-    console.log(recipe, typeof recipe)
-    createRecipe({ variables: { recipe } })
-
-  }
+    createRecipe({ variables: { input } });
+    // TODO: Fetch the recipe after created and add it to the list
+  };
 
   return (
-    <div className="w-full flex flex-col gap-3 mx-1">
-      <div className="flex flex-row dark:text-stone-100 gap-5 overflow-x-auto py-3">
-        {userRecipesByID.map(({ id, created_at, name, UserRecipeItemRecipe }) => (
-          <div className="transition hover:border-pea-500 min-w-fit p-4 bg-stone-300 dark:bg-zinc-700 rounded-lg shadow w-fit border border-transparent" key={id} onClick={() => {
-            UserRecipeItemRecipe.forEach(({ item_recipe_id, amount }) => {
-              let itemfound = items.find(
-                (item) => item.id === item_recipe_id
-              );
-              setItem({ type: "ADD_AMOUNT_BY_NUM", item: itemfound, index: amount });
-            });
-          }}>
-            <div className="flex justify-between items-center mb-4 space-x-3">
-              <div className="p-1 w-12 h-12 rounded bg-white">
-                {name === 'Cage Turret Tower' ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 320 336">
-                    <path fill="#000000" stroke="none"
-                      d="
+    <div className="mx-1 flex w-full flex-col gap-3">
+      <div className="flex flex-row gap-3 overflow-x-auto py-3 dark:text-stone-100">
+        {userRecipesByID.map(
+          ({
+            id,
+            created_at,
+            name,
+            UserRecipeItemRecipe,
+            private: IsPrivate,
+          }) => (
+            <div
+              className="hover:border-pea-500 relative flex w-fit min-w-fit flex-row space-x-3 rounded-lg border border-transparent bg-zinc-300 p-4 shadow transition dark:bg-zinc-700"
+              key={id}
+            >
+              <div
+                onClick={() => {
+                  UserRecipeItemRecipe.forEach(({ item_recipe_id, amount }) => {
+                    let itemfound = items.find(
+                      (item) => item.id === item_recipe_id
+                    );
+                    if (itemfound) {
+                      setItem({
+                        type: "ADD_AMOUNT_BY_NUM",
+                        item: itemfound,
+                        index: amount,
+                      });
+                    }
+                  });
+                }}
+              >
+                <div className="mb-4 flex items-center justify-between space-x-3">
+                  <div className="h-12 w-12 rounded bg-white p-1">
+                    {name === "Cage Turret Tower" ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="100%"
+                        viewBox="0 0 320 336"
+                        fill="#000000"
+                      >
+                        <path
+                          stroke="none"
+                          d="
 M188.999878,270.360046
 	C156.356644,270.359344 124.213432,270.359039 92.070221,270.357910
 	C90.404778,270.357849 88.736168,270.283478 87.074516,270.361115
@@ -351,37 +421,84 @@ M141.028931,216.489685
 	C132.404663,222.679123 130.449005,233.009415 129.097260,245.071671
 	C137.292328,238.060074 144.285828,232.076553 151.725922,225.710907
 	C148.040894,222.535919 144.803497,219.746597 141.028931,216.489685
-z"/>
-                  </svg>
-                ) : (
+z"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="pointer-events-none w-full p-2"
+                        fill="#000000"
+                        viewBox="0 0 512 512"
+                      >
+                        <path d="M207.1 64C207.1 99.35 179.3 128 143.1 128C108.7 128 79.1 99.35 79.1 64C79.1 28.65 108.7 0 143.1 0C179.3 0 207.1 28.65 207.1 64zM143.1 16C117.5 16 95.1 37.49 95.1 64C95.1 90.51 117.5 112 143.1 112C170.5 112 191.1 90.51 191.1 64C191.1 37.49 170.5 16 143.1 16zM15.06 315.8C12.98 319.7 8.129 321.1 4.232 319.1C.3354 316.1-1.136 312.1 .9453 308.2L50.75 214.1C68.83 181.1 104.1 160 142.5 160H145.5C183.9 160 219.2 181.1 237.3 214.1L287.1 308.2C289.1 312.1 287.7 316.1 283.8 319.1C279.9 321.1 275 319.7 272.9 315.8L223.1 222.5C207.8 193.9 178 175.1 145.5 175.1H142.5C110 175.1 80.16 193.9 64.86 222.5L15.06 315.8zM72 280C76.42 280 80 283.6 80 288V476C80 487 88.95 496 99.1 496C111 496 119.1 487 119.1 476V392C119.1 378.7 130.7 368 143.1 368C157.3 368 168 378.7 168 392V476C168 487 176.1 496 187.1 496C199 496 207.1 487 207.1 476V288C207.1 283.6 211.6 280 215.1 280C220.4 280 223.1 283.6 223.1 288V476C223.1 495.9 207.9 512 187.1 512C168.1 512 152 495.9 152 476V392C152 387.6 148.4 384 143.1 384C139.6 384 135.1 387.6 135.1 392V476C135.1 495.9 119.9 512 99.1 512C80.12 512 64 495.9 64 476V288C64 283.6 67.58 280 72 280V280zM438 400L471.9 490.4C475.8 500.8 468.1 512 456.9 512H384C375.2 512 368 504.8 368 496V400H352C334.3 400 320 385.7 320 368V224C320 206.3 334.3 192 352 192H368V160C368 148.2 374.4 137.8 384 132.3V16H376C371.6 16 368 12.42 368 8C368 3.582 371.6 0 376 0H416C424.8 0 432 7.164 432 16V132.3C441.6 137.8 448 148.2 448 160V269.3L464 264V208C464 199.2 471.2 192 480 192H496C504.8 192 512 199.2 512 208V292.5C512 299.4 507.6 305.5 501.1 307.6L448 325.3V352H496C504.8 352 512 359.2 512 368V384C512 392.8 504.8 400 496 400L438 400zM416 141.5V16H400V141.5L392 146.1C387.2 148.9 384 154.1 384 160V384H496V368H432V160C432 154.1 428.8 148.9 423.1 146.1L416 141.5zM456.9 496L420.9 400H384V496H456.9zM448 308.5L496 292.5V208H480V275.5L448 286.2V308.5zM336 224V368C336 376.8 343.2 384 352 384H368V208H352C343.2 208 336 215.2 336 224z" />
+                      </svg>
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">
+                      {name || "Your Custom Recipe"}
+                    </h3>
+                  </div>
+                </div>
+
+                <div className="mt-4 inline-block text-xs">
+                  <span className="relative mx-1 inline-block">
+                    {new Date(created_at).toLocaleString("en-GB", {
+                      dateStyle: "long",
+                    })}
+                  </span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="w-full pointer-events-none p-2"
-                    fill="#000000"
-
-                    viewBox="0 0 512 512"
+                    viewBox="0 0 2 2"
+                    className="inline-block h-1 w-1"
                   >
-                    <path d="M207.1 64C207.1 99.35 179.3 128 143.1 128C108.7 128 79.1 99.35 79.1 64C79.1 28.65 108.7 0 143.1 0C179.3 0 207.1 28.65 207.1 64zM143.1 16C117.5 16 95.1 37.49 95.1 64C95.1 90.51 117.5 112 143.1 112C170.5 112 191.1 90.51 191.1 64C191.1 37.49 170.5 16 143.1 16zM15.06 315.8C12.98 319.7 8.129 321.1 4.232 319.1C.3354 316.1-1.136 312.1 .9453 308.2L50.75 214.1C68.83 181.1 104.1 160 142.5 160H145.5C183.9 160 219.2 181.1 237.3 214.1L287.1 308.2C289.1 312.1 287.7 316.1 283.8 319.1C279.9 321.1 275 319.7 272.9 315.8L223.1 222.5C207.8 193.9 178 175.1 145.5 175.1H142.5C110 175.1 80.16 193.9 64.86 222.5L15.06 315.8zM72 280C76.42 280 80 283.6 80 288V476C80 487 88.95 496 99.1 496C111 496 119.1 487 119.1 476V392C119.1 378.7 130.7 368 143.1 368C157.3 368 168 378.7 168 392V476C168 487 176.1 496 187.1 496C199 496 207.1 487 207.1 476V288C207.1 283.6 211.6 280 215.1 280C220.4 280 223.1 283.6 223.1 288V476C223.1 495.9 207.9 512 187.1 512C168.1 512 152 495.9 152 476V392C152 387.6 148.4 384 143.1 384C139.6 384 135.1 387.6 135.1 392V476C135.1 495.9 119.9 512 99.1 512C80.12 512 64 495.9 64 476V288C64 283.6 67.58 280 72 280V280zM438 400L471.9 490.4C475.8 500.8 468.1 512 456.9 512H384C375.2 512 368 504.8 368 496V400H352C334.3 400 320 385.7 320 368V224C320 206.3 334.3 192 352 192H368V160C368 148.2 374.4 137.8 384 132.3V16H376C371.6 16 368 12.42 368 8C368 3.582 371.6 0 376 0H416C424.8 0 432 7.164 432 16V132.3C441.6 137.8 448 148.2 448 160V269.3L464 264V208C464 199.2 471.2 192 480 192H496C504.8 192 512 199.2 512 208V292.5C512 299.4 507.6 305.5 501.1 307.6L448 325.3V352H496C504.8 352 512 359.2 512 368V384C512 392.8 504.8 400 496 400L438 400zM416 141.5V16H400V141.5L392 146.1C387.2 148.9 384 154.1 384 160V384H496V368H432V160C432 154.1 428.8 148.9 423.1 146.1L416 141.5zM456.9 496L420.9 400H384V496H456.9zM448 308.5L496 292.5V208H480V275.5L448 286.2V308.5zM336 224V368C336 376.8 343.2 384 352 384H368V208H352C343.2 208 336 215.2 336 224z" />
+                    <circle fill="currentColor" r="1" cx="1" cy="1" />
                   </svg>
-                )}
+                  <span className="relative mx-1 inline-block">
+                    {new Date(created_at).toLocaleString("en-GB", {
+                      timeStyle: "short",
+                    })}
+                  </span>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold">{name || "Your Custom Recipe"}</h3>
-              </div>
+              {IsPrivate && (
+                <div className="flex h-full flex-col items-center justify-start space-y-3 border-l border-zinc-500 pl-3">
+                  <button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 576 512"
+                      fill="currentColor"
+                      className="w-3"
+                    >
+                      <path d="M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z" />
+                    </svg>
+                  </button>
+                  <button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                      fill="currentColor"
+                      className="w-3"
+                    >
+                      <path d="M373.1 24.97C401.2-3.147 446.8-3.147 474.9 24.97L487 37.09C515.1 65.21 515.1 110.8 487 138.9L289.8 336.2C281.1 344.8 270.4 351.1 258.6 354.5L158.6 383.1C150.2 385.5 141.2 383.1 135 376.1C128.9 370.8 126.5 361.8 128.9 353.4L157.5 253.4C160.9 241.6 167.2 230.9 175.8 222.2L373.1 24.97zM440.1 58.91C431.6 49.54 416.4 49.54 407 58.91L377.9 88L424 134.1L453.1 104.1C462.5 95.6 462.5 80.4 453.1 71.03L440.1 58.91zM203.7 266.6L186.9 325.1L245.4 308.3C249.4 307.2 252.9 305.1 255.8 302.2L390.1 168L344 121.9L209.8 256.2C206.9 259.1 204.8 262.6 203.7 266.6zM200 64C213.3 64 224 74.75 224 88C224 101.3 213.3 112 200 112H88C65.91 112 48 129.9 48 152V424C48 446.1 65.91 464 88 464H360C382.1 464 400 446.1 400 424V312C400 298.7 410.7 288 424 288C437.3 288 448 298.7 448 312V424C448 472.6 408.6 512 360 512H88C39.4 512 0 472.6 0 424V152C0 103.4 39.4 64 88 64H200z" />
+                    </svg>
+                  </button>
+                  <button type="button" onClick={() => console.log("delete")}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 448 512"
+                      fill="currentColor"
+                      className="w-3 hover:fill-red-500"
+                    >
+                      <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+                    </svg>
+                  </button>
+                </div>
+              )}
             </div>
-            <div className="mt-4 inline-block float-right text-xs">
-              <span className="relative inline-block mx-1">{new Date(created_at).toLocaleString("en-GB", {
-                dateStyle: "long",
-              })}</span>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2" className="inline-block w-1 h-1">
-                <circle fill="currentColor" r="1" cx="1" cy="1" />
-              </svg>
-              <span className="relative inline-block mx-1">{new Date(created_at).toLocaleString("en-GB", {
-                timeStyle: "short",
-              })}</span>
-            </div>
-          </div>
-        ))}
+          )
+        )}
       </div>
       <Form
         onSubmit={onAdd}
@@ -415,7 +532,7 @@ z"/>
 
           <button
             type="button"
-            onClick={clear}
+            onClick={() => setItem({ type: "RESET" })}
             className="rw-button rw-button-red"
             title="Clear all items"
           >
@@ -431,7 +548,7 @@ z"/>
             </svg>
           </button>
 
-          <div className="relative max-h-screen w-fit max-w-[14rem] overflow-y-auto rounded-lg border border-gray-200 bg-stone-200 px-3 py-4 text-gray-900 will-change-scroll dark:border-zinc-700 dark:bg-zinc-600 dark:text-white">
+          <div className="relative max-h-screen w-fit max-w-[14rem] overflow-y-auto rounded-lg border border-gray-200 bg-zinc-300 px-3 py-4 text-gray-900 will-change-scroll dark:border-zinc-700 dark:bg-zinc-600 dark:text-white">
             <ul className="relative space-y-2 font-medium">
               <li>
                 <Label
@@ -479,88 +596,77 @@ z"/>
               {Object.entries(categories).map(
                 ([category, categoryitems]: any) => (
                   <li key={category}>
-                    <details open={Object.values(categories).length === 1}>
-                      <summary className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                        <svg
+                    <details
+                      open={Object.values(categories).length === 1}
+                      className="[&>summary:after]:open:rotate-90"
+                    >
+                      <summary className="flex select-none items-center rounded-lg p-2 text-gray-900 after:absolute after:right-0 after:transform after:px-2 after:transition-transform after:duration-150 after:ease-in-out after:content-['>'] hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+                        <img
                           className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                          <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                        </svg>
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[category]}.webp`}
+                          alt={``}
+                        />
                         <span className="ml-2">{category}</span>
                       </summary>
 
                       <ul className="py-2">
                         {Object.values(categories).length === 1 ||
-                          categoryitems.every((item, i, a) => {
-                            return !item.type;
-                          })
+                        categoryitems.every(({ type }) => {
+                          return !type;
+                        })
                           ? categoryitems.map((item) => (
-                            <li key={`${category}-${item.type}-${item.id}`}>
-                              <button
-                                type="button"
-                                className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                onClick={() => onAdd({ itemId: item.id })}
-                              >
-                                <img
-                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
-                                  alt={item.name}
-                                  className="mr-2 h-5 w-5"
-                                />
-                                {item.name}
-                              </button>
-                            </li>
-                          ))
-                          : Object.entries(groupBy(categoryitems, "type")).map(
-                            ([type, typeitems]: any) => (
-                              <li key={`${category}-${type}`}>
-                                <details className="">
-                                  <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                                    {/* <svg
-                                    aria-hidden="true"
-                                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-                                    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-                                  </svg> */}
-                                    <span className="ml-2">{type}</span>
-                                    <span className="text-pea-800 dark:bg-pea-900 dark:text-pea-300 bg-pea-100 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full p-3 text-sm">
-                                      {typeitems.length}
-                                    </span>
-                                  </summary>
-
-                                  <ul className="py-2">
-                                    {typeitems.map((item) => (
-                                      <li
-                                        key={`${category}-${type}-${item.id}`}
-                                      >
-                                        <button
-                                          type="button"
-                                          className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                          onClick={() =>
-                                            onAdd({ itemId: item.id })
-                                          }
-                                        >
-                                          <img
-                                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`}
-                                            alt={item.name}
-                                            className="mr-2 h-5 w-5"
-                                          />
-                                          {item.name}
-                                        </button>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </details>
+                              <li key={`${category}-${item.type}-${item.id}`}>
+                                <button
+                                  type="button"
+                                  className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                                  onClick={() => onAdd({ itemId: item.id })}
+                                >
+                                  <img
+                                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
+                                    alt={item.name}
+                                    className="mr-2 h-5 w-5"
+                                  />
+                                  {item.name}
+                                </button>
                               </li>
-                            )
-                          )}
+                            ))
+                          : Object.entries(groupBy(categoryitems, "type")).map(
+                              ([type, typeitems]: any) => (
+                                <li key={`${category}-${type}`}>
+                                  <details className="">
+                                    <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+                                      <span className="">{type}</span>
+                                      <span className="text-pea-800 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full text-xs dark:text-stone-300">
+                                        {typeitems.length}
+                                      </span>
+                                    </summary>
+
+                                    <ul className="py-2">
+                                      {typeitems.map((item) => (
+                                        <li
+                                          key={`${category}-${type}-${item.id}`}
+                                        >
+                                          <button
+                                            type="button"
+                                            className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                                            onClick={() =>
+                                              onAdd({ itemId: item.id })
+                                            }
+                                          >
+                                            <img
+                                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
+                                              alt={item.name}
+                                              className="mr-2 h-5 w-5"
+                                            />
+                                            {item.name}
+                                          </button>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </details>
+                                </li>
+                              )
+                            )}
                       </ul>
                     </details>
                   </li>
@@ -571,25 +677,28 @@ z"/>
         </div>
         <div className="w-full">
           <Table
-            rows={mergeItemRecipe(viewBaseMaterials, items, ...item).slice(0, 1)}
+            rows={mergeItemRecipe(viewBaseMaterials, items, ...item).slice(
+              0,
+              1
+            )}
             className="animate-fade-in"
             toolbar={[
               <ToggleButton
-                className="ml-2"
+                className=""
                 offLabel="Materials"
                 onLabel="Base materials"
                 checked={viewBaseMaterials}
                 onChange={toggleBaseMaterials}
               />,
-              <button
-                data-testid="turrettowerbtn"
-                type="button"
-                // onClick={() => generatePDF()}
-                title="generate pedo-fil"
-                className="rw-button rw-button-gray p-2"
-              >
-                PDF
-              </button>,
+              // <button
+              //   data-testid="turrettowerbtn"
+              //   type="button"
+              //   // onClick={() => generatePDF()}
+              //   title="generate pedo-fil"
+              //   className="rw-button rw-button-gray p-2"
+              // >
+              //   PDF
+              // </button>,
             ]}
             columns={[
               ...mergeItemRecipe(viewBaseMaterials, items, ...item).map(
@@ -604,7 +713,7 @@ z"/>
                         key={`${value}-${Item_ItemRecipe_crafted_item_idToItem.id}`}
                       >
                         <img
-                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${Item_ItemRecipe_crafted_item_idToItem.image}`}
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafted_item_idToItem.image}`}
                           className="h-6 w-6"
                         />
                         <span className="text-sm">{formatNumber(amount)}</span>
@@ -616,45 +725,47 @@ z"/>
             ]}
           />
 
-          <ToggleButton
-            offLabel="Mortar And Pestle"
-            onLabel="Chemistry Bench"
-            checked={craftingStations.includes(607)}
-            onChange={(e) => {
-              if (e.target.checked) {
-                return setCraftingStations((prev) => [
-                  ...prev.filter((h) => h !== 107),
-                  607,
+          <div className="my-3 space-y-3">
+            <ToggleButton
+              offLabel="Mortar And Pestle"
+              onLabel="Chemistry Bench"
+              checked={selectedCraftingStations.includes(607)}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  return selectCraftingStations((prev) => [
+                    ...prev.filter((h) => h !== 107),
+                    607,
+                  ]);
+                }
+                return selectCraftingStations((prev) => [
+                  ...prev.filter((h) => h !== 607),
+                  107,
                 ]);
-              }
-              return setCraftingStations((prev) => [
-                ...prev.filter((h) => h !== 607),
-                107,
-              ]);
-            }}
-          />
+              }}
+            />
 
-          <ToggleButton
-            offLabel="Refining Forge"
-            onLabel="Industrial Forge"
-            checked={craftingStations.includes(600)}
-            onChange={(e) => {
-              if (e.target.checked) {
-                return setCraftingStations((prev) => [
-                  ...prev.filter((h) => h !== 125),
-                  600,
+            <ToggleButton
+              offLabel="Refining Forge"
+              onLabel="Industrial Forge"
+              checked={selectedCraftingStations.includes(600)}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  return selectCraftingStations((prev) => [
+                    ...prev.filter((h) => h !== 125),
+                    600,
+                  ]);
+                }
+                return selectCraftingStations((prev) => [
+                  ...prev.filter((h) => h !== 600),
+                  125,
                 ]);
-              }
-              return setCraftingStations((prev) => [
-                ...prev.filter((h) => h !== 600),
-                125,
-              ]);
-            }}
-          />
+              }}
+            />
+          </div>
 
           <Table
             rows={item}
-            className="animate-fade-in my-4 whitespace-nowrap"
+            className="animate-fade-in whitespace-nowrap"
             settings={{
               summary: true,
             }}
@@ -675,7 +786,7 @@ z"/>
                     >
                       <img
                         className="h-8 w-8"
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
                       />
                     </button>
                   );
@@ -705,12 +816,14 @@ z"/>
                       // value={value}
                       className="rw-input w-16 p-3 text-center"
                       onChange={(e) => {
-                        debounce(() => {
-                          onChangeAmount(rowIndex, parseInt(e.target.value) > 0 ? e.target.value : 1);
-                          if (parseInt(e.target.value) < 1) {
-                            e.target.value = parseInt(e.target.value) > 0 ? e.target.value : "1";
-                          }
-                        }, 300)();
+                        onChangeAmount(
+                          rowIndex,
+                          parseInt(e.target.value) > 0 ? e.target.value : 1
+                        );
+                        if (parseInt(e.target.value) < 1) {
+                          e.target.value =
+                            parseInt(e.target.value) > 0 ? e.target.value : "1";
+                        }
                       }}
                     />
                     <button
@@ -726,10 +839,13 @@ z"/>
               {
                 field: "crafting_time",
                 header: "Time pr item",
-                numeric: false,
+                numeric: true,
                 className: "w-0 text-center",
                 valueFormatter: ({ row, value }) => {
-                  return `${timeFormatL(value * row.amount, true)}`;
+                  return value * row.amount;
+                },
+                render: ({ value }) => {
+                  return `${timeFormatL(value, true)}`;
                 },
               },
               {
@@ -748,18 +864,22 @@ z"/>
                     .map(
                       (
                         {
-                          Item_ItemRecipe_crafted_item_idToItem: { id, name, image },
+                          Item_ItemRecipe_crafted_item_idToItem: {
+                            id,
+                            name,
+                            image,
+                          },
                           amount,
                         },
                         i
                       ) => (
                         <div
-                          className="inline-flex min-w-[3rem] flex-col items-center justify-center min-h-full"
+                          className="inline-flex min-h-full min-w-[3rem] flex-col items-center justify-center"
                           id={`${id}-${i * Math.random()}${i}`}
                           key={`${id}-${i * Math.random()}${i}`}
                         >
                           <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${image}`}
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
                             className="h-6 w-6"
                             title={name}
                             alt={name}

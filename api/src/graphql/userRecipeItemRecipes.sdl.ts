@@ -11,7 +11,7 @@ export const schema = gql`
   }
 
   type Query {
-    userRecipeItemRecipes: [UserRecipeItemRecipe!]! @requireAuth
+    userRecipeItemRecipes: [UserRecipeItemRecipe!]! @skipAuth
     userRecipeItemRecipe(id: String!): UserRecipeItemRecipe @requireAuth
   }
 
@@ -41,4 +41,4 @@ export const schema = gql`
     ): UserRecipeItemRecipe! @requireAuth
     deleteUserRecipeItemRecipe(id: String!): UserRecipeItemRecipe! @requireAuth
   }
-`
+`;

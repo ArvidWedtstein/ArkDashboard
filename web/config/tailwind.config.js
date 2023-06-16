@@ -5,6 +5,10 @@ module.exports = {
   content: ["src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      screens: {
+        "2xl": "1536px",
+        "3xl": "1600px",
+      },
       backgroundColor: {
         boxGradBefore: "linear-gradient(#ffffff, #ffffff, #e3e3e3)",
         boxShadowGrad: "linear-gradient(rgba(0,0,0,0.075), transparent)",

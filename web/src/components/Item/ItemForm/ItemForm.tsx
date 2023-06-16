@@ -366,85 +366,85 @@ const ItemForm = (props: ItemFormProps) => {
                           value: 606,
                           label: "Beer Barrel",
                           image:
-                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/beer-barrel.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/beer-barrel.png",
                         },
                         {
                           value: 39,
                           label: "Campfire",
                           image:
-                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/campfire.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/campfire.png",
                         },
                         {
                           value: 607,
                           label: "Chemistry Bench",
                           image:
-                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/chemistry-bench.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/chemistry-bench.png",
                         },
                         {
                           value: 128,
                           label: "Cooking Pot",
                           image:
-                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/cooking-pot.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/cooking-pot.png",
                         },
                         {
                           value: 127,
                           label: "Compost Bin",
                           image:
-                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/compost-bin.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/compost-bin.png",
                         },
                         {
                           value: 185,
                           label: "Fabricator",
                           image:
-                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/fabricator.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/fabricator.png",
                         },
                         {
                           value: 601,
                           label: "Industrial Cooker",
                           image:
-                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-cooker.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-cooker.png",
                         },
                         {
                           value: 600,
                           label: "Industrial Forge",
                           image:
-                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-forge.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-forge.png",
                         },
                         {
                           value: 360,
                           label: "Industrial Grill",
                           image:
-                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-grill.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-grill.png",
                         },
                         {
                           value: 618,
                           label: "Industrial Grinder",
                           image:
-                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/industrial-grinder.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-grinder.png",
                         },
                         {
                           value: 107,
                           label: "Mortar And Pestle",
                           image:
-                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/mortar-and-pestle.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/mortar-and-pestle.png",
                         },
                         {
                           value: 125,
                           label: "Refining Forge",
                           image:
-                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/refining-forge.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/refining-forge.png",
                         },
                         {
                           value: 126,
                           label: "Smithy",
                           image:
-                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/smithy.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/smithy.png",
                         },
                         {
                           value: 652,
                           label: "Tek Replicator",
                           image:
-                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/tek-replicator.png",
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/tek-replicator.png",
                         },
                       ]}
                     />
@@ -468,7 +468,7 @@ const ItemForm = (props: ItemFormProps) => {
                           type: item.type,
                           label: item.name,
                           value: item.id,
-                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
                         }))}
                         search={true}
                         className="!mt-0 !rounded-none !rounded-l-md"
@@ -534,7 +534,7 @@ const ItemForm = (props: ItemFormProps) => {
 
                 {/* <Lookup
                   items={arkitems.items.filter((item) => item.type === 'Resource').map((item) => ({
-                    ...item, image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.name
+                    ...item, image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.name
                       .replaceAll(" ", "-")
                       .replace("plant-species-y", "plant-species-y-trap")}.png`
                   }))}

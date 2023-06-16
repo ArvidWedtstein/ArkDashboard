@@ -45,6 +45,34 @@ const Routes = () => {
         <Route notfound page={NotFoundPage} />
         <Set
           wrap={ScaffoldLayout}
+          title="UserRecipes"
+          titleTo="userRecipes"
+          buttonLabel="New UserRecipe"
+          buttonTo="newUserRecipe"
+        >
+          <Route
+            path="/user-recipes/new"
+            page={UserRecipeNewUserRecipePage}
+            name="newUserRecipe"
+          />
+          <Route
+            path="/user-recipes/{id}/edit"
+            page={UserRecipeEditUserRecipePage}
+            name="editUserRecipe"
+          />
+          <Route
+            path="/user-recipes/{id}"
+            page={UserRecipeUserRecipePage}
+            name="userRecipe"
+          />
+          <Route
+            path="/user-recipes"
+            page={UserRecipeUserRecipesPage}
+            name="userRecipes"
+          />
+        </Set>
+        <Set
+          wrap={ScaffoldLayout}
           title="TimelineBasespotDinos"
           titleTo="timelineBasespotDinos"
           buttonLabel="New TimelineBasespotDino"
