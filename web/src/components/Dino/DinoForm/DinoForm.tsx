@@ -504,7 +504,7 @@ const DinoForm = (props: DinoFormProps) => {
             </div>
           </div>
           <div>
-            <div>
+            {/* <div>
               <Label
                 name="fits_through"
                 className="rw-label"
@@ -557,7 +557,7 @@ const DinoForm = (props: DinoFormProps) => {
               />
 
               <FieldError name="fits_through" className="rw-field-error" />
-            </div>
+            </div> */}
           </div>
           <div>
             <div>

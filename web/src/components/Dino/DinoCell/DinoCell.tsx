@@ -4,8 +4,6 @@ import { CellSuccessProps, CellFailureProps, MetaTags } from "@redwoodjs/web";
 
 import Dino from "src/components/Dino/Dino";
 
-// TODO: Optimize this query
-// Does not need to fetch every single item
 export const QUERY = gql`
   query FindDinoById($id: String!, $ids: [BigInt!]!) {
     dino: dino(id: $id) {
@@ -31,7 +29,6 @@ export const QUERY = gql`
       violent_tame
       taming_ineffectiveness
       disable_mult
-      base_points
       non_violent_food_rate_mult
       taming_interval
       disable_tame

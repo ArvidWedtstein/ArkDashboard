@@ -19,7 +19,6 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useReducer,
   useState,
   useTransition,
 } from "react";
@@ -40,6 +39,41 @@ const DELETE_DINO_MUTATION = gql`
   }
 `;
 
+type AdditionBasestat = {
+  b?: number | null;
+  s?: {
+    b?: number | null;
+  };
+  w?: {
+    b?: number | null;
+    st?: number | null;
+    sw?: number | null;
+  };
+};
+type Basestat = {
+  a?: AdditionBasestat[];
+  b?: number | null;
+  t?: number | null;
+  w?: number | null;
+};
+type BaseStats = {
+  /** Weight */
+  w?: Basestat;
+  /** Torpor */
+  t?: Basestat;
+  /** Health */
+  h?: Basestat;
+  /** Stamina */
+  s?: Basestat;
+  /** Damage */
+  d?: Basestat;
+  /** Food */
+  f?: Basestat;
+  /** Movement Speed */
+  m?: Basestat;
+  /** Oxygen */
+  o?: Basestat;
+};
 type TamingCalculatorForm = {
   level: number;
   x_variant?: boolean | null;
@@ -73,8 +107,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     }
   };
 
-  const canDestroy = ({ value }) => {
-    return value > 0 ? (
+  const canDestroy = ({ value }: { value: number }) =>
+    value > 0 ? (
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 512 512"
@@ -90,8 +124,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       >
         <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
       </svg>
-    );
-  };
+    )
+
 
   const [useFoundationUnit, setUseFoundationUnit] = useState(false);
   const [maturation, setMaturation] = useState(0);
@@ -101,7 +135,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
   const [dinoXVariant, setDinoXVariant] = useState(false); // TODO: remove hardcode
   const [weaponDamage, setWeaponDamage] = useState({});
 
-  const [isPending, startTransition] = useTransition();
   const calcMaturationPercent = useCallback(() => {
     let timeElapsed = maturation * dino?.maturation_time * 1;
     return timeElapsed / 100;
@@ -109,23 +142,23 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
   const [baseStats, setBaseStats] = useState(
     dino?.base_stats &&
-      Object.entries(dino?.base_stats).map(([key, value]) => ({
-        stat: {
-          s: "Stamina",
-          w: "Weight",
-          o: "Oxygen",
-          d: "Melee Damage",
-          f: "Food",
-          m: "Movement Speed",
-          t: "Torpidity",
-          h: "Health",
-        }[key],
-        base: (typeof value === "object" ? value.b || 0 : value) || 0,
-        increasePerLevelWild: value.w || 0,
-        increasePerLevelTamed: value.t || 0,
-        total: 0,
-        points: 0,
-      }))
+    Object.entries(dino?.base_stats).map(([key, value]) => ({
+      stat: {
+        s: "Stamina",
+        w: "Weight",
+        o: "Oxygen",
+        d: "Melee Damage",
+        f: "Food",
+        m: "Movement Speed",
+        t: "Torpidity",
+        h: "Health",
+      }[key],
+      base: (typeof value === "object" ? value.b || 0 : value) || 0,
+      increasePerLevelWild: value.w || 0,
+      increasePerLevelTamed: value.t || 0,
+      total: 0,
+      points: 0,
+    }))
   );
 
   const onAdd = useCallback(
@@ -290,12 +323,11 @@ const Dino = ({ dino, itemsByIds }: Props) => {
   // Value = (BaseStat × ( 1 + LevelWild × IncreaseWild) + TamingBonusAdd × TamingBonusAddModifier) × (1 + TamingEffectiveness × TamingBonusMult × TamingBonusMultModifier)
   useEffect(() => {
     if (!selectedFood)
-      startTransition(() =>
-        setSelectedFood(
-          dino.DinoStat.filter((f) => f.type === "food") &&
-            dino?.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
-        )
-      );
+      setSelectedFood(
+        dino.DinoStat.filter((f) => f.type === "food") &&
+        dino?.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
+      )
+
   }, []);
 
   const calculateDino = (e) => {
@@ -307,42 +339,12 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     setSelectedFood(foodSelect);
 
     if (!foodSelect)
-      startTransition(() =>
-        setSelectedFood(
-          dino.DinoStat.filter((f) => f.type === "food") &&
-            dino.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
-        )
-      );
+      setSelectedFood(
+        dino.DinoStat.filter((f) => f.type === "food") &&
+        dino.DinoStat.filter((f) => f.type === "food")[0]?.Item.id
+      )
   };
-  const tamingFood2 = useReducer(
-    (state, action) => {
-      switch (action.type) {
-        case "add":
-          return [...state, action.item];
-        case "remove":
-          return state.filter((_, i) => i !== action.index);
-        case "update":
-          return state.map((item, i) =>
-            i === action.index ? { ...item, ...action.item } : item
-          );
-        default:
-          return state;
-      }
-    },
-    [
-      {
-        id: 0,
-        max: 0,
-        food: 0,
-        seconds: 0,
-        secondsPer: 0,
-        percentPer: 0,
-        interval: 0,
-        interval1: 0,
-        use: 0,
-      },
-    ]
-  );
+
   const tamingFood = useMemo(() => {
     if (!dino || !dinoLevel) return [];
     const affinityNeeded = dino.affinity_needed + dino.aff_inc * dinoLevel;
@@ -377,7 +379,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         // if non violent tame
         foodMaxRaw = foodMaxRaw / dino.non_violent_food_rate_mult;
         interval = foodValue / foodConsumption;
-        const baseStat = dino?.base_stats ? (dino.base_stats as any)?.f : null;
+        const baseStat = dino?.base_stats as BaseStats ? (dino.base_stats as BaseStats)?.f : null;
         if (
           typeof baseStat?.b === "number" &&
           typeof baseStat?.w === "number"
@@ -393,8 +395,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           foodSecondsPer = foodValue / foodConsumption;
           foodSeconds = Math.ceil(
             Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
-              foodSecondsPer +
-              (typeof interval1 === "number" ? interval1 : 0)
+            foodSecondsPer +
+            (typeof interval1 === "number" ? interval1 : 0)
           );
         } else {
           foodSecondsPer = 0;
@@ -420,7 +422,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         use: isFoodSelected ? foodMax : 0,
       };
     });
-  }, [selectedFood, dinoLevel]);
+  }, []);
 
   const tameData = useMemo(() => {
     if (!tamingFood || tamingFood.length == 0) return null;
@@ -455,7 +457,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     let numNeeded = 0;
     let numToUse = 0;
     let totalSecs = 0;
-    // console.log(tamingFood)
+
     tamingFood.forEach((food) => {
       if (!food) return;
       let foodVal = food.food;
@@ -468,22 +470,22 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         numNeeded = dino.violent_tame
           ? Math.ceil(affinityLeft / affinityVal / tamingMultiplier)
           : Math.ceil(
-              affinityLeft /
-                affinityVal /
-                tamingMultiplier /
-                dino.non_violent_food_rate_mult
-            );
+            affinityLeft /
+            affinityVal /
+            tamingMultiplier /
+            dino.non_violent_food_rate_mult
+          );
 
         numToUse = numNeeded >= food.use ? food.use : numNeeded;
-        tooMuchFood = numNeeded >= food.use ? false : true;
+        tooMuchFood = numNeeded >= food.use;
 
         affinityLeft = dino.violent_tame
           ? affinityLeft - numToUse * affinityVal * tamingMultiplier
           : affinityLeft -
-            numToUse *
-              affinityVal *
-              tamingMultiplier *
-              dino.non_violent_food_rate_mult;
+          numToUse *
+          affinityVal *
+          tamingMultiplier *
+          dino.non_violent_food_rate_mult;
 
         totalFood += numToUse * foodVal;
 
@@ -492,14 +494,14 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         while (i <= numToUse) {
           effectiveness -= dino.violent_tame
             ? (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
-              affinityVal /
-              tamingMultiplier /
-              100
+            affinityVal /
+            tamingMultiplier /
+            100
             : (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
-              affinityVal /
-              tamingMultiplier /
-              dino.non_violent_food_rate_mult /
-              100;
+            affinityVal /
+            tamingMultiplier /
+            dino.non_violent_food_rate_mult /
+            100;
 
           totalSecs =
             numUsedTotal == 1
@@ -546,7 +548,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         [`${name.replace(" ", "-")}Min`]: Math.max(
           Math.ceil(
             (totalSecs * torporDepletionPS - totalTorpor) /
-              (torpor + torporDepletionPS * torpor_duration)
+            (torpor + torporDepletionPS * torpor_duration)
           ),
           0
         ),
@@ -575,42 +577,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         const { id, userDamage, torpor, torpor_duration, multipliers, damage } =
           weapon;
 
-        type AdditionBasestat = {
-          b?: number | null;
-          s?: {
-            b?: number | null;
-          };
-          w?: {
-            b?: number | null;
-            st?: number | null;
-            sw?: number | null;
-          };
-        };
-        type Basestat = {
-          a?: AdditionBasestat[];
-          b?: number | null;
-          t?: number | null;
-          w?: number | null;
-        };
-        type BaseStats = {
-          /** Weight */
-          w?: Basestat;
-          /** Torpor */
-          t?: Basestat;
-          /** Health */
-          h?: Basestat;
-          /** Stamina */
-          s?: Basestat;
-          /** Damage */
-          d?: Basestat;
-          /** Food */
-          f?: Basestat;
-          /** Movement Speed */
-          m?: Basestat;
-          /** Oxygen */
-          o?: Basestat;
-        };
-
         const { b: baseHealth, w: incPerLevel } = (
           dino?.base_stats as BaseStats
         )?.h || { b: 0, w: 0 };
@@ -623,9 +589,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
         let torporPerHit = torpor_duration
           ? torpor -
-            (secondsBetweenHits - torpor_duration) *
-              (dino.tdps +
-                Math.pow(dinoLevel - 1, 0.8493) / (22.39671632 / dino.tdps))
+          (secondsBetweenHits - torpor_duration) *
+          (dino.tdps +
+            Math.pow(dinoLevel - 1, 0.8493) / (22.39671632 / dino.tdps))
           : torpor;
         const isPossible = torporPerHit > 0;
 
@@ -659,47 +625,47 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
         const hitboxes = dino.hitboxes
           ? Object.entries(
-              dino.hitboxes as {
-                [key: string]: number;
-              }
-            ).map(([name, multiplier]) => {
-              const hitboxHits = numHitsRaw / multiplier;
-              const hitsUntilFlee =
-                creatureFleeThreshold === 1
-                  ? "-"
-                  : Math.max(1, Math.ceil(hitboxHits * creatureFleeThreshold));
+            dino.hitboxes as {
+              [key: string]: number;
+            }
+          ).map(([name, multiplier]) => {
+            const hitboxHits = numHitsRaw / multiplier;
+            const hitsUntilFlee =
+              creatureFleeThreshold === 1
+                ? "-"
+                : Math.max(1, Math.ceil(hitboxHits * creatureFleeThreshold));
 
-              const totalDamage =
-                damage *
-                Math.ceil(hitboxHits) *
-                totalMultipliers *
-                ((weaponDamage[id] || userDamage) / 100) *
-                multiplier;
-              const propsurvival =
-                totalDamage < baseHealth
-                  ? 100
-                  : calculatePropability(
-                      dinoLevel - 1,
-                      7,
-                      Math.max(
-                        Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                        0
-                      )
-                    );
+            const totalDamage =
+              damage *
+              Math.ceil(hitboxHits) *
+              totalMultipliers *
+              ((weaponDamage[id] || userDamage) / 100) *
+              multiplier;
+            const propsurvival =
+              totalDamage < baseHealth
+                ? 100
+                : calculatePropability(
+                  dinoLevel - 1,
+                  7,
+                  Math.max(
+                    Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                    0
+                  )
+                );
 
-              const chanceOfDeath = Math.round(100 - propsurvival);
+            const chanceOfDeath = Math.round(100 - propsurvival);
 
-              return {
-                name,
-                multiplier,
-                hitsRaw: hitboxHits,
-                hitsUntilFlee,
-                hits: Math.ceil(hitboxHits),
-                chanceOfDeath,
-                chanceOfDeathHigh: chanceOfDeath > 40,
-                isPossible,
-              };
-            })
+            return {
+              name,
+              multiplier,
+              hitsRaw: hitboxHits,
+              hitsUntilFlee,
+              hits: Math.ceil(hitboxHits),
+              chanceOfDeath,
+              chanceOfDeathHigh: chanceOfDeath > 40,
+              isPossible,
+            };
+          })
           : [];
 
         let bodyChanceOfDeath = 0;
@@ -722,8 +688,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                     Math.ceil((totalDamage - baseHealth) / incPerLevel),
                     0
                   )
-                ? 0
-                : calculatePropability(
+                  ? 0
+                  : calculatePropability(
                     dinoLevel - 1,
                     numStats,
                     Math.max(
@@ -747,13 +713,13 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 totalDamage < baseHealth
                   ? 100
                   : calculatePropability(
-                      dinoLevel - 1,
-                      numStats,
-                      Math.max(
-                        Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                        0
-                      )
-                    );
+                    dinoLevel - 1,
+                    numStats,
+                    Math.max(
+                      Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                      0
+                    )
+                  );
 
               const chanceOfDeath = Math.round(100 - propsurvival);
               hitbox.chanceOfDeath = chanceOfDeath;
@@ -791,7 +757,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         <img
           src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${dino.image}`}
           alt={dino.name}
-          className="max-h-48 w-fit"
+          className="w-auto transform -scale-x-100"
         />
         <div className="py-4 px-8 text-sm font-light">
           <div className="m-0 mb-4 text-sm">
@@ -837,7 +803,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
       {!!dino.maturation_time &&
         dino.maturation_time != 0 &&
-        (dino.incubation_time || dino.base_points) && (
+        (dino.incubation_time) && (
           <section className="col-span-2 rounded-md">
             <p className="my-3 text-center text-sm">{dino.name} breeding:</p>
             <Form className="my-6 mx-auto flex justify-center">
@@ -916,10 +882,10 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           </section>
         )}
 
-      {dino.egg_max !== 0 && dino.egg_min !== 0 && (
+      {(dino.egg_max != null && dino.egg_min != null && dino.egg_max > 0 && dino.egg_min > 0) && (
         <section className="col-span-2">
           <img
-            src={`https://www.dododex.com/media/item/Dodo_Egg.png`}
+            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/Dodo_Egg.webp`}
             alt={dino.name}
           />
           <div className="flex flex-col space-y-2">
@@ -1346,6 +1312,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           />
         </section>
       )}
+
       {dino.DinoStat.some((d) => d.type == "drops") &&
         dino.DinoStat.some((d) => d.type == "food") && (
           <section className="col-span-2 flex flex-wrap justify-start gap-3 md:col-span-1">
@@ -1469,9 +1436,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                   selectedFood
                     ? selectedFood.toString()
                     : dino?.DinoStat.filter((f) => f.type === "food") &&
-                      dino?.DinoStat.filter(
-                        (f) => f.type === "food"
-                      )[0]?.Item.id.toString(),
+                    dino?.DinoStat.filter(
+                      (f) => f.type === "food"
+                    )[0]?.Item.id.toString(),
                 ]}
                 validation={{
                   single: true,
@@ -1493,276 +1460,267 @@ const Dino = ({ dino, itemsByIds }: Props) => {
               </div>
             </Form>
           </div>
-          <section
-            style={{
-              opacity: isPending ? 0.5 : 1,
-            }}
-          >
-            <>
-              {tameData && (
-                <>
-                  <p className="my-3 text-center text-base dark:text-gray-200">
-                    With selected food:
-                  </p>
-                  <section className="mt-3 rounded-t-md bg-zinc-300 p-4 dark:bg-zinc-600 dark:text-white">
-                    <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
-                      {[
-                        {
-                          name: "Current",
-                          sub: `Lvl ${dinoLevel}`,
-                          icon: (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 448 512"
-                            >
-                              <path d="M432 144h-85.73l21.32-92.4c1.969-8.609-3.375-17.2-12-19.19c-8.688-2.031-17.19 3.39-19.19 11.1l-22.98 99.59H186.3l21.32-92.4c1.969-8.609-3.375-17.2-12-19.19c-8.719-2.031-17.19 3.39-19.19 11.1L153.4 144H48c-8.844 0-16 7.144-16 15.99C32 168.8 39.16 176 48 176h98.04L109.1 336H16c-8.844 0-16 7.151-16 15.99s7.156 16 16 16h85.73L80.41 460.4c-1.969 8.609 3.375 17.2 12 19.19C93.63 479.9 94.81 480 96 480c7.281 0 13.88-4.1 15.59-12.41l22.98-99.59h127.2l-21.32 92.4c-1.969 8.609 3.375 17.2 12 19.19C253.6 479.9 254.8 480 256 480c7.281 0 13.88-4.1 15.59-12.41l22.98-99.59H400c8.844 0 16-7.161 16-16s-7.156-15.99-16-15.99h-98.04l36.92-159.1H432c8.844 0 16-7.168 16-16.01C448 151.2 440.8 144 432 144zM269.1 336H141.1L178.9 176h127.2L269.1 336z" />
-                            </svg>
-                          ),
-                        },
-                        {
-                          name: "Taming Eff.",
-                          sub: `${(tameData.effectiveness
-                            ? tameData.effectiveness
-                            : 0
-                          ).toFixed()}%`,
-                          icon: (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 384 512"
-                            >
-                              <path d="M379.3 68.69c-6.25-6.25-16.38-6.25-22.62 0l-352 352c-6.25 6.25-6.25 16.38 0 22.62C7.813 446.4 11.91 448 16 448s8.188-1.562 11.31-4.688l352-352C385.6 85.06 385.6 74.94 379.3 68.69zM64 192c35.35 0 64-28.65 64-64S99.35 64.01 64 64.01c-35.35 0-64 28.65-64 63.1S28.65 192 64 192zM64 96c17.64 0 32 14.36 32 32S81.64 160 64 160S32 145.6 32 128S46.36 96 64 96zM320 320c-35.35 0-64 28.65-64 64s28.65 64 64 64c35.35 0 64-28.65 64-64S355.3 320 320 320zM320 416c-17.64 0-32-14.36-32-32s14.36-32 32-32s32 14.36 32 32S337.6 416 320 416z" />
-                            </svg>
-                          ),
-                        },
-                        {
-                          name: "With Bonus",
-                          sub: `Lvl ${dinoLevel + tameData.levelsGained}`,
-                          icon: (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 512 512"
-                            >
-                              <path d="M466.5 83.69l-192-80.01C268.6 1.188 262.3 0 256.1 0S243.5 1.188 237.6 3.688l-192 80.01C27.72 91.07 16 108.6 16 127.1C16 385.4 205.4 512 255.1 512C305.2 512 496 387.3 496 127.1C496 108.6 484.3 91.07 466.5 83.69zM463.9 128.3c0 225.3-166.2 351.7-207.8 351.7C213.3 479.1 48 352.2 48 128c0-6.5 3.875-12.25 9.75-14.75l192-80c1.973-.8275 4.109-1.266 6.258-1.266c2.071 0 4.154 .4072 6.117 1.266l192 80C463.3 117.1 463.9 125.8 463.9 128.3zM336 240H271.1v-64C271.1 167.2 264.8 160 256 160S240 167.2 240 176v64H175.1C167.2 240 160 247.2 160 256s7.154 16 15.1 16H240v64c0 8.836 7.154 16 15.1 16c8.838 0 15.1-7.16 15.1-16v-64h64C344.8 272 352 264.8 352 256S344.8 240 336 240z" />
-                            </svg>
-                          ),
-                        },
-                        {
-                          name: "Max after Taming",
-                          sub: `Lvl ${
-                            dinoLevel +
-                            tameData.levelsGained +
-                            (dinoXVariant && dino.x_variant ? 88 : 73)
-                          }`,
-                          icon: (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 576 512"
-                            >
-                              <path d="M477.4 304.2l-131 21.75C336.5 303.6 314.1 288 288 288c-35.38 0-64 28.62-64 64s28.62 64 64 64c33.38 0 60.5-25.75 63.38-58.38l131.3-21.87c8.75-1.375 14.62-9.625 13.12-18.38C494.4 308.6 485.9 302.8 477.4 304.2zM288 384c-17.62 0-32-14.38-32-32s14.38-31.1 32-31.1S320 334.4 320 352S305.6 384 288 384zM288 32c-159 0-288 129-288 288c0 52.75 14.25 102.3 39 144.8c5.625 9.625 16.38 15.25 27.5 15.25h443c11.12 0 21.88-5.625 27.5-15.25C561.8 422.3 576 372.8 576 320C576 161 447 32 288 32zM509.5 448H66.75C44 409.1 32 365.2 32 320c0-141.1 114.9-256 256-256s256 114.9 256 256C544 365.2 532 409.8 509.5 448z" />
-                            </svg>
-                          ),
-                        },
-                      ].map(({ name, sub, icon }, i) => (
-                        <li
-                          key={`taming-stage-${i}`}
-                          className="flex items-center space-x-2.5 [&>*]:border-black [&>*]:fill-black [&>*]:dark:border-white [&>*]:dark:fill-white [&:last-of-type>svg]:hidden"
+
+          {tameData && (
+            <section>
+              <p className="my-3 text-center text-base dark:text-gray-200">
+                With selected food:
+              </p>
+              <section className="mt-3 rounded-t-md bg-zinc-300 p-4 dark:bg-zinc-600 dark:text-white">
+                <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
+                  {[
+                    {
+                      name: "Current",
+                      sub: `Lvl ${dinoLevel}`,
+                      icon: (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 448 512"
                         >
-                          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border p-3">
-                            {icon}
-                          </span>
-                          <span>
-                            <h3 className="font-medium leading-tight">
-                              {name}
-                            </h3>
-                            <p className="space-x-1 text-sm">
-                              <span>{sub.replace(/[0-9]/g, "")}</span>
-                              <Counter
-                                className="inline-block"
-                                startNum={0}
-                                endNum={sub.replace(/\D/g, "")}
-                                duration={500}
-                              />
-                            </p>
-                          </span>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6"
-                            viewBox="0 0 256 512"
-                          >
-                            <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
-                          </svg>
-                        </li>
-                      ))}
-                    </ol>
-                  </section>
-
-                  <section className="rounded-b-md bg-zinc-200 p-4 dark:bg-zinc-700 dark:text-white">
-                    <div className="relative my-3 grid grid-cols-5 gap-4 text-center">
-                      <div className="flex flex-col items-center">
-                        <p className="font-light">
-                          Torpor Drain Rate:{" "}
-                          <span
-                            className={clsx(`font-bold`, {
-                              "text-pea-500": tameData.torporDepletionPS < 1,
-                              "text-yellow-500":
-                                tameData.torporDepletionPS >= 1 &&
-                                tameData.torporDepletionPS < 2,
-                              "text-red-500": tameData.torporDepletionPS >= 2,
-                            })}
-                          >
-                            {tameData.torporDepletionPS.toFixed(1)}/s
-                          </span>
+                          <path d="M432 144h-85.73l21.32-92.4c1.969-8.609-3.375-17.2-12-19.19c-8.688-2.031-17.19 3.39-19.19 11.1l-22.98 99.59H186.3l21.32-92.4c1.969-8.609-3.375-17.2-12-19.19c-8.719-2.031-17.19 3.39-19.19 11.1L153.4 144H48c-8.844 0-16 7.144-16 15.99C32 168.8 39.16 176 48 176h98.04L109.1 336H16c-8.844 0-16 7.151-16 15.99s7.156 16 16 16h85.73L80.41 460.4c-1.969 8.609 3.375 17.2 12 19.19C93.63 479.9 94.81 480 96 480c7.281 0 13.88-4.1 15.59-12.41l22.98-99.59h127.2l-21.32 92.4c-1.969 8.609 3.375 17.2 12 19.19C253.6 479.9 254.8 480 256 480c7.281 0 13.88-4.1 15.59-12.41l22.98-99.59H400c8.844 0 16-7.161 16-16s-7.156-15.99-16-15.99h-98.04l36.92-159.1H432c8.844 0 16-7.168 16-16.01C448 151.2 440.8 144 432 144zM269.1 336H141.1L178.9 176h127.2L269.1 336z" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      name: "Taming Eff.",
+                      sub: `${(tameData.effectiveness
+                        ? tameData.effectiveness
+                        : 0
+                      ).toFixed()}%`,
+                      icon: (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 384 512"
+                        >
+                          <path d="M379.3 68.69c-6.25-6.25-16.38-6.25-22.62 0l-352 352c-6.25 6.25-6.25 16.38 0 22.62C7.813 446.4 11.91 448 16 448s8.188-1.562 11.31-4.688l352-352C385.6 85.06 385.6 74.94 379.3 68.69zM64 192c35.35 0 64-28.65 64-64S99.35 64.01 64 64.01c-35.35 0-64 28.65-64 63.1S28.65 192 64 192zM64 96c17.64 0 32 14.36 32 32S81.64 160 64 160S32 145.6 32 128S46.36 96 64 96zM320 320c-35.35 0-64 28.65-64 64s28.65 64 64 64c35.35 0 64-28.65 64-64S355.3 320 320 320zM320 416c-17.64 0-32-14.36-32-32s14.36-32 32-32s32 14.36 32 32S337.6 416 320 416z" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      name: "With Bonus",
+                      sub: `Lvl ${dinoLevel + tameData.levelsGained}`,
+                      icon: (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 512 512"
+                        >
+                          <path d="M466.5 83.69l-192-80.01C268.6 1.188 262.3 0 256.1 0S243.5 1.188 237.6 3.688l-192 80.01C27.72 91.07 16 108.6 16 127.1C16 385.4 205.4 512 255.1 512C305.2 512 496 387.3 496 127.1C496 108.6 484.3 91.07 466.5 83.69zM463.9 128.3c0 225.3-166.2 351.7-207.8 351.7C213.3 479.1 48 352.2 48 128c0-6.5 3.875-12.25 9.75-14.75l192-80c1.973-.8275 4.109-1.266 6.258-1.266c2.071 0 4.154 .4072 6.117 1.266l192 80C463.3 117.1 463.9 125.8 463.9 128.3zM336 240H271.1v-64C271.1 167.2 264.8 160 256 160S240 167.2 240 176v64H175.1C167.2 240 160 247.2 160 256s7.154 16 15.1 16H240v64c0 8.836 7.154 16 15.1 16c8.838 0 15.1-7.16 15.1-16v-64h64C344.8 272 352 264.8 352 256S344.8 240 336 240z" />
+                        </svg>
+                      ),
+                    },
+                    {
+                      name: "Max after Taming",
+                      sub: `Lvl ${dinoLevel +
+                        tameData.levelsGained +
+                        (dinoXVariant && dino.x_variant ? 88 : 73)
+                        }`,
+                      icon: (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 576 512"
+                        >
+                          <path d="M477.4 304.2l-131 21.75C336.5 303.6 314.1 288 288 288c-35.38 0-64 28.62-64 64s28.62 64 64 64c33.38 0 60.5-25.75 63.38-58.38l131.3-21.87c8.75-1.375 14.62-9.625 13.12-18.38C494.4 308.6 485.9 302.8 477.4 304.2zM288 384c-17.62 0-32-14.38-32-32s14.38-31.1 32-31.1S320 334.4 320 352S305.6 384 288 384zM288 32c-159 0-288 129-288 288c0 52.75 14.25 102.3 39 144.8c5.625 9.625 16.38 15.25 27.5 15.25h443c11.12 0 21.88-5.625 27.5-15.25C561.8 422.3 576 372.8 576 320C576 161 447 32 288 32zM509.5 448H66.75C44 409.1 32 365.2 32 320c0-141.1 114.9-256 256-256s256 114.9 256 256C544 365.2 532 409.8 509.5 448z" />
+                        </svg>
+                      ),
+                    },
+                  ].map(({ name, sub, icon }, i) => (
+                    <li
+                      key={`taming-stage-${i}`}
+                      className="flex items-center space-x-2.5 [&>*]:border-black [&>*]:fill-black [&>*]:dark:border-white [&>*]:dark:fill-white [&:last-of-type>svg]:hidden"
+                    >
+                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border p-3">
+                        {icon}
+                      </span>
+                      <span>
+                        <h3 className="font-medium leading-tight">
+                          {name}
+                        </h3>
+                        <p className="space-x-1 text-sm">
+                          <span>{sub.replace(/[0-9]/g, "")}</span>
+                          <Counter
+                            className="inline-block"
+                            startNum={0}
+                            endNum={sub.replace(/\D/g, "")}
+                            duration={500}
+                          />
                         </p>
-                        <p>
-                          {timeFormatL(
-                            tameData.totalTorpor / tameData.torporDepletionPS
-                          )}{" "}
-                          until unconscious
+                      </span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        viewBox="0 0 256 512"
+                      >
+                        <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                      </svg>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+
+              <section className="rounded-b-md bg-zinc-200 p-4 dark:bg-zinc-700 dark:text-white">
+                <div className="relative my-3 grid grid-cols-5 gap-4 text-center">
+                  <div className="flex flex-col items-center">
+                    <p className="font-light">
+                      Torpor Drain Rate:{" "}
+                      <span
+                        className={clsx(`font-bold`, {
+                          "text-pea-500": tameData.torporDepletionPS < 1,
+                          "text-yellow-500":
+                            tameData.torporDepletionPS >= 1 &&
+                            tameData.torporDepletionPS < 2,
+                          "text-red-500": tameData.torporDepletionPS >= 2,
+                        })}
+                      >
+                        {tameData.torporDepletionPS.toFixed(1)}/s
+                      </span>
+                    </p>
+                    <p>
+                      {timeFormatL(
+                        tameData.totalTorpor / tameData.torporDepletionPS
+                      )}{" "}
+                      until unconscious
+                    </p>
+                  </div>
+                  {Object.entries(tameData)
+                    .filter(([k, _]) =>
+                      [
+                        "NarcoberryMin",
+                        "Bio-ToxinMin",
+                        "NarcoticMin",
+                        "Ascerbic-MushroomMin",
+                      ].includes(k)
+                    )
+                    .map(([name, v]) => (
+                      <div
+                        className="flex flex-col items-center"
+                        key={`narcotic-${name}`}
+                      >
+                        {/* https://placehold.co/100x100/png */}
+                        <img
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${name
+                            .replace("Min", "")
+                            .toLowerCase()}.png`}
+                          alt=""
+                          className="w-12"
+                        />
+                        <p>{v.toString()}</p>
+                        <p className="text-xs capitalize">
+                          {name.replace("Min", "").replace("-", " ")}
                         </p>
                       </div>
-                      {Object.entries(tameData)
-                        .filter(([k, _]) =>
-                          [
-                            "NarcoberryMin",
-                            "Bio-ToxinMin",
-                            "NarcoticMin",
-                            "Ascerbic-MushroomMin",
-                          ].includes(k)
-                        )
-                        .map(([name, v]) => (
-                          <div
-                            className="flex flex-col items-center"
-                            key={`narcotic-${name}`}
+                    ))}
+                </div>
+              </section>
+
+              {calculateWeapons && tameData && (
+                <>
+                  <p className="mt-3 text-lg">Knock Out</p>
+                  <div className="max-w-screen rw-segment relative flex flex-row gap-2 overflow-x-auto rounded-md py-3 text-center">
+                    {calculateWeapons.map(
+                      ({
+                        id,
+                        name,
+                        image,
+                        isPossible,
+                        chanceOfDeath,
+                        hits,
+                        hitboxes,
+                        userDamage,
+                        chanceOfDeathHigh,
+                      }) => (
+                        <div
+                          key={`weapon-${id}`}
+                          className={clsx(
+                            `animate-fade-in my-1 flex min-h-full min-w-[8rem] flex-1 flex-col items-center justify-between space-y-1 rounded bg-zinc-200 p-3 first:ml-1 last:mr-1 dark:bg-zinc-600`,
+                            {
+                              "shadow-pea-500 shadow":
+                                isPossible && chanceOfDeath < 99,
+                              "rw-img-disable text-gray-500":
+                                !isPossible || chanceOfDeath >= 99,
+                            }
+                          )}
+                        >
+                          <img
+                            className="h-16 w-16"
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                          />
+                          <Link
+                            to={routes.item({ id: id.toString() })}
+                            className="w-full"
                           >
-                            {/* https://placehold.co/100x100/png */}
-                            <img
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${name
-                                .replace("Min", "")
-                                .toLowerCase()}.png`}
-                              alt=""
-                              className="w-12"
+                            {name}
+                          </Link>
+                          {isPossible ? (
+                            <Counter
+                              startNum={0}
+                              endNum={hits}
+                              duration={3000 / hits}
                             />
-                            <p>{v.toString()}</p>
-                            <p className="text-xs capitalize">
-                              {name.replace("Min", "").replace("-", " ")}
-                            </p>
-                          </div>
-                        ))}
-                    </div>
-                  </section>
-
-                  {calculateWeapons && tameData && (
-                    <>
-                      <p className="mt-3 text-lg">Knock Out</p>
-                      <div className="max-w-screen rw-segment relative flex flex-row gap-2 overflow-x-auto rounded-md py-3 text-center">
-                        {calculateWeapons.map(
-                          ({
-                            id,
-                            name,
-                            image,
-                            isPossible,
-                            chanceOfDeath,
-                            hits,
-                            hitboxes,
-                            userDamage,
-                            chanceOfDeathHigh,
-                          }) => (
-                            <div
-                              key={`weapon-${id}`}
-                              className={clsx(
-                                `animate-fade-in my-1 flex min-h-full min-w-[8rem] flex-1 flex-col items-center justify-between space-y-1 rounded bg-zinc-200 p-3 first:ml-1 last:mr-1 dark:bg-zinc-600`,
-                                {
-                                  "shadow-pea-500 shadow":
-                                    isPossible && chanceOfDeath < 99,
-                                  "rw-img-disable text-gray-500":
-                                    !isPossible || chanceOfDeath >= 99,
-                                }
-                              )}
+                          ) : (
+                            <p>Not Possible</p>
+                          )}
+                          {chanceOfDeath > 0 && isPossible && (
+                            <p
+                              className={clsx("text-xs", {
+                                "text-red-300": chanceOfDeathHigh,
+                              })}
                             >
-                              <img
-                                className="h-16 w-16"
-                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                              />
-                              <Link
-                                to={routes.item({ id: id.toString() })}
-                                className="w-full"
-                              >
-                                {name}
-                              </Link>
-                              {isPossible ? (
-                                <Counter
-                                  startNum={0}
-                                  endNum={hits}
-                                  duration={3000 / hits}
-                                />
-                              ) : (
-                                <p>Not Possible</p>
-                              )}
-                              {chanceOfDeath > 0 && isPossible && (
-                                <p
-                                  className={clsx("text-xs", {
-                                    "text-red-300": chanceOfDeathHigh,
-                                  })}
-                                >
-                                  {chanceOfDeath}% chance of death
-                                </p>
-                              )}
-                              {hitboxes.length > 0 && (
-                                <span className="rounded bg-gray-100 px-2.5 py-0.5 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
-                                  {hitboxes.map((h) => (
-                                    <span
-                                      key={`hitbox-${h.name}`}
-                                    >{`${h.name} - ${h.multiplier}x`}</span>
-                                  ))}
-                                </span>
-                              )}
-                              <div className="rw-button-group max-w-full">
-                                <input
-                                  className="rw-input w-12 !p-1 text-center"
-                                  defaultValue={userDamage}
-                                  disabled={!isPossible || chanceOfDeath >= 99}
-                                  onChange={debounce((e) => {
-                                    setWeaponDamage({
-                                      ...weaponDamage,
-                                      [id]: e.target.value,
-                                    });
-                                  }, 300)}
-                                />
-                                <input
-                                  type="readonly"
-                                  disabled={!isPossible || chanceOfDeath >= 99}
-                                  className="rw-input !w-5 !p-1 text-center"
-                                  readOnly
-                                  placeholder="%"
-                                  defaultValue={`%`}
-                                />
-                              </div>
-                            </div>
-                          )
-                        )}
-                      </div>
-                    </>
-                  )}
-                  <label htmlFor="sec_between_hits" className="rw-label">
-                    Seconds between hits
-                  </label>
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    id="sec_between_hits"
-                    name="sec_between_hits"
-                    className="rw-input"
-                    placeholder="Seconds between hits"
-                    defaultValue={secondsBetweenHits || 5}
-                    onChange={debounce((e) => {
-                      setSecondsBetweenHits(parseInt(e.target.value));
-                    }, 300)}
-                  />
+                              {chanceOfDeath}% chance of death
+                            </p>
+                          )}
+                          {hitboxes.length > 0 && (
+                            <span className="rounded bg-gray-100 px-2.5 py-0.5 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                              {hitboxes.map(({ name, multiplier }) => (
+                                <span
+                                  key={`hitbox-${name}`}
+                                >{`${name} - ${multiplier}x`}</span>
+                              ))}
+                            </span>
+                          )}
+                          <div className="rw-button-group max-w-full">
+                            <input
+                              className="rw-input w-12 !p-1 text-center"
+                              defaultValue={userDamage}
+                              disabled={!isPossible || chanceOfDeath >= 99}
+                              onChange={debounce((e) => {
+                                setWeaponDamage({
+                                  ...weaponDamage,
+                                  [id]: e.target.value,
+                                });
+                              }, 300)}
+                            />
+                            <input
+                              type="readonly"
+                              disabled={!isPossible || chanceOfDeath >= 99}
+                              className="rw-input !w-5 !p-1 text-center"
+                              readOnly
+                              placeholder="%"
+                              defaultValue={`%`}
+                            />
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
                 </>
               )}
-            </>
-            {/* )} */}
-          </section>
+              <label htmlFor="sec_between_hits" className="rw-label">
+                Seconds between hits
+              </label>
+              <input
+                type="number"
+                inputMode="numeric"
+                id="sec_between_hits"
+                name="sec_between_hits"
+                className="rw-input"
+                placeholder="Seconds between hits"
+                defaultValue={secondsBetweenHits || 5}
+                onChange={debounce((e) => {
+                  setSecondsBetweenHits(parseInt(e.target.value));
+                }, 300)}
+              />
+            </section>
+          )}
         </section>
       )}
 
@@ -1827,60 +1785,61 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       )}
 
       {baseStats && (
-        <section className="rounded-b-md py-3">
+        <section className="rounded-b-md space-y-2">
+          <h4>Stats</h4>
           <Table
             className="w-fit"
             rows={baseStats}
             toolbar={
               !dino.type.includes("boss")
                 ? [
-                    <button
-                      type="button"
-                      className="rw-button rw-button-gray"
-                      onClick={genRandomStats}
-                    >
-                      Random
-                    </button>,
-                    <button
-                      type="button"
-                      className="rw-button rw-button-gray text-white"
-                      onClick={() =>
-                        setBaseStats(
-                          baseStats.map((s) => ({
-                            ...s,
-                            points:
-                              s.stat == "Torpidity"
-                                ? 0
-                                : Math.round(dinoLevel / 7),
-                          }))
-                        )
-                      }
-                    >
-                      Distribute Evenly
-                    </button>,
-                    <button
-                      type="button"
-                      className="rw-button rw-button-red"
-                      onClick={() =>
-                        setBaseStats(
-                          baseStats.map((s) => ({
-                            ...s,
-                            points: 0,
-                            total: s.base,
-                          }))
-                        )
-                      }
-                    >
-                      Clear
-                    </button>,
-                    <p>
-                      {dinoLevel -
-                        baseStats
-                          .map((b) => b.points)
-                          .reduce((a, b) => a + b, 0)}{" "}
-                      points wasted
-                    </p>,
-                  ]
+                  <button
+                    type="button"
+                    className="rw-button rw-button-gray"
+                    onClick={genRandomStats}
+                  >
+                    Random
+                  </button>,
+                  <button
+                    type="button"
+                    className="rw-button rw-button-gray text-white"
+                    onClick={() =>
+                      setBaseStats(
+                        baseStats.map((s) => ({
+                          ...s,
+                          points:
+                            s.stat == "Torpidity"
+                              ? 0
+                              : Math.round(dinoLevel / 7),
+                        }))
+                      )
+                    }
+                  >
+                    Distribute Evenly
+                  </button>,
+                  <button
+                    type="button"
+                    className="rw-button rw-button-red"
+                    onClick={() =>
+                      setBaseStats(
+                        baseStats.map((s) => ({
+                          ...s,
+                          points: 0,
+                          total: s.base,
+                        }))
+                      )
+                    }
+                  >
+                    Clear
+                  </button>,
+                  <p>
+                    {dinoLevel -
+                      baseStats
+                        .map((b) => b.points)
+                        .reduce((a, b) => a + b, 0)}{" "}
+                    points wasted
+                  </p>,
+                ]
                 : []
             }
             columns={[
@@ -1940,7 +1899,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                         type="button"
                         disabled={
                           baseStats.find((s) => s.stat === row.stat)?.points <=
-                            0 || row.stat === "Torpidity"
+                          0 || row.stat === "Torpidity"
                         }
                         className="rw-button rw-button-red-outline h-8 w-8 rounded-full p-0 !text-xl"
                         onClick={() => onRemove(row.stat)}
@@ -1978,9 +1937,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       )}
 
       {dino.movement && (
-        <section className="my-3 rounded-md p-4">
+        <section className="my-3 rounded-md">
           <div
-            className={clsx("grid items-center gap-1", {
+            className={clsx("grid items-center gap-1 w-fit", {
               "grid-cols-4": Object.values(dino.movement["w"]).some((d) =>
                 Object.keys(d).some((f) => f === "sprint")
               ),
@@ -1996,13 +1955,12 @@ const Dino = ({ dino, itemsByIds }: Props) => {
             ) && <p>Sprint</p>}
             <p>&nbsp;</p>
             {Object.entries(dino.movement["w"]).map(([stat, value], index) => (
-              <>
+              <React.Fragment key={`dino-movement-${index}`}>
                 <p className="text-right capitalize">{stat}</p>
 
                 {Object.values(value).map((v, i) => (
-                  <>
+                  <React.Fragment key={`movement-${stat}-${i}`}>
                     <p
-                      key={`movement-${stat}-${i}`}
                       className={clsx("rw-input rounded-none", {
                         "rounded-tl-lg": i === 0 && index === 0,
                         "rounded-tr-lg":
@@ -2023,9 +1981,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                       {!v
                         ? "-"
                         : (useFoundationUnit
-                            ? Number(v / 300)
-                            : Number(v)
-                          ).toFixed(2)}
+                          ? Number(v / 300)
+                          : Number(v)
+                        ).toFixed(2)}
                     </p>
                     {Object.values(value).length < 2 && (
                       <p
@@ -2049,16 +2007,15 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                         -
                       </p>
                     )}
-                  </>
+                  </React.Fragment>
                 ))}
                 <abbr
-                  title={`${
-                    useFoundationUnit ? "Foundation" : `Units`
-                  } per second`}
+                  title={`${useFoundationUnit ? "Foundation" : `Units`
+                    } per second`}
                 >
                   {useFoundationUnit ? "Foundation" : `Units`}/s
                 </abbr>
-              </>
+              </React.Fragment>
             ))}
 
             <ToggleButton

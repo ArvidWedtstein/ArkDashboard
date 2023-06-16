@@ -2,7 +2,6 @@ import { useCallback, useMemo, useState } from "react";
 import {
   IntRange,
   debounce,
-  dynamicSort,
   formatNumber,
 } from "src/lib/formatters";
 import clsx from "clsx";

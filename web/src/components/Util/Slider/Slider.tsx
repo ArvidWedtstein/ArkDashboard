@@ -1,106 +1,68 @@
-import clsx from "clsx";
 import { useState } from "react";
+import { debounce } from "src/lib/formatters";
 
-// const Slider = ({ min, max, onChange }) => {
-//   const [values, setValues] = useState([min, max]);
+interface SliderProps {
+  /**
+   * The minimum value of the slider
+   * @default 0
+   */
+  min?: number;
+  /**
+   * The maximum value of the slider
+   *  @default 100
+   */
+  max?: number;
+  /**
+   * The step value of the slider
+   * @default 1
+   */
+  step?: number;
+  value?: number | number[];
+  onChange?: (values: boolean extends true ? number[] : number | number[]) => void;
+  className?: string;
+  text?: boolean;
+  double?: boolean;
+}
+const Slider = ({ min = 0, max = 100, step = 1, value, onChange, className, double = false, text = true }: SliderProps) => {
+  const [valueA, setValueA] = useState<number>(Array.isArray(value) ? value[0] : 0);
+  const [valueB, setValueB] = useState<number>(Array.isArray(value) ? value[1] : 100);
 
-//   const handleChange = (index, newValue) => {
-//     const newValues = [...values];
-//     newValues[index] = newValue;
-//     setValues(newValues);
-//     onChange(newValues);
-//   };
+  const start = Math.min(valueA, valueB) * 3;
+  const diff = Math.abs(valueA - valueB) * 3;
 
-//   return (
-//     <div className="range-slider">
-//       <input
-//         type="range"
-//         min={min}
-//         max={max}
-//         value={values[0]}
-//         onChange={(e) => handleChange(0, Number(e.target.value))}
-//       />
-//       <input
-//         type="range"
-//         min={min}
-//         max={max}
-//         value={values[1]}
-//         onChange={(e) => handleChange(1, Number(e.target.value))}
-//       />
-//       <div className="range-values">
-//         <span>{values[0]}</span>
-//         <span>{values[1]}</span>
-//       </div>
-//     </div>
-//   );
-// };
-
-const Slider = ({ min, max, step, value, onChange, className }) => {
-  const [values, setValues] = useState(value || [min, max]);
-  const [activeThumb, setActiveThumb] = useState(null);
-
-  const handleChange = (index, newValue) => {
-    const newValues = [...values];
-    newValues[index] = newValue;
-    setValues(newValues);
-    onChange(newValues);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>, doubleSlider: boolean) => {
+    const newValueA = parseInt(event.target.value, 10);
+    const newValueB = parseInt(event.target.value, 10);
+    doubleSlider ? setValueA(newValueA) : setValueB(newValueB);
+    onChange?.(double ? [doubleSlider ? newValueA : valueA, !doubleSlider ? newValueB : valueB] : newValueA);
   };
 
-  const handleThumbMouseDown = (index) => {
-    setActiveThumb(index);
-  };
 
-  const handleMouseUp = () => {
-    setActiveThumb(null);
-  };
-
-  const handleMouseMove = (e) => {
-    if (activeThumb === 0) {
-      const newValue = Math.max(
-        min,
-        Math.min(values[1] - step, parseFloat(e.target.value))
-      );
-      handleChange(0, newValue);
-    } else if (activeThumb === 1) {
-      const newValue = Math.min(
-        max,
-        Math.max(values[0] + step, parseFloat(e.target.value))
-      );
-      handleChange(1, newValue);
-    }
+  const commonInputProps = {
+    type: "range",
+    className: "slider pointer-events-none !absolute top-0 left-0 h-6 w-full appearance-none bg-transparent p-0 outline-none",
+    min,
+    max,
+    step,
   };
 
   return (
-    <div className={`range-slider ${className}`} onMouseUp={handleMouseUp}>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={values[0]}
-        onChange={(e) => handleChange(0, parseFloat(e.target.value))}
-        onMouseDown={() => handleThumbMouseDown(0)}
-        onMouseMove={handleMouseMove}
-      />
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={values[1]}
-        onChange={(e) => handleChange(1, parseFloat(e.target.value))}
-        onMouseDown={() => handleThumbMouseDown(1)}
-        onMouseMove={handleMouseMove}
-      />
-      <div className="range-values">
-        <span>{values[0]}</span>
-        <span>{values[1]}</span>
-      </div>
-      {activeThumb !== null && (
-        <div className="range-tooltip">
-          {values[activeThumb]}
+    <div className={"inline-flex justify-start text-gray-800 dark:text-white space-x-1 " + className}>
+      <div className="relative w-[322px] h-6">
+        <div className="border absolute rounded-full bg-zinc-300 dark:bg-zinc-600 dark:border-zinc-500 border-zinc-500 left-3 right-3 h-2 top-1/2" style={{ transform: "translate(0, -50%)" }}></div>
+        <div className="absolute rounded-full bg-zinc-400 border-pea-500 border dark:bg-zinc-700 h-2 top-1/2" style={{ left: `${12 + start}px`, width: `${diff}px`, transform: "translate(0, -50%)" }}></div>
+        {double && (
+          <div className="absolute grid place-items-center top-0 h-6 w-6" style={{ left: `${valueA * 3}px` }}>
+            <div className="bg-pea-600 shadow-md rounded-full grid place-items-center w-5 h-5 border border-zinc-500"></div>
+          </div>
+        )}
+        <div className="absolute grid place-items-center top-0 h-6 w-6" style={{ left: `${valueB * 3}px` }}>
+          <div className="bg-pea-600 shadow-md rounded-full grid place-items-center w-5 h-5 border border-zinc-500"></div>
         </div>
-      )}
+        {double && <input {...commonInputProps} value={valueA} onChange={(e) => handleChange(e, true)} />}
+        <input {...commonInputProps} value={valueB} onChange={(e) => handleChange(e, false)} />
+      </div>
+      {text && <p>{double ? `${valueA} - ${valueB}` : `${valueB}`}</p>}
     </div>
   );
 };
