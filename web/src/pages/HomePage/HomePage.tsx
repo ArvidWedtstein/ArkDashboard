@@ -1,7 +1,6 @@
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "src/auth";
-import Chat from "src/components/Chat/Chat";
 const HomePage = () => {
   const { isAuthenticated, currentUser } = useAuth();
   // if (document.addEventListener) {
