@@ -24,6 +24,11 @@ export const itemRecipes: QueryResolvers["itemRecipes"] = () => {
   return db.itemRecipe.findMany({
     where: { crafting_station_id: { notIn: [572, 525, 214] } },
     // distinct: ["crafted_item_id"],
+    select: {
+      id: true,
+      crafting_station_id: true,
+      yields: true,
+    },
   });
 };
 

@@ -41,11 +41,11 @@ export const userRecipe: QueryResolvers["userRecipe"] = ({ id }) => {
 export const createUserRecipe: MutationResolvers["createUserRecipe"] = ({
   input,
 }) => {
-  validateWithSync(() => {
-    if (context.currentUser.id !== input.user_id) {
-      throw "Your gallimimus outran the authorization process. Slow down!";
-    }
-  });
+  // validateWithSync(() => {
+  //   if (context.currentUser.id !== input.user_id) {
+  //     throw "Your gallimimus outran the authorization process. Slow down!";
+  //   }
+  // });
   return db.userRecipe.create({
     data: input,
   });
