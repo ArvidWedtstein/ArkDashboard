@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 const drawSvgPath = (
   coordinates: { lat: number; lon: number }[],
-  size
+  size: { width: number; height: number }
 ): string => {
   let pathString = "";
   coordinates.forEach((coordinate, index) => {
@@ -37,13 +37,17 @@ const Map = ({
   const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
 
   const handleKeyUp = useCallback((event) => {
-    if (!interactive) return;
-    if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
-      setZoom(1);
-      setPanPosition({ x: 0, y: 0 });
-      setIsDragging(false);
-      setStartPosition({ x: 0, y: 0 });
-    }
+    if (
+      !interactive ||
+      event.code !== "ShiftLeft" ||
+      event.code !== "ShiftRight"
+    )
+      return;
+
+    setZoom(1);
+    setPanPosition({ x: 0, y: 0 });
+    setIsDragging(false);
+    setStartPosition({ x: 0, y: 0 });
   }, []);
 
   useEffect(() => {
@@ -78,10 +82,9 @@ const Map = ({
     };
   }, []);
 
-  const handleWheel = (event) => {
+  const handleWheel = (event: React.WheelEvent<SVGImageElement>) => {
     event.preventDefault();
-    if (!interactive) return;
-    if (!event.shiftKey) return;
+    if (!interactive || !event.shiftKey) return;
     const scale = event.deltaY > 0 ? 0.9 : 1.1;
     const newZoom = zoom * scale;
     const rect = svgRef.current.getBoundingClientRect();
@@ -96,18 +99,19 @@ const Map = ({
     }));
   };
 
-  const handleMouseDown = (event) => {
+  const handleMouseDown = (
+    event: React.MouseEvent<SVGImageElement, MouseEvent>
+  ) => {
     event.preventDefault();
-    if (!interactive) return;
-    if (!event.shiftKey) return;
+    if (!interactive || !event.shiftKey) return;
     setIsDragging(true);
     setStartPosition({ x: event.clientX, y: event.clientY });
   };
 
-  const handleMouseMove = (event) => {
-    if (!isDragging) return;
-    if (!interactive) return;
-    if (!event.shiftKey) return;
+  const handleMouseMove = (
+    event: React.MouseEvent<SVGImageElement, MouseEvent>
+  ) => {
+    if (!isDragging || !interactive || !event.shiftKey) return;
     const dx = event.clientX - startPosition.x;
     const dy = event.clientY - startPosition.y;
     setPanPosition((prevPosition) => ({
