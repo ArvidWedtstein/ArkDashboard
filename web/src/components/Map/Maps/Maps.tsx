@@ -263,13 +263,15 @@ const MapsList = ({ maps }: FindMaps) => {
 
   return (
     <div>
-      <p className="text-center text-xl dark:text-white text-gray-900 before:content-['-\00a0'] after:content-['\00a0-']">Ark Maps</p>
+      <p className="text-center text-xl text-gray-900 before:content-['-\00a0'] after:content-['\00a0-'] dark:text-white">
+        Ark Maps
+      </p>
       <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {maps.map((map) => (
           <Link
             key={map.id}
             to={routes.map({ id: map.id.toString() })}
-            className="hover:no-underline hover:ring-1 hover:ring-pea-500 hover:rounded-3xl"
+            className="hover:ring-pea-500 hover:rounded-3xl hover:no-underline hover:ring-1"
           >
             <ArkCard
               className="!dark:text-white !text-white"
@@ -300,7 +302,9 @@ const MapsList = ({ maps }: FindMaps) => {
                   })}
                 </div>
               }
-              icon={{ src: map.img }}
+              icon={{
+                src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/small-${map.img}`,
+              }}
             />
           </Link>
         ))}

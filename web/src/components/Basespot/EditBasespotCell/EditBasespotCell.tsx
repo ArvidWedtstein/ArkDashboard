@@ -23,6 +23,9 @@ export const QUERY = gql`
       created_by
       turretsetup_image
       updated_at
+      Map {
+        img
+      }
     }
   }
 `;

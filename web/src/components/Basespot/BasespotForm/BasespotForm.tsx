@@ -20,7 +20,6 @@ import { useEffect, useRef, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
 import Lookup from "src/components/Util/Lookup/Lookup";
 
-
 type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
 
 interface BasespotFormProps {
@@ -125,34 +124,6 @@ const BasespotForm = (props: BasespotFormProps) => {
           Map
         </Label>
 
-        {/* <SelectField
-          name="Map"
-          defaultValue={props.basespot?.Map || map}
-          validation={{
-            required: true,
-            validate: {
-              matchesInitialValue: (value) => {
-                return (
-                  value !== "Please select an option" || "Select an Option"
-                );
-              },
-            },
-          }}
-        >
-          <option>Please select an option</option>
-          <option value={1}>Valguero</option>
-          <option value={2}>The Island</option>
-          <option value={3}>The Center</option>
-          <option value={4}>Ragnarok</option>
-          <option value={5}>Aberration</option>
-          <option value={6}>Extinction</option>
-          <option value={7}>Scorched Earth</option>
-          <option value={8}>Genesis</option>
-          <option value={9}>Genesis 2</option>
-          <option value={10}>Crystal Isles</option>
-          <option value={11}>Fjordur</option>
-          <option value={12}>Lost Island</option>
-        </SelectField> */}
         <Lookup
           defaultValue={props.basespot?.map || map}
           options={[
@@ -177,6 +148,11 @@ const BasespotForm = (props: BasespotFormProps) => {
         <MapPicker
           className="mt-2"
           map={props.basespot?.map || map.toString()}
+          url={
+            props.basespot.Map.img
+              ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${props.basespot.Map.img}`
+              : null
+          }
           valueProp={{ ...props.basespot }}
           onChanges={(e) => {
             formMethods.setValue("latitude", e.latitude);
@@ -238,11 +214,12 @@ const BasespotForm = (props: BasespotFormProps) => {
             <FileUpload
               multiple={false}
               name="image"
-              storagePath={`basespotimages/${props.basespot?.id ||
+              storagePath={`basespotimages/${
+                props.basespot?.id ||
                 basename.current?.value.replaceAll(" ", "")
                 // basename.current?.value.replaceAll(" ", "") ||
                 // props.basespot?.name.replaceAll(" ", "")
-                }`}
+              }`}
               onUpload={(url) => {
                 setThumbnailUrl(url);
               }}

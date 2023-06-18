@@ -276,8 +276,9 @@ const Map = ({ map }: Props) => {
         ...item,
         category,
         color,
-        name: `${category.replaceAll("_", " ")}\n${item.latitude}, ${item.longitude
-          }`,
+        name: `${category.replaceAll("_", " ")}\n${item.latitude}, ${
+          item.longitude
+        }`,
       }));
 
       setCategories((prevState) => ({
@@ -299,9 +300,12 @@ const Map = ({ map }: Props) => {
     [categories, mapData, setCategories, setMapData]
   );
 
-  let noterun = map.id === 1 ? [57, 520, 242, 241, 201, 79, 238, 143, 301, 283, 284, 60] : [];
+  let noterun =
+    map.id === 1
+      ? [57, 520, 242, 241, 201, 79, 238, 143, 301, 283, 284, 60]
+      : [];
   return (
-    <>
+    <article>
       <div className="rw-segment">
         <header className="rw-segment-header">
           <h2 className="rw-heading rw-heading-primary">
@@ -317,13 +321,11 @@ const Map = ({ map }: Props) => {
                     map.MapCoordinate.filter((d) => d.type === c[0]) != null &&
                     map.MapCoordinate.filter((d) => d.type === c[0])
                 )
-                .map((category) => {
-                  return {
-                    label: capitalizeSentence(category[0].replaceAll("_", " ")),
-                    value: category[0],
-                    image: category[1].icon,
-                  };
-                })}
+                .map((category) => ({
+                  label: capitalizeSentence(category[0].replaceAll("_", " ")),
+                  value: category[0],
+                  image: category[1].icon,
+                }))}
               onChange={(name, values) => {
                 setCategory(
                   name,
@@ -335,7 +337,7 @@ const Map = ({ map }: Props) => {
             <MapComp
               interactive={true}
               className="col-span-1 w-auto"
-              map={map.name.replace(" ", "")}
+              url={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.img}`}
               size={{ width: 500, height: 500 }}
               pos={mapData.map((d) => ({
                 lat: d.latitude,
@@ -390,22 +392,33 @@ const Map = ({ map }: Props) => {
         </div>
       </div>
       <section className="rw-segment-header rw-heading rw-heading-secondary">
-        <Link className="after:content-['_↗']" to={routes.basespots({ map: map.name })}>Basespots</Link>
+        <Link
+          className="after:content-['_↗']"
+          to={routes.basespots({ map: map.name })}
+        >
+          Basespots
+        </Link>
       </section>
 
       <section className="rw-segment-header rw-heading rw-heading-secondary">
-        <Link className="after:content-['_↗']" to={routes.lootcrates({ map: map.id })}>Lootcrates</Link>
+        <Link
+          className="after:content-['_↗']"
+          to={routes.lootcrates({ map: map.id })}
+        >
+          Lootcrates
+        </Link>
         <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4">
           {map.Lootcrate.map((lootcrate, i) => (
             <ArkCard
-              className="border-t-2 bg-zinc-600"
+              key={`lootcrate-${i}`}
+              className="border-t-2 bg-zinc-700"
               style={{
                 borderColor: lootcrate.color ? lootcrate.color : "white",
               }}
               title={lootcrate.name}
               ring={
                 lootcrate?.level_requirement &&
-                  lootcrate.level_requirement["min"] > 0 ? (
+                lootcrate.level_requirement["min"] > 0 ? (
                   <button
                     title={`You need to be lvl ${lootcrate.level_requirement["min"]} to open this crate`}
                     className="relative flex items-center justify-center space-x-2 rounded-full bg-gray-600 px-4 py-2.5 text-gray-100 shadow-sm ring-1 ring-green-500"
@@ -425,22 +438,22 @@ const Map = ({ map }: Props) => {
           ))}
         </div>
       </section>
-      <nav className="rw-button-group">
+      {/* <nav className="rw-button-group">
         <Link
           to={routes.editMap({ id: map.id.toString() })}
-          className="rw-button rw-button-blue"
+          className="rw-button rw-button-blue-outline"
         >
           Edit
         </Link>
         <button
           type="button"
-          className="rw-button rw-button-red"
+          className="rw-button rw-button-red-outline"
           onClick={() => onDeleteClick(map.id)}
         >
           Delete
         </button>
-      </nav>
-    </>
+      </nav> */}
+    </article>
   );
 };
 

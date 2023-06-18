@@ -190,6 +190,18 @@ a {
   @apply ring-blue-300 dark:ring-blue-800;
 }
 
+/* Blue Outline Button*/
+.rw-button.rw-button-blue-outline {
+  @apply border border-blue-500 text-blue-500;
+  /* @apply border-pea-500 text-pea-500 rounded border-2 font-normal leading-tight transition duration-150 ease-in-out hover:bg-opacity-5; */
+}
+.rw-button.rw-button-blue-outline:hover {
+  @apply bg-blue-600 text-white;
+}
+.rw-button.rw-button-green-outline:focus {
+  @apply outline-none ring-4 ring-blue-800;
+}
+
 /* Yellow Button */
 .rw-button.rw-button-yellow {
   @apply bg-yellow-500 text-white;
@@ -477,7 +489,7 @@ input[type="range"].slider:active::-moz-range-thumb {
   height: 20px;
   /* border-radius: 5px; */
   /* background-color: #9880ff; */
-  background: url("https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages//hide.png");
+  background: url("https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/hide.webp");
   background-position: center;
   background-size: cover;
   color: #9880ff;
@@ -495,7 +507,7 @@ input[type="range"].slider:active::-moz-range-thumb {
   height: 20px;
   /* border-radius: 5px; */
   /* background-color: #9880ff; */
-  background: url("https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/hide.png");
+  background: url("https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/hide.webp");
   background-position: center;
   background-size: cover;
   color: #9880ff;
@@ -509,7 +521,7 @@ input[type="range"].slider:active::-moz-range-thumb {
   height: 20px;
   /* border-radius: 5px; */
   /* background-color: #9880ff; */
-  background: url("https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages//hide.png");
+  background: url("https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/hide.webp");
   background-position: center;
   background-size: cover;
   color: #9880ff;

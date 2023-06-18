@@ -28,6 +28,28 @@ export const itemRecipes: QueryResolvers["itemRecipes"] = () => {
       id: true,
       crafting_station_id: true,
       yields: true,
+      Item_ItemRecipe_crafted_item_idToItem: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+          category: true,
+          type: true,
+        },
+      },
+      ItemRecipeItem: {
+        select: {
+          id: true,
+          amount: true,
+          Item: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+      },
     },
   });
 };
