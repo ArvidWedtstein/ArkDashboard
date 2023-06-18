@@ -25,11 +25,11 @@ const Slideshow = ({
   const [index, setIndex] = React.useState(0);
   const timeoutRef = React.useRef(null);
 
-  function resetTimeout() {
+  const resetTimeout = () => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-  }
+  };
   React.useEffect(() => {
     if (!autoPlay || slides.length === 1) return;
     resetTimeout();
@@ -64,7 +64,11 @@ const Slideshow = ({
                     {slide.content}
                   </div>
                 ) : (
-                  <img src={slide.url} className="h-full w-full object-cover" />
+                  <img
+                    src={slide.url}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
                 )}
 
                 {(slide.title || slide.subtitle) && (
@@ -81,7 +85,7 @@ const Slideshow = ({
         ))}
       </div>
       {controls && slides.length > 1 && (
-        <div className="absolute top-0 left-0 flex h-full w-full flex-row items-center justify-between font-black text-white text-opacity-75 bg-">
+        <div className="bg- absolute top-0 left-0 flex h-full w-full flex-row items-center justify-between font-black text-white text-opacity-75">
           <button
             className="p-3"
             onClick={() =>
@@ -90,7 +94,12 @@ const Slideshow = ({
               )
             }
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" fill="currentColor" className="w-8 p-2 rounded-lg hover:scale-125 hover:fill-white transition">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 320 512"
+              fill="currentColor"
+              className="w-8 rounded-lg p-2 transition hover:scale-125 hover:fill-white"
+            >
               <path d="M234.8 36.25c3.438 3.141 5.156 7.438 5.156 11.75c0 3.891-1.406 7.781-4.25 10.86L53.77 256l181.1 197.1c6 6.5 5.625 16.64-.9062 22.61c-6.5 6-16.59 5.594-22.59-.8906l-192-208c-5.688-6.156-5.688-15.56 0-21.72l192-208C218.2 30.66 228.3 30.25 234.8 36.25z" />
             </svg>
           </button>
@@ -102,7 +111,12 @@ const Slideshow = ({
               )
             }
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" fill="currentColor" className="w-8 p-2 rounded-lg hover:scale-125 hover:fill-white transition">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 320 512"
+              fill="currentColor"
+              className="w-8 rounded-lg p-2 transition hover:scale-125 hover:fill-white"
+            >
               <path d="M85.14 475.8c-3.438-3.141-5.156-7.438-5.156-11.75c0-3.891 1.406-7.781 4.25-10.86l181.1-197.1L84.23 58.86c-6-6.5-5.625-16.64 .9062-22.61c6.5-6 16.59-5.594 22.59 .8906l192 208c5.688 6.156 5.688 15.56 0 21.72l-192 208C101.7 481.3 91.64 481.8 85.14 475.8z" />
             </svg>
           </button>
@@ -114,7 +128,11 @@ const Slideshow = ({
             <div
               key={idx}
               title={tabColor}
-              className={`mx-1 inline-block h-[3px] w-[30px] flex-initial cursor-pointer ${tabColor ? tabColor : 'bg-white'} bg-clip-padding p-0 transition-opacity ${index === idx ? "opacity-100" : "opacity-50"}`}
+              className={`mx-1 inline-block h-[3px] w-[30px] flex-initial cursor-pointer ${
+                tabColor ? tabColor : "bg-white"
+              } bg-clip-padding p-0 transition-opacity ${
+                index === idx ? "opacity-100" : "opacity-50"
+              }`}
               onClick={() => {
                 setIndex(idx);
               }}

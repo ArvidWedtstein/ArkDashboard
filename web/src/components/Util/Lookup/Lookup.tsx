@@ -1,19 +1,19 @@
-import { Controller, FieldError, TextField, useController, useFormContext, useRegister } from "@redwoodjs/forms";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useController } from "@redwoodjs/forms";
+import { useEffect, useState } from "react";
 import useComponentVisible from "../../useComponentVisible";
-import { debounce, groupBy } from "src/lib/formatters";
+import { groupBy } from "src/lib/formatters";
 import clsx from "clsx";
 
 interface ILookup {
   defaultValue?: any;
-  children?: any;
+  children?: React.ReactNode[];
   className?: string;
   onSelect?: (value: any) => void;
   search?: boolean;
   group?: string;
   name?: string;
   disabled?: boolean;
-  options?: { label: string, value: any, image?: string }[];
+  options?: { label: string; value: any; image?: string }[];
   onChange?: (value: any) => void;
   placeholder?: string;
   filterFn?: (option: any, searchTerm: string) => boolean;
@@ -38,25 +38,33 @@ const Lookup = ({
     useComponentVisible(false);
   // const [isFilterVisible, setIsFilterVisible] = useState(false)
 
-
   const { field } = !!name && useController({ name: name });
-  const [searchTerm, setSearchTerm] = useState(defaultValue && options.length > 0 ? options?.find((option) => option?.value === defaultValue)?.label : '')
-  const [filteredOptions, setFilteredOptions] = useState(options)
+  const [searchTerm, setSearchTerm] = useState(
+    defaultValue && options.length > 0
+      ? options?.find((option) => option?.value === defaultValue)?.label
+      : ""
+  );
+  const [filteredOptions, setFilteredOptions] = useState(options);
   const [openIndexes, setOpenIndexes] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(defaultValue && options.length > 0 ? options.find(option => option.value === defaultValue) : null)
+  const [selectedOption, setSelectedOption] = useState(
+    defaultValue && options.length > 0
+      ? options.find((option) => option.value === defaultValue)
+      : null
+  );
 
   // Run filter and sort functions when options or searchTerm changes
   useEffect(() => {
-    const filtered = filterFn && searchTerm ? options.filter(option =>
-      filterFn(option, searchTerm)
-    ) : options
-    const sorted = sortFn ? filtered.sort(sortFn) : filtered
-    const grouped = !!group ? groupBy(sorted, group) : sorted
+    const filtered =
+      filterFn && searchTerm
+        ? options.filter((option) => filterFn(option, searchTerm))
+        : options;
+    const sorted = sortFn ? filtered.sort(sortFn) : filtered;
+    const grouped = !!group ? groupBy(sorted, group) : sorted;
     if (Object.keys(grouped).length === 1) {
-      setOpenIndexes([0])
+      setOpenIndexes([0]);
     }
     setFilteredOptions(grouped);
-  }, [options, searchTerm, filterFn, sortFn])
+  }, [options, searchTerm, filterFn, sortFn]);
 
   // Update form values when selectedOption changes
   // useEffect(() => {
@@ -65,38 +73,38 @@ const Lookup = ({
 
   // Update selectedOption when defaultValue changes
   useEffect(() => {
-    const selected = options.find(option => option.value == defaultValue)
-    setSelectedOption(selected || defaultValue)
+    const selected = options.find((option) => option.value == defaultValue);
+    setSelectedOption(selected || defaultValue);
     !!name && field.onChange(defaultValue);
-  }, [defaultValue])
+  }, [defaultValue]);
 
   // Handle input change
-  const handleInputChange = event => {
+  const handleInputChange = (event) => {
     if (!event.target.value) {
-      setSearchTerm('')
+      setSearchTerm("");
     }
-    setSelectedOption(null)
-    setSearchTerm(event.target.value)
-    onChange && onChange(event)
-  }
+    setSelectedOption(null);
+    setSearchTerm(event.target.value);
+    onChange && onChange(event);
+  };
 
   // Handle option select
-  const handleOptionSelect = option => {
-    setSelectedOption(option)
-    setSearchTerm(option.label)
+  const handleOptionSelect = (option) => {
+    setSelectedOption(option);
+    setSearchTerm(option.label);
     // name && clearErrors(name)
     onSelect && onSelect(option);
     !!name && field.onChange(option.value);
-  }
+  };
 
   // Handle option clear
   const handleOptionClear = () => {
-    setSelectedOption(null)
-    setSearchTerm('')
+    setSelectedOption(null);
+    setSearchTerm("");
     // name && clearErrors(name)
     onSelect && onSelect({ label: null, value: null });
     !!name && field.onChange(null);
-  }
+  };
 
   /**
    * @description For toggling the open state of the groups
@@ -129,7 +137,7 @@ const Lookup = ({
             id={name}
             value={searchTerm}
             onChange={handleInputChange}
-            placeholder={placeholder || 'Search...'}
+            placeholder={placeholder || "Search..."}
             className="flex w-full items-center bg-transparent outline-none"
             disabled={disabled}
           />
@@ -144,7 +152,11 @@ const Lookup = ({
               onChange={handleInputChange}
               disabled={disabled}
             />
-            {children ? children : (selectedOption ? selectedOption["label"] : placeholder)}
+            {children
+              ? children
+              : selectedOption
+              ? selectedOption["label"]
+              : placeholder}
           </>
         )}
 
@@ -215,74 +227,72 @@ const Lookup = ({
             ) : null}
             {!group
               ? filteredOptions.map((option, i) => (
-                <li
-                  key={option.value}
-                  onClick={() => handleOptionSelect(option)}
-                  className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  {"image" in option && (
-                    <img
-                      className="mr-2 h-6 w-6 rounded-full"
-                      src={option.image}
-                      alt=""
-                    />
-                  )}
-                  {option.label}
-                </li>
-              )
-              )
-              : Object.keys(filteredOptions).map((key, i) => {
-                return (
-                  <li key={i}>
-                    <div
-                      onClick={() => toggleOpen(i)}
-
-                      className="flex items-center justify-between border-t border-b-2 border-gray-200 px-4 pb-2 pt-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      <span className="mr-2 font-semibold">{key}</span>
-                      <svg
-                        className="h-4 w-4"
-                        aria-hidden="true"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d={
-                            openIndexes.includes(i)
-                              ? "M19 16L12 9l-7 7"
-                              : "M19 9l-7 7-7-7"
-                          }
-                        ></path>
-                      </svg>
-                    </div>
-                    {openIndexes.includes(i) && (
-                      <ul className="">
-                        {filteredOptions[key].map((option, i) => (
-                          <li
-                            key={i}
-                            onClick={() => handleOptionSelect(option)}
-                            className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                          >
-                            {"image" in option && (
-                              <img
-                                className="mr-2 h-6 w-6 rounded-full"
-                                src={option.image}
-                                alt=""
-                              />
-                            )}
-                            {option.label}
-                          </li>
-                        ))}
-                      </ul>
+                  <li
+                    key={option.value}
+                    onClick={() => handleOptionSelect(option)}
+                    className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  >
+                    {"image" in option && (
+                      <img
+                        className="mr-2 h-6 w-6 rounded-full"
+                        src={option.image}
+                        alt=""
+                      />
                     )}
+                    {option.label}
                   </li>
-                );
-              })}
+                ))
+              : Object.keys(filteredOptions).map((key, i) => {
+                  return (
+                    <li key={i}>
+                      <div
+                        onClick={() => toggleOpen(i)}
+                        className="flex items-center justify-between border-t border-b-2 border-gray-200 px-4 pb-2 pt-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white"
+                      >
+                        <span className="mr-2 font-semibold">{key}</span>
+                        <svg
+                          className="h-4 w-4"
+                          aria-hidden="true"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d={
+                              openIndexes.includes(i)
+                                ? "M19 16L12 9l-7 7"
+                                : "M19 9l-7 7-7-7"
+                            }
+                          ></path>
+                        </svg>
+                      </div>
+                      {openIndexes.includes(i) && (
+                        <ul className="">
+                          {filteredOptions[key].map((option, i) => (
+                            <li
+                              key={i}
+                              onClick={() => handleOptionSelect(option)}
+                              className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                            >
+                              {"image" in option && (
+                                <img
+                                  className="mr-2 h-6 w-6 rounded-full"
+                                  src={option.image}
+                                  alt=""
+                                />
+                              )}
+                              {option.label}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  );
+                })}
           </ul>
         </div>
       ) : null}
@@ -290,7 +300,4 @@ const Lookup = ({
   );
 };
 
-
 export default Lookup;
-
-

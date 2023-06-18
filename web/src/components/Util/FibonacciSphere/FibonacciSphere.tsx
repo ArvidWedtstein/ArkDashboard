@@ -36,10 +36,9 @@ const FibonacciSphere = ({
   animate?: boolean;
 }) => {
   const [rotationAngle, setRotationAngle] = useState(0);
-  const [gradientOffset, setGradientOffset] = useState(0);
-  let points = new FibonacciCircle(vertices ? vertices : text.length).points;
-  var rotationAxis = [0, 1, 0];
-  let size = 1.5;
+  const points = new FibonacciCircle(vertices ? vertices : text.length).points;
+  const rotationAxis = [0, 1, 0];
+  const size = 1.5;
   const sin = Math.sin(rotationAngle);
   const cos = Math.cos(rotationAngle);
   const ux = rotationAxis[0];
@@ -101,15 +100,14 @@ const FibonacciSphere = ({
         cancelAnimationFrame(animationFrame);
       };
     }
+  }, [rotationAngle]);
 
-  }, [rotationAngle, gradientOffset]);
-  const gradientId = "textGradient";
   return (
-    <div className={clsx('relative', className)}>
+    <div className={clsx("relative", className)}>
       <svg viewBox="-1 -1 2 2" style={{ width: "100%", height: "100%" }}>
         <defs>
           <linearGradient
-            id={gradientId}
+            id={"textGradient"}
             gradientUnits="userSpaceOnUse"
             x1="-1"
             y1="0"
@@ -122,7 +120,6 @@ const FibonacciSphere = ({
             <stop offset="70%" stopColor="#3497ff" />
             <stop offset="100%" stopColor="#1e0038" />
           </linearGradient>
-
         </defs>
         <g transform={`rotate(${rotationAngle})`}>
           {points.map((point, i) => (
@@ -131,12 +128,12 @@ const FibonacciSphere = ({
               x={point[0]}
               y={point[1]}
               // fill="currentColor"
-              fill={`url(#${gradientId})`} // use the gradient as fill
+              fill={`url(#textGradient)`} // use the gradient as fill
               fontSize={0.05}
               opacity={point[6]}
               scale={point[5]}
               textAnchor="middle"
-              className="transition-all duration-200 ease-in-out animate-fade-in animate-pulse"
+              className="animate-fade-in animate-pulse transition-all duration-200 ease-in-out"
             >
               {text ? text[i] : i}
             </text>

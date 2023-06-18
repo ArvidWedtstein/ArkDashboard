@@ -274,7 +274,7 @@ const MapsList = ({ maps }: FindMaps) => {
             className="hover:ring-pea-500 hover:rounded-3xl hover:no-underline hover:ring-1"
           >
             <ArkCard
-              className="!dark:text-white !text-white"
+              className="!dark:text-white animate-fade-in !text-white"
               title={map.name}
               image={{
                 src: mapImages[map.name.replace(" ", "")],
@@ -284,9 +284,9 @@ const MapsList = ({ maps }: FindMaps) => {
               subtitle={
                 <div className="flex flex-row gap-1">
                   {Object.entries(map).map(([key, value]) => {
-                    if (!value || (value as any).length == 0 || !mapData[key]) {
+                    if (!value || (value as any).length == 0 || !mapData[key])
                       return;
-                    }
+
                     return (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
