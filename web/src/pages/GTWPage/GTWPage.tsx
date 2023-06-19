@@ -29,8 +29,8 @@ const ArkDinos = [
 function sameLetters(str1: string, str2: string) {
   if (str1.length !== str2.length) return false;
 
-  const obj1: any = {}
-  const obj2: any = {}
+  const obj1 = {}
+  const obj2 = {}
 
   for (const letter of str1) {
     obj1[letter] = (obj1[letter] || 1) + 1

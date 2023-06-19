@@ -21,6 +21,7 @@ export const QUERY = gql`
       longitude
       Map {
         name
+        img
       }
       basespot {
         id

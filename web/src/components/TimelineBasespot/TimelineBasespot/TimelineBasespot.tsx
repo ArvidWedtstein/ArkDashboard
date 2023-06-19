@@ -519,7 +519,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
               {timelineBasespot.map && (
                 <Map
                   className="h-full w-full object-cover object-center"
-                  map={timelineBasespot?.map.toString()}
+                  url={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${timelineBasespot.Map.img}`}
                   size={{ width: 500, height: 500 }}
                   pos={[
                     {

@@ -48,10 +48,10 @@ describe('dinoStats', () => {
     })) as DinoStat
     const result = await updateDinoStat({
       id: original.id,
-      input: { type: 'bossrecipe' },
+      input: { type: 'engrams' },
     })
 
-    expect(result.type).toEqual('bossrecipe')
+    expect(result.type).toEqual('engrams')
   })
 
   scenario('deletes a dinoStat', async (scenario: StandardScenario) => {

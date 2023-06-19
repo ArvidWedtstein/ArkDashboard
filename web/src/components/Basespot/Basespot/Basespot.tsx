@@ -70,9 +70,10 @@ const Basespot = ({ basespot }: Props) => {
         <header
           className="flex min-h-[200px] w-full flex-col justify-between rounded-2xl bg-cover bg-center bg-no-repeat p-12 text-white ring-1 ring-black dark:ring-white"
           style={{
-            backgroundImage: `url(${baseUrl ||
+            backgroundImage: `url(${
+              baseUrl ||
               "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s"
-              })`,
+            })`,
           }}
         >
           <div className="flex justify-between pb-5">
@@ -187,7 +188,7 @@ const Basespot = ({ basespot }: Props) => {
           <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
             <Map
               className="h-full w-full object-cover object-center"
-              map={basespot.map.toString()}
+              url={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${basespot.Map.img}`}
               size={{ width: 500, height: 500 }}
               pos={[{ lat: basespot.latitude, lon: basespot.longitude }]}
             />

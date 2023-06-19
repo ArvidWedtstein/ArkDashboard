@@ -40,6 +40,7 @@ export const itemsPage: QueryResolvers["itemsPage"] = ({
             ? { category: { contains: category, mode: "insensitive" } }
             : {},
           type ? { type: { contains: type, mode: "insensitive" } } : {},
+          { visible: true },
         ],
       },
     }),

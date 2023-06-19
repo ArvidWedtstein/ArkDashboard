@@ -126,15 +126,11 @@ const Pagination = ({
             {getPaginationGroup().map((item, index) => (
               <Link
                 key={`page-${index}`}
-                to={routes[route]({ ...params, page: index + 1 })}
-                className={clsx(
-                  {
-                    "rw-pagination-item-active":
-                      parseInt(page) === index + 1,
-                    "rw-pagination-item":
-                      parseInt(page) !== index + 1,
-                  }
-                )}
+                to={routes[route]({ ...params, page: item })}
+                className={clsx({
+                  "rw-pagination-item-active": parseInt(page) === item,
+                  "rw-pagination-item": parseInt(page) !== item,
+                })}
               >
                 {item}
               </Link>

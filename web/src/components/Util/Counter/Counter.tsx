@@ -1,8 +1,19 @@
 import clsx from "clsx";
 import React, { useState, useEffect, useRef } from "react";
 
-const Counter = ({ startNum, endNum, duration = 1000, className = "" }) => {
-  const [count, setCount] = useState(startNum);
+interface CounterProps {
+  startNum: number;
+  endNum: number;
+  duration?: number;
+  className?: string;
+}
+const Counter = ({
+  startNum,
+  endNum,
+  duration = 1000,
+  className = "",
+}: CounterProps) => {
+  const [count, setCount] = useState<number>(startNum);
   const countValueRef = useRef(null);
 
   useEffect(() => {

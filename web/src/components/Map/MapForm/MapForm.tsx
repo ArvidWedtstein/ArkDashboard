@@ -9,22 +9,24 @@ import {
   useForm,
   useFieldArray,
   useFormContext,
-} from '@redwoodjs/forms'
+} from "@redwoodjs/forms";
 
-import type { EditMapById, UpdateMapInput } from 'types/graphql'
-import type { Control, FieldValues, RWGqlError, UseFormRegister } from '@redwoodjs/forms'
-import Map from 'src/components/Util/Map/Map'
+import type { EditMapById, UpdateMapInput } from "types/graphql";
+import type {
+  Control,
+  FieldValues,
+  RWGqlError,
+  UseFormRegister,
+} from "@redwoodjs/forms";
+import Map from "src/components/Util/Map/Map";
 
-
-
-
-type FormMap = NonNullable<EditMapById['map']>
+type FormMap = NonNullable<EditMapById["map"]>;
 
 interface MapFormProps {
-  map?: EditMapById['map']
-  onSave: (data: UpdateMapInput, id?: FormMap['id']) => void
-  error: RWGqlError
-  loading: boolean
+  map?: EditMapById["map"];
+  onSave: (data: UpdateMapInput, id?: FormMap["id"]) => void;
+  error: RWGqlError;
+  loading: boolean;
 }
 
 interface MapInputProps {
@@ -33,16 +35,20 @@ interface MapInputProps {
   register: UseFormRegister<FieldValues>;
 }
 const MapInput = ({ name, control, register }: MapInputProps) => {
-  const { fields: fields, append: append, remove: remove } = useFieldArray({
+  const {
+    fields: fields,
+    append: append,
+    remove: remove,
+  } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name, // the name of the field array in your form data
   });
   return (
-    <details className="rw-form-group group custom">
+    <details className="rw-form-group custom group">
       <summary className="inline-flex items-center capitalize">
-        {name.replaceAll('_', ' ')}
+        {name.replaceAll("_", " ")}
         <svg
-          className="h-4 w-4 ml-1"
+          className="ml-1 h-4 w-4"
           aria-hidden="true"
           fill="none"
           stroke="currentColor"
@@ -62,18 +68,22 @@ const MapInput = ({ name, control, register }: MapInputProps) => {
           ></path>
         </svg>
       </summary>
-      <div className='grid grid-cols-1 md:grid-cols-2'>
-        <div className='flex flex-col'>
+      <div className="grid grid-cols-1 md:grid-cols-2">
+        <div className="flex flex-col">
           {fields.map((cr: any, index) => (
-            <div className="rw-button-group justify-start !mt-0" role="group" key={cr.id} >
+            <div
+              className="rw-button-group !mt-0 justify-start"
+              role="group"
+              key={cr.id}
+            >
               <TextField
                 name={`${name}.${index}.lat`}
                 {...register(`${name}.${index}.lat`)}
                 defaultValue={cr.lat.toString()}
                 className="rw-input !mt-0 max-w-[7rem]"
                 errorClassName="rw-input rw-input-error"
-                title='Latitude'
-                placeholder='Latitude'
+                title="Latitude"
+                placeholder="Latitude"
               />
               <TextField
                 name={`${name}.${index}.lon`}
@@ -81,42 +91,49 @@ const MapInput = ({ name, control, register }: MapInputProps) => {
                 defaultValue={cr.lon.toString()}
                 className="rw-input !mt-0 max-w-[7rem]"
                 errorClassName="rw-input rw-input-error"
-                title='Longitude'
-                placeholder='Longitude'
+                title="Longitude"
+                placeholder="Longitude"
               />
-              <button type="button" className="rw-button rw-button-red rounded-none !ml-0 !rounded-r-md" onClick={() => remove(index)}>
+              <button
+                type="button"
+                className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
+                onClick={() => remove(index)}
+              >
                 Remove
               </button>
             </div>
-          ))
-          }
+          ))}
         </div>
         <div>
           <Map
-            map={"1"}
+            url={
+              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheIsland-Map.webp"
+            }
             pos={fields.map((cr: any) => ({ lat: cr.lat, lon: cr.lon }))}
           />
         </div>
       </div>
       <div className="rw-button-group justify-start">
-        <button type="button" className="rw-button rw-button-gray !ml-0 capitalize" onClick={() => append({ lat: 50, lon: 50 })}>
-          Add {name.replaceAll('_', ' ')}
+        <button
+          type="button"
+          className="rw-button rw-button-gray !ml-0 capitalize"
+          onClick={() => append({ lat: 50, lon: 50 })}
+        >
+          Add {name.replaceAll("_", " ")}
         </button>
       </div>
       <FieldError name={name} className="rw-field-error" />
     </details>
-  )
-}
+  );
+};
 const MapForm = (props: MapFormProps) => {
   // TODO: Fix inputs
   // <DeepPartial<FormMap>>
   const { register, control, setValue } = useForm();
 
-
-
   const onSubmit = (data: FormMap) => {
-    props.onSave(data, props?.map?.id)
-  }
+    props.onSave(data, props?.map?.id);
+  };
   return (
     <div className="rw-form-wrapper">
       <Form<FormMap> onSubmit={onSubmit} error={props.error}>
@@ -144,7 +161,6 @@ const MapForm = (props: MapFormProps) => {
 
         <FieldError name="name" className="rw-field-error" />
 
-
         <Label
           name="img"
           className="rw-label"
@@ -168,11 +184,19 @@ const MapForm = (props: MapFormProps) => {
 
         <MapInput name="wyvern_nests" register={register} control={control} />
 
-        <MapInput name="ice_wyvern_nests" register={register} control={control} />
+        <MapInput
+          name="ice_wyvern_nests"
+          register={register}
+          control={control}
+        />
 
         <MapInput name="gas_veins" register={register} control={control} />
 
-        <MapInput name="deinonychus_nests" register={register} control={control} />
+        <MapInput
+          name="deinonychus_nests"
+          register={register}
+          control={control}
+        />
 
         <MapInput name="charge_nodes" register={register} control={control} />
 
@@ -182,23 +206,24 @@ const MapForm = (props: MapFormProps) => {
 
         <MapInput name="glitches" register={register} control={control} />
 
-        <MapInput name="magmasaur_nests" register={register} control={control} />
+        <MapInput
+          name="magmasaur_nests"
+          register={register}
+          control={control}
+        />
 
         <MapInput name="mutagen_bulbs" register={register} control={control} />
 
         <MapInput name="notes" register={register} control={control} />
 
         <div className="rw-button-group">
-          <Submit
-            disabled={props.loading}
-            className="rw-button rw-button-blue"
-          >
+          <Submit disabled={props.loading} className="rw-button rw-button-blue">
             Save
           </Submit>
         </div>
-      </Form >
-    </div >
-  )
-}
+      </Form>
+    </div>
+  );
+};
 
-export default MapForm
+export default MapForm;

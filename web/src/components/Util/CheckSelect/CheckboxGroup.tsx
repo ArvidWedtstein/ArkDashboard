@@ -1,6 +1,6 @@
 import { useController } from "@redwoodjs/forms";
 import clsx from "clsx";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 interface CheckboxGroupProps {
   name?: string;
@@ -40,7 +40,7 @@ const CheckboxGroup = ({
   const memoizedOptions = useMemo(() => options, [options]);
 
   const handleCheckboxChange = useCallback(
-    (event) => {
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
       let newSelectedOptions;
 
@@ -55,7 +55,6 @@ const CheckboxGroup = ({
       }
 
       setSelectedOptions(newSelectedOptions);
-      // onChange && onChange(value, newSelectedOptions);
       !!name &&
         form &&
         field.onChange(
@@ -71,7 +70,9 @@ const CheckboxGroup = ({
   );
 
   return (
-    <div className={clsx("mt-1 flex h-fit flex-wrap gap-1 md:gap-3", className)}>
+    <div
+      className={clsx("mt-1 flex h-fit flex-wrap gap-1 md:gap-3", className)}
+    >
       {memoizedOptions.map(({ label, image, value: optValue }) => (
         <label key={label} aria-details={`Item: ${optValue}`}>
           <input
@@ -88,7 +89,7 @@ const CheckboxGroup = ({
               "rw-check-tile relative flex h-28 w-28 flex-col items-center justify-center rounded-lg border-2 border-zinc-500 bg-zinc-300 shadow transition-all duration-150 dark:bg-zinc-600",
               {
                 disabled: !name && !label,
-                'cursor-pointer': name && label,
+                "cursor-pointer": name && label,
               }
             )}
           >

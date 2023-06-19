@@ -18,13 +18,6 @@ const HomePage = () => {
   //     subscription.unsubscribe()
   //   }
   // }, [supabase])
-
-  const formatDatetime = (value) => {
-    if (value) {
-      return value.toString().replace(/:\d{2}\.\d{3}\w/, "");
-    }
-  };
-
   return (
     <>
       <MetaTags

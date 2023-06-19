@@ -5,7 +5,7 @@ import {
   RWGqlError,
   SearchField,
 } from "@redwoodjs/forms";
-import { useCallback, useMemo, useReducer, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 
 import {
   formatNumber,
@@ -58,7 +58,6 @@ type ItemRecipe = {
   }[];
 };
 interface MaterialGridProps {
-  // itemRecipes: NonNullable<FindItemsMats["itemRecipesByCraftingStations"]>;
   itemRecipes: NonNullable<FindItemsMats["itemRecipes"]>;
   userRecipesByID?: NonNullable<FindItemsMats["userRecipesByID"]>;
   error?: RWGqlError;
@@ -69,6 +68,9 @@ export const MaterialGrid = ({
   itemRecipes,
   userRecipesByID,
 }: MaterialGridProps) => {
+  // useEffect(() => {
+
+  // }, [])
   const categoriesIcons = {
     Armor: "cloth-shirt",
     Tool: "stone-pick",
@@ -79,7 +81,7 @@ export const MaterialGrid = ({
     Other: "any-craftable-resource",
     Consumable: "any-berry-seed",
   };
-  const { currentUser, isAuthenticated } = useAuth();
+  const { currentUser, isAuthenticated, client } = useAuth();
   // TODO: Fix Types
   const [search, setSearch] = useState<string>("");
 
@@ -192,12 +194,13 @@ export const MaterialGrid = ({
   const items = useMemo(() => {
     const craftedItems: { [key: string]: ItemRecipe[] } = groupBy(
       itemRecipes,
-      "crafted_item_id"
+      // "crafted_item_id"
+      "Item_ItemRecipe_crafted_item_idToItem.id"
     );
     const craftingStations = {};
 
     for (const [key, value] of Object.entries(craftedItems)) {
-      craftingStations[key] = groupBy(value as any, "crafting_station_id");
+      craftingStations[key] = groupBy(value, "crafting_station_id");
     }
     const result = [];
     Object.values(craftingStations).forEach((v) => {
@@ -286,20 +289,50 @@ export const MaterialGrid = ({
     }
   );
 
-  const saveRecipe = (e) => {
+  const saveRecipe = async (e) => {
     e.preventDefault();
-    const input = {
-      created_at: new Date().toISOString(),
-      user_id: currentUser.id,
-      private: true,
-      UserRecipeItemRecipe: {
-        create: item.map((u) => ({
-          amount: u.amount,
-          item_recipe_id: u.id,
-        })),
-      },
-    };
-    createRecipe({ variables: { input } });
+
+    try {
+      // TODO: Fix permission error
+      // const { data, error } = await client.from("UserRecipe").insert([
+      //   {
+      //     user_id: currentUser.id,
+      //     private: true,
+      //     name: "test",
+      //   },
+      // ]);
+
+      //       let { data, error } = await client.from("UserRecipe").select(`
+      //   user_id,
+      //   UserRecipeItemRecipe (
+      //     id
+      //   )
+      // `);
+
+      const input = {
+        created_at: new Date().toISOString(),
+        user_id: currentUser.id,
+        private: true,
+        UserRecipeItemRecipe: {
+          create: item.map((u) => ({
+            amount: u.amount,
+            item_recipe_id: u.id,
+          })),
+        },
+      };
+      createRecipe({ variables: { input } });
+
+      // if (error) {
+      //   console.error(error);
+      // }
+      // if (!error) {
+      //   toast.success("Recipe created");
+      //   console.log(data);
+      // }
+    } catch (error) {
+      return console.error(error);
+    }
+
     // TODO: Fetch the recipe after created and add it to the list
   };
 

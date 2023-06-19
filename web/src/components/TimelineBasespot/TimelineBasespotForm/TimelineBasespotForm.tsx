@@ -262,6 +262,11 @@ const TimelineBasespotForm = (props: TimelineBasespotFormProps) => {
 
         <MapPicker
           map={map || props.timelineBasespot?.map}
+          url={
+            props.timelineBasespot?.Map
+              ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${props.timelineBasespot?.Map?.img}`
+              : null
+          }
           valueProp={
             selectedBasespot !== null
               ? {

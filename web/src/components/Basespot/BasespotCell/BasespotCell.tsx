@@ -22,6 +22,7 @@ export const QUERY = gql`
       updated_at
       Map {
         name
+        img
       }
     }
   }

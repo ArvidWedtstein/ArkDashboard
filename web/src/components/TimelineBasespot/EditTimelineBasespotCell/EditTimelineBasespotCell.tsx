@@ -90,7 +90,6 @@ const UPDATE_TIMELINE_BASESPOT_MUTATION = gql`
       cluster
       latitude
       longitude
-      created_by
       TimelineBasespotRaid {
         id
         raid_start
@@ -126,6 +125,9 @@ const UPDATE_TIMELINE_BASESPOT_MUTATION = gql`
           base_stats
           icon
         }
+      }
+      Map {
+        img
       }
     }
   }
