@@ -39,7 +39,7 @@ const ArkCard = memo<IArkCard>(
   }) => {
     return (
       <div
-        className={clsx("relative w-auto rounded-3xl shadow-md", className, {
+        className={clsx("relative w-auto rounded-lg shadow-md", className, {
           "bg-stone-300 dark:bg-zinc-600": !image,
         })}
         style={{

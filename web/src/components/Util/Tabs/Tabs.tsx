@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface ITabs {
   tabs: {
@@ -7,9 +7,14 @@ interface ITabs {
     content: string | React.ReactNode;
   }[];
   tabClassName?: React.ClassAttributes<HTMLButtonElement> | string;
+  selectedTab?: number;
+  onSelect?: (index: number) => void;
 }
-const Tabs = ({ tabs, tabClassName }: ITabs) => {
-  const [activeTab, setActiveTab] = useState(0);
+const Tabs = ({ tabs, tabClassName, onSelect, selectedTab = 0 }: ITabs) => {
+  useEffect(() => {
+    setActiveTab(selectedTab);
+  }, [selectedTab]);
+  const [activeTab, setActiveTab] = useState(selectedTab);
 
   return (
     <div className="flex flex-col">
@@ -18,7 +23,10 @@ const Tabs = ({ tabs, tabClassName }: ITabs) => {
           {tabs.map(({ title }, index) => (
             <li key={`${index}-tablist-${title}`} className={clsx("flex-grow")}>
               <button
-                onClick={() => setActiveTab(index)}
+                onClick={() => {
+                  onSelect && onSelect(index);
+                  setActiveTab(index);
+                }}
                 className={clsx(
                   "w-full rounded-t-lg border-b-2 py-2 focus:outline-none",
                   tabClassName,
