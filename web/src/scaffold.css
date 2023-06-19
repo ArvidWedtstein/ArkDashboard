@@ -571,3 +571,11 @@ input[type="range"].slider:active::-moz-range-thumb {
     transform: scale(1, 1);
   }
 }
+@keyframes fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}

@@ -21,6 +21,7 @@ export const schema = gql`
     drops
     saddle
     bossrecipe
+    engrams
   }
 
   type Query {

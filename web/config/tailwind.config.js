@@ -23,6 +23,7 @@ module.exports = {
           "popUp 0.5s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
         "fill-up":
           "fillProgess 2s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
+        fill: "fill 2s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
       },
       boxShadow: {
         boxContent:
