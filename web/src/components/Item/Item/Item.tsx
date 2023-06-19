@@ -107,9 +107,9 @@ const Item = ({ item }: Props) => {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <article className="flex flex-row rw-segment gap-3">
-      <div className="grid grid-cols-2 gap-3 text-gray-700 dark:text-white w-full">
-        <section className="col-span-2 grid grid-flow-col gap-2 w-full rounded-lg bg-gray-200 p-4 dark:bg-zinc-600 border border-zinc-500">
+    <article className="rw-segment flex flex-row gap-3">
+      <div className="grid w-full grid-cols-2 gap-3 text-gray-700 dark:text-white">
+        <section className="col-span-2 grid w-full grid-flow-col gap-2 rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600">
           <div className="w-full">
             <img
               className="w-auto max-w-6xl"
@@ -126,9 +126,19 @@ const Item = ({ item }: Props) => {
             <p className="mt-2">{item.description}</p>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 w-fit justify-self-end">
+          <div className="grid w-fit grid-cols-3 gap-2 justify-self-end">
             <StatCard stat={"Max Stack"} value={item.max_stack} chart={false} />
-            <StatCard stat={"Weight"} value={item.weight} iconBackground="relative border border-zinc-500" icon={<img src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp`} />} chart={false} />
+            <StatCard
+              stat={"Weight"}
+              value={item.weight}
+              iconBackground="relative border border-zinc-500"
+              icon={
+                <img
+                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp`}
+                />
+              }
+              chart={false}
+            />
             <StatCard stat={"Type"} value={item.type} chart={false} />
             <StatCard stat={"Category"} value={item.category} chart={false} />
           </div>
@@ -154,7 +164,7 @@ const Item = ({ item }: Props) => {
 
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "gather_efficiency").length >
-          0 && (
+            0 && (
             <section className="rounded-lg bg-gray-200 p-4 dark:bg-zinc-600">
               <p className="my-1 text-lg">Gather Efficiency</p>
               <div className="flex flex-col">
@@ -213,7 +223,7 @@ const Item = ({ item }: Props) => {
 
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "weight_reduction").length >
-          0 && (
+            0 && (
             <section className="rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
               <p className="my-1 text-lg">Weight Reduction</p>
               <div className="flex flex-col">
@@ -275,78 +285,103 @@ const Item = ({ item }: Props) => {
             </section>
           )}
 
-        <section className="h-64 rounded-lg bg-gray-200 dark:bg-zinc-600 border border-zinc-500 col-span-2 flex overflow-hidden gap-4 p-4">
-          {item.ItemRecipe_ItemRecipe_crafted_item_idToItem.map(({ id, Item_ItemRecipe_crafting_station_idToItem, ItemRecipeItem, yields }, i) => (
-            <div className={clsx("flex flex-row items-center h-full transition-all duration-500 ease-in-out", {
-              "flex-grow": activeTab === i,
-              "flex-grow-0": activeTab !== i,
-            })} key={`recipe-${id}`}
-              // style={{
-              //   background: 'url("https://cdn.akamai.steamstatic.com/steam/apps/473850/ss_f13c4990d4609d3fc89174f71858835a9f09aaa3.1920x1080.jpg?t=1508277712")',
-              //   backgroundSize: "auto",
-              //   backgroundRepeat: 'no-repeat',
-              //   backgroundPosition: 'left',
-              // }}
-              onClick={() => setActiveTab(i)}
-            >
-              <div className="relative flex-1 flex flex-row bg-zinc-300 dark:bg-zinc-700 rounded-lg h-full p-4 overflow-hidden space-x-4">
-                <div className="flex justify-center items-center h-full transition-colors animate-fade-in">
-                  <img
-                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafting_station_idToItem.image}`}
-                    className="w-16 h-16"
-                  />
-                </div>
-
-                <div className={clsx("flex flex-row gap-2 items-center px-4 border-l dark:border-zinc-200 border-zinc-600", {
-                  'hidden': activeTab !== i,
-                  'block': activeTab === i,
-                })}>
-                  <div className="flex flex-row gap-2 flex-wrap">
-                    {ItemRecipeItem.map(({ Item, amount }, i) => (
-                      <Link
-                        to={routes.item({ id: Item.id.toString() })}
-                        className="relative rounded-lg border border-zinc-500 p-2 text-center animate-fade-in"
-                        title={Item.name}
-                        key={`recipe-${Item.id}`}
-                      >
-                        <img
-                          className="h-10 w-10"
-                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
-                          alt={Item.name}
-                        />
-                        <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
-                          {amount}
-                        </div>
-                      </Link>
-                    ))}
+        <section className="col-span-2 flex h-64 gap-4 overflow-hidden rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600">
+          {item.ItemRecipe_ItemRecipe_crafted_item_idToItem.map(
+            (
+              {
+                id,
+                Item_ItemRecipe_crafting_station_idToItem,
+                ItemRecipeItem,
+                yields,
+              },
+              i
+            ) => (
+              <div
+                className={clsx(
+                  "flex h-full flex-row items-center transition-all duration-500 ease-in-out",
+                  {
+                    "flex-grow": activeTab === i,
+                    "flex-grow-0": activeTab !== i,
+                  }
+                )}
+                key={`recipe-${id}`}
+                // style={{
+                //   background: 'url("https://cdn.akamai.steamstatic.com/steam/apps/473850/ss_f13c4990d4609d3fc89174f71858835a9f09aaa3.1920x1080.jpg?t=1508277712")',
+                //   backgroundSize: "auto",
+                //   backgroundRepeat: 'no-repeat',
+                //   backgroundPosition: 'left',
+                // }}
+                onClick={() => setActiveTab(i)}
+              >
+                <div className="relative flex h-full flex-1 flex-row space-x-4 overflow-hidden rounded-lg bg-zinc-300 p-4 dark:bg-zinc-700">
+                  <div className="animate-fade-in flex h-full items-center justify-center transition-colors">
+                    <img
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafting_station_idToItem.image}`}
+                      className="h-16 w-16"
+                    />
                   </div>
 
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" className="w-12 h-12">
-                    <path d="M427.8 266.8l-160 176C264.7 446.3 260.3 448 256 448c-3.844 0-7.703-1.375-10.77-4.156c-6.531-5.938-7.016-16.06-1.078-22.59L379.8 272H16c-8.844 0-15.1-7.155-15.1-15.1S7.156 240 16 240h363.8l-135.7-149.3c-5.938-6.531-5.453-16.66 1.078-22.59c6.547-5.906 16.66-5.469 22.61 1.094l160 176C433.4 251.3 433.4 260.7 427.8 266.8z" />
-                  </svg>
-
-                  <Link
-                    to={routes.item({ id: item.id.toString() })}
-                    className="relative rounded-lg border border-zinc-500 p-2 text-center animate-fade-in"
-                    title={item.name}
-                    key={`recipe-${item.id}`}
+                  <div
+                    className={clsx(
+                      "flex flex-row items-center gap-2 border-l border-zinc-600 px-4 dark:border-zinc-200",
+                      {
+                        hidden: activeTab !== i,
+                        block: activeTab === i,
+                      }
+                    )}
                   >
-                    <img
-                      className="h-10 w-10"
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
-                      alt={item.name}
-                    />
-                    <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
-                      {yields}
+                    <div className="flex flex-row flex-wrap gap-2">
+                      {ItemRecipeItem.map(({ Item, amount }, i) => (
+                        <Link
+                          to={routes.item({ id: Item.id.toString() })}
+                          className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
+                          title={Item.name}
+                          key={`recipe-${Item.id}`}
+                        >
+                          <img
+                            className="h-10 w-10"
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
+                            alt={Item.name}
+                          />
+                          <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
+                            {amount}
+                          </div>
+                        </Link>
+                      ))}
                     </div>
-                  </Link>
+
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 448 512"
+                      fill="currentColor"
+                      className="h-12 w-12"
+                    >
+                      <path d="M427.8 266.8l-160 176C264.7 446.3 260.3 448 256 448c-3.844 0-7.703-1.375-10.77-4.156c-6.531-5.938-7.016-16.06-1.078-22.59L379.8 272H16c-8.844 0-15.1-7.155-15.1-15.1S7.156 240 16 240h363.8l-135.7-149.3c-5.938-6.531-5.453-16.66 1.078-22.59c6.547-5.906 16.66-5.469 22.61 1.094l160 176C433.4 251.3 433.4 260.7 427.8 266.8z" />
+                    </svg>
+
+                    <Link
+                      to={routes.item({ id: item.id.toString() })}
+                      className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
+                      title={item.name}
+                      key={`recipe-${item.id}`}
+                    >
+                      <img
+                        className="h-10 w-10"
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
+                        alt={item.name}
+                      />
+                      <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
+                        {yields}
+                      </div>
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          )}
         </section>
 
-        <section className="col-span-1 rounded-lg bg-gray-200 p-4 dark:bg-zinc-600 border border-zinc-500">
+        <section className="col-span-1 rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600">
           <p className="mb-1 text-lg">{item.name} can be crafted in:</p>
           <Tabs
             tabs={item.ItemRecipe_ItemRecipe_crafted_item_idToItem.map(
@@ -365,7 +400,9 @@ const Item = ({ item }: Props) => {
                       src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafting_station_idToItem.image}`}
                       className="w-8"
                     />
-                    <span>{Item_ItemRecipe_crafting_station_idToItem.name}</span>
+                    <span>
+                      {Item_ItemRecipe_crafting_station_idToItem.name}
+                    </span>
                   </p>
                 ),
                 content: (
@@ -467,18 +504,23 @@ const Item = ({ item }: Props) => {
             )}
           </nav>
         </div>
-      </div >
+      </div>
 
       <aside id="separator-sidebar" className="w-72" aria-label="Sidebar">
-        <div className="px-3 py-4 overflow-y-auto rounded-lg bg-gray-200 dark:bg-zinc-600 border-zinc-500 border">
+        <div className="overflow-y-auto rounded-lg border border-zinc-500 bg-gray-200 px-3 py-4 dark:bg-zinc-600">
           <ul className="space-y-2 divide-y divide-gray-300">
             <li className="flex flex-col">
-              <span className="text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 font-medium">Unlocked by</span>
-              <ol className="flex flex-col ml-4">
-                {item.DinoStat.filter(ds => ds.type === 'engrams')
+              <span className="rounded-lg p-2 font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                Unlocked by
+              </span>
+              <ol className="ml-4 flex flex-col">
+                {item.DinoStat.filter((ds) => ds.type === "engrams")
                   .sort((a, b) => a.Dino.name.localeCompare(b.Dino.name))
                   .map((d) => (
-                    <li className="space-x-2 py-0.5" key={`bossdino-${d.Dino.id}`}>
+                    <li
+                      className="space-x-2 py-0.5"
+                      key={`bossdino-${d.Dino.id}`}
+                    >
                       <Link
                         key={`bossdino-${d.Dino.id}`}
                         to={routes.dino({
@@ -486,33 +528,46 @@ const Item = ({ item }: Props) => {
                         })}
                         className="text-sm font-medium text-gray-800 dark:text-stone-300"
                       >
-                        {d.Dino.name.replace("(Alpha)", "").replace("(Beta)", "").replace("(Gamma)", "").trimEnd()}
-
+                        {d.Dino.name
+                          .replace("(Alpha)", "")
+                          .replace("(Beta)", "")
+                          .replace("(Gamma)", "")
+                          .trimEnd()}
                       </Link>
-                      <span className={clsx("text-xs font-medium px-1 py-0.5 rounded dark:bg-zinc-700 border", {
-                        "bg-red-100 dark:text-red-400 text-red-800 border-red-400": d.Dino.name.includes("Alpha"),
-                        "bg-yellow-100 dark:text-yellow-300 text-yellow-800 border-yellow-300": d.Dino.name.includes("Beta"),
-                        "bg-green-100 dark:text-green-400 text-green-800 border-green-400": d.Dino.name.includes("Gamma"),
-                      })}>{d.Dino.name.match(/(Gamma|Beta|Alpha)/g)[0]}</span>
+                      <span
+                        className={clsx(
+                          "rounded border px-1 py-0.5 text-xs font-medium dark:bg-zinc-700",
+                          {
+                            "border-red-400 bg-red-100 text-red-800 dark:text-red-400":
+                              d.Dino.name.includes("Alpha"),
+                            "border-yellow-300 bg-yellow-100 text-yellow-800 dark:text-yellow-300":
+                              d.Dino.name.includes("Beta"),
+                            "border-green-400 bg-green-100 text-green-800 dark:text-green-400":
+                              d.Dino.name.includes("Gamma"),
+                          }
+                        )}
+                      >
+                        {d.Dino.name.match(/(Gamma|Beta|Alpha)/g)[0]}
+                      </span>
                     </li>
                   ))}
               </ol>
             </li>
 
             <li className="flex flex-col">
-              <span className="text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 p-2 font-medium">Found In</span>
-              <div className="flex flex-col ml-4">
+              <span className="rounded-lg p-2 font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                Found In
+              </span>
+              <div className="ml-4 flex flex-col">
                 {item?.LootcrateSetEntryItem.filter(
                   (value, index, self) =>
                     index ===
                     self.findIndex(
                       (t) =>
                         t.LootcrateSetEntry.LootcrateSet.Lootcrate.id ===
-                        value.LootcrateSetEntry.LootcrateSet.Lootcrate
-                          .id &&
+                          value.LootcrateSetEntry.LootcrateSet.Lootcrate.id &&
                         t.LootcrateSetEntry.LootcrateSet.Lootcrate.id ===
-                        value.LootcrateSetEntry.LootcrateSet.Lootcrate
-                          .id
+                          value.LootcrateSetEntry.LootcrateSet.Lootcrate.id
                     )
                 )
                   .slice(0, 5)
@@ -525,8 +580,7 @@ const Item = ({ item }: Props) => {
                       className="rounded border px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:text-white"
                       style={{
                         borderColor:
-                          g.LootcrateSetEntry.LootcrateSet.Lootcrate
-                            .color,
+                          g.LootcrateSetEntry.LootcrateSet.Lootcrate.color,
                       }}
                     >
                       {g.LootcrateSetEntry.LootcrateSet.Lootcrate.name}
@@ -534,46 +588,8 @@ const Item = ({ item }: Props) => {
                   ))}
               </div>
             </li>
-            {/* <li>
-              <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                <svg aria-hidden="true" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                <span className="flex-1 ml-3 whitespace-nowrap">Kanban</span>
-                <span className="inline-flex items-center justify-center px-2 ml-3 text-sm font-medium text-gray-800 bg-gray-200 rounded-full dark:bg-gray-700 dark:text-gray-300">Pro</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                <svg aria-hidden="true" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l2-2a1 1 0 00-1.414-1.414L11 7.586V3a1 1 0 10-2 0v4.586l-.293-.293z"></path><path d="M3 5a2 2 0 012-2h1a1 1 0 010 2H5v7h2l1 2h4l1-2h2V5h-1a1 1 0 110-2h1a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"></path></svg>
-                <span className="flex-1 ml-3 whitespace-nowrap">Inbox</span>
-                <span className="inline-flex items-center justify-center w-3 h-3 p-3 ml-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                <svg aria-hidden="true" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
-                <span className="flex-1 ml-3 whitespace-nowrap">Users</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                <svg aria-hidden="true" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd"></path></svg>
-                <span className="flex-1 ml-3 whitespace-nowrap">Products</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                <svg aria-hidden="true" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"></path></svg>
-                <span className="flex-1 ml-3 whitespace-nowrap">Sign In</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                <svg aria-hidden="true" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5 4a3 3 0 00-3 3v6a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H5zm-1 9v-1h5v2H5a1 1 0 01-1-1zm7 1h4a1 1 0 001-1v-1h-5v2zm0-4h5V8h-5v2zM9 8H4v2h5V8z" clip-rule="evenodd"></path></svg>
-                <span className="flex-1 ml-3 whitespace-nowrap">Sign Up</span>
-              </a>
-            </li> */}
           </ul>
-          <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-700 dark:border-stone-300">
+          <ul className="mt-4 space-y-2 border-t border-gray-700 pt-4 font-medium dark:border-stone-300">
             {/* <li>
               <a href="#" className="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                 <svg aria-hidden="true" className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white dark:text-gray-400" focusable="false" data-prefix="fas" data-icon="gem" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M378.7 32H133.3L256 182.7L378.7 32zM512 192l-107.4-141.3L289.6 192H512zM107.4 50.67L0 192h222.4L107.4 50.67zM244.3 474.9C247.3 478.2 251.6 480 256 480s8.653-1.828 11.67-5.062L510.6 224H1.365L244.3 474.9z"></path></svg>
@@ -601,7 +617,7 @@ const Item = ({ item }: Props) => {
           </ul>
         </div>
       </aside>
-    </article >
+    </article>
   );
 };
 
