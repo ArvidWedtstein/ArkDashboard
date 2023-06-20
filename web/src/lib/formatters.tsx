@@ -255,7 +255,6 @@ export const combineBySummingKeys = (...objects: object[]) => {
 export const getBaseMaterials = (
   baseMaterials: boolean = false,
   items: any[],
-  // crafting_stations?: any[],
   ...objects: Array<any>
 ) => {
   let materials = [];
@@ -323,7 +322,6 @@ export const getBaseMaterials = (
   objects.forEach((item) => {
     findBaseMaterials(item, item.amount, item.yields);
   });
-  // console.log(materials);
   return materials;
 };
 
@@ -544,38 +542,33 @@ export const getDateDiff = (date1: Date, date2: Date) => {
   };
 };
 
+
+/**
+ * Generates a pdf from an array of your choice
+ */
+
 export const generatePDF = () => {
-  // Create an array to store PDF content
-  var content = [];
+  const content = [];
+  const crafts = [
+    {
+      name: "Knitting",
+      amount: 5,
+    }
+  ];
 
-  // Add PDF header
   content.push("%PDF-1.3");
-
-  // Define a function to generate PDF object numbers
-  var generateObjectNumber = function () {
-    var objectNumber = content.length / 2 + 1;
-    return Math.floor(objectNumber);
-  };
-
-  // Add PDF content
-  var objectNumber = generateObjectNumber();
   content.push("1 0 obj");
   content.push("<< /Type /Catalog /Pages 2 0 R >>");
   content.push("endobj");
 
-  objectNumber = generateObjectNumber();
   content.push("2 0 obj");
-  content.push("<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
+  content.push("<< /Type /Pages /Kids [3 0 R 6 0 R 4 0 R] /Count 2 >>");
   content.push("endobj");
 
-  objectNumber = generateObjectNumber();
   content.push("3 0 obj");
-  content.push(
-    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>"
-  );
+  content.push("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>");
   content.push("endobj");
 
-  objectNumber = generateObjectNumber();
   content.push("4 0 obj");
   content.push("<< /Length 66 >>");
   content.push("stream");
@@ -583,59 +576,40 @@ export const generatePDF = () => {
   content.push("/F1 12 Tf");
   content.push("72 720 Td");
 
-  // Define table properties
-  var tableX = 72;
-  var tableY = 700;
-  var cellPadding = 10;
-  var tableWidth = 400;
-  var tableHeight = 300;
+  const tableX = 72;
+  const tableY = 700;
+  const cellPadding = 10;
+  const tableWidth = 400;
+  const tableHeight = 300;
 
-  // Generate table content
-  // const crafts = mergeItemRecipe(viewBaseMaterials, items, ...item);
-  const crafts = [];
+  const generateObjectNumber = () => Math.floor(content.length / 2 + 1);
+
   crafts.forEach((item, i) => {
     for (let col = 0; col < 3; col++) {
-      var cellX = tableX + col * (tableWidth / 3);
-      var cellY = tableY - i * (tableHeight / crafts.length);
+      const cellX = tableX + col * (tableWidth / 3);
+      const cellY = tableY - i * (tableHeight / crafts.length);
 
-      // Line start
+      content.push(`${cellX} ${cellY + 5 - tableHeight / crafts.length} m`);
       content.push(
-        cellX + " " + (cellY + 5 - tableHeight / crafts.length) + " m"
-      );
-
-      // Line end
-      content.push(
-        cellX +
-        tableWidth / crafts.length +
-        " " +
-        (cellY + 5 - tableHeight / crafts.length) +
-        " l"
+        `${cellX + tableWidth / crafts.length} ${cellY + 5 - tableHeight / crafts.length} l`
       );
       content.push("S");
 
-      // Add table cell content
-      var textX = cellX + cellPadding;
-      var textY = cellY - cellPadding;
+      const textX = cellX + cellPadding;
+      const textY = cellY - cellPadding;
       content.push("BT");
 
-      content.push("1 0 0 rg"); // Set font color to red (R: 1, G: 0, B: 0)
+      content.push("1 0 0 rg");
       content.push("/F1 12 Tf");
 
       if (i === 0) {
+        content.push(`${cellX} ${cellY + 30 - tableHeight / crafts.length} m`);
         content.push(
-          cellX + " " + (cellY + 30 - tableHeight / crafts.length) + " m"
-        );
-
-        // Line end
-        content.push(
-          cellX +
-          tableWidth / crafts.length +
-          " " +
-          (cellY + 30 - tableHeight / crafts.length) +
-          " l"
+          `${cellX + tableWidth / crafts.length} ${cellY + 30 - tableHeight / crafts.length} l`
         );
         content.push("S");
-        content.push(textX + " " + (textY + 20) + " Td");
+        content.push(`${textX} ${textY + 20} Td`);
+
         switch (col) {
           case 0:
             content.push(`(Name) Tj`);
@@ -649,17 +623,18 @@ export const generatePDF = () => {
         }
         content.push("ET");
       }
+
       content.push("BT");
-      // content.push("/F1 12 Tf");
-      content.push(textX + " " + textY + " Td");
+      content.push(`${textX} ${textY} Td`);
+
       switch (col) {
         case 0:
           content.push("0 0 0 rg");
-          content.push(`(${item.Item_ItemRec_crafted_item_idToItem.name}) Tj`);
+          content.push(`(${item.name}) Tj`);
           break;
         case 1:
           content.push("0 0 0 rg");
-          content.push(`(${item.amount * item.yields}) Tj`);
+          content.push(`(${item.amount}) Tj`);
           break;
         case 2:
           content.push("0 0 0 rg");
@@ -675,32 +650,82 @@ export const generatePDF = () => {
   content.push("endstream");
   content.push("endobj");
 
-  // Add PDF trailer
-  var xrefOffset = content.join("\n").length;
+  content.push("6 0 obj");
+  content.push("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 7 0 R >>");
+  content.push("endobj");
+
+  content.push("7 0 obj");
+  content.push("<< /Length 66 >>");
+  content.push("stream");
+  content.push("BT");
+  content.push("/F1 12 Tf");
+  content.push("72 720 Td");
+
+
+  crafts.forEach((item, i) => {
+    Object.keys(crafts[0]).forEach((key, col) => {
+      const cellX = tableX + col * (tableWidth / 3);
+      const cellY = tableY - i * (tableHeight / crafts.length);
+
+      content.push(`${cellX} ${cellY + 5 - tableHeight / crafts.length} m`);
+      content.push(
+        `${cellX + tableWidth / crafts.length} ${cellY + 5 - tableHeight / crafts.length} l`
+      );
+      content.push("S");
+
+      const textX = cellX + cellPadding;
+      const textY = cellY - cellPadding;
+      content.push("BT");
+
+      content.push("1 0 0 rg");
+      content.push("/F1 12 Tf");
+
+      if (i === 0) {
+        content.push(`${cellX} ${cellY + 30 - tableHeight / crafts.length} m`);
+        content.push(
+          `${cellX + tableWidth / crafts.length} ${cellY + 30} l`
+        );
+        content.push("S");
+        content.push(`${textX} ${textY + 20} Td`);
+        content.push(`(${key}) Tj`);
+        content.push("ET");
+      }
+
+      content.push("BT");
+      content.push(`${textX} ${textY} Td`);
+
+      content.push("0 0 0 rg");
+      content.push(`(${item[key]}) Tj`);
+
+      content.push("ET");
+    });
+  });
+
+  content.push("ET");
+  content.push("endstream");
+  content.push("endobj");
+
+  const xrefOffset = content.join("\n").length;
+
   content.push("xref");
-  content.push("0 " + (content.length / 2 + 1));
-  content.push("0000000000 65535 f ");
-  content.push("0000000009 00000 n ");
+  content.push(`0 ${content.length / 2 + 1}`);
+  content.push("0000000000 65535 f");
+  content.push("0000000009 00000 n");
   content.push("trailer");
-  content.push("<< /Size " + (content.length / 2 + 1) + " /Root 1 0 R >>");
+  content.push(`<< /Size ${content.length / 2 + 1} /Root 1 0 R >>`);
   content.push("startxref");
   content.push(xrefOffset);
   content.push("%%EOF");
 
-  // Join all PDF content into a string
-  var pdfContent = content.join("\n");
+  const pdfContent = content.join("\n");
+  const dataURI = `data:application/pdf;base64,${btoa(pdfContent)}`;
 
-  // Create a data URI for the PDF
-  var dataURI = "data:application/pdf;base64," + btoa(pdfContent);
-
-  // Open the PDF in a new window
-  var win = window.open();
+  const win = window.open();
   win.document.write(
-    '<iframe src="' +
-    dataURI +
-    '" style="width:100%; height:100%;" frameborder="0"></iframe>'
+    `<iframe src="${dataURI}" style="width:100%; height:100%;" frameborder="0"></iframe>`
   );
 };
+
 
 /**
  * Removes duplicates from an array and returns a new array.
@@ -708,8 +733,8 @@ export const generatePDF = () => {
  * @param {Array} arr - The input array.
  * @return {Array} - The array with duplicates removed.
  */
-export const removeDuplicates = (arr: Array<any>): Array<any> => {
-  return [...new Set(arr)];
+export const removeDuplicates = (array: unknown[]): unknown[] => {
+  return [...new Set(array)];
 };
 
 /**
@@ -719,11 +744,11 @@ export const removeDuplicates = (arr: Array<any>): Array<any> => {
  * @param {string} key - The key to group by.
  * @return {Object} - An object where each key is a unique value of the provided key and the value is an array of elements that have that key value.
  */
-export const groupBy = (xs: Array<any>, key: string) => {
+export const groupBy = <T extends {}>(xs: T[], key: string): { [groupKey: string]: T[] } => {
   const nestedKeys = key.split(".");
 
-  return xs.reduce((acc, obj) => {
-    let groupKey = obj;
+  return xs.reduce((acc: { [groupKey: string]: T[] }, obj: T) => {
+    let groupKey: any = obj; // Use 'any' type for indexing
     for (const nestedKey of nestedKeys) {
       groupKey = groupKey[nestedKey];
     }
@@ -737,20 +762,6 @@ export const groupBy = (xs: Array<any>, key: string) => {
   }, {});
 };
 
-export const groupByObject = (
-  arr: Array<any>,
-  key: string
-): [group_object: any, grouped_items: any[]] => {
-  return arr.reduce((acc, obj) => {
-    const Thekey = JSON.stringify(obj[key]);
-    if (!acc[Thekey]) {
-      acc[Thekey] = [];
-    }
-    acc[Thekey].push(obj);
-    return acc;
-  }, {});
-};
-
 /**
  * @description debounce function for search fields
  * @param func
@@ -759,9 +770,13 @@ export const groupByObject = (
  * @example
  *  const handleSearch = debounce((e) => setSearch(e.target.value))
  */
-export const debounce = (func, wait = 300) => {
-  let timeout;
-  return function (...args) {
+export const debounce = <F extends (...args: any[]) => void>(
+  func: F,
+  wait = 300
+): ((...args: Parameters<F>) => void) => {
+  let timeout: ReturnType<typeof setTimeout>;
+
+  return function (this: any, ...args: Parameters<F>) {
     clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(this, args), wait);
   };

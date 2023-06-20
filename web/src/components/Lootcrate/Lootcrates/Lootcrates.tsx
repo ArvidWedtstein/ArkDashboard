@@ -1,22 +1,17 @@
-import { Link, navigate, parseSearch, routes } from "@redwoodjs/router";
-import { useMutation } from "@redwoodjs/web";
-import { toast } from "@redwoodjs/web/toast";
+import { navigate, parseSearch, routes } from "@redwoodjs/router";
 import { useCallback, useMemo, useState } from "react";
 import ArkCard from "src/components/ArkCard/ArkCard";
 
-import { QUERY } from "src/components/Lootcrate/LootcratesCell";
 import Lookup from "src/components/Util/Lookup/Lookup";
-import Tabs from "src/components/Util/Tabs/Tabs";
 import {
   removeDuplicates,
 } from "src/lib/formatters";
 
 import type {
-  DeleteLootcrateMutationVariables,
   FindLootcrates,
 } from "types/graphql";
 import { useParams } from "@redwoodjs/router";
-import { Form, Label, SearchField, SelectField, Submit } from "@redwoodjs/forms";
+import { Form, Label, SearchField, Submit } from "@redwoodjs/forms";
 
 const LootcratesList = ({ lootcratesByMap: lootcrates }: FindLootcrates) => {
 

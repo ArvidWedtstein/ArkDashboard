@@ -1,6 +1,8 @@
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
+import { useEffect } from "react";
 import { useAuth } from "src/auth";
+import { generatePDF } from "src/lib/formatters";
 const HomePage = () => {
   const { isAuthenticated, currentUser } = useAuth();
   // if (document.addEventListener) {
@@ -18,6 +20,9 @@ const HomePage = () => {
   //     subscription.unsubscribe()
   //   }
   // }, [supabase])
+  useEffect(() => {
+    generatePDF();
+  }, []);
   return (
     <>
       <MetaTags
@@ -61,7 +66,21 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-
+        {/* <iframe src={generateTablePDF({
+          columns: [
+            { label: "Name", key: "name" },
+            { label: "Age", key: "age" },
+            { label: "City", key: "city" },
+          ],
+          data: [
+            { name: "John Doe", age: 30, city: "New York" },
+            { name: "Jane Smith", age: 25, city: "London" },
+            { name: "Bob Johnson", age: 35, city: "Sydney" },
+          ]
+        })} frameBorder="0" style={{
+          width: '100%',
+          height: '100%'
+        }}></iframe> */}
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}

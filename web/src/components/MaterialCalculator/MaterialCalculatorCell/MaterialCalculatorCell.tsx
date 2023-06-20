@@ -77,6 +77,7 @@ export const Success = ({
   itemRecipes,
   userRecipesByID,
 }: CellSuccessProps<FindItemsMats>) => {
+
   return (
     <div className="rw-form-wrapper container-xl mx-auto">
       <MaterialGrid

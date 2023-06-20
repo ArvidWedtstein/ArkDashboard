@@ -1,10 +1,8 @@
 import { FieldError, Form, FormError, Label, RWGqlError, TextField } from '@redwoodjs/forms'
-import { Link, routes } from '@redwoodjs/router'
-import { MetaTags, useQuery } from '@redwoodjs/web'
-import { useCallback, useMemo, useState } from 'react'
+import { MetaTags } from '@redwoodjs/web'
+import { useMemo, useState } from 'react'
 import debounce from 'lodash.debounce';
 import { toast } from '@redwoodjs/web/dist/toast';
-import Chat from 'src/components/Chat/Chat';
 import FibonacciSphere from 'src/components/Util/FibonacciSphere/FibonacciSphere';
 
 const ArkDinos = [

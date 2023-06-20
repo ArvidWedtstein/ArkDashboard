@@ -26,6 +26,7 @@ export const itemRecipes: QueryResolvers["itemRecipes"] = () => {
     // distinct: ["crafted_item_id"],
     select: {
       id: true,
+      crafting_time: true,
       crafting_station_id: true,
       yields: true,
       Item_ItemRecipe_crafted_item_idToItem: {

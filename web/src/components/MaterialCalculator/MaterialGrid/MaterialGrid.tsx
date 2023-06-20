@@ -5,7 +5,7 @@ import {
   RWGqlError,
   SearchField,
 } from "@redwoodjs/forms";
-import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { useCallback, useMemo, useReducer, useState } from "react";
 
 import {
   formatNumber,
@@ -21,7 +21,6 @@ import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useAuth } from "src/auth";
 import { QUERY } from "../MaterialCalculatorCell";
-import UserCard from "src/components/Util/UserCard/UserCard";
 
 const CREATE_USERRECIPE_MUTATION = gql`
   mutation CreateUserRecipe($input: CreateUserRecipeInput!) {
@@ -33,11 +32,10 @@ const CREATE_USERRECIPE_MUTATION = gql`
 type ItemRecipe = {
   __typename: string;
   id: string;
-  crafted_item_id: number;
   crafting_station_id: number;
   crafting_time: number;
   yields: number;
-  Item_ItemRecipe_crafted_item_idToItem: {
+  Item_ItemRecipe_crafted_item_idToItem?: {
     __typename: string;
     id: number;
     name: string;
@@ -45,7 +43,7 @@ type ItemRecipe = {
     category: string;
     type: string;
   };
-  ItemRecipeItem: {
+  ItemRecipeItem?: {
     __typename: string;
     id: string;
     amount: number;
@@ -68,9 +66,6 @@ export const MaterialGrid = ({
   itemRecipes,
   userRecipesByID,
 }: MaterialGridProps) => {
-  // useEffect(() => {
-
-  // }, [])
   const categoriesIcons = {
     Armor: "cloth-shirt",
     Tool: "stone-pick",
@@ -81,11 +76,11 @@ export const MaterialGrid = ({
     Other: "any-craftable-resource",
     Consumable: "any-berry-seed",
   };
-  const { currentUser, isAuthenticated, client } = useAuth();
+  const { currentUser, isAuthenticated } = useAuth();
   // TODO: Fix Types
   const [search, setSearch] = useState<string>("");
 
-  const [selectedCraftingStations, selectCraftingStations] = useState<any>([
+  const [selectedCraftingStations, selectCraftingStations] = useState<number[]>([
     107, 125,
   ]);
 
@@ -106,9 +101,9 @@ export const MaterialGrid = ({
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                  ...item,
-                  amount: item.amount + (action.index || 1) * yields,
-                }
+                ...item,
+                amount: item.amount + (action.index || 1) * yields,
+              }
               : item
           );
         }
@@ -134,9 +129,9 @@ export const MaterialGrid = ({
           const yields = item?.yields || 1;
           return i === action.index
             ? {
-                ...item,
-                amount: parseInt(item.amount) + parseInt(yields),
-              }
+              ...item,
+              amount: parseInt(item.amount) + parseInt(yields),
+            }
             : item;
         });
       }
@@ -145,10 +140,10 @@ export const MaterialGrid = ({
           const yields = item?.yields || 1;
           return i === action.index
             ? {
-                ...item,
-                amount:
-                  item.amount - yields < 1 ? yields : item.amount - yields,
-              }
+              ...item,
+              amount:
+                item.amount - yields < 1 ? yields : item.amount - yields,
+            }
             : item;
         });
       }
@@ -160,9 +155,9 @@ export const MaterialGrid = ({
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                  ...item,
-                  amount: parseInt(item.amount || 0) + yields,
-                }
+                ...item,
+                amount: parseInt(item.amount || 0) + yields,
+              }
               : item
           );
         }
@@ -178,7 +173,7 @@ export const MaterialGrid = ({
         return state.filter((_, i) => i !== action.index);
       }
       case "REMOVE_BY_ID": {
-        return state.filter((itm, i) => itm.id !== action.id);
+        return state.filter((itm) => itm.id !== action.id);
       }
       case "RESET": {
         return [];
@@ -189,53 +184,53 @@ export const MaterialGrid = ({
     }
   };
 
-  let [item, setItem] = useReducer(reducer, []);
+  let [recipes, setRecipes] = useReducer(reducer, []);
 
   const items = useMemo(() => {
-    const craftedItems: { [key: string]: ItemRecipe[] } = groupBy(
+    const recipesGroupedByItemId = groupBy(
       itemRecipes,
-      // "crafted_item_id"
       "Item_ItemRecipe_crafted_item_idToItem.id"
     );
-    const craftingStations = {};
 
-    for (const [key, value] of Object.entries(craftedItems)) {
-      craftingStations[key] = groupBy(value, "crafting_station_id");
+    const craftingStations: { [groupKey: string]: ItemRecipe[][] } = {};
+
+    for (const [key, value] of Object.entries(recipesGroupedByItemId)) {
+      Object.assign(craftingStations, { [key]: groupBy(value, "crafting_station_id") });
     }
-    const result = [];
-    Object.values(craftingStations).forEach((v) => {
-      // If the item is crafted in either chem bench, mortar, refining or industral forge, we need to find the one that is selected
-      if (
-        Object.keys(v).some((f) => [107, 607, 125, 600].includes(Number(f)))
-      ) {
-        const t = Object.entries(v)
-          .filter(([k, _]) => {
-            return selectedCraftingStations.includes(Number(k));
-          })
-          .map(([_, v]) => {
-            return Object.values(v)[0];
-          });
-        t && t[0] && result.push(t[0]);
+
+    const result: ItemRecipe[] = [];
+
+    for (const recipePerCraftingstation of Object.values(craftingStations)) {
+      const craftingStationIds = Object.keys(recipePerCraftingstation);
+      // If the item is crafted in either chem bench, mortar, refining or industrial forge, we need to find the one that is selected
+      if (craftingStationIds.some((id) => [107, 607, 125, 600].includes(Number(id)))) {
+        const itemRecipeFilteredByCraftingStation = craftingStationIds
+          .filter((k) => selectedCraftingStations.includes(parseInt(k)))
+          .map((k) => recipePerCraftingstation[k][0]);
+
+        if (itemRecipeFilteredByCraftingStation.length > 0) {
+          result.push(itemRecipeFilteredByCraftingStation[0]);
+        }
       } else {
-        const craftingStation = Object.values(Object.values(v)[0])[0];
+        const craftingStation: ItemRecipe = recipePerCraftingstation[craftingStationIds[0]][0];
         result.push(craftingStation);
       }
-    });
-    item.forEach((item) => {
-      setItem({ type: "REMOVE_BY_ID", id: item.id });
+    }
+
+    recipes.forEach((recipe) => {
+      setRecipes({ type: "REMOVE_BY_ID", id: recipe.id });
       let itemfound = result.find(
-        (item2) =>
-          parseInt(item2.crafted_item_id) === parseInt(item.crafted_item_id)
+        (i) =>
+          i.Item_ItemRecipe_crafted_item_idToItem.id === parseInt(recipe.Item_ItemRecipe_crafted_item_idToItem.id)
       );
       if (itemfound) {
-        setItem({
+        setRecipes({
           type: "ADD_AMOUNT_BY_NUM",
           item: itemfound,
-          index: item.amount / itemfound.yields,
+          index: recipe.amount / itemfound.yields,
         });
       }
     });
-
     return result;
   }, [selectedCraftingStations]);
 
@@ -253,28 +248,26 @@ export const MaterialGrid = ({
   const onAdd = ({ itemId }) => {
     if (!itemId) return;
     let chosenItem = items.find(
-      (item) => parseInt(item.crafted_item_id) === parseInt(itemId)
+      (item) => item.Item_ItemRecipe_crafted_item_idToItem.id === parseInt(itemId)
     );
 
-    setItem({ type: "ADD", item: chosenItem });
+    if (!chosenItem) return toast.error("Item could not be found")
+    setRecipes({ type: "ADD", item: chosenItem });
   };
 
   const onAddAmount = (index) => {
-    setItem({ type: "ADD_AMOUNT", index });
+    setRecipes({ type: "ADD_AMOUNT", index });
   };
   const onRemoveAmount = (index) => {
-    setItem({ type: "REMOVE_AMOUNT", index });
+    setRecipes({ type: "REMOVE_AMOUNT", index });
   };
-  const onChangeAmount = debounce((index, amount) => {
-    setItem({ type: "CHANGE_AMOUNT", item: index, index: amount });
-  }, 500);
 
   const mergeItemRecipe = useCallback(getBaseMaterials, [
-    item,
+    recipes,
     selectedCraftingStations,
   ]);
 
-  const [createRecipe, { loading, error: recipeError, data }] = useMutation(
+  const [createRecipe, { loading }] = useMutation(
     CREATE_USERRECIPE_MUTATION,
     {
       onCompleted: (data) => {
@@ -314,21 +307,13 @@ export const MaterialGrid = ({
         user_id: currentUser.id,
         private: true,
         UserRecipeItemRecipe: {
-          create: item.map((u) => ({
+          create: recipes.map((u) => ({
             amount: u.amount,
             item_recipe_id: u.id,
           })),
         },
       };
       createRecipe({ variables: { input } });
-
-      // if (error) {
-      //   console.error(error);
-      // }
-      // if (!error) {
-      //   toast.success("Recipe created");
-      //   console.log(data);
-      // }
     } catch (error) {
       return console.error(error);
     }
@@ -358,7 +343,7 @@ export const MaterialGrid = ({
                       (item) => item.id === item_recipe_id
                     );
                     if (itemfound) {
-                      setItem({
+                      setRecipes({
                         type: "ADD_AMOUNT_BY_NUM",
                         item: itemfound,
                         index: amount,
@@ -550,6 +535,7 @@ z"
               type="button"
               onClick={saveRecipe}
               className="rw-button rw-button-green"
+              disabled={loading}
             >
               Save Recipe
               <svg
@@ -565,7 +551,7 @@ z"
 
           <button
             type="button"
-            onClick={() => setItem({ type: "RESET" })}
+            onClick={() => setRecipes({ type: "RESET" })}
             className="rw-button rw-button-red"
             title="Clear all items"
           >
@@ -627,7 +613,7 @@ z"
                   </li>
                 ))}
               {Object.entries(categories).map(
-                ([category, categoryitems]: any) => (
+                ([category, categoryitems]) => (
                   <li key={category}>
                     <details
                       open={Object.values(categories).length === 1}
@@ -638,68 +624,69 @@ z"
                           className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
                           src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[category]}.webp`}
                           alt={``}
+                          loading="lazy"
                         />
                         <span className="ml-2">{category}</span>
                       </summary>
 
                       <ul className="py-2">
                         {Object.values(categories).length === 1 ||
-                        categoryitems.every(({ type }) => {
-                          return !type;
-                        })
-                          ? categoryitems.map((item) => (
-                              <li key={`${category}-${item.type}-${item.id}`}>
-                                <button
-                                  type="button"
-                                  className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                  onClick={() => onAdd({ itemId: item.id })}
-                                >
-                                  <img
-                                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
-                                    alt={item.name}
-                                    className="mr-2 h-5 w-5"
-                                  />
-                                  {item.name}
-                                </button>
-                              </li>
-                            ))
+                          categoryitems.every(({ type }) => !type)
+                          ? categoryitems.map(({ id, type, image, name }) => (
+                            <li key={`${category}-${type}-${id}`}>
+                              <button
+                                type="button"
+                                className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                                onClick={() => onAdd({ itemId: id })}
+                              >
+                                <img
+                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                                  alt={name}
+                                  className="mr-2 h-5 w-5"
+                                  loading="lazy"
+                                />
+                                {name}
+                              </button>
+                            </li>
+                          ))
                           : Object.entries(groupBy(categoryitems, "type")).map(
-                              ([type, typeitems]: any) => (
-                                <li key={`${category}-${type}`}>
-                                  <details className="">
-                                    <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                                      <span className="">{type}</span>
-                                      <span className="text-pea-800 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full text-xs dark:text-stone-300">
-                                        {typeitems.length}
-                                      </span>
-                                    </summary>
+                            ([type, typeitems]) => (
+                              <li key={`${category}-${type}`}>
+                                <details className="">
+                                  <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+                                    <span className="">{type}</span>
+                                    <span className="text-pea-800 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full text-xs dark:text-stone-300">
+                                      {typeitems.length}
+                                    </span>
+                                  </summary>
 
-                                    <ul className="py-2">
-                                      {typeitems.map((item) => (
-                                        <li
-                                          key={`${category}-${type}-${item.id}`}
+                                  <ul className="py-2">
+                                    {typeitems.map((item) => (
+                                      <li
+                                        key={`${category}-${type}-${item.id}`}
+                                      >
+                                        <button
+                                          type="button"
+                                          className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                                          onClick={() =>
+                                            onAdd({ itemId: item.id })
+                                          }
                                         >
-                                          <button
-                                            type="button"
-                                            className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                            onClick={() =>
-                                              onAdd({ itemId: item.id })
-                                            }
-                                          >
-                                            <img
-                                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
-                                              alt={item.name}
-                                              className="mr-2 h-5 w-5"
-                                            />
-                                            {item.name}
-                                          </button>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </details>
-                                </li>
-                              )
-                            )}
+                                          <img
+                                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
+                                            alt={item.name}
+                                            className="mr-2 h-5 w-5"
+                                            loading="lazy"
+                                          />
+                                          {item.name}
+                                        </button>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </details>
+                              </li>
+                            )
+                          )}
                       </ul>
                     </details>
                   </li>
@@ -710,7 +697,7 @@ z"
         </div>
         <div className="w-full">
           <Table
-            rows={mergeItemRecipe(viewBaseMaterials, items, ...item).slice(
+            rows={mergeItemRecipe(viewBaseMaterials, items, ...recipes).slice(
               0,
               1
             )}
@@ -723,18 +710,9 @@ z"
                 checked={viewBaseMaterials}
                 onChange={toggleBaseMaterials}
               />,
-              // <button
-              //   data-testid="turrettowerbtn"
-              //   type="button"
-              //   // onClick={() => generatePDF()}
-              //   title="generate pedo-fil"
-              //   className="rw-button rw-button-gray p-2"
-              // >
-              //   PDF
-              // </button>,
             ]}
             columns={[
-              ...mergeItemRecipe(viewBaseMaterials, items, ...item).map(
+              ...mergeItemRecipe(viewBaseMaterials, items, ...recipes).map(
                 ({ Item_ItemRecipe_crafted_item_idToItem, amount }) => ({
                   field: Item_ItemRecipe_crafted_item_idToItem.id,
                   header: Item_ItemRecipe_crafted_item_idToItem.name,
@@ -748,6 +726,7 @@ z"
                         <img
                           src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafted_item_idToItem.image}`}
                           className="h-6 w-6"
+                          loading="lazy"
                         />
                         <span className="text-sm">{formatNumber(amount)}</span>
                       </div>
@@ -797,7 +776,7 @@ z"
           </div>
 
           <Table
-            rows={item}
+            rows={recipes}
             className="animate-fade-in whitespace-nowrap"
             settings={{
               summary: true,
@@ -812,7 +791,7 @@ z"
                     <button
                       type="button"
                       onClick={() => {
-                        setItem({ type: "REMOVE", index: rowIndex });
+                        setRecipes({ type: "REMOVE", index: rowIndex });
                       }}
                       className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-red-500"
                       title={`Remove ${name}`}
@@ -820,6 +799,7 @@ z"
                       <img
                         className="h-8 w-8"
                         src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                        loading="lazy"
                       />
                     </button>
                   );
@@ -845,18 +825,10 @@ z"
                     </button>
                     <input
                       type="text"
-                      defaultValue={value}
-                      // value={value}
+                      value={value}
                       className="rw-input w-16 p-3 text-center"
                       onChange={(e) => {
-                        onChangeAmount(
-                          rowIndex,
-                          parseInt(e.target.value) > 0 ? e.target.value : 1
-                        );
-                        if (parseInt(e.target.value) < 1) {
-                          e.target.value =
-                            parseInt(e.target.value) > 0 ? e.target.value : "1";
-                        }
+                        setRecipes({ type: "CHANGE_AMOUNT", item: rowIndex, index: parseInt(e.target.value) > 0 ? e.target.value : 1 });
                       }}
                     />
                     <button
@@ -927,12 +899,6 @@ z"
               },
             ]}
           />
-          {/* {loading && (
-          <div className="m-16 flex items-center justify-center text-white">
-            <p className="mr-4">LOADING</p>
-            <div className="dot-revolution"></div>
-          </div>
-        )} */}
         </div>
       </Form>
     </div>
