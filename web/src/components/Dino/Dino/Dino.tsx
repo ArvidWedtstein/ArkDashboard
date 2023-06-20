@@ -1675,7 +1675,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                             </p>
                           )}
                           {hitboxes.length > 0 && (
-                            <span className="rounded bg-gray-100 px-2.5 py-0.5 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                            <span className="rw-badge rw-badge-gray">
                               {hitboxes.map(({ name, multiplier }) => (
                                 <span
                                   key={`hitbox-${name}`}

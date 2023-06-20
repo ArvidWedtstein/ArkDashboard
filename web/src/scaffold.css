@@ -349,6 +349,32 @@ input[type="range"].slider:active::-moz-range-thumb {
 .rw-field-error {
   @apply mt-1 block text-xs font-semibold uppercase text-red-600;
 }
+/*
+// ----------------------------
+// Badge Variants
+// ----------------------------
+*/
+.rw-badge {
+  @apply rounded px-2.5 py-0.5 text-xs font-medium;
+}
+
+/* Red Badge */
+.rw-badge.rw-badge-red {
+  @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300;
+}
+.rw-badge.rw-badge-red-outline {
+  @apply border border-red-400 bg-red-100 text-red-800 dark:bg-zinc-700 dark:text-red-400;
+}
+
+/* Gray Badge */
+.rw-badge.rw-badge-gray {
+  @apply bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300;
+}
+.rw-badge.rw-badge-gray-outline {
+  @apply border border-gray-500 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400;
+}
+
+/* Table */
 .rw-table-wrapper-responsive {
   @apply overflow-x-auto;
 }

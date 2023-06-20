@@ -412,8 +412,9 @@ const TimelineBasespotsList = ({
                       >
                         <h3 className="inline-flex w-full items-center justify-between text-xl">
                           <span>{tribe_name}</span>
-                          <div className="inline-flex space-x-1 self-end">
+                          <div className="inline-flex space-x-1 self-end items-center">
                             <span className="">S{season || "?"}</span>
+                            {cluster && <span className="rw-badge rw-badge-red-outline">{cluster}</span>}
                             <img
                               src={servers[server]}
                               className="w-8 rounded-full"
