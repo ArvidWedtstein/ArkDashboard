@@ -299,51 +299,6 @@ const ItemForm = (props: ItemFormProps) => {
             <div>
               <div>
                 <Label
-                  name="crafting_time"
-                  className="rw-label"
-                  errorClassName="rw-label rw-label-error"
-                >
-                  Crafting time
-                </Label>
-
-                <TextField
-                  name="crafting_time"
-                  defaultValue={
-                    props.item?.crafting_time
-                      ? props.item.crafting_time.toString()
-                      : 0
-                  }
-                  className="rw-input"
-                  errorClassName="rw-input rw-input-error"
-                  validation={{ valueAsNumber: true }}
-                />
-                <p className="rw-helper-text">Time needed to craft this item</p>
-
-                <FieldError name="crafting_time" className="rw-field-error" />
-              </div>
-              {/* <div>
-                <Label
-                  name="yields"
-                  className="rw-label"
-                  errorClassName="rw-label rw-label-error"
-                >
-                  Yields
-                </Label>
-
-                <TextField
-                  name="yields"
-                  defaultValue={props.item?.yields ? props.item.yields : 1}
-                  className="rw-input"
-                  errorClassName="rw-input rw-input-error"
-                  validation={{ valueAsNumber: true }}
-                />
-                <p className="rw-helper-text">The amount of this item gained when crafting</p>
-                <FieldError name="yields" className="rw-field-error" />
-              </div> */}
-            </div>
-            <div>
-              <div>
-                <Label
                   name="recipe"
                   className="rw-label"
                   errorClassName="rw-label rw-label-error"

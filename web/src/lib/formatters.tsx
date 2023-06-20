@@ -663,7 +663,7 @@ export const generatePDF = () => {
           break;
         case 2:
           content.push("0 0 0 rg");
-          content.push(`(${item.crafting_time}s) Tj`);
+          content.push(`(${item.amount}s) Tj`);
           break;
       }
 
