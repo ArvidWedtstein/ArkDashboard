@@ -59,7 +59,6 @@ export const jsonTruncate = (obj: unknown, maxlength: number = 150) => {
   return truncate(JSON.stringify(obj, null, 2), maxlength);
 };
 
-
 // const dateFormatter = new Intl.DateTimeFormat("en-GB", {
 // 	day: "2-digit",
 // 	month: "2-digit",
@@ -167,8 +166,9 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-    }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+  }`;
 };
 
 /**
@@ -315,7 +315,7 @@ export const getBaseMaterials = (
         } else if (newRecipe) {
           findBaseMaterials(newRecipe, recipeAmount * amount, newRecipe.yields);
         }
-      } catch (error) { }
+      } catch (error) {}
     }
   };
 
@@ -542,32 +542,58 @@ export const getDateDiff = (date1: Date, date2: Date) => {
   };
 };
 
-
 /**
  * Generates a pdf from an array of your choice
  */
 
 export const generatePDF = () => {
+  const pages = 2;
+  const tableSize = {
+    width: 612,
+    height: 792,
+  };
   const content = [];
   const crafts = [
     {
       name: "Knitting",
       amount: 5,
-    }
+    },
+    {
+      name: "Smithing Table",
+      amount: 1,
+    },
+    {
+      name: "Fabricator",
+      amount: 5,
+    },
+    {
+      name: "Chem Bench",
+      amount: 5,
+    },
   ];
 
-  content.push("%PDF-1.3");
+  // https://blog.idrsolutions.com/make-your-own-pdf-file-part-5-path-objects/
+  content.push("%PDF-2.0");
   content.push("1 0 obj");
-  content.push("<< /Type /Catalog /Pages 2 0 R >>");
+  content.push(`<< /Type /Catalog /Pages 2 0 R >>`);
   content.push("endobj");
 
   content.push("2 0 obj");
-  content.push("<< /Type /Pages /Kids [3 0 R 6 0 R 4 0 R] /Count 2 >>");
+  content.push(
+    `<< /Type /Pages /Kids [${Array.from(Array(pages))
+      .map((g, i) => `${(i + 1) * 3} 0 R`)
+      .join(" ")}] /Count ${pages} >>`
+  );
+
   content.push("endobj");
 
   content.push("3 0 obj");
-  content.push("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>");
-  content.push("endobj");
+  content.push(
+    `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${tableSize.width} ${tableSize.height}] /Contents 4 0 R >>`
+  );
+  const tableX = 72;
+  const tableY = 700;
+  const cellPadding = 3;
 
   content.push("4 0 obj");
   content.push("<< /Length 66 >>");
@@ -576,23 +602,13 @@ export const generatePDF = () => {
   content.push("/F1 12 Tf");
   content.push("72 720 Td");
 
-  const tableX = 72;
-  const tableY = 700;
-  const cellPadding = 10;
-  const tableWidth = 400;
-  const tableHeight = 300;
+  Object.keys(crafts[0]).forEach((key, col) => {
+    crafts.forEach((item, i) => {
+      const cellX = tableX + col * (tableSize.width / 3);
+      const cellY = tableY - i * 20;
 
-  const generateObjectNumber = () => Math.floor(content.length / 2 + 1);
-
-  crafts.forEach((item, i) => {
-    for (let col = 0; col < 3; col++) {
-      const cellX = tableX + col * (tableWidth / 3);
-      const cellY = tableY - i * (tableHeight / crafts.length);
-
-      content.push(`${cellX} ${cellY + 5 - tableHeight / crafts.length} m`);
-      content.push(
-        `${cellX + tableWidth / crafts.length} ${cellY + 5 - tableHeight / crafts.length} l`
-      );
+      content.push(`${cellX} ${cellY - 8} m`);
+      content.push(`${cellX + tableSize.width / crafts.length} ${cellY - 8} l`);
       content.push("S");
 
       const textX = cellX + cellPadding;
@@ -602,56 +618,96 @@ export const generatePDF = () => {
       content.push("1 0 0 rg");
       content.push("/F1 12 Tf");
 
-      if (i === 0) {
-        content.push(`${cellX} ${cellY + 30 - tableHeight / crafts.length} m`);
-        content.push(
-          `${cellX + tableWidth / crafts.length} ${cellY + 30 - tableHeight / crafts.length} l`
-        );
-        content.push("S");
-        content.push(`${textX} ${textY + 20} Td`);
-
-        switch (col) {
-          case 0:
-            content.push(`(Name) Tj`);
-            break;
-          case 1:
-            content.push(`(Amount) Tj`);
-            break;
-          case 2:
-            content.push(`(Time) Tj`);
-            break;
-        }
-        content.push("ET");
-      }
+      // if (i === 0) {
+      //   content.push(`${cellX} ${cellY - 20} m`);
+      //   content.push(`${cellX + tableSize.width} ${cellY} l`);
+      //   content.push("S");
+      //   content.push(`${textX} ${textY} Td`);
+      //   content.push(`(${key}) Tj`);
+      //   content.push("ET");
+      // }
 
       content.push("BT");
       content.push(`${textX} ${textY} Td`);
 
-      switch (col) {
-        case 0:
-          content.push("0 0 0 rg");
-          content.push(`(${item.name}) Tj`);
-          break;
-        case 1:
-          content.push("0 0 0 rg");
-          content.push(`(${item.amount}) Tj`);
-          break;
-        case 2:
-          content.push("0 0 0 rg");
-          content.push(`(${item.amount}s) Tj`);
-          break;
-      }
+      content.push("0 0 0 rg");
+      content.push(`(${item[key]}) Tj`);
 
       content.push("ET");
-    }
+    });
   });
+  // crafts.forEach((item, i) => {
+  //   for (let col = 0; col < 3; col++) {
+  //     const cellX = tableX + col * (tableSize.width / 3);
+  //     const cellY = tableY - i * (tableSize.height / crafts.length);
+
+  //     content.push(
+  //       `${cellX} ${cellY + 5 - tableSize.height / crafts.length} m`
+  //     );
+  //     content.push(
+  //       `${cellX + tableSize.width / crafts.length} ${
+  //         cellY + 5 - tableSize.height / crafts.length
+  //       } l`
+  //     );
+  //     content.push("S");
+
+  //     const textX = cellX + cellPadding;
+  //     const textY = cellY - cellPadding;
+  //     content.push("BT");
+
+  //     content.push("1 0 0 rg");
+  //     content.push("/F1 12 Tf");
+
+  //     if (i === 0) {
+  //       content.push(`${cellX} ${cellY + 30} m`);
+  //       content.push(`${cellX + tableSize.width} ${cellY + 30} l`);
+  //       content.push("S");
+  //       content.push(`${textX} ${cellY + 20} Td`);
+
+  //       switch (col) {
+  //         case 0:
+  //           content.push(`(Name) Tj`);
+  //           break;
+  //         case 1:
+  //           content.push(`(Amount) Tj`);
+  //           break;
+  //         case 2:
+  //           content.push(`(Time) Tj`);
+  //           break;
+  //       }
+  //       content.push("ET");
+  //     }
+
+  //     content.push("BT");
+  //     content.push(`${textX} ${textY} Td`);
+
+  //     switch (col) {
+  //       case 0:
+  //         content.push("0 0 0 rg");
+  //         content.push(`(${item.name}) Tj`);
+  //         break;
+  //       case 1:
+  //         content.push("0 0 0 rg");
+  //         content.push(`(${item.amount}) Tj`);
+  //         break;
+  //       case 2:
+  //         content.push("0 0 0 rg");
+  //         content.push(`(${item.amount}s) Tj`);
+  //         break;
+  //     }
+
+  //     content.push("ET");
+  //   }
+  // });
 
   content.push("ET");
   content.push("endstream");
   content.push("endobj");
 
   content.push("6 0 obj");
-  content.push("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 7 0 R >>");
+  content.push(
+    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 7 0 R >>"
+  );
   content.push("endobj");
 
   content.push("7 0 obj");
@@ -661,16 +717,13 @@ export const generatePDF = () => {
   content.push("/F1 12 Tf");
   content.push("72 720 Td");
 
+  Object.keys(crafts[0]).forEach((key, col) => {
+    crafts.forEach((item, i) => {
+      const cellX = tableX + col * (tableSize.width / 3);
+      const cellY = tableY - i * 20;
 
-  crafts.forEach((item, i) => {
-    Object.keys(crafts[0]).forEach((key, col) => {
-      const cellX = tableX + col * (tableWidth / 3);
-      const cellY = tableY - i * (tableHeight / crafts.length);
-
-      content.push(`${cellX} ${cellY + 5 - tableHeight / crafts.length} m`);
-      content.push(
-        `${cellX + tableWidth / crafts.length} ${cellY + 5 - tableHeight / crafts.length} l`
-      );
+      content.push(`${cellX} ${cellY - 8} m`);
+      content.push(`${cellX + tableSize.width / crafts.length} ${cellY - 8} l`);
       content.push("S");
 
       const textX = cellX + cellPadding;
@@ -680,16 +733,14 @@ export const generatePDF = () => {
       content.push("1 0 0 rg");
       content.push("/F1 12 Tf");
 
-      if (i === 0) {
-        content.push(`${cellX} ${cellY + 30 - tableHeight / crafts.length} m`);
-        content.push(
-          `${cellX + tableWidth / crafts.length} ${cellY + 30} l`
-        );
-        content.push("S");
-        content.push(`${textX} ${textY + 20} Td`);
-        content.push(`(${key}) Tj`);
-        content.push("ET");
-      }
+      // if (i === 0) {
+      //   content.push(`${cellX} ${cellY - 20} m`);
+      //   content.push(`${cellX + tableSize.width} ${cellY} l`);
+      //   content.push("S");
+      //   content.push(`${textX} ${textY} Td`);
+      //   content.push(`(${key}) Tj`);
+      //   content.push("ET");
+      // }
 
       content.push("BT");
       content.push(`${textX} ${textY} Td`);
@@ -720,12 +771,13 @@ export const generatePDF = () => {
   const pdfContent = content.join("\n");
   const dataURI = `data:application/pdf;base64,${btoa(pdfContent)}`;
 
-  const win = window.open();
-  win.document.write(
-    `<iframe src="${dataURI}" style="width:100%; height:100%;" frameborder="0"></iframe>`
-  );
-};
+  // const win = window.open();
+  // win.document.write(
+  //   `<iframe src="${dataURI}" style="width:100%; height:100%;" frameborder="0"></iframe>`
+  // );
 
+  return dataURI;
+};
 
 /**
  * Removes duplicates from an array and returns a new array.
@@ -744,7 +796,10 @@ export const removeDuplicates = (array: unknown[]): unknown[] => {
  * @param {string} key - The key to group by.
  * @return {Object} - An object where each key is a unique value of the provided key and the value is an array of elements that have that key value.
  */
-export const groupBy = <T extends {}>(xs: T[], key: string): { [groupKey: string]: T[] } => {
+export const groupBy = <T extends {}>(
+  xs: T[],
+  key: string
+): { [groupKey: string]: T[] } => {
   const nestedKeys = key.split(".");
 
   return xs.reduce((acc: { [groupKey: string]: T[] }, obj: T) => {

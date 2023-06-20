@@ -20,9 +20,9 @@ const HomePage = () => {
   //     subscription.unsubscribe()
   //   }
   // }, [supabase])
-  useEffect(() => {
-    generatePDF();
-  }, []);
+  // useEffect(() => {
+  //   generatePDF();
+  // }, []);
   return (
     <>
       <MetaTags
@@ -66,21 +66,14 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        {/* <iframe src={generateTablePDF({
-          columns: [
-            { label: "Name", key: "name" },
-            { label: "Age", key: "age" },
-            { label: "City", key: "city" },
-          ],
-          data: [
-            { name: "John Doe", age: 30, city: "New York" },
-            { name: "Jane Smith", age: 25, city: "London" },
-            { name: "Bob Johnson", age: 35, city: "Sydney" },
-          ]
-        })} frameBorder="0" style={{
-          width: '100%',
-          height: '100%'
-        }}></iframe> */}
+        <iframe
+          src={generatePDF()}
+          frameBorder="0"
+          style={{
+            width: "100%",
+            height: "100vh",
+          }}
+        ></iframe>
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
