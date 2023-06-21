@@ -623,7 +623,7 @@ input[type="range"].slider:active::-moz-range-thumb {
   /* width: 400px; */
   position: absolute;
   top: 5px;
-  width: 100%;
+  /* width: 100%; */
 }
 .clash-card__level {
   text-transform: uppercase;
