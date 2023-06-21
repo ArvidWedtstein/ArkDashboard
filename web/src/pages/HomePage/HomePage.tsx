@@ -1,8 +1,6 @@
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
-import { useEffect } from "react";
 import { useAuth } from "src/auth";
-import { generatePDF } from "src/lib/formatters";
 const HomePage = () => {
   const { isAuthenticated, currentUser } = useAuth();
   // if (document.addEventListener) {
@@ -20,9 +18,6 @@ const HomePage = () => {
   //     subscription.unsubscribe()
   //   }
   // }, [supabase])
-  // useEffect(() => {
-  //   generatePDF();
-  // }, []);
   return (
     <>
       <MetaTags
@@ -66,14 +61,6 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-        <iframe
-          src={generatePDF()}
-          frameBorder="0"
-          style={{
-            width: "100%",
-            height: "100vh",
-          }}
-        ></iframe>
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}

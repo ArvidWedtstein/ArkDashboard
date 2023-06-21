@@ -12,6 +12,7 @@ export const QUERY = gql`
       dinos {
         id
         name
+        description
         type
         image
       }

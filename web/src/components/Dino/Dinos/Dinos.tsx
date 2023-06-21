@@ -41,7 +41,6 @@ const DinosList = ({ dinosPage }: FindDinos) => {
     water:
       "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/9/9d/Water.png",
   };
-  // const debouncedChangeHandler = useMemo(() => debounce(handlechange, 500), []);
   return (
     <section className="">
       <Form className="flex w-auto" onSubmit={onSubmit}>
@@ -87,43 +86,73 @@ const DinosList = ({ dinosPage }: FindDinos) => {
         </nav>
       </Form>
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-5 3xl:grid-cols-8">
-        {dinosPage.dinos.map(({ id, name, type, image }) => (
-          <Link
-            key={`dino-${id}`}
-            to={routes.dino({ id: id })}
-            className="flex h-auto w-auto max-w-xs flex-row items-start justify-start rounded-md bg-zinc-600 p-4 text-center text-white"
-          >
-            <div className="flex h-full w-full flex-col items-start justify-between justify-items-stretch">
-              <div className="relative mb-3 h-32 w-32 rounded-full border bg-gradient-to-br from-zinc-700 to-zinc-700">
-                <img
-                  className="h-auto max-h-full"
-                  loading="lazy"
-                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
-                  onError={(e) => {
-                    e.currentTarget.src = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/any-hat.png`;
-                    // e.currentTarget.parentElement.hidden = true;
-                    e.currentTarget.parentElement.parentElement.classList.replace(
-                      "justify-between",
-                      "justify-end"
-                    );
-                  }}
-                />
+      {/* <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-5 3xl:grid-cols-8"> */}
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-6">
+        {dinosPage.dinos.map(({ id, name, type, image, description }) => (
+          // <Link
+          //   key={`dino-${id}`}
+          //   to={routes.dino({ id: id })}
+          //   className="flex h-auto w-auto max-w-xs flex-row items-start justify-start rounded-md bg-zinc-600 p-4 text-center text-white ring ring-zinc-500 border border-zinc-700"
+          // >
+          //   <div className="flex h-full w-full flex-col items-start justify-between justify-items-stretch">
+          //     <div className="relative mb-3 h-32 w-32 rounded-full border bg-gradient-to-br from-zinc-700 to-zinc-700">
+          //       <img
+          //         className="h-auto max-h-full"
+          //         loading="lazy"
+          //         src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
+          //         onError={(e) => {
+          //           e.currentTarget.src = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/any-hat.png`;
+          //           // e.currentTarget.parentElement.hidden = true;
+          //           e.currentTarget.parentElement.parentElement.classList.replace(
+          //             "justify-between",
+          //             "justify-end"
+          //           );
+          //         }}
+          //       />
+          //     </div>
+          //     <p className="tracking-wide subpixel-antialiased">{name}</p>
+          //   </div>
+          //   <div className="flex flex-col gap-1">
+          //     {type &&
+          //       type.map((type) => (
+          //         <img
+          //           key={`dino-${id}-${type}`}
+          //           className="w-8"
+          //           title={type}
+          //           src={types[type]}
+          //         />
+          //       ))}
+          //   </div>
+          // </Link>
+          <div className="clash-card barbarian flex-1 h-full flex flex-col">
+            <div className="clash-card__image clash-card__image--barbarian">
+              <img src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`} className="max-h-64 w-auto" alt="barbarian" />
+            </div>
+            <div className="clash-card__level clash-card__level--barbarian">Level 4</div>
+            <div className="clash-card__unit-name">{name}</div>
+            <div className="clash-card__unit-description truncate flex-grow">
+              {description}
+            </div>
+
+            <div className="clash-card__unit-stats clash-card__unit-stats--barbarian clearfix">
+              <div className="one-third">
+                <div className="stat">20<sup>S</sup></div>
+                <div className="stat-value">Training</div>
               </div>
-              <p className="tracking-wide subpixel-antialiased">{name}</p>
+
+              <div className="one-third">
+                <div className="stat">16</div>
+                <div className="stat-value">Speed</div>
+              </div>
+
+              <div className="one-third no-border">
+                <div className="stat">150</div>
+                <div className="stat-value">Cost</div>
+              </div>
+
             </div>
-            <div className="flex flex-col gap-1">
-              {type &&
-                type.map((type) => (
-                  <img
-                    key={`dino-${id}-${type}`}
-                    className="w-8"
-                    title={type}
-                    src={types[type]}
-                  />
-                ))}
-            </div>
-          </Link>
+
+          </div>
         ))}
       </div>
     </section>
