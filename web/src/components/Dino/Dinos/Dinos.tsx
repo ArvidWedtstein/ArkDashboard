@@ -87,7 +87,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
       </Form>
 
       {/* <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-5 3xl:grid-cols-8"> */}
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-6">
+      <div className="3xl:grid-cols-6 grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4">
         {dinosPage.dinos.map(({ id, name, type, image, description }) => (
           // <Link
           //   key={`dino-${id}`}
@@ -124,34 +124,44 @@ const DinosList = ({ dinosPage }: FindDinos) => {
           //       ))}
           //   </div>
           // </Link>
-          <div className="clash-card barbarian flex-1 h-full flex flex-col">
+          <div className="clash-card barbarian flex h-full flex-1 flex-col">
             <div className="clash-card__image clash-card__image--barbarian">
-              <img src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`} className="max-h-64 w-auto" alt="barbarian" />
+              <img
+                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
+                className="max-h-64 w-auto"
+                alt="barbarian"
+              />
             </div>
-            <div className="clash-card__level clash-card__level--barbarian">Level 4</div>
+            <div className="clash-card__level clash-card__level--barbarian">
+              Level 4
+            </div>
             <div className="clash-card__unit-name">{name}</div>
-            <div className="clash-card__unit-description truncate flex-grow">
+            <div className="clash-card__unit-description flex-grow truncate">
               {description}
             </div>
 
             <div className="clash-card__unit-stats clash-card__unit-stats--barbarian clearfix">
               <div className="one-third">
-                <div className="stat">20<sup>S</sup></div>
+                <div className="stat">
+                  20<sup>S</sup>
+                </div>
                 <div className="stat-value">Training</div>
               </div>
-
+              {/*
+            person-arrow-down-to-line - ground type
+            dove - flyer type
+            frog - amphibious type
+          */}
               <div className="one-third">
-                <div className="stat">16</div>
-                <div className="stat-value">Speed</div>
+                <div className="stat">{type}</div>
+                <div className="stat-value">Type</div>
               </div>
 
               <div className="one-third no-border">
                 <div className="stat">150</div>
                 <div className="stat-value">Cost</div>
               </div>
-
             </div>
-
           </div>
         ))}
       </div>
