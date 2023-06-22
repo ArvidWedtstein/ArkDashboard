@@ -1,11 +1,11 @@
-import type { EditUserRecipeById, UpdateUserRecipeInput } from 'types/graphql'
+import type { EditUserRecipeById, UpdateUserRecipeInput } from "types/graphql";
 
-import { navigate, routes } from '@redwoodjs/router'
-import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
+import { navigate, routes } from "@redwoodjs/router";
+import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
 
-import UserRecipeForm from 'src/components/UserRecipe/UserRecipeForm'
+import UserRecipeForm from "src/components/UserRecipe/UserRecipeForm";
 
 export const QUERY = gql`
   query EditUserRecipeById($id: String!) {
@@ -16,9 +16,30 @@ export const QUERY = gql`
       user_id
       private
       name
+      UserRecipeItemRecipe {
+        id
+        amount
+        ItemRecipe {
+          id
+          Item_ItemRecipe_crafted_item_idToItem {
+            id
+            name
+            image
+          }
+          ItemRecipeItem {
+            id
+            amount
+            Item {
+              id
+              name
+              image
+            }
+          }
+        }
+      }
     }
   }
-`
+`;
 const UPDATE_USER_RECIPE_MUTATION = gql`
   mutation UpdateUserRecipeMutation(
     $id: String!
@@ -33,13 +54,13 @@ const UPDATE_USER_RECIPE_MUTATION = gql`
       name
     }
   }
-`
+`;
 
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => <div>Loading...</div>;
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>
-)
+);
 
 export const Success = ({
   userRecipe,
@@ -47,28 +68,28 @@ export const Success = ({
   const [updateUserRecipe, { loading, error }] = useMutation(
     UPDATE_USER_RECIPE_MUTATION,
     {
-      onCompleted: () => {
-        toast.success('UserRecipe updated')
-        navigate(routes.userRecipes())
+      onCompleted: ({ updateUserRecipe }) => {
+        toast.success("UserRecipe updated");
+        navigate(routes.userRecipe({ id: updateUserRecipe.id }));
       },
       onError: (error) => {
-        toast.error(error.message)
+        toast.error(error.message);
       },
     }
-  )
+  );
 
   const onSave = (
     input: UpdateUserRecipeInput,
-    id: EditUserRecipeById['userRecipe']['id']
+    id: EditUserRecipeById["userRecipe"]["id"]
   ) => {
-    updateUserRecipe({ variables: { id, input } })
-  }
+    updateUserRecipe({ variables: { id, input } });
+  };
 
   return (
     <div className="rw-segment">
       <header className="rw-segment-header">
         <h2 className="rw-heading rw-heading-secondary">
-          Edit UserRecipe {userRecipe?.id}
+          Edit UserRecipe "{userRecipe?.name}"
         </h2>
       </header>
       <div className="rw-segment-main">
@@ -80,5 +101,5 @@ export const Success = ({
         />
       </div>
     </div>
-  )
-}
+  );
+};

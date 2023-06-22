@@ -275,10 +275,10 @@ a {
   @apply scale-x-100;
 }
 .rw-input-underline::before {
-  @apply pointer-events-none absolute left-0 top-0 right-0 bottom-0 rounded-lg transition-colors duration-200 ease-in-out content-['\00a0'];
+  @apply pointer-events-none absolute left-0 top-0 right-0 bottom-0 border-b transition-colors duration-200 ease-in-out content-['\00a0'];
 }
 .rw-input-underline::after {
-  @apply border-pea-500 pointer-events-none absolute top-0 left-0 bottom-0 right-0 block h-full w-full scale-x-0 transform rounded-lg border-b-2 transition-transform duration-200 ease-out content-[''];
+  @apply border-pea-500 pointer-events-none absolute top-0 left-0 bottom-0 right-0 z-10 block h-full w-full scale-x-0 transform border-b-2 transition-transform duration-200 ease-out content-[''];
 }
 
 /* Select */
