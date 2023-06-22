@@ -1154,22 +1154,22 @@ const DinoForm = (props: DinoFormProps) => {
           <div>
             <div>
               <Label
-                name="disable_tame"
+                name="tamable"
                 className="rw-label"
                 errorClassName="rw-label rw-label-error"
               >
-                Disable tame
+                Tamable
               </Label>
 
               <CheckboxField
-                name="disable_tame"
-                defaultChecked={props.dino?.disable_tame}
+                name="tamable"
+                defaultChecked={props.dino?.tamable}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
               />
               <p className="rw-helper-text">If this dino is tamable</p>
 
-              <FieldError name="disable_tame" className="rw-field-error" />
+              <FieldError name="tamable" className="rw-field-error" />
             </div>
             <div>
               <Label

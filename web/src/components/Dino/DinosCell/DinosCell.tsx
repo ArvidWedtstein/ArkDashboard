@@ -14,6 +14,8 @@ export const QUERY = gql`
         name
         description
         type
+        tamable
+        temperament
         image
       }
       count

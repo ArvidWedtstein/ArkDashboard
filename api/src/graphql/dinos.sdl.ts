@@ -46,6 +46,12 @@ export const schema = gql`
     gestation_time: Float
     mating_cooldown_min: BigInt
     mating_cooldown_max: BigInt
+    temperament: String
+    diet: String
+    released: DateTime
+    tamable: Boolean
+    breedable: Boolean
+    bp: String
     DinoStat: [DinoStat]!
     TimelineBasespotDino: [TimelineBasespotDino]!
   }
@@ -107,6 +113,12 @@ export const schema = gql`
     gestation_time: Float
     mating_cooldown_min: BigInt
     mating_cooldown_max: BigInt
+    temperament: String
+    diet: String
+    released: DateTime
+    tamable: Boolean
+    breedable: Boolean
+    bp: String
   }
 
   input UpdateDinoInput {
@@ -155,6 +167,12 @@ export const schema = gql`
     gestation_time: Float
     mating_cooldown_min: BigInt
     mating_cooldown_max: BigInt
+    temperament: String
+    diet: String
+    released: DateTime
+    tamable: Boolean
+    breedable: Boolean
+    bp: String
   }
 
   type Mutation {

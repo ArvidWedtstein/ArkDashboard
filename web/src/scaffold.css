@@ -609,14 +609,15 @@ input[type="range"].slider:active::-moz-range-thumb {
   background: white;
   /* width: 300px; */
   display: inline-block;
-  border-radius: 0.25rem;
   position: relative;
   text-align: center;
-  box-shadow: -1px 15px 30px -12px black;
+  /* box-shadow: -1px 15px 30px -12px black; */
   z-index: 9999;
 }
 .clash-card__image--barbarian {
   background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/barbarian-bg.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
   position: relative;
 }
 .clash-card__image--barbarian img {
@@ -630,11 +631,11 @@ input[type="range"].slider:active::-moz-range-thumb {
   font-size: 12px;
   font-weight: 700;
   margin-bottom: 3px;
-  @apply text-pea-700;
+  @apply text-neutral-600;
 }
 
 .clash-card__unit-stats--barbarian .one-third {
-  border-right: 1px solid #000;
+  border-right: 1px solid #fff;
 }
 .clash-card__image--barbarian.clash-card__image {
   position: relative;
@@ -661,13 +662,14 @@ input[type="range"].slider:active::-moz-range-thumb {
   font-weight: 700;
   border-bottom-left-radius: 0.25rem;
   border-bottom-right-radius: 0.25rem;
-  @apply bg-pea-500;
+  @apply bg-neutral-600;
   /* background: #bd7c2f; */
 }
 .clash-card__unit-stats .one-third {
   width: 33%;
   float: left;
   padding: 20px 15px;
+  @apply h-full;
 }
 .clash-card__unit-stats sup {
   position: absolute;

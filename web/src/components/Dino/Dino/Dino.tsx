@@ -1386,7 +1386,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           </section>
         )}
 
-      {!dino.disable_tame && (
+      {dino.tamable && (
         <section className="col-span-2 border-t border-gray-700 pt-3 dark:border-white">
           <h3 className="text-xl font-medium leading-tight">Taming</h3>
           <p>{dino?.taming_notice}</p>

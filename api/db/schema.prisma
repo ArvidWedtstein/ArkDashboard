@@ -165,6 +165,12 @@ model Dino {
   gestation_time                 Float?                 @default(0)
   mating_cooldown_min            BigInt?                @default(0)
   mating_cooldown_max            BigInt?                @default(0)
+  temperament                    String?                @default("Passive")
+  diet                           String?
+  released                       DateTime?              @db.Date
+  tamable                        Boolean?               @default(true)
+  breedable                      Boolean?               @default(true)
+  bp                             String?
   DinoStat                       DinoStat[]
   TimelineBasespotDino           TimelineBasespotDino[]
 }
