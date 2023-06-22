@@ -630,15 +630,9 @@ input[type="range"].slider:active::-moz-range-thumb {
   font-size: 12px;
   font-weight: 700;
   margin-bottom: 3px;
+  @apply text-pea-700;
 }
 
-.clash-card__level--barbarian {
-  color: #bd7c2f;
-}
-
-.clash-card__unit-stats--barbarian {
-  background: #bd7c2f;
-}
 .clash-card__unit-stats--barbarian .one-third {
   border-right: 1px solid #000;
 }
@@ -667,6 +661,8 @@ input[type="range"].slider:active::-moz-range-thumb {
   font-weight: 700;
   border-bottom-left-radius: 0.25rem;
   border-bottom-right-radius: 0.25rem;
+  @apply bg-pea-500;
+  /* background: #bd7c2f; */
 }
 .clash-card__unit-stats .one-third {
   width: 33%;
