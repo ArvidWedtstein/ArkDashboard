@@ -24425,10 +24425,11 @@
 <!--
 
 	const dinoarr = []
+dinoarray = []
 document.querySelectorAll("tr").forEach((d) => {
 	let dino = {
 	name: d.querySelector("a").title || "",
-releasedsteam: d.querySelector("img[data-image-name='Steam.svg']").title || "",
+releasedsteam: d.querySelector("img[data-image-name='Steam.svg']")?.title || "",
 temperament: d.childNodes[7].innerHTML || "",
 diet: d.childNodes[5].innerHTML || "",
 tamable: d.childNodes[9].innerHTML || "",
@@ -24436,6 +24437,6 @@ ridable: d.childNodes[11].innerHTML || "",
 breedable: d.childNodes[13].innerHTML || "",
 saddle: d.childNodes[15].innerHTML || ""
 }
-dinoarr.push(dino)
+dinoarray.push(dino)
 })
  -->
