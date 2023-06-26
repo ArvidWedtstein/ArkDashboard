@@ -82,25 +82,19 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
   };
   const { register, control } = useForm({
     defaultValues: {
-      UserRecipeItemRecipe: props.userRecipe?.UserRecipeItemRecipe || [],
+      "UserRecipeItemRecipe.update":
+        props.userRecipe?.UserRecipeItemRecipe || [],
     },
   });
 
-  const {
-    fields,
-    append,
-    remove,
-  } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
-    name: "UserRecipeItemRecipe", // the name of the field array in your form data
+    name: "UserRecipeItemRecipe.update", // the name of the field array in your form data
   });
 
-  const [recipes, setRecipes] = useState(props.userRecipe?.UserRecipeItemRecipe || []);
-  const handleAddItemRecipe = (itemRecipeId) => {
-    console.log(itemRecipeId)
-    // setRecipes([...recipes, itemRecipeId]);
-  };
-
+  const [recipes, setRecipes] = useState<any>(
+    props.userRecipe?.UserRecipeItemRecipe || []
+  );
 
   const categoriesIcons = {
     Armor: "cloth-shirt",
@@ -187,18 +181,41 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
         <FieldError name="private" className="rw-field-error" />
 
         <div className="flex flex-row gap-3">
-          <ItemList options={Object.entries(groupBy(
-            (props.itemRecipes || [])
-              .map((f) => f.Item_ItemRecipe_crafted_item_idToItem),
-            "category"
-          )).map(([k, v]) => ({
-            label: k,
-            value: Object.entries(groupBy(v, "type")).map(([k2, v2]) => ({ label: k2, value: v2.map((itm) => ({ ...itm, label: itm.name, icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`, value: [] })), })),
-            icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
-          }))} onSelect={(e) => {
-            console.log(e)
-            setRecipes([...recipes, e])
-          }} />
+          <ItemList
+            options={Object.entries(
+              groupBy(
+                (props.itemRecipes || []).map(
+                  (f) => f.Item_ItemRecipe_crafted_item_idToItem
+                ),
+                "category"
+              )
+            ).map(([k, v]) => ({
+              label: k,
+              value: Object.entries(groupBy(v, "type")).map(([k2, v2]) => ({
+                label: k2,
+                value: v2.map((itm) => ({
+                  ...itm,
+                  label: itm.name,
+                  icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                  value: [],
+                })),
+              })),
+              icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
+            }))}
+            onSelect={(e) => {
+              console.log(e);
+              let recipe = props.itemRecipes.find(
+                (f) => f.Item_ItemRecipe_crafted_item_idToItem.id == e.id
+              );
+              setRecipes([...recipes, recipe?.id]);
+              append({
+                update: recipes.map((u) => ({
+                  amount: u.amount,
+                  item_recipe_id: u.id,
+                })),
+              });
+            }}
+          />
 
           <pre className="text-black dark:text-white">
             {JSON.stringify(props.userRecipe, null, 2)}
@@ -226,8 +243,6 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
             )}
           </div>
         </div>
-
-
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">
