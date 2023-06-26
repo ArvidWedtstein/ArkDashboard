@@ -5,20 +5,23 @@ import { debounce } from "src/lib/formatters";
 interface ItemListProps {
   options: { label: string; value?: any[], icon?: string | ReactNode }[];
   onSearch?: (search: string) => void;
+  onSelect?: (item: any) => void;
 }
 
 const ItemList = ({
   options,
-  onSearch
+  onSearch,
+  onSelect,
 }: ItemListProps) => {
   const [search, setSearch] = useState<string>("");
-  const renderItem = (item: { label: string, icon?: string | ReactNode }) => (
+  const renderItem = (item: { label: string, icon?: string | ReactNode }, recipeID) => (
     <li
-      key={`${JSON.stringify(item)}`}
+      key={`${JSON.stringify(item)}-${Math.random()}`}
     >
       <button
         type="button"
         className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700 space-x-1"
+        onClick={() => onSelect(item)}
       >
         {item.icon && typeof item.icon == "string" ? (<img
           className="h-6 w-6 "
@@ -33,7 +36,7 @@ const ItemList = ({
   )
 
   const renderList = (item) => (
-    <li key={`${JSON.stringify(item)}`}>
+    <li key={`${JSON.stringify(item)}-${Math.random()}`}>
       {item?.value && item?.value.filter((f) => f.label.toLowerCase().includes(search.toLowerCase())).length > 0 && item?.value?.length > 1 ? (
         <details className="[&>summary:after]:open:rotate-90" open={item?.value.filter((f) => f.label.toLowerCase().includes(search.toLowerCase())).length == 1}>
           <summary className="flex select-none items-center rounded-lg p-2 text-gray-900 after:absolute after:right-0 after:transform after:px-2 after:transition-transform after:duration-150 after:ease-in-out after:content-['>'] hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700 space-x-1">
@@ -53,7 +56,7 @@ const ItemList = ({
           <ul className="py-2">
             {item?.value.map((itm) => renderList(itm))}
           </ul>
-        </details>) : item.label.toLowerCase().includes(search.toLowerCase()) && renderItem(item)}
+        </details>) : item.label.toLowerCase().includes(search.toLowerCase()) && renderItem(item, item.id)}
     </li>
   )
 

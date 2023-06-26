@@ -101,17 +101,7 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
     // setRecipes([...recipes, itemRecipeId]);
   };
 
-  const [search, setSearch] = useState<string>("");
-  const categories = useMemo(() => {
-    return groupBy(
-      (props.itemRecipes || [])
-        .map((f) => f.Item_ItemRecipe_crafted_item_idToItem)
-        .filter((item) =>
-          item.name.toLowerCase().includes(search.toLowerCase())
-        ),
-      "category"
-    );
-  }, []);
+
   const categoriesIcons = {
     Armor: "cloth-shirt",
     Tool: "stone-pick",
@@ -205,134 +195,11 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
             label: k,
             value: Object.entries(groupBy(v, "type")).map(([k2, v2]) => ({ label: k2, value: v2.map((itm) => ({ ...itm, label: itm.name, icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`, value: [] })), })),
             icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
-          }))} />
-          {/* <Form className="relative max-h-screen w-fit max-w-[14rem] overflow-y-auto rounded-lg border border-gray-200 bg-zinc-300 px-3 py-4 text-gray-900 will-change-scroll dark:border-zinc-700 dark:bg-zinc-600 dark:text-white">
-            <ul className="relative space-y-2 font-medium">
-              <li>
-                <Label
-                  name="search"
-                  className="sr-only mb-2 text-sm text-gray-900 dark:text-white"
-                >
-                  Search
-                </Label>
-                <div className="relative">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                    <svg
-                      aria-hidden="true"
-                      className="h-5 w-5 text-gray-500 dark:text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      ></path>
-                    </svg>
-                  </div>
-                  <SearchField
-                    className="rw-input w-full pl-10 dark:bg-zinc-700 dark:focus:bg-zinc-700"
-                    name="search"
-                    defaultValue={search}
-                    placeholder="Search..."
-                    inputMode="search"
-                    onChange={debounce((e) => {
-                      setSearch(e.target.value);
-                    }, 300)}
-                  />
-                </div>
-              </li>
-              {!props.itemRecipes ||
-                (props.itemRecipes.length < 1 && (
-                  <li className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                    No items found
-                  </li>
-                ))}
-              {Object.entries(categories).map(
-                ([category, categoryitems]) => (
-                  <li key={category}>
-                    <details
-                      open={Object.values(categories).length === 1}
-                      className="[&>summary:after]:open:rotate-90"
-                    >
-                      <summary className="flex select-none items-center rounded-lg p-2 text-gray-900 after:absolute after:right-0 after:transform after:px-2 after:transition-transform after:duration-150 after:ease-in-out after:content-['>'] hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                        <img
-                          className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
-                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[category]}.webp`}
-                          alt={``}
-                          loading="lazy"
-                        />
-                        <span className="ml-2">{category}</span>
-                      </summary>
+          }))} onSelect={(e) => {
+            console.log(e)
+            setRecipes([...recipes, e])
+          }} />
 
-                      <ul className="py-2">
-                        {Object.values(categoryitems).length === 1 ||
-                          categoryitems.every(({ type }) => !type)
-                          ? categoryitems.map(({ id, type, image, name }) => (
-                            <li key={`${category}-${type}-${id}`}>
-                              <button
-                                type="button"
-                                className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                onClick={() => handleAddItemRecipe(id)}
-                              >
-                                <img
-                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                                  alt={name}
-                                  className="mr-2 h-5 w-5"
-                                  loading="lazy"
-                                />
-                                {name}
-                              </button>
-                            </li>
-                          ))
-                          : Object.entries(groupBy(categoryitems, "type")).map(
-                            ([type, typeitems]) => (
-                              <li key={`${category}-${type}-${Math.random()}`}>
-                                <details className="">
-                                  <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                                    <span className="">{type}</span>
-                                    <span className="text-pea-800 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full text-xs dark:text-stone-300">
-                                      {typeitems.length}
-                                    </span>
-                                  </summary>
-
-                                  <ul className="py-2">
-                                    {typeitems.map((item) => (
-                                      <li
-                                        key={`${category}-${type}-${item.id}`}
-                                      >
-                                        <button
-                                          type="button"
-                                          className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                          onClick={() =>
-                                            handleAddItemRecipe(item.id)
-                                          }
-                                        >
-                                          <img
-                                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
-                                            alt={item.name}
-                                            className="mr-2 h-5 w-5"
-                                            loading="lazy"
-                                          />
-                                          {item.name}
-                                        </button>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </details>
-                              </li>
-                            )
-                          )}
-                      </ul>
-                    </details>
-                  </li>
-                )
-              )}
-            </ul>
-          </Form> */}
           <pre className="text-black dark:text-white">
             {JSON.stringify(props.userRecipe, null, 2)}
           </pre>
