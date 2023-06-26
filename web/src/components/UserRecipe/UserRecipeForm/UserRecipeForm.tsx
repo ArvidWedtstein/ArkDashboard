@@ -174,10 +174,16 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
         <CheckboxField
           name="private"
           defaultChecked={props.userRecipe?.private}
-          className="rw-input"
+          className="rw-input peer/draft"
           errorClassName="rw-input rw-input-error"
         />
 
+        <div className="hidden text-white peer-checked/draft:block">
+          Drafts are only visible to you and administrators.
+        </div>
+        <div className="block text-white peer-checked/draft:hidden">
+          Your post will be publicly visible to everyone
+        </div>
         <FieldError name="private" className="rw-field-error" />
 
         <div className="flex flex-row gap-3">

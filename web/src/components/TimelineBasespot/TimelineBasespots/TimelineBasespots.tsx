@@ -18,46 +18,6 @@ import type {
 const TimelineBasespotsList = ({
   timelineBasespots,
 }: FindTimelineBasespots) => {
-  // const [grid, setGrid] = useState([]);
-  // const [radio, changeRadio] = useState("server");
-  // useEffect(() => {
-  //   if (grid.length < 9) {
-  //     for (let i = 0; i < 9; i++) {
-  //       const date = new Date(new Date().setDate(1));
-  //       date.setMonth(date.getMonth() - i);
-  //       const monthName = date.toLocaleString("default", {
-  //         month: "short",
-  //         year: "numeric",
-  //       });
-
-  //       grid.push({
-  //         label: monthName,
-  //         date,
-  //       });
-  //     }
-  //     setGrid((prev) => prev.reverse());
-  //   }
-  // }, []);
-
-  // const groupedEvents = useMemo(() => {
-  //   return timelineBasespots.reduce((acc, x) => {
-  //     let keyValue = new Date(x.start_date).toLocaleString("default", {
-  //       month: "short",
-  //       year: "numeric",
-  //     });
-
-  //     acc[keyValue] = acc[keyValue] ? [...acc[keyValue], x] : [x];
-  //     return acc;
-  //   }, {});
-  // }, [timelineBasespots]);
-
-  // const setRadio = useCallback(
-  //   (e) => {
-  //     changeRadio(e);
-  //   },
-  //   [radio]
-  // );
-
   const mapImages = {
     2: [
       "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
@@ -160,7 +120,7 @@ const TimelineBasespotsList = ({
       .then((data) => {
         setImages(data.data);
       });
-    return () => { };
+    return () => {};
   }, [timelineBasespots]);
 
   const setActive = useCallback(
@@ -181,102 +141,6 @@ const TimelineBasespotsList = ({
     [isActive, setIsActive]
   );
 
-  // const getEventCellStyle = (day, server) => {
-  //   const colors = [
-  //     "#FFB6C1",
-  //     "#FFC0CB",
-  //     "#FF69B4",
-  //     "#FF1493",
-  //     "#DB7093",
-  //     "#C71585",
-  //     "#E6E6FA",
-  //     "#D8BFD8",
-  //     "#DDA0DD",
-  //     "#DA70D6",
-  //     "#EE82EE",
-  //     "#FF00FF",
-  //     "#BA55D3",
-  //     "#9370DB",
-  //     "#663399",
-  //   ];
-  // const event = timelineBasespots.find((event) => {
-  //   const startDate = new Date(event.start_date);
-  //   const endDate = new Date(event.end_date);
-
-  //   return (
-  //     new Date(startDate).toLocaleString("default", {
-  //       year: "numeric",
-  //       month: "numeric",
-  //     }) <=
-  //       new Date(day).toLocaleString("default", {
-  //         year: "numeric",
-  //         month: "numeric",
-  //       }) &&
-  //     new Date(day).toLocaleString("default", {
-  //       year: "numeric",
-  //       month: "numeric",
-  //     }) <=
-  //       new Date(endDate).toLocaleString("default", {
-  //         year: "numeric",
-  //         month: "numeric",
-  //       }) &&
-  //     event[radio] === server
-  //   );
-  // });
-
-  //   if (event && event != null) {
-  //     const { id, start_date, end_date } = event;
-  //     const startDay = new Date(start_date).getMonth();
-  //     const endDay = new Date(end_date).getMonth();
-  //     const daysSpan = endDay - startDay + 1;
-  //     const mineStart = startDay === day.getMonth();
-  //     const mineEnd = endDay === day.getMonth();
-
-  //     const style = {
-  //       background: colors[id % colors.length],
-  //       borderLeft:
-  //         mineStart && timelineBasespots.indexOf(event) === isActive
-  //           ? "1px solid #fff"
-  //           : mineEnd && !mineStart
-  //           ? `3px solid ${colors[id % colors.length]}`
-  //           : 0,
-  //       borderRight:
-  //         mineEnd && timelineBasespots.indexOf(event) === isActive
-  //           ? "1px solid #fff"
-  //           : mineStart && !mineEnd
-  //           ? `3px solid ${colors[id % colors.length]}`
-  //           : 0,
-  //       borderTop:
-  //         (mineEnd || mineStart) &&
-  //         timelineBasespots.indexOf(event) === isActive
-  //           ? "1px solid #fff"
-  //           : 0,
-  //       borderBottom:
-  //         (mineEnd || mineStart) &&
-  //         timelineBasespots.indexOf(event) === isActive
-  //           ? "1px solid #fff"
-  //           : 0,
-
-  //       borderTopLeftRadius: mineStart ? "0.25rem" : 0,
-  //       borderBottomLeftRadius: mineStart ? "0.25rem" : 0,
-  //       borderTopRightRadius: mineEnd ? "0.25rem" : 0,
-  //       borderBottomRightRadius: mineEnd ? "0.25rem" : 0,
-  //       marginTop: "3px",
-  //       gridColumnStart: mineStart ? "auto" : "span 1",
-  //       gridColumnEnd: mineEnd ? "auto" : `span ${daysSpan}`,
-  //     };
-
-  //     return {
-  //       style,
-  //       onClick: (e) => {
-  //         setIsActive(timelineBasespots.indexOf(event));
-  //         // navigate(routes.timelineBasespot({ id: id.toString() }));
-  //       },
-  //     };
-  //   }
-
-  //   return null;
-  // };
   return (
     <div>
       <section className="relative m-auto flex h-full w-full scroll-smooth px-10">
@@ -319,16 +183,18 @@ const TimelineBasespotsList = ({
                       }
                     )}
                     // src={arrRandNoRep(mapImages[timelineBasespot.map])}
-                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${arrRandNoRep(
-                      images?.filter(
-                        (img) =>
-                          img.path_tokens[0] ===
-                          timelineBasespot.id.toString()
-                      )
-                    )?.name
-                      }`}
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${
+                      arrRandNoRep(
+                        images?.filter(
+                          (img) =>
+                            img.path_tokens[0] ===
+                            timelineBasespot.id.toString()
+                        )
+                      )?.name
+                    }`}
                   />
-                  {(new Date(timelineBasespot.start_date) < new Date() || !timelineBasespot.end_date) && (
+                  {(new Date(timelineBasespot.start_date) < new Date() ||
+                    !timelineBasespot.end_date) && (
                     <Link
                       to={routes.timelineBasespot({
                         id: timelineBasespot.id.toString(),
@@ -412,9 +278,13 @@ const TimelineBasespotsList = ({
                       >
                         <h3 className="inline-flex w-full items-center justify-between text-xl">
                           <span>{tribe_name}</span>
-                          <div className="inline-flex space-x-1 self-end items-center">
+                          <div className="inline-flex items-center space-x-1 self-end">
                             <span className="">S{season || "?"}</span>
-                            {cluster && <span className="rw-badge rw-badge-red-outline">{cluster}</span>}
+                            {cluster && (
+                              <span className="rw-badge rw-badge-red-outline">
+                                {cluster}
+                              </span>
+                            )}
                             <img
                               src={servers[server]}
                               className="w-8 rounded-full"
@@ -446,6 +316,28 @@ const TimelineBasespotsList = ({
                             dateStyle: "short",
                           })}
                         </span>
+                        <div className="flex -space-x-4">
+                          <img
+                            className="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800"
+                            src="/docs/images/people/profile-picture-5.jpg"
+                            alt=""
+                          />
+                          <img
+                            className="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800"
+                            src="/docs/images/people/profile-picture-2.jpg"
+                            alt=""
+                          />
+                          <img
+                            className="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800"
+                            src="/docs/images/people/profile-picture-3.jpg"
+                            alt=""
+                          />
+                          <img
+                            className="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800"
+                            src="/docs/images/people/profile-picture-4.jpg"
+                            alt=""
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
