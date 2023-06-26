@@ -102,7 +102,7 @@ export const MaterialGrid = ({
     }
   };
   const { currentUser, isAuthenticated } = useAuth();
-  // TODO: Fix Types
+
   const [search, setSearch] = useState<string>("");
 
   const [selectedCraftingStations, selectCraftingStations] = useState<number[]>([

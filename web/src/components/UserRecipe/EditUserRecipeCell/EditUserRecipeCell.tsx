@@ -38,6 +38,28 @@ export const QUERY = gql`
         }
       }
     }
+    itemRecipes {
+      id
+      crafting_station_id
+      crafting_time
+      yields
+      Item_ItemRecipe_crafted_item_idToItem {
+        id
+        name
+        image
+        category
+        type
+      }
+      ItemRecipeItem {
+        id
+        amount
+        Item {
+          id
+          name
+          image
+        }
+      }
+    }
   }
 `;
 const UPDATE_USER_RECIPE_MUTATION = gql`
@@ -64,6 +86,7 @@ export const Failure = ({ error }: CellFailureProps) => (
 
 export const Success = ({
   userRecipe,
+  itemRecipes,
 }: CellSuccessProps<EditUserRecipeById>) => {
   const [updateUserRecipe, { loading, error }] = useMutation(
     UPDATE_USER_RECIPE_MUTATION,
@@ -95,6 +118,7 @@ export const Success = ({
       <div className="rw-segment-main">
         <UserRecipeForm
           userRecipe={userRecipe}
+          itemRecipes={itemRecipes}
           onSave={onSave}
           error={error}
           loading={loading}
