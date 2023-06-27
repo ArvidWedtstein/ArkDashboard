@@ -23,6 +23,13 @@ export const QUERY = gql`
       Map {
         name
       }
+      TimelineBasespotPerson {
+        ingame_name
+        Profile {
+          avatar_url
+          full_name
+        }
+      }
     }
   }
 `;

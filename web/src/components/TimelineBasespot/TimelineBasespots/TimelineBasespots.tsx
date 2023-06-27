@@ -120,7 +120,7 @@ const TimelineBasespotsList = ({
       .then((data) => {
         setImages(data.data);
       });
-    return () => {};
+    return () => { };
   }, [timelineBasespots]);
 
   const setActive = useCallback(
@@ -183,27 +183,26 @@ const TimelineBasespotsList = ({
                       }
                     )}
                     // src={arrRandNoRep(mapImages[timelineBasespot.map])}
-                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${
-                      arrRandNoRep(
-                        images?.filter(
-                          (img) =>
-                            img.path_tokens[0] ===
-                            timelineBasespot.id.toString()
-                        )
-                      )?.name
-                    }`}
+                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${arrRandNoRep(
+                      images?.filter(
+                        (img) =>
+                          img.path_tokens[0] ===
+                          timelineBasespot.id.toString()
+                      )
+                    )?.name
+                      }`}
                   />
                   {(new Date(timelineBasespot.start_date) < new Date() ||
                     !timelineBasespot.end_date) && (
-                    <Link
-                      to={routes.timelineBasespot({
-                        id: timelineBasespot.id.toString(),
-                      })}
-                      className="rw-button rw-button-green-outline float-right mt-2 transition"
-                    >
-                      View
-                    </Link>
-                  )}
+                      <Link
+                        to={routes.timelineBasespot({
+                          id: timelineBasespot.id.toString(),
+                        })}
+                        className="rw-button rw-button-green-outline float-right mt-2 transition"
+                      >
+                        View
+                      </Link>
+                    )}
                 </div>
               ))}
             </div>
@@ -231,7 +230,7 @@ const TimelineBasespotsList = ({
             <div className="rw-segment max-h-[300px] overflow-y-auto scroll-smooth transition-all duration-300">
               {timelineBasespots.map(
                 (
-                  { tribe_name, start_date, season, cluster, region, server },
+                  { tribe_name, start_date, season, cluster, region, server, TimelineBasespotPerson },
                   index
                 ) => (
                   <div
@@ -317,26 +316,13 @@ const TimelineBasespotsList = ({
                           })}
                         </span>
                         <div className="flex -space-x-4">
-                          <img
-                            className="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800"
-                            src="/docs/images/people/profile-picture-5.jpg"
-                            alt=""
-                          />
-                          <img
-                            className="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800"
-                            src="/docs/images/people/profile-picture-2.jpg"
-                            alt=""
-                          />
-                          <img
-                            className="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800"
-                            src="/docs/images/people/profile-picture-3.jpg"
-                            alt=""
-                          />
-                          <img
-                            className="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800"
-                            src="/docs/images/people/profile-picture-4.jpg"
-                            alt=""
-                          />
+                          {TimelineBasespotPerson.map((person) => (
+                            <img
+                              className="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800"
+                              src={person?.Profile ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${person?.Profile?.avatar_url}` : `https://ui-avatars.com/api/?name=${person?.ingame_name}`}
+                              alt={person.ingame_name}
+                            />
+                          ))}
                         </div>
                       </div>
                     </div>
@@ -347,104 +333,6 @@ const TimelineBasespotsList = ({
           </div>
         </div>
       </section>
-
-      {/* <div className="rw-table-wrapper-responsive">
-        <select
-          className="rw-input"
-          onChange={(e) => setRadio(e.currentTarget.value)}
-          defaultValue={"server"}
-        >
-          <option value="server">Server</option>
-          <option value="season">Season</option>
-          <option value="cluster">Cluster</option>
-          <option value="region">Region</option>
-        </select>
-
-        <table className="mx-auto w-full table-auto text-sm">
-          <tbody className="rounded-lg text-center">
-            {Object.keys(groupBy(timelineBasespots, radio)).map((server) => (
-              <tr
-                className="table-row border-b border-black dark:border-stone-300 dark:border-opacity-50"
-                key={server}
-              >
-                <td className="table-cell min-w-fit px-3 py-2 font-bold text-gray-800 dark:text-white">
-                  {server}
-                </td>
-                {grid.map((m) => {
-                  const events = groupedEvents[m.label] || [];
-                  const filteredEvents = events.filter(
-                    (d) => d[radio] === server
-                  );
-
-                  return (
-                    <td
-                      className="table-cell border-l border-black px-3 py-2 text-gray-800 dark:border-stone-300 dark:text-white"
-                      key={m.label + "-" + server}
-                    >
-                      {filteredEvents.length > 0 ? (
-                        <div className="z-10 flex flex-col">
-                          {filteredEvents.map((event) => {
-                            const shouldRenderEvent =
-                              new Date(event.start_date).getMonth() <=
-                                new Date(m.date).getMonth() &&
-                              new Date(m.date).getMonth() <=
-                                new Date(event.end_date).getMonth();
-
-                            if (shouldRenderEvent) {
-                              return (
-                                <div key={event.id} className="relative">
-                                  <div
-                                    className="-mx-3 h-auto cursor-pointer text-left text-white"
-                                    {...getEventCellStyle(m.date, server)}
-                                    title={`${event.server} Season ${event.season}`}
-                                  >
-                                    <Link
-                                      className="ml-1"
-                                      to={routes.timelineBasespot({
-                                        id: event.id.toString(),
-                                      })}
-                                    >{`${event.server} S${
-                                      event.season ? event.season : "?"
-                                    }`}</Link>
-                                  </div>
-                                </div>
-                              );
-                            }
-
-                            return null;
-                          })}
-                        </div>
-                      ) : (
-                        <div className="flex flex-col">
-                          <div className="">
-                            <div
-                              className="-mx-3 h-fit text-transparent"
-                              {...getEventCellStyle(m.date, server)}
-                            >
-                              -
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-            <tr className="table-row p-2 last:border-t">
-              <td className="border-l border-black px-3 py-2 text-gray-800 dark:border-stone-300 dark:text-white"></td>
-              {grid.map((m) => (
-                <td
-                  className="border-l border-black px-3 py-2  text-gray-800 text-opacity-50 dark:border-stone-300 dark:text-white"
-                  key={m.label}
-                >
-                  <span>{m.label}</span>
-                </td>
-              ))}
-            </tr>
-          </tbody>
-        </table>
-      </div> */}
     </div>
   );
 };

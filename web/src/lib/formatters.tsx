@@ -829,3 +829,9 @@ export type IntRange<F extends number, T extends number> = Exclude<
  * @see https://stackoverflow.com/a/49936686/2391795
  */
 export type EnsureKeyExists<T, K extends keyof T> = Array<Required<Pick<T, K>> & Partial<T>>;
+
+/**
+ * Converts array type to single type
+ */
+export type ArrayElement<ArrayType extends readonly unknown[]> =
+  ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
