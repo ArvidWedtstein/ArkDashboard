@@ -1,15 +1,14 @@
-import { Link, navigate, routes } from '@redwoodjs/router'
+import { navigate, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
-import Avatar from 'src/components/Avatar/Avatar'
+import { useAuth } from 'src/auth'
 
 import { QUERY } from 'src/components/Profile/ProfilesCell'
 import { ContextMenu } from 'src/components/Util/ContextMenu/ContextMenu'
 import Table from 'src/components/Util/Table/Table'
-import UserCard from 'src/components/Util/UserCard/UserCard'
-import { formatEnum, timeTag, truncate } from 'src/lib/formatters'
+import { formatEnum, timeTag } from 'src/lib/formatters'
 
-import type { DeleteProfileMutationVariables, FindProfiles } from 'types/graphql'
+import type { DeleteProfileMutationVariables, FindProfiles, permission } from 'types/graphql'
 
 const DELETE_PROFILE_MUTATION = gql`
   mutation DeleteProfileMutation($id: String!) {
@@ -20,6 +19,7 @@ const DELETE_PROFILE_MUTATION = gql`
 `
 
 const ProfilesList = ({ profiles }: FindProfiles) => {
+  const { currentUser } = useAuth();
   const [deleteProfile] = useMutation(DELETE_PROFILE_MUTATION, {
     onCompleted: () => {
       toast.success('Profile deleted')
@@ -35,7 +35,8 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
   })
 
   const onDeleteClick = (id: DeleteProfileMutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete profile ' + id + '?')) {
+    if (currentUser &&
+      currentUser.permissions.some((p: permission) => p == 'user_delete') && confirm('Are you sure you want to delete profile ' + id + '?')) {
       deleteProfile({ variables: { id } })
     }
   }

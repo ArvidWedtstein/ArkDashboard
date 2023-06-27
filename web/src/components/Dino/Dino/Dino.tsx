@@ -23,7 +23,7 @@ import {
   useTransition,
 } from "react";
 
-import type { DeleteDinoMutationVariables, FindDinoById } from "types/graphql";
+import type { DeleteDinoMutationVariables, FindDinoById, permission } from "types/graphql";
 import clsx from "clsx";
 import Table from "src/components/Util/Table/Table";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
@@ -1545,8 +1545,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           <span>{sub.replace(/[0-9]/g, "")}</span>
                           <Counter
                             className="inline-block"
-                            startNum={0}
-                            endNum={parseInt(sub.replace(/\D/g, ""))}
+                            startNumber={0}
+                            endNumber={parseInt(sub.replace(/\D/g, ""))}
                             duration={500}
                           />
                         </p>
@@ -1658,8 +1658,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           </Link>
                           {isPossible ? (
                             <Counter
-                              startNum={0}
-                              endNum={hits}
+                              startNumber={0}
+                              endNumber={hits}
                               duration={3000 / hits}
                             />
                           ) : (
@@ -2072,7 +2072,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
       <nav className="rw-button-group col-span-2">
         {currentUser &&
-          currentUser?.permissions.some((p) => p === "gamedata_update") && (
+          currentUser?.permissions.some((p: permission) => p === "gamedata_update") && (
             <Link
               to={routes.editDino({ id: dino.id })}
               className="rw-button rw-button-blue"
@@ -2081,7 +2081,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
             </Link>
           )}
         {currentUser &&
-          currentUser?.permissions.some((p) => p === "gamedata_delete") && (
+          currentUser?.permissions.some((p: permission) => p === "gamedata_delete") && (
             <button
               type="button"
               className="rw-button rw-button-red"

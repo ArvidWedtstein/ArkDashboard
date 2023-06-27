@@ -2,10 +2,11 @@
 import { Link, routes, navigate } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
+import { useAuth } from 'src/auth'
 
 import { timeTag, } from 'src/lib/formatters'
 
-import type { DeleteTribeMutationVariables, FindTribeById } from 'types/graphql'
+import type { DeleteTribeMutationVariables, FindTribeById, permission } from 'types/graphql'
 
 const DELETE_TRIBE_MUTATION = gql`
   mutation DeleteTribeMutation($id: Int!) {
@@ -20,6 +21,7 @@ interface Props {
 }
 
 const Tribe = ({ tribe }: Props) => {
+  const { currentUser } = useAuth();
   const [deleteTribe] = useMutation(DELETE_TRIBE_MUTATION, {
     onCompleted: () => {
       toast.success('Tribe deleted')
@@ -31,7 +33,8 @@ const Tribe = ({ tribe }: Props) => {
   })
 
   const onDeleteClick = (id: DeleteTribeMutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete tribe ' + id + '?')) {
+    if (currentUser &&
+      currentUser.permissions.some((p: permission) => p === "tribe_delete") && confirm('Are you sure you want to delete tribe ' + id + '?')) {
       deleteTribe({ variables: { id } })
     }
   }
@@ -72,19 +75,25 @@ const Tribe = ({ tribe }: Props) => {
         </table>
       </div>
       <nav className="rw-button-group">
-        <Link
-          to={routes.editTribe({ id: tribe.id })}
-          className="rw-button rw-button-blue"
-        >
-          Edit
-        </Link>
-        <button
-          type="button"
-          className="rw-button rw-button-red"
-          onClick={() => onDeleteClick(tribe.id)}
-        >
-          Delete
-        </button>
+        {currentUser &&
+          currentUser.permissions.some((p: permission) => p === "tribe_update") && (
+            <Link
+              to={routes.editTribe({ id: tribe.id })}
+              className="rw-button rw-button-blue"
+            >
+              Edit
+            </Link>
+          )}
+        {currentUser &&
+          currentUser.permissions.some((p: permission) => p === "tribe_delete") && (
+            <button
+              type="button"
+              className="rw-button rw-button-red"
+              onClick={() => onDeleteClick(tribe.id)}
+            >
+              Delete
+            </button>
+          )}
       </nav>
     </>
   )

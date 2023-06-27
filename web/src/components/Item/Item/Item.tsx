@@ -9,7 +9,7 @@ import Tabs from "src/components/Util/Tabs/Tabs";
 
 import { getWordType, dynamicSort } from "src/lib/formatters";
 
-import type { DeleteItemMutationVariables, FindItemById } from "types/graphql";
+import type { DeleteItemMutationVariables, FindItemById, permission } from "types/graphql";
 
 const DELETE_ITEM_MUTATION = gql`
   mutation DeleteItemMutation($id: BigInt!) {
@@ -164,7 +164,7 @@ const Item = ({ item }: Props) => {
 
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "gather_efficiency").length >
-            0 && (
+          0 && (
             <section className="rounded-lg bg-gray-200 p-4 dark:bg-zinc-600">
               <p className="my-1 text-lg">Gather Efficiency</p>
               <div className="flex flex-col">
@@ -223,7 +223,7 @@ const Item = ({ item }: Props) => {
 
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "weight_reduction").length >
-            0 && (
+          0 && (
             <section className="rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
               <p className="my-1 text-lg">Weight Reduction</p>
               <div className="flex flex-col">
@@ -468,7 +468,7 @@ const Item = ({ item }: Props) => {
         </section>
         <div className="col-span-full">
           <nav className="rw-button-group">
-            {currentUser?.permissions.some((p) => p === "gamedata_update") && (
+            {currentUser?.permissions.some((p: permission) => p === "gamedata_update") && (
               <Link
                 to={routes.editItem({ id: item.id.toString() })}
                 className="rw-button rw-button-blue"
@@ -476,7 +476,7 @@ const Item = ({ item }: Props) => {
                 Edit
               </Link>
             )}
-            {currentUser?.permissions.some((p) => p === "gamedata_delete") && (
+            {currentUser?.permissions.some((p: permission) => p === "gamedata_delete") && (
               <button
                 type="button"
                 className="rw-button rw-button-red"
@@ -555,9 +555,9 @@ const Item = ({ item }: Props) => {
                     self.findIndex(
                       (t) =>
                         t.LootcrateSetEntry.LootcrateSet.Lootcrate.id ===
-                          value.LootcrateSetEntry.LootcrateSet.Lootcrate.id &&
+                        value.LootcrateSetEntry.LootcrateSet.Lootcrate.id &&
                         t.LootcrateSetEntry.LootcrateSet.Lootcrate.id ===
-                          value.LootcrateSetEntry.LootcrateSet.Lootcrate.id
+                        value.LootcrateSetEntry.LootcrateSet.Lootcrate.id
                     )
                 )
                   .slice(0, 5)

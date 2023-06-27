@@ -2,18 +2,18 @@ import clsx from "clsx";
 import React, { useState, useEffect, useRef } from "react";
 
 interface CounterProps {
-  startNum: number;
-  endNum: number;
+  startNumber: number;
+  endNumber: number;
   duration?: number;
   className?: string;
 }
 const Counter = ({
-  startNum,
-  endNum,
+  startNumber,
+  endNumber,
   duration = 1000,
   className = "",
 }: CounterProps) => {
-  const [count, setCount] = useState<number>(startNum);
+  const [count, setCount] = useState<number>(startNumber);
   const countValueRef = useRef(null);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const Counter = ({
     const step = (timestamp) => {
       if (!startTimestamp) startTimestamp = timestamp;
       const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      setCount(Math.floor(progress * (endNum - startNum) + startNum));
+      setCount(Math.floor(progress * (endNumber - startNumber) + startNumber));
       if (progress < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
@@ -30,7 +30,7 @@ const Counter = ({
     if (countValueRef.current) {
       countValueRef.current.classList.add("animate-countup");
     }
-  }, [startNum, endNum, duration]);
+  }, [startNumber, endNumber, duration]);
 
   useEffect(() => {
     // Remove the animation class when the count value animation completes
@@ -53,7 +53,7 @@ const Counter = ({
     <div
       ref={countValueRef}
       className={clsx(className, {
-        "animate-countup": endNum !== count,
+        "animate-countup": endNumber !== count,
       })}
     >
       {count}

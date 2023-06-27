@@ -8,7 +8,7 @@ import Counter from './Counter'
 describe('Counter', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<Counter />)
+      render(<Counter startNumber={1} endNumber={10} />)
     }).not.toThrow()
   })
 })
