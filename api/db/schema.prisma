@@ -77,12 +77,13 @@ model Profile {
   Timeline                      Timeline[]
   TimelineBasespot              TimelineBasespot[]
   TimelineBasespotPerson        TimelineBasespotPerson[]
+  TimelineSeasonEvent           TimelineSeasonEvent[]
   Tribe                         Tribe[]
   UserRecipe                    UserRecipe[]
 }
 
 model Role {
-  id                               String       @id(map: "roles_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                               String       @id(map: "roles_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   name                             String
   created_by                       String?      @db.Uuid
   permissions                      permission[]
@@ -91,12 +92,13 @@ model Role {
 }
 
 model Timeline {
-  id               String             @id(map: "timeline_pkey") @unique(map: "timeline_id_key") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id               String             @id(map: "timeline_pkey") @unique(map: "timeline_id_key") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   created_at       DateTime?          @default(now()) @db.Timestamptz(6)
   updated_at       DateTime?          @db.Timestamptz(6)
   created_by       String             @db.Uuid
   Profile          Profile            @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   TimelineBasespot TimelineBasespot[]
+  TimelineSeason   TimelineSeason[]
 }
 
 model Tribe {
@@ -111,7 +113,7 @@ model Tribe {
 }
 
 model Message {
-  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id         String    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   profile_id String    @default(dbgenerated("auth.uid()")) @db.Uuid
   content    String
   created_at DateTime? @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
@@ -119,7 +121,7 @@ model Message {
 }
 
 model Dino {
-  id                             String                 @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                             String                 @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   created_at                     DateTime?              @default(now()) @db.Timestamptz(6)
   name                           String
   synonyms                       String?
@@ -205,19 +207,20 @@ model Item {
 }
 
 model Map {
-  id               BigInt             @id @default(autoincrement())
-  created_at       DateTime?          @default(now()) @db.Timestamptz(6)
-  name             String?
-  img              String?
-  Basespot         Basespot[]
-  Lootcrate        Lootcrate[]
-  MapCoordinate    MapCoordinate[]
-  MapNote          MapNote[]
-  TimelineBasespot TimelineBasespot[]
+  id                  BigInt                @id @default(autoincrement())
+  created_at          DateTime?             @default(now()) @db.Timestamptz(6)
+  name                String?
+  img                 String?
+  Basespot            Basespot[]
+  Lootcrate           Lootcrate[]
+  MapCoordinate       MapCoordinate[]
+  MapNote             MapNote[]
+  TimelineBasespot    TimelineBasespot[]
+  TimelineSeasonEvent TimelineSeasonEvent[]
 }
 
 model Lootcrate {
-  id                 String         @id(map: "Lootcrates_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                 String         @id(map: "Lootcrates_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   created_at         DateTime?      @default(now()) @db.Timestamptz(6)
   updated_at         DateTime?      @default(now()) @db.Timestamptz(6)
   blueprint          String
@@ -236,7 +239,7 @@ model Lootcrate {
 }
 
 model LootcrateSet {
-  id                String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                String              @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   created_at        DateTime?           @default(now()) @db.Timestamptz(6)
   lootcrate_id      String              @db.Uuid
   name              String?
@@ -248,7 +251,7 @@ model LootcrateSet {
 }
 
 model LootcrateSetEntry {
-  id                    String                  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                    String                  @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   created_at            DateTime?               @default(now()) @db.Timestamptz(6)
   set_id                String                  @db.Uuid
   name                  String?
@@ -260,7 +263,7 @@ model LootcrateSetEntry {
 }
 
 model DinoStat {
-  id         String       @id(map: "DinoEffWeight_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id         String       @id(map: "DinoEffWeight_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   created_at DateTime?    @default(now()) @db.Timestamptz(6)
   updated_at DateTime?    @default(now()) @db.Timestamptz(6)
   dino_id    String       @db.Uuid
@@ -275,7 +278,7 @@ model DinoStat {
 }
 
 model LootcrateSetEntryItem {
-  id                String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                String            @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   created_at        DateTime?         @default(now()) @db.Timestamptz(6)
   updated_at        DateTime?         @default(now()) @db.Timestamptz(6)
   entry_id          String            @db.Uuid
@@ -286,7 +289,7 @@ model LootcrateSetEntryItem {
 }
 
 model TimelineBasespotDino {
-  id                  String           @id(map: "TimelineDino_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                  String           @id(map: "TimelineDino_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   created_at          DateTime?        @default(now()) @db.Timestamptz(6)
   updated_at          DateTime?        @default(now()) @db.Timestamptz(6)
   timelinebasespot_id BigInt
@@ -317,7 +320,7 @@ model TimelineBasespotDino {
 }
 
 model TimelineBasespotRaid {
-  id                  String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                  String           @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   created_at          DateTime         @unique @default(now()) @db.Timestamptz(6)
   updated_at          DateTime?        @default(now()) @db.Timestamptz(6)
   timelinebasespot_id BigInt
@@ -332,7 +335,7 @@ model TimelineBasespotRaid {
 }
 
 model MapCoordinate {
-  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id         String    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   updated_at DateTime? @default(now()) @db.Timestamptz(6)
   latitude   Float?
@@ -346,7 +349,7 @@ model MapCoordinate {
 }
 
 model MapNote {
-  id         String    @id(map: "MapNotes_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id         String    @id(map: "MapNotes_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   updated_at DateTime? @default(now()) @db.Timestamptz(6)
   map_id     BigInt
@@ -438,15 +441,38 @@ model ItemRecipe {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model TimelineSeason {
-  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  created_at        DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at        DateTime? @db.Timestamptz(6)
-  server            String?
-  season            Int?
-  tribe_name        String?
-  season_start_date DateTime? @db.Timestamptz(6)
-  season_end_date   DateTime? @db.Timestamptz(6)
-  cluster           String?
+  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at          DateTime?             @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime?             @db.Timestamptz(6)
+  server              String?
+  season              String?
+  tribe_name          String?
+  season_start_date   DateTime?             @db.Timestamptz(6)
+  season_end_date     DateTime?             @db.Timestamptz(6)
+  cluster             String?
+  timeline_id         String                @db.Uuid
+  Timeline            Timeline              @relation(fields: [timeline_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  TimelineSeasonEvent TimelineSeasonEvent[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model TimelineSeasonEvent {
+  id                 String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at         DateTime?      @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime?      @db.Timestamptz(6)
+  timeline_season_id String         @db.Uuid
+  title              String?
+  content            String?
+  map_id             BigInt?
+  latitude           Float?
+  longitude          Float?
+  images             String?
+  created_by         String?        @db.Uuid
+  tags               String?
+  Profile            Profile?       @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Map                Map?           @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  TimelineSeason     TimelineSeason @relation(fields: [timeline_season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum permission {
