@@ -18,12 +18,6 @@ import { useAuth } from "./auth";
 const Routes = () => {
   return (
     <Router useAuth={useAuth} pageLoadingDelay={0}>
-      <Set wrap={ScaffoldLayout} title="TimelineSeasonBasespots" titleTo="timelineSeasonBasespots" buttonLabel="New TimelineSeasonBasespot" buttonTo="newTimelineSeasonBasespot">
-        <Route path="/timeline-season-basespots/new" page={TimelineSeasonBasespotNewTimelineSeasonBasespotPage} name="newTimelineSeasonBasespot" />
-        <Route path="/timeline-season-basespots/{id}/edit" page={TimelineSeasonBasespotEditTimelineSeasonBasespotPage} name="editTimelineSeasonBasespot" />
-        <Route path="/timeline-season-basespots/{id}" page={TimelineSeasonBasespotTimelineSeasonBasespotPage} name="timelineSeasonBasespot" />
-        <Route path="/timeline-season-basespots" page={TimelineSeasonBasespotTimelineSeasonBasespotsPage} name="timelineSeasonBasespots" />
-      </Set>
       <Set wrap={MainLayout}>
         {/*whileLoadingPage*/}
         <Route
@@ -54,6 +48,12 @@ const Routes = () => {
           <Route path="/timeline-seasons/{id}/edit" page={TimelineSeasonEditTimelineSeasonPage} name="editTimelineSeason" />
           <Route path="/timeline-seasons/{id}" page={TimelineSeasonTimelineSeasonPage} name="timelineSeason" />
           <Route path="/timeline-seasons" page={TimelineSeasonTimelineSeasonsPage} name="timelineSeasons" />
+        </Set>
+        <Set wrap={ScaffoldLayout} title="TimelineSeasonBasespots" titleTo="timelineSeasonBasespots" buttonLabel="New TimelineSeasonBasespot" buttonTo="newTimelineSeasonBasespot">
+          <Route path="/timeline-season-basespots/new" page={TimelineSeasonBasespotNewTimelineSeasonBasespotPage} name="newTimelineSeasonBasespot" />
+          <Route path="/timeline-season-basespots/{id}/edit" page={TimelineSeasonBasespotEditTimelineSeasonBasespotPage} name="editTimelineSeasonBasespot" />
+          <Route path="/timeline-season-basespots/{id}" page={TimelineSeasonBasespotTimelineSeasonBasespotPage} name="timelineSeasonBasespot" />
+          <Route path="/timeline-season-basespots" page={TimelineSeasonBasespotTimelineSeasonBasespotsPage} name="timelineSeasonBasespots" />
         </Set>
         <Set wrap={ScaffoldLayout} title="TimelineSeasonEvents" titleTo="timelineSeasonEvents" buttonLabel="New TimelineSeasonEvent" buttonTo="newTimelineSeasonEvent">
           <Route path="/timeline-season-events/new" page={TimelineSeasonEventNewTimelineSeasonEventPage} name="newTimelineSeasonEvent" />
