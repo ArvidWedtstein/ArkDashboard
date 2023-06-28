@@ -224,23 +224,21 @@ a {
   @apply ring ring-gray-300 dark:ring-zinc-700;
 }
 
+/* Button Group */
 .rw-button-group {
-  @apply my-3 flex justify-center rounded-md;
-}
-.rw-button-group .rw-button:first-child,
-.rw-button-group .rw-input:first-child {
-  @apply rounded-l-md !rounded-r-none;
-}
-.rw-button-group .rw-button:last-child,
-.rw-button-group .rw-input:last-child {
-  @apply rounded-r-md !rounded-l-none;
+  @apply my-3 flex w-fit justify-center rounded-lg;
 }
 .rw-button-group > .rw-button:only-child,
 .rw-button-group > .rw-input:only-child {
-  @apply !rounded-md;
+  @apply !rounded-lg;
 }
-.rw-button-group .rw-input {
+.rw-button-group .rw-input,
+.rw-button-group .rw-button {
   @apply mt-0 rounded-none first:rounded-l-md last:rounded-r-md;
+}
+.rw-button-group.rw-button-group-border .rw-input,
+.rw-button-group.rw-button-group-border .rw-button {
+  @apply not-firstlast:border-l-0 border border-zinc-500 last:border-l-0;
 }
 
 .rw-form-wrapper .rw-button-group {
