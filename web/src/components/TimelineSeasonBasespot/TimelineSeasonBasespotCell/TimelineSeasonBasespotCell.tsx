@@ -17,7 +17,22 @@ export const QUERY = gql`
       created_by
       latitude
       longitude
-      timeline_season_id
+      Map {
+        name
+        img
+      }
+      TimelineSeason {
+        tribe_name
+        season
+        server
+        cluster
+      }
+      Basespot {
+        id
+        name
+        latitude
+        longitude
+      }
     }
   }
 `

@@ -16,7 +16,19 @@ export const QUERY = gql`
       season_start_date
       season_end_date
       cluster
-      timeline_id
+      TimelineSeasonBasespot {
+        id
+        Map {
+          name
+        }
+      }
+      TimelineSeasonEvent {
+        id
+        title
+        content
+        tags
+        created_at
+      }
     }
   }
 `
