@@ -763,9 +763,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                 >
                   <div className="flex h-full justify-between">
                     <button
-                      className={clsx(
-                        "group relative flex h-auto w-full overflow-hidden rounded-xl"
-                      )}
+                      className={"group relative flex h-auto w-full overflow-hidden rounded-xl"}
                       onClick={() => {
                         setCurrentModalImage(
                           `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineBasespot.id}/${img.name}`

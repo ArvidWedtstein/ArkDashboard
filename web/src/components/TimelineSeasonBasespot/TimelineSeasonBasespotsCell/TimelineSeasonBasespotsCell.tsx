@@ -1,21 +1,24 @@
-import type { FindTimelineSeasons } from 'types/graphql'
+import type { FindTimelineSeasonBasespots } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
-import TimelineSeasons from 'src/components/TimelineSeason/TimelineSeasons'
+import TimelineSeasonBasespots from 'src/components/TimelineSeasonBasespot/TimelineSeasonBasespots'
 
 export const QUERY = gql`
-  query FindTimelineSeasons {
-    timelineSeasons {
+  query FindTimelineSeasonBasespots {
+    timelineSeasonBasespots {
       id
-      server
-      season
-      tribe_name
-      season_start_date
-      season_end_date
-      cluster
-      timeline_id
+      created_at
+      updated_at
+      start_date
+      end_date
+      basespot_id
+      map
+      created_by
+      latitude
+      longitude
+      timeline_season_id
     }
   }
 `
@@ -66,8 +69,8 @@ export const Loading = () => (
 export const Empty = () => {
   return (
     <div className="rw-text-center">
-      {'No timelineSeasons yet. '}
-      <Link to={routes.newTimelineSeason()} className="rw-link">
+      {'No timelineSeasonBasespots yet. '}
+      <Link to={routes.newTimelineSeasonBasespot()} className="rw-link">
         {'Create one?'}
       </Link>
     </div>
@@ -93,7 +96,11 @@ export const Failure = ({ error }: CellFailureProps) => (
 )
 
 export const Success = ({
-  timelineSeasons,
-}: CellSuccessProps<FindTimelineSeasons>) => {
-  return <TimelineSeasons timelineSeasons={timelineSeasons} />
+  timelineSeasonBasespots,
+}: CellSuccessProps<FindTimelineSeasonBasespots>) => {
+  return (
+    <TimelineSeasonBasespots
+      timelineSeasonBasespots={timelineSeasonBasespots}
+    />
+  )
 }

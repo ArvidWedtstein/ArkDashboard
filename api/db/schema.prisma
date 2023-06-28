@@ -36,23 +36,24 @@ model TimelineBasespot {
 }
 
 model Basespot {
-  id                    BigInt             @id(map: "basespot_pkey") @default(autoincrement())
-  name                  String
-  description           String
-  latitude              Float
-  longitude             Float
-  image                 String?
-  created_at            DateTime?          @default(now()) @db.Timestamptz(6)
-  map                   BigInt
-  estimated_for_players String?            @default("0")
-  defense_images        String?
-  created_by            String?            @db.Uuid
-  turretsetup_image     String?
-  updated_at            DateTime?          @db.Timestamptz(6)
-  type                  String?
-  Profile               Profile?           @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Map                   Map                @relation(fields: [map], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  TimelineBasespot      TimelineBasespot[]
+  id                     BigInt                   @id(map: "basespot_pkey") @default(autoincrement())
+  name                   String
+  description            String
+  latitude               Float
+  longitude              Float
+  image                  String?
+  created_at             DateTime?                @default(now()) @db.Timestamptz(6)
+  map                    BigInt
+  estimated_for_players  String?                  @default("0")
+  defense_images         String?
+  created_by             String?                  @db.Uuid
+  turretsetup_image      String?
+  updated_at             DateTime?                @db.Timestamptz(6)
+  type                   String?
+  Profile                Profile?                 @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Map                    Map                      @relation(fields: [map], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  TimelineBasespot       TimelineBasespot[]
+  TimelineSeasonBasespot TimelineSeasonBasespot[]
 }
 
 model Profile {
@@ -77,6 +78,7 @@ model Profile {
   Timeline                      Timeline[]
   TimelineBasespot              TimelineBasespot[]
   TimelineBasespotPerson        TimelineBasespotPerson[]
+  TimelineSeasonBasespot        TimelineSeasonBasespot[]
   TimelineSeasonEvent           TimelineSeasonEvent[]
   Tribe                         Tribe[]
   UserRecipe                    UserRecipe[]
@@ -207,16 +209,17 @@ model Item {
 }
 
 model Map {
-  id                  BigInt                @id @default(autoincrement())
-  created_at          DateTime?             @default(now()) @db.Timestamptz(6)
-  name                String?
-  img                 String?
-  Basespot            Basespot[]
-  Lootcrate           Lootcrate[]
-  MapCoordinate       MapCoordinate[]
-  MapNote             MapNote[]
-  TimelineBasespot    TimelineBasespot[]
-  TimelineSeasonEvent TimelineSeasonEvent[]
+  id                     BigInt                   @id @default(autoincrement())
+  created_at             DateTime?                @default(now()) @db.Timestamptz(6)
+  name                   String?
+  img                    String?
+  Basespot               Basespot[]
+  Lootcrate              Lootcrate[]
+  MapCoordinate          MapCoordinate[]
+  MapNote                MapNote[]
+  TimelineBasespot       TimelineBasespot[]
+  TimelineSeasonBasespot TimelineSeasonBasespot[]
+  TimelineSeasonEvent    TimelineSeasonEvent[]
 }
 
 model Lootcrate {
@@ -441,18 +444,19 @@ model ItemRecipe {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model TimelineSeason {
-  id                  String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  created_at          DateTime?             @default(now()) @db.Timestamptz(6)
-  updated_at          DateTime?             @db.Timestamptz(6)
-  server              String?
-  season              String?
-  tribe_name          String?
-  season_start_date   DateTime?             @db.Timestamptz(6)
-  season_end_date     DateTime?             @db.Timestamptz(6)
-  cluster             String?
-  timeline_id         String                @db.Uuid
-  Timeline            Timeline              @relation(fields: [timeline_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  TimelineSeasonEvent TimelineSeasonEvent[]
+  id                     String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at             DateTime?                @default(now()) @db.Timestamptz(6)
+  updated_at             DateTime?                @db.Timestamptz(6)
+  server                 String?
+  season                 String?
+  tribe_name             String?
+  season_start_date      DateTime?                @db.Timestamptz(6)
+  season_end_date        DateTime?                @db.Timestamptz(6)
+  cluster                String?
+  timeline_id            String                   @db.Uuid
+  Timeline               Timeline                 @relation(fields: [timeline_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  TimelineSeasonBasespot TimelineSeasonBasespot[]
+  TimelineSeasonEvent    TimelineSeasonEvent[]
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -473,6 +477,27 @@ model TimelineSeasonEvent {
   Profile            Profile?       @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Map                Map?           @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   TimelineSeason     TimelineSeason @relation(fields: [timeline_season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model TimelineSeasonBasespot {
+  id                 BigInt          @id @default(autoincrement())
+  created_at         DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime?       @db.Timestamptz(6)
+  start_date         DateTime?       @db.Timestamptz(6)
+  end_date           DateTime?       @db.Timestamptz(6)
+  basespot_id        BigInt?
+  map                BigInt?
+  created_by         String?         @db.Uuid
+  latitude           Float?          @default(0)
+  longitude          Float?          @default(0)
+  timeline_season_id String?         @db.Uuid
+  Basespot           Basespot?       @relation(fields: [basespot_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Profile            Profile?        @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Map                Map?            @relation(fields: [map], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  TimelineSeason     TimelineSeason? @relation(fields: [timeline_season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum permission {

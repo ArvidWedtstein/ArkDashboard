@@ -18,6 +18,12 @@ import { useAuth } from "./auth";
 const Routes = () => {
   return (
     <Router useAuth={useAuth} pageLoadingDelay={0}>
+      <Set wrap={ScaffoldLayout} title="TimelineSeasonBasespots" titleTo="timelineSeasonBasespots" buttonLabel="New TimelineSeasonBasespot" buttonTo="newTimelineSeasonBasespot">
+        <Route path="/timeline-season-basespots/new" page={TimelineSeasonBasespotNewTimelineSeasonBasespotPage} name="newTimelineSeasonBasespot" />
+        <Route path="/timeline-season-basespots/{id}/edit" page={TimelineSeasonBasespotEditTimelineSeasonBasespotPage} name="editTimelineSeasonBasespot" />
+        <Route path="/timeline-season-basespots/{id}" page={TimelineSeasonBasespotTimelineSeasonBasespotPage} name="timelineSeasonBasespot" />
+        <Route path="/timeline-season-basespots" page={TimelineSeasonBasespotTimelineSeasonBasespotsPage} name="timelineSeasonBasespots" />
+      </Set>
       <Set wrap={MainLayout}>
         {/*whileLoadingPage*/}
         <Route
