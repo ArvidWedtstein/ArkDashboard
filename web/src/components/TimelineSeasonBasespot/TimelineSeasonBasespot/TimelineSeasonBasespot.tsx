@@ -1,19 +1,19 @@
-import { Link, routes, navigate } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
-import clsx from 'clsx'
-import { useLayoutEffect, useState } from 'react'
-import { useAuth } from 'src/auth'
-import ImageContainer from 'src/components/Util/ImageContainer/ImageContainer'
-import Map from 'src/components/Util/Map/Map'
-import { RefModal } from 'src/components/Util/Modal/Modal'
+import { Link, routes, navigate } from "@redwoodjs/router";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
+import clsx from "clsx";
+import { useLayoutEffect, useState } from "react";
+import { useAuth } from "src/auth";
+import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
+import Map from "src/components/Util/Map/Map";
+import { RefModal } from "src/components/Util/Modal/Modal";
 
-import { formatBytes, timeTag } from 'src/lib/formatters'
+import { formatBytes, timeTag } from "src/lib/formatters";
 
 import type {
   DeleteTimelineSeasonBasespotMutationVariables,
   FindTimelineSeasonBasespotById,
-} from 'types/graphql'
+} from "types/graphql";
 
 const DELETE_TIMELINE_SEASON_BASESPOT_MUTATION = gql`
   mutation DeleteTimelineSeasonBasespotMutation($id: BigInt!) {
@@ -21,12 +21,12 @@ const DELETE_TIMELINE_SEASON_BASESPOT_MUTATION = gql`
       id
     }
   }
-`
+`;
 
 interface Props {
   timelineSeasonBasespot: NonNullable<
-    FindTimelineSeasonBasespotById['timelineSeasonBasespot']
-  >
+    FindTimelineSeasonBasespotById["timelineSeasonBasespot"]
+  >;
 }
 
 const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
@@ -41,26 +41,26 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
     DELETE_TIMELINE_SEASON_BASESPOT_MUTATION,
     {
       onCompleted: () => {
-        toast.success('TimelineSeasonBasespot deleted')
-        navigate(routes.timelineSeasonBasespots())
+        toast.success("TimelineSeasonBasespot deleted");
+        navigate(routes.timelineSeasonBasespots());
       },
       onError: (error) => {
-        toast.error(error.message)
+        toast.error(error.message);
       },
     }
-  )
+  );
 
   const onDeleteClick = (
-    id: DeleteTimelineSeasonBasespotMutationVariables['id']
+    id: DeleteTimelineSeasonBasespotMutationVariables["id"]
   ) => {
     if (
       confirm(
-        'Are you sure you want to delete timelineSeasonBasespot ' + id + '?'
+        "Are you sure you want to delete timelineSeasonBasespot " + id + "?"
       )
     ) {
-      deleteTimelineSeasonBasespot({ variables: { id } })
+      deleteTimelineSeasonBasespot({ variables: { id } });
     }
-  }
+  };
   const [images, setImages] = useState([]);
   const [isComponentVisible, setIsComponentVisible] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(null);
@@ -86,7 +86,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
     const second = parseInt(dateString.substring(12, 14));
 
     return new Date(year, month, day, hour, minute, second);
-  }
+  };
   return (
     <article className="rw-segment">
       <RefModal
@@ -96,180 +96,9 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
         image={currentModalImage}
       />
 
-
-      {/* <Modal
-        isOpen={isRaided}
-        onClose={() => setIsRaided(false)}
-        form={
-          <div className="flex flex-col items-center justify-center">
-            <p className="text-lg text-gray-700 dark:text-white">
-              Please fill out the form below to report the raid.
-            </p>
-            <fieldset className="rw-form-group">
-              <legend>Raid Form</legend>
-              <div>
-                <div>
-                  <Label
-                    name="raid_start"
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Raid Start date
-                  </Label>
-
-                  <DatetimeLocalField
-                    name="raid_start"
-                    className="rw-input"
-                    errorClassName="rw-input rw-input-error"
-                    validation={{ required: true }}
-                  />
-
-                  <FieldError name="raid_start" className="rw-field-error" />
-                </div>
-                <div>
-                  <Label
-                    name="raid_end"
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Raid End date
-                  </Label>
-
-                  <DatetimeLocalField
-                    name="raid_end"
-                    className="rw-input"
-                    errorClassName="rw-input rw-input-error"
-                    emptyAs={null}
-                  />
-
-                  <FieldError name="raid_end" className="rw-field-error" />
-                </div>
-              </div>
-              <div>
-                <div>
-                  <Label
-                    name="raid_comment"
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Raid Comment
-                  </Label>
-
-                  <TextAreaField
-                    name="raid_comment"
-                    className="rw-input"
-                    errorClassName="rw-input rw-input-error"
-                  />
-
-                  <FieldError name="raid_comment" className="rw-field-error" />
-                </div>
-                <div>
-                  <Label
-                    name="attackers"
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Attackers
-                  </Label>
-
-                  <TextAreaField
-                    name="attackers"
-                    className="rw-input"
-                    errorClassName="rw-input rw-input-error"
-                  />
-                  <p className="rw-helper-text">
-                    Player names, comma seperated
-                  </p>
-
-                  <FieldError name="attackers" className="rw-field-error" />
-                </div>
-                <div>
-                  <Label
-                    name="base_survived"
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Base Survived?
-                  </Label>
-
-                  <CheckboxField
-                    name="base_survived"
-                    className="rw-input"
-                    errorClassName="rw-input rw-input-error"
-                  />
-                  <p className="rw-helper-text">Did base survived raid?</p>
-
-                  <FieldError name="base_survived" className="rw-field-error" />
-                </div>
-              </div>
-              <div>
-                <div>
-                  <Label
-                    name="tribe_name"
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Tribe Name
-                  </Label>
-
-                  <TextField
-                    name="tribe_name"
-                    className="rw-input"
-                    errorClassName="rw-input rw-input-error"
-                  />
-                  <p className="rw-helper-text">
-                    Name of tribe who started the raid
-                  </p>
-
-                  <FieldError name="tribe_name" className="rw-field-error" />
-                </div>
-                <div>
-                  <Label
-                    name="defenders"
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Defenders
-                  </Label>
-
-                  <TextAreaField
-                    name="defenders"
-                    className="rw-input"
-                    errorClassName="rw-input rw-input-error"
-                  />
-                  <p className="rw-helper-text">
-                    Name of players who defended, comma seperated
-                  </p>
-
-                  <FieldError name="defenders" className="rw-field-error" />
-                </div>
-              </div>
-            </fieldset>
-          </div>
-        }
-        formSubmit={(data) => {
-          data.preventDefault();
-          const formData = new FormData(data.currentTarget);
-          createTimelineBasespotRaid({
-            variables: {
-              input: {
-                raid_start: formData.get("raid_start") || new Date(),
-                raid_end: convertToDate(formData.get("raid_end")),
-                raid_comment: formData.get("raid_comment"),
-                attacker_players: formData.get("attacker_players"),
-                base_survived: formData.get("base_survived"),
-                tribe_name: formData.get("tribe_name"),
-                defenders: formData.get("defenders"),
-              },
-            },
-          });
-          setIsRaided(false);
-        }}
-      /> */}
-
       <div className="m-2 block rounded-md text-white">
         <section className="body-font container mx-auto flex flex-col items-center px-5 py-12 md:flex-row">
-          <div className="mb-16 space-y-2 flex flex-col items-center text-center md:mb-0 md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24">
+          <div className="mb-16 flex flex-col items-center space-y-2 text-center md:mb-0 md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24">
             <h1 className="title-font mb-4 text-3xl font-medium text-gray-900 dark:text-zinc-200 sm:text-4xl">
               {timelineSeasonBasespot.TimelineSeason.tribe_name}
             </h1>
@@ -277,7 +106,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
               This time we played on
               {` ${timelineSeasonBasespot?.TimelineSeason.server} ${timelineSeasonBasespot.TimelineSeason?.cluster} Season ${timelineSeasonBasespot.TimelineSeason.season}`}
             </p>
-            <div className="flex space-x-1 flex-wrap justify-start xl:space-y-0 md:space-y-1">
+            <div className="flex flex-wrap justify-start space-x-1 md:space-y-1 xl:space-y-0">
               {isAuthenticated && (
                 <>
                   <p>test</p>
@@ -371,7 +200,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
           {images.length > 0 && (
             <div className="w-5/6 md:w-1/2 lg:w-full lg:max-w-lg">
               <ImageContainer
-                className="rounded-lg object-cover object-center"
+                className="aspect-video w-full rounded-lg object-cover object-center"
                 src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineSeasonBasespot.id}/${images[0].name}`}
                 caption={timeTag(timelineSeasonBasespot.start_date)}
               />
@@ -493,8 +322,12 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                   size={{ width: 500, height: 500 }}
                   pos={[
                     {
-                      lat: timelineSeasonBasespot.Basespot ? timelineSeasonBasespot.Basespot.latitude : timelineSeasonBasespot.latitude,
-                      lon: timelineSeasonBasespot.Basespot ? timelineSeasonBasespot.Basespot.longitude : timelineSeasonBasespot.longitude,
+                      lat: timelineSeasonBasespot.Basespot
+                        ? timelineSeasonBasespot.Basespot.latitude
+                        : timelineSeasonBasespot.latitude,
+                      lon: timelineSeasonBasespot.Basespot
+                        ? timelineSeasonBasespot.Basespot.longitude
+                        : timelineSeasonBasespot.longitude,
                       name: timelineSeasonBasespot?.Basespot?.name,
                     },
                   ]}
@@ -528,12 +361,19 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                     )
                       ? "was "
                       : "is "} */}
-                    is located at: {timelineSeasonBasespot.Basespot ? timelineSeasonBasespot.Basespot.latitude : timelineSeasonBasespot.latitude}{" "}
+                    is located at:{" "}
+                    {timelineSeasonBasespot.Basespot
+                      ? timelineSeasonBasespot.Basespot.latitude
+                      : timelineSeasonBasespot.latitude}{" "}
                     <abbr title="Latitude">Lat</abbr>,{" "}
-                    {timelineSeasonBasespot.Basespot ? timelineSeasonBasespot.Basespot.longitude : timelineSeasonBasespot.longitude}{" "}
+                    {timelineSeasonBasespot.Basespot
+                      ? timelineSeasonBasespot.Basespot.longitude
+                      : timelineSeasonBasespot.longitude}{" "}
                     <abbr title="Longitude">Lon</abbr> on the map{" "}
                     <Link
-                      to={routes.map({ id: timelineSeasonBasespot.map.toString() })}
+                      to={routes.map({
+                        id: timelineSeasonBasespot.map.toString(),
+                      })}
                     >
                       {timelineSeasonBasespot?.Map?.name}
                     </Link>
@@ -636,7 +476,9 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                 >
                   <div className="flex h-full justify-between">
                     <button
-                      className={"group relative flex h-auto w-full overflow-hidden rounded-xl"}
+                      className={
+                        "group relative flex h-auto w-full overflow-hidden rounded-xl"
+                      }
                       onClick={() => {
                         setCurrentModalImage(
                           `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineSeasonBasespot.id}/${img.name}`
@@ -677,15 +519,15 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                           timeStyle: "short",
                         }) === "Invalid Date"
                           ? new Date(img.created_at).toLocaleString("de", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })
                           : convertToDate(
-                            img.name.replace("_1.jpg", "")
-                          ).toLocaleString("de", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })}
+                              img.name.replace("_1.jpg", "")
+                            ).toLocaleString("de", {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })}
                       </span>
                     </button>
                   </div>
@@ -818,7 +660,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
         )} */}
       </div>
     </article>
-  )
-}
+  );
+};
 
-export default TimelineSeasonBasespot
+export default TimelineSeasonBasespot;
