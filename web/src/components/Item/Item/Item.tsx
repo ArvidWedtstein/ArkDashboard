@@ -7,7 +7,7 @@ import { useAuth } from "src/auth";
 import StatCard from "src/components/Util/StatCard/StatCard";
 import Tabs from "src/components/Util/Tabs/Tabs";
 
-import { getWordType, dynamicSort } from "src/lib/formatters";
+import { getWordType } from "src/lib/formatters";
 
 import type { DeleteItemMutationVariables, FindItemById, permission } from "types/graphql";
 

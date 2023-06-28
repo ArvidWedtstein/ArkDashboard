@@ -396,7 +396,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
               {isAuthenticated && (
                 <>
                   {hasRole("timeline_update") ||
-                    (currentUser.permissions.some(
+                    (currentUser && currentUser.permissions.some(
                       (p) => p === "timeline_update"
                     ) && (
                         <Link
@@ -409,7 +409,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                         </Link>
                       ))}
                   {hasRole("timeline_delete") ||
-                    (currentUser.permissions.some(
+                    (currentUser && currentUser.permissions.some(
                       (p) => p === "timeline_delete"
                     ) && (
                         <button

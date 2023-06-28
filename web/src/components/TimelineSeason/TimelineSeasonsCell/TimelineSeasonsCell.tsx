@@ -18,6 +18,13 @@ export const QUERY = gql`
       season_end_date
       cluster
       timeline_id
+      TimelineSeasonEvent {
+        id
+        tags
+        title
+        content
+        created_by
+      }
     }
   }
 `
