@@ -83,6 +83,8 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           </div>
         </div>
 
+        {/* TODO: Add map with all basespots, add option for adding persons */}
+
         <div className="basis-72 grow-0 text-white h-screen p-6 overflow-auto">
           <p>Downloads</p>
           <div className="py-3">
