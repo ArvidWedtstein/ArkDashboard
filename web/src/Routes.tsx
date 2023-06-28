@@ -7,9 +7,9 @@
 // 'src/pages/HomePage/HomePage.js'         -> HomePage
 // 'src/pages/Admin/BooksPage/BooksPage.js' -> AdminBooksPage
 
-import { Set, Router, Route, Private } from "@redwoodjs/router";
+import { Set, Router, Route, Private } from '@redwoodjs/router'
 
-import ScaffoldLayout from "src/layouts/ScaffoldLayout";
+import ScaffoldLayout from 'src/layouts/ScaffoldLayout';
 
 import MainLayout from "./layouts/MainLayout/MainLayout";
 
@@ -43,6 +43,18 @@ const Routes = () => {
           name="resetPassword"
         />
         <Route notfound page={NotFoundPage} />
+        <Set wrap={ScaffoldLayout} title="TimelineSeasons" titleTo="timelineSeasons" buttonLabel="New TimelineSeason" buttonTo="newTimelineSeason">
+          <Route path="/timeline-seasons/new" page={TimelineSeasonNewTimelineSeasonPage} name="newTimelineSeason" />
+          <Route path="/timeline-seasons/{id}/edit" page={TimelineSeasonEditTimelineSeasonPage} name="editTimelineSeason" />
+          <Route path="/timeline-seasons/{id}" page={TimelineSeasonTimelineSeasonPage} name="timelineSeason" />
+          <Route path="/timeline-seasons" page={TimelineSeasonTimelineSeasonsPage} name="timelineSeasons" />
+        </Set>
+        <Set wrap={ScaffoldLayout} title="TimelineSeasonEvents" titleTo="timelineSeasonEvents" buttonLabel="New TimelineSeasonEvent" buttonTo="newTimelineSeasonEvent">
+          <Route path="/timeline-season-events/new" page={TimelineSeasonEventNewTimelineSeasonEventPage} name="newTimelineSeasonEvent" />
+          <Route path="/timeline-season-events/{id}/edit" page={TimelineSeasonEventEditTimelineSeasonEventPage} name="editTimelineSeasonEvent" />
+          <Route path="/timeline-season-events/{id}" page={TimelineSeasonEventTimelineSeasonEventPage} name="timelineSeasonEvent" />
+          <Route path="/timeline-season-events" page={TimelineSeasonEventTimelineSeasonEventsPage} name="timelineSeasonEvents" />
+        </Set>
         <Set
           wrap={ScaffoldLayout}
           title="UserRecipes"
