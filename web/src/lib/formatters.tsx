@@ -74,20 +74,24 @@ export const jsonTruncate = (obj: unknown, maxlength: number = 150) => {
 // 	minute: "2-digit",
 // 	timeZone: "utc",
 // });
+interface options {
+  dateStyle?: "long" | "short" | "full" | "medium",
+  timeStyle?: "long" | "short" | "full" | "medium"
+}
 /**
  * Renders a formatted time tag element.
  *
  * @param dateTime - The date and time value to format and display.
  * @returns The formatted time tag element or an empty string if `dateTime` is not provided.
  */
-export const timeTag = (dateTime?: string | Date): string | React.ReactNode => {
+export const timeTag = (dateTime?: string | Date, { dateStyle, timeStyle }: options = {}): React.ReactNode => {
   if (!dateTime) {
     return "";
   }
 
   const formattedDateTime = new Date(dateTime).toLocaleString("en-GB", {
-    timeStyle: "short",
-    dateStyle: "long",
+    timeStyle: timeStyle || "short",
+    dateStyle: dateStyle || "long",
   });
 
   return (
