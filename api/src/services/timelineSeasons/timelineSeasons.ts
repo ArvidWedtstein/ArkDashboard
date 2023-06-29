@@ -8,7 +8,12 @@ import { db } from "src/lib/db";
 
 export const timelineSeasons: QueryResolvers["timelineSeasons"] = () => {
   return db.timelineSeason.findMany({
-    where: { created_by: context.currentUser.id },
+    where: {
+      OR: [
+        { created_by: context.currentUser.id },
+        { TimelineSeasonPerson: { some: { user_id: context.currentUser.id } } },
+      ],
+    },
     orderBy: { season_start_date: "asc" },
   });
 };
