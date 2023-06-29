@@ -22,9 +22,6 @@ export const QUERY = gql`
           name
         }
       }
-      TimelineSeasonPerson {
-        id
-      }
     }
   }
 `

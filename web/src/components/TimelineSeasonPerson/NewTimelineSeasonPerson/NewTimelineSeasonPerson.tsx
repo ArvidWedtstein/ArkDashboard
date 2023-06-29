@@ -16,7 +16,7 @@ const CREATE_TIMELINE_SEASON_PERSON_MUTATION = gql`
   }
 `
 
-const NewTimelineSeasonPerson = () => {
+const NewTimelineSeasonPerson = ({ timeline_season_id }: { timeline_season_id: string }) => {
   const [createTimelineSeasonPerson, { loading, error }] = useMutation(
     CREATE_TIMELINE_SEASON_PERSON_MUTATION,
     {
@@ -36,13 +36,9 @@ const NewTimelineSeasonPerson = () => {
 
   return (
     <div className="rw-segment">
-      <header className="rw-segment-header">
-        <h2 className="rw-heading rw-heading-secondary">
-          New TimelineSeasonPerson
-        </h2>
-      </header>
       <div className="rw-segment-main">
         <TimelineSeasonPersonForm
+          timeline_season_id={timeline_season_id}
           onSave={onSave}
           loading={loading}
           error={error}

@@ -22,6 +22,7 @@ type FormTimelineSeasonPerson = NonNullable<
 
 interface TimelineSeasonPersonFormProps {
   timelineSeasonPerson?: EditTimelineSeasonPersonById['timelineSeasonPerson']
+  timeline_season_id?: string
   onSave: (
     data: UpdateTimelineSeasonPersonInput,
     id?: FormTimelineSeasonPerson['id']
@@ -32,6 +33,7 @@ interface TimelineSeasonPersonFormProps {
 
 const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
   const onSubmit = (data: FormTimelineSeasonPerson) => {
+    data.timeline_season_id = props.timeline_season_id
     props.onSave(data, props?.timelineSeasonPerson?.id)
   }
 
@@ -45,23 +47,7 @@ const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
           listClassName="rw-form-error-list"
         />
 
-        <Label
-          name="updated_at"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Updated at
-        </Label>
-
-        <DatetimeLocalField
-          name="updated_at"
-          defaultValue={formatDatetime(props.timelineSeasonPerson?.updated_at)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="updated_at" className="rw-field-error" />
-
+        {/* TODO: insert user lookup here */}
         <Label
           name="user_id"
           className="rw-label"
@@ -95,24 +81,6 @@ const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
         />
 
         <FieldError name="ingame_name" className="rw-field-error" />
-
-        <Label
-          name="timeline_season_id"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Timeline season id
-        </Label>
-
-        <TextField
-          name="timeline_season_id"
-          defaultValue={props.timelineSeasonPerson?.timeline_season_id}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
-
-        <FieldError name="timeline_season_id" className="rw-field-error" />
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">

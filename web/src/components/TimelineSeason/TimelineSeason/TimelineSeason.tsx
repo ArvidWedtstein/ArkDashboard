@@ -3,8 +3,10 @@ import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import NewTimelineSeasonEvent from "src/components/TimelineSeasonEvent/NewTimelineSeasonEvent/NewTimelineSeasonEvent";
 import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
+import NewTimelineSeasonPerson from "src/components/TimelineSeasonPerson/NewTimelineSeasonPerson/NewTimelineSeasonPerson";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
 import { Modal } from "src/components/Util/Modal/Modal";
+import { timeTag } from "src/lib/formatters";
 
 
 import type {
@@ -41,82 +43,163 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
     }
   };
 
-  const [newTimelineSeasonEvent, setNewTimelineSeasonEvent] = React.useState<boolean>(false);
+  const servers = {
+    "Elite Ark":
+    {
+      icon: "https://eliteark.com/wp-content/uploads/2022/06/cropped-0_ark-logo.thumb_.png.36427f75c51aff4ecec55bba50fd194d.png",
+      badge: "rw-badge-blue-outline"
+    },
+    "Bloody Ark": {
+      icon: "https://preview.redd.it/cdje2wcsmr521.png?width=313&format=png&auto=webp&s=bf1e8347b8dcd066bcf3aace6a461b61e804570b",
+      badge: "rw-badge-red-outline"
+    },
+
+    Arkosic: {
+      icon: "https://steamuserimages-a.akamaihd.net/ugc/2023839858710970915/3E075CEE248A0C9F9069EC7D12894F597E74A2CF/?imw=200&imh=200&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true",
+      badge: "rw-badge-green-outline"
+    }
+  };
+
+  const [openModal, setOpenModal] = React.useState<'timelineseasonevent' | 'timelineseasonperson' | 'timelineseasonbasespot'>(null);
 
   return (
     <>
       <Modal
-        isOpen={newTimelineSeasonEvent}
+        isOpen={openModal === 'timelineseasonevent'}
         title="New TimelineSeasonEvent"
-        onClose={() => setNewTimelineSeasonEvent(false)}
+        onClose={() => setOpenModal(null)}
         content={<NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />}
         actions={[]}
       />
-      {/* <Modal
-        isOpen={newTimelineSeasonEvent}
-        title="New TimelineSeasonEvent"
-        onClose={() => setNewTimelineSeasonEvent(false)}
-        content={<NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />}
+      <Modal
+        isOpen={openModal === 'timelineseasonperson'}
+        title="Add person"
+        onClose={() => setOpenModal(null)}
+        content={<NewTimelineSeasonPerson timeline_season_id={timelineSeason.id} />}
         actions={[]}
-      /> */}
-      <header className="rw-segment-header ml-0">
-        <h2 className="rw-heading rw-heading-secondary ml-0">
-          {timelineSeason.server} Season {timelineSeason.season}
-        </h2>
+      />
+      <Modal
+        isOpen={openModal === 'timelineseasonbasespot'}
+        title="Add Basespot"
+        onClose={() => setOpenModal(null)}
+        content={<NewTimelineSeasonPerson timeline_season_id={timelineSeason.id} />}
+        actions={[]}
+      />
+      <header
+        className="flex w-full flex-col justify-between rounded-lg bg-cover bg-center bg-no-repeat p-12 text-white"
+        style={{
+          backgroundImage:
+            "url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg)",
+        }}
+      >
+        <div className="flex justify-between pb-5">
+          <div className="text-xl font-bold uppercase tracking-widest">
+            <span className="font-medium text-gray-900 dark:text-white align-middle">
+              {timelineSeason.server} {timelineSeason.cluster && (
+                <span className={`align-middle rw-badge ${servers[timelineSeason.server].badge}`}>
+                  {timelineSeason.cluster} <span className="border-l mx-2 border-current"></span> Season {timelineSeason.season}
+                </span>
+              )}
+            </span>
+          </div>
+          <div className="flex items-center text-sm opacity-50 space-x-3">
+            {timeTag(timelineSeason.season_start_date)}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-5 fill-current">
+              <path d="M272 249.4V128c0-8.844-7.156-16-16-16s-16 7.156-16 16v128c0 4.25 1.688 8.312 4.688 11.31l80 80C327.8 350.4 331.9 352 336 352s8.188-1.562 11.31-4.688c6.25-6.25 6.25-16.38 0-22.62L272 249.4zM255.1 0c-141.4 0-256 114.6-256 256s114.6 256 256 256s255.1-114.6 255.1-256S397.4 0 255.1 0zM256 480c-123.5 0-224-100.5-224-224s100.5-224 224-224s224 100.5 224 224S379.5 480 256 480z" />
+            </svg>
+          </div>
+        </div>
+        <div className="pt-12">
+          <div className="mb-3 flex items-center space-x-1 opacity-75 [&>span:not(:last-child)]:after:content-[',']">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              className="mr-3 w-5 fill-current"
+            >
+              <path
+                className="d"
+                d="M19.22,9.66L10.77,1.21c-.74-.74-1.86-1.21-2.97-1.21H1.67C.75,0,0,.75,0,1.67V7.8c0,1.11,.46,2.23,1.3,2.97l8.45,8.46c1,1,2.62,1,3.62,0l5.94-5.95c.93-.93,.93-2.6-.09-3.62ZM6.96,6.35c-.59,.59-1.56,.59-2.15,0-.59-.59-.59-1.56,0-2.15,.59-.59,1.56-.59,2.15,0,.59,.59,.59,1.56,0,2.15Z"
+              />
+            </svg>
+            {["Placeholder data", "Placeholder data"].map((tag) => (
+              <span className="text-sm" key={tag}>
+                {tag}
+              </span>
+            ))}
+          </div>
+          <h1 className="my-3 text-5xl font-bold">{timelineSeason.tribe_name}</h1>
+        </div>
       </header>
-      <div className="rw-segment flex">
+
+      <div className="rw-segment flex gap-3 my-3">
         <div className="w-full flex-1 basis-32">
-          <h2 className="rw-heading rw-heading-secondary mb-3 text-white">
-            TimelineSeason Basespots
-          </h2>
-          <div className="grid h-fit grid-cols-4 gap-3">
-            {timelineSeason.TimelineSeasonBasespot.map(
-              ({ id, Map: { name } }) => (
-                <div className="flex justify-between">
-                  <Link
-                    to={routes.timelineSeasonBasespot({ id: id.toString() })}
-                    className={
-                      "group relative flex h-auto w-full overflow-hidden rounded-xl"
-                    }
-                  >
-                    <img
-                      className="h-full w-full object-cover transition-all duration-200 ease-in group-hover:scale-110"
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/13/20220618173551_1.jpg?t=2023-06-28T09%3A03%3A09.582Z`}
-                      alt=""
-                    />
-                    <div
-                      className="absolute flex h-full w-full flex-col items-end justify-end p-3"
-                      style={{
-                        background:
-                          "linear-gradient(0deg, #001022cc 0%, #f0f4fd33 90%)",
-                      }}
+          <section className="w-full my-3 rounded-lg border border-zinc-500 bg-zinc-300 dark:bg-zinc-800 font-semibold text-black dark:text-white relative">
+            <div className="w-full p-3 mb-0 inline-flex items-center space-x-3">
+              <p className="underline underline-offset-8 flex-1">
+                Basespots
+              </p>
+              <button
+                className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
+                onClick={() => setOpenModal('timelineseasonbasespot')}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  className="rw-button-icon h-4 w-4 fill-current stroke-current"
+                >
+                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                </svg>
+              </button>
+            </div>
+            <div className="grid h-fit grid-cols-4 gap-3 p-3">
+              {/* TODO: move this to TimelineSeasonBasespots */}
+              {timelineSeason.TimelineSeasonBasespot.map(
+                ({ id, Map: { name } }) => (
+                  <div className="flex justify-between border border-white rounded-lg">
+                    <Link
+                      to={routes.timelineSeasonBasespot({ id: id.toString() })}
+                      className={
+                        "group relative flex h-auto w-full overflow-hidden rounded-xl"
+                      }
                     >
-                      <div className="flex w-full justify-between text-left">
-                        <div className="w-full">
-                          <p className="m-0 overflow-hidden text-ellipsis whitespace-nowrap text-xs text-white">
-                            Basespot
-                          </p>
+                      <img
+                        className="h-full w-full object-cover transition-all duration-200 ease-in group-hover:scale-110"
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/13/20220618173551_1.jpg?t=2023-06-28T09%3A03%3A09.582Z`}
+                        alt=""
+                      />
+                      <div
+                        className="absolute flex h-full w-full flex-col items-end justify-end p-3"
+                        style={{
+                          background:
+                            "linear-gradient(0deg, #001022cc 0%, #f0f4fd33 90%)",
+                        }}
+                      >
+                        <div className="flex w-full justify-between text-left">
+                          <div className="w-full">
+                            <p className="m-0 overflow-hidden text-ellipsis whitespace-nowrap text-xs text-white">
+                              Basespot
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <span className="absolute right-3 top-3 z-10 rounded-[10px] bg-[#8b9ca380] py-1 px-3 text-xs text-white">
-                      {name}
-                    </span>
-                  </Link>
-                </div>
-              )
-            )}
-          </div>
+                      <span className="absolute right-3 top-3 z-10 rounded-[10px] bg-[#8b9ca380] py-1 px-3 text-xs text-white">
+                        {name}
+                      </span>
+                    </Link>
+                  </div>
+                )
+              )}
+            </div>
+          </section>
 
-          <section className="w-full my-3 rounded-lg border border-zinc-500 bg-zinc-800 font-semibold text-white relative">
+          <section className="w-full my-3 rounded-lg border border-zinc-500 bg-zinc-300 dark:bg-zinc-800 font-semibold text-black dark:text-white relative">
             <div className="w-full p-3 mb-0 inline-flex items-center space-x-3">
-
               <p className="underline underline-offset-8 flex-1">
                 Persons in this season
               </p>
               <button
                 className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
-              // onClick={() => setNewTimelineSeasonEvent(true)}
+                onClick={() => setOpenModal('timelineseasonperson')}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -136,11 +219,13 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
 
 
 
-        <div className="h-screen grow-0 basis-72 p-6 text-white">
-          <p>Downloads</p>
+        <div className="h-screen grow-0 basis-72 pr-3 dark:text-white text-black my-3 space-y-3">
+          <div className="flex justify-between items-center">
+            <p>Bases</p>
+          </div>
           <div className="py-3">
             <div className="text-xs">Today</div>
-            <div className="mt-3 flex items-center rounded-xl bg-zinc-500 p-2">
+            <div className="mt-3 flex items-center rounded-lg dark:bg-zinc-600 bg-zinc-300 border border-zinc-500 p-2">
               <div className="w-8">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -166,30 +251,21 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               </div>
               <div className="px-3">
                 <p className="m-0 w-36 overflow-hidden text-ellipsis whitespace-nowrap text-sm leading-4">
-                  Dilophosaur.mp4
+                  Crouch Cave
                 </p>
                 <p className="download-text-info m-0 w-36 overflow-hidden text-ellipsis whitespace-nowrap text-xs leading-4">
-                  34.45 MB<span className="ml-1">Waiting for download</span>
+
                 </p>
-              </div>
-              <div className="w-6">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 612 612"
-                  fill="#fff"
-                >
-                  <defs />
-                  <path d="M403.939 295.749l-78.814 78.833V172.125c0-10.557-8.568-19.125-19.125-19.125s-19.125 8.568-19.125 19.125v202.457l-78.814-78.814c-7.478-7.478-19.584-7.478-27.043 0-7.478 7.478-7.478 19.584 0 27.042L289.208 431c4.59 4.59 10.863 6.005 16.812 4.953 5.929 1.052 12.221-.382 16.811-4.953l108.19-108.19c7.478-7.478 7.478-19.583 0-27.042-7.498-7.478-19.604-7.478-27.082-.019zM306 0C137.012 0 0 136.992 0 306s137.012 306 306 306 306-137.012 306-306S475.008 0 306 0zm0 573.75C158.125 573.75 38.25 453.875 38.25 306S158.125 38.25 306 38.25 573.75 158.125 573.75 306 453.875 573.75 306 573.75z" />
-                </svg>
               </div>
             </div>
           </div>
+
 
           <div className="flex justify-between items-center">
             <p>Events</p>
             <button
               className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
-              onClick={() => setNewTimelineSeasonEvent(true)}
+              onClick={() => setOpenModal('timelineseasonevent')}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

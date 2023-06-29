@@ -48,9 +48,8 @@ const TimelineSeasonEventsList = ({
   //   }
   // }
   return (
-    <div className="relative mt-3 max-h-80 overflow-y-auto rounded-lg border border-zinc-500 bg-zinc-800 px-4">
-      <ul className="relative w-full border-l border-gray-200 py-3">
-        {/* group by date */}
+    <div className="relative mt-3 max-h-80 overflow-y-auto rounded-lg border border-zinc-500 bg-zinc-300 dark:bg-zinc-800 px-4 dark:text-white text-zinc-700">
+      <ul className="relative w-full border-l dark:border-zinc-300 border-zinc-600 py-3">
         {timelineSeasonEvents && Object.entries(groupBy(timelineSeasonEvents, 'created_at')).map(
           ([date, timeGroup], i) => (
             <>
@@ -61,7 +60,7 @@ const TimelineSeasonEventsList = ({
               </li>
               {timeGroup.map(({ title, content, tags, created_at }, idx) => (
                 <li className="mb-10 ml-6" key={`date-event-${idx}`}>
-                  <span className="absolute -left-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-blue-100 dark:bg-white">
+                  <span className="absolute -left-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-zinc-600 dark:bg-zinc-300">
                     {/* <svg aria-hidden="true" className="w-3 h-3 text-blue-800 dark:text-black" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path>
                   </svg> */}
@@ -78,7 +77,7 @@ const TimelineSeasonEventsList = ({
                     )}
                   </h3>
                   <p className="text-sm font-semibold">{title}</p>
-                  <p className="mb-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+                  <p className="mb-4 text-sm font-normal text-zinc-600 dark:text-gray-400">
                     {content}
                   </p>
                   <div className="flex h-fit space-x-2">
