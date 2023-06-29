@@ -3,8 +3,12 @@ import type { ScenarioData } from '@redwoodjs/testing/api'
 
 export const standard = defineScenario<Prisma.LootcrateCreateArgs>({
   lootcrate: {
-    one: { data: { blueprint: 'String', Map: { create: {} } } },
-    two: { data: { blueprint: 'String', Map: { create: {} } } },
+    one: {
+      data: { blueprint: 'String', Map: { create: { name: 'String9201634' } } },
+    },
+    two: {
+      data: { blueprint: 'String', Map: { create: { name: 'String3692696' } } },
+    },
   },
 })
 

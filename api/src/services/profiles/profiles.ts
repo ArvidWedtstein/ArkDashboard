@@ -99,6 +99,9 @@ export const deleteProfile: MutationResolvers["deleteProfile"] = ({ id }) => {
 };
 
 export const Profile: ProfileRelationResolvers = {
+  Basespot: (_obj, { root }) => {
+    return db.profile.findUnique({ where: { id: root?.id } }).Basespot();
+  },
   Message: (_obj, { root }) => {
     return db.profile.findUnique({ where: { id: root?.id } }).Message();
   },
@@ -130,6 +133,29 @@ export const Profile: ProfileRelationResolvers = {
     return db.profile
       .findUnique({ where: { id: root?.id } })
       .TimelineBasespotPerson();
+  },
+  TimelineSeasonBasespot: (_obj, { root }) => {
+    return db.profile
+      .findUnique({ where: { id: root?.id } })
+      .TimelineSeasonBasespot();
+  },
+  TimelineSeasonEvent: (_obj, { root }) => {
+    return db.profile
+      .findUnique({ where: { id: root?.id } })
+      .TimelineSeasonEvent();
+  },
+  TimelineSeasonEvent_TimelineSeasonEvent_updated_byToProfile: (
+    _obj,
+    { root }
+  ) => {
+    return db.profile
+      .findUnique({ where: { id: root?.id } })
+      .TimelineSeasonEvent_TimelineSeasonEvent_updated_byToProfile();
+  },
+  TimelineSeasonPerson: (_obj, { root }) => {
+    return db.profile
+      .findUnique({ where: { id: root?.id } })
+      .TimelineSeasonPerson();
   },
   Tribe: (_obj, { root }) => {
     return db.profile.findUnique({ where: { id: root?.id } }).Tribe();

@@ -5,7 +5,7 @@ export const schema = gql`
     updated_at: DateTime
     blueprint: String!
     name: String
-    map: BigInt!
+    map_id: BigInt!
     level_requirement: JSON
     decay_time: JSON
     no_repeat_in_sets: Boolean
@@ -13,7 +13,7 @@ export const schema = gql`
     set_qty: JSON
     color: String
     latitude: Float
-    longitude_: Float
+    longitude: Float
     Map: Map!
     LootcrateSet: [LootcrateSet]!
   }
@@ -29,7 +29,7 @@ export const schema = gql`
     updated_at: DateTime
     blueprint: String!
     name: String
-    map: BigInt!
+    map_id: BigInt!
     level_requirement: JSON
     decay_time: JSON
     no_repeat_in_sets: Boolean
@@ -37,7 +37,7 @@ export const schema = gql`
     set_qty: JSON
     color: String
     latitude: Float
-    longitude_: Float
+    longitude: Float
   }
 
   input UpdateLootcrateInput {
@@ -45,7 +45,7 @@ export const schema = gql`
     updated_at: DateTime
     blueprint: String
     name: String
-    map: BigInt
+    map_id: BigInt
     level_requirement: JSON
     decay_time: JSON
     no_repeat_in_sets: Boolean
@@ -53,7 +53,7 @@ export const schema = gql`
     set_qty: JSON
     color: String
     latitude: Float
-    longitude_: Float
+    longitude: Float
   }
 
   type Mutation {

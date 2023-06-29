@@ -13,7 +13,7 @@ export const QUERY = gql`
       created_at
       updated_at
       name
-      map
+      map_id
       level_requirement
       decay_time
       no_repeat_in_sets

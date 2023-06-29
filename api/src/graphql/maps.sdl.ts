@@ -4,11 +4,14 @@ export const schema = gql`
     created_at: DateTime
     name: String
     img: String
+    updated_at: DateTime
     Basespot: [Basespot]!
     Lootcrate: [Lootcrate]!
     MapCoordinate: [MapCoordinate]!
     MapNote: [MapNote]!
     TimelineBasespot: [TimelineBasespot]!
+    TimelineSeasonBasespot: [TimelineSeasonBasespot]!
+    TimelineSeasonEvent: [TimelineSeasonEvent]!
   }
 
   type Query {
@@ -20,12 +23,14 @@ export const schema = gql`
     created_at: DateTime
     name: String
     img: String
+    updated_at: DateTime
   }
 
   input UpdateMapInput {
     created_at: DateTime
     name: String
     img: String
+    updated_at: DateTime
   }
 
   type Mutation {

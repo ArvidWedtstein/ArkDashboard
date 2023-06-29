@@ -13,6 +13,7 @@ export const schema = gql`
     Timeline: Timeline!
     TimelineSeasonBasespot: [TimelineSeasonBasespot]!
     TimelineSeasonEvent: [TimelineSeasonEvent]!
+    TimelineSeasonPerson: [TimelineSeasonPerson]!
   }
 
   type Query {
@@ -47,10 +48,15 @@ export const schema = gql`
   type Mutation {
     createTimelineSeason(input: CreateTimelineSeasonInput!): TimelineSeason!
       @requireAuth
+      @hasPermission(permission: "timeline_create")
     updateTimelineSeason(
       id: String!
       input: UpdateTimelineSeasonInput!
-    ): TimelineSeason! @requireAuth
-    deleteTimelineSeason(id: String!): TimelineSeason! @requireAuth
+    ): TimelineSeason!
+      @requireAuth
+      @hasPermission(permission: "timeline_update")
+    deleteTimelineSeason(id: String!): TimelineSeason!
+      @requireAuth
+      @hasPermission(permission: "timeline_delete")
   }
-`
+`;

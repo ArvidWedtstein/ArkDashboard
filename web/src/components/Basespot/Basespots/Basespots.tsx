@@ -71,7 +71,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
     genesis2:
       "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
   };
-  const [currentMap, setCurrentMap] = useState(map || null);
+  // const [currentMap, setCurrentMap] = useState(map || null);
 
   return (
     <div className="-m-3">
@@ -94,7 +94,7 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
                 d="M19.22,9.66L10.77,1.21c-.74-.74-1.86-1.21-2.97-1.21H1.67C.75,0,0,.75,0,1.67V7.8c0,1.11,.46,2.23,1.3,2.97l8.45,8.46c1,1,2.62,1,3.62,0l5.94-5.95c.93-.93,.93-2.6-.09-3.62ZM6.96,6.35c-.59,.59-1.56,.59-2.15,0-.59-.59-.59-1.56,0-2.15,.59-.59,1.56-.59,2.15,0,.59,.59,.59,1.56,0,2.15Z"
               />
             </svg>
-            {["Deez", "Nuts"].map((tag) => (
+            {["Base", "Spots"].map((tag) => (
               <span className="text-sm" key={tag}>
                 {tag}
               </span>

@@ -15,7 +15,7 @@ export const QUERY = gql`
       updated_at
       blueprint
       name
-      map
+      map_id
       level_requirement
       decay_time
       no_repeat_in_sets
@@ -33,7 +33,7 @@ const UPDATE_LOOTCRATE_MUTATION = gql`
       updated_at
       blueprint
       name
-      map
+      map_id
       level_requirement
       decay_time
       no_repeat_in_sets

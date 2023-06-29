@@ -79,7 +79,7 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         <FieldError name="name" className="rw-field-error" />
 
         <Label
-          name="map"
+          name="map_id"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
@@ -87,15 +87,15 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         </Label>
 
         <TextField
-          name="map"
-          defaultValue={props.lootcrate?.map}
+          name="map_id"
+          defaultValue={props.lootcrate?.map_id}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ required: true }}
         />
 
 
-        <FieldError name="map" className="rw-field-error" />
+        <FieldError name="map_id" className="rw-field-error" />
 
         <Label
           name="level_requirement"

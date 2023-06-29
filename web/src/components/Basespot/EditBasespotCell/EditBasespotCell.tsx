@@ -17,7 +17,7 @@ export const QUERY = gql`
       longitude
       image
       created_at
-      map
+      map_id
       estimated_for_players
       defense_images
       created_by
@@ -39,7 +39,7 @@ const UPDATE_BASESPOT_MUTATION = gql`
       longitude
       image
       created_at
-      map
+      map_id
       estimated_for_players
       defense_images
       created_by
