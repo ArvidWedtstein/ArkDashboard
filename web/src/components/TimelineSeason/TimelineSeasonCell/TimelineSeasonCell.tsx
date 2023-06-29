@@ -23,12 +23,7 @@ export const QUERY = gql`
         }
       }
       TimelineSeasonPerson {
-        user_id
-        ingame_name
-        Profile {
-          username
-          avatar_url
-        }
+        id
       }
     }
   }

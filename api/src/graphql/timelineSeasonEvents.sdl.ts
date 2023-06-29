@@ -145,15 +145,21 @@ export const schema = gql`
     "Creates a new TimelineSeasonEvent."
     createTimelineSeasonEvent(
       input: CreateTimelineSeasonEventInput!
-    ): TimelineSeasonEvent! @requireAuth
+    ): TimelineSeasonEvent!
+      @requireAuth
+      @hasPermission(permission: "timeline_create")
 
     "Updates an existing TimelineSeasonEvent."
     updateTimelineSeasonEvent(
       id: String!
       input: UpdateTimelineSeasonEventInput!
-    ): TimelineSeasonEvent! @requireAuth
+    ): TimelineSeasonEvent!
+      @requireAuth
+      @hasPermission(permission: "timeline_update")
 
     "Deletes an existing TimelineSeasonEvent."
-    deleteTimelineSeasonEvent(id: String!): TimelineSeasonEvent! @requireAuth
+    deleteTimelineSeasonEvent(id: String!): TimelineSeasonEvent!
+      @requireAuth
+      @hasPermission(permission: "timeline_delete")
   }
 `;

@@ -71,7 +71,7 @@ const TimelineSeasonEventsList = ({
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
-                    {idx == 0 && (
+                    {idx == 0 && i === 0 && (
                       <span className="mr-2 ml-3 rounded bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
                         Latest
                       </span>

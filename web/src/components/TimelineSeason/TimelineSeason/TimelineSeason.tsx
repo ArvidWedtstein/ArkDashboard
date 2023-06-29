@@ -3,9 +3,9 @@ import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import NewTimelineSeasonEvent from "src/components/TimelineSeasonEvent/NewTimelineSeasonEvent/NewTimelineSeasonEvent";
 import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
+import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
 import { Modal } from "src/components/Util/Modal/Modal";
 
-import { timeTag } from "src/lib/formatters";
 
 import type {
   DeleteTimelineSeasonMutationVariables,
@@ -127,21 +127,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
                 </svg>
               </button>
             </div>
-            <div className="flex justify-start gap-3 overflow-x-auto px-6">
-              {timelineSeason.TimelineSeasonPerson.map(({ user_id, ingame_name, Profile }) => (
-                <div className="flex-none py-6 px-3">
-                  <div className="flex flex-col items-center justify-center gap-3">
-                    <img
-                      className="h-16 w-16 rounded-full"
-                      src={Profile?.avatar_url ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${Profile.avatar_url}` : `https://ui-avatars.com/api/?name=${ingame_name}`}
-                    />
-                    <strong className="text-xs font-medium text-slate-900 dark:text-slate-200">
-                      {Profile ? <Link to={routes.profile({ id: user_id })}>{Profile.username}</Link> : ingame_name}
-                    </strong>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <TimelineSeasonPeopleCell timeline_season_id={timelineSeason.id} />
           </section>
 
           <section></section>

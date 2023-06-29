@@ -11,7 +11,8 @@ export const schema = gql`
   }
 
   type Query {
-    timelineSeasonPeople: [TimelineSeasonPerson!]! @requireAuth
+    timelineSeasonPeople(timeline_season_id: String!): [TimelineSeasonPerson!]!
+      @requireAuth
     timelineSeasonPerson(id: String!): TimelineSeasonPerson @requireAuth
   }
 

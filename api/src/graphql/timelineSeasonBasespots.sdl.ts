@@ -139,16 +139,21 @@ export const schema = gql`
     "Creates a new TimelineSeasonBasespot."
     createTimelineSeasonBasespot(
       input: CreateTimelineSeasonBasespotInput!
-    ): TimelineSeasonBasespot! @requireAuth
+    ): TimelineSeasonBasespot!
+      @requireAuth
+      @hasPermission(permission: "timeline_create")
 
     "Updates an existing TimelineSeasonBasespot."
     updateTimelineSeasonBasespot(
       id: BigInt!
       input: UpdateTimelineSeasonBasespotInput!
-    ): TimelineSeasonBasespot! @requireAuth
+    ): TimelineSeasonBasespot!
+      @requireAuth
+      @hasPermission(permission: "timeline_update")
 
     "Deletes an existing TimelineSeasonBasespot."
     deleteTimelineSeasonBasespot(id: BigInt!): TimelineSeasonBasespot!
       @requireAuth
+      @hasPermission(permission: "timeline_delete")
   }
-`
+`;

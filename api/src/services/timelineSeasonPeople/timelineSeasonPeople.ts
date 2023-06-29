@@ -2,54 +2,57 @@ import type {
   QueryResolvers,
   MutationResolvers,
   TimelineSeasonPersonRelationResolvers,
-} from 'types/graphql'
+} from "types/graphql";
 
-import { db } from 'src/lib/db'
+import { db } from "src/lib/db";
 
-export const timelineSeasonPeople: QueryResolvers['timelineSeasonPeople'] =
-  () => {
-    return db.timelineSeasonPerson.findMany()
-  }
+export const timelineSeasonPeople: QueryResolvers["timelineSeasonPeople"] = ({
+  timeline_season_id,
+}: Required<Pick<any, "timeline_season_id">>) => {
+  return db.timelineSeasonPerson.findMany({
+    where: { timeline_season_id },
+  });
+};
 
-export const timelineSeasonPerson: QueryResolvers['timelineSeasonPerson'] = ({
+export const timelineSeasonPerson: QueryResolvers["timelineSeasonPerson"] = ({
   id,
 }) => {
   return db.timelineSeasonPerson.findUnique({
     where: { id },
-  })
-}
+  });
+};
 
-export const createTimelineSeasonPerson: MutationResolvers['createTimelineSeasonPerson'] =
+export const createTimelineSeasonPerson: MutationResolvers["createTimelineSeasonPerson"] =
   ({ input }) => {
     return db.timelineSeasonPerson.create({
       data: input,
-    })
-  }
+    });
+  };
 
-export const updateTimelineSeasonPerson: MutationResolvers['updateTimelineSeasonPerson'] =
+export const updateTimelineSeasonPerson: MutationResolvers["updateTimelineSeasonPerson"] =
   ({ id, input }) => {
     return db.timelineSeasonPerson.update({
       data: input,
       where: { id },
-    })
-  }
+    });
+  };
 
-export const deleteTimelineSeasonPerson: MutationResolvers['deleteTimelineSeasonPerson'] =
+export const deleteTimelineSeasonPerson: MutationResolvers["deleteTimelineSeasonPerson"] =
   ({ id }) => {
     return db.timelineSeasonPerson.delete({
       where: { id },
-    })
-  }
+    });
+  };
 
 export const TimelineSeasonPerson: TimelineSeasonPersonRelationResolvers = {
   TimelineSeason: (_obj, { root }) => {
     return db.timelineSeasonPerson
       .findUnique({ where: { id: root?.id } })
-      .TimelineSeason()
+      .TimelineSeason();
   },
   Profile: (_obj, { root }) => {
     return db.timelineSeasonPerson
       .findUnique({ where: { id: root?.id } })
-      .Profile()
+      .Profile();
   },
-}
+};
