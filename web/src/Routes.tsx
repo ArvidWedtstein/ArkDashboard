@@ -55,12 +55,7 @@ const Routes = () => {
           <Route path="/timeline-season-basespots/{id}" page={TimelineSeasonBasespotTimelineSeasonBasespotPage} name="timelineSeasonBasespot" />
           <Route path="/timeline-season-basespots" page={TimelineSeasonBasespotTimelineSeasonBasespotsPage} name="timelineSeasonBasespots" />
         </Set>
-        <Set wrap={ScaffoldLayout} title="TimelineSeasonEvents" titleTo="timelineSeasonEvents" buttonLabel="New TimelineSeasonEvent" buttonTo="newTimelineSeasonEvent">
-          <Route path="/timeline-season-events/new" page={TimelineSeasonEventNewTimelineSeasonEventPage} name="newTimelineSeasonEvent" />
-          <Route path="/timeline-season-events/{id}/edit" page={TimelineSeasonEventEditTimelineSeasonEventPage} name="editTimelineSeasonEvent" />
-          <Route path="/timeline-season-events/{id}" page={TimelineSeasonEventTimelineSeasonEventPage} name="timelineSeasonEvent" />
-          <Route path="/timeline-season-events" page={TimelineSeasonEventTimelineSeasonEventsPage} name="timelineSeasonEvents" />
-        </Set>
+
         <Set
           wrap={ScaffoldLayout}
           title="UserRecipes"
