@@ -8,6 +8,7 @@ import { db } from "src/lib/db";
 
 export const timelineSeasons: QueryResolvers["timelineSeasons"] = () => {
   return db.timelineSeason.findMany({
+    where: { created_by: context.currentUser.id },
     orderBy: { season_start_date: "asc" },
   });
 };
@@ -41,6 +42,9 @@ export const deleteTimelineSeason: MutationResolvers["deleteTimelineSeason"] =
   };
 
 export const TimelineSeason: TimelineSeasonRelationResolvers = {
+  Profile: (_obj, { root }) => {
+    return db.timelineSeason.findUnique({ where: { id: root?.id } }).Profile();
+  },
   Timeline: (_obj, { root }) => {
     return db.timelineSeason.findUnique({ where: { id: root?.id } }).Timeline();
   },

@@ -71,6 +71,7 @@ module.exports = {
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
+        montserrat: ["Montserrat"],
         // poppins2: ["Unifraktur Cook", "Poppins", "sans-serif"],
       },
     },
@@ -79,6 +80,7 @@ module.exports = {
     plugin(({ addVariant }) => {
       addVariant("dataready", '&[data-ready="true"]');
       addVariant("not-last", "&:not(:last-child)");
+      addVariant("not-only", "&:not(:only-child)");
       addVariant("not-firstlast", "&:not(:first-child):not(:last-child)");
     }),
   ],

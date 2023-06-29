@@ -1,11 +1,10 @@
 import { Link, routes } from "@redwoodjs/router";
 import { timeTag } from "src/lib/formatters";
 
-import type {
-  FindTimelines,
-} from "types/graphql";
+import type { FindTimelines } from "types/graphql";
 
 const TimelinesList = ({ timelines }: FindTimelines) => {
+  // TODO: Show timelines here from other users where the currentuser has partaken in any of the seasons
   return (
     <div className="rw-segment overflow-x-auto">
       <div className="flex gap-3">
@@ -29,16 +28,18 @@ const TimelinesList = ({ timelines }: FindTimelines) => {
                 's Timeline
               </div>
               <div className="mt-1 text-ellipsis whitespace-nowrap text-xs">
-                by <Link to={routes.profile({ id: Profile.id })}>{Profile.full_name}</Link>
+                by{" "}
+                <Link to={routes.profile({ id: Profile.id })}>
+                  {Profile.full_name}
+                </Link>
               </div>
               <div className="">
                 <span className="mt-2 whitespace-nowrap align-sub text-xs">
                   Created {timeTag(created_at)}
-                  {/* {pluralize(TimelineBasespot.length, "basespot")} */}
                 </span>
               </div>
               <p
-                className="mt-5 text-sm overflow-hidden"
+                className="mt-5 overflow-hidden text-sm"
                 style={{
                   display: "-webkit-box",
                   lineClamp: 3,
@@ -50,21 +51,19 @@ const TimelinesList = ({ timelines }: FindTimelines) => {
                   brave survivors embark on a tumultuous journey of survival and discovery. As they awaken on the enigmatic shores of Ark,
                   an isle infused with ancient secrets, they find themselves thrust into a primal struggle against nature's fury and formidable creatures."
               >
-                In the untamed expanse of Ark's mysterious world, where pre&shy;historic wonders and perilous challenges await at every turn,
-                brave survivors embark on a tumultuous journey of survival and discovery. As they awaken on the enigmatic shores of Ark,
-                an isle infused with ancient secrets, they find themselves thrust into a primal struggle against nature's fury and formidable creatures.
+                In the untamed expanse of Ark's mysterious world, where
+                pre&shy;historic wonders and perilous challenges await at every
+                turn, brave survivors embark on a tumultuous journey of survival
+                and discovery. As they awaken on the enigmatic shores of Ark, an
+                isle infused with ancient secrets, they find themselves thrust
+                into a primal struggle against nature's fury and formidable
+                creatures.
               </p>
-              <div className="rw-button-group rw-button-group-border justify-start mt-5" role="group">
-                <Link
-                  to={routes.timelineBasespots({ id })}
-                  className="rw-button"
-                >
-                  View Timeline
-                </Link>
-                <Link
-                  to={routes.timelineSeasons({ id })}
-                  className="rw-button"
-                >
+              <div
+                className="rw-button-group rw-button-group-border mt-5 justify-start"
+                role="group"
+              >
+                <Link to={routes.timelineSeasons({ id })} className="rw-button">
                   View Timeline Seasons
                 </Link>
               </div>

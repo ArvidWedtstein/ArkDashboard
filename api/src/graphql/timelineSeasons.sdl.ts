@@ -10,6 +10,8 @@ export const schema = gql`
     season_end_date: DateTime
     cluster: String
     timeline_id: String!
+    created_by: String
+    Profile: Profile
     Timeline: Timeline!
     TimelineSeasonBasespot: [TimelineSeasonBasespot]!
     TimelineSeasonEvent: [TimelineSeasonEvent]!
@@ -31,6 +33,7 @@ export const schema = gql`
     season_end_date: DateTime
     cluster: String
     timeline_id: String!
+    created_by: String
   }
 
   input UpdateTimelineSeasonInput {
@@ -43,6 +46,7 @@ export const schema = gql`
     season_end_date: DateTime
     cluster: String
     timeline_id: String
+    created_by: String
   }
 
   type Mutation {

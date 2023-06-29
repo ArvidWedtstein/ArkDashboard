@@ -8,7 +8,6 @@ import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/Timeli
 import { Modal } from "src/components/Util/Modal/Modal";
 import { timeTag } from "src/lib/formatters";
 
-
 import type {
   DeleteTimelineSeasonMutationVariables,
   FindTimelineSeasonById,
@@ -44,45 +43,52 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
   };
 
   const servers = {
-    "Elite Ark":
-    {
+    "Elite Ark": {
       icon: "https://eliteark.com/wp-content/uploads/2022/06/cropped-0_ark-logo.thumb_.png.36427f75c51aff4ecec55bba50fd194d.png",
-      badge: "rw-badge-blue-outline"
+      badge: "rw-badge-blue-outline",
     },
     "Bloody Ark": {
       icon: "https://preview.redd.it/cdje2wcsmr521.png?width=313&format=png&auto=webp&s=bf1e8347b8dcd066bcf3aace6a461b61e804570b",
-      badge: "rw-badge-red-outline"
+      badge: "rw-badge-red-outline",
     },
 
     Arkosic: {
       icon: "https://steamuserimages-a.akamaihd.net/ugc/2023839858710970915/3E075CEE248A0C9F9069EC7D12894F597E74A2CF/?imw=200&imh=200&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true",
-      badge: "rw-badge-green-outline"
-    }
+      badge: "rw-badge-green-outline",
+    },
   };
 
-  const [openModal, setOpenModal] = React.useState<'timelineseasonevent' | 'timelineseasonperson' | 'timelineseasonbasespot'>(null);
+  const [openModal, setOpenModal] = React.useState<
+    "timelineseasonevent" | "timelineseasonperson" | "timelineseasonbasespot"
+  >(null);
 
   return (
     <>
       <Modal
-        isOpen={openModal === 'timelineseasonevent'}
+        isOpen={openModal === "timelineseasonevent"}
         title="New TimelineSeasonEvent"
         onClose={() => setOpenModal(null)}
-        content={<NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />}
+        content={
+          <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
+        }
         actions={[]}
       />
       <Modal
-        isOpen={openModal === 'timelineseasonperson'}
+        isOpen={openModal === "timelineseasonperson"}
         title="Add person"
         onClose={() => setOpenModal(null)}
-        content={<NewTimelineSeasonPerson timeline_season_id={timelineSeason.id} />}
+        content={
+          <NewTimelineSeasonPerson timeline_season_id={timelineSeason.id} />
+        }
         actions={[]}
       />
       <Modal
-        isOpen={openModal === 'timelineseasonbasespot'}
+        isOpen={openModal === "timelineseasonbasespot"}
         title="Add Basespot"
         onClose={() => setOpenModal(null)}
-        content={<NewTimelineSeasonPerson timeline_season_id={timelineSeason.id} />}
+        content={
+          <NewTimelineSeasonPerson timeline_season_id={timelineSeason.id} />
+        }
         actions={[]}
       />
 
@@ -95,26 +101,41 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
       >
         <div className="flex justify-between pb-5">
           <div className="text-xl font-bold uppercase tracking-widest">
-            <span className="font-medium text-gray-900 dark:text-white align-middle">
-              {timelineSeason.server} {timelineSeason.cluster && (
-                <span className={`align-middle rw-badge ${servers[timelineSeason.server].badge}`}>
-                  {timelineSeason.cluster} <span className="border-l mx-2 border-current"></span> Season {timelineSeason.season}
+            <span className="align-middle font-medium text-gray-900 dark:text-white">
+              {timelineSeason.server}{" "}
+              {timelineSeason.cluster && (
+                <span
+                  className={`rw-badge align-middle ${
+                    servers[timelineSeason.server]?.badge
+                  }`}
+                >
+                  {timelineSeason.cluster}{" "}
+                  <span className="mx-2 border-l border-current"></span> Season{" "}
+                  {timelineSeason.season}
                 </span>
               )}
             </span>
           </div>
-          <div className="flex items-center text-sm opacity-50 space-x-3">
+          <div className="flex items-center space-x-3 text-sm opacity-50">
             {timeTag(timelineSeason.season_start_date)}
             <span>-</span>
             {timeTag(timelineSeason.season_end_date)}
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-5 fill-current">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 512 512"
+              className="w-5 fill-current"
+            >
               <path d="M272 249.4V128c0-8.844-7.156-16-16-16s-16 7.156-16 16v128c0 4.25 1.688 8.312 4.688 11.31l80 80C327.8 350.4 331.9 352 336 352s8.188-1.562 11.31-4.688c6.25-6.25 6.25-16.38 0-22.62L272 249.4zM255.1 0c-141.4 0-256 114.6-256 256s114.6 256 256 256s255.1-114.6 255.1-256S397.4 0 255.1 0zM256 480c-123.5 0-224-100.5-224-224s100.5-224 224-224s224 100.5 224 224S379.5 480 256 480z" />
             </svg>
           </div>
         </div>
         <div className="pt-12">
           <div className="mb-3 flex items-center space-x-1 opacity-75 [&>span:not(:last-child)]:after:content-[',']">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="mr-2 w-4 fill-current">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+              className="mr-2 w-4 fill-current"
+            >
               <path d="M431.6 225.6l-177.2-177.2c-9.021-9.021-26.84-16.4-39.6-16.4H28c-15.46 0-28 12.54-28 28v186.8c0 12.76 7.381 30.58 16.4 39.6l177.2 177.2C204.5 474.5 218.9 480 233.2 480c14.33 0 28.66-5.469 39.6-16.4l158.8-158.8C453.5 282.9 453.5 247.5 431.6 225.6zM408.1 282.2l-158.8 158.8C245.6 445.5 239.6 448 233.2 448c-6.412 0-12.44-2.496-16.97-7.029L39.03 263.8C36.01 260.8 32 251.1 32 246.8V64h182.8c4.273 0 13.95 4.006 16.97 7.029l177.2 177.2C413.5 252.8 416 258.8 416 265.2C416 271.6 413.5 277.6 408.1 282.2zM111.1 120c-13.25 0-24 10.74-24 24s10.75 24 24 24s24-10.74 24-24S125.2 120 111.1 120z" />
             </svg>
             {["Placeholder data", "Placeholder data"].map((tag) => (
@@ -123,20 +144,20 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               </span>
             ))}
           </div>
-          <h1 className="my-3 text-5xl font-bold">{timelineSeason.tribe_name}</h1>
+          <h1 className="my-3 text-5xl font-bold">
+            {timelineSeason.tribe_name}
+          </h1>
         </div>
       </header>
 
-      <div className="rw-segment flex gap-3 my-3">
+      <div className="rw-segment my-3 flex gap-3">
         <div className="w-full flex-1 basis-32">
-          <section className="w-full my-3 rounded-lg border border-zinc-500 bg-zinc-300 dark:bg-zinc-800 font-semibold text-black dark:text-white relative">
-            <div className="w-full p-3 mb-0 inline-flex items-center space-x-3">
-              <p className="underline underline-offset-8 flex-1">
-                Basespots
-              </p>
+          <section className="relative my-3 w-full rounded-lg border border-zinc-500 bg-zinc-300 font-semibold text-black dark:bg-zinc-800 dark:text-white">
+            <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
+              <p className="flex-1 underline underline-offset-8">Basespots</p>
               <button
                 className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
-                onClick={() => setOpenModal('timelineseasonbasespot')}
+                onClick={() => setOpenModal("timelineseasonbasespot")}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -151,7 +172,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               {/* TODO: move this to TimelineSeasonBasespots */}
               {timelineSeason.TimelineSeasonBasespot.map(
                 ({ id, Map: { name } }) => (
-                  <div className="flex justify-between border border-white rounded-lg">
+                  <div className="flex justify-between rounded-lg border border-white">
                     <Link
                       to={routes.timelineSeasonBasespot({ id: id.toString() })}
                       className={
@@ -188,14 +209,14 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
             </div>
           </section>
 
-          <section className="w-full my-3 rounded-lg border border-zinc-500 bg-zinc-300 dark:bg-zinc-800 font-semibold text-black dark:text-white relative">
-            <div className="w-full p-3 mb-0 inline-flex items-center space-x-3">
-              <p className="underline underline-offset-8 flex-1">
+          <section className="relative my-3 w-full rounded-lg border border-zinc-500 bg-zinc-300 font-semibold text-black dark:bg-zinc-800 dark:text-white">
+            <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
+              <p className="flex-1 underline underline-offset-8">
                 Persons in this season
               </p>
               <button
                 className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
-                onClick={() => setOpenModal('timelineseasonperson')}
+                onClick={() => setOpenModal("timelineseasonperson")}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -210,18 +231,15 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           </section>
 
           <section></section>
-
         </div>
 
-
-
-        <div className="h-screen grow-0 basis-72 pr-3 dark:text-white text-black my-3 space-y-3">
-          <div className="flex justify-between items-center">
+        <div className="my-3 h-screen grow-0 basis-72 space-y-3 pr-3 text-black dark:text-white">
+          <div className="flex items-center justify-between">
             <p>Bases</p>
           </div>
           <div className="py-3">
             <div className="text-xs">Today</div>
-            <div className="mt-3 flex items-center rounded-lg dark:bg-zinc-600 bg-zinc-300 border border-zinc-500 p-2">
+            <div className="mt-3 flex items-center rounded-lg border border-zinc-500 bg-zinc-300 p-2 dark:bg-zinc-600">
               <div className="w-8">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -249,19 +267,16 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
                 <p className="m-0 w-36 overflow-hidden text-ellipsis whitespace-nowrap text-sm leading-4">
                   Crouch Cave
                 </p>
-                <p className="download-text-info m-0 w-36 overflow-hidden text-ellipsis whitespace-nowrap text-xs leading-4">
-
-                </p>
+                <p className="download-text-info m-0 w-36 overflow-hidden text-ellipsis whitespace-nowrap text-xs leading-4"></p>
               </div>
             </div>
           </div>
 
-
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <p>Events</p>
             <button
               className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
-              onClick={() => setOpenModal('timelineseasonevent')}
+              onClick={() => setOpenModal("timelineseasonevent")}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -274,8 +289,8 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           </div>
 
           <TimelineSeasonEventsCell timeline_season_id={timelineSeason.id} />
-        </div >
-      </div >
+        </div>
+      </div>
       <nav className="rw-button-group">
         <Link
           to={routes.editTimelineSeason({ id: timelineSeason.id })}

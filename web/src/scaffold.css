@@ -238,7 +238,7 @@ a {
 }
 .rw-button-group.rw-button-group-border .rw-input,
 .rw-button-group.rw-button-group-border .rw-button {
-  @apply not-firstlast:border-l-0 border border-zinc-500 last:border-l-0;
+  @apply not-firstlast:border-l-0 not-only:last:border-l-0 border border-zinc-500;
 }
 
 .rw-form-wrapper .rw-button-group {
