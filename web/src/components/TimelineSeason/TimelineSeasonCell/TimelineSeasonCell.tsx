@@ -22,12 +22,13 @@ export const QUERY = gql`
           name
         }
       }
-      TimelineSeasonEvent {
-        id
-        title
-        content
-        tags
-        created_at
+      TimelineSeasonPerson {
+        user_id
+        ingame_name
+        Profile {
+          username
+          avatar_url
+        }
       }
     }
   }

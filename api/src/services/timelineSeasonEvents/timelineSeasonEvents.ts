@@ -2,16 +2,20 @@ import type {
   QueryResolvers,
   MutationResolvers,
   TimelineSeasonEventRelationResolvers,
+  TimelineSeason,
 } from "types/graphql";
 
 import { db } from "src/lib/db";
 
-export const timelineSeasonEvents: QueryResolvers["timelineSeasonEvents"] =
-  () => {
-    return db.timelineSeasonEvent.findMany({
-      orderBy: { created_at: "asc" },
-    });
-  };
+export const timelineSeasonEvents: QueryResolvers["timelineSeasonEvents"] = ({
+  timeline_season_id,
+}: Required<Pick<any, "timeline_season_id">>) => {
+  // TODO: fix type
+  return db.timelineSeasonEvent.findMany({
+    orderBy: { created_at: "asc" },
+    where: { timeline_season_id },
+  });
+};
 
 export const timelineSeasonEvent: QueryResolvers["timelineSeasonEvent"] = ({
   id,

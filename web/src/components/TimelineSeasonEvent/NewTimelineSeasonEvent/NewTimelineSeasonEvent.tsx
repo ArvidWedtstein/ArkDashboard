@@ -5,6 +5,7 @@ import { toast } from '@redwoodjs/web/toast'
 import TimelineSeasonEventForm from 'src/components/TimelineSeasonEvent/TimelineSeasonEventForm'
 
 import type { CreateTimelineSeasonEventInput } from 'types/graphql'
+import { QUERY } from '../TimelineSeasonEventsCell'
 
 const CREATE_TIMELINE_SEASON_EVENT_MUTATION = gql`
   mutation CreateTimelineSeasonEventMutation(
@@ -16,17 +17,17 @@ const CREATE_TIMELINE_SEASON_EVENT_MUTATION = gql`
   }
 `
 
-const NewTimelineSeasonEvent = () => {
+const NewTimelineSeasonEvent = ({ timeline_season_id }: { timeline_season_id: string }) => {
   const [createTimelineSeasonEvent, { loading, error }] = useMutation(
     CREATE_TIMELINE_SEASON_EVENT_MUTATION,
     {
       onCompleted: () => {
         toast.success('TimelineSeasonEvent created')
-        navigate(routes.timelineSeasonEvents())
       },
       onError: (error) => {
         toast.error(error.message)
       },
+      refetchQueries: [{ query: QUERY, variables: { timeline_season_id } }]
     }
   )
 
@@ -36,16 +37,17 @@ const NewTimelineSeasonEvent = () => {
 
   return (
     <div className="rw-segment">
-      <header className="rw-segment-header">
+      {/* <header className="rw-segment-header">
         <h2 className="rw-heading rw-heading-secondary">
-          New TimelineSeasonEvent
+          Create Event
         </h2>
-      </header>
-      <div className="rw-segment-main">
+      </header> */}
+      <div className="">
         <TimelineSeasonEventForm
           onSave={onSave}
           loading={loading}
           error={error}
+          timeline_season_id={timeline_season_id}
         />
       </div>
     </div>

@@ -3,18 +3,17 @@ import {
   FormError,
   FieldError,
   Label,
-  DatetimeLocalField,
   TextField,
   Submit,
+  TextAreaField,
 } from '@redwoodjs/forms'
-
-import { timeTag as formatDatetime } from 'src/lib/formatters'
 
 import type {
   EditTimelineSeasonEventById,
   UpdateTimelineSeasonEventInput,
 } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
+import Lookup from 'src/components/Util/Lookup/Lookup'
 
 type FormTimelineSeasonEvent = NonNullable<
   EditTimelineSeasonEventById['timelineSeasonEvent']
@@ -22,6 +21,7 @@ type FormTimelineSeasonEvent = NonNullable<
 
 interface TimelineSeasonEventFormProps {
   timelineSeasonEvent?: EditTimelineSeasonEventById['timelineSeasonEvent']
+  timeline_season_id?: string
   onSave: (
     data: UpdateTimelineSeasonEventInput,
     id?: FormTimelineSeasonEvent['id']
@@ -32,12 +32,13 @@ interface TimelineSeasonEventFormProps {
 
 const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
   const onSubmit = (data: FormTimelineSeasonEvent) => {
+    data.timeline_season_id = props.timeline_season_id
     props.onSave(data, props?.timelineSeasonEvent?.id)
   }
 
   return (
-    <div className="rw-form-wrapper">
-      <Form<FormTimelineSeasonEvent> onSubmit={onSubmit} error={props.error}>
+    <div className="rw-form-wrapper mt-3">
+      <Form<FormTimelineSeasonEvent> onSubmit={onSubmit} error={props.error} className='space-y-1 h-fit overflow-y-auto'>
         <FormError
           error={props.error}
           wrapperClassName="rw-form-error-wrapper"
@@ -45,93 +46,64 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
           listClassName="rw-form-error-list"
         />
 
-        <Label
-          name="updated_at"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Updated at
-        </Label>
+        <div className="relative max-w-sm">
+          <TextField
+            name="title"
+            defaultValue={props.timelineSeasonEvent?.title}
+            className="rw-float-input peer"
+            errorClassName="rw-float-input rw-input-error"
+            placeholder=""
+          />
+          <Label
+            name="title"
+            className="rw-float-label"
+            errorClassName="rw-float-label rw-label-error"
+          >
+            Title
+          </Label>
+          <FieldError name="title" className="rw-field-error" />
+        </div>
 
-        <DatetimeLocalField
-          name="updated_at"
-          defaultValue={formatDatetime(props.timelineSeasonEvent?.updated_at)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
+        <div className="relative max-w-sm">
+          <TextAreaField
+            name="content"
+            defaultValue={props.timelineSeasonEvent?.content}
+            className="rw-float-input peer"
+            errorClassName="rw-float-input rw-input-error"
+            placeholder=""
+          />
+          <Label
+            name="content"
+            className="rw-float-label"
+            errorClassName="rw-float-label rw-label-error"
+          >
+            Content
+          </Label>
+          <FieldError name="content" className="rw-field-error" />
+        </div>
 
-        <FieldError name="updated_at" className="rw-field-error" />
-
-        <Label
-          name="timeline_season_id"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Timeline season id
-        </Label>
-
-        <TextField
-          name="timeline_season_id"
-          defaultValue={props.timelineSeasonEvent?.timeline_season_id}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
-
-        <FieldError name="timeline_season_id" className="rw-field-error" />
-
-        <Label
-          name="title"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Title
-        </Label>
-
-        <TextField
-          name="title"
-          defaultValue={props.timelineSeasonEvent?.title}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="title" className="rw-field-error" />
-
-        <Label
-          name="content"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Content
-        </Label>
-
-        <TextField
-          name="content"
-          defaultValue={props.timelineSeasonEvent?.content}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="content" className="rw-field-error" />
-
-        <Label
-          name="map_id"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Map id
-        </Label>
-
-        <TextField
+        <Lookup
+          options={[
+            { label: "Valguero", value: 1 },
+            { label: "The Island", value: 2 },
+            { label: "The Center", value: 3 },
+            { label: "Ragnarok", value: 4 },
+            { label: "Aberration", value: 5 },
+            { label: "Extinction", value: 6 },
+            { label: "Scorched Earth", value: 7 },
+            { label: "Genesis", value: 8 },
+            { label: "Genesis 2", value: 9 },
+            { label: "Crystal Isles", value: 10 },
+            { label: "Fjordur", value: 11 },
+            { label: "Lost Island", value: 12 },
+          ]}
           name="map_id"
           defaultValue={props.timelineSeasonEvent?.map_id}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
+          placeholder='Select a map'
         />
-
         <FieldError name="map_id" className="rw-field-error" />
 
-        <Label
+        {/* <Label
           name="latitude"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
@@ -165,8 +137,9 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
           validation={{ valueAsNumber: true }}
         />
 
-        <FieldError name="longitude" className="rw-field-error" />
+        <FieldError name="longitude" className="rw-field-error" /> */}
 
+        {/* TODO: insert fileupload */}
         <Label
           name="images"
           className="rw-label"
@@ -184,23 +157,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
 
         <FieldError name="images" className="rw-field-error" />
 
-        <Label
-          name="created_by"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Created by
-        </Label>
-
-        <TextField
-          name="created_by"
-          defaultValue={props.timelineSeasonEvent?.created_by}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="created_by" className="rw-field-error" />
-
+        {/* TODO: Make tags input  */}
         <Label
           name="tags"
           className="rw-label"

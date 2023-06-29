@@ -1,6 +1,9 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
+import NewTimelineSeasonEvent from "src/components/TimelineSeasonEvent/NewTimelineSeasonEvent/NewTimelineSeasonEvent";
+import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
+import { Modal } from "src/components/Util/Modal/Modal";
 
 import { timeTag } from "src/lib/formatters";
 
@@ -38,8 +41,17 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
     }
   };
 
+  const [newTimelineSeasonEvent, setNewTimelineSeasonEvent] = React.useState<boolean>(false);
+
   return (
     <>
+      <Modal
+        isOpen={newTimelineSeasonEvent}
+        title="New TimelineSeasonEvent"
+        onClose={() => setNewTimelineSeasonEvent(false)}
+        content={<NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />}
+        actions={[]}
+      />
       <header className="rw-segment-header ml-0">
         <h2 className="rw-heading rw-heading-secondary ml-0">
           {timelineSeason.server} Season {timelineSeason.season}
@@ -89,77 +101,39 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
             )}
           </div>
 
-          <section className="my-3 rounded-lg border border-zinc-500 bg-zinc-800 text-center font-semibold text-white">
-            <p className="m-3 mx-auto mb-0 w-fit border-b">
-              Persons in this season
-            </p>
-            <div className="flex justify-between gap-3 overflow-x-auto px-6">
-              <div className="flex-none py-6 px-3">
-                <div className="flex flex-col items-center justify-center gap-3">
-                  <img
-                    className="h-16 w-16 rounded-full"
-                    src="https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80"
-                  />
-                  <strong className="text-xs font-medium text-slate-900 dark:text-slate-200">
-                    Andrew
-                  </strong>
+          <section className="w-full my-3 rounded-lg border border-zinc-500 bg-zinc-800 font-semibold text-white relative">
+            <div className="w-full p-3 mb-0 inline-flex items-center space-x-3">
+
+              <p className="underline underline-offset-8 flex-1">
+                Persons in this season
+              </p>
+              <button
+                className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
+                onClick={() => setNewTimelineSeasonEvent(true)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  className="rw-button-icon h-4 w-4 fill-current stroke-current"
+                >
+                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                </svg>
+              </button>
+            </div>
+            <div className="flex justify-start gap-3 overflow-x-auto px-6">
+              {timelineSeason.TimelineSeasonPerson.map(({ user_id, ingame_name, Profile }) => (
+                <div className="flex-none py-6 px-3">
+                  <div className="flex flex-col items-center justify-center gap-3">
+                    <img
+                      className="h-16 w-16 rounded-full"
+                      src={Profile?.avatar_url ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${Profile.avatar_url}` : `https://ui-avatars.com/api/?name=${ingame_name}`}
+                    />
+                    <strong className="text-xs font-medium text-slate-900 dark:text-slate-200">
+                      {Profile ? <Link to={routes.profile({ id: user_id })}>{Profile.username}</Link> : ingame_name}
+                    </strong>
+                  </div>
                 </div>
-              </div>
-              <div className="flex-none py-6 px-3">
-                <div className="flex flex-col items-center justify-center gap-3">
-                  <img
-                    className="h-16 w-16 rounded-full"
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80"
-                  />
-                  <strong className="text-xs font-medium text-slate-900 dark:text-slate-200">
-                    Emily
-                  </strong>
-                </div>
-              </div>
-              <div className="flex-none py-6 px-3">
-                <div className="flex flex-col items-center justify-center gap-3">
-                  <img
-                    className="h-16 w-16 rounded-full"
-                    src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80"
-                  />
-                  <strong className="text-xs font-medium text-slate-900 dark:text-slate-200">
-                    Whitney
-                  </strong>
-                </div>
-              </div>
-              <div className="flex-none py-6 px-3">
-                <div className="flex flex-col items-center justify-center gap-3">
-                  <img
-                    className="h-16 w-16 rounded-full"
-                    src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80"
-                  />
-                  <strong className="text-xs font-medium text-slate-900 dark:text-slate-200">
-                    David
-                  </strong>
-                </div>
-              </div>
-              <div className="flex-none py-6 px-3">
-                <div className="flex flex-col items-center justify-center gap-3">
-                  <img
-                    className="h-16 w-16 rounded-full"
-                    src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80"
-                  />
-                  <strong className="text-xs font-medium text-slate-900 dark:text-slate-200">
-                    Kristin
-                  </strong>
-                </div>
-              </div>
-              <div className="flex-none py-6 px-3">
-                <div className="flex flex-col items-center justify-center gap-3">
-                  <img
-                    className="h-16 w-16 rounded-full"
-                    src="https://images.unsplash.com/photo-1605405748313-a416a1b84491?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80"
-                  />
-                  <strong className="text-xs font-medium text-slate-900 dark:text-slate-200">
-                    Sarah
-                  </strong>
-                </div>
-              </div>
+              ))}
             </div>
           </section>
 
@@ -384,177 +358,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           </div> */}
         </div>
 
-        {/* <Modal
-        isOpen={isRaided}
-        onClose={() => setIsRaided(false)}
-        form={
-          <div className="flex flex-col items-center justify-center">
-            <p className="text-lg text-gray-700 dark:text-white">
-              Please fill out the form below to report the raid.
-            </p>
-            <fieldset className="rw-form-group">
-              <legend>Raid Form</legend>
-              <div>
-                <div>
-                  <Label
-                    name="raid_start"
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Raid Start date
-                  </Label>
 
-                  <DatetimeLocalField
-                    name="raid_start"
-                    className="rw-input"
-                    errorClassName="rw-input rw-input-error"
-                    validation={{ required: true }}
-                  />
-
-                  <FieldError name="raid_start" className="rw-field-error" />
-                </div>
-                <div>
-                  <Label
-                    name="raid_end"
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Raid End date
-                  </Label>
-
-                  <DatetimeLocalField
-                    name="raid_end"
-                    className="rw-input"
-                    errorClassName="rw-input rw-input-error"
-                    emptyAs={null}
-                  />
-
-                  <FieldError name="raid_end" className="rw-field-error" />
-                </div>
-              </div>
-              <div>
-                <div>
-                  <Label
-                    name="raid_comment"
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Raid Comment
-                  </Label>
-
-                  <TextAreaField
-                    name="raid_comment"
-                    className="rw-input"
-                    errorClassName="rw-input rw-input-error"
-                  />
-
-                  <FieldError name="raid_comment" className="rw-field-error" />
-                </div>
-                <div>
-                  <Label
-                    name="attackers"
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Attackers
-                  </Label>
-
-                  <TextAreaField
-                    name="attackers"
-                    className="rw-input"
-                    errorClassName="rw-input rw-input-error"
-                  />
-                  <p className="rw-helper-text">
-                    Player names, comma seperated
-                  </p>
-
-                  <FieldError name="attackers" className="rw-field-error" />
-                </div>
-                <div>
-                  <Label
-                    name="base_survived"
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Base Survived?
-                  </Label>
-
-                  <CheckboxField
-                    name="base_survived"
-                    className="rw-input"
-                    errorClassName="rw-input rw-input-error"
-                  />
-                  <p className="rw-helper-text">Did base survived raid?</p>
-
-                  <FieldError name="base_survived" className="rw-field-error" />
-                </div>
-              </div>
-              <div>
-                <div>
-                  <Label
-                    name="tribe_name"
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Tribe Name
-                  </Label>
-
-                  <TextField
-                    name="tribe_name"
-                    className="rw-input"
-                    errorClassName="rw-input rw-input-error"
-                  />
-                  <p className="rw-helper-text">
-                    Name of tribe who started the raid
-                  </p>
-
-                  <FieldError name="tribe_name" className="rw-field-error" />
-                </div>
-                <div>
-                  <Label
-                    name="defenders"
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Defenders
-                  </Label>
-
-                  <TextAreaField
-                    name="defenders"
-                    className="rw-input"
-                    errorClassName="rw-input rw-input-error"
-                  />
-                  <p className="rw-helper-text">
-                    Name of players who defended, comma seperated
-                  </p>
-
-                  <FieldError name="defenders" className="rw-field-error" />
-                </div>
-              </div>
-            </fieldset>
-          </div>
-        }
-        formSubmit={(data) => {
-          data.preventDefault();
-          const formData = new FormData(data.currentTarget);
-          createTimelineBasespotRaid({
-            variables: {
-              input: {
-                raid_start: formData.get("raid_start") || new Date(),
-                raid_end: convertToDate(formData.get("raid_end")),
-                raid_comment: formData.get("raid_comment"),
-                attacker_players: formData.get("attacker_players"),
-                base_survived: formData.get("base_survived"),
-                tribe_name: formData.get("tribe_name"),
-                defenders: formData.get("defenders"),
-              },
-            },
-          });
-          setIsRaided(false);
-        }}
-      /> */}
-
-        {/* TODO: Add map with all basespots, add option for adding persons */}
 
         <div className="h-screen grow-0 basis-72 p-6 text-white">
           <p>Downloads</p>
@@ -606,89 +410,12 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           </div>
 
           <p>Events</p>
-          {/* TODO: Make modal for event */}
-          <div className="relative mt-3 max-h-80 overflow-y-auto rounded-lg border border-zinc-500 bg-zinc-800 px-4">
-            <ul className="relative w-full border-l border-gray-200 py-3">
-              {/* group by date */}
-              {timelineSeason.TimelineSeasonEvent.map(
-                ({ title, content, tags, created_at }, idx) => (
-                  <li className="mb-10 ml-6">
-                    <span className="absolute -left-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-blue-100 dark:bg-white">
-                      {/* <svg aria-hidden="true" className="w-3 h-3 text-blue-800 dark:text-black" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd"></path>
-                  </svg> */}
-                    </span>
-                    <h3 className="-ml-2 mt-2 mb-1 flex items-center text-xs text-gray-900 dark:text-white">
-                      {new Date(created_at).toLocaleTimeString("en-GB", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                      {idx == 0 && (
-                        <span className="mr-2 ml-3 rounded bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                          Latest
-                        </span>
-                      )}
-                    </h3>
-                    <p className="text-sm font-semibold">{title}</p>
-                    <p className="mb-4 text-sm font-normal text-gray-500 dark:text-gray-400">
-                      {content}
-                    </p>
-                    <div className="flex h-fit space-x-2">
-                      <div className="flex">
-                        <img
-                          className="rounded"
-                          src="https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80"
-                        />
-                      </div>
-                      <div className="flex">
-                        <img
-                          className="rounded"
-                          src="https://images.unsplash.com/photo-1498855926480-d98e83099315?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80"
-                        />
-                      </div>
-                      <div className=" flex">
-                        <img
-                          className="rounded"
-                          src="https://images.unsplash.com/photo-1492648272180-61e45a8d98a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80"
-                        />
-                      </div>
-                    </div>
-                  </li>
-                )
-              )}
-            </ul>
-          </div>
+          <TimelineSeasonEventsCell timeline_season_id={timelineSeason.id} />
 
-          {/* <div className="h-[150px] w-full flex pl-1">
-            <div className="h-full w-[2px] bg-white flex justify-between flex-col relative pt-3">
-              <div className="ml-2 text-xs space-x-2">
-                <span className="absolute w-3 h-3 rounded-full -left-1 border bg-white" />
-                <span>15:30</span>
-              </div>
-              <div className="ml-2 text-xs space-x-2">
-                <span className="absolute w-3 h-3 rounded-full -left-1 border bg-white" />
-                <span>18:30</span>
-              </div>
-            </div>
-            <div className="py-6 px-3">
-              <div className="flex h-fit space-x-2 pt-3">
-                <div className="flex">
-                  <img className='ml-2 rounded' src="https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80" />
-                </div>
-                <div className="flex">
-                  <img className='ml-2 rounded' src="https://images.unsplash.com/photo-1498855926480-d98e83099315?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80" />
-                </div>
-                <div className=" flex">
-                  <img className='ml-2 rounded' src="https://images.unsplash.com/photo-1492648272180-61e45a8d98a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80" />
-                </div>
-              </div>
-              <div className="text-xs ml-3 mt-3">
-                Received <span className="text-gray-400">3 images</span> total  <span className="text-gray-400">50.3 MB</span>
-              </div>
-            </div>
-          </div> */}
-        </div>
-      </div>
+          {/* TODO: move to modal */}
+          {/* <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} /> */}
+        </div >
+      </div >
       <nav className="rw-button-group">
         <Link
           to={routes.editTimelineSeason({ id: timelineSeason.id })}

@@ -64,7 +64,6 @@ export const Success = ({
     {
       onCompleted: () => {
         toast.success('TimelineSeasonEvent updated')
-        navigate(routes.timelineSeasonEvents())
       },
       onError: (error) => {
         toast.error(error.message)
@@ -83,12 +82,13 @@ export const Success = ({
     <div className="rw-segment">
       <header className="rw-segment-header">
         <h2 className="rw-heading rw-heading-secondary">
-          Edit TimelineSeasonEvent {timelineSeasonEvent?.id}
+          Edit TimelineSeasonEvent {timelineSeasonEvent?.title}
         </h2>
       </header>
       <div className="rw-segment-main">
         <TimelineSeasonEventForm
           timelineSeasonEvent={timelineSeasonEvent}
+          timeline_season_id={timelineSeasonEvent?.timeline_season_id}
           onSave={onSave}
           error={error}
           loading={loading}

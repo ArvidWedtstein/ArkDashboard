@@ -55,7 +55,8 @@ export const schema = gql`
   """
   type Query {
     "Fetch TimelineSeasonEvents."
-    timelineSeasonEvents: [TimelineSeasonEvent!]! @requireAuth
+    timelineSeasonEvents(timeline_season_id: String!): [TimelineSeasonEvent!]!
+      @requireAuth
 
     "Fetch a TimelineSeasonEvent by id."
     timelineSeasonEvent(id: String!): TimelineSeasonEvent @requireAuth
@@ -155,4 +156,4 @@ export const schema = gql`
     "Deletes an existing TimelineSeasonEvent."
     deleteTimelineSeasonEvent(id: String!): TimelineSeasonEvent! @requireAuth
   }
-`
+`;

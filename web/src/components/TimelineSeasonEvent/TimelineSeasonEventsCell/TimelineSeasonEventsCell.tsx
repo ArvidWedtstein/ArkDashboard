@@ -6,8 +6,8 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import TimelineSeasonEvents from 'src/components/TimelineSeasonEvent/TimelineSeasonEvents'
 
 export const QUERY = gql`
-  query FindTimelineSeasonEvents {
-    timelineSeasonEvents {
+  query FindTimelineSeasonEvents($timeline_season_id: String!) {
+    timelineSeasonEvents: timelineSeasonEvents(timeline_season_id: $timeline_season_id) {
       id
       created_at
       updated_at
@@ -23,7 +23,7 @@ export const QUERY = gql`
     }
   }
 `
-
+// TODO: Update skeleton loader to list
 export const Loading = () => (
   <div
     role="status"

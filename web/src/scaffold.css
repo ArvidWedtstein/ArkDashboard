@@ -259,10 +259,17 @@ a {
 // ----------------------------
 */
 .rw-input {
-  @apply block rounded-lg border border-zinc-500 bg-zinc-300 px-4 py-2.5 text-sm text-gray-900 !placeholder-zinc-700 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 disabled:cursor-not-allowed disabled:text-gray-400 contrast-more:border-black contrast-more:placeholder-black dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200 dark:!placeholder-zinc-300 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white;
+  @apply block rounded-lg border border-zinc-500 bg-zinc-300 px-4 py-2.5 text-sm text-gray-900 !placeholder-zinc-700 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 disabled:cursor-not-allowed disabled:text-gray-400 contrast-more:border-black contrast-more:placeholder-black dark:bg-zinc-600 dark:text-stone-200 dark:!placeholder-zinc-300 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white;
 }
 .rw-input.rw-input-small {
   @apply py-1 px-2 text-xs;
+}
+
+.rw-float-input {
+  @apply focus:border-pea-600 dark:focus:border-pea-500 block w-full appearance-none rounded-lg border border-zinc-500 bg-zinc-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:outline-none focus:ring-0 dark:bg-zinc-600 dark:text-white;
+}
+.rw-float-label {
+  @apply peer-focus:text-pea-600 peer-focus:dark:text-pea-500 absolute top-4 left-1 z-10 origin-[0] -translate-y-4 scale-75 transform px-2 text-sm text-gray-500 duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-4 peer-focus:-translate-y-4 peer-focus:scale-75 dark:text-gray-400;
 }
 
 /* Underline */
