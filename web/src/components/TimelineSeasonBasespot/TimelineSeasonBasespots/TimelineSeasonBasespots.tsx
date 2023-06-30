@@ -1,11 +1,8 @@
 import { Link, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
-import Table from 'src/components/Util/Table/Table'
 
 import { QUERY } from 'src/components/TimelineSeasonBasespot/TimelineSeasonBasespotsCell'
-import { timeTag, truncate } from 'src/lib/formatters'
-
 import type {
   DeleteTimelineSeasonBasespotMutationVariables,
   FindTimelineSeasonBasespots,
@@ -52,81 +49,43 @@ const TimelineSeasonBasespotsList = ({
   }
 
   return (
-    <div className="rw-segment rw-table-wrapper-responsive">
-      <table className="rw-table">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Created at</th>
-            <th>Updated at</th>
-            <th>Start date</th>
-            <th>End date</th>
-            <th>Basespot id</th>
-            <th>Map</th>
-            <th>Created by</th>
-            <th>Latitude</th>
-            <th>Longitude</th>
-            <th>Timeline season id</th>
-            <th>&nbsp;</th>
-          </tr>
-        </thead>
-        <tbody>
-          {timelineSeasonBasespots.map((timelineSeasonBasespot) => (
-            <tr key={timelineSeasonBasespot.id}>
-              <td>{truncate(timelineSeasonBasespot.id)}</td>
-              <td>{timeTag(timelineSeasonBasespot.created_at)}</td>
-              <td>{timeTag(timelineSeasonBasespot.updated_at)}</td>
-              <td>{timeTag(timelineSeasonBasespot.start_date)}</td>
-              <td>{timeTag(timelineSeasonBasespot.end_date)}</td>
-              <td>{truncate(timelineSeasonBasespot.basespot_id)}</td>
-              <td>{truncate(timelineSeasonBasespot.map)}</td>
-              <td>{truncate(timelineSeasonBasespot.created_by)}</td>
-              <td>{truncate(timelineSeasonBasespot.latitude)}</td>
-              <td>{truncate(timelineSeasonBasespot.longitude)}</td>
-              <td>{truncate(timelineSeasonBasespot.timeline_season_id)}</td>
-              <td>
-                <nav className="rw-table-actions">
-                  <Link
-                    to={routes.timelineSeasonBasespot({
-                      id: timelineSeasonBasespot.id,
-                    })}
-                    title={
-                      'Show timelineSeasonBasespot ' +
-                      timelineSeasonBasespot.id +
-                      ' detail'
-                    }
-                    className="rw-button rw-button-small"
-                  >
-                    Show
-                  </Link>
-                  <Link
-                    to={routes.editTimelineSeasonBasespot({
-                      id: timelineSeasonBasespot.id,
-                    })}
-                    title={
-                      'Edit timelineSeasonBasespot ' + timelineSeasonBasespot.id
-                    }
-                    className="rw-button rw-button-small rw-button-blue"
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    type="button"
-                    title={
-                      'Delete timelineSeasonBasespot ' +
-                      timelineSeasonBasespot.id
-                    }
-                    className="rw-button rw-button-small rw-button-red"
-                    onClick={() => onDeleteClick(timelineSeasonBasespot.id)}
-                  >
-                    Delete
-                  </button>
-                </nav>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="grid h-fit grid-cols-4 gap-3 p-3">
+      {timelineSeasonBasespots.map(
+        ({ id, Map: { name } }) => (
+          <div className="flex justify-between rounded-lg border border-white" key={id}>
+            <Link
+              to={routes.timelineSeasonBasespot({ id: id.toString() })}
+              className={
+                "group relative flex h-auto w-full overflow-hidden rounded-xl"
+              }
+            >
+              <img
+                className="h-full w-full object-cover transition-all duration-200 ease-in group-hover:scale-110"
+                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/13/20220618173551_1.jpg?t=2023-06-28T09%3A03%3A09.582Z`}
+                alt=""
+              />
+              <div
+                className="absolute flex h-full w-full flex-col items-end justify-end p-3"
+                style={{
+                  background:
+                    "linear-gradient(0deg, #001022cc 0%, #f0f4fd33 90%)",
+                }}
+              >
+                <div className="flex w-full justify-between text-left">
+                  <div className="w-full">
+                    <p className="m-0 overflow-hidden text-ellipsis whitespace-nowrap text-xs text-white">
+                      Basespot
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <span className="absolute right-3 top-3 z-10 rounded-[10px] bg-[#8b9ca380] py-1 px-3 text-xs text-white">
+                {name}
+              </span>
+            </Link>
+          </div>
+        )
+      )}
     </div>
   )
 }

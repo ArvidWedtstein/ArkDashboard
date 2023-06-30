@@ -8,13 +8,13 @@ import {
   Submit,
 } from '@redwoodjs/forms'
 
-import { timeTag as formatDatetime } from 'src/lib/formatters'
 
 import type {
   EditTimelineSeasonBasespotById,
   UpdateTimelineSeasonBasespotInput,
 } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
+import Lookup from 'src/components/Util/Lookup/Lookup'
 
 type FormTimelineSeasonBasespot = NonNullable<
   EditTimelineSeasonBasespotById['timelineSeasonBasespot']
@@ -22,6 +22,7 @@ type FormTimelineSeasonBasespot = NonNullable<
 
 interface TimelineSeasonBasespotFormProps {
   timelineSeasonBasespot?: EditTimelineSeasonBasespotById['timelineSeasonBasespot']
+  timeline_season_id?: string
   onSave: (
     data: UpdateTimelineSeasonBasespotInput,
     id?: FormTimelineSeasonBasespot['id']
@@ -32,6 +33,7 @@ interface TimelineSeasonBasespotFormProps {
 
 const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
   const onSubmit = (data: FormTimelineSeasonBasespot) => {
+    data.timeline_season_id = props.timeline_season_id
     props.onSave(data, props?.timelineSeasonBasespot?.id)
   }
 
@@ -45,43 +47,28 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
           listClassName="rw-form-error-list"
         />
 
-        <Label
-          name="updated_at"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Updated at
-        </Label>
+        <div className="relative max-w-sm">
+          <DatetimeLocalField
+            name="start_date"
+            defaultValue={
+              props.timelineSeasonBasespot?.start_date ?? new Date(new Date().toString().split('GMT')[0] + ' UTC').toISOString().split('.')[0].toString().slice(0, -3)
+            }
+            className="rw-float-input peer"
+            errorClassName="rw-float-input rw-input-error"
+            validation={{
+              valueAsDate: true,
+            }}
+          />
+          <Label
+            name="start_date"
+            className="rw-float-label"
+            errorClassName="rw-float-label rw-label-error"
+          >
+            Start date
+          </Label>
 
-        <DatetimeLocalField
-          name="updated_at"
-          defaultValue={formatDatetime(
-            props.timelineSeasonBasespot?.updated_at
-          )}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="updated_at" className="rw-field-error" />
-
-        <Label
-          name="start_date"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Start date
-        </Label>
-
-        <DatetimeLocalField
-          name="start_date"
-          defaultValue={formatDatetime(
-            props.timelineSeasonBasespot?.start_date
-          )}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="start_date" className="rw-field-error" />
+          <FieldError name="start_date" className="rw-field-error" />
+        </div>
 
         <Label
           name="end_date"
@@ -93,13 +80,14 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
 
         <DatetimeLocalField
           name="end_date"
-          defaultValue={formatDatetime(props.timelineSeasonBasespot?.end_date)}
+          defaultValue={props.timelineSeasonBasespot?.end_date}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
         />
 
         <FieldError name="end_date" className="rw-field-error" />
 
+        {/* TODO: Insert basespot lookup */}
         <Label
           name="basespot_id"
           className="rw-label"
@@ -117,92 +105,72 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
 
         <FieldError name="basespot_id" className="rw-field-error" />
 
-        <Label
-          name="map"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Map
-        </Label>
-
-        <TextField
+        <Lookup
+          options={[
+            { label: "Valguero", value: 1 },
+            { label: "The Island", value: 2 },
+            { label: "The Center", value: 3 },
+            { label: "Ragnarok", value: 4 },
+            { label: "Aberration", value: 5 },
+            { label: "Extinction", value: 6 },
+            { label: "Scorched Earth", value: 7 },
+            { label: "Genesis", value: 8 },
+            { label: "Genesis 2", value: 9 },
+            { label: "Crystal Isles", value: 10 },
+            { label: "Fjordur", value: 11 },
+            { label: "Lost Island", value: 12 },
+          ]}
           name="map"
           defaultValue={props.timelineSeasonBasespot?.map}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
+          placeholder='Select a map'
+          className='mt-3'
         />
-
         <FieldError name="map" className="rw-field-error" />
 
-        <Label
-          name="created_by"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Created by
-        </Label>
+        <div className='rw-button-group'>
+          <div className="relative max-w-sm" role="textbox">
+            <TextField
+              name="latitude"
+              defaultValue={
+                props.timelineSeasonBasespot?.latitude ?? 0
+              }
+              className="rw-float-input peer"
+              errorClassName="rw-float-input rw-input-error"
+              validation={{ valueAsNumber: true }}
+            />
+            <Label
+              name="latitude"
+              className="rw-float-label"
+              errorClassName="rw-float-label rw-label-error"
+            >
+              Latitude
+            </Label>
 
-        <TextField
-          name="created_by"
-          defaultValue={props.timelineSeasonBasespot?.created_by}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
+            <FieldError name="latitude" className="rw-field-error" />
+            <input type="hidden" />
+          </div>
+          <div className="relative max-w-sm" role="textbox">
+            <input type="hidden" />
+            <TextField
+              name="longitude"
+              defaultValue={
+                props.timelineSeasonBasespot?.longitude ?? 0
+              }
+              className="rw-float-input peer"
+              errorClassName="rw-float-input rw-input-error"
+              validation={{ valueAsNumber: true }}
+            />
+            <Label
+              name="longitude"
+              className="rw-float-label"
+              errorClassName="rw-float-label rw-label-error"
+            >
+              Longitude
+            </Label>
 
-        <FieldError name="created_by" className="rw-field-error" />
-
-        <Label
-          name="latitude"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Latitude
-        </Label>
-
-        <TextField
-          name="latitude"
-          defaultValue={props.timelineSeasonBasespot?.latitude}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsNumber: true }}
-        />
-
-        <FieldError name="latitude" className="rw-field-error" />
-
-        <Label
-          name="longitude"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Longitude
-        </Label>
-
-        <TextField
-          name="longitude"
-          defaultValue={props.timelineSeasonBasespot?.longitude}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsNumber: true }}
-        />
-
-        <FieldError name="longitude" className="rw-field-error" />
-
-        <Label
-          name="timeline_season_id"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Timeline season id
-        </Label>
-
-        <TextField
-          name="timeline_season_id"
-          defaultValue={props.timelineSeasonBasespot?.timeline_season_id}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="timeline_season_id" className="rw-field-error" />
+            <FieldError name="longitude" className="rw-field-error" />
+          </div>
+        </div>
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">

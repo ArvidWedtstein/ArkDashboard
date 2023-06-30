@@ -16,7 +16,7 @@ const CREATE_TIMELINE_SEASON_BASESPOT_MUTATION = gql`
   }
 `
 
-const NewTimelineSeasonBasespot = () => {
+const NewTimelineSeasonBasespot = ({ timeline_season_id }: { timeline_season_id: string }) => {
   const [createTimelineSeasonBasespot, { loading, error }] = useMutation(
     CREATE_TIMELINE_SEASON_BASESPOT_MUTATION,
     {
@@ -36,13 +36,9 @@ const NewTimelineSeasonBasespot = () => {
 
   return (
     <div className="rw-segment">
-      <header className="rw-segment-header">
-        <h2 className="rw-heading rw-heading-secondary">
-          New TimelineSeasonBasespot
-        </h2>
-      </header>
       <div className="rw-segment-main">
         <TimelineSeasonBasespotForm
+          timeline_season_id={timeline_season_id}
           onSave={onSave}
           loading={loading}
           error={error}

@@ -121,7 +121,7 @@ const Lookup = ({
 
 
   return (
-    <div className="relative flex items-center" ref={ref}>
+    <div className="relative flex items-center w-fit" ref={ref}>
       <div
         onClick={() => !disabled && setIsComponentVisible(true)}
         className={clsx(

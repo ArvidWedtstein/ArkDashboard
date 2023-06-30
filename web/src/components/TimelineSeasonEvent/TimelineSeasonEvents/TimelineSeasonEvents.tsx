@@ -48,7 +48,7 @@ const TimelineSeasonEventsList = ({
   //   }
   // }
   return (
-    <div className="relative mt-3 max-h-80 overflow-y-auto rounded-lg border border-zinc-500 bg-zinc-300 dark:bg-zinc-800 px-4 dark:text-white text-zinc-700">
+    <div className="relative mt-3 max-h-96 overflow-y-auto rounded-lg border border-zinc-500 bg-zinc-300 dark:bg-zinc-800 px-4 dark:text-white text-zinc-700">
       <ul className="relative w-full border-l dark:border-zinc-300 border-zinc-600 py-3">
         {timelineSeasonEvents && Object.entries(groupBy(timelineSeasonEvents, 'created_at')).map(
           ([date, timeGroup], i) => (

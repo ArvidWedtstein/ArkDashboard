@@ -1,6 +1,8 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
+import NewTimelineSeasonBasespot from "src/components/TimelineSeasonBasespot/NewTimelineSeasonBasespot/NewTimelineSeasonBasespot";
+import TimelineSeasonBasespotsCell from "src/components/TimelineSeasonBasespot/TimelineSeasonBasespotsCell";
 import NewTimelineSeasonEvent from "src/components/TimelineSeasonEvent/NewTimelineSeasonEvent/NewTimelineSeasonEvent";
 import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
 import NewTimelineSeasonPerson from "src/components/TimelineSeasonPerson/NewTimelineSeasonPerson/NewTimelineSeasonPerson";
@@ -64,6 +66,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
 
   return (
     <>
+      {/* TODO: add editforms here too */}
       <Modal
         isOpen={openModal === "timelineseasonevent"}
         title="New TimelineSeasonEvent"
@@ -87,7 +90,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
         title="Add Basespot"
         onClose={() => setOpenModal(null)}
         content={
-          <NewTimelineSeasonPerson timeline_season_id={timelineSeason.id} />
+          <NewTimelineSeasonBasespot timeline_season_id={timelineSeason.id} />
         }
         actions={[]}
       />
@@ -105,9 +108,8 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               {timelineSeason.server}{" "}
               {timelineSeason.cluster && (
                 <span
-                  className={`rw-badge align-middle ${
-                    servers[timelineSeason.server]?.badge
-                  }`}
+                  className={`rw-badge align-middle ${servers[timelineSeason.server]?.badge
+                    }`}
                 >
                   {timelineSeason.cluster}{" "}
                   <span className="mx-2 border-l border-current"></span> Season{" "}
@@ -130,7 +132,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           </div>
         </div>
         <div className="pt-12">
-          <div className="mb-3 flex items-center space-x-1 opacity-75 [&>span:not(:last-child)]:after:content-[',']">
+          {/* <div className="mb-3 flex items-center space-x-1 opacity-75 [&>span:not(:last-child)]:after:content-[',']">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 448 512"
@@ -143,15 +145,15 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
                 {tag}
               </span>
             ))}
-          </div>
+          </div> */}
           <h1 className="my-3 text-5xl font-bold">
             {timelineSeason.tribe_name}
           </h1>
         </div>
       </header>
 
-      <div className="rw-segment my-3 flex gap-3">
-        <div className="w-full flex-1 basis-32">
+      <div className="rw-segment my-3 flex gap-3 h-min">
+        <div className="w-full flex-1 basis-32 h-fit">
           <section className="relative my-3 w-full rounded-lg border border-zinc-500 bg-zinc-300 font-semibold text-black dark:bg-zinc-800 dark:text-white">
             <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
               <p className="flex-1 underline underline-offset-8">Basespots</p>
@@ -168,45 +170,8 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
                 </svg>
               </button>
             </div>
-            <div className="grid h-fit grid-cols-4 gap-3 p-3">
-              {/* TODO: move this to TimelineSeasonBasespots */}
-              {timelineSeason.TimelineSeasonBasespot.map(
-                ({ id, Map: { name } }) => (
-                  <div className="flex justify-between rounded-lg border border-white">
-                    <Link
-                      to={routes.timelineSeasonBasespot({ id: id.toString() })}
-                      className={
-                        "group relative flex h-auto w-full overflow-hidden rounded-xl"
-                      }
-                    >
-                      <img
-                        className="h-full w-full object-cover transition-all duration-200 ease-in group-hover:scale-110"
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/13/20220618173551_1.jpg?t=2023-06-28T09%3A03%3A09.582Z`}
-                        alt=""
-                      />
-                      <div
-                        className="absolute flex h-full w-full flex-col items-end justify-end p-3"
-                        style={{
-                          background:
-                            "linear-gradient(0deg, #001022cc 0%, #f0f4fd33 90%)",
-                        }}
-                      >
-                        <div className="flex w-full justify-between text-left">
-                          <div className="w-full">
-                            <p className="m-0 overflow-hidden text-ellipsis whitespace-nowrap text-xs text-white">
-                              Basespot
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <span className="absolute right-3 top-3 z-10 rounded-[10px] bg-[#8b9ca380] py-1 px-3 text-xs text-white">
-                        {name}
-                      </span>
-                    </Link>
-                  </div>
-                )
-              )}
-            </div>
+
+            <TimelineSeasonBasespotsCell timeline_season_id={timelineSeason.id} />
           </section>
 
           <section className="relative my-3 w-full rounded-lg border border-zinc-500 bg-zinc-300 font-semibold text-black dark:bg-zinc-800 dark:text-white">
@@ -233,8 +198,8 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           <section></section>
         </div>
 
-        <div className="my-3 h-screen grow-0 basis-72 space-y-3 pr-3 text-black dark:text-white">
-          <div className="flex items-center justify-between">
+        <div className="my-3 h-fit grow-0 basis-72 space-y-3 pr-3 text-black dark:text-white">
+          {/* <div className="flex items-center justify-between">
             <p>Bases</p>
           </div>
           <div className="py-3">
@@ -270,7 +235,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
                 <p className="download-text-info m-0 w-36 overflow-hidden text-ellipsis whitespace-nowrap text-xs leading-4"></p>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="flex items-center justify-between">
             <p>Events</p>
