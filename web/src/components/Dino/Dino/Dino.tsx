@@ -15,13 +15,7 @@ import {
   debounce,
   clamp,
 } from "src/lib/formatters";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  useTransition,
-} from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type {
   DeleteDinoMutationVariables,
@@ -32,7 +26,6 @@ import clsx from "clsx";
 import Table from "src/components/Util/Table/Table";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import Counter from "src/components/Util/Counter/Counter";
-import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
 import { useAuth } from "src/auth";
 
 const DELETE_DINO_MUTATION = gql`
@@ -1482,7 +1475,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
               <p className="my-3 text-center text-base dark:text-gray-200">
                 With selected food:
               </p>
-              <section className="mt-3 rounded-t-md bg-zinc-300 p-4 dark:bg-zinc-600 dark:text-white">
+              <section className="mt-3 rounded-t-md border border-zinc-500 bg-zinc-300 p-4 dark:bg-zinc-600 dark:text-white">
                 <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
                   {[
                     {
@@ -1543,7 +1536,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                   ].map(({ name, sub, icon }, i) => (
                     <li
                       key={`taming-stage-${i}`}
-                      className="flex items-center space-x-2.5 [&>*]:border-black [&>*]:fill-black [&>*]:dark:border-white [&>*]:dark:fill-white [&:last-of-type>svg]:hidden"
+                      className="[&>*]:fill-secondary-button [&>*]:border-secondary-button flex items-center space-x-2.5 [&>*]:dark:border-white [&>*]:dark:fill-white [&:last-of-type>svg]:hidden"
                     >
                       <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border p-3">
                         {icon}
@@ -1572,7 +1565,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 </ol>
               </section>
 
-              <section className="rounded-b-md bg-zinc-200 p-4 dark:bg-zinc-700 dark:text-white">
+              <section className="rounded-b-md border border-t-0 border-zinc-500 bg-zinc-200 p-4 dark:bg-zinc-700 dark:text-white">
                 <div className="relative my-3 grid grid-cols-5 gap-4 text-center">
                   <div className="flex flex-col items-center">
                     <p className="font-light">
@@ -1614,7 +1607,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                         <img
                           src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${name
                             .replace("Min", "")
-                            .toLowerCase()}.png`}
+                            .toLowerCase()}.webp`}
                           alt=""
                           className="w-12"
                         />
@@ -1646,7 +1639,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                         <div
                           key={`weapon-${id}`}
                           className={clsx(
-                            `animate-fade-in my-1 flex min-h-full min-w-[8rem] flex-1 flex-col items-center justify-between space-y-1 rounded bg-zinc-200 p-3 first:ml-1 last:mr-1 dark:bg-zinc-600`,
+                            `animate-fade-in dark:bg-secondary-button my-1 flex min-h-full min-w-[8rem] flex-1 flex-col items-center justify-between space-y-1 rounded bg-zinc-200 p-3 first:ml-1 last:mr-1`,
                             {
                               "shadow-pea-500 shadow":
                                 isPossible && chanceOfDeath < 99,
@@ -2052,9 +2045,14 @@ const Dino = ({ dino, itemsByIds }: Props) => {
             },
             { field: "format", header: "" },
           ]}
-          rows={Object.entries(dino.movement["w"]).map(([k, m]: any) => {
-            return { ...m, format: "Foundation/s", name: k };
-          })}
+          rows={Object.entries(dino.movement["w"]).map(
+            ([k, m]: [
+              k: string,
+              m: { swim?: number; base?: number; fly?: number; sprint?: number }
+            ]) => {
+              return { ...m, format: "Foundation/s", name: k };
+            }
+          )}
         />
       )}
 

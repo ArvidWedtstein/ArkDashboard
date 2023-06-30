@@ -97,6 +97,5 @@ export const Failure = ({ error }: CellFailureProps) => (
 export const Success = ({
   timelineSeasons,
 }: CellSuccessProps<FindTimelineSeasons>) => {
-  console.log(timelineSeasons);
   return <TimelineSeasons timelineSeasons={timelineSeasons} />;
 };
