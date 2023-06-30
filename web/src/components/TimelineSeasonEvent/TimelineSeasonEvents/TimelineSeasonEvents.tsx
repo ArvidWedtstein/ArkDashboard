@@ -1,6 +1,8 @@
 
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
+import { useEffect, useState } from 'react'
+import { useAuth } from 'src/auth'
 
 import { QUERY } from 'src/components/TimelineSeasonEvent/TimelineSeasonEventsCell'
 import { timeTag, truncate, groupBy } from 'src/lib/formatters'
@@ -47,6 +49,8 @@ const TimelineSeasonEventsList = ({
   //     deleteTimelineSeasonEvent({ variables: { id } })
   //   }
   // }
+
+
   return (
     <div className="relative mt-3 max-h-96 overflow-y-auto rounded-lg border border-zinc-500 bg-zinc-300 dark:bg-zinc-800 px-4 dark:text-white text-zinc-700">
       <ul className="relative w-full border-l dark:border-zinc-300 border-zinc-600 py-3">
@@ -58,7 +62,7 @@ const TimelineSeasonEventsList = ({
                   dateStyle: "medium",
                 })}
               </li>
-              {timeGroup.map(({ title, content, tags, created_at }, idx) => (
+              {timeGroup.map(({ id, title, content, tags, created_at, images }, idx) => (
                 <li className="mb-10 ml-6" key={`date-event-${idx}`}>
                   <span className="absolute -left-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-zinc-600 dark:bg-zinc-300">
                     {/* <svg aria-hidden="true" className="w-3 h-3 text-blue-800 dark:text-black" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -81,24 +85,14 @@ const TimelineSeasonEventsList = ({
                     {content}
                   </p>
                   <div className="flex h-fit space-x-2">
-                    <div className="flex">
-                      <img
-                        className="rounded"
-                        src="https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80"
-                      />
-                    </div>
-                    <div className="flex">
-                      <img
-                        className="rounded"
-                        src="https://images.unsplash.com/photo-1498855926480-d98e83099315?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80"
-                      />
-                    </div>
-                    <div className=" flex">
-                      <img
-                        className="rounded"
-                        src="https://images.unsplash.com/photo-1492648272180-61e45a8d98a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80"
-                      />
-                    </div>
+                    {images && images.split(', ').slice(0, 3).map((url, index) => (
+                      <div className="flex" key={`event-${id}-image-${index}`}>
+                        <img
+                          className="rounded h-16 aspect-square"
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineeventimages/${url}`}
+                        />
+                      </div>
+                    ))}
                   </div>
                 </li>
               ))}

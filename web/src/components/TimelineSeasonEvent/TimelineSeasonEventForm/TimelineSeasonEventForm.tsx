@@ -6,6 +6,7 @@ import {
   TextField,
   Submit,
   TextAreaField,
+  CheckboxField,
 } from '@redwoodjs/forms'
 
 import type {
@@ -34,11 +35,11 @@ interface TimelineSeasonEventFormProps {
 
 const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
   const [files, setFiles] = useState<string[]>([])
+  const [raid, isRaid] = useState<boolean>(false)
   const onSubmit = (data: FormTimelineSeasonEvent) => {
 
     data.timeline_season_id = props.timeline_season_id
     data.images = files.join(', ')
-    console.log(data)
     props.onSave(data, props?.timelineSeasonEvent?.id)
   }
 
@@ -88,6 +89,20 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
           <FieldError name="content" className="rw-field-error" />
         </div>
 
+        <input type="checkbox" className='rw-input' checked={raid} onChange={(e) => isRaid(e.currentTarget.checked)} />
+
+        {/* TODO: Insert lookup with basespots on this season here */}
+        {raid && (<Lookup
+          options={[
+            { label: "Crack", value: 1 },
+            { label: "TWaterfall", value: 2 },
+
+          ]}
+          name="basespot_id"
+          defaultValue={props.timelineSeasonEvent?.map_id}
+          placeholder='Select a Base Spot'
+        />
+        )}
         <Lookup
           options={[
             { label: "Valguero", value: 1 },
