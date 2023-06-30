@@ -50,9 +50,6 @@ export const TimelineSeason: TimelineSeasonRelationResolvers = {
   Profile: (_obj, { root }) => {
     return db.timelineSeason.findUnique({ where: { id: root?.id } }).Profile();
   },
-  Timeline: (_obj, { root }) => {
-    return db.timelineSeason.findUnique({ where: { id: root?.id } }).Timeline();
-  },
   TimelineSeasonBasespot: (_obj, { root }) => {
     return db.timelineSeason
       .findUnique({ where: { id: root?.id } })

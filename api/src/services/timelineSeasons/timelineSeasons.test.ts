@@ -36,26 +36,6 @@ describe('timelineSeasons', () => {
     }
   )
 
-  scenario('creates a timelineSeason', async (scenario: StandardScenario) => {
-    const result = await createTimelineSeason({
-      input: { timeline_id: scenario.timelineSeason.two.timeline_id },
-    })
-
-    expect(result.timeline_id).toEqual(scenario.timelineSeason.two.timeline_id)
-  })
-
-  scenario('updates a timelineSeason', async (scenario: StandardScenario) => {
-    const original = (await timelineSeason({
-      id: scenario.timelineSeason.one.id,
-    })) as TimelineSeason
-    const result = await updateTimelineSeason({
-      id: original.id,
-      input: { timeline_id: scenario.timelineSeason.two.timeline_id },
-    })
-
-    expect(result.timeline_id).toEqual(scenario.timelineSeason.two.timeline_id)
-  })
-
   scenario('deletes a timelineSeason', async (scenario: StandardScenario) => {
     const original = (await deleteTimelineSeason({
       id: scenario.timelineSeason.one.id,

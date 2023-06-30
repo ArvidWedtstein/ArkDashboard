@@ -1,14 +1,8 @@
 import {
-  Link,
   NavLink,
   routes,
-  useLocation,
-  useMatch,
-  useParams,
 } from "@redwoodjs/router";
-import clsx from "clsx";
 import { memo } from "react";
-import { singularize } from "src/lib/formatters";
 const Icon = (icon: string) => {
   // FontAwesome Light Icons
   const icons = {
@@ -140,7 +134,7 @@ const Sidebar = memo(({ }) => {
     },
     {
       name: "Story",
-      href: routes.timelines(),
+      href: routes.timelineSeasons(),
       color: "!ring-sky-200 !bg-sky-400",
     },
     {

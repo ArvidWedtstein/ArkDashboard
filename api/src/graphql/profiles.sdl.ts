@@ -18,9 +18,9 @@ export const schema = gql`
     Profile: Profile
     other_Profile: [Profile]!
     Role_Role_created_byToProfile: [Role]!
-    Timeline: [Timeline]!
     TimelineBasespot: [TimelineBasespot]!
     TimelineBasespotPerson: [TimelineBasespotPerson]!
+    TimelineSeason: [TimelineSeason]!
     TimelineSeasonBasespot: [TimelineSeasonBasespot]!
     TimelineSeasonEvent: [TimelineSeasonEvent]!
     TimelineSeasonEvent_TimelineSeasonEvent_updated_byToProfile: [TimelineSeasonEvent]!
@@ -78,4 +78,4 @@ export const schema = gql`
       @requireAuth
       @hasPermission(permission: "user_delete")
   }
-`;
+`

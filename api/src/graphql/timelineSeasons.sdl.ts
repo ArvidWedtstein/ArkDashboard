@@ -9,10 +9,8 @@ export const schema = gql`
     season_start_date: DateTime
     season_end_date: DateTime
     cluster: String
-    timeline_id: String!
     created_by: String
     Profile: Profile
-    Timeline: Timeline!
     TimelineSeasonBasespot: [TimelineSeasonBasespot]!
     TimelineSeasonEvent: [TimelineSeasonEvent]!
     TimelineSeasonPerson: [TimelineSeasonPerson]!
@@ -32,7 +30,6 @@ export const schema = gql`
     season_start_date: DateTime
     season_end_date: DateTime
     cluster: String
-    timeline_id: String!
     created_by: String
   }
 
@@ -45,7 +42,6 @@ export const schema = gql`
     season_start_date: DateTime
     season_end_date: DateTime
     cluster: String
-    timeline_id: String
     created_by: String
   }
 

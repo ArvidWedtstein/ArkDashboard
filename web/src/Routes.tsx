@@ -259,29 +259,6 @@ const Routes = () => {
         </Set>
         <Set
           wrap={ScaffoldLayout}
-          title="Timelines"
-          titleTo="timelines"
-          buttonLabel="New Timeline"
-          buttonTo="newTimeline"
-        >
-          <Route
-            path="/timelines/new"
-            page={TimelineNewTimelinePage}
-            name="newTimeline"
-          />
-          {/* <Route
-            path="/timelines/{id:String}"
-            page={TimelineTimelinePage}
-            name="timeline"
-          /> */}
-          <Route
-            path="/timelines"
-            page={TimelineTimelinesPage}
-            name="timelines"
-          />
-        </Set>
-        <Set
-          wrap={ScaffoldLayout}
           title="TimelineBasespots"
           titleTo="timelineBasespots"
           buttonLabel="New TimelineBasespot"
