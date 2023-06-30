@@ -7,7 +7,7 @@ import NewTimelineSeasonEvent from "src/components/TimelineSeasonEvent/NewTimeli
 import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
 import NewTimelineSeasonPerson from "src/components/TimelineSeasonPerson/NewTimelineSeasonPerson/NewTimelineSeasonPerson";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
-import { Modal } from "src/components/Util/Modal/Modal";
+import { Modal, RefModal } from "src/components/Util/Modal/Modal";
 import { timeTag } from "src/lib/formatters";
 
 import type {
@@ -67,9 +67,18 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
   return (
     <>
       {/* TODO: add editforms here too */}
-      <Modal
+      {/* <Modal
         isOpen={openModal === "timelineseasonevent"}
         title="New TimelineSeasonEvent"
+        onClose={() => setOpenModal(null)}
+        content={
+          <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
+        }
+        actions={[]}
+      /> */}
+      <RefModal
+        isOpen={openModal === "timelineseasonevent"}
+        title="Add Basespot"
         onClose={() => setOpenModal(null)}
         content={
           <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />

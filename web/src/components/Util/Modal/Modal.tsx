@@ -31,15 +31,6 @@ export const RefModal = ({
   //   setIsComponentVisible(isOpen);
   // }, [isOpen, onClose]);
 
-  // useEffect(() => {
-  //   // if (isComponentVisible) {
-  //   //   console.log("modalRef", modalRef);
-  //   //   onClose();
-  //   // }
-  //   console.log("modalRef", modalRef)
-  //   if (modalRef.current) setIsComponentVisible(!isComponentVisible);
-  // }, [modalRef]);
-
   return (
     <div
       tabIndex={-1}
@@ -121,14 +112,19 @@ export const Modal = ({
         }`}
     >
       <div className="relative top-1/2 left-1/2 h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2">
+        {!form && (
+          <div className="relative rounded-lg bg-white shadow dark:bg-zinc-700">
+
+          </div>
+        )}
         <Form
           onSubmit={(e) => {
+            e.preventDefault();
             formSubmit && formSubmit(e);
             e.currentTarget.reset();
           }}
           className="relative rounded-lg bg-white shadow dark:bg-zinc-700"
         >
-          {/* <div className="relative rounded-lg bg-white shadow dark:bg-gray-700"> */}
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
             {title && (
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -195,3 +191,4 @@ export const Modal = ({
     </div>
   );
 };
+

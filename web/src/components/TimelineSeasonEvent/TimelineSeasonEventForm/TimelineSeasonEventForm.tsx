@@ -14,6 +14,8 @@ import type {
 } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
 import Lookup from 'src/components/Util/Lookup/Lookup'
+import FileUpload from 'src/components/Util/FileUpload/FileUpload'
+import { useState } from 'react'
 
 type FormTimelineSeasonEvent = NonNullable<
   EditTimelineSeasonEventById['timelineSeasonEvent']
@@ -31,8 +33,12 @@ interface TimelineSeasonEventFormProps {
 }
 
 const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
+  const [files, setFiles] = useState<string[]>([])
   const onSubmit = (data: FormTimelineSeasonEvent) => {
+
     data.timeline_season_id = props.timeline_season_id
+    data.images = files.join(', ')
+    console.log(data)
     props.onSave(data, props?.timelineSeasonEvent?.id)
   }
 
@@ -139,23 +145,9 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
 
         <FieldError name="longitude" className="rw-field-error" /> */}
 
-        {/* TODO: insert fileupload */}
-        <Label
-          name="images"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Images
-        </Label>
-
-        <TextField
-          name="images"
-          defaultValue={props.timelineSeasonEvent?.images}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="images" className="rw-field-error" />
+        <FileUpload storagePath='timelineeventimages' multiple name="images" onUpload={(e) => {
+          setFiles((prev) => [...prev, e])
+        }} />
 
         {/* TODO: Make tags input  */}
         <Label

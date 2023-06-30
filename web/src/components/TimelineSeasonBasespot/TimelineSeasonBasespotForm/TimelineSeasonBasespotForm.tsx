@@ -70,7 +70,8 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
           <FieldError name="start_date" className="rw-field-error" />
         </div>
 
-        <Label
+        {/* TODO: set enddate automatically when raid is registered in TimelineSeasonEvent form */}
+        {/* <Label
           name="end_date"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
@@ -85,7 +86,7 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
           errorClassName="rw-input rw-input-error"
         />
 
-        <FieldError name="end_date" className="rw-field-error" />
+        <FieldError name="end_date" className="rw-field-error" /> */}
 
         {/* TODO: Insert basespot lookup */}
         <Label

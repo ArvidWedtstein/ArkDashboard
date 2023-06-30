@@ -52,7 +52,7 @@ const TimelineSeasonEventsList = ({
       <ul className="relative w-full border-l dark:border-zinc-300 border-zinc-600 py-3">
         {timelineSeasonEvents && Object.entries(groupBy(timelineSeasonEvents, 'created_at')).map(
           ([date, timeGroup], i) => (
-            <>
+            <React.Fragment key={`date-${i}`}>
               <li key={`date-${i}`} className="my-3 ml-3">
                 {new Date(date).toLocaleDateString("en-GB", {
                   dateStyle: "medium",
@@ -102,7 +102,7 @@ const TimelineSeasonEventsList = ({
                   </div>
                 </li>
               ))}
-            </>
+            </React.Fragment>
           )
         )}
       </ul>
