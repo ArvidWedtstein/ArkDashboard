@@ -15,7 +15,6 @@ export const QUERY = gql`
       max_stack
       weight
       engram_points
-      crafting_time
       stats
       color
       type
@@ -46,7 +45,6 @@ export const QUERY = gql`
         id
         crafted_item_id
         crafting_station_id
-        crafting_time
         yields
         Item_ItemRecipe_crafting_station_idToItem {
           id

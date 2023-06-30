@@ -90,7 +90,7 @@ const Profile = ({ profile }: Props) => {
                         new Date(profile.created_at).getFullYear() +
                         (new Date().getMonth() -
                           new Date(profile.created_at).getMonth()) /
-                          12
+                        12
                       ).toPrecision(1)}
                     </span>
                     <span className="text-sm text-gray-600 dark:text-stone-300">

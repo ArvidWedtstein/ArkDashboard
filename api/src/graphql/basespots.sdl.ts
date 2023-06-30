@@ -7,7 +7,7 @@ export const schema = gql`
     longitude: Float!
     image: String
     created_at: DateTime
-    map: BigInt!
+    map_id: BigInt!
     estimated_for_players: String
     defense_images: String
     created_by: String
@@ -17,6 +17,7 @@ export const schema = gql`
     Profile: Profile
     Map: Map!
     TimelineBasespot: [TimelineBasespot]!
+    TimelineSeasonBasespot: [TimelineSeasonBasespot]!
   }
 
   type BasespotPage {
@@ -38,7 +39,7 @@ export const schema = gql`
     longitude: Float!
     image: String
     created_at: DateTime
-    map: BigInt!
+    map_id: BigInt!
     estimated_for_players: String
     defense_images: String
     created_by: String
@@ -54,7 +55,7 @@ export const schema = gql`
     longitude: Float
     image: String
     created_at: DateTime
-    map: BigInt
+    map_id: BigInt
     estimated_for_players: String
     defense_images: String
     created_by: String

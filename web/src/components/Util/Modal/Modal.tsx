@@ -31,15 +31,6 @@ export const RefModal = ({
   //   setIsComponentVisible(isOpen);
   // }, [isOpen, onClose]);
 
-  // useEffect(() => {
-  //   // if (isComponentVisible) {
-  //   //   console.log("modalRef", modalRef);
-  //   //   onClose();
-  //   // }
-  //   console.log("modalRef", modalRef)
-  //   if (modalRef.current) setIsComponentVisible(!isComponentVisible);
-  // }, [modalRef]);
-
   return (
     <div
       tabIndex={-1}
@@ -121,14 +112,19 @@ export const Modal = ({
         }`}
     >
       <div className="relative top-1/2 left-1/2 h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2">
+        {!form && (
+          <div className="relative rounded-lg bg-white shadow dark:bg-zinc-700">
+
+          </div>
+        )}
         <Form
           onSubmit={(e) => {
+            e.preventDefault();
             formSubmit && formSubmit(e);
             e.currentTarget.reset();
           }}
           className="relative rounded-lg bg-white shadow dark:bg-zinc-700"
         >
-          {/* <div className="relative rounded-lg bg-white shadow dark:bg-gray-700"> */}
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
             {title && (
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -138,8 +134,9 @@ export const Modal = ({
             <button
               type="button"
               className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
-              onClick={() => {
-                onClose();
+              onClick={(e) => {
+                e.currentTarget.form.reset();
+                onClose && onClose();
               }}
             >
               <svg
@@ -171,24 +168,27 @@ export const Modal = ({
             {form && formSubmit && form}
           </div>
           <div className="flex items-center space-x-2 rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
-            <button
-              className="rw-button rw-button-blue"
-              onClick={() => onClose()}
-              type={form && formSubmit ? "submit" : "button"}
-            >
-              {form && formSubmit ? "Submit" : "OK"}
-            </button>
-            <button
-              data-modal-toggle="defaultModal"
-              onClick={() => onClose()}
-              type="button"
-              className="rw-button rw-button-red-outline"
-            >
-              Cancel
-            </button>
+            {!actions && (
+              <><button
+                className="rw-button rw-button-blue"
+                onClick={() => onClose()}
+                type={form && formSubmit ? "submit" : "button"}
+              >
+                {form && formSubmit ? "Submit" : "OK"}
+              </button>
+                <button
+                  data-modal-toggle="defaultModal"
+                  onClick={() => onClose()}
+                  type="button"
+                  className="rw-button rw-button-red-outline"
+                >
+                  Cancel
+                </button>
+              </>)}
           </div>
         </Form>
       </div>
     </div>
   );
 };
+

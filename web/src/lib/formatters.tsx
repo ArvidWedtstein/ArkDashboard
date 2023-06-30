@@ -59,7 +59,6 @@ export const jsonTruncate = (obj: unknown, maxlength: number = 150) => {
   return truncate(JSON.stringify(obj, null, 2), maxlength);
 };
 
-
 // const dateFormatter = new Intl.DateTimeFormat("en-GB", {
 // 	day: "2-digit",
 // 	month: "2-digit",
@@ -75,20 +74,24 @@ export const jsonTruncate = (obj: unknown, maxlength: number = 150) => {
 // 	minute: "2-digit",
 // 	timeZone: "utc",
 // });
+interface options {
+  dateStyle?: "long" | "short" | "full" | "medium",
+  timeStyle?: "long" | "short" | "full" | "medium"
+}
 /**
  * Renders a formatted time tag element.
  *
  * @param dateTime - The date and time value to format and display.
  * @returns The formatted time tag element or an empty string if `dateTime` is not provided.
  */
-export const timeTag = (dateTime?: string | Date): string | React.ReactNode => {
+export const timeTag = (dateTime?: string | Date, { dateStyle, timeStyle }: options = {}): React.ReactNode => {
   if (!dateTime) {
     return "";
   }
 
   const formattedDateTime = new Date(dateTime).toLocaleString("en-GB", {
-    timeStyle: "short",
-    dateStyle: "long",
+    timeStyle: timeStyle || "short",
+    dateStyle: dateStyle || "long",
   });
 
   return (
@@ -255,7 +258,6 @@ export const combineBySummingKeys = (...objects: object[]) => {
 export const getBaseMaterials = (
   baseMaterials: boolean = false,
   items: any[],
-  // crafting_stations?: any[],
   ...objects: Array<any>
 ) => {
   let materials = [];
@@ -323,7 +325,6 @@ export const getBaseMaterials = (
   objects.forEach((item) => {
     findBaseMaterials(item, item.amount, item.yields);
   });
-  // console.log(materials);
   return materials;
 };
 
@@ -544,162 +545,153 @@ export const getDateDiff = (date1: Date, date2: Date) => {
   };
 };
 
-export const generatePDF = () => {
-  // Create an array to store PDF content
-  var content = [];
+/**
+ * Generates a pdf from an array of your choice
+ */
 
-  // Add PDF header
-  content.push("%PDF-1.3");
-
-  // Define a function to generate PDF object numbers
-  var generateObjectNumber = function () {
-    var objectNumber = content.length / 2 + 1;
-    return Math.floor(objectNumber);
+export const generatePDF = (crafts) => {
+  const pages = []
+  const tableSize = {
+    width: 612,
+    height: 792,
   };
 
-  // Add PDF content
-  var objectNumber = generateObjectNumber();
-  content.push("1 0 obj");
-  content.push("<< /Type /Catalog /Pages 2 0 R >>");
-  content.push("endobj");
+  const content = [];
+  const columnWidths = [100, 20, 30]
 
-  objectNumber = generateObjectNumber();
-  content.push("2 0 obj");
-  content.push("<< /Type /Pages /Kids [3 0 R] /Count 1 >>");
-  content.push("endobj");
 
-  objectNumber = generateObjectNumber();
-  content.push("3 0 obj");
-  content.push(
-    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>"
-  );
-  content.push("endobj");
+  // https://blog.idrsolutions.com/make-your-own-pdf-file-part-5-path-objects/
 
-  objectNumber = generateObjectNumber();
-  content.push("4 0 obj");
-  content.push("<< /Length 66 >>");
-  content.push("stream");
-  content.push("BT");
-  content.push("/F1 12 Tf");
-  content.push("72 720 Td");
+  const newobj = (name, obj: string[]) => {
+    content.push(...[`${name} 0 obj`, obj.join('\n'), "endobj"]);
+  };
 
-  // Define table properties
-  var tableX = 72;
-  var tableY = 700;
-  var cellPadding = 10;
-  var tableWidth = 400;
-  var tableHeight = 300;
+  const newpage = (pageref, size, contentref) => {
+    pages.push(`${pageref} 0 R`);
+    newobj(pageref, [`<< /Type /Page`, `/Parent 2 0 R`, `/Resources 4 0 R`, `/Contents ${contentref}`, `/MediaBox [0 0 ${size.width} ${size.height}]`, `>>`]);
+  };
+  /**
+   *
+   * @param x text from left
+   * @param y  text from top
+   * @param text text to write
+   * @param size font size
+   * @returns a string to write text
+   */
+  const text = (x, y, text, size) => [`BT`, `/F1 ${size} Tf`, `${x} ${tableSize.height - y} Td`, `(${text}) Tj`, `ET`].join('\n');
 
-  // Generate table content
-  // const crafts = mergeItemRecipe(viewBaseMaterials, items, ...item);
-  const crafts = [];
-  crafts.forEach((item, i) => {
-    for (let col = 0; col < 3; col++) {
-      var cellX = tableX + col * (tableWidth / 3);
-      var cellY = tableY - i * (tableHeight / crafts.length);
+  const rect = (x, y, width, height, fill: boolean = true, color: string = "0 0 0 ") => [`${color} rg`, `${x} ${tableSize.height - y} ${width} ${height} re ${fill ? 'f' : ''} S`, `0 0 0 rg`].join('\n')
 
-      // Line start
-      content.push(
-        cellX + " " + (cellY + 5 - tableHeight / crafts.length) + " m"
-      );
+  /**
+   * @param x x coordinate
+   * @param y y coordinate
+   * @param lines lines to draw
+   * @returns a string to draw lines
+   * @example
+   * lines(0, 0, [
+   * { x: 0, y: 0, c: [{ x: 0, y: 0 }] },
+   * { x: 0, y: 0, c: [{ x: 0, y: 0 }] },
+   * ])
+   *
+   */
+  const line = (x = 0, y = 0, lines = []) => {
+    const path = [`${x} ${tableSize.height - y} m`];
+    lines.forEach((line) => {
+      path.push(`${line.x} ${tableSize.height - line.y} l`);
+    });
+    path.push("h");
+    path.push("S");
+    return path.join("\n");
+  };
 
-      // Line end
-      content.push(
-        cellX +
-        tableWidth / crafts.length +
-        " " +
-        (cellY + 5 - tableHeight / crafts.length) +
-        " l"
-      );
-      content.push("S");
+  const tableX = 72;
+  const textcolor = "0.2 0.2 0.2 rg";
+  const cellPadding = 3;
 
-      // Add table cell content
-      var textX = cellX + cellPadding;
-      var textY = cellY - cellPadding;
-      content.push("BT");
+  content.push("%PDF-2.0");
 
-      content.push("1 0 0 rg"); // Set font color to red (R: 1, G: 0, B: 0)
-      content.push("/F1 12 Tf");
+  newobj("1", [`<< /Type /Catalog /Pages 2 0 R >>`]);
 
-      if (i === 0) {
-        content.push(
-          cellX + " " + (cellY + 30 - tableHeight / crafts.length) + " m"
-        );
 
-        // Line end
-        content.push(
-          cellX +
-          tableWidth / crafts.length +
-          " " +
-          (cellY + 30 - tableHeight / crafts.length) +
-          " l"
-        );
-        content.push("S");
-        content.push(textX + " " + (textY + 20) + " Td");
-        switch (col) {
-          case 0:
-            content.push(`(Name) Tj`);
-            break;
-          case 1:
-            content.push(`(Amount) Tj`);
-            break;
-          case 2:
-            content.push(`(Time) Tj`);
-            break;
+  // newpage("3", tableSize, "6 0 R");
+
+  newobj("4", [`<< /Font << /F1 5 0 R >> >>`]);
+
+  newobj("5", [`<< /Type /Font /Subtype /Type1 /BaseFont /Papyrus >>`]);
+  // const generateObjectNumber = () => Math.floor(content.length / 2 + 1);
+  // newobj("6", [
+  //   `<< /Length 105 >>`,
+  //   `stream`,
+  //   text(72, 30, "Hello World!", 24),
+  //   text(72, 50, "Hello woooorld!", 24),
+  //   `endstream`,
+  // ]);
+
+  newpage("8", tableSize, `9 0 R`)
+
+  newobj("9", [
+    `<< /Length 105>>`,
+    `stream`,
+    rect(tableX - cellPadding * 2, 30 + crafts.length * 20, (tableX + (Object.keys(crafts[0]).length - 1) * (tableSize.width / Object.keys(crafts[0]).length)) + columnWidths[Object.keys(crafts[0]).length - 1], 40 + (crafts.length - 1) * 20 + cellPadding, true, `0.9 0.9 0.9`),
+    Object.keys(crafts[0]).map((key, col) => {
+      return [text(col === 0 ? tableX : 0 + col * (tableSize.width / Object.keys(crafts[0]).length), 20, key, 12), ...crafts.map((item, i) => {
+        const t = []
+        const cellX = (col === 0 ? tableX : 0) + col * (tableSize.width / Object.keys(crafts[0]).length);
+        // const cellX = (col === 0 ? tableX : 0) + columnWidths[col];
+        const cellY = 40 + i * 20;
+        // Line
+        col === 0 && t.push(`${textcolor}`);
+
+        // t.push(rect(cellX, cellY, tableSize.width / crafts.length, 12 + cellPadding * 2, false))
+        if (col === 0) {
+          t.push(line(cellX, cellY + cellPadding, [{ x: (tableX + (Object.keys(crafts[0]).length - 1) * (tableSize.width / Object.keys(crafts[0]).length)) + columnWidths[Object.keys(crafts[0]).length - 1], y: cellY + cellPadding }]));
         }
-        content.push("ET");
-      }
-      content.push("BT");
-      // content.push("/F1 12 Tf");
-      content.push(textX + " " + textY + " Td");
-      switch (col) {
-        case 0:
-          content.push("0 0 0 rg");
-          content.push(`(${item.Item_ItemRec_crafted_item_idToItem.name}) Tj`);
-          break;
-        case 1:
-          content.push("0 0 0 rg");
-          content.push(`(${item.amount * item.yields}) Tj`);
-          break;
-        case 2:
-          content.push("0 0 0 rg");
-          content.push(`(${item.crafting_time}s) Tj`);
-          break;
-      }
+        // Text
+        const textX = cellX + cellPadding;
+        const textY = cellY - cellPadding;
 
-      content.push("ET");
-    }
-  });
+        t.push(text(textX, textY, `${item[key]}`, 12));
 
-  content.push("ET");
-  content.push("endstream");
-  content.push("endobj");
+        t.push("0 0 0 rg");
 
-  // Add PDF trailer
-  var xrefOffset = content.join("\n").length;
+        return t.join("\n");
+      })].join('\n');
+
+    }).join("\n"),
+    "endstream"
+  ]);
+
+
+  newobj("2", [`<< /Type /Pages /Kids [${pages.join(' ')}] /Count ${pages.length} >>`]);
+  const xrefOffset = content.join("\n").length;
+
   content.push("xref");
-  content.push("0 " + (content.length / 2 + 1));
-  content.push("0000000000 65535 f ");
-  content.push("0000000009 00000 n ");
+  content.push(`0 ${content.length}`);
+  content.push(`
+  0 7
+0000000000 65535 f
+0000000009 00000 n
+0000000056 00000 n
+0000000111 00000 n
+0000000212 00000 n
+0000000250 00000 n
+0000000317 00000 n
+`)
   content.push("trailer");
-  content.push("<< /Size " + (content.length / 2 + 1) + " /Root 1 0 R >>");
+  content.push(`<< /Size ${content.length} /Root 1 0 R >>`);
   content.push("startxref");
-  content.push(xrefOffset);
-  content.push("%%EOF");
+  content.push(xrefOffset); // bytes from start of file to xref
+  content.push("%%EOF"); // end of file
 
-  // Join all PDF content into a string
-  var pdfContent = content.join("\n");
+  const pdfContent = content.join("\n");
+  const dataURI = `data:application/pdf;base64,${btoa(pdfContent)}`;
 
-  // Create a data URI for the PDF
-  var dataURI = "data:application/pdf;base64," + btoa(pdfContent);
-
-  // Open the PDF in a new window
-  var win = window.open();
+  const win = window.open();
   win.document.write(
-    '<iframe src="' +
-    dataURI +
-    '" style="width:100%; height:100%;" frameborder="0"></iframe>'
+    `<iframe src="${dataURI}" style="width:100%; height:100%;" frameborder="0"></iframe>`
   );
+
+  return dataURI;
 };
 
 /**
@@ -708,8 +700,8 @@ export const generatePDF = () => {
  * @param {Array} arr - The input array.
  * @return {Array} - The array with duplicates removed.
  */
-export const removeDuplicates = (arr: Array<any>): Array<any> => {
-  return [...new Set(arr)];
+export const removeDuplicates = (array: unknown[]): unknown[] => {
+  return [...new Set(array)];
 };
 
 /**
@@ -719,11 +711,15 @@ export const removeDuplicates = (arr: Array<any>): Array<any> => {
  * @param {string} key - The key to group by.
  * @return {Object} - An object where each key is a unique value of the provided key and the value is an array of elements that have that key value.
  */
-export const groupBy = (xs: Array<any>, key: string) => {
+
+export const groupBy = <T extends {}>(
+  array: T[],
+  key: string
+): { [groupKey: string]: T[] } => {
   const nestedKeys = key.split(".");
 
-  return xs.reduce((acc, obj) => {
-    let groupKey = obj;
+  return array.reduce((acc: { [groupKey: string]: T[] }, obj: T) => {
+    let groupKey: any = obj; // Use 'any' type for indexing
     for (const nestedKey of nestedKeys) {
       groupKey = groupKey[nestedKey];
     }
@@ -737,19 +733,6 @@ export const groupBy = (xs: Array<any>, key: string) => {
   }, {});
 };
 
-export const groupByObject = (
-  arr: Array<any>,
-  key: string
-): [group_object: any, grouped_items: any[]] => {
-  return arr.reduce((acc, obj) => {
-    const Thekey = JSON.stringify(obj[key]);
-    if (!acc[Thekey]) {
-      acc[Thekey] = [];
-    }
-    acc[Thekey].push(obj);
-    return acc;
-  }, {});
-};
 
 /**
  * @description debounce function for search fields
@@ -759,9 +742,13 @@ export const groupByObject = (
  * @example
  *  const handleSearch = debounce((e) => setSearch(e.target.value))
  */
-export const debounce = (func, wait = 300) => {
-  let timeout;
-  return function (...args) {
+export const debounce = <F extends (...args: any[]) => void>(
+  func: F,
+  wait = 300
+): ((...args: Parameters<F>) => void) => {
+  let timeout: ReturnType<typeof setTimeout>;
+
+  return function (this: any, ...args: Parameters<F>) {
     clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(this, args), wait);
   };
@@ -825,3 +812,30 @@ export type IntRange<F extends number, T extends number> = Exclude<
   Enumerate<T>,
   Enumerate<F>
 >;
+
+/**
+ * @description ensures that a key exists on an object
+ * @example
+ * type EnsureKeyExists<T, K extends keyof T> = Array<Required<Pick<T, K>> & Partial<T>>;
+ *
+ * interface ExampleObject {
+ *  id: number;
+ *  name: string;
+ *  age: number;
+ * }
+ *
+ * const array: EnsureKeyExists<ExampleObject, 'name'> = [
+ *  { name: 'John', age: 25 },
+ *  { name: 'Jane', age: 30 },
+ *  { name: 'Bob', age: 40 },
+ * ];
+ *
+ * @see https://stackoverflow.com/a/49936686/2391795
+ */
+export type EnsureKeyExists<T, K extends keyof T> = Array<Required<Pick<T, K>> & Partial<T>>;
+
+/**
+ * Converts array type to single type
+ */
+export type ArrayElement<ArrayType extends readonly unknown[]> =
+  ArrayType extends readonly (infer ElementType)[] ? ElementType : never;

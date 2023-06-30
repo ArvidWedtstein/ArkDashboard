@@ -8,7 +8,7 @@ import { ContextMenu } from "src/components/Util/ContextMenu/ContextMenu";
 import Table from "src/components/Util/Table/Table";
 import { getWeekDates, pluralize, timeTag } from "src/lib/formatters";
 
-import type { DeleteTribeMutationVariables, FindTribes } from "types/graphql";
+import type { DeleteTribeMutationVariables, FindTribes, permission } from "types/graphql";
 
 const DELETE_TRIBE_MUTATION = gql`
   mutation DeleteTribeMutation($id: Int!) {
@@ -37,7 +37,7 @@ const TribesList = ({ tribes }: FindTribes) => {
   const onDeleteClick = (id: DeleteTribeMutationVariables["id"]) => {
     if (
       currentUser &&
-      currentUser.permissions.some((p) => p === "tribe_delete")
+      currentUser.permissions.some((p: permission) => p === "tribe_delete")
     ) {
       if (confirm("Are you sure you want to delete tribe " + id + "?")) {
         deleteTribe({ variables: { id } });
@@ -52,12 +52,6 @@ const TribesList = ({ tribes }: FindTribes) => {
       let date = +new Date(d.created_at);
       return date >= start && date < end;
     });
-  };
-
-  const pickRandomTribe = () => {
-    const randomIndex = Math.floor(Math.random() * tribes.length);
-    const randomTribe = tribes[randomIndex];
-    toast.success(`You've been assigned to ${randomTribe.name}!`);
   };
 
   return (
@@ -92,7 +86,11 @@ const TribesList = ({ tribes }: FindTribes) => {
 
         <button
           className="hover:ring-pea-400 focus:ring-pea-400 flex items-start rounded-xl bg-stone-300 p-4 shadow-lg hover:ring-1 dark:bg-zinc-700"
-          onClick={pickRandomTribe}
+          onClick={() => {
+            const randomIndex = Math.floor(Math.random() * tribes.length);
+            const randomTribe = tribes[randomIndex];
+            toast.success(`You've been assigned to ${randomTribe.name}!`);
+          }}
         >
           <div className="dark:border-pea-400 border-pea-100 bg-pea-50 flex !h-12 !w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800">
             <svg

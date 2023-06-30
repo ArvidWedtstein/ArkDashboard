@@ -18,46 +18,6 @@ import type {
 const TimelineBasespotsList = ({
   timelineBasespots,
 }: FindTimelineBasespots) => {
-  // const [grid, setGrid] = useState([]);
-  // const [radio, changeRadio] = useState("server");
-  // useEffect(() => {
-  //   if (grid.length < 9) {
-  //     for (let i = 0; i < 9; i++) {
-  //       const date = new Date(new Date().setDate(1));
-  //       date.setMonth(date.getMonth() - i);
-  //       const monthName = date.toLocaleString("default", {
-  //         month: "short",
-  //         year: "numeric",
-  //       });
-
-  //       grid.push({
-  //         label: monthName,
-  //         date,
-  //       });
-  //     }
-  //     setGrid((prev) => prev.reverse());
-  //   }
-  // }, []);
-
-  // const groupedEvents = useMemo(() => {
-  //   return timelineBasespots.reduce((acc, x) => {
-  //     let keyValue = new Date(x.start_date).toLocaleString("default", {
-  //       month: "short",
-  //       year: "numeric",
-  //     });
-
-  //     acc[keyValue] = acc[keyValue] ? [...acc[keyValue], x] : [x];
-  //     return acc;
-  //   }, {});
-  // }, [timelineBasespots]);
-
-  // const setRadio = useCallback(
-  //   (e) => {
-  //     changeRadio(e);
-  //   },
-  //   [radio]
-  // );
-
   const mapImages = {
     2: [
       "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
@@ -181,102 +141,6 @@ const TimelineBasespotsList = ({
     [isActive, setIsActive]
   );
 
-  // const getEventCellStyle = (day, server) => {
-  //   const colors = [
-  //     "#FFB6C1",
-  //     "#FFC0CB",
-  //     "#FF69B4",
-  //     "#FF1493",
-  //     "#DB7093",
-  //     "#C71585",
-  //     "#E6E6FA",
-  //     "#D8BFD8",
-  //     "#DDA0DD",
-  //     "#DA70D6",
-  //     "#EE82EE",
-  //     "#FF00FF",
-  //     "#BA55D3",
-  //     "#9370DB",
-  //     "#663399",
-  //   ];
-  // const event = timelineBasespots.find((event) => {
-  //   const startDate = new Date(event.start_date);
-  //   const endDate = new Date(event.end_date);
-
-  //   return (
-  //     new Date(startDate).toLocaleString("default", {
-  //       year: "numeric",
-  //       month: "numeric",
-  //     }) <=
-  //       new Date(day).toLocaleString("default", {
-  //         year: "numeric",
-  //         month: "numeric",
-  //       }) &&
-  //     new Date(day).toLocaleString("default", {
-  //       year: "numeric",
-  //       month: "numeric",
-  //     }) <=
-  //       new Date(endDate).toLocaleString("default", {
-  //         year: "numeric",
-  //         month: "numeric",
-  //       }) &&
-  //     event[radio] === server
-  //   );
-  // });
-
-  //   if (event && event != null) {
-  //     const { id, start_date, end_date } = event;
-  //     const startDay = new Date(start_date).getMonth();
-  //     const endDay = new Date(end_date).getMonth();
-  //     const daysSpan = endDay - startDay + 1;
-  //     const mineStart = startDay === day.getMonth();
-  //     const mineEnd = endDay === day.getMonth();
-
-  //     const style = {
-  //       background: colors[id % colors.length],
-  //       borderLeft:
-  //         mineStart && timelineBasespots.indexOf(event) === isActive
-  //           ? "1px solid #fff"
-  //           : mineEnd && !mineStart
-  //           ? `3px solid ${colors[id % colors.length]}`
-  //           : 0,
-  //       borderRight:
-  //         mineEnd && timelineBasespots.indexOf(event) === isActive
-  //           ? "1px solid #fff"
-  //           : mineStart && !mineEnd
-  //           ? `3px solid ${colors[id % colors.length]}`
-  //           : 0,
-  //       borderTop:
-  //         (mineEnd || mineStart) &&
-  //         timelineBasespots.indexOf(event) === isActive
-  //           ? "1px solid #fff"
-  //           : 0,
-  //       borderBottom:
-  //         (mineEnd || mineStart) &&
-  //         timelineBasespots.indexOf(event) === isActive
-  //           ? "1px solid #fff"
-  //           : 0,
-
-  //       borderTopLeftRadius: mineStart ? "0.25rem" : 0,
-  //       borderBottomLeftRadius: mineStart ? "0.25rem" : 0,
-  //       borderTopRightRadius: mineEnd ? "0.25rem" : 0,
-  //       borderBottomRightRadius: mineEnd ? "0.25rem" : 0,
-  //       marginTop: "3px",
-  //       gridColumnStart: mineStart ? "auto" : "span 1",
-  //       gridColumnEnd: mineEnd ? "auto" : `span ${daysSpan}`,
-  //     };
-
-  //     return {
-  //       style,
-  //       onClick: (e) => {
-  //         setIsActive(timelineBasespots.indexOf(event));
-  //         // navigate(routes.timelineBasespot({ id: id.toString() }));
-  //       },
-  //     };
-  //   }
-
-  //   return null;
-  // };
   return (
     <div>
       <section className="relative m-auto flex h-full w-full scroll-smooth px-10">
@@ -328,16 +192,17 @@ const TimelineBasespotsList = ({
                     )?.name
                       }`}
                   />
-                  {(new Date(timelineBasespot.start_date) < new Date() || !timelineBasespot.end_date) && (
-                    <Link
-                      to={routes.timelineBasespot({
-                        id: timelineBasespot.id.toString(),
-                      })}
-                      className="rw-button rw-button-green-outline float-right mt-2 transition"
-                    >
-                      View
-                    </Link>
-                  )}
+                  {(new Date(timelineBasespot.start_date) < new Date() ||
+                    !timelineBasespot.end_date) && (
+                      <Link
+                        to={routes.timelineBasespot({
+                          id: timelineBasespot.id.toString(),
+                        })}
+                        className="rw-button rw-button-green-outline float-right mt-2 transition"
+                      >
+                        View
+                      </Link>
+                    )}
                 </div>
               ))}
             </div>
@@ -365,7 +230,7 @@ const TimelineBasespotsList = ({
             <div className="rw-segment max-h-[300px] overflow-y-auto scroll-smooth transition-all duration-300">
               {timelineBasespots.map(
                 (
-                  { tribe_name, start_date, season, cluster, region, server },
+                  { tribe_name, start_date, season, cluster, region, server, TimelineBasespotPerson },
                   index
                 ) => (
                   <div
@@ -412,8 +277,13 @@ const TimelineBasespotsList = ({
                       >
                         <h3 className="inline-flex w-full items-center justify-between text-xl">
                           <span>{tribe_name}</span>
-                          <div className="inline-flex space-x-1 self-end">
+                          <div className="inline-flex items-center space-x-1 self-end">
                             <span className="">S{season || "?"}</span>
+                            {cluster && (
+                              <span className="rw-badge rw-badge-red-outline">
+                                {cluster}
+                              </span>
+                            )}
                             <img
                               src={servers[server]}
                               className="w-8 rounded-full"
@@ -445,6 +315,15 @@ const TimelineBasespotsList = ({
                             dateStyle: "short",
                           })}
                         </span>
+                        <div className="flex -space-x-4">
+                          {TimelineBasespotPerson.map((person) => (
+                            <img
+                              className="h-10 w-10 rounded-full border-2 border-white dark:border-gray-800"
+                              src={person?.Profile ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${person?.Profile?.avatar_url}` : `https://ui-avatars.com/api/?name=${person?.ingame_name}`}
+                              alt={person.ingame_name}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -454,104 +333,6 @@ const TimelineBasespotsList = ({
           </div>
         </div>
       </section>
-
-      {/* <div className="rw-table-wrapper-responsive">
-        <select
-          className="rw-input"
-          onChange={(e) => setRadio(e.currentTarget.value)}
-          defaultValue={"server"}
-        >
-          <option value="server">Server</option>
-          <option value="season">Season</option>
-          <option value="cluster">Cluster</option>
-          <option value="region">Region</option>
-        </select>
-
-        <table className="mx-auto w-full table-auto text-sm">
-          <tbody className="rounded-lg text-center">
-            {Object.keys(groupBy(timelineBasespots, radio)).map((server) => (
-              <tr
-                className="table-row border-b border-black dark:border-stone-300 dark:border-opacity-50"
-                key={server}
-              >
-                <td className="table-cell min-w-fit px-3 py-2 font-bold text-gray-800 dark:text-white">
-                  {server}
-                </td>
-                {grid.map((m) => {
-                  const events = groupedEvents[m.label] || [];
-                  const filteredEvents = events.filter(
-                    (d) => d[radio] === server
-                  );
-
-                  return (
-                    <td
-                      className="table-cell border-l border-black px-3 py-2 text-gray-800 dark:border-stone-300 dark:text-white"
-                      key={m.label + "-" + server}
-                    >
-                      {filteredEvents.length > 0 ? (
-                        <div className="z-10 flex flex-col">
-                          {filteredEvents.map((event) => {
-                            const shouldRenderEvent =
-                              new Date(event.start_date).getMonth() <=
-                                new Date(m.date).getMonth() &&
-                              new Date(m.date).getMonth() <=
-                                new Date(event.end_date).getMonth();
-
-                            if (shouldRenderEvent) {
-                              return (
-                                <div key={event.id} className="relative">
-                                  <div
-                                    className="-mx-3 h-auto cursor-pointer text-left text-white"
-                                    {...getEventCellStyle(m.date, server)}
-                                    title={`${event.server} Season ${event.season}`}
-                                  >
-                                    <Link
-                                      className="ml-1"
-                                      to={routes.timelineBasespot({
-                                        id: event.id.toString(),
-                                      })}
-                                    >{`${event.server} S${
-                                      event.season ? event.season : "?"
-                                    }`}</Link>
-                                  </div>
-                                </div>
-                              );
-                            }
-
-                            return null;
-                          })}
-                        </div>
-                      ) : (
-                        <div className="flex flex-col">
-                          <div className="">
-                            <div
-                              className="-mx-3 h-fit text-transparent"
-                              {...getEventCellStyle(m.date, server)}
-                            >
-                              -
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-            <tr className="table-row p-2 last:border-t">
-              <td className="border-l border-black px-3 py-2 text-gray-800 dark:border-stone-300 dark:text-white"></td>
-              {grid.map((m) => (
-                <td
-                  className="border-l border-black px-3 py-2  text-gray-800 text-opacity-50 dark:border-stone-300 dark:text-white"
-                  key={m.label}
-                >
-                  <span>{m.label}</span>
-                </td>
-              ))}
-            </tr>
-          </tbody>
-        </table>
-      </div> */}
     </div>
   );
 };

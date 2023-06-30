@@ -38,17 +38,11 @@ describe('timelineBasespots', () => {
     }
   )
 
-  scenario('creates a timelineBasespot', async (scenario: StandardScenario) => {
+  scenario('creates a timelineBasespot', async () => {
     const result = await createTimelineBasespot({
-      input: {
-        timeline_id: scenario.timelineBasespot.two.timeline_id,
-        tribe_name: 'String',
-      },
+      input: { tribe_name: 'String' },
     })
 
-    expect(result.timeline_id).toEqual(
-      scenario.timelineBasespot.two.timeline_id
-    )
     expect(result.tribe_name).toEqual('String')
   })
 

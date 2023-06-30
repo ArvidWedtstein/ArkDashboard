@@ -12,12 +12,12 @@ interface IArkCard {
     link: string;
   };
   image?:
-    | {
-        src: string;
-        alt?: string;
-        position?: string | number | (string & {});
-      }
-    | string;
+  | {
+    src: string;
+    alt?: string;
+    position?: string | number | (string & {});
+  }
+  | string;
   icon?: {
     src: string;
     alt?: string;
@@ -48,16 +48,15 @@ const ArkCard = memo<IArkCard>(
             typeof image === "string"
               ? `${image}`
               : image
-              ? `url('${image.src}')`
-              : "",
+                ? `url('${image.src}')`
+                : "",
           backgroundSize: "cover",
-          backgroundPosition: `${
-            typeof image !== "string" ? image?.position ?? "center" : "center"
-          }`,
+          backgroundPosition: `${typeof image !== "string" ? image?.position ?? "center" : "center"
+            }`,
         }}
       >
         <div
-          className={clsx("h-full rounded-3xl p-4", {
+          className={clsx("h-full rounded-lg p-4", {
             "bg-[#121317] bg-opacity-60": image && typeof image !== "string",
           })}
         >
@@ -140,7 +139,7 @@ const ArkCard2 = ({
 }: IArkCard) => {
   return (
     <div
-      className={clsx("relative w-auto rounded-3xl shadow-md", className, {
+      className={clsx("relative w-auto rounded-lg shadow-md", className, {
         "bg-gray-600": !image,
       })}
       style={{
@@ -148,15 +147,14 @@ const ArkCard2 = ({
           typeof image === "string"
             ? `${image}`
             : image
-            ? `url('${image.src}')`
-            : "url()",
+              ? `url('${image.src}')`
+              : "url()",
         backgroundSize: "cover",
-        backgroundPosition: `${
-          typeof image !== "string" ? image?.position ?? "center" : "center"
-        }`,
+        backgroundPosition: `${typeof image !== "string" ? image?.position ?? "center" : "center"
+          }`,
       }}
     >
-      <div className="h-full rounded-3xl bg-[#121317] bg-opacity-60 p-4">
+      <div className="h-full rounded-lg bg-[#121317] bg-opacity-60 p-4">
         <div className="flex-none place-content-center lg:flex">
           {icon && (
             <div
@@ -168,7 +166,7 @@ const ArkCard2 = ({
                 src={icon.src}
                 alt={icon.alt ?? "icon"}
                 title={icon.alt ?? "icon"}
-                className="lg:object-fit h-full w-full rounded-2xl object-scale-down"
+                className="lg:object-fit h-full w-full rounded-lg object-scale-down"
               />
             </div>
           )}

@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+
 import { FatalErrorBoundary, RedwoodProvider } from '@redwoodjs/web'
 import { RedwoodApolloProvider } from '@redwoodjs/web/apollo'
 

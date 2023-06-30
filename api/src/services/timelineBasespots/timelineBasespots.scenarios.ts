@@ -3,40 +3,8 @@ import type { ScenarioData } from '@redwoodjs/testing/api'
 
 export const standard = defineScenario<Prisma.TimelineBasespotCreateArgs>({
   timelineBasespot: {
-    one: {
-      data: {
-        tribe_name: 'String',
-        timeline: {
-          create: {
-            Profile: {
-              create: {
-                id: 'String',
-                role_profile_role_idTorole: {
-                  create: { name: 'String', permissions: 'basespot:delete' },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    two: {
-      data: {
-        tribe_name: 'String',
-        timeline: {
-          create: {
-            Profile: {
-              create: {
-                id: 'String',
-                role_profile_role_idTorole: {
-                  create: { name: 'String', permissions: 'basespot:delete' },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
+    one: { data: { tribe_name: 'String' } },
+    two: { data: { tribe_name: 'String' } },
   },
 })
 

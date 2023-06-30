@@ -47,58 +47,6 @@ const Lootcrate = ({ lootcrate }: Props) => {
             {lootcrate.name} on <Link to={routes.map({ id: lootcrate.Map.id.toString() })}>{lootcrate.Map.name}</Link>
           </h2>
         </header>
-        {/* <table className="rw-table">
-          <tbody>
-            <tr>
-              <th>Id</th>
-              <td>{lootcrate.id}</td>
-            </tr>
-            <tr>
-              <th>Created at</th>
-              <td>{timeTag(lootcrate.created_at)}</td>
-            </tr>
-            <tr>
-              <th>Updated at</th>
-              <td>{timeTag(lootcrate.updated_at)}</td>
-            </tr>
-            <tr>
-              <th>Blueprint</th>
-              <td>{lootcrate.blueprint}</td>
-            </tr>
-            <tr>
-              <th>Name</th>
-              <td>{lootcrate.name}</td>
-            </tr>
-            <tr>
-              <th>Map</th>
-              <td>{lootcrate.map}</td>
-            </tr>
-            <tr>
-              <th>Level requirement</th>
-              <td>{jsonDisplay(lootcrate.level_requirement)}</td>
-            </tr>
-            <tr>
-              <th>Decay time</th>
-              <td>{jsonDisplay(lootcrate.decay_time)}</td>
-            </tr>
-            <tr>
-              <th>No repeat in sets</th>
-              <td>{checkboxInputTag(lootcrate.no_repeat_in_sets)}</td>
-            </tr>
-            <tr>
-              <th>Quality multiplier</th>
-              <td>{jsonDisplay(lootcrate.quality_multiplier)}</td>
-            </tr>
-            <tr>
-              <th>Set qty</th>
-              <td>{jsonDisplay(lootcrate.set_qty)}</td>
-            </tr>
-            <tr>
-              <th>Color</th>
-              <td>{lootcrate.color}</td>
-            </tr>
-          </tbody>
-  </table> */}
       </div>
 
       <div className="w-full space-y-2">

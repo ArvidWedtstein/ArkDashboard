@@ -1,9 +1,9 @@
-import type { FindUserRecipes } from 'types/graphql'
+import type { FindUserRecipes } from "types/graphql";
 
-import { Link, routes } from '@redwoodjs/router'
-import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
+import { Link, navigate, routes } from "@redwoodjs/router";
+import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
-import UserRecipes from 'src/components/UserRecipe/UserRecipes'
+import UserRecipes from "src/components/UserRecipe/UserRecipes";
 
 export const QUERY = gql`
   query FindUserRecipes {
@@ -16,7 +16,7 @@ export const QUERY = gql`
       name
     }
   }
-`
+`;
 
 export const Loading = () => (
   <div
@@ -59,21 +59,21 @@ export const Loading = () => (
     </div>
     <span className="sr-only">Loading...</span>
   </div>
-)
+);
 
 export const Empty = () => {
   return (
     <div className="rw-text-center">
-      {'No userRecipes yet. '}
+      {"No userRecipes yet. "}
       <Link to={routes.newUserRecipe()} className="rw-link">
-        {'Create one?'}
+        {"Create one?"}
       </Link>
     </div>
-  )
-}
+  );
+};
 
 export const Failure = ({ error }: CellFailureProps) => (
-  <div className="rw-cell-error flex animate-fly-in items-center space-x-3">
+  <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
     <svg
       className="h-12 w-12 fill-current"
       xmlns="http://www.w3.org/2000/svg"
@@ -88,8 +88,8 @@ export const Failure = ({ error }: CellFailureProps) => (
       <p className="text-sm">{error?.message}</p>
     </div>
   </div>
-)
+);
 
 export const Success = ({ userRecipes }: CellSuccessProps<FindUserRecipes>) => {
-  return <UserRecipes userRecipes={userRecipes} />
-}
+  return <UserRecipes userRecipes={userRecipes} />;
+};

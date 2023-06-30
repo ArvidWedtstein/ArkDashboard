@@ -117,7 +117,7 @@ const TimelineBasespotDinoForm = (props: TimelineBasespotDinoFormProps) => {
               <Lookup
                 name="dino_id"
                 defaultValue={props.timelineBasespotDino?.dino_id}
-                options={data.dinos.map((dino) => ({
+                options={data && data?.dinos.map((dino) => ({
                   label: dino.name,
                   value: dino.id,
                   image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/DinoIcon${dino.icon}`,

@@ -9,7 +9,7 @@ import {
   UrlField,
 } from '@redwoodjs/forms'
 
-import type { EditProfileById, UpdateProfileInput } from 'types/graphql'
+import type { EditProfileById, UpdateProfileInput, permission } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
 import Avatar from 'src/components/Avatar/Avatar'
 import Lookup from 'src/components/Util/Lookup/Lookup'
@@ -41,8 +41,10 @@ interface ProfileFormProps {
 const ProfileForm = (props: ProfileFormProps) => {
   const { currentUser } = useAuth();
   const onSubmit = (data: FormProfile) => {
-
-    props.onSave(data, props?.profile?.id)
+    if (currentUser &&
+      currentUser.permissions.some((p: permission) => p == props?.profile?.id ? 'user_update' : 'user_create')) {
+      props.onSave(data, props?.profile?.id)
+    }
   }
 
   const [loadRoles, { called, loading, data }] = useLazyQuery(ROLEQURY, {
@@ -237,7 +239,7 @@ const ProfileForm = (props: ProfileFormProps) => {
                   <FieldError name="website" className="rw-field-error" />
                 </div>
 
-                {currentUser.permissions.some((p) => p.includes('user_update')) && (
+                {currentUser.permissions.some((p: permission) => p.includes('user_update')) && (
                   <div className="flex flex-col items-center justify-center">
                     <Label
                       name="role_id"

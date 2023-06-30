@@ -8,15 +8,15 @@ import { MaterialGrid } from './MaterialGrid'
 describe('MaterialGrid', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<MaterialGrid />)
+      render(<MaterialGrid itemRecipes={[]} />)
     }).not.toThrow()
   })
   it('renders the MaterialGrid component', () => {
-    const { getByText } = render(<MaterialGrid />)
+    const { getByText } = render(<MaterialGrid itemRecipes={[]} />)
     expect(getByText('MaterialGrid')).toBeInTheDocument()
   })
   it('Adds turret tower items when button is clicked', () => {
-    const wrapper = render(<MaterialGrid />)
+    const wrapper = render(<MaterialGrid itemRecipes={[]} />)
     let btn = wrapper.findByTestId('turrettowerbtn');
 
     expect(btn).toBeInTheDocument();

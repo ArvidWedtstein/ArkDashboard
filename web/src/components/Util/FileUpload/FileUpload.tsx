@@ -406,7 +406,7 @@ const FileUpload = ({
               className={`flex-wrap items-center delay-200 group-data-[ready=true]:flex group-data-[ready=false]:hidden`}
             >
               {files.map((file, index) => (
-                <div className="flex w-full flex-row items-center">
+                <div className="flex w-full flex-row items-center" key={`file-${index}`}>
                   <svg
                     className="mr-3 block h-6 w-6 text-[#737a8c] transition-colors"
                     viewBox="0 0 24 24"

@@ -7,9 +7,9 @@
 // 'src/pages/HomePage/HomePage.js'         -> HomePage
 // 'src/pages/Admin/BooksPage/BooksPage.js' -> AdminBooksPage
 
-import { Set, Router, Route, Private } from "@redwoodjs/router";
+import { Set, Router, Route, Private } from '@redwoodjs/router'
 
-import ScaffoldLayout from "src/layouts/ScaffoldLayout";
+import ScaffoldLayout from 'src/layouts/ScaffoldLayout';
 
 import MainLayout from "./layouts/MainLayout/MainLayout";
 
@@ -43,6 +43,19 @@ const Routes = () => {
           name="resetPassword"
         />
         <Route notfound page={NotFoundPage} />
+        <Set wrap={ScaffoldLayout} title="TimelineSeasons" titleTo="timelineSeasons" buttonLabel="New TimelineSeason" buttonTo="newTimelineSeason">
+          <Route path="/timeline-seasons/new" page={TimelineSeasonNewTimelineSeasonPage} name="newTimelineSeason" />
+          <Route path="/timeline-seasons/{id}/edit" page={TimelineSeasonEditTimelineSeasonPage} name="editTimelineSeason" />
+          <Route path="/timeline-seasons/{id}" page={TimelineSeasonTimelineSeasonPage} name="timelineSeason" />
+          <Route path="/timeline-seasons" page={TimelineSeasonTimelineSeasonsPage} name="timelineSeasons" />
+        </Set>
+        <Set wrap={ScaffoldLayout} title="TimelineSeasonBasespots" titleTo="timelineSeasonBasespots" buttonLabel="New TimelineSeasonBasespot" buttonTo="newTimelineSeasonBasespot">
+          <Route path="/timeline-season-basespots/new" page={TimelineSeasonBasespotNewTimelineSeasonBasespotPage} name="newTimelineSeasonBasespot" />
+          <Route path="/timeline-season-basespots/{id}/edit" page={TimelineSeasonBasespotEditTimelineSeasonBasespotPage} name="editTimelineSeasonBasespot" />
+          <Route path="/timeline-season-basespots/{id}" page={TimelineSeasonBasespotTimelineSeasonBasespotPage} name="timelineSeasonBasespot" />
+          <Route path="/timeline-season-basespots" page={TimelineSeasonBasespotTimelineSeasonBasespotsPage} name="timelineSeasonBasespots" />
+        </Set>
+
         <Set
           wrap={ScaffoldLayout}
           title="UserRecipes"
@@ -243,29 +256,6 @@ const Routes = () => {
           />
           <Route path="/tribes/{id:Int}" page={TribeTribePage} name="tribe" />
           <Route path="/tribes" page={TribeTribesPage} name="tribes" />
-        </Set>
-        <Set
-          wrap={ScaffoldLayout}
-          title="Timelines"
-          titleTo="timelines"
-          buttonLabel="New Timeline"
-          buttonTo="newTimeline"
-        >
-          <Route
-            path="/timelines/new"
-            page={TimelineNewTimelinePage}
-            name="newTimeline"
-          />
-          {/* <Route
-            path="/timelines/{id:String}"
-            page={TimelineTimelinePage}
-            name="timeline"
-          /> */}
-          <Route
-            path="/timelines"
-            page={TimelineTimelinesPage}
-            name="timelines"
-          />
         </Set>
         <Set
           wrap={ScaffoldLayout}

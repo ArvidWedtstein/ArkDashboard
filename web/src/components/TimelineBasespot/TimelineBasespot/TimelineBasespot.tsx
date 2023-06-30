@@ -13,11 +13,13 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { useAuth } from "src/auth";
 import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
+import Lookup from "src/components/Util/Lookup/Lookup";
 import Map from "src/components/Util/Map/Map";
 import { Modal, RefModal } from "src/components/Util/Modal/Modal";
 import Slideshow from "src/components/Util/Slideshow/Slideshow";
 
 import {
+  ArrayElement,
   formatBytes,
   formatNumber,
   getDateDiff,
@@ -39,11 +41,21 @@ const DELETE_TIMELINE_BASESPOT_MUTATION = gql`
   }
 `;
 
-export const CREATE_TIMELINE_BASESPOT_RAID_MUTATION = gql`
+const CREATE_TIMELINE_BASESPOT_RAID_MUTATION = gql`
   mutation CreateTimelineBasespotRaidMutation(
     $input: CreateTimelineBasespotRaidInput!
   ) {
     createTimelineBasespotRaid(input: $input) {
+      id
+    }
+  }
+`;
+
+const CREATE_TIMELINE_BASESPOT_PERSON_MUTATION = gql`
+  mutation CreateTimelineBasespotPersonMutation(
+    $input: CreateTimelineBasespotPersonInput!
+  ) {
+    createTimelineBasespotPerson(input: $input) {
       id
     }
   }
@@ -83,11 +95,23 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
     }
   };
 
-  const [createTimelineBasespotRaid, { loading, error }] = useMutation(
+  const [createTimelineBasespotRaid, { loading: timelimeBasespotRaidLoading }] = useMutation(
     CREATE_TIMELINE_BASESPOT_RAID_MUTATION,
     {
       onCompleted: () => {
         toast.success("TimelineBasespot raid initiated");
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    }
+  );
+
+  const [createTimelineBasespotPerson, { loading: timelimeBasespotPersonLoading }] = useMutation(
+    CREATE_TIMELINE_BASESPOT_PERSON_MUTATION,
+    {
+      onCompleted: () => {
+        toast.success("Person added to this basespot!");
       },
       onError: (error) => {
         toast.error(error.message);
@@ -109,6 +133,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
   });
 
   const [images, setImages] = useState([]);
+  const [personLookup, setPersonLookup] = useState<{ id: String, full_name?: string, avatar_url?: string }[]>([]);
 
   const [isComponentVisible, setIsComponentVisible] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(null);
@@ -123,7 +148,48 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
           setImages(data.filter((f) => f.name !== ".emptyFolderPlaceholder"));
         }
       });
+
+    supabase
+      .from("Profile")
+      .select("id, full_name, avatar_url")
+      .then(({ data, error }) => {
+        if (error) throw error;
+        if (data) {
+          setPersonLookup(data);
+        }
+      });
   }, []);
+
+
+  const renderDinoCardStat = (stat: 'stamina' | 'melee_damage' | 'movement_speed' | 'health' | 'food' | 'weight' | 'oxygen', dino: ArrayElement<FindTimelineBasespotById["timelineBasespot"]["TimelineBasespotDino"]>) => {
+    let char = stat[0]
+    if (stat === 'melee_damage') char = 'd'
+    return (
+      <>
+        <p className="inline-flex space-x-2">
+          <img
+            className="h-6 w-6"
+            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${stat}.webp`}
+            alt=""
+          />
+          <span>
+            {formatNumber(
+              dino[`wild_${stat}`] *
+              dino.Dino.base_stats[char]["w"] +
+              dino[stat] *
+              dino.Dino.base_stats[char]["t"] +
+              dino.Dino.base_stats[char]["b"],
+              { notation: "compact" }
+            )}
+            {stat === 'movement_speed' || stat === 'melee_damage' && '%'}
+          </span>
+        </p>
+        <p className="text-center">
+          ({dino[`wild_${stat}`]}-{dino[stat]})
+        </p>
+      </>
+    )
+  }
 
   function convertToDate(dateString) {
     const year = dateString.substr(0, 4);
@@ -318,7 +384,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
 
       <div className="m-2 block rounded-md text-white">
         <section className="body-font container mx-auto flex flex-col items-center px-5 py-12 md:flex-row">
-          <div className="mb-16 flex flex-col items-center text-center md:mb-0 md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24">
+          <div className="mb-16 space-y-2 flex flex-col items-center text-center md:mb-0 md:w-1/2 md:items-start md:pr-16 md:text-left lg:flex-grow lg:pr-24">
             <h1 className="title-font mb-4 text-3xl font-medium text-gray-900 dark:text-zinc-200 sm:text-4xl">
               {timelineBasespot.tribe_name}
             </h1>
@@ -326,40 +392,40 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
               This time we played on
               {` ${timelineBasespot?.server} ${timelineBasespot?.cluster} Season ${timelineBasespot.season}`}
             </p>
-            <div className="mt-2 flex justify-center space-x-2">
+            <div className="flex space-x-1 flex-wrap justify-start xl:space-y-0 md:space-y-1">
               {isAuthenticated && (
                 <>
                   {hasRole("timeline_update") ||
-                    (currentUser.permissions.some(
+                    (currentUser && currentUser.permissions.some(
                       (p) => p === "timeline_update"
                     ) && (
-                      <Link
-                        to={routes.editTimelineBasespot({
-                          id: timelineBasespot.id.toString(),
-                        })}
-                        className="rw-button rw-button-gray-outline"
-                      >
-                        Edit
-                      </Link>
-                    ))}
+                        <Link
+                          to={routes.editTimelineBasespot({
+                            id: timelineBasespot.id.toString(),
+                          })}
+                          className="rw-button rw-button-gray-outline"
+                        >
+                          Edit
+                        </Link>
+                      ))}
                   {hasRole("timeline_delete") ||
-                    (currentUser.permissions.some(
+                    (currentUser && currentUser.permissions.some(
                       (p) => p === "timeline_delete"
                     ) && (
-                      <button
-                        onClick={() => onDeleteClick(timelineBasespot.id)}
-                        className="rw-button rw-button-red-outline"
-                      >
-                        Delete
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 448 512"
-                          className="rw-button-icon"
+                        <button
+                          onClick={() => onDeleteClick(timelineBasespot.id)}
+                          className="rw-button rw-button-red-outline"
                         >
-                          <path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
-                        </svg>
-                      </button>
-                    ))}
+                          Delete
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 448 512"
+                            className="rw-button-icon"
+                          >
+                            <path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
+                          </svg>
+                        </button>
+                      ))}
                   {(!timelineBasespot.TimelineBasespotRaid.find(
                     (f) => f.base_survived === false
                   ) &&
@@ -371,28 +437,60 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                     (currentUser.permissions.some(
                       (p) => p === "timeline_update"
                     ) && (
-                      <button
-                        className="rw-button rw-button-red-outline"
-                        onClick={() => initRaid()}
-                      >
-                        Raid
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 576 512"
-                          className="rw-button-icon"
+                        <button
+                          className="rw-button rw-button-red-outline"
+                          onClick={() => initRaid()}
+                          disabled={timelimeBasespotRaidLoading}
                         >
-                          <path d="M285.3 247.1c-3.093-4.635-8.161-7.134-13.32-7.134c-8.739 0-15.1 7.108-15.1 16.03c0 3.05 .8717 6.133 2.693 8.859l52.37 78.56l-76.12 25.38c-6.415 2.16-10.94 8.159-10.94 15.18c0 2.758 .7104 5.498 2.109 7.946l63.1 112C293.1 509.1 298.5 512 304 512c11.25 0 15.99-9.84 15.99-16.02c0-2.691-.6807-5.416-2.114-7.915L263.6 393l77.48-25.81c1.701-.5727 10.93-4.426 10.93-15.19c0-3.121-.9093-6.205-2.685-8.873L285.3 247.1zM575.1 256c0-4.435-1.831-8.841-5.423-12l-58.6-51.87c.002-.0938 0 .0938 0 0l.0247-144.1c0-8.844-7.156-16-15.1-16L400 32c-8.844 0-15.1 7.156-15.1 16l-.0014 31.37L298.6 4c-3.016-2.656-6.797-3.997-10.58-3.997c-3.781 0-7.563 1.34-10.58 3.997l-271.1 240C1.831 247.2 .0007 251.6 .0007 256c0 8.92 7.239 15.99 16.04 15.99c3.757 0 7.52-1.313 10.54-3.993l37.42-33.02V432c0 44.13 35.89 80 79.1 80h63.1c8.844 0 15.1-7.156 15.1-16S216.8 480 208 480h-63.1c-26.47 0-47.1-21.53-47.1-48v-224c0-.377-.1895-.6914-.2148-1.062L288 37.34l192.2 169.6C480.2 207.3 479.1 207.6 479.1 208v224c0 26.47-21.53 48-47.1 48h-31.1c-8.844 0-15.1 7.156-15.1 16s7.156 16 15.1 16h31.1c44.11 0 79.1-35.88 79.1-80V234.1L549.4 268C552.5 270.7 556.2 272 559.1 272C568.7 272 575.1 264.9 575.1 256zM479.1 164.1l-63.1-56.47V64h63.1V164.1z" />
-                        </svg>
-                      </button>
-                    ))}
-                  <Link
-                    to={routes.newTimelineBasespotDino({
-                      id: timelineBasespot.id,
-                    })}
-                    className="rw-button rw-button-green-outline"
-                  >
-                    + Dino
-                  </Link>
+                          Raid
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 576 512"
+                            className="rw-button-icon"
+                          >
+                            <path d="M285.3 247.1c-3.093-4.635-8.161-7.134-13.32-7.134c-8.739 0-15.1 7.108-15.1 16.03c0 3.05 .8717 6.133 2.693 8.859l52.37 78.56l-76.12 25.38c-6.415 2.16-10.94 8.159-10.94 15.18c0 2.758 .7104 5.498 2.109 7.946l63.1 112C293.1 509.1 298.5 512 304 512c11.25 0 15.99-9.84 15.99-16.02c0-2.691-.6807-5.416-2.114-7.915L263.6 393l77.48-25.81c1.701-.5727 10.93-4.426 10.93-15.19c0-3.121-.9093-6.205-2.685-8.873L285.3 247.1zM575.1 256c0-4.435-1.831-8.841-5.423-12l-58.6-51.87c.002-.0938 0 .0938 0 0l.0247-144.1c0-8.844-7.156-16-15.1-16L400 32c-8.844 0-15.1 7.156-15.1 16l-.0014 31.37L298.6 4c-3.016-2.656-6.797-3.997-10.58-3.997c-3.781 0-7.563 1.34-10.58 3.997l-271.1 240C1.831 247.2 .0007 251.6 .0007 256c0 8.92 7.239 15.99 16.04 15.99c3.757 0 7.52-1.313 10.54-3.993l37.42-33.02V432c0 44.13 35.89 80 79.1 80h63.1c8.844 0 15.1-7.156 15.1-16S216.8 480 208 480h-63.1c-26.47 0-47.1-21.53-47.1-48v-224c0-.377-.1895-.6914-.2148-1.062L288 37.34l192.2 169.6C480.2 207.3 479.1 207.6 479.1 208v224c0 26.47-21.53 48-47.1 48h-31.1c-8.844 0-15.1 7.156-15.1 16s7.156 16 15.1 16h31.1c44.11 0 79.1-35.88 79.1-80V234.1L549.4 268C552.5 270.7 556.2 272 559.1 272C568.7 272 575.1 264.9 575.1 256zM479.1 164.1l-63.1-56.47V64h63.1V164.1z" />
+                          </svg>
+                        </button>
+                      ))}
+
+                  {(timelineBasespot.TimelineBasespotPerson.some(
+                    (p) => p.user_id === currentUser.id
+                  ) ||
+                    currentUser.permissions.some(
+                      (p) => p === "timeline_update"
+                    )) && (
+                      <>
+                        <Link
+                          to={routes.newTimelineBasespotDino({
+                            id: timelineBasespot.id,
+                          })}
+                          className="rw-button rw-button-green-outline"
+                        >
+                          Dino
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" className="rw-button-icon">
+                            <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                          </svg>
+                        </Link>
+                        <Lookup
+                          disabled={timelimeBasespotPersonLoading}
+                          placeholder="Add Person"
+                          options={personLookup.filter((p) => p.full_name != null).map((p) => ({
+                            label: p.full_name,
+                            value: p.id,
+                            image: p.avatar_url ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${p.avatar_url}` : `https://ui-avatars.com/api/?name=${p.full_name}`,
+                          }))}
+                          onSelect={(e) => {
+                            createTimelineBasespotPerson({
+                              variables: {
+                                input: {
+                                  timelinebasespot_id: timelineBasespot.id,
+                                  user_id: e.value,
+                                }
+                              }
+                            })
+                          }} />
+                      </>
+                    )}
                 </>
               )}
             </div>
@@ -499,9 +597,8 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                             {timeTag(raid_start)} - {timeTag(raid_end)}
                           </p>
                           <p className="text-gray-500">
-                            {`Base ${
-                              base_survived ? "survived" : "did not survive"
-                            }`}
+                            {`Base ${base_survived ? "survived" : "did not survive"
+                              }`}
                           </p>
                         </div>
                       </div>
@@ -523,8 +620,8 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                   size={{ width: 500, height: 500 }}
                   pos={[
                     {
-                      lat: timelineBasespot.latitude,
-                      lon: timelineBasespot.longitude,
+                      lat: timelineBasespot.basespot ? timelineBasespot.basespot.latitude : timelineBasespot.latitude,
+                      lon: timelineBasespot.basespot ? timelineBasespot.basespot.longitude : timelineBasespot.longitude,
                       name: timelineBasespot?.basespot?.name,
                     },
                   ]}
@@ -558,9 +655,9 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                     )
                       ? "was "
                       : "is "}
-                    located at: {timelineBasespot.latitude}{" "}
+                    located at: {timelineBasespot.basespot ? timelineBasespot.basespot.latitude : timelineBasespot.latitude}{" "}
                     <abbr title="Latitude">Lat</abbr>,{" "}
-                    {timelineBasespot.longitude}{" "}
+                    {timelineBasespot.basespot ? timelineBasespot.basespot.longitude : timelineBasespot.longitude}{" "}
                     <abbr title="Longitude">Lon</abbr> on the map{" "}
                     <Link
                       to={routes.map({ id: timelineBasespot.map.toString() })}
@@ -624,18 +721,18 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                   <p className="text-base leading-relaxed">
                     {timelineBasespot.TimelineBasespotPerson.length > 0
                       ? formatter.format(
-                          timelineBasespot.TimelineBasespotPerson.map(
-                            (p) =>
-                              // p.user_id ? (
-                              //   <Link to={routes.profile({ id: p.user_id })}>
-                              //     {p.ingame_name}
-                              //   </Link>
-                              // ) : (
-                              //   p.ingame_name
-                              // )
-                              p.ingame_name
-                          )
+                        timelineBasespot.TimelineBasespotPerson.map(
+                          (p) =>
+                            // p.user_id ? (
+                            //   <Link to={routes.profile({ id: p.user_id })}>
+                            //     {p.ingame_name}
+                            //   </Link>
+                            // ) : (
+                            //   p.ingame_name
+                            // )
+                            p.ingame_name
                         )
+                      )
                       : "none"}
                   </p>
                 </div>
@@ -666,9 +763,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                 >
                   <div className="flex h-full justify-between">
                     <button
-                      className={clsx(
-                        "group relative flex h-auto w-full overflow-hidden rounded-xl"
-                      )}
+                      className={"group relative flex h-auto w-full overflow-hidden rounded-xl"}
                       onClick={() => {
                         setCurrentModalImage(
                           `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineBasespot.id}/${img.name}`
@@ -722,15 +817,15 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           timeStyle: "short",
                         }) === "Invalid Date"
                           ? new Date(img.created_at).toLocaleString("de", {
-                              dateStyle: "medium",
-                              timeStyle: "short",
-                            })
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          })
                           : convertToDate(
-                              img.name.replace("_1.jpg", "")
-                            ).toLocaleString("de", {
-                              dateStyle: "medium",
-                              timeStyle: "short",
-                            })}
+                            img.name.replace("_1.jpg", "")
+                          ).toLocaleString("de", {
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          })}
                       </span>
                     </button>
                   </div>
@@ -796,120 +891,12 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                         </div>
                       </div>
                       <div className="mt-3 grid grid-cols-4 place-content-center gap-1 text-center font-medium">
-                        <p className="inline-flex space-x-2">
-                          <img
-                            className="h-6 w-6"
-                            src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp"
-                            alt=""
-                          />
-                          <span>
-                            {formatNumber(
-                              dino.wild_stamina *
-                                dino.Dino.base_stats["s"]["w"] +
-                                dino.stamina * dino.Dino.base_stats["s"]["t"] +
-                                dino.Dino.base_stats["s"]["b"],
-                              { notation: "compact" }
-                            )}
-                          </span>
-                        </p>
-                        <p className="text-center">
-                          ({dino.wild_stamina}-{dino.stamina})
-                        </p>
-                        <p className="inline-flex space-x-2">
-                          <img
-                            className="h-6 w-6"
-                            src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
-                            alt=""
-                          />
-                          <span>
-                            {formatNumber(
-                              dino.wild_weight *
-                                dino.Dino.base_stats["w"]["w"] +
-                                dino.weight * dino.Dino.base_stats["w"]["t"] +
-                                dino.Dino.base_stats["w"]["b"],
-                              { notation: "compact" }
-                            )}
-                          </span>
-                        </p>
-                        <p className="text-center">
-                          ({dino.wild_weight}-{dino.weight})
-                        </p>
-                        <p className="inline-flex space-x-2">
-                          <img
-                            className="h-6 w-6"
-                            src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp"
-                            alt=""
-                          />
-                          <span>
-                            {formatNumber(
-                              dino.wild_oxygen *
-                                dino.Dino.base_stats["o"]["w"] +
-                                dino.oxygen * dino.Dino.base_stats["o"]["t"] +
-                                dino.Dino.base_stats["o"]["b"],
-                              { notation: "compact" }
-                            )}
-                          </span>
-                        </p>
-                        <p className="text-center">
-                          ({dino.wild_oxygen}-{dino.oxygen})
-                        </p>
-                        <p className="inline-flex space-x-2">
-                          <img
-                            className="h-6 w-6"
-                            src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
-                            alt=""
-                          />
-                          <span>
-                            {dino.wild_melee_damage *
-                              dino.Dino.base_stats["d"]["w"] +
-                              dino.melee_damage *
-                                dino.Dino.base_stats["d"]["t"] +
-                              dino.Dino.base_stats["d"]["b"]}
-                            %
-                          </span>
-                        </p>
-                        <p className="text-center">
-                          ({dino.wild_melee_damage}-{dino.melee_damage})
-                        </p>
-                        <p className="inline-flex space-x-2">
-                          <img
-                            className="h-6 w-6"
-                            src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp"
-                            alt=""
-                          />
-                          <span>
-                            {formatNumber(
-                              dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                                dino.food * dino.Dino.base_stats["f"]["t"] +
-                                dino.Dino.base_stats["f"]["b"],
-                              { notation: "compact" }
-                            )}
-                          </span>
-                        </p>
-                        <p className="text-center">
-                          ({dino.wild_food}-{dino.food})
-                        </p>
-                        <p className="inline-flex space-x-2">
-                          <img
-                            className="h-6 w-6"
-                            src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp"
-                            alt=""
-                          />
-                          <span>
-                            {formatNumber(
-                              dino.wild_movement_speed *
-                                dino.Dino.base_stats["m"]["w"] +
-                                dino.movement_speed *
-                                  dino.Dino.base_stats["m"]["t"] +
-                                dino.Dino.base_stats["m"]["b"],
-                              { notation: "compact" }
-                            )}
-                            %
-                          </span>
-                        </p>
-                        <p className="text-center">
-                          ({dino.wild_movement_speed}-{dino.movement_speed})
-                        </p>
+                        {renderDinoCardStat('stamina', dino)}
+                        {renderDinoCardStat('weight', dino)}
+                        {renderDinoCardStat('oxygen', dino)}
+                        {renderDinoCardStat('melee_damage', dino)}
+                        {renderDinoCardStat('food', dino)}
+                        {renderDinoCardStat('movement_speed', dino)}
                       </div>
                       <div className="relative mt-3 h-8 w-full border border-[#97FBFF] bg-[#646665] text-center">
                         <div className="relative flex h-full w-full items-center border-2 border-[#0D2836]">
@@ -917,17 +904,17 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span className="absolute w-full items-center text-base font-semibold">
                             {formatNumber(
                               dino.wild_health *
-                                dino.Dino.base_stats["h"]["w"] +
-                                dino.health * dino.Dino.base_stats["h"]["t"] +
-                                dino.Dino.base_stats["h"]["b"],
+                              dino.Dino.base_stats["h"]["w"] +
+                              dino.health * dino.Dino.base_stats["h"]["t"] +
+                              dino.Dino.base_stats["h"]["b"],
                               { notation: "compact" }
                             )}
                             /
                             {formatNumber(
                               dino.wild_health *
-                                dino.Dino.base_stats["h"]["w"] +
-                                dino.health * dino.Dino.base_stats["h"]["t"] +
-                                dino.Dino.base_stats["h"]["b"],
+                              dino.Dino.base_stats["h"]["w"] +
+                              dino.health * dino.Dino.base_stats["h"]["t"] +
+                              dino.Dino.base_stats["h"]["b"],
                               { notation: "compact" }
                             )}{" "}
                             Health ({dino.wild_health}-{dino.health})
@@ -940,15 +927,15 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                           <span className="absolute w-full items-center text-base font-semibold">
                             {formatNumber(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                                dino.food * dino.Dino.base_stats["f"]["t"] +
-                                dino.Dino.base_stats["f"]["b"],
+                              dino.food * dino.Dino.base_stats["f"]["t"] +
+                              dino.Dino.base_stats["f"]["b"],
                               { notation: "compact" }
                             )}
                             /
                             {formatNumber(
                               dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                                dino.food * dino.Dino.base_stats["f"]["t"] +
-                                dino.Dino.base_stats["f"]["b"],
+                              dino.food * dino.Dino.base_stats["f"]["t"] +
+                              dino.Dino.base_stats["f"]["b"],
                               { notation: "compact" }
                             )}{" "}
                             Food ({dino.wild_food}-{dino.food})
@@ -959,20 +946,7 @@ const TimelineBasespot = ({ timelineBasespot }: Props) => {
                         <div className="relative flex h-full w-full items-center border-2 border-[#0D2836]">
                           <div className="h-full w-full bg-gradient-to-t from-[#A340B7] to-fuchsia-500"></div>
                           <span className="absolute w-full items-center text-base font-semibold">
-                            {/* {formatNumber(
-                              dino.wild_torpor *
-                              dino.Dino.base_stats["t"]["w"] +
-                              dino.torpor * dino.Dino.base_stats["t"]["t"] +
-                              dino.Dino.base_stats["t"]["b"]
-                              , { notation: 'compact' })} */}
-                            0 /
-                            {/* {formatNumber(
-                              dino.wild_torpor *
-                              dino.Dino.base_stats["t"]["w"] +
-                              dino.torpor * dino.Dino.base_stats["t"]["t"] +
-                              dino.Dino.base_stats["t"]["b"]
-                              , { notation: 'compact' })}{" "} */}
-                            0{/* Torpor ({dino.wild_torpor}-{dino.torpor}) */}
+                            0 / 0
                           </span>
                         </div>
                       </div>

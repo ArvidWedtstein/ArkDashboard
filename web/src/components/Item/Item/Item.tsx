@@ -7,9 +7,9 @@ import { useAuth } from "src/auth";
 import StatCard from "src/components/Util/StatCard/StatCard";
 import Tabs from "src/components/Util/Tabs/Tabs";
 
-import { getWordType, dynamicSort } from "src/lib/formatters";
+import { getWordType } from "src/lib/formatters";
 
-import type { DeleteItemMutationVariables, FindItemById } from "types/graphql";
+import type { DeleteItemMutationVariables, FindItemById, permission } from "types/graphql";
 
 const DELETE_ITEM_MUTATION = gql`
   mutation DeleteItemMutation($id: BigInt!) {
@@ -164,7 +164,7 @@ const Item = ({ item }: Props) => {
 
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "gather_efficiency").length >
-            0 && (
+          0 && (
             <section className="rounded-lg bg-gray-200 p-4 dark:bg-zinc-600">
               <p className="my-1 text-lg">Gather Efficiency</p>
               <div className="flex flex-col">
@@ -223,7 +223,7 @@ const Item = ({ item }: Props) => {
 
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "weight_reduction").length >
-            0 && (
+          0 && (
             <section className="rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
               <p className="my-1 text-lg">Weight Reduction</p>
               <div className="flex flex-col">
@@ -425,16 +425,6 @@ const Item = ({ item }: Props) => {
                           </div>
                           <div className="flex flex-col justify-between">
                             <p>{item.description}</p>
-                            <p className="justify-self-end">
-                              Crafting time: {item.crafting_time}
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="inline-block h-4 w-4 fill-current"
-                                viewBox="0 0 384 512"
-                              >
-                                <path d="M352 80C352 71.16 344.8 64 336 64S320 71.16 320 80c0 27.5-9.094 54.78-25.59 76.81l-67.2 89.59c-4.266 5.688-4.266 13.5 0 19.19l67.2 89.59C310.9 377.2 320 404.5 320 432c0 8.844 7.156 16 16 16s16-7.156 16-16c0-34.38-11.36-68.47-32-96L260 256L320 176C340.6 148.5 352 114.4 352 80zM32 432C32 440.8 39.16 448 48 448S64 440.8 64 432c0-27.5 9.094-54.78 25.59-76.81l67.2-89.59c4.266-5.688 4.266-13.5 0-19.19L89.59 156.8C73.09 134.8 64 107.5 64 80C64 71.16 56.84 64 48 64S32 71.16 32 80c0 34.38 11.36 68.47 32 96L124 256L64 336C43.36 363.5 32 397.6 32 432zM368 480h-352C7.156 480 0 487.2 0 496S7.156 512 16 512h352c8.844 0 16-7.156 16-16S376.8 480 368 480zM16 32h352C376.8 32 384 24.84 384 16S376.8 0 368 0h-352C7.156 0 0 7.156 0 16S7.156 32 16 32zM112 448h160c8.844 0 16-7.156 16-16c0-24.81-6.453-49.59-18.64-71.72C266.5 355.2 261.2 352 255.3 352H128.7c-5.828 0-11.2 3.156-14.02 8.281C102.5 382.4 96 407.2 96 432C96 440.8 103.2 448 112 448zM138.5 384h106.1c4.656 10.25 7.812 21.03 9.375 32H129.1C130.7 405 133.9 394.3 138.5 384zM179.7 234.3C182.8 237.9 187.3 240 192 240s9.25-2.125 12.3-5.75l49.25-59.13c5.719-6.844 10.88-14.5 15.8-23.38C272.1 146.8 272 140.8 269.1 135.9S261 128 255.3 128H128.7C122.1 128 117.8 131 114.9 135.9S111.9 146.8 114.7 151.8c4.922 8.875 10.08 16.53 15.78 23.38L179.7 234.3zM224.5 160L192 199L159.5 160H224.5z" />
-                              </svg>
-                            </p>
                             <p className="mb-3">
                               Engram Points: {item.engram_points}
                             </p>
@@ -478,7 +468,7 @@ const Item = ({ item }: Props) => {
         </section>
         <div className="col-span-full">
           <nav className="rw-button-group">
-            {currentUser?.permissions.some((p) => p === "gamedata_update") && (
+            {currentUser?.permissions.some((p: permission) => p === "gamedata_update") && (
               <Link
                 to={routes.editItem({ id: item.id.toString() })}
                 className="rw-button rw-button-blue"
@@ -486,7 +476,7 @@ const Item = ({ item }: Props) => {
                 Edit
               </Link>
             )}
-            {currentUser?.permissions.some((p) => p === "gamedata_delete") && (
+            {currentUser?.permissions.some((p: permission) => p === "gamedata_delete") && (
               <button
                 type="button"
                 className="rw-button rw-button-red"
@@ -565,9 +555,9 @@ const Item = ({ item }: Props) => {
                     self.findIndex(
                       (t) =>
                         t.LootcrateSetEntry.LootcrateSet.Lootcrate.id ===
-                          value.LootcrateSetEntry.LootcrateSet.Lootcrate.id &&
+                        value.LootcrateSetEntry.LootcrateSet.Lootcrate.id &&
                         t.LootcrateSetEntry.LootcrateSet.Lootcrate.id ===
-                          value.LootcrateSetEntry.LootcrateSet.Lootcrate.id
+                        value.LootcrateSetEntry.LootcrateSet.Lootcrate.id
                     )
                 )
                   .slice(0, 5)
@@ -588,32 +578,6 @@ const Item = ({ item }: Props) => {
                   ))}
               </div>
             </li>
-          </ul>
-          <ul className="mt-4 space-y-2 border-t border-gray-700 pt-4 font-medium dark:border-stone-300">
-            {/* <li>
-              <a href="#" className="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                <svg aria-hidden="true" className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white dark:text-gray-400" focusable="false" data-prefix="fas" data-icon="gem" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M378.7 32H133.3L256 182.7L378.7 32zM512 192l-107.4-141.3L289.6 192H512zM107.4 50.67L0 192h222.4L107.4 50.67zM244.3 474.9C247.3 478.2 251.6 480 256 480s8.653-1.828 11.67-5.062L510.6 224H1.365L244.3 474.9z"></path></svg>
-                <span className="ml-4">Upgrade to Pro</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" className="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                <svg aria-hidden="true" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path></svg>
-                <span className="ml-3">Documentation</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" className="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                <svg aria-hidden="true" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg>
-                <span className="ml-3">Components</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" className="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
-                <svg aria-hidden="true" className="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.078-2.183l1.562-1.562C15.802 8.249 16 9.1 16 10zm-5.165 3.913l1.58 1.58A5.98 5.98 0 0110 16a5.976 5.976 0 01-2.516-.552l1.562-1.562a4.006 4.006 0 001.789.027zm-4.677-2.796a4.002 4.002 0 01-.041-2.08l-.08.08-1.53-1.533A5.98 5.98 0 004 10c0 .954.223 1.856.619 2.657l1.54-1.54zm1.088-6.45A5.974 5.974 0 0110 4c.954 0 1.856.223 2.657.619l-1.54 1.54a4.002 4.002 0 00-2.346.033L7.246 4.668zM12 10a2 2 0 11-4 0 2 2 0 014 0z" clip-rule="evenodd"></path></svg>
-                <span className="ml-3">Help</span>
-              </a>
-            </li> */}
           </ul>
         </div>
       </aside>

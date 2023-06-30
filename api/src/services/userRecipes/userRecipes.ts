@@ -29,7 +29,11 @@ export const userRecipesByID: QueryResolvers["userRecipesByID"] = ({
   });
 };
 export const userRecipes: QueryResolvers["userRecipes"] = () => {
-  return db.userRecipe.findMany();
+  return db.userRecipe.findMany({
+    where: {
+      user_id: { equals: context.currentUser?.id },
+    },
+  });
 };
 
 export const userRecipe: QueryResolvers["userRecipe"] = ({ id }) => {
@@ -41,11 +45,11 @@ export const userRecipe: QueryResolvers["userRecipe"] = ({ id }) => {
 export const createUserRecipe: MutationResolvers["createUserRecipe"] = ({
   input,
 }) => {
-  // validateWithSync(() => {
-  //   if (context.currentUser.id !== input.user_id) {
-  //     throw "Your gallimimus outran the authorization process. Slow down!";
-  //   }
-  // });
+  validateWithSync(() => {
+    if (context.currentUser.id !== input.user_id) {
+      throw "Your gallimimus outran the authorization process. Slow down!";
+    }
+  });
   return db.userRecipe.create({
     data: input,
   });

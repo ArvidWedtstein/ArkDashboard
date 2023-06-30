@@ -8,7 +8,6 @@ export const QUERY = gql`
   query FindTimelineBasespotById($id: BigInt!) {
     timelineBasespot: timelineBasespot(id: $id) {
       id
-      timeline_id
       start_date
       end_date
       tribe_name

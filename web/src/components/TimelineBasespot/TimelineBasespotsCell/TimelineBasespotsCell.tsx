@@ -11,7 +11,6 @@ export const QUERY = gql`
       id
       created_at
       updated_at
-      timeline_id
       start_date
       end_date
       tribe_name
@@ -22,6 +21,13 @@ export const QUERY = gql`
       cluster
       Map {
         name
+      }
+      TimelineBasespotPerson {
+        ingame_name
+        Profile {
+          avatar_url
+          full_name
+        }
       }
     }
   }

@@ -18,7 +18,7 @@ export const QUERY = gql`
         image
         created_at
         updated_at
-        map
+        map_id
         estimated_for_players
         Map {
           name

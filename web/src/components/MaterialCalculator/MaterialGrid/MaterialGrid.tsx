@@ -5,10 +5,11 @@ import {
   RWGqlError,
   SearchField,
 } from "@redwoodjs/forms";
-import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { useCallback, useMemo, useReducer, useState } from "react";
 
 import {
   formatNumber,
+  generatePDF,
   getBaseMaterials,
   groupBy,
   timeFormatL,
@@ -16,12 +17,12 @@ import {
 import debounce from "lodash.debounce";
 import Table from "src/components/Util/Table/Table";
 import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
-import { FindItemsMats } from "types/graphql";
+import { DeleteUserRecipeMutationVariables, FindItemsMats } from "types/graphql";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useAuth } from "src/auth";
 import { QUERY } from "../MaterialCalculatorCell";
-import UserCard from "src/components/Util/UserCard/UserCard";
+import { navigate, routes } from "@redwoodjs/router";
 
 const CREATE_USERRECIPE_MUTATION = gql`
   mutation CreateUserRecipe($input: CreateUserRecipeInput!) {
@@ -30,14 +31,21 @@ const CREATE_USERRECIPE_MUTATION = gql`
     }
   }
 `;
+
+const DELETE_USERRECIPE_MUTATION = gql`
+  mutation DeleteUserRecipeMutation($id: String!) {
+    deleteUserRecipe(id: $id) {
+      id
+    }
+  }
+`
 type ItemRecipe = {
   __typename: string;
   id: string;
-  crafted_item_id: number;
   crafting_station_id: number;
   crafting_time: number;
   yields: number;
-  Item_ItemRecipe_crafted_item_idToItem: {
+  Item_ItemRecipe_crafted_item_idToItem?: {
     __typename: string;
     id: number;
     name: string;
@@ -45,7 +53,7 @@ type ItemRecipe = {
     category: string;
     type: string;
   };
-  ItemRecipeItem: {
+  ItemRecipeItem?: {
     __typename: string;
     id: string;
     amount: number;
@@ -68,9 +76,6 @@ export const MaterialGrid = ({
   itemRecipes,
   userRecipesByID,
 }: MaterialGridProps) => {
-  // useEffect(() => {
-
-  // }, [])
   const categoriesIcons = {
     Armor: "cloth-shirt",
     Tool: "stone-pick",
@@ -81,21 +86,30 @@ export const MaterialGrid = ({
     Other: "any-craftable-resource",
     Consumable: "any-berry-seed",
   };
-  const { currentUser, isAuthenticated, client } = useAuth();
-  // TODO: Fix Types
+
+  const [deleteUserRecipe] = useMutation(DELETE_USERRECIPE_MUTATION, {
+    onCompleted: () => {
+      toast.success("Custom recipe deleted");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const onDeleteClick = (id: DeleteUserRecipeMutationVariables["id"]) => {
+    if (confirm("Are you sure you want to delete profile " + id + "?")) {
+      deleteUserRecipe({ variables: { id } });
+    }
+  };
+  const { currentUser, isAuthenticated } = useAuth();
+
   const [search, setSearch] = useState<string>("");
 
-  const [selectedCraftingStations, selectCraftingStations] = useState<any>([
+  const [selectedCraftingStations, selectCraftingStations] = useState<number[]>([
     107, 125,
   ]);
 
   const [viewBaseMaterials, setViewBaseMaterials] = useState<boolean>(false);
-  const toggleBaseMaterials = useCallback(
-    (e) => {
-      setViewBaseMaterials(e.currentTarget.checked);
-    },
-    [viewBaseMaterials]
-  );
 
   const reducer = (state, action) => {
     switch (action.type) {
@@ -106,9 +120,9 @@ export const MaterialGrid = ({
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                  ...item,
-                  amount: item.amount + (action.index || 1) * yields,
-                }
+                ...item,
+                amount: item.amount + (action.index || 1) * yields,
+              }
               : item
           );
         }
@@ -134,9 +148,9 @@ export const MaterialGrid = ({
           const yields = item?.yields || 1;
           return i === action.index
             ? {
-                ...item,
-                amount: parseInt(item.amount) + parseInt(yields),
-              }
+              ...item,
+              amount: parseInt(item.amount) + parseInt(yields),
+            }
             : item;
         });
       }
@@ -145,10 +159,10 @@ export const MaterialGrid = ({
           const yields = item?.yields || 1;
           return i === action.index
             ? {
-                ...item,
-                amount:
-                  item.amount - yields < 1 ? yields : item.amount - yields,
-              }
+              ...item,
+              amount:
+                item.amount - yields < 1 ? yields : item.amount - yields,
+            }
             : item;
         });
       }
@@ -160,9 +174,9 @@ export const MaterialGrid = ({
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                  ...item,
-                  amount: parseInt(item.amount || 0) + yields,
-                }
+                ...item,
+                amount: parseInt(item.amount || 0) + yields,
+              }
               : item
           );
         }
@@ -178,7 +192,7 @@ export const MaterialGrid = ({
         return state.filter((_, i) => i !== action.index);
       }
       case "REMOVE_BY_ID": {
-        return state.filter((itm, i) => itm.id !== action.id);
+        return state.filter((itm) => itm.id !== action.id);
       }
       case "RESET": {
         return [];
@@ -189,53 +203,53 @@ export const MaterialGrid = ({
     }
   };
 
-  let [item, setItem] = useReducer(reducer, []);
+  let [recipes, setRecipes] = useReducer(reducer, []);
 
   const items = useMemo(() => {
-    const craftedItems: { [key: string]: ItemRecipe[] } = groupBy(
+    const recipesGroupedByItemId = groupBy(
       itemRecipes,
-      // "crafted_item_id"
       "Item_ItemRecipe_crafted_item_idToItem.id"
     );
-    const craftingStations = {};
 
-    for (const [key, value] of Object.entries(craftedItems)) {
-      craftingStations[key] = groupBy(value, "crafting_station_id");
+    const craftingStations: { [groupKey: string]: ItemRecipe[][] } = {};
+
+    for (const [key, value] of Object.entries(recipesGroupedByItemId)) {
+      Object.assign(craftingStations, { [key]: groupBy(value, "crafting_station_id") });
     }
-    const result = [];
-    Object.values(craftingStations).forEach((v) => {
-      // If the item is crafted in either chem bench, mortar, refining or industral forge, we need to find the one that is selected
-      if (
-        Object.keys(v).some((f) => [107, 607, 125, 600].includes(Number(f)))
-      ) {
-        const t = Object.entries(v)
-          .filter(([k, _]) => {
-            return selectedCraftingStations.includes(Number(k));
-          })
-          .map(([_, v]) => {
-            return Object.values(v)[0];
-          });
-        t && t[0] && result.push(t[0]);
+
+    const result: ItemRecipe[] = [];
+
+    for (const recipePerCraftingstation of Object.values(craftingStations)) {
+      const craftingStationIds = Object.keys(recipePerCraftingstation);
+      // If the item is crafted in either chem bench, mortar, refining or industrial forge, we need to find the one that is selected
+      if (craftingStationIds.some((id) => [107, 607, 125, 600].includes(Number(id)))) {
+        const itemRecipeFilteredByCraftingStation = craftingStationIds
+          .filter((k) => selectedCraftingStations.includes(parseInt(k)))
+          .map((k) => recipePerCraftingstation[k][0]);
+
+        if (itemRecipeFilteredByCraftingStation.length > 0) {
+          result.push(itemRecipeFilteredByCraftingStation[0]);
+        }
       } else {
-        const craftingStation = Object.values(Object.values(v)[0])[0];
+        const craftingStation: ItemRecipe = recipePerCraftingstation[craftingStationIds[0]][0];
         result.push(craftingStation);
       }
-    });
-    item.forEach((item) => {
-      setItem({ type: "REMOVE_BY_ID", id: item.id });
+    }
+
+    recipes.forEach((recipe) => {
+      setRecipes({ type: "REMOVE_BY_ID", id: recipe.id });
       let itemfound = result.find(
-        (item2) =>
-          parseInt(item2.crafted_item_id) === parseInt(item.crafted_item_id)
+        (i) =>
+          i.Item_ItemRecipe_crafted_item_idToItem.id === parseInt(recipe.Item_ItemRecipe_crafted_item_idToItem.id)
       );
       if (itemfound) {
-        setItem({
+        setRecipes({
           type: "ADD_AMOUNT_BY_NUM",
           item: itemfound,
-          index: item.amount / itemfound.yields,
+          index: recipe.amount // / itemfound.yields,
         });
       }
     });
-
     return result;
   }, [selectedCraftingStations]);
 
@@ -253,28 +267,26 @@ export const MaterialGrid = ({
   const onAdd = ({ itemId }) => {
     if (!itemId) return;
     let chosenItem = items.find(
-      (item) => parseInt(item.crafted_item_id) === parseInt(itemId)
+      (item) => item.Item_ItemRecipe_crafted_item_idToItem.id === parseInt(itemId)
     );
 
-    setItem({ type: "ADD", item: chosenItem });
+    if (!chosenItem) return toast.error("Item could not be found")
+    setRecipes({ type: "ADD", item: chosenItem });
   };
 
   const onAddAmount = (index) => {
-    setItem({ type: "ADD_AMOUNT", index });
+    setRecipes({ type: "ADD_AMOUNT", index });
   };
   const onRemoveAmount = (index) => {
-    setItem({ type: "REMOVE_AMOUNT", index });
+    setRecipes({ type: "REMOVE_AMOUNT", index });
   };
-  const onChangeAmount = debounce((index, amount) => {
-    setItem({ type: "CHANGE_AMOUNT", item: index, index: amount });
-  }, 500);
 
   const mergeItemRecipe = useCallback(getBaseMaterials, [
-    item,
+    recipes,
     selectedCraftingStations,
   ]);
 
-  const [createRecipe, { loading, error: recipeError, data }] = useMutation(
+  const [createRecipe, { loading }] = useMutation(
     CREATE_USERRECIPE_MUTATION,
     {
       onCompleted: (data) => {
@@ -314,21 +326,13 @@ export const MaterialGrid = ({
         user_id: currentUser.id,
         private: true,
         UserRecipeItemRecipe: {
-          create: item.map((u) => ({
+          create: recipes.map((u) => ({
             amount: u.amount,
             item_recipe_id: u.id,
           })),
         },
       };
       createRecipe({ variables: { input } });
-
-      // if (error) {
-      //   console.error(error);
-      // }
-      // if (!error) {
-      //   toast.success("Recipe created");
-      //   console.log(data);
-      // }
     } catch (error) {
       return console.error(error);
     }
@@ -358,7 +362,7 @@ export const MaterialGrid = ({
                       (item) => item.id === item_recipe_id
                     );
                     if (itemfound) {
-                      setItem({
+                      setRecipes({
                         type: "ADD_AMOUNT_BY_NUM",
                         item: itemfound,
                         index: amount,
@@ -497,7 +501,8 @@ z"
               </div>
               {IsPrivate && (
                 <div className="flex h-full flex-col items-center justify-start space-y-3 border-l border-zinc-500 pl-3">
-                  <button>
+                  <button onClick={() => navigate(routes.userRecipe({ id }))}>
+                    <span className="sr-only">View</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 576 512"
@@ -507,7 +512,8 @@ z"
                       <path d="M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z" />
                     </svg>
                   </button>
-                  <button>
+                  <button onClick={() => navigate(routes.editUserRecipe({ id }))}>
+                    <span className="sr-only">Edit</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 512 512"
@@ -517,7 +523,8 @@ z"
                       <path d="M373.1 24.97C401.2-3.147 446.8-3.147 474.9 24.97L487 37.09C515.1 65.21 515.1 110.8 487 138.9L289.8 336.2C281.1 344.8 270.4 351.1 258.6 354.5L158.6 383.1C150.2 385.5 141.2 383.1 135 376.1C128.9 370.8 126.5 361.8 128.9 353.4L157.5 253.4C160.9 241.6 167.2 230.9 175.8 222.2L373.1 24.97zM440.1 58.91C431.6 49.54 416.4 49.54 407 58.91L377.9 88L424 134.1L453.1 104.1C462.5 95.6 462.5 80.4 453.1 71.03L440.1 58.91zM203.7 266.6L186.9 325.1L245.4 308.3C249.4 307.2 252.9 305.1 255.8 302.2L390.1 168L344 121.9L209.8 256.2C206.9 259.1 204.8 262.6 203.7 266.6zM200 64C213.3 64 224 74.75 224 88C224 101.3 213.3 112 200 112H88C65.91 112 48 129.9 48 152V424C48 446.1 65.91 464 88 464H360C382.1 464 400 446.1 400 424V312C400 298.7 410.7 288 424 288C437.3 288 448 298.7 448 312V424C448 472.6 408.6 512 360 512H88C39.4 512 0 472.6 0 424V152C0 103.4 39.4 64 88 64H200z" />
                     </svg>
                   </button>
-                  <button type="button" onClick={() => console.log("delete")}>
+                  <button type="button" onClick={() => onDeleteClick(id)}>
+                    <span className="sr-only">Delete</span>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 448 512"
@@ -550,6 +557,7 @@ z"
               type="button"
               onClick={saveRecipe}
               className="rw-button rw-button-green"
+              disabled={loading}
             >
               Save Recipe
               <svg
@@ -565,7 +573,7 @@ z"
 
           <button
             type="button"
-            onClick={() => setItem({ type: "RESET" })}
+            onClick={() => setRecipes({ type: "RESET" })}
             className="rw-button rw-button-red"
             title="Clear all items"
           >
@@ -627,7 +635,7 @@ z"
                   </li>
                 ))}
               {Object.entries(categories).map(
-                ([category, categoryitems]: any) => (
+                ([category, categoryitems]) => (
                   <li key={category}>
                     <details
                       open={Object.values(categories).length === 1}
@@ -638,68 +646,69 @@ z"
                           className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
                           src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[category]}.webp`}
                           alt={``}
+                          loading="lazy"
                         />
                         <span className="ml-2">{category}</span>
                       </summary>
 
                       <ul className="py-2">
                         {Object.values(categories).length === 1 ||
-                        categoryitems.every(({ type }) => {
-                          return !type;
-                        })
-                          ? categoryitems.map((item) => (
-                              <li key={`${category}-${item.type}-${item.id}`}>
-                                <button
-                                  type="button"
-                                  className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                  onClick={() => onAdd({ itemId: item.id })}
-                                >
-                                  <img
-                                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
-                                    alt={item.name}
-                                    className="mr-2 h-5 w-5"
-                                  />
-                                  {item.name}
-                                </button>
-                              </li>
-                            ))
+                          categoryitems.every(({ type }) => !type)
+                          ? categoryitems.map(({ id, type, image, name }) => (
+                            <li key={`${category}-${type}-${id}`}>
+                              <button
+                                type="button"
+                                className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                                onClick={() => onAdd({ itemId: id })}
+                              >
+                                <img
+                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                                  alt={name}
+                                  className="mr-2 h-5 w-5"
+                                  loading="lazy"
+                                />
+                                {name}
+                              </button>
+                            </li>
+                          ))
                           : Object.entries(groupBy(categoryitems, "type")).map(
-                              ([type, typeitems]: any) => (
-                                <li key={`${category}-${type}`}>
-                                  <details className="">
-                                    <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                                      <span className="">{type}</span>
-                                      <span className="text-pea-800 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full text-xs dark:text-stone-300">
-                                        {typeitems.length}
-                                      </span>
-                                    </summary>
+                            ([type, typeitems]) => (
+                              <li key={`${category}-${type}`}>
+                                <details className="">
+                                  <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+                                    <span className="">{type}</span>
+                                    <span className="text-pea-800 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full text-xs dark:text-stone-300">
+                                      {typeitems.length}
+                                    </span>
+                                  </summary>
 
-                                    <ul className="py-2">
-                                      {typeitems.map((item) => (
-                                        <li
-                                          key={`${category}-${type}-${item.id}`}
+                                  <ul className="py-2">
+                                    {typeitems.map((item) => (
+                                      <li
+                                        key={`${category}-${type}-${item.id}`}
+                                      >
+                                        <button
+                                          type="button"
+                                          className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+                                          onClick={() =>
+                                            onAdd({ itemId: item.id })
+                                          }
                                         >
-                                          <button
-                                            type="button"
-                                            className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                            onClick={() =>
-                                              onAdd({ itemId: item.id })
-                                            }
-                                          >
-                                            <img
-                                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
-                                              alt={item.name}
-                                              className="mr-2 h-5 w-5"
-                                            />
-                                            {item.name}
-                                          </button>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </details>
-                                </li>
-                              )
-                            )}
+                                          <img
+                                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
+                                            alt={item.name}
+                                            className="mr-2 h-5 w-5"
+                                            loading="lazy"
+                                          />
+                                          {item.name}
+                                        </button>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </details>
+                              </li>
+                            )
+                          )}
                       </ul>
                     </details>
                   </li>
@@ -710,7 +719,7 @@ z"
         </div>
         <div className="w-full">
           <Table
-            rows={mergeItemRecipe(viewBaseMaterials, items, ...item).slice(
+            rows={mergeItemRecipe(viewBaseMaterials, items, ...recipes).slice(
               0,
               1
             )}
@@ -721,20 +730,17 @@ z"
                 offLabel="Materials"
                 onLabel="Base materials"
                 checked={viewBaseMaterials}
-                onChange={toggleBaseMaterials}
+                onChange={(e) => setViewBaseMaterials(e.currentTarget.checked)}
               />,
-              // <button
-              //   data-testid="turrettowerbtn"
-              //   type="button"
-              //   // onClick={() => generatePDF()}
-              //   title="generate pedo-fil"
-              //   className="rw-button rw-button-gray p-2"
-              // >
-              //   PDF
-              // </button>,
+              <button className="rw-button rw-button-gray rw-button-small" onClick={() => generatePDF(recipes.map(r => ({
+                name: r.Item_ItemRecipe_crafted_item_idToItem.name,
+                amount: r.amount,
+              })))}>
+                PDF
+              </button>
             ]}
             columns={[
-              ...mergeItemRecipe(viewBaseMaterials, items, ...item).map(
+              ...mergeItemRecipe(viewBaseMaterials, items, ...recipes).map(
                 ({ Item_ItemRecipe_crafted_item_idToItem, amount }) => ({
                   field: Item_ItemRecipe_crafted_item_idToItem.id,
                   header: Item_ItemRecipe_crafted_item_idToItem.name,
@@ -748,6 +754,7 @@ z"
                         <img
                           src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafted_item_idToItem.image}`}
                           className="h-6 w-6"
+                          loading="lazy"
                         />
                         <span className="text-sm">{formatNumber(amount)}</span>
                       </div>
@@ -797,7 +804,7 @@ z"
           </div>
 
           <Table
-            rows={item}
+            rows={recipes}
             className="animate-fade-in whitespace-nowrap"
             settings={{
               summary: true,
@@ -812,7 +819,7 @@ z"
                     <button
                       type="button"
                       onClick={() => {
-                        setItem({ type: "REMOVE", index: rowIndex });
+                        setRecipes({ type: "REMOVE", index: rowIndex });
                       }}
                       className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-red-500"
                       title={`Remove ${name}`}
@@ -820,6 +827,7 @@ z"
                       <img
                         className="h-8 w-8"
                         src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                        loading="lazy"
                       />
                     </button>
                   );
@@ -845,18 +853,10 @@ z"
                     </button>
                     <input
                       type="text"
-                      defaultValue={value}
-                      // value={value}
+                      value={value}
                       className="rw-input w-16 p-3 text-center"
                       onChange={(e) => {
-                        onChangeAmount(
-                          rowIndex,
-                          parseInt(e.target.value) > 0 ? e.target.value : 1
-                        );
-                        if (parseInt(e.target.value) < 1) {
-                          e.target.value =
-                            parseInt(e.target.value) > 0 ? e.target.value : "1";
-                        }
+                        setRecipes({ type: "CHANGE_AMOUNT", item: rowIndex, index: parseInt(e.target.value) > 0 ? e.target.value : 1 });
                       }}
                     />
                     <button
@@ -927,12 +927,6 @@ z"
               },
             ]}
           />
-          {/* {loading && (
-          <div className="m-16 flex items-center justify-center text-white">
-            <p className="mr-4">LOADING</p>
-            <div className="dot-revolution"></div>
-          </div>
-        )} */}
         </div>
       </Form>
     </div>

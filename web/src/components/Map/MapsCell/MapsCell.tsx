@@ -9,9 +9,9 @@ export const QUERY = gql`
   query FindMaps {
     maps {
       id
-      created_at
       name
       img
+      icon
     }
   }
 `

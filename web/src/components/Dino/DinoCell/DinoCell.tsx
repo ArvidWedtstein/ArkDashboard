@@ -31,7 +31,7 @@ export const QUERY = gql`
       disable_mult
       non_violent_food_rate_mult
       taming_interval
-      disable_tame
+      tamable
       base_taming_time
       x_variant
       mounted_weaponry

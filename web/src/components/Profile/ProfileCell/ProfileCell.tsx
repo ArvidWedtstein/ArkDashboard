@@ -8,14 +8,11 @@ export const QUERY = gql`
   query FindProfileById($id: String!) {
     profile: profile(id: $id) {
       id
-      updated_at
       username
       full_name
       avatar_url
       website
       biography
-      status
-      role_id
       created_at
       role_profile_role_idTorole {
         name

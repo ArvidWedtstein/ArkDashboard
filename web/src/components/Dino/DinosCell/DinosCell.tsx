@@ -12,7 +12,10 @@ export const QUERY = gql`
       dinos {
         id
         name
+        description
         type
+        tamable
+        temperament
         image
       }
       count

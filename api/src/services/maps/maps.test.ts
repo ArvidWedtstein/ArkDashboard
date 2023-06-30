@@ -22,6 +22,24 @@ describe('maps', () => {
     expect(result).toEqual(scenario.map.one)
   })
 
+  scenario('creates a map', async () => {
+    const result = await createMap({
+      input: { name: 'String5111700' },
+    })
+
+    expect(result.name).toEqual('String5111700')
+  })
+
+  scenario('updates a map', async (scenario: StandardScenario) => {
+    const original = (await map({ id: scenario.map.one.id })) as Map
+    const result = await updateMap({
+      id: original.id,
+      input: { name: 'String49563102' },
+    })
+
+    expect(result.name).toEqual('String49563102')
+  })
+
   scenario('deletes a map', async (scenario: StandardScenario) => {
     const original = (await deleteMap({ id: scenario.map.one.id })) as Map
     const result = await map({ id: original.id })

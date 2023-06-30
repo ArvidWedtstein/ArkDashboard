@@ -1,26 +1,23 @@
-const dino = require("./values.json");
-// const d = require("./web/public/maps.json");
-// const d2 = require("./web/public/f.json");
-// const lootcrates = require("./web/public/lootcratesItemId.json");
-
-// const dd = require("./j.json");
-
-// let d = ["aaaa", "bbbbbbbbb", "Hello", "bruh", "aaaa"];
 console.time("normal");
 
-const dinos = dino.species.map((x) => {
+const dinos = dadinos.map((x) => {
   return `
   UPDATE public."Dino"
-  SET taming_ineffectiveness = ${x?.taming?.tamingIneffectiveness || 0},
-  baby_food_consumption_mult = ${x?.taming?.babyFoodConsumptionMult || 0},
-  gestation_time = ${x?.breeding?.gestationTime || 0},
-  maturation_time = ${x?.breeding?.maturationTime || "maturation_time"},
-  incubation_time = ${x?.breeding?.incubationTime || "incubation_time"},
-  mating_cooldown_min = ${x?.breeding?.matingCooldownMin || 0},
-  mating_cooldown_max = ${x?.breeding?.matingCooldownMax || 0},
-  egg_min = ${x?.breeding?.eggTempMin || "egg_min"},
-  egg_max = ${x?.breeding?.eggTempMax || "egg_max"}
+  SET bp = '${x.bp}'
   WHERE name LIKE '${x.name}';`;
+
+  // return `
+  // UPDATE public."Dino"
+  // SET taming_ineffectiveness = ${x?.taming?.tamingIneffectiveness || 0},
+  // baby_food_consumption_mult = ${x?.taming?.babyFoodConsumptionMult || 0},
+  // gestation_time = ${x?.breeding?.gestationTime || 0},
+  // maturation_time = ${x?.breeding?.maturationTime || "maturation_time"},
+  // incubation_time = ${x?.breeding?.incubationTime || "incubation_time"},
+  // mating_cooldown_min = ${x?.breeding?.matingCooldownMin || 0},
+  // mating_cooldown_max = ${x?.breeding?.matingCooldownMax || 0},
+  // egg_min = ${x?.breeding?.eggTempMin || "egg_min"},
+  // egg_max = ${x?.breeding?.eggTempMax || "egg_max"}
+  // WHERE name LIKE '${x.name}';`;
 
   return {
     name: x.name,
@@ -35,6 +32,7 @@ const dinos = dino.species.map((x) => {
     egg_max: x?.breeding?.eggTempMax || 0,
   };
 });
+
 // const crates = Object.entries(dino).map(([k, v]) => {
 //   let d = v.mult
 //     ? `UPDATE public."Dino" SET multipliers = '[${JSON.stringify(

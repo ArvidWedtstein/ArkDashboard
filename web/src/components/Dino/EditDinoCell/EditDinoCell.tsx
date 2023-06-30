@@ -41,7 +41,7 @@ export const QUERY = gql`
       non_violent_food_rate_mult
       taming_interval
       base_taming_time
-      disable_tame
+      tamable
       x_variant
       attack
       mounted_weaponry
@@ -97,7 +97,7 @@ const UPDATE_DINO_MUTATION = gql`
       non_violent_food_rate_mult
       taming_interval
       base_taming_time
-      disable_tame
+      tamable
       x_variant
       attack
       mounted_weaponry

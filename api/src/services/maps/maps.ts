@@ -51,4 +51,12 @@ export const Map: MapRelationResolvers = {
   TimelineBasespot: (_obj, { root }) => {
     return db.map.findUnique({ where: { id: root?.id } }).TimelineBasespot()
   },
+  TimelineSeasonBasespot: (_obj, { root }) => {
+    return db.map
+      .findUnique({ where: { id: root?.id } })
+      .TimelineSeasonBasespot()
+  },
+  TimelineSeasonEvent: (_obj, { root }) => {
+    return db.map.findUnique({ where: { id: root?.id } }).TimelineSeasonEvent()
+  },
 }

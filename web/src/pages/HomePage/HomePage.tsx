@@ -61,10 +61,49 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-
         {/* {isAuthenticated && <Chat />} */}
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
+
+        <section
+          className="my-12 mx-auto flex max-w-5xl overflow-hidden rounded-lg border border-zinc-500 dark:bg-zinc-800 dark:text-white"
+          style={{
+            background:
+              "url('https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj')",
+            backgroundPosition: "50%",
+            backfaceVisibility: "visible",
+            backgroundAttachment: "fixed",
+            backgroundSize: "cover",
+          }}
+        >
+          <div className="min-h-max overflow-hidden transition">
+            <img
+              src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg"
+              className="aspect-video h-full max-w-sm object-cover"
+            />
+          </div>
+          <div className="font-montserrat w-full space-y-6 bg-black bg-opacity-80 p-8 text-left font-normal">
+            <h1 className="text-5xl">Crafting Made Easy</h1>
+            <p className="font-light">
+              Struggling to remember how to craft that rare item? Use our
+              crafting recipe calculator to quickly look up the ingredients and
+              steps needed for any item in ARK Survival Evolved. Never waste
+              resources on failed crafting attempts again!
+            </p>
+            <details className="transition">
+              <summary>How to Use the Calculator</summary>
+              <p className="m-1 border-l pl-5">
+                Simply select the item you want to craft from the dropdown list,
+                and the calculator will show you the materials and steps needed
+                to craft it. You can also filter the list by item type or
+                crafting station.
+              </p>
+              <Link to={routes.materialCalculator()} className="rw-button rw-button-green-outline mt-2">
+                Explore
+              </Link>
+            </details>
+          </div>
+        </section>
       </div>
     </>
   );

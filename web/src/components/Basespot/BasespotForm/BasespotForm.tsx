@@ -35,17 +35,17 @@ const BasespotForm = (props: BasespotFormProps) => {
   const [defenseImages, setDefenseImages] = useState([]);
 
   const basename = useRef(null);
-  const [map, setMap] = useState(props.basespot?.map || 2);
+  const [map, setMap] = useState(props.basespot?.map_id || 2);
 
   const onSubmit = (data: FormBasespot) => {
-    data.map = parseInt(data.map.toString() || map.toString());
+    data.map_id = parseInt(data.map_id.toString() || map.toString());
     if (thumbnailUrl) data.image = thumbnailUrl;
     props.onSave(data, props?.basespot?.id);
   };
 
   useEffect(() => {
-    if (props.basespot?.map) {
-      setMap(props.basespot.map);
+    if (props.basespot?.map_id) {
+      setMap(props.basespot.map_id);
     }
   }, []);
 
@@ -117,7 +117,7 @@ const BasespotForm = (props: BasespotFormProps) => {
         <FieldError name="description" className="rw-field-error" />
 
         <Label
-          name="map"
+          name="map_id"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
@@ -125,7 +125,7 @@ const BasespotForm = (props: BasespotFormProps) => {
         </Label>
 
         <Lookup
-          defaultValue={props.basespot?.map || map}
+          defaultValue={props.basespot?.map_id || map}
           options={[
             { label: "Valguero", value: 1 },
             { label: "The Island", value: 2 },
@@ -140,14 +140,14 @@ const BasespotForm = (props: BasespotFormProps) => {
             { label: "Fjordur", value: 11 },
             { label: "Lost Island", value: 12 },
           ]}
-          name="map"
+          name="map_id"
         />
 
-        <FieldError name="map" className="rw-field-error" />
+        <FieldError name="map_id" className="rw-field-error" />
 
         <MapPicker
           className="mt-2"
-          map={props.basespot?.map || map.toString()}
+          map={props.basespot?.map_id || map.toString()}
           url={
             props.basespot.Map.img
               ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${props.basespot.Map.img}`
@@ -214,12 +214,11 @@ const BasespotForm = (props: BasespotFormProps) => {
             <FileUpload
               multiple={false}
               name="image"
-              storagePath={`basespotimages/${
-                props.basespot?.id ||
+              storagePath={`basespotimages/${props.basespot?.id ||
                 basename.current?.value.replaceAll(" ", "")
                 // basename.current?.value.replaceAll(" ", "") ||
                 // props.basespot?.name.replaceAll(" ", "")
-              }`}
+                }`}
               onUpload={(url) => {
                 setThumbnailUrl(url);
               }}

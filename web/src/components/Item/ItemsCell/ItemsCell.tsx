@@ -23,7 +23,6 @@ export const QUERY = gql`
         max_stack
         weight
         engram_points
-        crafting_time
         stats
         color
         category
