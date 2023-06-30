@@ -1,7 +1,4 @@
-import {
-  NavLink,
-  routes,
-} from "@redwoodjs/router";
+import { NavLink, routes } from "@redwoodjs/router";
 import { memo } from "react";
 const Icon = (icon: string) => {
   // FontAwesome Light Icons
@@ -105,7 +102,7 @@ const Icon = (icon: string) => {
   return icons[icon.toLowerCase()] || null;
 };
 
-const Sidebar = memo(({ }) => {
+const Sidebar = memo(({}) => {
   const navigation = [
     {
       name: "Home",
@@ -155,7 +152,7 @@ const Sidebar = memo(({ }) => {
   ];
 
   return (
-    <nav className="overflow-x-auto sm:overflow-visible sticky top-0 z-10 flex h-fit flex-row items-center justify-between bg-zinc-800 rounded-r-xl border-gray-700 px-10 py-2 dark:border-gray-200 max-sm:border-b sm:bg-transparent sm:flex-col sm:justify-start sm:border-r sm:py-10 sm:px-2">
+    <nav className="sticky top-0 z-10 flex h-fit flex-row items-center justify-between overflow-x-auto rounded-r-xl border-gray-700 bg-zinc-800 px-10 py-2 dark:border-gray-200 max-sm:border-b sm:flex-col sm:justify-start sm:overflow-visible sm:border-r sm:bg-transparent sm:py-10 sm:px-2">
       {navigation.map((item, index) => (
         <aside
           className="mx-2 flex flex-col items-center justify-start self-start text-black transition-all dark:text-[#ffffffcc] sm:flex-row"
@@ -166,7 +163,7 @@ const Sidebar = memo(({ }) => {
             title={item.name}
             activeClassName={`text-white ring-2 ${item.color}`}
             matchSubPaths={false}
-            className="mr-2 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-stone-300 outline-none ring-1 ring-transparent hover:text-gray-900 hover:ring-stone-400 focus:ring-stone-400 dark:bg-zinc-700 dark:hover:text-white dark:hover:ring-white dark:focus:ring-white sm:my-2"
+            className="mr-2 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-zinc-500 text-white outline-none ring-1 ring-transparent hover:text-gray-100 hover:ring-stone-400 focus:ring-stone-400 dark:bg-zinc-700 dark:hover:text-white dark:hover:ring-white dark:focus:ring-white sm:my-2"
           >
             {Icon(item.name)} <span className="sr-only">{item.name}</span>
           </NavLink>

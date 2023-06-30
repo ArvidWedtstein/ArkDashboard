@@ -1,9 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import {
-  IntRange,
-  debounce,
-  formatNumber,
-} from "src/lib/formatters";
+import { IntRange, debounce, formatNumber } from "src/lib/formatters";
 import clsx from "clsx";
 import useComponentVisible from "src/components/useComponentVisible";
 import { Form, SelectField, Submit, TextField } from "@redwoodjs/forms";
@@ -70,52 +66,56 @@ type TableColumn = {
    * @param options.rowIndex - The index of the current row.
    * @returns The rendered content.
    */
-  render?: (options: { value: any; row: any; rowIndex: number }) => React.ReactNode;
+  render?: (options: {
+    value: any;
+    row: any;
+    rowIndex: number;
+  }) => React.ReactNode;
 };
 
 type TableSettings = {
   /**
- * Indicates whether the search feature is enabled.
- */
+   * Indicates whether the search feature is enabled.
+   */
   search?: boolean;
   /**
- * Indicates whether the header is visible.
- */
+   * Indicates whether the header is visible.
+   */
   header?: boolean;
   /**
- * Indicates whether the select feature is enabled.
- */
+   * Indicates whether the select feature is enabled.
+   */
   select?: boolean;
   /**
-  * Indicates whether the filter feature is enabled.
-  */
+   * Indicates whether the filter feature is enabled.
+   */
   filter?: boolean;
   /**
- * Indicates whether the summary is visible.
- */
+   * Indicates whether the summary is visible.
+   */
   summary?: boolean;
   /**
- * Configuration for table borders.
- */
+   * Configuration for table borders.
+   */
   borders?: {
     vertical?: boolean;
     horizontal?: boolean;
   };
   /**
- * Configuration for pagination.
- */
+   * Configuration for pagination.
+   */
   pagination?: {
     /**
- * Indicates whether pagination is enabled.
- */
+     * Indicates whether pagination is enabled.
+     */
     enabled?: boolean;
     /**
- * The range of rows per page.
- */
+     * The range of rows per page.
+     */
     rowsPerPage?: IntRange<1, 100>;
     /**
-   * The available page size options.
-   */
+     * The available page size options.
+     */
     pageSizeOptions?: number[];
   };
 };
@@ -171,7 +171,10 @@ const Table = ({
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
-  const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(mergedSettings.pagination.rowsPerPage || mergedSettings.pagination.pageSizeOptions[0]);
+  const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(
+    mergedSettings.pagination.rowsPerPage ||
+      mergedSettings.pagination.pageSizeOptions[0]
+  );
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filters, setFilters] = useState<Filter[]>([]);
   const [sort, setSort] = useState({
@@ -331,20 +334,24 @@ const Table = ({
         key={`headcell-${columnIndex}-${label}`}
         id={`headcell-${other.field}`}
         className={clsx(
-          "bg-zinc-300 p-3 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-800 line-clamp-1",
+          "line-clamp-1 bg-zinc-300 p-3 first:rounded-tl-lg last:rounded-tr-lg dark:bg-zinc-800",
           other.className
         )}
         aria-sort="none"
         scope="col"
         onClick={() => {
-          other.sortable && setSort((prev) => ({ column: other.field, direction: prev.direction === "asc" ? "desc" : "asc" }));
+          other.sortable &&
+            setSort((prev) => ({
+              column: other.field,
+              direction: prev.direction === "asc" ? "desc" : "asc",
+            }));
         }}
       >
         {label}
         {other.sortable && (
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="ml-1 h-3 w-3 inline-flex"
+            className="ml-1 inline-flex h-3 w-3"
             fill="currentColor"
             viewBox="0 0 320 512"
           >
@@ -381,8 +388,15 @@ const Table = ({
       {
         truncate: !render && !valueFormatter,
         "dark:!bg-zinc-700 !bg-zinc-300": rowSelected,
-        "rounded-bl-lg": rowIndex === PaginatedData.length - 1 && columnIndex === 0 && !mergedSettings.select && !mergedSettings.summary,
-        "rounded-br-lg": rowIndex === PaginatedData.length - 1 && columnIndex === columns.length - 1 && !mergedSettings.summary,
+        "rounded-bl-lg":
+          rowIndex === PaginatedData.length - 1 &&
+          columnIndex === 0 &&
+          !mergedSettings.select &&
+          !mergedSettings.summary,
+        "rounded-br-lg":
+          rowIndex === PaginatedData.length - 1 &&
+          columnIndex === columns.length - 1 &&
+          !mergedSettings.summary,
       }
     );
 
@@ -394,22 +408,22 @@ const Table = ({
 
     const valueFormatted = valueFormatter
       ? valueFormatter({
-        value: cellData,
-        row: rowData,
-        columnIndex,
-      })
+          value: cellData,
+          row: rowData,
+          columnIndex,
+        })
       : isNaN(cellData)
-        ? cellData?.amount || cellData
-        : cellData;
+      ? cellData?.amount || cellData
+      : cellData;
 
     const content = render
       ? render({
-        columnIndex,
-        rowIndex,
-        value: valueFormatted,
-        field: field,
-        row: rowData,
-      })
+          columnIndex,
+          rowIndex,
+          value: valueFormatted,
+          field: field,
+          row: rowData,
+        })
       : valueFormatted;
 
     return (
@@ -431,11 +445,12 @@ const Table = ({
     return (
       <td
         className={clsx("w-4 p-4", {
-          "bg-zinc-400 first:rounded-tl-lg dark:bg-zinc-800": header,
+          "bg-zinc-300 first:rounded-tl-lg dark:bg-zinc-800": header,
           "bg-zinc-100 dark:bg-zinc-600": !header,
           "!bg-zinc-300 dark:!bg-zinc-700":
             !header && isSelected(datarow.row_id),
-          "rounded-bl-lg": rowIndex === PaginatedData.length - 1 && !mergedSettings.summary,
+          "rounded-bl-lg":
+            rowIndex === PaginatedData.length - 1 && !mergedSettings.summary,
         })}
         scope="col"
       >
@@ -445,8 +460,8 @@ const Table = ({
             checked={
               header
                 ? PaginatedData.every((row) =>
-                  selectedRows.includes(row.row_id)
-                )
+                    selectedRows.includes(row.row_id)
+                  )
                 : isSelected(datarow.row_id)
             }
             onChange={(e) => handleRowSelect(e, datarow?.row_id)}
@@ -485,7 +500,8 @@ const Table = ({
         className={clsx(
           "rounded-b-lg font-semibold text-gray-900 dark:text-white",
           {
-            "divide-x divide-gray-400 dark:divide-zinc-800": mergedSettings.borders.vertical,
+            "divide-x divide-gray-400 dark:divide-zinc-800":
+              mergedSettings.borders.vertical,
           }
         )}
       >
@@ -502,7 +518,7 @@ const Table = ({
                 key={key}
                 className={clsx(
                   "bg-zinc-300 px-3 py-4 first:rounded-bl-lg last:rounded-br-lg dark:bg-zinc-800",
-                  className,
+                  className
                 )}
               >
                 {numeric ? sum : index === 0 ? "Total" : ""}
@@ -567,7 +583,8 @@ const Table = ({
         setCurrentPage(currentPage - 1);
       } else if (
         dir === "next" &&
-        currentPage < Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
+        currentPage <
+          Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
       ) {
         setCurrentPage(currentPage + 1);
       }
@@ -576,8 +593,11 @@ const Table = ({
   );
 
   const tablePagination = () => {
-    const totalPageCount = Math.ceil(SortedFilteredData.length / selectedPageSizeOption);
-    const startRowIndex = currentPage * selectedPageSizeOption - selectedPageSizeOption + 1;
+    const totalPageCount = Math.ceil(
+      SortedFilteredData.length / selectedPageSizeOption
+    );
+    const startRowIndex =
+      currentPage * selectedPageSizeOption - selectedPageSizeOption + 1;
     const endRowIndex = Math.min(
       currentPage * selectedPageSizeOption,
       SortedFilteredData.length
@@ -613,7 +633,9 @@ const Table = ({
           // defaultValue={mergedSettings.pagination.rowsPerPage}
           defaultValue={selectedPageSizeOption}
         >
-          {!mergedSettings?.pagination?.pageSizeOptions.includes(settings.pagination.rowsPerPage) && <option>{mergedSettings.pagination.rowsPerPage}</option>}
+          {!mergedSettings?.pagination?.pageSizeOptions.includes(
+            settings.pagination.rowsPerPage
+          ) && <option>{mergedSettings.pagination.rowsPerPage}</option>}
           {mergedSettings?.pagination?.pageSizeOptions.map((option) => (
             <option key={option}>{option}</option>
           ))}
@@ -809,7 +831,9 @@ const Table = ({
                       type="button"
                       onClick={(e) => {
                         e.preventDefault();
-                        setFilters((prev) => prev.filter((_, idx) => idx !== index))
+                        setFilters((prev) =>
+                          prev.filter((_, idx) => idx !== index)
+                        );
                       }}
                     >
                       -
@@ -928,11 +952,13 @@ const Table = ({
         <thead className="text-sm uppercase">
           <tr
             className={clsx("table-row", {
-              "divide-x divide-gray-400 dark:divide-zinc-800": mergedSettings.borders.vertical,
+              "divide-x divide-gray-400 dark:divide-zinc-800":
+                mergedSettings.borders.vertical,
               hidden: !mergedSettings.header,
             })}
           >
-            {mergedSettings.select && tableSelect({ header: true, rowIndex: -1 })}
+            {mergedSettings.select &&
+              tableSelect({ header: true, rowIndex: -1 })}
             {columns.map(({ ...other }, index) =>
               headerRenderer({
                 label: other.header,
@@ -943,7 +969,8 @@ const Table = ({
           </tr>
         </thead>
         <tbody
-          className={mergedSettings.borders.horizontal &&
+          className={
+            mergedSettings.borders.horizontal &&
             "divide-y divide-gray-400 dark:divide-zinc-800"
           }
         >
@@ -951,33 +978,44 @@ const Table = ({
             PaginatedData.map((datarow, i) => (
               <tr
                 key={datarow.row_id}
-                className={mergedSettings.borders.vertical ?
-                  "divide-x divide-gray-400 dark:divide-zinc-800" : ""
+                className={
+                  mergedSettings.borders.vertical
+                    ? "divide-x divide-gray-400 dark:divide-zinc-800"
+                    : ""
                 }
               >
                 {mergedSettings.select && tableSelect({ datarow })}
-                {columns.map(({ field, render, valueFormatter, className, numeric, ...other }, index) =>
-                  cellRenderer({
-                    rowData: datarow,
-                    cellData: datarow[field],
-                    columnIndex: index,
-                    rowIndex: i,
-                    render,
-                    valueFormatter,
-                    field,
-                    className,
-                    numeric,
-                    ...other,
-                  })
+                {columns.map(
+                  (
+                    {
+                      field,
+                      render,
+                      valueFormatter,
+                      className,
+                      numeric,
+                      ...other
+                    },
+                    index
+                  ) =>
+                    cellRenderer({
+                      rowData: datarow,
+                      cellData: datarow[field],
+                      columnIndex: index,
+                      rowIndex: i,
+                      render,
+                      valueFormatter,
+                      field,
+                      className,
+                      numeric,
+                      ...other,
+                    })
                 )}
               </tr>
             ))}
           {(dataRows === null || dataRows.length === 0) && (
             <tr className="w-full bg-zinc-100 dark:bg-zinc-600">
               <td headers="" className="p-4 text-center" colSpan={100}>
-                <span className="px-3 py-2 text-gray-400">
-                  No data found
-                </span>
+                <span className="px-3 py-2 text-gray-400">No data found</span>
               </td>
             </tr>
           )}

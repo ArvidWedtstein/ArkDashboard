@@ -61,6 +61,12 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
 
   return (
     <article className="rw-segment overflow-x-auto">
+      <Link
+        className="rw-button rw-button-green-outline m-3"
+        to={routes.newTimelineSeason()}
+      >
+        New Season
+      </Link>
       {/* <header className="rw-segment-header">
         <h2 className="rw-heading rw-heading-secondary">TimelineSeasons</h2>
         <Link
@@ -71,7 +77,7 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
         </Link>
       </header> */}
 
-      <ol className="relative mx-2 border-l border-gray-200 dark:border-zinc-500">
+      <ol className="relative mx-2 border-l border-zinc-500">
         {timelineSeasons.map(
           ({
             id,
@@ -84,7 +90,7 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
           }) => (
             <li className="not-last:mb-10 ml-4" key={id}>
               <div className="absolute -left-1.5 mt-1.5  h-3 w-3 rounded-full border border-white bg-zinc-500 dark:border-gray-900"></div>
-              <time className="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
+              <time className="mb-1 text-sm font-normal leading-none text-gray-500">
                 {dateformatter.formatRange(
                   new Date(season_start_date),
                   new Date(season_end_date)

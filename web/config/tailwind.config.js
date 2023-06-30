@@ -68,6 +68,11 @@ module.exports = {
           800: "#1f5c37",
           900: "#1b4c2f",
         },
+        text: "#221102",
+        background: "#fefaf5",
+        "primary-button": "#7df7b6",
+        "secondary-button": "#242424",
+        accent: "#801cf2",
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],

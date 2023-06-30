@@ -65,24 +65,14 @@ const HomePage = () => {
 
         {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
 
-        <section
-          className="my-12 mx-auto flex max-w-5xl overflow-hidden rounded-lg border border-zinc-500 dark:bg-zinc-800 dark:text-white"
-          style={{
-            background:
-              "url('https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj')",
-            backgroundPosition: "50%",
-            backfaceVisibility: "visible",
-            backgroundAttachment: "fixed",
-            backgroundSize: "cover",
-          }}
-        >
+        <section className="my-12 mx-auto flex max-w-5xl overflow-hidden rounded-lg border border-zinc-500 bg-zinc-800 dark:text-white">
           <div className="min-h-max overflow-hidden transition">
             <img
               src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg"
               className="aspect-video h-full max-w-sm object-cover"
             />
           </div>
-          <div className="font-montserrat w-full space-y-6 bg-black bg-opacity-80 p-8 text-left font-normal">
+          <div className="font-montserrat w-full space-y-6 bg-opacity-80 p-8 text-left font-normal text-zinc-300 dark:bg-black">
             <h1 className="text-5xl">Crafting Made Easy</h1>
             <p className="font-light">
               Struggling to remember how to craft that rare item? Use our
@@ -98,7 +88,10 @@ const HomePage = () => {
                 to craft it. You can also filter the list by item type or
                 crafting station.
               </p>
-              <Link to={routes.materialCalculator()} className="rw-button rw-button-green-outline mt-2">
+              <Link
+                to={routes.materialCalculator()}
+                className="rw-button rw-button-green-outline mt-2"
+              >
                 Explore
               </Link>
             </details>

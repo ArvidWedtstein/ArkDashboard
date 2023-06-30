@@ -101,7 +101,10 @@ const Pagination = ({
         <nav aria-label="Page navigation">
           <div className="rw-button-group mt-5 w-full">
             <Link
-              className="rw-pagination-item"
+              className={clsx("rw-pagination-item", {
+                "pointer-events-none cursor-not-allowed select-none":
+                  parseInt(page) == 1,
+              })}
               to={routes[route]({ ...params, page: changePage("prev") })}
               aria-label="Previous"
               aria-disabled={count / itemsPerPage <= 1}
@@ -136,10 +139,13 @@ const Pagination = ({
               </Link>
             ))}
             <Link
-              className="rw-pagination-item"
+              className={clsx("rw-pagination-item", {
+                "pointer-events-none cursor-not-allowed select-none":
+                  Math.ceil(count / itemsPerPage) == parseInt(page),
+              })}
               to={routes[route]({ ...params, page: changePage("next") })}
               aria-label="Next"
-              aria-disabled={count / itemsPerPage <= 1}
+              aria-disabled={Math.ceil(count / itemsPerPage) == parseInt(page)}
             >
               <span aria-hidden="true" className="sr-only">
                 Next

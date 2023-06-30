@@ -76,13 +76,13 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
   return (
     <div className="-m-3">
       <header
-        className="flex min-h-[200px] w-full flex-col justify-between rounded-2xl bg-cover bg-center bg-no-repeat p-12 text-white"
+        className="flex min-h-[100px] w-full flex-col justify-between rounded-2xl bg-cover bg-center bg-no-repeat p-8 text-white"
         style={{
           backgroundImage:
             "url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg)",
         }}
       >
-        <div className="pt-12">
+        <div className="">
           <div className="mb-3 flex items-center space-x-1 opacity-75 [&>span:not(:last-child)]:after:content-[',']">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -140,15 +140,15 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
           // )
           .map((basespot, i) => (
             <ArkCard
+              className=""
               key={`${basespot.id}-${i}`}
               title={basespot.name}
-              subtitle={basespot.Map.name.split(/(?=[A-Z])/).join(" ")}
-              content={basespot.description}
-              ring={
-                parseInt(basespot.estimated_for_players) > 0
-                  ? `Est. ${basespot.estimated_for_players} players`
-                  : ""
+              subtitle={
+                <span className="text-zinc-300">
+                  {basespot.Map.name.split(/(?=[A-Z])/).join(" ")}
+                </span>
               }
+              content={basespot.description}
               image={{
                 src: mapImages[
                   basespot.Map.name.toLowerCase().replaceAll(" ", "")
