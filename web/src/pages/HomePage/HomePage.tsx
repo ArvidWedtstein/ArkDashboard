@@ -98,9 +98,9 @@ const HomePage = () => {
                 to craft it. You can also filter the list by item type or
                 crafting station.
               </p>
-              <button className="rw-button rw-button-green-outline mt-2">
+              <Link to={routes.materialCalculator()} className="rw-button rw-button-green-outline mt-2">
                 Explore
-              </button>
+              </Link>
             </details>
           </div>
         </section>

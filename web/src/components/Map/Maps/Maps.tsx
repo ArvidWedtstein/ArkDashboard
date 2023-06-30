@@ -271,7 +271,7 @@ const MapsList = ({ maps }: FindMaps) => {
           <Link
             key={map.id}
             to={routes.map({ id: map.id.toString() })}
-            className="hover:ring-pea-500 hover:rounded-3xl hover:no-underline hover:ring-1"
+            className="hover:ring-pea-500 rounded-lg hover:no-underline hover:ring-1"
           >
             <ArkCard
               className="!dark:text-white animate-fade-in !text-white"
@@ -304,6 +304,7 @@ const MapsList = ({ maps }: FindMaps) => {
               }
               icon={{
                 src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/small-${map.img}`,
+                // src: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
               }}
             />
           </Link>
