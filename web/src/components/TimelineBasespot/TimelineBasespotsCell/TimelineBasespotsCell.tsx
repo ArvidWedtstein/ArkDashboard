@@ -11,7 +11,6 @@ export const QUERY = gql`
       id
       created_at
       updated_at
-      timeline_id
       start_date
       end_date
       tribe_name

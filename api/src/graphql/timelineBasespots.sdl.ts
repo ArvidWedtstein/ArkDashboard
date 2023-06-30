@@ -3,7 +3,6 @@ export const schema = gql`
     id: BigInt!
     created_at: DateTime
     updated_at: DateTime
-    timeline_id: String!
     start_date: DateTime
     end_date: DateTime
     basespot_id: BigInt
@@ -19,21 +18,19 @@ export const schema = gql`
     basespot: Basespot
     Profile: Profile
     Map: Map
-    timeline: Timeline!
     TimelineBasespotDino: [TimelineBasespotDino]!
     TimelineBasespotPerson: [TimelineBasespotPerson]!
     TimelineBasespotRaid: [TimelineBasespotRaid]!
   }
 
   type Query {
-    timelineBasespots: [TimelineBasespot!]! @skipAuth
+    timelineBasespots: [TimelineBasespot!]! @requireAuth
     timelineBasespot(id: BigInt!): TimelineBasespot @requireAuth
   }
 
   input CreateTimelineBasespotInput {
     created_at: DateTime
     updated_at: DateTime
-    timeline_id: String!
     start_date: DateTime
     end_date: DateTime
     basespot_id: BigInt
@@ -51,7 +48,6 @@ export const schema = gql`
   input UpdateTimelineBasespotInput {
     created_at: DateTime
     updated_at: DateTime
-    timeline_id: String
     start_date: DateTime
     end_date: DateTime
     basespot_id: BigInt

@@ -16,7 +16,6 @@ export const QUERY = gql`
       id
       created_at
       updated_at
-      timeline_id
       start_date
       end_date
       basespot_id
@@ -78,7 +77,6 @@ const UPDATE_TIMELINE_BASESPOT_MUTATION = gql`
       id
       created_at
       updated_at
-      timeline_id
       start_date
       end_date
       basespot_id

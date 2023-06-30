@@ -22,7 +22,6 @@ export const QUERY = gql`
       season_start_date
       season_end_date
       cluster
-      timeline_id
     }
   }
 `
@@ -41,7 +40,6 @@ const UPDATE_TIMELINE_SEASON_MUTATION = gql`
       season_start_date
       season_end_date
       cluster
-      timeline_id
     }
   }
 `
