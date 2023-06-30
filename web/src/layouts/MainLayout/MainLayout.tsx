@@ -1,5 +1,5 @@
 import { SkipNavContent } from "@redwoodjs/router";
-import { Link, routes, usePageLoadingContext } from "@redwoodjs/router";
+import { usePageLoadingContext } from "@redwoodjs/router";
 import { Toaster } from "@redwoodjs/web/toast";
 import Footer from "src/components/Footer/Footer";
 import Navbar from "src/components/Navbar/Navbar";
@@ -11,9 +11,7 @@ type LayoutProps = {
 
 const MainLayout = ({ children }: LayoutProps) => {
   const { loading } = usePageLoadingContext();
-
   return (
-    // <div className="overflow-hidden h-[100vh]">
     <div className="w-full">
       {/* <SkipNavLink contentId="main-content"></SkipNavLink> */}
       <Navbar />

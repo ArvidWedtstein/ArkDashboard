@@ -7,4 +7,6 @@ const supabaseClient = createClient(
   process.env.SUPABASE_KEY || ""
 );
 
-export const { AuthProvider, useAuth } = createAuth(supabaseClient);
+export const client = supabaseClient;
+export const { AuthProvider, useAuth, AuthContext } =
+  createAuth(supabaseClient);

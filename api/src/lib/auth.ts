@@ -50,7 +50,25 @@ export const getCurrentUser = async (
 ): Promise<RedwoodUser | null> => {
   try {
     const user = await db.profile.findUnique({
-      include: { role_profile_role_idTorole: true },
+      select: {
+        id: true,
+        updated_at: true,
+        updated_by: true,
+        created_at: true,
+        username: true,
+        avatar_url: true,
+        role_id: true,
+        full_name: true,
+        status: true,
+        role_profile_role_idTorole: {
+          select: {
+            id: true,
+            name: true,
+            permissions: true,
+          },
+        },
+      },
+      // include: { role_profile_role_idTorole: true },
       where: { id: decoded.sub.toString() },
     });
     return {
