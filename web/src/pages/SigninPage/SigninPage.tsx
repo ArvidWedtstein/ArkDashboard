@@ -12,13 +12,15 @@ import { MetaTags } from "@redwoodjs/web";
 import { toast, Toaster } from "@redwoodjs/web/toast";
 import { RouteFocus } from "@redwoodjs/router";
 import { useAuth } from "src/auth";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 const WELCOME_MESSAGE = "Welcome back!";
 const REDIRECT = routes.home();
 
 const SigninPage = () => {
   const { isAuthenticated, loading, logIn } = useAuth();
-
+  const [captchaToken, setCaptchaToken] = React.useState("");
+  const captcha = React.useRef(null);
   // should redirect right after login or wait to show the client prompts?
   useEffect(() => {
     if (isAuthenticated) {
@@ -38,9 +40,11 @@ const SigninPage = () => {
         ...data,
         options: {
           redirectTo: window.history.back(),
+          captchaToken,
         },
       });
 
+      // captcha?.current?.resetCaptcha();
       if (response?.error) {
         toast.error(response.error.message);
       } else {
@@ -131,6 +135,13 @@ const SigninPage = () => {
               />
               <FieldError name="password" className="rw-field-error" />
 
+              <div className="my-3">
+                <HCaptcha
+                  ref={captcha}
+                  sitekey={process.env.HCAPTCHA_SITE_KEY}
+                  onVerify={setCaptchaToken}
+                />
+              </div>
               <div className="rw-link mt-1">
                 <Link to={routes.forgotPassword()} className="rw-forgot-link">
                   Forgot da Password?
