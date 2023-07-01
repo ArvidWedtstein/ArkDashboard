@@ -1,4 +1,5 @@
 import { Link, NavLink, routes } from "@redwoodjs/router";
+import clsx from "clsx";
 import { memo, useState } from "react";
 import { useAuth } from "src/auth";
 const Icon = (icon: string) => {
@@ -103,8 +104,8 @@ const Icon = (icon: string) => {
   return icons[icon.toLowerCase()] || null;
 };
 
-const Sidebar = memo(({}) => {
-  const { currentUser, isAuthenticated, logOut, loading } = useAuth();
+const Sidebar = ({}) => {
+  const { currentUser, isAuthenticated, logOut } = useAuth();
   const navigation = [
     {
       name: "Home",
@@ -153,7 +154,8 @@ const Sidebar = memo(({}) => {
     },
   ];
 
-  const [openSidebar, setOpenSidebar] = useState(false);
+  // const [openSidebar, setOpenSidebar] = useState(false);
+
   return (
     <aside className="z-10 min-w-[14rem] overflow-x-auto border-gray-700 bg-zinc-800 py-2 dark:border-zinc-300 max-sm:border-b sm:h-screen sm:max-w-sm sm:overflow-visible sm:border-r sm:bg-zinc-800 sm:py-2 sm:px-4">
       <div className="sticky top-0 flex w-full flex-row items-start justify-between sm:flex-col sm:justify-start">
@@ -162,12 +164,19 @@ const Sidebar = memo(({}) => {
             to={routes.profile({
               id: currentUser?.id || currentUser?.sub || "",
             })}
-            className="text-center"
+            className={clsx("text-center", {
+              "pointer-events-none cursor-not-allowed": !isAuthenticated,
+            })}
           >
-            <img
-              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/0.9251532583561198.png`}
-              className="animate-fade-in mx-1 aspect-square w-12 max-w-xs rounded-full object-cover object-center shadow sm:m-2 sm:w-20"
-            />
+            <div className="relative">
+              <img
+                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/0.9251532583561198.png`}
+                className="animate-fade-in mx-1 aspect-square w-12 max-w-xs rounded-full object-cover object-center shadow sm:m-2 sm:w-20"
+              />
+              {currentUser?.status == "ONLINE" && (
+                <span className="absolute bottom-2.5 right-2.5 h-4 w-4 translate-y-1/4 transform rounded-full border-2 border-white bg-green-400 dark:border-gray-800"></span>
+              )}
+            </div>
             <p className="hidden text-sm sm:block sm:text-xl">
               {currentUser?.full_name.toString()}
             </p>
@@ -240,6 +249,6 @@ const Sidebar = memo(({}) => {
       </div>
     </aside>
   );
-});
+};
 
 export default Sidebar;

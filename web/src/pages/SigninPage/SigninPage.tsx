@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import {
   Form,
   Label,
-  TextField,
   PasswordField,
   Submit,
   FieldError,
@@ -49,7 +48,7 @@ const SigninPage = () => {
         // navigate(REDIRECT);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error);
     }
   };
 
@@ -130,12 +129,13 @@ const SigninPage = () => {
                   },
                 }}
               />
+              <FieldError name="password" className="rw-field-error" />
+
               <div className="rw-link mt-1">
                 <Link to={routes.forgotPassword()} className="rw-forgot-link">
                   Forgot da Password?
                 </Link>
               </div>
-              <FieldError name="password" className="rw-field-error" />
 
               <Submit className="rw-button rw-button-blue my-3">Login</Submit>
             </Form>

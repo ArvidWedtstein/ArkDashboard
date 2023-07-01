@@ -190,7 +190,9 @@ const TribesList = ({ tribes }: FindTribes) => {
                       </svg>
                     ),
                     onClick: () => {
-                      navigate(routes.editTribe({ id: row["id"] }));
+                      currentUser?.permissions?.some(
+                        (p: permission) => p === "tribe_update"
+                      ) && navigate(routes.editTribe({ id: row["id"] }));
                     },
                   },
                   {
@@ -204,7 +206,9 @@ const TribesList = ({ tribes }: FindTribes) => {
                       </svg>
                     ),
                     onClick: () => {
-                      onDeleteClick(row["id"]);
+                      currentUser?.permissions.some(
+                        (p: permission) => p === "tribe_delete"
+                      ) && onDeleteClick(row["id"]);
                     },
                   },
                 ]}

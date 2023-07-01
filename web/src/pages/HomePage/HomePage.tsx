@@ -2,7 +2,7 @@ import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "src/auth";
 const HomePage = () => {
-  const { isAuthenticated, currentUser } = useAuth();
+  const { isAuthenticated, currentUser, client } = useAuth();
   // if (document.addEventListener) {
   //   document.addEventListener('contextmenu', function (e) {
   //     alert("You've tried to open context menu");
@@ -10,14 +10,29 @@ const HomePage = () => {
   //   }, false);
   // }
   // useEffect(() => {
-  //   const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-  //     console.log(event, session)
-  //   })
+  //   const {
+  //     data: { subscription },
+  //   } = client.auth.onAuthStateChange(async (event, session) => {
+  //     console.log(event, session);
+  //     if (event == "SIGNED_IN") {
+  //       client.auth.updateUser({ data: { ...session.user } });
+
+  //       const { data, error } = await client
+  //         .from("Profile")
+  //         .update({ status: "ONLINE" })
+  //         .eq("id", session.user.id);
+  //     } else if (event == "SIGNED_OUT") {
+  //       const { data, error } = await client
+  //         .from("Profile")
+  //         .update({ status: "OFFLINE" })
+  //         .eq("id", currentUser.id);
+  //     }
+  //   });
 
   //   return () => {
-  //     subscription.unsubscribe()
-  //   }
-  // }, [supabase])
+  //     subscription.unsubscribe();
+  //   };
+  // }, [client]);
   return (
     <>
       <MetaTags
@@ -26,7 +41,7 @@ const HomePage = () => {
         ogContentUrl="https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj"
         ogType="website"
       />
-      <div className="container-xl p-3 pt-0 text-center">
+      <div className="container-xl p-3 text-center">
         <div
           className="relative overflow-hidden rounded-md bg-cover bg-no-repeat"
           style={{
@@ -73,7 +88,7 @@ const HomePage = () => {
             />
           </div>
           <div className="font-montserrat w-full space-y-6 bg-opacity-80 p-8 text-left font-normal text-zinc-300 ">
-            <h1 className="">Crafting Made Easy</h1>
+            <h1 className="text-xl">Crafting Made Easy</h1>
             <p className="font-light">
               Struggling to remember how to craft that rare item? Use our
               crafting recipe calculator to quickly look up the ingredients and
