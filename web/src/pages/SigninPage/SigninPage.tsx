@@ -44,7 +44,7 @@ const SigninPage = () => {
         },
       });
 
-      // captcha?.current?.resetCaptcha();
+      captcha?.current?.resetCaptcha();
       if (response?.error) {
         toast.error(response.error.message);
       } else {
@@ -138,7 +138,7 @@ const SigninPage = () => {
               <div className="my-3">
                 <HCaptcha
                   ref={captcha}
-                  sitekey={process.env.HCAPTCHA_SITE_KEY}
+                  sitekey={"c570c5c4-0ccc-4d8f-9b90-73dc7c4a7099"}
                   onVerify={setCaptchaToken}
                 />
               </div>

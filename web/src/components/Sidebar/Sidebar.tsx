@@ -169,10 +169,31 @@ const Sidebar = ({}) => {
             })}
           >
             <div className="relative">
-              <img
-                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/0.9251532583561198.png`}
-                className="animate-fade-in mx-1 aspect-square w-12 max-w-xs rounded-full object-cover object-center shadow sm:m-2 sm:w-20"
-              />
+              {isAuthenticated ? (
+                <img
+                  src={
+                    currentUser?.avatar_url
+                      ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${currentUser.avatar_url}`
+                      : `https://ui-avatars.com/api/?name=${currentUser?.full_name}`
+                  }
+                  className="animate-fade-in mx-1 aspect-square w-12 max-w-xs rounded-full object-cover object-center shadow sm:m-2 sm:w-20"
+                />
+              ) : (
+                <div className="relative h-8 w-8 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-600">
+                  <svg
+                    className="absolute -left-1 h-10 w-10 text-gray-400"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+              )}
               {currentUser?.status == "ONLINE" && (
                 <span className="absolute bottom-2.5 right-2.5 h-4 w-4 translate-y-1/4 transform rounded-full border-2 border-white bg-green-400 dark:border-gray-800"></span>
               )}
