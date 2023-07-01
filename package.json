@@ -30,7 +30,6 @@
   },
   "packageManager": "yarn@3.3.0",
   "dependencies": {
-    "@hcaptcha/react-hcaptcha": "^1.8.1",
     "@tailwindcss/typography": "^0.5.9",
     "clsx": "^1.2.1"
   }

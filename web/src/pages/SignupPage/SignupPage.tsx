@@ -11,12 +11,10 @@ import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 const SignupPage = () => {
   const { isAuthenticated, signUp, client } = useAuth();
-  const [captchaToken, setCaptchaToken] = useState("");
-  const captcha = useRef(null);
+
   // focus on email box on page load
   const emailRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -28,15 +26,12 @@ const SignupPage = () => {
       const response = await signUp({
         email: data.email,
         password: data.password,
-        options: {
-          captchaToken: captchaToken,
-          data: {
-            username: data.username,
-          },
-        },
+        // options: {
+        //   data: {
+        //     username: data.username,
+        //   },
+        // },
       });
-
-      captcha?.current?.resetCaptcha();
       if (response?.error) {
         toast.error(JSON.stringify(response.error));
       } else {
@@ -128,13 +123,6 @@ const SignupPage = () => {
             />
             <FieldError name="password" className="rw-field-error" />
 
-            <div className="my-3">
-              <HCaptcha
-                ref={captcha}
-                sitekey={process.env.HCAPTCHA_SITE_KEY}
-                onVerify={setCaptchaToken}
-              />
-            </div>
             {/* TODO: add terms  */}
             {/* <Label
               name="terms"

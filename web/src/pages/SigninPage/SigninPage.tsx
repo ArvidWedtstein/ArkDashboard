@@ -12,16 +12,14 @@ import { MetaTags } from "@redwoodjs/web";
 import { toast, Toaster } from "@redwoodjs/web/toast";
 import { RouteFocus } from "@redwoodjs/router";
 import { useAuth } from "src/auth";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 const WELCOME_MESSAGE = "Welcome back!";
 const REDIRECT = routes.home();
 
 const SigninPage = () => {
-  const { isAuthenticated, loading, logIn } = useAuth();
-  const [captchaToken, setCaptchaToken] = React.useState("");
-  const captcha = React.useRef(null);
-  // should redirect right after login or wait to show the client prompts?
+  const { isAuthenticated, loading, logIn, client } = useAuth();
+  // const captcha = React.useRef(null);
+
   useEffect(() => {
     if (isAuthenticated) {
       navigate(REDIRECT);
@@ -40,11 +38,12 @@ const SigninPage = () => {
         ...data,
         options: {
           redirectTo: window.history.back(),
-          captchaToken,
         },
       });
+      // const response = await client.auth.signInWithOAuth({
+      //   provider: "discord",
+      // });
 
-      captcha?.current?.resetCaptcha();
       if (response?.error) {
         toast.error(response.error.message);
       } else {
@@ -135,13 +134,6 @@ const SigninPage = () => {
               />
               <FieldError name="password" className="rw-field-error" />
 
-              <div className="my-3">
-                <HCaptcha
-                  ref={captcha}
-                  sitekey={"c570c5c4-0ccc-4d8f-9b90-73dc7c4a7099"}
-                  onVerify={setCaptchaToken}
-                />
-              </div>
               <div className="rw-link mt-1">
                 <Link to={routes.forgotPassword()} className="rw-forgot-link">
                   Forgot da Password?
