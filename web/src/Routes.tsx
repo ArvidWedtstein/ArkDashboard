@@ -240,22 +240,32 @@ const Routes = () => {
           buttonLabel="New Profile"
           buttonTo="newProfile"
         >
-          <Route
-            path="/profiles/new"
-            page={ProfileNewProfilePage}
-            name="newProfile"
-          />
+          <Private
+            unauthenticated="home"
+            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
+          >
+            <Route
+              path="/profiles/new"
+              page={ProfileNewProfilePage}
+              name="newProfile"
+            />
+            <Route
+              path="/profiles"
+              page={ProfileProfilesPage}
+              name="profiles"
+            />
+          </Private>
           <Route
             path="/profiles/{id}/edit"
             page={ProfileEditProfilePage}
             name="editProfile"
           />
+
           <Route
             path="/profiles/{id}"
             page={ProfileProfilePage}
             name="profile"
           />
-          <Route path="/profiles" page={ProfileProfilesPage} name="profiles" />
         </Set>
         <Set
           wrap={ScaffoldLayout}

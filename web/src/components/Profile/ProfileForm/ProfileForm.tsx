@@ -7,17 +7,19 @@ import {
   Submit,
   TextAreaField,
   UrlField,
-} from '@redwoodjs/forms'
+} from "@redwoodjs/forms";
 
-import type { EditProfileById, UpdateProfileInput, permission } from 'types/graphql'
-import type { RWGqlError } from '@redwoodjs/forms'
-import Avatar from 'src/components/Avatar/Avatar'
-import Lookup from 'src/components/Util/Lookup/Lookup'
+import type {
+  EditProfileById,
+  UpdateProfileInput,
+  permission,
+} from "types/graphql";
+import type { RWGqlError } from "@redwoodjs/forms";
+import Avatar from "src/components/Avatar/Avatar";
+import Lookup from "src/components/Util/Lookup/Lookup";
 import { useLazyQuery } from "@apollo/client";
-import { useEffect } from 'react'
-import { useAuth } from 'src/auth'
-
-
+import { useEffect } from "react";
+import { useAuth } from "src/auth";
 
 const ROLEQURY = gql`
   query FindRoles {
@@ -29,27 +31,31 @@ const ROLEQURY = gql`
   }
 `;
 
-type FormProfile = NonNullable<EditProfileById['profile']>
+type FormProfile = NonNullable<EditProfileById["profile"]>;
 
 interface ProfileFormProps {
-  profile?: EditProfileById['profile']
-  onSave: (data: UpdateProfileInput, id?: FormProfile['id']) => void
-  error: RWGqlError
-  loading: boolean
+  profile?: EditProfileById["profile"];
+  onSave: (data: UpdateProfileInput, id?: FormProfile["id"]) => void;
+  error: RWGqlError;
+  loading: boolean;
 }
 
 const ProfileForm = (props: ProfileFormProps) => {
   const { currentUser } = useAuth();
   const onSubmit = (data: FormProfile) => {
-    if (currentUser &&
-      currentUser.permissions.some((p: permission) => p == props?.profile?.id ? 'user_update' : 'user_create')) {
-      props.onSave(data, props?.profile?.id)
+    if (
+      currentUser &&
+      currentUser.permissions.some((p: permission) =>
+        p == props?.profile?.id ? "user_update" : "user_create"
+      )
+    ) {
+      props.onSave(data, props?.profile?.id);
     }
-  }
+  };
 
   const [loadRoles, { called, loading, data }] = useLazyQuery(ROLEQURY, {
     onCompleted: (data) => {
-      console.log(data);
+      // console.log(data);
     },
     onError: (error) => {
       console.log(error);
@@ -83,7 +89,7 @@ const ProfileForm = (props: ProfileFormProps) => {
       </section>
       <section className="relative -mt-32 py-16">
         <div className="container-fluid mx-auto px-4">
-          <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded-lg dark:bg-zinc-500 bg-white shadow-xl">
+          <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded-lg bg-white shadow-xl dark:bg-zinc-500">
             <Form<FormProfile> onSubmit={onSubmit} error={props.error}>
               <FormError
                 error={props.error}
@@ -95,7 +101,7 @@ const ProfileForm = (props: ProfileFormProps) => {
                 <div className="flex w-full justify-center px-4 lg:order-2 lg:w-3/12">
                   <div className="relative">
                     <Avatar
-                      className="absolute -mt-20 h-auto rounded-full border-none align-middle shadow-xl"
+                      className="absolute -mt-20 aspect-square h-auto rounded-full border-none align-middle shadow-xl"
                       url={props.profile.avatar_url}
                       size={200}
                       editable={false}
@@ -127,7 +133,7 @@ const ProfileForm = (props: ProfileFormProps) => {
                 <div className="w-full px-4 lg:order-1 lg:w-4/12">
                   <div className="flex justify-center py-4 pt-8 lg:pt-4">
                     <div className="mr-4 p-3 text-center">
-                      <span className="text-gray-800 dark:text-stone-100 block text-xl font-bold uppercase tracking-wide">
+                      <span className="block text-xl font-bold uppercase tracking-wide text-gray-800 dark:text-stone-100">
                         0
                       </span>
                       <span className="text-sm text-gray-600 dark:text-stone-300">
@@ -135,18 +141,24 @@ const ProfileForm = (props: ProfileFormProps) => {
                       </span>
                     </div>
                     <div className="mr-4 p-3 text-center">
-                      <span className="text-gray-800 dark:text-stone-100 block text-xl font-bold uppercase tracking-wide">
-                        {(new Date().getFullYear() - new Date(props.profile.created_at).getFullYear() + (new Date().getMonth() - new Date(props.profile.created_at).getMonth()) / 12).toPrecision(1)}
+                      <span className="block text-xl font-bold uppercase tracking-wide text-gray-800 dark:text-stone-100">
+                        {(
+                          new Date().getFullYear() -
+                          new Date(props.profile.created_at).getFullYear() +
+                          (new Date().getMonth() -
+                            new Date(props.profile.created_at).getMonth()) /
+                            12
+                        ).toPrecision(1)}
                       </span>
                       <span className="text-sm text-gray-600 dark:text-stone-300">
                         Years Active
                       </span>
                     </div>
                     <div className="p-3 text-center lg:mr-4">
-                      <span className="text-gray-800 dark:text-stone-100 block text-xl font-bold uppercase tracking-wide">
+                      <span className="block text-xl font-bold uppercase tracking-wide text-gray-800 dark:text-stone-100">
                         {/* {tribescreated} */}0
                       </span>
-                      <span className="text-gray-600 text-sm dark:text-stone-300">
+                      <span className="text-sm text-gray-600 dark:text-stone-300">
                         Tribes
                       </span>
                     </div>
@@ -154,8 +166,8 @@ const ProfileForm = (props: ProfileFormProps) => {
                 </div>
               </div>
 
-              <div className="w-full my-6 text-center flex flex-wrap justify-center flex-col text-gray-800 dark:text-stone-100">
-                <div className='flex flex-col items-center justify-center'>
+              <div className="my-6 flex w-full flex-col flex-wrap justify-center text-center text-gray-800 dark:text-stone-100">
+                <div className="flex flex-col items-center justify-center">
                   <Label
                     name="full_name"
                     className="rw-label"
@@ -174,7 +186,7 @@ const ProfileForm = (props: ProfileFormProps) => {
                   <FieldError name="full_name" className="rw-field-error" />
                 </div>
 
-                <div className='flex flex-col items-center justify-center'>
+                <div className="flex flex-col items-center justify-center">
                   <Label
                     name="username"
                     className="rw-label"
@@ -184,7 +196,13 @@ const ProfileForm = (props: ProfileFormProps) => {
                   </Label>
                   <div className="relative">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" stroke="none" fill="currentColor" className="h-5 w-5 text-gray-500 dark:text-gray-400" viewBox="0 0 512 512">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        stroke="none"
+                        fill="currentColor"
+                        className="h-5 w-5 text-gray-500 dark:text-gray-400"
+                        viewBox="0 0 512 512"
+                      >
                         <path d="M259.7 16.03C116.5 13.94 2.766 140.5 17.25 283.1c11.96 117.8 102.2 205.2 221.5 212.8c9.275 .5957 17.18-6.739 17.18-16.04c0-8.395-6.552-15.39-14.92-15.92c-106.1-6.828-185.7-86.38-192.7-192.5c-7.852-119.6 82.95-220.8 202.6-223.4c118.1-2.607 212.1 89.77 212.1 208.2V278.7c0 26.43-17.55 50.57-43.34 56.27c-36.37 8.039-68.67-19.59-68.67-54.64v-120.1c0-8.846-7.168-16.02-16.01-16.02c-8.838 0-16.02 7.165-16.02 16.01v17.88c-24.95-25.56-61.83-39.39-101.6-31.85C173.5 154.7 137.8 190.7 129.8 235.6c-12.72 70.86 41.68 132.8 110.2 132.8c37.39 0 70.32-18.63 90.68-46.9c16.48 30.84 50.34 51.03 88.7 46.15c44.44-5.656 76.63-45.58 76.63-90.42V256.3C495.1 122.8 392.5 17.96 259.7 16.03zM239.9 336.3c-44.13 0-80.02-35.93-80.02-80.09S195.8 176.2 239.9 176.2s80.02 35.93 80.02 80.09S284.1 336.3 239.9 336.3z" />
                       </svg>
                     </div>
@@ -239,7 +257,9 @@ const ProfileForm = (props: ProfileFormProps) => {
                   <FieldError name="website" className="rw-field-error" />
                 </div>
 
-                {currentUser.permissions.some((p: permission) => p.includes('user_update')) && (
+                {currentUser.permissions.some((p: permission) =>
+                  p.includes("user_update")
+                ) && (
                   <div className="flex flex-col items-center justify-center">
                     <Label
                       name="role_id"
@@ -252,7 +272,12 @@ const ProfileForm = (props: ProfileFormProps) => {
                     <Lookup
                       name="role_id"
                       defaultValue={[props.profile?.role_id.toString()]}
-                      options={data?.roles.map((r) => ({ label: r.name, value: r.id })) || []}
+                      options={
+                        data?.roles.map((r) => ({
+                          label: r.name,
+                          value: r.id,
+                        })) || []
+                      }
                     />
 
                     <FieldError name="role_id" className="rw-field-error" />
@@ -264,7 +289,7 @@ const ProfileForm = (props: ProfileFormProps) => {
         </div>
       </section>
     </div>
-  )
-}
+  );
+};
 
-export default ProfileForm
+export default ProfileForm;

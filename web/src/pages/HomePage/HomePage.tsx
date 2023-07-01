@@ -1,5 +1,6 @@
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
+import { useEffect } from "react";
 import { useAuth } from "src/auth";
 const HomePage = () => {
   const { isAuthenticated, currentUser, client } = useAuth();
@@ -15,7 +16,6 @@ const HomePage = () => {
   //   } = client.auth.onAuthStateChange(async (event, session) => {
   //     console.log(event, session);
   //     if (event == "SIGNED_IN") {
-  //       client.auth.updateUser({ data: { ...session.user } });
 
   //       const { data, error } = await client
   //         .from("Profile")

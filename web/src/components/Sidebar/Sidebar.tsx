@@ -199,10 +199,11 @@ const Sidebar = ({}) => {
               )}
             </div>
             <p className="hidden text-sm sm:block sm:text-xl">
-              {currentUser?.full_name.toString()}
+              {currentUser?.full_name?.toString() || "Guest"}
             </p>
             <p className="hidden text-xs sm:block">
-              {currentUser?.role_profile_role_idTorole["name"].toString()}
+              {currentUser?.role_profile_role_idTorole &&
+                currentUser?.role_profile_role_idTorole["name"]?.toString()}
             </p>
             <span className="sr-only">Your Profile</span>
           </Link>
@@ -239,34 +240,6 @@ const Sidebar = ({}) => {
             <span className="text-sm">{item.name}</span>
           </div>
         ))}
-        {/* {navigation.map((item, i) => (
-        <aside
-          className="mx-2 flex flex-col items-center justify-start self-start text-black transition-all dark:text-[#ffffffcc] sm:flex-row"
-          key={`sidebar-item-${i}`}
-        >
-          <NavLink
-            key={item.name}
-            to={item.href}
-            title={item.name}
-            activeClassName={`text-white ring-2 ${item.color}`}
-            className={clsx(
-              `mr-2 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md outline-none ring-1 ring-transparent hover:text-gray-900 dark:hover:text-white sm:my-2`,
-              {
-                "bg-stone-300 text-black hover:ring-stone-400 focus:ring-stone-400  focus-visible:ring-white dark:bg-[#c3cff433] dark:text-[#ffffffcc] dark:hover:ring-white dark:focus:ring-white":
-                  singularize(item.href.split("?")[0]) !==
-                  singularize(`/${pathname.split("/")[1]}`),
-                "text-white ring-2":
-                  singularize(item.href.split("?")[0]) ===
-                  singularize(`/${pathname.split("/")[1]}`),
-              },
-              item.color
-            )}
-          >
-            {Icon(item.name)} <span className="sr-only">{item.name}</span>
-          </NavLink>
-          <span className="text-sm">{item.name}</span>
-        </aside>
-      ))} */}
       </div>
     </aside>
   );

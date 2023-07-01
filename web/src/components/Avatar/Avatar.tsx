@@ -44,7 +44,6 @@ const Avatar = memo<AvatarProps>(
     //   }
     // };
 
-
     const uploadAvatar = async (event) => {
       try {
         setUploading(true);
@@ -103,11 +102,25 @@ const Avatar = memo<AvatarProps>(
           )}
         >
           {url ? (
-            <img className="w-full h-full rounded-full" id="imagePreview" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${url}`} alt={'avatar'} />
+            <img
+              className="h-full w-full rounded-full object-cover object-center"
+              id="imagePreview"
+              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${url}`}
+              alt={"avatar"}
+            />
           ) : (
-            <div className="relative w-8 h-8 overflow-hidden bg-zinc-100 rounded-full dark:bg-zinc-600">
-              <svg className="absolute w-10 h-10 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+            <div className="relative h-8 w-8 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-600">
+              <svg
+                className="absolute -left-1 h-10 w-10 text-gray-400"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
           )}

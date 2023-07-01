@@ -36,14 +36,14 @@ const SigninPage = () => {
         // provider: "discord",
         authMethod: "password",
         ...data,
-        options: {
-          redirectTo: window.history.back(),
-        },
+        // options: {
+        //   redirectTo: window.history.back(),
+        // },
       });
       // const response = await client.auth.signInWithOAuth({
       //   provider: "discord",
       // });
-
+      console.log("Authrespone", response);
       if (response?.error) {
         toast.error(response.error.message);
       } else {
