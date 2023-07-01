@@ -1,5 +1,6 @@
-import { NavLink, routes } from "@redwoodjs/router";
-import { memo } from "react";
+import { Link, NavLink, routes } from "@redwoodjs/router";
+import { memo, useState } from "react";
+import { useAuth } from "src/auth";
 const Icon = (icon: string) => {
   // FontAwesome Light Icons
   const icons = {
@@ -103,6 +104,7 @@ const Icon = (icon: string) => {
 };
 
 const Sidebar = memo(({}) => {
+  const { currentUser, isAuthenticated, logOut, loading } = useAuth();
   const navigation = [
     {
       name: "Home",
@@ -151,26 +153,63 @@ const Sidebar = memo(({}) => {
     },
   ];
 
+  const [openSidebar, setOpenSidebar] = useState(false);
   return (
-    <aside className="sticky top-0 z-10 flex h-fit flex-row items-center justify-between overflow-x-auto rounded-r-xl border-gray-700 bg-zinc-800 px-10 py-2 dark:border-gray-200 max-sm:border-b sm:flex-col sm:justify-start sm:overflow-visible sm:border-r sm:bg-transparent sm:py-10 sm:px-2">
-      {navigation.map((item, index) => (
-        <div
-          className="mx-2 flex flex-col items-center justify-start self-start text-black transition-all dark:text-[#ffffffcc] sm:flex-row"
-          key={`sidebar-item-${index}`}
-        >
-          <NavLink
-            to={item.href}
-            title={item.name}
-            activeClassName={`text-white ring-2 ${item.color}`}
-            matchSubPaths={false}
-            className="mr-2 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-zinc-500 text-white outline-none ring-1 ring-transparent hover:text-gray-100 hover:ring-stone-400 focus:ring-stone-400 dark:bg-zinc-700 dark:hover:text-white dark:hover:ring-white dark:focus:ring-white sm:my-2"
+    <aside className="z-10 min-w-[14rem] overflow-x-auto border-gray-700 bg-zinc-800 py-2 dark:border-zinc-300 max-sm:border-b sm:h-screen sm:max-w-sm sm:overflow-visible sm:border-r sm:bg-zinc-800 sm:py-2 sm:px-4">
+      <div className="sticky top-0 flex w-full flex-row items-start justify-between sm:flex-col sm:justify-start">
+        <div className="flex items-center justify-center border-gray-700 text-black transition-all dark:border-zinc-300 dark:text-[#ffffffcc] sm:my-3 sm:w-full sm:flex-col sm:border-b">
+          <Link
+            to={routes.profile({
+              id: currentUser?.id || currentUser?.sub || "",
+            })}
+            className="text-center"
           >
-            {Icon(item.name)} <span className="sr-only">{item.name}</span>
-          </NavLink>
-          <span className="text-sm">{item.name}</span>
+            <img
+              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/0.9251532583561198.png`}
+              className="animate-fade-in mx-1 aspect-square w-12 max-w-xs rounded-full object-cover object-center shadow sm:m-2 sm:w-20"
+            />
+            <p className="hidden text-sm sm:block sm:text-xl">
+              {currentUser?.full_name.toString()}
+            </p>
+            <p className="hidden text-xs sm:block">
+              {currentUser?.role_profile_role_idTorole["name"].toString()}
+            </p>
+            <span className="sr-only">Your Profile</span>
+          </Link>
+          {isAuthenticated ? (
+            <button
+              className="rw-button rw-button-gray-outline rw-button-medium mx-3 sm:my-3 sm:w-full"
+              onClick={logOut}
+            >
+              Sign out
+            </button>
+          ) : (
+            <Link
+              className="rw-button rw-button-gray-outline rw-button-medium sm:my-3 sm:w-full"
+              to={routes.signin()}
+            >
+              Sign In
+            </Link>
+          )}
         </div>
-      ))}
-      {/* {navigation.map((item, i) => (
+        {navigation.map((item, index) => (
+          <div
+            className="flex flex-col items-center justify-start self-start text-black transition-all dark:text-[#ffffffcc] sm:flex-row"
+            key={`sidebar-item-${index}`}
+          >
+            <NavLink
+              to={item.href}
+              title={item.name}
+              activeClassName={`text-white ring-2 ${item.color}`}
+              matchSubPaths={false}
+              className="mr-2 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-zinc-500 text-white outline-none ring-1 ring-transparent hover:text-gray-100 hover:ring-stone-400 focus:ring-stone-400 dark:bg-zinc-700 dark:hover:text-white dark:hover:ring-white dark:focus:ring-white sm:my-2"
+            >
+              {Icon(item.name)} <span className="sr-only">{item.name}</span>
+            </NavLink>
+            <span className="text-sm">{item.name}</span>
+          </div>
+        ))}
+        {/* {navigation.map((item, i) => (
         <aside
           className="mx-2 flex flex-col items-center justify-start self-start text-black transition-all dark:text-[#ffffffcc] sm:flex-row"
           key={`sidebar-item-${i}`}
@@ -198,6 +237,7 @@ const Sidebar = memo(({}) => {
           <span className="text-sm">{item.name}</span>
         </aside>
       ))} */}
+      </div>
     </aside>
   );
 });

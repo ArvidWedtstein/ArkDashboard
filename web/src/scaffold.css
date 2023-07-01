@@ -104,6 +104,9 @@ a {
 .rw-button.rw-button-small {
   @apply rounded-sm py-1 px-2 text-xs;
 }
+.rw-button.rw-button-medium {
+  @apply rounded-lg py-1.5 px-4 text-sm;
+}
 .rw-button.rw-button-large {
   @apply rounded-lg py-3 px-8 text-base;
 }
