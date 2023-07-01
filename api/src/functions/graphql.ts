@@ -40,7 +40,7 @@ export const handler = createGraphQLHandler({
   services,
   armorConfig: {
     maxDepth: {
-      n: 6,
+      n: 7,
     },
     // logErrors: true,
   },

@@ -6,32 +6,32 @@ import {
   DatetimeLocalField,
   TextField,
   Submit,
-} from '@redwoodjs/forms'
+} from "@redwoodjs/forms";
 
-import { timeTag as formatDatetime } from 'src/lib/formatters'
+import { timeTag as formatDatetime } from "src/lib/formatters";
 
 import type {
   EditTimelineSeasonById,
   UpdateTimelineSeasonInput,
-} from 'types/graphql'
-import type { RWGqlError } from '@redwoodjs/forms'
+} from "types/graphql";
+import type { RWGqlError } from "@redwoodjs/forms";
 
-type FormTimelineSeason = NonNullable<EditTimelineSeasonById['timelineSeason']>
+type FormTimelineSeason = NonNullable<EditTimelineSeasonById["timelineSeason"]>;
 
 interface TimelineSeasonFormProps {
-  timelineSeason?: EditTimelineSeasonById['timelineSeason']
+  timelineSeason?: EditTimelineSeasonById["timelineSeason"];
   onSave: (
     data: UpdateTimelineSeasonInput,
-    id?: FormTimelineSeason['id']
-  ) => void
-  error: RWGqlError
-  loading: boolean
+    id?: FormTimelineSeason["id"]
+  ) => void;
+  error: RWGqlError;
+  loading: boolean;
 }
 
 const TimelineSeasonForm = (props: TimelineSeasonFormProps) => {
   const onSubmit = (data: FormTimelineSeason) => {
-    props.onSave(data, props?.timelineSeason?.id)
-  }
+    props.onSave(data, props?.timelineSeason?.id);
+  };
 
   return (
     <div className="rw-form-wrapper">
@@ -42,23 +42,6 @@ const TimelineSeasonForm = (props: TimelineSeasonFormProps) => {
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
-
-        <Label
-          name="updated_at"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Updated at
-        </Label>
-
-        <DatetimeLocalField
-          name="updated_at"
-          defaultValue={formatDatetime(props.timelineSeason?.updated_at)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="updated_at" className="rw-field-error" />
 
         <Label
           name="server"
@@ -95,6 +78,23 @@ const TimelineSeasonForm = (props: TimelineSeasonFormProps) => {
         <FieldError name="season" className="rw-field-error" />
 
         <Label
+          name="cluster"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Cluster
+        </Label>
+
+        <TextField
+          name="cluster"
+          defaultValue={props.timelineSeason?.cluster}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+
+        <FieldError name="cluster" className="rw-field-error" />
+
+        <Label
           name="tribe_name"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
@@ -121,7 +121,14 @@ const TimelineSeasonForm = (props: TimelineSeasonFormProps) => {
 
         <DatetimeLocalField
           name="season_start_date"
-          defaultValue={formatDatetime(props.timelineSeason?.season_start_date)}
+          defaultValue={
+            props.timelineSeason?.season_start_date ??
+            new Date(new Date().toString().split("GMT")[0] + " UTC")
+              .toISOString()
+              .split(".")[0]
+              .toString()
+              .slice(0, -3)
+          }
           className="rw-input"
           errorClassName="rw-input rw-input-error"
         />
@@ -138,47 +145,12 @@ const TimelineSeasonForm = (props: TimelineSeasonFormProps) => {
 
         <DatetimeLocalField
           name="season_end_date"
-          defaultValue={formatDatetime(props.timelineSeason?.season_end_date)}
+          defaultValue={props.timelineSeason?.season_end_date}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
         />
 
         <FieldError name="season_end_date" className="rw-field-error" />
-
-        <Label
-          name="cluster"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Cluster
-        </Label>
-
-        <TextField
-          name="cluster"
-          defaultValue={props.timelineSeason?.cluster}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="cluster" className="rw-field-error" />
-
-        <Label
-          name="timeline_id"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Timeline id
-        </Label>
-
-        <TextField
-          name="timeline_id"
-          defaultValue={props.timelineSeason?.timeline_id}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: true }}
-        />
-
-        <FieldError name="timeline_id" className="rw-field-error" />
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">
@@ -195,7 +167,7 @@ const TimelineSeasonForm = (props: TimelineSeasonFormProps) => {
         </div>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default TimelineSeasonForm
+export default TimelineSeasonForm;

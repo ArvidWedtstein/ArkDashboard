@@ -7,7 +7,7 @@ import NewTimelineSeasonEvent from "src/components/TimelineSeasonEvent/NewTimeli
 import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
 import NewTimelineSeasonPerson from "src/components/TimelineSeasonPerson/NewTimelineSeasonPerson/NewTimelineSeasonPerson";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
-import { Modal, RefModal } from "src/components/Util/Modal/Modal";
+import { FormModal, Modal, RefModal } from "src/components/Util/Modal/Modal";
 import { timeTag } from "src/lib/formatters";
 
 import type {
@@ -76,7 +76,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
         }
         actions={[]}
       /> */}
-      <RefModal
+      {/* <RefModal
         isOpen={openModal === "timelineseasonevent"}
         title="Add Basespot"
         onClose={() => setOpenModal(null)}
@@ -84,8 +84,8 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
         }
         actions={[]}
-      />
-      <Modal
+      /> */}
+      {/* <Modal
         isOpen={openModal === "timelineseasonperson"}
         title="Add person"
         onClose={() => setOpenModal(null)}
@@ -102,7 +102,14 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           <NewTimelineSeasonBasespot timeline_season_id={timelineSeason.id} />
         }
         actions={[]}
-      />
+      /> */}
+
+      <FormModal
+        isOpen={openModal === "timelineseasonevent"}
+        onClose={() => setOpenModal(null)}
+      >
+        <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
+      </FormModal>
 
       <header
         className="flex w-full flex-col justify-between rounded-lg bg-cover bg-center bg-no-repeat p-12 text-white"
@@ -113,12 +120,13 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
       >
         <div className="flex justify-between pb-5">
           <div className="text-xl font-bold uppercase tracking-widest">
-            <span className="align-middle font-medium text-gray-900 dark:text-white">
+            <span className="align-middle font-medium text-white">
               {timelineSeason.server}{" "}
               {timelineSeason.cluster && (
                 <span
-                  className={`rw-badge align-middle ${servers[timelineSeason.server]?.badge
-                    }`}
+                  className={`rw-badge align-middle ${
+                    servers[timelineSeason.server]?.badge
+                  }`}
                 >
                   {timelineSeason.cluster}{" "}
                   <span className="mx-2 border-l border-current"></span> Season{" "}
@@ -161,9 +169,9 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
         </div>
       </header>
 
-      <div className="rw-segment my-3 flex gap-3 h-min">
-        <div className="w-full flex-1 basis-32 h-fit">
-          <section className="relative my-3 w-full rounded-lg border border-zinc-500 bg-zinc-300 font-semibold text-black dark:bg-zinc-800 dark:text-white">
+      <div className="rw-segment my-3 flex flex-1 gap-3">
+        <div className="relative w-full flex-1">
+          <section className="bg-accent-900 text-text relative w-full rounded-lg border border-zinc-500 font-semibold dark:bg-zinc-800 dark:text-white">
             <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
               <p className="flex-1 underline underline-offset-8">Basespots</p>
               <button
@@ -180,10 +188,12 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               </button>
             </div>
 
-            <TimelineSeasonBasespotsCell timeline_season_id={timelineSeason.id} />
+            <TimelineSeasonBasespotsCell
+              timeline_season_id={timelineSeason.id}
+            />
           </section>
 
-          <section className="relative my-3 w-full rounded-lg border border-zinc-500 bg-zinc-300 font-semibold text-black dark:bg-zinc-800 dark:text-white">
+          <section className="bg-background relative my-3 w-full rounded-lg border border-zinc-500 font-semibold text-black dark:bg-zinc-800 dark:text-white">
             <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
               <p className="flex-1 underline underline-offset-8">
                 Persons in this season
@@ -203,49 +213,9 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
             </div>
             <TimelineSeasonPeopleCell timeline_season_id={timelineSeason.id} />
           </section>
-
-          <section></section>
         </div>
 
         <div className="my-3 h-fit grow-0 basis-72 space-y-3 pr-3 text-black dark:text-white">
-          {/* <div className="flex items-center justify-between">
-            <p>Bases</p>
-          </div>
-          <div className="py-3">
-            <div className="text-xs">Today</div>
-            <div className="mt-3 flex items-center rounded-lg border border-zinc-500 bg-zinc-300 p-2 dark:bg-zinc-600">
-              <div className="w-8">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 512 512"
-                  className=""
-                >
-                  <defs></defs>
-                  <circle cx="256" cy="256" r="256" fill="#4b50dd"></circle>
-                  <path
-                    fill="#f5f5f5"
-                    d="M192 64h176c4.4 0 8 3.6 8 8v328c0 4.4-3.6 8-8 8H120c-4.4 0-8-3.6-8-8V148l80-84z"
-                  ></path>
-                  <path
-                    fill="#e6e6e6"
-                    d="M184 148c4.4 0 8-3.6 8-8V64l-80 84h72z"
-                  ></path>
-                  <circle cx="352" cy="384" r="52" fill="#2179a6"></circle>
-                  <g fill="#f5f5f5" className="g">
-                    <path d="M352 416c-2.208 0-4-1.788-4-4v-56c0-2.212 1.792-4 4-4s4 1.788 4 4v56c0 2.212-1.792 4-4 4z"></path>
-                    <path d="M352 416a3.989 3.989 0 01-2.828-1.172l-20-20c-1.564-1.564-1.564-4.092 0-5.656s4.092-1.564 5.656 0L352 406.344l17.172-17.172c1.564-1.564 4.092-1.564 5.656 0s1.564 4.092 0 5.656l-20 20A3.989 3.989 0 01352 416z"></path>
-                  </g>
-                </svg>
-              </div>
-              <div className="px-3">
-                <p className="m-0 w-36 overflow-hidden text-ellipsis whitespace-nowrap text-sm leading-4">
-                  Crouch Cave
-                </p>
-                <p className="download-text-info m-0 w-36 overflow-hidden text-ellipsis whitespace-nowrap text-xs leading-4"></p>
-              </div>
-            </div>
-          </div> */}
-
           <div className="flex items-center justify-between">
             <p>Events</p>
             <button

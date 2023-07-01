@@ -104,6 +104,9 @@ a {
 .rw-button.rw-button-small {
   @apply rounded-sm py-1 px-2 text-xs;
 }
+.rw-button.rw-button-medium {
+  @apply rounded-lg py-1.5 px-4 text-sm;
+}
 .rw-button.rw-button-large {
   @apply rounded-lg py-3 px-8 text-base;
 }
@@ -170,13 +173,27 @@ a {
 /* Green Outline Button */
 .rw-button.rw-button-green-outline {
   @apply border-pea-500 text-pea-500 border;
-  /* @apply border-pea-500 text-pea-500 rounded border-2 font-normal leading-tight transition duration-150 ease-in-out hover:bg-opacity-5; */
 }
 .rw-button.rw-button-green-outline:hover {
   @apply bg-pea-600 text-white;
 }
 .rw-button.rw-button-green-outline:focus {
   @apply ring-pea-800 outline-none ring-4;
+}
+
+/* Green Gradient Button */
+.rw-button.rw-button-green-gradient {
+  @apply from-pea-400 to-pea-600 dark:from-pea-300 dark:to-pea-500 dark:text-pea-950 bg-gradient-to-br text-white;
+}
+.rw-button.rw-button-green-gradient:hover {
+  @apply from-pea-500 to-pea-700 dark:from-pea-200 dark:to-pea-400;
+}
+.rw-button.rw-button-green-gradient:focus,
+.rw-button.rw-button-green-gradient:active {
+  @apply from-pea-600 to-pea-800 dark:from-pea-400 dark:to-pea-600 ring-0;
+}
+.rw-button.rw-button-green-gradient:disabled {
+  @apply from-pea-100 to-pea-300 text-pea-700 dark:from-pea-700 dark:text-pea-100 dark:to-pea-900;
 }
 
 /* Blue Button */
@@ -272,7 +289,7 @@ a {
 }
 
 .rw-float-input {
-  @apply focus:border-pea-600 dark:focus:border-pea-500 block w-full appearance-none rounded-lg border border-zinc-500 bg-zinc-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:outline-none focus:ring-0 dark:bg-zinc-600 dark:text-white;
+  @apply focus:border-pea-600 dark:focus:border-pea-500 block w-full appearance-none rounded-lg border border-zinc-500 bg-zinc-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:outline-none focus:ring-0 dark:bg-zinc-600 dark:text-white dark:placeholder-zinc-200;
 }
 .rw-float-label {
   @apply peer-focus:text-pea-600 peer-focus:dark:text-pea-500 absolute top-4 left-1 z-[2] origin-[0] -translate-y-4 scale-75 transform px-2 text-sm text-gray-500 duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-4 peer-focus:-translate-y-4 peer-focus:scale-75 dark:text-gray-400;

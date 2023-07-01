@@ -21,10 +21,10 @@ export const basespotPage: QueryResolvers["basespotPage"] = ({
       take: POSTS_PER_PAGE,
       skip: offset,
       orderBy: { created_at: "desc" },
-      where: map ? { map: map } : {},
+      where: map ? { map_id: map } : {},
     }),
     count: db.basespot.count({
-      where: map ? { map: map } : {},
+      where: map ? { map_id: map } : {},
     }),
   };
 };

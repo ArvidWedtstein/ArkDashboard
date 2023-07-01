@@ -88,73 +88,84 @@ const DinosList = ({ dinosPage }: FindDinos) => {
 
       {/* <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-5 3xl:grid-cols-8"> */}
       <div className="3xl:grid-cols-6 grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4">
-        {dinosPage.dinos.map(({ id, name, type, image, description, tamable, temperament }) => (
-          // <Link
-          //   key={`dino-${id}`}
-          //   to={routes.dino({ id: id })}
-          //   className="flex h-auto w-auto max-w-xs flex-row items-start justify-start rounded-md bg-zinc-600 p-4 text-center text-white ring ring-zinc-500 border border-zinc-700"
-          // >
-          //   <div className="flex h-full w-full flex-col items-start justify-between justify-items-stretch">
-          //     <div className="relative mb-3 h-32 w-32 rounded-full border bg-gradient-to-br from-zinc-700 to-zinc-700">
-          //       <img
-          //         className="h-auto max-h-full"
-          //         loading="lazy"
-          //         src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
-          //         onError={(e) => {
-          //           e.currentTarget.src = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/any-hat.png`;
-          //           // e.currentTarget.parentElement.hidden = true;
-          //           e.currentTarget.parentElement.parentElement.classList.replace(
-          //             "justify-between",
-          //             "justify-end"
-          //           );
-          //         }}
-          //       />
-          //     </div>
-          //     <p className="tracking-wide subpixel-antialiased">{name}</p>
-          //   </div>
-          //   <div className="flex flex-col gap-1">
-          //     {type &&
-          //       type.map((type) => (
-          //         <img
-          //           key={`dino-${id}-${type}`}
-          //           className="w-8"
-          //           title={type}
-          //           src={types[type]}
-          //         />
-          //       ))}
-          //   </div>
-          // </Link>
-          <Link to={routes.dino({ id: id })} className="rounded-lg bg-white relative text-center flex h-full flex-1 flex-col overflow-hidden" key={`dino-${id}`}>
-            <div className="relative h-52 mb-10 rounded-t-lg" style={{
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-              background: `url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/barbarian-bg.jpg')`,
-            }}>
-              <img
-                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
-                className="max-h-64 w-auto p-3 absolute top-1"
-                alt={name}
-              />
-            </div>
-            <div className="uppercase text-xs font-bold mb-0.5 text-neutral-600">
-              {temperament}
-            </div>
-            <div className="text-2xl text-black font-black mb-1">{name}</div>
-            <div className="p-5 mb-2 text-stone-500 flex-grow truncate" title={description}>
-              {description}
-            </div>
+        {dinosPage.dinos.map(
+          ({ id, name, type, image, description, tamable, temperament }) => (
+            // <Link
+            //   key={`dino-${id}`}
+            //   to={routes.dino({ id: id })}
+            //   className="flex h-auto w-auto max-w-xs flex-row items-start justify-start rounded-md bg-zinc-600 p-4 text-center text-white ring ring-zinc-500 border border-zinc-700"
+            // >
+            //   <div className="flex h-full w-full flex-col items-start justify-between justify-items-stretch">
+            //     <div className="relative mb-3 h-32 w-32 rounded-full border bg-gradient-to-br from-zinc-700 to-zinc-700">
+            //       <img
+            //         className="h-auto max-h-full"
+            //         loading="lazy"
+            //         src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
+            //         onError={(e) => {
+            //           e.currentTarget.src = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/any-hat.png`;
+            //           // e.currentTarget.parentElement.hidden = true;
+            //           e.currentTarget.parentElement.parentElement.classList.replace(
+            //             "justify-between",
+            //             "justify-end"
+            //           );
+            //         }}
+            //       />
+            //     </div>
+            //     <p className="tracking-wide subpixel-antialiased">{name}</p>
+            //   </div>
+            //   <div className="flex flex-col gap-1">
+            //     {type &&
+            //       type.map((type) => (
+            //         <img
+            //           key={`dino-${id}-${type}`}
+            //           className="w-8"
+            //           title={type}
+            //           src={types[type]}
+            //         />
+            //       ))}
+            //   </div>
+            // </Link>
+            <Link
+              to={routes.dino({ id: id })}
+              className="relative flex h-full flex-1 flex-col overflow-hidden rounded-lg border border-black bg-white text-center dark:border-zinc-500"
+              key={`dino-${id}`}
+            >
+              <div
+                className="relative mb-10 h-52 rounded-t-lg"
+                style={{
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "cover",
+                  background: `url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/barbarian-bg.jpg')`,
+                }}
+              >
+                <img
+                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`}
+                  className="absolute top-1 max-h-64 w-auto p-3"
+                  alt={name}
+                />
+              </div>
+              <div className="mb-0.5 text-xs font-bold uppercase text-neutral-600">
+                {temperament}
+              </div>
+              <div className="mb-1 text-2xl font-black text-black">{name}</div>
+              <div
+                className="mb-2 flex-grow truncate p-5 text-stone-500"
+                title={description}
+              >
+                {description}
+              </div>
 
-            <div className="text-white font-bold rounded-b-lg border-t border-neutral-600 bg-stone-200 flex flex-row justify-center">
-              {type &&
-                type.map((type) => (
-                  <img
-                    key={`dino-${id}-${type}`}
-                    className="w-8 m-4"
-                    title={type}
-                    src={types[type]}
-                  />
-                ))}
-              {/* <div className="w-1/3 float-left py-5 px-4 h-full border-r border-r-white">
+              <div className="flex flex-row justify-center rounded-b-lg border-t border-neutral-600 bg-stone-200 font-bold text-white">
+                {type &&
+                  type.map((type) => (
+                    <img
+                      key={`dino-${id}-${type}`}
+                      className="m-4 w-8"
+                      title={type}
+                      src={types[type]}
+                    />
+                  ))}
+                {/* <div className="w-1/3 float-left py-5 px-4 h-full border-r border-r-white">
                 <div className="relative text-2xl mb-3 justify-center inline-flex items-center fill-white">{{
                   "amphibious": (
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="w-6"><path d="M560 448h-40.81l-109.9-123.6l131.5-71.91C562.5 240.8 576 218.3 576 193.6c0-26.84-15.94-51-40.56-61.53c-30.63-13.12-59.45-22.2-88.24-28.06C443.1 63.63 409.4 32 368 32c-38.95 0-71.32 27.86-78.46 64.73C128.7 104.4 0 237.3 0 400C0 444.1 35.88 480 80 480h288c8.844 0 16-7.156 16-16S376.8 448 368 448h-288C53.53 448 32 426.5 32 400c0-145.2 114.5-263.8 257.8-271.3C297.5 164.9 329.6 192 368 192c35.81 0 65.76-23.68 75.96-56.12c25.68 5.471 51.47 13.86 78.88 25.62C535.7 167 544 179.6 544 193.6c0 12.84-7.031 24.62-18.47 30.78l-149.2 81.59c-4.25 2.344-7.25 6.5-8.062 11.28c-.8438 4.812 .5625 9.75 3.781 13.38l128 144C503.1 478 507.4 480 512 480h48c8.844 0 16-7.156 16-16S568.8 448 560 448zM368 128c15.06 0 29.67 1.078 44.15 2.801C404.8 147.9 387.8 160 368 160C341.5 160 320 138.5 320 112S341.5 64 368 64c21.82 0 40.08 14.73 45.89 34.71C398.9 97 383.7 96 368 96c-8.844 0-16 7.156-16 16S359.2 128 368 128zM281.3 365.5l-34.16 22.75c-7.344 4.906-9.344 14.81-4.438 22.19C245.8 415.1 250.8 417.6 256 417.6c3.062 0 6.156-.875 8.875-2.688l34.16-22.75c18.44-12.31 31-31.06 35.34-52.81s-.0313-43.91-12.34-62.34s-31.06-31-52.78-35.34C247.3 237.3 225.3 241.7 206.9 253.1L175.8 274.7C168.5 279.6 166.5 289.5 171.4 296.9s14.88 9.281 22.19 4.438l31.09-20.72C236 273 249.6 270.3 262.1 273c13.34 2.656 24.88 10.38 32.44 21.72s10.28 24.97 7.594 38.34C300.3 346.4 292.6 357.9 281.3 365.5z" /></svg>
@@ -167,7 +178,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
                 <div className="uppercase font-normal text-xs">{type[0]}</div>
               </div> */}
 
-              {/* <div className="w-1/3 float-left py-5 px-4 h-full border-r-0">
+                {/* <div className="w-1/3 float-left py-5 px-4 h-full border-r-0">
                 <div className="relative text-2xl mb-3 justify-center inline-flex items-center">
                   {tamable ? (
                     <svg
@@ -189,8 +200,8 @@ const DinosList = ({ dinosPage }: FindDinos) => {
                 </div>
                 <div className="uppercase font-normal text-xs">Tamable</div>
               </div> */}
-            </div>
-            {/* <div className="text-white font-bold rounded-bl-lg rounded-br-lg bg-neutral-600">
+              </div>
+              {/* <div className="text-white font-bold rounded-bl-lg rounded-br-lg bg-neutral-600">
               <div className="w-1/3 float-left py-5 px-4 h-full border-r border-r-white">
                 <div className="relative text-2xl mb-3">
                   20<sup className="absolute bottom-1 text-[45%] ml-1">XP</sup>
@@ -233,8 +244,9 @@ const DinosList = ({ dinosPage }: FindDinos) => {
                 <div className="uppercase font-normal text-xs">Tamable</div>
               </div>
             </div> */}
-          </Link>
-        ))}
+            </Link>
+          )
+        )}
       </div>
     </section>
   );

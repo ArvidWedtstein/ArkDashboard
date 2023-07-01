@@ -22,12 +22,15 @@ interface TribeFormProps {
 }
 
 const TribeForm = (props: TribeFormProps) => {
-  const { currentUser } = useAuth();
+  const { currentUser, isAuthenticated } = useAuth();
 
   const onSubmit = (data: FormTribe) => {
     if (
       // hasRole("f0c1b8e9-5f27-4430-ad8f-5349f83339c0") ||
-      currentUser.permissions.includes(props?.tribe?.id ? "tribe_update" : 'tribe_create' as permission)
+      isAuthenticated &&
+      currentUser?.permissions?.includes(
+        props?.tribe?.id ? "tribe_update" : ("tribe_create" as permission)
+      )
     ) {
       data.created_by = props.tribe?.created_by || currentUser?.id.toString();
       props.onSave(data, props?.tribe?.id);
@@ -82,7 +85,17 @@ const TribeForm = (props: TribeFormProps) => {
         <FieldError name="description" className="rw-field-error" />
 
         <div className="rw-button-group">
-          <Submit disabled={props.loading || !currentUser.permissions.includes(props?.tribe?.id ? "tribe_update" : 'tribe_create' as permission)} className="rw-button rw-button-blue">
+          <Submit
+            disabled={
+              props.loading ||
+              !currentUser?.permissions.includes(
+                props?.tribe?.id
+                  ? "tribe_update"
+                  : ("tribe_create" as permission)
+              )
+            }
+            className="rw-button rw-button-blue"
+          >
             Save
           </Submit>
         </div>

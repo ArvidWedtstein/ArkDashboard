@@ -82,7 +82,6 @@ export const Empty = () => {
 };
 
 export const Failure = ({ error }: CellFailureProps) => {
-  console.warn(error.name, error.message);
   return (
     <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
       <svg

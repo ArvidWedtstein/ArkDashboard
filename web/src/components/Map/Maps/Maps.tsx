@@ -274,7 +274,7 @@ const MapsList = ({ maps }: FindMaps) => {
             className="hover:ring-pea-500 rounded-lg hover:no-underline hover:ring-1"
           >
             <ArkCard
-              className="!dark:text-white animate-fade-in !text-white"
+              className="!dark:text-white animate-fade-in text-white"
               title={map.name}
               image={{
                 src: mapImages[map.name.replace(" ", "")],

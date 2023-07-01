@@ -102,48 +102,6 @@ const FileUpload = ({
       setProgress(0);
       setState(1);
 
-      const totalSize = files.reduce((acc, file) => acc + file.size, 0);
-      let uploadedSize = 0;
-
-      // const uploadPromises = files.map((file) => {
-      //   return new Promise(async (resolve, reject) => {
-      //     if (sizeLimit && file.size > sizeLimit) {
-      //       reject();
-      //     }
-
-      //     const fileExt = file.name.split(".").pop();
-      //     const fileName = `${Math.random()}.${fileExt}`;
-      //     const filePath = `${fileName}`;
-
-      //     let { error: uploadError } = await supabase.storage
-      //       .from(`${storagePath}`)
-      //       .upload(filePath, file);
-
-      //     if (uploadError) {
-      //       reject();
-      //     }
-      //     onUpload && onUpload(filePath);
-      //     uploadedSize += file.size;
-      //     setProgress((uploadedSize / totalSize) * 100);
-      //     progressDisplay();
-      //   });
-      // });
-
-      // Promise.all(uploadPromises)
-      //   .then(() => {
-      //     // All files uploaded successfully
-      //     success();
-
-      //     progressLoop();
-      //     setFiles([]);
-      //   })
-      //   .catch((error) => {
-      //     // Handle error
-      //     console.error("File upload failed", error);
-      //     fail();
-      //     setProgress(0);
-      //   });
-
       try {
         files.forEach(async (file) => {
           if (sizeLimit && file.size > sizeLimit) {
@@ -238,7 +196,7 @@ const FileUpload = ({
     <div
       ref={el}
       className={clsx(
-        "group relative w-[calc(100%-3rem)] max-w-xl overflow-hidden rounded-2xl bg-[#f1f2f4] text-slate-700 shadow transition-colors dark:bg-zinc-600 dark:text-stone-200",
+        "group relative w-[calc(100%-3rem)] max-w-xl overflow-hidden rounded-lg border border-gray-300 bg-gray-50 text-gray-900 shadow transition-colors dark:border-zinc-600 dark:bg-zinc-700 dark:text-stone-200",
         {
           "before:bg-[#f5463d]": state === 2,
           "before:bg-[#3df574]": state === 3,
@@ -406,7 +364,10 @@ const FileUpload = ({
               className={`flex-wrap items-center delay-200 group-data-[ready=true]:flex group-data-[ready=false]:hidden`}
             >
               {files.map((file, index) => (
-                <div className="flex w-full flex-row items-center" key={`file-${index}`}>
+                <div
+                  className="flex w-full flex-row items-center"
+                  key={`file-${index}`}
+                >
                   <svg
                     className="mr-3 block h-6 w-6 text-[#737a8c] transition-colors"
                     viewBox="0 0 24 24"

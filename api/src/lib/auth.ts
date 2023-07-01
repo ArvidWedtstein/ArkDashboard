@@ -20,6 +20,7 @@ type RedwoodUser = Record<string, any> & {
   role_id?: string;
   avatar_url?: string;
   permissions?: string[];
+  sub?: string;
 };
 
 /**
