@@ -1,13 +1,15 @@
-import type { FindTimelineSeasonPeople } from 'types/graphql'
+import type { FindTimelineSeasonPeople } from "types/graphql";
 
-import { Link, routes } from '@redwoodjs/router'
-import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
+import { Link, routes } from "@redwoodjs/router";
+import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
-import TimelineSeasonPeople from 'src/components/TimelineSeasonPerson/TimelineSeasonPeople'
+import TimelineSeasonPeople from "src/components/TimelineSeasonPerson/TimelineSeasonPeople";
 
 export const QUERY = gql`
   query FindTimelineSeasonPeople($timeline_season_id: String!) {
-    timelineSeasonPeople: timelineSeasonPeople(timeline_season_id: $timeline_season_id) {
+    timelineSeasonPeople: timelineSeasonPeople(
+      timeline_season_id: $timeline_season_id
+    ) {
       id
       created_at
       updated_at
@@ -21,43 +23,89 @@ export const QUERY = gql`
       }
     }
   }
-`
+`;
 
 export const Loading = () => (
   <div
     role="status"
-    className="flex justify-start gap-3 nimate-pulse rounded border border-gray-200 p-4 shadow dark:border-gray-700 md:p-6"
+    className="nimate-pulse flex justify-start gap-3 rounded border border-gray-200 p-4 shadow dark:border-gray-700 md:p-6"
   >
-    <div className='p-3 space-y-3 w-fit'>
-      <svg className="w-16 h-16 text-gray-200 dark:text-gray-700" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"></path></svg>
-      <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5"></div>
+    <div className="w-fit space-y-3 p-3">
+      <svg
+        className="h-16 w-16 text-gray-200 dark:text-gray-700"
+        aria-hidden="true"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fillRule="evenodd"
+          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+          clipRule="evenodd"
+        ></path>
+      </svg>
+      <div className="mb-2.5 h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700"></div>
     </div>
-    <div className='p-3 space-y-3 w-fit'>
-      <svg className="w-16 h-16 text-gray-200 dark:text-gray-700" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"></path></svg>
-      <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5"></div>
+    <div className="w-fit space-y-3 p-3">
+      <svg
+        className="h-16 w-16 text-gray-200 dark:text-gray-700"
+        aria-hidden="true"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fillRule="evenodd"
+          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+          clipRule="evenodd"
+        ></path>
+      </svg>
+      <div className="mb-2.5 h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700"></div>
     </div>
-    <div className='p-3 space-y-3 w-fit'>
-      <svg className="w-16 h-16 text-gray-200 dark:text-gray-700" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"></path></svg>
-      <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5"></div>
+    <div className="w-fit space-y-3 p-3">
+      <svg
+        className="h-16 w-16 text-gray-200 dark:text-gray-700"
+        aria-hidden="true"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fillRule="evenodd"
+          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+          clipRule="evenodd"
+        ></path>
+      </svg>
+      <div className="mb-2.5 h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700"></div>
     </div>
-    <div className='p-3 space-y-3 w-fit'>
-      <svg className="w-16 h-16 text-gray-200 dark:text-gray-700" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"></path></svg>
-      <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-full mb-2.5"></div>
+    <div className="w-fit space-y-3 p-3">
+      <svg
+        className="h-16 w-16 text-gray-200 dark:text-gray-700"
+        aria-hidden="true"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fillRule="evenodd"
+          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+          clipRule="evenodd"
+        ></path>
+      </svg>
+      <div className="mb-2.5 h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700"></div>
     </div>
     <span className="sr-only">Loading...</span>
   </div>
-)
+);
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">
-      {'No timelineSeasonPeople yet. '}
-    </div>
-  )
-}
+    <div className="rw-text-center">{"No timelineSeasonPeople yet. "}</div>
+  );
+};
 
 export const Failure = ({ error }: CellFailureProps) => (
-  <div className="rw-cell-error flex animate-fly-in items-center space-x-3">
+  <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
     <svg
       className="h-12 w-12 fill-current"
       xmlns="http://www.w3.org/2000/svg"
@@ -72,10 +120,10 @@ export const Failure = ({ error }: CellFailureProps) => (
       <p className="text-sm">{error?.message}</p>
     </div>
   </div>
-)
+);
 
 export const Success = ({
   timelineSeasonPeople,
 }: CellSuccessProps<FindTimelineSeasonPeople>) => {
-  return <TimelineSeasonPeople timelineSeasonPeople={timelineSeasonPeople} />
-}
+  return <TimelineSeasonPeople timelineSeasonPeople={timelineSeasonPeople} />;
+};

@@ -7,7 +7,7 @@ import NewTimelineSeasonEvent from "src/components/TimelineSeasonEvent/NewTimeli
 import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
 import NewTimelineSeasonPerson from "src/components/TimelineSeasonPerson/NewTimelineSeasonPerson/NewTimelineSeasonPerson";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
-import { Modal, RefModal } from "src/components/Util/Modal/Modal";
+import { FormModal, Modal, RefModal } from "src/components/Util/Modal/Modal";
 import { timeTag } from "src/lib/formatters";
 
 import type {
@@ -76,7 +76,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
         }
         actions={[]}
       /> */}
-      <RefModal
+      {/* <RefModal
         isOpen={openModal === "timelineseasonevent"}
         title="Add Basespot"
         onClose={() => setOpenModal(null)}
@@ -84,8 +84,8 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
         }
         actions={[]}
-      />
-      <Modal
+      /> */}
+      {/* <Modal
         isOpen={openModal === "timelineseasonperson"}
         title="Add person"
         onClose={() => setOpenModal(null)}
@@ -102,7 +102,14 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           <NewTimelineSeasonBasespot timeline_season_id={timelineSeason.id} />
         }
         actions={[]}
-      />
+      /> */}
+
+      <FormModal
+        isOpen={openModal === "timelineseasonevent"}
+        onClose={() => setOpenModal(null)}
+      >
+        <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
+      </FormModal>
 
       <header
         className="flex w-full flex-col justify-between rounded-lg bg-cover bg-center bg-no-repeat p-12 text-white"
@@ -164,7 +171,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
 
       <div className="rw-segment my-3 flex flex-1 gap-3">
         <div className="relative w-full flex-1">
-          <section className="bg-background text-text relative w-full rounded-lg border border-zinc-500 font-semibold dark:bg-zinc-800 dark:text-white">
+          <section className="bg-accent-900 text-text relative w-full rounded-lg border border-zinc-500 font-semibold dark:bg-zinc-800 dark:text-white">
             <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
               <p className="flex-1 underline underline-offset-8">Basespots</p>
               <button

@@ -72,8 +72,8 @@ const HomePage = () => {
               className="aspect-video h-full max-w-sm object-cover"
             />
           </div>
-          <div className="font-montserrat w-full space-y-6 bg-opacity-80 p-8 text-left font-normal text-zinc-300 dark:bg-black">
-            <h1 className="text-5xl">Crafting Made Easy</h1>
+          <div className="font-montserrat w-full space-y-6 bg-opacity-80 p-8 text-left font-normal text-zinc-300 ">
+            <h1 className="">Crafting Made Easy</h1>
             <p className="font-light">
               Struggling to remember how to craft that rare item? Use our
               crafting recipe calculator to quickly look up the ingredients and
@@ -90,7 +90,7 @@ const HomePage = () => {
               </p>
               <Link
                 to={routes.materialCalculator()}
-                className="rw-button rw-button-green-outline mt-2"
+                className="rw-button rw-button-green-gradient mdisabled mt-2"
               >
                 Explore
               </Link>

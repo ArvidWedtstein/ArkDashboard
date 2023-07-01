@@ -1,13 +1,15 @@
-import type { FindTimelineSeasonEvents } from 'types/graphql'
+import type { FindTimelineSeasonEvents } from "types/graphql";
 
-import { Link, routes } from '@redwoodjs/router'
-import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
+import { Link, routes } from "@redwoodjs/router";
+import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
-import TimelineSeasonEvents from 'src/components/TimelineSeasonEvent/TimelineSeasonEvents'
+import TimelineSeasonEvents from "src/components/TimelineSeasonEvent/TimelineSeasonEvents";
 
 export const QUERY = gql`
   query FindTimelineSeasonEvents($timeline_season_id: String!) {
-    timelineSeasonEvents: timelineSeasonEvents(timeline_season_id: $timeline_season_id) {
+    timelineSeasonEvents: timelineSeasonEvents(
+      timeline_season_id: $timeline_season_id
+    ) {
       id
       created_at
       updated_at
@@ -22,7 +24,7 @@ export const QUERY = gql`
       tags
     }
   }
-`
+`;
 // TODO: Update skeleton loader to list
 export const Loading = () => (
   <div
@@ -53,9 +55,9 @@ export const Loading = () => (
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
-          fill-rule="evenodd"
+          fillRule="evenodd"
           d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-          clip-rule="evenodd"
+          clipRule="evenodd"
         ></path>
       </svg>
       <div>
@@ -65,21 +67,21 @@ export const Loading = () => (
     </div>
     <span className="sr-only">Loading...</span>
   </div>
-)
+);
 
 export const Empty = () => {
   return (
     <div className="rw-text-center">
-      {'No timelineSeasonEvents yet. '}
+      {"No timelineSeasonEvents yet. "}
       <Link to={routes.newTimelineSeasonEvent()} className="rw-link">
-        {'Create one?'}
+        {"Create one?"}
       </Link>
     </div>
-  )
-}
+  );
+};
 
 export const Failure = ({ error }: CellFailureProps) => (
-  <div className="rw-cell-error flex animate-fly-in items-center space-x-3">
+  <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
     <svg
       className="h-12 w-12 fill-current"
       xmlns="http://www.w3.org/2000/svg"
@@ -94,10 +96,10 @@ export const Failure = ({ error }: CellFailureProps) => (
       <p className="text-sm">{error?.message}</p>
     </div>
   </div>
-)
+);
 
 export const Success = ({
   timelineSeasonEvents,
 }: CellSuccessProps<FindTimelineSeasonEvents>) => {
-  return <TimelineSeasonEvents timelineSeasonEvents={timelineSeasonEvents} />
-}
+  return <TimelineSeasonEvents timelineSeasonEvents={timelineSeasonEvents} />;
+};

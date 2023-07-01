@@ -152,9 +152,9 @@ const Sidebar = memo(({}) => {
   ];
 
   return (
-    <nav className="sticky top-0 z-10 flex h-fit flex-row items-center justify-between overflow-x-auto rounded-r-xl border-gray-700 bg-zinc-800 px-10 py-2 dark:border-gray-200 max-sm:border-b sm:flex-col sm:justify-start sm:overflow-visible sm:border-r sm:bg-transparent sm:py-10 sm:px-2">
+    <aside className="sticky top-0 z-10 flex h-fit flex-row items-center justify-between overflow-x-auto rounded-r-xl border-gray-700 bg-zinc-800 px-10 py-2 dark:border-gray-200 max-sm:border-b sm:flex-col sm:justify-start sm:overflow-visible sm:border-r sm:bg-transparent sm:py-10 sm:px-2">
       {navigation.map((item, index) => (
-        <aside
+        <div
           className="mx-2 flex flex-col items-center justify-start self-start text-black transition-all dark:text-[#ffffffcc] sm:flex-row"
           key={`sidebar-item-${index}`}
         >
@@ -168,7 +168,7 @@ const Sidebar = memo(({}) => {
             {Icon(item.name)} <span className="sr-only">{item.name}</span>
           </NavLink>
           <span className="text-sm">{item.name}</span>
-        </aside>
+        </div>
       ))}
       {/* {navigation.map((item, i) => (
         <aside
@@ -198,7 +198,7 @@ const Sidebar = memo(({}) => {
           <span className="text-sm">{item.name}</span>
         </aside>
       ))} */}
-    </nav>
+    </aside>
   );
 });
 
