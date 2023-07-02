@@ -5,6 +5,7 @@ import { useCallback, useState } from "react";
 import ArkCard from "src/components/ArkCard/ArkCard";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import MapComp from "src/components/Util/Map/Map";
+import Slideshow from "src/components/Util/Slideshow/Slideshow";
 
 import { capitalizeSentence } from "src/lib/formatters";
 
@@ -23,22 +24,64 @@ interface Props {
 }
 
 const Map = ({ map }: Props) => {
-  const [deleteMap] = useMutation(DELETE_MAP_MUTATION, {
-    onCompleted: () => {
-      toast.success("Map deleted");
-      navigate(routes.maps());
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
-
-  const onDeleteClick = (id: DeleteMapMutationVariables["id"]) => {
-    if (confirm("Are you sure you want to delete map " + id + "?")) {
-      deleteMap({ variables: { id } });
-    }
+  const mapImages = {
+    2: [
+      "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
+    ],
+    3: [
+      "https://cdn.akamai.steamstatic.com/steam/apps/473850/ss_f13c4990d4609d3fc89174f71858835a9f09aaa3.1920x1080.jpg?t=1508277712",
+    ],
+    7: ["https://wallpapercave.com/wp/wp10504822.jpg"],
+    4: [
+      "https://cdn.survivetheark.com/uploads/monthly_2016_10/large.580b5a9c3b586_Ragnarok02.jpg.6cfa8b30a81187caace6fecc1e9f0c31.jpg",
+      "https://survivetheark.com/index.php?/gallery/image/20889-ragnarok/&do=download",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJJmqrzhtbVQJCChwuL510y_vCKfy1XIHCnQ&usqp=CAU",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRBdPB6lPmw7GEpebf9vKTd7pESyh1NZUuSw&usqp=CAU",
+    ],
+    5: [
+      "https://cdn.images.express.co.uk/img/dynamic/143/590x/ARK-Survival-Evolved-849382.jpg",
+      "https://i.ytimg.com/vi/JD2pw7olqTI/maxresdefault.jpg",
+      "https://mcdn.wallpapersafari.com/medium/11/10/HqzA26.jpg",
+      "https://external-preview.redd.it/kNGv5THQAMo1KkSV0kh3rb3zVkv1sQ5JfcVhxYQU3M8.png?format=pjpg&auto=webp&s=b586ca457104b002c9f132e84dcc8819236d6d40",
+      "https://cdn.survivetheark.com/uploads/monthly_2018_01/large.ARK-Wallpaper-Aberration-Flowers_by_pollti_1024x576.jpg.ccd6f6278b7e536b56095df031fbac12.jpg",
+    ],
+    6: [
+      "https://cdn.cloudflare.steamstatic.com/steam/apps/887380/ss_3c2c1d7c027c8beb54d2065afe3200e457c2867c.1920x1080.jpg?t=1594677636",
+    ],
+    1: [
+      "https://i.pinimg.com/originals/0b/95/09/0b9509ddce658e3209ece1957053b27e.jpg",
+      "https://pbs.twimg.com/media/D9h39iwX4AUrWAh.jpg:large",
+      "https://i.redd.it/du3kqr863aa31.jpg",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFKZIiTnhO5yYY1yA15nQ2UnH3W-v-PU9Mfw&usqp=CAU",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_Zs3mrwKB_uGiZns4R7I8iZ8gpzMtWJ1EFA&usqp=CAU",
+    ],
+    8: [
+      "https://cdn.akamai.steamstatic.com/steam/apps/1646700/ss_c939dd546237cba9352807d4deebd79c4e29e547.1920x1080.jpg?t=1622514386",
+    ],
+    10: [
+      "https://cdn2.unrealengine.com/egs-crystalislesarkexpansionmap-studiowildcard-dlc-g1a-05-1920x1080-119682147.jpg?h=720&resize=1&w=1280",
+      "https://c4.wallpaperflare.com/wallpaper/218/915/795/video-games-cherry-blossom-ark-survival-evolved-ark-wallpaper-preview.jpg",
+      "https://i.redd.it/845iigipfgg61.png",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmcFNjX9A0w07KkV3pTfnpMl_uIGTqq0nphQ&usqp=CAU",
+      "https://www.rencorner.com/uploads/monthly_2020_06/20200619191942_1.jpg.4546a3de96d1223171467b33a4f15cab.jpg",
+    ],
+    11: [
+      "https://cdn.cloudflare.steamstatic.com/steam/apps/1887560/ss_331869adb5f0c98e3f13b48189e280f8a0ba1616.1920x1080.jpg?t=1655054447",
+    ],
+    12: [
+      "https://dicendpads.com/wp-content/uploads/2021/12/Ark-Lost-Island.png",
+      "https://c4.wallpaperflare.com/wallpaper/745/402/370/ark-survival-evolved-video-games-the-island-sunlight-jungle-wallpaper-preview.jpg",
+      "https://c4.wallpaperflare.com/wallpaper/958/368/11/video-game-ark-survival-evolved-ark-survival-evolved-jungle-wallpaper-thumb.jpg",
+    ],
+    9: [
+      "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
+      "https://wallpapercave.com/wp/wp9285176.png",
+      "https://cdn.survivetheark.com/images/gen2/wallpaper/ARK_Genesis2_Promo_Canoe.jpg",
+      "https://wallpapercave.com/wp/wp6293505.png",
+      "https://wallpapercave.com/wp/wp6293166.jpg",
+      "https://wallpapercave.com/wp/wp9285339.jpg",
+    ],
   };
-
   const [mapData, setMapData] = useState([]);
   const [categories, setCategories] = useState({
     mutagen_bulb: {
@@ -313,7 +356,7 @@ const Map = ({ map }: Props) => {
           </h2>
         </header>
         <div className="rw-segment-main">
-          <div className="grid grid-flow-row gap-4 md:grid-cols-2">
+          <div className="grid grid-flow-row gap-3 md:grid-cols-2">
             <CheckboxGroup
               options={Object.entries(categories)
                 .filter(
@@ -401,12 +444,14 @@ const Map = ({ map }: Props) => {
       </section>
 
       <section className="rw-segment-header rw-heading rw-heading-secondary">
-        <Link
-          className="after:content-['_↗']"
-          to={routes.lootcrates({ map: map.id })}
-        >
-          Lootcrates
-        </Link>
+        {map.Lootcrate.length > 0 && (
+          <Link
+            className="after:content-['_↗']"
+            to={routes.lootcrates({ map: map.id })}
+          >
+            Lootcrates
+          </Link>
+        )}
         <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4">
           {map.Lootcrate.map((lootcrate, i) => (
             <ArkCard
@@ -438,21 +483,17 @@ const Map = ({ map }: Props) => {
           ))}
         </div>
       </section>
-      {/* <nav className="rw-button-group">
-        <Link
-          to={routes.editMap({ id: map.id.toString() })}
-          className="rw-button rw-button-blue-outline"
-        >
-          Edit
-        </Link>
-        <button
-          type="button"
-          className="rw-button rw-button-red-outline"
-          onClick={() => onDeleteClick(map.id)}
-        >
-          Delete
-        </button>
-      </nav> */}
+
+      <section className="m-3">
+        <p className="my-3 text-lg font-semibold text-gray-900 dark:text-white">
+          Gallery
+        </p>
+        <Slideshow
+          slides={mapImages[`${map.id}`].map((img) => ({
+            url: img,
+          }))}
+        />
+      </section>
     </article>
   );
 };

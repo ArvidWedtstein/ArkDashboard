@@ -9,30 +9,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model TimelineBasespot {
-  id                     BigInt                   @id(map: "timeline_basespots_pkey") @default(autoincrement())
-  created_at             DateTime?                @default(now()) @db.Timestamptz(6)
-  updated_at             DateTime?                @db.Timestamptz(6)
-  start_date             DateTime?                @db.Timestamptz(6)
-  end_date               DateTime?                @db.Timestamptz(6)
-  basespot_id            BigInt?
-  tribe_name             String
-  map                    BigInt?
-  server                 String?
-  region                 String?
-  season                 String?
-  cluster                String?
-  created_by             String?                  @db.Uuid
-  latitude               Float?                   @default(0)
-  longitude              Float?                   @default(0)
-  basespot               Basespot?                @relation(fields: [basespot_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Profile                Profile?                 @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Map                    Map?                     @relation(fields: [map], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  TimelineBasespotDino   TimelineBasespotDino[]
-  TimelineBasespotPerson TimelineBasespotPerson[]
-  TimelineBasespotRaid   TimelineBasespotRaid[]
-}
-
 model Basespot {
   id                     BigInt                   @id(map: "basespot_pkey") @default(autoincrement())
   name                   String
@@ -50,7 +26,6 @@ model Basespot {
   type                   String?
   Profile                Profile?                 @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Map                    Map                      @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  TimelineBasespot       TimelineBasespot[]
   TimelineSeasonBasespot TimelineSeasonBasespot[]
 }
 
@@ -73,8 +48,6 @@ model Profile {
   Profile                                                     Profile?                 @relation("ProfileToProfile", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   other_Profile                                               Profile[]                @relation("ProfileToProfile")
   Role_Role_created_byToProfile                               Role[]                   @relation("Role_created_byToProfile")
-  TimelineBasespot                                            TimelineBasespot[]
-  TimelineBasespotPerson                                      TimelineBasespotPerson[]
   TimelineSeason                                              TimelineSeason[]
   TimelineSeasonBasespot                                      TimelineSeasonBasespot[]
   TimelineSeasonEvent                                         TimelineSeasonEvent[]
@@ -113,60 +86,59 @@ model Message {
 }
 
 model Dino {
-  id                             String                 @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
-  created_at                     DateTime?              @default(now()) @db.Timestamptz(6)
+  id                             String     @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  created_at                     DateTime?  @default(now()) @db.Timestamptz(6)
   name                           String
   synonyms                       String?
   description                    String?
   taming_notice                  String?
   can_destroy                    String[]
   base_stats                     Json?
-  exp_per_kill                   Float?                 @default(0)
-  egg_min                        Float?                 @default(0)
-  egg_max                        Float?                 @default(0)
-  tdps                           Float?                 @default(0)
-  maturation_time                Float?                 @default(0)
-  incubation_time                Float?                 @default(0)
-  affinity_needed                Float?                 @default(0)
-  aff_inc                        Float?                 @default(0)
-  flee_threshold                 Float?                 @default(0)
+  exp_per_kill                   Float?     @default(0)
+  egg_min                        Float?     @default(0)
+  egg_max                        Float?     @default(0)
+  tdps                           Float?     @default(0)
+  maturation_time                Float?     @default(0)
+  incubation_time                Float?     @default(0)
+  affinity_needed                Float?     @default(0)
+  aff_inc                        Float?     @default(0)
+  flee_threshold                 Float?     @default(0)
   hitboxes                       Json?
-  food_consumption_base          Float?                 @default(0)
-  food_consumption_mult          Float?                 @default(0)
-  disable_ko                     Boolean?               @default(false)
-  violent_tame                   Boolean?               @default(false)
-  taming_ineffectiveness         Float?                 @default(0)
-  disable_food                   Boolean?               @default(false)
-  disable_mult                   Boolean?               @default(false)
+  food_consumption_base          Float?     @default(0)
+  food_consumption_mult          Float?     @default(0)
+  disable_ko                     Boolean?   @default(false)
+  violent_tame                   Boolean?   @default(false)
+  taming_ineffectiveness         Float?     @default(0)
+  disable_food                   Boolean?   @default(false)
+  disable_mult                   Boolean?   @default(false)
   admin_note                     String?
   base_points                    Float?
   non_violent_food_affinity_mult Float?
-  non_violent_food_rate_mult     Float?                 @default(0)
-  taming_interval                Float?                 @default(0)
+  non_violent_food_rate_mult     Float?     @default(0)
+  taming_interval                Float?     @default(0)
   base_taming_time               Float?
-  disable_tame                   Boolean?               @default(false)
-  x_variant                      Boolean?               @default(false)
+  disable_tame                   Boolean?   @default(false)
+  x_variant                      Boolean?   @default(false)
   attack                         Json?
-  mounted_weaponry               Boolean?               @default(false)
-  ridable                        Boolean?               @default(false)
-  movement                       Json?                  @default("null")
+  mounted_weaponry               Boolean?   @default(false)
+  ridable                        Boolean?   @default(false)
+  movement                       Json?      @default("null")
   type                           String[]
   carryable_by                   String[]
   icon                           String?
   image                          String?
   multipliers                    Json?
-  baby_food_consumption_mult     Float?                 @default(0)
-  gestation_time                 Float?                 @default(0)
-  mating_cooldown_min            BigInt?                @default(0)
-  mating_cooldown_max            BigInt?                @default(0)
-  temperament                    String?                @default("Passive")
+  baby_food_consumption_mult     Float?     @default(0)
+  gestation_time                 Float?     @default(0)
+  mating_cooldown_min            BigInt?    @default(0)
+  mating_cooldown_max            BigInt?    @default(0)
+  temperament                    String?    @default("Passive")
   diet                           String?
-  released                       DateTime?              @db.Date
-  tamable                        Boolean?               @default(true)
-  breedable                      Boolean?               @default(true)
+  released                       DateTime?  @db.Date
+  tamable                        Boolean?   @default(true)
+  breedable                      Boolean?   @default(true)
   bp                             String?
   DinoStat                       DinoStat[]
-  TimelineBasespotDino           TimelineBasespotDino[]
 }
 
 model Item {
@@ -209,7 +181,6 @@ model Map {
   Lootcrate              Lootcrate[]
   MapCoordinate          MapCoordinate[]
   MapNote                MapNote[]
-  TimelineBasespot       TimelineBasespot[]
   TimelineSeasonBasespot TimelineSeasonBasespot[]
   TimelineSeasonEvent    TimelineSeasonEvent[]
 }
@@ -283,52 +254,6 @@ model LootcrateSetEntryItem {
   Item              Item              @relation(fields: [item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model TimelineBasespotDino {
-  id                  String           @id(map: "TimelineDino_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
-  created_at          DateTime?        @default(now()) @db.Timestamptz(6)
-  updated_at          DateTime?        @default(now()) @db.Timestamptz(6)
-  timelinebasespot_id BigInt
-  dino_id             String           @db.Uuid
-  name                String?
-  birth_date          DateTime?        @db.Timestamptz(6)
-  death_date          DateTime?        @db.Timestamptz(6)
-  death_cause         String?
-  level_wild          BigInt?          @default(0)
-  level               BigInt?          @default(0)
-  health              Float?           @default(0)
-  stamina             Float?           @default(0)
-  oxygen              Float?           @default(0)
-  food                Float?           @default(0)
-  weight              Float?           @default(0)
-  melee_damage        Float?           @default(0)
-  movement_speed      Float?           @default(0)
-  gender              String?          @default("N/A")
-  wild_health         Float?           @default(0)
-  wild_stamina        Float?           @default(0)
-  wild_oxygen         Float?           @default(0)
-  wild_food           Float?           @default(0)
-  wild_weight         Float?           @default(0)
-  wild_melee_damage   Float?           @default(0)
-  wild_movement_speed Float?           @default(0)
-  Dino                Dino             @relation(fields: [dino_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  TimelineBasespot    TimelineBasespot @relation(fields: [timelinebasespot_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-}
-
-model TimelineBasespotRaid {
-  id                  String           @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
-  created_at          DateTime         @unique @default(now()) @db.Timestamptz(6)
-  updated_at          DateTime?        @default(now()) @db.Timestamptz(6)
-  timelinebasespot_id BigInt
-  raid_start          DateTime?        @default(now()) @db.Timestamptz(6)
-  raid_end            DateTime?        @db.Timestamptz(6)
-  raid_comment        String?
-  attacker_players    String?
-  tribe_name          String?
-  base_survived       Boolean          @default(false)
-  defenders           String?
-  TimelineBasespot    TimelineBasespot @relation(fields: [timelinebasespot_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
 model MapCoordinate {
   id         String    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
   created_at DateTime? @default(now()) @db.Timestamptz(6)
@@ -371,21 +296,6 @@ model ItemRecipeItem {
 
   @@unique([item_id, item_recipe_id])
   @@index([id], map: "idx_item_recipe_item_id")
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model TimelineBasespotPerson {
-  id                  String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  created_at          DateTime         @default(now()) @db.Timestamptz(6)
-  updated_at          DateTime?        @db.Timestamptz(6)
-  user_id             String?          @db.Uuid
-  timelinebasespot_id BigInt
-  ingame_name         String?
-  TimelineBasespot    TimelineBasespot @relation(fields: [timelinebasespot_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  Profile             Profile?         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@unique([timelinebasespot_id, user_id, ingame_name])
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -478,7 +388,7 @@ model TimelineSeasonEvent {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model TimelineSeasonBasespot {
-  id                 BigInt         @id @default(autoincrement())
+  id                 BigInt         @id
   created_at         DateTime?      @default(now()) @db.Timestamptz(6)
   updated_at         DateTime?      @db.Timestamptz(6)
   start_date         DateTime?      @db.Timestamptz(6)

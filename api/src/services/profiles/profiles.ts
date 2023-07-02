@@ -66,19 +66,19 @@ export const updateProfile: MutationResolvers["updateProfile"] = ({
     }
   });
 
-  validate(input.role_id, "role_id", {
-    custom: {
-      with: () => {
-        if (
-          input.role_id !== context.currentUser.role_id &&
-          !hasPermission({ permission: "user_update" })
-        ) {
-          throw new Error("You are not allowed to change your own role");
-        }
-      },
-      message: "You are not allowed to change your own role",
-    },
-  });
+  // validate(input.role_id, "role_id", {
+  //   custom: {
+  //     with: () => {
+  //       if (
+  //         input.role_id !== context.currentUser.role_id &&
+  //         !hasPermission({ permission: "user_update" })
+  //       ) {
+  //         throw new Error("You are not allowed to change your own role");
+  //       }
+  //     },
+  //     message: "You are not allowed to change your own role",
+  //   },
+  // });
   return validateUniqueness(
     "profile",
     { username: input.username, $self: { id } },
@@ -120,16 +120,6 @@ export const Profile: ProfileRelationResolvers = {
     return db.profile
       .findUnique({ where: { id: root?.id } })
       .Role_Role_created_byToProfile();
-  },
-  TimelineBasespot: (_obj, { root }) => {
-    return db.profile
-      .findUnique({ where: { id: root?.id } })
-      .TimelineBasespot();
-  },
-  TimelineBasespotPerson: (_obj, { root }) => {
-    return db.profile
-      .findUnique({ where: { id: root?.id } })
-      .TimelineBasespotPerson();
   },
   TimelineSeason: (_obj, { root }) => {
     return db.profile.findUnique({ where: { id: root?.id } }).TimelineSeason();

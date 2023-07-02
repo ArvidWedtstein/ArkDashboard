@@ -7,7 +7,7 @@ import NewTimelineSeasonEvent from "src/components/TimelineSeasonEvent/NewTimeli
 import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
 import NewTimelineSeasonPerson from "src/components/TimelineSeasonPerson/NewTimelineSeasonPerson/NewTimelineSeasonPerson";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
-import { FormModal, Modal, RefModal } from "src/components/Util/Modal/Modal";
+import { FormModal } from "src/components/Util/Modal/Modal";
 import { timeTag } from "src/lib/formatters";
 
 import type {
@@ -67,48 +67,29 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
   return (
     <>
       {/* TODO: add editforms here too */}
-      {/* <Modal
-        isOpen={openModal === "timelineseasonevent"}
-        title="New TimelineSeasonEvent"
-        onClose={() => setOpenModal(null)}
-        content={
-          <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
-        }
-        actions={[]}
-      /> */}
-      {/* <RefModal
-        isOpen={openModal === "timelineseasonevent"}
-        title="Add Basespot"
-        onClose={() => setOpenModal(null)}
-        content={
-          <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
-        }
-        actions={[]}
-      /> */}
-      {/* <Modal
-        isOpen={openModal === "timelineseasonperson"}
-        title="Add person"
-        onClose={() => setOpenModal(null)}
-        content={
-          <NewTimelineSeasonPerson timeline_season_id={timelineSeason.id} />
-        }
-        actions={[]}
-      />
-      <Modal
-        isOpen={openModal === "timelineseasonbasespot"}
-        title="Add Basespot"
-        onClose={() => setOpenModal(null)}
-        content={
-          <NewTimelineSeasonBasespot timeline_season_id={timelineSeason.id} />
-        }
-        actions={[]}
-      /> */}
 
       <FormModal
-        isOpen={openModal === "timelineseasonevent"}
+        title={
+          openModal === "timelineseasonperson"
+            ? "Add person"
+            : openModal === "timelineseasonbasespot"
+            ? "Add Basespot"
+            : openModal === "timelineseasonevent"
+            ? "Add Event"
+            : ""
+        }
+        isOpen={openModal !== null}
         onClose={() => setOpenModal(null)}
       >
-        <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
+        {openModal === "timelineseasonperson" && (
+          <NewTimelineSeasonPerson timeline_season_id={timelineSeason.id} />
+        )}
+        {openModal === "timelineseasonbasespot" && (
+          <NewTimelineSeasonBasespot timeline_season_id={timelineSeason.id} />
+        )}
+        {openModal === "timelineseasonevent" && (
+          <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
+        )}
       </FormModal>
 
       <header

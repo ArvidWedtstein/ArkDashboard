@@ -2,6 +2,7 @@ import { Form, TextField } from "@redwoodjs/forms";
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
+import { useAuth } from "src/auth";
 import Avatar from "src/components/Avatar/Avatar";
 
 import { formatEnum, timeTag } from "src/lib/formatters";
@@ -24,6 +25,7 @@ interface Props {
 }
 
 const Profile = ({ profile }: Props) => {
+  const { currentUser, isAuthenticated } = useAuth();
   const [deleteProfile] = useMutation(DELETE_PROFILE_MUTATION, {
     onCompleted: () => {
       toast.success("Profile deleted");
@@ -63,7 +65,7 @@ const Profile = ({ profile }: Props) => {
               <div className="flex w-full justify-center px-4 lg:order-2 lg:w-3/12">
                 <div className="relative">
                   <Avatar
-                    className="absolute -mt-20 h-auto rounded-full border-none align-middle shadow-xl"
+                    className="absolute -mt-20 aspect-square h-auto rounded-full border-none align-middle shadow-xl"
                     url={profile.avatar_url}
                     size={200}
                     editable={false}
@@ -90,7 +92,7 @@ const Profile = ({ profile }: Props) => {
                         new Date(profile.created_at).getFullYear() +
                         (new Date().getMonth() -
                           new Date(profile.created_at).getMonth()) /
-                        12
+                          12
                       ).toPrecision(1)}
                     </span>
                     <span className="text-sm text-gray-600 dark:text-stone-300">
@@ -138,7 +140,7 @@ const Profile = ({ profile }: Props) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-5 dark:text-stone-100 xl:grid-cols-4">
+          {/* <div className="grid grid-cols-1 gap-5 dark:text-stone-100 xl:grid-cols-4">
             {profile.UserRecipe.map(
               ({
                 id,
@@ -228,23 +230,25 @@ const Profile = ({ profile }: Props) => {
                 </div>
               )
             )}
-          </div>
-          {/*
-          <nav className="rw-button-group">
-            <Link
-              to={routes.editProfile({ id: profile.id })}
-              className="rw-button rw-button-blue"
-            >
-              Edit
-            </Link>
-            <button
-              type="button"
-              className="rw-button rw-button-red"
-              onClick={() => onDeleteClick(profile.id)}
-            >
-              Delete
-            </button>
-          </nav> */}
+          </div> */}
+
+          {currentUser && currentUser.id === profile.id && (
+            <nav className="rw-button-group">
+              <Link
+                to={routes.editProfile({ id: profile.id })}
+                className="rw-button rw-button-blue"
+              >
+                Edit
+              </Link>
+              <button
+                type="button"
+                className="rw-button rw-button-red"
+                onClick={() => onDeleteClick(profile.id)}
+              >
+                Delete
+              </button>
+            </nav>
+          )}
         </div>
       </section>
     </div>

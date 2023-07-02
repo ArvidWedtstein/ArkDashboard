@@ -11,20 +11,26 @@ const POSTS_PER_PAGE = 6;
 export const basespotPage: QueryResolvers["basespotPage"] = ({
   page,
   map,
+  type,
 }: {
   page: number;
   map?: number;
+  type?: string;
 }) => {
   const offset = (page - 1) * POSTS_PER_PAGE;
+  const where = {
+    ...(map && { map_id: map }),
+    ...(type && { type: type }),
+  };
   return {
     basespots: db.basespot.findMany({
       take: POSTS_PER_PAGE,
       skip: offset,
       orderBy: { created_at: "desc" },
-      where: map ? { map_id: map } : {},
+      where: where,
     }),
     count: db.basespot.count({
-      where: map ? { map_id: map } : {},
+      where: where,
     }),
   };
 };
@@ -53,7 +59,6 @@ export const updateBasespot: MutationResolvers["updateBasespot"] = ({
   input,
 }) => {
   requireAuth({ roles: "f0c1b8e9-5f27-4430-ad8f-5349f83339c0" });
-
   return db.basespot.update({
     data: input,
     where: { id },
@@ -73,11 +78,6 @@ export const Basespot: BasespotRelationResolvers = {
   },
   Map: (_obj, { root }) => {
     return db.basespot.findUnique({ where: { id: root?.id } }).Map();
-  },
-  TimelineBasespot: (_obj, { root }) => {
-    return db.basespot
-      .findUnique({ where: { id: root?.id } })
-      .TimelineBasespot();
   },
   TimelineSeasonBasespot: (_obj, { root }) => {
     return db.basespot

@@ -10,7 +10,6 @@ export const schema = gql`
     Lootcrate: [Lootcrate]!
     MapCoordinate: [MapCoordinate]!
     MapNote: [MapNote]!
-    TimelineBasespot: [TimelineBasespot]!
     TimelineSeasonBasespot: [TimelineSeasonBasespot]!
     TimelineSeasonEvent: [TimelineSeasonEvent]!
   }

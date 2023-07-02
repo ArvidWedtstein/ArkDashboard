@@ -1,9 +1,8 @@
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import { MaterialGrid } from "../MaterialGrid/MaterialGrid";
 import { FindItemsMats } from "types/graphql";
-import { useAuth } from "src/auth";
 export const QUERY = gql`
-  query FindItemsMats($user_id: String) {
+  query FindItemsMats {
     itemRecipes {
       id
       crafting_station_id
@@ -26,23 +25,9 @@ export const QUERY = gql`
         }
       }
     }
-    userRecipesByID(user_id: $user_id) {
-      id
-      name
-      created_at
-      private
-      UserRecipeItemRecipe {
-        item_recipe_id
-        amount
-      }
-    }
   }
 `;
 
-export const beforeQuery = () => {
-  const { currentUser } = useAuth();
-  return { variables: { user_id: currentUser?.id } };
-};
 export const Loading = () => (
   <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-transparent">
     <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>
@@ -73,16 +58,6 @@ export const Failure = ({ error }: CellFailureProps) => (
   </div>
 );
 
-export const Success = ({
-  itemRecipes,
-  userRecipesByID,
-}: CellSuccessProps<FindItemsMats>) => {
-  return (
-    <div className="rw-form-wrapper container-xl mx-auto">
-      <MaterialGrid
-        itemRecipes={itemRecipes}
-        userRecipesByID={userRecipesByID}
-      />
-    </div>
-  );
+export const Success = ({ itemRecipes }: CellSuccessProps<FindItemsMats>) => {
+  return <MaterialGrid itemRecipes={itemRecipes} />;
 };

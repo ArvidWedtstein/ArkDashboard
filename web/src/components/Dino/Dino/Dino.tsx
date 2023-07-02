@@ -81,7 +81,35 @@ interface Props {
   dino: NonNullable<FindDinoById["dino"]>;
   itemsByIds: NonNullable<FindDinoById["itemsByIds"]>;
 }
-
+// const renderDinoCardStat = (stat: 'stamina' | 'melee_damage' | 'movement_speed' | 'health' | 'food' | 'weight' | 'oxygen', dino: ArrayElement<FindTimelineBasespotById["timelineBasespot"]["TimelineBasespotDino"]>) => {
+//     let char = stat[0]
+//     if (stat === 'melee_damage') char = 'd'
+//     return (
+//       <>
+//         <p className="inline-flex space-x-2">
+//           <img
+//             className="h-6 w-6"
+//             src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${stat}.webp`}
+//             alt=""
+//           />
+//           <span>
+//             {formatNumber(
+//               dino[`wild_${stat}`] *
+//               dino.Dino.base_stats[char]["w"] +
+//               dino[stat] *
+//               dino.Dino.base_stats[char]["t"] +
+//               dino.Dino.base_stats[char]["b"],
+//               { notation: "compact" }
+//             )}
+//             {stat === 'movement_speed' || stat === 'melee_damage' && '%'}
+//           </span>
+//         </p>
+//         <p className="text-center">
+//           ({dino[`wild_${stat}`]}-{dino[stat]})
+//         </p>
+//       </>
+//     )
+//   }
 const Dino = ({ dino, itemsByIds }: Props) => {
   const { currentUser } = useAuth();
   const [deleteDino] = useMutation(DELETE_DINO_MUTATION, {

@@ -76,9 +76,4 @@ export const Dino: DinoRelationResolvers = {
   DinoStat: (_obj, { root }) => {
     return db.dino.findUnique({ where: { id: root?.id } }).DinoStat();
   },
-  TimelineBasespotDino: (_obj, { root }) => {
-    return db.dino
-      .findUnique({ where: { id: root?.id } })
-      .TimelineBasespotDino();
-  },
 };

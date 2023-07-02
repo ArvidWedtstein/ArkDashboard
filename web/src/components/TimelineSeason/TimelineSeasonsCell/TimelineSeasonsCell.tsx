@@ -15,9 +15,6 @@ export const QUERY = gql`
       season_start_date
       season_end_date
       cluster
-      TimelineSeasonBasespot {
-        id
-      }
     }
   }
 `;

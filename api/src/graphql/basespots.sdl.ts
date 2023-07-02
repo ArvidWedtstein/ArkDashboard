@@ -16,7 +16,6 @@ export const schema = gql`
     type: String
     Profile: Profile
     Map: Map!
-    TimelineBasespot: [TimelineBasespot]!
     TimelineSeasonBasespot: [TimelineSeasonBasespot]!
   }
 
@@ -27,7 +26,7 @@ export const schema = gql`
   type Query {
     basespots: [Basespot!]! @skipAuth
     basespot(id: BigInt!): Basespot @requireAuth
-    basespotPage(page: Int, map: Int): BasespotPage @skipAuth
+    basespotPage(page: Int, map: Int, type: String): BasespotPage @skipAuth
     # @requireAuth(roles: "697b7d70-bab3-4ff9-9c3e-f30b058b621c")
     # @hasPermission(permission: "gamedata_as")
   }
