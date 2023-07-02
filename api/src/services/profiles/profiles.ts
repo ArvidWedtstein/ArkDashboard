@@ -121,16 +121,6 @@ export const Profile: ProfileRelationResolvers = {
       .findUnique({ where: { id: root?.id } })
       .Role_Role_created_byToProfile();
   },
-  TimelineBasespot: (_obj, { root }) => {
-    return db.profile
-      .findUnique({ where: { id: root?.id } })
-      .TimelineBasespot();
-  },
-  TimelineBasespotPerson: (_obj, { root }) => {
-    return db.profile
-      .findUnique({ where: { id: root?.id } })
-      .TimelineBasespotPerson();
-  },
   TimelineSeason: (_obj, { root }) => {
     return db.profile.findUnique({ where: { id: root?.id } }).TimelineSeason();
   },

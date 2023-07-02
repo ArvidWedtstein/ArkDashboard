@@ -53,7 +53,6 @@ export const schema = gql`
     breedable: Boolean
     bp: String
     DinoStat: [DinoStat]!
-    TimelineBasespotDino: [TimelineBasespotDino]!
   }
 
   type DinosPage {

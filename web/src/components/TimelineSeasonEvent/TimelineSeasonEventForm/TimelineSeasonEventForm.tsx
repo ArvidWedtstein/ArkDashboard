@@ -17,6 +17,7 @@ import type { RWGqlError } from "@redwoodjs/forms";
 import Lookup from "src/components/Util/Lookup/Lookup";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import { ForwardedRef, forwardRef, useState } from "react";
+import TagInput from "src/components/Util/TagInput/TagInput";
 
 type FormTimelineSeasonEvent = NonNullable<
   EditTimelineSeasonEventById["timelineSeasonEvent"]
@@ -177,9 +178,10 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
           }}
         />
 
-        {/* TODO: Make tags input  */}
+        <TagInput name="tags" defaultValue={props.timelineSeasonEvent?.tags} />
 
-        <div className="relative max-w-sm">
+        <FieldError name="tags" className="rw-field-error" />
+        {/* <div className="relative max-w-sm">
           <TextField
             name="tags"
             defaultValue={props.timelineSeasonEvent?.tags}
@@ -194,8 +196,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
           >
             Tags
           </Label>
-          <FieldError name="tags" className="rw-field-error" />
-        </div>
+        </div> */}
 
         {/* <div className="rw-button-group">
             <Submit

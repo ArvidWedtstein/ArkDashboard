@@ -33,6 +33,7 @@ const HomePage = () => {
   //     subscription.unsubscribe();
   //   };
   // }, [client]);
+
   return (
     <>
       <MetaTags

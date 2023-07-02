@@ -104,6 +104,7 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
                     alt="image"
                   />
                 )}
+
                 <div className="text-gray-600 dark:text-gray-300">
                   <div className="text-base font-normal">
                     <span className="font-medium text-gray-900 dark:text-white">

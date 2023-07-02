@@ -16,7 +16,6 @@ export const schema = gql`
     type: String
     Profile: Profile
     Map: Map!
-    TimelineBasespot: [TimelineBasespot]!
     TimelineSeasonBasespot: [TimelineSeasonBasespot]!
   }
 

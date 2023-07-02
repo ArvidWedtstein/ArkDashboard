@@ -7,7 +7,7 @@ import NewTimelineSeasonEvent from "src/components/TimelineSeasonEvent/NewTimeli
 import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
 import NewTimelineSeasonPerson from "src/components/TimelineSeasonPerson/NewTimelineSeasonPerson/NewTimelineSeasonPerson";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
-import { FormModal, Modal, RefModal } from "src/components/Util/Modal/Modal";
+import { FormModal } from "src/components/Util/Modal/Modal";
 import { timeTag } from "src/lib/formatters";
 
 import type {
@@ -74,7 +74,9 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
             ? "Add person"
             : openModal === "timelineseasonbasespot"
             ? "Add Basespot"
-            : "Add Event"
+            : openModal === "timelineseasonevent"
+            ? "Add Event"
+            : ""
         }
         isOpen={openModal !== null}
         onClose={() => setOpenModal(null)}

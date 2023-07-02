@@ -72,23 +72,6 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
         }}
       >
         <div className="">
-          {/* <div className="mb-3 flex items-center space-x-1 opacity-75 [&>span:not(:last-child)]:after:content-[',']">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              className="mr-3 w-5 fill-current "
-            >
-              <path
-                className="d"
-                d="M19.22,9.66L10.77,1.21c-.74-.74-1.86-1.21-2.97-1.21H1.67C.75,0,0,.75,0,1.67V7.8c0,1.11,.46,2.23,1.3,2.97l8.45,8.46c1,1,2.62,1,3.62,0l5.94-5.95c.93-.93,.93-2.6-.09-3.62ZM6.96,6.35c-.59,.59-1.56,.59-2.15,0-.59-.59-.59-1.56,0-2.15,.59-.59,1.56-.59,2.15,0,.59,.59,.59,1.56,0,2.15Z"
-              />
-            </svg>
-            {["Base", "Spots"].map((tag) => (
-              <span className="text-sm" key={tag}>
-                {tag}
-              </span>
-            ))}
-          </div> */}
           <h1 className="my-5 text-5xl font-bold opacity-90">Basespots!</h1>
           <p className="mt-3 w-1/2 leading-7 opacity-75">
             Here you'll find various basespots

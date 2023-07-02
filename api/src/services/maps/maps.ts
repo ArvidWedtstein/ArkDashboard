@@ -2,61 +2,58 @@ import type {
   QueryResolvers,
   MutationResolvers,
   MapRelationResolvers,
-} from 'types/graphql'
+} from "types/graphql";
 
-import { db } from 'src/lib/db'
+import { db } from "src/lib/db";
 
-export const maps: QueryResolvers['maps'] = () => {
-  return db.map.findMany()
-}
+export const maps: QueryResolvers["maps"] = () => {
+  return db.map.findMany();
+};
 
-export const map: QueryResolvers['map'] = ({ id }) => {
+export const map: QueryResolvers["map"] = ({ id }) => {
   return db.map.findUnique({
     where: { id },
-  })
-}
+  });
+};
 
-export const createMap: MutationResolvers['createMap'] = ({ input }) => {
+export const createMap: MutationResolvers["createMap"] = ({ input }) => {
   return db.map.create({
     data: input,
-  })
-}
+  });
+};
 
-export const updateMap: MutationResolvers['updateMap'] = ({ id, input }) => {
+export const updateMap: MutationResolvers["updateMap"] = ({ id, input }) => {
   return db.map.update({
     data: input,
     where: { id },
-  })
-}
+  });
+};
 
-export const deleteMap: MutationResolvers['deleteMap'] = ({ id }) => {
+export const deleteMap: MutationResolvers["deleteMap"] = ({ id }) => {
   return db.map.delete({
     where: { id },
-  })
-}
+  });
+};
 
 export const Map: MapRelationResolvers = {
   Basespot: (_obj, { root }) => {
-    return db.map.findUnique({ where: { id: root?.id } }).Basespot()
+    return db.map.findUnique({ where: { id: root?.id } }).Basespot();
   },
   Lootcrate: (_obj, { root }) => {
-    return db.map.findUnique({ where: { id: root?.id } }).Lootcrate()
+    return db.map.findUnique({ where: { id: root?.id } }).Lootcrate();
   },
   MapCoordinate: (_obj, { root }) => {
-    return db.map.findUnique({ where: { id: root?.id } }).MapCoordinate()
+    return db.map.findUnique({ where: { id: root?.id } }).MapCoordinate();
   },
   MapNote: (_obj, { root }) => {
-    return db.map.findUnique({ where: { id: root?.id } }).MapNote()
-  },
-  TimelineBasespot: (_obj, { root }) => {
-    return db.map.findUnique({ where: { id: root?.id } }).TimelineBasespot()
+    return db.map.findUnique({ where: { id: root?.id } }).MapNote();
   },
   TimelineSeasonBasespot: (_obj, { root }) => {
     return db.map
       .findUnique({ where: { id: root?.id } })
-      .TimelineSeasonBasespot()
+      .TimelineSeasonBasespot();
   },
   TimelineSeasonEvent: (_obj, { root }) => {
-    return db.map.findUnique({ where: { id: root?.id } }).TimelineSeasonEvent()
+    return db.map.findUnique({ where: { id: root?.id } }).TimelineSeasonEvent();
   },
-}
+};

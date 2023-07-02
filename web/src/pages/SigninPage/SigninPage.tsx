@@ -43,7 +43,7 @@ const SigninPage = () => {
       // const response = await client.auth.signInWithOAuth({
       //   provider: "discord",
       // });
-      console.log("Authrespone", response);
+      // console.log("Authrespone", response);
       if (response?.error) {
         toast.error(response.error.message);
       } else {

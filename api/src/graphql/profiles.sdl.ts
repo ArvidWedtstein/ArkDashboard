@@ -18,8 +18,6 @@ export const schema = gql`
     Profile: Profile
     other_Profile: [Profile]!
     Role_Role_created_byToProfile: [Role]!
-    TimelineBasespot: [TimelineBasespot]!
-    TimelineBasespotPerson: [TimelineBasespotPerson]!
     TimelineSeason: [TimelineSeason]!
     TimelineSeasonBasespot: [TimelineSeasonBasespot]!
     TimelineSeasonEvent: [TimelineSeasonEvent]!

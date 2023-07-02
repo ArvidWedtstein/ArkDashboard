@@ -213,12 +213,17 @@ export const FormModal = ({ title, isOpen, children, onClose }: iModalForm) => {
   }, [isOpen, modalRef?.current?.open]);
   return (
     <dialog
-      className={`animate-pop-up text-text-950 bg-accent-50 z-10 flex flex-col gap-3 rounded-lg p-3 ring-1 ring-zinc-500 backdrop:blur-[3px] dark:bg-zinc-900`}
+      className={clsx(
+        `animate-pop-up text-text-950 bg-accent-50 z-10 flex flex-col gap-3 rounded-lg p-3 ring-1 ring-zinc-500 backdrop:blur-[3px] dark:bg-zinc-900`,
+        {
+          hidden: isOpen === false,
+        }
+      )}
       onCancel={() => {
         modalRef?.current?.querySelector("form")?.reset();
         onClose?.();
       }}
-      id="dialog"
+      // id="dialog"
       ref={modalRef}
     >
       <div className="flex items-start justify-between border-b border-zinc-500 pb-3">
@@ -231,7 +236,7 @@ export const FormModal = ({ title, isOpen, children, onClose }: iModalForm) => {
           type="button"
           className="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
           onClick={(e) => {
-            modalRef.current.querySelector("form").reset();
+            modalRef.current.querySelector("form")?.reset();
             onClose?.();
           }}
         >
@@ -258,8 +263,8 @@ export const FormModal = ({ title, isOpen, children, onClose }: iModalForm) => {
         <button
           className="rw-button rw-button-blue"
           onClick={() => {
-            modalRef.current.querySelector("form").requestSubmit();
-            modalRef.current.querySelector("form").reset();
+            modalRef.current.querySelector("form")?.requestSubmit();
+            modalRef.current.querySelector("form")?.reset();
             onClose?.();
             modalRef.current?.close();
           }}
@@ -268,7 +273,7 @@ export const FormModal = ({ title, isOpen, children, onClose }: iModalForm) => {
         </button>
         <button
           onClick={() => {
-            modalRef.current.querySelector("form").reset();
+            modalRef.current.querySelector("form")?.reset();
             onClose?.();
           }}
           type="button"
