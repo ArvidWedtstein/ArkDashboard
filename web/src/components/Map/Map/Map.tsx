@@ -23,22 +23,6 @@ interface Props {
 }
 
 const Map = ({ map }: Props) => {
-  const [deleteMap] = useMutation(DELETE_MAP_MUTATION, {
-    onCompleted: () => {
-      toast.success("Map deleted");
-      navigate(routes.maps());
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
-
-  const onDeleteClick = (id: DeleteMapMutationVariables["id"]) => {
-    if (confirm("Are you sure you want to delete map " + id + "?")) {
-      deleteMap({ variables: { id } });
-    }
-  };
-
   const [mapData, setMapData] = useState([]);
   const [categories, setCategories] = useState({
     mutagen_bulb: {
@@ -401,12 +385,14 @@ const Map = ({ map }: Props) => {
       </section>
 
       <section className="rw-segment-header rw-heading rw-heading-secondary">
-        <Link
-          className="after:content-['_↗']"
-          to={routes.lootcrates({ map: map.id })}
-        >
-          Lootcrates
-        </Link>
+        {map.Lootcrate.length > 0 && (
+          <Link
+            className="after:content-['_↗']"
+            to={routes.lootcrates({ map: map.id })}
+          >
+            Lootcrates
+          </Link>
+        )}
         <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4">
           {map.Lootcrate.map((lootcrate, i) => (
             <ArkCard

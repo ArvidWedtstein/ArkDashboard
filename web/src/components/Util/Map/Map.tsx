@@ -50,6 +50,12 @@ const Map = ({
     setStartPosition({ x: 0, y: 0 });
   }, []);
 
+  const reset = () => {
+    setZoom(1);
+    setPanPosition({ x: 0, y: 0 });
+    setIsDragging(false);
+    setStartPosition({ x: 0, y: 0 });
+  };
   useEffect(() => {
     if (!interactive || !svgRef.current) return;
     const handleResize = () => {
@@ -83,7 +89,7 @@ const Map = ({
   }, []);
 
   const handleWheel = (event: React.WheelEvent<SVGImageElement>) => {
-    event.preventDefault();
+    // event.preventDefault();
     if (!interactive || !event.shiftKey) return;
     const scale = event.deltaY > 0 ? 0.9 : 1.1;
     const newZoom = zoom * scale;
@@ -151,6 +157,42 @@ const Map = ({
           transformOrigin: "center center",
         }}
       />
+      <g transform={`translate(${size.width - 30}, 1)`}>
+        <rect
+          style={{
+            cursor: "pointer",
+          }}
+          stroke="black"
+          fill={"#ff0000"}
+          onClick={() => {
+            reset();
+          }}
+          width={30}
+          height={30}
+          y={0}
+          x={0}
+          x1={0}
+          y1={0}
+          x2={0}
+          y2={0}
+        >
+          <title>Reset</title>
+        </rect>
+        <text
+          style={{
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            reset();
+          }}
+          fontSize={10}
+          x={0}
+          y={18}
+          fill="white"
+        >
+          Reset
+        </text>
+      </g>
       {pos?.map((p, i) => (
         <circle
           style={{
@@ -163,6 +205,7 @@ const Map = ({
           key={"map-pos-" + i}
           id={"map-pos-" + i}
           fill={p.color || "red"}
+          stroke="black"
           cy={(size.height / 100) * p.lat + size.height / 100}
           cx={(size.width / 100) * p.lon + size.width / 100}
           // r={((imageTransform.replace("scale(", "").replace(')', '')) as number * 2) * 2}
