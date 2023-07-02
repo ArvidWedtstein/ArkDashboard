@@ -157,14 +157,14 @@ const Sidebar = ({}) => {
   // const [openSidebar, setOpenSidebar] = useState(false);
 
   return (
-    <aside className="z-10 min-w-[14rem] overflow-x-auto border-gray-700 bg-zinc-800 py-2 dark:border-zinc-300 max-sm:border-b sm:h-screen sm:max-w-sm sm:overflow-visible sm:border-r sm:bg-zinc-800 sm:py-2 sm:px-4">
+    <aside className="z-10 min-w-[14rem] overflow-x-auto border-gray-700 bg-zinc-800 py-2 dark:border-zinc-300 max-sm:border-b sm:h-screen sm:max-w-sm sm:overflow-visible sm:border-r sm:py-2 sm:px-4">
       <div className="sticky top-0 flex w-full flex-row items-start justify-between sm:flex-col sm:justify-start">
-        <div className="flex items-center justify-center border-gray-700 text-black transition-all dark:border-zinc-300 dark:text-[#ffffffcc] sm:my-3 sm:w-full sm:flex-col sm:border-b">
+        <div className="flex items-center justify-center border-gray-700 text-black text-[#ffffffcc] transition-all dark:border-zinc-300 sm:my-3 sm:w-full sm:flex-col sm:border-b">
           <Link
             to={routes.profile({
               id: currentUser?.id || currentUser?.sub || "",
             })}
-            className={clsx("text-center", {
+            className={clsx("text-center hover:underline", {
               "pointer-events-none cursor-not-allowed": !isAuthenticated,
             })}
           >
@@ -194,9 +194,9 @@ const Sidebar = ({}) => {
                   </svg>
                 </div>
               )}
-              {currentUser?.status == "ONLINE" && (
+              {/* {currentUser?.status == "ONLINE" && (
                 <span className="absolute bottom-2.5 right-2.5 h-4 w-4 translate-y-1/4 transform rounded-full border-2 border-white bg-green-400 dark:border-gray-800"></span>
-              )}
+              )} */}
             </div>
             <p className="hidden text-sm sm:block sm:text-xl">
               {currentUser?.full_name?.toString() || "Guest"}
@@ -209,14 +209,14 @@ const Sidebar = ({}) => {
           </Link>
           {isAuthenticated ? (
             <button
-              className="rw-button rw-button-gray-outline rw-button-medium mx-3 sm:my-3 sm:w-full"
+              className="rw-button rw-button-gray-outline rw-button-medium mx-3 text-white sm:my-3 sm:w-full"
               onClick={logOut}
             >
               Sign out
             </button>
           ) : (
             <Link
-              className="rw-button rw-button-gray-outline rw-button-medium sm:my-3 sm:w-full"
+              className="rw-button rw-button-gray-outline rw-button-medium text-white sm:my-3 sm:w-full"
               to={routes.signin()}
             >
               Sign In
@@ -225,7 +225,7 @@ const Sidebar = ({}) => {
         </div>
         {navigation.map((item, index) => (
           <div
-            className="flex flex-col items-center justify-start self-start text-black transition-all dark:text-[#ffffffcc] sm:flex-row"
+            className="flex flex-col items-center justify-start self-start text-white/70 transition-all hover:text-white sm:flex-row"
             key={`sidebar-item-${index}`}
           >
             <NavLink
@@ -237,7 +237,7 @@ const Sidebar = ({}) => {
             >
               {Icon(item.name)} <span className="sr-only">{item.name}</span>
             </NavLink>
-            <span className="text-sm">{item.name}</span>
+            <span className="active: text-sm">{item.name}</span>
           </div>
         ))}
       </div>

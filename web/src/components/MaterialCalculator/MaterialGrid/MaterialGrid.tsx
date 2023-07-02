@@ -27,6 +27,7 @@ import { useAuth } from "src/auth";
 import { QUERY } from "../MaterialCalculatorCell";
 import { navigate, routes } from "@redwoodjs/router";
 import UserRecipesCell from "src/components/UserRecipe/UserRecipesCell";
+import ItemList from "src/components/Util/ItemList/ItemList";
 
 const CREATE_USERRECIPE_MUTATION = gql`
   mutation CreateUserRecipe($input: CreateUserRecipeInput!) {
@@ -36,13 +37,6 @@ const CREATE_USERRECIPE_MUTATION = gql`
   }
 `;
 
-const DELETE_USERRECIPE_MUTATION = gql`
-  mutation DeleteUserRecipeMutation($id: String!) {
-    deleteUserRecipe(id: $id) {
-      id
-    }
-  }
-`;
 type ItemRecipe = {
   __typename: string;
   id: string;
@@ -86,20 +80,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     Consumable: "any-berry-seed",
   };
 
-  const [deleteUserRecipe] = useMutation(DELETE_USERRECIPE_MUTATION, {
-    onCompleted: () => {
-      toast.success("Custom recipe deleted");
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
-
-  const onDeleteClick = (id: DeleteUserRecipeMutationVariables["id"]) => {
-    if (confirm("Are you sure you want to delete profile " + id + "?")) {
-      deleteUserRecipe({ variables: { id } });
-    }
-  };
   const { currentUser, isAuthenticated } = useAuth();
 
   const [search, setSearch] = useState<string>("");
@@ -366,7 +346,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       <Form
         onSubmit={onAdd}
         error={error}
-        className="flex h-full w-full space-x-3 sm:flex-row"
+        className="flex h-full w-full flex-col gap-3 sm:flex-row"
       >
         <FormError
           error={error}
@@ -412,131 +392,43 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
             </svg>
           </button>
 
-          <div className="relative max-h-screen w-fit max-w-[14rem] overflow-y-auto rounded-lg border border-gray-200 bg-zinc-300 px-3 py-4 text-gray-900 will-change-scroll dark:border-zinc-700 dark:bg-zinc-600 dark:text-white">
-            <ul className="relative space-y-2 font-medium">
-              <li>
-                <Label
-                  name="search"
-                  className="sr-only mb-2 text-sm text-gray-900 dark:text-white"
-                >
-                  Search
-                </Label>
-                <div className="relative">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                    <svg
-                      aria-hidden="true"
-                      className="h-5 w-5 text-gray-500 dark:text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      ></path>
-                    </svg>
-                  </div>
-                  <SearchField
-                    className="rw-input w-full pl-10 dark:bg-zinc-700 dark:focus:bg-zinc-700"
-                    name="search"
-                    defaultValue={search}
-                    placeholder="Search..."
-                    inputMode="search"
-                    onChange={debounce((e) => {
-                      setSearch(e.target.value);
-                    }, 300)}
-                  />
-                </div>
-              </li>
-              {!items ||
-                (items.length < 1 && (
-                  <li className="flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                    No items found
-                  </li>
-                ))}
-              {Object.entries(categories).map(([category, categoryitems]) => (
-                <li key={category}>
-                  <details
-                    open={Object.values(categories).length === 1}
-                    className="[&>summary:after]:open:rotate-90"
-                  >
-                    <summary className="flex select-none items-center rounded-lg p-2 text-gray-900 after:absolute after:right-0 after:transform after:px-2 after:transition-transform after:duration-150 after:ease-in-out after:content-['>'] hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                      <img
-                        className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[category]}.webp`}
-                        alt={``}
-                        loading="lazy"
-                      />
-                      <span className="ml-2">{category}</span>
-                    </summary>
-
-                    <ul className="py-2">
-                      {Object.values(categories).length === 1 ||
-                      categoryitems.every(({ type }) => !type)
-                        ? categoryitems.map(({ id, type, image, name }) => (
-                            <li key={`${category}-${type}-${id}`}>
-                              <button
-                                type="button"
-                                className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                onClick={() => onAdd({ itemId: id })}
-                              >
-                                <img
-                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                                  alt={name}
-                                  className="mr-2 h-5 w-5"
-                                  loading="lazy"
-                                />
-                                {name}
-                              </button>
-                            </li>
-                          ))
-                        : Object.entries(groupBy(categoryitems, "type")).map(
-                            ([type, typeitems]) => (
-                              <li key={`${category}-${type}`}>
-                                <details className="">
-                                  <summary className="flex w-full items-center justify-between rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                                    <span className="">{type}</span>
-                                    <span className="text-pea-800 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full text-xs dark:text-stone-300">
-                                      {typeitems.length}
-                                    </span>
-                                  </summary>
-
-                                  <ul className="py-2">
-                                    {typeitems.map((item) => (
-                                      <li
-                                        key={`${category}-${type}-${item.id}`}
-                                      >
-                                        <button
-                                          type="button"
-                                          className="flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-                                          onClick={() =>
-                                            onAdd({ itemId: item.id })
-                                          }
-                                        >
-                                          <img
-                                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
-                                            alt={item.name}
-                                            className="mr-2 h-5 w-5"
-                                            loading="lazy"
-                                          />
-                                          {item.name}
-                                        </button>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </details>
-                              </li>
-                            )
-                          )}
-                    </ul>
-                  </details>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <ItemList
+            defaultSearch={false}
+            onSearch={(e) => setSearch(e)}
+            options={Object.entries(
+              groupBy(
+                (items || [])
+                  .map((f) => f.Item_ItemRecipe_crafted_item_idToItem)
+                  .filter((item) =>
+                    item.name.toLowerCase().includes(search.toLowerCase())
+                  ),
+                "category"
+              )
+            ).map(([k, v]) => ({
+              label: k,
+              icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
+              value: v.every(({ type }) => !type)
+                ? v.map((itm) => ({
+                    ...itm,
+                    label: itm.name,
+                    icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                    value: [],
+                  }))
+                : Object.entries(groupBy(v, "type")).map(([type, v2]) => {
+                    return {
+                      label: type,
+                      value: v2.map((itm) => ({
+                        label: itm.name,
+                        ...itm,
+                        icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                      })),
+                    };
+                  }),
+            }))}
+            onSelect={(item) => {
+              onAdd({ itemId: item.id });
+            }}
+          />
         </div>
         <div className="w-full">
           <Table
