@@ -43,7 +43,6 @@ export const beforeQuery = ({ page, map }) => {
 // }
 
 export const Loading = () => {
-  let items = 6;
   return (
     <div
       role="status"
@@ -73,30 +72,6 @@ export const Loading = () => {
       <span className="sr-only">Loading...</span>
     </div>
   );
-  // return (
-  //   <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-  //     {Array.from(Array(items).keys()).map((item, i) => (
-  //       <div
-  //         key={i}
-  //         className="border-pea-300 mx-auto w-full rounded-md border p-4 shadow"
-  //       >
-  //         <div className="flex animate-pulse space-x-4">
-  //           <div className="bg-pea-600 h-10 w-10 rounded-full"></div>
-  //           <div className="flex-1 space-y-6 py-1">
-  //             <div className="bg-pea-600 h-2 rounded"></div>
-  //             <div className="space-y-3">
-  //               <div className="grid grid-cols-3 gap-4">
-  //                 <div className="bg-pea-600 col-span-2 h-2 rounded"></div>
-  //                 <div className="bg-pea-600 col-span-1 h-2 rounded"></div>
-  //               </div>
-  //               <div className="bg-pea-600 h-2 rounded"></div>
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     ))}
-  //   </div>
-  // );
 };
 
 export const Empty = () => {
@@ -129,11 +104,6 @@ export const Failure = ({ error }: CellFailureProps) => {
     </div>
   );
 };
-
-// export const Success = ({ basespots }: CellSuccessProps<FindBasespots>) => {
-//   console.log(basespots);
-//   return <Basespots basespots={basespots} />;
-// };
 
 export const Success = ({ basespotPage }: CellSuccessProps<FindBasespots>) => {
   return (

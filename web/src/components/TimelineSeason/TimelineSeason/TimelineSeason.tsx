@@ -67,48 +67,27 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
   return (
     <>
       {/* TODO: add editforms here too */}
-      {/* <Modal
-        isOpen={openModal === "timelineseasonevent"}
-        title="New TimelineSeasonEvent"
-        onClose={() => setOpenModal(null)}
-        content={
-          <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
-        }
-        actions={[]}
-      /> */}
-      {/* <RefModal
-        isOpen={openModal === "timelineseasonevent"}
-        title="Add Basespot"
-        onClose={() => setOpenModal(null)}
-        content={
-          <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
-        }
-        actions={[]}
-      /> */}
-      {/* <Modal
-        isOpen={openModal === "timelineseasonperson"}
-        title="Add person"
-        onClose={() => setOpenModal(null)}
-        content={
-          <NewTimelineSeasonPerson timeline_season_id={timelineSeason.id} />
-        }
-        actions={[]}
-      />
-      <Modal
-        isOpen={openModal === "timelineseasonbasespot"}
-        title="Add Basespot"
-        onClose={() => setOpenModal(null)}
-        content={
-          <NewTimelineSeasonBasespot timeline_season_id={timelineSeason.id} />
-        }
-        actions={[]}
-      /> */}
 
       <FormModal
-        isOpen={openModal === "timelineseasonevent"}
+        title={
+          openModal === "timelineseasonperson"
+            ? "Add person"
+            : openModal === "timelineseasonbasespot"
+            ? "Add Basespot"
+            : "Add Event"
+        }
+        isOpen={openModal !== null}
         onClose={() => setOpenModal(null)}
       >
-        <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
+        {openModal === "timelineseasonperson" && (
+          <NewTimelineSeasonPerson timeline_season_id={timelineSeason.id} />
+        )}
+        {openModal === "timelineseasonbasespot" && (
+          <NewTimelineSeasonBasespot timeline_season_id={timelineSeason.id} />
+        )}
+        {openModal === "timelineseasonevent" && (
+          <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
+        )}
       </FormModal>
 
       <header

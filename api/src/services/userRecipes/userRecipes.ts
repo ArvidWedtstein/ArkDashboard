@@ -28,10 +28,23 @@ export const userRecipesByID: QueryResolvers["userRecipesByID"] = ({
     },
   });
 };
+
 export const userRecipes: QueryResolvers["userRecipes"] = () => {
   return db.userRecipe.findMany({
+    orderBy: {
+      created_at: "desc",
+    },
     where: {
-      user_id: { equals: context.currentUser?.id },
+      OR: [
+        {
+          user_id: {
+            equals: context?.currentUser?.id || context?.currentUser.sub,
+          },
+        },
+        {
+          private: { equals: false },
+        },
+      ],
     },
   });
 };
@@ -74,7 +87,7 @@ export const deleteUserRecipe: MutationResolvers["deleteUserRecipe"] = ({
   id,
 }) => {
   return db.userRecipe.delete({
-    where: { id, user_id: context.currentUser?.id },
+    where: { id },
   });
 };
 
