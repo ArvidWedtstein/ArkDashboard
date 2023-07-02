@@ -104,7 +104,7 @@ const Icon = (icon: string) => {
   return icons[icon.toLowerCase()] || null;
 };
 
-const Sidebar = ({}) => {
+const Sidebar = memo(({}) => {
   const { currentUser, isAuthenticated, logOut } = useAuth();
   const navigation = [
     {
@@ -177,6 +177,7 @@ const Sidebar = ({}) => {
                       : `https://ui-avatars.com/api/?name=${currentUser?.full_name}`
                   }
                   className="animate-fade-in mx-1 aspect-square w-12 max-w-xs rounded-full object-cover object-center shadow sm:m-2 sm:w-20"
+                  loading="lazy"
                 />
               ) : (
                 <div className="relative h-8 w-8 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-600">
@@ -243,6 +244,6 @@ const Sidebar = ({}) => {
       </div>
     </aside>
   );
-};
+});
 
 export default Sidebar;

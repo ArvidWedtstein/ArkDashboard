@@ -16,35 +16,24 @@ import type {
   FindBasespots,
 } from "types/graphql";
 
-const BasespotsList = ({ basespotPage }: FindBasespots) => {
+const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
   let basespots = basespotPage.basespots;
 
-  // const [loadMaps, { called, loading, error, data }] = useLazyQuery(MAPQUERY, {
-  //   onCompleted: (data) => {
-  //     console.log(data);
-  //   },
-  //   onError: (error) => {
-  //     console.log(error);
-  //     toast.error(error.message);
-  //   }
-  // });
+  let { search, map, type } = useParams();
 
-  // useEffect(() => {
-  //   loadMaps();
-  // }, []);
-  let { search, map } = useParams();
-  const onSearch = (e) => {
+  const [params, setParams] = useState({ map, type });
+  useEffect(() => {
     navigate(
       routes.basespots({
         ...parseSearch(
           Object.fromEntries(
-            Object.entries(e).filter(([_, v]) => v != "")
-          ) as any
+            Object.entries(params).filter(([_, v]) => v != "" && v != null)
+          ) as Record<string, string>
         ),
         page: 1,
       })
     );
-  };
+  }, [params]);
 
   const mapImages = {
     theisland:
@@ -76,14 +65,14 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
   return (
     <div className="-m-3">
       <header
-        className="flex min-h-[100px] w-full flex-col justify-between rounded-2xl bg-cover bg-center bg-no-repeat p-8 text-white"
+        className="flex min-h-[100px] w-full flex-col justify-between rounded-lg bg-cover bg-center bg-no-repeat p-8 text-white"
         style={{
           backgroundImage:
             "url(https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg)",
         }}
       >
         <div className="">
-          <div className="mb-3 flex items-center space-x-1 opacity-75 [&>span:not(:last-child)]:after:content-[',']">
+          {/* <div className="mb-3 flex items-center space-x-1 opacity-75 [&>span:not(:last-child)]:after:content-[',']">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
@@ -99,69 +88,74 @@ const BasespotsList = ({ basespotPage }: FindBasespots) => {
                 {tag}
               </span>
             ))}
-          </div>
+          </div> */}
           <h1 className="my-5 text-5xl font-bold opacity-90">Basespots!</h1>
           <p className="mt-3 w-1/2 leading-7 opacity-75">
             Here you'll find various basespots
           </p>
         </div>
       </header>
-      <div className="my-4 flex items-center justify-start">
+      <div className="my-4 flex items-center justify-start gap-3">
+        <Lookup
+          options={maps.map((map) => ({
+            label: map.name,
+            value: map.id,
+            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
+          }))}
+          placeholder="Choose a Map"
+          defaultValue={parseInt(map)}
+          onSelect={(e) => {
+            setParams({
+              ...(e.value && { map: e.value }),
+              ...(params.type && { type: params.type }),
+            });
+          }}
+        />
+        {/* TODO: make this to multiselect? */}
         <Lookup
           options={[
-            { label: "Valguero", value: 1 },
-            { label: "The Island", value: 2 },
-            { label: "The Center", value: 3 },
-            { label: "Ragnarok", value: 4 },
-            { label: "Abberation", value: 5 },
-            { label: "Extinction", value: 6 },
-            { label: "Scorched Earth", value: 7 },
-            { label: "Genesis", value: 8 },
-            { label: "Genesis 2", value: 9 },
-            { label: "Crystal Isles", value: 10 },
-            { label: "Fjordur", value: 11 },
-            { label: "Lost Island", value: 12 },
+            { label: "Rathole", value: "rathole" },
+            { label: "Cave", value: "cave" },
+            { label: "Cliff", value: "cliff" },
+            { label: "Open", value: "open" },
+            { label: "Waterfall", value: "waterfall" },
+            { label: "Underwater", value: "underwater" },
           ]}
-          // options={data?.maps.map((map) => ({
-          //   label: map.name,
-          //   value: map.id,
-          // }))}
-          placeholder="Choose Map"
-          defaultValue={map}
-          onSelect={(e) => onSearch(e.value ? { map: e.value.toString() } : {})}
+          placeholder="Choose a type"
+          defaultValue={type}
+          onSelect={(e) => {
+            setParams({
+              ...(e.value && { type: e.value }),
+              ...(params.map && { map: params.map }),
+            });
+          }}
         />
       </div>
       <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {basespots
-          // .filter((spot) =>
-          //   currentMap != null
-          //     ? spot.map.toString() === currentMap.toString()
-          //     : true
-          // )
-          .map((basespot, i) => (
-            <ArkCard
-              className=""
-              key={`${basespot.id}-${i}`}
-              title={basespot.name}
-              subtitle={
-                <span className="text-zinc-300">
-                  {basespot.Map.name.split(/(?=[A-Z])/).join(" ")}
-                </span>
-              }
-              content={basespot.description}
-              image={{
-                src: mapImages[
-                  basespot.Map.name.toLowerCase().replaceAll(" ", "")
-                ],
-                alt: basespot.Map.name,
-                position: `${random(0, 100)}% ${random(25, 75)}%`,
-              }}
-              button={{
-                text: "Learn More",
-                link: routes.basespot({ id: basespot.id.toString() }),
-              }}
-            />
-          ))}
+        {basespots.map((basespot, i) => (
+          <ArkCard
+            className=""
+            key={`${basespot.id}-${i}`}
+            title={basespot.name}
+            subtitle={
+              <span className="text-zinc-300">
+                {basespot.Map.name.split(/(?=[A-Z])/).join(" ")}
+              </span>
+            }
+            content={basespot.description}
+            image={{
+              src: mapImages[
+                basespot.Map.name.toLowerCase().replaceAll(" ", "")
+              ],
+              alt: basespot.Map.name,
+              position: `${random(0, 100)}% ${random(25, 75)}%`,
+            }}
+            button={{
+              text: "Learn More",
+              link: routes.basespot({ id: basespot.id.toString() }),
+            }}
+          />
+        ))}
       </div>
     </div>
   );

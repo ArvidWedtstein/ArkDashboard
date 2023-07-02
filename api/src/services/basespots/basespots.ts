@@ -11,20 +11,26 @@ const POSTS_PER_PAGE = 6;
 export const basespotPage: QueryResolvers["basespotPage"] = ({
   page,
   map,
+  type,
 }: {
   page: number;
   map?: number;
+  type?: string;
 }) => {
   const offset = (page - 1) * POSTS_PER_PAGE;
+  const where = {
+    ...(map && { map_id: map }),
+    ...(type && { type: type }),
+  };
   return {
     basespots: db.basespot.findMany({
       take: POSTS_PER_PAGE,
       skip: offset,
       orderBy: { created_at: "desc" },
-      where: map ? { map_id: map } : {},
+      where: where,
     }),
     count: db.basespot.count({
-      where: map ? { map_id: map } : {},
+      where: where,
     }),
   };
 };

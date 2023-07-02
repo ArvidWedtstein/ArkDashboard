@@ -7,8 +7,8 @@ import Basespots from "src/components/Basespot/Basespots";
 import Pagination from "src/components/Util/Pagination/Pagination";
 
 export const QUERY = gql`
-  query FindBasespots($page: Int, $map: Int) {
-    basespotPage(page: $page, map: $map) {
+  query FindBasespots($page: Int, $map: Int, $type: String) {
+    basespotPage(page: $page, map: $map, type: $type) {
       basespots {
         id
         name
@@ -26,21 +26,18 @@ export const QUERY = gql`
       }
       count
     }
+    maps {
+      id
+      name
+      icon
+    }
   }
 `;
 
-export const beforeQuery = ({ page, map }) => {
+export const beforeQuery = ({ page, map, type }) => {
   page = parseInt(page) ? parseInt(page, 10) : 1;
-  return { variables: { page, map: parseInt(map) } };
+  return { variables: { page, map: parseInt(map), type } };
 };
-
-// export const Loading = () => {
-//   return (
-//     <div className='w-full h-full flex items-center justify-center '>
-//       {/* <span className='w-16 h-16 inline-block rounded-full border-t-4 border-white border-r-2 border-transparent animate-spin'></span> */}
-//     </div>
-//   )
-// }
 
 export const Loading = () => {
   return (
@@ -105,16 +102,19 @@ export const Failure = ({ error }: CellFailureProps) => {
   );
 };
 
-export const Success = ({ basespotPage }: CellSuccessProps<FindBasespots>) => {
+export const Success = ({
+  basespotPage,
+  maps,
+}: CellSuccessProps<FindBasespots>) => {
   return (
     <>
       {basespotPage.count > 0 ? (
         <>
-          <Basespots basespotPage={basespotPage} />
+          <Basespots basespotPage={basespotPage} maps={maps} />
           <Pagination count={basespotPage.count} route={"basespots"} />
         </>
       ) : (
-        <Basespots basespotPage={basespotPage} />
+        <Basespots basespotPage={basespotPage} maps={maps} />
       )}
     </>
   );
