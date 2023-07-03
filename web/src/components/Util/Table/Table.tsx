@@ -56,7 +56,7 @@ type TableColumn = {
    * @param options.row - The current row data.
    * @returns The formatted value.
    */
-  valueFormatter?: (options: { value: any; row: any }) => any;
+  valueFormatter?: (options: { value: any; row: TableDataRow }) => any;
   /**
    * A function to render custom content in the column.
    *
@@ -68,7 +68,7 @@ type TableColumn = {
    */
   render?: (options: {
     value: any;
-    row: any;
+    row: TableDataRow;
     rowIndex: number;
   }) => React.ReactNode;
 };
@@ -173,7 +173,7 @@ const Table = ({
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
   const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(
     mergedSettings.pagination.rowsPerPage ||
-      mergedSettings.pagination.pageSizeOptions[0]
+    mergedSettings.pagination.pageSizeOptions[0]
   );
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filters, setFilters] = useState<Filter[]>([]);
@@ -182,7 +182,7 @@ const Table = ({
     direction: "asc",
   });
 
-  const sortData = (data: any[], column: string, direction: "asc" | "desc") => {
+  const sortData = (data: TableDataRow[], column: string, direction: "asc" | "desc") => {
     if (column) {
       const sortOrder = direction === "desc" ? -1 : 1;
       const sortKey = column.startsWith("-") ? column.substring(1) : column;
@@ -408,22 +408,22 @@ const Table = ({
 
     const valueFormatted = valueFormatter
       ? valueFormatter({
-          value: cellData,
-          row: rowData,
-          columnIndex,
-        })
+        value: cellData,
+        row: rowData,
+        columnIndex,
+      })
       : isNaN(cellData)
-      ? cellData?.amount || cellData
-      : cellData;
+        ? cellData?.amount || cellData
+        : cellData;
 
     const content = render
       ? render({
-          columnIndex,
-          rowIndex,
-          value: valueFormatted,
-          field: field,
-          row: rowData,
-        })
+        columnIndex,
+        rowIndex,
+        value: valueFormatted,
+        field: field,
+        row: rowData,
+      })
       : valueFormatted;
 
     return (
@@ -460,8 +460,8 @@ const Table = ({
             checked={
               header
                 ? PaginatedData.every((row) =>
-                    selectedRows.includes(row.row_id)
-                  )
+                  selectedRows.includes(row.row_id)
+                )
                 : isSelected(datarow.row_id)
             }
             onChange={(e) => handleRowSelect(e, datarow?.row_id)}
@@ -584,7 +584,7 @@ const Table = ({
       } else if (
         dir === "next" &&
         currentPage <
-          Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
+        Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
       ) {
         setCurrentPage(currentPage + 1);
       }

@@ -84,19 +84,19 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
             field: "updated_at",
             header: "Last Updated",
             sortable: true,
-            valueFormatter: (params) => timeTag(params.value),
+            valueFormatter: ({ value }) => timeTag(value),
           },
           {
             field: "created_at",
             header: "Created",
             sortable: true,
-            valueFormatter: (params) => timeTag(params.value),
+            valueFormatter: ({ value }) => timeTag(value),
           },
           {
             field: "role_id",
             header: "Role",
-            valueFormatter: (params) =>
-              formatEnum(params.row.role_profile_role_idTorole.name),
+            valueFormatter: ({ row }) =>
+              formatEnum(row.role_profile_role_idTorole.name),
           },
           {
             field: "id",

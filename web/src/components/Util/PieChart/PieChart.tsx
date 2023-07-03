@@ -96,11 +96,11 @@ export const PieChart = ({
   useEffect(() => {
     if (!items) return;
     setTimeout(() => {
-      let pies = document.querySelectorAll("circle:not(#piebg)");
+      let pies: NodeListOf<SVGCircleElement> = document.querySelectorAll("circle:not(#piebg)");
       let lastlength = 0;
 
       if (!pies) return;
-      pies.forEach((pie: any, i) => {
+      pies.forEach((pie, i) => {
         let totallength = pie.getTotalLength();
         let strokedash = (Math.abs(items[i].percent) * totallength) / 100;
         pies[i].setAttribute(

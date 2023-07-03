@@ -156,7 +156,7 @@ const TribesList = ({ tribes }: FindTribes) => {
             field: "created_at",
             header: "Created At",
             sortable: true,
-            valueFormatter: (params) => timeTag(params.value),
+            valueFormatter: ({ value }) => timeTag(value),
           },
           {
             field: "Profile",

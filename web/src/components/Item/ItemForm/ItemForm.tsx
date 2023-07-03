@@ -307,7 +307,7 @@ const ItemForm = (props: ItemFormProps) => {
                   Recipe
                 </Label>
 
-                {recipeFields.map((recipe: any, index) => (
+                {recipeFields.map((recipe: { id?: number | string, crafting_station?: string, item_id?: number, amount?: number, yields?: number }, index) => (
                   <div
                     className="rounded-md bg-zinc-800 p-3"
                     key={`recipe-${index}`}
