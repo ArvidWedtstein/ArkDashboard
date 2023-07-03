@@ -64,13 +64,14 @@ const TribesList = ({ tribes }: FindTribes) => {
 
   return (
     <div className="relative">
-      <FormModal isOpen={open} onClose={() => setOpen(false)}>
+      <FormModal isOpen={open} onClose={() => setOpen(false)} title="Add new tribe">
         <NewTribe />
       </FormModal>
       <div className="m-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <Link
-          className="hover:ring-pea-400 focus:ring-pea-400 bg-zinc-200 flex items-start rounded-xl p-4 transition-shadow hover:shadow-sm shadow-lg ring-1 dark:bg-zinc-700 cursor-pointer ring-zinc-500 dark:ring-pea-600"
-          to={routes.newTribe()}
+        <button
+          className="disabled:ring-transparent disabled:cursor-not-allowed hover:ring-pea-400 focus:ring-pea-400 bg-zinc-200 flex items-start rounded-xl p-4 transition-shadow hover:shadow-sm shadow-lg ring-1 dark:bg-zinc-700 cursor-pointer ring-zinc-500 dark:ring-pea-600"
+          onClick={() => setOpen(true)}
+          disabled={!currentUser?.permissions.some((p: permission) => p === "tribe_create")}
         >
           <div className="dark:border-pea-400 border-pea-100 bg-pea-50 flex !h-12 !w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800 ">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="text-pea-500 fill-pea-500 !h-6 !w-6">
@@ -80,10 +81,10 @@ const TribesList = ({ tribes }: FindTribes) => {
           <div className="ml-4 text-gray-700 dark:text-white">
             <span className="">Add a new tribe</span>
           </div>
-        </Link>
+        </button>
 
         <button
-          className="bg-zinc-200 hover:ring-pea-400 focus:ring-pea-400 transition-shadow flex items-start rounded-xl p-4 hover:shadow-sm shadow-lg ring-1 dark:bg-zinc-700 w-fit ring-zinc-500 dark:ring-pea-600"
+          className="bg-zinc-200 hover:ring-pea-400 focus:ring-pea-400 transition-shadow flex items-start rounded-xl p-4 hover:shadow-sm shadow-lg ring-1 dark:bg-zinc-700 ring-zinc-500 dark:ring-pea-600"
           onClick={() => {
             const randomIndex = Math.floor(Math.random() * tribes.length);
             const randomTribe = tribes[randomIndex];

@@ -84,7 +84,7 @@ const TribeForm = (props: TribeFormProps) => {
 
         <FieldError name="description" className="rw-field-error" />
 
-        <div className="rw-button-group">
+        {/* <div className="rw-button-group">
           <Submit
             disabled={
               props.loading ||
@@ -98,7 +98,7 @@ const TribeForm = (props: TribeFormProps) => {
           >
             Save
           </Submit>
-        </div>
+        </div> */}
       </Form>
     </div>
   );
