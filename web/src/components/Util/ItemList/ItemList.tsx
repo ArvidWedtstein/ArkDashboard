@@ -3,10 +3,10 @@ import { ReactNode, useState } from "react";
 import { debounce } from "src/lib/formatters";
 
 interface Item {
+  id?: string | number;
   label: string;
-  value?: any[];
+  value?: Item[];
   icon?: string | ReactNode;
-  id?: string;
 }
 interface ItemListProps {
   options: Item[];
@@ -22,7 +22,7 @@ const ItemList = ({
   defaultSearch = true,
 }: ItemListProps) => {
   const [search, setSearch] = useState<string>("");
-  const renderItem = (item: Item, recipeID?) => (
+  const renderItem = (item: Item) => (
     <li key={`${JSON.stringify(item)}-${Math.random()}`}>
       <button
         type="button"
@@ -42,9 +42,9 @@ const ItemList = ({
   const renderList = (item: Item) => (
     <li key={`${JSON.stringify(item)}-${Math.random()}`}>
       {item?.value &&
-      item?.value?.filter(({ label }) =>
-        label.toLowerCase().includes(defaultSearch ? search.toLowerCase() : "")
-      ).length > 0 ? (
+        item?.value?.filter(({ label }) =>
+          label.toLowerCase().includes(defaultSearch ? search.toLowerCase() : "")
+        ).length > 0 ? (
         <details
           className="[&>summary:after]:open:rotate-90"
           open={
@@ -74,8 +74,8 @@ const ItemList = ({
               {
                 (defaultSearch
                   ? item?.value?.filter(({ label }) =>
-                      label.toLowerCase().includes(search.toLowerCase())
-                    )
+                    label.toLowerCase().includes(search.toLowerCase())
+                  )
                   : item?.value
                 ).length
               }

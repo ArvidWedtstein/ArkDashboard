@@ -1,48 +1,26 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useState } from "react";
 import clsx from "clsx";
 import { useAuth } from "src/auth";
 
 interface AvatarProps {
   url: string;
   size: number;
-  // sizes?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   onUpload?: (path: string) => void;
   className?: string;
   storage?: string;
-  editable?: boolean;
 }
 const Avatar = memo<AvatarProps>(
   ({
     url,
     size,
-    // sizes,
     onUpload,
     className = "",
     storage = "avatars",
-    editable = false,
   }: AvatarProps) => {
     const { client: supabase } = useAuth();
 
-    // const [avatarUrl, setAvatarUrl] = useState(null);
     const [uploading, setUploading] = useState(false);
 
-    // useEffect(() => {
-    //   if (!!url) {
-    //     downloadImage(url);
-    //   }
-    // }, [url]);
-
-    // const downloadImage = async (path) => {
-    //   try {
-    //     const { data, error } = await supabase.storage
-    //       .from(storage)
-    //       .download(path);
-    //     if (error) throw error;
-    //     if (data) setAvatarUrl(URL.createObjectURL(data));
-    //   } catch (error) {
-    //     console.log("Error downloading image: ", error.message);
-    //   }
-    // };
 
     const uploadAvatar = async (event) => {
       try {
@@ -58,7 +36,8 @@ const Avatar = memo<AvatarProps>(
           .from(storage)
           .upload(filePath, file);
         if (uploadError) throw uploadError;
-        onUpload && onUpload(filePath);
+
+        onUpload?.(filePath);
       } catch (error) {
         alert(error.message);
       } finally {
@@ -74,7 +53,7 @@ const Avatar = memo<AvatarProps>(
         }
         style={{ height: size, width: size }}
       >
-        {onUpload ? (
+        {onUpload && (
           <div className="relative right-3 top-5 z-[1]">
             <input
               className="hidden"
@@ -94,7 +73,7 @@ const Avatar = memo<AvatarProps>(
               </svg>
             </label>
           </div>
-        ) : null}
+        )}
         <div
           className={clsx(
             `relative flex h-full w-full items-center justify-center rounded-full border-none border-[#f8f8f8]`,

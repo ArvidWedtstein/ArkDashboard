@@ -70,7 +70,7 @@ const MapInput = ({ name, control, register }: MapInputProps) => {
       </summary>
       <div className="grid grid-cols-1 md:grid-cols-2">
         <div className="flex flex-col">
-          {fields.map((cr: any, index) => (
+          {fields.map((cr: { lat?: number, lon?: number, id?: number | string }, index) => (
             <div
               className="rw-button-group !mt-0 justify-start"
               role="group"
@@ -109,7 +109,7 @@ const MapInput = ({ name, control, register }: MapInputProps) => {
             url={
               "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheIsland-Map.webp"
             }
-            pos={fields.map((cr: any) => ({ lat: cr.lat, lon: cr.lon }))}
+            pos={fields.map((cr: { lat?: number, lon?: number, id?: number | string }) => ({ lat: cr.lat, lon: cr.lon }))}
           />
         </div>
       </div>

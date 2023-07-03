@@ -1,10 +1,12 @@
-import { navigate, routes } from "@redwoodjs/router";
+import { Link, navigate, routes } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
+import { useState } from "react";
 import { useAuth } from "src/auth";
 
 import { QUERY } from "src/components/Tribe/TribesCell";
 import { ContextMenu } from "src/components/Util/ContextMenu/ContextMenu";
+import { FormModal } from "src/components/Util/Modal/Modal";
 import Table from "src/components/Util/Table/Table";
 import { getWeekDates, pluralize, timeTag } from "src/lib/formatters";
 
@@ -13,6 +15,7 @@ import type {
   FindTribes,
   permission,
 } from "types/graphql";
+import NewTribe from "../NewTribe/NewTribe";
 
 const DELETE_TRIBE_MUTATION = gql`
   mutation DeleteTribeMutation($id: Int!) {
@@ -24,6 +27,7 @@ const DELETE_TRIBE_MUTATION = gql`
 
 const TribesList = ({ tribes }: FindTribes) => {
   const { currentUser } = useAuth();
+  const [open, setOpen] = useState(false);
   const [deleteTribe] = useMutation(DELETE_TRIBE_MUTATION, {
     onCompleted: () => {
       toast.success("Tribe deleted");
@@ -60,8 +64,44 @@ const TribesList = ({ tribes }: FindTribes) => {
 
   return (
     <div className="relative">
+      <FormModal isOpen={open} onClose={() => setOpen(false)} title="Add new tribe">
+        <NewTribe />
+      </FormModal>
       <div className="m-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <div className="flex items-start rounded-xl bg-zinc-300 p-4 shadow-lg dark:bg-zinc-700">
+        <button
+          className="disabled:ring-transparent disabled:cursor-not-allowed hover:ring-pea-400 focus:ring-pea-400 bg-zinc-200 flex items-start rounded-xl p-4 transition-shadow hover:shadow-sm shadow-lg ring-1 dark:bg-zinc-700 cursor-pointer ring-zinc-500 dark:ring-pea-600"
+          onClick={() => setOpen(true)}
+          disabled={!currentUser?.permissions.some((p: permission) => p === "tribe_create")}
+        >
+          <div className="dark:border-pea-400 border-pea-100 bg-pea-50 flex !h-12 !w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800 ">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="text-pea-500 fill-pea-500 !h-6 !w-6">
+              <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+            </svg>
+          </div>
+          <div className="ml-4 text-gray-700 dark:text-white">
+            <span className="">Add a new tribe</span>
+          </div>
+        </button>
+
+        <button
+          className="bg-zinc-200 hover:ring-pea-400 focus:ring-pea-400 transition-shadow flex items-start rounded-xl p-4 hover:shadow-sm shadow-lg ring-1 dark:bg-zinc-700 ring-zinc-500 dark:ring-pea-600"
+          onClick={() => {
+            const randomIndex = Math.floor(Math.random() * tribes.length);
+            const randomTribe = tribes[randomIndex];
+            toast.success(`You've been assigned to ${randomTribe.name}!`);
+          }}
+        >
+          <div className="dark:border-pea-400 border-pea-100 bg-pea-50 flex !h-12 !w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="text-pea-500 fill-pea-500 !h-6 !w-6">
+              <path d="M213.1 32H106.7C47.84 32 0 79.84 0 138.7V160c0 8.844 7.156 16 16 16S32 168.9 32 160V138.7C32 97.48 65.5 64 106.7 64h106.5C254.4 64 288 97.58 288 138.9c0 27-14.62 52-38.16 65.25L152.5 258.9C137.4 267.4 128 283.4 128 300.7V336c0 8.844 7.156 16.01 16 16.01S160 344.8 160 336V300.7c0-5.766 3.125-11.11 8.156-13.95l97.38-54.78C299.1 213.1 320 177.4 320 138.9C320 79.94 272.1 32 213.1 32zM144 400c-17.67 0-32 14.32-32 31.99s14.33 32 32 32s32-14.33 32-32S161.7 400 144 400z" />
+            </svg>
+          </div>
+          <div className="ml-4 text-gray-700 dark:text-white">
+            <span className="">Pick random tribe name</span>
+          </div>
+        </button>
+
+        <div className="flex items-start rounded-xl bg-zinc-300 p-4 shadow-lg dark:bg-zinc-700 bg-opacity-40">
           <div className="border-pea-100 bg-pea-50 dark:border-pea-400 flex h-12 w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -87,28 +127,6 @@ const TribesList = ({ tribes }: FindTribes) => {
             </p>
           </div>
         </div>
-
-        <button
-          className="hover:ring-pea-400 focus:ring-pea-400 flex items-start rounded-xl bg-zinc-300 p-4 shadow-lg hover:ring-1 dark:bg-zinc-700"
-          onClick={() => {
-            const randomIndex = Math.floor(Math.random() * tribes.length);
-            const randomTribe = tribes[randomIndex];
-            toast.success(`You've been assigned to ${randomTribe.name}!`);
-          }}
-        >
-          <div className="dark:border-pea-400 border-pea-100 bg-pea-50 flex !h-12 !w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="text-pea-500 fill-pea-500 !h-6 !w-6"
-              viewBox="0 0 512 512"
-            >
-              <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM256 464c-114.7 0-208-93.31-208-208S141.3 48 256 48s208 93.31 208 208S370.7 464 256 464zM256 336c-18 0-32 14-32 32s13.1 32 32 32c17.1 0 32-14 32-32S273.1 336 256 336zM289.1 128h-51.1C199 128 168 159 168 198c0 13 11 24 24 24s24-11 24-24C216 186 225.1 176 237.1 176h51.1C301.1 176 312 186 312 198c0 8-4 14.1-11 18.1L244 251C236 256 232 264 232 272V288c0 13 11 24 24 24S280 301 280 288V286l45.1-28c21-13 34-36 34-60C360 159 329 128 289.1 128z" />
-            </svg>
-          </div>
-          <div className="ml-4 text-gray-700 dark:text-white">
-            <span className="">Pick random tribe name</span>
-          </div>
-        </button>
       </div>
 
       <Table
@@ -138,7 +156,7 @@ const TribesList = ({ tribes }: FindTribes) => {
             field: "created_at",
             header: "Created At",
             sortable: true,
-            valueFormatter: (params) => timeTag(params.value),
+            valueFormatter: ({ value }) => timeTag(value),
           },
           {
             field: "Profile",

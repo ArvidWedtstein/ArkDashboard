@@ -23,7 +23,7 @@ type FormItem = NonNullable<EditItemById["item"]>;
 
 interface ItemFormProps {
   item?: EditItemById["item"];
-  onSave: (data: any | UpdateItemInput, id?: FormItem["id"]) => void;
+  onSave: (data: UpdateItemInput, id?: FormItem["id"]) => void;
   error: RWGqlError;
   loading: boolean;
 }
@@ -298,6 +298,7 @@ const ItemForm = (props: ItemFormProps) => {
             </div>
             <div>
               <div>
+                {/* TODO: redo replace. / Move to own form */}
                 <Label
                   name="recipe"
                   className="rw-label"
@@ -306,7 +307,7 @@ const ItemForm = (props: ItemFormProps) => {
                   Recipe
                 </Label>
 
-                {recipeFields.map((recipe: any, index) => (
+                {recipeFields.map((recipe: { id?: number | string, crafting_station?: string, item_id?: number, amount?: number, yields?: number }, index) => (
                   <div
                     className="rounded-md bg-zinc-800 p-3"
                     key={`recipe-${index}`}

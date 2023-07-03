@@ -3,21 +3,21 @@ import { ChangeEventHandler, useEffect, useMemo, useRef, useState } from "react"
 import useComponentVisible from "../../useComponentVisible";
 import { groupBy } from "src/lib/formatters";
 import clsx from "clsx";
-
+type value = string | object | number | null | undefined;
 interface ILookup {
   defaultValue?: any;
   children?: React.ReactNode[];
   className?: string;
-  onSelect?: (value: { label: string; value: any; image?: string }) => void;
+  onSelect?: (value: { label: string; value: value; image?: string }) => void;
   search?: boolean;
   group?: string;
   name?: string;
   disabled?: boolean;
-  options?: { label: string; value: any; image?: string }[];
+  options?: { label: string; value: value; image?: string }[];
   onChange?: ChangeEventHandler | undefined;
   placeholder?: string;
-  filterFn?: (option: { label: string; value: any; image?: string }, searchTerm: string) => boolean;
-  sortFn?: (a: any, b: any) => number;
+  filterFn?: (option: { label: string; value: value; image?: string }, searchTerm: string) => boolean;
+  sortFn?: (a: { label: string; value: value; image?: string }, b: { label: string; value: value; image?: string }) => number;
 }
 
 const Lookup = ({
@@ -61,7 +61,7 @@ const Lookup = ({
     return grouped as any[];
   }, [options, searchTerm, filterFn, sortFn]);
 
-  const openIndexesRef = useRef([])
+  const openIndexesRef = useRef<number[]>([])
   const selectedOptionRef = useRef(defaultValue && hasOptions
     ? options.find((option) => option.value === defaultValue)
     : null)

@@ -142,9 +142,9 @@ export const hasRole = (role_id: AllowedRoles): boolean => {
       if (uuidCheck.test(role_id)) {
         return currentUserRoles === role_id;
       }
-      let userRole: any = db.role.findUnique({
+      let userRole = db.role.findUnique({
         where: { id: currentUserRoles },
-      });
+      }) as { name?: string; id?: string; permissions?: permission[] };
       return role_id === userRole?.name;
     }
     //  else if (Array.isArray(currentUserRoles)) {

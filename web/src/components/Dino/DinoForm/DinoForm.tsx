@@ -1720,7 +1720,7 @@ const DinoForm = (props: DinoFormProps) => {
                 className="relative flex flex-row items-center space-x-1 space-y-1"
                 key={`m-${i}`}
               >
-                {Object.entries(v).map(([k2, v2]: any, i2) => (
+                {Object.entries(v).map(([k2, v2], i2) => (
                   <div
                     className="rounded-lg bg-zinc-700 p-3"
                     key={`m-${i}-c-${i2}`}
@@ -1729,7 +1729,7 @@ const DinoForm = (props: DinoFormProps) => {
                       {k2}
                     </legend>
                     {typeof v2 === "object" ? (
-                      Object.entries(v2).map(([k3, v3]: any, i3) => (
+                      Object.entries(v2).map(([k3, v3], i3) => (
                         <div
                           className="mt-2 border-spacing-6 border-t"
                           key={`m-${i}-c-${i2}-s-${i3}`}

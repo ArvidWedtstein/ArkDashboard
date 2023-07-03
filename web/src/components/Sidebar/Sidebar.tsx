@@ -104,7 +104,7 @@ const Icon = (icon: string) => {
   return icons[icon.toLowerCase()] || null;
 };
 
-const Sidebar = memo(({}) => {
+const Sidebar = memo(({ }) => {
   const { currentUser, isAuthenticated, logOut } = useAuth();
   const navigation = [
     {
@@ -154,12 +154,11 @@ const Sidebar = memo(({}) => {
     },
   ];
 
-  // const [openSidebar, setOpenSidebar] = useState(false);
 
   return (
-    <aside className="z-10 min-w-[14rem] overflow-x-auto border-gray-700 bg-zinc-800 py-2 dark:border-zinc-300 max-sm:border-b sm:h-auto sm:max-w-sm sm:overflow-visible sm:border-r sm:py-2 sm:px-4">
+    <aside className="group z-10 min-w-[12rem] overflow-x-auto border-gray-700 bg-zinc-800 py-2 dark:border-zinc-300 max-sm:border-b sm:h-auto sm:max-w-sm sm:overflow-visible sm:border-r sm:py-2 sm:px-4">
       <div className="sticky top-0 flex w-full flex-row items-start justify-between sm:flex-col sm:justify-start">
-        <div className="flex items-center justify-center border-gray-700 text-black text-[#ffffffcc] transition-all dark:border-zinc-300 sm:my-3 sm:w-full sm:flex-col sm:border-b">
+        <div className="flex items-center justify-center text-black text-[#ffffffcc] transition-all border-zinc-300 sm:my-3 sm:w-full sm:flex-col sm:border-b">
           <Link
             to={routes.profile({
               id: currentUser?.id || currentUser?.sub || "",
@@ -180,9 +179,9 @@ const Sidebar = memo(({}) => {
                   loading="lazy"
                 />
               ) : (
-                <div className="relative h-8 w-8 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-600">
+                <div className="animate-fade-in mx-1 relative aspect-square w-12 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-600">
                   <svg
-                    className="absolute -left-1 h-10 w-10 text-gray-400"
+                    className="absolute -left-1 h-14 w-14 text-gray-400"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -199,7 +198,7 @@ const Sidebar = memo(({}) => {
                 <span className="absolute bottom-2.5 right-2.5 h-4 w-4 translate-y-1/4 transform rounded-full border-2 border-white bg-green-400 dark:border-gray-800"></span>
               )} */}
             </div>
-            <p className="hidden text-sm sm:block sm:text-xl">
+            <p className="hidden text-sm sm:text-xl sm:block">
               {currentUser?.full_name?.toString() || "Guest"}
             </p>
             <p className="hidden text-xs sm:block">
@@ -220,13 +219,13 @@ const Sidebar = memo(({}) => {
               className="rw-button rw-button-gray-outline rw-button-medium text-white sm:my-3 sm:w-full"
               to={routes.signin()}
             >
-              Sign In
+              <span>Sign In</span>
             </Link>
           )}
         </div>
         {navigation.map((item, index) => (
           <div
-            className="flex flex-col items-center justify-start self-start text-white/70 transition-all hover:text-white sm:flex-row"
+            className="flex flex-col items-center justify-start self-start text-white/70 transition-all hover:text-white sm:flex-row space-x-2"
             key={`sidebar-item-${index}`}
           >
             <NavLink
@@ -234,11 +233,11 @@ const Sidebar = memo(({}) => {
               title={item.name}
               activeClassName={`text-white ring-2 ${item.color}`}
               matchSubPaths={false}
-              className="mr-2 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-zinc-500 text-white outline-none ring-1 ring-transparent hover:text-gray-100 hover:ring-stone-400 focus:ring-stone-400 dark:bg-zinc-700 dark:hover:text-white dark:hover:ring-white dark:focus:ring-white sm:my-2"
+              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-zinc-500 text-white outline-none ring-1 ring-transparent hover:text-gray-100 hover:ring-stone-400 focus:ring-stone-400 dark:bg-zinc-700 dark:hover:text-white dark:hover:ring-white dark:focus:ring-white sm:my-2"
             >
               {Icon(item.name)} <span className="sr-only">{item.name}</span>
             </NavLink>
-            <span className="active: text-sm">{item.name}</span>
+            <span className="text-sm">{item.name}</span>
           </div>
         ))}
       </div>

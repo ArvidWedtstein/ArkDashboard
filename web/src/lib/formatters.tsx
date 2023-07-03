@@ -139,7 +139,7 @@ export const isUUID = (value: string): boolean => {
  * @summary Checks if date is in 2022-11-28T14:17:14.899Z format
  * @static true
  */
-export const isDate = (dateString: any): boolean => {
+export const isDate = (dateString: string): boolean => {
   const date = new Date(dateString);
   return !isNaN(date.getTime());
 };
@@ -148,13 +148,13 @@ export const isDate = (dateString: any): boolean => {
  * Sorts an array of objects based on the value of a property
  *
  * @param {string} property - The property name to sort the objects by
- * @returns {(a: any, b: any) => number} A comparison function that can be passed to `Array.sort` method.
+ * @returns {(a, b) => number} A comparison function that can be passed to `Array.sort` method.
  */
 export const dynamicSort = (property: string) => {
   const sortOrder = property[0] === "-" ? -1 : 1;
   const sortKey = property[0] === "-" ? property.substring(1) : property;
 
-  return (a: any, b: any) => {
+  return (a, b) => {
     const result =
       a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
     return result * sortOrder;

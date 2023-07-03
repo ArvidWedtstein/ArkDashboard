@@ -18,7 +18,7 @@ interface ImageContainerProps
    *
    */
   height?: number;
-  key?: any;
+  key?: string;
 }
 const ImageContainer = ({ ...props }: ImageContainerProps) => {
   const {

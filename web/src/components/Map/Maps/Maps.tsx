@@ -1,7 +1,7 @@
 import { Link, routes } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import ArkCard from "src/components/ArkCard/ArkCard";
+import ArkCard from "src/components/Util/ArkCard/ArkCard";
 
 import { QUERY } from "src/components/Map/MapsCell";
 
@@ -284,7 +284,7 @@ const MapsList = ({ maps }: FindMaps) => {
               subtitle={
                 <div className="flex flex-row gap-1">
                   {Object.entries(map).map(([key, value]) => {
-                    if (!value || (value as any).length == 0 || !mapData[key])
+                    if (!value || !mapData[key])
                       return;
 
                     return (

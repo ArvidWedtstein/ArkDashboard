@@ -1,9 +1,7 @@
 import {
   Form,
   FormError,
-  Label,
   RWGqlError,
-  SearchField,
 } from "@redwoodjs/forms";
 import { useCallback, useMemo, useReducer, useState } from "react";
 
@@ -14,18 +12,15 @@ import {
   groupBy,
   timeFormatL,
 } from "src/lib/formatters";
-import debounce from "lodash.debounce";
 import Table from "src/components/Util/Table/Table";
 import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
 import {
-  DeleteUserRecipeMutationVariables,
   FindItemsMats,
 } from "types/graphql";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useAuth } from "src/auth";
 import { QUERY } from "../MaterialCalculatorCell";
-import { navigate, routes } from "@redwoodjs/router";
 import UserRecipesCell from "src/components/UserRecipe/UserRecipesCell";
 import ItemList from "src/components/Util/ItemList/ItemList";
 
@@ -90,88 +85,101 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
 
   const [viewBaseMaterials, setViewBaseMaterials] = useState<boolean>(false);
 
-  const reducer = (state, action) => {
-    switch (action.type) {
+  type RecipeActionType = "ADD_AMOUNT_BY_NUM" | "CHANGE_AMOUNT" | "ADD_AMOUNT" | "REMOVE_AMOUNT" | "ADD" | "REMOVE" | "REMOVE_BY_ID" | "RESET";
+  interface RecipeAction {
+    type: RecipeActionType;
+    payload?: {
+      amount?: number;
+      index?: number;
+      item?: ItemRecipe;
+    };
+  }
+  interface RecipeState extends ItemRecipe {
+    amount: number;
+  }
+  const reducer = (state: RecipeState[], action: RecipeAction) => {
+    const { type, payload } = action;
+    switch (type) {
       case "ADD_AMOUNT_BY_NUM": {
-        let itemIndex = state.findIndex((item) => item.id === action.item.id);
-        const yields = action.item?.yields || 1;
+        let itemIndex = state.findIndex((item) => item.id === payload.item.id);
+        const yields = payload.item?.yields || 1;
         if (itemIndex !== -1) {
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                  ...item,
-                  amount: item.amount + (action.index || 1) * yields,
-                }
+                ...item,
+                amount: item.amount + (payload.amount || 1) * yields,
+              }
               : item
           );
         }
         return [
           ...state,
           {
-            ...action.item,
-            amount: action.index || 1, //* yields,
+            ...payload.item,
+            amount: payload.amount || 1, //* yields,
           },
         ];
       }
       case "CHANGE_AMOUNT": {
-        const itemIndex = action.item;
+        const itemIndex = payload.index;
         if (itemIndex !== -1) {
           return state.map((item, i) =>
-            i === itemIndex ? { ...item, amount: action.index } : item
+            i === itemIndex ? { ...item, amount: payload.amount } : item
           );
         }
-        return [...state, { ...action.item, amount: action.index }];
+        return state;
       }
       case "ADD_AMOUNT": {
         return state.map((item, i) => {
           const yields = item?.yields || 1;
-          return i === action.index
+          return i === payload.index
             ? {
-                ...item,
-                amount: parseInt(item.amount) + parseInt(yields),
-              }
+              ...item,
+              amount: item.amount + yields,
+            }
             : item;
         });
       }
       case "REMOVE_AMOUNT": {
         return state.map((item, i) => {
           const yields = item?.yields || 1;
-          return i === action.index
+          return i === payload.index
             ? {
-                ...item,
-                amount:
-                  item.amount - yields < 1 ? yields : item.amount - yields,
-              }
+              ...item,
+              amount:
+                item.amount - yields < 1 ? yields : item.amount - yields,
+            }
             : item;
         });
       }
       case "ADD": {
-        const itemIndex = state.findIndex((item) => item.id === action.item.id);
+        const itemIndex = state.findIndex((item) => item.id === payload.item.id);
 
-        const yields = action.item?.yields || 1;
+        const yields = payload.item?.yields || 1;
         if (itemIndex !== -1) {
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                  ...item,
-                  amount: parseInt(item.amount || 0) + yields,
-                }
+                ...item,
+                amount: (item.amount || 0) + yields,
+              }
               : item
           );
         }
         return [
           ...state,
           {
-            ...action.item,
+            ...payload.item,
             amount: yields,
           },
         ];
       }
       case "REMOVE": {
-        return state.filter((_, i) => i !== action.index);
+        return state.filter((_, i) => i !== payload.index);
       }
       case "REMOVE_BY_ID": {
-        return state.filter((itm) => itm.id !== action.id);
+        return state.filter((itm) => itm.id !== payload.item.id);
       }
       case "RESET": {
         return [];
@@ -223,17 +231,16 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     }
 
     recipes.forEach((recipe) => {
-      setRecipes({ type: "REMOVE_BY_ID", id: recipe.id });
+      setRecipes({ type: "REMOVE_BY_ID", payload: { item: recipe } });
       let itemfound = result.find(
         (i) =>
           i.Item_ItemRecipe_crafted_item_idToItem.id ===
-          parseInt(recipe.Item_ItemRecipe_crafted_item_idToItem.id)
+          recipe.Item_ItemRecipe_crafted_item_idToItem.id
       );
       if (itemfound) {
         setRecipes({
           type: "ADD_AMOUNT_BY_NUM",
-          item: itemfound,
-          index: recipe.amount, // / itemfound.yields,
+          payload: { item: itemfound, amount: recipe.amount }, // / itemfound.yields,
         });
       }
     });
@@ -259,14 +266,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     );
 
     if (!chosenItem) return toast.error("Item could not be found");
-    setRecipes({ type: "ADD", item: chosenItem });
-  };
-
-  const onAddAmount = (index) => {
-    setRecipes({ type: "ADD_AMOUNT", index });
-  };
-  const onRemoveAmount = (index) => {
-    setRecipes({ type: "REMOVE_AMOUNT", index });
+    setRecipes({ type: "ADD", payload: { item: chosenItem } });
   };
 
   const mergeItemRecipe = useCallback(getBaseMaterials, [
@@ -277,7 +277,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   const [createRecipe, { loading }] = useMutation(CREATE_USERRECIPE_MUTATION, {
     onCompleted: (data) => {
       toast.success("Recipe created");
-      console.log(data);
     },
     onError: (error) => {
       toast.error(error.message);
@@ -322,8 +321,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     } catch (error) {
       return console.error(error);
     }
-
-    // TODO: Fetch the recipe after created and add it to the list
   };
 
   return (
@@ -335,8 +332,10 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
             if (itemfound) {
               setRecipes({
                 type: "ADD_AMOUNT_BY_NUM",
-                item: itemfound,
-                index: amount,
+                payload: {
+                  item: itemfound,
+                  amount: amount,
+                },
               });
             }
           });
@@ -409,21 +408,21 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
               value: v.every(({ type }) => !type)
                 ? v.map((itm) => ({
-                    ...itm,
-                    label: itm.name,
-                    icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                    value: [],
-                  }))
+                  ...itm,
+                  label: itm.name,
+                  icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                  value: [],
+                }))
                 : Object.entries(groupBy(v, "type")).map(([type, v2]) => {
-                    return {
-                      label: type,
-                      value: v2.map((itm) => ({
-                        label: itm.name,
-                        ...itm,
-                        icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                      })),
-                    };
-                  }),
+                  return {
+                    label: type,
+                    value: v2.map((itm) => ({
+                      label: itm.name,
+                      ...itm,
+                      icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                    })),
+                  };
+                }),
             }))}
             onSelect={(item) => {
               onAdd({ itemId: item.id });
@@ -534,24 +533,22 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 field: "Item_ItemRecipe_crafted_item_idToItem",
                 header: "Name",
                 className: "w-0",
-                render: ({ rowIndex, value: { name, image } }) => {
-                  return (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setRecipes({ type: "REMOVE", index: rowIndex });
-                      }}
-                      className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-red-500"
-                      title={`Remove ${name}`}
-                    >
-                      <img
-                        className="h-8 w-8"
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                        loading="lazy"
-                      />
-                    </button>
-                  );
-                },
+                render: ({ rowIndex, value: { name, image } }) => (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setRecipes({ type: "REMOVE", payload: { index: rowIndex } });
+                    }}
+                    className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-red-500"
+                    title={`Remove ${name}`}
+                  >
+                    <img
+                      className="h-8 w-8"
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                      loading="lazy"
+                    />
+                  </button>
+                ),
               },
               {
                 field: "amount",
@@ -567,7 +564,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                       type="button"
                       disabled={value === 1}
                       className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
-                      onClick={() => onRemoveAmount(rowIndex)}
+                      onClick={() => setRecipes({ type: "REMOVE_AMOUNT", payload: { index: rowIndex } })}
                     >
                       -
                     </button>
@@ -578,16 +575,14 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                       onChange={(e) => {
                         setRecipes({
                           type: "CHANGE_AMOUNT",
-                          item: rowIndex,
-                          index:
-                            parseInt(e.target.value) > 0 ? e.target.value : 1,
+                          payload: { index: rowIndex, amount: parseInt(e.target.value) > 0 ? parseInt(e.target.value) : 1 },
                         });
                       }}
                     />
                     <button
                       type="button"
                       className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
-                      onClick={() => onAddAmount(rowIndex)}
+                      onClick={() => setRecipes({ type: "ADD_AMOUNT", payload: { index: rowIndex } })}
                     >
                       +
                     </button>
@@ -599,12 +594,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 header: "Time pr item",
                 numeric: true,
                 className: "w-0 text-center",
-                valueFormatter: ({ row, value }) => {
-                  return value * row.amount;
-                },
-                render: ({ value }) => {
-                  return `${timeFormatL(value, true)}`;
-                },
+                valueFormatter: ({ row, value }) => value * row.amount,
+                render: ({ value }) => `${timeFormatL(value, true)}`,
               },
               {
                 field: "Item_ItemRecipe_crafted_item_idToItem",

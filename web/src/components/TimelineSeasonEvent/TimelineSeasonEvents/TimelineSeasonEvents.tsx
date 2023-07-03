@@ -50,7 +50,7 @@ const TimelineSeasonEventsList = ({
   // }
 
   return (
-    <div className="bg-background relative mt-3 max-h-96 overflow-y-auto rounded-lg border border-zinc-500 px-4 text-zinc-700 dark:bg-zinc-800 dark:text-white">
+    <div className="h-96 overflow-y-auto px-4 bg-background rounded-lg border border-zinc-500 dark:bg-zinc-800 dark:text-white text-zinc-700">
       <ul className="relative w-full border-l border-zinc-600 py-3 dark:border-zinc-300">
         {timelineSeasonEvents &&
           Object.entries(groupBy(timelineSeasonEvents, "created_at")).map(
