@@ -1,7 +1,7 @@
 import { Link, routes } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import ArkCard from "src/components/ArkCard/ArkCard";
+import ArkCard from "src/components/Util/ArkCard/ArkCard";
 
 import { QUERY } from "src/components/Map/MapsCell";
 

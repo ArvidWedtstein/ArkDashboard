@@ -22,7 +22,7 @@ const Slideshow = ({
   delay = 5000,
   ...props
 }: ISlideshowProps) => {
-  const [index, setIndex] = React.useState(0);
+  const [index, setIndex] = React.useState<number>(0);
   const timeoutRef = React.useRef(null);
 
   const resetTimeout = () => {
@@ -52,10 +52,10 @@ const Slideshow = ({
         className="whitespace-nowrap transition-transform duration-500 ease-in-out"
         style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}
       >
-        {slides.map((slide, indegs) => (
+        {slides.map((slide, index) => (
           <div
             className="relative inline-block h-[400px] w-full rounded"
-            key={indegs}
+            key={`slide-${index}`}
           >
             {slide && (
               <>
@@ -126,13 +126,11 @@ const Slideshow = ({
         <div className="relative bottom-0 w-full p-3 text-center">
           {slides.map(({ tabColor }, idx) => (
             <div
-              key={idx}
+              key={`slide-control-${idx}`}
               title={tabColor}
-              className={`mx-1 inline-block h-[3px] w-[30px] flex-initial cursor-pointer ${
-                tabColor ? tabColor : "bg-white"
-              } bg-clip-padding p-0 transition-opacity ${
-                index === idx ? "opacity-100" : "opacity-50"
-              }`}
+              className={`mx-1 inline-block h-[3px] w-[30px] flex-initial cursor-pointer ${tabColor ? tabColor : "bg-white"
+                } bg-clip-padding p-0 transition-opacity ${index === idx ? "opacity-100" : "opacity-50"
+                }`}
               onClick={() => {
                 setIndex(idx);
               }}

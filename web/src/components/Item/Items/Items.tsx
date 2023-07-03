@@ -15,7 +15,7 @@ import {
 
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import ArkCard from "src/components/ArkCard/ArkCard";
+import ArkCard from "src/components/Util/ArkCard/ArkCard";
 import Tabs from "src/components/Util/Tabs/Tabs";
 
 import type { FindItems } from "types/graphql";

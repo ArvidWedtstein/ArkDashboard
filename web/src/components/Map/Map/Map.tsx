@@ -2,7 +2,7 @@ import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useCallback, useState } from "react";
-import ArkCard from "src/components/ArkCard/ArkCard";
+import ArkCard from "src/components/Util/ArkCard/ArkCard";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import MapComp from "src/components/Util/Map/Map";
 import Slideshow from "src/components/Util/Slideshow/Slideshow";
@@ -319,9 +319,8 @@ const Map = ({ map }: Props) => {
         ...item,
         category,
         color,
-        name: `${category.replaceAll("_", " ")}\n${item.latitude}, ${
-          item.longitude
-        }`,
+        name: `${category.replaceAll("_", " ")}\n${item.latitude}, ${item.longitude
+          }`,
       }));
 
       setCategories((prevState) => ({
@@ -463,7 +462,7 @@ const Map = ({ map }: Props) => {
               title={lootcrate.name}
               ring={
                 lootcrate?.level_requirement &&
-                lootcrate.level_requirement["min"] > 0 ? (
+                  lootcrate.level_requirement["min"] > 0 ? (
                   <button
                     title={`You need to be lvl ${lootcrate.level_requirement["min"]} to open this crate`}
                     className="relative flex items-center justify-center space-x-2 rounded-full bg-gray-600 px-4 py-2.5 text-gray-100 shadow-sm ring-1 ring-green-500"
