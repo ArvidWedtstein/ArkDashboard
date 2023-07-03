@@ -26,11 +26,6 @@ export const RefModal = ({
     isComponentVisible,
     setIsComponentVisible,
   } = useComponentVisible(isOpen);
-  // useEffect(() => {
-  //   console.log(isOpen)
-  //   setIsComponentVisible(isOpen);
-  // }, [isOpen, onClose]);
-
   return (
     <div
       tabIndex={-1}
@@ -111,9 +106,8 @@ export const Modal = ({
     <div
       tabIndex={-1}
       aria-hidden={isOpen ? "false" : "true"}
-      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full ${
-        isOpen ? "block" : "hidden"
-      }`}
+      className={`fixed z-50 w-full place-content-center overflow-y-auto overflow-x-hidden p-4 md:inset-0 md:h-full ${isOpen ? "block" : "hidden"
+        }`}
     >
       <div className="relative top-1/2 left-1/2 h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2">
         {!form && (
@@ -204,6 +198,7 @@ interface iModalForm {
 }
 export const FormModal = ({ title, isOpen, children, onClose }: iModalForm) => {
   const modalRef = React.useRef<HTMLDialogElement>(null);
+
   useEffect(() => {
     if (isOpen == true && !modalRef?.current.open)
       modalRef.current?.showModal();
@@ -211,6 +206,7 @@ export const FormModal = ({ title, isOpen, children, onClose }: iModalForm) => {
       modalRef.current?.close();
     } else modalRef.current?.close();
   }, [isOpen, modalRef?.current?.open]);
+
   return (
     <dialog
       className={clsx(
