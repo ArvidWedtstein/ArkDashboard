@@ -159,7 +159,7 @@ const Sidebar = memo(({ }) => {
   return (
     <aside className="z-10 min-w-[14rem] overflow-x-auto border-gray-700 bg-zinc-800 py-2 dark:border-zinc-300 max-sm:border-b sm:h-auto sm:max-w-sm sm:overflow-visible sm:border-r sm:py-2 sm:px-4">
       <div className="sticky top-0 flex w-full flex-row items-start justify-between sm:flex-col sm:justify-start">
-        <div className="flex items-center justify-center border-gray-700 text-black text-[#ffffffcc] transition-all dark:border-zinc-300 sm:my-3 sm:w-full sm:flex-col sm:border-b">
+        <div className="flex items-center justify-center text-black text-[#ffffffcc] transition-all border-zinc-300 sm:my-3 sm:w-full sm:flex-col sm:border-b">
           <Link
             to={routes.profile({
               id: currentUser?.id || currentUser?.sub || "",

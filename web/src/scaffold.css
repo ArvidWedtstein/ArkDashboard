@@ -166,7 +166,7 @@
     @apply bg-pea-600;
   }
   .rw-button.rw-button-green:focus {
-    @apply ring-pea-300 dark:ring-pea-800;
+    @apply ring-pea-300 dark:ring-pea-800 outline-none;
   }
 
   /* Green Outline Button */
