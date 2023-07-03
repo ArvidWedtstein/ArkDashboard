@@ -1,10 +1,10 @@
 import clsx from "clsx";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useAuth } from "src/auth";
 import { pluralize } from "src/lib/formatters";
 
 interface IFileUploadProps {
-  onUpload?: (url: any) => void;
+  onUpload?: (url: string) => void;
   className?: string;
   multiple?: boolean;
   storagePath: string;
@@ -20,32 +20,33 @@ const FileUpload = ({
 }: IFileUploadProps) => {
   let filename = "";
   let id = Math.round(Math.random() * 100).toString();
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState<{ file: any, imagePreviewUrl: string | ArrayBuffer }[]>([]);
   const [state, setState] = useState(0);
   const [progress, setProgress] = useState(0);
   const [imagePreview, setImagePreview] = useState(null);
+  let elRef = useRef(null);
+  const { client: supabase } = useAuth();
   let isCopying,
     isUploading = false;
   let progressTimeout = null;
-  let el = useRef(null);
-  const { client: supabase } = useAuth();
 
-  const handleImagePreview = (file) => {
+  const handleImagePreview = useCallback((file) => {
     const reader = new FileReader();
     reader.onload = () => {
       setImagePreview(reader.result);
     };
     reader.readAsDataURL(file);
-  };
-  function fileHandle(e) {
+  }, []);
+
+  const fileHandle = (e) => {
+
     stateDisplay();
     return new Promise(() => {
       const { target } = e;
       if (target?.files.length) {
         let reader = new FileReader();
         reader.onload = (e2) => {
-          // setFiles(Array.from(target.files));
-          setFiles([...files, ...Array.from(target.files)]);
+          setFiles([...files, ...Array.from(target.files).map((file) => ({ file, imagePreviewUrl: reader.result }))]);
           fileDisplay(
             files.length > 1 ? `${files.length} files` : target.files[0].name
           );
@@ -54,18 +55,34 @@ const FileUpload = ({
       }
     });
   }
-  function stateDisplay() {
-    el.current.setAttribute("data-state", `${state}`);
+  const handleDrop = (event) => {
+    event.preventDefault();
+    stateDisplay();
+    let reader = new FileReader();
+    reader.onload = (e2) => {
+      reader.result;
+      setFiles((prev) => [...prev, ...Array.from(event.dataTransfer.files).map((file) => ({ file, imagePreviewUrl: reader.result }))]);
+      fileDisplay(
+        files.length > 1 ? `${files.length} files` : event.dataTransfer.files[0].name
+      );
+    };
+    reader.readAsDataURL(event.dataTransfer.files[0]);
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const stateDisplay = () => {
+    elRef.current.setAttribute("data-state", `${state}`);
   }
-  function fileDisplay(name = "") {
+
+  const fileDisplay = (name = "") => {
     // update the name
     filename = name;
 
-    // const fileValue = el.current.querySelector("[data-file]");
-    // if (fileValue) fileValue.textContent = filename;
-
     // show the file
-    el?.current.setAttribute("data-ready", filename ? "true" : "false");
+    elRef?.current.setAttribute("data-ready", filename ? "true" : "false");
   }
   const cancel = () => {
     isUploading = false;
@@ -76,34 +93,39 @@ const FileUpload = ({
     progressDisplay();
     fileReset();
   };
-  function fileReset(index = 0) {
-    // const fileField: any = el?.current.querySelector(`#fileupload-${id}`);
-    // if (fileField) fileField.value = null;
-    setFiles(files.filter((file) => file !== files[index]));
-    fileDisplay();
+
+  const fileReset = (index = 0) => {
+    setFiles((prev) => prev.filter((file) => file !== files[index]));
+    fileDisplay(
+      files.length > 1 ? `${files.length} files` : ""
+    );
+    stateDisplay();
   }
-  function progressDisplay() {
-    const progressValue = el?.current.querySelector("[data-progress-value]");
-    const progressFill: any = el?.current.querySelector("[data-progress-fill]");
+
+  const progressDisplay = () => {
+    const progressValue = elRef?.current.querySelector("[data-progress-value]");
+    const progressFill: HTMLElement = elRef?.current.querySelector("[data-progress-fill]");
     const progressTimes100 = Math.floor(progress * 100);
 
     if (progressValue) progressValue.textContent = `${progressTimes100}%`;
     if (progressFill)
       progressFill.style.transform = `translateX(${progressTimes100}%)`;
   }
-  function file() {
-    let t: any = el?.current.querySelector(`#fileupload-${id}`);
+
+  const file = () => {
+    let t: HTMLInputElement = elRef?.current.querySelector(`#fileupload-${id}`);
     t.click();
     stateDisplay();
   }
-  function upload() {
+
+  const upload = () => {
     if (!isUploading) {
       isUploading = true;
       setProgress(0);
       setState(1);
 
       try {
-        files.forEach(async (file) => {
+        files.forEach(async ({ file }) => {
           if (sizeLimit && file.size > sizeLimit) {
             fail();
           }
@@ -119,7 +141,7 @@ const FileUpload = ({
           if (uploadError) {
             fail();
           }
-          onUpload && onUpload(filePath);
+          onUpload?.(filePath);
         });
         progressLoop();
       } catch (error) {
@@ -130,14 +152,15 @@ const FileUpload = ({
     }
     stateDisplay();
   }
-  function fail() {
+  const fail = () => {
     isUploading = false;
     setProgress(0);
     progressTimeout = null;
     setState(2);
     stateDisplay();
   }
-  async function progressLoop() {
+
+  const progressLoop = async () => {
     progressDisplay();
 
     try {
@@ -167,14 +190,15 @@ const FileUpload = ({
       fail();
     }
   }
-  function success() {
+
+  const success = () => {
     isUploading = false;
     setState(3);
     stateDisplay();
   }
 
-  async function copy() {
-    const copyButton: any = el?.current.querySelector("[data-action='copy']");
+  const copy = async () => {
+    const copyButton: HTMLButtonElement = elRef?.current.querySelector("[data-action='copy']");
 
     if (!isCopying && copyButton) {
       // disable
@@ -194,9 +218,9 @@ const FileUpload = ({
 
   return (
     <div
-      ref={el}
+      ref={elRef}
       className={clsx(
-        "group relative w-[calc(100%-3rem)] max-w-xl overflow-hidden rounded-lg border border-gray-300 bg-gray-50 text-gray-900 shadow transition-colors dark:border-zinc-600 dark:bg-zinc-700 dark:text-stone-200",
+        "group relative w-[calc(100%-3rem)] max-w-xl overflow-hidden rounded-lg border border-zinc-500 bg-zinc-50 text-gray-900 transition-colors dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200",
         {
           "before:bg-[#f5463d]": state === 2,
           "before:bg-[#3df574]": state === 3,
@@ -204,6 +228,8 @@ const FileUpload = ({
       )}
       data-state="0"
       data-ready="false"
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
     >
       <div className="relative z-[1] flex flex-col pt-0 pr-8 pb-7 pl-7">
         <div className="mt-7 flex-1">
@@ -224,36 +250,6 @@ const FileUpload = ({
               strokeLinejoin="round"
             />
           </svg>
-          {/* <svg
-            className="stroke-pea-500 z-[10] mx-auto block h-12 w-12 fill-transparent text-black"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <circle
-              className="origin-[12px_12px] -rotate-[90deg]"
-              style={{ strokeDashoffset: "0" }}
-              // style={{ strokeDashoffset: "69.12" }}
-              cx="12"
-              cy="12"
-              r="11"
-              strokeDasharray="69.12 69.12"
-            />
-            <polyline
-              // style={{ strokeDashoffset: "14.2" }}
-              style={{ strokeDashoffset: "0" }}
-              points="7 12 12 7 17 12"
-              strokeDasharray="14.2 14.2"
-            />
-            <line
-              style={{ strokeDashoffset: "0" }}
-              // style={{ strokeDashoffset: "10" }}
-              x1="12"
-              y1="7"
-              x2="12"
-              y2="17"
-              strokeDasharray="10 10"
-            />
-          </svg> */}
           {/* <!-- error --> */}
           <svg
             className="m-auto block h-9 w-9 stroke-red-500"
@@ -332,7 +328,7 @@ const FileUpload = ({
         </div>
         <div className="mt-3 flex-1">
           <div
-            className={clsx("modal__content", {
+            className={clsx("text-center", {
               block: state === 0,
               hidden: state !== 0,
             })}
@@ -341,7 +337,8 @@ const FileUpload = ({
               Upload {multiple ? "Files" : "a File"}
             </h2>
             <p className="mb-6 min-h-[3rem] text-center text-base">
-              Select a file to upload from your computer or device.
+              Select a file to upload from your computer or device<br />
+              or drag and drop a file here.
             </p>
             <div className="mb-2 flex flex-wrap items-center delay-200">
               <button
@@ -349,7 +346,7 @@ const FileUpload = ({
                 type="button"
                 onClick={file}
               >
-                Choose {multiple ? "Files" : "File"}
+                Choose {multiple ? "Files" : "File"} or drop files here
               </button>
               <input
                 id={`fileupload-${id}`}
@@ -363,31 +360,20 @@ const FileUpload = ({
             <div
               className={`flex-wrap items-center delay-200 group-data-[ready=true]:flex group-data-[ready=false]:hidden`}
             >
-              {files.map((file, index) => (
+              {files.map(({ file }, index) => (
                 <div
-                  className="flex w-full flex-row items-center"
+                  className="flex w-full flex-row items-center justify-start space-x-3"
                   key={`file-${index}`}
                 >
-                  <svg
-                    className="mr-3 block h-6 w-6 text-[#737a8c] transition-colors"
-                    viewBox="0 0 24 24"
-                    width="24px"
-                    height="24px"
-                    aria-hidden="true"
-                  >
-                    <g
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polygon points="4 1 12 1 20 8 20 23 4 23" />
-                      <polyline points="12 1 12 8 20 8" />
-                    </g>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" className="h-6 w-6 text-[#737a8c] transition-colors" fill="currentColor">
+                    {file.type.includes("image") ? (
+                      <path d="M190.3 285.7l-26.36 40.67c-12-14.92-37.75-13.73-48.31 2.531l-46.69 72.02c-5.984 9.266-6.531 21.09-1.453 30.84C72.67 441.8 82.83 448 93.1 448h196c11.17 0 21.33-6.219 26.55-16.23c5.094-9.797 4.531-21.62-1.484-30.86l-74.66-115.2C229.3 268.5 201.4 268.5 190.3 285.7zM286.7 416L95.77 416l44.89-66.95l9.922 15.3c5.906 9.094 20.97 9.094 26.84 0l37.91-58.48L286.7 416zM96 280c13.25 0 24-10.75 24-24c0-13.26-10.75-24-24-24S72 242.7 72 256C72 269.3 82.75 280 96 280zM365.3 125.3l-106.5-106.5C246.7 6.742 230.5 0 213.5 0H64C28.65 0 0 28.65 0 64l.0065 384c0 35.35 28.65 64 64 64H320c35.35 0 64-28.65 64-64V170.5C384 153.5 377.3 137.3 365.3 125.3zM224 34.08c4.477 1.566 8.666 3.846 12.12 7.299l106.5 106.5C346.1 151.3 348.4 155.5 349.9 160H240C231.2 160 224 152.8 224 144V34.08zM352 448c0 17.64-14.36 32-32 32H64c-17.64 0-32-14.36-32-32V64c0-17.64 14.36-32 32-32h128v112C192 170.5 213.5 192 240 192H352V448z" />
+                    ) : (
+                      <path d="M365.3 125.3l-106.5-106.5C246.7 6.742 230.5 0 213.5 0L64-.0001c-35.35 0-64 28.65-64 64l.0065 384c0 35.35 28.65 64 64 64H320c35.35 0 64-28.65 64-64v-277.5C384 153.5 377.3 137.3 365.3 125.3zM342.6 147.9C346.1 151.3 348.4 155.5 349.9 160H240C231.2 160 224 152.8 224 144V34.08c4.477 1.566 8.666 3.846 12.12 7.299L342.6 147.9zM352 448c0 17.64-14.36 32-32 32H64c-17.64 0-32-14.36-32-32V64c0-17.64 14.36-32 32-32h128v112C192 170.5 213.5 192 240 192H352V448z" />
+                    )}
                   </svg>
 
-                  <div className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-xs">
+                  <div className="text-left text-ellipsis whitespace-nowrap text-xs flex-grow">
                     {file.name}
                   </div>
 
@@ -400,9 +386,10 @@ const FileUpload = ({
                   </button>
 
                   <button
-                    className="block cursor-pointer py-2 text-current"
+                    className="hover:text-red-500"
                     type="button"
                     onClick={() => fileReset(index)}
+                    title="Remove"
                   >
                     <svg
                       className="pointer-events-none m-auto block h-auto w-full"
@@ -421,7 +408,7 @@ const FileUpload = ({
                         <polyline points="12,4 4,12" />
                       </g>
                     </svg>
-                    <span className="absolute h-[1px] w-[1px] overflow-hidden">
+                    <span className="sr-only">
                       Remove
                     </span>
                   </button>
@@ -429,8 +416,9 @@ const FileUpload = ({
               ))}
             </div>
             {files.length > 0 && (
+
               <button
-                className="mt-3 w-full rounded bg-[#737a8c] py-2 px-4 text-xs text-current transition-colors hover:bg-[#8f95a3] focus:outline-none disabled:opacity-50"
+                className="mt-3 rw-button rw-button-gray-outline w-full rw-button-medium"
                 type="button"
                 onClick={upload}
               >
@@ -451,7 +439,7 @@ const FileUpload = ({
             )}
           </div>
           <div
-            className={clsx("modal__content", {
+            className={clsx("text-center", {
               block: state === 1,
               hidden: state !== 1,
             })}
@@ -487,7 +475,7 @@ const FileUpload = ({
             </div>
           </div>
           <div
-            className={clsx("modal__content", {
+            className={clsx("text-center", {
               block: state === 2,
               hidden: state !== 2,
             })}
@@ -517,7 +505,7 @@ const FileUpload = ({
             </div>
           </div>
           <div
-            className={clsx(`modal__content`, {
+            className={clsx(`text-center`, {
               block: state === 3,
               hidden: state !== 3,
             })}

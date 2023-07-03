@@ -104,7 +104,7 @@ const Icon = (icon: string) => {
   return icons[icon.toLowerCase()] || null;
 };
 
-const Sidebar = memo(({}) => {
+const Sidebar = memo(({ }) => {
   const { currentUser, isAuthenticated, logOut } = useAuth();
   const navigation = [
     {
@@ -180,9 +180,9 @@ const Sidebar = memo(({}) => {
                   loading="lazy"
                 />
               ) : (
-                <div className="relative h-8 w-8 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-600">
+                <div className="animate-fade-in mx-1 relative aspect-square w-12 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-600">
                   <svg
-                    className="absolute -left-1 h-10 w-10 text-gray-400"
+                    className="absolute -left-1 h-14 w-14 text-gray-400"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"

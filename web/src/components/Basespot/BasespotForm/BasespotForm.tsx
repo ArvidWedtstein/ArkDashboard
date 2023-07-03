@@ -4,12 +4,8 @@ import {
   FieldError,
   Label,
   TextField,
-  DatetimeLocalField,
   Submit,
-  SelectField,
-  NumberField,
   TextAreaField,
-  MonthField,
   useForm,
 } from "@redwoodjs/forms";
 
@@ -30,18 +26,34 @@ interface BasespotFormProps {
 }
 
 const BasespotForm = (props: BasespotFormProps) => {
+
   const formMethods = useForm<FormBasespot>();
   const [thumbnailUrl, setThumbnailUrl] = useState(null);
   const [defenseImages, setDefenseImages] = useState([]);
 
   const basename = useRef(null);
-  const [map, setMap] = useState(props.basespot?.map_id || 2);
+  const [map, setMap] = useState(props?.basespot?.map_id || 2);
 
   const onSubmit = (data: FormBasespot) => {
     data.map_id = parseInt(data.map_id.toString() || map.toString());
     if (thumbnailUrl) data.image = thumbnailUrl;
     props.onSave(data, props?.basespot?.id);
   };
+
+  const mapNames = [
+    { label: "Valguero", value: 1 },
+    { label: "The Island", value: 2 },
+    { label: "The Center", value: 3 },
+    { label: "Ragnarok", value: 4 },
+    { label: "Abberation", value: 5 },
+    { label: "Extinction", value: 6 },
+    { label: "Scorched Earth", value: 7 },
+    { label: "Genesis", value: 8 },
+    { label: "Genesis 2", value: 9 },
+    { label: "Crystal Isles", value: 10 },
+    { label: "Fjordur", value: 11 },
+    { label: "Lost Island", value: 12 },
+  ]
 
   useEffect(() => {
     if (props.basespot?.map_id) {
@@ -126,34 +138,18 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <Lookup
           defaultValue={props.basespot?.map_id || map}
-          options={[
-            { label: "Valguero", value: 1 },
-            { label: "The Island", value: 2 },
-            { label: "The Center", value: 3 },
-            { label: "Ragnarok", value: 4 },
-            { label: "Abberation", value: 5 },
-            { label: "Extinction", value: 6 },
-            { label: "Scorched Earth", value: 7 },
-            { label: "Genesis", value: 8 },
-            { label: "Genesis 2", value: 9 },
-            { label: "Crystal Isles", value: 10 },
-            { label: "Fjordur", value: 11 },
-            { label: "Lost Island", value: 12 },
-          ]}
+          options={mapNames}
           name="map_id"
         />
 
         <FieldError name="map_id" className="rw-field-error" />
 
         <MapPicker
-          className="mt-2"
-          map={props.basespot?.map_id || map.toString()}
+          className="mt-3"
           url={
-            props.basespot.Map.img
-              ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${props.basespot.Map.img}`
-              : null
+            `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${mapNames.find((x) => x.value === map)?.label.replaceAll(' ', '')}-Map.webp`
           }
-          valueProp={{ ...props.basespot }}
+          valueProp={{ ...props?.basespot }}
           onChanges={(e) => {
             formMethods.setValue("latitude", e.latitude);
             formMethods.setValue("longitude", e.longitude);
@@ -172,7 +168,7 @@ const BasespotForm = (props: BasespotFormProps) => {
 
             <TextField
               name="latitude"
-              defaultValue={props.basespot?.latitude}
+              defaultValue={props?.basespot?.latitude}
               className="rw-input"
               errorClassName="rw-input rw-input-error"
               emptyAs={null}
@@ -191,7 +187,7 @@ const BasespotForm = (props: BasespotFormProps) => {
 
             <TextField
               name="longitude"
-              defaultValue={props.basespot?.longitude}
+              defaultValue={props?.basespot?.longitude}
               className="rw-input"
               errorClassName="rw-input rw-input-error"
               emptyAs={null}
@@ -201,32 +197,32 @@ const BasespotForm = (props: BasespotFormProps) => {
           </div>
         </div>
 
-        {props.basespot?.id && (
-          <>
-            <Label
-              name="image"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Image
-            </Label>
+        {/* {props.basespot?.id && ( */}
+        <>
+          <Label
+            name="image"
+            className="rw-label"
+            errorClassName="rw-label rw-label-error"
+          >
+            Image
+          </Label>
 
-            <FileUpload
-              multiple={false}
-              name="image"
-              storagePath={`basespotimages/${props.basespot?.id ||
-                basename.current?.value.replaceAll(" ", "")
-                // basename.current?.value.replaceAll(" ", "") ||
-                // props.basespot?.name.replaceAll(" ", "")
-                }`}
-              onUpload={(url) => {
-                setThumbnailUrl(url);
-              }}
-            />
+          <FileUpload
+            multiple={false}
+            name="image"
+            storagePath={`basespotimages/${props?.basespot?.id ||
+              basename.current?.value.replaceAll(" ", "")
+              // basename.current?.value.replaceAll(" ", "") ||
+              // props.basespot?.name.replaceAll(" ", "")
+              }`}
+            onUpload={(url) => {
+              setThumbnailUrl(url);
+            }}
+          />
 
-            <FieldError name="image" className="rw-field-error" />
-          </>
-        )}
+          <FieldError name="image" className="rw-field-error" />
+        </>
+        {/* )} */}
 
         <Label
           name="estimated_for_players"

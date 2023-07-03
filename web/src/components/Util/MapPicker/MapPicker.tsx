@@ -1,18 +1,11 @@
 import {
-  Controller,
-  FieldError,
   InputFieldProps,
-  NumberField,
   RegisterOptions,
-  useErrorStyles,
-  useForm,
-  useRegister,
 } from "@redwoodjs/forms";
-import { ReactElement, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface MapPickerProps extends Omit<InputFieldProps, "name"> {
   validation?: RegisterOptions;
-  map: string | number;
   url?: string;
   valueProp?: {
     latitude: number;
@@ -25,7 +18,6 @@ const MapPicker = ({
   className,
   style,
   url = "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheIsland-Map.webp",
-  map = "theisland",
   valueProp = {
     latitude: 0,
     longitude: 0,
@@ -47,8 +39,7 @@ const MapPicker = ({
       circle.setAttributeNS(
         null,
         "transform",
-        `translate(${5 * valueProp.longitude + 500 / 100}, ${
-          5 * valueProp.latitude
+        `translate(${5 * valueProp.longitude + 500 / 100}, ${5 * valueProp.latitude
         })`
       );
       svgRef.current.querySelector(
@@ -74,9 +65,8 @@ const MapPicker = ({
         `translate(${cursorpt.x}, ${cursorpt.y})`
       );
 
-      svgRef.current.querySelector("text#coords").innerHTML = `${
-        Math.round(((cursorpt.y - 5) / 5) * 100) / 100
-      }, ${Math.round(((cursorpt.x - 5) / 5) * 100) / 100}`;
+      svgRef.current.querySelector("text#coords").innerHTML = `${Math.round(((cursorpt.y - 5) / 5) * 100) / 100
+        }, ${Math.round(((cursorpt.x - 5) / 5) * 100) / 100}`;
 
       setPos({
         latitude: Math.round(((cursorpt.y - 5) / 5) * 100) / 100,
@@ -100,7 +90,7 @@ const MapPicker = ({
         height={500}
         viewBox={`0 0 ${500} ${500}`}
         xmlns="http://www.w3.org/2000/svg"
-        onClick={!validation.disabled ? updatePosition : () => {}}
+        onClick={!validation.disabled ? updatePosition : () => { }}
         ref={svgRef}
       >
         <image href={url} height={500} width={500} />

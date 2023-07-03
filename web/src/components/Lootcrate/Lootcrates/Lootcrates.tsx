@@ -33,7 +33,7 @@ const LootcratesList = ({ lootcratesByMap: lootcrates }: FindLootcrates) => {
           filteredCrates
             .map((crate) => crate?.LootcrateSet)
             .flat()
-            .map((set: any) => set?.name)
+            .map((set) => set?.name)
         )
       );
     }

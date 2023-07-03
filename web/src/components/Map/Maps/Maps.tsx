@@ -284,7 +284,7 @@ const MapsList = ({ maps }: FindMaps) => {
               subtitle={
                 <div className="flex flex-row gap-1">
                   {Object.entries(map).map(([key, value]) => {
-                    if (!value || (value as any).length == 0 || !mapData[key])
+                    if (!value || !mapData[key])
                       return;
 
                     return (
