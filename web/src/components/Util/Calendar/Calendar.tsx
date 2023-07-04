@@ -16,9 +16,9 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
     const millisecondsPerWeek = 7 * 24 * 60 * 60 * 1000;
 
     const elapsedMilliseconds = date.getTime() - startOfYear.getTime();
-    const elapsedWeeks = Math.floor(elapsedMilliseconds / millisecondsPerWeek);
+    const elapsedWeeks = Math.ceil(elapsedMilliseconds / millisecondsPerWeek);
 
-    return elapsedWeeks + 1; // Adding 1 to make the first week number 1 instead of 0
+    return elapsedWeeks;
   };
   const [currentWeek, setCurrentWeek] = useState<number>(
     getCurrentWeekNumber(new Date())
@@ -179,7 +179,7 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
             {date.toDateString()}
           </div>
         ))}
-        {Object.entries(groupBy(data, group)).map(([key, groupedValues], i) => (
+        {Object.entries(groupBy(data.filter((event) => event.cluster === '6man'), group)).map(([key, groupedValues], i) => (
           <React.Fragment key={key}>
             <div className={`sticky left-0 col-start-[1] row-start-[${i + 2}] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800`}>
               {key}
@@ -192,13 +192,8 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
                 <div key={`day-${j}-line`} className={clsx(`border-b border-r border-slate-100 dark:border-slate-200/5`, `row-start-[${i + 2}] col-start-[${j + 2}]`)}></div>
               )
             })}
-            {/* <div className={`col-start-[2] row-start-[${i + 2}] border-b border-r border-slate-100 dark:border-slate-200/5`}></div>
-            <div className={`col-start-[3] row-start-[${i + 2}] border-b border-r border-slate-100 dark:border-slate-200/5`}></div>
-            <div className={`col-start-[4] row-start-[${i + 2}] border-b border-r border-slate-100 dark:border-slate-200/5`}></div>
-            <div className={`col-start-[5] row-start-[${i + 2}] border-b border-r border-slate-100 dark:border-slate-200/5`}></div>
-            <div className={`col-start-[6] row-start-[${i + 2}] border-b border-r border-slate-100 dark:border-slate-200/5`}></div>
-            <div className={`col-start-[7] row-start-[${i + 2}] border-b border-r border-slate-100 dark:border-slate-200/5`}></div>
-            <div className={`col-start-[8] row-start-[${i + 2}] border-b border-r border-slate-100 dark:border-slate-200/5`}></div> */}
+            {/* TODO: subgrid/filter for cluster? */}
+            {/* TODO: Make borderradius none if season continues next week */}
             {
               groupedValues.filter((item) => {
                 const [startCurrWeek, endCurrWeek] = getDatesInWeek(currentYear, currentWeek)
@@ -207,10 +202,13 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
 
                 return (seasonDays.some((d: Date) => dayFromDate(d) >= dayFromDate(startCurrWeek) && dayFromDate(d) <= dayFromDate(endCurrWeek) && new Date(item[dateStartKey]).getFullYear() === currentYear));
               }).map((event, j) => (
-                <div className={clsx(`row-start-[${i + 2}] m-1 flex flex-col rounded-lg border border-blue-700/10 bg-blue-400/20 p-1 dark:border-sky-500 dark:bg-sky-600/50`, `col-start-[${getCurrentWeekNumber(new Date(event[dateStartKey])) == currentWeek ? new Date(event[dateStartKey]).getDay() + 1 : 2}] col-end-[${getCurrentWeekNumber(new Date(event[dateEndKey])) > currentWeek ? 9 : 7 - (new Date(event[dateEndKey]).getDay() + 1)}]`)}>
+                <div className={clsx(`row-start-[${i + 2}] m-1 flex flex-col rounded-lg border border-blue-700/10 bg-blue-400/20 p-1 dark:border-sky-500 dark:bg-sky-600/50`, `col-start-[${getCurrentWeekNumber(new Date(event[dateStartKey])) == currentWeek ? new Date(event[dateStartKey]).getDay() + 1 : 2}] col-end-[${getCurrentWeekNumber(new Date(event[dateEndKey])) > currentWeek ? 9 : 7 - (new Date(event[dateEndKey]).getDay() + 1)}]`, {
+                  'rounded-r-none': getCurrentWeekNumber(new Date(event[dateEndKey])) > currentWeek,
+                  'rounded-l-none': getCurrentWeekNumber(new Date(event[dateStartKey])) < currentWeek,
+                })}>
                   <span className="text-xs text-blue-600 dark:text-sky-100">{timeTag(event[dateStartKey])} - {timeTag(event[dateEndKey])}</span>
                   <span className="text-xs font-medium text-blue-600 dark:text-sky-100">
-                    Base raid
+                    {event.season} {event.cluster} - {getCurrentWeekNumber(new Date(event[dateEndKey]))} - {currentWeek}
                   </span>
                   <span className="text-xs text-blue-600 dark:text-sky-100">
                     Ragnarok, NA
