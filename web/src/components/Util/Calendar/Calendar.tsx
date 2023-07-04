@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { getWeekDates } from "src/lib/formatters";
+
 
 const Calendar = () => {
   const getCurrentWeekNumber = (date: Date): number => {
@@ -63,7 +63,7 @@ const Calendar = () => {
     const startDateWithOffset = new Date(startDate.getTime() - offset);
     const startWeekNumber = Math.ceil(
       (startDateWithOffset.getTime() - startDate.getTime()) /
-        (7 * dayMilliseconds)
+      (7 * dayMilliseconds)
     );
 
     if (weekNumber < startWeekNumber || weekNumber > startWeekNumber + 52) {
@@ -72,7 +72,7 @@ const Calendar = () => {
 
     const startOfWeek = new Date(
       startDateWithOffset.getTime() +
-        (weekNumber - startWeekNumber) * 7 * dayMilliseconds
+      (weekNumber - startWeekNumber) * 7 * dayMilliseconds
     );
 
     const endOfWeek = new Date(startOfWeek.getTime() + 6 * dayMilliseconds);

@@ -105,7 +105,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
           <Lookup
             options={[
               { label: "Crack", value: 1 },
-              { label: "TWaterfall", value: 2 },
+              { label: "Waterfall", value: 2 },
             ]}
             name="basespot_id"
             defaultValue={props.timelineSeasonEvent?.map_id}
