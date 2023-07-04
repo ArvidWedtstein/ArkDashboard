@@ -2,8 +2,6 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { groupBy, timeTag } from "src/lib/formatters";
 
-
-
 interface CalendarProps {
   data: any[];
   group: string;
@@ -16,9 +14,9 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
     const millisecondsPerWeek = 7 * 24 * 60 * 60 * 1000;
 
     const elapsedMilliseconds = date.getTime() - startOfYear.getTime();
-    const elapsedWeeks = Math.ceil(elapsedMilliseconds / millisecondsPerWeek);
 
-    return elapsedWeeks;
+    const elapsedWeeks = Math.ceil(elapsedMilliseconds / millisecondsPerWeek);
+    return date.getDay() === 0 ? elapsedWeeks - 1 : elapsedWeeks;
   };
   const [currentWeek, setCurrentWeek] = useState<number>(
     getCurrentWeekNumber(new Date())
@@ -87,18 +85,17 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
     const startDateWithOffset = new Date(startDate.getTime() - offset);
     const startWeekNumber = Math.ceil(
       (startDateWithOffset.getTime() - startDate.getTime()) /
-      (7 * dayMilliseconds)
+        (7 * dayMilliseconds)
     );
     const startOfWeek = new Date(
       startDateWithOffset.getTime() +
-      (weekNumber - startWeekNumber) * 7 * dayMilliseconds
+        (weekNumber - startWeekNumber) * 7 * dayMilliseconds
     );
 
     const endOfWeek = new Date(startOfWeek.getTime() + 6 * dayMilliseconds);
 
     return [startOfWeek, endOfWeek];
   };
-
 
   const [days, setDays] = useState<Date[]>([]);
   useEffect(() => {
@@ -120,10 +117,7 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
       // ...getDaysArray(startNextWeek, endNextWeek),
     ]);
 
-    document
-      .getElementById(`week-${currentWeek}-day-7`)
-      ?.scrollIntoView();
-
+    document.getElementById(`week-${currentWeek}-day-7`)?.scrollIntoView();
   }, []);
 
   const changeWeek = (direction: "prev" | "next") => {
@@ -135,7 +129,10 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
         setCurrentYear((prev) => prev - 1);
         week = getWeeksInYear(currentYear - 1);
       }
-      const [startPrevWeek, endPrevWeek] = getDatesInWeek(currentYear, week - 1);
+      const [startPrevWeek, endPrevWeek] = getDatesInWeek(
+        currentYear,
+        week - 1
+      );
       // const [startPrevWeek, endPrevWeek] = getDatesInWeek(currentYear, week - 2);
 
       setDays((prev) => [
@@ -150,9 +147,11 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
         setCurrentYear((prev) => prev + 1);
         week = 1;
       }
-      const [startNextWeek, endNextWeek] = getDatesInWeek(currentYear, currentWeek + 1);
+      const [startNextWeek, endNextWeek] = getDatesInWeek(
+        currentYear,
+        currentWeek + 1
+      );
       // const [startNextWeek, endNextWeek] = getDatesInWeek(currentYear, currentWeek + 2);
-
 
       setDays((prev) => [
         ...prev.slice(7),
@@ -165,7 +164,14 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
 
   return (
     <div>
-      <div className={clsx("grid max-h-[400px] grid-cols-[70px,repeat(7,150px)] w-fit overflow-y-auto overflow-x-hidden scroll-smooth", `grid-rows-[auto,repeat(${Object.keys(groupBy(data, group)).length},100px)]`)}>
+      <div
+        className={clsx(
+          "grid max-h-[400px] w-fit grid-cols-[70px,repeat(7,150px)] overflow-y-auto overflow-x-hidden scroll-smooth",
+          `grid-rows-[auto,repeat(${
+            Object.keys(groupBy(data, group)).length
+          },100px)]`
+        )}
+      >
         <div className="sticky top-0 z-10 col-start-[1] row-start-[1] border-b border-slate-100 bg-white bg-clip-padding py-2 text-sm font-medium text-slate-900 dark:border-black/10 dark:bg-gradient-to-b dark:from-slate-600 dark:to-slate-700 dark:text-slate-200"></div>
         {days.map((date, i) => (
           <div
@@ -179,43 +185,145 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
             {date.toDateString()}
           </div>
         ))}
-        {Object.entries(groupBy(data.filter((event) => event.cluster === '6man'), group)).map(([key, groupedValues], i) => (
+        {Object.entries(
+          groupBy(
+            data.filter((event) => event.cluster === "6man"),
+            group
+          )
+        ).map(([key, groupedValues], i) => (
           <React.Fragment key={key}>
-            <div className={`sticky left-0 col-start-[1] row-start-[${i + 2}] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800`}>
+            <div
+              className={`sticky left-0 col-start-[1] row-start-[${
+                i + 2
+              }] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800`}
+            >
               {key}
             </div>
-            {Array.from(Array(7)).map((_, j) => {
-              const day = days[j];
-              const value = groupedValues.find((v) => v.date === day.toDateString());
-              // if (Number(2) !== j + 1)
-              return (
-                <div key={`day-${j}-line`} className={clsx(`border-b border-r border-slate-100 dark:border-slate-200/5`, `row-start-[${i + 2}] col-start-[${j + 2}]`)}></div>
-              )
-            })}
+            <div
+              className={clsx(
+                `border-b border-r border-slate-100 dark:border-slate-200/5`,
+                `row-start-[${i + 2}] col-start-[2]`
+              )}
+            ></div>
+            <div
+              className={clsx(
+                `border-b border-r border-slate-100 dark:border-slate-200/5`,
+                `row-start-[${i + 2}] col-start-[3]`
+              )}
+            ></div>
+            <div
+              className={clsx(
+                `border-b border-r border-slate-100 dark:border-slate-200/5`,
+                `row-start-[${i + 2}] col-start-[4]`
+              )}
+            ></div>
+            <div
+              className={clsx(
+                `border-b border-r border-slate-100 dark:border-slate-200/5`,
+                `row-start-[${i + 2}] col-start-[5]`
+              )}
+            ></div>
+            <div
+              className={clsx(
+                `border-b border-r border-slate-100 dark:border-slate-200/5`,
+                `row-start-[${i + 2}] col-start-[6]`
+              )}
+            ></div>
+            <div
+              className={clsx(
+                `border-b border-r border-slate-100 dark:border-slate-200/5`,
+                `row-start-[${i + 2}] col-start-[7]`
+              )}
+            ></div>
+            <div
+              className={clsx(
+                `border-b border-r border-slate-100 dark:border-slate-200/5`,
+                `row-start-[${i + 2}] col-start-[8]`
+              )}
+            ></div>
             {/* TODO: subgrid/filter for cluster? */}
-            {/* TODO: Make borderradius none if season continues next week */}
-            {
-              groupedValues.filter((item) => {
-                const [startCurrWeek, endCurrWeek] = getDatesInWeek(currentYear, currentWeek)
-                const seasonDays = getDaysArray(new Date(item[dateStartKey]), new Date(item[dateEndKey]))
-                console.log(seasonDays.some((d: Date) => dayFromDate(d) >= dayFromDate(startCurrWeek) && dayFromDate(d) <= dayFromDate(endCurrWeek) && new Date(item[dateStartKey]).getFullYear() === currentYear))
-
-                return (seasonDays.some((d: Date) => dayFromDate(d) >= dayFromDate(startCurrWeek) && dayFromDate(d) <= dayFromDate(endCurrWeek) && new Date(item[dateStartKey]).getFullYear() === currentYear));
-              }).map((event, j) => (
-                <div className={clsx(`row-start-[${i + 2}] m-1 flex flex-col rounded-lg border border-blue-700/10 bg-blue-400/20 p-1 dark:border-sky-500 dark:bg-sky-600/50`, `col-start-[${getCurrentWeekNumber(new Date(event[dateStartKey])) == currentWeek ? new Date(event[dateStartKey]).getDay() + 1 : 2}] col-end-[${getCurrentWeekNumber(new Date(event[dateEndKey])) > currentWeek ? 9 : 7 - (new Date(event[dateEndKey]).getDay() + 1)}]`, {
-                  'rounded-r-none': getCurrentWeekNumber(new Date(event[dateEndKey])) > currentWeek,
-                  'rounded-l-none': getCurrentWeekNumber(new Date(event[dateStartKey])) < currentWeek,
-                })}>
-                  <span className="text-xs text-blue-600 dark:text-sky-100">{timeTag(event[dateStartKey])} - {timeTag(event[dateEndKey])}</span>
+            {groupedValues
+              .filter((item) => {
+                const [startCurrWeek, endCurrWeek] = getDatesInWeek(
+                  currentYear,
+                  currentWeek
+                );
+                const seasonDays = getDaysArray(
+                  new Date(item[dateStartKey]),
+                  new Date(item[dateEndKey])
+                );
+                return seasonDays.some(
+                  (d: Date) =>
+                    dayFromDate(d) >= dayFromDate(startCurrWeek) &&
+                    dayFromDate(d) <= dayFromDate(endCurrWeek) &&
+                    new Date(item[dateStartKey]).getFullYear() === currentYear
+                );
+              })
+              .map((event, j) => (
+                <div
+                  key={`event-${j}`}
+                  style={{
+                    gridColumnStart: `${
+                      getCurrentWeekNumber(new Date(event[dateStartKey])) ==
+                      currentWeek
+                        ? new Date(event[dateStartKey]).getDay() + 1
+                        : 2
+                    }`,
+                    gridColumnEnd: `${
+                      getCurrentWeekNumber(new Date(event[dateEndKey])) >
+                      currentWeek
+                        ? 9
+                        : new Date(event[dateEndKey]).getDay() == 0
+                        ? 9
+                        : new Date(event[dateEndKey]).getDay() + 1
+                    }`,
+                  }}
+                  className={clsx(
+                    `row-start-[${
+                      i + 2
+                    }] m-1 flex flex-col rounded-lg border border-blue-700/10 bg-blue-400/20 p-1 dark:border-sky-500 dark:bg-sky-600/50`,
+                    // `col-start-[${
+                    //   getCurrentWeekNumber(new Date(event[dateStartKey])) ==
+                    //   currentWeek
+                    //     ? new Date(event[dateStartKey]).getDay() + 1
+                    //     : 2
+                    // }] col-end-[${
+                    //   getCurrentWeekNumber(new Date(event[dateEndKey])) >
+                    //   currentWeek
+                    //     ? 9
+                    //     : 7 - (new Date(event[dateEndKey]).getDay() + 1)
+                    // }] col-span-[${
+                    //   (getCurrentWeekNumber(new Date(event[dateEndKey])) >
+                    //   currentWeek
+                    //     ? 9
+                    //     : 7 - (new Date(event[dateEndKey]).getDay() + 1)) -
+                    //   (getCurrentWeekNumber(new Date(event[dateStartKey])) ==
+                    //   currentWeek
+                    //     ? new Date(event[dateStartKey]).getDay() + 1
+                    //     : 2)
+                    // }]`,
+                    {
+                      "rounded-r-none":
+                        getCurrentWeekNumber(new Date(event[dateEndKey])) >
+                        currentWeek,
+                      "rounded-l-none":
+                        getCurrentWeekNumber(new Date(event[dateStartKey])) <
+                        currentWeek,
+                    }
+                  )}
+                >
+                  <span className="text-xs text-blue-600 dark:text-sky-100">
+                    {timeTag(event[dateStartKey])} -{" "}
+                    {timeTag(event[dateEndKey])}
+                  </span>
                   <span className="text-xs font-medium text-blue-600 dark:text-sky-100">
-                    {event.season} {event.cluster} - {getCurrentWeekNumber(new Date(event[dateEndKey]))} - {currentWeek}
+                    {event.season} {event.cluster}
                   </span>
                   <span className="text-xs text-blue-600 dark:text-sky-100">
                     Ragnarok, NA
                   </span>
                 </div>
-              ))
-            }
+              ))}
           </React.Fragment>
         ))}
         {/* {data && data.map((event, i) => (
@@ -240,7 +348,7 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
             Mel's Diner
           </span>
         </div> */}
-        <div className="col-start-[7] row-span-3 row-start-[14] m-1 flex flex-col rounded-lg border border-pink-700/10 bg-pink-400/20 p-1 dark:border-indigo-500 dark:bg-indigo-600/50">
+        {/* <div className="col-span-6 col-start-[7] row-span-3 row-start-[14] m-1 flex flex-col rounded-lg border border-pink-700/10 bg-pink-400/20 p-1 dark:border-indigo-500 dark:bg-indigo-600/50">
           <span className="text-xs text-pink-600 dark:text-indigo-100">
             5 PM
           </span>
@@ -250,7 +358,7 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
           <span className="text-xs text-pink-600 dark:text-indigo-100">
             We like to party!
           </span>
-        </div>
+        </div> */}
       </div>
       <div className="rw-button-group rw-button-group-border">
         <button
