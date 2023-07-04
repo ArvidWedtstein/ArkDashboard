@@ -78,7 +78,7 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
         </Link>
       </header>
 
-      <Calendar />
+      <Calendar data={timelineSeasons} group="server" dateStartKey="season_start_date" dateEndKey="season_end_date" />
 
       <ol className="relative mx-2 border-l border-zinc-500">
         {timelineSeasons.map(

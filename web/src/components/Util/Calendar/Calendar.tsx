@@ -1,8 +1,16 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
+import { groupBy, timeTag } from "src/lib/formatters";
 
 
-const Calendar = () => {
+
+interface CalendarProps {
+  data: any[];
+  group: string;
+  dateStartKey: string;
+  dateEndKey: string;
+}
+const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
   const getCurrentWeekNumber = (date: Date): number => {
     const startOfYear = new Date(date.getFullYear(), 0, 1);
     const millisecondsPerWeek = 7 * 24 * 60 * 60 * 1000;
@@ -14,6 +22,9 @@ const Calendar = () => {
   };
   const [currentWeek, setCurrentWeek] = useState<number>(
     getCurrentWeekNumber(new Date())
+  );
+  const [currentYear, setCurrentYear] = useState<number>(
+    new Date().getFullYear()
   );
   const weeksInMonth = (year, month_number) => {
     let firstOfMonth = new Date(year, month_number - 1, 1);
@@ -45,6 +56,19 @@ const Calendar = () => {
   const daysInYear = (year: number): number =>
     (year % 4 === 0 && year % 100 > 0) || year % 400 == 0 ? 366 : 365;
 
+  const getWeeksInYear = (year: number): number => {
+    const firstDayOfYear = new Date(year, 0, 1);
+    const lastDayOfYear = new Date(year, 11, 31);
+
+    // Calculate the time difference in milliseconds
+    const timeDifference = lastDayOfYear.getTime() - firstDayOfYear.getTime();
+
+    // Convert milliseconds to weeks
+    const weeks = Math.ceil(timeDifference / (1000 * 3600 * 24 * 7));
+
+    return weeks;
+  };
+
   const dateFromDay = (year: number, day: number) => {
     let date = new Date(year, 0);
     return new Date(date.setDate(day));
@@ -65,11 +89,6 @@ const Calendar = () => {
       (startDateWithOffset.getTime() - startDate.getTime()) /
       (7 * dayMilliseconds)
     );
-
-    if (weekNumber < startWeekNumber || weekNumber > startWeekNumber + 52) {
-      throw new Error("Invalid week number");
-    }
-
     const startOfWeek = new Date(
       startDateWithOffset.getTime() +
       (weekNumber - startWeekNumber) * 7 * dayMilliseconds
@@ -80,71 +99,78 @@ const Calendar = () => {
     return [startOfWeek, endOfWeek];
   };
 
+
   const [days, setDays] = useState<Date[]>([]);
   useEffect(() => {
     const [startPrevWeek, endPrevWeek] = getDatesInWeek(
-      2023,
-      getCurrentWeekNumber(new Date()) - 1
+      currentYear,
+      currentWeek - 1
     );
     const [startCurrWeek, endCurrWeek] = getDatesInWeek(
-      2023,
-      getCurrentWeekNumber(new Date())
+      currentYear,
+      currentWeek
     );
     const [startNextWeek, endNextWeek] = getDatesInWeek(
-      2023,
-      getCurrentWeekNumber(new Date()) + 1
+      currentYear,
+      currentWeek + 1
     );
     setDays([
-      ...getDaysArray(startPrevWeek, endPrevWeek),
+      // ...getDaysArray(startPrevWeek, endPrevWeek),
       ...getDaysArray(startCurrWeek, endCurrWeek),
-      ...getDaysArray(startNextWeek, endNextWeek),
+      // ...getDaysArray(startNextWeek, endNextWeek),
     ]);
 
     document
-      .getElementById(`day-${getCurrentWeekNumber(new Date()) + 1}`)
+      .getElementById(`week-${currentWeek}-day-7`)
       ?.scrollIntoView();
+
   }, []);
 
   const changeWeek = (direction: "prev" | "next") => {
-    const [startPrevWeek, endPrevWeek] = getDatesInWeek(2023, currentWeek - 1);
-    const [startCurrWeek, endCurrWeek] = getDatesInWeek(2023, currentWeek);
-    const [startNextWeek, endNextWeek] = getDatesInWeek(2023, currentWeek + 1);
+    let week = currentWeek;
+
     if (direction === "prev") {
+      if (currentWeek === 1) {
+        setCurrentWeek(getWeeksInYear(currentYear - 1));
+        setCurrentYear((prev) => prev - 1);
+        week = getWeeksInYear(currentYear - 1);
+      }
+      const [startPrevWeek, endPrevWeek] = getDatesInWeek(currentYear, week - 1);
+      // const [startPrevWeek, endPrevWeek] = getDatesInWeek(currentYear, week - 2);
+
       setDays((prev) => [
         ...getDaysArray(startPrevWeek, endPrevWeek),
         ...prev.slice(0, -7),
       ]);
 
-      document.getElementById(`day-${currentWeek - 1}-1`)?.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "end",
-      });
-
       setCurrentWeek((prev) => prev - 1);
     } else {
+      if (currentWeek === getWeeksInYear(currentYear)) {
+        setCurrentWeek(1);
+        setCurrentYear((prev) => prev + 1);
+        week = 1;
+      }
+      const [startNextWeek, endNextWeek] = getDatesInWeek(currentYear, currentWeek + 1);
+      // const [startNextWeek, endNextWeek] = getDatesInWeek(currentYear, currentWeek + 2);
+
+
       setDays((prev) => [
         ...prev.slice(7),
         ...getDaysArray(startNextWeek, endNextWeek),
       ]);
 
-      document.getElementById(`day-${currentWeek + 1}-7`)?.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "end",
-      });
-
       setCurrentWeek((prev) => prev + 1);
     }
   };
+
   return (
     <div>
-      <div className="grid max-h-[350px] grid-cols-[70px,repeat(21,150px)] grid-rows-[auto,repeat(16,50px)] overflow-y-auto scroll-smooth">
+      <div className={clsx("grid max-h-[400px] grid-cols-[70px,repeat(7,150px)] w-fit overflow-y-auto overflow-x-hidden scroll-smooth", `grid-rows-[auto,repeat(${Object.keys(groupBy(data, group)).length},100px)]`)}>
         <div className="sticky top-0 z-10 col-start-[1] row-start-[1] border-b border-slate-100 bg-white bg-clip-padding py-2 text-sm font-medium text-slate-900 dark:border-black/10 dark:bg-gradient-to-b dark:from-slate-600 dark:to-slate-700 dark:text-slate-200"></div>
         {days.map((date, i) => (
           <div
             key={`day-${i}`}
-            id={`day-${getCurrentWeekNumber(date)}-${(i % 7) + 1}`}
+            id={`week-${getCurrentWeekNumber(date)}-day-${(i % 7) + 1}`}
             className={clsx(
               "sticky top-0 z-10 row-start-[1] border-b border-slate-100 bg-white bg-clip-padding py-2 text-center text-sm font-medium text-slate-900 dark:border-black/10 dark:bg-gradient-to-b dark:from-slate-600 dark:to-slate-700 dark:text-slate-200",
               `col-start-[${i + 2}]`
@@ -153,202 +179,50 @@ const Calendar = () => {
             {date.toDateString()}
           </div>
         ))}
-        {/* <div className="sticky top-0 z-10 col-start-[2] row-start-[1] border-b border-slate-100 bg-white bg-clip-padding py-2 text-center text-sm font-medium text-slate-900 dark:border-black/10 dark:bg-gradient-to-b dark:from-slate-600 dark:to-slate-700 dark:text-slate-200">
-        Sun
-      </div>
-      <div className="sticky top-0 z-10 col-start-[3] row-start-[1] border-b border-slate-100 bg-white bg-clip-padding py-2 text-center text-sm font-medium text-slate-900 dark:border-black/10 dark:bg-gradient-to-b dark:from-slate-600 dark:to-slate-700 dark:text-slate-200">
-        Mon
-      </div>
-      <div className="sticky top-0 z-10 col-start-[4] row-start-[1] border-b border-slate-100 bg-white bg-clip-padding py-2 text-center text-sm font-medium text-slate-900 dark:border-black/10 dark:bg-gradient-to-b dark:from-slate-600 dark:to-slate-700 dark:text-slate-200">
-        Tue
-      </div>
-      <div className="sticky top-0 z-10 col-start-[5] row-start-[1] border-b border-slate-100 bg-white bg-clip-padding py-2 text-center text-sm font-medium text-slate-900 dark:border-black/10 dark:bg-gradient-to-b dark:from-slate-600 dark:to-slate-700 dark:text-slate-200">
-        Wed
-      </div>
-      <div className="sticky top-0 z-10 col-start-[6] row-start-[1] border-b border-slate-100 bg-white bg-clip-padding py-2 text-center text-sm font-medium text-slate-900 dark:border-black/10 dark:bg-gradient-to-b dark:from-slate-600 dark:to-slate-700 dark:text-slate-200">
-        Thu
-      </div>
-      <div className="sticky top-0 z-10 col-start-[7] row-start-[1] border-b border-slate-100 bg-white bg-clip-padding py-2 text-center text-sm font-medium text-slate-900 dark:border-black/10 dark:bg-gradient-to-b dark:from-slate-600 dark:to-slate-700 dark:text-slate-200">
-        Fri
-      </div>
-      <div className="sticky top-0 z-10 col-start-[8] row-start-[1] border-b border-slate-100 bg-white bg-clip-padding py-2 text-center text-sm font-medium text-slate-900 dark:border-black/10 dark:bg-gradient-to-b dark:from-slate-600 dark:to-slate-700 dark:text-slate-200">
-        Sat
-      </div> */}
-        {/* {Object.entries(groupBy(timelineSeasons, 'server')).map(([server, seasons], i) => (
-          <React.Fragment key={server}>
+        {Object.entries(groupBy(data, group)).map(([key, groupedValues], i) => (
+          <React.Fragment key={key}>
             <div className={`sticky left-0 col-start-[1] row-start-[${i + 2}] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800`}>
-              {server}
+              {key}
             </div>
-            <div className={`col-start-[2] row-start-[${i + 2}] border-b border-r border-slate-100 dark:border-slate-200/5`}></div>
+            {Array.from(Array(7)).map((_, j) => {
+              const day = days[j];
+              const value = groupedValues.find((v) => v.date === day.toDateString());
+              // if (Number(2) !== j + 1)
+              return (
+                <div key={`day-${j}-line`} className={clsx(`border-b border-r border-slate-100 dark:border-slate-200/5`, `row-start-[${i + 2}] col-start-[${j + 2}]`)}></div>
+              )
+            })}
+            {/* <div className={`col-start-[2] row-start-[${i + 2}] border-b border-r border-slate-100 dark:border-slate-200/5`}></div>
             <div className={`col-start-[3] row-start-[${i + 2}] border-b border-r border-slate-100 dark:border-slate-200/5`}></div>
             <div className={`col-start-[4] row-start-[${i + 2}] border-b border-r border-slate-100 dark:border-slate-200/5`}></div>
             <div className={`col-start-[5] row-start-[${i + 2}] border-b border-r border-slate-100 dark:border-slate-200/5`}></div>
             <div className={`col-start-[6] row-start-[${i + 2}] border-b border-r border-slate-100 dark:border-slate-200/5`}></div>
             <div className={`col-start-[7] row-start-[${i + 2}] border-b border-r border-slate-100 dark:border-slate-200/5`}></div>
-            <div className={`col-start-[8] row-start-[${i + 2}] border-b border-slate-100 dark:border-slate-200/5`}></div>
+            <div className={`col-start-[8] row-start-[${i + 2}] border-b border-r border-slate-100 dark:border-slate-200/5`}></div> */}
+            {
+              groupedValues.filter((item) => {
+                const [startCurrWeek, endCurrWeek] = getDatesInWeek(currentYear, currentWeek)
+                const seasonDays = getDaysArray(new Date(item[dateStartKey]), new Date(item[dateEndKey]))
+                console.log(seasonDays.some((d: Date) => dayFromDate(d) >= dayFromDate(startCurrWeek) && dayFromDate(d) <= dayFromDate(endCurrWeek) && new Date(item[dateStartKey]).getFullYear() === currentYear))
+
+                return (seasonDays.some((d: Date) => dayFromDate(d) >= dayFromDate(startCurrWeek) && dayFromDate(d) <= dayFromDate(endCurrWeek) && new Date(item[dateStartKey]).getFullYear() === currentYear));
+              }).map((event, j) => (
+                <div className={clsx(`row-start-[${i + 2}] m-1 flex flex-col rounded-lg border border-blue-700/10 bg-blue-400/20 p-1 dark:border-sky-500 dark:bg-sky-600/50`, `col-start-[${getCurrentWeekNumber(new Date(event[dateStartKey])) == currentWeek ? new Date(event[dateStartKey]).getDay() + 1 : 2}] col-end-[${getCurrentWeekNumber(new Date(event[dateEndKey])) > currentWeek ? 9 : 7 - (new Date(event[dateEndKey]).getDay() + 1)}]`)}>
+                  <span className="text-xs text-blue-600 dark:text-sky-100">{timeTag(event[dateStartKey])} - {timeTag(event[dateEndKey])}</span>
+                  <span className="text-xs font-medium text-blue-600 dark:text-sky-100">
+                    Base raid
+                  </span>
+                  <span className="text-xs text-blue-600 dark:text-sky-100">
+                    Ragnarok, NA
+                  </span>
+                </div>
+              ))
+            }
           </React.Fragment>
+        ))}
+        {/* {data && data.map((event, i) => (
         ))} */}
-        <div className="sticky left-0 col-start-[1] row-start-[2] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800">
-          5 AM
-        </div>
-        <div className="col-start-[2] row-start-[2] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[3] row-start-[2] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[4] row-start-[2] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[5] row-start-[2] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[6] row-start-[2] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[7] row-start-[2] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[8] row-start-[2] border-b border-slate-100 dark:border-slate-200/5"></div>
-        <div className="sticky left-0 col-start-[1] row-start-[3] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800">
-          6 AM
-        </div>
-        <div className="col-start-[2] row-start-[3] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[3] row-start-[3] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[4] row-start-[3] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[5] row-start-[3] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[6] row-start-[3] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[7] row-start-[3] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[8] row-start-[3] border-b border-slate-100 dark:border-slate-200/5"></div>
-        <div className="sticky left-0 col-start-[1] row-start-[4] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800">
-          7 AM
-        </div>
-        <div className="col-start-[2] row-start-[4] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[3] row-start-[4] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[4] row-start-[4] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[5] row-start-[4] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[6] row-start-[4] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[7] row-start-[4] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[8] row-start-[4] border-b border-slate-100 dark:border-slate-200/5"></div>
-        <div className="sticky left-0 col-start-[1] row-start-[5] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800">
-          8 AM
-        </div>
-        <div className="col-start-[2] row-start-[5] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[3] row-start-[5] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[4] row-start-[5] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[5] row-start-[5] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[6] row-start-[5] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[7] row-start-[5] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[8] row-start-[5] border-b border-slate-100 dark:border-slate-200/5"></div>
-        <div className="sticky left-0 col-start-[1] row-start-[6] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800">
-          9 AM
-        </div>
-        <div className="col-start-[2] row-start-[6] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[3] row-start-[6] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[4] row-start-[6] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[5] row-start-[6] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[6] row-start-[6] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[7] row-start-[6] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[8] row-start-[6] border-b border-slate-100 dark:border-slate-200/5"></div>
-        <div className="sticky left-0 col-start-[1] row-start-[7] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800">
-          10 AM
-        </div>
-        <div className="col-start-[2] row-start-[7] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[3] row-start-[7] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[4] row-start-[7] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[5] row-start-[7] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[6] row-start-[7] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[7] row-start-[7] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[8] row-start-[7] border-b border-slate-100 dark:border-slate-200/5"></div>
-        <div className="sticky left-0 col-start-[1] row-start-[8] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800">
-          11 AM
-        </div>
-        <div className="col-start-[2] row-start-[8] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[3] row-start-[8] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[4] row-start-[8] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[5] row-start-[8] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[6] row-start-[8] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[7] row-start-[8] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[8] row-start-[8] border-b border-slate-100 dark:border-slate-200/5"></div>
-        <div className="sticky left-0 col-start-[1] row-start-[9] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800">
-          12 PM
-        </div>
-        <div className="col-start-[2] row-start-[9] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[3] row-start-[9] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[4] row-start-[9] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[5] row-start-[9] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[6] row-start-[9] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[7] row-start-[9] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[8] row-start-[9] border-b border-slate-100 dark:border-slate-200/5"></div>
-        <div className="sticky left-0 col-start-[1] row-start-[10] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800">
-          1 PM
-        </div>
-        <div className="col-start-[2] row-start-[10] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[3] row-start-[10] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[4] row-start-[10] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[5] row-start-[10] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[6] row-start-[10] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[7] row-start-[10] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[8] row-start-[10] border-b border-slate-100 dark:border-slate-200/5"></div>
-        <div className="sticky left-0 col-start-[1] row-start-[11] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800">
-          2 PM
-        </div>
-        <div className="col-start-[2] row-start-[11] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[3] row-start-[11] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[4] row-start-[11] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[5] row-start-[11] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[6] row-start-[11] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[7] row-start-[11] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[8] row-start-[11] border-b border-slate-100 dark:border-slate-200/5"></div>
-        <div className="sticky left-0 col-start-[1] row-start-[12] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800">
-          3 PM
-        </div>
-        <div className="col-start-[2] row-start-[12] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[3] row-start-[12] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[4] row-start-[12] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[5] row-start-[12] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[6] row-start-[12] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[7] row-start-[12] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[8] row-start-[12] border-b border-slate-100 dark:border-slate-200/5"></div>
-        <div className="sticky left-0 col-start-[1] row-start-[13] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800">
-          4 PM
-        </div>
-        <div className="col-start-[2] row-start-[13] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[3] row-start-[13] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[4] row-start-[13] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[5] row-start-[13] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[6] row-start-[13] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[7] row-start-[13] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[8] row-start-[13] border-b border-slate-100 dark:border-slate-200/5"></div>
-        <div className="sticky left-0 col-start-[1] row-start-[14] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800">
-          5 PM
-        </div>
-        <div className="col-start-[2] row-start-[14] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[3] row-start-[14] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[4] row-start-[14] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[5] row-start-[14] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[6] row-start-[14] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[7] row-start-[14] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[8] row-start-[14] border-b border-slate-100 dark:border-slate-200/5"></div>
-        <div className="sticky left-0 col-start-[1] row-start-[15] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800">
-          6 PM
-        </div>
-        <div className="col-start-[2] row-start-[15] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[3] row-start-[15] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[4] row-start-[15] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[5] row-start-[15] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[6] row-start-[15] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[7] row-start-[15] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[8] row-start-[15] border-b border-slate-100 dark:border-slate-200/5"></div>
-        <div className="sticky left-0 col-start-[1] row-start-[16] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800">
-          7 PM
-        </div>
-        <div className="col-start-[2] row-start-[16] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[3] row-start-[16] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[4] row-start-[16] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[5] row-start-[16] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[6] row-start-[16] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[7] row-start-[16] border-b border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[8] row-start-[16] border-b border-slate-100 dark:border-slate-200/5"></div>
-        <div className="sticky left-0 col-start-[1] row-start-[17] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800">
-          8 PM
-        </div>
-        <div className="col-start-[2] row-start-[17] border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[3] row-start-[17] border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[4] row-start-[17] border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[5] row-start-[17] border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[6] row-start-[17] border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[7] row-start-[17] border-r border-slate-100 dark:border-slate-200/5"></div>
-        <div className="col-start-[8] row-start-[17]"></div>
-        <div className="col-start-3 row-span-2 row-start-[2] m-1 flex flex-col rounded-lg border border-blue-700/10 bg-blue-400/20 p-1 dark:border-sky-500 dark:bg-sky-600/50">
+        {/* <div className="col-start-[3] row-span-2 row-start-[2] m-1 flex flex-col rounded-lg border border-blue-700/10 bg-blue-400/20 p-1 dark:border-sky-500 dark:bg-sky-600/50">
           <span className="text-xs text-blue-600 dark:text-sky-100">5 AM</span>
           <span className="text-xs font-medium text-blue-600 dark:text-sky-100">
             Base raid
@@ -356,8 +230,8 @@ const Calendar = () => {
           <span className="text-xs text-blue-600 dark:text-sky-100">
             Ragnarok, NA
           </span>
-        </div>
-        <div className="col-start-[4] row-span-4 row-start-[3] m-1 flex flex-col rounded-lg border border-purple-700/10 bg-purple-400/20 p-1 dark:border-fuchsia-500 dark:bg-fuchsia-600/50">
+        </div> */}
+        {/* <div className="col-start-[4] row-span-4 row-start-[3] m-1 flex flex-col rounded-lg border border-purple-700/10 bg-purple-400/20 p-1 dark:border-fuchsia-500 dark:bg-fuchsia-600/50">
           <span className="text-xs text-purple-600 dark:text-fuchsia-100">
             6 AM
           </span>
@@ -367,7 +241,7 @@ const Calendar = () => {
           <span className="text-xs text-purple-600 dark:text-fuchsia-100">
             Mel's Diner
           </span>
-        </div>
+        </div> */}
         <div className="col-start-[7] row-span-3 row-start-[14] m-1 flex flex-col rounded-lg border border-pink-700/10 bg-pink-400/20 p-1 dark:border-indigo-500 dark:bg-indigo-600/50">
           <span className="text-xs text-pink-600 dark:text-indigo-100">
             5 PM
@@ -380,7 +254,7 @@ const Calendar = () => {
           </span>
         </div>
       </div>
-      <div className="flex">
+      <div className="rw-button-group rw-button-group-border">
         <button
           className="rw-button rw-button-green"
           onClick={() => changeWeek("prev")}
