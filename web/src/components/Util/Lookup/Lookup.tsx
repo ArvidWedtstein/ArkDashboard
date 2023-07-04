@@ -92,7 +92,7 @@ const Lookup = ({
 
     setSearchTerm(option.label);
     // name && clearErrors(name)
-    onSelect && onSelect(option);
+    onSelect?.(option);
     !!name && field.onChange(option.value);
   };
 

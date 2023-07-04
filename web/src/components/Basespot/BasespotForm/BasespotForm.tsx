@@ -45,7 +45,7 @@ const BasespotForm = (props: BasespotFormProps) => {
     { label: "The Island", value: 2 },
     { label: "The Center", value: 3 },
     { label: "Ragnarok", value: 4 },
-    { label: "Abberation", value: 5 },
+    { label: "Aberration", value: 5 },
     { label: "Extinction", value: 6 },
     { label: "Scorched Earth", value: 7 },
     { label: "Genesis", value: 8 },
@@ -139,6 +139,12 @@ const BasespotForm = (props: BasespotFormProps) => {
         <Lookup
           defaultValue={props.basespot?.map_id || map}
           options={mapNames}
+          onSelect={(e) => {
+            if (!e) return;
+            setMap(parseInt(e.value.toString()));
+            formMethods.setValue("map_id", parseInt(e.value.toString()));
+          }
+          }
           name="map_id"
         />
 
