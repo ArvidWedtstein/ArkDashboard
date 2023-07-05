@@ -871,6 +871,23 @@ export const groupBy = <T extends {}>(
   }, {});
 };
 
+type NestedKey<T> = string | (string | number)[];
+
+export const getValueByNestedKey = <T extends object>(obj: T, nestedKey: NestedKey<T>): unknown => {
+  const keys = Array.isArray(nestedKey) ? nestedKey : nestedKey.split('.');
+  let value: unknown = obj;
+
+  for (const key of keys) {
+    if (value && typeof value === 'object' && key in value) {
+      value = (value as Record<string, unknown>)[key];
+    } else {
+      return undefined;
+    }
+  }
+
+  return value;
+};
+
 /**
  * @description debounce function for search fields
  * @param func

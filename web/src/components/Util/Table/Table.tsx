@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { IntRange, debounce, formatNumber } from "src/lib/formatters";
+import { IntRange, debounce, formatNumber, getValueByNestedKey } from "src/lib/formatters";
 import clsx from "clsx";
 import useComponentVisible from "src/components/useComponentVisible";
 import { Form, SelectField, Submit, TextField } from "@redwoodjs/forms";
@@ -124,7 +124,7 @@ interface TableProps {
   /**
    * The column configurations for the table.
    */
-  columns: TableColumn[];
+  columns?: TableColumn[] | null;
   /**
    * The data rows for the table.
    */
@@ -301,6 +301,9 @@ const Table = ({
 
   const handleSearch = debounce((e) => setSearchTerm(e.target.value), 500);
 
+  const { isComponentVisible, setIsComponentVisible, ref } =
+    useComponentVisible(false);
+
   const handleRowSelect = (event, id?) => {
     if (event.target.id === "checkbox-all-select") {
       return setSelectedRows(
@@ -380,6 +383,12 @@ const Table = ({
     field,
     className,
     numeric,
+  }: {
+    rowData: TableDataRow;
+    rowIndex: number;
+    field: string;
+    numeric: boolean;
+    [key: string]: any;
   }) => {
     const rowSelected = isSelected(rowData.row_id);
     const cellClassName = clsx(
@@ -736,9 +745,6 @@ const Table = ({
     ]);
   };
 
-  const { isComponentVisible, setIsComponentVisible, ref } =
-    useComponentVisible(false);
-
   return (
     <div
       className={clsx(
@@ -959,7 +965,7 @@ const Table = ({
           >
             {mergedSettings.select &&
               tableSelect({ header: true, rowIndex: -1 })}
-            {columns.map(({ ...other }, index) =>
+            {columns && columns.map(({ ...other }, index) =>
               headerRenderer({
                 label: other.header,
                 columnIndex: index,
@@ -985,7 +991,7 @@ const Table = ({
                 }
               >
                 {mergedSettings.select && tableSelect({ datarow })}
-                {columns.map(
+                {columns && columns.map(
                   (
                     {
                       field,
@@ -999,7 +1005,7 @@ const Table = ({
                   ) =>
                     cellRenderer({
                       rowData: datarow,
-                      cellData: datarow[field],
+                      cellData: field.includes('.') ? getValueByNestedKey(datarow, field) : datarow[field],
                       columnIndex: index,
                       rowIndex: i,
                       render,

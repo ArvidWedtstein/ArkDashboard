@@ -10,7 +10,7 @@ type StatCardProps = React.HTMLAttributes<HTMLDivElement> & {
 }
 const StatCard = ({ stat, value, chart = true, icon, text = false, iconBackground, ...props }: StatCardProps) => {
   return (
-    <div className="relative flex flex-col min-w-0 break-words flex-1 bg-gray-200 dark:bg-zinc-700 rounded-lg xl:mb-0 transition ease-in-out shadow-lg dark:text-white text-black border border-transparent hover:border-zinc-500" {...props}>
+    <div className="relative flex flex-col min-w-0 break-words flex-1 bg-gray-200 dark:bg-zinc-700 rounded-lg xl:mb-0 transition ease-in-out shadow-lg dark:text-white text-black border border-transparent" {...props}>
       <div className="flex-auto p-4">
         <div className="flex flex-row flex-wrap flex-shrink">
           <div className="relative w-full pr-4 max-w-full flex-grow flex-1 text-left">
