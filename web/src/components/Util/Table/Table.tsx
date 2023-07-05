@@ -87,6 +87,10 @@ type TableSettings = {
    */
   select?: boolean;
   /**
+   * Enables exporting selected rows to clipboard
+   */
+  export?: boolean;
+  /**
    * Indicates whether the filter feature is enabled.
    */
   filter?: boolean;
@@ -186,12 +190,13 @@ const Table = ({
     if (column) {
       const sortOrder = direction === "desc" ? -1 : 1;
       const sortKey = column.startsWith("-") ? column.substring(1) : column;
-
       data.sort((a, b) => {
-        if (a[sortKey] < b[sortKey]) {
+        let c = sortKey.includes(".") ? getValueByNestedKey(a, sortKey) : sortKey;
+        let d = sortKey.includes(".") ? getValueByNestedKey(b, sortKey) : sortKey;
+        if (c < d) {
           return -1 * sortOrder;
         }
-        if (a[sortKey] > b[sortKey]) {
+        if (c > d) {
           return 1 * sortOrder;
         }
         return 0;
@@ -452,15 +457,17 @@ const Table = ({
     rowIndex?: number;
   }) => {
     return (
-      <td
-        className={clsx("w-4 p-4", {
-          "bg-zinc-300 first:rounded-tl-lg dark:bg-zinc-800": header,
-          "bg-zinc-100 dark:bg-zinc-600": !header,
-          "!bg-zinc-300 dark:!bg-zinc-700":
-            !header && isSelected(datarow.row_id),
-          "rounded-bl-lg":
-            rowIndex === PaginatedData.length - 1 && !mergedSettings.summary,
-        })}
+      < td
+        className={
+          clsx("w-4 p-4", {
+            "bg-zinc-300 first:rounded-tl-lg dark:bg-zinc-800": header,
+            "bg-zinc-100 dark:bg-zinc-600": !header,
+            "!bg-zinc-300 dark:!bg-zinc-700":
+              !header && isSelected(datarow.row_id),
+            "rounded-bl-lg":
+              rowIndex === PaginatedData.length - 1 && !mergedSettings.summary,
+          })
+        }
         scope="col"
       >
         <div className="flex items-center">
@@ -484,7 +491,7 @@ const Table = ({
             checkbox
           </label>
         </div>
-      </td>
+      </td >
     );
   };
 
@@ -631,7 +638,7 @@ const Table = ({
     ));
 
     return (
-      <nav className="my-2 flex items-center justify-end space-x-2 text-center text-sm text-zinc-800 dark:text-gray-400">
+      <nav className="m-2 flex items-center justify-end space-x-2 text-center text-sm text-zinc-800 dark:text-gray-400">
         Rows per page&nbsp;
         <select
           disabled={dataRows.length == 0}
@@ -902,7 +909,7 @@ const Table = ({
             </dialog>
           </div>
         )}
-        {mergedSettings.select && (
+        {mergedSettings.select && mergedSettings.export && (
           <button
             className="rw-button rw-button-gray"
             title="Export"
@@ -990,7 +997,7 @@ const Table = ({
                     : ""
                 }
               >
-                {mergedSettings.select && tableSelect({ datarow })}
+                {mergedSettings.select && tableSelect({ datarow, rowIndex: i })}
                 {columns && columns.map(
                   (
                     {
