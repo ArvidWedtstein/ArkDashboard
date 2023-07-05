@@ -1,6 +1,7 @@
 import { Link, routes } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
+import { useEffect } from "react";
 import { QUERY } from "src/components/TimelineSeason/TimelineSeasonsCell";
 import Calendar from "src/components/Util/Calendar/Calendar";
 
@@ -79,6 +80,7 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
       </header>
 
       <Calendar data={timelineSeasons} group="server" dateStartKey="season_start_date" dateEndKey="season_end_date" />
+
 
       <ol className="relative mx-2 border-l border-zinc-500">
         {timelineSeasons.map(

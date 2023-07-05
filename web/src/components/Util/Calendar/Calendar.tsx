@@ -85,11 +85,11 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
     const startDateWithOffset = new Date(startDate.getTime() - offset);
     const startWeekNumber = Math.ceil(
       (startDateWithOffset.getTime() - startDate.getTime()) /
-        (7 * dayMilliseconds)
+      (7 * dayMilliseconds)
     );
     const startOfWeek = new Date(
       startDateWithOffset.getTime() +
-        (weekNumber - startWeekNumber) * 7 * dayMilliseconds
+      (weekNumber - startWeekNumber) * 7 * dayMilliseconds
     );
 
     const endOfWeek = new Date(startOfWeek.getTime() + 6 * dayMilliseconds);
@@ -167,8 +167,7 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
       <div
         className={clsx(
           "grid max-h-[400px] w-fit grid-cols-[70px,repeat(7,150px)] overflow-y-auto overflow-x-hidden scroll-smooth",
-          `grid-rows-[auto,repeat(${
-            Object.keys(groupBy(data, group)).length
+          `grid-rows-[auto,repeat(${Object.keys(groupBy(data, group)).length
           },100px)]`
         )}
       >
@@ -193,9 +192,8 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
         ).map(([key, groupedValues], i) => (
           <React.Fragment key={key}>
             <div
-              className={`sticky left-0 col-start-[1] row-start-[${
-                i + 2
-              }] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800`}
+              className={`sticky left-0 col-start-[1] row-start-[${i + 2
+                }] border-r border-slate-100 bg-white p-1.5 text-right text-xs font-medium uppercase text-slate-400 dark:border-slate-200/5 dark:bg-slate-800`}
             >
               {key}
             </div>
@@ -263,24 +261,21 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
                 <div
                   key={`event-${j}`}
                   style={{
-                    gridColumnStart: `${
-                      getCurrentWeekNumber(new Date(event[dateStartKey])) ==
+                    gridColumnStart: `${getCurrentWeekNumber(new Date(event[dateStartKey])) ==
                       currentWeek
-                        ? new Date(event[dateStartKey]).getDay() + 1
-                        : 2
-                    }`,
-                    gridColumnEnd: `${
-                      getCurrentWeekNumber(new Date(event[dateEndKey])) >
+                      ? new Date(event[dateStartKey]).getDay() + 1
+                      : 2
+                      }`,
+                    gridColumnEnd: `${getCurrentWeekNumber(new Date(event[dateEndKey])) >
                       currentWeek
-                        ? 9
-                        : new Date(event[dateEndKey]).getDay() == 0
+                      ? 9
+                      : new Date(event[dateEndKey]).getDay() == 0
                         ? 9
                         : new Date(event[dateEndKey]).getDay() + 1
-                    }`,
+                      }`,
                   }}
                   className={clsx(
-                    `row-start-[${
-                      i + 2
+                    `row-start-[${i + 2
                     }] m-1 flex flex-col rounded-lg border border-blue-700/10 bg-blue-400/20 p-1 dark:border-sky-500 dark:bg-sky-600/50`,
                     // `col-start-[${
                     //   getCurrentWeekNumber(new Date(event[dateStartKey])) ==
@@ -379,3 +374,4 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
 };
 
 export default Calendar;
+
