@@ -9,6 +9,7 @@ interface CalendarProps {
   dateEndKey: string;
 }
 const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
+
   const getCurrentWeekNumber = (date: Date): number => {
     const startOfYear = new Date(date.getFullYear(), 0, 1);
     const millisecondsPerWeek = 7 * 24 * 60 * 60 * 1000;
@@ -18,12 +19,15 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
     const elapsedWeeks = Math.ceil(elapsedMilliseconds / millisecondsPerWeek);
     return date.getDay() === 0 ? elapsedWeeks - 1 : elapsedWeeks;
   };
+
   const [currentWeek, setCurrentWeek] = useState<number>(
     getCurrentWeekNumber(new Date())
   );
   const [currentYear, setCurrentYear] = useState<number>(
     new Date().getFullYear()
   );
+  const [days, setDays] = useState<Date[]>([]);
+
   const weeksInMonth = (year, month_number) => {
     let firstOfMonth = new Date(year, month_number - 1, 1);
     let day = firstOfMonth.getDay() || 6;
@@ -41,8 +45,9 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
     return result + 1;
   };
   const getDaysArray = (s: Date, e: Date) => {
+    let a = []
     for (
-      var a = [], d = new Date(s);
+      let d = new Date(s);
       d <= new Date(e);
       d.setDate(d.getDate() + 1)
     ) {
@@ -77,6 +82,7 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
     let oneDay = 1000 * 60 * 60 * 24;
     return Math.floor(diff / oneDay);
   };
+
   const getDatesInWeek = (year: number, weekNumber: number): Date[] => {
     const startDate = new Date(year, 0, 1);
     const dayMilliseconds = 24 * 60 * 60 * 1000;
@@ -96,29 +102,17 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
 
     return [startOfWeek, endOfWeek];
   };
-
-  const [days, setDays] = useState<Date[]>([]);
   useEffect(() => {
-    const [startPrevWeek, endPrevWeek] = getDatesInWeek(
-      currentYear,
-      currentWeek - 1
-    );
     const [startCurrWeek, endCurrWeek] = getDatesInWeek(
       currentYear,
       currentWeek
     );
-    const [startNextWeek, endNextWeek] = getDatesInWeek(
-      currentYear,
-      currentWeek + 1
-    );
     setDays([
-      // ...getDaysArray(startPrevWeek, endPrevWeek),
       ...getDaysArray(startCurrWeek, endCurrWeek),
-      // ...getDaysArray(startNextWeek, endNextWeek),
     ]);
 
     document.getElementById(`week-${currentWeek}-day-7`)?.scrollIntoView();
-  }, []);
+  }, [currentYear, currentWeek]);
 
   const changeWeek = (direction: "prev" | "next") => {
     let week = currentWeek;
@@ -140,12 +134,14 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
         ...prev.slice(0, -7),
       ]);
 
-      setCurrentWeek((prev) => prev - 1);
+      if (currentWeek !== 1) setCurrentWeek((prev) => prev - 1);
     } else {
       if (currentWeek === getWeeksInYear(currentYear)) {
         setCurrentWeek(1);
         setCurrentYear((prev) => prev + 1);
         week = 1;
+      } else {
+
       }
       const [startNextWeek, endNextWeek] = getDatesInWeek(
         currentYear,
@@ -158,7 +154,7 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
         ...getDaysArray(startNextWeek, endNextWeek),
       ]);
 
-      setCurrentWeek((prev) => prev + 1);
+      if (currentWeek !== getWeeksInYear(currentYear)) setCurrentWeek((prev) => prev + 1);
     }
   };
 
@@ -186,7 +182,7 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
         ))}
         {Object.entries(
           groupBy(
-            data.filter((event) => event.cluster === "6man"),
+            data, //.filter((event) => event.cluster === "6man"),
             group
           )
         ).map(([key, groupedValues], i) => (
@@ -240,6 +236,7 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
               )}
             ></div>
             {/* TODO: subgrid/filter for cluster? */}
+            {/* TODO: fix bug event not showing on new year */}
             {groupedValues
               .filter((item) => {
                 const [startCurrWeek, endCurrWeek] = getDatesInWeek(
@@ -250,11 +247,33 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
                   new Date(item[dateStartKey]),
                   new Date(item[dateEndKey])
                 );
+                const weekDays = getDaysArray(startCurrWeek, endCurrWeek);
+
+                if (item.season == "3" && item.cluster == '6man') console.log(dayFromDate(startCurrWeek), dayFromDate(endCurrWeek), seasonDays.some(
+                  (d: Date) =>
+                    (dayFromDate(d) >= dayFromDate(startCurrWeek) &&
+                      dayFromDate(d) <= dayFromDate(endCurrWeek)) &&
+                    new Date(item[dateStartKey]).getFullYear() === currentYear &&
+                    new Date(item[dateEndKey]).getFullYear() === currentYear
+                ))
+
+                // return seasonDays.some(
+                //   (d: Date) =>
+                //     dayFromDate(d) >= dayFromDate(startCurrWeek) &&
+                //     dayFromDate(d) <= dayFromDate(endCurrWeek) &&
+                //     new Date(item[dateStartKey]).getFullYear() === currentYear &&
+                //     new Date(item[dateEndKey]).getFullYear() === currentYear
+                // );
                 return seasonDays.some(
                   (d: Date) =>
-                    dayFromDate(d) >= dayFromDate(startCurrWeek) &&
-                    dayFromDate(d) <= dayFromDate(endCurrWeek) &&
-                    new Date(item[dateStartKey]).getFullYear() === currentYear
+                    weekDays.some(
+                      (w: Date) =>
+                        dayFromDate(d) === dayFromDate(w) &&
+                        new Date(item[dateStartKey]).getFullYear() ===
+                        currentYear &&
+                        new Date(item[dateEndKey]).getFullYear() ===
+                        currentYear
+                    )
                 );
               })
               .map((event, j) => (
@@ -271,32 +290,12 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
                       ? 9
                       : new Date(event[dateEndKey]).getDay() == 0
                         ? 9
-                        : new Date(event[dateEndKey]).getDay() + 1
+                        : new Date(event[dateEndKey]).getDay() + 2
                       }`,
                   }}
                   className={clsx(
                     `row-start-[${i + 2
-                    }] m-1 flex flex-col rounded-lg border border-blue-700/10 bg-blue-400/20 p-1 dark:border-sky-500 dark:bg-sky-600/50`,
-                    // `col-start-[${
-                    //   getCurrentWeekNumber(new Date(event[dateStartKey])) ==
-                    //   currentWeek
-                    //     ? new Date(event[dateStartKey]).getDay() + 1
-                    //     : 2
-                    // }] col-end-[${
-                    //   getCurrentWeekNumber(new Date(event[dateEndKey])) >
-                    //   currentWeek
-                    //     ? 9
-                    //     : 7 - (new Date(event[dateEndKey]).getDay() + 1)
-                    // }] col-span-[${
-                    //   (getCurrentWeekNumber(new Date(event[dateEndKey])) >
-                    //   currentWeek
-                    //     ? 9
-                    //     : 7 - (new Date(event[dateEndKey]).getDay() + 1)) -
-                    //   (getCurrentWeekNumber(new Date(event[dateStartKey])) ==
-                    //   currentWeek
-                    //     ? new Date(event[dateStartKey]).getDay() + 1
-                    //     : 2)
-                    // }]`,
+                    }] relative m-1 flex flex-col rounded-lg border border-blue-700/10 bg-blue-400/20 p-1 dark:border-sky-500 dark:bg-sky-600/50`,
                     {
                       "rounded-r-none":
                         getCurrentWeekNumber(new Date(event[dateEndKey])) >
@@ -307,16 +306,23 @@ const Calendar = ({ data, group, dateStartKey, dateEndKey }: CalendarProps) => {
                     }
                   )}
                 >
-                  <span className="text-xs text-blue-600 dark:text-sky-100">
-                    {timeTag(event[dateStartKey])} -{" "}
-                    {timeTag(event[dateEndKey])}
-                  </span>
-                  <span className="text-xs font-medium text-blue-600 dark:text-sky-100">
-                    {event.season} {event.cluster}
-                  </span>
-                  <span className="text-xs text-blue-600 dark:text-sky-100">
-                    Ragnarok, NA
-                  </span>
+                  {(getCurrentWeekNumber(new Date(event[dateStartKey])) ==
+                    currentWeek || getCurrentWeekNumber(new Date(event[dateEndKey])) ==
+                    currentWeek) && (<>
+                      <span className={`text-xs text-blue-600 dark:text-sky-100 ${getCurrentWeekNumber(new Date(event[dateStartKey])) ==
+                        currentWeek ? 'text-left' : 'text-right'}`}>
+                        {timeTag(event[dateStartKey])} -{" "}
+                        {timeTag(event[dateEndKey])}
+                      </span>
+                      <span className={`text-xs font-medium text-blue-600 dark:text-sky-100 ${getCurrentWeekNumber(new Date(event[dateStartKey])) ==
+                        currentWeek ? 'text-left' : 'text-right'}`}>
+                        {event.season} {event.cluster}
+                      </span>
+                      <span className={`text-xs text-blue-600 dark:text-sky-100 ${getCurrentWeekNumber(new Date(event[dateStartKey])) ==
+                        currentWeek ? 'text-left' : 'text-right'}`}>
+                        Ragnarok, NA
+                      </span>
+                    </>)}
                 </div>
               ))}
           </React.Fragment>

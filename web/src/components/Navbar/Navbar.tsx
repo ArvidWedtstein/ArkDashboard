@@ -3,7 +3,7 @@ import { Link, routes, useLocation } from "@redwoodjs/router";
 import { useAuth } from "src/auth";
 import { capitalizeSentence, singularize } from "src/lib/formatters";
 import useComponentVisible from "../useComponentVisible";
-import Avatar from "../Avatar/Avatar";
+import Avatar from "../Util/Avatar/Avatar";
 import clsx from "clsx";
 
 const Navbar = () => {
@@ -32,9 +32,9 @@ const Navbar = () => {
   const profileId = (currentUser?.id || currentUser?.sub || "") as string;
   const newRoute =
     routes[
-      `new${singularize(
-        capitalizeSentence(title.split("-").join(" ")).replace(" ", "")
-      )}`
+    `new${singularize(
+      capitalizeSentence(title.split("-").join(" ")).replace(" ", "")
+    )}`
     ];
   const showNewButton = isAuthenticated && newRoute;
   return (

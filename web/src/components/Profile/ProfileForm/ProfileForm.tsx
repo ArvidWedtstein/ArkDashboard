@@ -15,7 +15,7 @@ import type {
   permission,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import Avatar from "src/components/Avatar/Avatar";
+import Avatar from "src/components/Util/Avatar/Avatar";
 import Lookup from "src/components/Util/Lookup/Lookup";
 import { useLazyQuery } from "@apollo/client";
 import { useEffect } from "react";
