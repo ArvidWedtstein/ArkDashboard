@@ -22,8 +22,10 @@ model Basespot {
   defense_images         String?
   created_by             String?                  @db.Uuid
   turretsetup_image      String?
-  updated_at             DateTime?                @db.Timestamptz(6)
+  updated_at             DateTime?                @default(now()) @db.Timestamptz(6)
   type                   String?
+  server                 String?
+  published              Boolean?
   Profile                Profile?                 @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Map                    Map                      @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   TimelineSeasonBasespot TimelineSeasonBasespot[]
@@ -58,7 +60,7 @@ model Profile {
 }
 
 model Role {
-  id                               String       @id(map: "roles_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                               String       @id(map: "roles_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name                             String
   created_by                       String?      @db.Uuid
   permissions                      permission[]
@@ -78,7 +80,7 @@ model Tribe {
 }
 
 model Message {
-  id         String    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   profile_id String    @default(dbgenerated("auth.uid()")) @db.Uuid
   content    String
   created_at DateTime? @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
@@ -86,7 +88,7 @@ model Message {
 }
 
 model Dino {
-  id                             String     @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                             String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at                     DateTime?  @default(now()) @db.Timestamptz(6)
   name                           String
   synonyms                       String?
@@ -186,7 +188,7 @@ model Map {
 }
 
 model Lootcrate {
-  id                 String         @id(map: "Lootcrates_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                 String         @id(map: "Lootcrates_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at         DateTime?      @default(now()) @db.Timestamptz(6)
   updated_at         DateTime?      @default(now()) @db.Timestamptz(6)
   blueprint          String
@@ -205,7 +207,7 @@ model Lootcrate {
 }
 
 model LootcrateSet {
-  id                String              @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at        DateTime?           @default(now()) @db.Timestamptz(6)
   lootcrate_id      String              @db.Uuid
   name              String?
@@ -217,7 +219,7 @@ model LootcrateSet {
 }
 
 model LootcrateSetEntry {
-  id                    String                  @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                    String                  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at            DateTime?               @default(now()) @db.Timestamptz(6)
   set_id                String                  @db.Uuid
   name                  String?
@@ -229,7 +231,7 @@ model LootcrateSetEntry {
 }
 
 model DinoStat {
-  id         String       @id(map: "DinoEffWeight_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id         String       @id(map: "DinoEffWeight_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at DateTime?    @default(now()) @db.Timestamptz(6)
   updated_at DateTime?    @default(now()) @db.Timestamptz(6)
   dino_id    String       @db.Uuid
@@ -244,7 +246,7 @@ model DinoStat {
 }
 
 model LootcrateSetEntryItem {
-  id                String            @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id                String            @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at        DateTime?         @default(now()) @db.Timestamptz(6)
   updated_at        DateTime?         @default(now()) @db.Timestamptz(6)
   entry_id          String            @db.Uuid
@@ -255,7 +257,7 @@ model LootcrateSetEntryItem {
 }
 
 model MapCoordinate {
-  id         String    @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   updated_at DateTime? @default(now()) @db.Timestamptz(6)
   latitude   Float?
@@ -269,7 +271,7 @@ model MapCoordinate {
 }
 
 model MapNote {
-  id         String    @id(map: "MapNotes_pkey") @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  id         String    @id(map: "MapNotes_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   created_at DateTime? @default(now()) @db.Timestamptz(6)
   updated_at DateTime? @default(now()) @db.Timestamptz(6)
   map_id     BigInt
