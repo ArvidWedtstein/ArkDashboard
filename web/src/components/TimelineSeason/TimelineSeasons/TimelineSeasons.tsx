@@ -63,12 +63,12 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
   return (
     <article className="rw-segment overflow-x-auto">
       <header className="rw-segment-header">
-        <h2 className="rw-heading text-xl">TimelineSeasons</h2>
+        <h2 className="rw-heading text-xl">Timeline Seasons</h2>
         <Link
           to={routes.newTimelineSeason()}
           className="rw-button rw-button-green-outline my-3"
         >
-          New TimelineSeason
+          New Timeline Season
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 448 512"
@@ -79,8 +79,12 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
         </Link>
       </header>
 
-      <Calendar data={timelineSeasons} group="server" dateStartKey="season_start_date" dateEndKey="season_end_date" />
-
+      <Calendar
+        data={timelineSeasons}
+        group="server"
+        dateStartKey="season_start_date"
+        dateEndKey="season_end_date"
+      />
 
       <ol className="relative mx-2 border-l border-zinc-500">
         {timelineSeasons.map(
