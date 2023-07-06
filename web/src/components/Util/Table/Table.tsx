@@ -753,12 +753,7 @@ const Table = ({
   };
 
   return (
-    <div
-      className={clsx(
-        "relative overflow-x-auto overflow-y-hidden sm:rounded-lg",
-        className
-      )}
-    >
+    <div className="relative overflow-x-auto overflow-y-hidden sm:rounded-lg">
       <div className="flex items-center justify-start space-x-3 [&:not(:empty)]:my-2">
         {mergedSettings.filter && (
           <div className="relative w-fit" ref={ref}>
@@ -960,81 +955,82 @@ const Table = ({
           <div key={`toolbar-${index}`}>{item}</div>
         ))}
       </div>
-
-      <table className="relative mr-auto w-full table-auto text-left text-sm text-zinc-700 dark:text-zinc-300">
-        <thead className="text-sm uppercase">
-          <tr
-            className={clsx("table-row", {
-              "divide-x divide-gray-400 dark:divide-zinc-800":
-                mergedSettings.borders.vertical,
-              hidden: !mergedSettings.header,
-            })}
-          >
-            {mergedSettings.select &&
-              tableSelect({ header: true, rowIndex: -1 })}
-            {columns && columns.map(({ ...other }, index) =>
-              headerRenderer({
-                label: other.header,
-                columnIndex: index,
-                ...other,
-              })
-            )}
-          </tr>
-        </thead>
-        <tbody
-          className={
-            mergedSettings.borders.horizontal &&
-            "divide-y divide-gray-400 dark:divide-zinc-800"
-          }
-        >
-          {dataRows &&
-            PaginatedData.map((datarow, i) => (
-              <tr
-                key={datarow.row_id}
-                className={
-                  mergedSettings.borders.vertical
-                    ? "divide-x divide-gray-400 dark:divide-zinc-800"
-                    : ""
-                }
-              >
-                {mergedSettings.select && tableSelect({ datarow, rowIndex: i })}
-                {columns && columns.map(
-                  (
-                    {
-                      field,
-                      render,
-                      valueFormatter,
-                      className,
-                      numeric,
-                      ...other
-                    },
-                    index
-                  ) =>
-                    cellRenderer({
-                      rowData: datarow,
-                      cellData: field.includes('.') ? getValueByNestedKey(datarow, field) : datarow[field],
-                      columnIndex: index,
-                      rowIndex: i,
-                      render,
-                      valueFormatter,
-                      field,
-                      className,
-                      numeric,
-                      ...other,
-                    })
-                )}
-              </tr>
-            ))}
-          {(dataRows === null || dataRows.length === 0) && (
-            <tr className="w-full bg-zinc-100 dark:bg-zinc-600">
-              <td headers="" className="p-4 text-center" colSpan={100}>
-                <span className="px-3 py-2 text-gray-400">No data found</span>
-              </td>
+      <div className={clsx("sm:rounded-lg", className)}>
+        <table className="relative mr-auto w-full table-auto text-left text-sm text-zinc-700 dark:text-zinc-300">
+          <thead className="text-sm uppercase">
+            <tr
+              className={clsx("table-row", {
+                "divide-x divide-gray-400 dark:divide-zinc-800":
+                  mergedSettings.borders.vertical,
+                hidden: !mergedSettings.header,
+              })}
+            >
+              {mergedSettings.select &&
+                tableSelect({ header: true, rowIndex: -1 })}
+              {columns && columns.map(({ ...other }, index) =>
+                headerRenderer({
+                  label: other.header,
+                  columnIndex: index,
+                  ...other,
+                })
+              )}
             </tr>
-          )}
-        </tbody>
-        {mergedSettings.summary && tableFooter()}
-      </table>
+          </thead>
+          <tbody
+            className={
+              mergedSettings.borders.horizontal &&
+              "divide-y divide-gray-400 dark:divide-zinc-800"
+            }
+          >
+            {dataRows &&
+              PaginatedData.map((datarow, i) => (
+                <tr
+                  key={datarow.row_id}
+                  className={
+                    mergedSettings.borders.vertical
+                      ? "divide-x divide-gray-400 dark:divide-zinc-800"
+                      : ""
+                  }
+                >
+                  {mergedSettings.select && tableSelect({ datarow, rowIndex: i })}
+                  {columns && columns.map(
+                    (
+                      {
+                        field,
+                        render,
+                        valueFormatter,
+                        className,
+                        numeric,
+                        ...other
+                      },
+                      index
+                    ) =>
+                      cellRenderer({
+                        rowData: datarow,
+                        cellData: field.includes('.') ? getValueByNestedKey(datarow, field) : datarow[field],
+                        columnIndex: index,
+                        rowIndex: i,
+                        render,
+                        valueFormatter,
+                        field,
+                        className,
+                        numeric,
+                        ...other,
+                      })
+                  )}
+                </tr>
+              ))}
+            {(dataRows === null || dataRows.length === 0) && (
+              <tr className="w-full bg-zinc-100 dark:bg-zinc-600">
+                <td headers="" className="p-4 text-center" colSpan={100}>
+                  <span className="px-3 py-2 text-gray-400">No data found</span>
+                </td>
+              </tr>
+            )}
+          </tbody>
+          {mergedSettings.summary && tableFooter()}
+        </table>
+      </div>
       {mergedSettings.pagination.enabled && tablePagination()}
     </div>
   );

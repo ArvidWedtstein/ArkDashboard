@@ -1,24 +1,69 @@
 import { MetaTags } from "@redwoodjs/web"
-import clsx from "clsx"
-import { PingAlert } from "src/components/Util/PingAlert/PingAlert"
+import { useMemo } from "react"
 import StatCard from "src/components/Util/StatCard/StatCard"
 import Table from "src/components/Util/Table/Table"
+import { formatNumber, relativeDate, rtf } from "src/lib/formatters"
 import { FindAdminData } from "types/graphql"
 
 const Admin = ({ basespots }: FindAdminData) => {
+  const optimizedBasespots = useMemo(() => {
+    return basespots.map((base) => {
+      const totalSteps = 5;
+      const missingSteps: string[] = [];
+      let completedSteps = 0;
+
+      if (base.description && base.description.length < 70) {
+        completedSteps += 0.5;
+      }
+      if (base.description && base.description.length >= 70) {
+        completedSteps += 1
+      } else {
+        missingSteps.push("Add longer description")
+      }
+
+      if (base.image) {
+        completedSteps += 1
+      } else {
+        missingSteps.push("Add preview image")
+      }
+
+      if (base.estimated_for_players) {
+        completedSteps += 1
+      } else {
+        missingSteps.push("Add estimated for players / tribe size")
+      }
+
+      if (base.latitude && base.latitude > 0 && base.longitude && base.longitude > 0) {
+        completedSteps += 1
+      } else {
+        missingSteps.push("Add location coords")
+      }
+
+      if (base.type) {
+        completedSteps += 1
+      } else {
+        missingSteps.push("Add spot type e.g cave, rathole, ceiling")
+      }
+      return {
+        ...base,
+        progress: (completedSteps / totalSteps) * 100,
+        missingSteps: missingSteps.join(',\n')
+      }
+    })
+  }, [basespots])
+
   return (
     <>
       <MetaTags title="Admin" description="Admin page" />
 
-      {/* TODO: Replace with taybul?*/}
       <div className="container-xl overflow-hidden p-3 text-center m-4">
         <div className="flex flex-col-reverse md:flex-row space-x-3 mb-3">
-          <StatCard stat={"Test"} value={10} />
+          <StatCard stat={"Finsihed Basespots"} value={formatNumber((optimizedBasespots.filter((b) => b.progress == 100).length / optimizedBasespots.length) * 100, { maximumSignificantDigits: 3 })} valueof={100} />
           <StatCard stat={"Test"} value={10} />
           <StatCard stat={"Test"} value={10} />
           <StatCard stat={"Test"} value={10} />
         </div>
-        <Table className="" settings={{
+        <Table rows={optimizedBasespots} settings={{
           select: true,
           pagination: {
             enabled: true,
@@ -38,100 +83,44 @@ const Admin = ({ basespots }: FindAdminData) => {
           field: "Map.name",
           sortable: true,
         }, {
+          header: "Last Updated",
+          field: "updated_at",
+          render: ({ value }) => (
+            <span className="rw-badge rw-badge-gray-outline">
+              <svg className="w-2.5 h-2.5 mr-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
+              </svg>
+              {relativeDate(new Date(value), 'days')}
+            </span>
+          )
+        }, {
           header: "Progress",
-          field: "id",
-          render: ({ row }) => {
-            const totalSteps = 5;
-            const colors = [
-              "bg-red-500",
-              "bg-orange-500",
-              "bg-yellow-500",
-              "bg-lime-500",
-              "bg-green-500",
-            ];
-
-            let completedSteps = 0;
-            if (row.description && row.description.length < 70) {
-              completedSteps += 0.5;
+          field: "progress",
+          render: ({ value, row }) => {
+            let color = 'bg-red-500'
+            switch (true) {
+              case (value <= 20):
+                color = "bg-red-500";
+              case (value <= 40 && value > 20):
+                color = "bg-orange-500";
+              case (value > 40 && value <= 60):
+                color = "bg-yellow-500";
+              case (value > 60 && value <= 80):
+                color = "bg-lime-500";
+              case (value <= 100 && value > 80):
+                color = "bg-green-500";
             }
-            if (row.description && row.description.length >= 70) {
-              completedSteps += 1
-            }
-
-            if (row.image) {
-              completedSteps += 1
-            }
-
-            if (row.estimated_for_players) {
-              completedSteps += 1
-            }
-
-            if (row.turret_setup_images && row.turret_setup_images.length > 0) {
-              completedSteps += 1
-            }
-
-            if (row.type) {
-              completedSteps += 1
-            }
-
-            const completionPercentage = (completedSteps / totalSteps) * 100;
-
-
-            const color = (completionPercentage) => {
-              switch (true) {
-                case (completionPercentage <= 20):
-                  return "bg-red-500";
-                case (completionPercentage <= 40 && completionPercentage > 20):
-                  return "bg-orange-500";
-                case (completionPercentage > 40 && completionPercentage <= 60):
-                  return "bg-yellow-500";
-                case (completionPercentage > 60 && completionPercentage <= 80):
-                  return "bg-lime-500";
-                case (completionPercentage <= 100 && completionPercentage > 80):
-                  return "bg-green-500";
-              }
-            }
-            const getBarColor = (index) => {
-              return Math.round(completedSteps) >= index + 1
-                ? colors[index]
-                : "bg-transparent";
-            };
 
             return (
-              <>
-                <dd className="flex items-center space-x-2">
-                  <div className="w-full bg-gray-200 rounded h-2 dark:bg-gray-700">
-                    <div className={`h-2 rounded ${color(completionPercentage)}`} style={{ width: `${completionPercentage}%` }}></div>
-                  </div>
-                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{completionPercentage}%</span>
-                </dd>
-                {/* <div
-                  className="flex h-2 w-32 flex-row rounded-full bg-gray-300 dark:bg-gray-700"
-                >
-                  {Array.from(Array(totalSteps)).map((_, i) => (
-                    <div
-                      key={`${row.row_id}-progess-${i}`}
-                      className={clsx(
-                        `h-full w-1/5`,
-                        "first:rounded-l-full last:rounded-r-full",
-                        getBarColor(i)
-                      )}
-                    ></div>
-                  ))}
-                </div> */}
-              </>
+              <dd className="flex items-center space-x-2" title={row.missingSteps}>
+                <div className="w-full bg-gray-200 rounded h-2 dark:bg-gray-700">
+                  <div className={`h-2 rounded ${color}`} style={{ width: `${value}%` }}></div>
+                </div>
+                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{value}%</span>
+              </dd>
             )
           }
-        }]} rows={basespots} />
-        {/* Object.keys(basespots[0]).map((f) => {
-          if (f !== "__typename" && f !== "Map") {
-            return {
-              label: f,
-              field: f,
-            }
-          }
-          return null
-        }).filter((f) => f != null) */}
+        }]} />
       </div >
       {/* <div className="flex items-center mb-5">
             <p className="bg-blue-100 text-blue-800 text-sm font-semibold inline-flex items-center p-1.5 rounded dark:bg-blue-200 dark:text-blue-800">8.7</p>

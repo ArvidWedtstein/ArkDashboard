@@ -142,7 +142,7 @@ export const isUUID = (value: string): boolean => {
  * @summary Checks if date is in 2022-11-28T14:17:14.899Z format
  * @static true
  */
-export const isDate = (dateString: string): boolean => {
+export const isDate = (dateString: string | Date | number): boolean => {
   const date = new Date(dateString);
   return !isNaN(date.getTime());
 };
@@ -445,11 +445,26 @@ export const getWeekDates = (date?: Date): [Date, Date] => {
   return [start, end];
 };
 
-export const rtf = new Intl.RelativeTimeFormat("en", {
-  localeMatcher: "best fit", // other values: "lookup"
-  numeric: "always", // other values: "auto"
-  style: "long", // other values: "short" or "narrow"
-}).format;
+export const rtf = (
+  num: number,
+  unit: Intl.RelativeTimeFormatUnit
+): string => {
+  return new Intl.RelativeTimeFormat("en", {
+    localeMatcher: "best fit", // other values: "lookup"
+    numeric: "always", // other values: "auto"
+    style: "long", // other values: "short" or "narrow"
+  }).format(num, unit);
+};
+export const relativeDate = (date: Date, unit: Intl.RelativeTimeFormatUnit): string => {
+  const daysDifference = Math.round(
+    (date.getTime() - new Date().getTime()) / 86400000,
+  );
+  return new Intl.RelativeTimeFormat("en", {
+    localeMatcher: "lookup",
+    numeric: "auto",
+  }).format(daysDifference, unit);
+}
+
 
 /**
  * Determines the type of a word based on regular expressions.

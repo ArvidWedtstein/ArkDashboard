@@ -11,7 +11,6 @@ import {
   SearchField,
   SelectField,
   Submit,
-  TextField,
 } from "@redwoodjs/forms";
 
 import type { FindDinos } from "types/graphql";
@@ -134,8 +133,10 @@ const DinosList = ({ dinosPage }: FindDinos) => {
                 className="relative mb-10 h-52 rounded-t-lg"
                 style={{
                   backgroundRepeat: "no-repeat",
-                  backgroundSize: "cover",
-                  background: `url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/barbarian-bg.jpg')`,
+                  backgroundSize: "100%",
+                  objectFit: "cover",
+                  objectPosition: "center",
+                  backgroundImage: `url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/barbarian-bg.jpg')`,
                 }}
               >
                 <img

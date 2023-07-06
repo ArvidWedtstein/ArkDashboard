@@ -15,6 +15,7 @@ export const QUERY = gql`
         updated_at
         map_id
         estimated_for_players
+        type
         Map {
           name
         }

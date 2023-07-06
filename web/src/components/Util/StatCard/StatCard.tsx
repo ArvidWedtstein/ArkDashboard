@@ -1,21 +1,24 @@
-import { BgColor } from "src/lib/formatters"
+import clsx from "clsx"
+import { BgColor, StrokeColor } from "src/lib/formatters"
 
 type StatCardProps = React.HTMLAttributes<HTMLDivElement> & {
   stat: string
   value: number | string
+  valueof?: number | string
   chart?: boolean
   icon?: React.ReactNode
   iconBackground?: string | BgColor
   text?: boolean
+  circleColor?: StrokeColor
 }
-const StatCard = ({ stat, value, chart = true, icon, text = false, iconBackground, ...props }: StatCardProps) => {
+const StatCard = ({ stat, value, chart = true, icon, text = false, iconBackground, circleColor, valueof, ...props }: StatCardProps) => {
   return (
     <div className="relative flex flex-col min-w-0 break-words flex-1 bg-gray-200 dark:bg-zinc-700 rounded-lg xl:mb-0 transition ease-in-out shadow-lg dark:text-white text-black border border-transparent" {...props}>
       <div className="flex-auto p-4">
         <div className="flex flex-row flex-wrap flex-shrink">
           <div className="relative w-full pr-4 max-w-full flex-grow flex-1 text-left">
             <h5 className="text-gray-400 uppercase font-bold text-xs">{stat}</h5>
-            <span className="font-bold text-xl">{value}</span>
+            <span className="font-bold text-xl">{value} {valueof && `/ ${valueof}`}</span>
           </div>
           {icon && (
             <div className="relative w-auto flex-initial">
@@ -32,7 +35,7 @@ const StatCard = ({ stat, value, chart = true, icon, text = false, iconBackgroun
                 <path className="fill-none stroke-1 stroke-[#557b88]" d="M18 2.0845
           a 15.9155 15.9155 0 0 1 0 31.831
           a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-                <path className="fill-none stroke-2 stroke-[#00cfde] animate-circle-progress" strokeLinecap="round" strokeDasharray={`${value}, 100`} d="M18 2.0845
+                <path className={clsx("fill-none stroke-2 animate-circle-progress", circleColor || "stroke-[#00cfde]")} strokeLinecap="round" strokeDasharray={`${value}, 100`} d="M18 2.0845
           a 15.9155 15.9155 0 0 1 0 31.831
           a 15.9155 15.9155 0 0 1 0 -31.831"></path>
                 <text textAnchor="middle" x="18" y="19.35" dominantBaseline="middle" fontSize={8} className="fill-black dark:fill-white text-center font-normal">{value}%</text>

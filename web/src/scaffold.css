@@ -1,5 +1,13 @@
 @import "tailwindcss/components";
 @layer components {
+  a:hover {
+    @apply dark:text-accent-500 text-accent-600 underline;
+  }
+  span > a,
+  p > a {
+    @apply decoration-pea-500 underline;
+  }
+
   .rw-header {
     @apply flex justify-between py-4 px-8;
   }
@@ -382,7 +390,7 @@
   // ----------------------------
   */
   .rw-badge {
-    @apply rounded px-2.5 py-0.5 text-xs font-medium;
+    @apply inline-flex items-center rounded px-2.5 py-0.5 text-xs font-medium;
   }
 
   /* Red Badge */
