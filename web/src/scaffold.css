@@ -124,7 +124,11 @@
   .rw-button:not(:empty) {
     @apply inline-flex items-center justify-center;
   }
-  .rw-button .rw-button-icon {
+
+  .rw-button .rw-button-icon-start {
+    @apply pointer-events-none order-1 mr-2 w-5 fill-current text-xl leading-5;
+  }
+  .rw-button .rw-button-icon-end {
     @apply pointer-events-none ml-2 w-5 fill-current text-xl leading-5;
   }
   /*
