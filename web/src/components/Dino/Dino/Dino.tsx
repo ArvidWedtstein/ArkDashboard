@@ -1724,7 +1724,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                         <div
                           key={`weapon-${id}`}
                           className={clsx(
-                            `animate-fade-in dark:bg-secondary-900 my-1 flex min-h-full min-w-[8rem] flex-1 flex-col items-center justify-between space-y-1 rounded bg-zinc-200 p-3 first:ml-1 last:mr-1`,
+                            `animate-fade-in my-1 flex min-h-full min-w-[8rem] flex-1 flex-col items-center justify-between space-y-1 rounded bg-zinc-200 p-3 first:ml-1 last:mr-1 dark:bg-zinc-700`,
                             {
                               "shadow-pea-500 shadow":
                                 isPossible && chanceOfDeath < 99,
