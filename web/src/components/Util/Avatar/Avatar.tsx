@@ -82,7 +82,7 @@ const Avatar = memo<AvatarProps>(
         >
           {url ? (
             <img
-              className="h-full w-full rounded-full object-cover object-center"
+              className="h-full w-full rounded-full object-cover object-center aspect-square"
               id="imagePreview"
               src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${url}`}
               alt={"avatar"}

@@ -148,10 +148,8 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           </h1>
         </div>
       </header>
-      <div className="my-3 grid grid-cols-4 grid-flow-row gap-3 relative">
-
-
-        <section className="h-full bg-accent-900 text-text relative col-span-3 row-span-2 w-full rounded-lg border border-zinc-500 font-semibold dark:bg-zinc-800 dark:text-white">
+      <div className="relative my-3 grid grid-flow-row grid-cols-4 gap-3">
+        <section className="bg-accent-900 text-text relative col-span-3 row-span-2 h-full w-full rounded-lg border border-zinc-500 font-semibold dark:bg-zinc-800 dark:text-white">
           <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
             <p className="flex-1 underline underline-offset-8">Basespots</p>
             <button
@@ -161,7 +159,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
-                className="rw-button-icon h-4 w-4 fill-current stroke-current"
+                className="rw-button-icon-end h-4 w-4 fill-current stroke-current"
               >
                 <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
               </svg>
@@ -171,8 +169,8 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           <TimelineSeasonBasespotsCell timeline_season_id={timelineSeason.id} />
         </section>
 
-        <section className="row-span-4 col-span-1 max-w-xs space-y-3 pr-3 text-black dark:text-white relative">
-          <div className="flex items-center justify-between mt-3">
+        <section className="relative col-span-1 row-span-4 max-w-xs space-y-3 pr-3 text-black dark:text-white">
+          <div className="mt-3 flex items-center justify-between">
             <p>Events</p>
             <button
               className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
@@ -181,7 +179,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
-                className="rw-button-icon h-4 w-4 fill-current stroke-current"
+                className="rw-button-icon-end h-4 w-4 fill-current stroke-current"
               >
                 <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
               </svg>
@@ -203,7 +201,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
-                className="rw-button-icon h-4 w-4 fill-current stroke-current"
+                className="rw-button-icon-end h-4 w-4 fill-current stroke-current"
               >
                 <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
               </svg>
@@ -211,76 +209,9 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           </div>
           <TimelineSeasonPeopleCell timeline_season_id={timelineSeason.id} />
         </section>
-
       </div>
 
-      {/* <div className="rw-segment my-3 flex gap-3">
-        <div className="relative flex h-max min-h-full w-full flex-1 flex-grow flex-col">
-          <section className="bg-accent-900 text-text relative w-full rounded-lg border border-zinc-500 font-semibold dark:bg-zinc-800 dark:text-white">
-            <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
-              <p className="flex-1 underline underline-offset-8">Basespots</p>
-              <button
-                className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
-                onClick={() => setOpenModal("timelineseasonbasespot")}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 448 512"
-                  className="rw-button-icon h-4 w-4 fill-current stroke-current"
-                >
-                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-                </svg>
-              </button>
-            </div>
-
-            <TimelineSeasonBasespotsCell
-              timeline_season_id={timelineSeason.id}
-            />
-          </section>
-
-          <section className="bg-background relative my-3 w-full rounded-lg border border-zinc-500 font-semibold text-black dark:bg-zinc-800 dark:text-white">
-            <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
-              <p className="flex-1 underline underline-offset-8">
-                Persons in this season
-              </p>
-              <button
-                className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
-                onClick={() => setOpenModal("timelineseasonperson")}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 448 512"
-                  className="rw-button-icon h-4 w-4 fill-current stroke-current"
-                >
-                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-                </svg>
-              </button>
-            </div>
-            <TimelineSeasonPeopleCell timeline_season_id={timelineSeason.id} />
-          </section>
-        </div>
-
-        <div className="my-3 h-fit grow-0 basis-72 space-y-3 pr-3 text-black dark:text-white">
-          <div className="flex items-center justify-between">
-            <p>Events</p>
-            <button
-              className="relative flex h-5 w-5 items-center justify-center rounded-full border-none p-0 text-black ring-1 ring-black transition-all hover:rotate-45 hover:ring-2 dark:text-white dark:ring-white md:h-7 md:w-7"
-              onClick={() => setOpenModal("timelineseasonevent")}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                className="rw-button-icon h-4 w-4 fill-current stroke-current"
-              >
-                <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
-              </svg>
-            </button>
-          </div>
-
-          <TimelineSeasonEventsCell timeline_season_id={timelineSeason.id} />
-        </div>
-      </div> */}
-      < nav className="rw-button-group" >
+      <nav className="rw-button-group">
         <Link
           to={routes.editTimelineSeason({ id: timelineSeason.id })}
           className="rw-button rw-button-blue"
@@ -294,7 +225,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
         >
           Delete
         </button>
-      </nav >
+      </nav>
     </>
   );
 };

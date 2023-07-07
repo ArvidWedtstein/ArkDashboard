@@ -15,7 +15,7 @@ import type {
   permission,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import Avatar from "src/components/Avatar/Avatar";
+import Avatar from "src/components/Util/Avatar/Avatar";
 import Lookup from "src/components/Util/Lookup/Lookup";
 import { useLazyQuery } from "@apollo/client";
 import { useEffect } from "react";
@@ -54,9 +54,6 @@ const ProfileForm = (props: ProfileFormProps) => {
   };
 
   const [loadRoles, { called, loading, data }] = useLazyQuery(ROLEQURY, {
-    onCompleted: (data) => {
-      // console.log(data);
-    },
     onError: (error) => {
       console.log(error);
     },
@@ -104,7 +101,6 @@ const ProfileForm = (props: ProfileFormProps) => {
                       className="absolute -mt-20 aspect-square h-auto rounded-full border-none align-middle shadow-xl"
                       url={props.profile.avatar_url}
                       size={200}
-                      editable={false}
                       onUpload={(url) => {
                         // setAvatarUrl(url);
                         // updateProfile({
@@ -147,7 +143,7 @@ const ProfileForm = (props: ProfileFormProps) => {
                           new Date(props.profile.created_at).getFullYear() +
                           (new Date().getMonth() -
                             new Date(props.profile.created_at).getMonth()) /
-                            12
+                          12
                         ).toPrecision(1)}
                       </span>
                       <span className="text-sm text-gray-600 dark:text-stone-300">
@@ -260,29 +256,29 @@ const ProfileForm = (props: ProfileFormProps) => {
                 {currentUser.permissions.some((p: permission) =>
                   p.includes("user_update")
                 ) && (
-                  <div className="flex flex-col items-center justify-center">
-                    <Label
-                      name="role_id"
-                      className="rw-label"
-                      errorClassName="rw-label rw-label-error"
-                    >
-                      Role
-                    </Label>
+                    <div className="flex flex-col items-center justify-center">
+                      <Label
+                        name="role_id"
+                        className="rw-label"
+                        errorClassName="rw-label rw-label-error"
+                      >
+                        Role
+                      </Label>
 
-                    <Lookup
-                      name="role_id"
-                      defaultValue={[props.profile?.role_id.toString()]}
-                      options={
-                        data?.roles.map((r) => ({
-                          label: r.name,
-                          value: r.id,
-                        })) || []
-                      }
-                    />
+                      <Lookup
+                        name="role_id"
+                        defaultValue={[props.profile?.role_id.toString()]}
+                        options={
+                          data?.roles.map((r) => ({
+                            label: r.name,
+                            value: r.id,
+                          })) || []
+                        }
+                      />
 
-                    <FieldError name="role_id" className="rw-field-error" />
-                  </div>
-                )}
+                      <FieldError name="role_id" className="rw-field-error" />
+                    </div>
+                  )}
               </div>
             </Form>
           </div>

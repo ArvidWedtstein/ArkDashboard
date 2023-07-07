@@ -3,13 +3,14 @@ import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
-import Avatar from "src/components/Avatar/Avatar";
+import Avatar from "src/components/Util/Avatar/Avatar";
 
-import { formatEnum, timeTag } from "src/lib/formatters";
+import { combineBySummingKeys, formatEnum, groupBy, timeTag } from "src/lib/formatters";
 
 import type {
   DeleteProfileMutationVariables,
   FindProfileById,
+  permission,
 } from "types/graphql";
 
 const DELETE_PROFILE_MUTATION = gql`
@@ -42,8 +43,9 @@ const Profile = ({ profile }: Props) => {
     }
   };
 
+
   return (
-    <div className="">
+    <article className="">
       <section className="relative h-[200px]">
         <div
           className="absolute top-0 h-full w-full bg-cover bg-center"
@@ -67,8 +69,7 @@ const Profile = ({ profile }: Props) => {
                   <Avatar
                     className="absolute -mt-20 aspect-square h-auto rounded-full border-none align-middle shadow-xl"
                     url={profile.avatar_url}
-                    size={200}
-                    editable={false}
+                    size={160}
                   />
                 </div>
               </div>
@@ -92,7 +93,7 @@ const Profile = ({ profile }: Props) => {
                         new Date(profile.created_at).getFullYear() +
                         (new Date().getMonth() -
                           new Date(profile.created_at).getMonth()) /
-                          12
+                        12
                       ).toPrecision(1)}
                     </span>
                     <span className="text-sm text-gray-600 dark:text-stone-300">
@@ -117,9 +118,6 @@ const Profile = ({ profile }: Props) => {
                   {profile.full_name}
                 </p>
                 <p className="text-sm tracking-wide">@{profile.username}</p>
-                <span className="text-base font-normal">
-                  {profile.role_profile_role_idTorole.name}
-                </span>
               </div>
 
               <hr className="my-6 border-gray-600 dark:border-stone-300" />
@@ -138,99 +136,53 @@ const Profile = ({ profile }: Props) => {
                 <span className="">{profile.website}</span>
               </div>
             </div>
-          </div>
-
-          {/* <div className="grid grid-cols-1 gap-5 dark:text-stone-100 xl:grid-cols-4">
-            {profile.UserRecipe.map(
-              ({
-                id,
-                created_at,
-                name,
-                private: IsPrivate,
-                UserRecipeItemRecipe,
-              }) => (
-                <div
-                  className="relative w-full max-w-sm rounded-lg bg-stone-300 p-4 shadow dark:bg-zinc-700"
-                  key={id}
-                >
-                  <div className="mb-4 flex items-center justify-between">
-                    <div
-                      className="h-12 w-12 rounded bg-white p-1 hover:shadow"
-                      title={`Private: ${IsPrivate}`}
-                    >
-                      {IsPrivate ? (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 448 512"
-                          className="h-full w-full"
-                        >
-                          <path d="M384 223.1l-32 0V127.1c0-70.59-57.41-127.1-128-127.1S96 57.41 96 127.1v95.1L64 223.1c-35.35 0-64 28.65-64 64v160c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64v-160C448 252.7 419.3 223.1 384 223.1zM128 128c0-52.94 43.06-96 96-96s96 43.06 96 96v96H128V128zM416 448c0 17.64-14.36 32-32 32H64c-17.64 0-32-14.36-32-32V288c0-17.64 14.36-32 32-32h320c17.64 0 32 14.36 32 32V448zM224 319.1c-8.844 0-16 7.156-16 16v64c0 8.844 7.156 15.1 16 15.1S240 408.8 240 400v-64C240 327.2 232.8 319.1 224 319.1z" />
-                        </svg>
-                      ) : (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 576 512"
-                          className="h-full w-full"
-                        >
-                          <path d="M448 0c-70.59 0-128 57.41-128 128v96H64C28.65 224 0 252.7 0 288v160c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V288c0-35.35-28.65-64-64-64h-32V128c0-52.94 43.06-96 96-96s96 43.06 96 96v80C544 216.8 551.2 224 560 224S576 216.8 576 208V128C576 57.41 518.6 0 448 0zM384 256c17.64 0 32 14.36 32 32v160c0 17.64-14.36 32-32 32H64c-17.64 0-32-14.36-32-32V288c0-17.64 14.36-32 32-32H384zM224 416c8.844 0 16-7.156 16-16v-64C240 327.2 232.8 320 224 320s-16 7.156-16 16v64C208 408.8 215.2 416 224 416z" />
-                        </svg>
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="my-1 font-semibold">
-                        {name || "Your Custom Recipe"}
-                      </h3>
-                      <span className="text-stone-300">test</span>
-                    </div>
-                  </div>
-                  <div className="mb-4 flex flex-row flex-wrap gap-2">
-                    {UserRecipeItemRecipe.map(
-                      ({
-                        id: userRecipeId,
-                        ItemRecipe: {
-                          id: recipeId,
-                          Item_ItemRecipe_crafted_item_idToItem: {
-                            name,
-                            image,
-                          },
-                          yields,
-                        },
-                      }) => (
-                        <Link
-                          to={routes.itemRecipe({ id: recipeId })}
-                          className="relative rounded-lg border border-zinc-500 p-2 text-center"
-                          title={name}
-                          key={`recipe-${userRecipeId}`}
-                        >
-                          <img
-                            className="h-10 w-10"
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                            alt={name}
-                          />
-                          <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-transparent text-xs font-bold text-white dark:border-zinc-700">
-                            {yields}
-                          </div>
-                        </Link>
-                      )
-                    )}
-                  </div>
-                  <div className="absolute bottom-2 right-2 float-right mt-4 inline-block text-xs">
-                    <span className="relative mx-1 inline-block">
-                      {new Date(created_at).toLocaleString("en-GB", {
-                        dateStyle: "long",
-                      })}
-                    </span>
-                    *
-                    <span className="relative mx-1 inline-block">
-                      {new Date(created_at).toLocaleString("en-GB", {
-                        timeStyle: "short",
-                      })}
-                    </span>
-                  </div>
+            <div id="detailed-pricing" className="w-full overflow-x-auto text-left my-3">
+              <div className="overflow-hidden min-w-max">
+                <div className="grid grid-cols-4 p-4 text-sm font-medium text-gray-900 bg-gray-100 gap-x-16 dark:bg-zinc-700 rounded-t-lg dark:text-white">
+                  <div className="flex items-center">Permissions</div>
+                  <div>Create</div>
+                  <div>Update</div>
+                  <div>Delete</div>
                 </div>
-              )
-            )}
-          </div> */}
+                {Object.entries(groupBy(Object.entries(combineBySummingKeys(
+                  {
+                    basespot_create: false,
+                    basespot_update: false,
+                    basespot_delete: false,
+                    user_create: false,
+                    user_update: false,
+                    user_delete: false,
+                    timeline_create: false,
+                    timeline_update: false,
+                    timeline_delete: false,
+                    gamedata_create: false,
+                    gamedata_update: false,
+                    gamedata_delete: false,
+                    tribe_create: false,
+                    tribe_update: false,
+                    tribe_delete: false,
+                    role_create: false,
+                    role_update: false,
+                    role_delete: false,
+                  },
+                  profile.role_profile_role_idTorole.permissions.reduce((a, v) => ({ ...a, [v]: true }), {})
+                )).map(([p, v]) => ({ perm: p, for: p.split('_')[0], type: p.split('_')[1], hasPermission: v })), 'for')).map(([type, perms]) => (
+                  <div className="grid grid-cols-4 px-4 py-5 text-sm text-zinc-700 border-b border-gray-200 gap-x-16 dark:border-zinc-500">
+                    <div className="text-gray-500 dark:text-gray-400 capitalize">{type}</div>
+                    {perms.sort((a, b) => ["create", "update", "delete", "read"].indexOf(a.type) - ["create", "update", "delete", "read"].indexOf(b.type)).map(perm => (
+                      <div>
+                        {perm.hasPermission ? (
+                          <svg className="w-5 h-5 text-green-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                        ) : (
+                          <svg className="w-5 h-5 text-red-500" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
 
           {currentUser && currentUser.id === profile.id && (
             <nav className="rw-button-group">
@@ -251,7 +203,7 @@ const Profile = ({ profile }: Props) => {
           )}
         </div>
       </section>
-    </div>
+    </article>
   );
 };
 

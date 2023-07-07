@@ -1,5 +1,13 @@
 @import "tailwindcss/components";
 @layer components {
+  a:hover {
+    @apply dark:text-accent-500 text-accent-600 underline;
+  }
+  span > a,
+  p > a {
+    @apply decoration-pea-500 underline;
+  }
+
   .rw-header {
     @apply flex justify-between py-4 px-8;
   }
@@ -92,7 +100,7 @@
     @apply ring-0;
   }
   .rw-button:focus {
-    @apply outline-none ring-4;
+    @apply outline-none ring-2;
   }
 
   /*
@@ -116,7 +124,11 @@
   .rw-button:not(:empty) {
     @apply inline-flex items-center justify-center;
   }
-  .rw-button .rw-button-icon {
+
+  .rw-button .rw-button-icon-start {
+    @apply pointer-events-none order-1 mr-2 w-5 fill-current text-xl leading-5;
+  }
+  .rw-button .rw-button-icon-end {
     @apply pointer-events-none ml-2 w-5 fill-current text-xl leading-5;
   }
   /*
@@ -382,7 +394,7 @@
   // ----------------------------
   */
   .rw-badge {
-    @apply rounded px-2.5 py-0.5 text-xs font-medium;
+    @apply inline-flex items-center rounded px-2.5 py-0.5 text-xs font-medium;
   }
 
   /* Red Badge */

@@ -10,13 +10,12 @@ export const dinosPage: QueryResolvers["dinosPage"] = ({
   page = 1,
   search = "",
   category = "",
-  dinos_per_page = 35,
 }: {
   page: number;
   search?: string;
   category?: string;
-  dinos_per_page?: number;
 }) => {
+  const dinos_per_page = 36;
   const offset = (page - 1) * dinos_per_page;
   return {
     dinos: db.dino.findMany({
@@ -34,10 +33,10 @@ export const dinosPage: QueryResolvers["dinosPage"] = ({
     count: db.dino.count({
       where: {
         OR: [
-          { name: { startsWith: search, mode: "insensitive" } },
+          { name: { contains: search, mode: "insensitive" } },
           { synonyms: { contains: search, mode: "insensitive" } },
-          category ? { type: { has: category } } : {},
         ],
+        AND: [category ? { type: { has: category } } : {}],
       },
     }),
   };

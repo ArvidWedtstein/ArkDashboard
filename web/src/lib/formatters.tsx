@@ -75,8 +75,8 @@ export const jsonTruncate = (obj: unknown, maxlength: number = 150) => {
 // 	timeZone: "utc",
 // });
 interface options {
-  dateStyle?: "long" | "short" | "full" | "medium",
-  timeStyle?: "long" | "short" | "full" | "medium"
+  dateStyle?: "long" | "short" | "full" | "medium";
+  timeStyle?: "long" | "short" | "full" | "medium";
 }
 /**
  * Renders a formatted time tag element.
@@ -84,7 +84,10 @@ interface options {
  * @param dateTime - The date and time value to format and display.
  * @returns The formatted time tag element or an empty string if `dateTime` is not provided.
  */
-export const timeTag = (dateTime?: string | Date, { dateStyle, timeStyle }: options = {}): React.ReactNode => {
+export const timeTag = (
+  dateTime?: string | Date,
+  { dateStyle, timeStyle }: options = {}
+): React.ReactNode => {
   if (!dateTime) {
     return "";
   }
@@ -139,7 +142,7 @@ export const isUUID = (value: string): boolean => {
  * @summary Checks if date is in 2022-11-28T14:17:14.899Z format
  * @static true
  */
-export const isDate = (dateString: string): boolean => {
+export const isDate = (dateString: string | Date | number): boolean => {
   const date = new Date(dateString);
   return !isNaN(date.getTime());
 };
@@ -170,8 +173,9 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-    }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+  }`;
 };
 
 /**
@@ -318,7 +322,7 @@ export const getBaseMaterials = (
         } else if (newRecipe) {
           findBaseMaterials(newRecipe, recipeAmount * amount, newRecipe.yields);
         }
-      } catch (error) { }
+      } catch (error) {}
     }
   };
 
@@ -424,8 +428,8 @@ export const timeFormatL = (seconds, onlyLast = false) => {
  * @description Returns the start and end date of the current week
  * @returns {Array} array of start and end dates of the current week
  */
-export const getWeekDates = (): [Date, Date] => {
-  let now = new Date();
+export const getWeekDates = (date?: Date): [Date, Date] => {
+  let now = date ?? new Date();
   let dayOfWeek = now.getUTCDay();
   let numDay = now.getUTCDate();
 
@@ -442,11 +446,25 @@ export const getWeekDates = (): [Date, Date] => {
   return [start, end];
 };
 
-export const rtf = new Intl.RelativeTimeFormat("en", {
-  localeMatcher: "best fit", // other values: "lookup"
-  numeric: "always", // other values: "auto"
-  style: "long", // other values: "short" or "narrow"
-}).format;
+export const rtf = (num: number, unit: Intl.RelativeTimeFormatUnit): string => {
+  return new Intl.RelativeTimeFormat("en", {
+    localeMatcher: "best fit", // other values: "lookup"
+    numeric: "always", // other values: "auto"
+    style: "long", // other values: "short" or "narrow"
+  }).format(num, unit);
+};
+export const relativeDate = (
+  date: Date,
+  unit: Intl.RelativeTimeFormatUnit
+): string => {
+  const daysDifference = Math.round(
+    (date.getTime() - new Date().getTime()) / 86400000
+  );
+  return new Intl.RelativeTimeFormat("en", {
+    localeMatcher: "lookup",
+    numeric: "auto",
+  }).format(daysDifference, unit);
+};
 
 /**
  * Determines the type of a word based on regular expressions.
@@ -545,30 +563,121 @@ export const getDateDiff = (date1: Date, date2: Date) => {
   };
 };
 
+export const formatXYtoLatLon = (
+  map_id: number,
+  options: { x?: number; y?: number }
+) => {
+  let subtract = 0;
+  let multiplier = 0;
+
+  /**
+   * Latitude corresponds to the Y coordinate,
+   * and Longitude corresponds to X. To convert the Lat/Long map coordinates to UE coordinates,
+   * simply subtract the shift value, and multiply by the right multiplier from the following table.
+   */
+
+  switch (map_id) {
+    case 1: //  Valguero
+      subtract = 50;
+      multiplier = 8160;
+    case 2: // the island
+      subtract = 50;
+      multiplier = 8000;
+    case 3: // the center
+      if (!!options.x) {
+        // lon
+        subtract = 55.1;
+        multiplier = 9600;
+      }
+      if (!!options.y) {
+        // lat
+        subtract = 30.34;
+        multiplier = 9584;
+      }
+    case 4: // ragnarok
+      subtract = 50;
+      multiplier = 13100;
+    case 5: // abberation
+      subtract = 50;
+      multiplier = 8000;
+    case 6: // extinction
+      subtract = 50;
+      multiplier = 8000;
+    case 7: // scorched earth
+      subtract = 50;
+      multiplier = 8000;
+    case 8: // genesis part 1
+      subtract = 50;
+      multiplier = 10500;
+    case 9: // genesis part 2
+      subtract = 50;
+      multiplier = 14500;
+    case 10: // crystal isles
+      if (!!options.x) {
+        // lon
+        subtract = 50;
+        multiplier = 17000;
+      }
+      if (!!options.y) {
+        // lat
+        subtract = 48.75;
+        multiplier = 16000;
+      }
+    case 11: // fjordur
+      subtract = 0;
+      multiplier = 0;
+    case 12: // Lost island
+      if (options.x && !!options.x) {
+        // lon
+        subtract = 49.02;
+        multiplier = 15300;
+      }
+      if (options.y && !!options.y) {
+        // lat
+        subtract = 51.634;
+        multiplier = 15300;
+      }
+  }
+
+  // From Lat/Long to UE
+  // return (options.x - subtract) * multiplier
+
+  // From UE to Lat/Long
+  return Math.floor(
+    (options.x ? options.x : options.y) / multiplier + subtract
+  );
+};
+
 /**
  * Generates a pdf from an array of your choice
  */
 
 export const generatePDF = (crafts) => {
-  const pages = []
+  const pages = [];
   const tableSize = {
     width: 612,
     height: 792,
   };
 
   const content = [];
-  const columnWidths = [100, 20, 30]
-
+  const columnWidths = [100, 20, 30];
 
   // https://blog.idrsolutions.com/make-your-own-pdf-file-part-5-path-objects/
 
   const newobj = (name, obj: string[]) => {
-    content.push(...[`${name} 0 obj`, obj.join('\n'), "endobj"]);
+    content.push(...[`${name} 0 obj`, obj.join("\n"), "endobj"]);
   };
 
   const newpage = (pageref, size, contentref) => {
     pages.push(`${pageref} 0 R`);
-    newobj(pageref, [`<< /Type /Page`, `/Parent 2 0 R`, `/Resources 4 0 R`, `/Contents ${contentref}`, `/MediaBox [0 0 ${size.width} ${size.height}]`, `>>`]);
+    newobj(pageref, [
+      `<< /Type /Page`,
+      `/Parent 2 0 R`,
+      `/Resources 4 0 R`,
+      `/Contents ${contentref}`,
+      `/MediaBox [0 0 ${size.width} ${size.height}]`,
+      `>>`,
+    ]);
   };
   /**
    *
@@ -578,9 +687,28 @@ export const generatePDF = (crafts) => {
    * @param size font size
    * @returns a string to write text
    */
-  const text = (x, y, text, size) => [`BT`, `/F1 ${size} Tf`, `${x} ${tableSize.height - y} Td`, `(${text}) Tj`, `ET`].join('\n');
+  const text = (x, y, text, size) =>
+    [
+      `BT`,
+      `/F1 ${size} Tf`,
+      `${x} ${tableSize.height - y} Td`,
+      `(${text}) Tj`,
+      `ET`,
+    ].join("\n");
 
-  const rect = (x, y, width, height, fill: boolean = true, color: string = "0 0 0 ") => [`${color} rg`, `${x} ${tableSize.height - y} ${width} ${height} re ${fill ? 'f' : ''} S`, `0 0 0 rg`].join('\n')
+  const rect = (
+    x,
+    y,
+    width,
+    height,
+    fill: boolean = true,
+    color: string = "0 0 0 "
+  ) =>
+    [
+      `${color} rg`,
+      `${x} ${tableSize.height - y} ${width} ${height} re ${fill ? "f" : ""} S`,
+      `0 0 0 rg`,
+    ].join("\n");
 
   /**
    * @param x x coordinate
@@ -612,7 +740,6 @@ export const generatePDF = (crafts) => {
 
   newobj("1", [`<< /Type /Catalog /Pages 2 0 R >>`]);
 
-
   // newpage("3", tableSize, "6 0 R");
 
   newobj("4", [`<< /Font << /F1 5 0 R >> >>`]);
@@ -627,42 +754,77 @@ export const generatePDF = (crafts) => {
   //   `endstream`,
   // ]);
 
-  newpage("8", tableSize, `9 0 R`)
+  newpage("8", tableSize, `9 0 R`);
 
   newobj("9", [
     `<< /Length 105>>`,
     `stream`,
-    rect(tableX - cellPadding * 2, 30 + crafts.length * 20, (tableX + (Object.keys(crafts[0]).length - 1) * (tableSize.width / Object.keys(crafts[0]).length)) + columnWidths[Object.keys(crafts[0]).length - 1], 40 + (crafts.length - 1) * 20 + cellPadding, true, `0.9 0.9 0.9`),
-    Object.keys(crafts[0]).map((key, col) => {
-      return [text(col === 0 ? tableX : 0 + col * (tableSize.width / Object.keys(crafts[0]).length), 20, key, 12), ...crafts.map((item, i) => {
-        const t = []
-        const cellX = (col === 0 ? tableX : 0) + col * (tableSize.width / Object.keys(crafts[0]).length);
-        // const cellX = (col === 0 ? tableX : 0) + columnWidths[col];
-        const cellY = 40 + i * 20;
-        // Line
-        col === 0 && t.push(`${textcolor}`);
+    rect(
+      tableX - cellPadding * 2,
+      30 + crafts.length * 20,
+      tableX +
+        (Object.keys(crafts[0]).length - 1) *
+          (tableSize.width / Object.keys(crafts[0]).length) +
+        columnWidths[Object.keys(crafts[0]).length - 1],
+      40 + (crafts.length - 1) * 20 + cellPadding,
+      true,
+      `0.9 0.9 0.9`
+    ),
+    Object.keys(crafts[0])
+      .map((key, col) => {
+        return [
+          text(
+            col === 0
+              ? tableX
+              : 0 + col * (tableSize.width / Object.keys(crafts[0]).length),
+            20,
+            key,
+            12
+          ),
+          ...crafts.map((item, i) => {
+            const t = [];
+            const cellX =
+              (col === 0 ? tableX : 0) +
+              col * (tableSize.width / Object.keys(crafts[0]).length);
+            // const cellX = (col === 0 ? tableX : 0) + columnWidths[col];
+            const cellY = 40 + i * 20;
+            // Line
+            col === 0 && t.push(`${textcolor}`);
 
-        // t.push(rect(cellX, cellY, tableSize.width / crafts.length, 12 + cellPadding * 2, false))
-        if (col === 0) {
-          t.push(line(cellX, cellY + cellPadding, [{ x: (tableX + (Object.keys(crafts[0]).length - 1) * (tableSize.width / Object.keys(crafts[0]).length)) + columnWidths[Object.keys(crafts[0]).length - 1], y: cellY + cellPadding }]));
-        }
-        // Text
-        const textX = cellX + cellPadding;
-        const textY = cellY - cellPadding;
+            // t.push(rect(cellX, cellY, tableSize.width / crafts.length, 12 + cellPadding * 2, false))
+            if (col === 0) {
+              t.push(
+                line(cellX, cellY + cellPadding, [
+                  {
+                    x:
+                      tableX +
+                      (Object.keys(crafts[0]).length - 1) *
+                        (tableSize.width / Object.keys(crafts[0]).length) +
+                      columnWidths[Object.keys(crafts[0]).length - 1],
+                    y: cellY + cellPadding,
+                  },
+                ])
+              );
+            }
+            // Text
+            const textX = cellX + cellPadding;
+            const textY = cellY - cellPadding;
 
-        t.push(text(textX, textY, `${item[key]}`, 12));
+            t.push(text(textX, textY, `${item[key]}`, 12));
 
-        t.push("0 0 0 rg");
+            t.push("0 0 0 rg");
 
-        return t.join("\n");
-      })].join('\n');
-
-    }).join("\n"),
-    "endstream"
+            return t.join("\n");
+          }),
+        ].join("\n");
+      })
+      .join("\n"),
+    "endstream",
   ]);
 
-
-  newobj("2", [`<< /Type /Pages /Kids [${pages.join(' ')}] /Count ${pages.length} >>`]);
+  newobj("2", [
+    `<< /Type /Pages /Kids [${pages.join(" ")}] /Count ${pages.length} >>`,
+  ]);
   const xrefOffset = content.join("\n").length;
 
   content.push("xref");
@@ -676,7 +838,7 @@ export const generatePDF = (crafts) => {
 0000000212 00000 n
 0000000250 00000 n
 0000000317 00000 n
-`)
+`);
   content.push("trailer");
   content.push(`<< /Size ${content.length} /Root 1 0 R >>`);
   content.push("startxref");
@@ -733,6 +895,25 @@ export const groupBy = <T extends {}>(
   }, {});
 };
 
+type NestedKey<T> = string | (string | number)[];
+
+export const getValueByNestedKey = <T extends object>(
+  obj: T,
+  nestedKey: NestedKey<T>
+): unknown => {
+  const keys = Array.isArray(nestedKey) ? nestedKey : nestedKey.split(".");
+  let value: unknown = obj;
+
+  for (const key of keys) {
+    if (value && typeof value === "object" && key in value) {
+      value = (value as Record<string, unknown>)[key];
+    } else {
+      return undefined;
+    }
+  }
+
+  return value;
+};
 
 /**
  * @description debounce function for search fields
@@ -832,7 +1013,9 @@ export type IntRange<F extends number, T extends number> = Exclude<
  *
  * @see https://stackoverflow.com/a/49936686/2391795
  */
-export type EnsureKeyExists<T, K extends keyof T> = Array<Required<Pick<T, K>> & Partial<T>>;
+export type EnsureKeyExists<T, K extends keyof T> = Array<
+  Required<Pick<T, K>> & Partial<T>
+>;
 
 /**
  * Converts array type to single type

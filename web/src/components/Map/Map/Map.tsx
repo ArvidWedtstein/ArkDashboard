@@ -357,6 +357,7 @@ const Map = ({ map }: Props) => {
         <div className="rw-segment-main">
           <div className="grid grid-flow-row gap-3 md:grid-cols-2">
             <CheckboxGroup
+
               options={Object.entries(categories)
                 .filter(
                   (c) =>
@@ -386,18 +387,18 @@ const Map = ({ map }: Props) => {
                 lon: d.longitude,
                 ...d,
               }))}
-              path={{
-                color: "#0000ff",
-                coords: noterun.map((b) => {
-                  if (map.MapNote && map.MapNote.length > 0) {
-                    let note = (map?.MapNote).find((j) => j.note_index === b);
-                    return {
-                      lat: note.latitude,
-                      lon: note.longitude,
-                    };
-                  }
-                }),
-              }}
+            // path={{
+            //   color: "#0000ff",
+            //   coords: noterun.map((b) => {
+            //     if (map.MapNote && map.MapNote.length > 0) {
+            //       let note = (map?.MapNote).find((j) => j.note_index === b);
+            //       return {
+            //         lat: note.latitude,
+            //         lon: note.longitude,
+            //       };
+            //     }
+            //   }),
+            // }}
             />
 
             <ul className="rw-segment max-h-44 overflow-auto rounded-lg border border-gray-200 bg-stone-300 text-sm font-medium text-gray-900 dark:border-zinc-500 dark:bg-zinc-600 dark:text-white">
@@ -410,7 +411,7 @@ const Map = ({ map }: Props) => {
                     onClick={(e) => {
                       let c: SVGCircleElement = document.getElementById(
                         `map-pos-${i}`
-                      ) as any;
+                      ) as unknown as SVGCircleElement;
                       c.setAttribute("fill", "antiquewhite");
 
                       setTimeout(() => {
@@ -481,17 +482,6 @@ const Map = ({ map }: Props) => {
             />
           ))}
         </div>
-      </section>
-
-      <section className="m-3">
-        <p className="my-3 text-lg font-semibold text-gray-900 dark:text-white">
-          Gallery
-        </p>
-        <Slideshow
-          slides={mapImages[`${map.id}`].map((img) => ({
-            url: img,
-          }))}
-        />
       </section>
     </article>
   );

@@ -1,19 +1,19 @@
 import { useController } from "@redwoodjs/forms";
 import { ChangeEventHandler, useEffect, useMemo, useRef, useState } from "react";
 import useComponentVisible from "../../useComponentVisible";
-import { groupBy } from "src/lib/formatters";
+import { ArrayElement, groupBy } from "src/lib/formatters";
 import clsx from "clsx";
 type value = string | object | number | null | undefined;
 interface ILookup {
   defaultValue?: any;
   children?: React.ReactNode[];
   className?: string;
-  onSelect?: (value: { label: string; value: value; image?: string }) => void;
   search?: boolean;
   group?: string;
   name?: string;
   disabled?: boolean;
-  options?: { label: string; value: value; image?: string }[];
+  options?: { label: string; value: string | object | number; image?: string }[];
+  onSelect?: (value: ArrayElement<ILookup["options"]>) => void;
   onChange?: ChangeEventHandler | undefined;
   placeholder?: string;
   filterFn?: (option: { label: string; value: value; image?: string }, searchTerm: string) => boolean;
@@ -92,7 +92,7 @@ const Lookup = ({
 
     setSearchTerm(option.label);
     // name && clearErrors(name)
-    onSelect && onSelect(option);
+    onSelect?.(option);
     !!name && field.onChange(option.value);
   };
 

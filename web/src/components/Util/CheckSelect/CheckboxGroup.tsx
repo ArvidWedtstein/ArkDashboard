@@ -89,7 +89,7 @@ const CheckboxGroup = ({
               "rw-check-tile relative flex h-28 w-28 flex-col items-center justify-center rounded-lg border-2 border-zinc-500 bg-zinc-300 shadow transition-all duration-150 dark:bg-zinc-600",
               {
                 disabled: !name && !label,
-                "cursor-pointer": name && label,
+                "cursor-pointer": label,
               }
             )}
           >

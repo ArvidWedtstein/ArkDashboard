@@ -3,6 +3,11 @@ const plugin = require("tailwindcss/plugin");
 module.exports = {
   variants: {},
   content: ["src/**/*.{js,jsx,ts,tsx}"],
+  safelist: [
+    {
+      pattern: /grid-cols-./,
+    },
+  ],
   theme: {
     extend: {
       screens: {

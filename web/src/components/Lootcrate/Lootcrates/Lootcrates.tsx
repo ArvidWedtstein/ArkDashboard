@@ -16,17 +16,16 @@ import { Form, Label, SearchField, Submit } from "@redwoodjs/forms";
 const LootcratesList = ({ lootcratesByMap: lootcrates }: FindLootcrates) => {
 
   let { map, category, search } = useParams();
-  const [filters, setFilters] = useState({ map: map || "", category: category || "", search: search || "" });
   const [categoryItems, setCategoryItems] = useState([]);
 
   const daLootcrates = useMemo(() => {
     let filteredCrates = lootcrates;
 
-    if (filters.map) {
+    if (map) {
       filteredCrates = filteredCrates.filter(
         (crate) =>
           crate?.Map &&
-          crate.Map.id === parseInt(filters.map)
+          crate.Map.id === parseInt(map)
       );
       setCategoryItems(
         removeDuplicates(
@@ -38,27 +37,26 @@ const LootcratesList = ({ lootcratesByMap: lootcrates }: FindLootcrates) => {
       );
     }
 
-    if (filters.category) {
+    if (category) {
       filteredCrates = filteredCrates.map((crate) => ({
         ...crate,
         sets: (crate?.LootcrateSet).filter(
-          (set) => set.name == filters.category
+          (set) => set.name == category
         ),
       }));
     }
 
-    if (filters.search) {
+    if (search) {
       filteredCrates = filteredCrates.filter(
         (crate) =>
-          crate?.name?.toLowerCase().includes(filters.search.toLowerCase()) ||
-          crate?.LootcrateSet?.some((set) => set?.LootcrateSetEntry.some((entry) => entry?.LootcrateSetEntryItem.some((item) => item.Item.name.toLowerCase().includes(filters.search.toLowerCase()))))
+          crate?.name?.toLowerCase().includes(search.toLowerCase()) ||
+          crate?.LootcrateSet?.some((set) => set?.LootcrateSetEntry.some((entry) => entry?.LootcrateSetEntryItem.some((item) => item.Item.name.toLowerCase().includes(search.toLowerCase()))))
       );
     }
     return filteredCrates;
-  }, [filters, map, search]);
+  }, [category, map, search]);
 
   const onSubmit = useCallback((data) => {
-    // setFilters({ ...filters, ...data });
     navigate(routes.lootcrates({ ...parseSearch(Object.fromEntries(Object.entries(data).filter(([_, v]) => v != "" && v != undefined)) as any) }))
   }, []);
 

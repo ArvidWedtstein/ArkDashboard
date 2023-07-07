@@ -3,7 +3,7 @@ import { Link, routes, useLocation } from "@redwoodjs/router";
 import { useAuth } from "src/auth";
 import { capitalizeSentence, singularize } from "src/lib/formatters";
 import useComponentVisible from "../useComponentVisible";
-import Avatar from "../Avatar/Avatar";
+import Avatar from "../Util/Avatar/Avatar";
 import clsx from "clsx";
 
 const Navbar = () => {
@@ -32,9 +32,9 @@ const Navbar = () => {
   const profileId = (currentUser?.id || currentUser?.sub || "") as string;
   const newRoute =
     routes[
-      `new${singularize(
-        capitalizeSentence(title.split("-").join(" ")).replace(" ", "")
-      )}`
+    `new${singularize(
+      capitalizeSentence(title.split("-").join(" ")).replace(" ", "")
+    )}`
     ];
   const showNewButton = isAuthenticated && newRoute;
   return (
@@ -92,7 +92,7 @@ const Navbar = () => {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
-                className="rw-button-icon h-4 w-4 fill-current stroke-current"
+                className="rw-button-icon-end h-4 w-4 fill-current stroke-current"
               >
                 <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
               </svg>

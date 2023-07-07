@@ -16,7 +16,7 @@ export const timelineSeasons: QueryResolvers["timelineSeasons"] = () => {
         },
       ],
     },
-    orderBy: { season_start_date: "asc" },
+    orderBy: { season_start_date: "desc" },
   });
 };
 

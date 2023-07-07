@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { IntRange, debounce, formatNumber } from "src/lib/formatters";
+import { IntRange, debounce, formatNumber, getValueByNestedKey } from "src/lib/formatters";
 import clsx from "clsx";
 import useComponentVisible from "src/components/useComponentVisible";
 import { Form, SelectField, Submit, TextField } from "@redwoodjs/forms";
@@ -87,6 +87,10 @@ type TableSettings = {
    */
   select?: boolean;
   /**
+   * Enables exporting selected rows to clipboard
+   */
+  export?: boolean;
+  /**
    * Indicates whether the filter feature is enabled.
    */
   filter?: boolean;
@@ -124,7 +128,7 @@ interface TableProps {
   /**
    * The column configurations for the table.
    */
-  columns: TableColumn[];
+  columns?: TableColumn[] | null;
   /**
    * The data rows for the table.
    */
@@ -186,12 +190,13 @@ const Table = ({
     if (column) {
       const sortOrder = direction === "desc" ? -1 : 1;
       const sortKey = column.startsWith("-") ? column.substring(1) : column;
-
       data.sort((a, b) => {
-        if (a[sortKey] < b[sortKey]) {
+        let c = sortKey.includes(".") ? getValueByNestedKey(a, sortKey) : sortKey;
+        let d = sortKey.includes(".") ? getValueByNestedKey(b, sortKey) : sortKey;
+        if (c < d) {
           return -1 * sortOrder;
         }
-        if (a[sortKey] > b[sortKey]) {
+        if (c > d) {
           return 1 * sortOrder;
         }
         return 0;
@@ -301,6 +306,9 @@ const Table = ({
 
   const handleSearch = debounce((e) => setSearchTerm(e.target.value), 500);
 
+  const { isComponentVisible, setIsComponentVisible, ref } =
+    useComponentVisible(false);
+
   const handleRowSelect = (event, id?) => {
     if (event.target.id === "checkbox-all-select") {
       return setSelectedRows(
@@ -380,6 +388,12 @@ const Table = ({
     field,
     className,
     numeric,
+  }: {
+    rowData: TableDataRow;
+    rowIndex: number;
+    field: string;
+    numeric: boolean;
+    [key: string]: any;
   }) => {
     const rowSelected = isSelected(rowData.row_id);
     const cellClassName = clsx(
@@ -443,15 +457,17 @@ const Table = ({
     rowIndex?: number;
   }) => {
     return (
-      <td
-        className={clsx("w-4 p-4", {
-          "bg-zinc-300 first:rounded-tl-lg dark:bg-zinc-800": header,
-          "bg-zinc-100 dark:bg-zinc-600": !header,
-          "!bg-zinc-300 dark:!bg-zinc-700":
-            !header && isSelected(datarow.row_id),
-          "rounded-bl-lg":
-            rowIndex === PaginatedData.length - 1 && !mergedSettings.summary,
-        })}
+      < td
+        className={
+          clsx("w-4 p-4", {
+            "bg-zinc-300 first:rounded-tl-lg dark:bg-zinc-800": header,
+            "bg-zinc-100 dark:bg-zinc-600": !header,
+            "!bg-zinc-300 dark:!bg-zinc-700":
+              !header && isSelected(datarow.row_id),
+            "rounded-bl-lg":
+              rowIndex === PaginatedData.length - 1 && !mergedSettings.summary,
+          })
+        }
         scope="col"
       >
         <div className="flex items-center">
@@ -475,7 +491,7 @@ const Table = ({
             checkbox
           </label>
         </div>
-      </td>
+      </td >
     );
   };
 
@@ -622,7 +638,7 @@ const Table = ({
     ));
 
     return (
-      <nav className="my-2 flex items-center justify-end space-x-2 text-center text-sm text-zinc-800 dark:text-gray-400">
+      <nav className="m-2 flex items-center justify-end space-x-2 text-center text-sm text-zinc-800 dark:text-gray-400">
         Rows per page&nbsp;
         <select
           disabled={dataRows.length == 0}
@@ -736,16 +752,8 @@ const Table = ({
     ]);
   };
 
-  const { isComponentVisible, setIsComponentVisible, ref } =
-    useComponentVisible(false);
-
   return (
-    <div
-      className={clsx(
-        "relative overflow-x-auto overflow-y-hidden sm:rounded-lg",
-        className
-      )}
-    >
+    <div className="relative overflow-x-auto overflow-y-hidden sm:rounded-lg">
       <div className="flex items-center justify-start space-x-3 [&:not(:empty)]:my-2">
         {mergedSettings.filter && (
           <div className="relative w-fit" ref={ref}>
@@ -896,7 +904,7 @@ const Table = ({
             </dialog>
           </div>
         )}
-        {mergedSettings.select && (
+        {mergedSettings.select && mergedSettings.export && (
           <button
             className="rw-button rw-button-gray"
             title="Export"
@@ -947,81 +955,82 @@ const Table = ({
           <div key={`toolbar-${index}`}>{item}</div>
         ))}
       </div>
-
-      <table className="relative mr-auto w-full table-auto text-left text-sm text-zinc-700 dark:text-zinc-300">
-        <thead className="text-sm uppercase">
-          <tr
-            className={clsx("table-row", {
-              "divide-x divide-gray-400 dark:divide-zinc-800":
-                mergedSettings.borders.vertical,
-              hidden: !mergedSettings.header,
-            })}
-          >
-            {mergedSettings.select &&
-              tableSelect({ header: true, rowIndex: -1 })}
-            {columns.map(({ ...other }, index) =>
-              headerRenderer({
-                label: other.header,
-                columnIndex: index,
-                ...other,
-              })
-            )}
-          </tr>
-        </thead>
-        <tbody
-          className={
-            mergedSettings.borders.horizontal &&
-            "divide-y divide-gray-400 dark:divide-zinc-800"
-          }
-        >
-          {dataRows &&
-            PaginatedData.map((datarow, i) => (
-              <tr
-                key={datarow.row_id}
-                className={
-                  mergedSettings.borders.vertical
-                    ? "divide-x divide-gray-400 dark:divide-zinc-800"
-                    : ""
-                }
-              >
-                {mergedSettings.select && tableSelect({ datarow })}
-                {columns.map(
-                  (
-                    {
-                      field,
-                      render,
-                      valueFormatter,
-                      className,
-                      numeric,
-                      ...other
-                    },
-                    index
-                  ) =>
-                    cellRenderer({
-                      rowData: datarow,
-                      cellData: datarow[field],
-                      columnIndex: index,
-                      rowIndex: i,
-                      render,
-                      valueFormatter,
-                      field,
-                      className,
-                      numeric,
-                      ...other,
-                    })
-                )}
-              </tr>
-            ))}
-          {(dataRows === null || dataRows.length === 0) && (
-            <tr className="w-full bg-zinc-100 dark:bg-zinc-600">
-              <td headers="" className="p-4 text-center" colSpan={100}>
-                <span className="px-3 py-2 text-gray-400">No data found</span>
-              </td>
+      <div className={clsx("sm:rounded-lg", className)}>
+        <table className="relative mr-auto w-full table-auto text-left text-sm text-zinc-700 dark:text-zinc-300">
+          <thead className="text-sm uppercase">
+            <tr
+              className={clsx("table-row", {
+                "divide-x divide-gray-400 dark:divide-zinc-800":
+                  mergedSettings.borders.vertical,
+                hidden: !mergedSettings.header,
+              })}
+            >
+              {mergedSettings.select &&
+                tableSelect({ header: true, rowIndex: -1 })}
+              {columns && columns.map(({ ...other }, index) =>
+                headerRenderer({
+                  label: other.header,
+                  columnIndex: index,
+                  ...other,
+                })
+              )}
             </tr>
-          )}
-        </tbody>
-        {mergedSettings.summary && tableFooter()}
-      </table>
+          </thead>
+          <tbody
+            className={
+              mergedSettings.borders.horizontal &&
+              "divide-y divide-gray-400 dark:divide-zinc-800"
+            }
+          >
+            {dataRows &&
+              PaginatedData.map((datarow, i) => (
+                <tr
+                  key={datarow.row_id}
+                  className={
+                    mergedSettings.borders.vertical
+                      ? "divide-x divide-gray-400 dark:divide-zinc-800"
+                      : ""
+                  }
+                >
+                  {mergedSettings.select && tableSelect({ datarow, rowIndex: i })}
+                  {columns && columns.map(
+                    (
+                      {
+                        field,
+                        render,
+                        valueFormatter,
+                        className,
+                        numeric,
+                        ...other
+                      },
+                      index
+                    ) =>
+                      cellRenderer({
+                        rowData: datarow,
+                        cellData: field.includes('.') ? getValueByNestedKey(datarow, field) : datarow[field],
+                        columnIndex: index,
+                        rowIndex: i,
+                        render,
+                        valueFormatter,
+                        field,
+                        className,
+                        numeric,
+                        ...other,
+                      })
+                  )}
+                </tr>
+              ))}
+            {(dataRows === null || dataRows.length === 0) && (
+              <tr className="w-full bg-zinc-100 dark:bg-zinc-600">
+                <td headers="" className="p-4 text-center" colSpan={100}>
+                  <span className="px-3 py-2 text-gray-400">No data found</span>
+                </td>
+              </tr>
+            )}
+          </tbody>
+          {mergedSettings.summary && tableFooter()}
+        </table>
+      </div>
       {mergedSettings.pagination.enabled && tablePagination()}
     </div>
   );

@@ -14,6 +14,7 @@ import {
   combineBySummingKeys,
   debounce,
   clamp,
+  formatNumber,
 } from "src/lib/formatters";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -125,6 +126,51 @@ const Dino = ({ dino, itemsByIds }: Props) => {
   // Melee damage is affected by 4 factors: Weapon Base Damage, Weapon Damage Quality Multiplier, Survivor Melee Damage Multiplier and Server Settings: Player Damage.
 
   // Melee Damage = WBD * WDQM * SMDM * PD
+
+  /**
+   * Creature stats calculation
+   *
+   * Base-value: B
+   * Increase per wild-level as % of B: Iw
+   * Increase per domesticated level as % of Vpt (value post-tamed): Id
+   * Additive taming-bonus: Ta
+   * Multiplicative taming-bonus: Tm
+   * Taming Effectiveness: TE (when tamed)
+   * Imprinting Bonus: IB (when tamed)
+   * TamedBaseHealthMultiplier: TBHM (lowers the health of a few dinos right after taming, before the tamingAdd is applied)
+   *
+   * The Tm and  TmM are only affected by the TE if Tm > 0, i.e a malus won't get less bad if the TE is lower. The Tm is negative for aberrant creatures (-0.04)
+   *
+   * The imprinting bonus IB only affects bred creatures, and all stat-values except of stamina and oxygen (it does affect the torpor-value)
+   *
+   * Global variables for each stat:
+   * Increase per wild level modifier: IwM
+   * Increase per domesticated level modifier: IdM
+   * Additive taming-bonus modifier: TaM
+   * Multiplicative taming-bonus modifier: TmM
+   *
+   * Currently these modifiers for health are:
+   * TaM = 0.14
+   * TmM = 0.44
+   * IdM = 0.2
+   *
+   * Melee Damage:
+   * TaM = 0.14
+   * TmM = 0.44
+   * IdM = 0.17
+   * IwM is always 1 for official servers
+   *
+   * https://ark.fandom.com/wiki/Creature_stats_calculation
+   *
+   * Assume that a creature has upleveled a certain stat in the wild Lw times, was upleveled a stat by a player Ld times and was tamed with a taming effectiveness of TE.
+   * Then the final value V of that stat (as you see it ingame) is
+   * Stat Formula: V = (B × (1 + Lw × Iw × IwM) × TBHM × (1 + IB × 0.2 × IBM) + Ta × TaM) × (1 + TE × Tm × TmM) × (1 + Ld × Id × IdM)
+   *
+   * R-Creatures have 5% damage increase and 3% less health when tamed
+   * X-Creatures have 5% damage increase and 3% less health when tamed.
+   * Wild X-Creatures have a 250% damage increase and a 60% damage resistance from players and tamed creatures.
+   * Players and tames gain 2.5 times more XP for killing them.
+   */
 
   const onDeleteClick = (id: DeleteDinoMutationVariables["id"]) => {
     if (confirm("Are you sure you want to delete dino " + id + "?")) {
@@ -1417,8 +1463,16 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
       {dino.tamable && (
         <section className="col-span-2 border-t border-gray-700 pt-3 dark:border-white">
-          <h3 className="text-xl font-medium leading-tight">Taming</h3>
-          <p>{dino?.taming_notice}</p>
+          <h3 className="w-fit border-b text-xl font-medium">Taming</h3>
+          <p className="my-1 text-sm leading-relaxed">{dino?.taming_notice}</p>
+          {dino.id === "a5a9f2bb-7d89-4672-9d1c-567d035e23a7" && (
+            <p className="my-1 text-sm leading-relaxed">
+              <b className="underline">
+                {Math.floor(1 + 48 * (dinoLevel / 150))}
+              </b>{" "}
+              Missions needed for taming a level {dinoLevel} stryder
+            </p>
+          )}
           <div>
             <Form<TamingCalculatorForm> onSubmit={calculateDino}>
               <Label
@@ -1439,7 +1493,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                   min: 1,
                   max: 500,
                 }}
-                defaultValue={100}
+                defaultValue={dinoLevel}
               />
 
               <FieldError name="level" className="rw-field-error" />
@@ -1595,28 +1649,31 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
               <section className="rounded-b-md border border-t-0 border-zinc-500 bg-zinc-200 p-4 dark:bg-zinc-700 dark:text-white">
                 <div className="relative my-3 grid grid-cols-5 gap-4 text-center">
-                  <div className="flex flex-col items-center">
-                    <p className="font-light">
-                      Torpor Drain Rate:{" "}
-                      <span
-                        className={clsx(`font-bold`, {
-                          "text-pea-500": tameData.torporDepletionPS < 1,
-                          "text-yellow-500":
-                            tameData.torporDepletionPS >= 1 &&
-                            tameData.torporDepletionPS < 2,
-                          "text-red-500": tameData.torporDepletionPS >= 2,
-                        })}
-                      >
-                        {tameData.torporDepletionPS.toFixed(1)}/s
-                      </span>
-                    </p>
-                    <p>
-                      {timeFormatL(
-                        tameData.totalTorpor / tameData.torporDepletionPS
-                      )}{" "}
-                      until unconscious
-                    </p>
-                  </div>
+                  {!!tameData.totalTorpor && !!tameData.torporDepletionPS && (
+                    <div className="flex flex-col items-center">
+                      <p className="font-light">
+                        Torpor Drain Rate:{" "}
+                        <span
+                          className={clsx(`font-bold`, {
+                            "text-pea-500": tameData.torporDepletionPS < 1,
+                            "text-yellow-500":
+                              tameData.torporDepletionPS >= 1 &&
+                              tameData.torporDepletionPS < 2,
+                            "text-red-500": tameData.torporDepletionPS >= 2,
+                          })}
+                        >
+                          {tameData.torporDepletionPS.toFixed(1)}/s
+                        </span>
+                      </p>
+
+                      <p>
+                        {timeFormatL(
+                          tameData.totalTorpor / tameData.torporDepletionPS
+                        )}{" "}
+                        until unconscious
+                      </p>
+                    </div>
+                  )}
                   {Object.entries(tameData)
                     .filter(([k, _]) =>
                       [
@@ -1667,7 +1724,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                         <div
                           key={`weapon-${id}`}
                           className={clsx(
-                            `animate-fade-in dark:bg-secondary-button my-1 flex min-h-full min-w-[8rem] flex-1 flex-col items-center justify-between space-y-1 rounded bg-zinc-200 p-3 first:ml-1 last:mr-1`,
+                            `animate-fade-in my-1 flex min-h-full min-w-[8rem] flex-1 flex-col items-center justify-between space-y-1 rounded bg-zinc-200 p-3 first:ml-1 last:mr-1 dark:bg-zinc-700`,
                             {
                               "shadow-pea-500 shadow":
                                 isPossible && chanceOfDeath < 99,
@@ -1925,19 +1982,20 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 header: "Stat",
                 className: "font-bold",
                 sortable: true,
-                render: ({ value }) => (
-                  <div className="inline-flex items-center space-x-2">
-                    <img
-                      title={value}
-                      className="h-6 w-6"
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${value
-                        .replace(" ", "_")
-                        .toLowerCase()}.webp`}
-                      alt={value}
-                    />
-                    <p>{value}</p>
-                  </div>
-                ),
+                render: ({ value }) =>
+                  value && (
+                    <div className="inline-flex items-center space-x-2">
+                      <img
+                        title={value}
+                        className="h-6 w-6"
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${value
+                          ?.replace(" ", "_")
+                          .toLowerCase()}.webp`}
+                        alt={value}
+                      />
+                      <p>{value ?? 0}</p>
+                    </div>
+                  ),
               },
               {
                 field: "base",
@@ -2057,19 +2115,19 @@ const Dino = ({ dino, itemsByIds }: Props) => {
               field: "base",
               header: "Base",
               valueFormatter: ({ value }) =>
-                value ? Number(value / 300) : "-",
+                value ? formatNumber(Number(value / 300)) : "-",
             },
             {
               field: "sprint",
               header: "Sprint",
               valueFormatter: ({ value }) =>
-                value ? Number(value / 300) : "-",
+                value ? formatNumber(Number(value / 300)) : "-",
             },
             {
               field: "swim",
               header: "Swim",
               valueFormatter: ({ value }) =>
-                value ? Number(value / 300) : "-",
+                value ? formatNumber(Number(value / 300)) : "-",
             },
             { field: "format", header: "" },
           ]}
@@ -2109,7 +2167,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
-                className="rw-button-icon"
+                className="rw-button-icon-end"
               >
                 <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80c-15.1 0-29.4 7.125-38.4 19.25L112 64H16C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16 0-8.8-7.2-16-16-16zm-280 0l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zm248 64c-8.8 0-16 7.2-16 16v288c0 26.47-21.53 48-48 48H112c-26.47 0-48-21.5-48-48V144c0-8.8-7.16-16-16-16s-16 7.2-16 16v288c0 44.1 35.89 80 80 80h224c44.11 0 80-35.89 80-80V144c0-8.8-7.2-16-16-16zM144 416V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16z" />
               </svg>
