@@ -173,8 +173,9 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-    }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+  }`;
 };
 
 /**
@@ -321,7 +322,7 @@ export const getBaseMaterials = (
         } else if (newRecipe) {
           findBaseMaterials(newRecipe, recipeAmount * amount, newRecipe.yields);
         }
-      } catch (error) { }
+      } catch (error) {}
     }
   };
 
@@ -445,26 +446,25 @@ export const getWeekDates = (date?: Date): [Date, Date] => {
   return [start, end];
 };
 
-export const rtf = (
-  num: number,
-  unit: Intl.RelativeTimeFormatUnit
-): string => {
+export const rtf = (num: number, unit: Intl.RelativeTimeFormatUnit): string => {
   return new Intl.RelativeTimeFormat("en", {
     localeMatcher: "best fit", // other values: "lookup"
     numeric: "always", // other values: "auto"
     style: "long", // other values: "short" or "narrow"
   }).format(num, unit);
 };
-export const relativeDate = (date: Date, unit: Intl.RelativeTimeFormatUnit): string => {
+export const relativeDate = (
+  date: Date,
+  unit: Intl.RelativeTimeFormatUnit
+): string => {
   const daysDifference = Math.round(
-    (date.getTime() - new Date().getTime()) / 86400000,
+    (date.getTime() - new Date().getTime()) / 86400000
   );
   return new Intl.RelativeTimeFormat("en", {
     localeMatcher: "lookup",
     numeric: "auto",
   }).format(daysDifference, unit);
-}
-
+};
 
 /**
  * Determines the type of a word based on regular expressions.
@@ -563,9 +563,12 @@ export const getDateDiff = (date1: Date, date2: Date) => {
   };
 };
 
-const formatXYtoLatLon = (map_id: number, options: { x?: number, y?: number }) => {
-  let subtract = 0
-  let multiplier = 0
+export const formatXYtoLatLon = (
+  map_id: number,
+  options: { x?: number; y?: number }
+) => {
+  let subtract = 0;
+  let multiplier = 0;
 
   /**
    * Latitude corresponds to the Y coordinate,
@@ -575,69 +578,75 @@ const formatXYtoLatLon = (map_id: number, options: { x?: number, y?: number }) =
 
   switch (map_id) {
     case 1: //  Valguero
-      subtract = 50
-      multiplier = 8160
+      subtract = 50;
+      multiplier = 8160;
     case 2: // the island
-      subtract = 50
-      multiplier = 8000
+      subtract = 50;
+      multiplier = 8000;
     case 3: // the center
-      if (!!options.x) { // lon
-        subtract = 55.10
-        multiplier = 9600
+      if (!!options.x) {
+        // lon
+        subtract = 55.1;
+        multiplier = 9600;
       }
-      if (!!options.y) { // lat
-        subtract = 30.34
-        multiplier = 9584
+      if (!!options.y) {
+        // lat
+        subtract = 30.34;
+        multiplier = 9584;
       }
     case 4: // ragnarok
-      subtract = 50
-      multiplier = 13100
+      subtract = 50;
+      multiplier = 13100;
     case 5: // abberation
-      subtract = 50
-      multiplier = 8000
+      subtract = 50;
+      multiplier = 8000;
     case 6: // extinction
-      subtract = 50
-      multiplier = 8000
+      subtract = 50;
+      multiplier = 8000;
     case 7: // scorched earth
-      subtract = 50
-      multiplier = 8000
+      subtract = 50;
+      multiplier = 8000;
     case 8: // genesis part 1
-      subtract = 50
-      multiplier = 10500
+      subtract = 50;
+      multiplier = 10500;
     case 9: // genesis part 2
-      subtract = 50
-      multiplier = 14500
+      subtract = 50;
+      multiplier = 14500;
     case 10: // crystal isles
-      if (!!options.x) { // lon
-        subtract = 50
-        multiplier = 17000
+      if (!!options.x) {
+        // lon
+        subtract = 50;
+        multiplier = 17000;
       }
-      if (!!options.y) { // lat
-        subtract = 48.75
-        multiplier = 16000
+      if (!!options.y) {
+        // lat
+        subtract = 48.75;
+        multiplier = 16000;
       }
     case 11: // fjordur
-      subtract = 0
-      multiplier = 0
+      subtract = 0;
+      multiplier = 0;
     case 12: // Lost island
-      if (options.x && !!options.x) { // lon
-        subtract = 49.02
-        multiplier = 15300
+      if (options.x && !!options.x) {
+        // lon
+        subtract = 49.02;
+        multiplier = 15300;
       }
-      if (options.y && !!options.y) { // lat
-        subtract = 51.634
-        multiplier = 15300
+      if (options.y && !!options.y) {
+        // lat
+        subtract = 51.634;
+        multiplier = 15300;
       }
   }
-
 
   // From Lat/Long to UE
   // return (options.x - subtract) * multiplier
 
   // From UE to Lat/Long
-  return Math.floor((options.x ? options.x : options.y / multiplier) + subtract)
-}
-
+  return Math.floor(
+    (options.x ? options.x : options.y) / multiplier + subtract
+  );
+};
 
 /**
  * Generates a pdf from an array of your choice
@@ -754,9 +763,9 @@ export const generatePDF = (crafts) => {
       tableX - cellPadding * 2,
       30 + crafts.length * 20,
       tableX +
-      (Object.keys(crafts[0]).length - 1) *
-      (tableSize.width / Object.keys(crafts[0]).length) +
-      columnWidths[Object.keys(crafts[0]).length - 1],
+        (Object.keys(crafts[0]).length - 1) *
+          (tableSize.width / Object.keys(crafts[0]).length) +
+        columnWidths[Object.keys(crafts[0]).length - 1],
       40 + (crafts.length - 1) * 20 + cellPadding,
       true,
       `0.9 0.9 0.9`
@@ -790,7 +799,7 @@ export const generatePDF = (crafts) => {
                     x:
                       tableX +
                       (Object.keys(crafts[0]).length - 1) *
-                      (tableSize.width / Object.keys(crafts[0]).length) +
+                        (tableSize.width / Object.keys(crafts[0]).length) +
                       columnWidths[Object.keys(crafts[0]).length - 1],
                     y: cellY + cellPadding,
                   },
@@ -888,12 +897,15 @@ export const groupBy = <T extends {}>(
 
 type NestedKey<T> = string | (string | number)[];
 
-export const getValueByNestedKey = <T extends object>(obj: T, nestedKey: NestedKey<T>): unknown => {
-  const keys = Array.isArray(nestedKey) ? nestedKey : nestedKey.split('.');
+export const getValueByNestedKey = <T extends object>(
+  obj: T,
+  nestedKey: NestedKey<T>
+): unknown => {
+  const keys = Array.isArray(nestedKey) ? nestedKey : nestedKey.split(".");
   let value: unknown = obj;
 
   for (const key of keys) {
-    if (value && typeof value === 'object' && key in value) {
+    if (value && typeof value === "object" && key in value) {
       value = (value as Record<string, unknown>)[key];
     } else {
       return undefined;
