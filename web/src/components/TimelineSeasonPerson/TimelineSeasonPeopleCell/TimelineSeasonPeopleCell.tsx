@@ -28,7 +28,7 @@ export const QUERY = gql`
 export const Loading = () => (
   <div
     role="status"
-    className="nimate-pulse flex justify-start gap-3 rounded border border-gray-200 p-4 shadow dark:border-gray-700 md:p-6"
+    className="flex animate-pulse justify-start gap-3 p-4 shadow  md:p-6"
   >
     <div className="w-fit space-y-3 p-3">
       <svg
@@ -100,7 +100,9 @@ export const Loading = () => (
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">{"No timelineSeasonPeople yet. "}</div>
+    <div className="rw-text-center">
+      <p>No people added yet.</p>
+    </div>
   );
 };
 

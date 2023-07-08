@@ -44,10 +44,7 @@ export const Loading = () => (
 export const Empty = () => {
   return (
     <div className="rw-text-center">
-      {"No timelineSeasonBasespots yet. "}
-      <Link to={routes.newTimelineSeasonBasespot()} className="rw-link">
-        {"Create one?"}
-      </Link>
+      <p>No Basespots created yet.</p>
     </div>
   );
 };
