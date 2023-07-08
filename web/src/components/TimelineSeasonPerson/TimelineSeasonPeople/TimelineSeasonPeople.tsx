@@ -50,9 +50,7 @@ const TimelineSeasonPeopleList = ({
   ) => {
     if (
       confirm(
-        "Are you sure you want to delete timelineSeasonPerson " +
-          ingame_name +
-          "?"
+        "Are you sure you want to remove " + ingame_name + " from the tribe?"
       )
     ) {
       deleteTimelineSeasonPerson({ variables: { id } });
@@ -63,7 +61,7 @@ const TimelineSeasonPeopleList = ({
     <div className="flex justify-start gap-3 overflow-x-auto px-6">
       {timelineSeasonPeople.map(({ id, user_id, ingame_name, Profile }) => (
         <button
-          className="group relative flex-none py-6 px-3"
+          className="relative flex-none py-6 px-3"
           key={id}
           onClick={() => {
             onDeleteClick(id, ingame_name);
@@ -72,7 +70,7 @@ const TimelineSeasonPeopleList = ({
           <div className="flex flex-col items-center justify-center gap-3 ">
             {/* after:absolute after:top-1/3 group-hover:after:opacity-100 after:text-sm after:opacity-0 after:transition after:w-full after:backdrop-blur-sm after:content-['Remove?'] after:text-center after:text-white */}
             <img
-              className="relative h-16 w-16 rounded-full transition duration-150 ease-in-out group-hover:ring group-hover:ring-red-500"
+              className="relative h-16 w-16 rounded-full transition duration-150 ease-in-out hover:ring hover:ring-red-500"
               src={
                 Profile?.avatar_url
                   ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${Profile.avatar_url}`
