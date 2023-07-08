@@ -68,7 +68,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
   useLayoutEffect(() => {
     supabase.storage
       .from("timelineimages")
-      .list(timelineSeasonBasespot.id.toString())
+      .list(timelineSeasonBasespot.id?.toString())
       .then(({ data, error }) => {
         if (error) throw error;
         if (data) {
@@ -315,7 +315,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
         <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
           <div className="container mx-auto flex flex-wrap px-5 py-12">
             <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
-              {timelineSeasonBasespot.map && (
+              {timelineSeasonBasespot.map_id && (
                 <Map
                   className="h-full w-full object-cover object-center"
                   url={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${timelineSeasonBasespot.Map.img}`}
@@ -372,7 +372,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                     <abbr title="Longitude">Lon</abbr> on the map{" "}
                     <Link
                       to={routes.map({
-                        id: timelineSeasonBasespot.map.toString(),
+                        id: timelineSeasonBasespot.map_id?.toString(),
                       })}
                     >
                       {timelineSeasonBasespot?.Map?.name}
@@ -403,7 +403,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                       Our basespot was{" "}
                       <Link
                         to={routes.basespot({
-                          id: timelineSeasonBasespot.Basespot.id.toString(),
+                          id: timelineSeasonBasespot.Basespot.id?.toString(),
                         })}
                       >
                         {timelineSeasonBasespot.Basespot.name}
@@ -519,15 +519,15 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                           timeStyle: "short",
                         }) === "Invalid Date"
                           ? new Date(img.created_at).toLocaleString("de", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })
                           : convertToDate(
-                            img.name.replace("_1.jpg", "")
-                          ).toLocaleString("de", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })}
+                              img.name.replace("_1.jpg", "")
+                            ).toLocaleString("de", {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })}
                       </span>
                     </button>
                   </div>

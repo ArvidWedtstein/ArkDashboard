@@ -69,13 +69,14 @@ export const Loading = () => (
   </div>
 );
 
+// TODO: fix empty
 export const Empty = () => {
   return (
     <div className="rw-text-center">
       {"No timelineSeasonEvents yet. "}
-      <Link to={routes.newTimelineSeasonEvent()} className="rw-link">
+      {/* <Link to={routes.newTimelineSeasonEvent()} className="rw-link">
         {"Create one?"}
-      </Link>
+      </Link> */}
     </div>
   );
 };

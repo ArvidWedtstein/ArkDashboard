@@ -6,36 +6,35 @@ import {
   DatetimeLocalField,
   TextField,
   Submit,
-} from '@redwoodjs/forms'
-
+} from "@redwoodjs/forms";
 
 import type {
   EditTimelineSeasonBasespotById,
   UpdateTimelineSeasonBasespotInput,
-} from 'types/graphql'
-import type { RWGqlError } from '@redwoodjs/forms'
-import Lookup from 'src/components/Util/Lookup/Lookup'
+} from "types/graphql";
+import type { RWGqlError } from "@redwoodjs/forms";
+import Lookup from "src/components/Util/Lookup/Lookup";
 
 type FormTimelineSeasonBasespot = NonNullable<
-  EditTimelineSeasonBasespotById['timelineSeasonBasespot']
->
+  EditTimelineSeasonBasespotById["timelineSeasonBasespot"]
+>;
 
 interface TimelineSeasonBasespotFormProps {
-  timelineSeasonBasespot?: EditTimelineSeasonBasespotById['timelineSeasonBasespot']
-  timeline_season_id?: string
+  timelineSeasonBasespot?: EditTimelineSeasonBasespotById["timelineSeasonBasespot"];
+  timeline_season_id?: string;
   onSave: (
     data: UpdateTimelineSeasonBasespotInput,
-    id?: FormTimelineSeasonBasespot['id']
-  ) => void
-  error: RWGqlError
-  loading: boolean
+    id?: FormTimelineSeasonBasespot["id"]
+  ) => void;
+  error: RWGqlError;
+  loading: boolean;
 }
 
 const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
   const onSubmit = (data: FormTimelineSeasonBasespot) => {
-    data.timeline_season_id = props.timeline_season_id
-    props.onSave(data, props?.timelineSeasonBasespot?.id)
-  }
+    data.timeline_season_id = props.timeline_season_id;
+    props.onSave(data, props?.timelineSeasonBasespot?.id);
+  };
 
   return (
     <div className="rw-form-wrapper">
@@ -51,7 +50,12 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
           <DatetimeLocalField
             name="start_date"
             defaultValue={
-              props.timelineSeasonBasespot?.start_date ?? new Date(new Date().toString().split('GMT')[0] + ' UTC').toISOString().split('.')[0].toString().slice(0, -3)
+              props.timelineSeasonBasespot?.start_date ??
+              new Date(new Date().toString().split("GMT")[0] + " UTC")
+                .toISOString()
+                .split(".")[0]
+                .toString()
+                .slice(0, -3)
             }
             className="rw-float-input peer"
             errorClassName="rw-float-input rw-input-error"
@@ -89,7 +93,7 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
         <FieldError name="end_date" className="rw-field-error" /> */}
 
         {/* TODO: Insert basespot lookup */}
-        <Label
+        {/* <Label
           name="basespot_id"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
@@ -102,9 +106,10 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
           defaultValue={props.timelineSeasonBasespot?.basespot_id}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
+          emptyAs={null}
         />
 
-        <FieldError name="basespot_id" className="rw-field-error" />
+        <FieldError name="basespot_id" className="rw-field-error" /> */}
 
         <Lookup
           options={[
@@ -121,20 +126,18 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
             { label: "Fjordur", value: 11 },
             { label: "Lost Island", value: 12 },
           ]}
-          name="map"
+          name="map_id"
           defaultValue={props.timelineSeasonBasespot?.map}
-          placeholder='Select a map'
-          className='mt-3'
+          placeholder="Select a map"
+          className="mt-3"
         />
-        <FieldError name="map" className="rw-field-error" />
+        <FieldError name="map_id" className="rw-field-error" />
 
-        <div className='rw-button-group'>
+        <div className="rw-button-group">
           <div className="relative max-w-sm" role="textbox">
             <TextField
               name="latitude"
-              defaultValue={
-                props.timelineSeasonBasespot?.latitude ?? 0
-              }
+              defaultValue={props.timelineSeasonBasespot?.latitude ?? 0}
               className="rw-float-input peer"
               errorClassName="rw-float-input rw-input-error"
               validation={{ valueAsNumber: true }}
@@ -154,9 +157,7 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
             <input type="hidden" />
             <TextField
               name="longitude"
-              defaultValue={
-                props.timelineSeasonBasespot?.longitude ?? 0
-              }
+              defaultValue={props.timelineSeasonBasespot?.longitude ?? 0}
               className="rw-float-input peer"
               errorClassName="rw-float-input rw-input-error"
               validation={{ valueAsNumber: true }}
@@ -188,7 +189,7 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
         </div>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default TimelineSeasonBasespotForm
+export default TimelineSeasonBasespotForm;
