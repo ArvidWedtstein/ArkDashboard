@@ -73,10 +73,10 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           openModal === "timelineseasonperson"
             ? "Add person"
             : openModal === "timelineseasonbasespot"
-              ? "Add Basespot"
-              : openModal === "timelineseasonevent"
-                ? "Add Event"
-                : ""
+            ? "Add Basespot"
+            : openModal === "timelineseasonevent"
+            ? "Add Event"
+            : ""
         }
         isOpen={openModal !== null}
         onClose={() => setOpenModal(null)}
@@ -105,8 +105,9 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               {timelineSeason.server}{" "}
               {timelineSeason.cluster && (
                 <span
-                  className={`rw-badge align-middle ${servers[timelineSeason.server]?.badge
-                    }`}
+                  className={`rw-badge align-middle ${
+                    servers[timelineSeason.server]?.badge
+                  }`}
                 >
                   {timelineSeason.cluster}{" "}
                   <span className="mx-2 border-l border-current"></span> Season{" "}

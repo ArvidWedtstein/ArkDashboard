@@ -1,8 +1,8 @@
-import type { FindTimelineSeasonBasespotById } from 'types/graphql'
+import type { FindTimelineSeasonBasespotById } from "types/graphql";
 
-import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
+import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
-import TimelineSeasonBasespot from 'src/components/TimelineSeasonBasespot/TimelineSeasonBasespot'
+import TimelineSeasonBasespot from "src/components/TimelineSeasonBasespot/TimelineSeasonBasespot";
 
 export const QUERY = gql`
   query FindTimelineSeasonBasespotById($id: BigInt!) {
@@ -13,7 +13,7 @@ export const QUERY = gql`
       start_date
       end_date
       basespot_id
-      map
+      map_id
       created_by
       latitude
       longitude
@@ -35,20 +35,20 @@ export const QUERY = gql`
       }
     }
   }
-`
+`;
 
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => <div>Loading...</div>;
 
-export const Empty = () => <div>TimelineSeasonBasespot not found</div>
+export const Empty = () => <div>TimelineSeasonBasespot not found</div>;
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>
-)
+);
 
 export const Success = ({
   timelineSeasonBasespot,
 }: CellSuccessProps<FindTimelineSeasonBasespotById>) => {
   return (
     <TimelineSeasonBasespot timelineSeasonBasespot={timelineSeasonBasespot} />
-  )
-}
+  );
+};

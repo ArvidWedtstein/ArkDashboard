@@ -71,11 +71,8 @@ export const Loading = () => (
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">
-      {"No timelineSeasonEvents yet. "}
-      <Link to={routes.newTimelineSeasonEvent()} className="rw-link">
-        {"Create one?"}
-      </Link>
+    <div className="bg-background h-96 overflow-y-auto rounded-lg border border-zinc-500 px-4 text-center text-zinc-700 dark:bg-zinc-800 dark:text-zinc-400">
+      <p className="my-4">No Events registered yet.</p>
     </div>
   );
 };

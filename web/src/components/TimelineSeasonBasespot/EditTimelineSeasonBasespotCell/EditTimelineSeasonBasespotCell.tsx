@@ -1,14 +1,14 @@
 import type {
   EditTimelineSeasonBasespotById,
   UpdateTimelineSeasonBasespotInput,
-} from 'types/graphql'
+} from "types/graphql";
 
-import { navigate, routes } from '@redwoodjs/router'
-import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
+import { navigate, routes } from "@redwoodjs/router";
+import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
 
-import TimelineSeasonBasespotForm from 'src/components/TimelineSeasonBasespot/TimelineSeasonBasespotForm'
+import TimelineSeasonBasespotForm from "src/components/TimelineSeasonBasespot/TimelineSeasonBasespotForm";
 
 export const QUERY = gql`
   query EditTimelineSeasonBasespotById($id: BigInt!) {
@@ -19,14 +19,14 @@ export const QUERY = gql`
       start_date
       end_date
       basespot_id
-      map
+      map_id
       created_by
       latitude
       longitude
       timeline_season_id
     }
   }
-`
+`;
 const UPDATE_TIMELINE_SEASON_BASESPOT_MUTATION = gql`
   mutation UpdateTimelineSeasonBasespotMutation(
     $id: BigInt!
@@ -39,20 +39,20 @@ const UPDATE_TIMELINE_SEASON_BASESPOT_MUTATION = gql`
       start_date
       end_date
       basespot_id
-      map
+      map_id
       created_by
       latitude
       longitude
       timeline_season_id
     }
   }
-`
+`;
 
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => <div>Loading...</div>;
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>
-)
+);
 
 export const Success = ({
   timelineSeasonBasespot,
@@ -61,21 +61,21 @@ export const Success = ({
     UPDATE_TIMELINE_SEASON_BASESPOT_MUTATION,
     {
       onCompleted: () => {
-        toast.success('TimelineSeasonBasespot updated')
-        navigate(routes.timelineSeasonBasespots())
+        toast.success("TimelineSeasonBasespot updated");
+        navigate(routes.timelineSeasonBasespots());
       },
       onError: (error) => {
-        toast.error(error.message)
+        toast.error(error.message);
       },
     }
-  )
+  );
 
   const onSave = (
     input: UpdateTimelineSeasonBasespotInput,
-    id: EditTimelineSeasonBasespotById['timelineSeasonBasespot']['id']
+    id: EditTimelineSeasonBasespotById["timelineSeasonBasespot"]["id"]
   ) => {
-    updateTimelineSeasonBasespot({ variables: { id, input } })
-  }
+    updateTimelineSeasonBasespot({ variables: { id, input } });
+  };
 
   return (
     <div className="rw-segment">
@@ -93,5 +93,5 @@ export const Success = ({
         />
       </div>
     </div>
-  )
-}
+  );
+};

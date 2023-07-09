@@ -24,7 +24,7 @@ export const schema = gql`
     basespot_id: BigInt
 
     "Description for map."
-    map: BigInt
+    map_id: BigInt
 
     "Description for created_by."
     created_by: String
@@ -84,7 +84,7 @@ export const schema = gql`
     basespot_id: BigInt
 
     "Description for map."
-    map: BigInt
+    map_id: BigInt
 
     "Description for created_by."
     created_by: String
@@ -119,7 +119,7 @@ export const schema = gql`
     basespot_id: BigInt
 
     "Description for map."
-    map: BigInt
+    map_id: BigInt
 
     "Description for created_by."
     created_by: String

@@ -13,7 +13,7 @@ export const basespotPage: QueryResolvers["basespotPage"] = ({
   map,
   type,
 }: {
-  page: number;
+  page?: number;
   map?: number;
   type?: string;
 }) => {

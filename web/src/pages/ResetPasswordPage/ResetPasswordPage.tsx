@@ -9,7 +9,7 @@ import {
 } from "@redwoodjs/forms";
 import { navigate, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
-import { toast, Toaster } from "@redwoodjs/web/toast";
+import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
 
 const ResetPasswordPage = ({ resetToken }: { resetToken: string }) => {

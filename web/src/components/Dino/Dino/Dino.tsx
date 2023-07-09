@@ -222,9 +222,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           t: "Torpidity",
           h: "Health",
         }[key],
-        base: (typeof value === "object" ? value.b || 0 : value) || 0,
-        increasePerLevelWild: value.w || 0,
-        increasePerLevelTamed: value.t || 0,
+        base: (typeof value === "object" ? value?.b || 0 : value) || 0,
+        increasePerLevelWild: value?.w || 0,
+        increasePerLevelTamed: value?.t || 0,
         total: 0,
         points: 0,
       }))
@@ -286,7 +286,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     }
     setBaseStats(
       baseStats.map((b) => {
-        b.total = b.points * b.increasePerLevelWild + b.base;
+        b.total = b?.points * b?.increasePerLevelWild + b?.base;
         return b;
       })
     );
@@ -1258,7 +1258,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
               }}
               rows={dino.DinoStat.filter(
                 (d) => d.type == "gather_efficiency"
-              ).sort((a, b) => b.value - a.value)}
+              ).sort((a, b) => b?.value - a?.value)}
               columns={[
                 {
                   field: "Item",
@@ -1337,7 +1337,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
             className="min-w-fit border border-zinc-500"
             rows={dino.DinoStat.filter(
               (d) => d.type == "weight_reduction"
-            ).sort((a, b) => b.value - a.value)}
+            ).sort((a, b) => b?.value - a?.value)}
             columns={[
               {
                 field: "Item",
@@ -1969,7 +1969,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                     <p>
                       {dinoLevel -
                         baseStats
-                          .map((b) => b.points)
+                          .map((b) => b?.points)
                           .reduce((a, b) => a + b, 0)}{" "}
                       points wasted
                     </p>,

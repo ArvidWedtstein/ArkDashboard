@@ -58,6 +58,10 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
       icon: "https://steamuserimages-a.akamaihd.net/ugc/2023839858710970915/3E075CEE248A0C9F9069EC7D12894F597E74A2CF/?imw=200&imh=200&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true",
       badge: "rw-badge-green-outline",
     },
+    "Mesa Ark": {
+      icon: "https://cdn.discordapp.com/attachments/863625483062730762/863625518534633728/unknown.png",
+      badge: "rw-badge-green-outline",
+    },
   };
 
   return (
