@@ -16,8 +16,9 @@ const TagInput = ({ name, defaultValue = "" }) => {
   );
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      setTags([...tags, e.target.value]);
+    console.log(e.key, e.target.value);
+    if (e.target.value.includes(',') || e.key === "Enter") {
+      setTags([...tags, e.target.value.replace(',', '')]);
       e.target.value = "";
     }
   };

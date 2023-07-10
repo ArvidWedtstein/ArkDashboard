@@ -78,12 +78,10 @@ export const Failure = ({ error }: CellFailureProps) => {
 };
 
 export const Success = ({ dinosPage }: CellSuccessProps<FindDinos>) => {
-  return dinosPage.count > 0 ? (
+  return (
     <>
       <Dinos dinosPage={dinosPage} />
       <Pagination count={dinosPage.count} route={"dinos"} />
     </>
-  ) : (
-    Empty()
-  );
+  )
 };
