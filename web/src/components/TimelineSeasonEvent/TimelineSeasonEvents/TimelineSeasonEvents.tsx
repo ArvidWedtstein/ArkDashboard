@@ -1,8 +1,8 @@
 import { useMutation } from "@apollo/client";
 import { toast } from "@redwoodjs/web/dist/toast";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { QUERY } from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
-import { RefModal } from "src/components/Util/Modal/Modal";
+import { ModalContext, RefModal } from "src/components/Util/Modal/Modal";
 import { groupBy } from "src/lib/formatters";
 
 import type {
@@ -48,13 +48,10 @@ const TimelineSeasonEventsList = ({
   };
 
   const [currentModalImage, setCurrentModalImage] = useState(null);
-
+  const { openModal } = useContext(ModalContext);
   return (
     <div className="max-h-[36rem] flex-auto bg-background overflow-y-auto rounded-lg border border-zinc-500 px-4 text-zinc-700 dark:bg-zinc-800 dark:text-white">
       <RefModal
-        isOpen={currentModalImage !== null}
-        onClose={() => setCurrentModalImage(null)}
-        // setIsOpen={(open) => setIsComponentVisible(open)}
         image={currentModalImage}
       />
       <ul className="relative w-full border-l border-zinc-600 py-3 dark:border-zinc-300">
@@ -113,6 +110,7 @@ const TimelineSeasonEventsList = ({
                                     setCurrentModalImage(
                                       `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineeventimages/${url}`
                                     );
+                                    openModal();
                                   }}
                                   src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineeventimages/${url}`}
                                 />

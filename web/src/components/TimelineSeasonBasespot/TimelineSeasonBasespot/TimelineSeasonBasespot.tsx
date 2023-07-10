@@ -2,11 +2,11 @@ import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
-import { useLayoutEffect, useState } from "react";
+import { useContext, useLayoutEffect, useState } from "react";
 import { useAuth } from "src/auth";
 import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
 import Map from "src/components/Util/Map/Map";
-import { RefModal } from "src/components/Util/Modal/Modal";
+import { ModalContext, RefModal } from "src/components/Util/Modal/Modal";
 
 import { formatBytes, timeTag } from "src/lib/formatters";
 
@@ -62,7 +62,6 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
     }
   };
   const [images, setImages] = useState([]);
-  const [isComponentVisible, setIsComponentVisible] = useState(false);
   const [currentModalImage, setCurrentModalImage] = useState(null);
 
   useLayoutEffect(() => {
@@ -87,12 +86,11 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
 
     return new Date(year, month, day, hour, minute, second);
   };
+
+  const { openModal } = useContext(ModalContext);
   return (
     <article className="rw-segment">
       <RefModal
-        isOpen={isComponentVisible}
-        onClose={() => setIsComponentVisible(false)}
-        // setIsOpen={(open) => setIsComponentVisible(open)}
         image={currentModalImage}
       />
 
@@ -483,7 +481,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                         setCurrentModalImage(
                           `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/${timelineSeasonBasespot.id}/${img.name}`
                         );
-                        setIsComponentVisible(true);
+                        openModal();
                       }}
                     >
                       <img
