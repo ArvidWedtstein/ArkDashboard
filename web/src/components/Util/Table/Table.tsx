@@ -182,7 +182,7 @@ const Table = ({
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
   const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(
     mergedSettings.pagination.rowsPerPage ||
-      mergedSettings.pagination.pageSizeOptions[0]
+    mergedSettings.pagination.pageSizeOptions[0]
   );
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filters, setFilters] = useState<Filter[]>([]);
@@ -435,22 +435,22 @@ const Table = ({
 
     const valueFormatted = valueFormatter
       ? valueFormatter({
-          value: cellData,
-          row: rowData,
-          columnIndex,
-        })
+        value: cellData,
+        row: rowData,
+        columnIndex,
+      })
       : isNaN(cellData)
-      ? cellData?.amount || cellData
-      : cellData;
+        ? cellData?.amount || cellData
+        : cellData;
 
     const content = render
       ? render({
-          columnIndex,
-          rowIndex,
-          value: valueFormatted,
-          field: field,
-          row: rowData,
-        })
+        columnIndex,
+        rowIndex,
+        value: valueFormatted,
+        field: field,
+        row: rowData,
+      })
       : valueFormatted;
 
     return (
@@ -487,8 +487,8 @@ const Table = ({
             checked={
               header
                 ? PaginatedData.every((row) =>
-                    selectedRows.includes(row.row_id)
-                  )
+                  selectedRows.includes(row.row_id)
+                )
                 : isSelected(datarow.row_id)
             }
             onChange={(e) => handleRowSelect(e, datarow?.row_id)}
@@ -611,7 +611,7 @@ const Table = ({
       } else if (
         dir === "next" &&
         currentPage <
-          Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
+        Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
       ) {
         setCurrentPage(currentPage + 1);
       }
@@ -764,7 +764,7 @@ const Table = ({
   };
 
   return (
-    <div className="relative overflow-x-auto overflow-y-hidden sm:rounded-lg">
+    <div className={clsx("relative overflow-x-auto overflow-y-hidden sm:rounded-lg", className)}>
       <div className="flex items-center justify-start space-x-3 [&:not(:empty)]:my-2">
         {mergedSettings.filter && (
           <div className="relative w-fit" ref={ref}>
@@ -966,7 +966,7 @@ const Table = ({
           <div key={`toolbar-${index}`}>{item}</div>
         ))}
       </div>
-      <div className={clsx("sm:rounded-lg", className)}>
+      <div className="sm:rounded-lg">
         <table className="relative mr-auto w-full table-auto text-left text-sm text-zinc-700 dark:text-zinc-300">
           <thead className="text-sm uppercase">
             <tr

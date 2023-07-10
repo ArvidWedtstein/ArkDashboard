@@ -14,6 +14,7 @@ import {
 } from "@redwoodjs/forms";
 
 import type { FindDinos } from "types/graphql";
+import Tabs from "src/components/Util/Tabs/Tabs";
 
 const DinosList = ({ dinosPage }: FindDinos) => {
   let { search, category } = useParams();
@@ -30,21 +31,49 @@ const DinosList = ({ dinosPage }: FindDinos) => {
     );
   };
   const types = {
-    boss: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/5/50/Cowardice.png",
-    flyer:
-      "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/7/78/Landing.png",
-    amphibious:
-      "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/4/44/Swim_Mode.png",
+    all: '',
     ground:
       "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/f/f5/Slow.png",
+    flyer:
+      "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/7/78/Landing.png",
     water:
       "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/9/9d/Water.png",
+    amphibious:
+      "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/4/44/Swim_Mode.png",
+    boss: "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/5/50/Cowardice.png",
   };
   return (
-    <section className="">
+    <article className="">
+      <Tabs
+        selectedTab={Object.keys(types).indexOf(category) === -1 ? 0 : Object.keys(types).indexOf(category)}
+        tabs={[{
+          title: "All",
+        }, {
+          title: "Ground",
+        }, {
+          title: "Flyer",
+        }, {
+          title: "Water",
+        }, {
+          title: "Amphibious",
+        }, {
+          title: "Boss",
+        }]} type="start" onSelect={(i) => {
+          navigate(
+            routes.dinos({
+              ...parseSearch(
+                Object.fromEntries(
+                  Object.entries({ category: i === 0 ? '' : Object.keys(types)[i] }).filter(([_, v]) => v != "")
+                ) as any
+              ),
+              page: 1,
+            })
+          );
+        }} />
+
       <Form className="flex w-auto" onSubmit={onSubmit}>
         <nav className="flex w-full flex-row justify-center rw-button-group">
-          <Label name="category" className="sr-only">
+          {/* <Label name="category" className="sr-only">
             Choose a category
           </Label>
           <SelectField
@@ -66,14 +95,14 @@ const DinosList = ({ dinosPage }: FindDinos) => {
             <option value="water">Water</option>
             <option value="amphibious">Amphibious</option>
             <option value="ground">Ground</option>
-          </SelectField>
+          </SelectField> */}
           <div className="relative w-full">
             <Label name="search" className="sr-only">
               Search for dino
             </Label>
             <SearchField
               name="search"
-              className="rw-input mt-0 !w-full !rounded-r-lg !rounded-l-none"
+              className="rw-input mt-0 !w-full !rounded-l-lg !rounded-r-lg"
               placeholder="Search for a dinosaur..."
               defaultValue={search}
             />
@@ -145,7 +174,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
           )
         )}
       </div>
-    </section>
+    </article>
   );
 };
 

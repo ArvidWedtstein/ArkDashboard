@@ -166,6 +166,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
    * Then the final value V of that stat (as you see it ingame) is
    * Stat Formula: V = (B × (1 + Lw × Iw × IwM) × TBHM × (1 + IB × 0.2 × IBM) + Ta × TaM) × (1 + TE × Tm × TmM) × (1 + Ld × Id × IdM)
    *
+   * V = (base value × (1 + stat level wild × Increase per wild-level as % of B × Increase per wild level modifier) × TamedBaseHealthMultiplier × (1 + Imprinting Bonus when tamed × 0.2 × IBM) + Additive taming-bonus × Additive taming-bonus modifier) × (1 + Taming Effectiveness × Multiplicative taming-bonus × Multiplicative taming-bonus modifier) × (1 + Ld × Id × IdM)
    * R-Creatures have 5% damage increase and 3% less health when tamed
    * X-Creatures have 5% damage increase and 3% less health when tamed.
    * Wild X-Creatures have a 250% damage increase and a 60% damage resistance from players and tamed creatures.
