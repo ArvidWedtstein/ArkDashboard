@@ -20,7 +20,8 @@ const DELETE_TIMELINE_SEASON_EVENT_MUTATION = gql`
 
 const TimelineSeasonEventsList = ({
   timelineSeasonEvents,
-}: FindTimelineSeasonEvents) => {
+  setOpenModal,
+}: FindTimelineSeasonEvents & { setOpenModal: (v, type) => void }) => {
   const [deleteTimelineSeasonEvent] = useMutation(
     DELETE_TIMELINE_SEASON_EVENT_MUTATION,
     {
@@ -47,13 +48,8 @@ const TimelineSeasonEventsList = ({
     }
   };
 
-  const [currentModalImage, setCurrentModalImage] = useState(null);
-  const { openModal } = useContext(ModalContext);
   return (
     <div className="max-h-[36rem] flex-auto bg-background overflow-y-auto rounded-lg border border-zinc-500 px-4 text-zinc-700 dark:bg-zinc-800 dark:text-white">
-      <RefModal
-        image={currentModalImage}
-      />
       <ul className="relative w-full border-l border-zinc-600 py-3 dark:border-zinc-300">
         {timelineSeasonEvents &&
           Object.entries(groupBy(timelineSeasonEvents, "created_at")).map(
@@ -85,9 +81,14 @@ const TimelineSeasonEventsList = ({
                             Latest
                           </span>
                         )}
-                        <button className="group-hover:visible invisible ml-auto rw-badge rw-badge-red hover:text-white" onClick={() => onDeleteClick(id, title)}>
-                          Delete
-                        </button>
+                        <div className="ml-auto space-x-1">
+                          <button className="group-hover:visible invisible rw-badge rw-badge-gray hover:text-white" onClick={() => setOpenModal(id, 'editevent')}>
+                            Edit
+                          </button>
+                          <button className="group-hover:visible invisible rw-badge rw-badge-red hover:text-white" onClick={() => onDeleteClick(id, title)}>
+                            Delete
+                          </button>
+                        </div>
                       </h3>
                       <p className="text-sm font-semibold">{title}</p>
                       <p className="mb-4 text-sm font-normal text-zinc-600 dark:text-gray-400">
@@ -107,10 +108,7 @@ const TimelineSeasonEventsList = ({
                                   className="aspect-square h-16 rounded hover:cursor-pointer ring-1 ring-transparent hover:ring-zinc-500"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    setCurrentModalImage(
-                                      `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineeventimages/${url}`
-                                    );
-                                    openModal();
+                                    setOpenModal(`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineeventimages/${url}`, 'previewimage');
                                   }}
                                   src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineeventimages/${url}`}
                                 />

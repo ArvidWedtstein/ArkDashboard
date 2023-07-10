@@ -5,6 +5,7 @@ import { useState } from "react";
 import NewTimelineSeasonBasespot from "src/components/TimelineSeasonBasespot/NewTimelineSeasonBasespot/NewTimelineSeasonBasespot";
 import TimelineSeasonBasespotsCell from "src/components/TimelineSeasonBasespot/TimelineSeasonBasespotsCell";
 import NewTimelineSeasonEvent from "src/components/TimelineSeasonEvent/NewTimelineSeasonEvent/NewTimelineSeasonEvent";
+import EditTimelineSeasonEventCell from "src/components/TimelineSeasonEvent/EditTimelineSeasonEventCell";
 import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
 import NewTimelineSeasonPerson from "src/components/TimelineSeasonPerson/NewTimelineSeasonPerson/NewTimelineSeasonPerson";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
@@ -60,10 +61,9 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
       badge: "rw-badge-green-outline",
     },
   };
-
-  const [openModal, setOpenModal] = React.useState<
-    "timelineseasonevent" | "timelineseasonperson" | "timelineseasonbasespot"
-  >(null);
+  type modalType = "timelineseasonevent" | "timelineseasonperson" | "timelineseasonbasespot" | "editevent" | "previewimage"
+  const [editEvent, setEditEvent] = useState<string | null>(null);
+  const [openModal, setOpenModal] = React.useState<modalType>(null);
 
   return (
     <>
@@ -90,6 +90,12 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
         )}
         {openModal === "timelineseasonevent" && (
           <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
+        )}
+        {openModal === "editevent" && (
+          <EditTimelineSeasonEventCell id={editEvent} />
+        )}
+        {openModal === "previewimage" && (
+          <img src={editEvent} className="w-full rounded" />
         )}
       </FormModal>
 
@@ -188,7 +194,10 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
             </button>
           </div>
 
-          <TimelineSeasonEventsCell timeline_season_id={timelineSeason.id} />
+          <TimelineSeasonEventsCell timeline_season_id={timelineSeason.id} setOpenModal={(id, type) => {
+            setOpenModal(type);
+            setEditEvent(id);
+          }} />
         </section>
 
         <section className="bg-background relative col-span-5 row-span-2 flex-auto w-full rounded-lg border border-zinc-500 font-semibold text-black dark:bg-zinc-800 dark:text-white">

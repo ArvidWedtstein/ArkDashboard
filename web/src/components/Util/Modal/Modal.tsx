@@ -103,7 +103,7 @@ export const FormModal = ({ title, isOpen, children, onClose }: iModalForm) => {
   return (
     <dialog
       className={clsx(
-        `animate-pop-up text-text-950 bg-zinc-400 z-10 flex flex-col gap-3 rounded-lg p-3 ring-1 ring-zinc-500 backdrop:blur-[3px] dark:bg-zinc-900`,
+        `animate-pop-up text-text-950 bg-zinc-200 z-10 flex flex-col gap-3 rounded-lg p-3 ring-1 ring-zinc-500 backdrop:blur-[3px] dark:bg-zinc-900`,
         {
           hidden: isOpen === false,
         }

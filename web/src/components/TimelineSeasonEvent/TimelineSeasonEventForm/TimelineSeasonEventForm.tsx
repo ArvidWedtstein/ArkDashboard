@@ -178,7 +178,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
           }}
         />
 
-        <TagInput name="tags" defaultValue={props.timelineSeasonEvent?.tags} />
+        <TagInput name="tags" defaultValue={props.timelineSeasonEvent?.tags || ""} />
 
         <FieldError name="tags" className="rw-field-error" />
         {/* <div className="relative max-w-sm">

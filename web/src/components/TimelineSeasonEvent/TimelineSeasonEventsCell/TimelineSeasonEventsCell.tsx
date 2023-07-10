@@ -25,7 +25,6 @@ export const QUERY = gql`
     }
   }
 `;
-// TODO: Update skeleton loader to list
 export const Loading = () => (
   <div
     role="status"
@@ -97,6 +96,7 @@ export const Failure = ({ error }: CellFailureProps) => (
 
 export const Success = ({
   timelineSeasonEvents,
-}: CellSuccessProps<FindTimelineSeasonEvents>) => {
-  return <TimelineSeasonEvents timelineSeasonEvents={timelineSeasonEvents} />;
+  setOpenModal
+}: CellSuccessProps<FindTimelineSeasonEvents> & { setOpenModal: (v, type) => void }) => {
+  return <TimelineSeasonEvents timelineSeasonEvents={timelineSeasonEvents} setOpenModal={setOpenModal} />;
 };
