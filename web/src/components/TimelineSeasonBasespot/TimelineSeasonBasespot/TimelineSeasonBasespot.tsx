@@ -519,15 +519,15 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                           timeStyle: "short",
                         }) === "Invalid Date"
                           ? new Date(img.created_at).toLocaleString("de", {
-                              dateStyle: "medium",
-                              timeStyle: "short",
-                            })
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          })
                           : convertToDate(
-                              img.name.replace("_1.jpg", "")
-                            ).toLocaleString("de", {
-                              dateStyle: "medium",
-                              timeStyle: "short",
-                            })}
+                            img.name.replace("_1.jpg", "")
+                          ).toLocaleString("de", {
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          })}
                       </span>
                     </button>
                   </div>

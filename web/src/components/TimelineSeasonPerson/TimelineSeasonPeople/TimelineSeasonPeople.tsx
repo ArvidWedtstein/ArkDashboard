@@ -63,9 +63,6 @@ const TimelineSeasonPeopleList = ({
         <button
           className="relative flex-none py-6 px-3"
           key={id}
-          onClick={() => {
-            onDeleteClick(id, ingame_name);
-          }}
         >
           <div className="flex flex-col items-center justify-center gap-3 ">
             {/* after:absolute after:top-1/3 group-hover:after:opacity-100 after:text-sm after:opacity-0 after:transition after:w-full after:backdrop-blur-sm after:content-['Remove?'] after:text-center after:text-white */}
@@ -76,6 +73,9 @@ const TimelineSeasonPeopleList = ({
                   ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${Profile.avatar_url}`
                   : `https://ui-avatars.com/api/?name=${ingame_name}`
               }
+              onClick={() => {
+                onDeleteClick(id, ingame_name);
+              }}
             />
             <strong className="text-xs font-medium text-slate-900 dark:text-slate-200">
               {Profile ? (

@@ -59,7 +59,7 @@ const TimelineSeasonsList = ({ timelineSeasons }: FindTimelineSeasons) => {
       badge: "rw-badge-green-outline",
     },
     "Mesa Ark": {
-      icon: "https://cdn.discordapp.com/attachments/863625483062730762/863625518534633728/unknown.png",
+      icon: "https://mesa-ark.com/images/MESA_Icon.png",
       badge: "rw-badge-green-outline",
     },
   };

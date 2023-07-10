@@ -99,7 +99,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
           ({ id, name, type, image, description, tamable, temperament }) => (
             <Link
               to={routes.dino({ id: id })}
-              className="relative flex h-full flex-1 flex-col overflow-hidden rounded-lg border border-black bg-white text-center dark:border-zinc-500"
+              className="relative flex h-full flex-1 flex-col overflow-hidden rounded-lg border border-black bg-white text-center dark:border-zinc-500 animate-fade-in"
               key={`dino-${id}`}
             >
               <div

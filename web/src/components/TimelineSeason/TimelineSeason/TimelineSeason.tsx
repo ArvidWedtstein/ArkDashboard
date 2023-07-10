@@ -1,6 +1,7 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
+import { useState } from "react";
 import NewTimelineSeasonBasespot from "src/components/TimelineSeasonBasespot/NewTimelineSeasonBasespot/NewTimelineSeasonBasespot";
 import TimelineSeasonBasespotsCell from "src/components/TimelineSeasonBasespot/TimelineSeasonBasespotsCell";
 import NewTimelineSeasonEvent from "src/components/TimelineSeasonEvent/NewTimelineSeasonEvent/NewTimelineSeasonEvent";
@@ -73,10 +74,10 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           openModal === "timelineseasonperson"
             ? "Add person"
             : openModal === "timelineseasonbasespot"
-            ? "Add Basespot"
-            : openModal === "timelineseasonevent"
-            ? "Add Event"
-            : ""
+              ? "Add Basespot"
+              : openModal === "timelineseasonevent"
+                ? "Add Event"
+                : ""
         }
         isOpen={openModal !== null}
         onClose={() => setOpenModal(null)}
@@ -105,9 +106,8 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               {timelineSeason.server}{" "}
               {timelineSeason.cluster && (
                 <span
-                  className={`rw-badge align-middle ${
-                    servers[timelineSeason.server]?.badge
-                  }`}
+                  className={`rw-badge align-middle ${servers[timelineSeason.server]?.badge
+                    }`}
                 >
                   {timelineSeason.cluster}{" "}
                   <span className="mx-2 border-l border-current"></span> Season{" "}
@@ -149,8 +149,9 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           </h1>
         </div>
       </header>
-      <div className="relative my-3 grid grid-flow-row grid-cols-4 gap-3">
-        <section className="bg-accent-900 text-text relative col-span-3 row-span-2 h-full w-full rounded-lg border border-zinc-500 font-semibold dark:bg-zinc-800 dark:text-white">
+
+      <div className="relative my-3 grid grid-flow-row grid-cols-4 md:grid-cols-6 gap-3 w-full">
+        <section className="bg-background text-black relative col-span-5 row-span-2 flex-grow !w-full flex-auto rounded-lg border border-zinc-500 font-semibold dark:bg-zinc-800 dark:text-white">
           <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
             <p className="flex-1 underline underline-offset-8">Basespots</p>
             <button
@@ -170,7 +171,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           <TimelineSeasonBasespotsCell timeline_season_id={timelineSeason.id} />
         </section>
 
-        <section className="relative col-span-1 row-span-4 max-w-xs space-y-3 pr-3 text-black dark:text-white">
+        <section className="relative col-span-1 row-span-4 w-full space-y-3 flex-auto text-black dark:text-white">
           <div className="mt-3 flex items-center justify-between">
             <p>Events</p>
             <button
@@ -190,7 +191,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           <TimelineSeasonEventsCell timeline_season_id={timelineSeason.id} />
         </section>
 
-        <section className="bg-background relative col-span-3 row-span-2 w-full rounded-lg border border-zinc-500 font-semibold text-black dark:bg-zinc-800 dark:text-white">
+        <section className="bg-background relative col-span-5 row-span-2 flex-auto w-full rounded-lg border border-zinc-500 font-semibold text-black dark:bg-zinc-800 dark:text-white">
           <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
             <p className="flex-1 underline underline-offset-8">
               Persons in this season
