@@ -177,6 +177,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       )}
     </div>;
 
+  // TODO: FIX
   type DinoActionType = "" | "CHANGE_AMOUNT" | "ADD_AMOUNT" | "REMOVE_AMOUNT" | "ADD" | "REMOVE" | "REMOVE_BY_ID" | "RESET";
   interface DinoAction {
     type: DinoActionType;
