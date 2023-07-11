@@ -16,7 +16,7 @@ import {
   clamp,
   formatNumber,
 } from "src/lib/formatters";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 
 import type {
   DeleteDinoMutationVariables,
@@ -176,6 +176,30 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         </svg>
       )}
     </div>;
+
+  type DinoActionType = "" | "CHANGE_AMOUNT" | "ADD_AMOUNT" | "REMOVE_AMOUNT" | "ADD" | "REMOVE" | "REMOVE_BY_ID" | "RESET";
+  interface DinoAction {
+    type: DinoActionType;
+    payload?: {
+
+    };
+  }
+  interface DinoState {
+    level: number;
+    maturation: number;
+    seconds_between_hits: number;
+    x_variant: boolean;
+    weaponDamage: {
+      [key: string]: number;
+    };
+    activeRecipeTabIndex: number;
+  }
+  const [state, dispatch] = useReducer((state: DinoState, action: DinoAction) => {
+    switch (action.type) {
+      default:
+        return state
+    }
+  }, { maturation: 0, level: 150, seconds_between_hits: 5, x_variant: false, weaponDamage: {}, activeRecipeTabIndex: 0 })
 
   const [maturation, setMaturation] = useState(0);
   const [selectedFood, setSelectedFood] = useState(null);
