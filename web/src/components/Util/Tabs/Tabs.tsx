@@ -1,9 +1,10 @@
 import clsx from "clsx";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 
 interface ITabs {
   tabs: {
     title: string | React.ReactNode;
+    icon?: string | React.ReactNode;
     content?: string | React.ReactNode;
   }[];
   tabClassName?: React.ClassAttributes<HTMLButtonElement> | string;
@@ -11,7 +12,7 @@ interface ITabs {
   onSelect?: (index: number) => void;
   type?: 'justify' | 'center' | 'start' | 'end' | 'between' | 'around' | 'evenly';
 }
-const Tabs = ({ tabs, tabClassName, onSelect, selectedTab = 0, type = 'evenly' }: ITabs) => {
+const Tabs = memo(({ tabs, tabClassName, onSelect, selectedTab = 0, type = 'evenly' }: ITabs) => {
   useEffect(() => {
     setActiveTab(selectedTab);
   }, [selectedTab]);
@@ -21,7 +22,7 @@ const Tabs = ({ tabs, tabClassName, onSelect, selectedTab = 0, type = 'evenly' }
     <div className="flex flex-col">
       <div className="mb-4 text-center border-b border-zinc-500 text-sm text-gray-500 dark:text-gray-400">
         <ul className={clsx("-mb-px flex flex-row flex-wrap gap-1", `justify-${type}`)}>
-          {tabs.map(({ title }, index) => (
+          {tabs.map(({ title, icon }, index) => (
             <li key={`${index}-tablist-${title}`}>
               <button
                 onClick={() => {
@@ -29,7 +30,7 @@ const Tabs = ({ tabs, tabClassName, onSelect, selectedTab = 0, type = 'evenly' }
                   setActiveTab(index);
                 }}
                 className={clsx(
-                  "block py-2 px-4 rounded-t-lg focus:outline-none transition duration-150",
+                  "inline-flex items-center py-2 px-4 font-medium rounded-t-lg focus:outline-none transition duration-150",
                   tabClassName,
                   {
                     "border-b-2 border-pea-600 text-pea-600 dark:text-pea-500 dark:border-pea-500":
@@ -40,24 +41,26 @@ const Tabs = ({ tabs, tabClassName, onSelect, selectedTab = 0, type = 'evenly' }
                 )}
               >
                 {title}
+                {icon && icon}
               </button>
             </li>
           ))}
         </ul>
       </div>
-      {tabs.every((tab) => tab.content != null) && (<div className="flex-grow">
-        {tabs.map(({ content }, index) => (
-          <div
-            key={`tabcontent-${index}`}
-            className={`${activeTab === index ? "" : "hidden"}`}
-          >
-            {content}
-          </div>
-        ))}
-      </div>
+      {tabs.every((tab) => tab.content != null) && (
+        <div className="flex-grow">
+          {tabs.map(({ content }, index) => (
+            <div
+              key={`tabcontent-${index}`}
+              className={`${activeTab === index ? "" : "hidden"}`}
+            >
+              {content}
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
-};
+});
 
 export default Tabs;

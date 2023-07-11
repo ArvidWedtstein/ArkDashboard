@@ -75,6 +75,8 @@ type TableColumn = {
     value: any;
     row: TableDataRow;
     rowIndex: number;
+    field: string;
+    header: string;
   }) => React.ReactNode;
 };
 
@@ -401,10 +403,13 @@ const Table = ({
     field,
     className,
     numeric,
+    header,
   }: {
     rowData: TableDataRow;
+    cellData: any;
     rowIndex: number;
     field: string;
+    header: string;
     numeric: boolean;
     [key: string]: any;
   }) => {
@@ -449,6 +454,7 @@ const Table = ({
         rowIndex,
         value: valueFormatted,
         field: field,
+        header,
         row: rowData,
       })
       : valueFormatted;
@@ -764,7 +770,7 @@ const Table = ({
   };
 
   return (
-    <div className={clsx("relative overflow-x-auto overflow-y-hidden sm:rounded-lg", className)}>
+    <div className={"relative overflow-x-auto overflow-y-hidden sm:rounded-lg"}>
       <div className="flex items-center justify-start space-x-3 [&:not(:empty)]:my-2">
         {mergedSettings.filter && (
           <div className="relative w-fit" ref={ref}>
@@ -966,7 +972,7 @@ const Table = ({
           <div key={`toolbar-${index}`}>{item}</div>
         ))}
       </div>
-      <div className="sm:rounded-lg">
+      <div className={clsx("rounded-lg", className)}>
         <table className="relative mr-auto w-full table-auto text-left text-sm text-zinc-700 dark:text-zinc-300">
           <thead className="text-sm uppercase">
             <tr
@@ -1015,6 +1021,7 @@ const Table = ({
                           valueFormatter,
                           className,
                           numeric,
+                          header,
                           ...other
                         },
                         index
@@ -1025,6 +1032,7 @@ const Table = ({
                             ? getValueByNestedKey(datarow, field)
                             : datarow[field],
                           columnIndex: index,
+                          header,
                           rowIndex: i,
                           render,
                           valueFormatter,

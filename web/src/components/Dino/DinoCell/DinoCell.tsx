@@ -81,6 +81,7 @@ export const QUERY = gql`
       torpor
       torpor_duration
       damage
+      visible
     }
   }
 `;
@@ -97,6 +98,36 @@ export const beforeQuery = (props) => {
     fetchPolicy: "cache-and-network",
   };
 };
+
+// const renderDinoCardStat = (stat: 'stamina' | 'melee_damage' | 'movement_speed' | 'health' | 'food' | 'weight' | 'oxygen', dino: ArrayElement<FindTimelineBasespotById["timelineBasespot"]["TimelineBasespotDino"]>) => {
+//     let char = stat[0]
+//     if (stat === 'melee_damage') char = 'd'
+//     return (
+//       <>
+//         <p className="inline-flex space-x-2">
+//           <img
+//             className="h-6 w-6"
+//             src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${stat}.webp`}
+//             alt=""
+//           />
+//           <span>
+//             {formatNumber(
+//               dino[`wild_${stat}`] *
+//               dino.Dino.base_stats[char]["w"] +
+//               dino[stat] *
+//               dino.Dino.base_stats[char]["t"] +
+//               dino.Dino.base_stats[char]["b"],
+//               { notation: "compact" }
+//             )}
+//             {stat === 'movement_speed' || stat === 'melee_damage' && '%'}
+//           </span>
+//         </p>
+//         <p className="text-center">
+//           ({dino[`wild_${stat}`]}-{dino[stat]})
+//         </p>
+//       </>
+//     )
+//   }
 export const Loading = () => (
   <div className="flex h-full w-full items-center justify-center bg-transparent">
     <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>

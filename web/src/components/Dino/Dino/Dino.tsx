@@ -28,6 +28,7 @@ import Table from "src/components/Util/Table/Table";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import Counter from "src/components/Util/Counter/Counter";
 import { useAuth } from "src/auth";
+import Tabs from "src/components/Util/Tabs/Tabs";
 
 const DELETE_DINO_MUTATION = gql`
   mutation DeleteDinoMutation($id: String!) {
@@ -73,44 +74,17 @@ type BaseStats = {
   o?: Basestat;
 };
 type TamingCalculatorForm = {
-  level: number;
+  level: string;
   x_variant?: boolean | null;
   foodSelect: string;
+  seconds_between_hits: number;
 };
 
 interface Props {
   dino: NonNullable<FindDinoById["dino"]>;
   itemsByIds: NonNullable<FindDinoById["itemsByIds"]>;
 }
-// const renderDinoCardStat = (stat: 'stamina' | 'melee_damage' | 'movement_speed' | 'health' | 'food' | 'weight' | 'oxygen', dino: ArrayElement<FindTimelineBasespotById["timelineBasespot"]["TimelineBasespotDino"]>) => {
-//     let char = stat[0]
-//     if (stat === 'melee_damage') char = 'd'
-//     return (
-//       <>
-//         <p className="inline-flex space-x-2">
-//           <img
-//             className="h-6 w-6"
-//             src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${stat}.webp`}
-//             alt=""
-//           />
-//           <span>
-//             {formatNumber(
-//               dino[`wild_${stat}`] *
-//               dino.Dino.base_stats[char]["w"] +
-//               dino[stat] *
-//               dino.Dino.base_stats[char]["t"] +
-//               dino.Dino.base_stats[char]["b"],
-//               { notation: "compact" }
-//             )}
-//             {stat === 'movement_speed' || stat === 'melee_damage' && '%'}
-//           </span>
-//         </p>
-//         <p className="text-center">
-//           ({dino[`wild_${stat}`]}-{dino[stat]})
-//         </p>
-//       </>
-//     )
-//   }
+
 const Dino = ({ dino, itemsByIds }: Props) => {
   const { currentUser } = useAuth();
   const [deleteDino] = useMutation(DELETE_DINO_MUTATION, {
@@ -179,29 +153,34 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     }
   };
 
-  const canDestroy = ({ value }: { value: number }) =>
-    value > 0 ? (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 512 512"
-        className="fill-pea-500 h-8 w-8"
-      >
-        <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
-      </svg>
-    ) : (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 320 512"
-        className="h-8 w-8 fill-red-500"
-      >
-        <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
-      </svg>
-    );
+  const canDestroy = ({ value, header }: { value: number, header: string }) =>
+    <div className={clsx(`space-y-1`, {
+      'rw-img-disable': value <= 0
+    })}>
+      <img src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${header.toLowerCase()}-wall.webp`} className="w-8 aspect-square" />
+      {value > 0 ? (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 512 512"
+          className="fill-pea-500 h-8 w-8"
+        >
+          <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
+        </svg>
+      ) : (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 320 512"
+          className="h-8 w-8 fill-red-500"
+        >
+          <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
+        </svg>
+      )}
+    </div>;
 
   const [maturation, setMaturation] = useState(0);
   const [selectedFood, setSelectedFood] = useState(null);
   const [secondsBetweenHits, setSecondsBetweenHits] = useState(5);
-  const [dinoLevel, setDinoLevel] = useState(100); // TODO: remove hardcode
+  const [dinoLevel, setDinoLevel] = useState(150); // TODO: remove hardcode
   const [dinoXVariant, setDinoXVariant] = useState(false); // TODO: remove hardcode
   const [weaponDamage, setWeaponDamage] = useState({});
 
@@ -402,8 +381,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       );
   }, []);
 
-  const calculateDino = (e) => {
-    const { level, x_variant, foodSelect } = e;
+  const calculateDino = (data: TamingCalculatorForm) => {
+    const { level, x_variant, foodSelect, seconds_between_hits } = data;
     if (!level) return null;
 
     setDinoLevel(parseInt(level));
@@ -877,953 +856,1159 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         </div>
       </section>
 
-      {!!dino.maturation_time &&
-        dino.maturation_time != 0 &&
-        dino.incubation_time && (
-          <section className="col-span-2 rounded-md">
-            <p className="my-3 text-center text-sm">{dino.name} breeding:</p>
-            <Form className="my-6 mx-auto flex justify-center">
-              <NumberField
-                name="matPerc"
-                id="matPerc"
-                className="rw-input w-20 rounded-none rounded-l-lg"
-                placeholder="Maturation Percent"
-                defaultValue={0}
-                min={0}
-                max={100}
-                onInput={debounce((event) => {
-                  setMaturation(
-                    parseInt(event.target ? event.target["value"] : 0)
-                  );
-                }, 300)}
-              />
-              <label
-                htmlFor="matPerc"
-                className="rw-input rounded-none rounded-r-lg"
-              >
-                %
-              </label>
-            </Form>
+      <section className="col-span-2">
+        <Tabs type="around" tabs={[
+          {
+            title: 'Stats',
+            icon: (
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" className="ml-2 w-5 h-5 pointer-events-none">
+                <path d="M256 256c8.828 0 16-7.172 16-16v-96C272 135.2 264.8 128 256 128S240 135.2 240 144v96C240 248.8 247.2 256 256 256zM352 192c8.828 0 16-7.172 16-16v-96C368 71.17 360.8 64 352 64s-16 7.172-16 16v96C336 184.8 343.2 192 352 192zM160 352c8.828 0 16-7.172 16-16v-96C176 231.2 168.8 224 160 224S144 231.2 144 240v96C144 344.8 151.2 352 160 352zM496 448h-416C53.53 448 32 426.5 32 400v-352C32 39.17 24.83 32 16 32S0 39.17 0 48v352C0 444.1 35.88 480 80 480h416c8.828 0 16-7.172 16-16S504.8 448 496 448zM448 352c8.828 0 16-7.172 16-16v-256C464 71.17 456.8 64 448 64s-16 7.172-16 16v256C432 344.8 439.2 352 448 352z" />
+              </svg>
+            ),
+            content: (
+              <section className="space-y-3 md:space-y-9">
+                {dino?.DinoStat.some((d) => d.type == "immobilized_by") && (
+                  <section className="">
+                    <h4 className="rw-label">Immobilized by</h4>
 
-            <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
-              {[
-                {
-                  name: "Incubation",
-                  time: dino.incubation_time / settings.hatchMultiplier,
-                },
-                { name: "Baby", time: (dino.maturation_time * 1) / 10 },
-                {
-                  name: "Juvenile",
-                  time:
-                    (dino?.maturation_time * 1) / 2 -
-                    (dino?.maturation_time * 1) / 10,
-                },
-                {
-                  name: "Adolescent",
-                  time: (dino?.maturation_time * settings.matureMultiplier) / 2,
-                },
-                {
-                  name: "Total",
-                  time: dino?.maturation_time * settings.matureMultiplier,
-                },
-              ].map(({ name, time }, i) => (
-                <li
-                  key={`breeding-stage-${i}`}
-                  className={clsx(`flex items-center space-x-2.5`, {
-                    "text-black dark:text-gray-400 [&>*]:border-gray-500 [&>*]:fill-gray-500 [&>*]:dark:border-gray-400 [&>*]:dark:fill-gray-400":
-                      calcMaturationPercent() < time,
-                    "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500 [&>*]:dark:fill-pea-500 [&>*]:fill-pea-600":
-                      calcMaturationPercent() >= time,
-                  })}
-                >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
-                    {i + 1}
-                  </span>
-                  <span>
-                    <h3 className="font-medium leading-tight">{name}</h3>
-                    <p className="text-sm">{timeFormatL(time)}</p>
-                  </span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className={clsx(`h-6 w-6`, {
-                      hidden: i === 4,
-                    })}
-                    viewBox="0 0 256 512"
-                  >
-                    <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
-                  </svg>
-                </li>
-              ))}
-            </ol>
-          </section>
-        )}
-
-      {dino.egg_max != null &&
-        dino.egg_min != null &&
-        dino.egg_max > 0 &&
-        dino.egg_min > 0 && (
-          <section className="col-span-2">
-            <img
-              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/dodo-egg.webp`}
-              alt={dino.name}
-            />
-            <div className="flex flex-col space-y-2">
-              <h3 className="font-medium leading-tight">Egg</h3>
-              <p className="text-sm">
-                {dino.egg_min} - {dino.egg_max} °C
-              </p>
-            </div>
-          </section>
-        )}
-
-      {dino?.DinoStat.some((d) => d.type == "immobilized_by") && (
-        <section className="col-span-2">
-          <h3 className="font-medium leading-tight">Immobilized by</h3>
-
-          <CheckboxGroup
-            defaultValue={dino.DinoStat.filter(
-              (d) => d.type == "immobilized_by"
-            ).map((item) => item?.Item.id.toString())}
-            form={false}
-            options={[
-              {
-                value: "733",
-                label: "Lasso",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/lasso.webp",
-              },
-              {
-                value: "1040",
-                label: "Bola",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/bola.webp",
-              },
-              {
-                value: "725",
-                label: "Chain Bola",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/chain-bola.webp",
-              },
-              {
-                value: "785",
-                label: "Net Projectile",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/net-projectile.webp",
-              },
-              {
-                value: "1252",
-                label: "Plant Species Y Trap",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/plant-species-y-trap.webp",
-              },
-              {
-                value: "383",
-                label: "Bear Trap",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/bear-trap.webp",
-              },
-              {
-                value: "384",
-                label: "Large Bear Trap",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/large-bear-trap.webp",
-              },
-            ]}
-          />
-        </section>
-      )}
-
-      {dino.carryable_by && (
-        <section className="col-span-2">
-          <h3 className="font-medium leading-tight">Carryable by</h3>
-          <CheckboxGroup
-            defaultValue={dino?.carryable_by}
-            form={false}
-            options={[
-              {
-                value: "e85015a5-8694-44e6-81d3-9e1fdd06061d",
-                label: "Pteranodon",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_pteranodon.webp",
-              },
-              {
-                value: "1e7966e7-d63d-483d-a541-1a6d8cf739c8",
-                label: "Tropeognathus",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tropeognathus.webp",
-              },
-              {
-                value: "b8e304b3-ab46-4232-9226-c713e5a0d22c",
-                label: "Tapejara",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tapejara.webp",
-              },
-              {
-                value: "da86d88a-3171-4fc9-b96d-79e8f59f1601",
-                label: "Griffin",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_griffin.webp",
-              },
-              {
-                value: "147922ce-912d-4ab6-b4b6-712a42a9d939",
-                label: "Desmodus",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_desmodus.webp",
-              },
-              {
-                value: "28971d02-8375-4bf5-af20-6acb20bf7a76",
-                label: "Argentavis",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_argentavis.webp",
-              },
-              {
-                value: "f924e5d6-832a-4fb3-abc0-2fa42481cee1",
-                label: "Crystal Wyvern",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_crystalwyvern.webp",
-              },
-              {
-                value: "7aec6bf6-357e-44ec-8647-3943ca34e666",
-                label: "Wyvern",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_wyvern.webp",
-              },
-              {
-                value: "2b938227-61c2-4230-b7da-5d4d55f639ae",
-                label: "Quetzal",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_quetzal.webp",
-              },
-              {
-                value: "b1d6f790-d15c-4813-a6c8-9e6f62fafb52",
-                label: "Tusoteuthis",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tusoteuthis.webp",
-              },
-              {
-                value: "d670e948-055e-45e1-adf3-e56d63236238",
-                label: "Karkinos",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_karkinos.webp",
-              },
-              {
-                value: "52156470-6075-487b-a042-2f1d0d88536c",
-                label: "Kaprosuchus",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_kaprosuchus.webp",
-              },
-              {
-                value: "f723f861-0aa3-40b5-b2d4-6c48ec0ca683",
-                label: "Procoptodon",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_procoptodon.webp",
-              },
-              {
-                value: "human",
-                label: "Human",
-                image: "https://www.dododex.com/media/item/Pet.png",
-              },
-              {
-                value: "94708e56-483b-4eef-ad35-2b9ce0e9c669",
-                label: "Gigantopithecus",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_gigantopithecus.webp",
-              },
-            ]}
-          />
-        </section>
-      )}
-
-      {dino?.DinoStat.some((d) => d.type == "fits_through") && (
-        <section className="col-span-2">
-          <h3 className="font-medium leading-tight">Fits Through</h3>
-          <CheckboxGroup
-            defaultValue={dino.DinoStat.filter(
-              (d) => d.type == "fits_through"
-            ).map((item) => item?.Item.id.toString())}
-            form={false}
-            options={[
-              {
-                value: "322",
-                label: "Doorframe",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-doorframe.webp",
-              },
-              {
-                value: "1066",
-                label: "Double Doorframe",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-double-doorframe.webp",
-              },
-              {
-                value: "143",
-                label: "Dinosaur Gateway",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-dinosaur-gateway.webp",
-              },
-              {
-                value: "381",
-                label: "Behemoth Dino Gateway",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/behemoth-stone-dinosaur-gateway.webp",
-              },
-              {
-                value: "316",
-                label: "Hatchframe",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-hatchframe.webp",
-              },
-              {
-                value: "619",
-                label: "Giant Hatchframe",
-                image:
-                  "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/giant-stone-hatchframe.webp",
-              },
-            ]}
-          />
-        </section>
-      )}
-
-      {dino.can_destroy && (
-        <section className="col-span-2">
-          <h3 className="font-medium leading-tight">Can Destroy</h3>
-          <Table
-            className="max-w-fit border border-zinc-500"
-            rows={[
-              combineBySummingKeys(
-                {
-                  t: false,
-                  w: false,
-                  a: false,
-                  g: false,
-                  s: false,
-                  m: false,
-                  tk: false,
-                },
-                dino.can_destroy.reduce((a, v) => ({ ...a, [v]: true }), {})
-              ),
-            ]}
-            columns={[
-              {
-                field: "t",
-                header: "Thatch",
-                render: canDestroy,
-              },
-              {
-                field: "g",
-                header: "Greenhouse",
-                render: canDestroy,
-              },
-              {
-                field: "w",
-                header: "Wood",
-                render: canDestroy,
-              },
-              {
-                field: "a",
-                header: "Adobe",
-                render: canDestroy,
-              },
-              {
-                field: "s",
-                header: "Stone",
-                render: canDestroy,
-              },
-              {
-                field: "m",
-                header: "Metal",
-                render: canDestroy,
-              },
-              {
-                field: "tk",
-                header: "Tek",
-                render: canDestroy,
-              },
-            ]}
-          />
-        </section>
-      )}
-
-      {dino?.DinoStat &&
-        dino?.DinoStat.some((d) => d.type == "gather_efficiency") && (
-          <section className="col-span-2 space-y-2 md:col-span-1">
-            <h4>Gather Efficiency</h4>
-            <Table
-              className="min-w-fit border border-zinc-500"
-              settings={{
-                pagination: {
-                  enabled: true,
-                  rowsPerPage: 5,
-                  pageSizeOptions: [5, 10, 20, 50],
-                },
-              }}
-              rows={dino.DinoStat.filter(
-                (d) => d.type == "gather_efficiency"
-              ).sort((a, b) => b?.value - a?.value)}
-              columns={[
-                {
-                  field: "Item",
-                  header: "",
-                  render: ({ value }) => (
-                    <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value.image}`}
-                      className="h-8 w-8 self-end"
-                      title={value.name}
+                    <CheckboxGroup
+                      defaultValue={dino.DinoStat.filter(
+                        (d) => d.type == "immobilized_by"
+                      ).map((item) => item?.Item.id.toString())}
+                      form={false}
+                      disabled={true}
+                      options={[
+                        {
+                          value: "733",
+                          label: "Lasso",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/lasso.webp",
+                        },
+                        {
+                          value: "1040",
+                          label: "Bola",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/bola.webp",
+                        },
+                        {
+                          value: "725",
+                          label: "Chain Bola",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/chain-bola.webp",
+                        },
+                        {
+                          value: "785",
+                          label: "Net Projectile",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/net-projectile.webp",
+                        },
+                        {
+                          value: "1252",
+                          label: "Plant Species Y Trap",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/plant-species-y-trap.webp",
+                        },
+                        {
+                          value: "383",
+                          label: "Bear Trap",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/bear-trap.webp",
+                        },
+                        {
+                          value: "384",
+                          label: "Large Bear Trap",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/large-bear-trap.webp",
+                        },
+                      ]}
                     />
-                  ),
-                },
-                {
-                  field: "Item",
-                  header: "Name",
-                  render: ({ value }) => (
-                    <Link to={routes.item({ id: value?.id })}>
-                      {value.name}
-                    </Link>
-                  ),
-                },
-                {
-                  field: "value",
-                  header: "Value",
-                  sortable: true,
-                  render: ({ value }) => {
-                    const colors = [
-                      "bg-red-500",
-                      "bg-orange-500",
-                      "bg-yellow-500",
-                      "bg-lime-500",
-                      "bg-green-500",
-                    ];
+                  </section>
+                )}
 
-                    const getBarColor = (index) => {
-                      return Math.round(value) >= index + 1
-                        ? colors[index]
-                        : "bg-transparent";
-                    };
-                    return (
-                      <div
-                        className="flex h-2 w-32 flex-row divide-x divide-black rounded-full bg-gray-300"
-                        title={value}
-                      >
-                        {colors.map((_, i) => (
-                          <div
-                            key={`gather-efficiency-${i}`}
-                            className={clsx(
-                              `h-full w-1/5`,
-                              "first:rounded-l-full last:rounded-r-full",
-                              getBarColor(i)
-                            )}
-                          ></div>
-                        ))}
-                      </div>
-                    );
-                  },
-                },
-                {
-                  field: "rank",
-                  header: "rank",
-                  sortable: true,
-                  render: ({ value }) => {
-                    return value <= 10 && <p>#{value}</p>;
-                  },
-                },
-              ]}
-            />
-          </section>
-        )}
+                {dino.carryable_by && (
+                  <section>
+                    <h4 className="rw-label">Carryable by</h4>
+                    <CheckboxGroup
+                      defaultValue={dino?.carryable_by}
+                      form={false}
+                      disabled={true}
+                      options={[
+                        {
+                          value: "e85015a5-8694-44e6-81d3-9e1fdd06061d",
+                          label: "Pteranodon",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_pteranodon.webp",
+                        },
+                        {
+                          value: "1e7966e7-d63d-483d-a541-1a6d8cf739c8",
+                          label: "Tropeognathus",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tropeognathus.webp",
+                        },
+                        {
+                          value: "b8e304b3-ab46-4232-9226-c713e5a0d22c",
+                          label: "Tapejara",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tapejara.webp",
+                        },
+                        {
+                          value: "da86d88a-3171-4fc9-b96d-79e8f59f1601",
+                          label: "Griffin",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_griffin.webp",
+                        },
+                        {
+                          value: "147922ce-912d-4ab6-b4b6-712a42a9d939",
+                          label: "Desmodus",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_desmodus.webp",
+                        },
+                        {
+                          value: "28971d02-8375-4bf5-af20-6acb20bf7a76",
+                          label: "Argentavis",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_argentavis.webp",
+                        },
+                        {
+                          value: "f924e5d6-832a-4fb3-abc0-2fa42481cee1",
+                          label: "Crystal Wyvern",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_crystalwyvern.webp",
+                        },
+                        {
+                          value: "7aec6bf6-357e-44ec-8647-3943ca34e666",
+                          label: "Wyvern",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_wyvern.webp",
+                        },
+                        {
+                          value: "2b938227-61c2-4230-b7da-5d4d55f639ae",
+                          label: "Quetzal",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_quetzal.webp",
+                        },
+                        {
+                          value: "b1d6f790-d15c-4813-a6c8-9e6f62fafb52",
+                          label: "Tusoteuthis",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tusoteuthis.webp",
+                        },
+                        {
+                          value: "d670e948-055e-45e1-adf3-e56d63236238",
+                          label: "Karkinos",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_karkinos.webp",
+                        },
+                        {
+                          value: "52156470-6075-487b-a042-2f1d0d88536c",
+                          label: "Kaprosuchus",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_kaprosuchus.webp",
+                        },
+                        {
+                          value: "f723f861-0aa3-40b5-b2d4-6c48ec0ca683",
+                          label: "Procoptodon",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_procoptodon.webp",
+                        },
+                        {
+                          value: "human",
+                          label: "Human",
+                          image: "https://www.dododex.com/media/item/Pet.png",
+                        },
+                        {
+                          value: "94708e56-483b-4eef-ad35-2b9ce0e9c669",
+                          label: "Gigantopithecus",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_gigantopithecus.webp",
+                        },
+                      ]}
+                    />
+                  </section>
+                )}
 
-      {dino.DinoStat.some((d) => d.type == "weight_reduction") && (
-        <section className="col-span-2 space-y-2 md:col-span-1">
-          <h4>Weight Reduction</h4>
-          <Table
-            className="min-w-fit border border-zinc-500"
-            rows={dino.DinoStat.filter(
-              (d) => d.type == "weight_reduction"
-            ).sort((a, b) => b?.value - a?.value)}
-            columns={[
-              {
-                field: "Item",
-                header: "",
-                render: ({ value }) => (
-                  <img
-                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value.image}`}
-                    className="h-8 w-8 self-end"
-                  />
-                ),
-              },
-              {
-                field: "Item",
-                header: "Name",
-                render: ({ value: { id, name } }) => {
-                  return <Link to={routes.item({ id })}>{name}</Link>;
-                },
-              },
-              {
-                field: "value",
-                header: "Value",
-                render: ({ value }) => (
-                  <div className="flex items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 512 512"
-                      className="inline-block w-4 fill-current"
-                    >
-                      <path d="M510.3 445.9L437.3 153.8C433.5 138.5 420.8 128 406.4 128H346.1c3.625-9.1 5.875-20.75 5.875-32c0-53-42.1-96-96-96S159.1 43 159.1 96c0 11.25 2.25 22 5.875 32H105.6c-14.38 0-27.13 10.5-30.88 25.75l-73.01 292.1C-6.641 479.1 16.36 512 47.99 512h416C495.6 512 518.6 479.1 510.3 445.9zM256 128C238.4 128 223.1 113.6 223.1 96S238.4 64 256 64c17.63 0 32 14.38 32 32S273.6 128 256 128z" />
-                    </svg>
-                    <p className="mx-1 text-lime-300">{value}%</p>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 320 512"
-                      className="inline-block w-4 fill-current text-lime-300"
-                    >
-                      <path d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z" />
-                    </svg>
-                  </div>
-                ),
-              },
-              {
-                field: "rank",
-                header: "Rank",
-                render: ({ value }) => {
-                  return value <= 10 && <p>#{value}</p>;
-                },
-              },
-            ]}
-          />
-        </section>
-      )}
+                {dino?.DinoStat.some((d) => d.type == "fits_through") && (
+                  <section>
+                    <h4 className="rw-label">Fits Through</h4>
+                    <CheckboxGroup
+                      defaultValue={dino.DinoStat.filter(
+                        (d) => d.type == "fits_through"
+                      ).map((item) => item?.Item.id.toString())}
+                      form={false}
+                      disabled={true}
+                      options={[
+                        {
+                          value: "322",
+                          label: "Doorframe",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-doorframe.webp",
+                        },
+                        {
+                          value: "1066",
+                          label: "Double Doorframe",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-double-doorframe.webp",
+                        },
+                        {
+                          value: "143",
+                          label: "Dinosaur Gateway",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-dinosaur-gateway.webp",
+                        },
+                        {
+                          value: "381",
+                          label: "Behemoth Dino Gateway",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/behemoth-stone-dinosaur-gateway.webp",
+                        },
+                        {
+                          value: "316",
+                          label: "Hatchframe",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-hatchframe.webp",
+                        },
+                        {
+                          value: "619",
+                          label: "Giant Hatchframe",
+                          image:
+                            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/giant-stone-hatchframe.webp",
+                        },
+                      ]}
+                    />
+                  </section>
+                )}
 
-      {(dino.DinoStat.some((d) => d.type == "drops") ||
-        dino.DinoStat.some((d) => d.type == "food")) && (
-          <section className="col-span-2 flex flex-wrap justify-start gap-3 md:col-span-1">
-            {dino.DinoStat.some((d) => d.type == "drops") && (
-              <div className="space-y-2">
-                <h4>Drops</h4>
-                <Table
-                  className="min-w-fit border border-zinc-500"
-                  settings={{
-                    header: false,
-                    select: false,
-                  }}
-                  rows={dino.DinoStat.filter((d) => d.type == "drops")}
-                  columns={[
-                    {
-                      field: "Item",
-                      header: "",
-                      render: ({ value: { id, image, name } }) => (
-                        <div className="mr-3 flex flex-row items-center space-x-2">
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                            className="h-8 w-8 self-start"
-                          />
-                          <Link to={routes.item({ id })}>{name}</Link>
-                        </div>
-                      ),
-                    },
-                    {
-                      field: "value",
-                      header: "Amount",
-                      valueFormatter: ({ value }) => (value === 0 ? "" : value),
-                    },
-                  ]}
-                />
-              </div>
-            )}
+                <section className="grid grid-cols-1 md:grid-cols-2 gap-3 my-12 border-t">
+                  {dino.movement && (
+                    <section className="space-y-2 col-span-1">
+                      <h4 className="rw-label">Movement</h4>
+                      <Table
+                        className="border border-zinc-500"
+                        columns={[
+                          { field: "name", header: "", className: "capitalize text-center" },
+                          {
+                            field: "base",
+                            header: "Base",
+                            className: 'text-center',
+                            valueFormatter: ({ value }) =>
+                              value ? formatNumber(Number(value / 300)) : "-",
+                          },
+                          {
+                            field: "sprint",
+                            header: "Sprint",
+                            className: 'text-center',
+                            valueFormatter: ({ value }) =>
+                              value ? formatNumber(Number(value / 300)) : "-",
+                          },
+                          {
+                            field: "swim",
+                            header: "Swim",
+                            className: 'text-center',
+                            valueFormatter: ({ value }) =>
+                              value ? formatNumber(Number(value / 300)) : "-",
+                          },
+                          { field: "format", header: "", className: "text-center" },
+                        ]}
+                        rows={Object.entries(dino.movement["w"]).map(
+                          ([k, m]: [
+                            k: string,
+                            m: { swim?: number; base?: number; fly?: number; sprint?: number }
+                          ]) => ({ ...m, format: "Foundation/s", name: k })
+                        )}
+                      />
+                    </section>
+                  )}
 
-            {dino.DinoStat.some((d) => d.type == "food") && (
-              <div className="space-y-2">
-                <h4>Food</h4>
-                <Table
-                  className="min-w-fit border border-zinc-500"
-                  settings={{
-                    header: false,
-                  }}
-                  rows={dino.DinoStat.filter((d) => d.type == "food")}
-                  columns={[
-                    {
-                      field: "Item",
-                      header: "",
-                      render: ({ value: { id, name, image } }) => (
-                        <Link
-                          to={routes.item({ id })}
-                          className="mr-3 flex flex-row items-center space-x-2"
-                        >
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                            className="h-8 w-8 self-end"
-                          />
-                          <span>{name}</span>
-                        </Link>
-                      ),
-                    },
-                  ]}
-                />
-              </div>
-            )}
-          </section>
-        )}
+                  {dino.can_destroy && (
+                    <section className="space-y-2 col-span-1">
+                      <h4 className="rw-label">Can Destroy</h4>
+                      <Table
+                        className="min-w-fit border border-zinc-500"
+                        rows={[
+                          combineBySummingKeys(
+                            {
+                              t: false,
+                              w: false,
+                              a: false,
+                              g: false,
+                              s: false,
+                              m: false,
+                              tk: false,
+                            },
+                            dino.can_destroy.reduce((a, v) => ({ ...a, [v]: true }), {})
+                          ),
+                        ]}
+                        columns={[
+                          {
+                            field: "t",
+                            header: "Thatch",
+                            render: canDestroy,
+                          },
+                          {
+                            field: "w",
+                            header: "Wooden",
+                            render: canDestroy,
+                          },
+                          {
+                            field: "a",
+                            header: "Adobe",
+                            render: canDestroy,
+                          },
+                          {
+                            field: "s",
+                            header: "Stone",
+                            render: canDestroy,
+                          },
+                          {
+                            field: "m",
+                            header: "Metal",
+                            render: canDestroy,
+                          },
+                          {
+                            field: "g",
+                            header: "Greenhouse",
+                            render: canDestroy,
+                          },
+                          {
+                            field: "tk",
+                            header: "Tek",
+                            render: canDestroy,
+                          },
+                        ]}
+                      />
+                    </section>
+                  )}
 
-      {dino.tamable && (
-        <section className="col-span-2 border-t border-gray-700 pt-3 dark:border-white">
-          <h3 className="w-fit border-b text-xl font-medium">Taming</h3>
-          <p className="my-1 text-sm leading-relaxed">{dino?.taming_notice}</p>
-          {dino.id === "a5a9f2bb-7d89-4672-9d1c-567d035e23a7" && (
-            <p className="my-1 text-sm leading-relaxed">
-              <b className="underline">
-                {Math.floor(1 + 48 * (dinoLevel / 150))}
-              </b>{" "}
-              Missions needed for taming a level {dinoLevel} stryder
-            </p>
-          )}
-          <div>
-            <Form<TamingCalculatorForm> onSubmit={calculateDino}>
-              <Label
-                name="level"
-                className="rw-label"
-                errorClassName="rw-label rw-label-error"
-              >
-                Level
-              </Label>
+                  {dino?.DinoStat &&
+                    dino?.DinoStat.some((d) => d.type == "gather_efficiency") && (
+                      <section className="space-y-2 col-span-1">
+                        <h4 className="rw-label">Gather Efficiency</h4>
+                        <Table
+                          className="min-w-fit border border-zinc-500"
+                          settings={{
+                            pagination: {
+                              enabled: true,
+                              rowsPerPage: 5,
+                              pageSizeOptions: [5, 10, 20, 50],
+                            },
+                          }}
+                          rows={dino.DinoStat.filter(
+                            (d) => d.type == "gather_efficiency"
+                          ).sort((a, b) => b?.value - a?.value)}
+                          columns={[
+                            {
+                              field: "Item",
+                              header: "Name",
+                              render: ({ value }) => (
+                                <div className="inline-flex gap-2 justify-center items-center">
+                                  <img
+                                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value.image}`}
+                                    className="h-8 w-8 self-end"
+                                    title={value.name}
+                                  />
+                                  <Link to={routes.item({ id: value?.id })}>
+                                    {value.name}
+                                  </Link>
+                                </div>
+                              ),
+                            },
+                            {
+                              field: "value",
+                              header: "Value",
+                              sortable: true,
+                              render: ({ value }) => {
+                                const colors = [
+                                  "bg-red-500",
+                                  "bg-orange-500",
+                                  "bg-yellow-500",
+                                  "bg-lime-500",
+                                  "bg-green-500",
+                                ];
 
-              <NumberField
-                name="level"
-                className="rw-input"
-                errorClassName="rw-input rw-input-error"
-                validation={{
-                  required: true,
-                  valueAsNumber: true,
-                  min: 1,
-                  max: 500,
-                }}
-                defaultValue={dinoLevel}
-              />
+                                const getBarColor = (index) => {
+                                  return Math.round(value) >= index + 1
+                                    ? colors[index]
+                                    : "bg-transparent";
+                                };
+                                return (
+                                  <div
+                                    className="flex h-2 w-32 flex-row divide-x divide-black rounded-full bg-gray-300"
+                                    title={value}
+                                  >
+                                    {colors.map((_, i) => (
+                                      <div
+                                        key={`gather-efficiency-${i}`}
+                                        className={clsx(
+                                          `h-full w-1/5`,
+                                          "first:rounded-l-full last:rounded-r-full",
+                                          getBarColor(i)
+                                        )}
+                                      ></div>
+                                    ))}
+                                  </div>
+                                );
+                              },
+                            },
+                            {
+                              field: "rank",
+                              header: "rank",
+                              sortable: true,
+                              render: ({ value }) => {
+                                return value <= 10 && <p>#{value}</p>;
+                              },
+                            },
+                          ]}
+                        />
+                      </section>
+                    )}
 
-              <FieldError name="level" className="rw-field-error" />
+                  {dino.DinoStat.some((d) => d.type == "weight_reduction") && (
+                    <section className="space-y-2 col-span-1">
+                      <h4 className="rw-label">Weight Reduction</h4>
+                      <Table
+                        className="min-w-fit border border-zinc-500"
+                        rows={dino.DinoStat.filter(
+                          (d) => d.type == "weight_reduction"
+                        ).sort((a, b) => b?.value - a?.value)}
+                        columns={[
+                          {
+                            field: "Item",
+                            header: "",
+                            render: ({ value }) => (
+                              <img
+                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value.image}`}
+                                className="h-8 w-8 self-end"
+                              />
+                            ),
+                          },
+                          {
+                            field: "Item",
+                            header: "Name",
+                            render: ({ value: { id, name } }) => {
+                              return <Link to={routes.item({ id })}>{name}</Link>;
+                            },
+                          },
+                          {
+                            field: "value",
+                            header: "Value",
+                            render: ({ value }) => (
+                              <div className="flex items-center">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 512 512"
+                                  className="inline-block w-4 fill-current"
+                                >
+                                  <path d="M510.3 445.9L437.3 153.8C433.5 138.5 420.8 128 406.4 128H346.1c3.625-9.1 5.875-20.75 5.875-32c0-53-42.1-96-96-96S159.1 43 159.1 96c0 11.25 2.25 22 5.875 32H105.6c-14.38 0-27.13 10.5-30.88 25.75l-73.01 292.1C-6.641 479.1 16.36 512 47.99 512h416C495.6 512 518.6 479.1 510.3 445.9zM256 128C238.4 128 223.1 113.6 223.1 96S238.4 64 256 64c17.63 0 32 14.38 32 32S273.6 128 256 128z" />
+                                </svg>
+                                <p className="mx-1 text-lime-300">{value}%</p>
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 320 512"
+                                  className="inline-block w-4 fill-current text-lime-300"
+                                >
+                                  <path d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z" />
+                                </svg>
+                              </div>
+                            ),
+                          },
+                          {
+                            field: "rank",
+                            header: "Rank",
+                            render: ({ value }) =>
+                              value <= 10 && <p>#{value}</p>,
+                          },
+                        ]}
+                      />
+                    </section>
+                  )}
 
-              {dino.x_variant && (
-                <>
+                  {dino.DinoStat.some((d) => d.type == "drops") && (
+                    <section className="space-y-2 col-span-1">
+                      <h4 className="rw-label">Drops</h4>
+                      <Table
+                        className="min-w-fit border border-zinc-500"
+                        rows={dino.DinoStat.filter((d) => d.type == "drops")}
+                        columns={[
+                          {
+                            field: "Item",
+                            header: "Name",
+                            render: ({ value: { id, image, name } }) => (
+                              <Link
+                                to={routes.item({ id })}
+                                className="flex flex-row items-center space-x-2"
+                              >
+                                <img
+                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                                  className="h-8 w-8 self-end"
+                                />
+                                <span>{name}</span>
+                              </Link>
+                            ),
+                          },
+                        ]}
+                      />
+                    </section>
+                  )}
+
+                  {dino.DinoStat.some((d) => d.type == "food") && (
+                    <section className="space-y-2 col-span-1">
+                      <h4 className="rw-label">Food</h4>
+                      <Table
+                        className="min-w-fit border border-zinc-500"
+                        rows={dino.DinoStat.filter((d) => d.type == "food")}
+                        columns={[
+                          {
+                            field: "Item",
+                            header: "Name",
+                            render: ({ value: { id, name, image } }) => (
+                              <Link
+                                to={routes.item({ id })}
+                                className="flex flex-row items-center space-x-2"
+                              >
+                                <img
+                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                                  className="h-8 w-8 self-end"
+                                />
+                                <span>{name}</span>
+                              </Link>
+                            ),
+                          },
+                        ]}
+                      />
+                    </section>
+                  )}
+
+                  {baseStats && (
+                    <Table
+                      className="w-fit"
+                      rows={baseStats}
+                      toolbar={
+                        !dino.type.includes("boss")
+                          ? [
+                            <button
+                              type="button"
+                              className="rw-button rw-button-gray"
+                              onClick={genRandomStats}
+                            >
+                              Random
+                            </button>,
+                            <button
+                              type="button"
+                              className="rw-button rw-button-gray text-white"
+                              onClick={() =>
+                                setBaseStats(
+                                  baseStats.map((s) => ({
+                                    ...s,
+                                    points:
+                                      s.stat == "Torpidity"
+                                        ? 0
+                                        : Math.round(dinoLevel / 7),
+                                  }))
+                                )
+                              }
+                            >
+                              Distribute Evenly
+                            </button>,
+                            <button
+                              type="button"
+                              className="rw-button rw-button-red"
+                              onClick={() =>
+                                setBaseStats(
+                                  baseStats.map((s) => ({
+                                    ...s,
+                                    points: 0,
+                                    total: s.base,
+                                  }))
+                                )
+                              }
+                            >
+                              Clear
+                            </button>,
+                            <p>
+                              {dinoLevel -
+                                baseStats
+                                  .map((b) => b?.points)
+                                  .reduce((a, b) => a + b, 0)}{" "}
+                              points wasted
+                            </p>,
+                          ]
+                          : []
+                      }
+                      columns={[
+                        {
+                          field: "stat",
+                          header: "Stat",
+                          className: "font-bold w-fit",
+                          sortable: true,
+                          render: ({ value }) =>
+                            value && (
+                              <div className="inline-flex items-center space-x-2 w-fit">
+                                <img
+                                  title={value}
+                                  className="h-6 w-6"
+                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${value
+                                    ?.replace(" ", "_")
+                                    .toLowerCase()}.webp`}
+                                  alt={value}
+                                />
+                                <p className="sm:block hidden">{value ?? 0}</p>
+                              </div>
+                            ),
+                        },
+                        {
+                          field: "base",
+                          header: "Base",
+                          className: "w-fit",
+                          numeric: true,
+                          sortable: true,
+                        },
+                        {
+                          field: "increasePerLevelWild",
+                          header: "Increase per level (w)",
+                          className: "w-fit",
+                          numeric: true,
+                          render: ({ value }) => value === null ? "" : `+${value}`,
+                        },
+                        {
+                          field: "increasePerLevelTamed",
+                          header: "Increase per level (t)",
+                          numeric: true,
+                          render: ({ value }) => value === null ? "" : `+${value}%`,
+                        },
+                        {
+                          field: "total",
+                          header: "Total",
+                          className: "w-fit",
+                          numeric: true,
+                        },
+                        !dino.type.includes("boss") && {
+                          field: "base",
+                          header: "",
+                          render: ({ row }) => (
+                            <nav className="flex flex-row items-center space-x-2">
+                              <button
+                                type="button"
+                                disabled={
+                                  baseStats.find((s) => s.stat === row.stat)?.points <=
+                                  0 || row.stat === "Torpidity"
+                                }
+                                className="rw-button rw-button-red-outline h-8 w-8 rounded-full p-0 !text-xl"
+                                onClick={() => onRemove(row.stat)}
+                              >
+                                -
+                              </button>
+                              <input
+                                type="text"
+                                disabled={true}
+                                className="rw-input w-16 p-3 text-center"
+                                value={
+                                  baseStats.find((s) => s.stat === row.stat)?.points
+                                }
+                              />
+                              <button
+                                type="button"
+                                disabled={
+                                  baseStats
+                                    .map((b) => b.points)
+                                    .reduce((a, b) => a + b, 0) >= dinoLevel ||
+                                  row.stat === "Torpidity"
+                                }
+                                className="rw-button rw-button-green-outline h-8 w-8 rounded-full p-0 !text-xl"
+                                onClick={() => onAdd(row.stat)}
+                              >
+                                +
+                              </button>
+                            </nav>
+                          ),
+                        },
+                      ]}
+                    />
+                  )}
+                </section>
+              </section>
+            )
+          }, dino.tamable && {
+            title: 'Taming',
+            icon: (
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" className="ml-2 w-5 h-5 pointer-events-none">
+                <path d="M496.3 0c-1 0-2.115 .1567-3.115 .2817L364.6 26.03c-12.25 2.5-16.88 17.59-8 26.47l40.12 40.13L144.3 345L90.73 320.9c-7.375-2.375-15.5-.5022-20.1 4.1l-63.75 63.82c-10.75 10.75-6.376 29.12 8.126 33.99l55.62 18.5l18.5 55.62C91.22 506.8 99.47 512 107.8 512c5.125 0 10.37-1.918 14.5-6.041l63.62-63.74c5.502-5.5 7.376-13.62 5.001-20.1l-23.1-53.6l252.4-252.4l40.13 40.08C462.6 158.5 466.6 160 470.5 160c6.998 0 13.89-4.794 15.51-12.67l25.72-128.6C513.6 8.905 505.1 0 496.3 0zM112.7 470.3L94.97 417l-53.25-17.75l44.87-45l49.13 22l21.1 48.1L112.7 470.3zM460.6 111.3L400.7 51.5l74.75-15L460.6 111.3zM148.7 267.3C151.8 270.4 155.9 272 160 272s8.188-1.562 11.31-4.688c6.25-6.25 6.25-16.38 0-22.62L63.58 136.1c73.23-51.43 171.8-54.54 247.9-6.502c7.375 4.688 17.38 2.516 22.06-4.984C338.3 118 336 108.1 328.5 103.4c-88.5-55.89-203.9-51.54-288.1 10.46L27.26 100.7C21.01 94.5 10.94 94.44 4.688 100.7S-1.533 117 4.717 123.3L148.7 267.3zM408.6 183.5c-4.781-7.5-14.75-9.672-22.06-4.984c-7.5 4.719-9.719 14.61-5 22.08c48.06 76.04 44.97 174.6-6.494 247.9l-107.7-107.7c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62l144 144C391.8 510.4 395.9 512 400 512s8.188-1.562 11.31-4.688c6.25-6.25 6.25-16.38 0-22.62l-13.17-13.17C460.1 387.3 464.5 271.1 408.6 183.5z" />
+              </svg>
+            ),
+            content: (
+              <section>
+                <p className="my-1 text-sm leading-relaxed">{dino?.taming_notice}</p>
+
+                {/* Tek Stryder */}
+                {dino.id === "a5a9f2bb-7d89-4672-9d1c-567d035e23a7" && (
+                  <p className="my-1 text-sm leading-relaxed">
+                    <b className="underline">
+                      {Math.floor(1 + 48 * (dinoLevel / 150))}
+                    </b>{" "}
+                    Missions needed for taming a level {dinoLevel} stryder
+                  </p>
+                )}
+                <Form<TamingCalculatorForm> onSubmit={calculateDino}>
                   <Label
-                    name="x_variant"
+                    name="level"
                     className="rw-label"
                     errorClassName="rw-label rw-label-error"
                   >
-                    X Variant
+                    Level
                   </Label>
 
-                  <CheckboxField
-                    name="x_variant"
+                  <NumberField
+                    name="level"
                     className="rw-input"
                     errorClassName="rw-input rw-input-error"
-                    validation={{ required: false, valueAsBoolean: true }}
+                    validation={{
+                      required: true,
+                      valueAsNumber: true,
+                      min: 1,
+                      max: 500,
+                    }}
+                    defaultValue={dinoLevel}
                   />
 
-                  <FieldError name="x_variant" className="rw-field-error" />
-                </>
-              )}
+                  <FieldError name="level" className="rw-field-error" />
 
-              <CheckboxGroup
-                className="!mt-3"
-                name="foodSelect"
-                form={true}
-                defaultValue={[
-                  selectedFood
-                    ? selectedFood.toString()
-                    : dino?.DinoStat.filter((f) => f.type === "food") &&
-                    dino?.DinoStat.filter(
-                      (f) => f.type === "food"
-                    )[0]?.Item.id.toString(),
-                ]}
-                validation={{
-                  single: true,
-                }}
-                options={tamingFood.map(({ id, name, max, image }) => ({
-                  value: id,
-                  label: `${name} (${max})`,
-                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`,
-                }))}
-              />
+                  <Label
+                    name="sec_between_hits"
+                    className="rw-label"
+                    errorClassName="rw-label rw-label-error"
+                  >
+                    Seconds between hits
+                  </Label>
 
-              <div className="rw-button-group justify-start">
-                <Submit
-                  className="rw-button rw-button-green !ml-0"
-                  disabled={false}
-                >
-                  Calculate
-                </Submit>
-              </div>
-            </Form>
-          </div>
+                  <NumberField
+                    name="sec_between_hits"
+                    className="rw-input"
+                    errorClassName="rw-input rw-input-error"
+                    validation={{
+                      valueAsNumber: true,
+                      min: 1,
+                      max: 500,
+                    }}
+                    defaultValue={5}
+                  // onChange={debounce((e) => {
+                  //   setSecondsBetweenHits(parseInt(e.target.value));
+                  // }, 300)}
+                  />
 
-          {tameData && (
-            <section>
-              <p className="my-3 text-center text-base dark:text-gray-200">
-                With selected food:
-              </p>
-              <section className="mt-3 rounded-t-md border border-zinc-500 bg-zinc-300 p-4 dark:bg-zinc-600 dark:text-white">
-                <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
-                  {[
-                    {
-                      name: "Current",
-                      sub: `Lvl ${dinoLevel}`,
-                      icon: (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 448 512"
-                        >
-                          <path d="M432 144h-85.73l21.32-92.4c1.969-8.609-3.375-17.2-12-19.19c-8.688-2.031-17.19 3.39-19.19 11.1l-22.98 99.59H186.3l21.32-92.4c1.969-8.609-3.375-17.2-12-19.19c-8.719-2.031-17.19 3.39-19.19 11.1L153.4 144H48c-8.844 0-16 7.144-16 15.99C32 168.8 39.16 176 48 176h98.04L109.1 336H16c-8.844 0-16 7.151-16 15.99s7.156 16 16 16h85.73L80.41 460.4c-1.969 8.609 3.375 17.2 12 19.19C93.63 479.9 94.81 480 96 480c7.281 0 13.88-4.1 15.59-12.41l22.98-99.59h127.2l-21.32 92.4c-1.969 8.609 3.375 17.2 12 19.19C253.6 479.9 254.8 480 256 480c7.281 0 13.88-4.1 15.59-12.41l22.98-99.59H400c8.844 0 16-7.161 16-16s-7.156-15.99-16-15.99h-98.04l36.92-159.1H432c8.844 0 16-7.168 16-16.01C448 151.2 440.8 144 432 144zM269.1 336H141.1L178.9 176h127.2L269.1 336z" />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "Taming Eff.",
-                      sub: `${(tameData.effectiveness
-                        ? tameData.effectiveness
-                        : 0
-                      ).toFixed()}%`,
-                      icon: (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 384 512"
-                        >
-                          <path d="M379.3 68.69c-6.25-6.25-16.38-6.25-22.62 0l-352 352c-6.25 6.25-6.25 16.38 0 22.62C7.813 446.4 11.91 448 16 448s8.188-1.562 11.31-4.688l352-352C385.6 85.06 385.6 74.94 379.3 68.69zM64 192c35.35 0 64-28.65 64-64S99.35 64.01 64 64.01c-35.35 0-64 28.65-64 63.1S28.65 192 64 192zM64 96c17.64 0 32 14.36 32 32S81.64 160 64 160S32 145.6 32 128S46.36 96 64 96zM320 320c-35.35 0-64 28.65-64 64s28.65 64 64 64c35.35 0 64-28.65 64-64S355.3 320 320 320zM320 416c-17.64 0-32-14.36-32-32s14.36-32 32-32s32 14.36 32 32S337.6 416 320 416z" />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "With Bonus",
-                      sub: `Lvl ${dinoLevel + tameData.levelsGained}`,
-                      icon: (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 512 512"
-                        >
-                          <path d="M466.5 83.69l-192-80.01C268.6 1.188 262.3 0 256.1 0S243.5 1.188 237.6 3.688l-192 80.01C27.72 91.07 16 108.6 16 127.1C16 385.4 205.4 512 255.1 512C305.2 512 496 387.3 496 127.1C496 108.6 484.3 91.07 466.5 83.69zM463.9 128.3c0 225.3-166.2 351.7-207.8 351.7C213.3 479.1 48 352.2 48 128c0-6.5 3.875-12.25 9.75-14.75l192-80c1.973-.8275 4.109-1.266 6.258-1.266c2.071 0 4.154 .4072 6.117 1.266l192 80C463.3 117.1 463.9 125.8 463.9 128.3zM336 240H271.1v-64C271.1 167.2 264.8 160 256 160S240 167.2 240 176v64H175.1C167.2 240 160 247.2 160 256s7.154 16 15.1 16H240v64c0 8.836 7.154 16 15.1 16c8.838 0 15.1-7.16 15.1-16v-64h64C344.8 272 352 264.8 352 256S344.8 240 336 240z" />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "Max after Taming",
-                      sub: `Lvl ${dinoLevel +
-                        tameData.levelsGained +
-                        (dinoXVariant && dino.x_variant ? 88 : 73)
-                        }`,
-                      icon: (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 576 512"
-                        >
-                          <path d="M477.4 304.2l-131 21.75C336.5 303.6 314.1 288 288 288c-35.38 0-64 28.62-64 64s28.62 64 64 64c33.38 0 60.5-25.75 63.38-58.38l131.3-21.87c8.75-1.375 14.62-9.625 13.12-18.38C494.4 308.6 485.9 302.8 477.4 304.2zM288 384c-17.62 0-32-14.38-32-32s14.38-31.1 32-31.1S320 334.4 320 352S305.6 384 288 384zM288 32c-159 0-288 129-288 288c0 52.75 14.25 102.3 39 144.8c5.625 9.625 16.38 15.25 27.5 15.25h443c11.12 0 21.88-5.625 27.5-15.25C561.8 422.3 576 372.8 576 320C576 161 447 32 288 32zM509.5 448H66.75C44 409.1 32 365.2 32 320c0-141.1 114.9-256 256-256s256 114.9 256 256C544 365.2 532 409.8 509.5 448z" />
-                        </svg>
-                      ),
-                    },
-                  ].map(({ name, sub, icon }, i) => (
-                    <li
-                      key={`taming-stage-${i}`}
-                      className="[&>*]:fill-secondary-button [&>*]:border-secondary-button flex items-center space-x-2.5 [&>*]:dark:border-white [&>*]:dark:fill-white [&:last-of-type>svg]:hidden"
-                    >
-                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border p-3">
-                        {icon}
-                      </span>
-                      <span>
-                        <h3 className="font-medium leading-tight">{name}</h3>
-                        <p className="space-x-1 text-sm">
-                          <span>{sub.replace(/[0-9]/g, "")}</span>
-                          <Counter
-                            className="inline-block"
-                            startNumber={0}
-                            endNumber={parseInt(sub.replace(/\D/g, ""))}
-                            duration={500}
-                          />
-                        </p>
-                      </span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
-                        viewBox="0 0 256 512"
+                  <FieldError name="sec_between_hits" className="rw-field-error" />
+
+                  {dino.x_variant && (
+                    <>
+                      <Label
+                        name="x_variant"
+                        className="rw-label"
+                        errorClassName="rw-label rw-label-error"
                       >
-                        <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
-                      </svg>
-                    </li>
-                  ))}
-                </ol>
-              </section>
+                        X Variant
+                      </Label>
 
-              <section className="rounded-b-md border border-t-0 border-zinc-500 bg-zinc-200 p-4 dark:bg-zinc-700 dark:text-white">
-                <div className="relative my-3 grid grid-cols-5 gap-4 text-center">
-                  {!!tameData.totalTorpor && !!tameData.torporDepletionPS && (
-                    <div className="flex flex-col items-center">
-                      <p className="font-light">
-                        Torpor Drain Rate:{" "}
-                        <span
-                          className={clsx(`font-bold`, {
-                            "text-pea-500": tameData.torporDepletionPS < 1,
-                            "text-yellow-500":
-                              tameData.torporDepletionPS >= 1 &&
-                              tameData.torporDepletionPS < 2,
-                            "text-red-500": tameData.torporDepletionPS >= 2,
-                          })}
-                        >
-                          {tameData.torporDepletionPS.toFixed(1)}/s
-                        </span>
-                      </p>
+                      <CheckboxField
+                        name="x_variant"
+                        className="rw-input"
+                        errorClassName="rw-input rw-input-error"
+                        validation={{ required: false, valueAsBoolean: true }}
+                      />
 
-                      <p>
-                        {timeFormatL(
-                          tameData.totalTorpor / tameData.torporDepletionPS
-                        )}{" "}
-                        until unconscious
-                      </p>
-                    </div>
+                      <FieldError name="x_variant" className="rw-field-error" />
+                    </>
                   )}
-                  {Object.entries(tameData)
-                    .filter(([k, _]) =>
-                      [
-                        "NarcoberryMin",
-                        "Bio-ToxinMin",
-                        "NarcoticMin",
-                        "Ascerbic-MushroomMin",
-                      ].includes(k)
-                    )
-                    .map(([name, amount]) => {
-                      const newName = name.replace("Min", "").toLowerCase();
-                      return (
-                        <div
-                          className="flex flex-col items-center"
-                          key={`narcotic-${name}`}
-                        >
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${newName}.webp`}
-                            alt="food"
-                            className="w-12"
-                          />
-                          <p>{amount.toString()}</p>
-                          <p className="text-xs capitalize">
-                            {newName.replace("-", " ")}
-                          </p>
-                        </div>
-                      )
-                    })}
-                </div>
-              </section>
 
-              {calculateWeapons && (
-                <section className="space-y-2">
-                  <p className="rw-label">Knock Out</p>
-                  <div className="max-w-screen relative flex flex-row gap-3 overflow-x-auto rounded-md text-center">
-                    {calculateWeapons.sort((a, b) => b.isPossible ? 1 : 0 - (a.isPossible ? 1 : 0)).map(
-                      ({
-                        id,
-                        name,
-                        image,
-                        isPossible,
-                        chanceOfDeath,
-                        hits,
-                        hitboxes,
-                        userDamage,
-                        chanceOfDeathHigh,
-                      }) => (
-                        <div
-                          key={`weapon-${id}`}
-                          className={clsx(
-                            `animate-fade-in my-1 flex min-h-full min-w-[8rem] flex-1 flex-col items-center justify-between space-y-1 rounded bg-zinc-200 p-3 first:ml-1 last:mr-1 dark:bg-zinc-700`,
+                  <CheckboxGroup
+                    className="!mt-3 animate-fade-in"
+                    name="foodSelect"
+                    form={true}
+                    defaultValue={[
+                      selectedFood
+                        ? selectedFood.toString()
+                        : dino?.DinoStat.filter((f) => f.type === "food") &&
+                        dino?.DinoStat.filter(
+                          (f) => f.type === "food"
+                        )[0]?.Item.id.toString(),
+                    ]}
+                    validation={{
+                      single: true,
+                    }}
+                    options={tamingFood.map(({ id, name, max, image }) => ({
+                      value: id,
+                      label: `${name} (${max})`,
+                      image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`,
+                    }))}
+                  />
+
+                  <Submit className="rw-button rw-button-green my-3">
+                    Calculate
+                  </Submit>
+
+                  {tameData && (
+                    <section>
+                      <p className="rw-label">
+                        With selected food:
+                      </p>
+                      <div className="rounded-t-md border border-zinc-500 bg-zinc-300 p-4 dark:bg-zinc-600 dark:text-white">
+                        <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
+                          {[
                             {
-                              "shadow":
-                                isPossible && chanceOfDeath < 99,
-                              "rw-img-disable text-gray-500":
-                                !isPossible || chanceOfDeath >= 99,
-                            }
-                          )}
-                        >
-                          <img
-                            className="h-16 w-16"
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                          />
-                          <Link
-                            to={routes.item({ id: id.toString() })}
-                            className="w-full"
-                          >
-                            {name}
-                          </Link>
-                          {isPossible ? (
-                            <Counter
-                              startNumber={0}
-                              endNumber={hits}
-                              duration={3000 / hits}
-                            />
-                          ) : (
-                            <p>Not Possible</p>
-                          )}
-                          {chanceOfDeath > 0 && isPossible && (
-                            <p
-                              className={clsx("text-xs", {
-                                "text-red-300": chanceOfDeathHigh,
-                              })}
+                              name: "Current",
+                              sub: `Lvl ${dinoLevel}`,
+                              icon: (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 448 512"
+                                >
+                                  <path d="M432 144h-85.73l21.32-92.4c1.969-8.609-3.375-17.2-12-19.19c-8.688-2.031-17.19 3.39-19.19 11.1l-22.98 99.59H186.3l21.32-92.4c1.969-8.609-3.375-17.2-12-19.19c-8.719-2.031-17.19 3.39-19.19 11.1L153.4 144H48c-8.844 0-16 7.144-16 15.99C32 168.8 39.16 176 48 176h98.04L109.1 336H16c-8.844 0-16 7.151-16 15.99s7.156 16 16 16h85.73L80.41 460.4c-1.969 8.609 3.375 17.2 12 19.19C93.63 479.9 94.81 480 96 480c7.281 0 13.88-4.1 15.59-12.41l22.98-99.59h127.2l-21.32 92.4c-1.969 8.609 3.375 17.2 12 19.19C253.6 479.9 254.8 480 256 480c7.281 0 13.88-4.1 15.59-12.41l22.98-99.59H400c8.844 0 16-7.161 16-16s-7.156-15.99-16-15.99h-98.04l36.92-159.1H432c8.844 0 16-7.168 16-16.01C448 151.2 440.8 144 432 144zM269.1 336H141.1L178.9 176h127.2L269.1 336z" />
+                                </svg>
+                              ),
+                            },
+                            {
+                              name: "Taming Eff.",
+                              sub: `${(tameData.effectiveness
+                                ? tameData.effectiveness
+                                : 0
+                              ).toFixed()}%`,
+                              icon: (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 384 512"
+                                >
+                                  <path d="M379.3 68.69c-6.25-6.25-16.38-6.25-22.62 0l-352 352c-6.25 6.25-6.25 16.38 0 22.62C7.813 446.4 11.91 448 16 448s8.188-1.562 11.31-4.688l352-352C385.6 85.06 385.6 74.94 379.3 68.69zM64 192c35.35 0 64-28.65 64-64S99.35 64.01 64 64.01c-35.35 0-64 28.65-64 63.1S28.65 192 64 192zM64 96c17.64 0 32 14.36 32 32S81.64 160 64 160S32 145.6 32 128S46.36 96 64 96zM320 320c-35.35 0-64 28.65-64 64s28.65 64 64 64c35.35 0 64-28.65 64-64S355.3 320 320 320zM320 416c-17.64 0-32-14.36-32-32s14.36-32 32-32s32 14.36 32 32S337.6 416 320 416z" />
+                                </svg>
+                              ),
+                            },
+                            {
+                              name: "With Bonus",
+                              sub: `Lvl ${dinoLevel + tameData.levelsGained}`,
+                              icon: (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 512 512"
+                                >
+                                  <path d="M466.5 83.69l-192-80.01C268.6 1.188 262.3 0 256.1 0S243.5 1.188 237.6 3.688l-192 80.01C27.72 91.07 16 108.6 16 127.1C16 385.4 205.4 512 255.1 512C305.2 512 496 387.3 496 127.1C496 108.6 484.3 91.07 466.5 83.69zM463.9 128.3c0 225.3-166.2 351.7-207.8 351.7C213.3 479.1 48 352.2 48 128c0-6.5 3.875-12.25 9.75-14.75l192-80c1.973-.8275 4.109-1.266 6.258-1.266c2.071 0 4.154 .4072 6.117 1.266l192 80C463.3 117.1 463.9 125.8 463.9 128.3zM336 240H271.1v-64C271.1 167.2 264.8 160 256 160S240 167.2 240 176v64H175.1C167.2 240 160 247.2 160 256s7.154 16 15.1 16H240v64c0 8.836 7.154 16 15.1 16c8.838 0 15.1-7.16 15.1-16v-64h64C344.8 272 352 264.8 352 256S344.8 240 336 240z" />
+                                </svg>
+                              ),
+                            },
+                            {
+                              name: "Max after Taming",
+                              sub: `Lvl ${dinoLevel +
+                                tameData.levelsGained +
+                                (dinoXVariant && dino.x_variant ? 88 : 73)
+                                }`,
+                              icon: (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 576 512"
+                                >
+                                  <path d="M477.4 304.2l-131 21.75C336.5 303.6 314.1 288 288 288c-35.38 0-64 28.62-64 64s28.62 64 64 64c33.38 0 60.5-25.75 63.38-58.38l131.3-21.87c8.75-1.375 14.62-9.625 13.12-18.38C494.4 308.6 485.9 302.8 477.4 304.2zM288 384c-17.62 0-32-14.38-32-32s14.38-31.1 32-31.1S320 334.4 320 352S305.6 384 288 384zM288 32c-159 0-288 129-288 288c0 52.75 14.25 102.3 39 144.8c5.625 9.625 16.38 15.25 27.5 15.25h443c11.12 0 21.88-5.625 27.5-15.25C561.8 422.3 576 372.8 576 320C576 161 447 32 288 32zM509.5 448H66.75C44 409.1 32 365.2 32 320c0-141.1 114.9-256 256-256s256 114.9 256 256C544 365.2 532 409.8 509.5 448z" />
+                                </svg>
+                              ),
+                            },
+                          ].map(({ name, sub, icon }, i) => (
+                            <li
+                              key={`taming-stage-${i}`}
+                              className="[&>*]:fill-secondary-button [&>*]:border-secondary-button flex items-center space-x-2.5 [&>*]:dark:border-white [&>*]:dark:fill-white [&:last-of-type>svg]:hidden"
                             >
-                              {chanceOfDeath}% chance of death
-                            </p>
-                          )}
-                          {hitboxes.length > 0 && (
-                            <span className="rw-badge rw-badge-gray">
-                              {hitboxes.map(({ name, multiplier }) => (
+                              <span className="flex md:h-12 md:w-12 w-6 h-6 shrink-0 items-center justify-center rounded-full border p-1 md:p-3">
+                                {icon}
+                              </span>
+                              <span>
+                                <h3 className="font-medium leading-tight">{name}</h3>
+                                <p className="space-x-1 text-sm">
+                                  <span>{sub.replace(/[0-9]/g, "")}</span>
+                                  <Counter
+                                    className="inline-block"
+                                    startNumber={0}
+                                    endNumber={parseInt(sub.replace(/\D/g, ""))}
+                                    duration={500}
+                                  />
+                                </p>
+                              </span>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-6 w-6 transform rotate-90 md:rotate-0"
+                                viewBox="0 0 256 512"
+                              >
+                                <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                              </svg>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+
+                      <div className="rounded-b-md border border-t-0 border-zinc-500 bg-zinc-200 p-4 dark:bg-zinc-700 dark:text-white">
+                        <div className="relative my-3 grid grid-cols-5 gap-4 text-center">
+                          {!!tameData.totalTorpor && !!tameData.torporDepletionPS && (
+                            <div className="flex flex-col items-center">
+                              <p className="font-light">
+                                Torpor Drain Rate:{" "}
                                 <span
-                                  key={`hitbox-${name}`}
-                                >{`${name} - ${multiplier}x`}</span>
-                              ))}
-                            </span>
+                                  className={clsx(`font-bold`, {
+                                    "text-pea-500": tameData.torporDepletionPS < 1,
+                                    "text-yellow-500":
+                                      tameData.torporDepletionPS >= 1 &&
+                                      tameData.torporDepletionPS < 2,
+                                    "text-red-500": tameData.torporDepletionPS >= 2,
+                                  })}
+                                >
+                                  {tameData.torporDepletionPS.toFixed(1)}/s
+                                </span>
+                              </p>
+
+                              <p>
+                                {timeFormatL(
+                                  tameData.totalTorpor / tameData.torporDepletionPS
+                                )}{" "}
+                                until unconscious
+                              </p>
+                            </div>
                           )}
-                          <div className="rw-button-group max-w-full">
-                            <input
-                              className="rw-input w-12 !p-1 text-center"
-                              defaultValue={userDamage}
-                              disabled={!isPossible || chanceOfDeath >= 99}
-                              onChange={debounce((e) => {
-                                setWeaponDamage({
-                                  ...weaponDamage,
-                                  [id]: e.target.value,
-                                });
-                              }, 300)}
-                            />
-                            <input
-                              type="readonly"
-                              disabled={!isPossible || chanceOfDeath >= 99}
-                              className="rw-input !w-5 !p-1 text-center"
-                              readOnly
-                              placeholder="%"
-                              defaultValue={`%`}
-                            />
-                          </div>
+                          {Object.entries(tameData)
+                            .filter(([k, _]) =>
+                              [
+                                "NarcoberryMin",
+                                "Bio-ToxinMin",
+                                "NarcoticMin",
+                                "Ascerbic-MushroomMin",
+                              ].includes(k)
+                            )
+                            .map(([name, amount]) => {
+                              const newName = name.replace("Min", "").toLowerCase();
+                              return (
+                                <div
+                                  className="flex flex-col items-center"
+                                  key={`narcotic-${name}`}
+                                >
+                                  <img
+                                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${newName}.webp`}
+                                    alt="food"
+                                    className="w-8 sm:w-12"
+                                  />
+                                  <p>{amount.toString()}</p>
+                                  <p className="text-xs capitalize">
+                                    {newName.replace("-", " ")}
+                                  </p>
+                                </div>
+                              )
+                            })}
                         </div>
-                      )
-                    )}
-                  </div>
-                </section>
-              )}
-              <label htmlFor="sec_between_hits" className="rw-label">
-                Seconds between hits
-              </label>
-              <input
-                type="number"
-                inputMode="numeric"
-                id="sec_between_hits"
-                name="sec_between_hits"
-                className="rw-input"
-                placeholder="Seconds between hits"
-                defaultValue={secondsBetweenHits || 5}
-                onChange={debounce((e) => {
-                  setSecondsBetweenHits(parseInt(e.target.value));
-                }, 300)}
-              />
-            </section>
-          )}
-        </section>
-      )}
+                      </div>
 
-      <section className="bg-gray-200 p-4 dark:bg-zinc-600 rounded-lg border border-zinc-500">
-        <iframe width="100%" seamless
-          src={`https://www.youtube.com/results?search_query=ark+${dino.name}+taming`}>
-        </iframe>
+                      {calculateWeapons && (
+                        <>
+                          <h4 className="rw-label">Knock Out</h4>
+                          <div className="max-w-screen relative flex flex-row gap-3 overflow-x-auto rounded-md text-center">
+                            {calculateWeapons.sort((a, b) => b.isPossible ? 1 : 0 - (a.isPossible ? 1 : 0)).map(
+                              ({
+                                id,
+                                name,
+                                visible,
+                                image,
+                                isPossible,
+                                chanceOfDeath,
+                                hits,
+                                hitboxes,
+                                userDamage,
+                                chanceOfDeathHigh,
+                              }) => (
+                                <div
+                                  key={`weapon-${id}`}
+                                  className={clsx(
+                                    `animate-fade-in flex min-h-full min-w-[8rem] flex-1 flex-col items-center justify-between space-y-1 rounded bg-zinc-200 p-3 dark:bg-zinc-700 border border-zinc-500`,
+                                    {
+                                      "shadow":
+                                        isPossible && chanceOfDeath < 99,
+                                      "rw-img-disable text-gray-500":
+                                        !isPossible || chanceOfDeath >= 99,
+                                    }
+                                  )}
+                                >
+                                  <img
+                                    className="h-16 w-16"
+                                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                                  />
+                                  <Link
+                                    to={routes.item({ id: id.toString() })}
+                                    className={clsx("w-full", {
+                                      "pointer-events-none": !visible
+                                    })}
+                                  >
+                                    {name}
+                                  </Link>
+                                  {isPossible ? (
+                                    <Counter
+                                      startNumber={0}
+                                      endNumber={hits}
+                                      duration={3000 / hits}
+                                    />
+                                  ) : (
+                                    <p>Not Possible</p>
+                                  )}
+                                  {chanceOfDeath > 0 && isPossible && (
+                                    <p
+                                      className={clsx("text-xs", {
+                                        "text-red-300": chanceOfDeathHigh,
+                                      })}
+                                    >
+                                      {chanceOfDeath}% chance of death
+                                    </p>
+                                  )}
+                                  {hitboxes.length > 0 && (
+                                    <span className="rw-badge rw-badge-gray">
+                                      {hitboxes.map(({ name, multiplier }) => (
+                                        <span
+                                          key={`hitbox-${name}`}
+                                        >{`${name} - ${multiplier}x`}</span>
+                                      ))}
+                                    </span>
+                                  )}
+
+                                  <div className="relative">
+                                    <input
+                                      type="text"
+                                      className="rw-input w-24 rw-input-small !pr-10"
+                                      placeholder="Percent"
+                                      defaultValue={userDamage}
+                                      disabled={!isPossible || chanceOfDeath >= 99}
+                                      onChange={debounce((e) => {
+                                        setWeaponDamage({
+                                          ...weaponDamage,
+                                          [id]: e.target.value,
+                                        });
+                                      }, 300)}
+                                    />
+                                    <div className="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none">
+                                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 text-gray-500 dark:text-gray-400" viewBox="0 0 384 512" fill="currentColor">
+                                        <path d="M379.3 68.69c-6.25-6.25-16.38-6.25-22.62 0l-352 352c-6.25 6.25-6.25 16.38 0 22.62C7.813 446.4 11.91 448 16 448s8.188-1.562 11.31-4.688l352-352C385.6 85.06 385.6 74.94 379.3 68.69zM64 192c35.35 0 64-28.65 64-64S99.35 64.01 64 64.01c-35.35 0-64 28.65-64 63.1S28.65 192 64 192zM64 96c17.64 0 32 14.36 32 32S81.64 160 64 160S32 145.6 32 128S46.36 96 64 96zM320 320c-35.35 0-64 28.65-64 64s28.65 64 64 64c35.35 0 64-28.65 64-64S355.3 320 320 320zM320 416c-17.64 0-32-14.36-32-32s14.36-32 32-32s32 14.36 32 32S337.6 416 320 416z" />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        </>
+                      )}
+
+                      <section className="bg-gray-200 my-3 p-4 dark:bg-zinc-600 rounded-lg border border-zinc-500">
+                        <iframe width="100%" seamless
+                          src={`https://www.youtube.com/results?search_query=ark+${dino.name}+taming`}>
+                        </iframe>
+                      </section>
+                    </section>
+                  )}
+                </Form>
+              </section>
+            )
+          }, {
+            title: 'Breeding / Reproduction',
+            content: (
+              <section>
+                {!!dino.maturation_time &&
+                  dino.maturation_time != 0 &&
+                  dino.incubation_time && (
+                    <section className="col-span-2 rounded-md">
+                      <p className="my-3 text-center text-sm">{dino.name} breeding:</p>
+                      <Form className="my-6 mx-auto flex justify-center">
+                        <NumberField
+                          name="matPerc"
+                          id="matPerc"
+                          className="rw-input w-20 rounded-none rounded-l-lg"
+                          placeholder="Maturation Percent"
+                          defaultValue={0}
+                          min={0}
+                          max={100}
+                          onInput={debounce((event) => {
+                            setMaturation(
+                              parseInt(event.target ? event.target["value"] : 0)
+                            );
+                          }, 300)}
+                        />
+                        <label
+                          htmlFor="matPerc"
+                          className="rw-input rounded-none rounded-r-lg"
+                        >
+                          %
+                        </label>
+                      </Form>
+
+                      <ol className="w-full items-center justify-center space-y-4 sm:flex sm:space-x-8 sm:space-y-0">
+                        {[
+                          {
+                            name: "Incubation",
+                            time: dino.incubation_time / settings.hatchMultiplier,
+                          },
+                          { name: "Baby", time: (dino.maturation_time * 1) / 10 },
+                          {
+                            name: "Juvenile",
+                            time:
+                              (dino?.maturation_time * 1) / 2 -
+                              (dino?.maturation_time * 1) / 10,
+                          },
+                          {
+                            name: "Adolescent",
+                            time: (dino?.maturation_time * settings.matureMultiplier) / 2,
+                          },
+                          {
+                            name: "Total",
+                            time: dino?.maturation_time * settings.matureMultiplier,
+                          },
+                        ].map(({ name, time }, i) => (
+                          <li
+                            key={`breeding-stage-${i}`}
+                            className={clsx(`flex items-center space-x-2.5`, {
+                              "text-black dark:text-gray-400 [&>*]:border-gray-500 [&>*]:fill-gray-500 [&>*]:dark:border-gray-400 [&>*]:dark:fill-gray-400":
+                                calcMaturationPercent() < time,
+                              "dark:text-pea-500 text-pea-600 [&>*]:border-pea-600 [&>*]:dark:border-pea-500 [&>*]:dark:fill-pea-500 [&>*]:fill-pea-600":
+                                calcMaturationPercent() >= time,
+                            })}
+                          >
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border">
+                              {i + 1}
+                            </span>
+                            <span>
+                              <h3 className="font-medium leading-tight">{name}</h3>
+                              <p className="text-sm">{timeFormatL(time)}</p>
+                            </span>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className={clsx(`h-6 w-6`, {
+                                hidden: i === 4,
+                              })}
+                              viewBox="0 0 256 512"
+                            >
+                              <path d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z" />
+                            </svg>
+                          </li>
+                        ))}
+                      </ol>
+                    </section>
+                  )}
+
+                {dino.egg_max != null &&
+                  dino.egg_min != null &&
+                  dino.egg_max > 0 &&
+                  dino.egg_min > 0 && (
+                    <section className="">
+                      <img
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/dodo-egg.webp`}
+                        alt={dino.name}
+                      />
+                      <div className="flex flex-col space-y-2">
+                        <h3 className="font-medium leading-tight">Egg</h3>
+                        <p className="text-sm">
+                          {dino.egg_min} - {dino.egg_max} °C
+                        </p>
+                      </div>
+                    </section>
+                  )}
+              </section>
+            )
+          }
+        ]}
+        />
       </section>
-
-      <hr className="my-10 border-zinc-500 col-span-full !w-full" />
 
       {dino?.DinoStat.some((d) => d.type == "saddle") && (
         <section className="col-span-2">
@@ -1931,159 +2116,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         </section>
       )}
 
-      {baseStats && (
-        <section className="space-y-2 rounded-b-lg">
-          <p className="rw-label">Stats</p>
-          <Table
-            className="w-fit"
-            rows={baseStats}
-            toolbar={
-              !dino.type.includes("boss")
-                ? [
-                  <button
-                    type="button"
-                    className="rw-button rw-button-gray"
-                    onClick={genRandomStats}
-                  >
-                    Random
-                  </button>,
-                  <button
-                    type="button"
-                    className="rw-button rw-button-gray text-white"
-                    onClick={() =>
-                      setBaseStats(
-                        baseStats.map((s) => ({
-                          ...s,
-                          points:
-                            s.stat == "Torpidity"
-                              ? 0
-                              : Math.round(dinoLevel / 7),
-                        }))
-                      )
-                    }
-                  >
-                    Distribute Evenly
-                  </button>,
-                  <button
-                    type="button"
-                    className="rw-button rw-button-red"
-                    onClick={() =>
-                      setBaseStats(
-                        baseStats.map((s) => ({
-                          ...s,
-                          points: 0,
-                          total: s.base,
-                        }))
-                      )
-                    }
-                  >
-                    Clear
-                  </button>,
-                  <p>
-                    {dinoLevel -
-                      baseStats
-                        .map((b) => b?.points)
-                        .reduce((a, b) => a + b, 0)}{" "}
-                    points wasted
-                  </p>,
-                ]
-                : []
-            }
-            columns={[
-              {
-                field: "stat",
-                header: "Stat",
-                className: "font-bold",
-                sortable: true,
-                render: ({ value }) =>
-                  value && (
-                    <div className="inline-flex items-center space-x-2">
-                      <img
-                        title={value}
-                        className="h-6 w-6"
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${value
-                          ?.replace(" ", "_")
-                          .toLowerCase()}.webp`}
-                        alt={value}
-                      />
-                      <p>{value ?? 0}</p>
-                    </div>
-                  ),
-              },
-              {
-                field: "base",
-                header: "Base (lvl 1)",
-                numeric: true,
-                sortable: true,
-              },
-              {
-                field: "increasePerLevelWild",
-                header: "Increase per level (wild)",
-                numeric: true,
-                render: ({ value }) => {
-                  return value === null ? "" : `+${value}`;
-                },
-              },
-              {
-                field: "increasePerLevelTamed",
-                header: "Increase per level (tamed)",
-                numeric: true,
-                render: ({ value }) => {
-                  return value === null ? "" : `+${value}%`;
-                },
-              },
-              {
-                field: "total",
-                header: "Total",
-                numeric: true,
-              },
-              !dino.type.includes("boss") && {
-                field: "base",
-                header: "",
-                render: ({ row }) => {
-                  return (
-                    <nav className="flex flex-row items-center space-x-2">
-                      <button
-                        type="button"
-                        disabled={
-                          baseStats.find((s) => s.stat === row.stat)?.points <=
-                          0 || row.stat === "Torpidity"
-                        }
-                        className="rw-button rw-button-red-outline h-8 w-8 rounded-full p-0 !text-xl"
-                        onClick={() => onRemove(row.stat)}
-                      >
-                        -
-                      </button>
-                      <input
-                        type="text"
-                        disabled={true}
-                        className="rw-input w-16 p-3 text-center"
-                        value={
-                          baseStats.find((s) => s.stat === row.stat)?.points
-                        }
-                      />
-                      <button
-                        type="button"
-                        disabled={
-                          baseStats
-                            .map((b) => b.points)
-                            .reduce((a, b) => a + b, 0) >= dinoLevel ||
-                          row.stat === "Torpidity"
-                        }
-                        className="rw-button rw-button-green-outline h-8 w-8 rounded-full p-0 !text-xl"
-                        onClick={() => onAdd(row.stat)}
-                      >
-                        +
-                      </button>
-                    </nav>
-                  );
-                },
-              },
-            ]}
-          />
-        </section>
-      )}
-
       {dino.DinoStat.some((d) => d.type == "bossrecipe") && (
         <section className="space-y-2">
           <h4>Recipe for summoning boss</h4>
@@ -2115,45 +2147,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 header: "Amount",
               },
             ]}
-          />
-        </section>
-      )}
-
-      {dino.movement && (
-        <section className="space-y-2 rounded-b-md">
-          <h4>Movement</h4>
-          <Table
-            className="h-fit w-fit border border-zinc-500"
-            columns={[
-              { field: "name", header: "", className: "capitalize" },
-              {
-                field: "base",
-                header: "Base",
-                valueFormatter: ({ value }) =>
-                  value ? formatNumber(Number(value / 300)) : "-",
-              },
-              {
-                field: "sprint",
-                header: "Sprint",
-                valueFormatter: ({ value }) =>
-                  value ? formatNumber(Number(value / 300)) : "-",
-              },
-              {
-                field: "swim",
-                header: "Swim",
-                valueFormatter: ({ value }) =>
-                  value ? formatNumber(Number(value / 300)) : "-",
-              },
-              { field: "format", header: "" },
-            ]}
-            rows={Object.entries(dino.movement["w"]).map(
-              ([k, m]: [
-                k: string,
-                m: { swim?: number; base?: number; fly?: number; sprint?: number }
-              ]) => {
-                return { ...m, format: "Foundation/s", name: k };
-              }
-            )}
           />
         </section>
       )}

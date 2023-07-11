@@ -13,6 +13,7 @@ interface CheckboxGroupProps {
   className?: string;
   defaultValue?: string[];
   onChange?: (name: string, value: string[]) => void;
+  disabled?: boolean;
   validation?: {
     valueAsBoolean?: boolean;
     valueAsJSON?: boolean;
@@ -28,6 +29,7 @@ const CheckboxGroup = ({
   defaultValue = [],
   onChange,
   className,
+  disabled = false,
   validation = {
     single: false,
   },
@@ -76,7 +78,7 @@ const CheckboxGroup = ({
       {memoizedOptions.map(({ label, image, value: optValue }) => (
         <label key={label} aria-details={`Item: ${optValue}`}>
           <input
-            disabled={(!name && !label) || (!name && !form)}
+            disabled={(!name && !label) || (!name && !form) || disabled}
             type="checkbox"
             name={name || optValue.toString() || label + "checkbox"}
             value={optValue || label}
@@ -88,8 +90,8 @@ const CheckboxGroup = ({
             className={clsx(
               "rw-check-tile relative flex h-28 w-28 flex-col items-center justify-center rounded-lg border-2 border-zinc-500 bg-zinc-300 shadow transition-all duration-150 dark:bg-zinc-600",
               {
-                disabled: !name && !label,
-                "cursor-pointer": label,
+                disabled: !name && !label || disabled,
+                "cursor-pointer": label && !disabled,
               }
             )}
           >
