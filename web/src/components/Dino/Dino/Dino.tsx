@@ -77,7 +77,7 @@ type TamingCalculatorForm = {
   level: string;
   x_variant?: boolean | null;
   foodSelect: string;
-  seconds_between_hits: number;
+  seconds_between_hits: string;
 };
 
 interface Props {
@@ -388,6 +388,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     setDinoLevel(parseInt(level));
     setDinoXVariant(x_variant);
     setSelectedFood(foodSelect);
+    setSecondsBetweenHits(parseInt(seconds_between_hits));
 
     if (!foodSelect)
       setSelectedFood(
@@ -819,7 +820,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
             </strong>
             <div className="flex flex-row space-x-2 italic">
               <span>
-                {dino.synonyms && dino.synonyms.split(",").join(", ")}
+                {dino.synonyms && dino.synonyms.replace(',', ', ')}
               </span>
             </div>
           </div>
@@ -857,6 +858,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       </section>
 
       <section className="col-span-2">
+
         <Tabs type="around" tabs={[
           {
             title: 'Stats',
@@ -1589,9 +1591,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                       max: 500,
                     }}
                     defaultValue={5}
-                  // onChange={debounce((e) => {
-                  //   setSecondsBetweenHits(parseInt(e.target.value));
-                  // }, 300)}
                   />
 
                   <FieldError name="sec_between_hits" className="rw-field-error" />
@@ -1903,6 +1902,16 @@ const Dino = ({ dino, itemsByIds }: Props) => {
             )
           }, {
             title: 'Breeding / Reproduction',
+            icon: (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" className="ml-2 w-5 h-5 pointer-events-none">
+                  <path d="M446.8 41.89c-1.621-3.918-4.742-7.039-8.66-8.66c-1.955-.8086-4.047-1.23-6.129-1.23L304 32C295.2 32 288 39.16 288 48S295.2 64 304 64h89.38l-104.8 104.8C258.1 143.3 218.8 128 176 128C78.8 128 0 206.8 0 304S78.8 480 176 480S352 401.2 352 304c0-42.84-15.34-82.08-40.78-112.6L416 86.63V176C416 184.8 423.2 192 432 192S448 184.8 448 176v-128C448 45.92 447.6 43.85 446.8 41.89zM320 304c0 79.4-64.6 144-144 144S32 383.4 32 304S96.6 160 176 160S320 224.6 320 304z" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" className="w-5 h-5 pointer-events-none">
+                  <path d="M368 176c0-97.2-78.8-176-176-176c-97.2 0-176 78.8-176 176c0 91.8 70.31 167.1 160 175.2V400h-64C103.2 400 96 407.2 96 416s7.156 16 16 16h64v64c0 8.844 7.156 16 16 16s16-7.156 16-16v-64h64c8.844 0 16-7.156 16-16s-7.156-16-16-16h-64v-48.81C297.7 343.1 368 267.8 368 176zM48 176C48 96.6 112.6 32 192 32s144 64.6 144 144S271.4 320 192 320S48 255.4 48 176z" />
+                </svg>
+              </>
+            ),
             content: (
               <section>
                 {!!dino.maturation_time &&
@@ -2005,151 +2014,156 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                   )}
               </section>
             )
+          }, dino.DinoStat.some((d) => d.type == "bossrecipe" || d.type == "saddle") && {
+            title: "Recipes",
+            content: (
+              <section className="animate-fade-in">
+                {dino?.DinoStat.some((d) => d.type == "saddle") && (
+                  <>
+                    <h4 className="rw-label">Saddle Crafting Recipe</h4>
+                    {dino.DinoStat.filter((d) => d.type === "saddle").map(
+                      ({
+                        Item: {
+                          id: itemid,
+                          name,
+                          image,
+                          ItemRecipe_ItemRecipe_crafted_item_idToItem,
+                        },
+                      }) => (
+                        <div className="flex h-64 gap-4 overflow-hidden rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600">
+                          {ItemRecipe_ItemRecipe_crafted_item_idToItem.map(
+                            (
+                              {
+                                id,
+                                Item_ItemRecipe_crafting_station_idToItem,
+                                ItemRecipeItem,
+                                yields,
+                              },
+                              i
+                            ) => (
+                              <div
+                                className={clsx(
+                                  "flex h-full flex-row items-center transition-all duration-500 ease-in-out",
+                                  {
+                                    "flex-grow": activeTab === i,
+                                    "flex-grow-0": activeTab !== i,
+                                  }
+                                )}
+                                key={`recipe-${id}`}
+                                onClick={() => setActiveTab(i)}
+                              >
+                                <div className="relative flex h-full flex-1 flex-row space-x-4 overflow-hidden rounded-lg bg-zinc-300 p-4 dark:bg-zinc-700">
+                                  <div className="animate-fade-in flex h-full items-center justify-center transition-colors">
+                                    <img
+                                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafting_station_idToItem.image}`}
+                                      className="h-16 w-16"
+                                    />
+                                  </div>
+
+                                  <div
+                                    className={clsx(
+                                      "flex flex-row items-center gap-2 border-l border-zinc-600 px-4 dark:border-zinc-200",
+                                      {
+                                        hidden: activeTab !== i,
+                                        block: activeTab === i,
+                                      }
+                                    )}
+                                  >
+                                    <div className="flex flex-row flex-wrap gap-2">
+                                      {ItemRecipeItem.map(({ Item, amount }, i) => (
+                                        <Link
+                                          to={routes.item({ id: Item.id.toString() })}
+                                          className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
+                                          title={Item.name}
+                                          key={`recipe-${Item.id}`}
+                                        >
+                                          <img
+                                            className="h-10 w-10"
+                                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
+                                            alt={Item.name}
+                                          />
+                                          <div className="absolute -bottom-1  inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
+                                            {amount}
+                                          </div>
+                                        </Link>
+                                      ))}
+                                    </div>
+
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      viewBox="0 0 448 512"
+                                      fill="currentColor"
+                                      className="h-12 w-12"
+                                    >
+                                      <path d="M427.8 266.8l-160 176C264.7 446.3 260.3 448 256 448c-3.844 0-7.703-1.375-10.77-4.156c-6.531-5.938-7.016-16.06-1.078-22.59L379.8 272H16c-8.844 0-15.1-7.155-15.1-15.1S7.156 240 16 240h363.8l-135.7-149.3c-5.938-6.531-5.453-16.66 1.078-22.59c6.547-5.906 16.66-5.469 22.61 1.094l160 176C433.4 251.3 433.4 260.7 427.8 266.8z" />
+                                    </svg>
+
+                                    <Link
+                                      to={routes.item({ id: itemid.toString() })}
+                                      className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
+                                      title={name}
+                                      key={`recipe-${id}`}
+                                    >
+                                      <img
+                                        className="h-10 w-10"
+                                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                                        alt={name}
+                                      />
+                                      <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
+                                        {yields}
+                                      </div>
+                                    </Link>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      )
+                    )}
+                  </>
+                )}
+
+                {dino.DinoStat.some((d) => d.type == "bossrecipe") && (
+                  <>
+                    <h4 className="rw-label">Recipe for summoning boss</h4>
+                    <Table
+                      className="min-w-fit"
+                      settings={{
+                        header: false,
+                      }}
+                      rows={dino.DinoStat.filter((d) => d.type == "bossrecipe")}
+                      columns={[
+                        {
+                          field: "Item",
+                          header: "",
+                          render: ({ value: { id, name, image } }) => (
+                            <Link
+                              to={routes.item({ id })}
+                              className="mr-3 flex flex-row items-center space-x-2"
+                            >
+                              <img
+                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                                className="h-8 w-8 self-end"
+                              />
+                              <span>{name}</span>
+                            </Link>
+                          ),
+                        },
+                        {
+                          field: "value",
+                          header: "Amount",
+                        },
+                      ]}
+                    />
+                  </>
+                )}
+              </section>
+            )
           }
         ]}
         />
       </section>
-
-      {dino?.DinoStat.some((d) => d.type == "saddle") && (
-        <section className="col-span-2">
-          <p className="rw-label">Saddle Crafting Recipe</p>
-          {dino.DinoStat.filter((d) => d.type === "saddle").map(
-            ({
-              Item: {
-                id: itemid,
-                name,
-                image,
-                ItemRecipe_ItemRecipe_crafted_item_idToItem,
-              },
-            }) => (
-              <div className="flex h-64 gap-4 overflow-hidden rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600">
-                {ItemRecipe_ItemRecipe_crafted_item_idToItem.map(
-                  (
-                    {
-                      id,
-                      Item_ItemRecipe_crafting_station_idToItem,
-                      ItemRecipeItem,
-                      yields,
-                    },
-                    i
-                  ) => (
-                    <div
-                      className={clsx(
-                        "flex h-full flex-row items-center transition-all duration-500 ease-in-out",
-                        {
-                          "flex-grow": activeTab === i,
-                          "flex-grow-0": activeTab !== i,
-                        }
-                      )}
-                      key={`recipe-${id}`}
-                      onClick={() => setActiveTab(i)}
-                    >
-                      <div className="relative flex h-full flex-1 flex-row space-x-4 overflow-hidden rounded-lg bg-zinc-300 p-4 dark:bg-zinc-700">
-                        <div className="animate-fade-in flex h-full items-center justify-center transition-colors">
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafting_station_idToItem.image}`}
-                            className="h-16 w-16"
-                          />
-                        </div>
-
-                        <div
-                          className={clsx(
-                            "flex flex-row items-center gap-2 border-l border-zinc-600 px-4 dark:border-zinc-200",
-                            {
-                              hidden: activeTab !== i,
-                              block: activeTab === i,
-                            }
-                          )}
-                        >
-                          <div className="flex flex-row flex-wrap gap-2">
-                            {ItemRecipeItem.map(({ Item, amount }, i) => (
-                              <Link
-                                to={routes.item({ id: Item.id.toString() })}
-                                className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
-                                title={Item.name}
-                                key={`recipe-${Item.id}`}
-                              >
-                                <img
-                                  className="h-10 w-10"
-                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
-                                  alt={Item.name}
-                                />
-                                <div className="absolute -bottom-1  inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
-                                  {amount}
-                                </div>
-                              </Link>
-                            ))}
-                          </div>
-
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                            fill="currentColor"
-                            className="h-12 w-12"
-                          >
-                            <path d="M427.8 266.8l-160 176C264.7 446.3 260.3 448 256 448c-3.844 0-7.703-1.375-10.77-4.156c-6.531-5.938-7.016-16.06-1.078-22.59L379.8 272H16c-8.844 0-15.1-7.155-15.1-15.1S7.156 240 16 240h363.8l-135.7-149.3c-5.938-6.531-5.453-16.66 1.078-22.59c6.547-5.906 16.66-5.469 22.61 1.094l160 176C433.4 251.3 433.4 260.7 427.8 266.8z" />
-                          </svg>
-
-                          <Link
-                            to={routes.item({ id: itemid.toString() })}
-                            className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
-                            title={name}
-                            key={`recipe-${id}`}
-                          >
-                            <img
-                              className="h-10 w-10"
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                              alt={name}
-                            />
-                            <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
-                              {yields}
-                            </div>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  )
-                )}
-              </div>
-            )
-          )}
-        </section>
-      )}
-
-      {dino.DinoStat.some((d) => d.type == "bossrecipe") && (
-        <section className="space-y-2">
-          <h4>Recipe for summoning boss</h4>
-          <Table
-            className="min-w-fit"
-            settings={{
-              header: false,
-            }}
-            rows={dino.DinoStat.filter((d) => d.type == "bossrecipe")}
-            columns={[
-              {
-                field: "Item",
-                header: "",
-                render: ({ value: { id, name, image } }) => (
-                  <Link
-                    to={routes.item({ id })}
-                    className="mr-3 flex flex-row items-center space-x-2"
-                  >
-                    <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                      className="h-8 w-8 self-end"
-                    />
-                    <span>{name}</span>
-                  </Link>
-                ),
-              },
-              {
-                field: "value",
-                header: "Amount",
-              },
-            ]}
-          />
-        </section>
-      )}
 
       <nav className="rw-button-group col-span-2">
         {currentUser &&
