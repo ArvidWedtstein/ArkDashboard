@@ -186,9 +186,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
   type DinoActionType =
     | "FORM_SUBMIT"
     | "SET_MATURATION"
-    | "SET_WEAPON_DAMAGE"
     | "SELECT_FOOD"
     | "CALC_TAMING_FOOD"
+    | "CALC_WEAPON"
     | "RECIPE_TAB_CHANGE"
     | "CHANGE_STAT"
     | "RANDOMIZE_STAT"
@@ -204,6 +204,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       type?: string;
       value?: number;
       form?: TamingCalculatorForm;
+      id?: number;
     };
   }
 
@@ -222,9 +223,30 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     affinity: number,
     [key: string]: string | number
   }
-
-
-  type Weapons = Omit<FindDinoById["itemsByIds"], 'multipliers' | 'userDamage'>;
+  type Weapon = {
+    __typename?: "Item";
+    id: number;
+    name: string;
+    image?: string;
+    stats?: JSON;
+    torpor?: number;
+    torpor_duration?: number;
+    damage?: number;
+    visible?: boolean;
+    userDamage?: number;
+    multipliers?: string[];
+    hits?: number;
+    hitsRaw?: number;
+    hitsUntilFlee?: number;
+    chanceOfDeath?: number;
+    changeOfDeathHigh?: boolean;
+    minChanceOfDeath?: number;
+    isPossible?: boolean;
+    isRecommended?: boolean;
+    hitboxes?: { [key: string]: number }
+    hasMultipler?: boolean;
+  }
+  type Weapons = FindDinoById["itemsByIds"] | { userDamage: number, multipliers: string[], hits?: number, hitsRaw?: number, hitsUntilFlee?: number, chanceOfDeath?: number, changeOfDeathHigh?: boolean, minChanceOfDeath?: number, isPossible?: boolean, isRecommended?: boolean, hitboxes: { [key: string]: number } };
   interface DinoState {
     level: number;
     maturation: number;
@@ -248,6 +270,236 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     settings: {
       [key: string]: number;
     };
+  }
+
+  // function calculateTotalDamage(
+  //   damage: number,
+  //   hitsRaw: number,
+  //   totalMultipliers: number,
+  //   userDamage: number,
+  //   multiplier = 1
+  // ) {
+  //   return (
+  //     damage *
+  //     Math.ceil(hitsRaw) *
+  //     totalMultipliers *
+  //     (userDamage / 100) *
+  //     multiplier
+  //   );
+  // }
+
+  // function calculateProbability(level: number, totalDamage: number, baseHealth: number, incPerLevel: number) {
+  //   return totalDamage < baseHealth
+  //     ? 100
+  //     : calculatePropability(
+  //         level,
+  //         7,
+  //         Math.max(Math.ceil((totalDamage - baseHealth) / incPerLevel), 0)
+  //       );
+  // }
+
+  // function calculatePropability(level: number, numStats: number, difference: number) {
+  //   const k = Math.log(2) / numStats;
+  //   return 100 / (1 + Math.exp(k * (level - difference)));
+  // }
+  const calculateWeaponStats = (state: DinoState, dmg?: {
+    id: number,
+    value: number,
+  }) => {
+    const { base_stats, base_taming_time, taming_interval, flee_threshold, x_variant } = dino;
+    const { h: { b: baseHealth = 0, w: incPerLevel = 0 } = {} } = (base_stats as BaseStats || { b: 0, w: 0 });
+    return state.weapons.map((weapon) => {
+      let { id, userDamage, torpor, torpor_duration, multipliers, damage } =
+        weapon;
+
+      if (dmg && (id === dmg.id)) {
+        userDamage = dmg.value;
+      }
+
+      const creatureT = base_taming_time + taming_interval * (state.level - 1);
+      const creatureFleeThreshold = typeof flee_threshold === "number" ? flee_threshold : 0.75;
+      // const isPossible = torpor_duration ? torpor - (state.seconds_between_hits - torpor_duration) * (dino.tdps + Math.pow(state.level - 1, 0.8493) / (22.39671632 / dino.tdps)) : torpor;
+
+      // let torporPerHit = isPossible ? torpor - (state.seconds_between_hits - torpor_duration) * (dino.tdps + Math.pow(state.level - 1, 0.8493) / (22.39671632 / dino.tdps)) : torpor;
+
+      // const knockOutMultiplier = multipliers && dino.multipliers?.[0]?.[multipliers]?.[0] || 1;
+      // let totalMultipliers = 1 / knockOutMultiplier;
+      // let knockOut = creatureT / (torporPerHit * knockOutMultiplier);
+
+
+
+      // if (multipliers && multipliers.includes("DmgType_Melee_Human")) {
+      //   knockOut /= state.settings.meleeMultiplier / 100;
+      //   totalMultipliers *= state.settings.meleeMultiplier / 100;
+      // }
+
+      // if (x_variant && state.x_variant) {
+      //   knockOut /= 0.4;
+      //   totalMultipliers *= 0.4;
+      // }
+
+      let torporPerHit = torpor_duration
+        ? torpor -
+        (state.seconds_between_hits - torpor_duration) *
+        (dino.tdps +
+          Math.pow(state.level - 1, 0.8493) / (22.39671632 / dino.tdps))
+        : torpor;
+      const isPossible = torporPerHit > 0;
+
+      let knockOut = creatureT / torporPerHit;
+      let totalMultipliers = 1;
+
+      if (Array.isArray(multipliers) && dino?.multipliers?.[0]) {
+        for (const multiplier of multipliers) {
+          const dinoMultiplier = dino.multipliers[0][multiplier];
+          if (typeof dinoMultiplier === "number") {
+            knockOut /= dinoMultiplier;
+            totalMultipliers *= dinoMultiplier;
+          }
+        }
+      }
+
+      if (multipliers && multipliers.includes("DmgType_Melee_Human")) {
+        knockOut /= state.settings.meleeMultiplier / 100;
+        totalMultipliers *= state.settings.meleeMultiplier / 100;
+      }
+
+      if (dino.x_variant && state.x_variant) {
+        knockOut /= 0.4;
+        totalMultipliers *= 0.4;
+      }
+
+      knockOut /= state.settings.playerDamageMultiplier;
+      totalMultipliers *= state.settings.playerDamageMultiplier;
+
+      const numHitsRaw =
+        knockOut / (userDamage / 100);
+
+      const hitboxes = dino.hitboxes
+        ? Object.entries(
+          dino.hitboxes as {
+            [key: string]: number;
+          }
+        ).map(([name, multiplier]) => {
+          const hitboxHits = numHitsRaw / multiplier;
+          const hitsUntilFlee =
+            creatureFleeThreshold === 1
+              ? "-"
+              : Math.max(1, Math.ceil(hitboxHits * creatureFleeThreshold));
+
+          const totalDamage =
+            damage *
+            Math.ceil(hitboxHits) *
+            totalMultipliers *
+            ((userDamage) / 100) *
+            multiplier;
+          const propsurvival =
+            totalDamage < baseHealth
+              ? 100
+              : calculatePropability(
+                state.level - 1,
+                7,
+                Math.max(
+                  Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                  0
+                )
+              );
+
+          const chanceOfDeath = Math.round(100 - propsurvival);
+
+          return {
+            name,
+            multiplier,
+            hitsRaw: hitboxHits,
+            hitsUntilFlee,
+            hits: Math.ceil(hitboxHits),
+            chanceOfDeath,
+            chanceOfDeathHigh: chanceOfDeath > 40,
+            isPossible,
+          };
+        })
+        : [];
+
+      let bodyChanceOfDeath = 0;
+      let minChanceOfDeath = 0;
+
+      if (isPossible) {
+        if (damage != null && baseHealth != null && incPerLevel != null) {
+          let numStats = 7;
+          let totalDamage =
+            damage *
+            Math.ceil(numHitsRaw) *
+            totalMultipliers *
+            ((userDamage) / 100);
+
+          let propsurvival =
+            totalDamage < baseHealth
+              ? 100
+              : state.level - 1 <
+                Math.max(
+                  Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                  0
+                )
+                ? 0
+                : calculatePropability(
+                  state.level - 1,
+                  numStats,
+                  Math.max(
+                    Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                    0
+                  )
+                );
+
+          bodyChanceOfDeath = Math.round(100 - propsurvival);
+          minChanceOfDeath = bodyChanceOfDeath;
+
+          for (const hitbox of hitboxes) {
+            totalDamage =
+              damage *
+              Math.ceil(hitbox.hitsRaw) *
+              totalMultipliers *
+              ((userDamage) / 100) *
+              hitbox.multiplier;
+
+            propsurvival =
+              totalDamage < baseHealth
+                ? 100
+                : calculatePropability(
+                  state.level - 1,
+                  numStats,
+                  Math.max(
+                    Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                    0
+                  )
+                );
+
+            const chanceOfDeath = Math.round(100 - propsurvival);
+            hitbox.chanceOfDeath = chanceOfDeath;
+            hitbox.chanceOfDeathHigh = chanceOfDeath > 40;
+            minChanceOfDeath = Math.min(minChanceOfDeath, chanceOfDeath);
+          }
+        }
+      }
+
+      const chanceOfDeathHigh = bodyChanceOfDeath > 40;
+      const hitsUntilFlee =
+        creatureFleeThreshold == 1
+          ? "-"
+          : Math.max(1, Math.ceil(numHitsRaw * creatureFleeThreshold));
+
+      return {
+        ...weapon,
+        hits: Math.ceil(numHitsRaw),
+        hitsRaw: numHitsRaw,
+        hitsUntilFlee,
+        chanceOfDeath: bodyChanceOfDeath,
+        chanceOfDeathHigh,
+        minChanceOfDeath: minChanceOfDeath || 0,
+        isPossible,
+        isRecommended: isPossible && minChanceOfDeath < 90,
+        hitboxes,
+      }
+    })
   }
 
   const calculateFoodStats = (state: DinoState) => {
@@ -336,14 +588,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           ...state,
           maturation: payload.value,
         };
-      case "SET_WEAPON_DAMAGE":
-        return {
-          ...state,
-          weaponDamage: {
-            ...state.weaponDamage,
-            ...payload,
-          },
-        };
       case "SELECT_FOOD":
         return {
           ...state,
@@ -354,6 +598,11 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           ...state,
           foods: calculateFoodStats(state),
         }
+      case "CALC_WEAPON":
+        return {
+          ...state,
+          weapons: calculateWeaponStats(state, payload ? { id: payload.id, value: payload.value } : null),
+        };
       case "RECIPE_TAB_CHANGE":
         return {
           ...state,
@@ -453,7 +702,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       .map((w) => ({
         ...w,
         userDamage: 100,
-        durationDevKit: 5,
+        hitboxes: [],
         hasMultipler: true,
         multipliers: (
           w.stats as {
@@ -503,7 +752,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     @param {number} p - Probability of success
     @returns {number} - The cumulative probability
     */
-  function calculateProbabilityMore(ll, ul, p) {
+  const calculateProbabilityMore = (ll: number, ul: number, p: number) => {
     let n = ul;
     let numIntervals = n + 1;
     let probs = new Array(numIntervals);
@@ -535,7 +784,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     @param {number} ll - Lower limit of the result
     @returns {number|undefined} - The cumulative probability if all the parameters are valid, undefined otherwise
     */
-  function calculatePropability(n, numOptions, ll) {
+  function calculatePropability(n: number, numOptions: number, ll: number) {
     let ul;
     let p = 1 / numOptions;
     if (!isNaN(n) && !isNaN(p)) {
@@ -551,6 +800,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
   useEffect(() => {
     dispatch({
       type: "CALC_TAMING_FOOD"
+    })
+    dispatch({
+      type: 'CALC_WEAPON'
     })
   }, []);
 
@@ -700,192 +952,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       ...calcNarcotics.reduce((acc, cur) => ({ ...acc, ...cur }), {}),
     };
   }, [state.foods]);
-
-  const calculateWeapons = useMemo(
-    () =>
-      state.weapons.map((weapon) => {
-        const { id, userDamage, torpor, torpor_duration, multipliers, damage } =
-          weapon;
-
-        const { b: baseHealth, w: incPerLevel } = (
-          dino?.base_stats as BaseStats
-        )?.h || { b: 0, w: 0 };
-
-        const creatureT =
-          dino.base_taming_time + dino.taming_interval * (state.level - 1);
-
-        const creatureFleeThreshold =
-          typeof dino.flee_threshold === "number" ? dino.flee_threshold : 0.75;
-
-        let torporPerHit = torpor_duration
-          ? torpor -
-          (state.seconds_between_hits - torpor_duration) *
-          (dino.tdps +
-            Math.pow(state.level - 1, 0.8493) / (22.39671632 / dino.tdps))
-          : torpor;
-        const isPossible = torporPerHit > 0;
-
-        let knockOut = creatureT / torporPerHit;
-        let totalMultipliers = 1;
-
-        if (Array.isArray(multipliers) && dino?.multipliers?.[0]) {
-          for (const multiplier of multipliers) {
-            const dinoMultiplier = dino.multipliers[0][multiplier];
-            if (typeof dinoMultiplier === "number") {
-              knockOut /= dinoMultiplier;
-              totalMultipliers *= dinoMultiplier;
-            }
-          }
-        }
-
-        if (multipliers && multipliers.includes("DmgType_Melee_Human")) {
-          knockOut /= state.settings.meleeMultiplier / 100;
-          totalMultipliers *= state.settings.meleeMultiplier / 100;
-        }
-
-        if (dino.x_variant && state.x_variant) {
-          knockOut /= 0.4;
-          totalMultipliers *= 0.4;
-        }
-
-        knockOut /= state.settings.playerDamageMultiplier;
-        totalMultipliers *= state.settings.playerDamageMultiplier;
-
-        const numHitsRaw =
-          knockOut / ((state.weaponDamage[id] || userDamage) / 100);
-
-        const hitboxes = dino.hitboxes
-          ? Object.entries(
-            dino.hitboxes as {
-              [key: string]: number;
-            }
-          ).map(([name, multiplier]) => {
-            const hitboxHits = numHitsRaw / multiplier;
-            const hitsUntilFlee =
-              creatureFleeThreshold === 1
-                ? "-"
-                : Math.max(1, Math.ceil(hitboxHits * creatureFleeThreshold));
-
-            const totalDamage =
-              damage *
-              Math.ceil(hitboxHits) *
-              totalMultipliers *
-              ((state.weaponDamage[id] || userDamage) / 100) *
-              multiplier;
-            const propsurvival =
-              totalDamage < baseHealth
-                ? 100
-                : calculatePropability(
-                  state.level - 1,
-                  7,
-                  Math.max(
-                    Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                    0
-                  )
-                );
-
-            const chanceOfDeath = Math.round(100 - propsurvival);
-
-            return {
-              name,
-              multiplier,
-              hitsRaw: hitboxHits,
-              hitsUntilFlee,
-              hits: Math.ceil(hitboxHits),
-              chanceOfDeath,
-              chanceOfDeathHigh: chanceOfDeath > 40,
-              isPossible,
-            };
-          })
-          : [];
-
-        let bodyChanceOfDeath = 0;
-        let minChanceOfDeath = 0;
-
-        if (isPossible) {
-          if (damage != null && baseHealth != null && incPerLevel != null) {
-            let numStats = 7;
-            let totalDamage =
-              damage *
-              Math.ceil(numHitsRaw) *
-              totalMultipliers *
-              ((state.weaponDamage[id] || userDamage) / 100);
-
-            let propsurvival =
-              totalDamage < baseHealth
-                ? 100
-                : state.level - 1 <
-                  Math.max(
-                    Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                    0
-                  )
-                  ? 0
-                  : calculatePropability(
-                    state.level - 1,
-                    numStats,
-                    Math.max(
-                      Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                      0
-                    )
-                  );
-
-            bodyChanceOfDeath = Math.round(100 - propsurvival);
-            minChanceOfDeath = bodyChanceOfDeath;
-
-            for (const hitbox of hitboxes) {
-              totalDamage =
-                damage *
-                Math.ceil(hitbox.hitsRaw) *
-                totalMultipliers *
-                ((state.weaponDamage[id] || userDamage) / 100) *
-                hitbox.multiplier;
-
-              propsurvival =
-                totalDamage < baseHealth
-                  ? 100
-                  : calculatePropability(
-                    state.level - 1,
-                    numStats,
-                    Math.max(
-                      Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                      0
-                    )
-                  );
-
-              const chanceOfDeath = Math.round(100 - propsurvival);
-              hitbox.chanceOfDeath = chanceOfDeath;
-              hitbox.chanceOfDeathHigh = chanceOfDeath > 40;
-              minChanceOfDeath = Math.min(minChanceOfDeath, chanceOfDeath);
-            }
-          }
-        }
-
-        const chanceOfDeathHigh = bodyChanceOfDeath > 40;
-        const hitsUntilFlee =
-          creatureFleeThreshold == 1
-            ? "-"
-            : Math.max(1, Math.ceil(numHitsRaw * creatureFleeThreshold));
-
-        return {
-          hits: Math.ceil(numHitsRaw),
-          hitsRaw: numHitsRaw,
-          hitsUntilFlee,
-          chanceOfDeath: bodyChanceOfDeath,
-          chanceOfDeathHigh,
-          minChanceOfDeath: minChanceOfDeath || 0,
-          isPossible,
-          isRecommended: isPossible && minChanceOfDeath < 90,
-          hitboxes,
-          ...weapon,
-        };
-      }),
-    [
-      state.level,
-      state.seconds_between_hits,
-      state.x_variant,
-      state.weaponDamage,
-    ]
-  );
 
   return (
     <article className="grid grid-cols-1 gap-3 text-black dark:text-white md:grid-cols-2">
@@ -1489,157 +1555,159 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                     )}
 
                     {state.base_stats && (
-                      <Table
-                        className="w-fit"
-                        rows={state.base_stats}
-                        toolbar={
-                          !dino.type.includes("boss")
-                            ? [
-                              <button
-                                type="button"
-                                className="rw-button rw-button-gray"
-                                onClick={() => dispatch({ type: "RANDOMIZE_STAT" })}
-                              >
-                                Random
-                              </button>,
-                              <button
-                                type="button"
-                                className="rw-button rw-button-gray text-white"
-                                onClick={() =>
-                                  dispatch({
-                                    type: "DISTRIBUTE_STAT",
-                                  })
-                                }
-                              >
-                                Distribute Evenly
-                              </button>,
-                              <button
-                                type="button"
-                                className="rw-button rw-button-red"
-                                onClick={() =>
-                                  dispatch({
-                                    type: "RESET_STAT",
-                                  })
-                                }
-                              >
-                                Clear
-                              </button>,
-                              <p>
-                                {state.level -
-                                  state.base_stats
-                                    .map((b) => b?.points)
-                                    .reduce((a, b) => a + b, 0)}{" "}
-                                points wasted
-                              </p>,
-                            ]
-                            : []
-                        }
-                        columns={[
-                          {
-                            field: "stat",
-                            header: "Stat",
-                            className: "font-bold w-fit",
-                            sortable: true,
-                            render: ({ value }) =>
-                              value && (
-                                <div className="inline-flex w-fit items-center space-x-2">
-                                  <img
-                                    title={value}
-                                    className="h-6 w-6"
-                                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${value
-                                      ?.replace(" ", "_")
-                                      .toLowerCase()}.webp`}
-                                    alt={value}
-                                  />
-                                  <p className="hidden sm:block">
-                                    {value ?? 0}
-                                  </p>
-                                </div>
-                              ),
-                          },
-                          {
-                            field: "base",
-                            header: "Base",
-                            className: "w-fit",
-                            numeric: true,
-                            sortable: true,
-                          },
-                          // {
-                          //   field: "increasePerLevelWild",
-                          //   header: "Increase per level (w)",
-                          //   className: "w-fit",
-                          //   numeric: true,
-                          //   render: ({ value }) =>
-                          //     value === null ? "" : `+${value}`,
-                          // },
-                          {
-                            field: "increasePerLevelTamed",
-                            header: "Increase per level (t)",
-                            numeric: true,
-                            render: ({ value }) =>
-                              value === null ? "" : `+${value}%`,
-                          },
-                          {
-                            field: "total",
-                            header: "Total",
-                            className: "w-fit",
-                            numeric: true,
-                          },
-                          !dino.type.includes("boss") && {
-                            field: "base",
-                            header: "",
-                            render: ({ row }) => (
-                              <nav className="flex flex-row items-center space-x-2">
+                      <section className="col-span-full">
+                        <Table
+                          className=""
+                          rows={state.base_stats}
+                          toolbar={
+                            !dino.type.includes("boss")
+                              ? [
                                 <button
                                   type="button"
-                                  disabled={
-                                    state.base_stats.find(
-                                      (s) => s.stat === row.stat
-                                    )?.points <= 0 || row.stat === "Torpidity"
-                                  }
-                                  className="rw-button rw-button-red-outline h-8 w-8 rounded-full p-0 !text-xl"
+                                  className="rw-button rw-button-gray"
+                                  onClick={() => dispatch({ type: "RANDOMIZE_STAT" })}
+                                >
+                                  Random
+                                </button>,
+                                <button
+                                  type="button"
+                                  className="rw-button rw-button-gray text-white"
                                   onClick={() =>
                                     dispatch({
-                                      type: "CHANGE_STAT",
-                                      payload: { stat: row.stat, type: "remove" },
+                                      type: "DISTRIBUTE_STAT",
                                     })
                                   }
                                 >
-                                  -
-                                </button>
-                                <input
-                                  type="text"
-                                  disabled={true}
-                                  className="rw-input w-16 p-3 text-center"
-                                  value={
-                                    state.base_stats.find(
-                                      (s) => s.stat === row.stat
-                                    )?.points
-                                  }
-                                />
+                                  Distribute Evenly
+                                </button>,
                                 <button
                                   type="button"
-                                  disabled={
+                                  className="rw-button rw-button-red"
+                                  onClick={() =>
+                                    dispatch({
+                                      type: "RESET_STAT",
+                                    })
+                                  }
+                                >
+                                  Clear
+                                </button>,
+                                <p>
+                                  {state.level -
                                     state.base_stats
-                                      .map((b) => b.points)
-                                      .reduce((a, b) => a + b, 0) >=
-                                    state.level || row.stat === "Torpidity"
-                                  }
-                                  className="rw-button rw-button-green-outline h-8 w-8 rounded-full p-0 !text-xl"
-                                  onClick={() =>
-                                    dispatch({
-                                      type: "CHANGE_STAT",
-                                      payload: { stat: row.stat, type: "add" },
-                                    })
-                                  }
-                                >
-                                  +
-                                </button>
-                              </nav>
-                            ),
-                          },
-                        ]}
-                      />
+                                      .map((b) => b?.points)
+                                      .reduce((a, b) => a + b, 0)}{" "}
+                                  points wasted
+                                </p>,
+                              ]
+                              : []
+                          }
+                          columns={[
+                            {
+                              field: "stat",
+                              header: "Stat",
+                              className: "font-bold w-fit",
+                              sortable: true,
+                              render: ({ value }) =>
+                                value && (
+                                  <div className="inline-flex w-fit items-center space-x-2">
+                                    <img
+                                      title={value}
+                                      className="h-6 w-6"
+                                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${value
+                                        ?.replace(" ", "_")
+                                        .toLowerCase()}.webp`}
+                                      alt={value}
+                                    />
+                                    <p className="hidden sm:block">
+                                      {value ?? 0}
+                                    </p>
+                                  </div>
+                                ),
+                            },
+                            {
+                              field: "base",
+                              header: "Base",
+                              className: "w-fit",
+                              numeric: true,
+                              sortable: true,
+                            },
+                            // {
+                            //   field: "increasePerLevelWild",
+                            //   header: "Increase per level (w)",
+                            //   className: "w-fit",
+                            //   numeric: true,
+                            //   render: ({ value }) =>
+                            //     value === null ? "" : `+${value}`,
+                            // },
+                            {
+                              field: "increasePerLevelTamed",
+                              header: "Increase per level (t)",
+                              numeric: true,
+                              render: ({ value }) =>
+                                value === null ? "" : `+${value}%`,
+                            },
+                            {
+                              field: "total",
+                              header: "Total",
+                              className: "w-fit",
+                              numeric: true,
+                            },
+                            !dino.type.includes("boss") && {
+                              field: "base",
+                              header: "",
+                              render: ({ row }) => (
+                                <nav className="flex flex-row items-center space-x-2">
+                                  <button
+                                    type="button"
+                                    disabled={
+                                      state.base_stats.find(
+                                        (s) => s.stat === row.stat
+                                      )?.points <= 0 || row.stat === "Torpidity"
+                                    }
+                                    className="rw-button rw-button-red-outline h-8 w-8 rounded-full p-0 !text-xl"
+                                    onClick={() =>
+                                      dispatch({
+                                        type: "CHANGE_STAT",
+                                        payload: { stat: row.stat, type: "remove" },
+                                      })
+                                    }
+                                  >
+                                    -
+                                  </button>
+                                  <input
+                                    type="text"
+                                    disabled={true}
+                                    className="rw-input w-16 p-3 text-center"
+                                    value={
+                                      state.base_stats.find(
+                                        (s) => s.stat === row.stat
+                                      )?.points
+                                    }
+                                  />
+                                  <button
+                                    type="button"
+                                    disabled={
+                                      state.base_stats
+                                        .map((b) => b.points)
+                                        .reduce((a, b) => a + b, 0) >=
+                                      state.level || row.stat === "Torpidity"
+                                    }
+                                    className="rw-button rw-button-green-outline h-8 w-8 rounded-full p-0 !text-xl"
+                                    onClick={() =>
+                                      dispatch({
+                                        type: "CHANGE_STAT",
+                                        payload: { stat: row.stat, type: "add" },
+                                      })
+                                    }
+                                  >
+                                    +
+                                  </button>
+                                </nav>
+                              ),
+                            },
+                          ]}
+                        />
+                      </section>
                     )}
                   </section>
                 </section>
@@ -1689,6 +1757,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                       })
                       dispatch({
                         type: 'CALC_TAMING_FOOD'
+                      })
+                      dispatch({
+                        type: 'CALC_WEAPON'
                       })
                     }
                     }
@@ -1959,13 +2030,13 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           </div>
                         </div>
 
-                        {calculateWeapons && (
+                        {state.weapons && (
                           <>
                             <h4 className="rw-label">Knock Out</h4>
                             <div className="max-w-screen relative flex flex-row gap-3 overflow-x-auto rounded-md text-center">
-                              {calculateWeapons
+                              {state.weapons
                                 .sort((a, b) =>
-                                  b.isPossible ? 1 : 0 - (a.isPossible ? 1 : 0)
+                                  b.userDamage > a.userDamage
                                 )
                                 .map(
                                   ({
@@ -2045,9 +2116,10 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                           }
                                           onChange={debounce((e) => {
                                             dispatch({
-                                              type: "SET_WEAPON_DAMAGE",
+                                              type: "CALC_WEAPON",
                                               payload: {
-                                                [id]: e.target.value,
+                                                id,
+                                                value: parseInt(e.target.value),
                                               },
                                             });
                                           }, 300)}
