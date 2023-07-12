@@ -31,6 +31,7 @@ const CheckboxGroup = ({
   className,
   disabled = false,
   validation = {
+    required: false,
     single: false,
   },
 }: CheckboxGroupProps) => {
@@ -38,7 +39,7 @@ const CheckboxGroup = ({
     () => defaultValue
   );
   const { field } =
-    form && !!name ? useController({ name: name }) : { field: null };
+    form && !!name ? useController({ name: name, rules: validation, defaultValue }) : { field: null };
   const memoizedOptions = useMemo(() => options, [options]);
 
   const handleCheckboxChange = useCallback(

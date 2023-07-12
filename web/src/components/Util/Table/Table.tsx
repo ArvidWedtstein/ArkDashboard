@@ -1028,7 +1028,7 @@ const Table = ({
                       ) =>
                         cellRenderer({
                           rowData: datarow,
-                          cellData: field?.includes(".")
+                          cellData: field && field.toString()?.includes(".")
                             ? getValueByNestedKey(datarow, field)
                             : datarow[field],
                           columnIndex: index,
