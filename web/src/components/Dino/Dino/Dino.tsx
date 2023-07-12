@@ -1649,6 +1649,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                   defaultValue={value}
                                   name={`${rowIndex}-total`}
                                 />
+                                // TODO: Implement calculation logic
                               ),
                             },
                             !dino.type.includes("boss") && {
