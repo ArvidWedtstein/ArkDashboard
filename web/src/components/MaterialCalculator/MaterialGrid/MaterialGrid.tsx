@@ -20,7 +20,7 @@ import {
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useAuth } from "src/auth";
-import { QUERY } from "../MaterialCalculatorCell";
+import { ITEMRECIPEITEMQUERY, QUERY } from "../MaterialCalculatorCell";
 import UserRecipesCell from "src/components/UserRecipe/UserRecipesCell";
 import ItemList from "src/components/Util/ItemList/ItemList";
 import { useLazyQuery } from "@apollo/client";
@@ -62,19 +62,7 @@ interface MaterialGridProps {
   itemRecipes: NonNullable<FindItemsMats["itemRecipes"]>;
   error?: RWGqlError;
 }
-const ITEMRECIPEITEMQUERY = gql`
-  query FindRecipeItemsByIds($ids: [String!]) {
-      itemRecipeItemsByIds(ids: $ids) {
-        id
-        amount
-        Item {
-          id
-          name
-          image
-        }
-      }
-  }
-`
+
 export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   const { currentUser, isAuthenticated, client } = useAuth();
 
@@ -90,11 +78,12 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   };
 
   const [loadItems, { called, loading: load, data }] = useLazyQuery(ITEMRECIPEITEMQUERY, {
+    initialFetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-only',
     variables: {
       ids: itemRecipes.map((f) => f.id),
     },
     onCompleted: (data) => {
-      console.log("ITEMRECIPES", data);
     },
     onError: (error) => {
       console.log(error);
@@ -120,6 +109,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   interface RecipeAction {
     type: RecipeActionType;
     payload?: {
+      itemRecipeItems?: ItemRecipe["ItemRecipeItem"]
       amount?: number;
       index?: number;
       item?: ItemRecipe;
@@ -278,17 +268,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     return result;
   }, [selectedCraftingStations]);
 
-  const categories = useMemo(() => {
-    return groupBy(
-      (items || [])
-        .map((f) => f.Item_ItemRecipe_crafted_item_idToItem)
-        .filter((item) =>
-          item.name.toLowerCase().includes(search.toLowerCase())
-        ),
-      "category"
-    );
-  }, [items, search]);
-
   const onAdd = ({ itemId }) => {
     if (!itemId) return;
     let chosenItem = items.find(
@@ -297,7 +276,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     );
 
     if (!chosenItem) return toast.error("Item could not be found");
-    setRecipes({ type: "ADD", payload: { item: chosenItem } });
+    setRecipes({ type: "ADD", payload: { item: { ...chosenItem, ItemRecipeItem: data.itemRecipeItemsByIds.filter((iri) => iri.item_recipe_id == chosenItem.id) } } });
   };
 
   const mergeItemRecipe = useCallback(getBaseMaterials, [
@@ -364,7 +343,10 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               setRecipes({
                 type: "ADD_AMOUNT_BY_NUM",
                 payload: {
-                  item: itemfound,
+                  item: {
+                    ...itemfound,
+                    ItemRecipeItem: data.itemRecipeItemsByIds.filter((iri) => iri.item_recipe_id === item_recipe_id)
+                  },
                   amount: amount,
                 },
               });

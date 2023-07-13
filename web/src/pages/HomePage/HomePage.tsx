@@ -32,6 +32,10 @@ const HomePage = () => {
   //     subscription.unsubscribe();
   //   };
   // }, [client]);
+  //   document.addEventListener("visibilitychange", () => {
+  //     // it could be either hidden or visible
+  //     document.title = document.visibilityState;
+  // });
 
   return (
     <>

@@ -15,18 +15,33 @@ export const QUERY = gql`
         category
         type
       }
-      # ItemRecipeItem {
-      #   id
-      #   amount
-      #   Item {
-      #     id
-      #     name
-      #     image
-      #   }
-      # }
     }
   }
 `;
+// # ItemRecipeItem {
+//   #   id
+//   #   item_recipe_id
+//   #   amount
+//   #   Item {
+//   #     id
+//   #     name
+//   #     image
+//   #   }
+//   # }
+export const ITEMRECIPEITEMQUERY = gql`
+query FindRecipeItemsByIds($ids: [String!]) {
+    itemRecipeItemsByIds(ids: $ids) {
+      id
+      item_recipe_id
+      amount
+      Item {
+        id
+        name
+        image
+      }
+    }
+}
+`
 
 export const Loading = () => {
   return (
