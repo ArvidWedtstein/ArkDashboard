@@ -2198,9 +2198,6 @@
                 <mxCell id="rDfGQOmXJ0Y34_WwxiNb-11" value="&lt;font color=&quot;#fcfcfc&quot;&gt;Add 5% damage increase&lt;br&gt;and -3% health then tamed&lt;/font&gt;" style="html=1;fontColor=#2B2B2B;" parent="1" vertex="1">
                     <mxGeometry x="260" y="360" width="175" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="rDfGQOmXJ0Y34_WwxiNb-20" value="User" style="shape=umlLifeline;participant=umlActor;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;verticalAlign=top;spacingTop=36;outlineConnect=0;fontColor=#FCFCFC;" parent="1" vertex="1">
-                    <mxGeometry x="30" y="10" width="20" height="300" as="geometry"/>
-                </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
