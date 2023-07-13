@@ -1754,15 +1754,10 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                   </p>
 
                   {/* Tek Stryder */}
-
-                  <StatCard className="w-fit" stat={`Missions for Tek Stryder on level ${state.level}`} value={Math.floor(1 + 48 * (state.level / 150))} chart={false} />
                   {dino.id === "a5a9f2bb-7d89-4672-9d1c-567d035e23a7" && (
-                    <p className="my-1 text-sm leading-relaxed">
-                      <b className="underline">
-                        {Math.floor(1 + 48 * (state.level / 150))}
-                      </b>{" "}
-                      Missions needed for taming a level {state.level} stryder
-                    </p>
+                    <div className="w-fit">
+                      <StatCard stat={`Missions for Tek Stryder on level ${state.level}`} value={Math.floor(1 + 48 * (state.level / 150))} chart={false} />
+                    </div>
                   )}
 
                   <Form<TamingCalculatorForm>
