@@ -431,10 +431,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
         </div>
         <div className="w-full">
           <Table
-            rows={mergeItemRecipe(viewBaseMaterials, items, ...recipes).slice(
-              0,
-              1
-            )}
+            rows={mergeItemRecipe(viewBaseMaterials, items, ...recipes).slice(0, 1)}
             className="animate-fade-in"
             toolbar={[
               <ToggleButton

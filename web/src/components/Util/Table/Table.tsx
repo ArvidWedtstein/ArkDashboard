@@ -75,6 +75,8 @@ type TableColumn = {
     value: any;
     row: TableDataRow;
     rowIndex: number;
+    field: string;
+    header: string;
   }) => React.ReactNode;
 };
 
@@ -182,7 +184,7 @@ const Table = ({
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
   const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(
     mergedSettings.pagination.rowsPerPage ||
-      mergedSettings.pagination.pageSizeOptions[0]
+    mergedSettings.pagination.pageSizeOptions[0]
   );
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filters, setFilters] = useState<Filter[]>([]);
@@ -401,10 +403,13 @@ const Table = ({
     field,
     className,
     numeric,
+    header,
   }: {
     rowData: TableDataRow;
+    cellData: any;
     rowIndex: number;
     field: string;
+    header: string;
     numeric: boolean;
     [key: string]: any;
   }) => {
@@ -435,22 +440,23 @@ const Table = ({
 
     const valueFormatted = valueFormatter
       ? valueFormatter({
-          value: cellData,
-          row: rowData,
-          columnIndex,
-        })
+        value: cellData,
+        row: rowData,
+        columnIndex,
+      })
       : isNaN(cellData)
-      ? cellData?.amount || cellData
-      : cellData;
+        ? cellData?.amount || cellData
+        : cellData;
 
     const content = render
       ? render({
-          columnIndex,
-          rowIndex,
-          value: valueFormatted,
-          field: field,
-          row: rowData,
-        })
+        columnIndex,
+        rowIndex,
+        value: valueFormatted,
+        field: field,
+        header,
+        row: rowData,
+      })
       : valueFormatted;
 
     return (
@@ -487,8 +493,8 @@ const Table = ({
             checked={
               header
                 ? PaginatedData.every((row) =>
-                    selectedRows.includes(row.row_id)
-                  )
+                  selectedRows.includes(row.row_id)
+                )
                 : isSelected(datarow.row_id)
             }
             onChange={(e) => handleRowSelect(e, datarow?.row_id)}
@@ -611,7 +617,7 @@ const Table = ({
       } else if (
         dir === "next" &&
         currentPage <
-          Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
+        Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
       ) {
         setCurrentPage(currentPage + 1);
       }
@@ -764,7 +770,7 @@ const Table = ({
   };
 
   return (
-    <div className="relative overflow-x-auto overflow-y-hidden sm:rounded-lg">
+    <div className={"relative overflow-x-auto overflow-y-hidden sm:rounded-lg"}>
       <div className="flex items-center justify-start space-x-3 [&:not(:empty)]:my-2">
         {mergedSettings.filter && (
           <div className="relative w-fit" ref={ref}>
@@ -966,7 +972,7 @@ const Table = ({
           <div key={`toolbar-${index}`}>{item}</div>
         ))}
       </div>
-      <div className={clsx("sm:rounded-lg", className)}>
+      <div className={clsx("rounded-lg", className)}>
         <table className="relative mr-auto w-full table-auto text-left text-sm text-zinc-700 dark:text-zinc-300">
           <thead className="text-sm uppercase">
             <tr
@@ -1015,16 +1021,18 @@ const Table = ({
                           valueFormatter,
                           className,
                           numeric,
+                          header,
                           ...other
                         },
                         index
                       ) =>
                         cellRenderer({
                           rowData: datarow,
-                          cellData: field?.includes(".")
+                          cellData: field && field.toString()?.includes(".")
                             ? getValueByNestedKey(datarow, field)
                             : datarow[field],
                           columnIndex: index,
+                          header,
                           rowIndex: i,
                           render,
                           valueFormatter,

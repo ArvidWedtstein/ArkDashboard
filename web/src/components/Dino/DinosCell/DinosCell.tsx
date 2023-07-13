@@ -29,20 +29,23 @@ export const beforeQuery = ({ page, search, category }) => {
 };
 
 export const Loading = () => (
-  <div className="border-pea-300 mx-auto w-full rounded-md border p-4 shadow">
-    <div className="flex animate-pulse space-x-4">
-      <div className="bg-pea-600 h-10 w-10 rounded-full"></div>
-      <div className="flex-1 space-y-6 py-1">
-        <div className="bg-pea-600 h-2 rounded"></div>
-        <div className="space-y-3">
-          <div className="grid grid-cols-3 gap-4">
-            <div className="bg-pea-600 col-span-2 h-2 rounded"></div>
-            <div className="bg-pea-600 col-span-1 h-2 rounded"></div>
-          </div>
-          <div className="bg-pea-600 h-2 rounded"></div>
-        </div>
-      </div>
+  <div role="status" className="w-full animate-pulse">
+    <div className="h-12 bg-zinc-200 rounded-lg dark:bg-zinc-700 w-full mb-3"></div>
+    <div className="3xl:grid-cols-6 grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4">
+      <div className="h-96 bg-zinc-200 rounded-lg dark:bg-zinc-700 w-full"></div>
+      <div className="h-96 bg-zinc-200 rounded-lg dark:bg-zinc-700 w-full"></div>
+      <div className="h-96 bg-zinc-200 rounded-lg dark:bg-zinc-700 w-full"></div>
+      <div className="h-96 bg-zinc-200 rounded-lg dark:bg-zinc-700 w-full"></div>
+      <div className="h-96 bg-zinc-200 rounded-lg dark:bg-zinc-700 w-full"></div>
+      <div className="h-96 bg-zinc-200 rounded-lg dark:bg-zinc-700 w-full"></div>
+      <div className="h-96 bg-zinc-200 rounded-lg dark:bg-zinc-700 w-full"></div>
+      <div className="h-96 bg-zinc-200 rounded-lg dark:bg-zinc-700 w-full"></div>
+      <div className="h-96 bg-zinc-200 rounded-lg dark:bg-zinc-700 w-full"></div>
+      <div className="h-96 bg-zinc-200 rounded-lg dark:bg-zinc-700 w-full"></div>
+      <div className="h-96 bg-zinc-200 rounded-lg dark:bg-zinc-700 w-full"></div>
+      <div className="h-96 bg-zinc-200 rounded-lg dark:bg-zinc-700 w-full"></div>
     </div>
+    <span className="sr-only">Loading...</span>
   </div>
 );
 
@@ -78,12 +81,10 @@ export const Failure = ({ error }: CellFailureProps) => {
 };
 
 export const Success = ({ dinosPage }: CellSuccessProps<FindDinos>) => {
-  return dinosPage.count > 0 ? (
+  return (
     <>
       <Dinos dinosPage={dinosPage} />
       <Pagination count={dinosPage.count} route={"dinos"} />
     </>
-  ) : (
-    Empty()
-  );
+  )
 };

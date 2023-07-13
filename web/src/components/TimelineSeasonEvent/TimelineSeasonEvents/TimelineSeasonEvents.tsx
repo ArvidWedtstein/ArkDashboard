@@ -1,6 +1,8 @@
 import { useMutation } from "@apollo/client";
 import { toast } from "@redwoodjs/web/dist/toast";
+import { useContext, useState } from "react";
 import { QUERY } from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
+import { ModalContext, RefModal } from "src/components/Util/Modal/Modal";
 import { groupBy } from "src/lib/formatters";
 
 import type {
@@ -18,7 +20,8 @@ const DELETE_TIMELINE_SEASON_EVENT_MUTATION = gql`
 
 const TimelineSeasonEventsList = ({
   timelineSeasonEvents,
-}: FindTimelineSeasonEvents) => {
+  setOpenModal,
+}: FindTimelineSeasonEvents & { setOpenModal: (v, type) => void }) => {
   const [deleteTimelineSeasonEvent] = useMutation(
     DELETE_TIMELINE_SEASON_EVENT_MUTATION,
     {
@@ -46,7 +49,7 @@ const TimelineSeasonEventsList = ({
   };
 
   return (
-    <div className="bg-background h-96 overflow-y-auto rounded-lg border border-zinc-500 px-4 text-zinc-700 dark:bg-zinc-800 dark:text-white">
+    <div className="max-h-[36rem] flex-auto bg-background overflow-y-auto rounded-lg border border-zinc-500 px-4 text-zinc-700 dark:bg-zinc-800 dark:text-white">
       <ul className="relative w-full border-l border-zinc-600 py-3 dark:border-zinc-300">
         {timelineSeasonEvents &&
           Object.entries(groupBy(timelineSeasonEvents, "created_at")).map(
@@ -60,9 +63,8 @@ const TimelineSeasonEventsList = ({
                 {timeGroup.map(
                   ({ id, title, content, tags, created_at, images }, idx) => (
                     <li
-                      className="mb-10 ml-4 rounded-lg p-2 hover:ring-1 hover:ring-red-500"
+                      className="mb-10 ml-4 p-2 group border-y border-transparent hover:border-y-zinc-600"
                       key={`date-event-${idx}`}
-                      onClick={() => onDeleteClick(id, title)}
                     >
                       <span className="absolute -left-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-zinc-600 dark:bg-zinc-300">
                         {/* <svg aria-hidden="true" className="w-3 h-3 text-blue-800 dark:text-black" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -75,10 +77,18 @@ const TimelineSeasonEventsList = ({
                           minute: "2-digit",
                         })}
                         {idx == 0 && i === 0 && (
-                          <span className="mr-2 ml-3 rounded bg-blue-100 px-2.5 py-0.5 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                          <span className="ml-3 rw-badge rw-badge-blue">
                             Latest
                           </span>
                         )}
+                        <div className="ml-auto space-x-1">
+                          <button className="group-hover:visible invisible rw-badge rw-badge-gray hover:text-white" onClick={() => setOpenModal(id, 'editevent')}>
+                            Edit
+                          </button>
+                          <button className="group-hover:visible invisible rw-badge rw-badge-red hover:text-white" onClick={() => onDeleteClick(id, title)}>
+                            Delete
+                          </button>
+                        </div>
                       </h3>
                       <p className="text-sm font-semibold">{title}</p>
                       <p className="mb-4 text-sm font-normal text-zinc-600 dark:text-gray-400">
@@ -95,7 +105,11 @@ const TimelineSeasonEventsList = ({
                                 key={`event-${id}-image-${index}`}
                               >
                                 <img
-                                  className="aspect-square h-16 rounded"
+                                  className="aspect-square h-16 rounded hover:cursor-pointer ring-1 ring-transparent hover:ring-zinc-500"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setOpenModal(`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineeventimages/${url}`, 'previewimage');
+                                  }}
                                   src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineeventimages/${url}`}
                                 />
                               </div>

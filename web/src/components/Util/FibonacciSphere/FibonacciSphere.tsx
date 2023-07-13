@@ -133,7 +133,7 @@ const FibonacciSphere = ({
               opacity={point[6]}
               scale={point[5]}
               textAnchor="middle"
-              className="animate-fade-in animate-pulse transition-all duration-200 ease-in-out"
+              className="animate-fade-in transition-all duration-200 ease-in-out"
             >
               {text ? text[i] : i}
             </text>
