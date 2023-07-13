@@ -247,29 +247,12 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     hitboxes?: { [key: string]: number };
     hasMultipler?: boolean;
   };
-  type Weapons =
-    | FindDinoById["itemsByIds"]
-    | {
-      userDamage: number;
-      multipliers: string[];
-      hits?: number;
-      hitsRaw?: number;
-      hitsUntilFlee?: number;
-      chanceOfDeath?: number;
-      changeOfDeathHigh?: boolean;
-      minChanceOfDeath?: number;
-      isPossible?: boolean;
-      isRecommended?: boolean;
-      hitboxes: { [key: string]: number };
-    };
+
   interface DinoState {
     level: number;
     maturation: number;
     seconds_between_hits: number;
     x_variant: boolean;
-    weaponDamage: {
-      [key: string]: number;
-    };
     activeRecipeTabIndex: number;
     selected_food: number;
     foods: Food[];
@@ -666,7 +649,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
       level: 150,
       seconds_between_hits: 5,
       x_variant: false,
-      weaponDamage: {},
       foods: [],
       activeRecipeTabIndex: 0,
       selected_food: dino.DinoStat.some((f) => f.type === "food")
