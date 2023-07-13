@@ -16,7 +16,26 @@ export const QUERY = gql`
   }
 `
 
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => (
+  <div role="status" className="animate-pulse">
+    <div className="mx-auto h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+    <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="h-56 bg-gray-200 rounded-lg dark:bg-gray-700" />
+      <div className="h-56 bg-gray-200 rounded-lg dark:bg-gray-700" />
+      <div className="h-56 bg-gray-200 rounded-lg dark:bg-gray-700" />
+      <div className="h-56 bg-gray-200 rounded-lg dark:bg-gray-700" />
+      <div className="h-56 bg-gray-200 rounded-lg dark:bg-gray-700" />
+      <div className="h-56 bg-gray-200 rounded-lg dark:bg-gray-700" />
+      <div className="h-56 bg-gray-200 rounded-lg dark:bg-gray-700" />
+      <div className="h-56 bg-gray-200 rounded-lg dark:bg-gray-700" />
+      <div className="h-56 bg-gray-200 rounded-lg dark:bg-gray-700" />
+      <div className="h-56 bg-gray-200 rounded-lg dark:bg-gray-700" />
+      <div className="h-56 bg-gray-200 rounded-lg dark:bg-gray-700" />
+      <div className="h-56 bg-gray-200 rounded-lg dark:bg-gray-700" />
+    </div>
+    <span className="sr-only">Loading...</span>
+  </div>
+)
 
 export const Empty = () => {
   return (

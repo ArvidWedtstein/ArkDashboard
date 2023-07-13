@@ -7,9 +7,8 @@ const drawSvgPath = (
   let pathString = "";
   coordinates.forEach((coordinate, index) => {
     const command = index === 0 ? "M" : "L";
-    pathString += `${command}${
-      (size.height / 100) * coordinate.lon + size.width / 100
-    } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
+    pathString += `${command}${(size.height / 100) * coordinate.lon + size.width / 100
+      } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
   });
   return pathString;
 };
