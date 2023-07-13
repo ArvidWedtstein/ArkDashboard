@@ -13,6 +13,7 @@ export const schema = gql`
   type Query {
     itemRecipeItems: [ItemRecipeItem!]! @skipAuth
     itemRecipeItem(id: String!): ItemRecipeItem @skipAuth
+    itemRecipeItemsByIds(ids: [String!]): [ItemRecipeItem] @skipAuth
   }
 
   input CreateItemRecipeItemInput {

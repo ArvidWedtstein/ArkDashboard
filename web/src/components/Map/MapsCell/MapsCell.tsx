@@ -40,13 +40,7 @@ export const Loading = () => (
 export const Empty = () => {
   return (
     <div className="rw-text-center">
-      {'No maps yet. '}
-      <Link
-        to={routes.newMap()}
-        className="rw-link"
-      >
-        {'Create one?'}
-      </Link>
+      {'No maps created yet. '}
     </div>
   )
 }

@@ -3,7 +3,7 @@ import {
   FormError,
   RWGqlError,
 } from "@redwoodjs/forms";
-import { useCallback, useMemo, useReducer, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 
 import {
   formatNumber,
@@ -23,7 +23,7 @@ import { useAuth } from "src/auth";
 import { QUERY } from "../MaterialCalculatorCell";
 import UserRecipesCell from "src/components/UserRecipe/UserRecipesCell";
 import ItemList from "src/components/Util/ItemList/ItemList";
-
+import { useLazyQuery } from "@apollo/client";
 const CREATE_USERRECIPE_MUTATION = gql`
   mutation CreateUserRecipe($input: CreateUserRecipeInput!) {
     createUserRecipe(input: $input) {
@@ -62,8 +62,22 @@ interface MaterialGridProps {
   itemRecipes: NonNullable<FindItemsMats["itemRecipes"]>;
   error?: RWGqlError;
 }
-
+const ITEMRECIPEITEMQUERY = gql`
+  query FindRecipeItemsByIds($ids: [String!]) {
+      itemRecipeItemsByIds(ids: $ids) {
+        id
+        amount
+        Item {
+          id
+          name
+          image
+        }
+      }
+  }
+`
 export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
+  const { currentUser, isAuthenticated, client } = useAuth();
+
   const categoriesIcons = {
     Armor: "cloth-shirt",
     Tool: "stone-pick",
@@ -75,7 +89,24 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     Consumable: "any-berry-seed",
   };
 
-  const { currentUser, isAuthenticated } = useAuth();
+  const [loadItems, { called, loading: load, data }] = useLazyQuery(ITEMRECIPEITEMQUERY, {
+    variables: {
+      ids: itemRecipes.map((f) => f.id),
+    },
+    onCompleted: (data) => {
+      console.log("ITEMRECIPES", data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  useEffect(() => {
+    if (!called && !load) {
+      loadItems();
+    }
+  }, []);
+
 
   const [search, setSearch] = useState<string>("");
 

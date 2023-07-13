@@ -100,7 +100,7 @@
     @apply ring-0;
   }
   .rw-button:focus {
-    @apply outline-none ring-2;
+    @apply outline-none ring-current;
   }
 
   /*
@@ -156,7 +156,7 @@
     @apply bg-red-700 text-white;
   }
   .rw-button.rw-button-red:focus {
-    @apply ring-red-300 dark:ring-red-800;
+    @apply ring-1 ring-red-300 dark:ring-red-800;
   }
 
   /* Red Outline Button */
@@ -178,7 +178,7 @@
     @apply bg-pea-600;
   }
   .rw-button.rw-button-green:focus {
-    @apply ring-pea-300 dark:ring-pea-800 outline-none;
+    @apply ring-pea-300 dark:ring-pea-800 outline-none ring-1;
   }
 
   /* Green Outline Button */
@@ -188,8 +188,9 @@
   .rw-button.rw-button-green-outline:hover {
     @apply bg-pea-600 text-white;
   }
-  .rw-button.rw-button-green-outline:focus {
-    @apply ring-pea-800 outline-none ring-4;
+  .rw-button.rw-button-green-outline:focus,
+  .rw-button.rw-button-green-outline:focus-within {
+    @apply ring-pea-300 dark:!ring-pea-800 outline-none ring-4;
   }
 
   /* Green Gradient Button */
@@ -215,7 +216,7 @@
     @apply bg-blue-600;
   }
   .rw-button.rw-button-blue:focus {
-    @apply ring-blue-300 dark:ring-blue-800;
+    @apply ring-1 ring-blue-300 dark:ring-blue-800;
   }
 
   /* Blue Outline Button*/
@@ -238,7 +239,7 @@
     @apply bg-yellow-600 text-white;
   }
   .rw-button.rw-button-yellow:focus {
-    @apply ring-yellow-300 dark:ring-yellow-800;
+    @apply ring-1 ring-yellow-300 dark:ring-yellow-800;
   }
 
   /* Gray Button */
@@ -249,7 +250,7 @@
     @apply border-gray-500 bg-zinc-400 text-gray-900 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white;
   }
   .rw-button.rw-button-gray:focus {
-    @apply ring ring-gray-300 dark:ring-zinc-700;
+    @apply ring-1 ring-gray-300 dark:ring-zinc-700;
   }
 
   /* Button Group */

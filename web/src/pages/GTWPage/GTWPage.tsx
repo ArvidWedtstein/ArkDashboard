@@ -1,5 +1,5 @@
 import { FieldError, Form, FormError, Label, RWGqlError, TextField } from '@redwoodjs/forms'
-import { MetaTags } from '@redwoodjs/web'
+import { MetaTags, useQuery } from '@redwoodjs/web'
 import { useMemo, useState } from 'react'
 import debounce from 'lodash.debounce';
 import { toast } from '@redwoodjs/web/dist/toast';
@@ -57,17 +57,15 @@ interface GTWPageProps {
   loading: boolean
 }
 const GtwPage = (props: GTWPageProps) => {
-  // const QUERY = gql`
-  //   query {
-  //     dinos {
-  //       id
-  //       name
-  //     }
-  //   }
-  // `
+  const QUERY = gql`
+    query {
+      dinos {
+        id
+        name
+      }
+    }
+  `
   // useQuery(QUERY)
-
-
   const [word, setWord] = useState('')
   const handlechange = (e) => {
     setWord(e.target.value)
