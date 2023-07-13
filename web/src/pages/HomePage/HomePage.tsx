@@ -1,6 +1,8 @@
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "src/auth";
+import LineChart from "src/components/Util/LineChart/LineChart";
+import Map from "src/components/Util/Map/Map";
 const HomePage = () => {
   const { isAuthenticated, currentUser, client } = useAuth();
   // if (document.addEventListener) {
@@ -116,6 +118,12 @@ const HomePage = () => {
             </details>
           </div>
         </section>
+        <Map
+          url={
+            "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheIsland-Map.webp"
+          }
+          interactive
+        />
       </div>
     </>
   );
