@@ -59,7 +59,7 @@ const Lootcrate = ({ lootcrate }: Props) => {
                   {s.LootcrateSetEntry.map((e, ind) => {
                     return (
                       <details
-                        open={s.LootcrateSetEntry.length == 1}
+                        open={true}
                         key={`crate${ind}-set${l}-entry${ind}`}
                         className="hover:text-pea-700 focus:ring-pea-700 focus:text-pea-700 w-full cursor-pointer border-b border-gray-200 px-4 py-2 focus:outline-none focus:ring-2 dark:border-gray-400  dark:hover:text-white dark:focus:text-white dark:focus:ring-gray-500"
                       >

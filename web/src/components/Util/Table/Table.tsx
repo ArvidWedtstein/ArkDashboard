@@ -1061,3 +1061,68 @@ const Table = ({
 };
 
 export default Table;
+
+
+// const DataGrid = () => {
+//   const [data, setData] = useState([]);
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [page, setPage] = useState(1);
+//   const tableContainerRef = useRef<HTMLDivElement>();
+
+//   // Simulating fetching data from an API
+//   const fetchData = () => {
+//     setIsLoading(true);
+//     // Replace this with your actual data fetching logic
+//     setTimeout(() => {
+//       const newData = Array.from({ length: 10 }, (_, index) => `Row ${index + 1}`);
+//       setData((prevData) => [...prevData, ...newData]);
+//       setIsLoading(false);
+//     }, 1000);
+//   };
+
+//   // Fetch initial data
+//   useEffect(() => {
+//     fetchData();
+//   }, []);
+
+//   // Load more data when scrolling to the bottom
+//   const handleScroll = () => {
+//     const { scrollTop, clientHeight, scrollHeight } = tableContainerRef.current;
+//     if (scrollHeight - scrollTop === clientHeight) {
+//       setPage((prevPage) => prevPage + 1);
+//     }
+//   };
+
+//   // Fetch more data when the page changes
+//   useEffect(() => {
+//     fetchData();
+//   }, [page]);
+
+//   return (
+//     <div className="relative w-fit text-black dark:text-white" style={{ height: '300px', overflowY: 'scroll' }} onScroll={handleScroll} ref={tableContainerRef}>
+//       <table className="sticky top-0 bg-zinc-700 w-full">
+//         <thead>
+//           <tr>
+//             <th className="p-2">Page</th>
+//             <th className="p-2">Column 1</th>
+//             <th className="p-2">Column 2</th>
+//             <th className="p-2">Column 3</th>
+//           </tr>
+//         </thead>
+//       </table>
+//       <table className="w-full">
+//         <tbody>
+//           {data.map((row, index) => (
+//             <tr key={index}>
+//               <td className="p-2 border-r border-red-500">{page}</td>
+//               <td className="p-2">{row}</td>
+//               <td className="p-2">{row}</td>
+//               <td className="p-2">{row}</td>
+//             </tr>
+//           ))}
+//           {isLoading && <tr><td>Loading...</td></tr>}
+//         </tbody>
+//       </table>
+//     </div>
+//   );
+// };

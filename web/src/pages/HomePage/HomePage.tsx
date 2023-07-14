@@ -1,9 +1,9 @@
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
-import LineChart from "src/components/Util/LineChart/LineChart";
-import MapPicker from "src/components/Util/MapPicker/MapPicker";
-import { PieChart } from "src/components/Util/PieChart/PieChart";
+
+
 const HomePage = () => {
   const { isAuthenticated, currentUser, client } = useAuth();
   // if (document.addEventListener) {
@@ -119,6 +119,7 @@ const HomePage = () => {
             </details>
           </div>
         </section>
+        <p className="dark:text-white text-black">Infinite scroll grid test</p>
       </div>
     </>
   );
