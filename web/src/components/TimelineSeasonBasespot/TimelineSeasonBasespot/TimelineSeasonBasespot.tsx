@@ -315,8 +315,9 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
             <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
               {timelineSeasonBasespot.map_id && (
                 <Map
+                  disable_map={true}
                   className="h-full w-full object-cover object-center"
-                  url={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${timelineSeasonBasespot.Map.img}`}
+                  map_id={timelineSeasonBasespot.map_id}
                   size={{ width: 500, height: 500 }}
                   pos={[
                     {

@@ -13,8 +13,8 @@ const drawSvgPath = (
   return pathString;
 };
 interface Props {
-  url: string;
   map_id?: number;
+  disable_map?: boolean;
   size?: { width: number; height: number };
   pos?: { lat: number; lon: number; color?: string; name?: string }[];
   className?: string;
@@ -22,7 +22,7 @@ interface Props {
   interactive?: boolean;
 }
 const Map = ({
-  url,
+  disable_map = false,
   map_id = 2,
   size = { width: 500, height: 500 },
   pos,
@@ -84,6 +84,7 @@ const Map = ({
     setIsDragging(false);
     setStartPosition({ x: 0, y: 0 });
   };
+
   useEffect(() => {
     if (!interactive || !svgRef.current) return;
     const handleResize = () => {
@@ -182,7 +183,7 @@ const Map = ({
         <button className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" onClick={() => handleZoomButton('out')} disabled={zoom == 1}>
           -
         </button>
-        <select className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" onChange={(e) => setMap(parseInt(e.target.value))} defaultValue={map}>
+        <select value={map} disabled={disable_map} className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" onChange={(e) => setMap(parseInt(e.target.value))} defaultValue={map}>
           <option value={5}>Aberration</option>
           <option value={10}>Crystal Isles</option>
           <option value={6}>Extinction</option>
@@ -218,7 +219,6 @@ const Map = ({
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
-          // href={url}
           href={maps[map]}
           height={size.height}
           width={size.width}

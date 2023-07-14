@@ -5,8 +5,6 @@ import { useCallback, useState } from "react";
 import ArkCard from "src/components/Util/ArkCard/ArkCard";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import MapComp from "src/components/Util/Map/Map";
-import Slideshow from "src/components/Util/Slideshow/Slideshow";
-
 import { capitalizeSentence } from "src/lib/formatters";
 
 import type { DeleteMapMutationVariables, FindMapById } from "types/graphql";
@@ -380,7 +378,8 @@ const Map = ({ map }: Props) => {
             <MapComp
               interactive={true}
               className="col-span-1 w-auto"
-              url={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.img}`}
+              disable_map={true}
+              map_id={map.id}
               size={{ width: 500, height: 500 }}
               pos={mapData.map((d) => ({
                 lat: d.latitude,

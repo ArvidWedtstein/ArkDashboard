@@ -188,9 +188,10 @@ const Basespot = ({ basespot }: Props) => {
           <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
             <Map
               className="h-full w-full object-cover object-center"
-              url={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${basespot.Map.img}`}
+              map_id={basespot.map_id}
               size={{ width: 500, height: 500 }}
               pos={[{ lat: basespot.latitude, lon: basespot.longitude }]}
+              disable_map={true}
             />
           </div>
           <div className="-mb-10 flex flex-col flex-wrap text-center lg:w-1/2 lg:py-6 lg:pl-12 lg:text-left">
