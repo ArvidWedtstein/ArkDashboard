@@ -73,13 +73,14 @@ const MapPicker = ({
         latitude: Math.round(((cursorpt.y - 5) / 5) * 100) / 100,
         longitude: Math.round(((cursorpt.x - 5) / 5) * 100) / 100,
       });
+
       onChanges &&
         onChanges({
           latitude: Math.round(((cursorpt.y - 5) / 5) * 100) / 100,
           longitude: Math.round(((cursorpt.x - 5) / 5) * 100) / 100,
         });
     },
-    [pos]
+    [pos, setPos]
   );
 
   return (
@@ -106,8 +107,25 @@ const MapPicker = ({
           <option value={1}>Valguero</option>
         </select>
         {/* TODO: Make input group with label for lat and lon */}
-        <input className="rw-input rw-input-small w-32 first:!rounded-bl-none last:!rounded-br-none" placeholder="Latitude" value={pos.latitude} />
-        <input className="rw-input rw-input-small w-32 first:!rounded-bl-none last:!rounded-br-none" placeholder="Longitude" value={pos.longitude} />
+        <input className="rw-input rw-input-small w-32 first:!rounded-bl-none last:!rounded-br-none" placeholder="Latitude" value={pos.latitude} onChange={(e) => {
+          if (!isNaN(parseInt(e.target.value))) {
+            let pt = svgRef.current.createSVGPoint();
+            pt.y = ((parseInt(e.target.value) * 100) / 100) * 5 + 5
+            pt.x = ((pos.longitude * 100) / 100) * 5 + 5
+            let cursorpt = pt.matrixTransform(
+              svgRef.current.getScreenCTM().inverse()
+            );
+            let circle = svgRef.current.querySelector("g#marker");
+            circle.setAttributeNS(
+              null,
+              "transform",
+              `translate(${cursorpt.x}, ${cursorpt.y})`
+            );
+
+            setPos((old) => ({ ...old, latitude: parseInt(e.target.value) }));
+          }
+        }} />
+        <input className="rw-input rw-input-small w-32 first:!rounded-bl-none last:!rounded-br-none" placeholder="Longitude" value={pos.longitude} onChange={(e) => !isNaN(parseInt(e.target.value)) && setPos((old) => ({ ...old, longitude: parseInt(e.target.value) }))} />
       </div>
       <svg
         className="cursor-pointer select-none"

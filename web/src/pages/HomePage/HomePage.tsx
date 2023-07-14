@@ -2,7 +2,6 @@ import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "src/auth";
 import LineChart from "src/components/Util/LineChart/LineChart";
-import Map from "src/components/Util/Map/Map";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
 const HomePage = () => {
   const { isAuthenticated, currentUser, client } = useAuth();
@@ -119,11 +118,6 @@ const HomePage = () => {
             </details>
           </div>
         </section>
-        <Map
-          map_id={5}
-          disable_map={true}
-          interactive
-        />
         <MapPicker />
       </div>
     </>
