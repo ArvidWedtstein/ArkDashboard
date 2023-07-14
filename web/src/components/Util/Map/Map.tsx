@@ -14,6 +14,7 @@ const drawSvgPath = (
 };
 interface Props {
   url: string;
+  map_id?: number;
   size?: { width: number; height: number };
   pos?: { lat: number; lon: number; color?: string; name?: string }[];
   className?: string;
@@ -22,6 +23,7 @@ interface Props {
 }
 const Map = ({
   url,
+  map_id = 2,
   size = { width: 500, height: 500 },
   pos,
   className,
@@ -29,11 +31,37 @@ const Map = ({
   interactive = false,
 }: Props) => {
   const svgRef = useRef(null);
-
+  const maps = {
+    2:
+      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheIsland-Map.webp",
+    3:
+      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheCenter-Map.webp",
+    7:
+      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/ScorchedEarth-Map.webp",
+    4:
+      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Ragnarok-Map.webp",
+    5:
+      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Aberration-Map.webp",
+    6:
+      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Extinction-Map.webp",
+    1:
+      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Valguero-Map.webp",
+    8:
+      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis-Map.webp",
+    10:
+      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/CrystalIsles-Map.webp",
+    11:
+      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Map.webp",
+    12:
+      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/LostIsland-Map.webp",
+    9:
+      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis2-Map.webp",
+  }
   const [zoom, setZoom] = useState(1);
   const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
+  const [map, setMap] = useState(map_id);
 
   const handleKeyUp = useCallback((event) => {
     if (
@@ -51,6 +79,7 @@ const Map = ({
 
   const reset = () => {
     setZoom(1);
+    setMap(map_id);
     setPanPosition({ x: 0, y: 0 });
     setIsDragging(false);
     setStartPosition({ x: 0, y: 0 });
@@ -88,21 +117,36 @@ const Map = ({
   }, []);
 
   const handleWheel = (event: React.WheelEvent<SVGImageElement>) => {
-    // event.preventDefault();
+    const minZoom = 1;
+    const maxZoom = 5;
+    const { clientX, clientY } = event;
+
     if (!interactive || !event.shiftKey) return;
+
     const scale = event.deltaY > 0 ? 0.9 : 1.1;
-    const newZoom = zoom * scale;
+    const newZoom = event.deltaY > 0 ? zoom - 0.5 : zoom + 0.5;
+
     const rect = svgRef.current.getBoundingClientRect();
-    const offsetX = (event.clientX - rect.left) / zoom;
-    const offsetY = (event.clientY - rect.top) / zoom;
+    const offsetX = (clientX - rect.left) / zoom;
+    const offsetY = (clientY - rect.top) / zoom;
+
     const dx = offsetX * (1 - scale);
     const dy = offsetY * (1 - scale);
-    setZoom(newZoom);
+
+    const clampedZoom = Math.min(Math.max(newZoom, minZoom), maxZoom);
+    const clampedDX = clampedZoom === minZoom || clampedZoom === maxZoom ? 0 : -dx;
+    const clampedDY = clampedZoom === minZoom || clampedZoom === maxZoom ? 0 : -dy;
+
+    setZoom(clampedZoom);
     setPanPosition((prevPosition) => ({
-      x: prevPosition.x - dx,
-      y: prevPosition.y - dy,
+      x: prevPosition.x + clampedDX,
+      y: prevPosition.y + clampedDY,
     }));
   };
+
+  const handleZoomButton = (type: 'in' | 'out') => {
+    setZoom(type == 'in' ? zoom + 0.1 : zoom - 0.1);
+  }
 
   const handleMouseDown = (
     event: React.MouseEvent<SVGImageElement, MouseEvent>
@@ -130,105 +174,99 @@ const Map = ({
   };
 
   return (
-    <svg
-      ref={svgRef}
-      height={size.height}
-      width={size.width}
-      tabIndex={0}
-      className={"relative" + className}
-      cursor={interactive ? (isDragging ? "grabbing" : "grab") : "default"}
-      viewBox={`0 0 ${size.width} ${size.height}`}
-      onKeyUp={handleKeyUp}
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <image
-        onWheel={handleWheel}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        href={url}
+    <div className="flex flex-col">
+      <div className="rw-button-group rw-button-group-border m-0" role="menubar">
+        <button className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" onClick={() => handleZoomButton('in')} disabled={zoom >= 5}>
+          +
+        </button>
+        <button className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" onClick={() => handleZoomButton('out')} disabled={zoom == 1}>
+          -
+        </button>
+        <select className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" onChange={(e) => setMap(parseInt(e.target.value))} defaultValue={map}>
+          <option value={5}>Aberration</option>
+          <option value={10}>Crystal Isles</option>
+          <option value={6}>Extinction</option>
+          <option value={11}>Fjordur</option>
+          <option value={8}>Genesis</option>
+          <option value={9}>Genesis 2</option>
+          <option value={12}>Lost Island</option>
+          <option value={4}>Ragnarok</option>
+          <option value={7}>Scorched Earth</option>
+          <option value={3}>The Center</option>
+          <option value={2}>The Island</option>
+          <option value={1}>Valguero</option>
+        </select>
+        <button className="rw-button rw-button-small rw-button-red first:!rounded-bl-none last:!rounded-br-none" onClick={() => {
+          reset();
+        }}>
+          Reset
+        </button>
+      </div>
+      <svg
+        ref={svgRef}
         height={size.height}
         width={size.width}
-        style={{
-          width: "100%",
-          height: "100%",
-          transform: `scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`,
-          transformOrigin: "center center",
-        }}
-      />
-      <g transform={`translate(${size.width - 30}, 1)`}>
-        <rect
+        tabIndex={0}
+        className={"relative" + className}
+        cursor={interactive ? (isDragging ? "grabbing" : "grab") : "default"}
+        viewBox={`0 0 ${size.width} ${size.height}`}
+        onKeyUp={handleKeyUp}
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <image
+          onWheel={handleWheel}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          // href={url}
+          href={maps[map]}
+          height={size.height}
+          width={size.width}
           style={{
-            cursor: "pointer",
-          }}
-          stroke="black"
-          fill={"#ff0000"}
-          onClick={() => {
-            reset();
-          }}
-          width={30}
-          height={30}
-          y={0}
-          x={0}
-          x1={0}
-          y1={0}
-          x2={0}
-          y2={0}
-        >
-          <title>Reset</title>
-        </rect>
-        <text
-          style={{
-            cursor: "pointer",
-          }}
-          onClick={() => {
-            reset();
-          }}
-          fontSize={10}
-          x={0}
-          y={18}
-          fill="white"
-        >
-          Reset
-        </text>
-      </g>
-      {pos?.map((p, i) => (
-        <circle
-          style={{
-            pointerEvents: "none",
             width: "100%",
             height: "100%",
             transform: `scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`,
             transformOrigin: "center center",
           }}
-          key={"map-pos-" + i}
-          id={"map-pos-" + i}
-          fill={p.color || "red"}
-          stroke="black"
-          cy={(size.height / 100) * p.lat + size.height / 100}
-          cx={(size.width / 100) * p.lon + size.width / 100}
-          // r={((imageTransform.replace("scale(", "").replace(')', '')) as number * 2) * 2}
-          r="3"
-        >
-          <title>{p.name}</title>
-        </circle>
-      ))}
-      {path?.coords && (
-        <path
-          style={{
-            pointerEvents: "none",
-            width: "100%",
-            height: "100%",
-            transform: `scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`,
-            transformOrigin: "center center",
-          }}
-          d={drawSvgPath(path.coords, size)}
-          stroke={path.color || "red"}
-          strokeWidth="2"
-          fill="none"
         />
-      )}
-    </svg>
+        {pos?.map((p, i) => (
+          <circle
+            style={{
+              pointerEvents: "none",
+              width: "100%",
+              height: "100%",
+              transform: `scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`,
+              transformOrigin: "center center",
+            }}
+            key={"map-pos-" + i}
+            id={"map-pos-" + i}
+            fill={p.color || "red"}
+            stroke="black"
+            cy={(size.height / 100) * p.lat + size.height / 100}
+            cx={(size.width / 100) * p.lon + size.width / 100}
+            // r={((imageTransform.replace("scale(", "").replace(')', '')) as number * 2) * 2}
+            r="3"
+          >
+            <title>{p.name}</title>
+          </circle>
+        ))}
+        {path?.coords && (
+          <path
+            style={{
+              pointerEvents: "none",
+              width: "100%",
+              height: "100%",
+              transform: `scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`,
+              transformOrigin: "center center",
+            }}
+            d={drawSvgPath(path.coords, size)}
+            stroke={path.color || "red"}
+            strokeWidth="2"
+            fill="none"
+          />
+        )}
+      </svg>
+    </div>
   );
 };
 
