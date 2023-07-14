@@ -3,6 +3,7 @@ import { MetaTags } from "@redwoodjs/web";
 import { useAuth } from "src/auth";
 import LineChart from "src/components/Util/LineChart/LineChart";
 import Map from "src/components/Util/Map/Map";
+import MapPicker from "src/components/Util/MapPicker/MapPicker";
 const HomePage = () => {
   const { isAuthenticated, currentUser, client } = useAuth();
   // if (document.addEventListener) {
@@ -123,6 +124,7 @@ const HomePage = () => {
           disable_map={true}
           interactive
         />
+        <MapPicker />
       </div>
     </>
   );
