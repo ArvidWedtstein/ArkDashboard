@@ -119,10 +119,11 @@ const HomePage = () => {
             </details>
           </div>
         </section>
-        <p className="dark:text-white text-black">Infinite scroll grid test</p>
       </div>
     </>
   );
 };
 
 export default HomePage;
+
+
