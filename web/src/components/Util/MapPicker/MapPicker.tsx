@@ -85,7 +85,7 @@ const MapPicker = ({
 
   return (
     <div style={style} className={clsx("relative w-fit flex flex-col", className)}>
-      <div className="rw-button-group rw-button-group-border m-0 w-full" role="menubar">
+      {/* <div className="rw-button-group rw-button-group-border m-0 w-full" role="menubar">
         <button className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" >
           +
         </button>
@@ -106,7 +106,6 @@ const MapPicker = ({
           <option value={2}>The Island</option>
           <option value={1}>Valguero</option>
         </select>
-        {/* TODO: Make input group with label for lat and lon */}
         <input className="rw-input rw-input-small w-32 first:!rounded-bl-none last:!rounded-br-none" placeholder="Latitude" value={pos.latitude} onChange={(e) => {
           if (!isNaN(parseInt(e.target.value))) {
             let pt = svgRef.current.createSVGPoint();
@@ -126,7 +125,7 @@ const MapPicker = ({
           }
         }} />
         <input className="rw-input rw-input-small w-32 first:!rounded-bl-none last:!rounded-br-none" placeholder="Longitude" value={pos.longitude} onChange={(e) => !isNaN(parseInt(e.target.value)) && setPos((old) => ({ ...old, longitude: parseInt(e.target.value) }))} />
-      </div>
+      </div> */}
       <svg
         className="cursor-pointer select-none"
         id={`mapSelector${name}`}
