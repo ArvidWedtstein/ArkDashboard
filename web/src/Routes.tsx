@@ -135,16 +135,21 @@ const Routes = () => {
           buttonLabel="New ItemRecipe"
           buttonTo="newItemRecipe"
         >
-          <Route
-            path="/item-recipes/new"
-            page={ItemRecipeNewItemRecipePage}
-            name="newItemRecipe"
-          />
-          <Route
-            path="/item-recipes/{id}/edit"
-            page={ItemRecipeEditItemRecipePage}
-            name="editItemRecipe"
-          />
+          <Private
+            unauthenticated="home"
+            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
+          >
+            <Route
+              path="/item-recipes/new"
+              page={ItemRecipeNewItemRecipePage}
+              name="newItemRecipe"
+            />
+            <Route
+              path="/item-recipes/{id}/edit"
+              page={ItemRecipeEditItemRecipePage}
+              name="editItemRecipe"
+            />
+          </Private>
           <Route
             path="/item-recipes/{id}"
             page={ItemRecipeItemRecipePage}
@@ -163,16 +168,21 @@ const Routes = () => {
           buttonLabel="New Lootcrate"
           buttonTo="newLootcrate"
         >
-          <Route
-            path="/lootcrates/new"
-            page={LootcrateNewLootcratePage}
-            name="newLootcrate"
-          />
-          <Route
-            path="/lootcrates/{id}/edit"
-            page={LootcrateEditLootcratePage}
-            name="editLootcrate"
-          />
+          <Private
+            unauthenticated="home"
+            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
+          >
+            <Route
+              path="/lootcrates/new"
+              page={LootcrateNewLootcratePage}
+              name="newLootcrate"
+            />
+            <Route
+              path="/lootcrates/{id}/edit"
+              page={LootcrateEditLootcratePage}
+              name="editLootcrate"
+            />
+          </Private>
           <Route
             path="/lootcrates/{id}"
             page={LootcrateLootcratePage}
@@ -191,8 +201,17 @@ const Routes = () => {
           buttonLabel="New Map"
           buttonTo="newMap"
         >
-          <Route path="/maps/new" page={MapNewMapPage} name="newMap" />
-          <Route path="/maps/{id}/edit" page={MapEditMapPage} name="editMap" />
+          <Private
+            unauthenticated="home"
+            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
+          >
+            <Route path="/maps/new" page={MapNewMapPage} name="newMap" />
+            <Route
+              path="/maps/{id}/edit"
+              page={MapEditMapPage}
+              name="editMap"
+            />
+          </Private>
           <Route path="/maps/{id}" page={MapMapPage} name="map" />
           <Route path="/maps" page={MapMapsPage} name="maps" />
         </Set>
@@ -224,12 +243,17 @@ const Routes = () => {
           buttonLabel="New Dino"
           buttonTo="newDino"
         >
-          <Route path="/dinos/new" page={DinoNewDinoPage} name="newDino" />
-          <Route
-            path="/dinos/{id}/edit"
-            page={DinoEditDinoPage}
-            name="editDino"
-          />
+          <Private
+            unauthenticated="home"
+            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
+          >
+            <Route path="/dinos/new" page={DinoNewDinoPage} name="newDino" />
+            <Route
+              path="/dinos/{id}/edit"
+              page={DinoEditDinoPage}
+              name="editDino"
+            />
+          </Private>
           <Route path="/dinos/{id}" page={DinoDinoPage} name="dino" />
           <Route path="/dinos" page={DinoDinosPage} name="dinos" />
         </Set>
@@ -244,11 +268,6 @@ const Routes = () => {
             unauthenticated="home"
             roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
           >
-            <Route
-              path="/profiles/new"
-              page={ProfileNewProfilePage}
-              name="newProfile"
-            />
             <Route
               path="/profiles"
               page={ProfileProfilesPage}
@@ -274,12 +293,18 @@ const Routes = () => {
           buttonLabel="New Tribe"
           buttonTo="newTribe"
         >
-          <Route path="/tribes/new" page={TribeNewTribePage} name="newTribe" />
-          <Route
-            path="/tribes/{id:Int}/edit"
-            page={TribeEditTribePage}
-            name="editTribe"
-          />
+          <Private unauthenticated="tribes">
+            <Route
+              path="/tribes/new"
+              page={TribeNewTribePage}
+              name="newTribe"
+            />
+            <Route
+              path="/tribes/{id:Int}/edit"
+              page={TribeEditTribePage}
+              name="editTribe"
+            />
+          </Private>
           <Route path="/tribes/{id:Int}" page={TribeTribePage} name="tribe" />
           <Route path="/tribes" page={TribeTribesPage} name="tribes" />
         </Set>
@@ -291,16 +316,18 @@ const Routes = () => {
           buttonLabel="New Basespot"
           buttonTo="newBasespot"
         >
-          <Route
-            path="/basespots/new"
-            page={BasespotNewBasespotPage}
-            name="newBasespot"
-          />
-          <Route
-            path="/basespots/{id}/edit"
-            page={BasespotEditBasespotPage}
-            name="editBasespot"
-          />
+          <Private unauthenticated="home">
+            <Route
+              path="/basespots/new"
+              page={BasespotNewBasespotPage}
+              name="newBasespot"
+            />
+            <Route
+              path="/basespots/{id}/edit"
+              page={BasespotEditBasespotPage}
+              name="editBasespot"
+            />
+          </Private>
           <Route
             path="/basespots/{id}"
             page={BasespotBasespotPage}
