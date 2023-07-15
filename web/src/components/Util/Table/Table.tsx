@@ -369,7 +369,7 @@ const Table = ({
 
   const isSelected = (id: TableDataRow["row_id"]) =>
     selectedRows.indexOf(id) !== -1;
-  const isCollapsed = (id: TableDataRow["row_id"]) =>
+  const isRowOpen = (id: TableDataRow["row_id"]) =>
     collapsedRows.indexOf(id) !== -1;
 
   const headerRenderer = ({ label, columnIndex, ...other }) => {
@@ -540,7 +540,7 @@ const Table = ({
               className="rw-button rw-button-small rw-button-gray"
               onClick={() => handleRowCollapse(datarow.row_id)}
             >
-              {isCollapsed(datarow.row_id) ? "+" : "-"}
+              {isRowOpen(datarow.row_id) ? "-" : "+"}
             </button>
           )
         )}
@@ -1104,7 +1104,7 @@ const Table = ({
                   {datarow?.collapseContent && (
                     <tr
                       className={`transition ease-in ${
-                        isCollapsed(datarow.row_id) ? "hidden" : "table-row"
+                        isRowOpen(datarow.row_id) ? "table-row" : "hidden"
                       }`}
                     >
                       <td
