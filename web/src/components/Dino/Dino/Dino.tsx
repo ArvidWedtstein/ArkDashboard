@@ -306,16 +306,16 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         typeof flee_threshold === "number" ? flee_threshold : 0.75;
       const isPossible = torpor_duration
         ? torpor -
-        (state.seconds_between_hits - torpor_duration) *
-        (dino.tdps +
-          Math.pow(state.level - 1, 0.8493) / (22.39671632 / dino.tdps))
+          (state.seconds_between_hits - torpor_duration) *
+            (dino.tdps +
+              Math.pow(state.level - 1, 0.8493) / (22.39671632 / dino.tdps))
         : torpor;
 
       let torporPerHit = isPossible
         ? torpor -
-        (state.seconds_between_hits - torpor_duration) *
-        (dino.tdps +
-          Math.pow(state.level - 1, 0.8493) / (22.39671632 / dino.tdps))
+          (state.seconds_between_hits - torpor_duration) *
+            (dino.tdps +
+              Math.pow(state.level - 1, 0.8493) / (22.39671632 / dino.tdps))
         : torpor;
 
       const knockOutMultiplier =
@@ -340,47 +340,47 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
       const hitboxes = dino.hitboxes
         ? Object.entries(
-          dino.hitboxes as {
-            [key: string]: number;
-          }
-        ).map(([name, multiplier]) => {
-          const hitboxHits = numHitsRaw / multiplier;
-          const hitsUntilFlee =
-            creatureFleeThreshold === 1
-              ? "-"
-              : Math.max(1, Math.ceil(hitboxHits * creatureFleeThreshold));
+            dino.hitboxes as {
+              [key: string]: number;
+            }
+          ).map(([name, multiplier]) => {
+            const hitboxHits = numHitsRaw / multiplier;
+            const hitsUntilFlee =
+              creatureFleeThreshold === 1
+                ? "-"
+                : Math.max(1, Math.ceil(hitboxHits * creatureFleeThreshold));
 
-          const totalDamage =
-            damage *
-            Math.ceil(hitboxHits) *
-            totalMultipliers *
-            (userDamage / 100) *
-            multiplier;
-          const propsurvival =
-            totalDamage < baseHealth
-              ? 100
-              : calculatePropability(
-                state.level - 1,
-                7,
-                Math.max(
-                  Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                  0
-                )
-              );
+            const totalDamage =
+              damage *
+              Math.ceil(hitboxHits) *
+              totalMultipliers *
+              (userDamage / 100) *
+              multiplier;
+            const propsurvival =
+              totalDamage < baseHealth
+                ? 100
+                : calculatePropability(
+                    state.level - 1,
+                    7,
+                    Math.max(
+                      Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                      0
+                    )
+                  );
 
-          const chanceOfDeath = Math.round(100 - propsurvival);
+            const chanceOfDeath = Math.round(100 - propsurvival);
 
-          return {
-            name,
-            multiplier,
-            hitsRaw: hitboxHits,
-            hitsUntilFlee,
-            hits: Math.ceil(hitboxHits),
-            chanceOfDeath,
-            chanceOfDeathHigh: chanceOfDeath > 40,
-            isPossible,
-          };
-        })
+            return {
+              name,
+              multiplier,
+              hitsRaw: hitboxHits,
+              hitsUntilFlee,
+              hits: Math.ceil(hitboxHits),
+              chanceOfDeath,
+              chanceOfDeathHigh: chanceOfDeath > 40,
+              isPossible,
+            };
+          })
         : [];
 
       let bodyChanceOfDeath = 0;
@@ -400,8 +400,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
               ? 100
               : state.level - 1 <
                 Math.max(Math.ceil((totalDamage - baseHealth) / incPerLevel), 0)
-                ? 0
-                : calculatePropability(
+              ? 0
+              : calculatePropability(
                   state.level - 1,
                   numStats,
                   Math.max(
@@ -425,13 +425,13 @@ const Dino = ({ dino, itemsByIds }: Props) => {
               totalDamage < baseHealth
                 ? 100
                 : calculatePropability(
-                  state.level - 1,
-                  numStats,
-                  Math.max(
-                    Math.ceil((totalDamage - baseHealth) / incPerLevel),
-                    0
-                  )
-                );
+                    state.level - 1,
+                    numStats,
+                    Math.max(
+                      Math.ceil((totalDamage - baseHealth) / incPerLevel),
+                      0
+                    )
+                  );
 
             const chanceOfDeath = Math.round(100 - propsurvival);
             hitbox.chanceOfDeath = chanceOfDeath;
@@ -508,8 +508,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
           foodSecondsPer = foodValue / foodConsumption;
           foodSeconds = Math.ceil(
             Math.max(foodMax - (typeof interval1 === "number" ? 2 : 1), 0) *
-            foodSecondsPer +
-            (typeof interval1 === "number" ? interval1 : 0)
+              foodSecondsPer +
+              (typeof interval1 === "number" ? interval1 : 0)
           );
         } else {
           foodSecondsPer = 0;
@@ -586,8 +586,12 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                     (payload.value - stat.base) / stat.increasePerLevelWild
                   );
                 } else {
-                  stat.points = payload.type == "add" ? stat.points + 1 : stat.points - 1;
-                  stat.total = payload.type == 'set' ? payload.value : stat.points * stat.increasePerLevelWild + stat.base;
+                  stat.points =
+                    payload.type == "add" ? stat.points + 1 : stat.points - 1;
+                  stat.total =
+                    payload.type == "set"
+                      ? payload.value
+                      : stat.points * stat.increasePerLevelWild + stat.base;
                 }
               }
               return stat;
@@ -829,11 +833,11 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         numNeeded = dino.violent_tame
           ? Math.ceil(affinityLeft / affinityVal / tamingMultiplier)
           : Math.ceil(
-            affinityLeft /
-            affinityVal /
-            tamingMultiplier /
-            dino.non_violent_food_rate_mult
-          );
+              affinityLeft /
+                affinityVal /
+                tamingMultiplier /
+                dino.non_violent_food_rate_mult
+            );
 
         numToUse = numNeeded >= food.use ? food.use : numNeeded;
         tooMuchFood = numNeeded >= food.use;
@@ -841,10 +845,10 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         affinityLeft = dino.violent_tame
           ? affinityLeft - numToUse * affinityVal * tamingMultiplier
           : affinityLeft -
-          numToUse *
-          affinityVal *
-          tamingMultiplier *
-          dino.non_violent_food_rate_mult;
+            numToUse *
+              affinityVal *
+              tamingMultiplier *
+              dino.non_violent_food_rate_mult;
 
         totalFood += numToUse * foodVal;
 
@@ -853,14 +857,14 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         while (i <= numToUse) {
           effectiveness -= dino.violent_tame
             ? (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
-            affinityVal /
-            tamingMultiplier /
-            100
+              affinityVal /
+              tamingMultiplier /
+              100
             : (Math.pow(effectiveness, 2) * dino.taming_ineffectiveness) /
-            affinityVal /
-            tamingMultiplier /
-            dino.non_violent_food_rate_mult /
-            100;
+              affinityVal /
+              tamingMultiplier /
+              dino.non_violent_food_rate_mult /
+              100;
 
           totalSecs =
             numUsedTotal == 1
@@ -907,7 +911,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
         [`${name.replace(" ", "-")}Min`]: Math.max(
           Math.ceil(
             (totalSecs * torporDepletionPS - totalTorpor) /
-            (torpor + torporDepletionPS * torpor_duration)
+              (torpor + torporDepletionPS * torpor_duration)
           ),
           0
         ),
@@ -1214,7 +1218,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                       <section className="col-span-1 space-y-2">
                         <h4 className="rw-label">Movement</h4>
                         <Table
-                          className="border border-zinc-500"
                           columns={[
                             {
                               field: "name",
@@ -1267,7 +1270,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                       <section className="col-span-1 space-y-2">
                         <h4 className="rw-label">Can Destroy</h4>
                         <Table
-                          className="min-w-fit border border-zinc-500"
+                          className="min-w-fit"
                           rows={[
                             combineBySummingKeys(
                               {
@@ -1333,7 +1336,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                         <section className="col-span-1 space-y-2">
                           <h4 className="rw-label">Gather Efficiency</h4>
                           <Table
-                            className="min-w-fit border border-zinc-500"
+                            className="min-w-fit"
                             settings={{
                               pagination: {
                                 enabled: true,
@@ -1414,72 +1417,72 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                     {dino.DinoStat.some(
                       (d) => d.type == "weight_reduction"
                     ) && (
-                        <section className="col-span-1 space-y-2">
-                          <h4 className="rw-label">Weight Reduction</h4>
-                          <Table
-                            className="min-w-fit border border-zinc-500"
-                            rows={dino.DinoStat.filter(
-                              (d) => d.type == "weight_reduction"
-                            ).sort((a, b) => b?.value - a?.value)}
-                            columns={[
-                              {
-                                field: "Item",
-                                header: "",
-                                render: ({ value }) => (
-                                  <img
-                                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value.image}`}
-                                    className="h-8 w-8 self-end"
-                                  />
-                                ),
+                      <section className="col-span-1 space-y-2">
+                        <h4 className="rw-label">Weight Reduction</h4>
+                        <Table
+                          className="min-w-fit"
+                          rows={dino.DinoStat.filter(
+                            (d) => d.type == "weight_reduction"
+                          ).sort((a, b) => b?.value - a?.value)}
+                          columns={[
+                            {
+                              field: "Item",
+                              header: "",
+                              render: ({ value }) => (
+                                <img
+                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value.image}`}
+                                  className="h-8 w-8 self-end"
+                                />
+                              ),
+                            },
+                            {
+                              field: "Item",
+                              header: "Name",
+                              render: ({ value: { id, name } }) => {
+                                return (
+                                  <Link to={routes.item({ id })}>{name}</Link>
+                                );
                               },
-                              {
-                                field: "Item",
-                                header: "Name",
-                                render: ({ value: { id, name } }) => {
-                                  return (
-                                    <Link to={routes.item({ id })}>{name}</Link>
-                                  );
-                                },
-                              },
-                              {
-                                field: "value",
-                                header: "Value",
-                                render: ({ value }) => (
-                                  <div className="flex items-center">
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 512 512"
-                                      className="inline-block w-4 fill-current"
-                                    >
-                                      <path d="M510.3 445.9L437.3 153.8C433.5 138.5 420.8 128 406.4 128H346.1c3.625-9.1 5.875-20.75 5.875-32c0-53-42.1-96-96-96S159.1 43 159.1 96c0 11.25 2.25 22 5.875 32H105.6c-14.38 0-27.13 10.5-30.88 25.75l-73.01 292.1C-6.641 479.1 16.36 512 47.99 512h416C495.6 512 518.6 479.1 510.3 445.9zM256 128C238.4 128 223.1 113.6 223.1 96S238.4 64 256 64c17.63 0 32 14.38 32 32S273.6 128 256 128z" />
-                                    </svg>
-                                    <p className="mx-1 text-lime-300">{value}%</p>
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 320 512"
-                                      className="inline-block w-4 fill-current text-lime-300"
-                                    >
-                                      <path d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z" />
-                                    </svg>
-                                  </div>
-                                ),
-                              },
-                              {
-                                field: "rank",
-                                header: "Rank",
-                                render: ({ value }) =>
-                                  value <= 10 && <p>#{value}</p>,
-                              },
-                            ]}
-                          />
-                        </section>
-                      )}
+                            },
+                            {
+                              field: "value",
+                              header: "Value",
+                              render: ({ value }) => (
+                                <div className="flex items-center">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 512 512"
+                                    className="inline-block w-4 fill-current"
+                                  >
+                                    <path d="M510.3 445.9L437.3 153.8C433.5 138.5 420.8 128 406.4 128H346.1c3.625-9.1 5.875-20.75 5.875-32c0-53-42.1-96-96-96S159.1 43 159.1 96c0 11.25 2.25 22 5.875 32H105.6c-14.38 0-27.13 10.5-30.88 25.75l-73.01 292.1C-6.641 479.1 16.36 512 47.99 512h416C495.6 512 518.6 479.1 510.3 445.9zM256 128C238.4 128 223.1 113.6 223.1 96S238.4 64 256 64c17.63 0 32 14.38 32 32S273.6 128 256 128z" />
+                                  </svg>
+                                  <p className="mx-1 text-lime-300">{value}%</p>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 320 512"
+                                    className="inline-block w-4 fill-current text-lime-300"
+                                  >
+                                    <path d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z" />
+                                  </svg>
+                                </div>
+                              ),
+                            },
+                            {
+                              field: "rank",
+                              header: "Rank",
+                              render: ({ value }) =>
+                                value <= 10 && <p>#{value}</p>,
+                            },
+                          ]}
+                        />
+                      </section>
+                    )}
 
                     {dino.DinoStat.some((d) => d.type == "drops") && (
                       <section className="col-span-1 space-y-2">
                         <h4 className="rw-label">Drops</h4>
                         <Table
-                          className="min-w-fit border border-zinc-500"
+                          className="min-w-fit"
                           rows={dino.DinoStat.filter((d) => d.type == "drops")}
                           columns={[
                             {
@@ -1507,7 +1510,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                       <section className="col-span-1 space-y-2">
                         <h4 className="rw-label">Food</h4>
                         <Table
-                          className="min-w-fit border border-zinc-500"
+                          className="min-w-fit"
                           rows={dino.DinoStat.filter((d) => d.type == "food")}
                           columns={[
                             {
@@ -1534,50 +1537,49 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                     {state.base_stats && (
                       <section className="col-span-full">
                         <Table
-                          className="border border-zinc-500"
                           rows={state.base_stats}
                           toolbar={
                             !dino.type.includes("boss")
                               ? [
-                                <button
-                                  type="button"
-                                  className="rw-button rw-button-gray"
-                                  onClick={() =>
-                                    dispatch({ type: "RANDOMIZE_STAT" })
-                                  }
-                                >
-                                  Random
-                                </button>,
-                                <button
-                                  type="button"
-                                  className="rw-button rw-button-gray text-white"
-                                  onClick={() =>
-                                    dispatch({
-                                      type: "DISTRIBUTE_STAT",
-                                    })
-                                  }
-                                >
-                                  Distribute Evenly
-                                </button>,
-                                <button
-                                  type="button"
-                                  className="rw-button rw-button-red"
-                                  onClick={() =>
-                                    dispatch({
-                                      type: "RESET_STAT",
-                                    })
-                                  }
-                                >
-                                  Clear
-                                </button>,
-                                <p>
-                                  {state.level -
-                                    state.base_stats
-                                      .map((b) => b?.points)
-                                      .reduce((a, b) => a + b, 0)}{" "}
-                                  points wasted
-                                </p>,
-                              ]
+                                  <button
+                                    type="button"
+                                    className="rw-button rw-button-gray"
+                                    onClick={() =>
+                                      dispatch({ type: "RANDOMIZE_STAT" })
+                                    }
+                                  >
+                                    Random
+                                  </button>,
+                                  <button
+                                    type="button"
+                                    className="rw-button rw-button-gray text-white"
+                                    onClick={() =>
+                                      dispatch({
+                                        type: "DISTRIBUTE_STAT",
+                                      })
+                                    }
+                                  >
+                                    Distribute Evenly
+                                  </button>,
+                                  <button
+                                    type="button"
+                                    className="rw-button rw-button-red"
+                                    onClick={() =>
+                                      dispatch({
+                                        type: "RESET_STAT",
+                                      })
+                                    }
+                                  >
+                                    Clear
+                                  </button>,
+                                  <p>
+                                    {state.level -
+                                      state.base_stats
+                                        .map((b) => b?.points)
+                                        .reduce((a, b) => a + b, 0)}{" "}
+                                    points wasted
+                                  </p>,
+                                ]
                               : []
                           }
                           columns={[
@@ -1690,7 +1692,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                       state.base_stats
                                         .map((b) => b.points)
                                         .reduce((a, b) => a + b, 0) >=
-                                      state.level || row.stat === "Torpidity"
+                                        state.level || row.stat === "Torpidity"
                                     }
                                     className="rw-button rw-button-green-outline h-8 w-8 rounded-full p-0 !text-xl"
                                     onClick={() =>
@@ -1738,7 +1740,11 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                   {/* Tek Stryder */}
                   {dino.id === "a5a9f2bb-7d89-4672-9d1c-567d035e23a7" && (
                     <div className="w-fit">
-                      <StatCard stat={`Missions for Tek Stryder on level ${state.level}`} value={Math.floor(1 + 48 * (state.level / 150))} chart={false} />
+                      <StatCard
+                        stat={`Missions for Tek Stryder on level ${state.level}`}
+                        value={Math.floor(1 + 48 * (state.level / 150))}
+                        chart={false}
+                      />
                     </div>
                   )}
 
@@ -1909,8 +1915,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                               },
                               {
                                 name: "With Bonus",
-                                sub: `Lvl ${state.level + tameData.levelsGained
-                                  }`,
+                                sub: `Lvl ${
+                                  state.level + tameData.levelsGained
+                                }`,
                                 icon: (
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -1922,10 +1929,11 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                               },
                               {
                                 name: "Max after Taming",
-                                sub: `Lvl ${state.level +
+                                sub: `Lvl ${
+                                  state.level +
                                   tameData.levelsGained +
                                   (state.x_variant && dino.x_variant ? 88 : 73)
-                                  }`,
+                                }`,
                                 icon: (
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -1996,7 +2004,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                   <p>
                                     {timeFormatL(
                                       tameData.totalTorpor /
-                                      tameData.torporDepletionPS
+                                        tameData.torporDepletionPS
                                     )}{" "}
                                     until unconscious
                                   </p>
@@ -2159,7 +2167,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
               ),
             },
             {
-              disabled: (!dino.maturation_time && !dino.incubation_time) || (dino.egg_max == null && dino.egg_min == null),
+              disabled:
+                (!dino.maturation_time && !dino.incubation_time) ||
+                (dino.egg_max == null && dino.egg_min == null),
               title: "Breeding / Reproduction",
               icon: (
                 <>
@@ -2185,7 +2195,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                 <section className="space-y-3">
                   {dino.maturation_time != 0 && dino.incubation_time && (
                     <>
-                      <p className="!text-center rw-label">
+                      <p className="rw-label !text-center">
                         {dino.name} breeding:
                       </p>
                       <div className="mx-auto flex justify-center">
@@ -2297,19 +2307,30 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                     dino.egg_min != null &&
                     dino.egg_max > 0 &&
                     dino.egg_min > 0 && (
-                      <section className="bg-zinc-700 rounded-lg w-fit p-4 border border-zinc-500">
+                      <section className="w-fit rounded-lg border border-zinc-500 bg-zinc-700 p-4">
                         <img
                           src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/dodo-egg.webp`}
                           alt={dino.name}
                           className="aspect-square p-2"
                         />
                         <div className="flex flex-col space-y-3">
-                          <h3 className="font-medium leading-tight rw-label mt-0">Egg Temperature</h3>
-                          <p className="text-sm inline-flex gap-2">
-                            <span className="rw-badge rw-badge-blue-outline">{dino.egg_min}°C</span>
+                          <h3 className="rw-label mt-0 font-medium leading-tight">
+                            Egg Temperature
+                          </h3>
+                          <p className="inline-flex gap-2 text-sm">
+                            <span className="rw-badge rw-badge-blue-outline">
+                              {dino.egg_min}°C
+                            </span>
                             -
-                            <span className="rw-badge rw-badge-red-outline">{dino.egg_max}°C</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-4" fill="currentColor">
+                            <span className="rw-badge rw-badge-red-outline">
+                              {dino.egg_max}°C
+                            </span>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 512 512"
+                              className="w-4"
+                              fill="currentColor"
+                            >
                               <path d="M160 338.8V144C160 135.1 152.9 128 144 128S128 135.1 128 144v194.8c-18.62 6.625-32 24.38-32 45.25c0 26.5 21.5 48 47.1 48C170.5 432 192 410.5 192 384C192 363.1 178.6 345.4 160 338.8zM240 96c0-53-43-95.1-96-95.1C91 .0001 48 43 48 96v203.4c-19.75 22.38-31.88 51.75-32 84C15.63 453.6 72.75 511.5 143.1 512L144 512c70.75 0 128-57.25 128-128c0-32.5-12.12-62.13-32-84.63V96zM144 480H143.4c-52.75-.375-95.62-43.75-95.37-96.5c.25-39.5 22.5-61.38 32-72V96c0-35.25 28.75-64 63.1-64c35.25 0 64 28.75 64 64v215.5c9.125 10.38 32 32.63 32 72.5C240 436.9 196.9 480 144 480zM336 64h160C504.8 64 512 56.8 512 48C512 39.2 504.8 32 496 32h-160C327.2 32 320 39.2 320 48C320 56.8 327.2 64 336 64zM496 160h-160C327.2 160 320 167.2 320 176C320 184.8 327.2 192 336 192h160C504.8 192 512 184.8 512 176C512 167.2 504.8 160 496 160zM496 288h-128C359.2 288 352 295.2 352 304c0 8.799 7.201 16 16 16h128c8.801 0 16-7.201 16-16C512 295.2 504.8 288 496 288z" />
                             </svg>
                           </p>

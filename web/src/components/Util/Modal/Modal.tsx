@@ -13,11 +13,7 @@ type iModal = {
   formSubmit?: (formData) => void;
   onClose?: () => void;
 };
-export const RefModal = ({
-  image,
-  title,
-  content,
-}: iModal) => {
+export const RefModal = ({ image, title, content }: iModal) => {
   const { modalOpen, closeModal } = useContext(ModalContext);
   return (
     <div
@@ -33,9 +29,7 @@ export const RefModal = ({
         }
       )}
     >
-      <div
-        className="relative top-1/2 left-1/2 max-h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2"
-      >
+      <div className="relative top-1/2 left-1/2 max-h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2">
         <div className="relative rounded-lg bg-white shadow dark:bg-zinc-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
             {title && (
@@ -103,7 +97,7 @@ export const FormModal = ({ title, isOpen, children, onClose }: iModalForm) => {
   return (
     <dialog
       className={clsx(
-        `animate-pop-up text-text-950 bg-zinc-200 z-10 flex flex-col gap-3 rounded-lg p-3 ring-1 ring-zinc-500 backdrop:blur-[3px] dark:bg-zinc-900`,
+        `animate-pop-up text-text-950 z-10 flex flex-col gap-3 rounded-lg bg-zinc-200 p-3 ring-1 ring-zinc-500 backdrop:blur-[3px] dark:bg-zinc-900`,
         {
           hidden: isOpen === false,
         }
@@ -176,18 +170,17 @@ export const FormModal = ({ title, isOpen, children, onClose }: iModalForm) => {
   );
 };
 
-
 const ModalContext = createContext<{
   openModal: () => void;
   closeModal: () => void;
   modalOpen: boolean;
 }>({
-  openModal: () => { },
-  closeModal: () => { },
+  openModal: () => {},
+  closeModal: () => {},
   modalOpen: false,
 });
 
-const ModalProvider = ({ children }) => {
+const ModalProvider = ({ children }: { children: React.ReactNode }) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const openModal = () => {
@@ -203,6 +196,6 @@ const ModalProvider = ({ children }) => {
       {children}
     </ModalContext.Provider>
   );
-}
+};
 
-export { ModalContext, ModalProvider }
+export { ModalContext, ModalProvider };

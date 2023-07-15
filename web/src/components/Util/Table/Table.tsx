@@ -28,9 +28,9 @@ type Filter = {
  * @typedef {Object.<string, any>} TableDataRow
  */
 type TableDataRow = {
-  [key: string]: any;
   readonly row_id?: string;
-};
+  collapseContent?: React.ReactNode;
+} & Readonly<Omit<Record<string, any>, "row_id" | "collapseContent">>;
 
 type TableColumn = {
   /**
@@ -181,10 +181,15 @@ const Table = ({
   const columnData = useMemo(() => columns, [columns]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedRows, setSelectedRows] = useState<any[]>([]);
+  const [selectedRows, setSelectedRows] = useState<TableDataRow["row_id"][]>(
+    []
+  );
+  const [collapsedRows, setCollapsedRows] = useState<TableDataRow["row_id"][]>(
+    []
+  );
   const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(
     mergedSettings.pagination.rowsPerPage ||
-    mergedSettings.pagination.pageSizeOptions[0]
+      mergedSettings.pagination.pageSizeOptions[0]
   );
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filters, setFilters] = useState<Filter[]>([]);
@@ -284,7 +289,10 @@ const Table = ({
   const SortedFilteredData = useMemo(() => {
     if (!dataRows?.length) return dataRows;
     if (dataRows.every((r) => !r.hasOwnProperty("row_id"))) {
-      dataRows = dataRows.map((r, i) => ({ ...r, row_id: `row-${i}` }));
+      dataRows = dataRows.map((r, i) => ({
+        ...r,
+        row_id: `row-${i}`,
+      }));
     }
     let filteredData = dataRows;
 
@@ -325,31 +333,44 @@ const Table = ({
     useComponentVisible(false);
 
   const handleRowSelect = (event, id?) => {
-    if (event.target.id === "checkbox-all-select") {
-      return setSelectedRows(
-        event.target.checked ? PaginatedData.map((row) => row.row_id) : []
-      );
-    }
-    const selectedIndex = selectedRows.indexOf(id);
-    let newSelected = [];
+    const {
+      target: { id: targetId, checked },
+    } = event;
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selectedRows, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selectedRows.slice(1));
-    } else if (selectedIndex === selectedRows.length - 1) {
-      newSelected = newSelected.concat(selectedRows.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selectedRows.slice(0, selectedIndex),
-        selectedRows.slice(selectedIndex + 1)
-      );
+    if (targetId === "checkbox-all-select") {
+      setSelectedRows(checked ? PaginatedData.map((row) => row.row_id) : []);
+      return;
     }
 
-    setSelectedRows(newSelected);
+    setSelectedRows((prevSelectedRows) => {
+      const selectedIndex = prevSelectedRows.indexOf(id);
+      const newSelected = [...prevSelectedRows];
+
+      if (selectedIndex === -1) {
+        newSelected.push(id);
+      } else {
+        newSelected.splice(selectedIndex, 1);
+      }
+
+      return newSelected;
+    });
   };
 
-  const isSelected = (id) => selectedRows.indexOf(id) !== -1;
+  const handleRowCollapse = (id: TableDataRow["row_id"]) => {
+    const collapsedIndex = collapsedRows.indexOf(id);
+    setCollapsedRows((prevExpandedRows) => {
+      if (collapsedIndex !== -1) {
+        return prevExpandedRows.filter((rowId) => rowId !== id);
+      } else {
+        return [...prevExpandedRows, id];
+      }
+    });
+  };
+
+  const isSelected = (id: TableDataRow["row_id"]) =>
+    selectedRows.indexOf(id) !== -1;
+  const isCollapsed = (id: TableDataRow["row_id"]) =>
+    collapsedRows.indexOf(id) !== -1;
 
   const headerRenderer = ({ label, columnIndex, ...other }) => {
     return (
@@ -424,7 +445,8 @@ const Table = ({
           rowIndex === PaginatedData.length - 1 &&
           columnIndex === 0 &&
           !mergedSettings.select &&
-          !mergedSettings.summary,
+          !mergedSettings.summary &&
+          !dataRows.some((row) => row.collapseContent),
         "rounded-br-lg":
           rowIndex === PaginatedData.length - 1 &&
           columnIndex === columns.length - 1 &&
@@ -440,23 +462,23 @@ const Table = ({
 
     const valueFormatted = valueFormatter
       ? valueFormatter({
-        value: cellData,
-        row: rowData,
-        columnIndex,
-      })
+          value: cellData,
+          row: rowData,
+          columnIndex,
+        })
       : isNaN(cellData)
-        ? cellData?.amount || cellData
-        : cellData;
+      ? cellData?.amount || cellData
+      : cellData;
 
     const content = render
       ? render({
-        columnIndex,
-        rowIndex,
-        value: valueFormatted,
-        field: field,
-        header,
-        row: rowData,
-      })
+          columnIndex,
+          rowIndex,
+          value: valueFormatted,
+          field: field,
+          header,
+          row: rowData,
+        })
       : valueFormatted;
 
     return (
@@ -470,44 +492,58 @@ const Table = ({
     header = false,
     datarow,
     rowIndex,
+    select = false,
   }: {
     header?: boolean;
     datarow?: TableDataRow | null;
     rowIndex?: number;
+    select?: boolean;
   }) => {
     return (
       <td
-        className={clsx("w-4 p-4", {
+        className={clsx("w-4 p-2", {
           "bg-zinc-300 first:rounded-tl-lg dark:bg-zinc-800": header,
           "bg-zinc-100 dark:bg-zinc-600": !header,
           "!bg-zinc-300 dark:!bg-zinc-700":
             !header && isSelected(datarow.row_id),
-          "rounded-bl-lg":
+          "first:rounded-bl-lg":
             rowIndex === PaginatedData.length - 1 && !mergedSettings.summary,
         })}
         scope="col"
       >
-        <div className="flex items-center">
-          <input
-            id={header ? "checkbox-all-select" : datarow.row_id}
-            checked={
-              header
-                ? PaginatedData.every((row) =>
-                  selectedRows.includes(row.row_id)
-                )
-                : isSelected(datarow.row_id)
-            }
-            onChange={(e) => handleRowSelect(e, datarow?.row_id)}
-            type="checkbox"
-            className="rw-input rw-checkbox m-0"
-          />
-          <label
-            htmlFor={header ? "checkbox-all-select" : datarow.row_id}
-            className="sr-only"
-          >
-            checkbox
-          </label>
-        </div>
+        {select ? (
+          <div className="flex items-center">
+            <input
+              id={header ? "checkbox-all-select" : datarow.row_id}
+              checked={
+                header
+                  ? PaginatedData.every((row) =>
+                      selectedRows.includes(row.row_id)
+                    )
+                  : isSelected(datarow.row_id)
+              }
+              onChange={(e) => handleRowSelect(e, datarow?.row_id)}
+              type="checkbox"
+              className="rw-input rw-checkbox m-0"
+            />
+            <label
+              htmlFor={header ? "checkbox-all-select" : datarow.row_id}
+              className="sr-only"
+            >
+              checkbox
+            </label>
+          </div>
+        ) : (
+          !header &&
+          datarow.collapseContent && (
+            <button
+              className="rw-button rw-button-small rw-button-gray"
+              onClick={() => handleRowCollapse(datarow.row_id)}
+            >
+              {isCollapsed(datarow.row_id) ? "+" : "-"}
+            </button>
+          )
+        )}
       </td>
     );
   };
@@ -538,6 +574,9 @@ const Table = ({
           }
         )}
       >
+        {dataRows.some((row) => row.collapseContent) && (
+          <td className="bg-zinc-300 px-3 py-4 first:rounded-bl-lg dark:bg-zinc-800" />
+        )}
         {mergedSettings.select && (
           <td className="bg-zinc-300 px-3 py-4 first:rounded-bl-lg dark:bg-zinc-800" />
         )}
@@ -617,7 +656,7 @@ const Table = ({
       } else if (
         dir === "next" &&
         currentPage <
-        Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
+          Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
       ) {
         setCurrentPage(currentPage + 1);
       }
@@ -770,7 +809,12 @@ const Table = ({
   };
 
   return (
-    <div className={"relative overflow-x-auto overflow-y-hidden sm:rounded-lg"}>
+    <div
+      className={clsx(
+        "relative overflow-x-auto overflow-y-hidden sm:rounded-lg",
+        className
+      )}
+    >
       <div className="flex items-center justify-start space-x-3 [&:not(:empty)]:my-2">
         {mergedSettings.filter && (
           <div className="relative w-fit" ref={ref}>
@@ -972,18 +1016,20 @@ const Table = ({
           <div key={`toolbar-${index}`}>{item}</div>
         ))}
       </div>
-      <div className={clsx("rounded-lg", className)}>
+      <div className={"rounded-lg border border-zinc-500"}>
         <table className="relative mr-auto w-full table-auto text-left text-sm text-zinc-700 dark:text-zinc-300">
           <thead className="text-sm uppercase">
             <tr
-              className={clsx("table-row", {
+              className={clsx({
                 "divide-x divide-gray-400 dark:divide-zinc-800":
                   mergedSettings.borders.vertical,
                 hidden: !mergedSettings.header,
               })}
             >
+              {dataRows.some((row) => row.collapseContent) &&
+                tableSelect({ header: true, rowIndex: -1, select: false })}
               {mergedSettings.select &&
-                tableSelect({ header: true, rowIndex: -1 })}
+                tableSelect({ header: true, rowIndex: -1, select: true })}
               {columns &&
                 columns.map(({ ...other }, index) =>
                   headerRenderer({
@@ -1002,50 +1048,77 @@ const Table = ({
           >
             {dataRows &&
               PaginatedData.map((datarow, i) => (
-                <tr
-                  key={datarow.row_id}
-                  className={
-                    mergedSettings.borders.vertical
-                      ? "divide-x divide-gray-400 dark:divide-zinc-800"
-                      : ""
-                  }
-                >
-                  {mergedSettings.select &&
-                    tableSelect({ datarow, rowIndex: i })}
-                  {columns &&
-                    columns.map(
-                      (
-                        {
-                          field,
-                          render,
-                          valueFormatter,
-                          className,
-                          numeric,
-                          header,
-                          ...other
-                        },
-                        index
-                      ) =>
-                        cellRenderer({
-                          rowData: datarow,
-                          cellData: field && field.toString()?.includes(".")
-                            ? getValueByNestedKey(datarow, field)
-                            : datarow[field],
-                          columnIndex: index,
-                          header,
-                          rowIndex: i,
-                          render,
-                          valueFormatter,
-                          field,
-                          className,
-                          numeric,
-                          ...other,
-                        })
-                    )}
-                </tr>
+                <React.Fragment key={datarow.row_id}>
+                  <tr
+                    // onClick={() => {
+                    //   if (datarow.collapseContent) {
+                    //     handleRowCollapse(datarow.row_id);
+                    //   }
+                    // }}
+                    className={`z-10 ${
+                      mergedSettings.borders.vertical
+                        ? "divide-x divide-gray-400 dark:divide-zinc-800"
+                        : ""
+                    }`}
+                  >
+                    {dataRows.some((row) => row.collapseContent) &&
+                      tableSelect({
+                        datarow,
+                        rowIndex: i,
+                        select: false,
+                      })}
+                    {mergedSettings.select &&
+                      tableSelect({ datarow, rowIndex: i, select: true })}
+                    {columns &&
+                      columns.map(
+                        (
+                          {
+                            field,
+                            render,
+                            valueFormatter,
+                            className,
+                            numeric,
+                            header,
+                            ...other
+                          },
+                          index
+                        ) =>
+                          cellRenderer({
+                            rowData: datarow,
+                            cellData:
+                              field && field.toString()?.includes(".")
+                                ? getValueByNestedKey(datarow, field)
+                                : datarow[field],
+                            columnIndex: index,
+                            header,
+                            rowIndex: i,
+                            render,
+                            valueFormatter,
+                            field,
+                            className,
+                            numeric,
+                            ...other,
+                          })
+                      )}
+                  </tr>
+                  {datarow?.collapseContent && (
+                    <tr
+                      className={`transition ease-in ${
+                        isCollapsed(datarow.row_id) ? "hidden" : "table-row"
+                      }`}
+                    >
+                      <td
+                        colSpan={100}
+                        className="bg-zinc-100 dark:bg-zinc-600"
+                      >
+                        {datarow.collapseContent}
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))}
             {(dataRows === null || dataRows.length === 0) && (
-              <tr className="w-full bg-zinc-100 dark:bg-zinc-600">
+              <tr className=" bg-zinc-100 dark:bg-zinc-600">
                 <td headers="" className="p-4 text-center" colSpan={100}>
                   <span className="px-3 py-2 text-gray-400">No data found</span>
                 </td>
@@ -1061,68 +1134,3 @@ const Table = ({
 };
 
 export default Table;
-
-
-// const DataGrid = () => {
-//   const [data, setData] = useState([]);
-//   const [isLoading, setIsLoading] = useState(false);
-//   const [page, setPage] = useState(1);
-//   const tableContainerRef = useRef<HTMLDivElement>();
-
-//   // Simulating fetching data from an API
-//   const fetchData = () => {
-//     setIsLoading(true);
-//     // Replace this with your actual data fetching logic
-//     setTimeout(() => {
-//       const newData = Array.from({ length: 10 }, (_, index) => `Row ${index + 1}`);
-//       setData((prevData) => [...prevData, ...newData]);
-//       setIsLoading(false);
-//     }, 1000);
-//   };
-
-//   // Fetch initial data
-//   useEffect(() => {
-//     fetchData();
-//   }, []);
-
-//   // Load more data when scrolling to the bottom
-//   const handleScroll = () => {
-//     const { scrollTop, clientHeight, scrollHeight } = tableContainerRef.current;
-//     if (scrollHeight - scrollTop === clientHeight) {
-//       setPage((prevPage) => prevPage + 1);
-//     }
-//   };
-
-//   // Fetch more data when the page changes
-//   useEffect(() => {
-//     fetchData();
-//   }, [page]);
-
-//   return (
-//     <div className="relative w-fit text-black dark:text-white" style={{ height: '300px', overflowY: 'scroll' }} onScroll={handleScroll} ref={tableContainerRef}>
-//       <table className="sticky top-0 bg-zinc-700 w-full">
-//         <thead>
-//           <tr>
-//             <th className="p-2">Page</th>
-//             <th className="p-2">Column 1</th>
-//             <th className="p-2">Column 2</th>
-//             <th className="p-2">Column 3</th>
-//           </tr>
-//         </thead>
-//       </table>
-//       <table className="w-full">
-//         <tbody>
-//           {data.map((row, index) => (
-//             <tr key={index}>
-//               <td className="p-2 border-r border-red-500">{page}</td>
-//               <td className="p-2">{row}</td>
-//               <td className="p-2">{row}</td>
-//               <td className="p-2">{row}</td>
-//             </tr>
-//           ))}
-//           {isLoading && <tr><td>Loading...</td></tr>}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// };

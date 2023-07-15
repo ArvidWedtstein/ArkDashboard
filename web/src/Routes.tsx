@@ -11,7 +11,7 @@ import { Set, Router, Route, Private } from "@redwoodjs/router";
 
 import ScaffoldLayout from "src/layouts/ScaffoldLayout";
 
-import MainLayout from "./layouts/MainLayout/MainLayout";
+import MainLayout from "src/layouts/MainLayout/MainLayout";
 
 import { useAuth } from "./auth";
 

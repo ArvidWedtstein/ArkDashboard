@@ -2,10 +2,11 @@ import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
-
+import Table from "src/components/Util/Table/Table";
 
 const HomePage = () => {
-  const { isAuthenticated, currentUser, client } = useAuth();
+  const { isAuthenticated, currentUser, client, reauthenticate } = useAuth();
+
   // if (document.addEventListener) {
   //   document.addEventListener('contextmenu', function (e) {
   //     alert("You've tried to open context menu");
@@ -119,11 +120,36 @@ const HomePage = () => {
             </details>
           </div>
         </section>
+
+        <Table
+          columns={[
+            {
+              field: "id",
+              header: "ID",
+            },
+            {
+              field: "name",
+              header: "Name",
+            },
+            {
+              field: "age",
+              header: "Age",
+            },
+          ]}
+          rows={[
+            {
+              id: 1,
+              name: "John Doe",
+              age: 25,
+              collapseContent: <div className="bg-red-500">Hello</div>,
+            },
+            { id: 2, name: "Jane Smith", age: 30 },
+            { id: 3, name: "Bob Johnson", age: 40 },
+          ]}
+        />
       </div>
     </>
   );
 };
 
 export default HomePage;
-
-

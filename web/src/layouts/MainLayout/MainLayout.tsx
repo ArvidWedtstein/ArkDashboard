@@ -2,7 +2,6 @@ import { SkipNavContent } from "@redwoodjs/router";
 import { usePageLoadingContext } from "@redwoodjs/router";
 import { Toaster } from "@redwoodjs/web/toast";
 import Footer from "src/components/Footer/Footer";
-import Navbar from "src/components/Navbar/Navbar";
 import Sidebar from "src/components/Sidebar/Sidebar";
 
 type LayoutProps = {
