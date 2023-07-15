@@ -15,12 +15,6 @@ import { useAuth } from "src/auth";
 const SignupPage = () => {
   const { isAuthenticated, signUp, client } = useAuth();
 
-  // focus on email box on page load
-  const emailRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    emailRef.current?.focus();
-  }, []);
-
   const onSubmit = async (data) => {
     try {
       const response = await signUp({

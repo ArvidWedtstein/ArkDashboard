@@ -6,8 +6,11 @@ import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
 
+type FormForgotPassword = NonNullable<{
+  email: string;
+}>;
 const ForgotPasswordPage = () => {
-  const { isAuthenticated, forgotPassword } = useAuth();
+  const { isAuthenticated, client } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -15,31 +18,21 @@ const ForgotPasswordPage = () => {
     }
   }, [isAuthenticated]);
 
-  const emailRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    emailRef?.current?.focus();
-  }, []);
+  const onSubmit = async (data: FormForgotPassword) => {
+    const response = await client.auth.resetPasswordForEmail(data.email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
 
-  const onSubmit = async (data: { username: string }) => {
-    const response = await forgotPassword(data.username);
+    if (response?.error) return toast.error(response?.error.message);
 
-    if ((response as any)?.error) {
-      toast.error((response as any)?.error);
-    } else {
-      // The function `forgotPassword.handler` in api/src/functions/auth.js has
-      // been invoked, let the user know how to get the link to reset their
-      // password (sent in email, perhaps?)
-      toast.success(
-        "A link to reset your password was sent to " + (response as any)?.email
-      );
-      navigate(routes.signin());
-    }
+    toast.success(`A link to reset your password was sent to ${data.email}`);
+    // navigate(routes.signin());
   };
 
   return (
     <>
       <MetaTags title="I Forgot Password at home bro" />
-      <div className="flex w-full flex-col items-center justify-center">
+      <div className="flex w-full flex-col items-center justify-center p-16">
         <div className="rw-segment flex w-full flex-col items-center justify-center">
           <header className="rw-segment-header text-center">
             <h2 className="rw-heading rw-heading-secondary">Forgot Password</h2>
@@ -51,28 +44,36 @@ const ForgotPasswordPage = () => {
             down!
           </h3>
 
-          <Form
+          <Form<FormForgotPassword>
             onSubmit={onSubmit}
             className="rw-form-wrapper rw-segment-main text-center"
           >
-            <Label
-              name="email"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Your Email plz
-            </Label>
-            <TextField
-              name="email"
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-              ref={emailRef}
-              validation={{
-                required: true,
-              }}
-            />
+            <div className="relative">
+              <TextField
+                name="email"
+                className="rw-float-input peer w-60"
+                errorClassName="rw-float-input rw-input-error"
+                validation={{
+                  required: true,
+                  pattern: {
+                    value: /[^@]+@[^\.]+\..+/,
+                    message: "Please enter a valid email address",
+                  },
+                }}
+                autoComplete="email"
+                autoFocus={true}
+                placeholder=" "
+              />
+              <Label
+                name="email"
+                className="rw-float-label"
+                errorClassName="rw-float-label rw-label-error"
+              >
+                Enter your email
+              </Label>
 
-            <FieldError name="email" className="rw-field-error" />
+              <FieldError name="email" className="rw-field-error" />
+            </div>
 
             <Submit className="rw-button rw-button-blue my-3">Submit</Submit>
           </Form>
