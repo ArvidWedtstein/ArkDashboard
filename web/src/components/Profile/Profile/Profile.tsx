@@ -256,14 +256,19 @@ const Profile = ({ profile }: Props) => {
                   content: (
                     <div className="mb-6 grid grid-cols-2 justify-center gap-1 overflow-hidden rounded-lg dark:text-gray-300">
                       {profile.TimelineSeasonPerson.map((season) => (
-                        <div className="hover:border-pea-500 w-full rounded-sm border border-transparent bg-zinc-700 p-4 transition ease-in-out">
+                        <Link
+                          to={routes.timelineSeason({
+                            id: season.TimelineSeason.id,
+                          })}
+                          className="hover:border-pea-500 w-full rounded-sm border border-transparent bg-zinc-700 p-4 transition ease-in-out first:rounded-tl-lg"
+                        >
                           <p>{season.TimelineSeason.tribe_name}</p>
                           <p>
                             {season.TimelineSeason.season ? "S" : ""}
                             {season.TimelineSeason.season}{" "}
                             <span>{season.TimelineSeason.server}</span>
                           </p>
-                        </div>
+                        </Link>
                       ))}
                       {profile.TimelineSeasonPerson.length % 2 === 1 && (
                         <div className="w-full rounded-sm bg-zinc-700 p-4"></div>
