@@ -122,33 +122,6 @@ const HomePage = () => {
             </details>
           </div>
         </section>
-
-        <Table
-          columns={[
-            {
-              field: "id",
-              header: "ID",
-            },
-            {
-              field: "name",
-              header: "Name",
-            },
-            {
-              field: "age",
-              header: "Age",
-            },
-          ]}
-          rows={[
-            {
-              id: 1,
-              name: "John Doe",
-              age: 25,
-              collapseContent: <div className="bg-red-500">Hello</div>,
-            },
-            { id: 2, name: "Jane Smith", age: 30 },
-            { id: 3, name: "Bob Johnson", age: 40 },
-          ]}
-        />
       </div>
     </>
   );
