@@ -3,6 +3,7 @@ import { MetaTags } from "@redwoodjs/web";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
 import Table from "src/components/Util/Table/Table";
+import { formatXYtoLatLon } from "src/lib/formatters";
 
 const HomePage = () => {
   const { isAuthenticated, currentUser, client, reauthenticate } = useAuth();
@@ -36,6 +37,7 @@ const HomePage = () => {
   //     subscription.unsubscribe();
   //   };
   // }, [client]);
+
   //   document.addEventListener("visibilitychange", () => {
   //     // it could be either hidden or visible
   //     document.title = document.visibilityState;

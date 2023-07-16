@@ -565,10 +565,13 @@ export const getDateDiff = (date1: Date, date2: Date) => {
 
 export const formatXYtoLatLon = (
   map_id: number,
-  options: { x?: number; y?: number }
+  options: { x?: number; y?: number },
+  reverse: boolean = false
 ) => {
-  let subtract = 0;
-  let multiplier = 0;
+  let subtractX = 0;
+  let multiplierX = 0;
+  let subtractY = 0;
+  let multiplierY = 0;
 
   /**
    * Latitude corresponds to the Y coordinate,
@@ -578,74 +581,88 @@ export const formatXYtoLatLon = (
 
   switch (map_id) {
     case 1: //  Valguero
-      subtract = 50;
-      multiplier = 8160;
+      subtractX = 50;
+      multiplierX = 8160;
+      subtractY = 50;
+      multiplierY = 8160;
     case 2: // the island
-      subtract = 50;
-      multiplier = 8000;
+      subtractX = 50;
+      multiplierX = 8000;
+      subtractY = 50;
+      multiplierY = 8000;
     case 3: // the center
-      if (!!options.x) {
-        // lon
-        subtract = 55.1;
-        multiplier = 9600;
-      }
-      if (!!options.y) {
-        // lat
-        subtract = 30.34;
-        multiplier = 9584;
-      }
+      // lon
+      subtractX = 55.1;
+      multiplierX = 9600;
+
+      // lat
+      subtractY = 30.34;
+      multiplierY = 9584;
     case 4: // ragnarok
-      subtract = 50;
-      multiplier = 13100;
+      subtractX = 50;
+      multiplierX = 13100;
+      subtractY = 50;
+      multiplierY = 13100;
     case 5: // abberation
-      subtract = 50;
-      multiplier = 8000;
+      subtractX = 50;
+      multiplierX = 8000;
+      subtractY = 50;
+      multiplierY = 8000;
     case 6: // extinction
-      subtract = 50;
-      multiplier = 8000;
+      subtractX = 50;
+      multiplierX = 8000;
+      subtractY = 50;
+      multiplierY = 8000;
     case 7: // scorched earth
-      subtract = 50;
-      multiplier = 8000;
+      subtractX = 50;
+      multiplierX = 8000;
+      subtractY = 50;
+      multiplierY = 8000;
     case 8: // genesis part 1
-      subtract = 50;
-      multiplier = 10500;
+      subtractX = 50;
+      multiplierX = 10500;
+      subtractY = 50;
+      multiplierY = 10500;
     case 9: // genesis part 2
-      subtract = 50;
-      multiplier = 14500;
+      subtractX = 50;
+      multiplierX = 14500;
+      subtractY = 50;
+      multiplierY = 14500;
     case 10: // crystal isles
-      if (!!options.x) {
-        // lon
-        subtract = 50;
-        multiplier = 17000;
-      }
-      if (!!options.y) {
-        // lat
-        subtract = 48.75;
-        multiplier = 16000;
-      }
+      // lon
+      subtractX = 50;
+      multiplierX = 17000;
+
+      // lat
+      subtractY = 48.75;
+      multiplierY = 16000;
     case 11: // fjordur
-      subtract = 0;
-      multiplier = 0;
+      subtractX = 0;
+      multiplierX = 0;
+      subtractY = 0;
+      multiplierY = 0;
     case 12: // Lost island
-      if (options.x && !!options.x) {
-        // lon
-        subtract = 49.02;
-        multiplier = 15300;
-      }
-      if (options.y && !!options.y) {
-        // lat
-        subtract = 51.634;
-        multiplier = 15300;
-      }
+      // lon
+      subtractX = 49.02;
+      multiplierX = 15300;
+
+      // lat
+      subtractY = 51.634;
+      multiplierY = 15300;
   }
 
   // From Lat/Long to UE
   // return (options.x - subtract) * multiplier
 
   // From UE to Lat/Long
-  return Math.floor(
-    (options.x ? options.x : options.y) / multiplier + subtract
-  );
+  return {
+    lat: reverse
+      ? (options.y - subtractY) * multiplierY
+      : Math.floor(options.y / multiplierY + subtractY),
+    lon: reverse
+      ? (options.x - subtractX) * multiplierX
+      : Math.floor(options.x / multiplierX + subtractX),
+  };
 };
 
 /**
