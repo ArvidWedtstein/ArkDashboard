@@ -25,7 +25,8 @@ model Basespot {
   updated_at             DateTime?                @default(now()) @db.Timestamptz(6)
   type                   String?
   server                 String?
-  published              Boolean?
+  published              Boolean?                 @default(true)
+  level                  String?
   Profile                Profile?                 @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Map                    Map                      @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   TimelineSeasonBasespot TimelineSeasonBasespot[]
@@ -69,14 +70,12 @@ model Role {
 }
 
 model Tribe {
-  id          Int       @id(map: "tribe_pkey") @default(autoincrement())
-  name        String
-  description String?
-  created_at  DateTime? @default(now())
-  updated_at  DateTime?
-  created_by  String?   @default(dbgenerated("auth.uid()")) @db.Uuid
-  updated_by  String?   @db.Uuid
-  Profile     Profile?  @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+  name       String
+  created_by String?   @db.Uuid
+  Profile    Profile?  @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Message {
@@ -416,6 +415,7 @@ model TimelineSeasonPerson {
   user_id            String?        @db.Uuid
   ingame_name        String?
   timeline_season_id String         @db.Uuid
+  permission         String?        @default("'admin'")
   TimelineSeason     TimelineSeason @relation(fields: [timeline_season_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Profile            Profile?       @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

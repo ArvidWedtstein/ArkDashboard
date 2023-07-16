@@ -1,60 +1,19 @@
-import { Link, navigate, routes } from "@redwoodjs/router";
-import { useMutation } from "@redwoodjs/web";
+import { navigate, routes } from "@redwoodjs/router";
 import { toast } from "@redwoodjs/web/toast";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "src/auth";
 
-import { QUERY } from "src/components/Tribe/TribesCell";
 import { ContextMenu } from "src/components/Util/ContextMenu/ContextMenu";
 import { FormModal } from "src/components/Util/Modal/Modal";
 import Table from "src/components/Util/Table/Table";
 import { getWeekDates, pluralize, timeTag } from "src/lib/formatters";
 
-import type {
-  DeleteTribeMutationVariables,
-  FindTribes,
-  permission,
-} from "types/graphql";
+import type { FindTribes, permission } from "types/graphql";
 import NewTribe from "../NewTribe/NewTribe";
-
-const DELETE_TRIBE_MUTATION = gql`
-  mutation DeleteTribeMutation($id: Int!) {
-    deleteTribe(id: $id) {
-      id
-    }
-  }
-`;
-
-
-
 
 const TribesList = ({ tribes }: FindTribes) => {
   const { currentUser } = useAuth();
   const [open, setOpen] = useState(false);
-  const [deleteTribe] = useMutation(DELETE_TRIBE_MUTATION, {
-    onCompleted: () => {
-      toast.success("Tribe deleted");
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    // This refetches the query on the list page. Read more about other ways to
-    // update the cache over here:
-    // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
-    refetchQueries: [{ query: QUERY }],
-    awaitRefetchQueries: true,
-  });
-
-  const onDeleteClick = (id: DeleteTribeMutationVariables["id"]) => {
-    if (
-      currentUser &&
-      currentUser.permissions.some((p: permission) => p === "tribe_delete")
-    ) {
-      if (confirm("Are you sure you want to delete tribe " + id + "?")) {
-        deleteTribe({ variables: { id } });
-      }
-    }
-  };
 
   const filterDatesByCurrentWeek = (dates: FindTribes["tribes"]) => {
     let start = +getWeekDates()[0];
@@ -67,27 +26,39 @@ const TribesList = ({ tribes }: FindTribes) => {
 
   return (
     <div className="relative">
-      <FormModal isOpen={open} onClose={() => setOpen(false)} title="Add new tribe">
+      <FormModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        title="Add new tribe"
+      >
         <NewTribe />
       </FormModal>
-      <div className="m-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <button
-          className="disabled:ring-transparent disabled:cursor-not-allowed hover:ring-pea-400 focus:ring-pea-400 bg-zinc-200 flex items-start rounded-xl p-4 transition-shadow hover:shadow-sm shadow-lg ring-1 dark:bg-zinc-700 cursor-pointer ring-zinc-500 dark:ring-pea-600"
+          className="hover:ring-pea-400 focus:ring-pea-400 dark:ring-pea-600 flex cursor-pointer items-start space-x-4 rounded-lg bg-zinc-200 p-4 shadow-lg ring-1 ring-zinc-500 transition-shadow hover:shadow-sm disabled:cursor-not-allowed disabled:ring-transparent dark:bg-zinc-700"
           onClick={() => setOpen(true)}
-          disabled={!currentUser?.permissions.some((p: permission) => p === "tribe_create")}
+          disabled={
+            !currentUser?.permissions.some(
+              (p: permission) => p === "tribe_create"
+            )
+          }
         >
-          <div className="dark:border-pea-400 border-pea-100 bg-pea-50 flex !h-12 !w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800 ">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="text-pea-500 fill-pea-500 !h-6 !w-6">
+          <div className="dark:border-pea-400 border-pea-100 bg-pea-50 flex !h-12 !w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+              className="text-pea-500 fill-pea-500 !h-6 !w-6"
+            >
               <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
             </svg>
           </div>
-          <div className="ml-4 text-gray-700 dark:text-white">
+          <div className="text-gray-700 dark:text-white">
             <span className="">Add a new tribe</span>
           </div>
         </button>
 
         <button
-          className="bg-zinc-200 hover:ring-pea-400 focus:ring-pea-400 transition-shadow flex items-start rounded-xl p-4 hover:shadow-sm shadow-lg ring-1 dark:bg-zinc-700 ring-zinc-500 dark:ring-pea-600"
+          className="hover:ring-pea-400 focus:ring-pea-400 dark:ring-pea-600 flex items-start space-x-4 rounded-lg bg-zinc-200 p-4 shadow-lg ring-1 ring-zinc-500 transition-shadow hover:shadow-sm dark:bg-zinc-700"
           onClick={() => {
             const randomIndex = Math.floor(Math.random() * tribes.length);
             const randomTribe = tribes[randomIndex];
@@ -95,16 +66,20 @@ const TribesList = ({ tribes }: FindTribes) => {
           }}
         >
           <div className="dark:border-pea-400 border-pea-100 bg-pea-50 flex !h-12 !w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="text-pea-500 fill-pea-500 !h-6 !w-6">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 320 512"
+              className="text-pea-500 fill-pea-500 !h-6 !w-6"
+            >
               <path d="M213.1 32H106.7C47.84 32 0 79.84 0 138.7V160c0 8.844 7.156 16 16 16S32 168.9 32 160V138.7C32 97.48 65.5 64 106.7 64h106.5C254.4 64 288 97.58 288 138.9c0 27-14.62 52-38.16 65.25L152.5 258.9C137.4 267.4 128 283.4 128 300.7V336c0 8.844 7.156 16.01 16 16.01S160 344.8 160 336V300.7c0-5.766 3.125-11.11 8.156-13.95l97.38-54.78C299.1 213.1 320 177.4 320 138.9C320 79.94 272.1 32 213.1 32zM144 400c-17.67 0-32 14.32-32 31.99s14.33 32 32 32s32-14.33 32-32S161.7 400 144 400z" />
             </svg>
           </div>
-          <div className="ml-4 text-gray-700 dark:text-white">
+          <div className="text-gray-700 dark:text-white">
             <span className="">Pick random tribe name</span>
           </div>
         </button>
 
-        <div className="flex items-start rounded-xl bg-zinc-300 p-4 shadow-lg dark:bg-zinc-700 bg-opacity-40">
+        <div className="flex items-start space-x-4 rounded-lg bg-zinc-300 bg-opacity-40 p-4 shadow-lg dark:bg-zinc-700">
           <div className="border-pea-100 bg-pea-50 dark:border-pea-400 flex h-12 w-12 items-center justify-center rounded-full border-2 dark:bg-zinc-800">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -121,7 +96,7 @@ const TribesList = ({ tribes }: FindTribes) => {
               />
             </svg>
           </div>
-          <div className="ml-4">
+          <div>
             <h2 className="font-semibold text-gray-700 dark:text-white">
               {pluralize(filterDatesByCurrentWeek(tribes).length, "Tribe")}
             </h2>
@@ -132,7 +107,7 @@ const TribesList = ({ tribes }: FindTribes) => {
         </div>
       </div>
 
-      <div className="m-4">
+      <div className="">
         <Table
           className=""
           settings={{
@@ -149,11 +124,6 @@ const TribesList = ({ tribes }: FindTribes) => {
             {
               field: "name",
               header: "Name",
-              sortable: true,
-            },
-            {
-              field: "description",
-              header: "Description",
               sortable: true,
             },
             {
@@ -215,22 +185,6 @@ const TribesList = ({ tribes }: FindTribes) => {
                         currentUser?.permissions?.some(
                           (p: permission) => p === "tribe_update"
                         ) && navigate(routes.editTribe({ id: row["id"] }));
-                      },
-                    },
-                    {
-                      label: "Delete",
-                      icon: (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 448 512"
-                        >
-                          <path d="M160 400C160 408.8 152.8 416 144 416C135.2 416 128 408.8 128 400V192C128 183.2 135.2 176 144 176C152.8 176 160 183.2 160 192V400zM240 400C240 408.8 232.8 416 224 416C215.2 416 208 408.8 208 400V192C208 183.2 215.2 176 224 176C232.8 176 240 183.2 240 192V400zM320 400C320 408.8 312.8 416 304 416C295.2 416 288 408.8 288 400V192C288 183.2 295.2 176 304 176C312.8 176 320 183.2 320 192V400zM317.5 24.94L354.2 80H424C437.3 80 448 90.75 448 104C448 117.3 437.3 128 424 128H416V432C416 476.2 380.2 512 336 512H112C67.82 512 32 476.2 32 432V128H24C10.75 128 0 117.3 0 104C0 90.75 10.75 80 24 80H93.82L130.5 24.94C140.9 9.357 158.4 0 177.1 0H270.9C289.6 0 307.1 9.358 317.5 24.94H317.5zM151.5 80H296.5L277.5 51.56C276 49.34 273.5 48 270.9 48H177.1C174.5 48 171.1 49.34 170.5 51.56L151.5 80zM80 432C80 449.7 94.33 464 112 464H336C353.7 464 368 449.7 368 432V128H80V432z" />
-                        </svg>
-                      ),
-                      onClick: () => {
-                        currentUser?.permissions.some(
-                          (p: permission) => p === "tribe_delete"
-                        ) && onDeleteClick(row["id"]);
                       },
                     },
                   ]}
