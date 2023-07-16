@@ -14,7 +14,11 @@ import { RouteFocus } from "@redwoodjs/router";
 import { useAuth } from "src/auth";
 
 const WELCOME_MESSAGE = "Welcome back!";
-const REDIRECT = routes.home();
+
+type FormSigninPage = NonNullable<{
+  email: string;
+  password: string;
+}>;
 
 const SigninPage = () => {
   const { isAuthenticated, loading, logIn, client } = useAuth();
@@ -22,7 +26,7 @@ const SigninPage = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(REDIRECT);
+      navigate(routes.home());
     }
   }, [isAuthenticated]);
 
@@ -30,7 +34,7 @@ const SigninPage = () => {
     return null;
   }
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FormSigninPage) => {
     try {
       const response = await logIn({
         // provider: "discord",
@@ -66,7 +70,7 @@ const SigninPage = () => {
           </header>
 
           <div className="p-2">
-            <Form
+            <Form<FormSigninPage>
               onSubmit={onSubmit}
               className="rw-form-wrapper flex flex-col items-center justify-center"
             >

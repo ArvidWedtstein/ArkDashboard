@@ -20,6 +20,7 @@ const Routes = () => {
     <Router useAuth={useAuth} pageLoadingDelay={0}>
       <Set wrap={MainLayout}>
         {/*whileLoadingPage*/}
+        <Route path="/terms" page={TermsPage} name="terms" />
         <Route
           path="/material-calculator"
           page={MaterialCalculatorPage}

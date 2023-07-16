@@ -33,11 +33,14 @@
   .rw-segment-main {
     @apply p-4;
   }
+  p > .rw-link {
+    @apply text-pea-400 underline hover:no-underline;
+  }
   .rw-link {
-    @apply text-blue-400 underline;
+    @apply text-pea-400;
   }
   .rw-link:hover {
-    @apply text-blue-500;
+    @apply text-pea-500 underline;
   }
 
   .rw-heading {

@@ -44,7 +44,7 @@ const HomePage = () => {
   return (
     <>
       <MetaTags
-        title="Home"
+        title="ArkDashboard, the best Ark Survival Evolved companion app"
         description="Home page"
         ogContentUrl="https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj"
         ogType="website"
@@ -62,8 +62,10 @@ const HomePage = () => {
           <div className="h-full w-full overflow-hidden bg-black bg-opacity-60 bg-fixed">
             <div className="flex h-full items-center justify-center">
               <div className="px-6 text-center font-extralight text-white md:px-12">
-                <h1 className="mt-0 mb-6 text-5xl">Welcome Home Bob!</h1>
-                <h3 className="mb-8 text-3xl">
+                <h1 className="mt-0 mb-6 text-xl md:text-5xl">
+                  Welcome Home Bob!
+                </h1>
+                <h3 className="mb-8 text-lg md:text-3xl">
                   Here you can find{" "}
                   <span className="decoration-pea-500 underline decoration-4 underline-offset-8">
                     base
