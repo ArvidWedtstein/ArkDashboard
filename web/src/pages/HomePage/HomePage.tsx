@@ -43,6 +43,12 @@ const HomePage = () => {
   //     document.title = document.visibilityState;
   // });
 
+  // TODO: add gen 2 basespot
+
+  // 49.6 21.3 - under bridge
+  // 43.5 37.5
+  // https://www.youtube.com/watch?v=n_19SVJWcbc
+
   return (
     <>
       <MetaTags
