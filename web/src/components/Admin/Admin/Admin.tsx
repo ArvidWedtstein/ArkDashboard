@@ -1,9 +1,15 @@
 import { MetaTags } from "@redwoodjs/web";
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo } from "react";
 import Chart from "src/components/Util/Chart/Chart";
 import StatCard from "src/components/Util/StatCard/StatCard";
 import Table from "src/components/Util/Table/Table";
-import { formatNumber, relativeDate, rtf } from "src/lib/formatters";
+import {
+  formatNumber,
+  groupBy,
+  relativeDate,
+  rtf,
+  truncate,
+} from "src/lib/formatters";
 import { FindAdminData } from "types/graphql";
 
 const Admin = ({ basespots }: FindAdminData) => {
@@ -72,9 +78,29 @@ const Admin = ({ basespots }: FindAdminData) => {
                 100,
               { maximumSignificantDigits: 3 }
             )}
-            valueof={100}
+            subtext={`${formatNumber(
+              (optimizedBasespots.filter((b) => b.progress == 100).length /
+                optimizedBasespots.length) *
+                100,
+              { maximumSignificantDigits: 3 }
+            )} / 100`}
           />
-          <StatCard stat={"Test"} value={10} />
+          <StatCard
+            stat={"Goal: 20 basespots per map"}
+            value={(
+              Object.entries(groupBy(optimizedBasespots, "map_id"))
+                .map(([k, v]) => ({
+                  map_id: k,
+                  map_name: v[0].Map.name,
+                  basespots: v.length,
+                  percent: (v.slice(0, 20).length / 20) * 100,
+                }))
+                // .filter((g) => g.map_id === "12")
+                .reduce((acc, curr) => {
+                  return acc + curr.percent;
+                }, 0) / 12
+            ).toPrecision(3)}
+          />
           <StatCard stat={"Test"} value={10} />
           <StatCard stat={"Test"} value={10} />
         </div>
@@ -101,6 +127,7 @@ const Admin = ({ basespots }: FindAdminData) => {
               header: "Description",
               field: "description",
               sortable: true,
+              valueFormatter: ({ value }) => truncate(value, 70),
             },
             {
               header: "Map",
@@ -127,7 +154,7 @@ const Admin = ({ basespots }: FindAdminData) => {
               ),
             },
             {
-              header: "Last Updated",
+              header: "Updated",
               field: "updated_at",
               sortable: true,
               render: ({ value }) => (
@@ -146,7 +173,7 @@ const Admin = ({ basespots }: FindAdminData) => {
               ),
             },
             {
-              header: "Progress",
+              header: "prg",
               field: "progress",
               render: ({ value, row }) => {
                 let color = "bg-red-500";
@@ -174,7 +201,7 @@ const Admin = ({ basespots }: FindAdminData) => {
                         style={{ width: `${value}%` }}
                       ></div>
                     </div>
-                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    <span className="hidden text-sm font-medium text-gray-500 dark:text-gray-400 md:block">
                       {value}%
                     </span>
                   </dd>
