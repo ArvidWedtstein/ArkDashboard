@@ -18,6 +18,14 @@ export const QUERY = gql`
         name
         permissions
       }
+      TimelineSeasonPerson {
+        TimelineSeason {
+          id
+          tribe_name
+          season
+          server
+        }
+      }
     }
   }
 `;

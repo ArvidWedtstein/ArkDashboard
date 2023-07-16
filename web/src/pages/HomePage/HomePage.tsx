@@ -88,8 +88,6 @@ const HomePage = () => {
         </div>
         {/* {isAuthenticated && <Chat />} */}
 
-        {/* <iframe src="https://github.com/sponsors/ArvidWedtstein/button" title="Sponsor ArvidW" height="35" width="116" style={{ border: 0 }}></iframe> */}
-
         <section className="my-12 mx-auto flex max-w-5xl overflow-hidden rounded-lg border border-zinc-500 bg-zinc-800 dark:text-white">
           <div className="min-h-max overflow-hidden transition">
             <img

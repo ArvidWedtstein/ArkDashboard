@@ -6,7 +6,7 @@ const Footer = () => {
         respective publisher and its licensors. © {new Date().getFullYear()}{" "}
         <b>Arvid Wedtstein</b>. All Rights Reserved.
       </span>
-      <div className="mt-4 flex space-x-6 sm:justify-center md:mt-0">
+      <div className="mt-4 flex space-x-6 sm:items-center sm:justify-center md:mt-0">
         <a
           href="https://github.com/ArvidWedtstein"
           className="text-gray-400 hover:text-gray-900 dark:hover:text-white"
@@ -32,6 +32,14 @@ const Footer = () => {
           {/* TODO: Insert discord icon here */}
           <span className="sr-only">Discord server</span>
         </a>
+        <iframe
+          className="inline-flex"
+          src="https://github.com/sponsors/ArvidWedtstein/button"
+          title="Sponsor ArvidW"
+          height="32"
+          width="116"
+          style={{ border: 0, backgroundColor: "transparent" }}
+        ></iframe>
       </div>
     </footer>
   );
