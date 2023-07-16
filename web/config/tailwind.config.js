@@ -18,7 +18,9 @@ module.exports = {
         boxGradBefore: "linear-gradient(#ffffff, #ffffff, #e3e3e3)",
         boxShadowGrad: "linear-gradient(rgba(0,0,0,0.075), transparent)",
       },
-
+      borderWidth: {
+        skew: "55px 0 0 400px",
+      },
       animation: {
         "circle-progress": "progress 1s ease-out forwards",
         "fade-in": "fadein 0.5s ease-in forwards",
