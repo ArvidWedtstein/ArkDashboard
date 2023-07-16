@@ -6,6 +6,7 @@ import { useAuth } from "src/auth";
 import { QUERY } from "src/components/Profile/ProfilesCell";
 import { ContextMenu } from "src/components/Util/ContextMenu/ContextMenu";
 import Table from "src/components/Util/Table/Table";
+import Tooltip from "src/components/Util/Tooltip/Tooltip";
 import { formatEnum, timeTag } from "src/lib/formatters";
 
 import type {
@@ -90,10 +91,10 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
                     ]
                   ]
                 }
-                alt="sample87"
+                alt={`${profile.full_name} bg-image`}
                 className=" max-w-full align-top opacity-80"
               />
-              <figcaption className="before:border-skew relative w-full bg-zinc-700 p-6 before:absolute before:left-0 before:bottom-full before:h-0 before:w-0 before:border-transparent before:border-l-zinc-700 before:content-['']">
+              <figcaption className="before:border-skew relative flex w-full flex-col bg-zinc-700 p-6 before:absolute before:left-0 before:bottom-full before:h-0 before:w-0 before:border-transparent before:border-l-zinc-700 before:content-['']">
                 <img
                   src={
                     profile.avatar_url
@@ -103,16 +104,17 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
                   alt={profile.full_name}
                   className="absolute left-6 bottom-full aspect-square max-w-[90px] rounded-full opacity-100 shadow-lg"
                 />
-                <h2 className="mb-1 font-light">
+
+                <h2 className="mb-1 text-base font-normal">
                   {profile.full_name}
-                  <span className="text-pea-500 block text-xs">
+                  <span className="text-pea-500 block text-sm">
                     {profile.role_profile_role_idTorole.name}
                   </span>
                 </h2>
-                <p className="mb-2 flex-auto text-sm tracking-wide opacity-80">
+                <p className="flex-auto text-sm tracking-wide opacity-80">
                   {profile.biography}
                 </p>
-                <div>
+                <div className="justify-self-end">
                   <a
                     href="#"
                     className="rw-button rw-button-blue-outline rw-button-small opacity-60 hover:opacity-100"
@@ -148,15 +150,56 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
             header: "Avatar",
             render({ value, row }) {
               return (
-                <img
-                  className="h-10 w-10 rounded-full"
-                  src={
-                    value
-                      ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${value}`
-                      : `https://ui-avatars.com/api/?name=${row?.full_name}`
+                <Tooltip
+                  content={
+                    <figure className="font-montserrat relative w-full max-w-xs rounded-lg bg-zinc-700 text-left leading-6 text-white">
+                      <img
+                        // src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/sample60.jpg"
+                        src={
+                          mapImages[
+                            Object.keys(mapImages)[
+                              Math.floor(
+                                Math.random() * Object.keys(mapImages).length
+                              )
+                            ]
+                          ]
+                        }
+                        alt={`${row.full_name} bg-image`}
+                        className="max-w-full align-top opacity-80"
+                      />
+                      <figcaption className="before:border-skew relative w-full bg-zinc-700 before:absolute before:right-0 before:left-0 before:bottom-full before:h-0 before:w-0 before:border-transparent before:border-l-zinc-700 before:content-['']">
+                        <img
+                          src={
+                            value
+                              ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${value}`
+                              : `https://ui-avatars.com/api/?name=${row?.full_name}`
+                          }
+                          alt={row.full_name}
+                          className="absolute left-6 bottom-full aspect-square max-w-[90px] rounded-full opacity-100 shadow-lg"
+                        />
+                        <h2 className="mb-1 font-light">
+                          {row.full_name}
+                          <span className="text-pea-500 block text-xs">
+                            {row.role_profile_role_idTorole.name}
+                          </span>
+                        </h2>
+                        <p className="mb-2 flex-auto text-sm tracking-wide opacity-80">
+                          {row.biography}
+                        </p>
+                      </figcaption>
+                    </figure>
                   }
-                  alt="Profile Image"
-                />
+                >
+                  <img
+                    className="h-10 w-10 rounded-full"
+                    src={
+                      value
+                        ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${value}`
+                        : `https://ui-avatars.com/api/?name=${row?.full_name}`
+                    }
+                    alt="Profile Image"
+                  />
+                </Tooltip>
               );
             },
           },
