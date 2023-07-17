@@ -79,6 +79,11 @@ export const Basespot: BasespotRelationResolvers = {
   Map: (_obj, { root }) => {
     return db.basespot.findUnique({ where: { id: root?.id } }).Map();
   },
+  Profile_Basespot_updated_byToProfile: (_obj, { root }) => {
+    return db.basespot
+      .findUnique({ where: { id: root?.id } })
+      .Profile_Basespot_updated_byToProfile();
+  },
   TimelineSeasonBasespot: (_obj, { root }) => {
     return db.basespot
       .findUnique({ where: { id: root?.id } })

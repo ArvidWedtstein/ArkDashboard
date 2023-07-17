@@ -1,6 +1,5 @@
 import type { FindTimelineSeasonBasespots } from "types/graphql";
 
-import { Link, routes } from "@redwoodjs/router";
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import TimelineSeasonBasespots from "src/components/TimelineSeasonBasespot/TimelineSeasonBasespots";

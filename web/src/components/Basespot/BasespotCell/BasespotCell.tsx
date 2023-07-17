@@ -5,20 +5,19 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import Basespot from "src/components/Basespot/Basespot";
 
 export const QUERY = gql`
-  query FindBasespotById($id: BigInt!) {
+  query FindBasespotById($id: String!) {
     basespot: basespot(id: $id) {
       id
       name
       description
       latitude
       longitude
-      image
+      thumbnail
       created_at
       map_id
       estimated_for_players
-      defense_images
       created_by
-      turretsetup_image
+      turretsetup_images
       updated_at
       Map {
         name
@@ -28,6 +27,7 @@ export const QUERY = gql`
   }
 `;
 
+// TODO: add skeleton loader
 export const Loading = () => <div>Loading...</div>;
 
 export const Empty = () => <div>Basespot not found</div>;

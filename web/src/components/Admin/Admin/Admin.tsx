@@ -28,7 +28,7 @@ const Admin = ({ basespots }: FindAdminData) => {
         missingSteps.push("Add longer description");
       }
 
-      if (base.image) {
+      if (base.thumbnail) {
         completedSteps += 1;
       } else {
         missingSteps.push("Add preview image");
@@ -75,13 +75,13 @@ const Admin = ({ basespots }: FindAdminData) => {
             value={formatNumber(
               (optimizedBasespots.filter((b) => b.progress == 100).length /
                 optimizedBasespots.length) *
-                100,
+              100,
               { maximumSignificantDigits: 3 }
             )}
             subtext={`${formatNumber(
               (optimizedBasespots.filter((b) => b.progress == 100).length /
                 optimizedBasespots.length) *
-                100,
+              100,
               { maximumSignificantDigits: 3 }
             )} / 100`}
           />

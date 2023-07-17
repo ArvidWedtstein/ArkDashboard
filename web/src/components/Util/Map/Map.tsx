@@ -175,7 +175,7 @@ const Map = ({
   };
 
   return (
-    <div className="flex flex-col">
+    <div className={"flex flex-col " + className}>
       <div className="rw-button-group rw-button-group-border m-0" role="menubar">
         <button className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" onClick={() => handleZoomButton('in')} disabled={zoom >= 5}>
           +
@@ -208,7 +208,7 @@ const Map = ({
         height={size.height}
         width={size.width}
         tabIndex={0}
-        className={"relative" + className}
+        className={"relative"}
         cursor={interactive ? (isDragging ? "grabbing" : "grab") : "default"}
         viewBox={`0 0 ${size.width} ${size.height}`}
         onKeyUp={handleKeyUp}

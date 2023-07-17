@@ -1,23 +1,25 @@
 export const schema = gql`
   type Basespot {
-    id: BigInt!
-    name: String!
-    description: String!
+    id: String!
+    created_at: DateTime
+    updated_at: DateTime
+    created_by: String
+    updated_by: String
+    name: String
+    description: String
     latitude: Float!
     longitude: Float!
-    image: String
-    created_at: DateTime
     map_id: BigInt!
-    estimated_for_players: String
-    defense_images: String
-    created_by: String
-    turretsetup_image: String
-    updated_at: DateTime
-    type: String
-    server: String
+    thumbnail: String
+    turretsetup_images: String
     published: Boolean
+    level: String
+    estimated_for_players: String
+    type: String
+    old_id: BigInt
     Profile: Profile
     Map: Map!
+    Profile_Basespot_updated_byToProfile: Profile
     TimelineSeasonBasespot: [TimelineSeasonBasespot]!
   }
 
@@ -27,56 +29,58 @@ export const schema = gql`
   }
   type Query {
     basespots: [Basespot!]! @skipAuth
-    basespot(id: BigInt!): Basespot @requireAuth
+    basespot(id: String!): Basespot @requireAuth
     basespotPage(page: Int, map: Int, type: String): BasespotPage @skipAuth
     # @requireAuth(roles: "697b7d70-bab3-4ff9-9c3e-f30b058b621c")
     # @hasPermission(permission: "gamedata_as")
   }
 
   input CreateBasespotInput {
-    name: String!
-    description: String!
+    created_at: DateTime
+    updated_at: DateTime
+    created_by: String
+    updated_by: String
+    name: String
+    description: String
     latitude: Float!
     longitude: Float!
-    image: String
-    created_at: DateTime
     map_id: BigInt!
-    estimated_for_players: String
-    defense_images: String
-    created_by: String
-    turretsetup_image: String
-    updated_at: DateTime
-    type: String
-    server: String
+    thumbnail: String
+    turretsetup_images: String
     published: Boolean
+    level: String
+    estimated_for_players: String
+    type: String
+    old_id: BigInt
   }
 
   input UpdateBasespotInput {
+    created_at: DateTime
+    updated_at: DateTime
+    created_by: String
+    updated_by: String
     name: String
     description: String
     latitude: Float
     longitude: Float
-    image: String
-    created_at: DateTime
     map_id: BigInt
-    estimated_for_players: String
-    defense_images: String
-    created_by: String
-    turretsetup_image: String
-    updated_at: DateTime
-    type: String
-    server: String
+    thumbnail: String
+    turretsetup_images: String
     published: Boolean
+    level: String
+    estimated_for_players: String
+    type: String
+    old_id: BigInt
   }
 
   type Mutation {
     createBasespot(input: CreateBasespotInput!): Basespot!
       @requireAuth
       @hasPermission(permission: "basespot_create")
-    updateBasespot(id: BigInt!, input: UpdateBasespotInput!): Basespot!
+    updateBasespot(id: String!, input: UpdateBasespotInput!): Basespot!
       @requireAuth
       @hasPermission(permission: "basespot_update")
-    deleteBasespot(id: BigInt!): Basespot!
+    deleteBasespot(id: String!): Basespot!
       @requireAuth
       @hasPermission(permission: "basespot_delete")
   }

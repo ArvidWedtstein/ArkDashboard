@@ -29,7 +29,6 @@ const BasespotForm = (props: BasespotFormProps) => {
 
   const formMethods = useForm<FormBasespot>();
   const [thumbnailUrl, setThumbnailUrl] = useState(null);
-  const [defenseImages, setDefenseImages] = useState([]);
 
   const basename = useRef(null);
   const [map, setMap] = useState(props?.basespot?.map_id || 2);
@@ -206,17 +205,17 @@ const BasespotForm = (props: BasespotFormProps) => {
         {/* {props.basespot?.id && ( */}
         <>
           <Label
-            name="image"
+            name="thumbnail"
             className="rw-label"
             errorClassName="rw-label rw-label-error"
           >
-            Image
+            Thumbnail
           </Label>
 
           <FileUpload
             multiple={false}
-            name="image"
-            storagePath={`basespotimages/${props?.basespot?.id ||
+            name="thumbnail"
+            storagePath={`basespotimages/${props?.basespot?.id || // TODO: fix storagepath
               basename.current?.value.replaceAll(" ", "")
               // basename.current?.value.replaceAll(" ", "") ||
               // props.basespot?.name.replaceAll(" ", "")
@@ -247,25 +246,8 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <FieldError name="estimated_for_players" className="rw-field-error" />
 
-        {/* <Label
-          name="defenseImages"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Defense images
-        </Label>
-
-        <TextField
-          name="defenseImages"
-          defaultValue={props.basespot?.defenseImages}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ required: false }}
-          emptyAs={"undefined"}
-        />
-
-        <FieldError name="defenseImages" className="rw-field-error" />
-
+        {/* TODO: Fix select list for turretsetup images */}
+        {/*
         <Label
           name="turretsetup_image"
           className="rw-label"
@@ -283,6 +265,7 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <FieldError name="turretsetup_image" className="rw-field-error" /> */}
 
+        {/* TODO: fix save icon */}
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">
             Save

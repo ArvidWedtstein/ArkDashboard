@@ -8,20 +8,19 @@ import { toast } from "@redwoodjs/web/toast";
 import BasespotForm from "src/components/Basespot/BasespotForm";
 
 export const QUERY = gql`
-  query EditBasespotById($id: BigInt!) {
+  query EditBasespotById($id: String!) {
     basespot: basespot(id: $id) {
       id
       name
       description
       latitude
       longitude
-      image
+      thumbnail
       created_at
       map_id
       estimated_for_players
-      defense_images
       created_by
-      turretsetup_image
+      turretsetup_images
       updated_at
       Map {
         img
@@ -30,25 +29,26 @@ export const QUERY = gql`
   }
 `;
 const UPDATE_BASESPOT_MUTATION = gql`
-  mutation UpdateBasespotMutation($id: BigInt!, $input: UpdateBasespotInput!) {
+  mutation UpdateBasespotMutation($id: String!, $input: UpdateBasespotInput!) {
     updateBasespot(id: $id, input: $input) {
       id
       name
       description
       latitude
       longitude
-      image
+      thumbnail
       created_at
       map_id
       estimated_for_players
-      defense_images
       created_by
-      turretsetup_image
+      turretsetup_images
       updated_at
     }
   }
 `;
 
+
+// TODO: add skeleton loader
 export const Loading = () => <div>Loading...</div>;
 
 export const Failure = ({ error }: CellFailureProps) => {

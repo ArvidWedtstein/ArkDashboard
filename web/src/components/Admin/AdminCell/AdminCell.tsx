@@ -10,7 +10,7 @@ export const QUERY = gql`
         description
         latitude
         longitude
-        image
+        thumbnail
         created_at
         updated_at
         map_id

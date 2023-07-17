@@ -13,7 +13,7 @@ import type {
 } from "types/graphql";
 
 const DELETE_BASESPOT_MUTATION = gql`
-  mutation DeleteBasespotMutation($id: BigInt!) {
+  mutation DeleteBasespotMutation($id: String!) {
     deleteBasespot(id: $id) {
       id
     }
@@ -29,24 +29,26 @@ const Basespot = ({ basespot }: Props) => {
   const { client: supabase } = useAuth();
 
   const getImage = async () => {
-    if (basespot.image && !baseUrl && !basespot.image.startsWith("http")) {
-      const { data, error } = await supabase.storage
+    if (basespot.thumbnail && !baseUrl && !basespot.thumbnail.startsWith("http")) {
+      console.log(basespot.thumbnail)
+      await supabase.storage
         .from(`basespotimages`)
-        .download(`${basespot.id}/${basespot.image}`);
-      // .download(`thumbnails/${basespot.image}`);
-      if (error) {
-        throw error;
-      }
-      if (data) {
-        const url = URL.createObjectURL(data);
-        setBaseUrl(url);
-      }
+        .download(`M${basespot.map_id}-${basespot.id}/${basespot.thumbnail}`)
+        .then(({ data, error }) => {
+          if (error) {
+            toast.error(error.message);
+          }
+          if (data) {
+            const url = URL.createObjectURL(data);
+            setBaseUrl(url);
+          }
+        });
     }
   };
 
   useEffect(() => {
     getImage();
-  }, [basespot.image]);
+  }, [basespot.thumbnail]);
 
   const [deleteBasespot] = useMutation(DELETE_BASESPOT_MUTATION, {
     onCompleted: () => {
@@ -68,10 +70,10 @@ const Basespot = ({ basespot }: Props) => {
     <>
       <section className="body-font text-gray-700 dark:text-stone-200">
         <header
-          className="flex min-h-[200px] w-full flex-col justify-between rounded-2xl bg-cover bg-center bg-no-repeat p-12 text-white ring-1 ring-black dark:ring-white"
+          className="flex min-h-[200px] w-full flex-col justify-between rounded-2xl bg-cover bg-center bg-no-repeat p-12 text-white ring-1 ring-zinc-500 dark:ring-white"
           style={{
             backgroundImage: `url(${baseUrl ||
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvC4tJUjp6TudN0t7kMxrGll3AQDUOPCncWSSogN5lgA&s"
+              "https://images.placeholders.dev/?width=1055&height=200&text=ArkDashboard&bgColor=%23f7f6f6&textColor=%236d6e71"
               })`,
           }}
         >
@@ -99,36 +101,36 @@ const Basespot = ({ basespot }: Props) => {
             </div>
           </div>
           <div className="pt-12">
-            <div className="mb-3 flex items-center space-x-1 opacity-75 [&>span:not(:last-child)]:after:content-[',']">
-              {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" className="w-5 mr-3 fill-current ">
+            {/* <div className="mb-3 flex items-center space-x-1 opacity-75 [&>span:not(:last-child)]:after:content-[',']">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" className="w-5 mr-3 fill-current ">
                 <path className="d" d="M19.22,9.66L10.77,1.21c-.74-.74-1.86-1.21-2.97-1.21H1.67C.75,0,0,.75,0,1.67V7.8c0,1.11,.46,2.23,1.3,2.97l8.45,8.46c1,1,2.62,1,3.62,0l5.94-5.95c.93-.93,.93-2.6-.09-3.62ZM6.96,6.35c-.59,.59-1.56,.59-2.15,0-.59-.59-.59-1.56,0-2.15,.59-.59,1.56-.59,2.15,0,.59,.59,.59,1.56,0,2.15Z" />
               </svg>
               {["Deez", "Nuts"].map((tag) => (
                 <span className="text-sm" key={tag}>{tag}</span>
-              ))} */}
-              {/* TODO: Add permissioncheck here */}
-              {/* <div className="flex justify-center space-x-2">
-                <Link
-                  to={routes.editBasespot({ id: basespot.id.toString() })}
-                  className="rw-button rw-button-gray-outline"
+              ))}
+               TODO: Add permissioncheck here
+            <div className="flex justify-center space-x-2">
+              <Link
+                to={routes.editBasespot({ id: basespot.id.toString() })}
+                className="rw-button rw-button-gray-outline"
+              >
+                Edit
+              </Link>
+              <button
+                onClick={() => onDeleteClick(basespot.id)}
+                className="rw-button rw-button-red-outline"
+              >
+                Delete
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  className="rw-button-icon-end"
                 >
-                  Edit
-                </Link>
-                <button
-                  onClick={() => onDeleteClick(basespot.id)}
-                  className="rw-button rw-button-red-outline"
-                >
-                  Delete
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512"
-                    className="rw-button-icon-end"
-                  >
-                    <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
-                  </svg>
-                </button>
-              </div> */}
+                  <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+                </svg>
+              </button>
             </div>
+          </div> */}
             <h1 className="my-5 text-5xl font-bold opacity-90">
               {basespot.name}
             </h1>
@@ -182,19 +184,19 @@ const Basespot = ({ basespot }: Props) => {
             />
           </div>
         </div> */}
-      </section>
+      </section >
       <section className="body-font text-gray-700 dark:text-stone-200">
         <div className="flex flex-wrap py-12">
-          <div className="mb-10 w-full overflow-hidden rounded-lg lg:mb-0 lg:w-1/2">
+          <div className="w-full md:w-fit overflow-hidden rounded-lg lg:mb-0">
             <Map
               className="h-full w-full object-cover object-center"
               map_id={basespot.map_id}
-              size={{ width: 500, height: 500 }}
+              interactive={true}
               pos={[{ lat: basespot.latitude, lon: basespot.longitude }]}
               disable_map={true}
             />
           </div>
-          <div className="-mb-10 flex flex-col flex-wrap text-center lg:w-1/2 lg:py-6 lg:pl-12 lg:text-left">
+          <div className="flex flex-col flex-wrap text-center lg:w-1/2 lg:py-6 lg:pl-12 lg:text-left lg:flex-grow">
             <div className="mb-10 flex flex-col items-center lg:items-start">
               <div className="bg-pea-50 text-pea-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full">
                 <svg
