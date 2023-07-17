@@ -19,6 +19,9 @@ export const schema = gql`
 
   type Query {
     timelineSeasonBasespots: [TimelineSeasonBasespot!]! @requireAuth
+    timelineSeasonBasespotsByTimelineSeasonId(
+      timeline_season_id: String!
+    ): [TimelineSeasonBasespot!]! @requireAuth
     timelineSeasonBasespot(id: BigInt!): TimelineSeasonBasespot @requireAuth
   }
 

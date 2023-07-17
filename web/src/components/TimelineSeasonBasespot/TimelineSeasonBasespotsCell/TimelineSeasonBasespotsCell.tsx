@@ -6,7 +6,7 @@ import TimelineSeasonBasespots from "src/components/TimelineSeasonBasespot/Timel
 
 export const QUERY = gql`
   query FindTimelineSeasonBasespots($timeline_season_id: String!) {
-    timelineSeasonBasespots: timelineSeasonBasespots(
+    timelineSeasonBasespotsByTimelineSeasonId: timelineSeasonBasespotsByTimelineSeasonId(
       timeline_season_id: $timeline_season_id
     ) {
       id

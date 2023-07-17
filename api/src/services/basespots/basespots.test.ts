@@ -31,14 +31,14 @@ describe('basespots', () => {
   scenario('creates a basespot', async (scenario: StandardScenario) => {
     const result = await createBasespot({
       input: {
-        latitude: 4448491.982453111,
-        longitude: 8034899.583006383,
+        latitude: 9211981.209636737,
+        longitude: 3619539.0308738286,
         map_id: scenario.basespot.two.map_id,
       },
     })
 
-    expect(result.latitude).toEqual(4448491.982453111)
-    expect(result.longitude).toEqual(8034899.583006383)
+    expect(result.latitude).toEqual(9211981.209636737)
+    expect(result.longitude).toEqual(3619539.0308738286)
     expect(result.map_id).toEqual(scenario.basespot.two.map_id)
   })
 
@@ -48,10 +48,10 @@ describe('basespots', () => {
     })) as Basespot
     const result = await updateBasespot({
       id: original.id,
-      input: { latitude: 903053.3195002754 },
+      input: { latitude: 8017896.478442905 },
     })
 
-    expect(result.latitude).toEqual(903053.3195002754)
+    expect(result.latitude).toEqual(8017896.478442905)
   })
 
   scenario('deletes a basespot', async (scenario: StandardScenario) => {

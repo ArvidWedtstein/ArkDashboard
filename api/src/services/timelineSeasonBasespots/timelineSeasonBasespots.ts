@@ -6,12 +6,18 @@ import type {
 
 import { db } from "src/lib/db";
 
-export const timelineSeasonBasespots: QueryResolvers["timelineSeasonBasespots"] =
-  ({ timeline_season_id }: Required<Pick<any, "timeline_season_id">>) => {
-    // TODO: fix type
+export const timelineSeasonBasespotsByTimelineSeasonId: QueryResolvers["timelineSeasonBasespotsByTimelineSeasonId"] =
+  ({ timeline_season_id }) => {
     return db.timelineSeasonBasespot.findMany({
       orderBy: { created_at: "desc" },
       where: { timeline_season_id },
+    });
+  };
+
+export const timelineSeasonBasespots: QueryResolvers["timelineSeasonBasespots"] =
+  () => {
+    return db.timelineSeasonBasespot.findMany({
+      orderBy: { created_at: "desc" },
     });
   };
 
