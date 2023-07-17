@@ -3,17 +3,10 @@ import { MetaTags } from "@redwoodjs/web";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
 import Table from "src/components/Util/Table/Table";
-import { formatXYtoLatLon } from "src/lib/formatters";
 
 const HomePage = () => {
   const { isAuthenticated, currentUser, client, reauthenticate } = useAuth();
 
-  // if (document.addEventListener) {
-  //   document.addEventListener('contextmenu', function (e) {
-  //     alert("You've tried to open context menu");
-  //     e.preventDefault();
-  //   }, false);
-  // }
   // useEffect(() => {
   //   const {
   //     data: { subscription },

@@ -14,8 +14,8 @@ import type {
 
 const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
   let basespots = basespotPage.basespots;
-
   let { search, map, type } = useParams();
+
 
   const [params, setParams] = useState({ map, type });
   useEffect(() => {

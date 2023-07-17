@@ -123,11 +123,6 @@ const Routes = () => {
             page={UserRecipeUserRecipePage}
             name="userRecipe"
           />
-          <Route
-            path="/user-recipes"
-            page={UserRecipeUserRecipesPage}
-            name="userRecipes"
-          />
         </Set>
         <Set
           wrap={ScaffoldLayout}
