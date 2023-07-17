@@ -1,11 +1,15 @@
 @import "tailwindcss/components";
 @layer components {
-  a:hover {
-    @apply dark:text-accent-500 text-accent-600 underline;
+  /* Link */
+  .rw-link {
+    @apply text-pea-400;
   }
-  span > a,
-  p > a {
-    @apply decoration-pea-500 underline;
+  .rw-link:hover {
+    @apply text-pea-500 underline;
+  }
+  span > .rw-link,
+  p > .rw-link {
+    @apply decoration-pea-500 text-pea-400 underline hover:no-underline;
   }
 
   .rw-header {
@@ -32,15 +36,6 @@
   }
   .rw-segment-main {
     @apply p-4;
-  }
-  p > .rw-link {
-    @apply text-pea-400 underline hover:no-underline;
-  }
-  .rw-link {
-    @apply text-pea-400;
-  }
-  .rw-link:hover {
-    @apply text-pea-500 underline;
   }
 
   .rw-heading {

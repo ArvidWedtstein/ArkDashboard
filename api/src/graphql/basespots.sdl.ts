@@ -16,7 +16,7 @@ export const schema = gql`
     level: String
     estimated_for_players: String
     type: String
-    old_id: BigInt
+    base_images: String
     Profile: Profile
     Map: Map!
     Profile_Basespot_updated_byToProfile: Profile
@@ -51,7 +51,7 @@ export const schema = gql`
     level: String
     estimated_for_players: String
     type: String
-    old_id: BigInt
+    base_images: String
   }
 
   input UpdateBasespotInput {
@@ -70,7 +70,7 @@ export const schema = gql`
     level: String
     estimated_for_players: String
     type: String
-    old_id: BigInt
+    base_images: String
   }
 
   type Mutation {

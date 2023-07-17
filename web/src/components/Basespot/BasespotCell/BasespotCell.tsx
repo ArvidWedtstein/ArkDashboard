@@ -17,8 +17,8 @@ export const QUERY = gql`
       map_id
       estimated_for_players
       created_by
-      turretsetup_images
-      updated_at
+      base_images
+      type
       Map {
         name
         img

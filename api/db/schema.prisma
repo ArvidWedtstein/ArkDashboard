@@ -26,6 +26,7 @@ model Basespot {
   level                                String?                  @default("")
   estimated_for_players                String?                  @default("1")
   type                                 String?
+  base_images                          String?
   Profile                              Profile?                 @relation(fields: [created_by], references: [id], onUpdate: NoAction)
   Map                                  Map                      @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Profile_Basespot_updated_byToProfile Profile?                 @relation("Basespot_updated_byToProfile", fields: [updated_by], references: [id], onUpdate: NoAction)
