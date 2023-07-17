@@ -102,6 +102,11 @@ export const Profile: ProfileRelationResolvers = {
   Basespot: (_obj, { root }) => {
     return db.profile.findUnique({ where: { id: root?.id } }).Basespot();
   },
+  Basespot_Basespot_updated_byToProfile: (_obj, { root }) => {
+    return db.profile
+      .findUnique({ where: { id: root?.id } })
+      .Basespot_Basespot_updated_byToProfile();
+  },
   Message: (_obj, { root }) => {
     return db.profile.findUnique({ where: { id: root?.id } }).Message();
   },

@@ -13,6 +13,7 @@ export const schema = gql`
     updated_by: String
     steam_user_id: String
     Basespot: [Basespot]!
+    Basespot_Basespot_updated_byToProfile: [Basespot]!
     Message: [Message]!
     role_profile_role_idTorole: Role!
     Profile: Profile
@@ -66,13 +67,9 @@ export const schema = gql`
   }
 
   type Mutation {
-    createProfile(input: CreateProfileInput!): Profile!
-      @requireAuth
-      @hasPermission(permission: "user_create")
+    createProfile(input: CreateProfileInput!): Profile! @requireAuth
     updateProfile(id: String!, input: UpdateProfileInput!): Profile!
       @requireAuth
-    deleteProfile(id: String!): Profile!
-      @requireAuth
-      @hasPermission(permission: "user_delete")
+    deleteProfile(id: String!): Profile! @requireAuth
   }
-`;
+`
