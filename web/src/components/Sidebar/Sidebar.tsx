@@ -23,7 +23,7 @@ const Icon = (icon: string) => {
         <path d="M320 128c0 8.844 7.156 16 16 16S352 136.7 352 127.8V16.01c0-8.844-7.156-16-16-16h-320c-8.844 0-16 7.156-16 16V208c0 4.25 1.688 8.312 4.688 11.31L64 278.6V496C64 504.8 71.16 512 80 512S96 504.8 96 496v-224c0-4.25-1.688-8.312-4.688-11.31L32 201.4V32h80v64c0 8.844 7.156 16 16 16S144 104.8 144 96V32h64v64c0 8.844 7.156 16 16 16S240 104.8 240 96V32H320V128zM176 144C149.5 144 128 165.5 128 192v32c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V192C224 165.5 202.5 144 176 144zM192 224H160V192c0-8.822 7.178-16 16-16S192 183.2 192 192V224zM490.7 255.1h-85.32C393.6 255.1 384 265.5 384 277.3v85.26c0 11.88 9.633 21.38 21.39 21.38h85.32c11.76 0 21.39-9.625 21.39-21.38V277.3C512.1 265.6 502.6 255.1 490.7 255.1zM480.1 351.1h-64.05l-.0205-63.98h64.01L480.1 351.1zM622.9 242.8l-151.4-137.7C464.8 99.03 456.4 96 447.1 96s-16.83 3.031-23.48 9.084L273.1 242.7C262.2 252.6 256 266.7 256 281.4V448c0 35.35 28.65 64 64 64h255.1c35.35 0 63.1-28.56 64-63.9L640 281.2C640 266.6 633.8 252.6 622.9 242.8zM607.1 448c-.002 17.6-14.4 32-32 32H320c-17.67 0-32-14.33-32-32V281.4c0-5.738 2.42-11.21 6.666-15.07l153.3-138.4l153.4 138.4C605.6 270.2 608 275.7 608 281.4L607.1 448z" />
       </svg>
     ),
-    calculator: (
+    crafting: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 512 512"
@@ -104,7 +104,7 @@ const Icon = (icon: string) => {
   return icons[icon.toLowerCase()] || null;
 };
 
-const Sidebar = memo(({ }) => {
+const Sidebar = memo(({}) => {
   const { currentUser, isAuthenticated, logOut } = useAuth();
   const navigation = [
     {
@@ -118,7 +118,7 @@ const Sidebar = memo(({ }) => {
       color: "!ring-blue-400 !bg-blue-500",
     },
     {
-      name: "Calculator",
+      name: "Crafting",
       href: routes.materialCalculator(),
       color: "!ring-red-400 !bg-red-500",
     },
@@ -154,11 +154,10 @@ const Sidebar = memo(({ }) => {
     },
   ];
 
-
   return (
     <aside className="group z-10 min-w-[12rem] overflow-x-auto border-gray-700 bg-zinc-800 py-2 dark:border-zinc-300 max-sm:border-b sm:h-auto sm:max-w-sm sm:overflow-visible sm:border-r sm:py-2 sm:px-4">
       <div className="sticky top-0 flex w-full flex-row items-start justify-between sm:flex-col sm:justify-start">
-        <div className="flex items-center justify-center text-black text-[#ffffffcc] transition-all border-zinc-300 sm:my-3 sm:w-full sm:flex-col sm:border-b">
+        <div className="flex items-center justify-center border-zinc-300 text-black text-[#ffffffcc] transition-all sm:my-3 sm:w-full sm:flex-col sm:border-b">
           <Link
             to={routes.profile({
               id: currentUser?.id || currentUser?.sub || "",
@@ -179,7 +178,7 @@ const Sidebar = memo(({ }) => {
                   loading="lazy"
                 />
               ) : (
-                <div className="animate-fade-in mx-1 relative aspect-square w-12 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-600">
+                <div className="animate-fade-in relative mx-1 aspect-square w-12 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-600">
                   <svg
                     className="absolute -left-1 h-14 w-14 text-gray-400"
                     fill="currentColor"
@@ -194,11 +193,8 @@ const Sidebar = memo(({ }) => {
                   </svg>
                 </div>
               )}
-              {/* {currentUser?.status == "ONLINE" && (
-                <span className="absolute bottom-2.5 right-2.5 h-4 w-4 translate-y-1/4 transform rounded-full border-2 border-white bg-green-400 dark:border-gray-800"></span>
-              )} */}
             </div>
-            <p className="hidden text-sm sm:text-xl sm:block">
+            <p className="hidden text-sm sm:block sm:text-xl">
               {currentUser?.full_name?.toString() || "Guest"}
             </p>
             <p className="hidden text-xs sm:block">
@@ -225,7 +221,7 @@ const Sidebar = memo(({ }) => {
         </div>
         {navigation.map((item, index) => (
           <div
-            className="flex flex-col items-center justify-start self-start text-white/70 transition-all hover:text-white sm:flex-row space-x-2"
+            className="flex flex-col items-center justify-start space-x-2 self-start text-white/70 transition-all hover:text-white sm:flex-row"
             key={`sidebar-item-${index}`}
           >
             <NavLink

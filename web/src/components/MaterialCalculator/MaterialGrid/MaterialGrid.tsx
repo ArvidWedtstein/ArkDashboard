@@ -1,8 +1,4 @@
-import {
-  Form,
-  FormError,
-  RWGqlError,
-} from "@redwoodjs/forms";
+import { Form, FormError, RWGqlError } from "@redwoodjs/forms";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 
 import {
@@ -14,9 +10,7 @@ import {
 } from "src/lib/formatters";
 import Table from "src/components/Util/Table/Table";
 import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
-import {
-  FindItemsMats,
-} from "types/graphql";
+import { FindItemsMats } from "types/graphql";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useAuth } from "src/auth";
@@ -77,25 +71,26 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     Consumable: "any-berry-seed",
   };
 
-  const [loadItems, { called, loading: load, data }] = useLazyQuery(ITEMRECIPEITEMQUERY, {
-    initialFetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'cache-only',
-    variables: {
-      ids: itemRecipes.map((f) => f.id),
-    },
-    onCompleted: (data) => {
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
+  const [loadItems, { called, loading: load, data }] = useLazyQuery(
+    ITEMRECIPEITEMQUERY,
+    {
+      initialFetchPolicy: "cache-and-network",
+      nextFetchPolicy: "cache-only",
+      variables: {
+        ids: itemRecipes.map((f) => f.id),
+      },
+      onCompleted: (data) => {},
+      onError: (error) => {
+        console.log(error);
+      },
+    }
+  );
 
   useEffect(() => {
     if (!called && !load) {
       loadItems();
     }
   }, []);
-
 
   const [search, setSearch] = useState<string>("");
 
@@ -105,11 +100,19 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
 
   const [viewBaseMaterials, setViewBaseMaterials] = useState<boolean>(false);
 
-  type RecipeActionType = "ADD_AMOUNT_BY_NUM" | "CHANGE_AMOUNT" | "ADD_AMOUNT" | "REMOVE_AMOUNT" | "ADD" | "REMOVE" | "REMOVE_BY_ID" | "RESET";
+  type RecipeActionType =
+    | "ADD_AMOUNT_BY_NUM"
+    | "CHANGE_AMOUNT"
+    | "ADD_AMOUNT"
+    | "REMOVE_AMOUNT"
+    | "ADD"
+    | "REMOVE"
+    | "REMOVE_BY_ID"
+    | "RESET";
   interface RecipeAction {
     type: RecipeActionType;
     payload?: {
-      itemRecipeItems?: ItemRecipe["ItemRecipeItem"]
+      itemRecipeItems?: ItemRecipe["ItemRecipeItem"];
       amount?: number;
       index?: number;
       item?: ItemRecipe;
@@ -128,9 +131,9 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                ...item,
-                amount: item.amount + (payload.amount || 1) * yields,
-              }
+                  ...item,
+                  amount: item.amount + (payload.amount || 1) * yields,
+                }
               : item
           );
         }
@@ -156,9 +159,9 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           const yields = item?.yields || 1;
           return i === payload.index
             ? {
-              ...item,
-              amount: item.amount + yields,
-            }
+                ...item,
+                amount: item.amount + yields,
+              }
             : item;
         });
       }
@@ -167,24 +170,26 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           const yields = item?.yields || 1;
           return i === payload.index
             ? {
-              ...item,
-              amount:
-                item.amount - yields < 1 ? yields : item.amount - yields,
-            }
+                ...item,
+                amount:
+                  item.amount - yields < 1 ? yields : item.amount - yields,
+              }
             : item;
         });
       }
       case "ADD": {
-        const itemIndex = state.findIndex((item) => item.id === payload.item.id);
+        const itemIndex = state.findIndex(
+          (item) => item.id === payload.item.id
+        );
 
         const yields = payload.item?.yields || 1;
         if (itemIndex !== -1) {
           return state.map((item, i) =>
             i === itemIndex
               ? {
-                ...item,
-                amount: (item.amount || 0) + yields,
-              }
+                  ...item,
+                  amount: (item.amount || 0) + yields,
+                }
               : item
           );
         }
@@ -276,7 +281,17 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     );
 
     if (!chosenItem) return toast.error("Item could not be found");
-    setRecipes({ type: "ADD", payload: { item: { ...chosenItem, ItemRecipeItem: data.itemRecipeItemsByIds.filter((iri) => iri.item_recipe_id == chosenItem.id) } } });
+    setRecipes({
+      type: "ADD",
+      payload: {
+        item: {
+          ...chosenItem,
+          ItemRecipeItem: data.itemRecipeItemsByIds.filter(
+            (iri) => iri.item_recipe_id == chosenItem.id
+          ),
+        },
+      },
+    });
   };
 
   const mergeItemRecipe = useCallback(getBaseMaterials, [
@@ -345,7 +360,9 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 payload: {
                   item: {
                     ...itemfound,
-                    ItemRecipeItem: data.itemRecipeItemsByIds.filter((iri) => iri.item_recipe_id === item_recipe_id)
+                    ItemRecipeItem: data.itemRecipeItemsByIds.filter(
+                      (iri) => iri.item_recipe_id === item_recipe_id
+                    ),
                   },
                   amount: amount,
                 },
@@ -421,21 +438,21 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
               value: v.every(({ type }) => !type)
                 ? v.map((itm) => ({
-                  ...itm,
-                  label: itm.name,
-                  icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                  value: [],
-                }))
+                    ...itm,
+                    label: itm.name,
+                    icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                    value: [],
+                  }))
                 : Object.entries(groupBy(v, "type")).map(([type, v2]) => {
-                  return {
-                    label: type,
-                    value: v2.map((itm) => ({
-                      label: itm.name,
-                      ...itm,
-                      icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                    })),
-                  };
-                }),
+                    return {
+                      label: type,
+                      value: v2.map((itm) => ({
+                        label: itm.name,
+                        ...itm,
+                        icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                      })),
+                    };
+                  }),
             }))}
             onSelect={(item) => {
               onAdd({ itemId: item.id });
@@ -444,7 +461,10 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
         </div>
         <div className="w-full">
           <Table
-            rows={mergeItemRecipe(viewBaseMaterials, items, ...recipes).slice(0, 1)}
+            rows={mergeItemRecipe(viewBaseMaterials, items, ...recipes).slice(
+              0,
+              1
+            )}
             className="animate-fade-in"
             toolbar={[
               <ToggleButton
@@ -533,7 +553,14 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           </div>
 
           <Table
-            rows={recipes}
+            rows={recipes.map((recipe) => ({
+              ...recipe,
+              collapseContent: (
+                <div className="flex flex-col gap-3">
+                  <p>penis</p>
+                </div>
+              ),
+            }))}
             className="animate-fade-in whitespace-nowrap"
             settings={{
               summary: true,
@@ -547,7 +574,10 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                   <button
                     type="button"
                     onClick={() => {
-                      setRecipes({ type: "REMOVE", payload: { index: rowIndex } });
+                      setRecipes({
+                        type: "REMOVE",
+                        payload: { index: rowIndex },
+                      });
                     }}
                     className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-red-500"
                     title={`Remove ${name}`}
@@ -574,7 +604,12 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                       type="button"
                       disabled={value === 1}
                       className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
-                      onClick={() => setRecipes({ type: "REMOVE_AMOUNT", payload: { index: rowIndex } })}
+                      onClick={() =>
+                        setRecipes({
+                          type: "REMOVE_AMOUNT",
+                          payload: { index: rowIndex },
+                        })
+                      }
                     >
                       -
                     </button>
@@ -585,14 +620,25 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                       onChange={(e) => {
                         setRecipes({
                           type: "CHANGE_AMOUNT",
-                          payload: { index: rowIndex, amount: parseInt(e.target.value) > 0 ? parseInt(e.target.value) : 1 },
+                          payload: {
+                            index: rowIndex,
+                            amount:
+                              parseInt(e.target.value) > 0
+                                ? parseInt(e.target.value)
+                                : 1,
+                          },
                         });
                       }}
                     />
                     <button
                       type="button"
                       className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
-                      onClick={() => setRecipes({ type: "ADD_AMOUNT", payload: { index: rowIndex } })}
+                      onClick={() =>
+                        setRecipes({
+                          type: "ADD_AMOUNT",
+                          payload: { index: rowIndex },
+                        })
+                      }
                     >
                       +
                     </button>

@@ -5,6 +5,7 @@ import StatCard from "src/components/Util/StatCard/StatCard";
 import Table from "src/components/Util/Table/Table";
 import {
   formatNumber,
+  getHexCodeFromPercentage,
   groupBy,
   relativeDate,
   rtf,
@@ -75,13 +76,13 @@ const Admin = ({ basespots }: FindAdminData) => {
             value={formatNumber(
               (optimizedBasespots.filter((b) => b.progress == 100).length /
                 optimizedBasespots.length) *
-              100,
+                100,
               { maximumSignificantDigits: 3 }
             )}
             subtext={`${formatNumber(
               (optimizedBasespots.filter((b) => b.progress == 100).length /
                 optimizedBasespots.length) *
-              100,
+                100,
               { maximumSignificantDigits: 3 }
             )} / 100`}
           />
@@ -178,7 +179,9 @@ const Admin = ({ basespots }: FindAdminData) => {
                   >
                     <div className="h-2 w-full rounded bg-gray-200 dark:bg-gray-700">
                       <div
-                        className={`h-2 rounded ${color}`}
+                        className={`h-2 rounded bg-[${getHexCodeFromPercentage(
+                          value
+                        )}]`}
                         style={{ width: `${value}%` }}
                       ></div>
                     </div>

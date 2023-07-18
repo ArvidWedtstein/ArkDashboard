@@ -1118,9 +1118,24 @@ const Table = ({
                 </React.Fragment>
               ))}
             {(dataRows === null || dataRows.length === 0) && (
-              <tr className=" bg-zinc-100 dark:bg-zinc-600">
-                <td headers="" className="p-4 text-center" colSpan={100}>
-                  <span className="px-3 py-2 text-gray-400">No data found</span>
+              <tr className={"bg-zinc-100 dark:bg-zinc-600"}>
+                <td
+                  headers=""
+                  className={clsx("p-4 text-center", {
+                    "rounded-lg":
+                      !mergedSettings.summary ||
+                      (mergedSettings.header &&
+                        PaginatedData.length === 0 &&
+                        columns.length == 0),
+                  })}
+                  colSpan={100}
+                >
+                  <span className="px-3 py-2 text-gray-400">
+                    No data found {mergedSettings.summary ? "true" : "false"}{" "}
+                    {mergedSettings.header && PaginatedData.length === 0
+                      ? "true"
+                      : "false"}
+                  </span>
                 </td>
               </tr>
             )}

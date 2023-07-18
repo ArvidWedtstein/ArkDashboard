@@ -35,7 +35,7 @@ const ToggleButton = ({
   return (
     <label
       className={clsx(
-        "relative my-1 flex cursor-pointer items-center justify-start",
+        "relative my-1 flex w-fit cursor-pointer items-center justify-start",
         className
       )}
     >

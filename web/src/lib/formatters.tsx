@@ -884,6 +884,27 @@ export const removeDuplicates = (array: unknown[]): unknown[] => {
 };
 
 /**
+ * Returns color from red to green based on percentage
+ * @param percentage
+ * @returns
+ */
+export const getHexCodeFromPercentage = (percentage: number): string => {
+  // Ensure the input percentage is within the range [0, 100]
+  const normalizedPercentage = Math.min(100, Math.max(0, percentage));
+
+  // Calculate the RGB values based on the percentage
+  const red = (255 * (100 - normalizedPercentage)) / 100;
+  const green = (255 * normalizedPercentage) / 100;
+
+  // Convert RGB values to a hex code
+  const hexCode = `#${((red << 16) + (green << 8))
+    .toString(16)
+    .padStart(6, "0")}`;
+
+  return hexCode;
+};
+
+/**
  * Groups the elements of an array based on the provided key.
  *
  * @param {Array} xs - The input array.

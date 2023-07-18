@@ -26,7 +26,6 @@ interface BasespotFormProps {
 }
 
 const BasespotForm = (props: BasespotFormProps) => {
-
   const formMethods = useForm<FormBasespot>();
   const [thumbnailUrl, setThumbnailUrl] = useState(null);
 
@@ -35,7 +34,7 @@ const BasespotForm = (props: BasespotFormProps) => {
 
   const onSubmit = (data: FormBasespot) => {
     data.map_id = parseInt(data.map_id.toString() || map.toString());
-    if (thumbnailUrl) data.image = thumbnailUrl;
+    if (thumbnailUrl) data.thumbnail = thumbnailUrl;
     props.onSave(data, props?.basespot?.id);
   };
 
@@ -52,7 +51,7 @@ const BasespotForm = (props: BasespotFormProps) => {
     { label: "Crystal Isles", value: 10 },
     { label: "Fjordur", value: 11 },
     { label: "Lost Island", value: 12 },
-  ]
+  ];
 
   useEffect(() => {
     if (props.basespot?.map_id) {
@@ -142,8 +141,7 @@ const BasespotForm = (props: BasespotFormProps) => {
             if (!e) return;
             setMap(parseInt(e.value.toString()));
             formMethods.setValue("map_id", parseInt(e.value.toString()));
-          }
-          }
+          }}
           name="map_id"
         />
 
@@ -151,9 +149,9 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <MapPicker
           className="mt-3"
-          url={
-            `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${mapNames.find((x) => x.value === map)?.label.replaceAll(' ', '')}-Map.webp`
-          }
+          url={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${mapNames
+            .find((x) => x.value === map)
+            ?.label.replaceAll(" ", "")}-Map.webp`}
           valueProp={{ ...props?.basespot }}
           onChanges={(e) => {
             formMethods.setValue("latitude", e.latitude);
@@ -215,17 +213,18 @@ const BasespotForm = (props: BasespotFormProps) => {
           <FileUpload
             multiple={false}
             name="thumbnail"
-            storagePath={`basespotimages/${props?.basespot?.id || // TODO: fix storagepath
+            storagePath={`basespotimages/${
+              props?.basespot?.id || // TODO: fix storagepath
               basename.current?.value.replaceAll(" ", "")
               // basename.current?.value.replaceAll(" ", "") ||
               // props.basespot?.name.replaceAll(" ", "")
-              }`}
+            }`}
             onUpload={(url) => {
               setThumbnailUrl(url);
             }}
           />
 
-          <FieldError name="image" className="rw-field-error" />
+          <FieldError name="thumbnail" className="rw-field-error" />
         </>
         {/* )} */}
 
