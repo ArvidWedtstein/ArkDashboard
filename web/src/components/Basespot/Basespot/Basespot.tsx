@@ -78,14 +78,12 @@ const Basespot = ({ basespot }: Props) => {
         }}
       >
         <div className="flex justify-between pb-5">
-          <div className="text-xl font-bold uppercase tracking-[0.4rem] opacity-90">
-            <Link
-              to={routes.map({ id: basespot.map_id.toString() })}
-              className="rw-link text-white transition ease-linear"
-            >
-              {basespot.Map.name}
-            </Link>
-          </div>
+          <Link
+            to={routes.map({ id: basespot.map_id.toString() })}
+            className="rw-link text-white transition ease-linear text-xl font-bold uppercase tracking-[0.4rem] opacity-90"
+          >
+            {basespot.Map.name}
+          </Link>
           <div className="flex items-center text-sm group-hover:opacity-90 opacity-50 transition ease-linear">
             <p className="text-right">{timeTag(basespot.created_at)}</p>
             <svg
@@ -100,7 +98,7 @@ const Basespot = ({ basespot }: Props) => {
             </svg>
           </div>
         </div>
-        <div className="pt-6 md:pt-12">
+        <div className="mt-6 md:mt-12">
           {/* <div className="mb-3 flex items-center space-x-1 opacity-75 [&>span:not(:last-child)]:after:content-[',']">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" className="w-5 mr-3 fill-current ">
                 <path className="d" d="M19.22,9.66L10.77,1.21c-.74-.74-1.86-1.21-2.97-1.21H1.67C.75,0,0,.75,0,1.67V7.8c0,1.11,.46,2.23,1.3,2.97l8.45,8.46c1,1,2.62,1,3.62,0l5.94-5.95c.93-.93,.93-2.6-.09-3.62ZM6.96,6.35c-.59,.59-1.56,.59-2.15,0-.59-.59-.59-1.56,0-2.15,.59-.59,1.56-.59,2.15,0,.59,.59,.59,1.56,0,2.15Z" />
@@ -151,9 +149,9 @@ const Basespot = ({ basespot }: Props) => {
             disable_map={true}
           />
         </div>
-        <div className="w-full flex flex-col flex-wrap text-center lg:w-1/2 py-6 lg:pl-12 lg:text-left lg:flex-grow">
-          <div className="mb-10 flex flex-col items-center lg:items-start">
-            <div className="bg-pea-50 text-pea-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full">
+        <div className="w-full flex flex-col flex-wrap text-center lg:w-1/2 py-6 lg:pl-12 lg:text-left lg:flex-grow space-y-10">
+          <div className="flex flex-col items-center lg:items-start space-y-3">
+            <div className="bg-pea-50 text-pea-500 inline-flex h-12 w-12 items-center justify-center rounded-full">
               <svg
                 fill="none"
                 stroke="currentColor"
@@ -163,21 +161,19 @@ const Basespot = ({ basespot }: Props) => {
                 className="h-6 w-6"
                 viewBox="0 0 24 24"
               >
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
               </svg>
             </div>
-            <div className="flex-grow">
-              <h2 className="title-font mb-3 text-lg font-medium text-gray-900 dark:text-stone-200">
-                Coordinates
-              </h2>
-              <p className="text-base leading-relaxed">
-                This spot is located at {basespot.latitude} Lat,{" "}
-                {basespot.longitude} Lon
-              </p>
-            </div>
+            <h2 className="title-font text-lg font-medium text-gray-900 dark:text-stone-200">
+              Coordinates
+            </h2>
+            <p className="text-base leading-relaxed flex-grow">
+              This spot is located at {basespot.latitude} Lat,{" "}
+              {basespot.longitude} Lon
+            </p>
           </div>
-          <div className="mb-10 flex flex-col items-center lg:items-start">
-            <div className=" bg-pea-50 text-pea-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full">
+          <div className="space-y-3 flex flex-col items-center lg:items-start">
+            <div className="bg-pea-50 text-pea-500 inline-flex h-12 w-12 items-center justify-center rounded-full">
               <svg
                 fill="none"
                 stroke="currentColor"
@@ -187,22 +183,21 @@ const Basespot = ({ basespot }: Props) => {
                 className="h-6 w-6"
                 viewBox="0 0 24 24"
               >
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
               </svg>
             </div>
-            <div className="flex-grow">
-              <h2 className="title-font mb-3 text-lg font-medium text-gray-900 dark:text-stone-200">
-                Players
-              </h2>
-              <p className="text-base leading-relaxed">
-                We think that this basespot does fit about{" "}
-                {basespot.estimated_for_players} players
-              </p>
-            </div>
+            <h2 className="title-font mb-3 text-lg font-medium text-gray-900 dark:text-stone-200">
+              Players
+            </h2>
+            <p className="text-base leading-relaxed flex-grow space-y-3">
+              We think that this basespot does fit about{" "}
+              {basespot.estimated_for_players} players
+            </p>
           </div>
         </div>
       </div>
+
 
       {images && images.filter((img) => !img.thumbnail).length > 0 && (
         <section className="body-font border-t border-stone-200 text-gray-700 dark:border-gray-200 dark:text-stone-200">
