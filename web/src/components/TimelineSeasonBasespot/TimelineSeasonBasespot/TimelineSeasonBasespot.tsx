@@ -6,7 +6,7 @@ import { useContext, useLayoutEffect, useState } from "react";
 import { useAuth } from "src/auth";
 import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
 import Map from "src/components/Util/Map/Map";
-import { ModalContext, RefModal } from "src/components/Util/Modal/Modal";
+import { ModalContext, Modal } from "src/components/Util/Modal/Modal";
 
 import { formatBytes, timeTag } from "src/lib/formatters";
 
@@ -90,7 +90,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
   const { openModal } = useContext(ModalContext);
   return (
     <article className="rw-segment">
-      <RefModal
+      <Modal
         image={currentModalImage}
       />
 

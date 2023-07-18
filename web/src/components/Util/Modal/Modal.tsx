@@ -1,7 +1,5 @@
-import { Form } from "@redwoodjs/forms";
 import clsx from "clsx";
-import { createContext, useContext, useEffect, useState } from "react";
-import useComponentVisible from "src/components/useComponentVisible";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 type iModal = {
   isOpen?: boolean;
@@ -13,7 +11,7 @@ type iModal = {
   formSubmit?: (formData) => void;
   onClose?: () => void;
 };
-export const RefModal = ({ image, title, content }: iModal) => {
+export const Modal = ({ image, title, content }: iModal) => {
   const { modalOpen, closeModal } = useContext(ModalContext);
   return (
     <div
@@ -28,8 +26,13 @@ export const RefModal = ({ image, title, content }: iModal) => {
           hidden: modalOpen === false,
         }
       )}
+      onClick={() => {
+        closeModal();
+      }}
     >
-      <div className="relative top-1/2 left-1/2 max-h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2">
+      <div className="relative top-1/2 left-1/2 max-h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2" onClick={(e) => {
+        e.stopPropagation();
+      }}>
         <div className="relative rounded-lg bg-white shadow dark:bg-zinc-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
             {title && (
@@ -106,7 +109,6 @@ export const FormModal = ({ title, isOpen, children, onClose }: iModalForm) => {
         modalRef?.current?.querySelector("form")?.reset();
         onClose?.();
       }}
-      // id="dialog"
       ref={modalRef}
     >
       <div className="flex items-start justify-between border-b border-zinc-500 pb-3">
@@ -175,8 +177,8 @@ const ModalContext = createContext<{
   closeModal: () => void;
   modalOpen: boolean;
 }>({
-  openModal: () => {},
-  closeModal: () => {},
+  openModal: () => { },
+  closeModal: () => { },
   modalOpen: false,
 });
 

@@ -1,8 +1,6 @@
 import { useMutation } from "@apollo/client";
 import { toast } from "@redwoodjs/web/dist/toast";
-import { useContext, useState } from "react";
 import { QUERY } from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
-import { ModalContext, RefModal } from "src/components/Util/Modal/Modal";
 import { groupBy } from "src/lib/formatters";
 
 import type {

@@ -61,6 +61,15 @@ module.exports = {
             transform: "translateY(0)",
           },
         },
+        flyOut: {
+          from: {
+            transform: "translateX(0)",
+          },
+          to: {
+            transform: "translateX(calc(100 % +1.5em))",
+            display: "none",
+          },
+        },
       },
       // https://uicolors.app/create
       // https://realtimecolors.com/?colors=0a070e-f4f1f8-14eba3-25211e-12d393
