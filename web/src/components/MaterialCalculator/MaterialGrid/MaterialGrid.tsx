@@ -454,21 +454,19 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                   field: Item_ItemRecipe_crafted_item_idToItem.id,
                   header: Item_ItemRecipe_crafted_item_idToItem.name,
                   className: "w-0 text-center",
-                  render: ({ value }) => {
-                    return (
-                      <div
-                        className="flex flex-col items-center justify-center"
-                        key={`${value}-${Item_ItemRecipe_crafted_item_idToItem.id}`}
-                      >
-                        <img
-                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafted_item_idToItem.image}`}
-                          className="h-6 w-6"
-                          loading="lazy"
-                        />
-                        <span className="text-sm">{formatNumber(amount)}</span>
-                      </div>
-                    );
-                  },
+                  render: ({ value }) => (
+                    <div
+                      className="flex flex-col items-center justify-center"
+                      key={`${value}-${Item_ItemRecipe_crafted_item_idToItem.id}`}
+                    >
+                      <img
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafted_item_idToItem.image}`}
+                        className="h-6 w-6"
+                        loading="lazy"
+                      />
+                      <span className="text-sm">{formatNumber(amount)}</span>
+                    </div>
+                  )
                 })
               ),
             ]}
@@ -516,7 +514,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
             rows={recipes.map((recipe) => ({
               ...recipe,
               collapseContent: (
-                <div className="flex flex-col flex-wrap gap-3 p-4 divide-y divide-zinc-500">
+                <div className="flex flex-col justify-center items-start gap-3 p-4 divide-y divide-zinc-500">
                   {mergeItemRecipe(true, items, {
                     ...recipe,
                   })
@@ -533,36 +531,52 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                       amount,
                     },
                       i) => (
-                      <div>
-
-                        <h3 className="text-sm justify-center items-center inline-flex space-x-3"><span>{name} ({amount})</span>
+                      <div className="text-sm justify-center items-center flex flex-row space-x-3 space-y-2">
+                        {data.itemRecipeItemsByIds.filter(
+                          (iri) => iri.item_recipe_id === items.find(
+                            (item) =>
+                              item.Item_ItemRecipe_crafted_item_idToItem.id === id
+                          ).id
+                        ).map(({ amount, Item }) => (
+                          <div
+                            className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 w-fit text-center"
+                            title={Item.name}
+                          >
+                            <img
+                              className="h-10 w-10"
+                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
+                              alt={Item.name}
+                            />
+                            <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
+                              {amount}
+                            </div>
+                          </div>
+                        ))}
+                        {/* TODO: Add crafting station */}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 448 512"
+                          fill="currentColor"
+                          className="h-8 w-8"
+                        >
+                          <path d="M427.8 266.8l-160 176C264.7 446.3 260.3 448 256 448c-3.844 0-7.703-1.375-10.77-4.156c-6.531-5.938-7.016-16.06-1.078-22.59L379.8 272H16c-8.844 0-15.1-7.155-15.1-15.1S7.156 240 16 240h363.8l-135.7-149.3c-5.938-6.531-5.453-16.66 1.078-22.59c6.547-5.906 16.66-5.469 22.61 1.094l160 176C433.4 251.3 433.4 260.7 427.8 266.8z" />
+                        </svg>
+                        <div
+                          className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 w-fit text-center"
+                          title={name}
+                        >
                           <img
-                            className="h-8 w-8"
+                            className="h-10 w-10"
                             src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                            loading="lazy"
+                            alt={name}
                           />
-                        </h3>
-                        {/* {ItemRecipe.ItemRecipeItem.map(({ amount, Item }) => (
-                            <button
-                              type="button"
-                              className="animate-fade-in b relative rounded-lg border border-zinc-500 p-2 text-center hover:border-red-500 hover:ring-1 hover:ring-red-500"
-                              title={Item.name}
-                              key={`recipe-${Item.id}`}
-                            >
-                              <img
-                                className="h-10 w-10"
-                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
-                                alt={Item.name}
-                              />
-                              <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
-                                {amount}
-                              </div>
-                            </button>
-                          ))} */}
+                          <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
+                            {amount}
+                          </div>
+                        </div>
                       </div>
                     ))
                   }
-
                 </div>
               ),
             }))}
