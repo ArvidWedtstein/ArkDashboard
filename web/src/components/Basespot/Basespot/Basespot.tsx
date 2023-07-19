@@ -197,9 +197,6 @@ const Basespot = ({ basespot }: Props) => {
 
 
             <div className="grid gap-4">
-              {/* <div>
-                <img className="aspect-auto w-full rounded-lg border border-zinc-500 transition animate-fade-in" src={currentModalImage} alt="" />
-              </div> */}
               <Slideshow slides={images.map((img) => ({ url: img.url }))} autoPlay={false} onSlideChange={(index) => {
                 if (images[index]) {
                   setCurrentModalImage(images[index].url)

@@ -79,7 +79,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       variables: {
         ids: itemRecipes.map((f) => f.id),
       },
-      onCompleted: (data) => {},
+      onCompleted: (data) => { },
       onError: (error) => {
         console.log(error);
       },
@@ -103,8 +103,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   type RecipeActionType =
     | "ADD_AMOUNT_BY_NUM"
     | "CHANGE_AMOUNT"
-    | "ADD_AMOUNT"
-    | "REMOVE_AMOUNT"
     | "ADD"
     | "REMOVE"
     | "REMOVE_BY_ID"
@@ -124,25 +122,23 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   const reducer = (state: RecipeState[], action: RecipeAction) => {
     const { type, payload } = action;
     switch (type) {
-      case "ADD_AMOUNT_BY_NUM": {
-        let itemIndex = state.findIndex((item) => item.id === payload.item.id);
+      case "ADD_AMOUNT_BY_NUM":
+      case "ADD": {
+        const itemIndex = state.findIndex(item => item.id === payload.item.id);
         const yields = payload.item?.yields || 1;
+        const amountToAdd = payload.amount || 1;
+
         if (itemIndex !== -1) {
           return state.map((item, i) =>
             i === itemIndex
-              ? {
-                  ...item,
-                  amount: item.amount + (payload.amount || 1) * yields,
-                }
+              ? { ...item, amount: item.amount + amountToAdd * yields }
               : item
           );
         }
+
         return [
           ...state,
-          {
-            ...payload.item,
-            amount: payload.amount || 1, //* yields,
-          },
+          { ...payload.item, amount: type === "ADD_AMOUNT_BY_NUM" ? amountToAdd * yields : yields }
         ];
       }
       case "CHANGE_AMOUNT": {
@@ -153,53 +149,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           );
         }
         return state;
-      }
-      case "ADD_AMOUNT": {
-        return state.map((item, i) => {
-          const yields = item?.yields || 1;
-          return i === payload.index
-            ? {
-                ...item,
-                amount: item.amount + yields,
-              }
-            : item;
-        });
-      }
-      case "REMOVE_AMOUNT": {
-        return state.map((item, i) => {
-          const yields = item?.yields || 1;
-          return i === payload.index
-            ? {
-                ...item,
-                amount:
-                  item.amount - yields < 1 ? yields : item.amount - yields,
-              }
-            : item;
-        });
-      }
-      case "ADD": {
-        const itemIndex = state.findIndex(
-          (item) => item.id === payload.item.id
-        );
-
-        const yields = payload.item?.yields || 1;
-        if (itemIndex !== -1) {
-          return state.map((item, i) =>
-            i === itemIndex
-              ? {
-                  ...item,
-                  amount: (item.amount || 0) + yields,
-                }
-              : item
-          );
-        }
-        return [
-          ...state,
-          {
-            ...payload.item,
-            amount: yields,
-          },
-        ];
       }
       case "REMOVE": {
         return state.filter((_, i) => i !== payload.index);
@@ -256,22 +205,32 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       }
     }
 
-    recipes.forEach((recipe) => {
-      setRecipes({ type: "REMOVE_BY_ID", payload: { item: recipe } });
-      let itemfound = result.find(
-        (i) =>
-          i.Item_ItemRecipe_crafted_item_idToItem.id ===
-          recipe.Item_ItemRecipe_crafted_item_idToItem.id
-      );
+    const modifiedRecipes = [...recipes];
+
+    for (const recipe of modifiedRecipes) {
+      const itemfound = result.find(i => i.Item_ItemRecipe_crafted_item_idToItem.id === recipe.Item_ItemRecipe_crafted_item_idToItem.id);
       if (itemfound) {
+        setRecipes({ type: "REMOVE_BY_ID", payload: { item: itemfound } });
+        const amountToAdd = recipe.amount || 0;
         setRecipes({
           type: "ADD_AMOUNT_BY_NUM",
-          payload: { item: itemfound, amount: recipe.amount }, // / itemfound.yields,
+          payload: {
+            item: {
+              ...itemfound,
+              ItemRecipeItem: data.itemRecipeItemsByIds.filter(
+                (iri) => iri.item_recipe_id == itemfound.id
+              ),
+            },
+            amount: amountToAdd / (itemfound.yields || 1),
+          },
         });
       }
-    });
+
+    }
     return result;
   }, [selectedCraftingStations]);
+
+
 
   const onAdd = ({ itemId }) => {
     if (!itemId) return;
@@ -281,6 +240,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     );
 
     if (!chosenItem) return toast.error("Item could not be found");
+    if (!data) return toast.error("Items not loaded");
     setRecipes({
       type: "ADD",
       payload: {
@@ -354,9 +314,9 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
         onSelect={({ UserRecipeItemRecipe }) => {
           UserRecipeItemRecipe.forEach(({ item_recipe_id, amount }) => {
             let itemfound = items.find((item) => item.id === item_recipe_id);
-            if (itemfound) {
+            if (itemfound && data) {
               setRecipes({
-                type: "ADD_AMOUNT_BY_NUM",
+                type: "ADD",
                 payload: {
                   item: {
                     ...itemfound,
@@ -438,21 +398,21 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
               value: v.every(({ type }) => !type)
                 ? v.map((itm) => ({
-                    ...itm,
-                    label: itm.name,
-                    icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                    value: [],
-                  }))
+                  ...itm,
+                  label: itm.name,
+                  icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                  value: [],
+                }))
                 : Object.entries(groupBy(v, "type")).map(([type, v2]) => {
-                    return {
-                      label: type,
-                      value: v2.map((itm) => ({
-                        label: itm.name,
-                        ...itm,
-                        icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                      })),
-                    };
-                  }),
+                  return {
+                    label: type,
+                    value: v2.map((itm) => ({
+                      label: itm.name,
+                      ...itm,
+                      icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                    })),
+                  };
+                }),
             }))}
             onSelect={(item) => {
               onAdd({ itemId: item.id });
@@ -556,8 +516,53 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
             rows={recipes.map((recipe) => ({
               ...recipe,
               collapseContent: (
-                <div className="flex flex-col gap-3">
-                  <p>penis</p>
+                <div className="flex flex-col flex-wrap gap-3 p-4 divide-y divide-zinc-500">
+                  {mergeItemRecipe(true, items, {
+                    ...recipe,
+                  })
+                    .sort(
+                      (a, b) =>
+                        a.Item_ItemRecipe_crafted_item_idToItem.id -
+                        b.Item_ItemRecipe_crafted_item_idToItem.id
+                    ).map(({
+                      Item_ItemRecipe_crafted_item_idToItem: {
+                        id,
+                        name,
+                        image,
+                      },
+                      amount,
+                    },
+                      i) => (
+                      <div>
+
+                        <h3 className="text-sm justify-center items-center inline-flex space-x-3"><span>{name} ({amount})</span>
+                          <img
+                            className="h-8 w-8"
+                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+                            loading="lazy"
+                          />
+                        </h3>
+                        {/* {ItemRecipe.ItemRecipeItem.map(({ amount, Item }) => (
+                            <button
+                              type="button"
+                              className="animate-fade-in b relative rounded-lg border border-zinc-500 p-2 text-center hover:border-red-500 hover:ring-1 hover:ring-red-500"
+                              title={Item.name}
+                              key={`recipe-${Item.id}`}
+                            >
+                              <img
+                                className="h-10 w-10"
+                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
+                                alt={Item.name}
+                              />
+                              <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
+                                {amount}
+                              </div>
+                            </button>
+                          ))} */}
+                      </div>
+                    ))
+                  }
+
                 </div>
               ),
             }))}
@@ -595,7 +600,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 header: "Amount",
                 numeric: true,
                 className: "w-0 text-center",
-                render: ({ rowIndex, value }) => (
+                render: ({ rowIndex, value, row }) => (
                   <div
                     className="flex flex-row items-center"
                     key={`materialcalculator-${rowIndex}}`}
@@ -606,8 +611,11 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                       className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
                       onClick={() =>
                         setRecipes({
-                          type: "REMOVE_AMOUNT",
-                          payload: { index: rowIndex },
+                          type: "CHANGE_AMOUNT",
+                          payload: {
+                            index: rowIndex,
+                            amount: value - row.yields < 1 ? row.yields : value - row.yields,
+                          },
                         })
                       }
                     >
@@ -635,8 +643,11 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                       className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
                       onClick={() =>
                         setRecipes({
-                          type: "ADD_AMOUNT",
-                          payload: { index: rowIndex },
+                          type: "CHANGE_AMOUNT",
+                          payload: {
+                            index: rowIndex,
+                            amount: value + row.yields
+                          },
                         })
                       }
                     >
@@ -700,7 +711,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
             ]}
           />
         </div>
-      </Form>
-    </div>
+      </Form >
+    </div >
   );
 };

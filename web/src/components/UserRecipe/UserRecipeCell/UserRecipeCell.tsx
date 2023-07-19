@@ -13,6 +13,25 @@ export const QUERY = gql`
       user_id
       private
       name
+      UserRecipeItemRecipe {
+        id
+        ItemRecipe {
+          id
+          Item_ItemRecipe_crafted_item_idToItem  {
+            name
+            image
+          }
+          ItemRecipeItem {
+            Item {
+              id
+              name
+              image
+            }
+            amount
+          }
+        }
+        amount
+      }
     }
   }
 `

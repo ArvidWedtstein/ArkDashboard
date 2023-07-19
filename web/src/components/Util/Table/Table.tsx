@@ -189,7 +189,7 @@ const Table = ({
   );
   const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(
     mergedSettings.pagination.rowsPerPage ||
-      mergedSettings.pagination.pageSizeOptions[0]
+    mergedSettings.pagination.pageSizeOptions[0]
   );
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filters, setFilters] = useState<Filter[]>([]);
@@ -462,23 +462,23 @@ const Table = ({
 
     const valueFormatted = valueFormatter
       ? valueFormatter({
-          value: cellData,
-          row: rowData,
-          columnIndex,
-        })
+        value: cellData,
+        row: rowData,
+        columnIndex,
+      })
       : isNaN(cellData)
-      ? cellData?.amount || cellData
-      : cellData;
+        ? cellData?.amount || cellData
+        : cellData;
 
     const content = render
       ? render({
-          columnIndex,
-          rowIndex,
-          value: valueFormatted,
-          field: field,
-          header,
-          row: rowData,
-        })
+        columnIndex,
+        rowIndex,
+        value: valueFormatted,
+        field: field,
+        header,
+        row: rowData,
+      })
       : valueFormatted;
 
     return (
@@ -518,8 +518,8 @@ const Table = ({
               checked={
                 header
                   ? PaginatedData.every((row) =>
-                      selectedRows.includes(row.row_id)
-                    )
+                    selectedRows.includes(row.row_id)
+                  )
                   : isSelected(datarow.row_id)
               }
               onChange={(e) => handleRowSelect(e, datarow?.row_id)}
@@ -656,7 +656,7 @@ const Table = ({
       } else if (
         dir === "next" &&
         currentPage <
-          Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
+        Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
       ) {
         setCurrentPage(currentPage + 1);
       }
@@ -1055,11 +1055,10 @@ const Table = ({
                     //     handleRowCollapse(datarow.row_id);
                     //   }
                     // }}
-                    className={`z-10 ${
-                      mergedSettings.borders.vertical
+                    className={`z-10 ${mergedSettings.borders.vertical
                         ? "divide-x divide-gray-400 dark:divide-zinc-800"
                         : ""
-                    }`}
+                      }`}
                   >
                     {dataRows.some((row) => row.collapseContent) &&
                       tableSelect({
@@ -1103,9 +1102,8 @@ const Table = ({
                   </tr>
                   {datarow?.collapseContent && (
                     <tr
-                      className={`transition ease-in ${
-                        isRowOpen(datarow.row_id) ? "table-row" : "hidden"
-                      }`}
+                      className={`transition ease-in ${isRowOpen(datarow.row_id) ? "table-row" : "hidden"
+                        }`}
                     >
                       <td
                         colSpan={100}
@@ -1131,10 +1129,7 @@ const Table = ({
                   colSpan={100}
                 >
                   <span className="px-3 py-2 text-gray-400">
-                    No data found {mergedSettings.summary ? "true" : "false"}{" "}
-                    {mergedSettings.header && PaginatedData.length === 0
-                      ? "true"
-                      : "false"}
+                    No data found
                   </span>
                 </td>
               </tr>
