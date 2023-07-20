@@ -674,9 +674,6 @@
   }
 }
 
-.tree a[href=""] {
-  cursor: default;
-}
 .tree ul {
   position: relative;
   padding: 1em 0;

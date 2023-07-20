@@ -772,7 +772,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                       </li>
                     </ul>
                   </div> */}
-                  <div className="tree">
+                  <div className="tree relative py-4 mx-auto whitespace-nowrap text-center after:table after:content-[''] after:clear-both">
                     <ul>
                       {/* <li> */}
                       {/* <div
