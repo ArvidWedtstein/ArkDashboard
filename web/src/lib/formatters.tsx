@@ -174,8 +174,9 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-    }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+  }`;
 };
 
 /**
@@ -255,7 +256,7 @@ interface Item {
   id: number;
   name: string;
   image: string;
-  [key: string]: any
+  [key: string]: any;
   // Add other properties here if needed.
 }
 interface CraftingRecipe {
@@ -264,13 +265,13 @@ interface CraftingRecipe {
   amount: number;
 }
 interface Material {
-  "__typename": string;
+  __typename: string;
   id: string;
   crafting_station_id: number;
   crafting_time: number;
   yields: number;
   Item_ItemRecipe_crafted_item_idToItem: {
-    "__typename": string;
+    __typename: string;
     id: number;
     name: string;
     image: string;
@@ -278,12 +279,13 @@ interface Material {
     type: string;
   };
   ItemRecipeItem: {
-    "__typename": string;
+    __typename: string;
     id: string;
     item_recipe_id: string;
     amount: number;
+    ItemRecipeItem: CraftingRecipe[];
     Item: {
-      "__typename": string;
+      __typename: string;
       id: number;
       name: string;
       image: string;
@@ -307,10 +309,12 @@ export const getBaseMaterials = (
   items: any[],
   ...objects: Array<any>
 ) => {
-
-
   let materials: Material[] = [];
-  const findBaseMaterials = (item: { ItemRecipeItem: CraftingRecipe[] }, amount: number, yields: number = 1) => {
+  const findBaseMaterials = (
+    item: { ItemRecipeItem: CraftingRecipe[] },
+    amount: number,
+    yields: number = 1
+  ) => {
     // If has no crafting recipe, return
     if (!item?.ItemRecipeItem || item.ItemRecipeItem.length === 0) {
       return;
@@ -343,10 +347,15 @@ export const getBaseMaterials = (
     const recipeItems = item.ItemRecipeItem;
     for (const { Item, amount: recipeAmount } of recipeItems) {
       try {
-        let newRecipe = items.find((i) => i.Item_ItemRecipe_crafted_item_idToItem.id === Item.id);
+        let newRecipe = items.find(
+          (i) => i.Item_ItemRecipe_crafted_item_idToItem.id === Item.id
+        );
 
         if (!baseMaterials || !newRecipe?.ItemRecipeItem?.length || !Item) {
-          const materialId = newRecipe ? newRecipe.Item_ItemRecipe_crafted_item_idToItem.id : Item.id;
+          const materialId = newRecipe
+            ? newRecipe.Item_ItemRecipe_crafted_item_idToItem.id
+            : Item.id;
+
           let material = materials.find(
             (m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId
           );
@@ -368,73 +377,109 @@ export const getBaseMaterials = (
           findBaseMaterials(newRecipe, recipeAmount * amount, newRecipe.yields);
         }
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
     }
   };
-  const findBaseMaterialsPath = (item: Material, amount) => {
-    materials.push({ ...item });
+  const findBaseMaterialsPath = (item: Material, amount, first = true) => {
+    if (first && !materials.some((mat) => mat.id === item.id))
+      materials.push(item);
 
     // If has no crafting recipe, return
     if (!item?.ItemRecipeItem || item.ItemRecipeItem.length === 0) return;
     for (const { Item, amount: recipeAmount } of item.ItemRecipeItem) {
-      let newRecipe = items?.find((i) => i.Item_ItemRecipe_crafted_item_idToItem.id === Item.id);
+      let newRecipe = items?.find(
+        (i) => i.Item_ItemRecipe_crafted_item_idToItem.id === Item.id
+      );
 
-      if (!newRecipe?.ItemRecipeItem?.length || !Item) {
-        const materialId = newRecipe ? newRecipe.Item_ItemRecipe_crafted_item_idToItem.id : Item.id;
-        const existingMaterial = materials.find((m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId)
-        const count = (recipeAmount * amount) / item.yields;
-        let material = materials.find(
-          (m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId
-        );
-        if (existingMaterial) {
-          material.amount += count;
-          material.crafting_time += count * (newRecipe?.crafting_time || 1);
-          materials = materials.map((m) => {
-            if (m.Item_ItemRecipe_crafted_item_idToItem.id === materialId) {
-              m = material;
-              m.ItemRecipeItem = [{
-                ...newRecipe,
-                amount: recipeAmount * amount,
-              }];
-            }
-            return m;
-          });
-        } else {
-          material = {
-            ...(newRecipe || { Item_ItemRecipe_crafted_item_idToItem: Item }),
-            amount: count,
-            crafting_time: count * (newRecipe?.crafting_time || 1),
-          };
-          materials = materials.map((m) => {
-            return {
-              ...m,
-              ItemRecipeItem: m.ItemRecipeItem?.map((i: any) => {
-                if ((i.Item ? i?.Item.id : i?.Item_ItemRecipe_crafted_item_idToItem.id) === materialId) {
-                  return material;
-                }
-                return i;
-              }),
-            };
-          });
-
-        }
-      } else if (newRecipe) {
-        materials = materials.map((m) => {
-          if (m.Item_ItemRecipe_crafted_item_idToItem.id === newRecipe.Item_ItemRecipe_crafted_item_idToItem.id) {
-            m.ItemRecipeItem = [...(m.ItemRecipeItem || []), {
-              ...newRecipe,
-              amount: recipeAmount * amount,
-            }];
-          }
-          return m;
-        });
-      }
+      // if (!newRecipe?.ItemRecipeItem?.length || !Item) {
+      //   const materialId = newRecipe
+      //     ? newRecipe.Item_ItemRecipe_crafted_item_idToItem.id
+      //     : Item.id;
+      //   const existingMaterial = materials.find(
+      //     (m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId
+      //   );
+      //   const count = (recipeAmount * amount) / item.yields;
+      //   let material = materials.find(
+      //     (m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId
+      //   );
+      //   if (material) {
+      //     let materialRecipes = material.ItemRecipeItem.find(
+      //       (f) => f.item_recipe_id === item.id
+      //     );
+      //     let newRecipe = items?.find(
+      //       (i) =>
+      //         i.Item_ItemRecipe_crafted_item_idToItem.id === materialRecipes.id
+      //     );
+      //     if (materialRecipes) {
+      //       materialRecipes.ItemRecipeItem.push(newRecipe);
+      //     }
+      //   }
+      //   if (existingMaterial) {
+      //     material.amount += count;
+      //     material.crafting_time += count * (newRecipe?.crafting_time || 1);
+      //     materials = materials.map((m) => {
+      //       if (m.Item_ItemRecipe_crafted_item_idToItem.id === materialId) {
+      //         m = material;
+      //         m.ItemRecipeItem = [
+      //           {
+      //             ...newRecipe,
+      //             amount: recipeAmount * amount,
+      //           },
+      //         ];
+      //       }
+      //       return m;
+      //     });
+      //   } else {
+      //     material = {
+      //       ...(newRecipe || { Item_ItemRecipe_crafted_item_idToItem: Item }),
+      //       amount: count,
+      //       crafting_time: count * (newRecipe?.crafting_time || 1),
+      //     };
+      //     materials = materials.map((m) => {
+      //       return {
+      //         ...m,
+      //         ItemRecipeItem: m.ItemRecipeItem?.map((i: any) => {
+      //           if (
+      //             (i.Item
+      //               ? i?.Item.id
+      //               : i?.Item_ItemRecipe_crafted_item_idToItem.id) ===
+      //             materialId
+      //           ) {
+      //             return material;
+      //           }
+      //           return i;
+      //         }),
+      //       };
+      //     });
+      //   }
+      // } else if (newRecipe) {
+      //   findBaseMaterialsPath(newRecipe, recipeAmount * amount, false);
+      // }
     }
+  };
+  const materialsPath = (item: Material, amount, first = true) => {
+    return item.ItemRecipeItem.map((recipe) => {
+      const newRecipe = items?.find(
+        (i) => i.Item_ItemRecipe_crafted_item_idToItem.id === recipe.Item.id
+      );
+
+      if (newRecipe && newRecipe.ItemRecipeItem.length > 0) {
+      } else {
+        return {
+          ...recipe,
+          amount: recipe.amount * amount,
+          crafting_time:
+            recipe.amount * amount * (newRecipe?.crafting_time || 1),
+        };
+      }
+      console.log(newRecipe, items[0]);
+    });
   };
 
   objects.forEach((item, i) => {
-    if (path) findBaseMaterialsPath(item, item.amount);
+    if (path) materialsPath(item, item.amount);
+    // if (path) findBaseMaterialsPath(item, item.amount);
     else findBaseMaterials(item, item.amount, item.yields);
   });
   return materials;
@@ -888,9 +933,9 @@ export const generatePDF = (crafts) => {
       tableX - cellPadding * 2,
       30 + crafts.length * 20,
       tableX +
-      (Object.keys(crafts[0]).length - 1) *
-      (tableSize.width / Object.keys(crafts[0]).length) +
-      columnWidths[Object.keys(crafts[0]).length - 1],
+        (Object.keys(crafts[0]).length - 1) *
+          (tableSize.width / Object.keys(crafts[0]).length) +
+        columnWidths[Object.keys(crafts[0]).length - 1],
       40 + (crafts.length - 1) * 20 + cellPadding,
       true,
       `0.9 0.9 0.9`
@@ -924,7 +969,7 @@ export const generatePDF = (crafts) => {
                     x:
                       tableX +
                       (Object.keys(crafts[0]).length - 1) *
-                      (tableSize.width / Object.keys(crafts[0]).length) +
+                        (tableSize.width / Object.keys(crafts[0]).length) +
                       columnWidths[Object.keys(crafts[0]).length - 1],
                     y: cellY + cellPadding,
                   },
