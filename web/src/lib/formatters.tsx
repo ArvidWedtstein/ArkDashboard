@@ -1,6 +1,7 @@
 import React from "react";
 
 import humanize from "humanize-string";
+import { ItemRecipeItem } from "types/graphql";
 
 export const formatEnum = (values: string | string[] | null | undefined) => {
   let output = "";
@@ -249,6 +250,47 @@ export const combineBySummingKeys = (...objects: object[]) => {
 //   681: turretTower.tek_turrets, // Tek Turret
 //   676: amountTekGen, // Tek Generator
 // }
+interface Item {
+  // Define the properties of the "Item" type based on your actual data structure.
+  id: number;
+  name: string;
+  image: string;
+  [key: string]: any
+  // Add other properties here if needed.
+}
+interface CraftingRecipe {
+  // Define the properties of the "CraftingRecipe" type based on your actual data structure.
+  Item: Item;
+  amount: number;
+}
+interface Material {
+  "__typename": string;
+  id: string;
+  crafting_station_id: number;
+  crafting_time: number;
+  yields: number;
+  Item_ItemRecipe_crafted_item_idToItem: {
+    "__typename": string;
+    id: number;
+    name: string;
+    image: string;
+    category: string;
+    type: string;
+  };
+  ItemRecipeItem: {
+    "__typename": string;
+    id: string;
+    item_recipe_id: string;
+    amount: number;
+    Item: {
+      "__typename": string;
+      id: number;
+      name: string;
+      image: string;
+    };
+  }[];
+  amount: number;
+}
 /**
  * Calculates the base materials required to produce the specified objects.
  *
@@ -258,14 +300,17 @@ export const combineBySummingKeys = (...objects: object[]) => {
  *
  * @returns {Array<any>} An array of objects representing the base materials required.
  */
+
 export const getBaseMaterials = (
   baseMaterials: boolean = false,
+  path: boolean = false,
   items: any[],
   ...objects: Array<any>
 ) => {
 
-  let materials = [];
-  const findBaseMaterials = (item, amount, yields = 1) => {
+
+  let materials: Material[] = [];
+  const findBaseMaterials = (item: { ItemRecipeItem: CraftingRecipe[] }, amount: number, yields: number = 1) => {
     // If has no crafting recipe, return
     if (!item?.ItemRecipeItem || item.ItemRecipeItem.length === 0) {
       return;
@@ -298,10 +343,10 @@ export const getBaseMaterials = (
     const recipeItems = item.ItemRecipeItem;
     for (const { Item, amount: recipeAmount } of recipeItems) {
       try {
-        let newRecipe = items.find((i) => i.crafted_item_id === Item.id);
+        let newRecipe = items.find((i) => i.Item_ItemRecipe_crafted_item_idToItem.id === Item.id);
 
         if (!baseMaterials || !newRecipe?.ItemRecipeItem?.length || !Item) {
-          const materialId = newRecipe ? newRecipe.crafted_item_id : Item.id;
+          const materialId = newRecipe ? newRecipe.Item_ItemRecipe_crafted_item_idToItem.id : Item.id;
           let material = materials.find(
             (m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId
           );
@@ -322,12 +367,75 @@ export const getBaseMaterials = (
         } else if (newRecipe) {
           findBaseMaterials(newRecipe, recipeAmount * amount, newRecipe.yields);
         }
-      } catch (error) { }
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  };
+  const findBaseMaterialsPath = (item: Material, amount) => {
+    materials.push({ ...item });
+
+    // If has no crafting recipe, return
+    if (!item?.ItemRecipeItem || item.ItemRecipeItem.length === 0) return;
+    for (const { Item, amount: recipeAmount } of item.ItemRecipeItem) {
+      let newRecipe = items?.find((i) => i.Item_ItemRecipe_crafted_item_idToItem.id === Item.id);
+
+      if (!newRecipe?.ItemRecipeItem?.length || !Item) {
+        const materialId = newRecipe ? newRecipe.Item_ItemRecipe_crafted_item_idToItem.id : Item.id;
+        const existingMaterial = materials.find((m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId)
+        const count = (recipeAmount * amount) / item.yields;
+        let material = materials.find(
+          (m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId
+        );
+        if (existingMaterial) {
+          material.amount += count;
+          material.crafting_time += count * (newRecipe?.crafting_time || 1);
+          materials = materials.map((m) => {
+            if (m.Item_ItemRecipe_crafted_item_idToItem.id === materialId) {
+              m = material;
+              m.ItemRecipeItem = [{
+                ...newRecipe,
+                amount: recipeAmount * amount,
+              }];
+            }
+            return m;
+          });
+        } else {
+          material = {
+            ...(newRecipe || { Item_ItemRecipe_crafted_item_idToItem: Item }),
+            amount: count,
+            crafting_time: count * (newRecipe?.crafting_time || 1),
+          };
+          materials = materials.map((m) => {
+            return {
+              ...m,
+              ItemRecipeItem: m.ItemRecipeItem?.map((i: any) => {
+                if ((i.Item ? i?.Item.id : i?.Item_ItemRecipe_crafted_item_idToItem.id) === materialId) {
+                  return material;
+                }
+                return i;
+              }),
+            };
+          });
+
+        }
+      } else if (newRecipe) {
+        materials = materials.map((m) => {
+          if (m.Item_ItemRecipe_crafted_item_idToItem.id === newRecipe.Item_ItemRecipe_crafted_item_idToItem.id) {
+            m.ItemRecipeItem = [...(m.ItemRecipeItem || []), {
+              ...newRecipe,
+              amount: recipeAmount * amount,
+            }];
+          }
+          return m;
+        });
+      }
     }
   };
 
-  objects.forEach((item) => {
-    findBaseMaterials(item, item.amount, item.yields);
+  objects.forEach((item, i) => {
+    if (path) findBaseMaterialsPath(item, item.amount);
+    else findBaseMaterials(item, item.amount, item.yields);
   });
   return materials;
 };
