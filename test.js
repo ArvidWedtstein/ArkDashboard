@@ -1,5 +1,6 @@
 console.time("normal");
 
+return;
 const dinos = dadinos.map((x) => {
   return `
   UPDATE public."Dino"
