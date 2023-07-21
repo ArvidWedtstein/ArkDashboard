@@ -384,17 +384,18 @@ export const getBaseMaterials = (
     if (!recipe.ItemRecipeItem) return {
       ...recipe,
       amount: (recipe.amount * amount),
+      crafting_time: recipe.amount * (recipe.crafting_time || 1),
     };
 
     const processedItems = recipe.ItemRecipeItem.map((itemRecipeItem) => {
       const processedItem = {
-        ...{
-          ...itemRecipeItem,
-          amount: (itemRecipeItem.amount * recipe.amount) / recipe.yields,
-        },
+        ...itemRecipeItem,
+        amount: (itemRecipeItem.amount * recipe.amount) / recipe.yields,
+        crafting_time: (itemRecipeItem.amount / recipe.yields) * (recipe.crafting_time || 1),
       };
 
       const nestedRecipe = getRecipeById(itemRecipeItem.Item.id);
+
       if (nestedRecipe) {
         processedItem.Item = {
           ...processedItem.Item,
@@ -407,22 +408,20 @@ export const getBaseMaterials = (
           );
         }
       }
-
       return processedItem;
     });
-
-    materials.push({
-      ...recipe,
-      ItemRecipeItem: processedItems,
-    })
     return {
       ...recipe,
+      crafting_time: (recipe.crafting_time || 1) * amount,
+      Item: recipe.Item_ItemRecipe_crafted_item_idToItem,
       ItemRecipeItem: processedItems,
     };
   }
 
-  objects.forEach((item, i) => {
-    if (path) item = recipeTree(item);
+  objects.forEach((item) => {
+    if (path) {
+      materials.push(recipeTree(item, item.amount));
+    }
     else findBaseMaterials(item, item.amount, item.yields);
   });
   return materials;

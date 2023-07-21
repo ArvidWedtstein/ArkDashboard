@@ -18,6 +18,7 @@ import { ITEMRECIPEITEMQUERY, QUERY } from "../MaterialCalculatorCell";
 import UserRecipesCell from "src/components/UserRecipe/UserRecipesCell";
 import ItemList from "src/components/Util/ItemList/ItemList";
 import { useLazyQuery } from "@apollo/client";
+
 const CREATE_USERRECIPE_MUTATION = gql`
   mutation CreateUserRecipe($input: CreateUserRecipeInput!) {
     createUserRecipe(input: $input) {
@@ -56,6 +57,35 @@ interface MaterialGridProps {
   itemRecipes: NonNullable<FindItemsMats["itemRecipes"]>;
   error?: RWGqlError;
 }
+
+const TreeBranch = ({ itemRecipe }) => {
+  const { Item, amount, crafting_time } = itemRecipe;
+  const imageUrl = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item?.image}`;
+
+  return (
+    <li>
+      {Item && (
+        <div className="animate-fade-in relative inline-flex h-16 w-16 items-center justify-center rounded-lg border border-zinc-500 p-2 text-center" title={Item.name}>
+          <img className="h-8 w-8" src={imageUrl} alt={Item.name} />
+          <div className="absolute bottom-0 right-0 inline-flex h-6 w-full items-end justify-end bg-transparent p-1 text-xs font-bold">
+            {formatNumber(amount)}
+          </div>
+          <div className="absolute top-0 right-0 inline-flex h-6 w-full items-start justify-end bg-transparent p-1 text-xs font-medium">
+            {timeFormatL(crafting_time, true)}
+          </div>
+        </div>
+      )}
+      {itemRecipe?.ItemRecipeItem?.length > 0 && (
+        <ul>
+          {itemRecipe?.ItemRecipeItem.map((subItemRecipe, i) => (
+            <TreeBranch key={`subItem-${subItemRecipe?.Item?.id}`} itemRecipe={subItemRecipe} />
+          ))}
+        </ul>
+      )}
+    </li>
+  )
+}
+
 
 export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   const { currentUser, isAuthenticated, client } = useAuth();
@@ -537,342 +567,25 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           </div>
 
           <Table
-            rows={recipes.map((recipe, idx) => ({
-              ...recipe,
-              collapseContent: (
-                <div className="flex flex-col items-start justify-center gap-3 divide-y divide-zinc-500 p-4">
-                  {/* {mergeItemRecipe(viewBaseMaterials, items, {
-                    ...recipe,
-                  })
-                    .sort(
-                      (a, b) =>
-                        a.Item_ItemRecipe_crafted_item_idToItem.id -
-                        b.Item_ItemRecipe_crafted_item_idToItem.id
-                    ).map(({
-                      Item_ItemRecipe_crafted_item_idToItem: {
-                        id,
-                        name,
-                        image,
-                      },
-                      amount,
-                    },
-                      i) =>
-                    (<div className="text-sm justify-center items-center flex flex-row space-x-3 space-y-2" key={`crafting-recipe-${i}`}>
-                      {data.itemRecipeItemsByIds.filter(
-                        (iri) => iri.item_recipe_id === items.find(
-                          (item) =>
-                            item.Item_ItemRecipe_crafted_item_idToItem.id === id
-                        )?.id
-                      ).map(({ amount, Item }) => (
-                        <div
-                          className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 w-fit text-center"
-                          title={Item.name}
-                          key={`item-${Item.id}`}
-                        >
-                          <img
-                            className="h-10 w-10"
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
-                            alt={Item.name}
-                          />
-                          <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
-                            {amount}
-                          </div>
-                        </div>
-                      ))}
-                      <div className="flex flex-col items-center justify-center">
-                         <div
-                            className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 w-fit text-center"
-                            title={name}
-                          >
-                            <pre>{JSON.stringify(recipe.crafting_station_id)}</pre>
-                            <img
-                              className="h-10 w-10"
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                              alt={name}
-                            />
-                            <div className="absolute -bottom-1 right-0.5 inline-flex h-6 w-6 text-right items-center justify-center rounded-full bg-transparent text-xs font-bold">
-                              {amount}
-                            </div>
-                          </div>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 448 512"
-                            fill="currentColor"
-                            className="h-8 w-8 m-2"
-                          >
-                            <path d="M427.8 266.8l-160 176C264.7 446.3 260.3 448 256 448c-3.844 0-7.703-1.375-10.77-4.156c-6.531-5.938-7.016-16.06-1.078-22.59L379.8 272H16c-8.844 0-15.1-7.155-15.1-15.1S7.156 240 16 240h363.8l-135.7-149.3c-5.938-6.531-5.453-16.66 1.078-22.59c6.547-5.906 16.66-5.469 22.61 1.094l160 176C433.4 251.3 433.4 260.7 427.8 266.8z" />
-                          </svg>
-                        <div className="flex max-w-screen-xl flex-col items-center gap-6 p-6 lg:flex-row lg:gap-0">
-                          <ul className="lg:basis-[750px]">
-                            {data.itemRecipeItemsByIds.filter(
-                              (iri) => iri.item_recipe_id === items.find(
-                                (item) =>
-                                  item.Item_ItemRecipe_crafted_item_idToItem.id === id
-                              )?.id
-                            ).map(({ amount, Item }) => (
-                              <li className="group relative py-3">
-                                <div className="items-center gap-6 lg:flex">
-                                  {/* <div>
-                              <h3 className="mb-2 text-xl font-bold">A heading in euismod dolor</h3>
-                              <p className="opacity-75">Lorem ipsum dolor sit amet consectetur. Consequat sollicitudin in euismod dolor, nec sodales viverra.</p>
-                            </div>
-
-                                  <div className="relative mb-4 lg:mb-0 lg:w-full lg:pr-16">
-                                    <div className="absolute left-0 top-1/2 hidden h-px w-full bg-pea-600 lg:block" />
-                                    <div
-                                      className="animate-fade-in flex justify-center items-center w-20 h-20 relative rounded-lg border border-zinc-500 p-2 text-center bg-zinc-700"
-                                      title={Item.name}
-                                    >
-                                      <img
-                                        className="h-10 w-10"
-                                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
-                                        alt={Item.name}
-                                      />
-                                      <div className="absolute bottom-0 right-0 inline-flex h-6 w-full items-end p-1 justify-end bg-transparent text-xs font-bold">
-                                        {amount}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="absolute inset-0 left-full hidden w-px bg-pea-600 group-first:top-1/2 group-last:bottom-1/2 lg:block" />
-                              </li>
-                            ))}
-                          </ul>
-                          <div className="relative flex w-full flex-1 items-center lg:basis-[400px] lg:text-left">
-                            <div className="top-1/2 mt-px hidden h-px w-16 bg-pea-600 lg:block" />
-                            <div className="flex-1 ">
-                              <div
-                                className="animate-fade-in flex justify-center items-center relative rounded-lg border border-zinc-500 p-2 w-20 h-20 text-center"
-                                title={name}
-                                key={`item-${id}`}
-                              >
-                                <img
-                                  className="h-10 w-10"
-                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                                  alt={name}
-                                />
-                                <div className="absolute bottom-0 right-0 inline-flex h-6 w-full items-end p-1 justify-end bg-transparent text-xs font-bold">
-                                  {amount}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>)
-                    )
-                  } */}
-                  {/* <div className="tree">
-                    <ul>
-                      <li>
-                        <div
-                          className="animate-fade-in inline-flex items-center justify-center relative rounded-lg border border-zinc-500 p-2 w-16 h-16 text-center"
-                          title={recipe.Item_ItemRecipe_crafted_item_idToItem.name}
-                          key={`item-${recipe.Item_ItemRecipe_crafted_item_idToItem.id}`}
-                        >
-                          <img
-                            className="h-8 w-8"
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${recipe.Item_ItemRecipe_crafted_item_idToItem.image}`}
-                            alt={recipe.Item_ItemRecipe_crafted_item_idToItem.name}
-                          />
-                          <div className="absolute bottom-0 right-0 inline-flex h-6 w-full items-end p-1 justify-end bg-transparent text-xs font-bold">
-                            {recipe.amount}
-                          </div>
-                        </div>
-                        <ul>
-
-                          {mergeItemRecipe(viewBaseMaterials, true, items, {
-                            ...recipe,
-                          }).map((d,
-                            i) => {
-                            if (i == 0 && idx == 0) {
-                              console.log(mergeItemRecipe(viewBaseMaterials, true, items, {
-                                ...recipe,
-                              }));
-                            }
-                            const {
-                              Item_ItemRecipe_crafted_item_idToItem: {
-                                id,
-                                name,
-                                image,
-                              },
-                              amount,
-                              crafting_time
-                            } = d;
-                            return (<li key={`id-${i}`}>
-                              <div
-                                className="animate-fade-in inline-flex items-center justify-center relative rounded-lg border border-zinc-500 p-2 w-16 h-16 text-center"
-                                title={name}
-                                key={`item-${id}`}
-                              >
-                                <img
-                                  className="h-8 w-8"
-                                  src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                                  alt={name}
-                                />
-                                <div className="absolute bottom-0 right-0 inline-flex h-6 w-full items-end p-1 justify-end bg-transparent text-xs font-bold">
-                                  {amount}
-                                </div>
-                              </div>
-
-                              {data?.itemRecipeItemsByIds.filter(
-                                (iri) => iri.item_recipe_id === items.find(
-                                  (item) =>
-                                    item.Item_ItemRecipe_crafted_item_idToItem.id === id
-                                )?.id
-                              ).length > 0 && (
-                                  <ul>
-
-                                    {data.itemRecipeItemsByIds.filter(
-                                      (iri) => iri.item_recipe_id === items.find(
-                                        (item) =>
-                                          item.Item_ItemRecipe_crafted_item_idToItem.id === id
-                                      )?.id
-                                    ).map(({ amount, Item }) => (
-                                      <li>
-                                        <div
-                                          className="animate-fade-in relative inline-flex justify-center items-center rounded-lg border border-zinc-500 p-2 w-16 h-16 text-center"
-                                          title={Item.name}
-                                          key={`item-${Item.id}`}
-                                        >
-                                          <img
-                                            className="h-8 w-8"
-                                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
-                                            alt={Item.name}
-                                          />
-                                          <div className="absolute bottom-0 right-0 inline-flex h-6 w-full items-end p-1 justify-end bg-transparent text-xs font-bold">
-                                            {amount}
-                                          </div>
-                                        </div>
-                                        {data.itemRecipeItemsByIds.filter(
-                                          (iri) => iri.item_recipe_id === items.find(
-                                            (item) =>
-                                              item.Item_ItemRecipe_crafted_item_idToItem.id === Item.id
-                                          )?.id
-                                        ).length > 0 && (
-                                            <ul>
-                                              {data.itemRecipeItemsByIds.filter(
-                                                (iri) => iri.item_recipe_id === items.find(
-                                                  (item) =>
-                                                    item.Item_ItemRecipe_crafted_item_idToItem.id === Item.id
-                                                )?.id
-                                              ).map(({ amount, Item }) => (
-                                                <li>
-                                                  <div
-                                                    className="animate-fade-in relative inline-flex justify-center items-center rounded-lg border border-zinc-500 p-2 w-16 h-16 text-center"
-                                                    title={Item.name}
-                                                    key={`item-${Item.id}`}
-                                                  >
-                                                    <img
-                                                      className="h-8 w-8"
-                                                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
-                                                      alt={Item.name}
-                                                    />
-                                                    <div className="absolute bottom-0 right-0 inline-flex h-6 w-full items-end p-1 justify-end bg-transparent text-xs font-bold">
-                                                      {amount * recipe.amount}
-                                                    </div>
-                                                  </div>
-                                                </li>
-                                              ))}
-                                            </ul>
-                                          )}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                )}
-                            </li>
-                            )
-                          }
-                          )}
-                        </ul>
-                      </li>
-                    </ul>
-                  </div> */}
-                  <div className="tree relative mx-auto whitespace-nowrap py-4 text-center after:clear-both after:table after:content-['']">
-                    <ul className="relative mx-auto whitespace-nowrap py-4 text-center after:clear-both after:table after:content-['']">
-                      {mergeItemRecipe(viewBaseMaterials, true, items, {
-                        ...recipe,
-                      }).map((d, i) => {
-                        const {
-                          Item_ItemRecipe_crafted_item_idToItem: {
-                            id,
-                            name,
-                            image,
-                          },
-                          ItemRecipeItem,
-                          amount: secAmount,
-                          crafting_time,
-                        } = d;
-                        // console.log("D!", d)
-                        return (
-                          <li key={`id-${i}`}>
-                            <div
-                              className="animate-fade-in relative inline-flex h-16 w-16 items-center justify-center rounded-lg border border-zinc-500 p-2 text-center"
-                              title={name}
-                              key={`item-${id}`}
-                            >
-                              <img
-                                className="h-8 w-8"
-                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                                alt={name}
-                              />
-                              <div className="absolute bottom-0 right-0 inline-flex h-6 w-full items-end justify-end bg-transparent p-1 text-xs font-bold">
-                                {secAmount}
-                              </div>
-                            </div>
-                            <ul>
-                              {ItemRecipeItem?.length > 0 && ItemRecipeItem.map((itemRecipe, i) => (
-                                itemRecipe?.Item && (
-                                  <li>
-                                    <div
-                                      className="animate-fade-in relative inline-flex h-16 w-16 items-center justify-center rounded-lg border border-zinc-500 p-2 text-center"
-                                      title={itemRecipe?.Item.name}
-                                      key={`item-${itemRecipe?.Item.id}`}
-                                    >
-                                      <img
-                                        className="h-8 w-8"
-                                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itemRecipe?.Item.image}`}
-                                        alt={itemRecipe?.Item.name}
-                                      />
-                                      <div className="absolute bottom-0 right-0 inline-flex h-6 w-full items-end justify-end bg-transparent p-1 text-xs font-bold">
-                                        {itemRecipe.amount}
-                                      </div>
-                                    </div>
-
-                                    <ul>
-                                      {itemRecipe?.ItemRecipeItem?.length > 0 && itemRecipe?.ItemRecipeItem.map((itemRecipe, i) => (
-                                        itemRecipe?.Item && (
-                                          <li>
-                                            <div
-                                              className="animate-fade-in relative inline-flex h-16 w-16 items-center justify-center rounded-lg border border-zinc-500 p-2 text-center"
-                                              title={itemRecipe?.Item.name}
-                                              key={`item-${itemRecipe?.Item.id}`}
-                                            >
-                                              <img
-                                                className="h-8 w-8"
-                                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itemRecipe?.Item.image}`}
-                                                alt={itemRecipe?.Item.name}
-                                              />
-                                              <div className="absolute bottom-0 right-0 inline-flex h-6 w-full items-end justify-end bg-transparent p-1 text-xs font-bold">
-                                                {itemRecipe.amount}
-                                              </div>
-                                            </div>
-                                          </li>
-                                        )
-                                      ))}
-                                    </ul>
-                                  </li>
-                                )
-                              ))}
-                            </ul>
-                          </li>
-                        );
-                      })}
-                    </ul>
+            rows={recipes.map((recipe) => {
+              return {
+                ...recipe,
+                collapseContent: (
+                  <div className="flex flex-col items-start justify-center gap-3 divide-y divide-zinc-500 p-4">
+                    <div className="tree">
+                      <ul className="relative whitespace-nowrap py-4 text-center after:clear-both after:table after:content-['']">
+                        {mergeItemRecipe(viewBaseMaterials, true, items, {
+                          ...recipe,
+                        }).map((itemrecipe, i) => (
+                          <TreeBranch key={`tree-${i}`} itemRecipe={itemrecipe} />
+                        ))}
+                      </ul>
+                    </div>
                   </div>
-                </div>
-              ),
-            }))}
+                ),
+              }
+            })
+            }
             className="animate-fade-in whitespace-nowrap"
             settings={{
               summary: true,
@@ -974,19 +687,42 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 valueFormatter: ({ row, value }) => value * row.amount,
                 render: ({ value }) => `${timeFormatL(value, true)}`,
               },
+              // ...(mergeItemRecipe(
+              //   viewBaseMaterials,
+              //   false,
+              //   items,
+              //   ...recipes
+              // ).map(({ Item_ItemRecipe_crafted_item_idToItem, amount }) => ({
+              //   field: Item_ItemRecipe_crafted_item_idToItem,
+              //   header: Item_ItemRecipe_crafted_item_idToItem.name,
+              //   className: "w-0 text-center",
+              //   render: ({ value, row }) => {
+              //     console.log(value)
+              //     return (
+              //       <div
+              //         className="inline-flex min-h-full min-w-[3rem] flex-col items-center justify-center"
+              //         key={`value`}
+              //       >
+              //         <img
+              //           src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/metal.webp`}
+              //           className="h-6 w-6"
+              //         />
+              //         <span className="text-sm text-black dark:text-white">
+              //           {formatNumber(amount)}
+              //         </span>
+              //       </div>
+              //     )
+              //   },
+              // })) as any),
               {
                 field: "Item_ItemRecipe_crafted_item_idToItem",
                 header: "Ingredients",
                 numeric: false,
                 render: ({ row }) => {
-                  return mergeItemRecipe(false, false, items, {
+                  return mergeItemRecipe(viewBaseMaterials, false, items, {
                     ...row,
                   })
-                    .sort(
-                      (a, b) =>
-                        a.Item_ItemRecipe_crafted_item_idToItem.id -
-                        b.Item_ItemRecipe_crafted_item_idToItem.id
-                    )
+                    .sort((a, b) => a.Item_ItemRecipe_crafted_item_idToItem.id - b.Item_ItemRecipe_crafted_item_idToItem.id)
                     .map(
                       (
                         {
@@ -1000,7 +736,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                         i
                       ) => (
                         <div
-                          className="inline-flex min-h-full min-w-[3rem] flex-col items-center justify-center"
+                          className="inline-flex min-h-full min-w-[4rem] flex-col items-center justify-center"
                           id={`${id}-${i * Math.random()}${i}`}
                           key={`${id}-${i * Math.random()}${i}`}
                         >
