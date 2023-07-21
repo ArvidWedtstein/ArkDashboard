@@ -1,5 +1,12 @@
 import { Form, FormError, RWGqlError } from "@redwoodjs/forms";
-import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
 
 import {
   formatNumber,
@@ -58,14 +65,17 @@ interface MaterialGridProps {
   error?: RWGqlError;
 }
 
-const TreeBranch = ({ itemRecipe }) => {
+// TODO: change type
+const TreeBranch = memo(({ itemRecipe }: any) => {
   const { Item, amount, crafting_time } = itemRecipe;
   const imageUrl = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item?.image}`;
-
   return (
     <li>
       {Item && (
-        <div className="animate-fade-in relative inline-flex h-16 w-16 items-center justify-center rounded-lg border border-zinc-500 p-2 text-center" title={Item.name}>
+        <div
+          className="animate-fade-in relative inline-flex h-16 w-16 items-center justify-center rounded-lg border border-zinc-500 p-2 text-center"
+          title={Item.name}
+        >
           <img className="h-8 w-8" src={imageUrl} alt={Item.name} />
           <div className="absolute bottom-0 right-0 inline-flex h-6 w-full items-end justify-end bg-transparent p-1 text-xs font-bold">
             {formatNumber(amount)}
@@ -78,14 +88,16 @@ const TreeBranch = ({ itemRecipe }) => {
       {itemRecipe?.ItemRecipeItem?.length > 0 && (
         <ul>
           {itemRecipe?.ItemRecipeItem.map((subItemRecipe, i) => (
-            <TreeBranch key={`subItem-${subItemRecipe?.Item?.id}`} itemRecipe={subItemRecipe} />
+            <TreeBranch
+              key={`subItem-${subItemRecipe?.Item?.id}`}
+              itemRecipe={subItemRecipe}
+            />
           ))}
         </ul>
       )}
     </li>
-  )
-}
-
+  );
+});
 
 export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   const { currentUser, isAuthenticated, client } = useAuth();
@@ -109,7 +121,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       variables: {
         ids: itemRecipes.map((f) => f.id),
       },
-      onCompleted: (data) => { },
+      onCompleted: (data) => {},
       onError: (error) => {
         console.log(error);
       },
@@ -449,21 +461,21 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
               value: v.every(({ type }) => !type)
                 ? v.map((itm) => ({
-                  ...itm,
-                  label: itm.name,
-                  icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                  value: [],
-                }))
+                    ...itm,
+                    label: itm.name,
+                    icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                    value: [],
+                  }))
                 : Object.entries(groupBy(v, "type")).map(([type, v2]) => {
-                  return {
-                    label: type,
-                    value: v2.map((itm) => ({
-                      label: itm.name,
-                      ...itm,
-                      icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                    })),
-                  };
-                }),
+                    return {
+                      label: type,
+                      value: v2.map((itm) => ({
+                        label: itm.name,
+                        ...itm,
+                        icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                      })),
+                    };
+                  }),
             }))}
             onSelect={(item) => {
               onAdd({ itemId: item.id });
@@ -577,15 +589,17 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                         {mergeItemRecipe(viewBaseMaterials, true, items, {
                           ...recipe,
                         }).map((itemrecipe, i) => (
-                          <TreeBranch key={`tree-${i}`} itemRecipe={itemrecipe} />
+                          <TreeBranch
+                            key={`tree-${i}`}
+                            itemRecipe={itemrecipe}
+                          />
                         ))}
                       </ul>
                     </div>
                   </div>
                 ),
-              }
-            })
-            }
+              };
+            })}
             className="animate-fade-in whitespace-nowrap"
             settings={{
               summary: true,
@@ -722,7 +736,11 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                   return mergeItemRecipe(viewBaseMaterials, false, items, {
                     ...row,
                   })
-                    .sort((a, b) => a.Item_ItemRecipe_crafted_item_idToItem.id - b.Item_ItemRecipe_crafted_item_idToItem.id)
+                    .sort(
+                      (a, b) =>
+                        a.Item_ItemRecipe_crafted_item_idToItem.id -
+                        b.Item_ItemRecipe_crafted_item_idToItem.id
+                    )
                     .map(
                       (
                         {
