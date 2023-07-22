@@ -77,39 +77,39 @@ const BasespotForm = (props: BasespotFormProps) => {
   }
   return (
     <div className="rw-form-wrapper">
-      <div className="rw-segment-header px-0 lg:flex lg:items-center lg:justify-between">
-        <h2 className="rw-heading rw-heading-primary min-w-0 flex-1">
-          {props?.basespot?.id ? "Edit" : "Create"} Basespot{" "}
-          {props.basespot?.name}
-        </h2>
-        <div className="flex space-x-2">
-          <button
-            type="button"
-            className="rw-button rw-button-medium rw-button-red-outline hidden sm:block"
-            onClick={() => history.back()}
-          >
-            Cancel
-          </button>
-          <Submit
-            disabled={props.loading}
-            className="rw-button rw-button-medium rw-button-gray-outline"
-          >
-            Save
-          </Submit>
-
-          <Submit
-            disabled={props.loading}
-            className="rw-button rw-button-medium rw-button-green"
-          >
-            Publish
-          </Submit>
-        </div>
-      </div>
       <Form<FormBasespot>
         onSubmit={onSubmit}
         formMethods={formMethods}
         error={props.error}
       >
+        <div className="rw-segment-header px-0 lg:flex lg:items-center lg:justify-between">
+          <h2 className="rw-heading rw-heading-primary min-w-0 flex-1">
+            {props?.basespot?.id ? "Edit" : "Create"} Basespot{" "}
+            {props.basespot?.name}
+          </h2>
+          <div className="flex space-x-2">
+            <button
+              type="button"
+              className="rw-button rw-button-medium rw-button-red-outline hidden sm:block"
+              onClick={() => history.back()}
+            >
+              Cancel
+            </button>
+            <Submit
+              disabled={props.loading}
+              className="rw-button rw-button-medium rw-button-gray-outline"
+            >
+              Save
+            </Submit>
+
+            <button
+              disabled={props.loading}
+              className="rw-button rw-button-medium rw-button-green"
+            >
+              Publish
+            </button>
+          </div>
+        </div>
         <FormError
           error={props.error}
           wrapperClassName="rw-form-error-wrapper"

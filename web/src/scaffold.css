@@ -124,7 +124,7 @@
   }
 
   .rw-button .rw-button-icon-start {
-    @apply pointer-events-none order-1 mr-2 w-5 fill-current text-xl leading-5;
+    @apply pointer-events-none mr-2 w-5 fill-current text-xl leading-5;
   }
   .rw-button .rw-button-icon-end {
     @apply pointer-events-none ml-2 w-5 fill-current text-xl leading-5;
