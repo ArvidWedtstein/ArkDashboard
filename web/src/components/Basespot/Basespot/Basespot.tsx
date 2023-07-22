@@ -64,24 +64,55 @@ const Basespot = ({ basespot }: Props) => {
 
   return (
     <article className="text-gray-700 dark:text-stone-200">
-      <div className="lg:flex lg:items-center lg:justify-between">
+      <div className="mb-3 lg:flex lg:items-center lg:justify-between">
         <div className="min-w-0 flex-1">Basespot</div>
-        <div className="mt-5 flex space-x-2 lg:ml-4 lg:mt-0">
+        <div className="flex space-x-2 lg:ml-4 lg:mt-0">
+          {/* TODO: Add icons here */}
           <Link
             to={routes.editBasespot({ id: basespot.id.toString() })}
-            className="rw-button rw-button-gray-outline hidden sm:block"
+            className="rw-button rw-button-medium rw-button-gray-outline hidden sm:block"
           >
             Edit
           </Link>
 
           <button
             type="button"
-            className="rw-button rw-button-gray-outline hidden sm:block"
+            className="rw-button rw-button-medium rw-button-gray-outline hidden sm:block"
+            onClick={() => {
+              // ${encodeURIComponent(
+              //   window.location.href
+              // )}
+              // `https://www.facebook.com/sharer/sharer.php?u=`
+              // https://twitter.com/share?url=
+              // https://www.linkedin.com/shareArticle?url=
+              // https://pinterest.com/pin/create/button/?url=
+              // https://reddit.com/submit?url=
+
+              if (
+                navigator.canShare({
+                  url: window.location.href,
+                })
+              )
+                navigator
+                  .share({
+                    title: basespot.name,
+                    text: basespot.description,
+                    url: window.location.href,
+                  })
+                  .then(() => {
+                    toast.success("Thanks for sharing!");
+                  })
+                  .catch(console.error);
+            }}
           >
-            View
+            Share
           </button>
 
-          <button type="button" className="rw-button rw-button-green">
+          <button
+            type="button"
+            className="rw-button rw-button-medium rw-button-green"
+            disabled={basespot.published}
+          >
             Publish
           </button>
         </div>
@@ -195,7 +226,7 @@ const Basespot = ({ basespot }: Props) => {
         </div>
       </div>
 
-      {images && images.filter((img) => !img.thumbnail).length > 0 && (
+      {images && images.length > 0 && (
         <section className="body-font border-t border-stone-200 text-gray-700 dark:border-gray-200 dark:text-stone-200">
           <div className="container mx-auto py-24">
             <div className="mb-20 flex w-full flex-col text-center">
@@ -221,22 +252,21 @@ const Basespot = ({ basespot }: Props) => {
                 }
               />
               <div className="grid grid-cols-5 flex-nowrap gap-4 overflow-hidden">
-                {images
-                  .filter((img) => !img.thumbnail)
-                  .map((img, i) => (
-                    <div
-                      className="rounded-lg border border-zinc-500 transition-all ease-in hover:rounded-[50px]"
-                      onClick={() => {
-                        setCurrentModalImage(img.url);
-                      }}
-                    >
-                      <img
-                        className="aspect-auto w-full rounded-lg object-cover"
-                        src={img.url}
-                        alt=""
-                      />
-                    </div>
-                  ))}
+                {images.map((img, i) => (
+                  <div
+                    key={`image-${i}`}
+                    className="rounded-lg border border-zinc-500 transition-all ease-in hover:rounded-[50px]"
+                    onClick={() => {
+                      setCurrentModalImage(img.url);
+                    }}
+                  >
+                    <img
+                      className="aspect-auto w-full rounded-lg object-cover"
+                      src={img.url}
+                      alt=""
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </div>

@@ -394,6 +394,7 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <FieldError name="estimated_for_players" className="rw-field-error" />
 
+        {/* TODO make a selector for thumbnail */}
         {props.basespot?.id && (
           <>
             <Label
