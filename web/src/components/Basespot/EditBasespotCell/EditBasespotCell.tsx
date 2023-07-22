@@ -22,6 +22,8 @@ export const QUERY = gql`
       created_by
       turretsetup_images
       updated_at
+      type
+      level
       Map {
         img
       }
@@ -41,12 +43,13 @@ const UPDATE_BASESPOT_MUTATION = gql`
       map_id
       estimated_for_players
       created_by
+      level
       turretsetup_images
       updated_at
+      type
     }
   }
 `;
-
 
 // TODO: add skeleton loader
 export const Loading = () => <div>Loading...</div>;
@@ -94,11 +97,6 @@ export const Success = ({ basespot }: CellSuccessProps<EditBasespotById>) => {
 
   return (
     <div className="rw-segment">
-      <header className="rw-segment-header">
-        <h2 className="rw-heading rw-heading-secondary">
-          Edit Basespot {basespot?.name}
-        </h2>
-      </header>
       <div className="rw-segment-main">
         <BasespotForm
           basespot={basespot}

@@ -394,7 +394,7 @@ function initTaming() {
                 <circle
                   class="progress-ring__circle"
                   stroke="#bbff77"
-                  stroke-width="4"
+                  strokeWidth="4"
                   fill="#bbff7718"
                   r="28"
                   cx="30"

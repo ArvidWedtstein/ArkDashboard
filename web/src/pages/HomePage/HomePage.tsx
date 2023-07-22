@@ -50,9 +50,9 @@ const HomePage = () => {
         ogContentUrl="https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj"
         ogType="website"
       />
-      <div className="container-xl p-3 text-center">
+      <div className="container-xl text-center">
         <div
-          className="relative overflow-hidden rounded-md bg-cover bg-no-repeat"
+          className="relative m-3 overflow-hidden rounded-md bg-cover bg-no-repeat ring-1 ring-zinc-500"
           style={{
             backgroundPosition: "50%",
             backgroundImage:
@@ -66,13 +66,13 @@ const HomePage = () => {
                 <h1 className="mt-0 mb-6 text-xl md:text-5xl">
                   Welcome Home Bob!
                 </h1>
-                <h3 className="mb-8 text-lg md:text-3xl">
+                <span className="mb-8 block text-lg md:text-3xl">
                   Here you can find{" "}
-                  <span className="decoration-pea-500 underline decoration-4 underline-offset-8">
+                  <Link to={routes.basespots()} className="rw-link">
                     base
-                  </span>{" "}
+                  </Link>{" "}
                   locations, material calculator and much more
-                </h3>
+                </span>
                 {/* <h3 className="mb-8 text-3xl">
                   H're thee can findeth <span className="underline decoration-pea-500 decoration-4 underline-offset-8">base</span> locations, mat'rial calculat'rs and much m're
                 </h3> */}
@@ -89,7 +89,7 @@ const HomePage = () => {
         </div>
         {/* {isAuthenticated && <Chat />} */}
 
-        <section className="font-montserrat mx-auto mb-12 max-w-screen-xl">
+        <section className="font-montserrat mx-auto mb-12 max-w-screen-xl p-6">
           <div className="my-8 flex overflow-hidden rounded-lg border border-zinc-500 dark:border-zinc-700 dark:bg-gradient-to-tr dark:from-zinc-800 dark:to-zinc-900 dark:text-white">
             <div className="min-h-max overflow-hidden transition">
               <img
@@ -255,9 +255,9 @@ const HomePage = () => {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M1 5h12m0 0L9 1m4 4L9 9"
                   />
                 </svg>

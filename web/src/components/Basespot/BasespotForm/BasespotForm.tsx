@@ -16,6 +16,8 @@ import { useEffect, useRef, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
 import Lookup from "src/components/Util/Lookup/Lookup";
 
+import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
+
 type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
 
 interface BasespotFormProps {
@@ -29,7 +31,6 @@ const BasespotForm = (props: BasespotFormProps) => {
   const formMethods = useForm<FormBasespot>();
   const [thumbnailUrl, setThumbnailUrl] = useState(null);
 
-  const basename = useRef(null);
   const [map, setMap] = useState(props?.basespot?.map_id || 2);
 
   const onSubmit = (data: FormBasespot) => {
@@ -58,21 +59,8 @@ const BasespotForm = (props: BasespotFormProps) => {
       setMap(props.basespot.map_id);
     }
   }, []);
-
-  return (
-    <div className="rw-form-wrapper">
-      <Form<FormBasespot>
-        onSubmit={onSubmit}
-        formMethods={formMethods}
-        error={props.error}
-      >
-        <FormError
-          error={props.error}
-          wrapperClassName="rw-form-error-wrapper"
-          titleClassName="rw-form-error-title"
-          listClassName="rw-form-error-list"
-        />
-        {/* <div className="relative border-b ">
+  {
+    /* <div className="relative border-b ">
           <input
             type="text"
             id="floating_outlined"
@@ -85,7 +73,49 @@ const BasespotForm = (props: BasespotFormProps) => {
           >
             Floating outlined
           </label>
-        </div> */}
+        </div> */
+  }
+  return (
+    <div className="rw-form-wrapper">
+      <div className="rw-segment-header px-0 lg:flex lg:items-center lg:justify-between">
+        <h2 className="rw-heading rw-heading-primary min-w-0 flex-1">
+          {props?.basespot?.id ? "Edit" : "Create"} Basespot{" "}
+          {props.basespot?.name}
+        </h2>
+        <div className="flex space-x-2">
+          <button
+            type="button"
+            className="rw-button rw-button-medium rw-button-red-outline hidden sm:block"
+            onClick={() => history.back()}
+          >
+            Cancel
+          </button>
+          <Submit
+            disabled={props.loading}
+            className="rw-button rw-button-medium rw-button-gray-outline"
+          >
+            Save
+          </Submit>
+
+          <Submit
+            disabled={props.loading}
+            className="rw-button rw-button-medium rw-button-green"
+          >
+            Publish
+          </Submit>
+        </div>
+      </div>
+      <Form<FormBasespot>
+        onSubmit={onSubmit}
+        formMethods={formMethods}
+        error={props.error}
+      >
+        <FormError
+          error={props.error}
+          wrapperClassName="rw-form-error-wrapper"
+          titleClassName="rw-form-error-title"
+          listClassName="rw-form-error-list"
+        />
         <div className="relative">
           <Label
             name="name"
@@ -97,7 +127,6 @@ const BasespotForm = (props: BasespotFormProps) => {
 
           <TextField
             name="name"
-            ref={basename}
             defaultValue={props.basespot?.name}
             className="rw-input"
             errorClassName="rw-input rw-input-error"
@@ -117,7 +146,7 @@ const BasespotForm = (props: BasespotFormProps) => {
         <TextAreaField
           name="description"
           defaultValue={props.basespot?.description}
-          className="rw-input min-w-[300px]"
+          className="rw-input w-full min-w-max"
           errorClassName="rw-input rw-input-error"
           emptyAs={""}
           rows={5}
@@ -200,33 +229,153 @@ const BasespotForm = (props: BasespotFormProps) => {
           </div>
         </div>
 
-        {/* {props.basespot?.id && ( */}
-        <>
-          <Label
-            name="thumbnail"
-            className="rw-label"
-            errorClassName="rw-label rw-label-error"
-          >
-            Thumbnail
-          </Label>
+        <Label
+          name="type"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Basespot Type
+        </Label>
+        {/* TODO: fix icons here */}
+        <CheckboxGroup
+          name="type"
+          form={true}
+          validation={{ required: true, single: true }}
+          defaultValue={[props.basespot.type]}
+          options={[
+            {
+              value: "cave",
+              label: "Cave",
+              image: (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-12"
+                  viewBox="0 0 576 512"
+                  fill="currentColor"
+                >
+                  <path d="M320 33.8V160H48.5C100.2 82.8 188.1 32 288 32c10.8 0 21.5 .6 32 1.8zM352 160V39.1C424.9 55.7 487.2 99.8 527.5 160H352zM29.9 192H96V320H0c0-46 10.8-89.4 29.9-128zM192 320H128V192H448V320H384v32H576v80c0 26.5-21.5 48-48 48H352V352c0-35.3-28.7-64-64-64s-64 28.7-64 64V480H48c-26.5 0-48-21.5-48-48V352H192V320zm288 0V192h66.1c19.2 38.6 29.9 82 29.9 128H480z" />
+                </svg>
+              ),
+            },
+            {
+              value: "waterfall",
+              label: "Waterfall",
+              image:
+                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-double-doorframe.webp",
+            },
+            {
+              value: "floating island",
+              label: "Floating Island",
+              image:
+                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-dinosaur-gateway.webp",
+            },
+            {
+              value: "rathole",
+              label: "Rathole",
+              image: (
+                <svg
+                  version="1.0"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-20 w-20"
+                  viewBox="0 0 376.000000 270.000000"
+                >
+                  <g
+                    transform="translate(0.000000,270.000000) scale(0.100000,-0.100000)"
+                    fill="currentColor"
+                    stroke="none"
+                  >
+                    <path
+                      d="M1185 1651 c-77 -19 -152 -88 -173 -160 -17 -54 -17 -808 0 -862 15
+             -51 69 -114 122 -142 41 -22 44 -22 635 -25 679 -3 669 -4 746 73 72 72 75 90
+             75 525 0 435 -3 453 -75 525 -60 60 -122 78 -262 73 -101 -3 -106 -4 -129 -31
+             l-24 -28 0 -277 c0 -215 -3 -291 -15 -336 -38 -146 -162 -235 -313 -224 -123
+             9 -219 80 -261 192 -20 53 -21 76 -21 342 0 309 -3 328 -55 352 -28 13 -200
+             15 -250 3z m217 -393 l3 -303 31 -65 c56 -119 161 -198 294 -222 155 -27 325
+             52 405 189 48 81 55 135 55 430 l0 273 99 0 c107 0 140 -13 185 -73 20 -28 21
+             -38 21 -427 0 -389 -1 -399 -21 -427 -11 -15 -36 -38 -54 -50 l-33 -23 -591 0
+             c-666 0 -638 -3 -683 76 -22 39 -23 44 -23 424 0 380 1 385 23 424 34 60 74
+             76 189 76 l97 0 3 -302z"
+                    />
+                  </g>
+                </svg>
+              ),
+            },
+            {
+              value: "underwater rathole",
+              label: "Underwater Rathole",
+              image:
+                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-hatchframe.webp",
+            },
+            {
+              value: "underwater cave",
+              label: "Underwater Cave",
+              image:
+                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/giant-stone-hatchframe.webp",
+            },
+            {
+              value: "ceiling",
+              label: "Ceiling",
+              image:
+                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/giant-stone-hatchframe.webp",
+            },
+          ]}
+        />
+        <FieldError name="type" className="rw-field-error" />
 
-          <FileUpload
-            multiple={false}
-            name="thumbnail"
-            storagePath={`basespotimages/${
-              props?.basespot?.id || // TODO: fix storagepath
-              basename.current?.value.replaceAll(" ", "")
-              // basename.current?.value.replaceAll(" ", "") ||
-              // props.basespot?.name.replaceAll(" ", "")
-            }`}
-            onUpload={(url) => {
-              setThumbnailUrl(url);
-            }}
-          />
-
-          <FieldError name="thumbnail" className="rw-field-error" />
-        </>
-        {/* )} */}
+        <Label
+          name="level"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Difficulty
+        </Label>
+        <CheckboxGroup
+          name="level"
+          form={true}
+          validation={{ required: true, single: true }}
+          defaultValue={[props.basespot?.level]}
+          options={[
+            {
+              value: "starter",
+              label: "Starter",
+              image: (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-12"
+                  viewBox="0 0 576 512"
+                  fill="currentColor"
+                >
+                  <path d="M320 33.8V160H48.5C100.2 82.8 188.1 32 288 32c10.8 0 21.5 .6 32 1.8zM352 160V39.1C424.9 55.7 487.2 99.8 527.5 160H352zM29.9 192H96V320H0c0-46 10.8-89.4 29.9-128zM192 320H128V192H448V320H384v32H576v80c0 26.5-21.5 48-48 48H352V352c0-35.3-28.7-64-64-64s-64 28.7-64 64V480H48c-26.5 0-48-21.5-48-48V352H192V320zm288 0V192h66.1c19.2 38.6 29.9 82 29.9 128H480z" />
+                </svg>
+              ),
+            },
+            {
+              value: "beginner",
+              label: "Beginner",
+              image:
+                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-double-doorframe.webp",
+            },
+            {
+              value: "intermediate",
+              label: "Intermediate",
+              image:
+                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-double-doorframe.webp",
+            },
+            {
+              value: "advanced",
+              label: "Advanced",
+              image:
+                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-double-doorframe.webp",
+            },
+            {
+              value: "expert",
+              label: "Expert",
+              image:
+                "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-double-doorframe.webp",
+            },
+          ]}
+        />
+        <FieldError name="level" className="rw-field-error" />
 
         <Label
           name="estimated_for_players"
@@ -244,6 +393,52 @@ const BasespotForm = (props: BasespotFormProps) => {
         />
 
         <FieldError name="estimated_for_players" className="rw-field-error" />
+
+        {props.basespot?.id && (
+          <>
+            <Label
+              name="base_images"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Base Images
+            </Label>
+
+            <FileUpload
+              multiple={false}
+              name="base_images"
+              storagePath={`basespotimages/${props?.basespot?.id}`}
+              onUpload={(url) => {
+                setThumbnailUrl(url);
+              }}
+            />
+
+            <FieldError name="base_images" className="rw-field-error" />
+          </>
+        )}
+
+        {props.basespot?.id && (
+          <>
+            <Label
+              name="thumbnail"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Thumbnail
+            </Label>
+
+            <FileUpload
+              multiple={false}
+              name="thumbnail"
+              storagePath={`basespotimages/${props?.basespot?.id}`}
+              onUpload={(url) => {
+                setThumbnailUrl(url);
+              }}
+            />
+
+            <FieldError name="thumbnail" className="rw-field-error" />
+          </>
+        )}
 
         {/* TODO: Fix select list for turretsetup images */}
         {/*
@@ -263,13 +458,6 @@ const BasespotForm = (props: BasespotFormProps) => {
         />
 
         <FieldError name="turretsetup_image" className="rw-field-error" /> */}
-
-        {/* TODO: fix save icon */}
-        <div className="rw-button-group">
-          <Submit disabled={props.loading} className="rw-button rw-button-blue">
-            Save
-          </Submit>
-        </div>
       </Form>
     </div>
   );
