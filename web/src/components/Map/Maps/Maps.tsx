@@ -284,8 +284,7 @@ const MapsList = ({ maps }: FindMaps) => {
               subtitle={
                 <div className="flex flex-row gap-1">
                   {Object.entries(map).map(([key, value]) => {
-                    if (!value || !mapData[key])
-                      return;
+                    if (!value || !mapData[key]) return;
 
                     return (
                       <svg

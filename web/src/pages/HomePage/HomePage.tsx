@@ -50,76 +50,39 @@ const HomePage = () => {
         ogType="website"
       />
       <div className="container-xl text-center">
-        <div
-          className="relative m-3 overflow-hidden rounded-md bg-cover bg-no-repeat ring-1 ring-zinc-500"
-          style={{
-            backgroundPosition: "50%",
-            backgroundImage:
-              "url('https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj')",
-            height: "350px",
-          }}
-        >
-          <div className="h-full w-full overflow-hidden bg-black bg-opacity-60 bg-fixed">
-            <div className="flex h-full items-center justify-center">
-              <div className="px-6 text-center font-extralight text-white md:px-12">
-                <h1 className="mt-0 mb-6 text-xl md:text-5xl">
-                  Welcome Home Bob!
-                </h1>
-                <span className="mb-8 block text-lg md:text-3xl">
-                  Here you can find{" "}
-                  <Link to={routes.basespots()} className="rw-link">
-                    base
-                  </Link>{" "}
-                  locations, material calculator and much more
-                </span>
-                {/* <h3 className="mb-8 text-3xl">
-                  H're thee can findeth <span className="underline decoration-pea-500 decoration-4 underline-offset-8">base</span> locations, mat'rial calculat'rs and much m're
-                </h3> */}
-                <Link
-                  // className="rounded border-2 bg-pea-500 border-pea-500 px-6 py-2.5 text-sm font-normal uppercase leading-tight text-white transition duration-150 ease-in-out hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0"
-                  className="rw-button rw-button-green-outline uppercase"
-                  to={isAuthenticated ? routes.basespots() : routes.signin()}
-                >
-                  Get started
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* {isAuthenticated && <Chat />} */}
-
         <section className="font-montserrat mx-auto mb-12 max-w-screen-xl p-6">
-          <div className="my-8 flex overflow-hidden rounded-lg border border-zinc-500 dark:border-zinc-700 dark:bg-gradient-to-tr dark:from-zinc-800 dark:to-zinc-900 dark:text-white">
-            <div className="min-h-max overflow-hidden transition">
-              <img
-                src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg"
-                className="aspect-video h-full max-w-sm object-cover"
-              />
-            </div>
-            <div className="font-montserrat w-full space-y-6 bg-opacity-80 p-8 text-left font-normal text-zinc-300 ">
-              <h1 className="text-xl">Crafting Made Easy</h1>
-              <p className="font-light">
-                Struggling to remember how to craft that rare item? Use our
-                crafting recipe calculator to quickly look up the ingredients
-                and steps needed for any item in ARK Survival Evolved. Never
-                waste resources on failed crafting attempts again!
-              </p>
-              <details className="transition">
-                <summary>How to Use the Calculator</summary>
-                <p className="m-1 border-l pl-5">
-                  Simply select the item you want to craft from the dropdown
-                  list, and the calculator will show you the materials and steps
-                  needed to craft it. You can also filter the list by item type
-                  or crafting station.
-                </p>
-              </details>
-              <Link
-                to={routes.materialCalculator()}
-                className="rw-button rw-button-green-gradient mt-2"
+          <div className="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-8 dark:border-zinc-700 dark:bg-gradient-to-tr dark:from-zinc-800 dark:to-zinc-900 md:p-12">
+            <h1 className="mb-2 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl">
+              Welcome Home Bob!
+            </h1>
+            <p className="mb-6 text-lg font-normal text-gray-500 dark:text-gray-400">
+              Here you can find{" "}
+              <Link to={routes.basespots()} className="rw-link">
+                base
+              </Link>{" "}
+              locations, material calculator and much more
+            </p>
+            <Link
+              to={routes.signup()}
+              className="rw-button rw-button-green-outline"
+            >
+              Get Started
+              <svg
+                className="ml-2 h-3.5 w-3.5"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 10"
               >
-                Explore
-              </Link>
-            </div>
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M1 5h12m0 0L9 1m4 4L9 9"
+                />
+              </svg>
+            </Link>
           </div>
 
           <div className="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-8 dark:border-zinc-700 dark:bg-gradient-to-tr dark:from-zinc-800 dark:to-zinc-900 md:p-12">
@@ -166,6 +129,7 @@ const HomePage = () => {
               </svg>
             </Link>
           </div>
+
           <div className="grid gap-8 md:grid-cols-2">
             <div className="rounded-lg border border-zinc-500 bg-gray-50 p-8 dark:border-zinc-700 dark:bg-gradient-to-tr dark:from-zinc-800 dark:to-zinc-900 md:p-12">
               <a href="#" className="rw-badge rw-badge-gray !text-pea-500 mb-2">
@@ -260,6 +224,39 @@ const HomePage = () => {
                     d="M1 5h12m0 0L9 1m4 4L9 9"
                   />
                 </svg>
+              </Link>
+            </div>
+          </div>
+
+          <div className="my-8 flex overflow-hidden rounded-lg border border-zinc-500 dark:border-zinc-700 dark:bg-gradient-to-tr dark:from-zinc-800 dark:to-zinc-900 dark:text-white">
+            <div className="min-h-max overflow-hidden transition">
+              <img
+                src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg"
+                className="aspect-video h-full max-w-sm object-cover"
+              />
+            </div>
+            <div className="font-montserrat w-full space-y-6 bg-opacity-80 p-8 text-left font-normal text-zinc-300 ">
+              <h1 className="text-xl">Crafting Made Easy</h1>
+              <p className="font-light">
+                Struggling to remember how to craft that rare item? Use our
+                crafting recipe calculator to quickly look up the ingredients
+                and steps needed for any item in ARK Survival Evolved. Never
+                waste resources on failed crafting attempts again!
+              </p>
+              <details className="transition">
+                <summary>How to Use the Calculator</summary>
+                <p className="m-1 border-l pl-5">
+                  Simply select the item you want to craft from the dropdown
+                  list, and the calculator will show you the materials and steps
+                  needed to craft it. You can also filter the list by item type
+                  or crafting station.
+                </p>
+              </details>
+              <Link
+                to={routes.materialCalculator()}
+                className="rw-button rw-button-green-gradient mt-2"
+              >
+                Explore
               </Link>
             </div>
           </div>

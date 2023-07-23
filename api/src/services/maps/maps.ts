@@ -7,7 +7,9 @@ import type {
 import { db } from "src/lib/db";
 
 export const maps: QueryResolvers["maps"] = () => {
-  return db.map.findMany();
+  return db.map.findMany({
+    orderBy: { name: "asc" },
+  });
 };
 
 export const map: QueryResolvers["map"] = ({ id }) => {
