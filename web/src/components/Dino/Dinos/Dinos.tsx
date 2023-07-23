@@ -14,7 +14,7 @@ import {
 } from "@redwoodjs/forms";
 
 import type { FindDinos } from "types/graphql";
-import Tabs from "src/components/Util/Tabs/Tabs";
+import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 
 const DinosList = ({ dinosPage }: FindDinos) => {
   let { search, category } = useParams();
@@ -50,68 +50,89 @@ const DinosList = ({ dinosPage }: FindDinos) => {
             ? 0
             : Object.keys(types).indexOf(category)
         }
-        tabs={[
-          {
-            title: "All",
-          },
-          {
-            title: "Ground",
-          },
-          {
-            title: "Flyer",
-          },
-          {
-            title: "Water",
-          },
-          {
-            title: "Amphibious",
-          },
-          {
-            title: "Boss",
-          },
-        ]}
-        type="start"
-        onSelect={(i) => {
-          navigate(
-            routes.dinos({
-              ...parseSearch(
-                Object.fromEntries(
-                  Object.entries({
-                    category: i === 0 ? "" : Object.keys(types)[i],
-                  }).filter(([_, v]) => v != "")
-                ) as any
-              ),
-              page: 1,
-            })
-          );
-        }}
-      />
+      >
+        <Tab
+          label="All"
+          link={routes.dinos({
+            ...parseSearch(
+              Object.fromEntries(
+                Object.entries({
+                  category: "",
+                }).filter(([_, v]) => v != "")
+              )
+            ),
+            page: 1,
+          })}
+        />
+        <Tab
+          label="Ground"
+          link={routes.dinos({
+            ...parseSearch(
+              Object.fromEntries(
+                Object.entries({
+                  category: "ground",
+                }).filter(([_, v]) => v != "")
+              )
+            ),
+            page: 1,
+          })}
+        />
+        <Tab
+          label="Flyer"
+          link={routes.dinos({
+            ...parseSearch(
+              Object.fromEntries(
+                Object.entries({
+                  category: "flyer",
+                }).filter(([_, v]) => v != "")
+              )
+            ),
+            page: 1,
+          })}
+        />
+        <Tab
+          label="Water"
+          link={routes.dinos({
+            ...parseSearch(
+              Object.fromEntries(
+                Object.entries({
+                  category: "water",
+                }).filter(([_, v]) => v != "")
+              )
+            ),
+            page: 1,
+          })}
+        />
+        <Tab
+          label="Amphibious"
+          link={routes.dinos({
+            ...parseSearch(
+              Object.fromEntries(
+                Object.entries({
+                  category: "amphibious",
+                }).filter(([_, v]) => v != "")
+              )
+            ),
+            page: 1,
+          })}
+        />
+        <Tab
+          label="Boss"
+          link={routes.dinos({
+            ...parseSearch(
+              Object.fromEntries(
+                Object.entries({
+                  category: "boss",
+                }).filter(([_, v]) => v != "")
+              )
+            ),
+            page: 1,
+          })}
+        />
+      </Tabs>
 
       <Form className="flex w-auto" onSubmit={onSubmit}>
         <nav className="rw-button-group flex w-full flex-row justify-center">
-          {/* <Label name="category" className="sr-only">
-            Choose a category
-          </Label>
-          <SelectField
-            name="category"
-            className="rw-input mt-0 !rounded-l-lg"
-            defaultValue={category}
-            validation={{
-              required: false,
-              validate: {
-                matchesInitialValue: (value) => {
-                  return value !== "Choose a category" || "Select an Option";
-                },
-              },
-            }}
-          >
-            <option value="">Choose a category</option>
-            <option value="boss">Boss</option>
-            <option value="flyer">Flyer</option>
-            <option value="water">Water</option>
-            <option value="amphibious">Amphibious</option>
-            <option value="ground">Ground</option>
-          </SelectField> */}
           <div className="relative w-full">
             <Label name="search" className="sr-only">
               Search for dino

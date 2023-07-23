@@ -1,9 +1,7 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
-import Tabs from "src/components/Util/Tabs/Tabs";
-
-import { checkboxInputTag, jsonDisplay, timeTag } from "src/lib/formatters";
+import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 
 import type {
   DeleteLootcrateMutationVariables,
@@ -44,18 +42,20 @@ const Lootcrate = ({ lootcrate }: Props) => {
       <div className="rw-segment">
         <header className="rw-segment-header">
           <h2 className="rw-heading rw-heading-secondary">
-            {lootcrate.name} on <Link to={routes.map({ id: lootcrate.Map.id.toString() })}>{lootcrate.Map.name}</Link>
+            {lootcrate.name} on{" "}
+            <Link to={routes.map({ id: lootcrate.Map.id.toString() })}>
+              {lootcrate.Map.name}
+            </Link>
           </h2>
         </header>
       </div>
 
       <div className="w-full space-y-2">
-        <Tabs
-          tabs={lootcrate.LootcrateSet.map((s, l) => {
-            return {
-              title: s.name,
-              content: (
-                <div className="w-full rounded-lg border border-gray-200 bg-white/20 text-sm font-medium text-gray-900 backdrop-blur-sm transition-all duration-150 dark:border-gray-400 dark:text-white">
+        {lootcrate.LootcrateSet.length > 0 && (
+          <Tabs>
+            {lootcrate.LootcrateSet.map((s, l) => (
+              <Tab label={s.name} className="my-3">
+                <div className="my-3 w-full rounded-lg border border-gray-200 bg-white/20 text-sm font-medium text-gray-900 backdrop-blur-sm transition-all duration-150 dark:border-gray-400 dark:text-white">
                   {s.LootcrateSetEntry.map((e, ind) => {
                     return (
                       <details
@@ -98,10 +98,10 @@ const Lootcrate = ({ lootcrate }: Props) => {
                     );
                   })}
                 </div>
-              ),
-            };
-          })}
-        />
+              </Tab>
+            ))}
+          </Tabs>
+        )}
       </div>
       <nav className="rw-button-group">
         <Link

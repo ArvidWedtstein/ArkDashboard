@@ -2,7 +2,6 @@ import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
-import Table from "src/components/Util/Table/Table";
 
 const HomePage = () => {
   const { isAuthenticated, currentUser, client, reauthenticate } = useAuth();

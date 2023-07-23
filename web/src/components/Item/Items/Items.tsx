@@ -16,7 +16,7 @@ import {
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import ArkCard from "src/components/Util/ArkCard/ArkCard";
-import Tabs from "src/components/Util/Tabs/Tabs";
+import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 
 import type { FindItems } from "types/graphql";
 
@@ -288,7 +288,7 @@ const ItemsList = ({
             <SearchField
               name="search"
               className="rw-input mt-0 w-full"
-              placeholder="Enter a dino..."
+              placeholder="Enter a item..."
               defaultValue={search}
               disabled={loading}
             />
@@ -352,13 +352,19 @@ const ItemsList = ({
           </div>
         </nav>
 
-        <Tabs
-          selectedTab={types.findIndex((t) => t.toLowerCase() === selectedType)}
-          onSelect={(e) => {
-            selectType(types[e].toLowerCase().toString());
-          }}
-          tabs={types.map((t) => ({ title: t, content: "" }))}
-        />
+        <div className="my-3">
+          {types.length > 0 && (
+            <Tabs
+              onSelect={(_, index) => {
+                selectType(types[index].toLowerCase().toString());
+              }}
+            >
+              {types.map((t) => (
+                <Tab label={t}></Tab>
+              ))}
+            </Tabs>
+          )}
+        </div>
       </Form>
 
       <div
