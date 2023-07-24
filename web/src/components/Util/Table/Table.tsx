@@ -55,6 +55,14 @@ type TableColumn = {
    */
   sortable?: boolean;
   /**
+   * Indicates whether the column is hidable.
+   */
+  visibleOnly?: boolean;
+  /**
+   * If the column is hidden
+   */
+  hidden?: boolean;
+  /**
    * A function to format the column value.
    *
    * @param options - Formatting options.
@@ -183,13 +191,15 @@ const Table = ({
     },
   };
   const mergedSettings = { ...defaultSettings, ...settings };
-
-  const columnData = useMemo(() => columns, [columns]);
+  const [columnSettings, setColumnSettings] = useState<TableColumn[]>(
+    columns || []
+  );
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<TableDataRow["row_id"][]>(
     []
   );
+
   const [collapsedRows, setCollapsedRows] = useState<TableDataRow["row_id"][]>(
     []
   );
@@ -587,7 +597,7 @@ const Table = ({
         {mergedSettings.select && (
           <td className="bg-zinc-300 px-3 py-4 first:rounded-bl-lg dark:bg-zinc-800" />
         )}
-        {columnData.map(
+        {columnSettings.filter(col => !col.hidden).map(
           ({ header, field, numeric, className, valueFormatter }, index) => {
             const sum = calculateSum(field, valueFormatter);
 
@@ -825,12 +835,22 @@ const Table = ({
       <div className="flex items-center justify-start space-x-3 [&:not(:empty)]:my-2">
         {mergedSettings.columnSelector && (
           <div className="relative">
-            <MultiSelectLookup onSelect={(col) => {
-              console.log(col)
-            }} options={columnData.map((col) => ({
-              label: col.header,
-              value: col.field,
-            }))} />
+            <MultiSelectLookup
+              onSelect={(selectedColumns) => {
+                setColumnSettings((prev) => {
+                  return prev.map((column) => {
+                    column.hidden = !selectedColumns.includes(column.field);
+                    return column;
+                  });
+                });
+              }}
+              options={columnSettings.map((col) => ({
+                label: col.header,
+                value: col.field,
+                disabled: col.visibleOnly,
+                selected: !col.hidden,
+              }))}
+            />
           </div>
         )}
         {mergedSettings.filter && (
@@ -882,7 +902,7 @@ const Table = ({
                       defaultValue={column}
                       disabled
                     >
-                      {columns && columnData.map((column, idx) => (
+                      {columns && columnSettings.filter(col => !col.hidden).map((column, idx) => (
                         <option key={`filter-${index}-column-${idx}`} value={column.field}>
                           {column.field}
                         </option>
@@ -931,7 +951,7 @@ const Table = ({
                     name="column"
                     className="rw-input rw-input-small"
                   >
-                    {columns && columnData.map((column, index) => (
+                    {columns && columnSettings.filter(col => !col.hidden).map((column, index) => (
                       <option key={`column-option-${index}`} value={column.field}>
                         {column.field}
                       </option>
@@ -1048,7 +1068,7 @@ const Table = ({
               {mergedSettings.select &&
                 tableSelect({ header: true, rowIndex: -1, select: true })}
               {columns &&
-                columnData.map(({ ...other }, index) =>
+                columnSettings.filter(col => !col.hidden).map(({ ...other }, index) =>
                   headerRenderer({
                     label: other.header,
                     columnIndex: index,
@@ -1080,8 +1100,8 @@ const Table = ({
                       })}
                     {mergedSettings.select &&
                       tableSelect({ datarow, rowIndex: i, select: true })}
-                    {columnData &&
-                      columnData.map(
+                    {columnSettings &&
+                      columnSettings.map(
                         (
                           {
                             field,

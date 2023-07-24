@@ -284,19 +284,15 @@ export default Lookup;
 
 interface ILookupMultiSelect {
   defaultValue?: any;
-  options: { label: string; value: string | object | number; image?: string }[];
-  onSelect?: (value: ILookupMultiSelect["options"]) => void;
-
+  options: { label: string; value: string | object | number; image?: string, disabled?: boolean, selected?: boolean }[];
+  onSelect?: (value: ArrayElement<ILookupMultiSelect["options"]>["value"][]) => void;
 }
 export const MultiSelectLookup = ({ options, onSelect }: ILookupMultiSelect) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { ref, setIsComponentVisible, isComponentVisible } = useComponentVisible(false);
   const [selectedOptions, setSelectedOptions] = useState([]);
 
   const toggleDropdown = () => {
-    setIsOpen((prevState) => !prevState);
-    if (isOpen) {
-      onSelect?.(selectedOptions)
-    }
+    setIsComponentVisible(!isComponentVisible);
   };
 
   const handleOptionChange = (value) => {
@@ -307,23 +303,27 @@ export const MultiSelectLookup = ({ options, onSelect }: ILookupMultiSelect) => 
         return [...prevState, value];
       }
     });
+    onSelect?.(selectedOptions.includes(value) ? selectedOptions.filter((item) => item !== value) : [...selectedOptions, value]);
   };
 
   const handleSelectAll = () => {
     if (selectedOptions.length === options.length) {
       setSelectedOptions([]);
+      onSelect?.([]);
       return;
     }
+    onSelect?.(options.map((option) => option.value));
     setSelectedOptions(options.map((option) => option.value));
   };
 
   const handleClearSelection = () => {
     setSelectedOptions([]);
+    onSelect?.([]);
   };
 
   return (
-    <div className="relative inline-block text-white">
-      <button className="rw-button rw-button-gray space-x-1.5" onClick={toggleDropdown}>
+    <div className="relative inline-block text-white" ref={ref}>
+      <button className="rw-button rw-button-gray space-x-1.5" onClick={() => setIsComponentVisible(true)}>
         <div className="flex-1 select-none">
           {selectedOptions.length} Selected
         </div>
@@ -340,15 +340,15 @@ export const MultiSelectLookup = ({ options, onSelect }: ILookupMultiSelect) => 
             strokeLinejoin="round"
             strokeWidth="2"
             d={
-              isOpen
+              isComponentVisible
                 ? "M19 16L12 9l-7 7"
                 : "M19 9l-7 7-7-7"
             }
-          ></path>
+          />
         </svg>
       </button>
-      {isOpen && (
-        <div className="absolute top-full left-0 z-30 bg-zinc-600 w-full p-3 border border-zinc-500 space-y-1.5 flex flex-col">
+      {isComponentVisible && (
+        <div className="absolute top-full left-0 z-30 bg-zinc-700 w-full p-3 border border-zinc-500 space-y-1.5 flex flex-col">
           <label className="inline-flex items-center justify-start">
             <input
               type="checkbox"
