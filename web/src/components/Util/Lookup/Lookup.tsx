@@ -40,6 +40,7 @@ const Lookup = ({
 
   const hasOptions = options.length > 0;
 
+
   const { field } = !!name && useController({ name: name });
   const [searchTerm, setSearchTerm] = useState<string>(
     defaultValue && hasOptions
@@ -91,7 +92,6 @@ const Lookup = ({
     selectedOptionRef.current = option
 
     setSearchTerm(option.label);
-    // name && clearErrors(name)
     onSelect?.(option);
     !!name && field.onChange(option.value);
   };
@@ -101,7 +101,6 @@ const Lookup = ({
     selectedOptionRef.current = null;
 
     setSearchTerm("");
-    // name && clearErrors(name)
     onSelect && onSelect({ label: null, value: null });
     !!name && field.onChange(null);
   };
@@ -208,7 +207,7 @@ const Lookup = ({
             {!group
               ? filteredOptions.map((option) => (
                 <li
-                  key={option.value}
+                  key={option.value + Math.random()}
                   onClick={() => handleOptionSelect(option)}
                   className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                 >
@@ -281,3 +280,101 @@ const Lookup = ({
 };
 
 export default Lookup;
+
+
+interface ILookupMultiSelect {
+  defaultValue?: any;
+  options: { label: string; value: string | object | number; image?: string }[];
+  onSelect?: (value: ILookupMultiSelect["options"]) => void;
+
+}
+export const MultiSelectLookup = ({ options, onSelect }: ILookupMultiSelect) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+
+  const toggleDropdown = () => {
+    setIsOpen((prevState) => !prevState);
+    if (isOpen) {
+      onSelect?.(selectedOptions)
+    }
+  };
+
+  const handleOptionChange = (value) => {
+    setSelectedOptions((prevState) => {
+      if (prevState.includes(value)) {
+        return prevState.filter((item) => item !== value);
+      } else {
+        return [...prevState, value];
+      }
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedOptions.length === options.length) {
+      setSelectedOptions([]);
+      return;
+    }
+    setSelectedOptions(options.map((option) => option.value));
+  };
+
+  const handleClearSelection = () => {
+    setSelectedOptions([]);
+  };
+
+  return (
+    <div className="relative inline-block text-white">
+      <button className="rw-button rw-button-gray space-x-1.5" onClick={toggleDropdown}>
+        <div className="flex-1 select-none">
+          {selectedOptions.length} Selected
+        </div>
+        <svg
+          className="h-4 w-4"
+          aria-hidden="true"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d={
+              isOpen
+                ? "M19 16L12 9l-7 7"
+                : "M19 9l-7 7-7-7"
+            }
+          ></path>
+        </svg>
+      </button>
+      {isOpen && (
+        <div className="absolute top-full left-0 z-30 bg-zinc-600 w-full p-3 border border-zinc-500 space-y-1.5 flex flex-col">
+          <label className="inline-flex items-center justify-start">
+            <input
+              type="checkbox"
+              className="rw-input rw-checkbox m-0"
+              checked={selectedOptions.length === options.length}
+              onChange={handleSelectAll}
+            />
+            <span className="font-semibold">Select All</span>
+          </label>
+          {options.map((option) => (
+            <label className="inline-flex items-center justify-start" key={option.value.toString()}>
+              <input
+                type="checkbox"
+                className="rw-input rw-checkbox m-0"
+                checked={selectedOptions.includes(option.value)}
+                onChange={() => handleOptionChange(option.value)}
+              />
+              {option.label}
+            </label>
+          ))}
+          <div className="rw-button-group">
+            <button className="rw-button rw-button-small rw-button-gray" onClick={handleClearSelection}>Clear</button>
+            <button className="rw-button rw-button-small rw-button-red" onClick={toggleDropdown}>Close</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};

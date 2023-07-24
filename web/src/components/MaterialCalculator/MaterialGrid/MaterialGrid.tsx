@@ -1,4 +1,4 @@
-import { Form, FormError, RWGqlError } from "@redwoodjs/forms";
+import { RWGqlError } from "@redwoodjs/forms";
 import {
   memo,
   useCallback,
@@ -10,7 +10,6 @@ import {
 
 import {
   formatNumber,
-  generatePDF,
   getBaseMaterials,
   groupBy,
   timeFormatL,
@@ -121,9 +120,9 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       variables: {
         ids: itemRecipes.map((f) => f.id),
       },
-      onCompleted: (data) => {},
+      onCompleted: (data) => { },
       onError: (error) => {
-        console.log(error);
+        console.error(error);
       },
     }
   );
@@ -157,6 +156,11 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       index?: number;
       item?: ItemRecipe;
     };
+    payloads?: {
+      amount?: number;
+      index?: number;
+      item?: ItemRecipe;
+    }[];
   }
   interface RecipeState extends ItemRecipe {
     amount: number;
@@ -371,41 +375,38 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     }
   };
 
+  const onRecipeSelect = (async ({ UserRecipeItemRecipe }) => {
+    if (UserRecipeItemRecipe && UserRecipeItemRecipe.length > 0) {
+
+      const itemrecipes = UserRecipeItemRecipe.map(async ({ item_recipe_id, amount }) => {
+        let itemfound = items.find((item) => item.id === item_recipe_id);
+        if (itemfound && data) {
+          await setRecipes({
+            type: "ADD",
+            payload: {
+              item: {
+                ...itemfound,
+                ItemRecipeItem: data.itemRecipeItemsByIds ? data.itemRecipeItemsByIds.filter(
+                  (iri) => iri.item_recipe_id === item_recipe_id
+                ) : [],
+              },
+              amount: amount,
+            },
+          });
+        }
+      });
+    }
+  })
+
   return (
     <div className="mx-1 flex w-full flex-col gap-3">
       <UserRecipesCell
-        onSelect={({ UserRecipeItemRecipe }) => {
-          UserRecipeItemRecipe.forEach(({ item_recipe_id, amount }) => {
-            let itemfound = items.find((item) => item.id === item_recipe_id);
-            if (itemfound && data) {
-              setRecipes({
-                type: "ADD",
-                payload: {
-                  item: {
-                    ...itemfound,
-                    ItemRecipeItem: data.itemRecipeItemsByIds.filter(
-                      (iri) => iri.item_recipe_id === item_recipe_id
-                    ),
-                  },
-                  amount: amount,
-                },
-              });
-            }
-          });
-        }}
+        onSelect={onRecipeSelect}
       />
 
-      <Form
-        onSubmit={onAdd}
-        error={error}
+      <section
         className="flex h-full w-full flex-col gap-3 sm:flex-row"
       >
-        <FormError
-          error={error}
-          wrapperClassName="rw-form-error-wrapper"
-          titleClassName="rw-form-error-title"
-          listClassName="rw-form-error-list"
-        />
         <div className="flex flex-col space-y-3">
           {isAuthenticated && (
             <button
@@ -461,21 +462,21 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
               value: v.every(({ type }) => !type)
                 ? v.map((itm) => ({
-                    ...itm,
-                    label: itm.name,
-                    icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                    value: [],
-                  }))
+                  ...itm,
+                  label: itm.name,
+                  icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                  value: [],
+                }))
                 : Object.entries(groupBy(v, "type")).map(([type, v2]) => {
-                    return {
-                      label: type,
-                      value: v2.map((itm) => ({
-                        label: itm.name,
-                        ...itm,
-                        icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                      })),
-                    };
-                  }),
+                  return {
+                    label: type,
+                    value: v2.map((itm) => ({
+                      label: itm.name,
+                      ...itm,
+                      icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                    })),
+                  };
+                }),
             }))}
             onSelect={(item) => {
               onAdd({ itemId: item.id });
@@ -483,7 +484,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           />
         </div>
         <div className="w-full">
-          <Table
+          {/* <Table
             rows={mergeItemRecipe(
               viewBaseMaterials,
               false,
@@ -538,7 +539,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 ),
               })) as any),
             ]}
-          />
+          /> */}
 
           <div className="my-3 space-y-3">
             <ToggleButton
@@ -576,10 +577,17 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 ]);
               }}
             />
+
+            <ToggleButton
+              offLabel="Materials"
+              onLabel="Base materials"
+              checked={viewBaseMaterials}
+              onChange={(e) => setViewBaseMaterials(e.currentTarget.checked)}
+            />
           </div>
 
           <Table
-            rows={recipes.map((recipe) => {
+            rows={recipes.map((recipe, i) => {
               return {
                 ...recipe,
                 collapseContent: (
@@ -600,9 +608,14 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 ),
               };
             })}
-            className="animate-fade-in whitespace-nowrap"
+            className="animate-fade-in whitespace-nowrap !divide-opacity-50"
             settings={{
               summary: true,
+              columnSelector: true,
+              borders: {
+                vertical: true,
+                horizontal: true,
+              }
             }}
             columns={[
               {
@@ -701,81 +714,90 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 valueFormatter: ({ row, value }) => value * row.amount,
                 render: ({ value }) => `${timeFormatL(value, true)}`,
               },
-              // ...(mergeItemRecipe(
-              //   viewBaseMaterials,
-              //   false,
-              //   items,
-              //   ...recipes
-              // ).map(({ Item_ItemRecipe_crafted_item_idToItem, amount }) => ({
-              //   field: Item_ItemRecipe_crafted_item_idToItem,
-              //   header: Item_ItemRecipe_crafted_item_idToItem.name,
-              //   className: "w-0 text-center",
-              //   render: ({ value, row }) => {
-              //     console.log(value)
-              //     return (
-              //       <div
-              //         className="inline-flex min-h-full min-w-[3rem] flex-col items-center justify-center"
-              //         key={`value`}
-              //       >
-              //         <img
-              //           src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/metal.webp`}
-              //           className="h-6 w-6"
-              //         />
-              //         <span className="text-sm text-black dark:text-white">
-              //           {formatNumber(amount)}
-              //         </span>
-              //       </div>
-              //     )
-              //   },
-              // })) as any),
-              {
-                field: "Item_ItemRecipe_crafted_item_idToItem",
-                header: "Ingredients",
-                numeric: false,
-                render: ({ row }) => {
-                  return mergeItemRecipe(viewBaseMaterials, false, items, {
+              ...(mergeItemRecipe(
+                viewBaseMaterials,
+                false,
+                items,
+                ...recipes
+              ).map(({ Item_ItemRecipe_crafted_item_idToItem }) => ({
+                field: Item_ItemRecipe_crafted_item_idToItem,
+                header: Item_ItemRecipe_crafted_item_idToItem.name,
+                numeric: true,
+                className: "w-0 text-center",
+                valueFormatter: ({ row, value }) => {
+                  const itm = mergeItemRecipe(false, false, items, {
                     ...row,
-                  })
-                    .sort(
-                      (a, b) =>
-                        a.Item_ItemRecipe_crafted_item_idToItem.id -
-                        b.Item_ItemRecipe_crafted_item_idToItem.id
-                    )
-                    .map(
-                      (
-                        {
-                          Item_ItemRecipe_crafted_item_idToItem: {
-                            id,
-                            name,
-                            image,
-                          },
-                          amount,
-                        },
-                        i
-                      ) => (
-                        <div
-                          className="inline-flex min-h-full min-w-[4rem] flex-col items-center justify-center"
-                          id={`${id}-${i * Math.random()}${i}`}
-                          key={`${id}-${i * Math.random()}${i}`}
-                        >
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                            className="h-6 w-6"
-                            title={name}
-                            alt={name}
-                          />
-                          <span className="text-sm text-black dark:text-white">
-                            {formatNumber(amount)}
-                          </span>
-                        </div>
-                      )
-                    );
+                  }).filter((v) => v.Item_ItemRecipe_crafted_item_idToItem.id === Item_ItemRecipe_crafted_item_idToItem.id);
+                  return itm.length > 0 ? itm[0].amount : 0;
                 },
-              },
+                render: ({ row }) => {
+                  const itm = mergeItemRecipe(false, false, items, {
+                    ...row,
+                  }).filter((v) => v.Item_ItemRecipe_crafted_item_idToItem.id === Item_ItemRecipe_crafted_item_idToItem.id);
+                  return (
+                    itm.length > 0 && <div
+                      className="inline-flex min-h-full min-w-[3rem] flex-col items-center justify-center"
+                      key={`value`}
+                    >
+                      <img
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm[0].Item_ItemRecipe_crafted_item_idToItem.image}`}
+                        className="h-6 w-6"
+                      />
+                      <span className="text-sm text-black dark:text-white">
+                        {formatNumber(itm[0].amount)}
+                      </span>
+                    </div>
+                  )
+                },
+              }))),
+              // {
+              //   field: "Item_ItemRecipe_crafted_item_idToItem",
+              //   header: "Ingredients",
+              //   numeric: false,
+              //   render: ({ row }) => {
+              //     return mergeItemRecipe(viewBaseMaterials, false, items, {
+              //       ...row,
+              //     })
+              //       .sort(
+              //         (a, b) =>
+              //           a.Item_ItemRecipe_crafted_item_idToItem.id -
+              //           b.Item_ItemRecipe_crafted_item_idToItem.id
+              //       )
+              //       .map(
+              //         (
+              //           {
+              //             Item_ItemRecipe_crafted_item_idToItem: {
+              //               id,
+              //               name,
+              //               image,
+              //             },
+              //             amount,
+              //           },
+              //           i
+              //         ) => (
+              //           <div
+              //             className="inline-flex min-h-full min-w-[4rem] flex-col items-center justify-center"
+              //             id={`${id}-${i * Math.random()}${i}`}
+              //             key={`${id}-${i * Math.random()}${i}`}
+              //           >
+              //             <img
+              //               src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+              //               className="h-6 w-6"
+              //               title={name}
+              //               alt={name}
+              //             />
+              //             <span className="text-sm text-black dark:text-white">
+              //               {formatNumber(amount)}
+              //             </span>
+              //           </div>
+              //         )
+              //       );
+              //   },
+              // },
             ]}
           />
         </div>
-      </Form>
+      </section>
     </div>
   );
 };

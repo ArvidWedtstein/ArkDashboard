@@ -9,6 +9,7 @@ import clsx from "clsx";
 import useComponentVisible from "src/components/useComponentVisible";
 import { Form, SelectField, Submit, TextField } from "@redwoodjs/forms";
 import { toast } from "@redwoodjs/web/dist/toast";
+import { MultiSelectLookup } from "../Lookup/Lookup";
 type Filter = {
   /**
    * The column name.
@@ -106,6 +107,10 @@ type TableSettings = {
    */
   summary?: boolean;
   /**
+   * Lets user choose which columns to display
+   */
+  columnSelector?: boolean;
+  /**
    * Configuration for table borders.
    */
   borders?: {
@@ -160,12 +165,13 @@ const Table = ({
   settings = {},
   toolbar = [],
 }: TableProps) => {
-  const defaultSettings = {
+  const defaultSettings: TableSettings = {
     search: false,
     header: true,
     select: false,
     filter: false,
     summary: false,
+    columnSelector: false,
     borders: {
       vertical: false,
       horizontal: true,
@@ -191,6 +197,7 @@ const Table = ({
     mergedSettings.pagination.rowsPerPage ||
     mergedSettings.pagination.pageSizeOptions[0]
   );
+
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filters, setFilters] = useState<Filter[]>([]);
   const [sort, setSort] = useState({
@@ -569,7 +576,7 @@ const Table = ({
         className={clsx(
           "rounded-b-lg font-semibold text-gray-900 dark:text-white",
           {
-            "divide-x divide-gray-400 dark:divide-zinc-800":
+            "divide-x divide-gray-400 dark:divide-zinc-800 divide-opacity-30":
               mergedSettings.borders.vertical,
           }
         )}
@@ -593,7 +600,7 @@ const Table = ({
                   className
                 )}
               >
-                {numeric ? sum : index === 0 ? "Total" : ""}
+                {numeric ? formatNumber(sum) : index === 0 ? "Total" : ""}
               </td>
             );
           }
@@ -797,7 +804,7 @@ const Table = ({
     toast.success("Copied to clipboard");
   };
 
-  const addFilter = (e?) => {
+  const addFilter = (e: Filter) => {
     setFilters((prev) => [
       ...prev,
       {
@@ -816,6 +823,16 @@ const Table = ({
       )}
     >
       <div className="flex items-center justify-start space-x-3 [&:not(:empty)]:my-2">
+        {mergedSettings.columnSelector && (
+          <div className="relative">
+            <MultiSelectLookup onSelect={(col) => {
+              console.log(col)
+            }} options={columnData.map((col) => ({
+              label: col.header,
+              value: col.field,
+            }))} />
+          </div>
+        )}
         {mergedSettings.filter && (
           <div className="relative w-fit" ref={ref}>
             <button
@@ -847,7 +864,7 @@ const Table = ({
               open={isComponentVisible}
               onClose={() => setIsComponentVisible(false)}
             >
-              <Form
+              <Form<Filter>
                 className="flex flex-col"
                 method="dialog"
                 onSubmit={(e) => {
@@ -865,8 +882,8 @@ const Table = ({
                       defaultValue={column}
                       disabled
                     >
-                      {columns.map((column, idx) => (
-                        <option key={`filter-${index}-column-${idx}`}>
+                      {columns && columnData.map((column, idx) => (
+                        <option key={`filter-${index}-column-${idx}`} value={column.field}>
                           {column.field}
                         </option>
                       ))}
@@ -914,8 +931,8 @@ const Table = ({
                     name="column"
                     className="rw-input rw-input-small"
                   >
-                    {columns.map((column, index) => (
-                      <option key={`column-option-${index}`}>
+                    {columns && columnData.map((column, index) => (
+                      <option key={`column-option-${index}`} value={column.field}>
                         {column.field}
                       </option>
                     ))}
@@ -1016,7 +1033,7 @@ const Table = ({
           <div key={`toolbar-${index}`}>{item}</div>
         ))}
       </div>
-      <div className={"rounded-lg border border-zinc-500"}>
+      <div className={"relative rounded-lg overflow-x-auto border border-zinc-500"}>
         <table className="relative mr-auto w-full table-auto text-left text-sm text-zinc-700 dark:text-zinc-300">
           <thead className="text-sm uppercase">
             <tr
@@ -1031,7 +1048,7 @@ const Table = ({
               {mergedSettings.select &&
                 tableSelect({ header: true, rowIndex: -1, select: true })}
               {columns &&
-                columns.map(({ ...other }, index) =>
+                columnData.map(({ ...other }, index) =>
                   headerRenderer({
                     label: other.header,
                     columnIndex: index,
@@ -1043,21 +1060,16 @@ const Table = ({
           <tbody
             className={
               mergedSettings.borders.horizontal &&
-              "divide-y divide-gray-400 dark:divide-zinc-800"
+              "divide-y divide-gray-400 dark:divide-zinc-800 divide-opacity-30"
             }
           >
             {dataRows &&
               PaginatedData.map((datarow, i) => (
                 <React.Fragment key={datarow.row_id}>
                   <tr
-                    // onClick={() => {
-                    //   if (datarow.collapseContent) {
-                    //     handleRowCollapse(datarow.row_id);
-                    //   }
-                    // }}
-                    className={`z-10 ${mergedSettings.borders.vertical
-                        ? "divide-x divide-gray-400 dark:divide-zinc-800"
-                        : ""
+                    className={`z-10 overflow-x-auto ${mergedSettings.borders.vertical
+                      ? "divide-x divide-gray-400 dark:divide-zinc-800 divide-opacity-30"
+                      : ""
                       }`}
                   >
                     {dataRows.some((row) => row.collapseContent) &&
@@ -1068,8 +1080,8 @@ const Table = ({
                       })}
                     {mergedSettings.select &&
                       tableSelect({ datarow, rowIndex: i, select: true })}
-                    {columns &&
-                      columns.map(
+                    {columnData &&
+                      columnData.map(
                         (
                           {
                             field,

@@ -122,7 +122,7 @@ const ItemList = ({
                 ></path>
               </svg>
             </div>
-            <SearchField
+            <input
               className="rw-input w-full pl-10 dark:bg-zinc-700 dark:focus:bg-zinc-700"
               name="search"
               defaultValue={search}
