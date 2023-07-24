@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   IntRange,
   debounce,
@@ -195,6 +195,10 @@ const Table = ({
     columns || []
   );
 
+  useEffect(() => {
+    setColumnSettings(columns || []);
+  }, [columns]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<TableDataRow["row_id"][]>(
     []
@@ -205,7 +209,7 @@ const Table = ({
   );
   const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(
     mergedSettings.pagination.rowsPerPage ||
-    mergedSettings.pagination.pageSizeOptions[0]
+      mergedSettings.pagination.pageSizeOptions[0]
   );
 
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -479,23 +483,23 @@ const Table = ({
 
     const valueFormatted = valueFormatter
       ? valueFormatter({
-        value: cellData,
-        row: rowData,
-        columnIndex,
-      })
+          value: cellData,
+          row: rowData,
+          columnIndex,
+        })
       : isNaN(cellData)
-        ? cellData?.amount || cellData
-        : cellData;
+      ? cellData?.amount || cellData
+      : cellData;
 
     const content = render
       ? render({
-        columnIndex,
-        rowIndex,
-        value: valueFormatted,
-        field: field,
-        header,
-        row: rowData,
-      })
+          columnIndex,
+          rowIndex,
+          value: valueFormatted,
+          field: field,
+          header,
+          row: rowData,
+        })
       : valueFormatted;
 
     return (
@@ -535,8 +539,8 @@ const Table = ({
               checked={
                 header
                   ? PaginatedData.every((row) =>
-                    selectedRows.includes(row.row_id)
-                  )
+                      selectedRows.includes(row.row_id)
+                    )
                   : isSelected(datarow.row_id)
               }
               onChange={(e) => handleRowSelect(e, datarow?.row_id)}
@@ -586,7 +590,7 @@ const Table = ({
         className={clsx(
           "rounded-b-lg font-semibold text-gray-900 dark:text-white",
           {
-            "divide-x divide-gray-400 dark:divide-zinc-800 divide-opacity-30":
+            "divide-x divide-gray-400 divide-opacity-30 dark:divide-zinc-800":
               mergedSettings.borders.vertical,
           }
         )}
@@ -597,24 +601,26 @@ const Table = ({
         {mergedSettings.select && (
           <td className="bg-zinc-300 px-3 py-4 first:rounded-bl-lg dark:bg-zinc-800" />
         )}
-        {columnSettings.filter(col => !col.hidden).map(
-          ({ header, field, numeric, className, valueFormatter }, index) => {
-            const sum = calculateSum(field, valueFormatter);
+        {columnSettings
+          .filter((col) => !col.hidden)
+          .map(
+            ({ header, field, numeric, className, valueFormatter }, index) => {
+              const sum = calculateSum(field, valueFormatter);
 
-            const key = `${field}-${header}`; // Use a unique identifier for the key
-            return (
-              <td
-                key={key}
-                className={clsx(
-                  "bg-zinc-300 px-3 py-4 first:rounded-bl-lg last:rounded-br-lg dark:bg-zinc-800",
-                  className
-                )}
-              >
-                {numeric ? formatNumber(sum) : index === 0 ? "Total" : ""}
-              </td>
-            );
-          }
-        )}
+              const key = `${field}-${header}`; // Use a unique identifier for the key
+              return (
+                <td
+                  key={key}
+                  className={clsx(
+                    "bg-zinc-300 px-3 py-4 first:rounded-bl-lg last:rounded-br-lg dark:bg-zinc-800",
+                    className
+                  )}
+                >
+                  {numeric ? formatNumber(sum) : index === 0 ? "Total" : ""}
+                </td>
+              );
+            }
+          )}
       </tr>
     </tfoot>
   );
@@ -673,7 +679,7 @@ const Table = ({
       } else if (
         dir === "next" &&
         currentPage <
-        Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
+          Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
       ) {
         setCurrentPage(currentPage + 1);
       }
@@ -902,11 +908,17 @@ const Table = ({
                       defaultValue={column}
                       disabled
                     >
-                      {columns && columnSettings.filter(col => !col.hidden).map((column, idx) => (
-                        <option key={`filter-${index}-column-${idx}`} value={column.field}>
-                          {column.field}
-                        </option>
-                      ))}
+                      {columns &&
+                        columnSettings
+                          .filter((col) => !col.hidden)
+                          .map((column, idx) => (
+                            <option
+                              key={`filter-${index}-column-${idx}`}
+                              value={column.field}
+                            >
+                              {column.field}
+                            </option>
+                          ))}
                     </select>
                     <select
                       name="operator"
@@ -951,11 +963,17 @@ const Table = ({
                     name="column"
                     className="rw-input rw-input-small"
                   >
-                    {columns && columnSettings.filter(col => !col.hidden).map((column, index) => (
-                      <option key={`column-option-${index}`} value={column.field}>
-                        {column.field}
-                      </option>
-                    ))}
+                    {columns &&
+                      columnSettings
+                        .filter((col) => !col.hidden)
+                        .map((column, index) => (
+                          <option
+                            key={`column-option-${index}`}
+                            value={column.field}
+                          >
+                            {column.field}
+                          </option>
+                        ))}
                   </SelectField>
                   <SelectField
                     name="operator"
@@ -1053,7 +1071,9 @@ const Table = ({
           <div key={`toolbar-${index}`}>{item}</div>
         ))}
       </div>
-      <div className={"relative rounded-lg overflow-x-auto border border-zinc-500"}>
+      <div
+        className={"relative overflow-x-auto rounded-lg border border-zinc-500"}
+      >
         <table className="relative mr-auto w-full table-auto text-left text-sm text-zinc-700 dark:text-zinc-300">
           <thead className="text-sm uppercase">
             <tr
@@ -1068,29 +1088,32 @@ const Table = ({
               {mergedSettings.select &&
                 tableSelect({ header: true, rowIndex: -1, select: true })}
               {columns &&
-                columnSettings.filter(col => !col.hidden).map(({ ...other }, index) =>
-                  headerRenderer({
-                    label: other.header,
-                    columnIndex: index,
-                    ...other,
-                  })
-                )}
+                columnSettings
+                  .filter((col) => !col.hidden)
+                  .map(({ ...other }, index) =>
+                    headerRenderer({
+                      label: other.header,
+                      columnIndex: index,
+                      ...other,
+                    })
+                  )}
             </tr>
           </thead>
           <tbody
             className={
               mergedSettings.borders.horizontal &&
-              "divide-y divide-gray-400 dark:divide-zinc-800 divide-opacity-30"
+              "divide-y divide-gray-400 divide-opacity-30 dark:divide-zinc-800"
             }
           >
             {dataRows &&
               PaginatedData.map((datarow, i) => (
                 <React.Fragment key={datarow.row_id}>
                   <tr
-                    className={`z-10 overflow-x-auto ${mergedSettings.borders.vertical
-                      ? "divide-x divide-gray-400 dark:divide-zinc-800 divide-opacity-30"
-                      : ""
-                      }`}
+                    className={`z-10 overflow-x-auto ${
+                      mergedSettings.borders.vertical
+                        ? "divide-x divide-gray-400 divide-opacity-30 dark:divide-zinc-800"
+                        : ""
+                    }`}
                   >
                     {dataRows.some((row) => row.collapseContent) &&
                       tableSelect({
@@ -1134,8 +1157,9 @@ const Table = ({
                   </tr>
                   {datarow?.collapseContent && (
                     <tr
-                      className={`transition ease-in ${isRowOpen(datarow.row_id) ? "table-row" : "hidden"
-                        }`}
+                      className={`transition ease-in ${
+                        isRowOpen(datarow.row_id) ? "table-row" : "hidden"
+                      }`}
                     >
                       <td
                         colSpan={100}
@@ -1160,9 +1184,7 @@ const Table = ({
                   })}
                   colSpan={100}
                 >
-                  <span className="px-3 py-2 text-gray-400">
-                    No data found
-                  </span>
+                  <span className="px-3 py-2 text-gray-400">No data found</span>
                 </td>
               </tr>
             )}
