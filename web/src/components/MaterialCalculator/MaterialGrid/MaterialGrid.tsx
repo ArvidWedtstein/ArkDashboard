@@ -646,13 +646,13 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 className: "w-0 text-center",
                 render: ({ rowIndex, value, row }) => (
                   <div
-                    className="flex flex-row items-center"
+                    className="flex flex-row items-center gap-x-2 self-center w-fit"
                     key={`materialcalculator-${rowIndex}}`}
                   >
                     <button
                       type="button"
                       disabled={value === 1}
-                      className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
+                      className="relative h-8 w-8 inline-flex justify-center items-center rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
                       onClick={() =>
                         setRecipes({
                           type: "CHANGE_AMOUNT",
@@ -666,14 +666,14 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                         })
                       }
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-3.5 h-3.5">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-3.5 h-3.5" fill="currentColor">
                         <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
                       </svg>
                     </button>
                     <input
                       type="text"
                       value={value}
-                      className="rw-input w-16 p-3 text-center"
+                      className="rw-input w-20 p-3 text-center"
                       onChange={(e) => {
                         setRecipes({
                           type: "CHANGE_AMOUNT",
@@ -689,7 +689,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                     />
                     <button
                       type="button"
-                      className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
+                      className="relative inline-flex justify-center items-center h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
                       onClick={() =>
                         setRecipes({
                           type: "CHANGE_AMOUNT",
@@ -700,7 +700,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                         })
                       }
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-3.5 h-3.5">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-3.5 h-3.5" fill="currentColor">
                         <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
                       </svg>
                     </button>
@@ -711,6 +711,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 field: "crafting_time",
                 header: "Time pr item",
                 datatype: 'number',
+                aggregate: 'sum',
                 className: "w-0 text-center",
                 valueFormatter: ({ row, value }) => value * row.amount,
                 render: ({ value }) => `${timeFormatL(value, true)}`,

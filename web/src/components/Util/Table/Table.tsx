@@ -9,7 +9,7 @@ import clsx from "clsx";
 import useComponentVisible from "src/components/useComponentVisible";
 import { Form, SelectField, Submit, TextField } from "@redwoodjs/forms";
 import { toast } from "@redwoodjs/web/dist/toast";
-import { MultiSelectLookup } from "../Lookup/Lookup";
+import Tooltip from "../Tooltip/Tooltip";
 type Filter = {
   /**
    * The column name.
@@ -216,6 +216,7 @@ const Table = ({
   const [collapsedRows, setCollapsedRows] = useState<TableDataRow["row_id"][]>(
     []
   );
+
   const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(
     mergedSettings.pagination.rowsPerPage ||
     mergedSettings.pagination.pageSizeOptions[0]
@@ -223,14 +224,16 @@ const Table = ({
 
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filters, setFilters] = useState<Filter[]>([]);
-  const [sort, setSort] = useState({
+  const [sort, setSort] = useState<{ column: TableColumn["field"], direction: "asc" | "desc", columnDataType: TableColumn["datatype"] }>({
     column: "",
     direction: "asc",
+    columnDataType: "text",
   });
 
   const sortData = (
     data: TableDataRow[],
-    column: string,
+    column: TableColumn["field"],
+    columnDataType: TableColumn["datatype"],
     direction: "asc" | "desc"
   ) => {
     if (column) {
@@ -239,16 +242,23 @@ const Table = ({
       data.sort((a, b) => {
         let c = sortKey.includes(".")
           ? getValueByNestedKey(a, sortKey)
-          : sortKey;
+          : a[sortKey];
         let d = sortKey.includes(".")
           ? getValueByNestedKey(b, sortKey)
-          : sortKey;
-        if (c < d) {
-          return -1 * sortOrder;
+          : b[sortKey];
+
+        // Compare based on data type
+        if (columnDataType === "number") {
+          return (c - d) * sortOrder;
+        } else if (columnDataType === "boolean") {
+          return (c === d ? 0 : c ? 1 : -1) * sortOrder;
+        } else if (columnDataType === "text") {
+          return c.localeCompare(d) * sortOrder;
+        } else if (columnDataType === "date") {
+          return (c.getTime() - d.getTime()) * sortOrder;
         }
-        if (c > d) {
-          return 1 * sortOrder;
-        }
+
+        // If data types don't match or are not supported, return 0
         return 0;
       });
 
@@ -342,7 +352,7 @@ const Table = ({
     }
 
     if (sort.column) {
-      filteredData = sortData(filteredData, sort.column, sort.direction as any);
+      filteredData = sortData(filteredData, sort.column, sort.columnDataType, sort.direction);
     }
 
     return filteredData;
@@ -418,6 +428,7 @@ const Table = ({
           other.sortable &&
             setSort((prev) => ({
               column: other.field,
+              columnDataType: other.datatype,
               direction: prev.direction === "asc" ? "desc" : "asc",
             }));
         }}
@@ -441,6 +452,19 @@ const Table = ({
             )}
           </svg>
         )}
+        {/* <Tooltip
+          className="inline-flex self-end justify-self-end"
+          content={
+            <div className="flex flex-col">
+              <h1 className="text-sm font-bold">Column Settings</h1>
+              <p>Aggregation: {other.aggregate || 'none'}</p>
+            </div>
+          }
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512" className="h-full inline-flex" fill="currentColor" stroke="currentColor">
+            <path d="M64 128c17.67 0 32-14.33 32-32s-14.33-32-32-32C46.33 64 32 78.33 32 96S46.33 128 64 128zM64 224C46.33 224 32 238.3 32 256s14.33 32 32 32c17.67 0 32-14.33 32-32S81.67 224 64 224zM64 384c-17.67 0-32 14.33-32 32s14.33 32 32 32c17.67 0 32-14.33 32-32S81.67 384 64 384z" />
+          </svg>
+        </Tooltip> */}
       </th>
     );
   };
@@ -652,6 +676,7 @@ const Table = ({
           }
         )}
       >
+        {/* If master/detail */}
         {dataRows.some((row) => row.collapseContent) && (
           <td className="bg-zinc-300 px-3 py-4 first:rounded-bl-lg dark:bg-zinc-800" />
         )}
@@ -669,8 +694,6 @@ const Table = ({
               const aggregatedValue = calculateAggregate({ field, aggregationType: aggregate, valueFormatter });
 
               const key = `${field}-${header}`; // Use a unique identifier for the key
-
-
               return (
                 <td
                   key={key}
@@ -680,9 +703,7 @@ const Table = ({
                   )}
                 >
                   {datatype === 'number'
-                    ? aggregate === 'avg'
-                      ? formatNumber(aggregatedValue)
-                      : aggregatedValue
+                    ? formatNumber(aggregatedValue)
                     : index === 0
                       ? "Total"
                       : ""}
@@ -908,7 +929,7 @@ const Table = ({
       )}
     >
       <div className="flex items-center justify-start space-x-3 [&:not(:empty)]:my-2">
-        {mergedSettings.columnSelector && (
+        {/* {mergedSettings.columnSelector && (
           <div className="relative">
             <MultiSelectLookup
               onSelect={(selectedColumns) => {
@@ -927,7 +948,7 @@ const Table = ({
               }))}
             />
           </div>
-        )}
+        )} */}
         {mergedSettings.filter && (
           <div className="relative w-fit" ref={ref}>
             <button
