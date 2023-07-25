@@ -120,7 +120,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       variables: {
         ids: itemRecipes.map((f) => f.id),
       },
-      onCompleted: (data) => {},
+      onCompleted: (data) => { },
       onError: (error) => {
         console.error(error);
       },
@@ -387,8 +387,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 ...itemfound,
                 ItemRecipeItem: data.itemRecipeItemsByIds
                   ? data.itemRecipeItemsByIds.filter(
-                      (iri) => iri.item_recipe_id === item_recipe_id
-                    )
+                    (iri) => iri.item_recipe_id === item_recipe_id
+                  )
                   : [],
               },
               amount: amount,
@@ -459,21 +459,21 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
               value: v.every(({ type }) => !type)
                 ? v.map((itm) => ({
-                    ...itm,
-                    label: itm.name,
-                    icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                    value: [],
-                  }))
+                  ...itm,
+                  label: itm.name,
+                  icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                  value: [],
+                }))
                 : Object.entries(groupBy(v, "type")).map(([type, v2]) => {
-                    return {
-                      label: type,
-                      value: v2.map((itm) => ({
-                        label: itm.name,
-                        ...itm,
-                        icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                      })),
-                    };
-                  }),
+                  return {
+                    label: type,
+                    value: v2.map((itm) => ({
+                      label: itm.name,
+                      ...itm,
+                      icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                    })),
+                  };
+                }),
             }))}
             onSelect={(item) => {
               onAdd({ itemId: item.id });
@@ -607,7 +607,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
             })}
             className="animate-fade-in !divide-opacity-50 whitespace-nowrap"
             settings={{
-              summary: true,
               columnSelector: true,
               borders: {
                 vertical: true,
@@ -642,7 +641,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               {
                 field: "amount",
                 header: "Amount",
-                numeric: true,
+                datatype: 'number',
+                aggregate: "sum",
                 className: "w-0 text-center",
                 render: ({ rowIndex, value, row }) => (
                   <div
@@ -666,7 +666,9 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                         })
                       }
                     >
-                      -
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-3.5 h-3.5">
+                        <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
+                      </svg>
                     </button>
                     <input
                       type="text"
@@ -698,7 +700,9 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                         })
                       }
                     >
-                      +
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-3.5 h-3.5">
+                        <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                      </svg>
                     </button>
                   </div>
                 ),
@@ -706,7 +710,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               {
                 field: "crafting_time",
                 header: "Time pr item",
-                numeric: true,
+                datatype: 'number',
                 className: "w-0 text-center",
                 valueFormatter: ({ row, value }) => value * row.amount,
                 render: ({ value }) => `${timeFormatL(value, true)}`,
@@ -719,7 +723,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               ).map(({ Item_ItemRecipe_crafted_item_idToItem }) => ({
                 field: Item_ItemRecipe_crafted_item_idToItem,
                 header: Item_ItemRecipe_crafted_item_idToItem.name,
-                numeric: true,
+                type: 'number',
+                aggregate: 'sum' as const,
                 className: "w-0 text-center",
                 valueFormatter: ({ row, value }) => {
                   const itm = mergeItemRecipe(false, false, items, {
@@ -760,7 +765,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               // {
               //   field: "Item_ItemRecipe_crafted_item_idToItem",
               //   header: "Ingredients",
-              //   numeric: false,
+              //   datatype: 'number',
+              //   aggregate: "sum",
               //   render: ({ row }) => {
               //     return mergeItemRecipe(viewBaseMaterials, false, items, {
               //       ...row,

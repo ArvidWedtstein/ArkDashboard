@@ -254,7 +254,7 @@ const HomePage = () => {
               </details>
               <Link
                 to={routes.materialCalculator()}
-                className="rw-button rw-button-green-gradient mt-2"
+                className="rw-button rw-button-green-outline mt-2"
               >
                 Explore
               </Link>

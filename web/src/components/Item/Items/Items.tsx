@@ -381,7 +381,7 @@ const ItemsList = ({
             className="hover:border-pea-500 rounded-lg border border-transparent transition"
           >
             <ArkCard
-              className="h-full border border-gray-800 dark:border-gray-500" // bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-500 to-zinc-900
+              className="h-full border border-zinc-800 dark:border-zinc-500" // bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-500 to-zinc-900
               title={item.name}
               subtitle={item.type}
               content={view === "list" ? item.description : ""}
@@ -399,11 +399,6 @@ const ItemsList = ({
           <Link to={routes.newItem()} className="rw-link">
             {"Create one?"}
           </Link>
-        </div>
-      )}
-      {loading === true && (
-        <div className="flex h-full w-full items-center justify-center bg-transparent">
-          <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>
         </div>
       )}
     </div>

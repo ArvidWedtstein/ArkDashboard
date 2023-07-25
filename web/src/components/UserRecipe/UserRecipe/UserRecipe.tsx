@@ -37,10 +37,11 @@ const UserRecipe = ({ userRecipe }: Props) => {
 
   const onDeleteClick = (id: DeleteUserRecipeMutationVariables['id']) => {
     if (confirm('Are you sure you want to delete userRecipe ' + id + '?')) {
-      deleteUserRecipe({ variables: { id } })
+      // deleteUserRecipe({ variables: { id } })
     }
   }
 
+  // TODO: Add a way to edit the recipe
   return (
     <article>
       <div className="rw-segment">

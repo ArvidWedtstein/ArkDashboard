@@ -14,7 +14,7 @@ type Filter = {
   /**
    * The column name.
    */
-  column: string;
+  column: TableColumn["field"];
   /**
    * The filter operator.
    */
@@ -43,9 +43,9 @@ type TableColumn = {
    */
   field: string;
   /**
-   * Indicates whether the column contains numeric values.
+   * Indicates type of column
    */
-  numeric?: boolean;
+  datatype?: "text" | "number" | "boolean" | "date";
   /**
    * The CSS class name for the column.
    */
@@ -62,6 +62,20 @@ type TableColumn = {
    * If the column is hidden
    */
   hidden?: boolean;
+  /**
+   * Column Sort Direction
+   */
+  sortDirection?: "desc";
+  /**
+   * Column order
+   * @ignore - used for ordering columns
+   * NOT IMPLEMENTED YET
+   */
+  order?: number;
+  /**
+   *  Indicates whether the column is a summary column.
+   */
+  aggregate?: "sum" | "avg" | "count" | "min" | "max";
   /**
    * A function to format the column value.
    *
@@ -110,10 +124,6 @@ type TableSettings = {
    * Indicates whether the filter feature is enabled.
    */
   filter?: boolean;
-  /**
-   * Indicates whether the summary is visible.
-   */
-  summary?: boolean;
   /**
    * Lets user choose which columns to display
    */
@@ -178,7 +188,6 @@ const Table = ({
     header: true,
     select: false,
     filter: false,
-    summary: false,
     columnSelector: false,
     borders: {
       vertical: false,
@@ -209,7 +218,7 @@ const Table = ({
   );
   const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(
     mergedSettings.pagination.rowsPerPage ||
-      mergedSettings.pagination.pageSizeOptions[0]
+    mergedSettings.pagination.pageSizeOptions[0]
   );
 
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -396,6 +405,7 @@ const Table = ({
   const headerRenderer = ({ label, columnIndex, ...other }) => {
     return (
       <th
+        abbr={other.field}
         key={`headcell-${columnIndex}-${label}`}
         id={`headcell-${other.field}`}
         className={clsx(
@@ -444,7 +454,7 @@ const Table = ({
     valueFormatter,
     field,
     className,
-    numeric,
+    datatype,
     header,
   }: {
     rowData: TableDataRow;
@@ -452,7 +462,7 @@ const Table = ({
     rowIndex: number;
     field: string;
     header: string;
-    numeric: boolean;
+    datatype: TableColumn["datatype"];
     [key: string]: any;
   }) => {
     const rowSelected = isSelected(rowData.row_id);
@@ -466,16 +476,16 @@ const Table = ({
           rowIndex === PaginatedData.length - 1 &&
           columnIndex === 0 &&
           !mergedSettings.select &&
-          !mergedSettings.summary &&
+          !columnSettings.some(col => col.aggregate) &&
           !dataRows.some((row) => row.collapseContent),
         "rounded-br-lg":
           rowIndex === PaginatedData.length - 1 &&
           columnIndex === columns.length - 1 &&
-          !mergedSettings.summary,
+          !columnSettings.some(col => col.aggregate),
       }
     );
 
-    if (numeric && !isNaN(cellData) && !render) {
+    if (datatype == 'number' && !isNaN(cellData) && !render) {
       cellData = formatNumber(parseInt(cellData));
     }
 
@@ -483,23 +493,23 @@ const Table = ({
 
     const valueFormatted = valueFormatter
       ? valueFormatter({
-          value: cellData,
-          row: rowData,
-          columnIndex,
-        })
+        value: cellData,
+        row: rowData,
+        columnIndex,
+      })
       : isNaN(cellData)
-      ? cellData?.amount || cellData
-      : cellData;
+        ? cellData?.amount || cellData
+        : cellData;
 
     const content = render
       ? render({
-          columnIndex,
-          rowIndex,
-          value: valueFormatted,
-          field: field,
-          header,
-          row: rowData,
-        })
+        columnIndex,
+        rowIndex,
+        value: valueFormatted,
+        field: field,
+        header,
+        row: rowData,
+      })
       : valueFormatted;
 
     return (
@@ -528,7 +538,7 @@ const Table = ({
           "!bg-zinc-300 dark:!bg-zinc-700":
             !header && isSelected(datarow.row_id),
           "first:rounded-bl-lg":
-            rowIndex === PaginatedData.length - 1 && !mergedSettings.summary,
+            rowIndex === PaginatedData.length - 1 && !columnSettings.some(col => col.aggregate),
         })}
         scope="col"
       >
@@ -539,8 +549,8 @@ const Table = ({
               checked={
                 header
                   ? PaginatedData.every((row) =>
-                      selectedRows.includes(row.row_id)
-                    )
+                    selectedRows.includes(row.row_id)
+                  )
                   : isSelected(datarow.row_id)
               }
               onChange={(e) => handleRowSelect(e, datarow?.row_id)}
@@ -569,19 +579,66 @@ const Table = ({
     );
   };
 
-  const calculateSum = (field, valueFormatter) => {
-    return PaginatedData.filter(
+  const calculateAggregate = ({ field, aggregationType, valueFormatter }: { field: TableColumn["field"], aggregationType: TableColumn["aggregate"], valueFormatter: TableColumn["valueFormatter"] }) => {
+    const filteredData = PaginatedData.filter(
       (r) => !selectedRows.length || selectedRows.includes(r.row_id)
-    ).reduce((sum, row) => {
-      const cellData = row[field];
-      const valueFormatted = valueFormatter
-        ? valueFormatter({ value: cellData, row })
-        : cellData;
-      const value = parseInt(
-        isNaN(valueFormatted) ? valueFormatted?.amount : valueFormatted
-      );
-      return sum + value;
-    }, 0);
+    );
+
+    switch (aggregationType) {
+      case "sum":
+        return filteredData.reduce((sum, row) => {
+          const cellData = row[field];
+          const valueFormatted = valueFormatter
+            ? valueFormatter({ value: cellData, row })
+            : cellData;
+
+          const value = parseInt(
+            isNaN(valueFormatted) ? valueFormatted?.amount : valueFormatted
+          );
+          return sum + value;
+        }, 0);
+      case "avg":
+        const sum = filteredData.reduce((sum, row) => {
+          const cellData = row[field];
+          const valueFormatted = valueFormatter
+            ? valueFormatter({ value: cellData, row })
+            : cellData;
+
+          const value = parseInt(
+            isNaN(valueFormatted) ? valueFormatted?.amount : valueFormatted
+          );
+          return sum + value;
+        }, 0);
+        return sum / filteredData.length;
+      case "count":
+        return filteredData.length;
+      case "min":
+        return filteredData.reduce((min, row) => {
+          const cellData = row[field];
+          const valueFormatted = valueFormatter
+            ? valueFormatter({ value: cellData, row })
+            : cellData;
+
+          const value = parseInt(
+            isNaN(valueFormatted) ? valueFormatted?.amount : valueFormatted
+          );
+          return Math.min(min, value);
+        }, Infinity);
+      case "max":
+        return filteredData.reduce((max, row) => {
+          const cellData = row[field];
+          const valueFormatted = valueFormatter
+            ? valueFormatter({ value: cellData, row })
+            : cellData;
+
+          const value = parseInt(
+            isNaN(valueFormatted) ? valueFormatted?.amount : valueFormatted
+          );
+          return Math.max(max, value);
+        }, -Infinity);
+      default:
+        return 0;
+    }
   };
 
   const tableFooter = () => (
@@ -604,10 +661,16 @@ const Table = ({
         {columnSettings
           .filter((col) => !col.hidden)
           .map(
-            ({ header, field, numeric, className, valueFormatter }, index) => {
-              const sum = calculateSum(field, valueFormatter);
+            ({ header, field, datatype, aggregate, className, valueFormatter }, index) => {
+              if (!aggregate) {
+                return <td className="bg-zinc-300 px-3 py-4 first:rounded-bl-lg dark:bg-zinc-800" />
+              }
+
+              const aggregatedValue = calculateAggregate({ field, aggregationType: aggregate, valueFormatter });
 
               const key = `${field}-${header}`; // Use a unique identifier for the key
+
+
               return (
                 <td
                   key={key}
@@ -616,7 +679,13 @@ const Table = ({
                     className
                   )}
                 >
-                  {numeric ? formatNumber(sum) : index === 0 ? "Total" : ""}
+                  {datatype === 'number'
+                    ? aggregate === 'avg'
+                      ? formatNumber(aggregatedValue)
+                      : aggregatedValue
+                    : index === 0
+                      ? "Total"
+                      : ""}
                 </td>
               );
             }
@@ -679,7 +748,7 @@ const Table = ({
       } else if (
         dir === "next" &&
         currentPage <
-          Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
+        Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
       ) {
         setCurrentPage(currentPage + 1);
       }
@@ -1109,11 +1178,10 @@ const Table = ({
               PaginatedData.map((datarow, i) => (
                 <React.Fragment key={datarow.row_id}>
                   <tr
-                    className={`z-10 overflow-x-auto ${
-                      mergedSettings.borders.vertical
-                        ? "divide-x divide-gray-400 divide-opacity-30 dark:divide-zinc-800"
-                        : ""
-                    }`}
+                    className={`z-10 overflow-x-auto ${mergedSettings.borders.vertical
+                      ? "divide-x divide-gray-400 divide-opacity-30 dark:divide-zinc-800"
+                      : ""
+                      }`}
                   >
                     {dataRows.some((row) => row.collapseContent) &&
                       tableSelect({
@@ -1131,7 +1199,7 @@ const Table = ({
                             render,
                             valueFormatter,
                             className,
-                            numeric,
+                            datatype,
                             header,
                             ...other
                           },
@@ -1150,16 +1218,15 @@ const Table = ({
                             valueFormatter,
                             field,
                             className,
-                            numeric,
+                            datatype,
                             ...other,
                           })
                       )}
                   </tr>
                   {datarow?.collapseContent && (
                     <tr
-                      className={`transition ease-in ${
-                        isRowOpen(datarow.row_id) ? "table-row" : "hidden"
-                      }`}
+                      className={`transition ease-in ${isRowOpen(datarow.row_id) ? "table-row" : "hidden"
+                        }`}
                     >
                       <td
                         colSpan={100}
@@ -1177,7 +1244,7 @@ const Table = ({
                   headers=""
                   className={clsx("p-4 text-center", {
                     "rounded-lg":
-                      !mergedSettings.summary ||
+                      !columnSettings.some(col => col.aggregate) ||
                       (mergedSettings.header &&
                         PaginatedData.length === 0 &&
                         columns.length == 0),
@@ -1189,7 +1256,7 @@ const Table = ({
               </tr>
             )}
           </tbody>
-          {mergedSettings.summary && tableFooter()}
+          {columnSettings.some((col) => col.aggregate) && tableFooter()}
         </table>
       </div>
       {mergedSettings.pagination.enabled && tablePagination()}
