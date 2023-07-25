@@ -693,6 +693,7 @@ const Table = ({
 
               const aggregatedValue = calculateAggregate({ field, aggregationType: aggregate, valueFormatter });
 
+              // TODO: fix. doesn't work on itemcolumns on materialcalculator
               const key = `${field}-${header}`; // Use a unique identifier for the key
               return (
                 <td
