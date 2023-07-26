@@ -416,8 +416,6 @@ const Map = ({ map }: Props) => {
                       setTimeout(() => {
                         c.setAttribute("fill", d.color);
                       }, 3000);
-
-                      // TODO: set to original color after leave
                     }}
                     className={
                       "w-full border-l-2 px-4 py-2 text-left capitalize"

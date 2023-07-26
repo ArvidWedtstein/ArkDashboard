@@ -3,12 +3,10 @@ import { Link, routes, useParams } from "@redwoodjs/router";
 import { useEffect, useState } from "react";
 import ArkCard from "src/components/Util/ArkCard/ArkCard";
 
-import { QUERY } from "src/components/Basespot/BasespotsCell/BasespotsCell";
-import Lookup from "src/components/Util/Lookup/Lookup";
+import Lookup, { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
 import { random } from "src/lib/formatters";
 
 import type {
-  DeleteBasespotMutationVariables,
   FindBasespots,
 } from "types/graphql";
 
@@ -98,6 +96,16 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
           }}
         />
         {/* TODO: make this to multiselect? */}
+        <MultiSelectLookup
+          options={[
+            { label: "Rathole", value: "rathole" },
+            { label: "Cave", value: "cave" },
+            { label: "Cliff", value: "cliff" },
+            { label: "Open", value: "open" },
+            { label: "Waterfall", value: "waterfall" },
+            { label: "Underwater", value: "underwater" },
+          ]}
+        />
         <Lookup
           options={[
             { label: "Rathole", value: "rathole" },

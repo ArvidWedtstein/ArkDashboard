@@ -36,12 +36,6 @@ const HomePage = () => {
   //     document.title = document.visibilityState;
   // });
 
-  // TODO: add gen 2 basespot
-
-  // 49.6 21.3 - under bridge
-  // 43.5 37.5
-  // https://www.youtube.com/watch?v=n_19SVJWcbc
-
   return (
     <>
       <MetaTags
@@ -175,27 +169,12 @@ const HomePage = () => {
               </Link>
             </div>
             <div className="rounded-lg border border-gray-200 bg-gray-50 p-8 dark:border-zinc-700 dark:bg-gradient-to-tr dark:from-zinc-800 dark:to-zinc-900 md:p-12">
-              <a
-                href="#"
-                className="mb-2 inline-flex items-center rounded-md bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-800 dark:bg-zinc-700 dark:text-purple-400"
-              >
-                <svg
-                  className="mr-1.5 h-2.5 w-2.5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 16"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 4 1 8l4 4m10-8 4 4-4 4M11 1 9 15"
-                  />
+              <div className="mb-2 inline-flex items-center rounded-md bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-800 dark:bg-zinc-700 dark:text-purple-400">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="mr-1.5 h-2.5 w-2.5" fill="currentColor">
+                  <path d="M556.2 258.2L440 213V78.04c0-12.82-7.868-24.32-19.81-28.97l-120.6-46.9C295.9 .7252 291.9 0 288 0C284.1 0 280.1 .7252 276.4 2.176L155.8 49.06C143.9 53.71 136 65.23 136 78.06v134.9L19.84 258.2C7.878 262.8 0 274.2 0 287v146.9c0 12.83 7.876 24.35 19.83 28.1l120.9 47.03C144.4 511.3 148.2 512 152 512s7.625-.7032 11.28-2.125L288 461.4l124.8 48.53C416.4 511.3 420.2 512 424 512s7.625-.7032 11.28-2.125l120.9-47.01C568.1 458.2 576 446.7 576 433.9V287C576 274.2 568.1 262.8 556.2 258.2zM152 241.1l92.45 35.48L152 312.6l-91.84-35.72L152 241.1zM168 340.7L272 300.2v133l-104 40.67V340.7zM304 300.2l104 40.45v133L304 433.3V300.2zM424 312.6l-91.84-35.72L424 241.1l92.45 35.48L424 312.6zM408.5 212.8L304 253.5v-121.9l104.1-40.47L408.5 212.8zM288 32.01l92.45 35.48L288 103.4L196.2 67.72L288 32.01zM272 131.6v121.9L167.1 212.1L167.5 90.91L272 131.6zM31.48 300L136 340.7v133.1L32 433.9L31.48 300zM440 473.9v-133.2l104.1-40.47l.5117 132.8L440 473.9z" />
                 </svg>
-                Code
-              </a>
+                Recipes
+              </div>
               <h2 className="mb-2 text-3xl font-extrabold text-gray-900 dark:text-white">
                 Items
               </h2>
@@ -260,7 +239,6 @@ const HomePage = () => {
               </Link>
             </div>
           </div>
-
         </section>
       </div>
     </>

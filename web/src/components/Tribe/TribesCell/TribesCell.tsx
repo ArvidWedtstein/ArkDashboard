@@ -23,7 +23,6 @@ export const QUERY = gql`
   }
 `;
 
-// TODO: add skeleton loader
 export const Loading = () => (
   <div role="status" className="animate-pulse shadow">
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

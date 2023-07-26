@@ -70,8 +70,6 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
 
   return (
     <>
-      {/* TODO: add editforms here too */}
-
       <FormModal
         title={
           openModal === "timelineseasonperson"

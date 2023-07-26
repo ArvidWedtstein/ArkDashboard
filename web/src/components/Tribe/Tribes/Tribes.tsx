@@ -10,6 +10,7 @@ import { getWeekDates, pluralize, timeTag } from "src/lib/formatters";
 
 import type { FindTribes, permission } from "types/graphql";
 import NewTribe from "../NewTribe/NewTribe";
+import Tooltip from "src/components/Util/Tooltip/Tooltip";
 
 const TribesList = ({ tribes }: FindTribes) => {
   const { currentUser } = useAuth();

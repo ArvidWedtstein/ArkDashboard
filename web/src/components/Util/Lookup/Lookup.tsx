@@ -122,12 +122,12 @@ const Lookup = ({
   return (
     <div className="relative flex items-center w-fit" ref={ref}>
       <div
-        onClick={() => !disabled && setIsComponentVisible(true)}
+        onClick={() => !disabled && setIsComponentVisible(!isComponentVisible)}
         className={clsx(
-          "rw-input flex h-full items-center text-center ",
+          "rw-input flex h-full items-center text-center hover:border-zinc-400 transition ease-in select-none",
           className,
           {
-            "cursor-not-allowed select-none": disabled,
+            "cursor-not-allowed": disabled,
           }
         )}
       >
@@ -175,7 +175,9 @@ const Lookup = ({
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
-                d="M19 9l-7 7-7-7"
+                d={isComponentVisible
+                  ? "M19 16L12 9l-7 7"
+                  : "M19 9l-7 7-7-7"}
               ></path>
             </svg>
           </label>
@@ -194,13 +196,13 @@ const Lookup = ({
       </div>
 
       {isComponentVisible ? (
-        <div className="absolute top-12 z-10 w-60 rounded border-gray-800 bg-white shadow dark:bg-gray-700">
+        <div className="overflow-hidden transition-all ease-in-out duration-300 select-none absolute top-0 mt-12 z-10 w-60 rounded-lg border border-zinc-500 bg-white shadow dark:bg-zinc-700">
           <ul
             className="max-h-48 overflow-y-auto py-1 text-gray-700 dark:text-gray-200"
             aria-labelledby="dropdownButton"
           >
             {!hasOptions ? (
-              <li className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+              <li className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-zinc-700/50 dark:hover:text-white">
                 No options available
               </li>
             ) : null}
@@ -209,7 +211,7 @@ const Lookup = ({
                 <li
                   key={option.value + Math.random()}
                   onClick={() => handleOptionSelect(option)}
-                  className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                  className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-zinc-600/70 dark:hover:text-white"
                 >
                   {"image" in option && (
                     <img
@@ -286,8 +288,9 @@ interface ILookupMultiSelect {
   defaultValue?: any;
   options: { label: string; value: string | object | number; image?: string, disabled?: boolean, selected?: boolean }[];
   onSelect?: (value: ArrayElement<ILookupMultiSelect["options"]>["value"][]) => void;
+  placeholder?: string;
 }
-export const MultiSelectLookup = ({ options, onSelect }: ILookupMultiSelect) => {
+export const MultiSelectLookup = ({ options, onSelect, placeholder }: ILookupMultiSelect) => {
   const { ref, setIsComponentVisible, isComponentVisible } = useComponentVisible(false);
   const [selectedOptions, setSelectedOptions] = useState([]);
 
@@ -325,7 +328,7 @@ export const MultiSelectLookup = ({ options, onSelect }: ILookupMultiSelect) => 
     <div className="relative inline-block text-white" ref={ref}>
       <button className="rw-button rw-button-gray space-x-1.5" onClick={() => setIsComponentVisible(true)}>
         <div className="flex-1 select-none">
-          {selectedOptions.length} Selected
+          {placeholder ? placeholder : `${selectedOptions.length} Selected`}
         </div>
         <svg
           className="h-4 w-4"
