@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ArkCard from "src/components/Util/ArkCard/ArkCard";
 
 import Lookup, { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
-import { random } from "src/lib/formatters";
+import { debounce, random } from "src/lib/formatters";
 
 import type {
   FindBasespots,
@@ -95,17 +95,24 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
             });
           }}
         />
-        {/* TODO: make this to multiselect? */}
-        <MultiSelectLookup
+        {/* <MultiSelectLookup
           options={[
-            { label: "Rathole", value: "rathole" },
-            { label: "Cave", value: "cave" },
-            { label: "Cliff", value: "cliff" },
-            { label: "Open", value: "open" },
-            { label: "Waterfall", value: "waterfall" },
-            { label: "Underwater", value: "underwater" },
+            { label: "Rathole", value: "rathole", selected: params.type?.includes("rathole") },
+            { label: "Cave", value: "cave", selected: params.type?.includes("cave") },
+            { label: "Cliff", value: "cliff", selected: params.type?.includes("cliff") },
+            { label: "Open", value: "open", selected: params.type?.includes("open") },
+            { label: "Waterfall", value: "waterfall", selected: params.type?.includes("waterfall") },
+            { label: "Underwater", value: "underwater", selected: params.type?.includes("underwater") },
           ]}
-        />
+          onSelect={(e) => {
+            debounce(() => {
+              setParams({
+                ...(e && { type: e.join(',').toString() }),
+                ...(params.map && { map: params.map.toString() }),
+              });
+            }, 1000)();
+          }}
+        /> */}
         <Lookup
           options={[
             { label: "Rathole", value: "rathole" },

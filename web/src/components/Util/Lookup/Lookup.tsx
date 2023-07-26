@@ -292,7 +292,7 @@ interface ILookupMultiSelect {
 }
 export const MultiSelectLookup = ({ options, onSelect, placeholder }: ILookupMultiSelect) => {
   const { ref, setIsComponentVisible, isComponentVisible } = useComponentVisible(false);
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState(options.filter((option) => option.selected).map((option) => option.value));
 
   const toggleDropdown = () => {
     setIsComponentVisible(!isComponentVisible);

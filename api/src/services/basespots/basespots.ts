@@ -18,9 +18,14 @@ export const basespotPage: QueryResolvers["basespotPage"] = ({
   type?: string;
 }) => {
   const offset = (page - 1) * POSTS_PER_PAGE;
+  const types = type?.split(",").map((t) => t.trim());
   const where = {
     ...(map && { map_id: map }),
-    ...(type && { type: type }),
+    ...(type && {
+      type: {
+        in: types,
+      },
+    }),
   };
   return {
     basespots: db.basespot.findMany({
