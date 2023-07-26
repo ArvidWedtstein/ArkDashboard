@@ -1843,7 +1843,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                   className="animate-fade-in"
                   name="selected_food"
                   form={true}
-                  defaultValue={[state.selected_food.toString()]}
+                  defaultValue={[state?.selected_food?.toString() ?? ""]}
                   validation={{
                     required: true,
                     single: true,
@@ -2322,8 +2322,8 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                             image,
                             ItemRecipe_ItemRecipe_crafted_item_idToItem,
                           },
-                        }) => (
-                          <div className="flex h-64 gap-4 overflow-hidden rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600">
+                        }, idx) => (
+                          <div className="flex h-64 gap-4 overflow-hidden rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600" key={`Saddle-${idx}`}>
                             {ItemRecipe_ItemRecipe_crafted_item_idToItem.map(
                               (
                                 {
@@ -2335,6 +2335,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                 i
                               ) => (
                                 <div
+                                  key={`saddle-item-${i}`}
                                   className={clsx(
                                     "flex h-full flex-row items-center transition-all duration-500 ease-in-out",
                                     {
@@ -2344,7 +2345,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                         state.activeRecipeTabIndex !== i,
                                     }
                                   )}
-                                  key={`recipe-${id}`}
                                   onClick={() =>
                                     dispatch({
                                       type: "RECIPE_TAB_CHANGE",

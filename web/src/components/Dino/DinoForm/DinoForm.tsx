@@ -68,14 +68,14 @@ const DinoForm = (props: DinoFormProps) => {
 
   // TODO: fix this
   const [basestat, setBasestat] = useState({
-    d: { b: 100, t: 2.5, w: 5.8, a: [{ b: 60 }] },
-    f: { b: 2000, t: 10, w: 200 },
-    h: { b: 710, t: 5.4, w: 142 },
-    m: { b: 100, t: 2.5, w: null, a: { s: { b: 546 } } },
+    d: { b: 0, t: 0, w: 0, a: [{ b: 0 }] },
+    f: { b: 0, t: 0, w: 0 },
+    h: { b: 0, t: 0, w: 0 },
+    m: { b: 0, t: 0, w: null, a: { s: { b: 0 } } },
     o: { b: null, t: null, w: null },
-    s: { b: 200, t: 10, w: 20 },
-    t: { b: 1150, t: null, w: 69 },
-    w: { b: 910, t: 4, w: 18.2 },
+    s: { b: 0, t: 0, w: 0 },
+    t: { b: 0, t: null, w: 0 },
+    w: { b: 0, t: 0, w: 0 },
   });
 
   const [movement, setMovement] = useState({
