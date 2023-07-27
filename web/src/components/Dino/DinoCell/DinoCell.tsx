@@ -129,10 +129,88 @@ export const beforeQuery = (props) => {
 //     )
 //   }
 
-// TODO: fix skeleton loader
 export const Loading = () => (
-  <div className="flex h-full w-full items-center justify-center bg-transparent">
-    <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>
+  <div role="status" className="flex animate-pulse flex-col space-y-8">
+    <div className="flex">
+      <div className="aspect-square h-96 rounded-lg bg-zinc-200 dark:bg-zinc-600" />
+      <div className="flex w-full flex-col flex-wrap py-6 text-center lg:flex-grow lg:w-1/2 lg:pl-12 lg:text-left">
+        <div className="flex flex-col space-y-2.5">
+          <div className="flex w-full items-center space-x-2">
+            <div className="h-2.5 w-64 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+            <div className="h-2.5 w-24 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          </div>
+          <div className="flex w-full items-center space-x-2">
+            <div className="h-2.5 w-full rounded-full bg-zinc-200 dark:bg-zinc-700" />
+            <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            <div className="h-2.5 w-24 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          </div>
+          <div className="flex w-full items-center space-x-2">
+            <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            <div className="h-2.5 w-80 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+            <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          </div>
+          <div className="flex w-full items-center space-x-2">
+            <div className="h-2.5 w-full rounded-full bg-zinc-200 dark:bg-zinc-700" />
+            <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            <div className="h-2.5 w-24 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          </div>
+          <div className="flex w-full items-center space-x-2">
+            <div className="h-2.5 w-32 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            <div className="h-2.5 w-24 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            <div className="h-2.5 w-full rounded-full bg-zinc-200 dark:bg-zinc-700" />
+          </div>
+          <div className="flex w-full items-center space-x-2">
+            <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            <div className="h-2.5 w-80 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+            <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          </div>
+          <div className="flex w-full items-center space-x-2">
+            <div className="h-2.5 w-60 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            <div className="h-2.5 w-40 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="flex flex-col gap-y-2">
+      <div className="flex flex-row gap-x-3 w-full">
+        <div className="h-5 w-24 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-5 w-24 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-5 w-24 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      </div>
+      <div className="h-2.5 w-36 rounded-full bg-zinc-200 dark:bg-zinc-700 mt-5" />
+      <div className="flex flex-row gap-x-3 w-full">
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      </div>
+      <div className="h-2.5 w-36 rounded-full bg-zinc-200 dark:bg-zinc-700 mt-5" />
+      <div className="flex flex-row gap-x-3 w-full">
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      </div>
+      <div className="h-2.5 w-52 rounded-full bg-zinc-200 dark:bg-zinc-700 mt-5" />
+      <div className="flex flex-row gap-x-3 w-full">
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-28 w-28 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      </div>
+    </div>
+    <span className="sr-only">Loading...</span>
   </div>
 );
 
@@ -165,47 +243,6 @@ export const Success = ({
   return (
     <>
       <MetaTags title={dino.name} description={dino.description} />
-      {/* TODO: Fix skeletonloader */}
-      <div role="status" className="flex animate-pulse flex-col space-y-8">
-        <div className="flex">
-          <div className="aspect-square h-96 rounded-lg bg-zinc-200 dark:bg-zinc-600" />
-          <div className="flex w-full flex-col flex-wrap py-6 text-center lg:w-1/2 lg:flex-grow lg:pl-12 lg:text-left">
-            <div className="flex w-fit flex-col space-y-2.5 md:mt-12">
-              <div className="flex w-full items-center space-x-2">
-                <div className="h-2.5 w-64 rounded-full bg-zinc-200 dark:bg-zinc-700" />
-                <div className="h-2.5 w-24 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
-              </div>
-              <div className="flex w-full items-center space-x-2">
-                <div className="h-2.5 w-full rounded-full bg-zinc-200 dark:bg-zinc-700" />
-                <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                <div className="h-2.5 w-24 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-              </div>
-              <div className="flex w-full items-center space-x-2">
-                <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                <div className="h-2.5 w-80 rounded-full bg-zinc-200 dark:bg-zinc-700" />
-                <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
-              </div>
-              <div className="flex w-full items-center space-x-2">
-                <div className="h-2.5 w-full rounded-full bg-zinc-200 dark:bg-zinc-700" />
-                <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                <div className="h-2.5 w-24 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-              </div>
-              <div className="flex w-full items-center space-x-2">
-                <div className="h-2.5 w-32 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                <div className="h-2.5 w-24 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                <div className="h-2.5 w-full rounded-full bg-zinc-200 dark:bg-zinc-700" />
-              </div>
-              <div className="flex w-full items-center space-x-2">
-                <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                <div className="h-2.5 w-80 rounded-full bg-zinc-200 dark:bg-zinc-700" />
-                <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
-              </div>
-            </div>
-          </div>
-        </div>
-        <span className="sr-only">Loading...</span>
-      </div>
       <Dino dino={dino} itemsByIds={itemsByIds} />
     </>
   );
