@@ -9,32 +9,13 @@ import {
   useForm,
 } from "@redwoodjs/forms";
 
-import type { CreateBasespotInput, EditBasespotById, FindMapsAndTypes, NewBasespot, UpdateBasespotInput } from "types/graphql";
+import type { EditBasespotById, NewBasespot, UpdateBasespotInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
 import Lookup from "src/components/Util/Lookup/Lookup";
-import { useLazyQuery } from "@apollo/client";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
-import { toast } from "@redwoodjs/web/dist/toast";
-
-
-const MAPQUERY = gql`
-  query FindMapsAndTypes {
-    maps {
-      id
-      name
-      icon
-      img
-    }
-    basespotTypes {
-      id
-      name
-      type
-    }
-  }
-`;
 
 type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
 

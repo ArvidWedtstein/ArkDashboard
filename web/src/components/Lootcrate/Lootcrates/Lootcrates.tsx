@@ -12,8 +12,6 @@ import type {
 } from "types/graphql";
 import { useParams } from "@redwoodjs/router";
 import { Form, Label, SearchField, Submit } from "@redwoodjs/forms";
-import { useLazyQuery } from "@apollo/client";
-import { toast } from "@redwoodjs/web/dist/toast";
 
 const LootcratesList = ({ lootcratesByMap: lootcrates, maps }: FindLootcrates) => {
 

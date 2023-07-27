@@ -14,24 +14,8 @@ import type {
   UpdateTimelineSeasonBasespotInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import { useLazyQuery } from "@apollo/client";
 import Lookup from "src/components/Util/Lookup/Lookup";
-import { toast } from "@redwoodjs/web/dist/toast";
-import { useEffect } from "react";
 
-const MAPQUERY = gql`
-  query FindMapsAndBasespotsTimelineSeasonBasespotForm {
-    maps {
-      id
-      name
-      icon
-    }
-    basespots {
-      id,
-      name
-    }
-  }
-`;
 
 type FormTimelineSeasonBasespot = NonNullable<
   EditTimelineSeasonBasespotById["timelineSeasonBasespot"]
@@ -53,22 +37,10 @@ interface TimelineSeasonBasespotFormProps {
 
 const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
 
-  const [loadMaps, { called, loading, data }] = useLazyQuery(MAPQUERY, {
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
-
   const onSubmit = (data: FormTimelineSeasonBasespot) => {
     data.timeline_season_id = props.timeline_season_id;
     props.onSave(data, props?.timelineSeasonBasespot?.id);
   };
-
-  useEffect(() => {
-    if (!called && !loading) {
-      loadMaps();
-    }
-  }, []);
 
   return (
     <div className="rw-form-wrapper">
