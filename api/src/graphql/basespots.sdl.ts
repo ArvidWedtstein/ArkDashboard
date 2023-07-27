@@ -30,6 +30,7 @@ export const schema = gql`
   type Query {
     basespots: [Basespot!]! @skipAuth
     basespot(id: String!): Basespot @requireAuth
+    basespotTypes: [Basespot] @skipAuth
     basespotPage(page: Int, map: Int, type: String): BasespotPage @skipAuth
     # @requireAuth(roles: "697b7d70-bab3-4ff9-9c3e-f30b058b621c")
     # @hasPermission(permission: "gamedata_as")

@@ -13,11 +13,29 @@ import type {
   UpdateTimelineSeasonBasespotInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
+import { useLazyQuery } from "@apollo/client";
 import Lookup from "src/components/Util/Lookup/Lookup";
+import { toast } from "@redwoodjs/web/dist/toast";
+import { useEffect } from "react";
+
+const MAPQUERY = gql`
+  query FindMapsAndBasespotsTimelineSeasonBasespotForm {
+    maps {
+      id
+      name
+      icon
+    }
+    basespots {
+      id,
+      name
+    }
+  }
+`;
 
 type FormTimelineSeasonBasespot = NonNullable<
   EditTimelineSeasonBasespotById["timelineSeasonBasespot"]
 >;
+
 
 interface TimelineSeasonBasespotFormProps {
   timelineSeasonBasespot?: EditTimelineSeasonBasespotById["timelineSeasonBasespot"];
@@ -31,10 +49,23 @@ interface TimelineSeasonBasespotFormProps {
 }
 
 const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
+
+  const [loadMaps, { called, loading, data }] = useLazyQuery(MAPQUERY, {
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   const onSubmit = (data: FormTimelineSeasonBasespot) => {
     data.timeline_season_id = props.timeline_season_id;
     props.onSave(data, props?.timelineSeasonBasespot?.id);
   };
+
+  useEffect(() => {
+    if (!called && !loading) {
+      loadMaps();
+    }
+  }, []);
 
   return (
     <div className="rw-form-wrapper">
@@ -92,45 +123,53 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
 
         <FieldError name="end_date" className="rw-field-error" /> */}
 
-        {/* TODO: Insert basespot lookup */}
-        {/* <Label
+        <Label
           name="basespot_id"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
-          Basespot id
+          Basespot
         </Label>
-
-        <TextField
+        {/* TODO: Insert basespot lookup */}
+        <Lookup
+          options={data?.basespots.map((bs) => ({
+            label: bs.name,
+            value: bs.id,
+          })) || []}
           name="basespot_id"
           defaultValue={props.timelineSeasonBasespot?.basespot_id}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          emptyAs={null}
+          placeholder="Select a basespot"
+          className="mt-3"
         />
 
-        <FieldError name="basespot_id" className="rw-field-error" /> */}
+        <FieldError name="basespot_id" className="rw-field-error" />
+
 
         <Lookup
-          options={[
-            { label: "Valguero", value: 1 },
-            { label: "The Island", value: 2 },
-            { label: "The Center", value: 3 },
-            { label: "Ragnarok", value: 4 },
-            { label: "Aberration", value: 5 },
-            { label: "Extinction", value: 6 },
-            { label: "Scorched Earth", value: 7 },
-            { label: "Genesis", value: 8 },
-            { label: "Genesis 2", value: 9 },
-            { label: "Crystal Isles", value: 10 },
-            { label: "Fjordur", value: 11 },
-            { label: "Lost Island", value: 12 },
-          ]}
+          options={data?.maps.map((map) => ({
+            label: map.name,
+            value: map.id,
+            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`
+          })) || [
+              { label: "Valguero", value: 1 },
+              { label: "The Island", value: 2 },
+              { label: "The Center", value: 3 },
+              { label: "Ragnarok", value: 4 },
+              { label: "Aberration", value: 5 },
+              { label: "Extinction", value: 6 },
+              { label: "Scorched Earth", value: 7 },
+              { label: "Genesis", value: 8 },
+              { label: "Genesis 2", value: 9 },
+              { label: "Crystal Isles", value: 10 },
+              { label: "Fjordur", value: 11 },
+              { label: "Lost Island", value: 12 },
+            ]}
           name="map_id"
-          defaultValue={props.timelineSeasonBasespot?.map}
+          defaultValue={props.timelineSeasonBasespot?.map_id}
           placeholder="Select a map"
           className="mt-3"
         />
+
         <FieldError name="map_id" className="rw-field-error" />
 
         <div className="rw-button-group">

@@ -117,8 +117,6 @@ const Lookup = ({
     }
   };
 
-
-
   return (
     <div className="relative flex items-center w-fit" ref={ref}>
       <div
@@ -161,10 +159,10 @@ const Lookup = ({
           </>
         )}
 
-        <div className="flex flex-row">
+        <div className="flex flex-row select-auto pointer-events-none">
           <label htmlFor={name}>
             <svg
-              className="ml-2 h-4 w-4"
+              className="ml-2 h-4 w-4 pointer-events-none"
               aria-hidden="true"
               fill="none"
               stroke="currentColor"
@@ -185,7 +183,7 @@ const Lookup = ({
             <svg
               onClick={handleOptionClear}
               fill="currentColor"
-              className="ml-2 h-4 w-4"
+              className="ml-2 h-4 w-4 pointer-events-auto"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 320 512"
             >

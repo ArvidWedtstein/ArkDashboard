@@ -9,19 +9,39 @@ import {
   useForm,
 } from "@redwoodjs/forms";
 
-import type { EditBasespotById, UpdateBasespotInput } from "types/graphql";
+import type { CreateBasespotInput, EditBasespotById, FindMapsAndTypes, NewBasespot, UpdateBasespotInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import { useEffect, useRef, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
 import Lookup from "src/components/Util/Lookup/Lookup";
-
+import { useLazyQuery } from "@apollo/client";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
+import { toast } from "@redwoodjs/web/dist/toast";
+
+
+const MAPQUERY = gql`
+  query FindMapsAndTypes {
+    maps {
+      id
+      name
+      icon
+      img
+    }
+    basespotTypes {
+      id
+      name
+      type
+    }
+  }
+`;
 
 type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
 
 interface BasespotFormProps {
   basespot?: EditBasespotById["basespot"];
+  maps?: NewBasespot["maps"];
+  basespotTypes?: NewBasespot["basespotTypes"];
   onSave: (data: UpdateBasespotInput, id?: FormBasespot["id"]) => void;
   error: RWGqlError;
   loading: boolean;
@@ -43,21 +63,6 @@ const BasespotForm = (props: BasespotFormProps) => {
     }
     props.onSave(data, props?.basespot?.id);
   };
-
-  const mapNames = [
-    { label: "Valguero", value: 1 },
-    { label: "The Island", value: 2 },
-    { label: "The Center", value: 3 },
-    { label: "Ragnarok", value: 4 },
-    { label: "Aberration", value: 5 },
-    { label: "Extinction", value: 6 },
-    { label: "Scorched Earth", value: 7 },
-    { label: "Genesis", value: 8 },
-    { label: "Genesis 2", value: 9 },
-    { label: "Crystal Isles", value: 10 },
-    { label: "Fjordur", value: 11 },
-    { label: "Lost Island", value: 12 },
-  ];
 
   useEffect(() => {
     if (props.basespot?.map_id) {
@@ -170,22 +175,21 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <Lookup
           defaultValue={props.basespot?.map_id || map}
-          options={mapNames}
+          options={props?.maps.map((map) => ({ label: map.name, value: Number(map.id), image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}` })) || []}
           onSelect={(e) => {
-            if (!e) return;
+            if (!e || !e.value) return setMap(null);
             setMap(parseInt(e.value.toString()));
             formMethods.setValue("map_id", parseInt(e.value.toString()));
           }}
           name="map_id"
+          disabled={props.loading}
         />
 
         <FieldError name="map_id" className="rw-field-error" />
 
         <MapPicker
           className="mt-3"
-          url={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${mapNames
-            .find((x) => x.value === map)
-            ?.label.replaceAll(" ", "")}-Map.webp`}
+          url={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${props?.maps?.find((x) => x.id === map)?.img}`}
           valueProp={{ ...props?.basespot }}
           onChanges={(e) => {
             formMethods.setValue("latitude", e.latitude);
@@ -246,8 +250,21 @@ const BasespotForm = (props: BasespotFormProps) => {
           name="type"
           form={true}
           validation={{ required: true, single: true }}
-          defaultValue={[props.basespot.type]}
-          options={[
+          defaultValue={[props?.basespot?.type]}
+          options={props.basespotTypes ? props?.basespotTypes.map((type) => ({
+            value: type.type.toLowerCase(),
+            label: type.type,
+            image: (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-12"
+                viewBox="0 0 576 512"
+                fill="currentColor"
+              >
+                <path d="M320 33.8V160H48.5C100.2 82.8 188.1 32 288 32c10.8 0 21.5 .6 32 1.8zM352 160V39.1C424.9 55.7 487.2 99.8 527.5 160H352zM29.9 192H96V320H0c0-46 10.8-89.4 29.9-128zM192 320H128V192H448V320H384v32H576v80c0 26.5-21.5 48-48 48H352V352c0-35.3-28.7-64-64-64s-64 28.7-64 64V480H48c-26.5 0-48-21.5-48-48V352H192V320zm288 0V192h66.1c19.2 38.6 29.9 82 29.9 128H480z" />
+              </svg>
+            )
+          })) : [
             {
               value: "cave",
               label: "Cave",
@@ -325,6 +342,7 @@ const BasespotForm = (props: BasespotFormProps) => {
             },
           ]}
         />
+
         <FieldError name="type" className="rw-field-error" />
 
         <Label

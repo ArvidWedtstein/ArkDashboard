@@ -1,4 +1,4 @@
-import type { EditBasespotById, UpdateBasespotInput } from "types/graphql";
+import type { EditBasespotById, UpdateBasespotInput, CreateBasespotInput, NewBasespot } from "types/graphql";
 
 import { navigate, routes } from "@redwoodjs/router";
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
@@ -8,27 +8,7 @@ import { toast } from "@redwoodjs/web/toast";
 import BasespotForm from "src/components/Basespot/BasespotForm";
 
 export const QUERY = gql`
-  query EditBasespotById($id: String!) {
-    basespot: basespot(id: $id) {
-      id
-      name
-      description
-      latitude
-      longitude
-      thumbnail
-      created_at
-      map_id
-      estimated_for_players
-      created_by
-      turretsetup_images
-      updated_at
-      type
-      published
-      level
-      Map {
-        img
-      }
-    }
+  query NewBasespot {
     maps {
       id
       name
@@ -42,23 +22,12 @@ export const QUERY = gql`
     }
   }
 `;
-const UPDATE_BASESPOT_MUTATION = gql`
-  mutation UpdateBasespotMutation($id: String!, $input: UpdateBasespotInput!) {
-    updateBasespot(id: $id, input: $input) {
+
+
+const CREATE_BASESPOT_MUTATION = gql`
+  mutation CreateBasespotMutation($input: CreateBasespotInput!) {
+    createBasespot(input: $input) {
       id
-      name
-      description
-      latitude
-      longitude
-      thumbnail
-      created_at
-      map_id
-      estimated_for_players
-      created_by
-      level
-      turretsetup_images
-      updated_at
-      type
     }
   }
 `;
@@ -105,13 +74,13 @@ export const Failure = ({ error }: CellFailureProps) => {
   );
 };
 
-export const Success = ({ basespot, maps, basespotTypes }: CellSuccessProps<EditBasespotById>) => {
-  const [updateBasespot, { loading, error }] = useMutation(
-    UPDATE_BASESPOT_MUTATION,
+export const Success = ({ basespotTypes, maps }: CellSuccessProps<NewBasespot>) => {
+  const [createBasespot, { loading, error }] = useMutation(
+    CREATE_BASESPOT_MUTATION,
     {
-      onCompleted: (data) => {
-        toast.success("Basespot updated");
-        navigate(routes.basespot({ id: data.updateBasespot.id.toString() }));
+      onCompleted: () => {
+        toast.success("Basespot created");
+        navigate(routes.basespots());
       },
       onError: (error) => {
         toast.error(error.message);
@@ -119,24 +88,17 @@ export const Success = ({ basespot, maps, basespotTypes }: CellSuccessProps<Edit
     }
   );
 
-  const onSave = (
-    input: UpdateBasespotInput,
-    id: EditBasespotById["basespot"]["id"]
-  ) => {
-    updateBasespot({ variables: { id, input } });
+  const onSave = (input: CreateBasespotInput) => {
+    createBasespot({ variables: { input } });
   };
 
   return (
-    <div className="rw-segment">
-      <div className="rw-segment-main">
-        <BasespotForm
-          basespot={basespot}
-          onSave={onSave}
-          error={error}
-          loading={loading}
-          basespotTypes={basespotTypes}
-          maps={maps}
-        />
+    <div className="text-black dark:text-white">
+      <header className="py-3 px-4">
+        <h2 className="rw-heading rw-heading-secondary">New Basespot</h2>
+      </header>
+      <div className="p-4">
+        <BasespotForm onSave={onSave} loading={loading} error={error} basespotTypes={basespotTypes} maps={maps} />
       </div>
     </div>
   );

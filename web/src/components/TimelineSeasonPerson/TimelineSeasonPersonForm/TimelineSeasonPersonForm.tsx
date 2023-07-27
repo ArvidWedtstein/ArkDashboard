@@ -15,6 +15,7 @@ import type {
   UpdateTimelineSeasonPersonInput,
 } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
+import Lookup from 'src/components/Util/Lookup/Lookup'
 
 type FormTimelineSeasonPerson = NonNullable<
   EditTimelineSeasonPersonById['timelineSeasonPerson']
@@ -55,6 +56,10 @@ const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
         >
           User id
         </Label>
+
+        <Lookup options={[
+
+        ]} />
 
         <TextField
           name="user_id"

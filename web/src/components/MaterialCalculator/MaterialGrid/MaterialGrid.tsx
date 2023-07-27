@@ -342,22 +342,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
 
     if (!recipes.length) return toast.error("No items to save");
     try {
-      // TODO: Fix permission error
-      // const { data, error } = await client.from("UserRecipe").insert([
-      //   {
-      //     user_id: currentUser.id,
-      //     private: true,
-      //     name: "test",
-      //   },
-      // ]);
-
-      //       let { data, error } = await client.from("UserRecipe").select(`
-      //   user_id,
-      //   UserRecipeItemRecipe (
-      //     id
-      //   )
-      // `);
-
       const input = {
         created_at: new Date().toISOString(),
         user_id: currentUser.id,

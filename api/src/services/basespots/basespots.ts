@@ -40,6 +40,13 @@ export const basespotPage: QueryResolvers["basespotPage"] = ({
   };
 };
 
+export const basespotsTypes: QueryResolvers["basespotTypes"] = () => {
+  // return db.basespot.findMany();
+  return db.basespot.findMany({
+    distinct: ["type"],
+  });
+};
+
 export const basespots: QueryResolvers["basespots"] = () => {
   return db.basespot.findMany();
 };

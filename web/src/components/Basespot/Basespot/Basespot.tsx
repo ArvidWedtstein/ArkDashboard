@@ -15,7 +15,7 @@ interface Props {
 }
 
 const BASESPOT_PUBLISH = gql`
-  mutation UpdateBasespotMutation($id: String!, $input: UpdateBasespotInput!) {
+  mutation PublishBasespotMutation($id: String!, $input: UpdateBasespotInput!) {
     updateBasespot(id: $id, input: $input) {
       id
       name
@@ -146,7 +146,6 @@ const Basespot = ({ basespot }: Props) => {
             Share
           </button>
 
-          {/* TODO: implement publish functionality and perm check */}
           <button
             type="button"
             className="rw-button rw-button-medium rw-button-green"

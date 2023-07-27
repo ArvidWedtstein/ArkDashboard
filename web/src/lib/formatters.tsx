@@ -376,7 +376,7 @@ export const getBaseMaterials = (
   };
 
   // TODO: Check for right recipe for selected crafting stations
-  const getRecipeById = (recipeId: number) => {
+  const getRecipeById = (recipeId: number, crafting_stations?: any[]) => {
     return items.find((recipe) => recipe.Item_ItemRecipe_crafted_item_idToItem.id === recipeId);
   }
 

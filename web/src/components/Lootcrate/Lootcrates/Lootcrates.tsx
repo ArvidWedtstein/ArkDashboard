@@ -1,5 +1,5 @@
 import { navigate, parseSearch, routes } from "@redwoodjs/router";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import ArkCard from "src/components/Util/ArkCard/ArkCard";
 
 import Lookup from "src/components/Util/Lookup/Lookup";
@@ -12,11 +12,36 @@ import type {
 } from "types/graphql";
 import { useParams } from "@redwoodjs/router";
 import { Form, Label, SearchField, Submit } from "@redwoodjs/forms";
+import { useLazyQuery } from "@apollo/client";
+import { toast } from "@redwoodjs/web/dist/toast";
+import { useCellCacheContext } from "@redwoodjs/web";
+
+
+export const MAPQUERY = gql`
+  query FindMapsForLootcrateQuery {
+    maps {
+      id
+      name
+      icon
+    }
+  }
+`;
 
 const LootcratesList = ({ lootcratesByMap: lootcrates }: FindLootcrates) => {
+  const [loadMaps, { called, loading, data }] = useLazyQuery(MAPQUERY, {
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   let { map, category, search } = useParams();
   const [categoryItems, setCategoryItems] = useState([]);
+
+  useEffect(() => {
+    if (!called && !loading) {
+      loadMaps();
+    }
+  }, []);
 
   const daLootcrates = useMemo(() => {
     let filteredCrates = lootcrates;
@@ -72,24 +97,7 @@ const LootcratesList = ({ lootcratesByMap: lootcrates }: FindLootcrates) => {
             <Lookup
               name="map"
               className="rw-input !rounded-l-lg !rounded-none mt-0"
-              options={[
-                { label: "Valguero", value: 1 },
-                { label: "The Island", value: 2 },
-                { label: "The Center", value: 3 },
-                { label: "Ragnarok", value: 4 },
-                { label: "Abberation", value: 5 },
-                { label: "Extinction", value: 6 },
-                { label: "Scorched Earth", value: 7 },
-                { label: "Genesis", value: 8 },
-                { label: "Genesis 2", value: 9 },
-                { label: "Crystal Isles", value: 10 },
-                { label: "Fjordur", value: 11 },
-                { label: "Lost Island", value: 12 },
-              ]}
-              // options={data?.maps.map((map) => ({
-              //   label: map.name,
-              //   value: map.id,
-              // }))}
+              options={data?.maps.map((map) => ({ label: map.name, value: Number(map.id), image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}` })) || []}
               placeholder="Choose Map"
               defaultValue={map}
             // onSelect={(e) => setCurrentMap(e.value ? e.value : null)}

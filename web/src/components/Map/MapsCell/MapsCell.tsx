@@ -1,6 +1,5 @@
 import type { FindMaps } from "types/graphql";
 
-import { Link, routes } from "@redwoodjs/router";
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Maps from "src/components/Map/Maps";
