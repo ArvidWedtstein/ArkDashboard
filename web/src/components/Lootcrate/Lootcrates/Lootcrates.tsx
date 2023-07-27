@@ -14,34 +14,11 @@ import { useParams } from "@redwoodjs/router";
 import { Form, Label, SearchField, Submit } from "@redwoodjs/forms";
 import { useLazyQuery } from "@apollo/client";
 import { toast } from "@redwoodjs/web/dist/toast";
-import { useCellCacheContext } from "@redwoodjs/web";
 
-
-export const MAPQUERY = gql`
-  query FindMapsForLootcrateQuery {
-    maps {
-      id
-      name
-      icon
-    }
-  }
-`;
-
-const LootcratesList = ({ lootcratesByMap: lootcrates }: FindLootcrates) => {
-  const [loadMaps, { called, loading, data }] = useLazyQuery(MAPQUERY, {
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
+const LootcratesList = ({ lootcratesByMap: lootcrates, maps }: FindLootcrates) => {
 
   let { map, category, search } = useParams();
   const [categoryItems, setCategoryItems] = useState([]);
-
-  useEffect(() => {
-    if (!called && !loading) {
-      loadMaps();
-    }
-  }, []);
 
   const daLootcrates = useMemo(() => {
     let filteredCrates = lootcrates;
@@ -97,7 +74,7 @@ const LootcratesList = ({ lootcratesByMap: lootcrates }: FindLootcrates) => {
             <Lookup
               name="map"
               className="rw-input !rounded-l-lg !rounded-none mt-0"
-              options={data?.maps.map((map) => ({ label: map.name, value: Number(map.id), image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}` })) || []}
+              options={maps?.map((map) => ({ label: map.name, value: Number(map.id), image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}` })) || []}
               placeholder="Choose Map"
               defaultValue={map}
             // onSelect={(e) => setCurrentMap(e.value ? e.value : null)}
