@@ -23,6 +23,7 @@ export const QUERY = gql`
       turretsetup_images
       updated_at
       type
+      published
       level
       Map {
         img
@@ -51,8 +52,27 @@ const UPDATE_BASESPOT_MUTATION = gql`
   }
 `;
 
-// TODO: add skeleton loader
-export const Loading = () => <div>Loading...</div>;
+export const Loading = () => (
+  <div role="status" className="flex animate-pulse flex-col space-y-8">
+    <div className="h-5 w-60 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+    <div className="flex flex-col gap-y-5">
+      <div className="flex flex-col gap-x-3 space-y-2 w-full">
+        <div className="h-2.5 w-24 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-12 w-72 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      </div>
+      <div className="flex flex-col gap-x-3 space-y-2 w-full">
+        <div className="h-2.5 w-24 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-20 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      </div>
+      <div className="flex flex-col gap-x-3 space-y-2 w-full">
+        <div className="h-2.5 w-24 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-12 w-72 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      </div>
+      <div className="h-96 w-96 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+    </div>
+    <span className="sr-only">Loading...</span>
+  </div>
+);
 
 export const Failure = ({ error }: CellFailureProps) => {
   return (

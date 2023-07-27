@@ -35,7 +35,12 @@ const BasespotForm = (props: BasespotFormProps) => {
 
   const onSubmit = (data: FormBasespot) => {
     data.map_id = parseInt(data.map_id.toString() || map.toString());
+
     if (thumbnailUrl) data.thumbnail = thumbnailUrl;
+
+    if (props.basespot?.id) {
+      data.published = false;
+    }
     props.onSave(data, props?.basespot?.id);
   };
 
