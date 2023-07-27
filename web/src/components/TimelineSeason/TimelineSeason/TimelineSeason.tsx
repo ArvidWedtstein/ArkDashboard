@@ -2,12 +2,12 @@ import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useState } from "react";
-import NewTimelineSeasonBasespot from "src/components/TimelineSeasonBasespot/NewTimelineSeasonBasespot/NewTimelineSeasonBasespot";
+import NewTimelineSeasonBasespotCell from "src/components/TimelineSeasonBasespot/NewTimelineSeasonBasespotCell";
 import TimelineSeasonBasespotsCell from "src/components/TimelineSeasonBasespot/TimelineSeasonBasespotsCell";
 import NewTimelineSeasonEventCell from "src/components/TimelineSeasonEvent/NewTimelineSeasonEventCell";
 import EditTimelineSeasonEventCell from "src/components/TimelineSeasonEvent/EditTimelineSeasonEventCell";
 import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
-import NewTimelineSeasonPerson from "src/components/TimelineSeasonPerson/NewTimelineSeasonPerson/NewTimelineSeasonPerson";
+import NewTimelineSeasonPersonCell from "src/components/TimelineSeasonPerson/NewTimelineSeasonPersonCell";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
 import { FormModal } from "src/components/Util/Modal/Modal";
 import { timeTag } from "src/lib/formatters";
@@ -84,10 +84,10 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
         onClose={() => setOpenModal(null)}
       >
         {openModal === "timelineseasonperson" && (
-          <NewTimelineSeasonPerson timeline_season_id={timelineSeason.id} />
+          <NewTimelineSeasonPersonCell timeline_season_id={timelineSeason.id} />
         )}
         {openModal === "timelineseasonbasespot" && (
-          <NewTimelineSeasonBasespot timeline_season_id={timelineSeason.id} />
+          <NewTimelineSeasonBasespotCell timeline_season_id={timelineSeason.id} />
         )}
         {openModal === "timelineseasonevent" && (
           <NewTimelineSeasonEventCell timeline_season_id={timelineSeason.id} />

@@ -25,6 +25,15 @@ export const QUERY = gql`
       longitude
       timeline_season_id
     }
+    maps {
+      id
+      name
+      icon
+    }
+    basespots {
+      id,
+      name
+    }
   }
 `;
 const UPDATE_TIMELINE_SEASON_BASESPOT_MUTATION = gql`
@@ -56,6 +65,8 @@ export const Failure = ({ error }: CellFailureProps) => (
 
 export const Success = ({
   timelineSeasonBasespot,
+  maps,
+  basespots,
 }: CellSuccessProps<EditTimelineSeasonBasespotById>) => {
   const [updateTimelineSeasonBasespot, { loading, error }] = useMutation(
     UPDATE_TIMELINE_SEASON_BASESPOT_MUTATION,
@@ -87,6 +98,8 @@ export const Success = ({
       <div className="rw-segment-main">
         <TimelineSeasonBasespotForm
           timelineSeasonBasespot={timelineSeasonBasespot}
+          maps={maps}
+          basespots={basespots}
           onSave={onSave}
           error={error}
           loading={loading}

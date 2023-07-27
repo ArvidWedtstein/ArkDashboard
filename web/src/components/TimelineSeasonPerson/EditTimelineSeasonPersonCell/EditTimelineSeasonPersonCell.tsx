@@ -20,6 +20,10 @@ export const QUERY = gql`
       ingame_name
       timeline_season_id
     }
+    profiles {
+      id,
+      username
+    }
   }
 `
 const UPDATE_TIMELINE_SEASON_PERSON_MUTATION = gql`
@@ -37,7 +41,9 @@ const UPDATE_TIMELINE_SEASON_PERSON_MUTATION = gql`
     }
   }
 `
-
+export const beforeQuery = (props: { timeline_season_id: string }) => {
+  return { variables: props };
+}
 export const Loading = () => <div>Loading...</div>
 
 export const Failure = ({ error }: CellFailureProps) => (
@@ -46,6 +52,7 @@ export const Failure = ({ error }: CellFailureProps) => (
 
 export const Success = ({
   timelineSeasonPerson,
+  profiles,
 }: CellSuccessProps<EditTimelineSeasonPersonById>) => {
   const [updateTimelineSeasonPerson, { loading, error }] = useMutation(
     UPDATE_TIMELINE_SEASON_PERSON_MUTATION,
@@ -77,6 +84,7 @@ export const Success = ({
       <div className="rw-segment-main">
         <TimelineSeasonPersonForm
           timelineSeasonPerson={timelineSeasonPerson}
+          profiles={profiles}
           onSave={onSave}
           error={error}
           loading={loading}

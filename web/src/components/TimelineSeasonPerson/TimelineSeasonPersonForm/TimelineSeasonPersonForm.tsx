@@ -12,6 +12,7 @@ import { timeTag as formatDatetime } from 'src/lib/formatters'
 
 import type {
   EditTimelineSeasonPersonById,
+  NewTimelineSeasonPerson,
   UpdateTimelineSeasonPersonInput,
 } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
@@ -24,6 +25,7 @@ type FormTimelineSeasonPerson = NonNullable<
 interface TimelineSeasonPersonFormProps {
   timelineSeasonPerson?: EditTimelineSeasonPersonById['timelineSeasonPerson']
   timeline_season_id?: string
+  profiles?: NewTimelineSeasonPerson["profiles"]
   onSave: (
     data: UpdateTimelineSeasonPersonInput,
     id?: FormTimelineSeasonPerson['id']
@@ -48,25 +50,15 @@ const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
           listClassName="rw-form-error-list"
         />
 
-        {/* TODO: insert user lookup here */}
         <Label
           name="user_id"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
-          User id
+          User
         </Label>
 
-        <Lookup options={[
-
-        ]} />
-
-        <TextField
-          name="user_id"
-          defaultValue={props.timelineSeasonPerson?.user_id}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
+        <Lookup name="user_id" options={props?.profiles.map((user) => ({ label: user.username, value: user.id }))} defaultValue={props.timelineSeasonPerson?.user_id} />
 
         <FieldError name="user_id" className="rw-field-error" />
 

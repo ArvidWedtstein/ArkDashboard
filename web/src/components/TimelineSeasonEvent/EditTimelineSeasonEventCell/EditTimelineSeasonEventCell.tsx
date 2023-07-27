@@ -53,6 +53,10 @@ const UPDATE_TIMELINE_SEASON_EVENT_MUTATION = gql`
     }
   }
 `
+
+export const beforeQuery = (props: { timeline_season_id: string }) => {
+  return { variables: props };
+}
 // TODO: fix skeleton loader
 export const Loading = () => <div>Loading...</div>
 
@@ -63,7 +67,6 @@ export const Failure = ({ error }: CellFailureProps) => (
 export const Success = ({
   timelineSeasonEvent,
   maps,
-  timelineSeasonBasespotsByTimelineSeasonId,
 }: CellSuccessProps<EditTimelineSeasonEventById>) => {
   const [updateTimelineSeasonEvent, { loading, error }] = useMutation(
     UPDATE_TIMELINE_SEASON_EVENT_MUTATION,
