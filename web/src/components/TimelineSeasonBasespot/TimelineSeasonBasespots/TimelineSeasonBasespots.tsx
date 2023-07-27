@@ -35,9 +35,6 @@ const TimelineSeasonBasespotsList = ({
       awaitRefetchQueries: true,
     }
   );
-
-  console.log(timelineSeasonBasespots)
-
   const onDeleteClick = (
     id: DeleteTimelineSeasonBasespotMutationVariables["id"]
   ) => {

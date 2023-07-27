@@ -63,12 +63,13 @@ export const Failure = ({ error }: CellFailureProps) => (
 export const Success = ({
   timelineSeasonEvent,
   maps,
+  timelineSeasonBasespotsByTimelineSeasonId,
 }: CellSuccessProps<EditTimelineSeasonEventById>) => {
   const [updateTimelineSeasonEvent, { loading, error }] = useMutation(
     UPDATE_TIMELINE_SEASON_EVENT_MUTATION,
     {
       onCompleted: () => {
-        toast.success('TimelineSeasonEvent updated')
+        toast.success('Event updated')
       },
       onError: (error) => {
         toast.error(error.message)

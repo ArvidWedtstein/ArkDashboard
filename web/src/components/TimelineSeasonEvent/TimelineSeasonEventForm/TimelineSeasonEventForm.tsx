@@ -95,25 +95,20 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
           <FieldError name="content" className="rw-field-error" />
         </div>
 
+        <Label
+          name="raid"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Raid?
+        </Label>
         <input
           type="checkbox"
           className="rw-input"
+          name="raid"
           checked={raid}
           onChange={(e) => isRaid(e.currentTarget.checked)}
         />
-
-        {/* TODO: Insert lookup with basespots on this season here */}
-        {raid && (
-          <Lookup
-            options={[
-              { label: "Crack", value: 1 },
-              { label: "Waterfall", value: 2 },
-            ]}
-            name="basespot_id"
-            defaultValue={props.timelineSeasonEvent?.map_id}
-            placeholder="Select a Base Spot"
-          />
-        )}
 
         <Lookup
           options={props?.maps.map((map) => ({ label: map.name, value: map.id, image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}` }))}
@@ -121,43 +116,51 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
           defaultValue={props.timelineSeasonEvent?.map_id}
           placeholder="Select a map"
         />
+
         <FieldError name="map_id" className="rw-field-error" />
 
-        {/* <Label
-          name="latitude"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Latitude
-        </Label>
+        {raid && (
+          <>
+            <Label
+              name="latitude"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Latitude
+            </Label>
 
-        <TextField
-          name="latitude"
-          defaultValue={props.timelineSeasonEvent?.latitude}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsNumber: true }}
-        />
+            <TextField
+              name="latitude"
+              defaultValue={props.timelineSeasonEvent?.latitude}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              validation={{ valueAsNumber: true }}
+              emptyAs={0}
+            />
 
-        <FieldError name="latitude" className="rw-field-error" />
+            <FieldError name="latitude" className="rw-field-error" />
 
-        <Label
-          name="longitude"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Longitude
-        </Label>
+            <Label
+              name="longitude"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Longitude
+            </Label>
 
-        <TextField
-          name="longitude"
-          defaultValue={props.timelineSeasonEvent?.longitude}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsNumber: true }}
-        />
+            <TextField
+              name="longitude"
+              defaultValue={props.timelineSeasonEvent?.longitude}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              validation={{ valueAsNumber: true }}
+              emptyAs={0}
+            />
 
-        <FieldError name="longitude" className="rw-field-error" /> */}
+            <FieldError name="longitude" className="rw-field-error" />
+          </>
+        )}
+
 
         <FileUpload
           storagePath="timelineeventimages"
@@ -168,7 +171,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
           }}
         />
 
-        <TagInput name="tags" defaultValue={props.timelineSeasonEvent?.tags || ""} />
+        <TagInput name="tags" defaultValue={`${props.timelineSeasonEvent?.tags || ""}${raid ? 'raid' : ''}`} />
 
         <FieldError name="tags" className="rw-field-error" />
         {/* <div className="relative max-w-sm">

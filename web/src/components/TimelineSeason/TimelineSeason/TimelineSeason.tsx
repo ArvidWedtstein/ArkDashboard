@@ -90,10 +90,10 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           <NewTimelineSeasonBasespot timeline_season_id={timelineSeason.id} />
         )}
         {openModal === "timelineseasonevent" && (
-          <NewTimelineSeasonEventCell id={timelineSeason.id} />
+          <NewTimelineSeasonEventCell timeline_season_id={timelineSeason.id} />
         )}
         {openModal === "editevent" && (
-          <EditTimelineSeasonEventCell id={editEvent} />
+          <EditTimelineSeasonEventCell id={editEvent} timeline_season_id={timelineSeason.id} />
         )}
         {openModal === "previewimage" && (
           <img src={editEvent} className="w-full rounded" />

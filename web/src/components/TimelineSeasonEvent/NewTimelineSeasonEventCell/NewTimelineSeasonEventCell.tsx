@@ -53,7 +53,7 @@ export const Success = ({
       onError: (error) => {
         toast.error(error.message);
       },
-      refetchQueries: [{ query: eventsquery, variables: { timeline_season_id: queryResult.variables.id } }],
+      refetchQueries: [{ query: eventsquery, variables: { timeline_season_id: queryResult.variables.timeline_season_id } }],
     }
   );
 
@@ -68,7 +68,7 @@ export const Success = ({
         loading={loading}
         error={error}
         maps={maps}
-        timeline_season_id={queryResult.variables.id}
+        timeline_season_id={queryResult.variables.timeline_season_id}
       />
     </div>
   )
