@@ -17,24 +17,13 @@ import type {
 import type { RWGqlError } from "@redwoodjs/forms";
 import Avatar from "src/components/Util/Avatar/Avatar";
 import Lookup from "src/components/Util/Lookup/Lookup";
-import { useLazyQuery } from "@apollo/client";
-import { useEffect } from "react";
 import { useAuth } from "src/auth";
-
-const ROLEQURY = gql`
-  query FindRoles {
-    roles {
-      id
-      name
-      permissions
-    }
-  }
-`;
 
 type FormProfile = NonNullable<EditProfileById["profile"]>;
 
 interface ProfileFormProps {
   profile?: EditProfileById["profile"];
+  roles?: EditProfileById["roles"];
   onSave: (data: UpdateProfileInput, id?: FormProfile["id"]) => void;
   error: RWGqlError;
   loading: boolean;
@@ -52,18 +41,6 @@ const ProfileForm = (props: ProfileFormProps) => {
       props.onSave(data, props?.profile?.id);
     }
   };
-
-  const [loadRoles, { called, loading, data }] = useLazyQuery(ROLEQURY, {
-    onError: (error) => {
-      console.log(error);
-    },
-  });
-
-  useEffect(() => {
-    if (!called && !loading) {
-      loadRoles();
-    }
-  }, []);
   return (
     <div className="">
       {/* <div className="relative z-0 mt-3">
@@ -269,7 +246,7 @@ const ProfileForm = (props: ProfileFormProps) => {
                         name="role_id"
                         defaultValue={[props.profile?.role_id.toString()]}
                         options={
-                          data?.roles.map((r) => ({
+                          props?.roles.map((r) => ({
                             label: r.name,
                             value: r.id,
                           })) || []

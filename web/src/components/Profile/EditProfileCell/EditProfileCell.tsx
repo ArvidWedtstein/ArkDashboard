@@ -21,6 +21,11 @@ export const QUERY = gql`
       role_id
       created_at
     }
+    roles {
+      id
+      name
+      permissions
+    }
   }
 `
 const UPDATE_PROFILE_MUTATION = gql`
@@ -40,6 +45,7 @@ const UPDATE_PROFILE_MUTATION = gql`
   }
 `
 
+// TODO: fix skeleton loader
 export const Loading = () => <div>Loading...</div>
 
 export const Failure = ({ error }: CellFailureProps) => (
@@ -54,7 +60,7 @@ export const Failure = ({ error }: CellFailureProps) => (
   </div>
 );
 
-export const Success = ({ profile }: CellSuccessProps<EditProfileById>) => {
+export const Success = ({ profile, roles }: CellSuccessProps<EditProfileById>) => {
   const [updateProfile, { loading, error }] = useMutation(
     UPDATE_PROFILE_MUTATION,
     {
@@ -78,10 +84,10 @@ export const Success = ({ profile }: CellSuccessProps<EditProfileById>) => {
   return (
     <div className="rw-segment">
       <header className="rw-segment-header">
-        <h2 className="rw-heading rw-heading-secondary">Edit Profile {profile?.id}</h2>
+        <h2 className="rw-heading rw-heading-secondary">Edit Profile {profile?.full_name}</h2>
       </header>
       <div className="rw-segment-main">
-        <ProfileForm profile={profile} onSave={onSave} error={error} loading={loading} />
+        <ProfileForm profile={profile} roles={roles} onSave={onSave} error={error} loading={loading} />
       </div>
     </div>
   )
