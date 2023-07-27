@@ -4,7 +4,7 @@ import { toast } from "@redwoodjs/web/toast";
 import { useState } from "react";
 import NewTimelineSeasonBasespot from "src/components/TimelineSeasonBasespot/NewTimelineSeasonBasespot/NewTimelineSeasonBasespot";
 import TimelineSeasonBasespotsCell from "src/components/TimelineSeasonBasespot/TimelineSeasonBasespotsCell";
-import NewTimelineSeasonEvent from "src/components/TimelineSeasonEvent/NewTimelineSeasonEvent/NewTimelineSeasonEvent";
+import NewTimelineSeasonEventCell from "src/components/TimelineSeasonEvent/NewTimelineSeasonEventCell";
 import EditTimelineSeasonEventCell from "src/components/TimelineSeasonEvent/EditTimelineSeasonEventCell";
 import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
 import NewTimelineSeasonPerson from "src/components/TimelineSeasonPerson/NewTimelineSeasonPerson/NewTimelineSeasonPerson";
@@ -90,7 +90,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           <NewTimelineSeasonBasespot timeline_season_id={timelineSeason.id} />
         )}
         {openModal === "timelineseasonevent" && (
-          <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
+          <NewTimelineSeasonEventCell id={timelineSeason.id} />
         )}
         {openModal === "editevent" && (
           <EditTimelineSeasonEventCell id={editEvent} />

@@ -3,7 +3,6 @@ import type {
   UpdateTimelineSeasonEventInput,
 } from 'types/graphql'
 
-import { navigate, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
@@ -25,6 +24,11 @@ export const QUERY = gql`
       images
       created_by
       tags
+    }
+    maps {
+      id
+      name
+      icon
     }
   }
 `
@@ -49,7 +53,7 @@ const UPDATE_TIMELINE_SEASON_EVENT_MUTATION = gql`
     }
   }
 `
-
+// TODO: fix skeleton loader
 export const Loading = () => <div>Loading...</div>
 
 export const Failure = ({ error }: CellFailureProps) => (
@@ -58,6 +62,7 @@ export const Failure = ({ error }: CellFailureProps) => (
 
 export const Success = ({
   timelineSeasonEvent,
+  maps,
 }: CellSuccessProps<EditTimelineSeasonEventById>) => {
   const [updateTimelineSeasonEvent, { loading, error }] = useMutation(
     UPDATE_TIMELINE_SEASON_EVENT_MUTATION,
@@ -90,6 +95,7 @@ export const Success = ({
           timelineSeasonEvent={timelineSeasonEvent}
           timeline_season_id={timelineSeasonEvent?.timeline_season_id}
           onSave={onSave}
+          maps={maps}
           error={error}
           loading={loading}
         />

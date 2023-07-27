@@ -17,7 +17,7 @@ const DELETE_TIMELINE_SEASON_BASESPOT_MUTATION = gql`
 `;
 
 const TimelineSeasonBasespotsList = ({
-  timelineSeasonBasespots,
+  timelineSeasonBasespotsByTimelineSeasonId: timelineSeasonBasespots,
 }: FindTimelineSeasonBasespots) => {
   const [deleteTimelineSeasonBasespot] = useMutation(
     DELETE_TIMELINE_SEASON_BASESPOT_MUTATION,
@@ -36,6 +36,8 @@ const TimelineSeasonBasespotsList = ({
     }
   );
 
+  console.log(timelineSeasonBasespots)
+
   const onDeleteClick = (
     id: DeleteTimelineSeasonBasespotMutationVariables["id"]
   ) => {
@@ -50,7 +52,7 @@ const TimelineSeasonBasespotsList = ({
 
   return (
     <div className="grid h-fit grid-cols-4 gap-3 p-3">
-      {timelineSeasonBasespots.map(({ id, Map: { name } }) => (
+      {timelineSeasonBasespots && timelineSeasonBasespots.map(({ id, Map: { name } }) => (
         <div
           className="flex justify-between rounded-lg border border-zinc-500 dark:border-white"
           key={id}

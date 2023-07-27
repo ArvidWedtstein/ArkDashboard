@@ -11,12 +11,13 @@ import {
 
 import type {
   EditTimelineSeasonEventById,
+  NewTimelineSeasonEvent,
   UpdateTimelineSeasonEventInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import Lookup from "src/components/Util/Lookup/Lookup";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
-import { ForwardedRef, forwardRef, useState } from "react";
+import { useState } from "react";
 import TagInput from "src/components/Util/TagInput/TagInput";
 
 type FormTimelineSeasonEvent = NonNullable<
@@ -26,6 +27,7 @@ type FormTimelineSeasonEvent = NonNullable<
 interface TimelineSeasonEventFormProps {
   timelineSeasonEvent?: EditTimelineSeasonEventById["timelineSeasonEvent"];
   timeline_season_id?: string;
+  maps?: NewTimelineSeasonEvent["maps"];
   onSave: (
     data: UpdateTimelineSeasonEventInput,
     id?: FormTimelineSeasonEvent["id"]
@@ -112,21 +114,9 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
             placeholder="Select a Base Spot"
           />
         )}
+
         <Lookup
-          options={[
-            { label: "Valguero", value: 1 },
-            { label: "The Island", value: 2 },
-            { label: "The Center", value: 3 },
-            { label: "Ragnarok", value: 4 },
-            { label: "Aberration", value: 5 },
-            { label: "Extinction", value: 6 },
-            { label: "Scorched Earth", value: 7 },
-            { label: "Genesis", value: 8 },
-            { label: "Genesis 2", value: 9 },
-            { label: "Crystal Isles", value: 10 },
-            { label: "Fjordur", value: 11 },
-            { label: "Lost Island", value: 12 },
-          ]}
+          options={props?.maps.map((map) => ({ label: map.name, value: map.id, image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}` }))}
           name="map_id"
           defaultValue={props.timelineSeasonEvent?.map_id}
           placeholder="Select a map"
