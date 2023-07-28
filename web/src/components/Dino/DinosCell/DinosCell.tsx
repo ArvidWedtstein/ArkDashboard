@@ -51,7 +51,7 @@ export const Loading = () => (
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">
+    <div className="text-center text-black dark:text-white">
       {"No dinos yet. "}
       <Link to={routes.newDino()} className="rw-link">
         {"Create one?"}

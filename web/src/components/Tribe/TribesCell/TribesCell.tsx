@@ -139,7 +139,7 @@ export const Loading = () => (
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">
+    <div className="text-center text-black dark:text-white">
       {"No tribes yet. "}
       <Link to={routes.newTribe()} className="rw-link">
         {"Create one?"}

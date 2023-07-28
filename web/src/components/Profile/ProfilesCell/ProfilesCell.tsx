@@ -29,7 +29,7 @@ export const Loading = () => <div>Loading...</div>
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">
+    <div className="text-center text-black dark:text-white">
       {'No profiles yet. '}
       <Link
         to={routes.newProfile()}

@@ -24,7 +24,7 @@ export const Loading = () => <div>Loading...</div>
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">
+    <div className="text-center text-black dark:text-white">
       {'No itemRecipes yet. '}
       <Link to={routes.newItemRecipe()} className="rw-link">
         {'Create one?'}

@@ -37,7 +37,7 @@ export const Loading = () => (
 );
 
 export const Empty = () => {
-  return <div className="rw-text-center">{"No maps created yet. "}</div>;
+  return <div className="text-center text-black dark:text-white">{"No maps created yet. "}</div>;
 };
 
 export const Failure = ({ error }: CellFailureProps) => (

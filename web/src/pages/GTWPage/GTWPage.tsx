@@ -283,7 +283,7 @@ const GtwPage = (props: GTWPageProps) => {
           <FieldError name="scrambledWord" className="rw-field-error" />
         </Form>
         <div className="text-center">
-          <h1 className="rw-label rw-text-center p-3 text-2xl">
+          <h1 className="rw-label text-center text-black dark:text-white p-3 text-2xl">
             {getWord(word)}
           </h1>
         </div>

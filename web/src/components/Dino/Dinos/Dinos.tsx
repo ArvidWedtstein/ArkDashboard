@@ -160,7 +160,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
       <div className="3xl:grid-cols-6 grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4">
         {(dinosPage.count === 0 || dinosPage.dinos.length == 0) && (
           <div className="col-span-full">
-            <div className="rw-text-center">
+            <div className="text-center text-black dark:text-white">
               <p>No dinos found with that name</p>
             </div>
           </div>

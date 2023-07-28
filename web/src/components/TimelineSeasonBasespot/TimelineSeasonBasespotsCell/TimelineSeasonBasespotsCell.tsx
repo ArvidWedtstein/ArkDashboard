@@ -42,7 +42,7 @@ export const Loading = () => (
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">
+    <div className="text-center text-black dark:text-white">
       <p>No Basespots created yet.</p>
     </div>
   );

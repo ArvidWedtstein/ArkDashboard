@@ -64,7 +64,7 @@ export const Loading = () => (
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">
+    <div className="text-center text-black dark:text-white">
       {"No timelineSeasons yet. "}
       <Link to={routes.newTimelineSeason()} className="rw-link">
         {"Create one?"}

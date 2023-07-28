@@ -394,7 +394,7 @@ const ItemsList = ({
         ))}
       </div>
       {!loading && itemsPage.items.length === 0 && itemsPage.count === 0 && (
-        <div className="rw-text-center w-full">
+        <div className="text-center text-black dark:text-white w-full">
           {"No items yet. "}
           <Link to={routes.newItem()} className="rw-link">
             {"Create one?"}

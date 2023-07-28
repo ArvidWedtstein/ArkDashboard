@@ -59,7 +59,7 @@ export const Loading = () => (
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">
+    <div className="text-center text-black dark:text-white">
       {"No lootcrates yet. "}
       <Link to={routes.newLootcrate()} className="rw-link">
         {"Create one?"}

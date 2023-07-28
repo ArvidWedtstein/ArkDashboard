@@ -73,7 +73,7 @@ export const Loading = () => {
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center text-black dark:text-white">
+    <div className="text-center text-black dark:text-white text-black dark:text-white">
       {"No basespots yet. "}
       <Link to={routes.newBasespot()} className="rw-link">
         {"Create one?"}
