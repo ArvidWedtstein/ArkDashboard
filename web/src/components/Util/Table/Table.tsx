@@ -925,7 +925,7 @@ const Table = ({
   return (
     <div
       className={clsx(
-        "relative overflow-x-auto overflow-y-hidden sm:rounded-lg",
+        "relative overflow-y-hidden sm:rounded-lg",
         className
       )}
     >
