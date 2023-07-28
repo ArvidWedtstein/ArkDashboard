@@ -491,7 +491,7 @@
     @apply bg-gray-200 text-sm uppercase leading-normal text-gray-600;
   }
   .rw-table tbody tr {
-    @apply border-b border-gray-200 hover:bg-gray-100;
+    @apply border-b border-gray-200 text-black hover:bg-gray-100/10 dark:text-white;
   }
   .rw-table th,
   .rw-table td {

@@ -253,6 +253,34 @@ const Routes = () => {
           <Route path="/dinos/{id}" page={DinoDinoPage} name="dino" />
           <Route path="/dinos" page={DinoDinosPage} name="dinos" />
         </Set>
+        {/* <Set
+          wrap={ScaffoldLayout}
+          title="DinoStats"
+          titleTo="dinoStats"
+          buttonLabel="New DinoStat"
+          buttonTo="newDinoStat"
+        >
+          <Route
+            path="/dino-stats/new"
+            page={DinoStatNewDinoStatPage}
+            name="newDinoStat"
+          />
+          <Route
+            path="/dino-stats/{id}/edit"
+            page={DinoStatEditDinoStatPage}
+            name="editDinoStat"
+          />
+          <Route
+            path="/dino-stats/{id}"
+            page={DinoStatDinoStatPage}
+            name="dinoStat"
+          />
+          <Route
+            path="/dino-stats"
+            page={DinoStatDinoStatsPage}
+            name="dinoStats"
+          />
+        </Set> */}
         <Set
           wrap={ScaffoldLayout}
           title="Profiles"

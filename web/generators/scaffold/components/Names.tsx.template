@@ -1,7 +1,6 @@
 import { Link, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
-import Table from "src/components/Util/Table/Table";
 
 import { QUERY } from '${importComponentNamesCell}'
 import { ${listFormattersImports} } from 'src/lib/formatters'
