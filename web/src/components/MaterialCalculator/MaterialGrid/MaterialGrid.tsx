@@ -69,7 +69,7 @@ const TreeBranch = memo(({ itemRecipe }: any) => {
   const { Item, amount, crafting_time } = itemRecipe;
   const imageUrl = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item?.image}`;
   return (
-    <li>
+    <li className="inline-block align-top text-center list-none relative pt-4 px-2 -ml-1 -mr-1 before:content-[''] before:absolute before:top-0 before:right-1/2 before:w-1/2 before:h-4 before:border-t before:border-red-500 after:content-[''] after:absolute after:top-0 after:right-auto after:left-1/2 after:w-1/2 after:h-4 after:border-t after:border-l after:border-red-500 only:before:hidden only:after:hidden only:pt-0 first:before:border-0 last:after:border-0 last:before:border-r last:before:border-red-500 last:before:rounded-tr-2xl first:after:rounded-tl-2xl">
       {Item && (
         <div
           className="animate-fade-in relative inline-flex h-16 w-16 items-center justify-center rounded-lg border border-zinc-500 p-2 text-center"
@@ -85,7 +85,7 @@ const TreeBranch = memo(({ itemRecipe }: any) => {
         </div>
       )}
       {itemRecipe?.ItemRecipeItem?.length > 0 && (
-        <ul>
+        <ul className="relative whitespace-nowrap py-4 text-center after:clear-both after:table after:content-[''] before:content-[''] before:absolute before:top-0 before:left-1/2 before:h-4 before:w-0 before:border-l before:border-red-500">
           {itemRecipe?.ItemRecipeItem.map((subItemRecipe, i) => (
             <TreeBranch
               key={`subItem-${subItemRecipe?.Item?.id}`}

@@ -61,6 +61,14 @@ module.exports = {
             transform: "translateY(0)",
           },
         },
+        flyIn: {
+          from: {
+            transform: "translateX(calc(100% + 1.5em))",
+          },
+          to: {
+            transform: "translateX(0)",
+          },
+        },
         flyOut: {
           from: {
             transform: "translateX(0)",
@@ -68,6 +76,22 @@ module.exports = {
           to: {
             transform: "translateX(calc(100 % +1.5em))",
             display: "none",
+          },
+        },
+        popUp: {
+          from: {
+            transform: "scale(0)",
+          },
+          to: {
+            transform: "scale(1)",
+          },
+        },
+        fill: {
+          from: {
+            transform: "scaleX(0)",
+          },
+          to: {
+            transform: "scaleX(1)",
           },
         },
       },
