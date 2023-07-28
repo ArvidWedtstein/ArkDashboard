@@ -17,7 +17,7 @@
   }
 
   .rw-segment {
-    @apply w-full overflow-hidden; /*  rounded-lg border border-gray-200  */
+    @apply w-full overflow-hidden;
     scrollbar-color: theme("colors.zinc.400") transparent;
     scroll-behavior: smooth;
   }
@@ -31,11 +31,13 @@
   .rw-segment::-webkit-scrollbar-button {
     @apply rounded-full border-[3px] border-solid border-transparent bg-zinc-400 bg-clip-content;
   }
-  .rw-segment-header {
-    @apply py-3 px-4 text-gray-700 dark:text-stone-200;
-  }
+
   .rw-segment-main {
     @apply p-4;
+  }
+
+  .rw-segment-header {
+    @apply py-3 px-4 text-gray-700 dark:text-stone-200;
   }
 
   .rw-heading {
@@ -47,14 +49,16 @@
   .rw-heading.rw-heading-secondary {
     @apply text-sm;
   }
+
   .rw-heading .rw-link {
     @apply text-gray-600 no-underline;
   }
   .rw-heading .rw-link:hover {
     @apply text-gray-900 underline;
   }
+
   .rw-cell-error {
-    @apply text-sm font-semibold;
+    @apply animate-fly-in text-sm font-semibold;
   }
   .rw-form-wrapper {
     @apply -mt-4 text-sm;

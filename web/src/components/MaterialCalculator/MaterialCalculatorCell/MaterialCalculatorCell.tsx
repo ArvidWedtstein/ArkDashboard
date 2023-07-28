@@ -57,7 +57,7 @@ export const Loading = () => {
 export const Empty = () => <div>Empty</div>;
 
 export const Failure = ({ error }: CellFailureProps) => (
-  <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
+  <div className="rw-cell-error flex items-center space-x-3">
     <svg
       className="h-12 w-12"
       fill="currentColor"
