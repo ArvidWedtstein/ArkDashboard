@@ -78,17 +78,8 @@ const ProfileForm = (props: ProfileFormProps) => {
                       className="absolute -mt-20 aspect-square h-auto rounded-full border-none align-middle shadow-xl"
                       url={props.profile.avatar_url}
                       size={200}
-                      onUpload={(url) => {
-                        // setAvatarUrl(url);
-                        // updateProfile({
-                        //   username,
-                        //   website,
-                        //   avatar_url: url,
-                        //   firstname,
-                        //   lastname,
-                        //   biography,
-                        // });
-                      }}
+                      editable={true}
+
                     />
                   </div>
                 </div>
@@ -190,6 +181,36 @@ const ProfileForm = (props: ProfileFormProps) => {
                   <FieldError name="username" className="rw-field-error" />
                 </div>
 
+                <div className="flex flex-col items-center justify-center">
+                  <Label
+                    name="steam_user_id"
+                    className="rw-label"
+                    errorClassName="rw-label rw-label-error"
+                  >
+                    Steam ID
+                  </Label>
+                  <div className="relative">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512"
+                        fill="currentColor"
+                        className="h-5 w-5 text-gray-500 dark:text-gray-400"
+                      >
+                        <path d="M395.5 177.5c0 33.8-27.5 61-61 61-33.8 0-61-27.3-61-61s27.3-61 61-61c33.5 0 61 27.2 61 61zm52.5.2c0 63-51 113.8-113.7 113.8L225 371.3c-4 43-40.5 76.8-84.5 76.8-40.5 0-74.7-28.8-83-67L0 358V250.7L97.2 290c15.1-9.2 32.2-13.3 52-11.5l71-101.7c.5-62.3 51.5-112.8 114-112.8C397 64 448 115 448 177.7zM203 363c0-34.7-27.8-62.5-62.5-62.5-4.5 0-9 .5-13.5 1.5l26 10.5c25.5 10.2 38 39 27.7 64.5-10.2 25.5-39.2 38-64.7 27.5-10.2-4-20.5-8.3-30.7-12.2 10.5 19.7 31.2 33.2 55.2 33.2 34.7 0 62.5-27.8 62.5-62.5zm207.5-185.3c0-42-34.3-76.2-76.2-76.2-42.3 0-76.5 34.2-76.5 76.2 0 42.2 34.3 76.2 76.5 76.2 41.9.1 76.2-33.9 76.2-76.2z" />
+                      </svg>
+                    </div>
+                    <TextField
+                      name="steam_user_id"
+                      defaultValue={props.profile?.steam_user_id}
+                      className="rw-input pl-10"
+                      errorClassName="rw-input rw-input-error"
+                    />
+                  </div>
+
+                  <FieldError name="steam_user_id" className="rw-field-error" />
+                </div>
+
                 <hr className="my-6 border-gray-600 dark:border-stone-300" />
 
                 <div className="flex flex-col items-center justify-center">
@@ -225,6 +246,7 @@ const ProfileForm = (props: ProfileFormProps) => {
                     defaultValue={props.profile?.website}
                     className="rw-input"
                     errorClassName="rw-input rw-input-error"
+                    placeholder="https://www.example.com"
                   />
 
                   <FieldError name="website" className="rw-field-error" />

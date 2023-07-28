@@ -313,7 +313,7 @@
   // ----------------------------
   */
   .rw-input {
-    @apply block rounded-lg border border-zinc-500 bg-zinc-50 px-4 py-2.5 text-sm text-gray-900 !placeholder-zinc-700 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 disabled:cursor-default disabled:text-gray-400 contrast-more:border-black contrast-more:placeholder-black dark:bg-zinc-600 dark:text-stone-200 dark:!placeholder-zinc-300 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white;
+    @apply block rounded-lg border border-zinc-500 bg-zinc-50 px-4 py-2.5 text-sm text-gray-900 !placeholder-zinc-700 !placeholder-opacity-60 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 disabled:cursor-default disabled:text-gray-400 contrast-more:border-black contrast-more:placeholder-black dark:bg-zinc-600 dark:text-stone-200 dark:!placeholder-zinc-300 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white;
   }
   .rw-input.rw-input-small {
     @apply py-1 px-2 text-xs;

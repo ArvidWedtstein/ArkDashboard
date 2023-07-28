@@ -46,6 +46,7 @@ const ITEMQUERY = gql`
   }
 `;
 const DinoForm = (props: DinoFormProps) => {
+  const [disableFood, setDisableFood] = useState(props.dino?.disable_food);
   const [loadItems, { called, loading, data }] = useLazyQuery(ITEMQUERY, {
     variables: { category: "Resource,Consumable" },
     onCompleted: (data) => {
@@ -1269,29 +1270,30 @@ const DinoForm = (props: DinoFormProps) => {
 
               <FieldError name="aff_inc" className="rw-field-error" />
             </div>
-            <div>
-              {/* TODO: hide this when food is disabled */}
-              <Label
-                name="non_violent_food_affinity_mult"
-                className="rw-label"
-                errorClassName="rw-label rw-label-error"
-              >
-                Non violent food affinity multiplier
-              </Label>
+            {!disableFood && (
+              <div>
+                <Label
+                  name="non_violent_food_affinity_mult"
+                  className="rw-label"
+                  errorClassName="rw-label rw-label-error"
+                >
+                  Non violent food affinity multiplier
+                </Label>
 
-              <TextField
-                name="non_violent_food_affinity_mult"
-                defaultValue={props.dino?.non_violent_food_affinity_mult || 0}
-                className="rw-input"
-                errorClassName="rw-input rw-input-error"
-                validation={{ valueAsNumber: true }}
-              />
+                <TextField
+                  name="non_violent_food_affinity_mult"
+                  defaultValue={props.dino?.non_violent_food_affinity_mult || 0}
+                  className="rw-input"
+                  errorClassName="rw-input rw-input-error"
+                  validation={{ valueAsNumber: true }}
+                />
 
-              <FieldError
-                name="non_violent_food_affinity_mult"
-                className="rw-field-error"
-              />
-            </div>
+                <FieldError
+                  name="non_violent_food_affinity_mult"
+                  className="rw-field-error"
+                />
+              </div>
+            )}
           </div>
           <div>
             <div>
@@ -1545,6 +1547,10 @@ const DinoForm = (props: DinoFormProps) => {
               <CheckboxField
                 name="disable_food"
                 defaultChecked={props.dino?.disable_food}
+                checked={disableFood}
+                onChange={(e) => {
+                  setDisableFood(e.target.checked);
+                }}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
               />

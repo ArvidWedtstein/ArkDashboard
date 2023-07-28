@@ -72,4 +72,4 @@ export const schema = gql`
       @requireAuth
     deleteProfile(id: String!): Profile! @requireAuth
   }
-`
+`;

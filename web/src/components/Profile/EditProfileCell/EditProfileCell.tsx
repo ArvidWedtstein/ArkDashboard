@@ -20,6 +20,7 @@ export const QUERY = gql`
       status
       role_id
       created_at
+      steam_user_id
     }
     roles {
       id
@@ -41,12 +42,54 @@ const UPDATE_PROFILE_MUTATION = gql`
       status
       role_id
       created_at
+      steam_user_id
     }
   }
 `
 
-// TODO: fix skeleton loader
-export const Loading = () => <div>Loading...</div>
+export const Loading = () => (
+  <div
+    role="status"
+    className="animate-pulse flex-col space-y-8 md:flex md:items-center md:space-y-0 md:space-x-8"
+  >
+    <div className="flex w-full items-center justify-between">
+      <div className="flex w-1/3 items-center justify-center gap-16">
+        <div className="flex flex-col items-center justify-center gap-2">
+          <div className="h-4 w-6 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+          <div className="h-2 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+        </div>
+        <div className="flex flex-col items-center justify-center gap-2">
+          <div className="h-4 w-6 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+          <div className="h-2 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+        </div>
+        <div className="flex flex-col items-center justify-center gap-2">
+          <div className="h-4 w-6 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+          <div className="h-2 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+        </div>
+      </div>
+      <div className="w-1/3">
+        <svg
+          className="mx-auto h-32 w-32 text-gray-200 dark:text-gray-700"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z" />
+        </svg>
+      </div>
+      <div className="w-1/3"></div>
+    </div>
+    <div className="w-full space-y-2">
+      <div className="my-2 mx-auto h-2.5 w-48 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+      <div className="mx-auto h-2 w-64 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+      <div className="mx-auto h-2 max-w-[440px] rounded-full bg-gray-200 dark:bg-gray-700"></div>
+      <div className="mx-auto h-2 max-w-[460px] rounded-full bg-gray-200 dark:bg-gray-700"></div>
+      <div className="mx-auto h-2 max-w-[360px] rounded-full bg-gray-200 dark:bg-gray-700"></div>
+    </div>
+    <span className="sr-only">Loading...</span>
+  </div>
+)
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error flex items-center space-x-3 animate-fly-in" >
@@ -84,7 +127,7 @@ export const Success = ({ profile, roles }: CellSuccessProps<EditProfileById>) =
   return (
     <div className="rw-segment">
       <header className="rw-segment-header">
-        <h2 className="rw-heading rw-heading-secondary">Edit Profile {profile?.full_name}</h2>
+        <h2 className="rw-heading rw-heading-secondary">Edit Profile for {profile?.full_name}</h2>
       </header>
       <div className="rw-segment-main">
         <ProfileForm profile={profile} roles={roles} onSave={onSave} error={error} loading={loading} />
