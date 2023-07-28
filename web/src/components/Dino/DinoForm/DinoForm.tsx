@@ -114,11 +114,28 @@ const DinoForm = (props: DinoFormProps) => {
     },
   });
 
-  const { register, control } = useForm({
+  type FormValues = {
+    attack: any[];
+    "DinoStat.create": { type: string; item_id: number; value: number }[];
+    wr: any[];
+  };
+  const { register, control } = useForm<FormValues>({
     defaultValues: {
       attack: [],
-      "DinoStat.create": [],
-      wr: [],
+      "DinoStat.create": [
+        {
+          type: "",
+          value: 0,
+          item_id: null,
+        },
+      ],
+      wr: props.dino.DinoStat.filter((f) => f.type === "weight_reduction") ?? [
+        {
+          type: "",
+          value: 0,
+          item_id: null,
+        },
+      ],
     },
   });
 
@@ -383,7 +400,7 @@ const DinoForm = (props: DinoFormProps) => {
                             required: false,
                           } as const)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
-                          defaultValue={g.type}
+                          // defaultValue={g.type}
                         />
                         <button
                           type="button"
