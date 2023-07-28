@@ -233,10 +233,11 @@ const HomePage = () => {
               </details>
               <Link
                 to={routes.materialCalculator()}
-                className="rw-button rw-button-green-outline mt-2"
+                className="rw-button rw-button-green-outline mt-2 "
               >
                 Explore
               </Link>
+              <button className=" rw-button2">btn</button>
             </div>
           </div>
         </section>
