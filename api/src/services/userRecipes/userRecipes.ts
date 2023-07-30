@@ -55,9 +55,19 @@ export const userRecipe: QueryResolvers["userRecipe"] = ({ id }) => {
   });
 };
 
-export const createUserRecipe: MutationResolvers["createUserRecipe"] = ({
+export const createUserRecipe: MutationResolvers["createUserRecipe"] = async ({
   input,
 }) => {
+  const recipes = await db.userRecipe.findMany({
+    where: {
+      user_id: { equals: input.user_id },
+    },
+  });
+  validateWithSync(() => {
+    if (recipes.length >= 10) {
+      throw "You have reached the maximum number of recipes. Please delete one before adding another.";
+    }
+  });
   validateWithSync(() => {
     if (context.currentUser.id !== input.user_id) {
       throw "Your gallimimus outran the authorization process. Slow down!";
