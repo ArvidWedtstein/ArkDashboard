@@ -16,6 +16,7 @@ export const QUERY = gql`
       user_id
       ingame_name
       timeline_season_id
+      permission
       Profile {
         id
         username

@@ -46,11 +46,14 @@ const TimelineSeasonPeopleList = ({
 
   const onDeleteClick = (
     id: DeleteTimelineSeasonPersonMutationVariables["id"],
-    ingame_name: string
+    ingame_name: string,
+    permission: "admin" | "member" | "guest"
   ) => {
     if (
       confirm(
-        "Are you sure you want to remove " + ingame_name + " from the tribe?"
+        `Are you sure you want to remove ${ingame_name} ${
+          permission == "guest" ? "as guest?" : "from the tribe?"
+        }?`
       )
     ) {
       deleteTimelineSeasonPerson({ variables: { id } });
@@ -59,36 +62,35 @@ const TimelineSeasonPeopleList = ({
 
   return (
     <div className="flex justify-start gap-3 overflow-x-auto px-6">
-      {timelineSeasonPeople.map(({ id, user_id, ingame_name, Profile }) => (
-        <button
-          className="relative flex-none py-6 px-3"
-          key={id}
-        >
-          <div className="flex flex-col items-center justify-center gap-3 ">
-            {/* after:absolute after:top-1/3 group-hover:after:opacity-100 after:text-sm after:opacity-0 after:transition after:w-full after:backdrop-blur-sm after:content-['Remove?'] after:text-center after:text-white */}
-            <img
-              className="relative h-16 w-16 rounded-full transition duration-150 ease-in-out hover:ring hover:ring-red-500"
-              src={
-                Profile?.avatar_url
-                  ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${Profile.avatar_url}`
-                  : `https://ui-avatars.com/api/?name=${ingame_name}`
-              }
-              onClick={() => {
-                onDeleteClick(id, ingame_name);
-              }}
-            />
-            <strong className="text-xs font-medium text-slate-900 dark:text-slate-200">
-              {Profile ? (
-                <Link to={routes.profile({ id: user_id })}>
-                  {Profile.username || ingame_name}
-                </Link>
-              ) : (
-                ingame_name
-              )}
-            </strong>
-          </div>
-        </button>
-      ))}
+      {timelineSeasonPeople.map(
+        ({ id, user_id, ingame_name, Profile, permission }) => (
+          <button className="relative flex-none py-6 px-3" key={id}>
+            <div className="flex flex-col items-center justify-center gap-3 ">
+              {/* after:absolute after:top-1/3 group-hover:after:opacity-100 after:text-sm after:opacity-0 after:transition after:w-full after:backdrop-blur-sm after:content-['Remove?'] after:text-center after:text-white */}
+              <img
+                className="relative h-16 w-16 rounded-full transition duration-150 ease-in-out hover:ring hover:ring-red-500"
+                src={
+                  Profile?.avatar_url
+                    ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${Profile.avatar_url}`
+                    : `https://ui-avatars.com/api/?name=${ingame_name}`
+                }
+                onClick={() => {
+                  onDeleteClick(id, ingame_name, permission);
+                }}
+              />
+              <strong className="text-xs font-medium text-slate-900 dark:text-slate-200">
+                {Profile ? (
+                  <Link to={routes.profile({ id: user_id })}>
+                    {Profile.username || ingame_name}
+                  </Link>
+                ) : (
+                  ingame_name
+                )}
+              </strong>
+            </div>
+          </button>
+        )
+      )}
     </div>
   );
 };

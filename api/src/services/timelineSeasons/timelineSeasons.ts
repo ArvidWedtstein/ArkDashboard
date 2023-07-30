@@ -22,7 +22,15 @@ export const timelineSeasons: QueryResolvers["timelineSeasons"] = () => {
 
 export const timelineSeason: QueryResolvers["timelineSeason"] = ({ id }) => {
   return db.timelineSeason.findUnique({
-    where: { id },
+    where: {
+      id,
+      OR: [
+        { created_by: context.currentUser?.id },
+        {
+          TimelineSeasonPerson: { some: { user_id: context.currentUser?.id } },
+        },
+      ],
+    },
   });
 };
 
