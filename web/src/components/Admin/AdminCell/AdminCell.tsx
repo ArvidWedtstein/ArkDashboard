@@ -24,6 +24,7 @@ export const QUERY = gql`
   }
 `;
 
+// TODO: fix skeleton loader
 export const Loading = () => <div>Loading...</div>;
 
 export const Empty = () => <div>Empty</div>;

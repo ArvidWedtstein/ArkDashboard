@@ -54,7 +54,6 @@ export const getCurrentUser = async (
       select: {
         id: true,
         updated_at: true,
-        updated_by: true,
         created_at: true,
         username: true,
         avatar_url: true,
