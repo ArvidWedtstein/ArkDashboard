@@ -5,8 +5,9 @@ interface ChartProps {
   data: number[];
   width?: number;
   height?: number;
+  title?: string
 }
-const Chart = ({ width = 460, height = 260, labels, data }: ChartProps) => {
+const Chart = ({ width = 460, height = 260, labels, data, title }: ChartProps) => {
   const chartRef = useRef(null);
   useEffect(() => {
     // Create an SVG element to render the chart
@@ -25,7 +26,7 @@ const Chart = ({ width = 460, height = 260, labels, data }: ChartProps) => {
     const yAxisRange = yAxisMax - yAxisMin; // Range of the y-axis values
 
     // Function to map data points to chart coordinates
-    function mapPoint(x: number, y: number): [number, number] {
+    const mapPoint = (x: number, y: number): [number, number] => {
       const xCoord = margin + x * xAxisInterval;
       const yCoord =
         height - margin - ((y - yAxisMin) / yAxisRange) * (height - 2 * margin);
@@ -52,7 +53,7 @@ const Chart = ({ width = 460, height = 260, labels, data }: ChartProps) => {
     }
 
     // Function to generate the smooth line using Catmull-Rom interpolation
-    function generateSmoothLine(points: [number, number][]): string {
+    const generateSmoothLine = (points: [number, number][]): string => {
       const pathSegments = ["M", points[0][0], points[0][1]];
 
       for (let i = 1; i < points.length - 2; i++) {
@@ -119,6 +120,9 @@ const Chart = ({ width = 460, height = 260, labels, data }: ChartProps) => {
         "http://www.w3.org/2000/svg",
         "g"
       );
+      labelGroup.setAttribute("width", "100%")
+      labelGroup.setAttribute("height", "100%")
+      labelGroup.setAttribute("transform", `translate(0, 0)`);
 
       chartGroup.appendChild(labelGroup);
 
@@ -133,34 +137,47 @@ const Chart = ({ width = 460, height = 260, labels, data }: ChartProps) => {
 
         if (i == labels.length - 1) points.push([width, height]);
 
-        const lineGroup = document.createElementNS(
+        const lineGroupX = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "g"
         );
-        lineGroup.setAttribute("transform", `translate(${x}, 0)`);
+        lineGroupX.setAttribute("transform", `translate(${x}, 0)`);
+        lineGroupX.setAttribute("width", "100%")
+        lineGroupX.setAttribute("height", "100%")
 
-        const label = document.createElementNS(
+        const labelX = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "text"
         );
-        label.setAttribute("x", `0`);
-        label.setAttribute("y", `${height + margin - 5}`);
-        label.setAttribute("font-size", "12");
-        label.setAttribute("text-anchor", "middle");
-        label.setAttribute("fill", "white");
-        label.textContent = labels[i];
-        lineGroup.appendChild(label);
+        labelX.setAttribute("x", `0`);
+        labelX.setAttribute("y", `${height + margin - 5}`);
+        labelX.setAttribute("font-size", "12");
+        labelX.setAttribute("text-anchor", "middle");
+        labelX.setAttribute("fill", "white");
+        labelX.textContent = labels[i];
+        lineGroupX.appendChild(labelX);
 
+        // TODO: make this optional
         // const yLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         // yLine.setAttribute('x1', `0`);
-        // yLine.setAttribute('y1', `${chartHeight}`);
+        // yLine.setAttribute('y1', `${height}`);
         // yLine.setAttribute('x2', `0`);
         // yLine.setAttribute('y2', `0`);
         // yLine.setAttribute('stroke', '#ffffff');
         // yLine.setAttribute('stroke-opacity', '0.2');
         // lineGroup.appendChild(yLine);
 
-        labelGroup.appendChild(lineGroup);
+        // const xLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        // xLine.setAttribute('x1', `0`);
+        // xLine.setAttribute('y1', `${y}`);
+        // xLine.setAttribute('x2', `${width}`);
+        // xLine.setAttribute('y2', `${y}`);
+        // xLine.setAttribute('stroke', '#ffffff');
+        // xLine.setAttribute('stroke-opacity', '0.2');
+        // lineGroup.appendChild(xLine);
+
+        labelGroup.appendChild(lineGroupX);
+
 
         const dataPoint = document.createElementNS(
           "http://www.w3.org/2000/svg",
@@ -174,6 +191,35 @@ const Chart = ({ width = 460, height = 260, labels, data }: ChartProps) => {
         dataPoint.setAttribute("class", ` transition-all duration-300`);
         chartGroup.appendChild(dataPoint);
       }
+
+      const max = Math.max(...data);
+      const min = Math.min(...data);
+      const lineGroupY = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "g"
+      );
+      lineGroupY.setAttribute("transform", `translate(0, 0)`);
+      lineGroupY.setAttribute("width", "100%")
+      lineGroupY.setAttribute("height", "100%")
+      labelGroup.appendChild(lineGroupY);
+
+      // TODO: Make this optional
+      for (let i = min; i <= max; i += max - min > 10 ? 1 : 0.1) {
+
+        const labelY = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "text"
+        );
+        labelY.setAttribute("x", `-15`);
+        labelY.setAttribute("y", `${height - margin - ((i - yAxisMin) / yAxisRange) * (height - 2 * margin)}`);
+        labelY.setAttribute("font-size", "12");
+        labelY.setAttribute("text-anchor", "left");
+        labelY.setAttribute("alignment-baseline", "middle");
+        labelY.setAttribute("fill", "white");
+        labelY.textContent = i.toFixed(1).toString();
+        lineGroupY.appendChild(labelY);
+      }
+
 
       const smoothLine = document.createElementNS(
         "http://www.w3.org/2000/svg",
@@ -259,7 +305,10 @@ const Chart = ({ width = 460, height = 260, labels, data }: ChartProps) => {
     // Call the renderChart function to generate the chart
     renderChart();
   }, []);
-  return <div ref={chartRef}></div>;
+  return <div>
+    <h1 className="mx-auto text-white">{title}</h1>
+    <div ref={chartRef}></div>
+  </div>;
 };
 
 export default Chart;

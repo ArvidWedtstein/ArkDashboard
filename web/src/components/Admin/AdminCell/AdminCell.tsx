@@ -13,13 +13,17 @@ export const QUERY = gql`
       longitude
       thumbnail
       created_at
-      updated_at
       map_id
       estimated_for_players
       type
       Map {
         name
       }
+    }
+    profiles {
+      id
+      username
+      created_at
     }
   }
 `;
@@ -33,11 +37,13 @@ export const Failure = ({
   error,
 }: CellFailureProps<FindAdminDataVariables>) => {
   toast.error(error.message);
+  console.error(error)
   return <div style={{ color: "red" }}>Error: {error?.message}</div>;
 };
 
 export const Success = ({
   basespots,
+  profiles,
 }: CellSuccessProps<FindAdminData, FindAdminDataVariables>) => {
-  return <Admin basespots={basespots} />;
+  return <Admin basespots={basespots} profiles={profiles} />;
 };

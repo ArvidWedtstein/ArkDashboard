@@ -12,6 +12,7 @@ interface CheckboxGroupProps {
   form?: boolean;
   className?: string;
   defaultValue?: string[] | string;
+  size?: "sm" | "md" | "lg";
   onChange?: (name: string, value: string[]) => void;
   disabled?: boolean;
   validation?: {
@@ -29,6 +30,7 @@ const CheckboxGroup = ({
   defaultValue = [],
   onChange,
   className,
+  size = "lg",
   disabled = false,
   validation = {
     required: false,
@@ -91,11 +93,12 @@ const CheckboxGroup = ({
           />
           <span
             className={clsx(
-              "rw-check-tile relative flex h-28 w-28 flex-col items-center justify-center rounded-lg border-2 border-zinc-500 bg-zinc-300 shadow transition-all duration-150 dark:bg-zinc-600",
+              "rw-check-tile relative flex flex-col items-center justify-center rounded-lg border-2 border-zinc-500 bg-zinc-300 shadow transition-all duration-150 dark:bg-zinc-600",
               {
                 disabled: (!name && !label) || disabled,
                 "cursor-pointer": label && !disabled,
-              }
+              },
+              size === 'lg' ? 'h-28 w-28' : size === 'md' ? 'h-20 w-20' : 'h-12 w-12'
             )}
           >
             <span className="text-gray-900 transition-all duration-150 ease-in dark:text-stone-200">
@@ -104,7 +107,7 @@ const CheckboxGroup = ({
                   image
                 ) : (
                   <img
-                    className="max-w-16 max-h-12 w-auto"
+                    className={size === 'lg' ? 'max-w-16 max-h-12 w-auto' : size === 'md' ? 'max-w-10 max-h-8 w-auto' : "max-w-8 max-h-8 w-auto"}
                     src={image.toString()}
                   />
                 ))}

@@ -355,6 +355,7 @@ const Map = ({ map }: Props) => {
         <div className="rw-segment-main">
           <div className="grid grid-flow-row gap-3 md:grid-cols-2">
             <CheckboxGroup
+              size="md"
               options={Object.entries(categories)
                 .filter(
                   (c) =>
@@ -392,7 +393,6 @@ const Map = ({ map }: Props) => {
                   }
                   return prevState
                 });
-                console.log(e)
               }}
               path={{
                 color: "#0000ff",
@@ -434,12 +434,16 @@ const Map = ({ map }: Props) => {
                       }, 3000);
                     }}
                     className={
-                      "w-full border-l-2 px-4 py-2 text-left capitalize"
+                      "w-full border-l-2 px-4 py-2 text-left capitalize inline-flex"
                     }
                     style={{ borderLeftColor: d.color }}
                   >
-                    {d?.name ? d.name.split("\n")[0] : ""} - {d.latitude},{" "}
-                    {d.longitude}
+                    <span>{d?.name ? d.name.split("\n")[0] : ""} - </span>
+                    <span>{d.latitude},{" "}{d.longitude}</span>
+
+                    {noterun.find((j) => j === d.note_index) && (
+                      <span className="inline-flex place-self-end ml-auto">Noterun</span>
+                    )}
                   </button>
                 </li>
               ))}

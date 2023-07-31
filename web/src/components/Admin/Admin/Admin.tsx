@@ -13,7 +13,7 @@ import {
 } from "src/lib/formatters";
 import { FindAdminData } from "types/graphql";
 
-const Admin = ({ basespots }: FindAdminData) => {
+const Admin = ({ basespots, profiles }: FindAdminData) => {
   const optimizedBasespots = useMemo(() => {
     return basespots.map((base) => {
       const totalSteps = 5;
@@ -65,6 +65,23 @@ const Admin = ({ basespots }: FindAdminData) => {
     });
   }, [basespots]);
 
+  function groupDatesByMonth(datesArray) {
+    const groupedDates = {};
+
+    datesArray.forEach(date => {
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1; // Adding 1 because getMonth() returns 0-based index (0 for January, 11 for December)
+      const key = `${year}-${month.toString().padStart(2, '0')}`;
+
+      if (!groupedDates[key]) {
+        groupedDates[key] = [];
+      }
+
+      groupedDates[key].push(date);
+    });
+
+    return groupedDates;
+  }
   return (
     <>
       <MetaTags title="Admin" description="Admin page" />
@@ -76,13 +93,13 @@ const Admin = ({ basespots }: FindAdminData) => {
             value={formatNumber(
               (optimizedBasespots.filter((b) => b.progress == 100).length /
                 optimizedBasespots.length) *
-                100,
+              100,
               { maximumSignificantDigits: 3 }
             )}
             subtext={`${formatNumber(
               (optimizedBasespots.filter((b) => b.progress == 100).length /
                 optimizedBasespots.length) *
-                100,
+              100,
               { maximumSignificantDigits: 3 }
             )} / 100`}
           />
@@ -106,7 +123,7 @@ const Admin = ({ basespots }: FindAdminData) => {
           <StatCard stat={"Test"} value={10} />
         </div>
 
-        {/* <Chart data={[65, 59, 67, 70, 56, 55]} labels={['January', 'February', 'March', 'April', 'May', 'June']} /> */}
+        <Chart data={[65, 59, 67, 70, 56, 55]} labels={['January', 'February', 'March', 'April', 'May', 'June']} />
 
         <Table
           rows={optimizedBasespots}
@@ -134,25 +151,6 @@ const Admin = ({ basespots }: FindAdminData) => {
               header: "Map",
               field: "Map.name",
               sortable: true,
-            },
-            {
-              header: "Updated",
-              field: "updated_at",
-              sortable: true,
-              render: ({ value }) => (
-                <span className="rw-badge rw-badge-gray-outline">
-                  <svg
-                    className="mr-1.5 h-2.5 w-2.5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
-                  </svg>
-                  {relativeDate(new Date(value), "days")}
-                </span>
-              ),
             },
             {
               header: "prg",
@@ -194,6 +192,10 @@ const Admin = ({ basespots }: FindAdminData) => {
             },
           ]}
         />
+
+        <hr className="bg-zinc-300" />
+
+        <Chart data={Object.values(groupDatesByMonth(profiles.map(p => new Date(p.created_at)))).map((g: Date[]) => g.length) || [65, 59, 67, 70, 56, 55]} labels={Object.keys(groupDatesByMonth(profiles.map(p => new Date(p.created_at)))).map(p => new Date(p).toLocaleDateString('en-GB', { month: 'short' }))} title={'New Users in the last months'} />
       </div>
       {/* <div className="flex items-center mb-5">
             <p className="bg-blue-100 text-blue-800 text-sm font-semibold inline-flex items-center p-1.5 rounded dark:bg-blue-200 dark:text-blue-800">8.7</p>
