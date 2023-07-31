@@ -12,7 +12,7 @@ const drawSvgPath = (
   });
   return pathString;
 };
-interface Props {
+interface mapProps {
   map_id?: number;
   disable_map?: boolean;
   size?: { width: number; height: number };
@@ -20,6 +20,7 @@ interface Props {
   className?: string;
   path?: { color?: string; coords: { lat: number; lon: number }[] };
   interactive?: boolean;
+  onPosClick?: (pos: { lat: number; lon: number; color?: string; name?: string, node_index?: number }) => void;
 }
 const Map = ({
   disable_map = false,
@@ -29,7 +30,8 @@ const Map = ({
   className,
   path,
   interactive = false,
-}: Props) => {
+  onPosClick,
+}: mapProps) => {
   const svgRef = useRef(null);
   const maps = {
     2:
@@ -229,27 +231,34 @@ const Map = ({
             transformOrigin: "center center",
           }}
         />
-        {pos?.map((p, i) => (
-          <circle
-            style={{
-              pointerEvents: "none",
-              width: "100%",
-              height: "100%",
-              transform: `scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`,
-              transformOrigin: "center center",
-            }}
-            key={"map-pos-" + i}
-            id={"map-pos-" + i}
-            fill={p.color || "red"}
-            stroke="black"
-            cy={(size.height / 100) * p.lat + size.height / 100}
-            cx={(size.width / 100) * p.lon + size.width / 100}
-            // r={((imageTransform.replace("scale(", "").replace(')', '')) as number * 2) * 2}
-            r="3"
-          >
-            <title>{p.name}</title>
-          </circle>
-        ))}
+        <g x={0} y={0} transform={`scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`} width="100%" height="100%">
+          {pos?.map((p, i) => (
+            <circle
+              style={{
+                // pointerEvents: "none",
+                width: "100%",
+                cursor: "pointer",
+                height: "100%",
+                transform: `scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`,
+                transformOrigin: "center center",
+              }}
+              key={"map-pos-" + i}
+              id={"map-pos-" + i}
+              fill={p.color || "red"}
+              stroke="black"
+              className="hover:stroke-red-500"
+              x={0}
+              onClick={() => onPosClick?.(p)}
+              y={0}
+              cy={(size.height / 100) * p.lat + size.height / 100}
+              cx={(size.width / 100) * p.lon + size.width / 100}
+              // r={((imageTransform.replace("scale(", "").replace(')', '')) as number * 2) * 2}
+              r="3"
+            >
+              <title>{p.name}</title>
+            </circle>
+          ))}
+        </g>
         {path?.coords && (
           <path
             style={{

@@ -1,3 +1,4 @@
+import { Form } from "@redwoodjs/forms";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useEffect, useRef, useState } from "react";
@@ -238,14 +239,13 @@ const HomePage = () => {
               </details>
               <Link
                 to={routes.materialCalculator()}
-                className="rw-button rw-button-green-outline mt-2 "
+                className="rw-button rw-button-green-outline mt-2"
               >
                 Explore
               </Link>
             </div>
           </div>
         </section>
-        <FileUpload storagePath="basespotimages" thumbnail />
       </div>
     </>
   );

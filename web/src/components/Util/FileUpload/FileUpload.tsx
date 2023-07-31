@@ -1,3 +1,4 @@
+import { FieldError } from "@redwoodjs/forms";
 import clsx from "clsx";
 import { useCallback, useRef, useState } from "react";
 import { useAuth } from "src/auth";
@@ -152,16 +153,15 @@ const FileUpload = ({
 
           const fileExt = file.name.split(".").pop();
           const fileName = `${Math.random()}.${fileExt}`;
-          const filePath = `${fileName}`;
 
           let { error: uploadError } = await supabase.storage
             .from(`${storagePath}`)
-            .upload(filePath, file);
+            .upload(fileName, file);
 
           if (uploadError) {
             fail();
           }
-          onUpload?.(filePath);
+          onUpload?.(fileName);
         });
         progressLoop();
       } catch (error) {
@@ -416,20 +416,29 @@ const FileUpload = ({
                   </button>
 
                   {thumbnail && (
-                    <input
-                      type="radio"
-                      className="rw-input rw-input-small"
-                      title="thumbnail"
-                      name="thumbnail"
-                      checked={files[index].thumbnail}
-                      value={files[index].file.name}
-                      onChange={(e) => {
-                        setFiles((prev) => {
-                          prev[index].thumbnail = e.target.checked;
-                          return prev;
-                        });
-                      }}
-                    />
+                    <>
+                      <input
+                        type="radio"
+                        className="rw-input rw-input-small"
+                        title="thumbnail"
+                        name="thumbnail"
+                        id={`thumbnail-${index}`}
+                        checked={file.thumbnail}
+                        value={file.name}
+                        defaultChecked={index === 0}
+                        onChange={(e) => {
+                          setFiles((prev) => {
+                            if (files.indexOf(prev as any) === index) {
+                              prev[index].thumbnail = true;
+                            } else {
+                              prev[index].thumbnail = false;
+                            }
+                            return prev;
+                          });
+                        }}
+                      />
+                      <FieldError name="thumbnail" className="rw-field-error" />
+                    </>
                   )}
 
                   <button

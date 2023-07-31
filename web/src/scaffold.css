@@ -408,7 +408,7 @@
 
   /* Radio */
   .rw-input[type="radio"] {
-    @apply text-pea-600 dark:focus:ring-pea-600 focus:ring-pea-500 ml-0 mr-1 mt-1 inline h-4 w-4 appearance-none border-zinc-300 bg-gray-100 focus:ring-2 dark:border-zinc-500 dark:bg-zinc-700 dark:ring-offset-gray-800;
+    @apply text-pea-600 dark:accent-pea-600 accent-pea-500 inline h-4 w-4 border-zinc-500;
   }
   .rw-check-radio-items {
     @apply flex justify-items-center;

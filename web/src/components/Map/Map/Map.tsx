@@ -340,10 +340,10 @@ const Map = ({ map }: Props) => {
     [categories, mapData, setCategories, setMapData]
   );
 
-  let noterun =
-    map.id === 1
-      ? [57, 520, 242, 241, 201, 79, 238, 143, 301, 283, 284, 60]
-      : [];
+  const [noterun, setNoterun] = useState<number[]>(map.id === 2
+    ? [57, 520, 242, 241, 201, 79, 238, 143, 301, 283, 284, 60]
+    : []);
+
   return (
     <article>
       <div className="rw-segment">
@@ -355,7 +355,6 @@ const Map = ({ map }: Props) => {
         <div className="rw-segment-main">
           <div className="grid grid-flow-row gap-3 md:grid-cols-2">
             <CheckboxGroup
-
               options={Object.entries(categories)
                 .filter(
                   (c) =>
@@ -386,18 +385,34 @@ const Map = ({ map }: Props) => {
                 lon: d.longitude,
                 ...d,
               }))}
-            // path={{
-            //   color: "#0000ff",
-            //   coords: noterun.map((b) => {
-            //     if (map.MapNote && map.MapNote.length > 0) {
-            //       let note = (map?.MapNote).find((j) => j.note_index === b);
-            //       return {
-            //         lat: note.latitude,
-            //         lon: note.longitude,
-            //       };
-            //     }
-            //   }),
-            // }}
+              onPosClick={(e) => {
+                setNoterun((prevState) => {
+                  if (prevState.includes(e.node_index)) {
+                    return prevState.filter((p) => p !== e.node_index);
+                  }
+                  return prevState
+                });
+                console.log(e)
+              }}
+              path={{
+                color: "#0000ff",
+                coords: noterun.map((b) => {
+                  if (map.MapNote && map.MapNote.length > 0) {
+                    let note = (map?.MapNote).find((j) => j.note_index === b);
+                    if (note) {
+                      return {
+                        lat: note?.latitude,
+                        lon: note.longitude,
+                      };
+                    }
+
+                    return {
+                      lat: -1,
+                      lon: -1,
+                    };
+                  }
+                }).filter((c) => c.lat !== -1 && c.lon !== -1),
+              }}
             />
 
             <ul className="rw-segment max-h-44 overflow-auto rounded-lg border border-gray-200 bg-stone-300 text-sm font-medium text-gray-900 dark:border-zinc-500 dark:bg-zinc-600 dark:text-white">
@@ -412,9 +427,10 @@ const Map = ({ map }: Props) => {
                         `map-pos-${i}`
                       ) as unknown as SVGCircleElement;
                       c.setAttribute("fill", "antiquewhite");
-
+                      c.classList.toggle('animate-pulse')
                       setTimeout(() => {
                         c.setAttribute("fill", d.color);
+                        c.classList.toggle('animate-pulse')
                       }, 3000);
                     }}
                     className={

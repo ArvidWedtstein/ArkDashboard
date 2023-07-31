@@ -78,7 +78,16 @@ export const Success = ({ basespotTypes, maps }: CellSuccessProps<NewBasespot>) 
   const [createBasespot, { loading, error }] = useMutation(
     CREATE_BASESPOT_MUTATION,
     {
-      onCompleted: () => {
+      onCompleted: (data) => {
+        // console.log(data)
+        // {
+        //   "createBasespot": {
+        //     "id": "acb2a59a-92a2-4902-a5c1-88aba39e0103",
+        //     "__typename": "Basespot"
+        //   }
+        // }
+
+
         toast.success("Basespot created");
         navigate(routes.basespots());
       },
@@ -89,6 +98,8 @@ export const Success = ({ basespotTypes, maps }: CellSuccessProps<NewBasespot>) 
   );
 
   const onSave = (input: CreateBasespotInput) => {
+    // TODO: Get images here somehow
+    // console.log(input)
     createBasespot({ variables: { input } });
   };
 

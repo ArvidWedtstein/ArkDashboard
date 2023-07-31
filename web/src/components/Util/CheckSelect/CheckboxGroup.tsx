@@ -11,7 +11,7 @@ interface CheckboxGroupProps {
   }[];
   form?: boolean;
   className?: string;
-  defaultValue?: string[];
+  defaultValue?: string[] | string;
   onChange?: (name: string, value: string[]) => void;
   disabled?: boolean;
   validation?: {
@@ -36,7 +36,7 @@ const CheckboxGroup = ({
   },
 }: CheckboxGroupProps) => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
-    () => defaultValue
+    () => validation.single ? defaultValue as string[] : [defaultValue] as string[]
   );
   const { field } =
     form && !!name
