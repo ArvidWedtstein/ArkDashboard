@@ -19,7 +19,6 @@ const New${singularPascalName} = () => {
     CREATE_${singularConstantName}_MUTATION,
     {
       onCompleted: () => {
-        toast.success('${singularPascalName} created')
         navigate(routes.${pluralRouteName}())
       },
       onError: (error) => {
@@ -29,7 +28,11 @@ const New${singularPascalName} = () => {
   )
 
   const onSave = (input: Create${singularPascalName}Input) => {
-    create${singularPascalName}({ variables: { input } })
+    toast.promise(create${singularPascalName}({ variables: { input } }), {
+      loading: "Creating new ${singularPascalName}...",
+      success: "${singularPascalName} successfully created",
+      error: <b>Failed to create new ${singularPascalName}.</b>,
+    });
   }
 
   return (

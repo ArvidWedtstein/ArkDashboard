@@ -47,7 +47,6 @@ export const Success = ({ ${singularCamelName} }: CellSuccessProps<Edit${singula
     UPDATE_${singularConstantName}_MUTATION,
     {
       onCompleted: () => {
-        toast.success('${singularPascalName} updated')
         navigate(routes.${pluralRouteName}())
       },
       onError: (error) => {
@@ -60,7 +59,11 @@ export const Success = ({ ${singularCamelName} }: CellSuccessProps<Edit${singula
     input: Update${singularPascalName}Input,
     id: Edit${singularPascalName}ById['${singularCamelName}']['id']
   ) => {
-    update${singularPascalName}({ variables: { id, input } })
+    toast.promise(update${singularPascalName}({ variables: { id, input } }), {
+      loading: "Updating ${singularPascalName}...",
+      success: "${singularPascalName} successfully updated",
+      error: <b>Failed to update ${singularPascalName}.</b>,
+    });
   }
 
   return (

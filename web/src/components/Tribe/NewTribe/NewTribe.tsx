@@ -17,7 +17,6 @@ const CREATE_TRIBE_MUTATION = gql`
 const NewTribe = () => {
   const [createTribe, { loading, error }] = useMutation(CREATE_TRIBE_MUTATION, {
     onCompleted: () => {
-      toast.success("Tribe created");
       navigate(routes.tribes());
     },
     onError: (error) => {
@@ -28,7 +27,7 @@ const NewTribe = () => {
   const onSave = (input: CreateTribeInput) => {
     toast.promise(createTribe({ variables: { input } }), {
       loading: "Creating new tribe...",
-      success: <b>Tribe successfully created"</b>,
+      success: "Tribe successfully created",
       error: <b>Failed to create new Tribe.</b>,
     });
   };
