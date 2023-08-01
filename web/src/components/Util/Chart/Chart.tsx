@@ -1,13 +1,28 @@
-import { useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef } from "react";
+import Tooltip from "../Tooltip/Tooltip";
 
 interface ChartProps {
   labels: string[];
   data: number[];
   width?: number;
   height?: number;
-  title?: string
+  title?: string;
+  options?: {
+    horizontalLines?: boolean;
+    verticalLines?: boolean;
+    verticalLabels?: boolean;
+    horizontalLabels?: boolean;
+    lineAnimation?: boolean;
+  };
+  className?: string;
 }
-const Chart = ({ width = 460, height = 260, labels, data, title }: ChartProps) => {
+const Chart = ({ width = 460, height = 260, labels, data, title, options = {
+  horizontalLines: true,
+  verticalLines: false,
+  verticalLabels: false,
+  horizontalLabels: true,
+  lineAnimation: true
+}, className }: ChartProps) => {
   const chartRef = useRef(null);
   useEffect(() => {
     // Create an SVG element to render the chart
@@ -34,13 +49,13 @@ const Chart = ({ width = 460, height = 260, labels, data, title }: ChartProps) =
     }
 
     // Function to calculate the Catmull-Rom interpolation
-    function catmullRomInterpolation(
+    const catmullRomInterpolation = (
       p0: number,
       p1: number,
       p2: number,
       p3: number,
       t: number
-    ): number {
+    ): number => {
       const t2 = t * t;
       const t3 = t * t2;
       return (
@@ -79,7 +94,7 @@ const Chart = ({ width = 460, height = 260, labels, data, title }: ChartProps) =
     }
 
     // Function to render the chart
-    function renderChart(): void {
+    const renderChart = (): void => {
       // Clear any existing chart
       svg.innerHTML = "";
 
@@ -108,12 +123,13 @@ const Chart = ({ width = 460, height = 260, labels, data, title }: ChartProps) =
         "http://www.w3.org/2000/svg",
         "line"
       );
-      yAxis.setAttribute("x1", "0");
-      yAxis.setAttribute("y1", "0");
+      yAxis.setAttribute("x1", "");
+      yAxis.setAttribute("y1", "-20");
       yAxis.setAttribute("x2", "0");
       yAxis.setAttribute("y2", `${height}`);
       yAxis.setAttribute("stroke", "#dddddd");
       chartGroup.appendChild(yAxis);
+
 
       // Draw data points and smooth line
       const labelGroup = document.createElementNS(
@@ -125,6 +141,51 @@ const Chart = ({ width = 460, height = 260, labels, data, title }: ChartProps) =
       labelGroup.setAttribute("transform", `translate(0, 0)`);
 
       chartGroup.appendChild(labelGroup);
+
+      const max = Math.max(...data);
+      const min = Math.min(...data);
+      const lineGroupY = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "g"
+      );
+      lineGroupY.setAttribute("transform", `translate(0, 0)`);
+      lineGroupY.setAttribute("width", "100%")
+      lineGroupY.setAttribute("height", "100%")
+      labelGroup.appendChild(lineGroupY);
+
+      let mx = max + (max - min > 10 ? 1 : 0.5)
+      if (options?.verticalLabels || options.horizontalLines) {
+        for (let i = min; i <= mx; i += max - min > 10 ? 1 : 0.5) {
+          if (options?.verticalLabels) {
+            const labelY = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "text"
+            );
+            labelY.setAttribute("x", `-15`);
+            labelY.setAttribute("y", `${height - margin - ((i - yAxisMin) / yAxisRange) * (height - 2 * margin)}`);
+            labelY.setAttribute("font-size", `${max - min > 10 ? 12 : 8}`);
+            labelY.setAttribute("text-anchor", "right");
+            labelY.setAttribute("alignment-baseline", "middle");
+            labelY.setAttribute("fill", "white");
+            labelY.textContent = i.toFixed(1).toString();
+            lineGroupY.appendChild(labelY);
+          }
+
+          if (options?.horizontalLines) {
+            const yLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            yLine.setAttribute('x1', `0`);
+            yLine.setAttribute('y1', `${height - margin - ((i - yAxisMin) / yAxisRange) * (height - 2 * margin)}`);
+            yLine.setAttribute('x2', `${width}`);
+            yLine.setAttribute('y2', `${height - margin - ((i - yAxisMin) / yAxisRange) * (height - 2 * margin)}`);
+            yLine.setAttribute('stroke', '#ffffff');
+            yLine.setAttribute('stroke-opacity', '0.2');
+            yLine.setAttribute('z-index', '-1')
+            yLine.setAttribute('stroke-width', '0.5');
+            yLine.setAttribute('class', `transition-all duration-300 ease-in-out animate-fly-in`);
+            lineGroupY.appendChild(yLine);
+          }
+        }
+      }
 
       const points: [number, number][] = [];
       for (let i = 0; i < labels.length; i++) {
@@ -145,36 +206,30 @@ const Chart = ({ width = 460, height = 260, labels, data, title }: ChartProps) =
         lineGroupX.setAttribute("width", "100%")
         lineGroupX.setAttribute("height", "100%")
 
-        const labelX = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "text"
-        );
-        labelX.setAttribute("x", `0`);
-        labelX.setAttribute("y", `${height + margin - 5}`);
-        labelX.setAttribute("font-size", "12");
-        labelX.setAttribute("text-anchor", "middle");
-        labelX.setAttribute("fill", "white");
-        labelX.textContent = labels[i];
-        lineGroupX.appendChild(labelX);
+        if (options.horizontalLabels) {
+          const labelX = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "text"
+          );
+          labelX.setAttribute("x", `0`);
+          labelX.setAttribute("y", `${height + margin - 5}`);
+          labelX.setAttribute("font-size", "12");
+          labelX.setAttribute("text-anchor", "middle");
+          labelX.setAttribute("fill", "white");
+          labelX.textContent = labels[i];
+          lineGroupX.appendChild(labelX);
+        }
 
-        // TODO: make this optional
-        // const yLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        // yLine.setAttribute('x1', `0`);
-        // yLine.setAttribute('y1', `${height}`);
-        // yLine.setAttribute('x2', `0`);
-        // yLine.setAttribute('y2', `0`);
-        // yLine.setAttribute('stroke', '#ffffff');
-        // yLine.setAttribute('stroke-opacity', '0.2');
-        // lineGroup.appendChild(yLine);
-
-        // const xLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        // xLine.setAttribute('x1', `0`);
-        // xLine.setAttribute('y1', `${y}`);
-        // xLine.setAttribute('x2', `${width}`);
-        // xLine.setAttribute('y2', `${y}`);
-        // xLine.setAttribute('stroke', '#ffffff');
-        // xLine.setAttribute('stroke-opacity', '0.2');
-        // lineGroup.appendChild(xLine);
+        if (options.verticalLines) {
+          const yLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          yLine.setAttribute('x1', `0`);
+          yLine.setAttribute('y1', `${height}`);
+          yLine.setAttribute('x2', `0`);
+          yLine.setAttribute('y2', `-20`);
+          yLine.setAttribute('stroke', '#ffffff');
+          yLine.setAttribute('stroke-opacity', '0.2');
+          lineGroupX.appendChild(yLine);
+        }
 
         labelGroup.appendChild(lineGroupX);
 
@@ -188,38 +243,11 @@ const Chart = ({ width = 460, height = 260, labels, data, title }: ChartProps) =
         dataPoint.setAttribute("r", "3");
         dataPoint.setAttribute("fill", "#12d393"); // bg-accent-500
         dataPoint.setAttribute("stroke", "none");
+        // dataPoint.setAttribute("title", `${labels[i]}: ${data[i]}`);
         dataPoint.setAttribute("class", ` transition-all duration-300`);
+
         chartGroup.appendChild(dataPoint);
       }
-
-      const max = Math.max(...data);
-      const min = Math.min(...data);
-      const lineGroupY = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "g"
-      );
-      lineGroupY.setAttribute("transform", `translate(0, 0)`);
-      lineGroupY.setAttribute("width", "100%")
-      lineGroupY.setAttribute("height", "100%")
-      labelGroup.appendChild(lineGroupY);
-
-      // TODO: Make this optional
-      for (let i = min; i <= max; i += max - min > 10 ? 1 : 0.1) {
-
-        const labelY = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "text"
-        );
-        labelY.setAttribute("x", `-15`);
-        labelY.setAttribute("y", `${height - margin - ((i - yAxisMin) / yAxisRange) * (height - 2 * margin)}`);
-        labelY.setAttribute("font-size", "12");
-        labelY.setAttribute("text-anchor", "left");
-        labelY.setAttribute("alignment-baseline", "middle");
-        labelY.setAttribute("fill", "white");
-        labelY.textContent = i.toFixed(1).toString();
-        lineGroupY.appendChild(labelY);
-      }
-
 
       const smoothLine = document.createElementNS(
         "http://www.w3.org/2000/svg",
@@ -229,35 +257,40 @@ const Chart = ({ width = 460, height = 260, labels, data, title }: ChartProps) =
       smoothLine.setAttribute("stroke", "#26934f");
       smoothLine.setAttribute("fill", "none");
       smoothLine.setAttribute("strokeWidth", "1");
-      smoothLine.setAttribute(
-        "stroke-dasharray",
-        `${smoothLine.getTotalLength()} ${smoothLine.getTotalLength()}`
-      );
-      smoothLine.setAttribute(
-        "stroke-dashoffset",
-        `${smoothLine.getTotalLength()}`
-      );
+
+      if (options.lineAnimation) {
+        smoothLine.setAttribute(
+          "stroke-dasharray",
+          `${smoothLine.getTotalLength()} ${smoothLine.getTotalLength()}`
+        );
+        smoothLine.setAttribute(
+          "stroke-dashoffset",
+          `${smoothLine.getTotalLength()}`
+        );
+
+        smoothLine.style.animation = `chartLineAnimation 3s ease-out forwards`;
+
+        // Add keyframes for the animation
+        const style = document.createElement("style");
+        style.textContent = `
+      @keyframes chartLineAnimation {
+        from {
+          stroke-dashoffset: ${smoothLine.getTotalLength()};
+        }
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+    `;
+        document.head.appendChild(style);
+      }
       smoothLine.setAttribute(
         "class",
-        `transition-all duration-300 animate-circle-progress`
+        `transition-all duration-300`
       );
       chartGroup.appendChild(smoothLine);
 
-      smoothLine.style.animation = `chartLineAnimation 3s ease-out forwards`;
 
-      // Add keyframes for the animation
-      const style = document.createElement("style");
-      style.textContent = `
-    @keyframes chartLineAnimation {
-      from {
-        stroke-dashoffset: ${smoothLine.getTotalLength()};
-      }
-      to {
-        stroke-dashoffset: 0;
-      }
-    }
-  `;
-      document.head.appendChild(style);
 
       const gradient = document.createElementNS(
         "http://www.w3.org/2000/svg",
@@ -305,8 +338,8 @@ const Chart = ({ width = 460, height = 260, labels, data, title }: ChartProps) =
     // Call the renderChart function to generate the chart
     renderChart();
   }, []);
-  return <div>
-    <h1 className="mx-auto text-white">{title}</h1>
+  return <div className={className}>
+    {title && <h1 className="w-full text-center m-1 mb-0 text-white">{title}</h1>}
     <div ref={chartRef}></div>
   </div>;
 };

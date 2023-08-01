@@ -120,10 +120,8 @@ const Admin = ({ basespots, profiles }: FindAdminData) => {
             ).toPrecision(3)}
           />
           <StatCard stat={"Test"} value={10} />
-          <StatCard stat={"Test"} value={10} />
+          <Chart options={{ verticalLabels: true, horizontalLabels: true }} className="bg-gray-200 text-black shadow-lg transition ease-in-out dark:bg-zinc-700 dark:text-white rounded-lg border border-transparent" height={100} data={Object.values(groupDatesByMonth(profiles.map(p => new Date(p.created_at)))).map((g: Date[]) => g.length) || [65, 59, 67, 70, 56, 55]} labels={Object.keys(groupDatesByMonth(profiles.map(p => new Date(p.created_at)))).map(p => new Date(p).toLocaleDateString('en-GB', { month: 'short' }))} title={'New Users in the last months'} />
         </div>
-
-        <Chart data={[65, 59, 67, 70, 56, 55]} labels={['January', 'February', 'March', 'April', 'May', 'June']} />
 
         <Table
           rows={optimizedBasespots}
@@ -195,7 +193,7 @@ const Admin = ({ basespots, profiles }: FindAdminData) => {
 
         <hr className="bg-zinc-300" />
 
-        <Chart data={Object.values(groupDatesByMonth(profiles.map(p => new Date(p.created_at)))).map((g: Date[]) => g.length) || [65, 59, 67, 70, 56, 55]} labels={Object.keys(groupDatesByMonth(profiles.map(p => new Date(p.created_at)))).map(p => new Date(p).toLocaleDateString('en-GB', { month: 'short' }))} title={'New Users in the last months'} />
+
       </div>
       {/* <div className="flex items-center mb-5">
             <p className="bg-blue-100 text-blue-800 text-sm font-semibold inline-flex items-center p-1.5 rounded dark:bg-blue-200 dark:text-blue-800">8.7</p>
