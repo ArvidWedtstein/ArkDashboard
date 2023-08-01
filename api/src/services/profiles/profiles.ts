@@ -54,6 +54,16 @@ export const createProfile: MutationResolvers["createProfile"] = ({
 };
 
 export const banProfile: MutationResolvers["banProfile"] = ({ id, input }) => {
+  validateWithSync(() => {
+    if (
+      id !== context.currentUser.id &&
+      !hasPermission({ permission: "user_update" })
+    ) {
+      throw new Error("You are not allowed to ban users");
+    }
+  });
+
+  console.log(input);
   return db.profile.update({
     data: input,
     where: { id },

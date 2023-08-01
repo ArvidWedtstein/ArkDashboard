@@ -60,6 +60,7 @@ export const getCurrentUser = async (
         role_id: true,
         full_name: true,
         status: true,
+        banned_until: true,
         role_profile_role_idTorole: {
           select: {
             id: true,
@@ -71,6 +72,10 @@ export const getCurrentUser = async (
       // include: { role_profile_role_idTorole: true },
       where: { id: decoded.sub.toString() },
     });
+
+    if (user.banned_until && user.banned_until > new Date()) {
+      throw new AuthenticationError("You are banned");
+    }
     return {
       ...user,
       permissions: user?.role_profile_role_idTorole?.permissions || [],

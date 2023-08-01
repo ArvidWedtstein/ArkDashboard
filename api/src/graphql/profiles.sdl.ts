@@ -53,7 +53,7 @@ export const schema = gql`
   }
 
   input BanProfileInput {
-    banned_until: DateTime
+    banned_until: DateTime!
   }
 
   input UpdateProfileInput {
