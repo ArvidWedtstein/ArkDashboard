@@ -1,10 +1,10 @@
-import { navigate, routes } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
+import { navigate, routes } from "@redwoodjs/router";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
 
-import TribeForm from 'src/components/Tribe/TribeForm'
+import TribeForm from "src/components/Tribe/TribeForm";
 
-import type { CreateTribeInput } from 'types/graphql'
+import type { CreateTribeInput } from "types/graphql";
 
 const CREATE_TRIBE_MUTATION = gql`
   mutation CreateTribeMutation($input: CreateTribeInput!) {
@@ -12,25 +12,26 @@ const CREATE_TRIBE_MUTATION = gql`
       id
     }
   }
-`
+`;
 
 const NewTribe = () => {
-  const [createTribe, { loading, error }] = useMutation(
-    CREATE_TRIBE_MUTATION,
-    {
-      onCompleted: () => {
-        toast.success('Tribe created')
-        navigate(routes.tribes())
-      },
-      onError: (error) => {
-        toast.error(error.message)
-      },
-    }
-  )
+  const [createTribe, { loading, error }] = useMutation(CREATE_TRIBE_MUTATION, {
+    onCompleted: () => {
+      toast.success("Tribe created");
+      navigate(routes.tribes());
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   const onSave = (input: CreateTribeInput) => {
-    createTribe({ variables: { input } })
-  }
+    toast.promise(createTribe({ variables: { input } }), {
+      loading: "Creating new tribe...",
+      success: <b>Tribe successfully created"</b>,
+      error: <b>Failed to create new Tribe.</b>,
+    });
+  };
 
   return (
     <div className="rw-segment">
@@ -41,7 +42,7 @@ const NewTribe = () => {
         <TribeForm onSave={onSave} loading={loading} error={error} />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default NewTribe
+export default NewTribe;

@@ -1,4 +1,9 @@
-import type { EditBasespotById, UpdateBasespotInput, CreateBasespotInput, NewBasespot } from "types/graphql";
+import type {
+  EditBasespotById,
+  UpdateBasespotInput,
+  CreateBasespotInput,
+  NewBasespot,
+} from "types/graphql";
 
 import { navigate, routes } from "@redwoodjs/router";
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
@@ -23,7 +28,6 @@ export const QUERY = gql`
   }
 `;
 
-
 const CREATE_BASESPOT_MUTATION = gql`
   mutation CreateBasespotMutation($input: CreateBasespotInput!) {
     createBasespot(input: $input) {
@@ -36,15 +40,15 @@ export const Loading = () => (
   <div role="status" className="flex animate-pulse flex-col space-y-8">
     <div className="h-5 w-60 rounded-full bg-zinc-200 dark:bg-zinc-700" />
     <div className="flex flex-col gap-y-5">
-      <div className="flex flex-col gap-x-3 space-y-2 w-full">
+      <div className="flex w-full flex-col gap-x-3 space-y-2">
         <div className="h-2.5 w-24 rounded-full bg-zinc-200 dark:bg-zinc-700" />
         <div className="h-12 w-72 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
       </div>
-      <div className="flex flex-col gap-x-3 space-y-2 w-full">
+      <div className="flex w-full flex-col gap-x-3 space-y-2">
         <div className="h-2.5 w-24 rounded-full bg-zinc-200 dark:bg-zinc-700" />
         <div className="h-20 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700" />
       </div>
-      <div className="flex flex-col gap-x-3 space-y-2 w-full">
+      <div className="flex w-full flex-col gap-x-3 space-y-2">
         <div className="h-2.5 w-24 rounded-full bg-zinc-200 dark:bg-zinc-700" />
         <div className="h-12 w-72 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
       </div>
@@ -74,20 +78,14 @@ export const Failure = ({ error }: CellFailureProps) => {
   );
 };
 
-export const Success = ({ basespotTypes, maps }: CellSuccessProps<NewBasespot>) => {
+export const Success = ({
+  basespotTypes,
+  maps,
+}: CellSuccessProps<NewBasespot>) => {
   const [createBasespot, { loading, error }] = useMutation(
     CREATE_BASESPOT_MUTATION,
     {
       onCompleted: (data) => {
-        // console.log(data)
-        // {
-        //   "createBasespot": {
-        //     "id": "acb2a59a-92a2-4902-a5c1-88aba39e0103",
-        //     "__typename": "Basespot"
-        //   }
-        // }
-
-
         toast.success("Basespot created");
         navigate(routes.basespots());
       },
@@ -99,8 +97,11 @@ export const Success = ({ basespotTypes, maps }: CellSuccessProps<NewBasespot>) 
 
   const onSave = (input: CreateBasespotInput) => {
     // TODO: Get images here somehow
-    // console.log(input)
-    createBasespot({ variables: { input } });
+    toast.promise(createBasespot({ variables: { input } }), {
+      loading: "Creating new basespot...",
+      success: <b>Basespot successfully created"</b>,
+      error: <b>Failed to create new basespot.</b>,
+    });
   };
 
   return (
@@ -109,7 +110,13 @@ export const Success = ({ basespotTypes, maps }: CellSuccessProps<NewBasespot>) 
         <h2 className="rw-heading rw-heading-secondary">New Basespot</h2>
       </header>
       <div className="p-4">
-        <BasespotForm onSave={onSave} loading={loading} error={error} basespotTypes={basespotTypes} maps={maps} />
+        <BasespotForm
+          onSave={onSave}
+          loading={loading}
+          error={error}
+          basespotTypes={basespotTypes}
+          maps={maps}
+        />
       </div>
     </div>
   );

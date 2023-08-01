@@ -39,7 +39,8 @@ const TribesList = ({ tribes }: FindTribes) => {
           className="hover:ring-pea-400 focus:ring-pea-400 dark:ring-pea-600 flex cursor-pointer items-start space-x-4 rounded-lg bg-zinc-200 p-4 shadow-lg ring-1 ring-zinc-500 transition-shadow hover:shadow-sm disabled:cursor-not-allowed disabled:ring-transparent dark:bg-zinc-700"
           onClick={() => setOpen(true)}
           disabled={
-            !currentUser?.permissions.some(
+            !currentUser ||
+            !currentUser?.permissions?.some(
               (p: permission) => p === "tribe_create"
             )
           }
