@@ -47,6 +47,8 @@ model Profile {
   role_id                                                     String                   @default(dbgenerated("'697b7d70-bab3-4ff9-9c3e-f30b058b621c'::uuid")) @db.Uuid
   created_at                                                  DateTime?                @default(now()) @db.Timestamptz(6)
   steam_user_id                                               String?
+  banned_until                                                DateTime?                @db.Timestamptz(6)
+  email                                                       String?
   Basespot                                                    Basespot[]
   Basespot_Basespot_updated_byToProfile                       Basespot[]               @relation("Basespot_updated_byToProfile")
   Message                                                     Message[]

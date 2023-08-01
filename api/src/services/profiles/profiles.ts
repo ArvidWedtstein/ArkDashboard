@@ -5,7 +5,6 @@ import type {
 } from "types/graphql";
 
 import { db } from "src/lib/db";
-
 import { validate, validateUniqueness, validateWithSync } from "@redwoodjs/api";
 import { hasPermission } from "src/lib/auth";
 
@@ -52,6 +51,13 @@ export const createProfile: MutationResolvers["createProfile"] = ({
       });
     }
   );
+};
+
+export const banProfile: MutationResolvers["banProfile"] = ({ id, input }) => {
+  return db.profile.update({
+    data: input,
+    where: { id },
+  });
 };
 
 export const updateProfile: MutationResolvers["updateProfile"] = ({

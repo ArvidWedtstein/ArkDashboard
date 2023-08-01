@@ -324,12 +324,12 @@ const Routes = () => {
               name="newTribe"
             />
             <Route
-              path="/tribes/{id:Int}/edit"
+              path="/tribes/{id}/edit"
               page={TribeEditTribePage}
               name="editTribe"
             />
           </Private>
-          <Route path="/tribes/{id:Int}" page={TribeTribePage} name="tribe" />
+          <Route path="/tribes/{id}" page={TribeTribePage} name="tribe" />
           <Route path="/tribes" page={TribeTribesPage} name="tribes" />
         </Set>
 
