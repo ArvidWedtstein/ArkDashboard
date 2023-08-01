@@ -213,11 +213,11 @@ const HomePage = () => {
             </div>
           </div>
 
-          <div className="my-8 flex overflow-hidden rounded-lg border border-zinc-500 dark:border-zinc-700 dark:bg-gradient-to-tr dark:from-zinc-800 dark:to-zinc-900 dark:text-white">
+          <div className="group my-8 flex overflow-hidden rounded-lg border border-zinc-500 dark:border-zinc-700 dark:bg-gradient-to-tr dark:from-zinc-800 dark:to-zinc-900 dark:text-white">
             <div className="min-h-max overflow-hidden transition">
               <img
-                src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/4/20210603185039_1.jpg"
-                className="aspect-video h-full max-w-sm object-cover"
+                src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/thumbnail-small.webp"
+                className="aspect-video h-full max-w-sm object-cover grayscale transition-all duration-500 ease-in-out group-hover:grayscale-0"
               />
             </div>
             <div className="font-montserrat w-full space-y-6 bg-opacity-80 p-8 text-left font-normal text-zinc-300 ">
