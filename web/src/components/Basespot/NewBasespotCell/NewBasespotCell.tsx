@@ -99,7 +99,7 @@ export const Success = ({
     // TODO: Get images here somehow
     toast.promise(createBasespot({ variables: { input } }), {
       loading: "Creating new basespot...",
-      success: <b>Basespot successfully created"</b>,
+      success: "Basespot successfully created",
       error: <b>Failed to create new basespot.</b>,
     });
   };
