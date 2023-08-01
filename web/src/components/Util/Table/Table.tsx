@@ -9,7 +9,6 @@ import clsx from "clsx";
 import useComponentVisible from "src/components/useComponentVisible";
 import { Form, SelectField, Submit, TextField } from "@redwoodjs/forms";
 import { toast } from "@redwoodjs/web/dist/toast";
-import Tooltip from "../Tooltip/Tooltip";
 type Filter = {
   /**
    * The column name.
@@ -45,7 +44,7 @@ type TableColumn = {
   /**
    * Indicates type of column
    */
-  datatype?: "text" | "number" | "boolean" | "date";
+  datatype?: "number" | "boolean" | "date" | "symbol" | "function" | "string" | "bigint" | "undefined" | "object";
   /**
    * The CSS class name for the column.
    */
@@ -227,7 +226,7 @@ const Table = ({
   const [sort, setSort] = useState<{ column: TableColumn["field"], direction: "asc" | "desc", columnDataType: TableColumn["datatype"] }>({
     column: "",
     direction: "asc",
-    columnDataType: "text",
+    columnDataType: "string",
   });
 
   const sortData = (
@@ -237,8 +236,9 @@ const Table = ({
     direction: "asc" | "desc"
   ) => {
     if (column) {
-      const sortOrder = direction === "desc" ? -1 : 1;
+      const sortDirection = direction === "desc" ? -1 : 1;
       const sortKey = column.startsWith("-") ? column.substring(1) : column;
+
       data.sort((a, b) => {
         let c = sortKey.includes(".")
           ? getValueByNestedKey(a, sortKey)
@@ -248,14 +248,21 @@ const Table = ({
           : b[sortKey];
 
         // Compare based on data type
+        if (!columnDataType) {
+          columnDataType = typeof c;
+        }
         if (columnDataType === "number") {
-          return (c - d) * sortOrder;
+          return (c - d) * sortDirection;
         } else if (columnDataType === "boolean") {
-          return (c === d ? 0 : c ? 1 : -1) * sortOrder;
-        } else if (columnDataType === "text") {
-          return c.localeCompare(d) * sortOrder;
+          return (c === d ? 0 : c ? 1 : -1) * sortDirection;
+        } else if (columnDataType === "string") {
+          return c.localeCompare(d) * sortDirection;
         } else if (columnDataType === "date") {
-          return (c.getTime() - d.getTime()) * sortOrder;
+
+          if (typeof c === "string") c = new Date(c);
+          if (typeof d === "string") d = new Date(d);
+
+          return d.getTime() - c.getTime();
         }
 
         // If data types don't match or are not supported, return 0
@@ -452,19 +459,6 @@ const Table = ({
             )}
           </svg>
         )}
-        {/* <Tooltip
-          className="inline-flex self-end justify-self-end"
-          content={
-            <div className="flex flex-col">
-              <h1 className="text-sm font-bold">Column Settings</h1>
-              <p>Aggregation: {other.aggregate || 'none'}</p>
-            </div>
-          }
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512" className="h-full inline-flex" fill="currentColor" stroke="currentColor">
-            <path d="M64 128c17.67 0 32-14.33 32-32s-14.33-32-32-32C46.33 64 32 78.33 32 96S46.33 128 64 128zM64 224C46.33 224 32 238.3 32 256s14.33 32 32 32c17.67 0 32-14.33 32-32S81.67 224 64 224zM64 384c-17.67 0-32 14.33-32 32s14.33 32 32 32c17.67 0 32-14.33 32-32S81.67 384 64 384z" />
-          </svg>
-        </Tooltip> */}
       </th>
     );
   };

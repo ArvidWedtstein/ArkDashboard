@@ -24,6 +24,7 @@ export const QUERY = gql`
       id
       username
       created_at
+      avatar_url
     }
   }
 `;
