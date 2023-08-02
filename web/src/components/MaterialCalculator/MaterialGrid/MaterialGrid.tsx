@@ -21,7 +21,9 @@ import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useAuth } from "src/auth";
 import { ITEMRECIPEITEMQUERY, QUERY } from "../MaterialCalculatorCell";
-import UserRecipesCell, { QUERY as USERRECIPEQUERY } from "src/components/UserRecipe/UserRecipesCell";
+import UserRecipesCell, {
+  QUERY as USERRECIPEQUERY,
+} from "src/components/UserRecipe/UserRecipesCell";
 import ItemList from "src/components/Util/ItemList/ItemList";
 import { useLazyQuery } from "@apollo/client";
 
@@ -69,7 +71,7 @@ const TreeBranch = memo(({ itemRecipe }: any) => {
   const { Item, amount, crafting_time } = itemRecipe;
   const imageUrl = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item?.image}`;
   return (
-    <li className="inline-block align-top text-center list-none relative pt-4 px-2 -ml-1 -mr-1 before:content-[''] before:absolute before:top-0 before:right-1/2 before:w-1/2 before:h-4 before:border-t before:border-zinc-500 after:content-[''] after:absolute after:top-0 after:right-auto after:left-1/2 after:w-1/2 after:h-4 after:border-t after:border-l after:border-zinc-500 only:before:hidden only:after:hidden only:pt-0 first:before:border-0 last:after:border-0 last:before:border-r last:before:border-zinc-500 last:before:rounded-tr-2xl first:after:rounded-tl-2xl">
+    <li className="relative -ml-1 -mr-1 inline-block list-none px-2 pt-4 text-center align-top before:absolute before:top-0 before:right-1/2 before:h-4 before:w-1/2 before:border-t before:border-zinc-500 before:content-[''] after:absolute after:top-0 after:right-auto after:left-1/2 after:h-4 after:w-1/2 after:border-t after:border-l after:border-zinc-500 after:content-[''] first:before:border-0 first:after:rounded-tl-2xl last:before:rounded-tr-2xl last:before:border-r last:before:border-zinc-500 last:after:border-0 only:pt-0 only:before:hidden only:after:hidden">
       {Item && (
         <div
           className="animate-fade-in relative inline-flex h-16 w-16 items-center justify-center rounded-lg border border-zinc-500 p-2 text-center"
@@ -85,7 +87,7 @@ const TreeBranch = memo(({ itemRecipe }: any) => {
         </div>
       )}
       {itemRecipe?.ItemRecipeItem?.length > 0 && (
-        <ul className="relative whitespace-nowrap py-4 text-center after:clear-both after:table after:content-[''] before:content-[''] before:absolute before:top-0 before:left-1/2 before:h-4 before:w-0 before:border-l before:border-zinc-500">
+        <ul className="relative whitespace-nowrap py-4 text-center before:absolute before:top-0 before:left-1/2 before:h-4 before:w-0 before:border-l before:border-zinc-500 before:content-[''] after:clear-both after:table after:content-['']">
           {itemRecipe?.ItemRecipeItem.map((subItemRecipe, i) => (
             <TreeBranch
               key={`subItem-${subItemRecipe?.Item?.id}`}
@@ -120,7 +122,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       variables: {
         ids: itemRecipes.map((f) => f.id),
       },
-      onCompleted: (data) => { },
+      onCompleted: (data) => {},
       onError: (error) => {
         console.error(error);
       },
@@ -138,7 +140,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   const [selectedCraftingStations, selectCraftingStations] = useState<number[]>(
     [107, 125]
   );
-
 
   type RecipeActionType =
     | "ADD_AMOUNT_BY_NUM"
@@ -232,9 +233,10 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       });
     }
 
-    const result: ItemRecipe[] = Object.values(craftingStations).map((recipePerCraftingstation) => {
-      const craftingStationIds = Object.keys(recipePerCraftingstation);
+    const result: ItemRecipe[] = [];
 
+    for (const recipePerCraftingstation of Object.values(craftingStations)) {
+      const craftingStationIds = Object.keys(recipePerCraftingstation);
       // If the item is crafted in either chem bench, mortar, refining or industrial forge, we need to find the one that is selected
       if (
         craftingStationIds.some((id) =>
@@ -246,29 +248,28 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           .map((k) => recipePerCraftingstation[k][0]);
 
         if (itemRecipeFilteredByCraftingStation.length > 0) {
-          const itemRecipe = itemRecipeFilteredByCraftingStation[0];
-
-          return {
-            ...itemRecipe,
+          result.push({
+            ...itemRecipeFilteredByCraftingStation[0],
             ItemRecipeItem:
               data?.itemRecipeItemsByIds.filter(
                 (iri) =>
                   iri.item_recipe_id ==
-                  itemRecipe.id
-              ) || itemRecipe.ItemRecipeItem,
-          };
+                  itemRecipeFilteredByCraftingStation[0].id
+              ) || itemRecipeFilteredByCraftingStation[0].ItemRecipeItem,
+          });
         }
       } else {
-        const craftingStation: ItemRecipe = recipePerCraftingstation[craftingStationIds[0]][0];
-        return {
+        const craftingStation: ItemRecipe =
+          recipePerCraftingstation[craftingStationIds[0]][0];
+        result.push({
           ...craftingStation,
           ItemRecipeItem:
             data?.itemRecipeItemsByIds.filter(
               (iri) => iri.item_recipe_id == craftingStation.id
             ) || craftingStation.ItemRecipeItem,
-        };
+        });
       }
-    });
+    }
 
     const modifiedRecipes = [...recipes];
 
@@ -279,11 +280,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           recipe.Item_ItemRecipe_crafted_item_idToItem.id
       );
       if (itemfound) {
-        const amountToAdd = recipe.amount || 0;
-        const yieldAmount = itemfound.yields || 1;
-        const modifiedAmount = amountToAdd / yieldAmount;
-
         setRecipes({ type: "REMOVE_BY_ID", payload: { item: itemfound } });
+        const amountToAdd = recipe.amount || 0;
         setRecipes({
           type: "ADD_AMOUNT_BY_NUM",
           payload: {
@@ -293,7 +291,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 (iri) => iri.item_recipe_id == itemfound.id
               ),
             },
-            amount: modifiedAmount,
+            amount: amountToAdd / (itemfound.yields || 1),
           },
         });
       }
@@ -352,14 +350,11 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           })),
         },
       };
-      toast.promise(
-        createRecipe({ variables: { input } }),
-        {
-          loading: 'Creating recipe...',
-          success: <b>Recipe saved!</b>,
-          error: <b>Failed to create recipe.</b>,
-        }
-      );
+      toast.promise(createRecipe({ variables: { input } }), {
+        loading: "Creating recipe...",
+        success: <b>Recipe saved!</b>,
+        error: <b>Failed to create recipe.</b>,
+      });
     } catch (error) {
       return console.error(error);
     }
@@ -377,8 +372,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 ...itemfound,
                 ItemRecipeItem: data.itemRecipeItemsByIds
                   ? data.itemRecipeItemsByIds.filter(
-                    (iri) => iri.item_recipe_id === item_recipe_id
-                  )
+                      (iri) => iri.item_recipe_id === item_recipe_id
+                    )
                   : [],
               },
               amount: amount,
@@ -438,7 +433,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
             options={Object.entries(
               groupBy(
                 (items || [])
-                  .map((f) => f.Item_ItemRecipe_crafted_item_idToItem)
+                  .map((f) => f?.Item_ItemRecipe_crafted_item_idToItem)
                   .filter((item) =>
                     item.name.toLowerCase().includes(search.toLowerCase())
                   ),
@@ -449,21 +444,21 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
               value: v.every(({ type }) => !type)
                 ? v.map((itm) => ({
-                  ...itm,
-                  label: itm.name,
-                  icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                  value: [],
-                }))
+                    ...itm,
+                    label: itm.name,
+                    icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                    value: [],
+                  }))
                 : Object.entries(groupBy(v, "type")).map(([type, v2]) => {
-                  return {
-                    label: type,
-                    value: v2.map((itm) => ({
-                      label: itm.name,
-                      ...itm,
-                      icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                    })),
-                  };
-                }),
+                    return {
+                      label: type,
+                      value: v2.map((itm) => ({
+                        label: itm.name,
+                        ...itm,
+                        icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                      })),
+                    };
+                  }),
             }))}
             onSelect={(item) => {
               onAdd({ itemId: item.id });
@@ -631,18 +626,18 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               {
                 field: "amount",
                 header: "Amount",
-                datatype: 'number',
+                datatype: "number",
                 aggregate: "sum",
                 className: "w-0 text-center",
                 render: ({ rowIndex, value, row }) => (
                   <div
-                    className="flex flex-row items-center gap-x-2 self-center w-fit"
+                    className="flex w-fit flex-row items-center gap-x-2 self-center"
                     key={`materialcalculator-${rowIndex}}`}
                   >
                     <button
                       type="button"
                       disabled={value === 1}
-                      className="relative h-8 w-8 inline-flex justify-center items-center rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
+                      className="relative inline-flex h-8 w-8 items-center justify-center rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
                       onClick={() =>
                         setRecipes({
                           type: "CHANGE_AMOUNT",
@@ -656,7 +651,12 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                         })
                       }
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-3.5 h-3.5" fill="currentColor">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512"
+                        className="h-3.5 w-3.5"
+                        fill="currentColor"
+                      >
                         <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
                       </svg>
                     </button>
@@ -679,7 +679,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                     />
                     <button
                       type="button"
-                      className="relative inline-flex justify-center items-center h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
+                      className="relative inline-flex h-8 w-8 items-center justify-center rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
                       onClick={() =>
                         setRecipes({
                           type: "CHANGE_AMOUNT",
@@ -690,7 +690,12 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                         })
                       }
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-3.5 h-3.5" fill="currentColor">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512"
+                        className="h-3.5 w-3.5"
+                        fill="currentColor"
+                      >
                         <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
                       </svg>
                     </button>
@@ -700,8 +705,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               {
                 field: "crafting_time",
                 header: "Time pr item",
-                datatype: 'number',
-                aggregate: 'sum',
+                datatype: "number",
+                aggregate: "sum",
                 className: "w-0 text-center",
                 valueFormatter: ({ row, value }) => value * row.amount,
                 render: ({ value }) => `${timeFormatL(value, true)}`,
@@ -714,8 +719,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               ).map(({ Item_ItemRecipe_crafted_item_idToItem }) => ({
                 field: Item_ItemRecipe_crafted_item_idToItem,
                 header: Item_ItemRecipe_crafted_item_idToItem.name,
-                type: 'number',
-                aggregate: 'sum' as const,
+                type: "number",
+                aggregate: "sum" as const,
                 className: "w-0 text-center",
                 valueFormatter: ({ row, value }) => {
                   const itm = mergeItemRecipe(false, false, items, {

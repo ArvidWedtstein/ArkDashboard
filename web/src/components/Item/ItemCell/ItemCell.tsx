@@ -65,6 +65,7 @@ export const QUERY = gql`
   }
 `;
 
+// TODO: fix skeletonloader
 export const Loading = () => <div>Loading...</div>;
 
 export const Empty = () => <div>Item not found</div>;
