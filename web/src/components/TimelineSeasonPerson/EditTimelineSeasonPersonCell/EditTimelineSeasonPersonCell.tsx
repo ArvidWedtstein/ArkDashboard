@@ -1,14 +1,14 @@
 import type {
   EditTimelineSeasonPersonById,
   UpdateTimelineSeasonPersonInput,
-} from 'types/graphql'
+} from "types/graphql";
 
-import { navigate, routes } from '@redwoodjs/router'
-import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
+import { navigate, routes } from "@redwoodjs/router";
+import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
 
-import TimelineSeasonPersonForm from 'src/components/TimelineSeasonPerson/TimelineSeasonPersonForm'
+import TimelineSeasonPersonForm from "src/components/TimelineSeasonPerson/TimelineSeasonPersonForm";
 
 export const QUERY = gql`
   query EditTimelineSeasonPersonById($id: String!) {
@@ -19,13 +19,14 @@ export const QUERY = gql`
       user_id
       ingame_name
       timeline_season_id
+      permission
     }
     profiles {
-      id,
+      id
       username
     }
   }
-`
+`;
 const UPDATE_TIMELINE_SEASON_PERSON_MUTATION = gql`
   mutation UpdateTimelineSeasonPersonMutation(
     $id: String!
@@ -38,17 +39,18 @@ const UPDATE_TIMELINE_SEASON_PERSON_MUTATION = gql`
       user_id
       ingame_name
       timeline_season_id
+      permission
     }
   }
-`
+`;
 export const beforeQuery = (props: { timeline_season_id: string }) => {
   return { variables: props };
-}
-export const Loading = () => <div>Loading...</div>
+};
+export const Loading = () => <div>Loading...</div>;
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error">{error?.message}</div>
-)
+);
 
 export const Success = ({
   timelineSeasonPerson,
@@ -58,25 +60,25 @@ export const Success = ({
     UPDATE_TIMELINE_SEASON_PERSON_MUTATION,
     {
       onCompleted: () => {
-        toast.success('TimelineSeasonPerson updated')
-        navigate(routes.timelineSeasonPeople())
+        toast.success("TimelineSeasonPerson updated");
+        navigate(routes.timelineSeasonPeople());
       },
       onError: (error) => {
-        toast.error(error.message)
+        toast.error(error.message);
       },
     }
-  )
+  );
 
   const onSave = (
     input: UpdateTimelineSeasonPersonInput,
-    id: EditTimelineSeasonPersonById['timelineSeasonPerson']['id']
+    id: EditTimelineSeasonPersonById["timelineSeasonPerson"]["id"]
   ) => {
     toast.promise(updateTimelineSeasonPerson({ variables: { id, input } }), {
       loading: "Updating Person...",
       success: "Person successfully updated",
       error: <b>Failed to update person.</b>,
     });
-  }
+  };
 
   return (
     <div className="rw-segment">
@@ -95,5 +97,5 @@ export const Success = ({
         />
       </div>
     </div>
-  )
-}
+  );
+};

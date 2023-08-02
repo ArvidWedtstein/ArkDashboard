@@ -26,6 +26,11 @@ export const QUERY = gql`
         season
         server
         cluster
+        TimelineSeasonEvent {
+          id
+          title
+          content
+        }
       }
       Basespot {
         id
@@ -37,6 +42,7 @@ export const QUERY = gql`
   }
 `;
 
+// TODO: fix skeleton loader
 export const Loading = () => <div>Loading...</div>;
 
 export const Empty = () => <div>TimelineSeasonBasespot not found</div>;

@@ -85,12 +85,12 @@ const Routes = () => {
             name="newTimelineSeasonBasespot"
           />
           <Route
-            path="/timeline-season-basespots/{id}/edit"
+            path="/timeline-season-basespots/{id:Int}/edit"
             page={TimelineSeasonBasespotEditTimelineSeasonBasespotPage}
             name="editTimelineSeasonBasespot"
           />
           <Route
-            path="/timeline-season-basespots/{id}"
+            path="/timeline-season-basespots/{id:Int}"
             page={TimelineSeasonBasespotTimelineSeasonBasespotPage}
             name="timelineSeasonBasespot"
           />

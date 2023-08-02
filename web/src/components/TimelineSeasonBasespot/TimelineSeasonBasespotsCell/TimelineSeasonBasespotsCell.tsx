@@ -67,11 +67,13 @@ export const Failure = ({ error }: CellFailureProps) => (
 );
 
 export const Success = ({
-  timelineSeasonBasespots,
+  timelineSeasonBasespotsByTimelineSeasonId,
 }: CellSuccessProps<FindTimelineSeasonBasespots>) => {
   return (
     <TimelineSeasonBasespots
-      timelineSeasonBasespots={timelineSeasonBasespots}
+      timelineSeasonBasespotsByTimelineSeasonId={
+        timelineSeasonBasespotsByTimelineSeasonId
+      }
     />
   );
 };

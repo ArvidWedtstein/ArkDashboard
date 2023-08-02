@@ -90,9 +90,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
   const { openModal } = useContext(ModalContext);
   return (
     <article className="rw-segment">
-      <Modal
-        image={currentModalImage}
-      />
+      <Modal image={currentModalImage} />
 
       <div className="m-2 block rounded-md text-white">
         <section className="body-font container mx-auto flex flex-col items-center px-5 py-12 md:flex-row">
@@ -107,11 +105,11 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
             <div className="flex flex-wrap justify-start space-x-1 md:space-y-1 xl:space-y-0">
               {isAuthenticated && (
                 <>
-                  <p>test</p>
                   {/* {hasRole("timeline_update") ||
-                    (currentUser && currentUser.permissions.some(
-                      (p) => p === "timeline_update"
-                    ) && (
+                    (currentUser &&
+                      currentUser.permissions.some(
+                        (p) => p === "timeline_update"
+                      ) && (
                         <Link
                           to={routes.editTimelineBasespot({
                             id: timelineSeasonBasespot.id.toString(),
@@ -120,13 +118,16 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                         >
                           Edit
                         </Link>
-                      ))} */}
-                  {/* {hasRole("timeline_delete") ||
-                    (currentUser && currentUser.permissions.some(
-                      (p) => p === "timeline_delete"
-                    ) && (
+                      ))}
+                  {hasRole("timeline_delete") ||
+                    (currentUser &&
+                      currentUser.permissions.some(
+                        (p) => p === "timeline_delete"
+                      ) && (
                         <button
-                          onClick={() => onDeleteClick(timelineSeasonBasespot.id)}
+                          onClick={() =>
+                            onDeleteClick(timelineSeasonBasespot.id)
+                          }
                           className="rw-button rw-button-red-outline"
                         >
                           Delete
@@ -206,18 +207,18 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
           )}
         </section>
 
-        {/* <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
+        <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
           <div className="container mx-auto flex flex-wrap px-5 py-12">
             <div className="mb-10 w-full overflow-hidden text-base lg:mb-0 lg:w-1/2">
-              <p>Started playing on {timeTag(timelineSeasonBasespot.start_date)}.</p>
-              {timelineSeasonBasespot.start_date &&
-                timelineSeasonBasespot.TimelineBasespotRaid.length > 0 &&
-                timelineSeasonBasespot.TimelineBasespotRaid.find(
-                  (f) => f.base_survived === false
-                ) && (
+              <p>
+                Started playing on {timeTag(timelineSeasonBasespot.start_date)}.
+              </p>
+              {timelineSeasonBasespot?.TimelineSeason?.TimelineSeasonEvent &&
+                timelineSeasonBasespot?.TimelineSeason?.TimelineSeasonEvent
+                  .length > 0 && (
                   <p>
                     Base lasted{" "}
-                    {
+                    {/* {
                       getDateDiff(
                         new Date(timelineSeasonBasespot.start_date),
                         new Date(
@@ -226,12 +227,12 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                           ).raid_end
                         )
                       ).dateString
-                    }
+                    } */}
                   </p>
                 )}
             </div>
           </div>
-        </section> */}
+        </section>
 
         {/* {timelineSeasonBasespot.TimelineBasespotRaid.length > 0 && (
           <section className="body-font relative mx-4 border-t border-gray-700 text-stone-300 dark:border-gray-200">
@@ -518,15 +519,15 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                           timeStyle: "short",
                         }) === "Invalid Date"
                           ? new Date(img.created_at).toLocaleString("de", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })
                           : convertToDate(
-                            img.name.replace("_1.jpg", "")
-                          ).toLocaleString("de", {
-                            dateStyle: "medium",
-                            timeStyle: "short",
-                          })}
+                              img.name.replace("_1.jpg", "")
+                            ).toLocaleString("de", {
+                              dateStyle: "medium",
+                              timeStyle: "short",
+                            })}
                       </span>
                     </button>
                   </div>
