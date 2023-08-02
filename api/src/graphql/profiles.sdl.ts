@@ -52,10 +52,6 @@ export const schema = gql`
     email: String
   }
 
-  input BanProfileInput {
-    banned_until: DateTime!
-  }
-
   input UpdateProfileInput {
     updated_at: DateTime
     username: String
@@ -75,9 +71,6 @@ export const schema = gql`
     createProfile(input: CreateProfileInput!): Profile!
       @requireAuth
       @hasPermission(permission: "user_create")
-    banProfile(id: String!, input: BanProfileInput!): Profile!
-      @requireAuth
-      @hasPermission(permission: "user_update")
     updateProfile(id: String!, input: UpdateProfileInput!): Profile!
       @requireAuth
     deleteProfile(id: String!): Profile!

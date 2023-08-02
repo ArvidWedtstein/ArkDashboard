@@ -25,6 +25,13 @@ export const QUERY = gql`
       username
       created_at
       avatar_url
+      role_id
+      banned_until
+    }
+    roles {
+      id
+      name
+      permissions
     }
   }
 `;
@@ -60,6 +67,7 @@ export const Failure = ({
 export const Success = ({
   basespots,
   profiles,
+  roles,
 }: CellSuccessProps<FindAdminData, FindAdminDataVariables>) => {
-  return <Admin basespots={basespots} profiles={profiles} />;
+  return <Admin basespots={basespots} profiles={profiles} roles={roles} />;
 };

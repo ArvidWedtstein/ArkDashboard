@@ -53,23 +53,6 @@ export const createProfile: MutationResolvers["createProfile"] = ({
   );
 };
 
-export const banProfile: MutationResolvers["banProfile"] = ({ id, input }) => {
-  validateWithSync(() => {
-    if (
-      id !== context.currentUser.id &&
-      !hasPermission({ permission: "user_update" })
-    ) {
-      throw new Error("You are not allowed to ban users");
-    }
-  });
-
-  console.log(input);
-  return db.profile.update({
-    data: input,
-    where: { id },
-  });
-};
-
 export const updateProfile: MutationResolvers["updateProfile"] = ({
   id,
   input,
@@ -83,30 +66,23 @@ export const updateProfile: MutationResolvers["updateProfile"] = ({
     }
   });
 
-  // validate(input.role_id, "role_id", {
-  //   custom: {
-  //     with: () => {
-  //       if (
-  //         input.role_id !== context.currentUser.role_id &&
-  //         !hasPermission({ permission: "user_update" })
-  //       ) {
-  //         throw new Error("You are not allowed to change your own role");
-  //       }
-  //     },
-  //     message: "You are not allowed to change your own role",
-  //   },
-  // });
-  return validateUniqueness(
-    "profile",
-    { username: input.username, $self: { id } },
-    { message: "That username is already taken" },
-    () => {
-      return db.profile.update({
-        data: input,
-        where: { id },
-      });
-    }
-  );
+  validate(input.role_id, "role_id", {
+    custom: {
+      with: () => {
+        if (
+          input.role_id !== context.currentUser.role_id &&
+          !hasPermission({ permission: "user_update" })
+        ) {
+          throw new Error("You are not allowed to change your own role");
+        }
+      },
+      message: "You are not allowed to change your own role",
+    },
+  });
+  return db.profile.update({
+    data: input,
+    where: { id },
+  });
 };
 
 export const deleteProfile: MutationResolvers["deleteProfile"] = ({ id }) => {
