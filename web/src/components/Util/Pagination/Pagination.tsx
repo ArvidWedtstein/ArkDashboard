@@ -50,8 +50,7 @@ const Pagination = ({
   const changePage = useCallback(
     (dir: direction): number => {
       if (!!!page || isNaN(parseInt(page))) return 1;
-      if (dir === "prev")
-        return parseInt(page) - (parseInt(page) > 1 ? 1 : 0);
+      if (dir === "prev") return parseInt(page) - (parseInt(page) > 1 ? 1 : 0);
 
       return (
         parseInt(page) +
@@ -63,9 +62,7 @@ const Pagination = ({
 
   return (
     <nav className="flex justify-center" role="menubar">
-      <div
-        className="inline-flex items-center justify-center rounded bg-zinc-300 dark:bg-zinc-600 border border-zinc-500 py-1 text-zinc-800 dark:text-white"
-      >
+      <div className="inline-flex items-center justify-center rounded border border-zinc-500 bg-zinc-300 py-1 text-zinc-800 dark:bg-zinc-600 dark:text-white">
         <Link
           className={clsx("inline-flex h-8 w-8 items-center justify-center", {
             "pointer-events-none cursor-not-allowed select-none":
@@ -93,19 +90,20 @@ const Pagination = ({
         </Link>
 
         {getPaginationGroup().map((item, index) => (
-          <>
+          <React.Fragment key={`page-${index}`}>
             <span className="h-4 w-px bg-zinc-800/25 dark:bg-white/25" />
             <Link
-              key={`page-${index}`}
               to={routes[route]({ ...params, page: item })}
               className={clsx({
-                "inline-flex justify-center items-center h-8 w-12 rounded border-none bg-transparent p-0 text-center text-xs font-medium ring-1 ring-inset align-middle ring-zinc-800 dark:ring-white": parseInt(page) === item,
-                "inline-flex justify-center items-center h-8 w-12 rounded border-none bg-transparent p-0 text-center text-xs font-medium align-middle hover:ring-1 hover:ring-inset hover:ring-white/30": parseInt(page) !== item,
+                "inline-flex h-8 w-12 items-center justify-center rounded border-none bg-transparent p-0 text-center align-middle text-xs font-medium ring-1 ring-inset ring-zinc-800 dark:ring-white":
+                  parseInt(page) === item,
+                "inline-flex h-8 w-12 items-center justify-center rounded border-none bg-transparent p-0 text-center align-middle text-xs font-medium hover:ring-1 hover:ring-inset hover:ring-white/30":
+                  parseInt(page) !== item,
               })}
             >
               {item}
             </Link>
-          </>
+          </React.Fragment>
         ))}
 
         <span className="h-4 w-px bg-zinc-800/25 dark:bg-white/25" />
@@ -140,7 +138,8 @@ const Pagination = ({
   );
 };
 // OLd
-{/* <div className="flex justify-center">
+{
+  /* <div className="flex justify-center">
         <nav aria-label="Page navigation">
           <div className="rw-button-group mt-5 w-full">
             <Link
@@ -209,5 +208,6 @@ const Pagination = ({
             </Link>
           </div>
         </nav>
-      </div> */}
+      </div> */
+}
 export default Pagination;

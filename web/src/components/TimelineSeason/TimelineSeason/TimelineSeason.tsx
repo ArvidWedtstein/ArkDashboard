@@ -46,6 +46,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
     }
   };
 
+  // TODO: remove this hardcode
   const servers = {
     "Elite Ark": {
       icon: "https://eliteark.com/wp-content/uploads/2022/06/cropped-0_ark-logo.thumb_.png.36427f75c51aff4ecec55bba50fd194d.png",
@@ -64,7 +65,12 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
       badge: "rw-badge-green-outline",
     },
   };
-  type modalType = "timelineseasonevent" | "timelineseasonperson" | "timelineseasonbasespot" | "editevent" | "previewimage"
+  type modalType =
+    | "timelineseasonevent"
+    | "timelineseasonperson"
+    | "timelineseasonbasespot"
+    | "editevent"
+    | "previewimage";
   const [editEvent, setEditEvent] = useState<string | null>(null);
   const [openModal, setOpenModal] = React.useState<modalType>(null);
 
@@ -75,10 +81,10 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           openModal === "timelineseasonperson"
             ? "Add person"
             : openModal === "timelineseasonbasespot"
-              ? "Add Basespot"
-              : openModal === "timelineseasonevent"
-                ? "Add Event"
-                : ""
+            ? "Add Basespot"
+            : openModal === "timelineseasonevent"
+            ? "Add Event"
+            : ""
         }
         isOpen={openModal !== null}
         onClose={() => setOpenModal(null)}
@@ -87,13 +93,18 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           <NewTimelineSeasonPersonCell timeline_season_id={timelineSeason.id} />
         )}
         {openModal === "timelineseasonbasespot" && (
-          <NewTimelineSeasonBasespotCell timeline_season_id={timelineSeason.id} />
+          <NewTimelineSeasonBasespotCell
+            timeline_season_id={timelineSeason.id}
+          />
         )}
         {openModal === "timelineseasonevent" && (
           <NewTimelineSeasonEventCell timeline_season_id={timelineSeason.id} />
         )}
         {openModal === "editevent" && (
-          <EditTimelineSeasonEventCell id={editEvent} timeline_season_id={timelineSeason.id} />
+          <EditTimelineSeasonEventCell
+            id={editEvent}
+            timeline_season_id={timelineSeason.id}
+          />
         )}
         {openModal === "previewimage" && (
           <img src={editEvent} className="w-full rounded" />
@@ -113,8 +124,9 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               {timelineSeason.server}{" "}
               {timelineSeason.cluster && (
                 <span
-                  className={`rw-badge align-middle ${servers[timelineSeason.server]?.badge
-                    }`}
+                  className={`rw-badge align-middle ${
+                    servers[timelineSeason.server]?.badge
+                  }`}
                 >
                   {timelineSeason.cluster}{" "}
                   <span className="mx-2 border-l border-current"></span> Season{" "}
@@ -157,8 +169,8 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
         </div>
       </header>
 
-      <div className="relative my-3 grid grid-flow-row grid-cols-4 md:grid-cols-6 gap-3 w-full">
-        <section className="bg-background text-black relative col-span-5 row-span-2 flex-grow !w-full flex-auto rounded-lg border border-zinc-500 font-semibold dark:bg-zinc-800 dark:text-white">
+      <div className="relative my-3 grid w-full grid-flow-row grid-cols-4 gap-3 md:grid-cols-6">
+        <section className="bg-background relative col-span-5 row-span-2 !w-full flex-auto flex-grow rounded-lg border border-zinc-500 font-semibold text-black dark:bg-zinc-800 dark:text-white">
           <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
             <p className="flex-1 underline underline-offset-8">Basespots</p>
             <button
@@ -178,7 +190,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           <TimelineSeasonBasespotsCell timeline_season_id={timelineSeason.id} />
         </section>
 
-        <section className="relative col-span-1 row-span-4 w-full space-y-3 flex-auto text-black dark:text-white">
+        <section className="relative col-span-1 row-span-4 w-full flex-auto space-y-3 text-black dark:text-white">
           <div className="mt-3 flex items-center justify-between">
             <p>Events</p>
             <button
@@ -195,13 +207,16 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
             </button>
           </div>
 
-          <TimelineSeasonEventsCell timeline_season_id={timelineSeason.id} setOpenModal={(id, type) => {
-            setOpenModal(type);
-            setEditEvent(id);
-          }} />
+          <TimelineSeasonEventsCell
+            timeline_season_id={timelineSeason.id}
+            setOpenModal={(id, type) => {
+              setOpenModal(type);
+              setEditEvent(id);
+            }}
+          />
         </section>
 
-        <section className="bg-background relative col-span-5 row-span-2 flex-auto w-full rounded-lg border border-zinc-500 font-semibold text-black dark:bg-zinc-800 dark:text-white">
+        <section className="bg-background relative col-span-5 row-span-2 w-full flex-auto rounded-lg border border-zinc-500 font-semibold text-black dark:bg-zinc-800 dark:text-white">
           <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
             <p className="flex-1 underline underline-offset-8">
               Persons in this season
