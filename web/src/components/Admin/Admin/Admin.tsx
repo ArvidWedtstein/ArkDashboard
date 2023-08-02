@@ -30,7 +30,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
     UPDATE_PROFILE_MUTATION,
     {
       onError: (error) => {
-        console.error(`Failed banning user: ${error.message}`);
+        console.error(`Failed updating user: ${error.message}`);
       },
     }
   );
