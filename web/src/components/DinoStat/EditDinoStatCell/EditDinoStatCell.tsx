@@ -74,7 +74,11 @@ export const Success = ({ dinoStat }: CellSuccessProps<EditDinoStatById>) => {
     input: UpdateDinoStatInput,
     id: EditDinoStatById['dinoStat']['id']
   ) => {
-    updateDinoStat({ variables: { id, input } })
+    toast.promise(updateDinoStat({ variables: { id, input } }), {
+      loading: "Updating dinostat...",
+      success: "Dinostat successfully updated",
+      error: <b>Failed to update dinostat.</b>,
+    });
   }
 
   return (

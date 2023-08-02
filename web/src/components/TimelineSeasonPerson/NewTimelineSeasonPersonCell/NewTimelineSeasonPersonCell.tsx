@@ -56,7 +56,11 @@ export const Success = ({
   )
 
   const onSave = (input: CreateTimelineSeasonPersonInput) => {
-    createTimelineSeasonPerson({ variables: { input } })
+    toast.promise(createTimelineSeasonPerson({ variables: { input } }), {
+      loading: "Adding new person...",
+      success: "Person successfully added",
+      error: <b>Failed to add person.</b>,
+    });
   }
 
   return (

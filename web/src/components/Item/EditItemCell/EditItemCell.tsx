@@ -82,8 +82,11 @@ export const Success = ({
   });
 
   const onSave = (input: UpdateItemInput, id: EditItemById["item"]["id"]) => {
-    console.log(input, "input");
-    updateItem({ variables: { id, input } });
+    toast.promise(updateItem({ variables: { id, input } }), {
+      loading: "Updating item...",
+      success: "Item successfully updated",
+      error: <b>Failed to update item.</b>,
+    });
   };
 
   return (

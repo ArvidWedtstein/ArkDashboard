@@ -62,7 +62,11 @@ export const Success = ({
   )
 
   const onSave = (input: CreateTimelineSeasonBasespotInput) => {
-    createTimelineSeasonBasespot({ variables: { input } })
+    toast.promise(createTimelineSeasonBasespot({ variables: { input } }), {
+      loading: "Creating new season basespot...",
+      success: "Season Basespot successfully updated",
+      error: <b>Failed to create new basespot for this season.</b>,
+    });
   }
 
   return (

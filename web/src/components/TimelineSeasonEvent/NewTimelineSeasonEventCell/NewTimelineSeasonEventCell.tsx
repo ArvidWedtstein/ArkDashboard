@@ -61,7 +61,11 @@ export const Success = ({
   );
 
   const onSave = (input: CreateTimelineSeasonEventInput) => {
-    createTimelineSeasonEvent({ variables: { input } });
+    toast.promise(createTimelineSeasonEvent({ variables: { input } }), {
+      loading: "Creating new event...",
+      success: "Event successfully created",
+      error: <b>Failed to create new event.</b>,
+    });
   };
 
   return (

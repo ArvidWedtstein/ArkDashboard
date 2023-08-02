@@ -80,13 +80,17 @@ export const Success = ({ map }: CellSuccessProps<EditMapById>) => {
   });
 
   const onSave = (input: UpdateMapInput, id: EditMapById["map"]["id"]) => {
-    updateMap({ variables: { id, input } });
+    toast.promise(updateMap({ variables: { id, input } }), {
+      loading: "Updating map...",
+      success: "Map successfully updated",
+      error: <b>Failed to update map.</b>,
+    });
   };
 
   return (
     <div className="rw-segment">
       <header className="rw-segment-header">
-        <h2 className="rw-heading rw-heading-secondary">Edit Map {map?.id}</h2>
+        <h2 className="rw-heading rw-heading-secondary">Edit Map {map?.name}</h2>
       </header>
       <div className="rw-segment-main">
         <MapForm map={map} onSave={onSave} error={error} loading={loading} />

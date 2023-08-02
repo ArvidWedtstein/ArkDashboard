@@ -142,7 +142,11 @@ export const Success = ({ dino }: CellSuccessProps<EditDinoById>) => {
   });
 
   const onSave = (input: UpdateDinoInput, id: EditDinoById["dino"]["id"]) => {
-    updateDino({ variables: { id, input } });
+    toast.promise(updateDino({ variables: { id, input } }), {
+      loading: "Updating dino...",
+      success: "Dino successfully updated",
+      error: <b>Failed to update dino.</b>,
+    });
   };
 
   return (

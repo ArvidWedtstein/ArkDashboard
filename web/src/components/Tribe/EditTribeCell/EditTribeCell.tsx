@@ -65,7 +65,11 @@ export const Success = ({ tribe }: CellSuccessProps<EditTribeById>) => {
     input: UpdateTribeInput,
     id: EditTribeById["tribe"]["id"]
   ) => {
-    updateTribe({ variables: { id, input } });
+    toast.promise(updateTribe({ variables: { id, input } }), {
+      loading: "Updating tribe...",
+      success: "Tribe successfully updated",
+      error: <b>Failed to update tribe.</b>,
+    });
   };
 
   return (

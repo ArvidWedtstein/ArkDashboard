@@ -123,7 +123,11 @@ export const Success = ({ basespot, maps, basespotTypes }: CellSuccessProps<Edit
     input: UpdateBasespotInput,
     id: EditBasespotById["basespot"]["id"]
   ) => {
-    updateBasespot({ variables: { id, input } });
+    toast.promise(updateBasespot({ variables: { id, input } }), {
+      loading: "Updating basespot...",
+      success: "Basespot successfully updated",
+      error: <b>Failed to update basespot.</b>,
+    });
   };
 
   return (

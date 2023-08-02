@@ -121,7 +121,11 @@ export const Success = ({ profile, roles }: CellSuccessProps<EditProfileById>) =
     input: UpdateProfileInput,
     id: EditProfileById['profile']['id']
   ) => {
-    updateProfile({ variables: { id, input } })
+    toast.promise(updateProfile({ variables: { id, input } }), {
+      loading: "Updating profile...",
+      success: "Profile successfully updated",
+      error: <b>Failed to update profile.</b>,
+    });
   }
 
   return (

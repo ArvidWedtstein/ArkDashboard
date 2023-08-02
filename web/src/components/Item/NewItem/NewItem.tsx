@@ -31,15 +31,11 @@ const NewItem = () => {
 
 
   const onSave = async (input: CreateItemInput) => {
-    try {
-
-      createItem({ variables: { input } })
-      // console.log(d)
-    } catch (error) {
-      console.log(error)
-    }
-    // await createItemRecipe({ variables: { crafted_item_id: id, amount: 1, item_id: 1, crafting_station: 606 } });
-    // createItem({ variables: { input } })
+    toast.promise(createItem({ variables: { input } }), {
+      loading: "Creating new item...",
+      success: "Item successfully created",
+      error: <b>Failed to create item.</b>,
+    });
   }
 
   return (

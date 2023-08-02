@@ -29,7 +29,11 @@ const NewUserRecipe = () => {
   )
 
   const onSave = (input: CreateUserRecipeInput) => {
-    createUserRecipe({ variables: { input } })
+    toast.promise(createUserRecipe({ variables: { input } }), {
+      loading: "Creating new userrecipe...",
+      success: "Your recipe was successfully created",
+      error: <b>Failed to create your recipe.</b>,
+    });
   }
 
   return (

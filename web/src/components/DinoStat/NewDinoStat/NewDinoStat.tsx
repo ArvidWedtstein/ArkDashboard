@@ -29,7 +29,11 @@ const NewDinoStat = () => {
   )
 
   const onSave = (input: CreateDinoStatInput) => {
-    createDinoStat({ variables: { input } })
+    toast.promise(createDinoStat({ variables: { input } }), {
+      loading: "Create new dinostat ...",
+      success: "Dniostat successfully created",
+      error: <b>Failed to create dinostat .</b>,
+    });
   }
 
   return (

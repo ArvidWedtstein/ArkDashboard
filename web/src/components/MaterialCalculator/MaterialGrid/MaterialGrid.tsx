@@ -21,7 +21,7 @@ import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useAuth } from "src/auth";
 import { ITEMRECIPEITEMQUERY, QUERY } from "../MaterialCalculatorCell";
-import UserRecipesCell from "src/components/UserRecipe/UserRecipesCell";
+import UserRecipesCell, { QUERY as USERRECIPEQUERY } from "src/components/UserRecipe/UserRecipesCell";
 import ItemList from "src/components/Util/ItemList/ItemList";
 import { useLazyQuery } from "@apollo/client";
 
@@ -134,12 +134,11 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   }, []);
 
   const [search, setSearch] = useState<string>("");
-
+  const [viewBaseMaterials, setViewBaseMaterials] = useState<boolean>(false);
   const [selectedCraftingStations, selectCraftingStations] = useState<number[]>(
     [107, 125]
   );
 
-  const [viewBaseMaterials, setViewBaseMaterials] = useState<boolean>(false);
 
   type RecipeActionType =
     | "ADD_AMOUNT_BY_NUM"
@@ -233,10 +232,9 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       });
     }
 
-    const result: ItemRecipe[] = [];
-
-    for (const recipePerCraftingstation of Object.values(craftingStations)) {
+    const result: ItemRecipe[] = Object.values(craftingStations).map((recipePerCraftingstation) => {
       const craftingStationIds = Object.keys(recipePerCraftingstation);
+
       // If the item is crafted in either chem bench, mortar, refining or industrial forge, we need to find the one that is selected
       if (
         craftingStationIds.some((id) =>
@@ -248,28 +246,29 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           .map((k) => recipePerCraftingstation[k][0]);
 
         if (itemRecipeFilteredByCraftingStation.length > 0) {
-          result.push({
-            ...itemRecipeFilteredByCraftingStation[0],
+          const itemRecipe = itemRecipeFilteredByCraftingStation[0];
+
+          return {
+            ...itemRecipe,
             ItemRecipeItem:
               data?.itemRecipeItemsByIds.filter(
                 (iri) =>
                   iri.item_recipe_id ==
-                  itemRecipeFilteredByCraftingStation[0].id
-              ) || itemRecipeFilteredByCraftingStation[0].ItemRecipeItem,
-          });
+                  itemRecipe.id
+              ) || itemRecipe.ItemRecipeItem,
+          };
         }
       } else {
-        const craftingStation: ItemRecipe =
-          recipePerCraftingstation[craftingStationIds[0]][0];
-        result.push({
+        const craftingStation: ItemRecipe = recipePerCraftingstation[craftingStationIds[0]][0];
+        return {
           ...craftingStation,
           ItemRecipeItem:
             data?.itemRecipeItemsByIds.filter(
               (iri) => iri.item_recipe_id == craftingStation.id
             ) || craftingStation.ItemRecipeItem,
-        });
+        };
       }
-    }
+    });
 
     const modifiedRecipes = [...recipes];
 
@@ -280,8 +279,11 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           recipe.Item_ItemRecipe_crafted_item_idToItem.id
       );
       if (itemfound) {
-        setRecipes({ type: "REMOVE_BY_ID", payload: { item: itemfound } });
         const amountToAdd = recipe.amount || 0;
+        const yieldAmount = itemfound.yields || 1;
+        const modifiedAmount = amountToAdd / yieldAmount;
+
+        setRecipes({ type: "REMOVE_BY_ID", payload: { item: itemfound } });
         setRecipes({
           type: "ADD_AMOUNT_BY_NUM",
           payload: {
@@ -291,7 +293,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 (iri) => iri.item_recipe_id == itemfound.id
               ),
             },
-            amount: amountToAdd / (itemfound.yields || 1),
+            amount: modifiedAmount,
           },
         });
       }
@@ -327,13 +329,10 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   ]);
 
   const [createRecipe, { loading }] = useMutation(CREATE_USERRECIPE_MUTATION, {
-    onCompleted: (data) => {
-      toast.success("Recipe created");
-    },
     onError: (error) => {
       toast.error(error.message);
     },
-    refetchQueries: [{ query: QUERY }],
+    refetchQueries: [{ query: USERRECIPEQUERY }],
     awaitRefetchQueries: true,
   });
 
@@ -353,7 +352,14 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           })),
         },
       };
-      createRecipe({ variables: { input } });
+      toast.promise(
+        createRecipe({ variables: { input } }),
+        {
+          loading: 'Creating recipe...',
+          success: <b>Recipe saved!</b>,
+          error: <b>Failed to create recipe.</b>,
+        }
+      );
     } catch (error) {
       return console.error(error);
     }

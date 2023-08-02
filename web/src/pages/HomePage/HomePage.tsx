@@ -8,6 +8,24 @@ import FileUpload from "src/components/Util/FileUpload/FileUpload";
 const HomePage = () => {
   const { isAuthenticated, currentUser, client, reauthenticate } = useAuth();
 
+  const channelA = client.channel("public");
+
+  channelA.on('presence', { event: 'sync' }, () => {
+    const newState = channelA.presenceState();
+    console.log("sync", newState);
+  }).on('presence', { event: 'join' }, ({ key, newPresences }) => {
+    console.log('join', key, newPresences)
+  }).on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
+    console.log('leave', key, leftPresences)
+  }).subscribe(async (status) => {
+    if (status === 'SUBSCRIBED') {
+      const presenceTrackStatus = await channelA.track({
+        user: 'user-1',
+        online_at: new Date().toISOString(),
+      })
+      console.log("Status", presenceTrackStatus)
+    }
+  })
   // useEffect(() => {
   //   const {
   //     data: { subscription },

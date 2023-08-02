@@ -29,7 +29,11 @@ const NewTimelineSeason = () => {
   )
 
   const onSave = (input: CreateTimelineSeasonInput) => {
-    createTimelineSeason({ variables: { input } })
+    toast.promise(createTimelineSeason({ variables: { input } }), {
+      loading: "Creating new Season ...",
+      success: "Season successfully created",
+      error: <b>Failed to create new season.</b>,
+    });
   }
 
   return (

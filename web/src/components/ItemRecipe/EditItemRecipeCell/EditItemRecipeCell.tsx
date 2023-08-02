@@ -65,7 +65,11 @@ export const Success = ({
     input: UpdateItemRecipeInput,
     id: EditItemRecipeById['itemRecipe']['id']
   ) => {
-    updateItemRecipe({ variables: { id, input } })
+    toast.promise(updateItemRecipe({ variables: { id, input } }), {
+      loading: "Updating item recipe...",
+      success: "Item recipe successfully updated",
+      error: <b>Failed to update item recipe.</b>,
+    });
   }
 
   return (

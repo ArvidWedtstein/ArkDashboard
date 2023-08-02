@@ -76,7 +76,11 @@ export const Success = ({ lootcrate }: CellSuccessProps<EditLootcrateById>) => {
     input: UpdateLootcrateInput,
     id: EditLootcrateById['lootcrate']['id']
   ) => {
-    updateLootcrate({ variables: { id, input } })
+    toast.promise(updateLootcrate({ variables: { id, input } }), {
+      loading: "Updating lootcrate...",
+      success: "Lootcrate successfully updated",
+      error: <b>Failed to update lootcrate.</b>,
+    });
   }
 
   return (
