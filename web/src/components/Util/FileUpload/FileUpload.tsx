@@ -8,6 +8,10 @@ interface IFileUploadProps {
   onUpload?: (url: string) => void;
   className?: string;
   multiple?: boolean;
+  /**
+   * Comma seperated list of file names
+   */
+  defaultValue?: string;
   storagePath: string;
   sizeLimit?: number;
   name?: string;
@@ -20,15 +24,21 @@ const FileUpload = ({
   name,
   multiple,
   thumbnail = false,
+  defaultValue,
 }: IFileUploadProps) => {
   let filename = "";
   let id = Math.round(Math.random() * 100).toString();
   const [files, setFiles] = useState<
     { file: any; imagePreviewUrl: string | ArrayBuffer; thumbnail?: boolean }[]
-  >([]);
+  >(defaultValue?.split(',').map((img) => ({
+    file: {
+      name: img,
+      type: img.includes('png') ? 'image/png' : 'image/jpeg',
+    }, imagePreviewUrl: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/${storagePath}/${img}`
+  })) || []);
 
-  const [state, setState] = useState(0);
-  const [progress, setProgress] = useState(0);
+  const [state, setState] = useState<number>(defaultValue.split(',').length > 0 ? 1 : 0); // 0 = idle, 1 = ready, 2 = uploading, 3 = error, 4 = success
+  const [progress, setProgress] = useState<number>(0);
   const [imagePreview, setImagePreview] = useState(null);
   let elRef = useRef(null);
   const { client: supabase } = useAuth();
@@ -45,7 +55,9 @@ const FileUpload = ({
   }, []);
 
   const fileHandle = (e) => {
-    stateDisplay();
+    setState(1);
+    console.log("fileHandle", state)
+    // stateDisplay();
     return new Promise(() => {
       const { target } = e;
       if (target?.files.length) {
@@ -69,7 +81,9 @@ const FileUpload = ({
   };
   const handleDrop = (event) => {
     event.preventDefault();
-    stateDisplay();
+    console.log("handleDrop", state)
+    setState(1);
+    // stateDisplay();
     let reader = new FileReader();
     reader.onload = (e2) => {
       reader.result;
@@ -95,6 +109,7 @@ const FileUpload = ({
   };
 
   const stateDisplay = () => {
+    console.log("stateDisplay", state)
     elRef.current.setAttribute("data-state", `${state}`);
   };
 
@@ -103,12 +118,14 @@ const FileUpload = ({
     filename = name;
 
     // show the file
+    // setState(1);
     elRef?.current.setAttribute("data-ready", filename ? "true" : "false");
   };
   const cancel = () => {
     isUploading = false;
     setProgress(0);
     progressTimeout = null;
+    console.log("cancel", state)
     setState(0);
     stateDisplay();
     progressDisplay();
@@ -118,6 +135,7 @@ const FileUpload = ({
   const fileReset = (index = 0) => {
     setFiles((prev) => prev.filter((file) => file !== files[index]));
     fileDisplay(files.length > 1 ? `${files.length} files` : "");
+    console.log("fileReset", state)
     stateDisplay();
   };
 
@@ -143,7 +161,6 @@ const FileUpload = ({
     if (!isUploading) {
       isUploading = true;
       setProgress(0);
-      setState(1);
 
       try {
         files.forEach(async ({ file }) => {
@@ -170,14 +187,18 @@ const FileUpload = ({
         success();
       }
     }
-    stateDisplay();
+    // stateDisplay();
+    setState(2);
+    console.log("upload", state)
+
   };
   const fail = () => {
     isUploading = false;
     setProgress(0);
     progressTimeout = null;
-    setState(2);
-    stateDisplay();
+    console.log("fail", state)
+    setState(3);
+    // stateDisplay();
   };
 
   const progressLoop = async () => {
@@ -200,7 +221,9 @@ const FileUpload = ({
           progressTimeout = setTimeout(() => {
             if (isUploading) {
               success();
-              stateDisplay();
+
+              console.log("progressLoop", state)
+              // stateDisplay();
               progressTimeout = null;
             }
           }, 250);
@@ -213,7 +236,8 @@ const FileUpload = ({
 
   const success = () => {
     isUploading = false;
-    setState(3);
+    console.log("success", state)
+    setState(4);
     stateDisplay();
   };
 
@@ -244,8 +268,8 @@ const FileUpload = ({
       className={clsx(
         "group relative w-[calc(100%-3rem)] max-w-xl overflow-hidden rounded-lg border border-zinc-500 bg-zinc-50 text-gray-900 transition-colors dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200",
         {
-          "before:bg-[#f5463d]": state === 2,
-          "before:bg-[#3df574]": state === 3,
+          "before:bg-[#f5463d]": state === 3,
+          "before:bg-[#3df574]": state === 4,
         }
       )}
       data-state="0"
@@ -279,7 +303,7 @@ const FileUpload = ({
             width="24px"
             height="24px"
             aria-hidden="true"
-            display={state === 2 ? "block" : "none"}
+            display={state === 3 ? "block" : "none"}
           >
             <g
               fill="none"
@@ -315,8 +339,8 @@ const FileUpload = ({
           </svg>
           <svg
             className={clsx("m-auto h-9 w-9 stroke-[#0ac241]", {
-              block: state === 3,
-              hidden: state !== 3,
+              block: state === 4,
+              hidden: state !== 4,
             })}
             viewBox="0 0 24 24"
             width="24px"
@@ -351,8 +375,8 @@ const FileUpload = ({
         <div className="mt-3 flex-1">
           <div
             className={clsx("text-center", {
-              block: state === 0,
-              hidden: state !== 0,
+              block: state === 0 || state === 1,
+              hidden: state !== 0 && state !== 1,
             })}
           >
             <h2 className="mb-6 text-center text-xl font-medium leading-5">
@@ -383,7 +407,10 @@ const FileUpload = ({
             </div>
             {/* File list */}
             <div
-              className={`flex-wrap items-center delay-200 group-data-[ready=true]:flex group-data-[ready=false]:hidden`}
+              className={clsx(`delay-200`, {
+                'flex flex-wrap items-center': state === 1,
+                hidden: state !== 1,
+              })}
             >
               {files.map(({ file }, index) => (
                 <div
@@ -493,8 +520,8 @@ const FileUpload = ({
           </div>
           <div
             className={clsx("text-center", {
-              block: state === 1,
-              hidden: state !== 1,
+              block: state === 2,
+              hidden: state !== 2,
             })}
           >
             <h2 className="mb-6 text-center text-xl font-medium leading-5">
@@ -529,8 +556,8 @@ const FileUpload = ({
           </div>
           <div
             className={clsx("text-center", {
-              block: state === 2,
-              hidden: state !== 2,
+              block: state === 3,
+              hidden: state !== 3,
             })}
           >
             <h2 className="mb-6 text-center text-xl font-medium leading-5">
@@ -559,8 +586,8 @@ const FileUpload = ({
           </div>
           <div
             className={clsx(`text-center`, {
-              block: state === 3,
-              hidden: state !== 3,
+              block: state === 4,
+              hidden: state !== 4,
             })}
           >
             <h2 className="mb-6 text-center text-xl font-medium leading-5">

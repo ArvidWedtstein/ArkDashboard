@@ -41,7 +41,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
   const [raid, isRaid] = useState<boolean>(false);
   const onSubmit = (data: FormTimelineSeasonEvent) => {
     data.timeline_season_id = props.timeline_season_id;
-    data.images = files.join(", ");
+    data.images = data.images + files.join(", ");
     props.onSave(data, props?.timelineSeasonEvent?.id);
   };
 
@@ -164,6 +164,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
 
         <FileUpload
           storagePath="timelineeventimages"
+          defaultValue={props?.timelineSeasonEvent?.images}
           multiple
           name="images"
           onUpload={(e) => {
