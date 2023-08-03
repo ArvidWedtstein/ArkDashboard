@@ -102,7 +102,7 @@ const Slideshow = ({
 
                 {(slide.title || slide.subtitle) && (
                   <div className="absolute top-0 left-0 flex h-full w-full flex-col items-start justify-end">
-                    <div className="relative my-1 mx-3 divide-y rounded-lg bg-gray-700 bg-opacity-40 px-3 py-2 text-gray-300">
+                    <div className="relative my-1 mx-3 divide-y rounded-lg bg-zinc-700/60 bg-opacity-40 px-3 py-2 text-gray-300 border border-zinc-500 border-opacity-60">
                       <p className="text-sm font-medium">{slide.title}</p>
                       <p className="text-xs font-light">{slide.subtitle}</p>
                     </div>

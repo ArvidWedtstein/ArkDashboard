@@ -299,7 +299,7 @@ const Basespot = ({ basespot }: Props) => {
                   }
                 }}
                 slide={
-                  images.findIndex((img) => img.url == currentModalImage) || 0
+                  images.findIndex((img) => img.url == currentModalImage) == -1 ? 0 : images.findIndex((img) => img.url == currentModalImage)
                 }
               />
               <div className="grid grid-cols-5 flex-nowrap gap-4 overflow-hidden">
@@ -323,6 +323,76 @@ const Basespot = ({ basespot }: Props) => {
           </div>
         </section>
       )}
+
+      <section className="body-font border-t border-stone-200 text-gray-700 dark:border-gray-200 dark:text-stone-200">
+        <div className="container mx-auto py-24">
+          <div className="mb-20 flex w-full flex-col text-center">
+            <h2 className="title-font text-pea-500 mb-1 text-xs font-medium tracking-widest">
+              Tips & tricks
+            </h2>
+            <h1 className="title-font text-2xl font-medium text-gray-900 dark:text-stone-200 sm:text-3xl">
+              Tips for building basespots
+            </h1>
+          </div>
+
+          <div className="grid gap-4">
+            <Slideshow
+              className="mb-6"
+              border={false}
+              controls={true}
+              autoPlay={true}
+              slides={[
+                {
+                  title: 'Tip #1',
+                  content: (
+                    <div className="flex justify-center px-5 py-12">
+                      <div className="text-center lg:w-3/4 xl:w-1/2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          className="mb-8 inline-block h-8 w-8 text-black dark:text-white"
+                          viewBox="0 0 975.036 975.036"
+                        >
+                          <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
+                        </svg>
+
+                        <p className="text-black dark:text-white text-lg leading-relaxed whitespace-pre-wrap">
+                          Configure the turrets so that they have different ranges and different angles of fire. This will make it harder for raiders to find a blind spot.
+                        </p>
+
+                        <span className="bg-pea-500 mt-8 inline-block h-1 w-10 rounded" />
+                      </div>
+                    </div>
+                  ),
+                },
+                {
+                  title: 'Tip #2',
+                  content: (
+                    <div className="flex justify-center px-5 py-12">
+                      <div className="text-center lg:w-3/4 xl:w-1/2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          className="mb-8 inline-block h-8 w-8 text-black dark:text-white"
+                          viewBox="0 0 975.036 975.036"
+                        >
+                          <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
+                        </svg>
+
+                        <p className="text-black dark:text-white text-lg leading-relaxed">
+                          Build multiple turret walls if possible
+                        </p>
+
+                        <span className="bg-pea-500 mt-8 inline-block h-1 w-10 rounded" />
+                      </div>
+                    </div>
+                  ),
+                },
+              ]}
+            />
+          </div>
+        </div>
+      </section>
     </article>
   );
 };
