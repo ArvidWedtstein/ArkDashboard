@@ -4,11 +4,13 @@ import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
 import { useContext, useLayoutEffect, useState } from "react";
 import { useAuth } from "src/auth";
+import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
 import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
 import Map from "src/components/Util/Map/Map";
 import { ModalContext, Modal } from "src/components/Util/Modal/Modal";
+import Slideshow from "src/components/Util/Slideshow/Slideshow";
 
-import { formatBytes, timeTag } from "src/lib/formatters";
+import { formatBytes, getDateDiff, pluralize, timeTag } from "src/lib/formatters";
 
 import type {
   DeleteTimelineSeasonBasespotMutationVariables,
@@ -152,16 +154,17 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
               {` ${timelineSeasonBasespot?.TimelineSeason.server} ${timelineSeasonBasespot.TimelineSeason?.cluster} Season ${timelineSeasonBasespot.TimelineSeason.season}`}
             </p>
             <div className="flex flex-wrap justify-start space-x-1 md:space-y-1 xl:space-y-0">
+              {/* TODO: add check for if user is in current season */}
               {isAuthenticated && (
                 <>
-                  {/* {hasRole("timeline_update") ||
+                  {hasRole("timeline_update") ||
                     (currentUser &&
                       currentUser.permissions.some(
                         (p) => p === "timeline_update"
                       ) && (
                         <Link
-                          to={routes.editTimelineBasespot({
-                            id: timelineSeasonBasespot.id.toString(),
+                          to={routes.editTimelineSeasonBasespot({
+                            id: timelineSeasonBasespot.id,
                           })}
                           className="rw-button rw-button-gray-outline"
                         >
@@ -188,59 +191,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                             <path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
                           </svg>
                         </button>
-                      ))} */}
-                  {/* {(!timelineSeasonBasespot.TimelineBasespotRaid.find(
-                    (f) => f.base_survived === false
-                  ) &&
-                    new Date(timelineSeasonBasespot.start_date) < new Date() &&
-                    !timelineSeasonBasespot.end_date &&
-                    timelineSeasonBasespot.TimelineBasespotPerson.some(
-                      (p) => p.user_id === currentUser.id
-                    )) ||
-                    (currentUser.permissions.some(
-                      (p) => p === "timeline_update"
-                    ) && (
-                        <button
-                          className="rw-button rw-button-red-outline"
-                          onClick={() => initRaid()}
-                          disabled={timelimeBasespotRaidLoading}
-                        >
-                          Raid
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 576 512"
-                            className="rw-button-icon-end"
-                          >
-                            <path d="M285.3 247.1c-3.093-4.635-8.161-7.134-13.32-7.134c-8.739 0-15.1 7.108-15.1 16.03c0 3.05 .8717 6.133 2.693 8.859l52.37 78.56l-76.12 25.38c-6.415 2.16-10.94 8.159-10.94 15.18c0 2.758 .7104 5.498 2.109 7.946l63.1 112C293.1 509.1 298.5 512 304 512c11.25 0 15.99-9.84 15.99-16.02c0-2.691-.6807-5.416-2.114-7.915L263.6 393l77.48-25.81c1.701-.5727 10.93-4.426 10.93-15.19c0-3.121-.9093-6.205-2.685-8.873L285.3 247.1zM575.1 256c0-4.435-1.831-8.841-5.423-12l-58.6-51.87c.002-.0938 0 .0938 0 0l.0247-144.1c0-8.844-7.156-16-15.1-16L400 32c-8.844 0-15.1 7.156-15.1 16l-.0014 31.37L298.6 4c-3.016-2.656-6.797-3.997-10.58-3.997c-3.781 0-7.563 1.34-10.58 3.997l-271.1 240C1.831 247.2 .0007 251.6 .0007 256c0 8.92 7.239 15.99 16.04 15.99c3.757 0 7.52-1.313 10.54-3.993l37.42-33.02V432c0 44.13 35.89 80 79.1 80h63.1c8.844 0 15.1-7.156 15.1-16S216.8 480 208 480h-63.1c-26.47 0-47.1-21.53-47.1-48v-224c0-.377-.1895-.6914-.2148-1.062L288 37.34l192.2 169.6C480.2 207.3 479.1 207.6 479.1 208v224c0 26.47-21.53 48-47.1 48h-31.1c-8.844 0-15.1 7.156-15.1 16s7.156 16 15.1 16h31.1c44.11 0 79.1-35.88 79.1-80V234.1L549.4 268C552.5 270.7 556.2 272 559.1 272C568.7 272 575.1 264.9 575.1 256zM479.1 164.1l-63.1-56.47V64h63.1V164.1z" />
-                          </svg>
-                        </button>
-                      ))} */}
-
-                  {/* {(timelineSeasonBasespot.TimelineBasespotPerson.some(
-                    (p) => p.user_id === currentUser.id
-                  ) ||
-                    currentUser.permissions.some(
-                      (p) => p === "timeline_update"
-                    )) && (
-                        <Lookup
-                          disabled={timelimeBasespotPersonLoading}
-                          placeholder="Add Person"
-                          options={personLookup.filter((p) => p.full_name != null).map((p) => ({
-                            label: p.full_name,
-                            value: p.id,
-                            image: p.avatar_url ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${p.avatar_url}` : `https://ui-avatars.com/api/?name=${p.full_name}`,
-                          }))}
-                          onSelect={(e) => {
-                            createTimelineBasespotPerson({
-                              variables: {
-                                input: {
-                                  timelinebasespot_id: timelineSeasonBasespot.id,
-                                  user_id: e.value,
-                                }
-                              }
-                            })
-                          }} />
-                    )}*/}
+                      ))}
                 </>
               )}
             </div>
@@ -267,31 +218,27 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                   .length > 0 && (
                   <p>
                     Base lasted{" "}
-                    {/* {
+                    {
                       getDateDiff(
                         new Date(timelineSeasonBasespot.start_date),
-                        new Date(
-                          timelineSeasonBasespot.TimelineBasespotRaid.find(
-                            (f) => f.base_survived === false
-                          ).raid_end
-                        )
+                        new Date(timelineSeasonBasespot.end_date)
                       ).dateString
-                    } */}
+                    }
                   </p>
                 )}
             </div>
           </div>
         </section>
 
-        {/* {timelineSeasonBasespot.TimelineBasespotRaid.length > 0 && (
+        {timelineSeasonBasespot?.TimelineSeason?.TimelineSeasonEvent?.length > 0 && (
           <section className="body-font relative mx-4 border-t border-gray-700 text-stone-300 dark:border-gray-200">
             <h1
-              id="raid-heading"
+              id="event-heading"
               className="title-font mt-8 text-center text-xl font-medium text-gray-900 dark:text-neutral-200 sm:text-3xl"
             >
               {pluralize(
-                timelineSeasonBasespot.TimelineBasespotRaid.length,
-                "Raid",
+                timelineSeasonBasespot.TimelineSeason.TimelineSeasonEvent.length,
+                "Event",
                 "s",
                 false
               )}
@@ -299,17 +246,17 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
 
             <Slideshow
               className="mb-6"
-              aria-labelledby="raid-heading"
+              aria-labelledby="event-heading"
+              border={false}
               controls={true}
               autoPlay={false}
-              slides={timelineSeasonBasespot.TimelineBasespotRaid.map(
+              slides={timelineSeasonBasespot.TimelineSeason.TimelineSeasonEvent.map(
                 ({
                   id,
-                  raid_comment,
-                  raid_start,
-                  raid_end,
-                  tribe_name,
-                  base_survived,
+                  title,
+                  content,
+                  created_at,
+                  tags,
                 }) => {
                   return {
                     tabColor: `bg-pea-500`,
@@ -324,31 +271,28 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                           >
                             <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
                           </svg>
-                          <p className="text-lg leading-relaxed">
-                            {raid_comment &&
-                              raid_comment.split("\n").map((w, idx) => (
+
+                          <p className="text-black dark:text-white text-lg leading-relaxed">
+                            {content &&
+                              content.split("\n").map((w, idx) => (
                                 <span
                                   className="block"
-                                  key={`raid-comment-${idx}`}
+                                  key={`event-comment-${idx}`}
                                 >
                                   {w.replace("\\n", "")}
                                 </span>
                               ))}
                           </p>
 
-                          <span className="bg-pea-500 mt-8 mb-6 inline-block h-1 w-10 rounded" />
-                          <h2 className="text-sm text-stone-400">
-                            Raided by{" "}
-                            <span className="title-font font-medium tracking-wider">
-                              {tribe_name}
-                            </span>
+                          <span className="bg-pea-500 mt-8 inline-block h-1 w-10 rounded" />
+                          <h2 className="text-lg dark:text-gray-200 text-zinc-600 title-font font-medium tracking-wider my-4">
+                            {title}
                           </h2>
                           <p className="text-gray-500">
-                            {timeTag(raid_start)} - {timeTag(raid_end)}
+                            {timeTag(created_at)}
                           </p>
-                          <p className="text-gray-500">
-                            {`Base ${base_survived ? "survived" : "did not survive"
-                              }`}
+                          <p className="inline-flex gap-x-1">
+                            {tags && tags.split(',').map(t => <span className="rw-badge rw-badge-gray">#{t}</span>)}
                           </p>
                         </div>
                       </div>
@@ -358,7 +302,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
               )}
             />
           </section>
-        )} */}
+        )}
 
         <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
           <div className="container mx-auto flex flex-wrap px-5 py-12">
@@ -404,13 +348,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                     Coordinates
                   </h2>
                   <p className="text-base leading-relaxed">
-                    Our base{" "}
-                    {/* {timelineSeasonBasespot.TimelineBasespotRaid.some(
-                      (f) => !f.base_survived
-                    )
-                      ? "was "
-                      : "is "} */}
-                    is located at:{" "}
+                    Our base is located at:{" "}
                     {timelineSeasonBasespot.Basespot
                       ? timelineSeasonBasespot.Basespot.latitude
                       : timelineSeasonBasespot.latitude}{" "}
@@ -452,8 +390,9 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                       Our basespot was{" "}
                       <Link
                         to={routes.basespot({
-                          id: timelineSeasonBasespot.Basespot.id?.toString(),
+                          id: timelineSeasonBasespot.Basespot.id,
                         })}
+                        className="rw-link"
                       >
                         {timelineSeasonBasespot.Basespot.name}
                       </Link>
@@ -461,42 +400,28 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                   </div>
                 </div>
               )}
-              <div className="mb-10 flex flex-col items-center lg:items-start">
-                <div className="dark:bg-pea-50 text-pea-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
-                  <svg
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-6 w-6"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                  </svg>
-                </div>
-                <div className="flex-grow">
+              <div className="mb-10 flex flex-row items-center lg:items-start justify-start">
+                <div className="flex flex-col">
+                  <div className="dark:bg-pea-50 text-pea-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
+                    <svg
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-6 w-6"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </div>
                   <h2 className="title-font mb-3 text-lg font-medium text-gray-900 dark:text-neutral-200">
                     Players
                   </h2>
-                  {/* <p className="text-base leading-relaxed">
-                    {timelineSeasonBasespot.TimelineBasespotPerson.length > 0
-                      ? formatter.format(
-                        timelineSeasonBasespot.TimelineBasespotPerson.map(
-                          (p) =>
-                            // p.user_id ? (
-                            //   <Link to={routes.profile({ id: p.user_id })}>
-                            //     {p.ingame_name}
-                            //   </Link>
-                            // ) : (
-                            //   p.ingame_name
-                            // )
-                            p.ingame_name
-                        )
-                      )
-                      : "none"}
-                  </p> */}
+                </div>
+                <div className="-mt-6">
+                  <TimelineSeasonPeopleCell timeline_season_id={timelineSeasonBasespot.TimelineSeason.id} />
                 </div>
               </div>
             </div>
@@ -585,128 +510,6 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
             </div>
           </div>
         </section>
-
-        {/* {timelineSeasonBasespot.TimelineBasespotDino.length > 0 && (
-          <section className="body-font mx-4 border-t border-gray-700 text-gray-700 dark:border-gray-200 dark:text-neutral-200">
-            <div className="container mx-auto px-5 py-24">
-              <div className="mb-20 flex w-full flex-col text-center">
-                <h2 className="title-font  text-pea-500 mb-1 text-xs font-medium tracking-widest">
-                  Dinos we had during this base
-                </h2>
-                <h1 className="title-font text-2xl font-medium text-gray-900 dark:text-neutral-200 sm:text-3xl">
-                  Dinos
-                </h1>
-              </div>
-              <div className="-m-4 flex flex-wrap">
-                {timelineSeasonBasespot.TimelineBasespotDino.map((dino, i) => (
-                  <div
-                    className="w-1/3 max-w-3xl p-2"
-                    key={`timelinebasespotdino-${i}`}
-                  >
-                    <div className="border border-[#97FBFF] bg-[#0D2836] p-4">
-                      <div className="flex flex-row space-x-3">
-                        <div className="h-28 w-28 overflow-hidden border border-[#97FBFF]">
-                          <img
-                            style={{
-                              filter:
-                                "invert(95%) sepia(69%) saturate(911%) hue-rotate(157deg) brightness(100%) contrast(103%)",
-                            }}
-                            className="h-full w-full object-cover object-center p-2"
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/DinoIcon/${dino.Dino.icon}`}
-                            alt=""
-                          />
-                        </div>
-                        <div className="flex flex-col items-start justify-start leading-snug">
-                          <h1 className="mb-2 text-2xl font-semibold uppercase text-white">
-                            {truncate(dino.name, 13)} {dino.level}
-                          </h1>
-                          <p
-                            className={clsx({
-                              "text-blue-500": dino.gender === "Male",
-                              "text-pink-500": dino.gender === "Female",
-                              "text-white": dino.gender === "N/A",
-                            })}
-                          >
-                            {dino.gender}
-                          </p>
-                          <p
-                            className="font-semibold text-green-500"
-                            title={dino.death_cause}
-                          >
-                            {timelineSeasonBasespot.tribe_name}
-                          </p>
-                          <p className="font-semibold text-green-500">
-                            Tamed ({dino.level_wild})
-                          </p>
-                        </div>
-                      </div>
-                      <div className="mt-3 grid grid-cols-4 place-content-center gap-1 text-center font-medium">
-                        {renderDinoCardStat('stamina', dino)}
-                        {renderDinoCardStat('weight', dino)}
-                        {renderDinoCardStat('oxygen', dino)}
-                        {renderDinoCardStat('melee_damage', dino)}
-                        {renderDinoCardStat('food', dino)}
-                        {renderDinoCardStat('movement_speed', dino)}
-                      </div>
-                      <div className="relative mt-3 h-8 w-full border border-[#97FBFF] bg-[#646665] text-center">
-                        <div className="relative flex h-full w-full items-center border-2 border-[#0D2836]">
-                          <div className="h-full w-full bg-gradient-to-t from-[#A30100] to-red-500"></div>
-                          <span className="absolute w-full items-center text-base font-semibold">
-                            {formatNumber(
-                              dino.wild_health *
-                              dino.Dino.base_stats["h"]["w"] +
-                              dino.health * dino.Dino.base_stats["h"]["t"] +
-                              dino.Dino.base_stats["h"]["b"],
-                              { notation: "compact" }
-                            )}
-                            /
-                            {formatNumber(
-                              dino.wild_health *
-                              dino.Dino.base_stats["h"]["w"] +
-                              dino.health * dino.Dino.base_stats["h"]["t"] +
-                              dino.Dino.base_stats["h"]["b"],
-                              { notation: "compact" }
-                            )}{" "}
-                            Health ({dino.wild_health}-{dino.health})
-                          </span>
-                        </div>
-                      </div>
-                      <div className="relative mt-2 h-8 w-full border border-[#97FBFF] bg-[#646665] text-center">
-                        <div className="relative flex h-full w-full items-center border-2 border-[#0D2836]">
-                          <div className="h-full w-full bg-gradient-to-t from-[#009136] to-green-500"></div>
-                          <span className="absolute w-full items-center text-base font-semibold">
-                            {formatNumber(
-                              dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                              dino.food * dino.Dino.base_stats["f"]["t"] +
-                              dino.Dino.base_stats["f"]["b"],
-                              { notation: "compact" }
-                            )}
-                            /
-                            {formatNumber(
-                              dino.wild_food * dino.Dino.base_stats["f"]["w"] +
-                              dino.food * dino.Dino.base_stats["f"]["t"] +
-                              dino.Dino.base_stats["f"]["b"],
-                              { notation: "compact" }
-                            )}{" "}
-                            Food ({dino.wild_food}-{dino.food})
-                          </span>
-                        </div>
-                      </div>
-                      <div className="relative mt-2 h-8 w-full border border-[#97FBFF] bg-[#646665] text-center">
-                        <div className="relative flex h-full w-full items-center border-2 border-[#0D2836]">
-                          <div className="h-full w-full bg-gradient-to-t from-[#A340B7] to-fuchsia-500"></div>
-                          <span className="absolute w-full items-center text-base font-semibold">
-                            0 / 0
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )} */}
       </div>
     </article>
   );

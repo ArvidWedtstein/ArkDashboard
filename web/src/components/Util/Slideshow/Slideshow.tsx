@@ -9,6 +9,7 @@ interface ISlideshowProps {
   autoPlay?: boolean;
   delay?: number;
   slide?: number;
+  border?: boolean;
   onSlideChange?: (index: number) => void;
   slides: {
     url?: string;
@@ -27,6 +28,7 @@ const Slideshow = ({
   delay = 5000,
   onSlideChange,
   slide = 0,
+  border = true,
   ...props
 }: ISlideshowProps) => {
   const [index, setIndex] = React.useState<number>(slide);
@@ -81,7 +83,7 @@ const Slideshow = ({
       >
         {slides.map((slide, idx) => (
           <div
-            className="relative aspect-auto w-full max-h-[900px] inline-block rounded-lg border border-zinc-500"
+            className={`relative aspect-auto w-full max-h-[900px] inline-block rounded-lg ${border ? 'border border-zinc-500' : 'border-none'}`}
             key={`slide-${idx}`}
           >
             {slide && (
