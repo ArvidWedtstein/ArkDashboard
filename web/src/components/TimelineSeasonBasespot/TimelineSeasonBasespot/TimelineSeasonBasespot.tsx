@@ -400,7 +400,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                   </div>
                 </div>
               )}
-              <div className="mb-10 flex flex-row items-center lg:items-start justify-start">
+              <div className="mb-10 flex flex-col items-center lg:items-start justify-start">
                 <div className="flex flex-col">
                   <div className="dark:bg-pea-50 text-pea-500 mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-stone-200">
                     <svg
@@ -420,7 +420,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                     Players
                   </h2>
                 </div>
-                <div className="-mt-6">
+                <div className="-mx-8">
                   <TimelineSeasonPeopleCell timeline_season_id={timelineSeasonBasespot.TimelineSeason.id} />
                 </div>
               </div>
