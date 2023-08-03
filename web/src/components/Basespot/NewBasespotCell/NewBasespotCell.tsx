@@ -86,7 +86,6 @@ export const Success = ({
     CREATE_BASESPOT_MUTATION,
     {
       onCompleted: (data) => {
-        toast.success("Basespot created");
         navigate(routes.basespots());
       },
       onError: (error) => {

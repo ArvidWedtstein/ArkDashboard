@@ -1,9 +1,7 @@
-import { Form } from "@redwoodjs/forms";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
-import FileUpload from "src/components/Util/FileUpload/FileUpload";
 
 const HomePage = () => {
   const { isAuthenticated, currentUser, client, reauthenticate } = useAuth();
