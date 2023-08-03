@@ -195,14 +195,6 @@ module.exports = {
       addVariant("not-last", "&:not(:last-child)");
       addVariant("not-only", "&:not(:only-child)");
       addVariant("not-firstlast", "&:not(:first-child):not(:last-child)");
-      // addComponents({
-      //   ".rw-button2": {
-      //     padding: theme("spacing[2.5]") + " " + theme("spacing.6"),
-      //     borderRadius: theme("borderRadius.lg"),
-      //     fontWeight: theme("fontWeight.medium"),
-      //     fontSize
-      //   },
-      // });
     }),
   ],
 };

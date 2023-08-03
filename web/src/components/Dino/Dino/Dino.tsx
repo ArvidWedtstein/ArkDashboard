@@ -157,7 +157,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     toast.custom((t) => (
       <div
         className={`${t.visible ? "animate-fly-in" : "animate-fade-out"
-          } mb-4 rounded-lg border border-red-300 bg-red-50 p-4 text-red-800 dark:border-red-800 dark:bg-zinc-800 dark:text-red-400`}
+          } rw-toast rw-toast-error`}
         role="alert"
       >
         <div className="flex items-center">

@@ -114,13 +114,13 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
             value={formatNumber(
               (optimizedBasespots.filter((b) => b.progress == 100).length /
                 optimizedBasespots.length) *
-                100,
+              100,
               { maximumSignificantDigits: 3 }
             )}
             subtext={`${formatNumber(
               (optimizedBasespots.filter((b) => b.progress == 100).length /
                 optimizedBasespots.length) *
-                100,
+              100,
               { maximumSignificantDigits: 3 }
             )} / 100`}
           />
@@ -301,9 +301,8 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                     onClick={() => {
                       toast.custom((t) => (
                         <div
-                          className={`${
-                            t.visible ? "animate-fly-in" : "animate-fade-out"
-                          } mb-4 rounded-lg border border-red-300 bg-red-50 p-4 text-red-800 dark:border-red-800 dark:bg-zinc-800 dark:text-red-400`}
+                          className={`${t.visible ? "animate-fly-in" : "animate-fade-out"
+                            } rw-toast rw-toast-error`}
                           role="alert"
                         >
                           <div className="flex items-center">
@@ -339,7 +338,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                                       input: {
                                         banned_until: new Date(
                                           new Date().getTime() +
-                                            1000 * 60 * 60 * 24 * 7
+                                          1000 * 60 * 60 * 24 * 7
                                         ),
                                       },
                                     },
@@ -417,7 +416,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               field: "role_id",
               sortable: true,
               render: (
-                { value, row } // TODO: find better toast colors / make rw-toast class
+                { value, row }
               ) => (
                 <select
                   className="rw-input rw-input-small"
@@ -426,9 +425,8 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                   onChange={(e) => {
                     toast.custom((t) => (
                       <div
-                        className={`${
-                          t.visible ? "animate-fly-in" : "animate-fade-out"
-                        } text-pea-800 border-pea-300 bg-pea-50 dark:text-pea-400 dark:border-pea-800 mb-4 rounded-lg border p-4 dark:bg-zinc-700`}
+                        className={`${t.visible ? "animate-fly-in" : "animate-fade-out"
+                          } rw-toast rw-toast-info`}
                         role="alert"
                       >
                         <div className="flex items-center">

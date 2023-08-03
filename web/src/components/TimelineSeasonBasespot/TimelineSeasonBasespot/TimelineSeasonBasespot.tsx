@@ -53,13 +53,62 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
   const onDeleteClick = (
     id: DeleteTimelineSeasonBasespotMutationVariables["id"]
   ) => {
-    if (
-      confirm(
-        "Are you sure you want to delete timelineSeasonBasespot " + id + "?"
-      )
-    ) {
-      deleteTimelineSeasonBasespot({ variables: { id } });
-    }
+    toast.custom((t) => (
+      <div
+        className={`${t.visible ? "animate-fly-in" : "animate-fade-out"
+          } rw-toast rw-toast-error`}
+        role="alert"
+      >
+        <div className="flex items-center">
+          <svg
+            className="mr-2 h-4 w-4 flex-shrink-0"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+          </svg>
+          <span className="sr-only">Info</span>
+          <h3 className="text-lg font-medium">
+            You're about to delete basespot <b>{id}</b>
+          </h3>
+        </div>
+        <div className="mt-2 mb-4 text-sm">
+          <p>
+            Are you sure you want to delete basespot {id}?
+          </p>
+        </div>
+        <div className="flex">
+          <button
+            type="button"
+            onClick={() => {
+              toast.dismiss(t.id);
+              toast.promise(
+                deleteTimelineSeasonBasespot({ variables: { id } }),
+                {
+                  loading: "deleting basespot from season...",
+                  success: `Successfully deleted basespot`,
+                  error: `Failed to delete basespot`,
+                }
+              );
+            }}
+            className="mr-2 inline-flex items-center rounded-lg bg-red-800 px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-red-900 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+          >
+            Remove
+          </button>
+          <button
+            type="button"
+            onClick={() => toast.dismiss(t.id)}
+            className="rounded-lg border border-red-800 bg-transparent px-3 py-1.5 text-center text-xs font-medium text-red-800 hover:bg-red-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-red-300 dark:border-red-600 dark:text-red-500 dark:hover:bg-red-600 dark:hover:text-white dark:focus:ring-red-800"
+            data-dismiss-target="#alert-additional-content-2"
+            aria-label="Close"
+          >
+            Dismiss
+          </button>
+        </div>
+      </div>
+    ));
   };
   const [images, setImages] = useState([]);
   const [currentModalImage, setCurrentModalImage] = useState(null);
@@ -519,15 +568,15 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                           timeStyle: "short",
                         }) === "Invalid Date"
                           ? new Date(img.created_at).toLocaleString("de", {
-                              dateStyle: "medium",
-                              timeStyle: "short",
-                            })
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          })
                           : convertToDate(
-                              img.name.replace("_1.jpg", "")
-                            ).toLocaleString("de", {
-                              dateStyle: "medium",
-                              timeStyle: "short",
-                            })}
+                            img.name.replace("_1.jpg", "")
+                          ).toLocaleString("de", {
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          })}
                       </span>
                     </button>
                   </div>

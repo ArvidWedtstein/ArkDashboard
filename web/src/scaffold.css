@@ -477,6 +477,31 @@
     @apply border border-gray-500 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400;
   }
 
+  /* || Toasts */
+  .rw-toast {
+    @apply mb-4 rounded-lg border bg-zinc-50 p-4 dark:bg-zinc-700;
+  }
+
+  /* Info */
+  .rw-toast.rw-toast-info {
+    @apply border-blue-400 text-blue-800 dark:border-blue-800 dark:text-blue-400;
+  }
+
+  /* Success */
+  .rw-toast.rw-toast-success {
+    @apply text-pea-800 border-pea-300 dark:text-pea-400 dark:border-pea-800;
+  }
+
+  /* Warning */
+  .rw-toast.rw-toast-warning {
+    @apply border-yellow-300 text-yellow-800 dark:border-yellow-800 dark:text-yellow-400;
+  }
+
+  /* Error */
+  .rw-toast.rw-toast-error {
+    @apply border-red-300 text-red-800 dark:border-red-800 dark:text-red-400;
+  }
+
   /* Table */
   .rw-table-wrapper-responsive {
     @apply overflow-x-auto;
