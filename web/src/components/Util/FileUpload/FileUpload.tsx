@@ -1,6 +1,7 @@
 import { FieldError } from "@redwoodjs/forms";
+import { toast } from "@redwoodjs/web/dist/toast";
 import clsx from "clsx";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
 import { pluralize } from "src/lib/formatters";
 
@@ -26,22 +27,58 @@ const FileUpload = ({
   thumbnail = false,
   defaultValue,
 }: IFileUploadProps) => {
+  const { client: supabase } = useAuth();
   let filename = "";
   let id = Math.round(Math.random() * 100).toString();
   const [files, setFiles] = useState<
     { file: any; imagePreviewUrl: string | ArrayBuffer; thumbnail?: boolean }[]
-  >(defaultValue?.split(',').map((img) => ({
-    file: {
-      name: img,
-      type: img.includes('png') ? 'image/png' : 'image/jpeg',
-    }, imagePreviewUrl: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/${storagePath}/${img}`
-  })) || []);
+  >([]);
 
-  const [state, setState] = useState<number>(defaultValue.split(',').length > 0 ? 1 : 0); // 0 = idle, 1 = ready, 2 = uploading, 3 = error, 4 = success
+  // useEffect(() => {
+  //   const getimg = async () => {
+  //     try {
+  //       console.log(...(defaultValue
+  //         ? defaultValue
+  //           .split(",")
+  //           .map((img) => img.trim())
+  //         : []),)
+  //       const { data, error } = await supabase.storage
+  //         .from(storagePath)
+  //         .createSignedUrls(
+  //           [
+  //             ...(defaultValue
+  //               ? defaultValue
+  //                 .split(",")
+  //                 .map((img) => img.trim())
+  //               : []),
+  //           ],
+  //           60 * 60 * 24 * 365 * 10
+  //         );
+  //       if (error) {
+  //         toast.error(error.message);
+  //       }
+  //       if (data) {
+  //         // console.log(data)
+  //         // setFiles((prev) => [
+  //         //   ...prev,
+  //         //   ...data.map((d) => ({
+  //         //     file: new File([], d.file.name)
+  //         //     imagePreviewUrl: d.signedURL,
+  //         //     thumbnail: d.file.name.includes("thumbnail"),
+  //         //   })),
+  //         // ]);
+  //       }
+  //     } catch (error) {
+  //       toast.error(error.message);
+  //     }
+  //   }
+  //   getimg()
+  // }, [])
+  const [state, setState] = useState<number>(defaultValue && defaultValue.split(',').length > 0 ? 1 : 0); // 0 = idle, 1 = ready, 2 = uploading, 3 = error, 4 = success
   const [progress, setProgress] = useState<number>(0);
   const [imagePreview, setImagePreview] = useState(null);
   let elRef = useRef(null);
-  const { client: supabase } = useAuth();
+
   let isCopying,
     isUploading = false;
   let progressTimeout = null;
@@ -56,7 +93,7 @@ const FileUpload = ({
 
   const fileHandle = (e) => {
     setState(1);
-    console.log("fileHandle", state)
+    // console.log("fileHandle", state)
     // stateDisplay();
     return new Promise(() => {
       const { target } = e;
@@ -81,7 +118,7 @@ const FileUpload = ({
   };
   const handleDrop = (event) => {
     event.preventDefault();
-    console.log("handleDrop", state)
+    // console.log("handleDrop", state)
     setState(1);
     // stateDisplay();
     let reader = new FileReader();
@@ -109,7 +146,7 @@ const FileUpload = ({
   };
 
   const stateDisplay = () => {
-    console.log("stateDisplay", state)
+    // console.log("stateDisplay", state)
     elRef.current.setAttribute("data-state", `${state}`);
   };
 
@@ -135,7 +172,7 @@ const FileUpload = ({
   const fileReset = (index = 0) => {
     setFiles((prev) => prev.filter((file) => file !== files[index]));
     fileDisplay(files.length > 1 ? `${files.length} files` : "");
-    console.log("fileReset", state)
+    // console.log("fileReset", state)
     stateDisplay();
   };
 
@@ -189,14 +226,14 @@ const FileUpload = ({
     }
     // stateDisplay();
     setState(2);
-    console.log("upload", state)
+    // console.log("upload", state)
 
   };
   const fail = () => {
     isUploading = false;
     setProgress(0);
     progressTimeout = null;
-    console.log("fail", state)
+    // console.log("fail", state)
     setState(3);
     // stateDisplay();
   };
@@ -222,7 +259,7 @@ const FileUpload = ({
             if (isUploading) {
               success();
 
-              console.log("progressLoop", state)
+              // console.log("progressLoop", state)
               // stateDisplay();
               progressTimeout = null;
             }
@@ -236,7 +273,7 @@ const FileUpload = ({
 
   const success = () => {
     isUploading = false;
-    console.log("success", state)
+    // console.log("success", state)
     setState(4);
     stateDisplay();
   };

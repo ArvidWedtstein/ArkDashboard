@@ -479,7 +479,7 @@
 
   /* || Toasts */
   .rw-toast {
-    @apply mb-4 rounded-lg border bg-zinc-50 p-4 dark:bg-zinc-700;
+    @apply mb-4 rounded-lg border bg-zinc-50 p-4 text-black dark:bg-zinc-700 dark:text-white;
   }
 
   /* Info */

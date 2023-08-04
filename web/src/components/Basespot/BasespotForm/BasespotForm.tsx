@@ -429,8 +429,9 @@ const BasespotForm = (props: BasespotFormProps) => {
             <FileUpload
               multiple={true}
               thumbnail={true}
+              defaultValue={props.basespot?.base_images}
               name="base_images"
-              storagePath={`basespotimages/${props?.basespot?.id}`}
+              storagePath={`basespotimages/M${props?.basespot?.map_id}-${props?.basespot?.id}`}
               onUpload={(url) => {
                 setThumbnailUrl(url);
               }}

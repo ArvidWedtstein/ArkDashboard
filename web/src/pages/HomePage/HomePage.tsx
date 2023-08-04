@@ -7,52 +7,66 @@ import { useAuth } from "src/auth";
 const HomePage = () => {
   const { isAuthenticated, currentUser, client, reauthenticate } = useAuth();
 
-  // useEffect(() => {
-  //   const {
-  //     data: { subscription },
-  //   } = client.auth.onAuthStateChange(async (event, session) => {
-  //     console.log(event, session);
-  //     if (event == "SIGNED_IN") {
+  const get = async () => {
+    const { data, error } = await client
+      .storage
+      .from('avatars')
+      .list('', {
+        limit: 100,
+        offset: 0,
+        sortBy: { column: 'name', order: 'asc' },
+      })
 
-  //       const { data, error } = await client
-  //         .from("Profile")
-  //         .update({ status: "ONLINE" })
-  //         .eq("id", session.user.id);
-  //     } else if (event == "SIGNED_OUT") {
-  //       const { data, error } = await client
-  //         .from("Profile")
-  //         .update({ status: "OFFLINE" })
-  //         .eq("id", currentUser.id);
-  //     }
-  //   });
+    console.log(data, error)
+  }
 
-  //   return () => {
-  //     subscription.unsubscribe();
-  //   };
+  useEffect(() => {
+    // const {
+    //   data: { subscription },
+    // } = client.auth.onAuthStateChange(async (event, session) => {
+    //   console.log(event, session);
+    //   if (event == "SIGNED_IN") {
 
-  //   const channelA = client.channel("public");
+    //     const { data, error } = await client
+    //       .from("Profile")
+    //       .update({ status: "ONLINE" })
+    //       .eq("id", session.user.id);
+    //   } else if (event == "SIGNED_OUT") {
+    //     const { data, error } = await client
+    //       .from("Profile")
+    //       .update({ status: "OFFLINE" })
+    //       .eq("id", currentUser.id);
+    //   }
+    // });
 
-  //   channelA.on('presence', { event: 'sync' }, () => {
-  //     const newState = channelA.presenceState();
-  //     console.log("sync", newState);
-  //   }).on('presence', { event: 'join' }, ({ key, newPresences }) => {
-  //     console.log('join', key, newPresences)
-  //   }).on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-  //     console.log('leave', key, leftPresences)
-  //   }).subscribe(async (status) => {
-  //     if (status === 'SUBSCRIBED') {
-  //       const presenceTrackStatus = await channelA.track({
-  //         user: currentUser?.id,
-  //         online_at: new Date().toISOString(),
-  //       })
-  //       console.log("Status", presenceTrackStatus)
-  //     }
-  //   });
+    // return () => {
+    //   subscription.unsubscribe();
+    // };
 
-  //   return () => {
-  //     channelA.untrack();
-  //   }
-  // }, [currentUser]);
+    // const channelA = client.channel("public");
+
+    // channelA.on('presence', { event: 'sync' }, () => {
+    //   const newState = channelA.presenceState();
+    //   console.log("sync", newState);
+    // }).on('presence', { event: 'join' }, ({ key, newPresences }) => {
+    //   console.log('join', key, newPresences)
+    // }).on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
+    //   console.log('leave', key, leftPresences)
+    // }).subscribe(async (status) => {
+    //   if (status === 'SUBSCRIBED') {
+    //     const presenceTrackStatus = await channelA.track({
+    //       user: currentUser?.id,
+    //       online_at: new Date().toISOString(),
+    //     })
+    //     console.log("Status", presenceTrackStatus)
+    //   }
+    // });
+
+    // return () => {
+    //   channelA.untrack();
+    // }
+    get();
+  }, [currentUser]);
 
   //   document.addEventListener("visibilitychange", () => {
   //     // it could be either hidden or visible

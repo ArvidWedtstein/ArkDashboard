@@ -21,6 +21,7 @@ export const QUERY = gql`
       estimated_for_players
       created_by
       turretsetup_images
+      base_images
       updated_at
       type
       published
@@ -57,6 +58,7 @@ const UPDATE_BASESPOT_MUTATION = gql`
       created_by
       level
       turretsetup_images
+      base_images
       updated_at
       type
     }

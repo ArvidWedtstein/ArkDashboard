@@ -97,7 +97,7 @@ const Basespot = ({ basespot }: Props) => {
       <div className="mb-3 lg:flex lg:items-center lg:justify-between">
         <div className="min-w-0 flex-1 font-semibold text-lg">Basespot</div>
         <div className="flex space-x-2 lg:ml-4 lg:mt-0">
-          {!currentUser?.permissions.some(
+          {currentUser?.permissions.some(
             (p: permission) => p === "basespot_update"
           ) && (
               <Link
