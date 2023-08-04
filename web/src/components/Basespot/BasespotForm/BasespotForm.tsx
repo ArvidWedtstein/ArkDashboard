@@ -38,16 +38,14 @@ const BasespotForm = (props: BasespotFormProps) => {
 
   const [map, setMap] = useState(props?.basespot?.map_id || 2);
 
-  const onSubmit = (data: FormBasespot) => {
+  const onSubmit = (data: FormBasespot, publish?: boolean) => {
     data.map_id = parseInt(data.map_id.toString() || map.toString());
-
     if (thumbnailUrl) data.thumbnail = thumbnailUrl;
 
-    if (props.basespot?.id) {
-      data.published = false;
-    }
+    data.published = publish;
 
-    props.onSave(data, props?.basespot?.id);
+    console.log(data)
+    // props.onSave(data, props?.basespot?.id);
   };
 
   useEffect(() => {
@@ -74,7 +72,7 @@ const BasespotForm = (props: BasespotFormProps) => {
   return (
     <div className="rw-form-wrapper">
       <Form<FormBasespot>
-        onSubmit={onSubmit}
+        onSubmit={(e, btn) => onSubmit(e, (btn.nativeEvent as any)?.submitter?.name === "publish")}
         formMethods={formMethods}
         error={props.error}
       >
@@ -91,21 +89,23 @@ const BasespotForm = (props: BasespotFormProps) => {
             >
               Cancel
             </button>
+
             <Submit
               disabled={props.loading}
+              title={"Save. Unpublished changes will not be visible to the public."}
               className="rw-button rw-button-medium rw-button-gray-outline"
             >
               Save
             </Submit>
 
-
-            {/* TODO: implement publish functionality */}
-            {/* <button
+            <Submit
               disabled={props.loading}
+              name="publish"
+              title={"Publish"}
               className="rw-button rw-button-medium rw-button-green"
             >
               Publish
-            </button> */}
+            </Submit>
           </div>
         </div>
         <FormError
@@ -459,8 +459,21 @@ const BasespotForm = (props: BasespotFormProps) => {
         />
 
         <FieldError name="turretsetup_image" className="rw-field-error" /> */}
+        {/*
+        <fieldset>
+          <legend className="rw-helper-text">Published status - {props.basespot.published.toString()}</legend>
+
+          <input id="draft" className="peer/draft rw-input" type="radio" name="published" defaultChecked={!props.basespot.published} />
+          <label htmlFor="draft" className="peer-checked/draft:text-pea-500 rw-label">Draft</label>
+
+          <input id="published" className="peer/published rw-input" type="radio" name="published" defaultChecked={props.basespot.published} />
+          <label htmlFor="published" className="peer-checked/published:text-pea-500 rw-label">Published</label>
+
+          <div className="hidden peer-checked/draft:block rw-helper-text">Drafts are only visible to administrators.</div>
+          <div className="hidden peer-checked/published:block rw-helper-text">Your post will be publicly visible on your site.</div>
+        </fieldset> */}
       </Form>
-    </div>
+    </div >
   );
 };
 

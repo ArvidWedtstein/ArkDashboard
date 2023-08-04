@@ -1,4 +1,4 @@
-import { FieldError } from "@redwoodjs/forms";
+import { FieldError, TextField } from "@redwoodjs/forms";
 import { toast } from "@redwoodjs/web/dist/toast";
 import clsx from "clsx";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -314,6 +314,11 @@ const FileUpload = ({
       onDrop={handleDrop}
       onDragOver={handleDragOver}
     >
+      {(defaultValue && name) && <TextField
+        name={name}
+        defaultValue={defaultValue}
+        hidden
+      />}
       <div className="relative z-[1] flex flex-col pt-0 pr-8 pb-7 pl-7">
         <div className="mt-7 flex-1">
           <svg
