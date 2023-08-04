@@ -21,6 +21,7 @@ type RedwoodUser = Record<string, any> & {
   avatar_url?: string;
   permissions?: string[];
   sub?: string;
+  banned_until?: Date;
 };
 
 /**

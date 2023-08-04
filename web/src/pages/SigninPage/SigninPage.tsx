@@ -13,15 +13,13 @@ import { toast } from "@redwoodjs/web/toast";
 import { RouteFocus } from "@redwoodjs/router";
 import { useAuth } from "src/auth";
 
-const WELCOME_MESSAGE = "Welcome back!";
-
 type FormSigninPage = NonNullable<{
   email: string;
   password: string;
 }>;
 
 const SigninPage = () => {
-  const { isAuthenticated, loading, logIn, client } = useAuth();
+  const { isAuthenticated, loading, logIn } = useAuth();
   // const captcha = React.useRef(null);
 
   useEffect(() => {
@@ -44,15 +42,11 @@ const SigninPage = () => {
         //   redirectTo: window.history.back(),
         // },
       });
-      // const response = await client.auth.signInWithOAuth({
-      //   provider: "discord",
-      // });
-      // console.log("Authrespone", response);
+
       if (response?.error) {
         toast.error(response.error.message);
       } else {
-        toast.success(WELCOME_MESSAGE);
-        // navigate(REDIRECT);
+        toast.success("Welcome back!");
       }
     } catch (error) {
       toast.error(error);

@@ -74,7 +74,9 @@ const FileUpload = ({
   //   }
   //   getimg()
   // }, [])
-  const [state, setState] = useState<number>(defaultValue && defaultValue.split(',').length > 0 ? 1 : 0); // 0 = idle, 1 = ready, 2 = uploading, 3 = error, 4 = success
+  const [state, setState] = useState<number>(
+    defaultValue && defaultValue.split(",").length > 0 ? 1 : 0
+  ); // 0 = idle, 1 = ready, 2 = uploading, 3 = error, 4 = success
   const [progress, setProgress] = useState<number>(0);
   const [imagePreview, setImagePreview] = useState(null);
   let elRef = useRef(null);
@@ -162,7 +164,7 @@ const FileUpload = ({
     isUploading = false;
     setProgress(0);
     progressTimeout = null;
-    console.log("cancel", state)
+    console.log("cancel", state);
     setState(0);
     stateDisplay();
     progressDisplay();
@@ -227,7 +229,6 @@ const FileUpload = ({
     // stateDisplay();
     setState(2);
     // console.log("upload", state)
-
   };
   const fail = () => {
     isUploading = false;
@@ -314,11 +315,9 @@ const FileUpload = ({
       onDrop={handleDrop}
       onDragOver={handleDragOver}
     >
-      {(defaultValue && name) && <TextField
-        name={name}
-        defaultValue={defaultValue}
-        hidden
-      />}
+      {defaultValue && name && (
+        <TextField name={name} defaultValue={defaultValue} hidden />
+      )}
       <div className="relative z-[1] flex flex-col pt-0 pr-8 pb-7 pl-7">
         <div className="mt-7 flex-1">
           <svg
@@ -450,7 +449,7 @@ const FileUpload = ({
             {/* File list */}
             <div
               className={clsx(`delay-200`, {
-                'flex flex-wrap items-center': state === 1,
+                "flex flex-wrap items-center": state === 1,
                 hidden: state !== 1,
               })}
             >
@@ -570,7 +569,8 @@ const FileUpload = ({
               Uploading…
             </h2>
             <p className="mb-6 min-h-[3rem] text-center text-base">
-              Just give us a moment to process your file.
+              Just give us a moment to process your{" "}
+              {pluralize(files.length, "file")}.
             </p>
             <div className="flex flex-wrap items-center delay-200">
               <div className="flex-1">
@@ -606,8 +606,8 @@ const FileUpload = ({
               Oops!
             </h2>
             <p className="mb-6 min-h-[3rem] text-base">
-              Your file could not be uploaded due to an error. Try uploading it
-              again?
+              Your {pluralize(files.length, "file")} could not be uploaded due
+              to an error. Try uploading it again?
             </p>
             <div className="flex flex-wrap items-center delay-200">
               <button

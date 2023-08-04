@@ -7,8 +7,9 @@ const drawSvgPath = (
   let pathString = "";
   coordinates.forEach((coordinate, index) => {
     const command = index === 0 ? "M" : "L";
-    pathString += `${command}${(size.height / 100) * coordinate.lon + size.width / 100
-      } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
+    pathString += `${command}${
+      (size.height / 100) * coordinate.lon + size.width / 100
+    } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
   });
   return pathString;
 };
@@ -20,7 +21,13 @@ interface mapProps {
   className?: string;
   path?: { color?: string; coords: { lat: number; lon: number }[] };
   interactive?: boolean;
-  onPosClick?: (pos: { lat: number; lon: number; color?: string; name?: string, node_index?: number }) => void;
+  onPosClick?: (pos: {
+    lat: number;
+    lon: number;
+    color?: string;
+    name?: string;
+    node_index?: number;
+  }) => void;
 }
 const Map = ({
   disable_map = false,
@@ -35,31 +42,19 @@ const Map = ({
   const svgRef = useRef(null);
   const imgRef = useRef(null);
   const maps = {
-    2:
-      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheIsland-Map.webp",
-    3:
-      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheCenter-Map.webp",
-    7:
-      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/ScorchedEarth-Map.webp",
-    4:
-      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Ragnarok-Map.webp",
-    5:
-      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Aberration-Map.webp",
-    6:
-      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Extinction-Map.webp",
-    1:
-      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Valguero-Map.webp",
-    8:
-      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis-Map.webp",
-    10:
-      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/CrystalIsles-Map.webp",
-    11:
-      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Map.webp",
-    12:
-      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/LostIsland-Map.webp",
-    9:
-      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis2-Map.webp",
-  }
+    2: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheIsland-Map.webp",
+    3: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheCenter-Map.webp",
+    7: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/ScorchedEarth-Map.webp",
+    4: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Ragnarok-Map.webp",
+    5: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Aberration-Map.webp",
+    6: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Extinction-Map.webp",
+    1: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Valguero-Map.webp",
+    8: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis-Map.webp",
+    10: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/CrystalIsles-Map.webp",
+    11: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Map.webp",
+    12: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/LostIsland-Map.webp",
+    9: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis2-Map.webp",
+  };
   const [zoom, setZoom] = useState(1);
   const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -125,14 +120,15 @@ const Map = ({
     const imgRect = imgRef.current.getBoundingClientRect();
 
     if (
-      (imgRect.left / zoom) < rect.left ||
-      (imgRect.right / zoom) > rect.right ||
-      (imgRect.top / zoom) < rect.top ||
-      (imgRect.bottom / zoom) > rect.bottom
-    ) return false
-    else return true
+      imgRect.left / zoom < rect.left ||
+      imgRect.right / zoom > rect.right ||
+      imgRect.top / zoom < rect.top ||
+      imgRect.bottom / zoom > rect.bottom
+    )
+      return false;
+    else return true;
     // return x > rect.left && x < rect.right && y > rect.top && y < rect.bottom;
-  }
+  };
   const handleWheel = (event: React.WheelEvent<SVGImageElement>) => {
     const minZoom = 1;
     const maxZoom = 5;
@@ -151,8 +147,10 @@ const Map = ({
     const dy = offsetY * (1 - scale);
 
     const clampedZoom = Math.min(Math.max(newZoom, minZoom), maxZoom);
-    const clampedDX = clampedZoom === minZoom || clampedZoom === maxZoom ? 0 : -dx;
-    const clampedDY = clampedZoom === minZoom || clampedZoom === maxZoom ? 0 : -dy;
+    const clampedDX =
+      clampedZoom === minZoom || clampedZoom === maxZoom ? 0 : -dx;
+    const clampedDY =
+      clampedZoom === minZoom || clampedZoom === maxZoom ? 0 : -dy;
 
     setZoom(clampedZoom);
     setPanPosition((prevPosition) => ({
@@ -161,9 +159,9 @@ const Map = ({
     }));
   };
 
-  const handleZoomButton = (type: 'in' | 'out') => {
-    setZoom(type == 'in' ? zoom + 0.1 : zoom - 0.1);
-  }
+  const handleZoomButton = (type: "in" | "out") => {
+    setZoom(type == "in" ? zoom + 0.1 : zoom - 0.1);
+  };
 
   const handleMouseDown = (
     event: React.MouseEvent<SVGImageElement, MouseEvent>
@@ -200,14 +198,30 @@ const Map = ({
 
   return (
     <div className={"flex flex-col " + className}>
-      <div className="rw-button-group rw-button-group-border m-0" role="menubar">
-        <button className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" onClick={() => handleZoomButton('in')} disabled={zoom >= 5 || !interactive}>
+      <div
+        className="rw-button-group rw-button-group-border m-0"
+        role="menubar"
+      >
+        <button
+          className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
+          onClick={() => handleZoomButton("in")}
+          disabled={zoom >= 5 || !interactive}
+        >
           +
         </button>
-        <button className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" onClick={() => handleZoomButton('out')} disabled={zoom == 1 || !interactive}>
+        <button
+          className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
+          onClick={() => handleZoomButton("out")}
+          disabled={zoom == 1 || !interactive}
+        >
           -
         </button>
-        <select value={map} disabled={disable_map} className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" onChange={(e) => setMap(parseInt(e.target.value))}>
+        <select
+          value={map}
+          disabled={disable_map}
+          className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
+          onChange={(e) => setMap(parseInt(e.target.value))}
+        >
           <option value={5}>Aberration</option>
           <option value={10}>Crystal Isles</option>
           <option value={6}>Extinction</option>
@@ -258,7 +272,13 @@ const Map = ({
             transformOrigin: "center center",
           }}
         />
-        <g x={0} y={0} transform={`scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`} width="100%" height="100%">
+        <g
+          x={0}
+          y={0}
+          transform={`scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`}
+          width="100%"
+          height="100%"
+        >
           {pos?.map((p, i) => (
             <circle
               style={{
@@ -286,7 +306,7 @@ const Map = ({
             </circle>
           ))}
         </g>
-        {pos.length > 0 && path?.coords && (
+        {pos?.length > 0 && path?.coords && (
           <path
             style={{
               pointerEvents: "none",
