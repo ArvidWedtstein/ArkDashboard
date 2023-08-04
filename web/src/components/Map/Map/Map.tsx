@@ -417,7 +417,7 @@ const Map = ({ map }: Props) => {
         )}
 
         {Object.entries(groupBy(map.Lootcrate.map(l => ({ ...l, type: l.name.split(' ')[0] })), "type")).map(([k, v], i) => (
-          <div className="my-4 py-3 border-b border-zinc-500">
+          <div className="my-4 py-3 border-b border-zinc-500 animate-fade-in">
             <h1 className="rw-heading rw-heading-secondary">{k}</h1>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4" key={i}>
               {v.map((lootcrate, d) => (
