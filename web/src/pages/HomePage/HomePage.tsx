@@ -3,70 +3,57 @@ import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
+import Map from "src/components/Util/Map/Map";
 
 const HomePage = () => {
   const { isAuthenticated, currentUser, client, reauthenticate } = useAuth();
 
-  const get = async () => {
-    const { data, error } = await client
-      .storage
-      .from('avatars')
-      .list('', {
-        limit: 100,
-        offset: 0,
-        sortBy: { column: 'name', order: 'asc' },
-      })
+  // useEffect(() => {
+  //   const {
+  //     data: { subscription },
+  //   } = client.auth.onAuthStateChange(async (event, session) => {
+  //     console.log(event, session);
+  //     if (event == "SIGNED_IN") {
 
-    console.log(data, error)
-  }
+  //       const { data, error } = await client
+  //         .from("Profile")
+  //         .update({ status: "ONLINE" })
+  //         .eq("id", session.user.id);
+  //     } else if (event == "SIGNED_OUT") {
+  //       const { data, error } = await client
+  //         .from("Profile")
+  //         .update({ status: "OFFLINE" })
+  //         .eq("id", currentUser.id);
+  //     }
+  //   });
 
-  useEffect(() => {
-    // const {
-    //   data: { subscription },
-    // } = client.auth.onAuthStateChange(async (event, session) => {
-    //   console.log(event, session);
-    //   if (event == "SIGNED_IN") {
+  //   return () => {
+  //     subscription.unsubscribe();
+  //   };
 
-    //     const { data, error } = await client
-    //       .from("Profile")
-    //       .update({ status: "ONLINE" })
-    //       .eq("id", session.user.id);
-    //   } else if (event == "SIGNED_OUT") {
-    //     const { data, error } = await client
-    //       .from("Profile")
-    //       .update({ status: "OFFLINE" })
-    //       .eq("id", currentUser.id);
-    //   }
-    // });
+  //   const channelA = client.channel("public");
 
-    // return () => {
-    //   subscription.unsubscribe();
-    // };
+  //   channelA.on('presence', { event: 'sync' }, () => {
+  //     const newState = channelA.presenceState();
+  //     console.log("sync", newState);
+  //   }).on('presence', { event: 'join' }, ({ key, newPresences }) => {
+  //     console.log('join', key, newPresences)
+  //   }).on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
+  //     console.log('leave', key, leftPresences)
+  //   }).subscribe(async (status) => {
+  //     if (status === 'SUBSCRIBED') {
+  //       const presenceTrackStatus = await channelA.track({
+  //         user: currentUser?.id,
+  //         online_at: new Date().toISOString(),
+  //       })
+  //       console.log("Status", presenceTrackStatus)
+  //     }
+  //   });
 
-    // const channelA = client.channel("public");
-
-    // channelA.on('presence', { event: 'sync' }, () => {
-    //   const newState = channelA.presenceState();
-    //   console.log("sync", newState);
-    // }).on('presence', { event: 'join' }, ({ key, newPresences }) => {
-    //   console.log('join', key, newPresences)
-    // }).on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-    //   console.log('leave', key, leftPresences)
-    // }).subscribe(async (status) => {
-    //   if (status === 'SUBSCRIBED') {
-    //     const presenceTrackStatus = await channelA.track({
-    //       user: currentUser?.id,
-    //       online_at: new Date().toISOString(),
-    //     })
-    //     console.log("Status", presenceTrackStatus)
-    //   }
-    // });
-
-    // return () => {
-    //   channelA.untrack();
-    // }
-    get();
-  }, [currentUser]);
+  //   return () => {
+  //     channelA.untrack();
+  //   }
+  // }, [currentUser]);
 
   //   document.addEventListener("visibilitychange", () => {
   //     // it could be either hidden or visible
@@ -281,6 +268,7 @@ const HomePage = () => {
               </Link>
             </div>
           </div>
+          <Map map_id={5} interactive />
         </section>
       </div>
     </>

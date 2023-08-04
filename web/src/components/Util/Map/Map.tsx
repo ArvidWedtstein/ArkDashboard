@@ -33,6 +33,7 @@ const Map = ({
   onPosClick,
 }: mapProps) => {
   const svgRef = useRef(null);
+  const imgRef = useRef(null);
   const maps = {
     2:
       "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheIsland-Map.webp",
@@ -119,6 +120,19 @@ const Map = ({
     };
   }, []);
 
+  const isInBounds = () => {
+    const rect = svgRef.current.getBoundingClientRect();
+    const imgRect = imgRef.current.getBoundingClientRect();
+
+    if (
+      (imgRect.left / zoom) < rect.left ||
+      (imgRect.right / zoom) > rect.right ||
+      (imgRect.top / zoom) < rect.top ||
+      (imgRect.bottom / zoom) > rect.bottom
+    ) return false
+    else return true
+    // return x > rect.left && x < rect.right && y > rect.top && y < rect.bottom;
+  }
   const handleWheel = (event: React.WheelEvent<SVGImageElement>) => {
     const minZoom = 1;
     const maxZoom = 5;
@@ -164,8 +178,16 @@ const Map = ({
     event: React.MouseEvent<SVGImageElement, MouseEvent>
   ) => {
     if (!isDragging || !interactive || !event.shiftKey) return;
+
     const dx = event.clientX - startPosition.x;
     const dy = event.clientY - startPosition.y;
+
+    // if (isInBounds()) {
+    //   setIsDragging(false);
+    //   console.info('out of bounds');
+    //   return;
+    // }
+
     setPanPosition((prevPosition) => ({
       x: prevPosition.x + dx / zoom,
       y: prevPosition.y + dy / zoom,
@@ -179,13 +201,13 @@ const Map = ({
   return (
     <div className={"flex flex-col " + className}>
       <div className="rw-button-group rw-button-group-border m-0" role="menubar">
-        <button className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" onClick={() => handleZoomButton('in')} disabled={zoom >= 5}>
+        <button className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" onClick={() => handleZoomButton('in')} disabled={zoom >= 5 || !interactive}>
           +
         </button>
-        <button className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" onClick={() => handleZoomButton('out')} disabled={zoom == 1}>
+        <button className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" onClick={() => handleZoomButton('out')} disabled={zoom == 1 || !interactive}>
           -
         </button>
-        <select value={map} disabled={disable_map} className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" onChange={(e) => setMap(parseInt(e.target.value))} defaultValue={map}>
+        <select value={map} disabled={disable_map} className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none" onChange={(e) => setMap(parseInt(e.target.value))}>
           <option value={5}>Aberration</option>
           <option value={10}>Crystal Isles</option>
           <option value={6}>Extinction</option>
@@ -199,9 +221,13 @@ const Map = ({
           <option value={2}>The Island</option>
           <option value={1}>Valguero</option>
         </select>
-        <button className="rw-button rw-button-small rw-button-red first:!rounded-bl-none last:!rounded-br-none" onClick={() => {
-          reset();
-        }}>
+        <button
+          className="rw-button rw-button-small rw-button-red first:!rounded-bl-none last:!rounded-br-none"
+          onClick={() => {
+            reset();
+          }}
+          disabled={!interactive}
+        >
           Reset
         </button>
       </div>
@@ -224,6 +250,7 @@ const Map = ({
           href={maps[map]}
           height={size.height}
           width={size.width}
+          ref={imgRef}
           style={{
             width: "100%",
             height: "100%",
@@ -259,7 +286,7 @@ const Map = ({
             </circle>
           ))}
         </g>
-        {path?.coords && (
+        {pos.length > 0 && path?.coords && (
           <path
             style={{
               pointerEvents: "none",

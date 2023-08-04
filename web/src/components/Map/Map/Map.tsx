@@ -1,86 +1,20 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
-import { useMutation } from "@redwoodjs/web";
-import { toast } from "@redwoodjs/web/toast";
 import { useCallback, useState } from "react";
 import ArkCard from "src/components/Util/ArkCard/ArkCard";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import MapComp from "src/components/Util/Map/Map";
-import { capitalizeSentence } from "src/lib/formatters";
+import { capitalizeSentence, groupBy } from "src/lib/formatters";
 
-import type { DeleteMapMutationVariables, FindMapById } from "types/graphql";
+import type { FindMapById } from "types/graphql";
 
-const DELETE_MAP_MUTATION = gql`
-  mutation DeleteMapMutation($id: BigInt!) {
-    deleteMap(id: $id) {
-      id
-    }
-  }
-`;
 
 interface Props {
   map: NonNullable<FindMapById["map"]>;
 }
 
 const Map = ({ map }: Props) => {
-  const mapImages = {
-    2: [
-      "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
-    ],
-    3: [
-      "https://cdn.akamai.steamstatic.com/steam/apps/473850/ss_f13c4990d4609d3fc89174f71858835a9f09aaa3.1920x1080.jpg?t=1508277712",
-    ],
-    7: ["https://wallpapercave.com/wp/wp10504822.jpg"],
-    4: [
-      "https://cdn.survivetheark.com/uploads/monthly_2016_10/large.580b5a9c3b586_Ragnarok02.jpg.6cfa8b30a81187caace6fecc1e9f0c31.jpg",
-      "https://survivetheark.com/index.php?/gallery/image/20889-ragnarok/&do=download",
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJJmqrzhtbVQJCChwuL510y_vCKfy1XIHCnQ&usqp=CAU",
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRBdPB6lPmw7GEpebf9vKTd7pESyh1NZUuSw&usqp=CAU",
-    ],
-    5: [
-      "https://cdn.images.express.co.uk/img/dynamic/143/590x/ARK-Survival-Evolved-849382.jpg",
-      "https://i.ytimg.com/vi/JD2pw7olqTI/maxresdefault.jpg",
-      "https://mcdn.wallpapersafari.com/medium/11/10/HqzA26.jpg",
-      "https://external-preview.redd.it/kNGv5THQAMo1KkSV0kh3rb3zVkv1sQ5JfcVhxYQU3M8.png?format=pjpg&auto=webp&s=b586ca457104b002c9f132e84dcc8819236d6d40",
-      "https://cdn.survivetheark.com/uploads/monthly_2018_01/large.ARK-Wallpaper-Aberration-Flowers_by_pollti_1024x576.jpg.ccd6f6278b7e536b56095df031fbac12.jpg",
-    ],
-    6: [
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/887380/ss_3c2c1d7c027c8beb54d2065afe3200e457c2867c.1920x1080.jpg?t=1594677636",
-    ],
-    1: [
-      "https://i.pinimg.com/originals/0b/95/09/0b9509ddce658e3209ece1957053b27e.jpg",
-      "https://pbs.twimg.com/media/D9h39iwX4AUrWAh.jpg:large",
-      "https://i.redd.it/du3kqr863aa31.jpg",
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFKZIiTnhO5yYY1yA15nQ2UnH3W-v-PU9Mfw&usqp=CAU",
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_Zs3mrwKB_uGiZns4R7I8iZ8gpzMtWJ1EFA&usqp=CAU",
-    ],
-    8: [
-      "https://cdn.akamai.steamstatic.com/steam/apps/1646700/ss_c939dd546237cba9352807d4deebd79c4e29e547.1920x1080.jpg?t=1622514386",
-    ],
-    10: [
-      "https://cdn2.unrealengine.com/egs-crystalislesarkexpansionmap-studiowildcard-dlc-g1a-05-1920x1080-119682147.jpg?h=720&resize=1&w=1280",
-      "https://c4.wallpaperflare.com/wallpaper/218/915/795/video-games-cherry-blossom-ark-survival-evolved-ark-wallpaper-preview.jpg",
-      "https://i.redd.it/845iigipfgg61.png",
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmcFNjX9A0w07KkV3pTfnpMl_uIGTqq0nphQ&usqp=CAU",
-      "https://www.rencorner.com/uploads/monthly_2020_06/20200619191942_1.jpg.4546a3de96d1223171467b33a4f15cab.jpg",
-    ],
-    11: [
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/1887560/ss_331869adb5f0c98e3f13b48189e280f8a0ba1616.1920x1080.jpg?t=1655054447",
-    ],
-    12: [
-      "https://dicendpads.com/wp-content/uploads/2021/12/Ark-Lost-Island.png",
-      "https://c4.wallpaperflare.com/wallpaper/745/402/370/ark-survival-evolved-video-games-the-island-sunlight-jungle-wallpaper-preview.jpg",
-      "https://c4.wallpaperflare.com/wallpaper/958/368/11/video-game-ark-survival-evolved-ark-survival-evolved-jungle-wallpaper-thumb.jpg",
-    ],
-    9: [
-      "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
-      "https://wallpapercave.com/wp/wp9285176.png",
-      "https://cdn.survivetheark.com/images/gen2/wallpaper/ARK_Genesis2_Promo_Canoe.jpg",
-      "https://wallpapercave.com/wp/wp6293505.png",
-      "https://wallpapercave.com/wp/wp6293166.jpg",
-      "https://wallpapercave.com/wp/wp9285339.jpg",
-    ],
-  };
-  const [mapData, setMapData] = useState([]);
+  const [mapData, setMapData] = useState<{ __typename: string, category: string, color?: string, latitude?: number, longitude?: number, name?: string, note_index?: number, noterun?: boolean }[]>([]);
+  const [checkedNotes, setCheckedNotes] = useState<number[]>([]);
   const [categories, setCategories] = useState({
     mutagen_bulb: {
       active: false,
@@ -90,7 +24,7 @@ const Map = ({ map }: Props) => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 384 512"
           aria-hidden="true"
-          className="h-12 w-12 fill-current"
+          className="h-6 w-6 fill-current"
         >
           <path d="M192 16c-106 0-192 182-192 288c0 106 85.1 192 192 192c105.1 0 192-85.1 192-192C384 198 297.1 16 192 16zM160.1 138C128.6 177.1 96 249.8 96 304C96 312.8 88.84 320 80 320S64 312.8 64 304c0-63.56 36.7-143.3 71.22-186c5.562-6.906 15.64-7.969 22.5-2.406C164.6 121.1 165.7 131.2 160.1 138z" />
         </svg>
@@ -104,7 +38,7 @@ const Map = ({ map }: Props) => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 576 512"
           aria-hidden="true"
-          className="h-12 w-12 fill-current"
+          className="h-6 w-6 fill-current"
         >
           <path d="M352 336c0 8.875-7.125 16-16 16h-96C231.1 352 224 344.9 224 336V288H128v192h320V288h-96V336zM0 128v128h96V32C43 32 0 75 0 128zM0 448c0 17.62 14.38 32 32 32h64V288H0V448zM480 32v224h96V128C576 75 533 32 480 32zM304 304v-64C304 231.1 296.9 224 288 224S272 231.1 272 240v64C272 312.9 279.1 320 288 320S304 312.9 304 304zM480 480h64c17.62 0 32-14.38 32-32V288h-96V480zM128 256h96V208C224 199.1 231.1 192 240 192h96C344.9 192 352 199.1 352 208V256h96V32H128V256z" />
         </svg>
@@ -118,7 +52,7 @@ const Map = ({ map }: Props) => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 576 512"
           aria-hidden="true"
-          className="h-12 w-12 fill-current"
+          className="h-6 w-6 fill-current"
         >
           <path d="M352 336c0 8.875-7.125 16-16 16h-96C231.1 352 224 344.9 224 336V288H128v192h320V288h-96V336zM0 128v128h96V32C43 32 0 75 0 128zM0 448c0 17.62 14.38 32 32 32h64V288H0V448zM480 32v224h96V128C576 75 533 32 480 32zM304 304v-64C304 231.1 296.9 224 288 224S272 231.1 272 240v64C272 312.9 279.1 320 288 320S304 312.9 304 304zM480 480h64c17.62 0 32-14.38 32-32V288h-96V480zM128 256h96V208C224 199.1 231.1 192 240 192h96C344.9 192 352 199.1 352 208V256h96V32H128V256z" />
         </svg>
@@ -130,7 +64,7 @@ const Map = ({ map }: Props) => {
       icon: (
         <svg
           aria-hidden="true"
-          className="h-12 w-12 fill-current"
+          className="h-6 w-6 fill-current"
           fill="currentColor"
           viewBox="0 0 20 20"
           xmlns="http://www.w3.org/2000/svg"
@@ -150,7 +84,7 @@ const Map = ({ map }: Props) => {
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 640 512"
-          className="mr-2 h-12 w-12 fill-current"
+          className="mr-2 h-6 w-6 fill-current"
         >
           <path
             fillRule="evenodd"
@@ -167,7 +101,7 @@ const Map = ({ map }: Props) => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 640 512"
           aria-hidden="true"
-          className="mr-2 h-12 w-12 fill-current"
+          className="mr-2 h-6 w-6 fill-current"
         >
           <path
             fillRule="evenodd"
@@ -183,7 +117,7 @@ const Map = ({ map }: Props) => {
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 576 512"
-          className="h-12 w-12 fill-current"
+          className="h-6 w-6 fill-current"
         >
           <path d="M528.3 61.3c-11.4-42.7-55.3-68-98-56.6L414.9 8.8C397.8 13.4 387.7 31 392.3 48l24.5 91.4L308.5 167.5l-6.3-18.1C297.7 136.6 285.6 128 272 128s-25.7 8.6-30.2 21.4l-13.6 39L96 222.6V184c0-13.3-10.7-24-24-24s-24 10.7-24 24V448H32c-17.7 0-32 14.3-32 32s14.3 32 32 32H544c17.7 0 32-14.3 32-32s-14.3-32-32-32H406.7L340 257.5l-62.2 16.1L305.3 352H238.7L265 277l-74.6 19.3L137.3 448H96V288.8l337.4-87.5 25.2 94c4.6 17.1 22.1 27.2 39.2 22.6l15.5-4.1c42.7-11.4 68-55.3 56.6-98L528.3 61.3zM205.1 448l11.2-32H327.7l11.2 32H205.1z" />
         </svg>
@@ -197,7 +131,7 @@ const Map = ({ map }: Props) => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 384 512"
           aria-hidden="true"
-          className="h-12 w-12 fill-current"
+          className="h-6 w-6 fill-current"
         >
           <path d="M221.3 22.13c-8-28.87-49.5-30.12-58.5 0C116 179.9 16 222.8 16 333.9c0 98.5 78.75 178.1 176 178.1s176-79.63 176-178.1C368 222.1 268.3 180.6 221.3 22.13zM192 448c-61.75 0-112-50.25-112-111.1c0-8.875 7.125-16 16-16s16 7.125 16 16c0 44.12 35.88 79.1 80 79.1c8.875 0 16 7.125 16 15.1C208 440.9 200.9 448 192 448z" />
         </svg>
@@ -211,7 +145,7 @@ const Map = ({ map }: Props) => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 384 512"
           aria-hidden="true"
-          className="h-12 w-12 fill-current"
+          className="h-6 w-6 fill-current"
         >
           <path d="M203.1 4.365c-6.177-5.82-16.06-5.819-22.23-.0007C74.52 104.5 0 234.1 0 312C0 437.9 79 512 192 512s192-74.05 192-200C384 233.9 309 104.2 203.1 4.365zM192 432c-56.5 0-96-37.76-96-91.74c0-12.47 4.207-55.32 83.87-143c6.314-6.953 17.95-6.953 24.26 0C283.8 284.9 288 327.8 288 340.3C288 394.2 248.5 432 192 432z" />
         </svg>
@@ -223,7 +157,7 @@ const Map = ({ map }: Props) => {
       icon: (
         <svg
           aria-hidden="true"
-          className="h-12 w-12 fill-current"
+          className="h-6 w-6 fill-current"
           fill="currentColor"
           viewBox="0 0 20 20"
           xmlns="http://www.w3.org/2000/svg"
@@ -244,7 +178,7 @@ const Map = ({ map }: Props) => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
           aria-hidden="true"
-          className="h-12 w-12 fill-current"
+          className="h-6 w-6 fill-current"
         >
           <path d="M512 165.4c0 127.9-70.05 235.3-175.3 270.1c-20.04 7.938-41.83 12.46-64.69 12.46c-64.9 0-125.2-36.51-155.7-94.47c-54.13 49.93-68.71 107-68.96 108.1C44.72 472.6 34.87 480 24.02 480c-1.844 0-3.727-.2187-5.602-.6562c-12.89-3.098-20.84-16.08-17.75-28.96c9.598-39.5 90.47-226.4 335.3-226.4C344.8 224 352 216.8 352 208S344.8 192 336 192C228.6 192 151 226.6 96.29 267.6c.1934-10.82 1.242-21.84 3.535-33.05c13.47-65.81 66.04-119 131.4-134.2c28.33-6.562 55.68-6.013 80.93-.0054c56 13.32 118.2-7.412 149.3-61.24c5.664-9.828 20.02-9.516 24.66 .8282C502.7 76.76 512 121.9 512 165.4z" />
         </svg>
@@ -257,7 +191,7 @@ const Map = ({ map }: Props) => {
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 640 512"
-          className="mr-2 h-12 w-12 fill-current"
+          className="mr-2 h-6 w-6 fill-current"
         >
           <path
             fillRule="evenodd"
@@ -274,7 +208,7 @@ const Map = ({ map }: Props) => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
           aria-hidden="true"
-          className="h-12 w-12 fill-current"
+          className="h-6 w-6 fill-current"
         >
           <path d="M160 144c-35.3 0-64-28.7-64-64s28.7-64 64-64c15.7 0 30 5.6 41.2 15C212.4 12.4 232.7 0 256 0s43.6 12.4 54.8 31C322 21.6 336.3 16 352 16c35.3 0 64 28.7 64 64s-28.7 64-64 64c-14.7 0-28.3-5-39.1-13.3l-32 48C275.3 187 266 192 256 192s-19.3-5-24.9-13.3l-32-48C188.3 139 174.7 144 160 144zM144 352l48.4-24.2c10.2-5.1 21.6-7.8 33-7.8c19.6 0 38.4 7.8 52.2 21.6l32.5 32.5c6.3 6.3 14.9 9.9 23.8 9.9c11.3 0 21.8-5.6 28-15l9.7-14.6-59-66.3c-9.1-10.2-22.2-16.1-35.9-16.1H235.1c-13.7 0-26.8 5.9-35.9 16.1l-59.9 67.4L144 352zm19.4-95.8c18.2-20.5 44.3-32.2 71.8-32.2h41.8c27.4 0 53.5 11.7 71.8 32.2l150.2 169c8.5 9.5 13.2 21.9 13.2 34.7c0 28.8-23.4 52.2-52.2 52.2H52.2C23.4 512 0 488.6 0 459.8c0-12.8 4.7-25.1 13.2-34.7l150.2-169z" />
         </svg>
@@ -288,7 +222,7 @@ const Map = ({ map }: Props) => {
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
           aria-hidden="true"
-          className="h-12 w-12 fill-current"
+          className="h-6 w-6 fill-current"
         >
           <path d="M324.4 103.1L384 128l24.88 59.63C410.2 190.3 413 192 416 192s5.75-1.75 7.125-4.375L448 128l59.63-24.88C510.3 101.8 512 99 512 96s-1.75-5.75-4.375-7.125L448 64l-24.88-59.62C421.8 1.75 419 0 416 0s-5.75 1.75-7.125 4.375L384 64l-59.63 24.88C321.8 90.25 320 93 320 96S321.8 101.8 324.4 103.1zM507.6 408.9L448 384l-24.88-59.63C421.8 321.8 419 320 416 320s-5.75 1.75-7.125 4.375L384 384l-59.63 24.88C321.8 410.2 320 413 320 416s1.75 5.75 4.375 7.125L384 448l24.88 59.63C410.2 510.2 413 512 416 512s5.75-1.75 7.125-4.375L448 448l59.63-24.88C510.3 421.8 512 419 512 416S510.3 410.2 507.6 408.9zM384 255.6c0-6-3.375-11.62-8.875-14.38l-112.5-56.31L206.3 72.19c-5.375-10.88-23.13-10.88-28.5 0L121.4 184.9L8.875 241.2C3.375 244 0 249.6 0 255.6c0 6.125 3.375 11.62 8.875 14.38l112.5 56.37l56.38 112.7C180.4 444.4 185.1 447.9 192 447.9c5.999 0 11.62-3.512 14.25-8.887l56.38-112.7l112.5-56.37C380.6 267.2 384 261.8 384 255.6z" />
         </svg>
@@ -317,8 +251,7 @@ const Map = ({ map }: Props) => {
         ...item,
         category,
         color,
-        name: `${category.replaceAll("_", " ")}\n${item.latitude}, ${item.longitude
-          }`,
+        name: `${category.replaceAll("_", " ")}\n${item.latitude}, ${item.longitude}`,
       }));
 
       setCategories((prevState) => ({
@@ -331,11 +264,12 @@ const Map = ({ map }: Props) => {
 
       setMapData((prevState) => {
         if (checked) {
-          return [...prevState, ...newDataToAdd];
+          return [...prevState, ...newDataToAdd.map(d => ({ ...d, noterun: d.note_index && noterun.includes(d.note_index) }))];
         } else {
           return prevState.filter((item) => item.category !== category);
         }
       });
+
     },
     [categories, mapData, setCategories, setMapData]
   );
@@ -416,7 +350,7 @@ const Map = ({ map }: Props) => {
             />
 
             <ul className="rw-segment max-h-44 overflow-auto rounded-lg border border-gray-200 bg-stone-300 text-sm font-medium text-gray-900 dark:border-zinc-500 dark:bg-zinc-600 dark:text-white">
-              {mapData.map((d, i) => (
+              {mapData.sort((a, b) => (a.noterun === b.noterun) ? 0 : a.noterun ? -1 : 1).map((d, i) => (
                 <li
                   key={`point-${i}`}
                   className="w-full border-b border-gray-200 first:rounded-t-lg last:rounded-b-lg last:border-none dark:border-zinc-500"
@@ -426,12 +360,19 @@ const Map = ({ map }: Props) => {
                       let c: SVGCircleElement = document.getElementById(
                         `map-pos-${i}`
                       ) as unknown as SVGCircleElement;
-                      c.setAttribute("fill", "antiquewhite");
-                      c.classList.toggle('animate-pulse')
-                      setTimeout(() => {
-                        c.setAttribute("fill", d.color);
+                      if (!checkedNotes.includes(d.note_index)) {
+
+
+                        c.setAttribute("fill", "antiquewhite");
                         c.classList.toggle('animate-pulse')
-                      }, 3000);
+
+                        setTimeout(() => {
+                          c.setAttribute("fill", d.color);
+                          c.classList.toggle('animate-pulse')
+                        }, 3000);
+                      } else {
+                        c.setAttribute("fill", "#59ff00");
+                      }
                     }}
                     className={
                       "w-full border-l-2 px-4 py-2 text-left capitalize inline-flex"
@@ -441,8 +382,13 @@ const Map = ({ map }: Props) => {
                     <span>{d?.name ? d.name.split("\n")[0] : ""} - </span>
                     <span>{d.latitude},{" "}{d.longitude}</span>
 
-                    {noterun.find((j) => j === d.note_index) && (
-                      <span className="inline-flex place-self-end ml-auto">Noterun</span>
+                    {d.noterun && (
+                      <>
+                        <span className="inline-flex place-self-end ml-auto">Noterun</span>
+                        <input className="rw-input" type="checkbox" checked={checkedNotes.includes(d.note_index)} onChange={(e) => setCheckedNotes((prev) => {
+                          return e.target.checked ? [...prev, d.note_index] : prev.filter((p) => p !== d.note_index)
+                        })} />
+                      </>
                     )}
                   </button>
                 </li>
@@ -469,36 +415,42 @@ const Map = ({ map }: Props) => {
             Lootcrates
           </Link>
         )}
-        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4">
-          {map.Lootcrate.map((lootcrate, i) => (
-            <ArkCard
-              key={`lootcrate-${i}`}
-              className="border-t-2 bg-zinc-700"
-              style={{
-                borderColor: lootcrate.color ? lootcrate.color : "white",
-              }}
-              title={lootcrate.name}
-              ring={
-                lootcrate?.level_requirement &&
-                  lootcrate.level_requirement["min"] > 0 ? (
-                  <button
-                    title={`You need to be lvl ${lootcrate.level_requirement["min"]} to open this crate`}
-                    className="relative flex items-center justify-center space-x-2 rounded-full bg-gray-600 px-4 py-2.5 text-gray-100 shadow-sm ring-1 ring-green-500"
-                  >
-                    <span>Lvl {lootcrate.level_requirement["min"]}</span>
-                    <i className="fa-solid fa-circle my-auto ml-2 animate-pulse text-green-500"></i>
-                  </button>
-                ) : null
-              }
-              button={{
-                link: routes.lootcrate({
-                  id: lootcrate.id.toString(),
-                }),
-                text: "View",
-              }}
-            />
-          ))}
-        </div>
+
+        {Object.entries(groupBy(map.Lootcrate.map(l => ({ ...l, type: l.name.split(' ')[0] })), "type")).map(([k, v], i) => (
+          <div className="my-4 py-3 border-b border-zinc-500">
+            <h1 className="rw-heading rw-heading-secondary">{k}</h1>
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4" key={i}>
+              {v.map((lootcrate, d) => (
+                <ArkCard
+                  key={`lootcrate-${i}`}
+                  className="border-t-2 !bg-zinc-700"
+                  style={{
+                    borderColor: lootcrate.color ? lootcrate.color : "white",
+                  }}
+                  icon={{ src: k == 'Artifact' ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/artifact-of-the-${lootcrate.name.split(' ')[lootcrate.name.split(' ').length - 1].toLowerCase()}.webp` : 'https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/any-gun.webp' }}
+                  title={lootcrate.name}
+                  ring={
+                    lootcrate?.level_requirement &&
+                      lootcrate.level_requirement["min"] > 0 ? (
+                      <span
+                        title={`You need to be lvl ${lootcrate.level_requirement["min"]} to open this crate`}
+                        className="rw-badge rw-badge-yellow-outline"
+                      >
+                        Lvl {lootcrate.level_requirement["min"]}
+                      </span>
+                    ) : null
+                  }
+                  button={{
+                    link: routes.lootcrate({
+                      id: lootcrate.id.toString(),
+                    }),
+                    text: "View",
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
     </article>
   );
