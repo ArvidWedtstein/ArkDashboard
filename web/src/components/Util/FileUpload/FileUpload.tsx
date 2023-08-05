@@ -1,11 +1,13 @@
-import { FieldError, TextField } from "@redwoodjs/forms";
-import { toast } from "@redwoodjs/web/dist/toast";
 import clsx from "clsx";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
-import { pluralize } from "src/lib/formatters";
+import { formatBytes, pluralize } from "src/lib/formatters";
 
-interface IFileUploadProps {
+interface IFileUploadProps
+  extends Omit<
+    React.HTMLProps<HTMLInputElement>,
+    "className" | "type" | "hidden" | "onChange" | "defaultValue"
+  > {
   onUpload?: (url: string) => void;
   className?: string;
   multiple?: boolean;
@@ -17,7 +19,151 @@ interface IFileUploadProps {
   sizeLimit?: number;
   name?: string;
   thumbnail?: boolean;
+  /**
+   * Max size in bytes
+   */
+  maxSize?: number;
 }
+
+export const FileUpload2 = ({
+  storagePath,
+  accept = "image/.png, .jpg, .jpeg, .webp",
+  maxSize,
+  ...props
+}: IFileUploadProps) => {
+  const [state, setState] = useState<
+    "idle" | "ready" | "uploading" | "error" | "success"
+  >("idle");
+  const [files, setFiles] = useState<
+    {
+      file?: {
+        name: string;
+        lastModified: number;
+        webkitRelativePath: string;
+        size: number;
+        type: string;
+      };
+      oversized?: boolean;
+      url: string;
+    }[]
+  >([]);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setState("ready");
+    return new Promise(() => {
+      const { target } = e;
+      if (target?.files.length) {
+        Array.prototype.forEach.call(target.files, (file) => {
+          let reader = new FileReader();
+
+          reader.onloadend = (fileloader) => {
+            if (!file.type || !fileloader.target.result) {
+              setState("error");
+              return;
+            }
+            setFiles((prev) => [
+              ...prev,
+              {
+                file: file,
+                url: fileloader.target.result.toString(),
+                oversized: maxSize ? file.size > maxSize : false,
+              },
+            ]);
+          };
+
+          reader.readAsDataURL(file);
+        });
+      }
+    });
+  };
+  return (
+    <div className="group relative w-[calc(100%-3rem)] max-w-xl overflow-hidden rounded-lg border border-zinc-500 bg-zinc-50 p-3 text-gray-900 transition-colors dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200">
+      <div className="flex w-full items-center justify-center">
+        <label
+          htmlFor="dropzone-file"
+          className="flex h-48 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-zinc-200 transition-colors dark:border-zinc-800 dark:bg-zinc-700 dark:hover:border-zinc-900 dark:hover:bg-zinc-700/60"
+        >
+          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+            <svg
+              className="mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 16"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+              />
+            </svg>
+            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+              <span className="font-semibold">Click to upload</span> or drag and
+              drop
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              {new Intl.ListFormat("en-GB", {
+                style: "long",
+                type: "disjunction",
+              }).format(
+                accept
+                  .split(",")
+                  .map((type) => type.trim().split("/")[1].toUpperCase())
+              )}{" "}
+              {maxSize && `(MAX. ${formatBytes(maxSize)})`}
+            </p>
+          </div>
+          <input
+            ref={inputRef}
+            id="dropzone-file"
+            type="file"
+            className="hidden"
+            {...props}
+            onChange={handleFileChange}
+            hidden
+          />
+        </label>
+      </div>
+
+      {state == "ready" && (
+        <div className="w-full">
+          <div className="mt-3 table w-full table-auto rounded-lg border border-zinc-500 border-opacity-70 p-2 text-left">
+            <div className="table-header-group w-full text-xs text-black dark:text-zinc-300">
+              <div className="table-cell p-2">Name</div>
+              <div className="table-cell w-1/5 p-2">Size</div>
+              <div className="table-cell p-2">Last Modified</div>
+              <div className="table-cell p-2">Action</div>
+            </div>
+            {files.map((file, index) => (
+              <div
+                className="table-row-group w-full text-xs text-black dark:text-white"
+                key={`file-${index}`}
+              >
+                <div className="table-cell w-2/5 p-2 before:mr-1 before:inline-block before:rounded before:bg-purple-300 before:p-1 before:align-middle before:text-[8px] before:text-black before:content-['jpg']">
+                  {file.file.name}
+                </div>
+                <div className="table-cell p-2">
+                  {formatBytes(file.file.size)}
+                </div>
+                <div className="table-cell p-2">
+                  {new Date(file.file.lastModified).toDateString()}
+                </div>
+                <div className="table-cell p-2">
+                  {/* TODO: insert ellipsis icon here */}
+                  <button className="w-6">...</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const FileUpload = ({
   onUpload,
   storagePath,
@@ -26,6 +172,8 @@ const FileUpload = ({
   multiple,
   thumbnail = false,
   defaultValue,
+  accept = ".png, .jpg, .jpeg, .webp",
+  ...props
 }: IFileUploadProps) => {
   const { client: supabase } = useAuth();
   let filename = "";
@@ -34,46 +182,6 @@ const FileUpload = ({
     { file: any; imagePreviewUrl: string | ArrayBuffer; thumbnail?: boolean }[]
   >([]);
 
-  // useEffect(() => {
-  //   const getimg = async () => {
-  //     try {
-  //       console.log(...(defaultValue
-  //         ? defaultValue
-  //           .split(",")
-  //           .map((img) => img.trim())
-  //         : []),)
-  //       const { data, error } = await supabase.storage
-  //         .from(storagePath)
-  //         .createSignedUrls(
-  //           [
-  //             ...(defaultValue
-  //               ? defaultValue
-  //                 .split(",")
-  //                 .map((img) => img.trim())
-  //               : []),
-  //           ],
-  //           60 * 60 * 24 * 365 * 10
-  //         );
-  //       if (error) {
-  //         toast.error(error.message);
-  //       }
-  //       if (data) {
-  //         // console.log(data)
-  //         // setFiles((prev) => [
-  //         //   ...prev,
-  //         //   ...data.map((d) => ({
-  //         //     file: new File([], d.file.name)
-  //         //     imagePreviewUrl: d.signedURL,
-  //         //     thumbnail: d.file.name.includes("thumbnail"),
-  //         //   })),
-  //         // ]);
-  //       }
-  //     } catch (error) {
-  //       toast.error(error.message);
-  //     }
-  //   }
-  //   getimg()
-  // }, [])
   const [state, setState] = useState<number>(
     defaultValue && defaultValue.split(",").length > 0 ? 1 : 0
   ); // 0 = idle, 1 = ready, 2 = uploading, 3 = error, 4 = success
@@ -306,8 +414,8 @@ const FileUpload = ({
       className={clsx(
         "group relative w-[calc(100%-3rem)] max-w-xl overflow-hidden rounded-lg border border-zinc-500 bg-zinc-50 text-gray-900 transition-colors dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200",
         {
-          "before:bg-[#f5463d]": state === 3,
-          "before:bg-[#3df574]": state === 4,
+          "behtmlFore:bg-[#f5463d]": state === 3,
+          "behtmlFore:bg-[#3df574]": state === 4,
         }
       )}
       data-state="0"
@@ -316,7 +424,7 @@ const FileUpload = ({
       onDragOver={handleDragOver}
     >
       {defaultValue && name && (
-        <TextField name={name} defaultValue={defaultValue} hidden />
+        <input name={name} defaultValue={defaultValue} hidden />
       )}
       <div className="relative z-[1] flex flex-col pt-0 pr-8 pb-7 pl-7">
         <div className="mt-7 flex-1">
@@ -442,7 +550,8 @@ const FileUpload = ({
                 multiple={multiple}
                 onChange={fileHandle}
                 type="file"
-                accept="image/png, image/jpeg"
+                accept={accept}
+                {...props}
                 hidden
               />
             </div>
@@ -505,7 +614,6 @@ const FileUpload = ({
                           });
                         }}
                       />
-                      <FieldError name="thumbnail" className="rw-field-error" />
                     </>
                   )}
 
@@ -582,7 +690,7 @@ const FileUpload = ({
                 </div>
                 <div className="h-[0.4rem] w-full overflow-hidden">
                   <div
-                    className="h-full w-full bg-[#e3e4e8] transition-transform"
+                    className="transition-transhtmlForm h-full w-full bg-[#e3e4e8]"
                     data-progress-fill
                   ></div>
                 </div>

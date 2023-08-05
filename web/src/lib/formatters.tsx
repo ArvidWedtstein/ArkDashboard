@@ -39,10 +39,6 @@ export const formatNumber = (
   options?: Intl.NumberFormatOptions
 ): string => {
   return new Intl.NumberFormat("en-GB", options).format(num);
-  // const formattedNum = Math.round(num)
-  //   .toString()
-  //   .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  // return formattedNum;
 };
 
 export const truncate = (value: string | number, maxlength: number = 150) => {
@@ -173,8 +169,9 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-    }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+  }`;
 };
 
 /**
@@ -377,21 +374,25 @@ export const getBaseMaterials = (
 
   // TODO: Check for right recipe for selected crafting stations
   const getRecipeById = (recipeId: number, crafting_stations?: any[]) => {
-    return items.find((recipe) => recipe.Item_ItemRecipe_crafted_item_idToItem.id === recipeId);
-  }
+    return items.find(
+      (recipe) => recipe.Item_ItemRecipe_crafted_item_idToItem.id === recipeId
+    );
+  };
 
   const recipeTree = (recipe, amount: number = 1) => {
-    if (!recipe.ItemRecipeItem) return {
-      ...recipe,
-      amount: (recipe.amount * amount),
-      crafting_time: recipe.amount * (recipe.crafting_time || 1),
-    };
+    if (!recipe.ItemRecipeItem)
+      return {
+        ...recipe,
+        amount: recipe.amount * amount,
+        crafting_time: recipe.amount * (recipe.crafting_time || 1),
+      };
 
     const processedItems = recipe.ItemRecipeItem.map((itemRecipeItem) => {
       const processedItem = {
         ...itemRecipeItem,
         amount: (itemRecipeItem.amount * recipe.amount) / recipe.yields,
-        crafting_time: (itemRecipeItem.amount / recipe.yields) * (recipe.crafting_time || 1),
+        crafting_time:
+          (itemRecipeItem.amount / recipe.yields) * (recipe.crafting_time || 1),
       };
 
       const nestedRecipe = getRecipeById(itemRecipeItem.Item.id);
@@ -403,8 +404,9 @@ export const getBaseMaterials = (
         };
 
         if (nestedRecipe.ItemRecipeItem) {
-          processedItem.ItemRecipeItem = nestedRecipe.ItemRecipeItem.map((nestedItemRecipeItem) =>
-            recipeTree(nestedItemRecipeItem, processedItem.amount)
+          processedItem.ItemRecipeItem = nestedRecipe.ItemRecipeItem.map(
+            (nestedItemRecipeItem) =>
+              recipeTree(nestedItemRecipeItem, processedItem.amount)
           );
         }
       }
@@ -416,13 +418,12 @@ export const getBaseMaterials = (
       Item: recipe.Item_ItemRecipe_crafted_item_idToItem,
       ItemRecipeItem: processedItems,
     };
-  }
+  };
 
   objects.forEach((item) => {
     if (path) {
       materials.push(recipeTree(item, item.amount));
-    }
-    else findBaseMaterials(item, item.amount, item.yields);
+    } else findBaseMaterials(item, item.amount, item.yields);
   });
   return materials;
 };
@@ -548,6 +549,7 @@ export const rtf = (num: number, unit: Intl.RelativeTimeFormatUnit): string => {
     style: "long", // other values: "short" or "narrow"
   }).format(num, unit);
 };
+
 export const relativeDate = (
   date: Date,
   unit: Intl.RelativeTimeFormatUnit
@@ -875,9 +877,9 @@ export const generatePDF = (crafts) => {
       tableX - cellPadding * 2,
       30 + crafts.length * 20,
       tableX +
-      (Object.keys(crafts[0]).length - 1) *
-      (tableSize.width / Object.keys(crafts[0]).length) +
-      columnWidths[Object.keys(crafts[0]).length - 1],
+        (Object.keys(crafts[0]).length - 1) *
+          (tableSize.width / Object.keys(crafts[0]).length) +
+        columnWidths[Object.keys(crafts[0]).length - 1],
       40 + (crafts.length - 1) * 20 + cellPadding,
       true,
       `0.9 0.9 0.9`
@@ -911,7 +913,7 @@ export const generatePDF = (crafts) => {
                     x:
                       tableX +
                       (Object.keys(crafts[0]).length - 1) *
-                      (tableSize.width / Object.keys(crafts[0]).length) +
+                        (tableSize.width / Object.keys(crafts[0]).length) +
                       columnWidths[Object.keys(crafts[0]).length - 1],
                     y: cellY + cellPadding,
                   },

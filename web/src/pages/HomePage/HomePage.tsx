@@ -3,6 +3,9 @@ import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
+import FileUpload, {
+  FileUpload2,
+} from "src/components/Util/FileUpload/FileUpload";
 import Slider from "src/components/Util/Slider/Slider";
 
 const HomePage = () => {
@@ -68,7 +71,7 @@ const HomePage = () => {
         ogContentUrl="https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj"
         ogType="website"
       />
-      <div className="container-xl overflow-hidden  text-center">
+      <div className="container-xl overflow-hidden text-center">
         <section className="font-montserrat mx-auto mb-12 max-w-screen-xl p-6">
           <div className="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-8 dark:border-zinc-700 dark:bg-gradient-to-tr dark:from-zinc-800 dark:to-zinc-900 md:p-12">
             <h1 className="mb-2 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl">
@@ -270,6 +273,25 @@ const HomePage = () => {
             </div>
           </div>
         </section>
+        <div className="m-4">
+          <FileUpload
+            storagePath="timelineeventimages"
+            defaultValue={"0.44845431025828897.png"}
+            multiple
+            name="images"
+            onUpload={(e) => {
+              console.log(e);
+            }}
+            accept="image/png, image/jpeg, image/jpg"
+          />
+
+          <FileUpload2
+            multiple
+            maxSize={1024 * 1024}
+            storagePath="timelineeventimages"
+            accept="image/png, image/jpeg, image/jpg, image/webp"
+          />
+        </div>
       </div>
     </>
   );
