@@ -142,9 +142,8 @@ export const FileUpload2 = ({
                 className="table-row-group w-full text-xs text-black dark:text-white"
                 key={`file-${index}`}
               >
-                <div className="table-cell w-2/5 p-2 before:mr-1 before:inline-block before:rounded before:bg-purple-300 before:p-1 before:align-middle before:text-[8px] before:text-black before:content-['jpg']">
-                  {file.file.name}
-                </div>
+                {/* before:mr-1 before:inline-block before:rounded before:bg-purple-300 before:p-1 before:align-middle before:text-[8px] before:text-black before:content-['jpg'] */}
+                <div className="table-cell w-2/5 p-2 ">{file.file.name}</div>
                 <div className="table-cell p-2">
                   {formatBytes(file.file.size)}
                 </div>
