@@ -288,6 +288,7 @@ const HomePage = () => {
           <FileUpload2
             multiple
             maxSize={1024 * 1024}
+            defaultValue={"0.44845431025828897.png"}
             storagePath="timelineeventimages"
             accept="image/png, image/jpeg, image/jpg, image/webp"
           />

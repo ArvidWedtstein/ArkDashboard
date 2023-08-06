@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
 import { formatBytes, pluralize } from "src/lib/formatters";
+import { ContextMenu } from "../ContextMenu/ContextMenu";
 
 interface IFileUploadProps
   extends Omit<
@@ -27,7 +28,7 @@ interface IFileUploadProps
 
 export const FileUpload2 = ({
   storagePath,
-  accept = "image/.png, .jpg, .jpeg, .webp",
+  accept = "image/png, image/jpg, image/jpeg, image/webp",
   maxSize,
   ...props
 }: IFileUploadProps) => {
@@ -49,39 +50,94 @@ export const FileUpload2 = ({
   >([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  const imageUrlToFile = async (imageUrl: string, fileName: string) => {
+    try {
+      return await fetch(imageUrl)
+        .then((res) => res.blob())
+        .then((blob) => {
+          return new File([blob], fileName, { type: blob.type });
+        });
+    } catch (error) {
+      console.error("Error converting image URL to File:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    if (props.defaultValue) {
+      setState("ready");
+      props.defaultValue.split(",").map(async (url) => {
+        imageUrlToFile(
+          `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/${storagePath}/${url}`,
+          url
+        ).then((file) => {
+          setFiles((prev) => [
+            ...prev.filter((f) => f.file.name !== file.name),
+            {
+              file: file,
+              url: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/${storagePath}/${url}`,
+              oversized: maxSize ? file.size > maxSize : false,
+            },
+          ]);
+        });
+      });
+    }
+  }, []);
+
+  const readFiles = (files: FileList): void => {
+    Array.prototype.forEach.call(files, (file) => {
+      let reader = new FileReader();
+
+      reader.onloadend = (fileloader) => {
+        if (!file.type || !fileloader.target.result) {
+          setState("error");
+          return;
+        }
+        setFiles((prev) => [
+          ...prev,
+          {
+            file: file,
+            url: fileloader.target.result.toString(),
+            oversized: maxSize ? file.size > maxSize : false,
+          },
+        ]);
+      };
+
+      reader.readAsDataURL(file);
+    });
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setState("ready");
     return new Promise(() => {
       const { target } = e;
       if (target?.files.length) {
-        Array.prototype.forEach.call(target.files, (file) => {
-          let reader = new FileReader();
-
-          reader.onloadend = (fileloader) => {
-            if (!file.type || !fileloader.target.result) {
-              setState("error");
-              return;
-            }
-            setFiles((prev) => [
-              ...prev,
-              {
-                file: file,
-                url: fileloader.target.result.toString(),
-                oversized: maxSize ? file.size > maxSize : false,
-              },
-            ]);
-          };
-
-          reader.readAsDataURL(file);
-        });
+        readFiles(target.files);
       }
     });
   };
+
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    setState("ready");
+    return new Promise(() => {
+      const { dataTransfer } = e;
+      if (dataTransfer.files.length) {
+        console.log(dataTransfer.files);
+        readFiles(dataTransfer.files);
+      }
+    });
+  };
+
   return (
     <div className="group relative w-[calc(100%-3rem)] max-w-xl overflow-hidden rounded-lg border border-zinc-500 bg-zinc-50 p-3 text-gray-900 transition-colors dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200">
       <div className="flex w-full items-center justify-center">
         <label
           htmlFor="dropzone-file"
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleDrop}
           className="flex h-48 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-zinc-200 transition-colors dark:border-zinc-800 dark:bg-zinc-700 dark:hover:border-zinc-900 dark:hover:bg-zinc-700/60"
         >
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -105,14 +161,15 @@ export const FileUpload2 = ({
               drop
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              {new Intl.ListFormat("en-GB", {
-                style: "long",
-                type: "disjunction",
-              }).format(
-                accept
-                  .split(",")
-                  .map((type) => type.trim().split("/")[1].toUpperCase())
-              )}{" "}
+              {accept &&
+                new Intl.ListFormat("en-GB", {
+                  style: "long",
+                  type: "disjunction",
+                }).format(
+                  accept
+                    .split(",")
+                    .map((type) => type.trim().split("/")[1].toUpperCase())
+                )}{" "}
               {maxSize && `(MAX. ${formatBytes(maxSize)})`}
             </p>
           </div>
@@ -121,7 +178,9 @@ export const FileUpload2 = ({
             id="dropzone-file"
             type="file"
             className="hidden"
-            {...props}
+            accept={accept}
+            multiple={props.multiple}
+            size={maxSize}
             onChange={handleFileChange}
             hidden
           />
@@ -132,6 +191,7 @@ export const FileUpload2 = ({
         <div className="w-full">
           <div className="mt-3 table w-full table-auto rounded-lg border border-zinc-500 border-opacity-70 p-2 text-left">
             <div className="table-header-group w-full text-xs text-black dark:text-zinc-300">
+              <div className="table-cell p-1"></div>
               <div className="table-cell p-2">Name</div>
               <div className="table-cell w-1/5 p-2">Size</div>
               <div className="table-cell p-2">Last Modified</div>
@@ -139,11 +199,26 @@ export const FileUpload2 = ({
             </div>
             {files.map((file, index) => (
               <div
-                className="table-row-group w-full text-xs text-black dark:text-white"
+                className={clsx(
+                  `table-row-group w-full text-xs text-black dark:text-white`,
+                  {
+                    "!text-red-500":
+                      file.oversized ||
+                      !accept
+                        .split(",")
+                        .map((a) => a.trim().toUpperCase())
+                        .includes(file.file.type.toUpperCase()),
+                  }
+                )}
                 key={`file-${index}`}
+                title={file.oversized ? "File is too large" : ""}
               >
-                {/* before:mr-1 before:inline-block before:rounded before:bg-purple-300 before:p-1 before:align-middle before:text-[8px] before:text-black before:content-['jpg'] */}
-                <div className="table-cell w-2/5 p-2 ">{file.file.name}</div>
+                <div className="table-cell">
+                  <span className="aspect-square rounded bg-zinc-500 p-1 text-center align-middle text-[8px] uppercase text-black dark:text-white">
+                    {file.file.name.split(".").pop()}
+                  </span>
+                </div>
+                <div className="table-cell w-2/5 p-2">{file.file.name}</div>
                 <div className="table-cell p-2">
                   {formatBytes(file.file.size)}
                 </div>
@@ -151,8 +226,38 @@ export const FileUpload2 = ({
                   {new Date(file.file.lastModified).toDateString()}
                 </div>
                 <div className="table-cell p-2">
-                  {/* TODO: insert ellipsis icon here */}
-                  <button className="w-6">...</button>
+                  <ContextMenu
+                    type="click"
+                    items={[
+                      {
+                        label: "Delete",
+                        icon: (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 576 512"
+                            fill="currentColor"
+                          >
+                            <path d="M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z" />
+                          </svg>
+                        ),
+                        onClick: () => {
+                          setFiles((prev) =>
+                            prev.filter((f) => f.url !== file.url)
+                          );
+                        },
+                      },
+                    ]}
+                  >
+                    <svg
+                      className="w-4"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 448 512"
+                      fill="currentColor"
+                    >
+                      <path d="M120 256c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm160 0c0 30.9-25.1 56-56 56s-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56zm104 56c-30.9 0-56-25.1-56-56s25.1-56 56-56s56 25.1 56 56s-25.1 56-56 56z" />
+                    </svg>
+                  </ContextMenu>
+                  {/* <button className="w-6">...</button> */}
                 </div>
               </div>
             ))}
