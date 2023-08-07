@@ -16,7 +16,9 @@ import type {
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import Lookup from "src/components/Util/Lookup/Lookup";
-import FileUpload, { FileUpload2 } from "src/components/Util/FileUpload/FileUpload";
+import FileUpload, {
+  FileUpload2,
+} from "src/components/Util/FileUpload/FileUpload";
 import { useState } from "react";
 import TagInput from "src/components/Util/TagInput/TagInput";
 
@@ -41,8 +43,8 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
   const [raid, isRaid] = useState<boolean>(false);
   const onSubmit = (data: FormTimelineSeasonEvent) => {
     data.timeline_season_id = props.timeline_season_id;
-    data.images = data.images + files.join(", ");
-    console.log(data)
+    // data.images = data.images + files.join(", ");
+    console.log(data);
     // props.onSave(data, props?.timelineSeasonEvent?.id);
   };
 
@@ -112,7 +114,11 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
         />
 
         <Lookup
-          options={props?.maps.map((map) => ({ label: map.name, value: map.id, image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}` }))}
+          options={props?.maps.map((map) => ({
+            label: map.name,
+            value: map.id,
+            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
+          }))}
           name="map_id"
           defaultValue={props.timelineSeasonEvent?.map_id}
           placeholder="Select a map"
@@ -162,16 +168,12 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
           </>
         )}
 
-
         <FileUpload2
           className="relative !w-full"
           storagePath="timelineeventimages"
           defaultValue={props?.timelineSeasonEvent?.images}
           multiple
           name="images"
-          onFileAdded={(e) => {
-            setFiles((prev) => [...prev, e.name]);
-          }}
         />
         {/* <FileUpload
           storagePath="timelineeventimages"
@@ -183,7 +185,12 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
           }}
         /> */}
 
-        <TagInput name="tags" defaultValue={`${props.timelineSeasonEvent?.tags || ""}${raid ? 'raid' : ''}`} />
+        <TagInput
+          name="tags"
+          defaultValue={`${props.timelineSeasonEvent?.tags || ""}${
+            raid ? "raid" : ""
+          }`}
+        />
 
         <FieldError name="tags" className="rw-field-error" />
         {/* <div className="relative max-w-sm">

@@ -30,12 +30,12 @@ export const QUERY = gql`
 export const Loading = () => (
   <div
     role="status"
-    className="grid animate-pulse grid-cols-4 gap-3 rounded border border-gray-200 p-4 shadow dark:border-gray-700 md:p-6"
+    className="grid animate-pulse grid-cols-4 gap-3 rounded border border-zinc-200 p-4 shadow dark:border-zinc-700 md:p-6"
   >
-    <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
-    <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
-    <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
-    <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
+    <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
+    <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
+    <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
+    <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
     <span className="sr-only">Loading...</span>
   </div>
 );
