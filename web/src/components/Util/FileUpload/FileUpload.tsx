@@ -5,13 +5,11 @@ import { formatBytes, pluralize } from "src/lib/formatters";
 import { ContextMenu } from "../ContextMenu/ContextMenu";
 import { toast } from "@redwoodjs/web/dist/toast";
 import Toast from "../Toast/Toast";
+import { Controller, InputField, Label, SelectField, TextField, useController, useFormContext, useRegister } from "@redwoodjs/forms";
 
-interface IFileUploadProps
-  extends Omit<
-    React.HTMLProps<HTMLInputElement>,
-    "className" | "type" | "hidden" | "onChange" | "defaultValue"
-  > {
+interface IFileUploadProps {
   onUpload?: (url: string) => void;
+  onFileAdded?: (file: File) => void;
   className?: string;
   multiple?: boolean;
   /**
@@ -20,7 +18,14 @@ interface IFileUploadProps
   defaultValue?: string;
   storagePath: string;
   sizeLimit?: number;
+  /**
+   * Name of the input field
+   */
   name?: string;
+  /**
+   * Comma seperated list of mime file types
+   */
+  accept?: string;
   thumbnail?: boolean;
   /**
    * Max size in bytes
@@ -37,6 +42,7 @@ interface iFile {
     type: string;
   };
   thumbnail?: boolean;
+  preview: boolean;
   state: 'newfile' | 'uploading' | 'uploaded' | 'newuploaded';
   url: string;
   error?: {
@@ -50,15 +56,17 @@ export const FileUpload2 = ({
   accept = "image/png, image/jpg, image/jpeg, image/webp",
   maxSize,
   onUpload,
+  onFileAdded,
   thumbnail = false,
+  className,
+  name,
+  defaultValue,
   ...props
 }: IFileUploadProps) => {
   const { client: supabase } = useAuth();
-  const [state, setState] = useState<
-    "idle" | "ready" | "uploading" | "error" | "success"
-  >("idle");
   const [files, setFiles] = useState<iFile[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const { field } = !!name && useController({ name: name });
 
   const imageUrlToFile = async (imageUrl: string, fileName: string) => {
     try {
@@ -74,19 +82,21 @@ export const FileUpload2 = ({
   };
 
   useEffect(() => {
-    if (props.defaultValue) {
-      setState("ready");
-      props.defaultValue.split(",").map(async (url) => {
+    if (defaultValue) {
+      !!name && field.onChange(defaultValue);
+      defaultValue.split(",").map(async (url) => {
         imageUrlToFile(
           `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/${storagePath}/${url}`,
           url
         ).then((file) => {
+          onFileAdded?.(file);
           setFiles((prev) => [
             ...prev.filter((f) => f.file.name !== file.name),
             {
               file: file,
               url: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/${storagePath}/${url}`,
               state: 'uploaded',
+              preview: false,
               error:
                 maxSize && file.size > maxSize
                   ? {
@@ -111,13 +121,14 @@ export const FileUpload2 = ({
     }
   }, []);
 
-  const readFiles = (files: FileList): void => {
-    Array.prototype.forEach.call(files, (file: File) => {
+  const readFiles = (ifiles: FileList): void => {
+    Array.prototype.forEach.call(ifiles, (file: File) => {
       let reader = new FileReader();
 
+      onFileAdded?.(file);
       reader.onloadend = (fileloader) => {
         if (!file.type || !fileloader.target.result) {
-          setState("error");
+          toast.error("Invalid file type.");
           return;
         }
         setFiles((prev) => [
@@ -126,6 +137,7 @@ export const FileUpload2 = ({
             file: file,
             url: fileloader.target.result.toString(),
             state: 'newfile',
+            preview: false,
             error:
               maxSize && file.size > maxSize
                 ? {
@@ -152,7 +164,6 @@ export const FileUpload2 = ({
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setState("ready");
     return new Promise(() => {
       const { target } = e;
       if (target?.files.length) {
@@ -165,7 +176,6 @@ export const FileUpload2 = ({
     e.preventDefault();
     e.stopPropagation();
 
-    setState("ready");
     return new Promise(() => {
       const { dataTransfer } = e;
       if (dataTransfer.files.length) {
@@ -235,13 +245,22 @@ export const FileUpload2 = ({
       setFiles((prev) =>
         prev.filter((f) => f.url !== file.url)
       );
+    !!name && field.onChange(files.filter((f) => f.url !== file.url).map(f => f.file.name).join(', '));
   }
 
   return (
-    <div className="group relative flex w-[calc(100%-3rem)] max-w-xl flex-col gap-2 overflow-hidden rounded-lg border border-zinc-500 bg-zinc-50 p-3 text-gray-900 transition-colors dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200">
+    <div className={`group relative flex w-[calc(100%-3rem)] max-w-2xl flex-col gap-2 overflow-hidden rounded-lg border border-zinc-500 bg-zinc-50 p-3 text-gray-900 transition-colors dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200 ${className}`}>
+      {!!name && (
+        <input
+          name={name}
+          defaultValue={defaultValue}
+          value={files.map(f => f.file.name).join(', ')}
+          hidden
+        />
+      )}
       <div className="flex w-full items-center justify-center">
         <label
-          htmlFor="dropzone-file"
+          htmlFor="dropzone-files"
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDrop}
           className="flex h-48 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-zinc-200 transition-colors dark:border-zinc-500 dark:bg-zinc-700/60 dark:hover:bg-zinc-700"
@@ -286,7 +305,7 @@ export const FileUpload2 = ({
           </div>
           <input
             ref={inputRef}
-            id="dropzone-file"
+            id="dropzone-files"
             type="file"
             className="hidden"
             accept={accept}
@@ -320,7 +339,7 @@ export const FileUpload2 = ({
             >
               <div className="table-cell">
                 <span
-                  className={`rounded p-1 text-center align-middle text-[8px] uppercase text-black dark:text-white ${file.error ? "bg-red-500" : "bg-zinc-500"
+                  className={`truncate rounded p-1 text-center align-middle text-[8px] uppercase text-black dark:text-white ${file.error ? "bg-red-500" : "bg-zinc-500"
                     }`}
                 >
                   {file.error ?
@@ -342,14 +361,14 @@ export const FileUpload2 = ({
               <div className="table-cell p-2">
                 {formatBytes(file.file.size)}
               </div>
-              <div className="table-cell p-2">
+              <div className="table-cell p-2 truncate">
                 {new Date(file.file.lastModified).toDateString()}
               </div>
               <div className="table-cell p-2">
                 <ContextMenu
                   type="click"
                   items={[
-                    thumbnail && {
+                    thumbnail ? {
                       label: 'Set as thumbnail',
                       icon: (
                         <svg
@@ -362,17 +381,14 @@ export const FileUpload2 = ({
                       ),
                       onClick: () => {
                         setFiles((prev) =>
-                          prev.map((f) =>
-                            f.file.name === file.file.name
-                              ? {
-                                ...f,
-                                thumbnail: !f.thumbnail,
-                              }
-                              : f
+                          prev.map((f) => ({
+                            ...f,
+                            thumbnail: f.file.name === file.file.name,
+                          })
                           )
                         );
                       }
-                    },
+                    } : null,
                     {
                       label: 'Preview',
                       icon: (
@@ -385,16 +401,10 @@ export const FileUpload2 = ({
                         </svg>
                       ),
                       onClick: () => {
-                        setFiles((prev) =>
-                          prev.map((f) =>
-                            f.file.name === file.file.name
-                              ? {
-                                ...f,
-                                thumbnail: !f.thumbnail,
-                              }
-                              : f
-                          )
-                        );
+                        setFiles((prev) => prev.map((f) => ({
+                          ...f,
+                          preview: f.file.name === file.file.name
+                        })));
                       }
                     },
                     {
@@ -434,12 +444,22 @@ export const FileUpload2 = ({
                   </svg>
                 </ContextMenu>
               </div>
+              {thumbnail && <input
+                type="radio"
+                className="hidden"
+                title="thumbnail"
+                name="thumbnail"
+                id={`thumbnail-${index}`}
+                checked={file.thumbnail}
+                value={file.file.name}
+              />
+              }
             </div>
           ))}
         </div>
       )}
 
-      {files && files.some(f => f.thumbnail) && (
+      {files && files.some(f => f.preview) && (
         <div className="relative animate-fade-in border border-zinc-500 p-2 rounded-lg">
           <button
             className="rw-button rw-button-small rw-button-red absolute top-1 right-1"
@@ -448,7 +468,7 @@ export const FileUpload2 = ({
               setFiles((prev) =>
                 prev.map((f) => ({
                   ...f,
-                  thumbnail: false,
+                  preview: false,
                 }))
               );
             }}
@@ -458,7 +478,7 @@ export const FileUpload2 = ({
             </svg>
             <span className="sr-only">Close</span>
           </button>
-          <img src={files.find(f => f.thumbnail)?.url} className="ascpect-square object-cover" />
+          <img src={files.find(f => f.preview)?.url} className="ascpect-square object-cover max-w-full w-max" />
         </div>
       )}
 
@@ -723,8 +743,8 @@ const FileUpload = ({
       className={clsx(
         "group relative w-[calc(100%-3rem)] max-w-xl overflow-hidden rounded-lg border border-zinc-500 bg-zinc-50 text-gray-900 transition-colors dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200",
         {
-          "behtmlFore:bg-[#f5463d]": state === 3,
-          "behtmlFore:bg-[#3df574]": state === 4,
+          "before:bg-[#f5463d]": state === 3,
+          "before:bg-[#3df574]": state === 4,
         }
       )}
       data-state="0"
@@ -999,7 +1019,7 @@ const FileUpload = ({
                 </div>
                 <div className="h-[0.4rem] w-full overflow-hidden">
                   <div
-                    className="transition-transhtmlForm h-full w-full bg-[#e3e4e8]"
+                    className="transition-transform h-full w-full bg-[#e3e4e8]"
                     data-progress-fill
                   ></div>
                 </div>

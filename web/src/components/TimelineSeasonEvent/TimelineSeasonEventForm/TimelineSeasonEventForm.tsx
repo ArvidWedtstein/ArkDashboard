@@ -16,7 +16,7 @@ import type {
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import Lookup from "src/components/Util/Lookup/Lookup";
-import FileUpload from "src/components/Util/FileUpload/FileUpload";
+import FileUpload, { FileUpload2 } from "src/components/Util/FileUpload/FileUpload";
 import { useState } from "react";
 import TagInput from "src/components/Util/TagInput/TagInput";
 
@@ -42,11 +42,12 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
   const onSubmit = (data: FormTimelineSeasonEvent) => {
     data.timeline_season_id = props.timeline_season_id;
     data.images = data.images + files.join(", ");
-    props.onSave(data, props?.timelineSeasonEvent?.id);
+    console.log(data)
+    // props.onSave(data, props?.timelineSeasonEvent?.id);
   };
 
   return (
-    <div className="rw-form-wrapper mt-3">
+    <div className="rw-form-wrapper">
       <Form<FormTimelineSeasonEvent>
         onSubmit={onSubmit}
         error={props.error}
@@ -162,7 +163,17 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
         )}
 
 
-        <FileUpload
+        <FileUpload2
+          className="relative !w-full"
+          storagePath="timelineeventimages"
+          defaultValue={props?.timelineSeasonEvent?.images}
+          multiple
+          name="images"
+          onFileAdded={(e) => {
+            setFiles((prev) => [...prev, e.name]);
+          }}
+        />
+        {/* <FileUpload
           storagePath="timelineeventimages"
           defaultValue={props?.timelineSeasonEvent?.images}
           multiple
@@ -170,7 +181,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
           onUpload={(e) => {
             setFiles((prev) => [...prev, e]);
           }}
-        />
+        /> */}
 
         <TagInput name="tags" defaultValue={`${props.timelineSeasonEvent?.tags || ""}${raid ? 'raid' : ''}`} />
 

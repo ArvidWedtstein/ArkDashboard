@@ -17,6 +17,8 @@ export const ContextMenu = ({
   children,
   type = "context",
 }: IContextMenuProps) => {
+
+  // TODO: fix POSITIONING
   const [points, setPoints] = useState({
     x: 0,
     y: 0,
@@ -87,13 +89,13 @@ export const ContextMenu = ({
             top: points.y,
             left: points.x,
             zIndex: 1000,
-            // transform: "translate(-50%, -50%)",
+            transform: "translate(-50%, -50%)",
             position: "fixed",
           }}
           className="fixed flex w-60 origin-top-left flex-col rounded-lg border border-zinc-500 bg-zinc-100 p-1 text-sm text-gray-500 shadow-lg dark:bg-zinc-600 dark:text-zinc-100"
         >
           {items &&
-            items.map((item, i) => (
+            items.filter(i => i != null).map((item, i) => (
               <div
                 key={i}
                 onClick={(e) => {
