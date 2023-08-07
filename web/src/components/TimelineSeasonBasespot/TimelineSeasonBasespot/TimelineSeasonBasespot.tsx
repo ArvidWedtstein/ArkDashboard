@@ -9,6 +9,7 @@ import ImageContainer from "src/components/Util/ImageContainer/ImageContainer";
 import Map from "src/components/Util/Map/Map";
 import { ModalContext, Modal } from "src/components/Util/Modal/Modal";
 import Slideshow from "src/components/Util/Slideshow/Slideshow";
+import Toast from "src/components/Util/Toast/Toast";
 
 import { formatBytes, getDateDiff, pluralize, timeTag } from "src/lib/formatters";
 
@@ -56,60 +57,22 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
     id: DeleteTimelineSeasonBasespotMutationVariables["id"]
   ) => {
     toast.custom((t) => (
-      <div
-        className={`${t.visible ? "animate-fly-in" : "animate-fade-out"
-          } rw-toast rw-toast-error`}
-        role="alert"
-      >
-        <div className="flex items-center">
-          <svg
-            className="mr-2 h-4 w-4 flex-shrink-0"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-          </svg>
-          <span className="sr-only">Info</span>
-          <h3 className="text-lg font-medium">
-            You're about to delete basespot <b>{id}</b>
-          </h3>
-        </div>
-        <div className="mt-2 mb-4 text-sm">
-          <p>
-            Are you sure you want to delete basespot {id}?
-          </p>
-        </div>
-        <div className="flex">
-          <button
-            type="button"
-            onClick={() => {
-              toast.dismiss(t.id);
-              toast.promise(
-                deleteTimelineSeasonBasespot({ variables: { id } }),
-                {
-                  loading: "deleting basespot from season...",
-                  success: `Successfully deleted basespot`,
-                  error: `Failed to delete basespot`,
-                }
-              );
-            }}
-            className="mr-2 inline-flex items-center rounded-lg bg-red-800 px-3 py-1.5 text-center text-xs font-medium text-white hover:bg-red-900 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-          >
-            Remove
-          </button>
-          <button
-            type="button"
-            onClick={() => toast.dismiss(t.id)}
-            className="rounded-lg border border-red-800 bg-transparent px-3 py-1.5 text-center text-xs font-medium text-red-800 hover:bg-red-900 hover:text-white focus:outline-none focus:ring-4 focus:ring-red-300 dark:border-red-600 dark:text-red-500 dark:hover:bg-red-600 dark:hover:text-white dark:focus:ring-red-800"
-            data-dismiss-target="#alert-additional-content-2"
-            aria-label="Close"
-          >
-            Dismiss
-          </button>
-        </div>
-      </div>
+      <Toast
+        t={t}
+        title={`You're about to delete basespot ${id}`}
+        message={`Are you sure you want to delete basespot ${id}?`}
+        primaryAction={() => {
+          toast.promise(
+            deleteTimelineSeasonBasespot({ variables: { id } }),
+            {
+              loading: "deleting basespot from season...",
+              success: `Successfully deleted basespot`,
+              error: `Failed to delete basespot`,
+            }
+          );
+        }}
+        actionType="OkCancel"
+      />
     ));
   };
   const [images, setImages] = useState([]);

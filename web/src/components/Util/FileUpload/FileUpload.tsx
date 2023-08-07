@@ -28,34 +28,36 @@ interface IFileUploadProps
   maxSize?: number;
 }
 
+interface iFile {
+  file: {
+    name: string;
+    lastModified: number;
+    webkitRelativePath: string;
+    size: number;
+    type: string;
+  };
+  thumbnail?: boolean;
+  state: 'newfile' | 'uploading' | 'uploaded' | 'newuploaded';
+  url: string;
+  error?: {
+    type: "oversized" | "invalidType" | "uploadError";
+    message: string;
+  };
+}
+
 export const FileUpload2 = ({
   storagePath,
   accept = "image/png, image/jpg, image/jpeg, image/webp",
   maxSize,
   onUpload,
+  thumbnail = false,
   ...props
 }: IFileUploadProps) => {
   const { client: supabase } = useAuth();
   const [state, setState] = useState<
     "idle" | "ready" | "uploading" | "error" | "success"
   >("idle");
-  const [files, setFiles] = useState<
-    {
-      file?: {
-        name: string;
-        lastModified: number;
-        webkitRelativePath: string;
-        size: number;
-        type: string;
-      };
-      error?: {
-        type: "oversized" | "invalidType";
-        message: string;
-      };
-      uploaded: boolean;
-      url: string;
-    }[]
-  >([]);
+  const [files, setFiles] = useState<iFile[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const imageUrlToFile = async (imageUrl: string, fileName: string) => {
@@ -84,24 +86,24 @@ export const FileUpload2 = ({
             {
               file: file,
               url: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/${storagePath}/${url}`,
-              uploaded: true,
+              state: 'uploaded',
               error:
                 maxSize && file.size > maxSize
                   ? {
-                      type: "oversized",
-                      message: `File is too large.${` Max size is ${formatBytes(
-                        maxSize
-                      )}.`}`,
-                    }
+                    type: "oversized",
+                    message: `File is too large.${` Max size is ${formatBytes(
+                      maxSize
+                    )}.`}`,
+                  }
                   : !accept
-                      .split(",")
-                      .map((a) => a.trim().toUpperCase())
-                      .includes(file.type.toUpperCase())
-                  ? {
+                    .split(",")
+                    .map((a) => a.trim().toUpperCase())
+                    .includes(file.type.toUpperCase())
+                    ? {
                       type: "invalidType",
                       message: `Invalid file type.`,
                     }
-                  : null,
+                    : null,
             },
           ]);
         });
@@ -123,24 +125,24 @@ export const FileUpload2 = ({
           {
             file: file,
             url: fileloader.target.result.toString(),
-            uploaded: false,
+            state: 'newfile',
             error:
               maxSize && file.size > maxSize
                 ? {
-                    type: "oversized",
-                    message: `File is too large.${` Max size is ${formatBytes(
-                      maxSize
-                    )}.`}`,
-                  }
+                  type: "oversized",
+                  message: `File is too large.${` Max size is ${formatBytes(
+                    maxSize
+                  )}.`}`,
+                }
                 : !accept
-                    .split(",")
-                    .map((a) => a.trim().toUpperCase())
-                    .includes(file.type.toUpperCase())
-                ? {
+                  .split(",")
+                  .map((a) => a.trim().toUpperCase())
+                  .includes(file.type.toUpperCase())
+                  ? {
                     type: "invalidType",
                     message: `Invalid file type.`,
                   }
-                : null,
+                  : null,
           },
         ]);
       };
@@ -174,18 +176,66 @@ export const FileUpload2 = ({
 
   const handleUpload = () => {
     files
-      .filter((f) => f.error == null && !f.uploaded)
+      .filter((f) => f.error == null && f.state === 'newfile')
       .forEach(async ({ file }) => {
-        let { error: uploadError } = await supabase.storage
-          .from(`${storagePath}`)
-          .upload(file.name, file as File);
+        setFiles((prev) =>
+          prev.map((f) =>
+            f.file.name === file.name
+              ? {
+                ...f,
+                state: 'uploading',
+              }
+              : f
+          )
+        );
 
-        if (uploadError) {
-          fail();
+        let { error } = await supabase.storage
+          .from(`${storagePath}`)
+          .upload(file.name, file as File)
+          .finally(() => {
+            setFiles((prev) =>
+              prev.map((f) =>
+                f.file.name === file.name
+                  ? {
+                    ...f,
+                    state: 'newuploaded',
+                  }
+                  : f
+              )
+            );
+          });
+
+        if (error) {
+          setFiles((prev) => prev.map((f) =>
+            f.file.name === file.name
+              ? {
+                ...f,
+                error: {
+                  type: "uploadError",
+                  message: error.message,
+                },
+              }
+              : f
+          ));
+          toast.error(error.message);
         }
         onUpload?.(file.name);
       });
   };
+
+  const handleFileDelete = async (file) => {
+    let { error } = (file.state == 'uploaded' || file.state == 'newuploaded')
+      ? await supabase.storage
+        .from(`${storagePath}`)
+        .remove([file.file.name])
+      : { error: null };
+
+    if (error) toast.error(error.message);
+    else
+      setFiles((prev) =>
+        prev.filter((f) => f.url !== file.url)
+      );
+  }
 
   return (
     <div className="group relative flex w-[calc(100%-3rem)] max-w-xl flex-col gap-2 overflow-hidden rounded-lg border border-zinc-500 bg-zinc-50 p-3 text-gray-900 transition-colors dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-200">
@@ -270,12 +320,22 @@ export const FileUpload2 = ({
             >
               <div className="table-cell">
                 <span
-                  className={`rounded p-1 text-center align-middle text-[8px] uppercase text-black dark:text-white ${
-                    file.error ? "bg-red-500" : "bg-zinc-500"
-                  }`}
+                  className={`rounded p-1 text-center align-middle text-[8px] uppercase text-black dark:text-white ${file.error ? "bg-red-500" : "bg-zinc-500"
+                    }`}
                 >
-                  {/* TODO: insert error icon here if error */}
-                  {file.error ? "!" : file.file.name.split(".").pop()}
+                  {file.error ?
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" className="inline w-3 h-3">
+                      <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256s256-114.6 256-256S397.4 0 256 0zM256 480c-123.5 0-224-100.5-224-224s100.5-224 224-224s224 100.5 224 224S379.5 480 256 480zM256 304c8.844 0 16-7.156 16-16V128c0-8.844-7.156-16-16-16S240 119.2 240 128v160C240 296.8 247.2 304 256 304zM256 344c-13.25 0-24 10.75-24 24s10.75 24 24 24s24-10.75 24-24S269.3 344 256 344z" />
+                    </svg>
+                    : file.state == 'uploading' ?
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" className="inline w-3 h-3 animate-spin">
+                        <path d="M271.3 32.52C262.8 31.94 256 25.22 256 16.68c0-9.296 7.964-16.72 17.24-16.11C406.4 9.47 512 120.6 512 256c0 40.08-9.393 77.95-25.92 111.7c-4.07 8.32-14.23 11.61-22.27 7.015c-7.108-4.062-10.37-13.09-6.757-20.43C471.7 324.6 480 291.3 480 256C480 137.6 387.7 40.41 271.3 32.52z" />
+                      </svg>
+                      : file.state === 'newuploaded' ?
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" className="inline w-3 h-3">
+                          <path d="M475.3 123.3l-272 272C200.2 398.4 196.1 400 192 400s-8.188-1.562-11.31-4.688l-144-144c-6.25-6.25-6.25-16.38 0-22.62s16.38-6.25 22.62 0L192 361.4l260.7-260.7c6.25-6.25 16.38-6.25 22.62 0S481.6 117.1 475.3 123.3z" />
+                        </svg>
+                        : file.file.name.split(".").pop()}
                 </span>
               </div>
               <div className="table-cell w-2/5 p-2">{file.file.name}</div>
@@ -289,8 +349,8 @@ export const FileUpload2 = ({
                 <ContextMenu
                   type="click"
                   items={[
-                    {
-                      label: "Delete",
+                    thumbnail && {
+                      label: 'Set as thumbnail',
                       icon: (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -301,6 +361,53 @@ export const FileUpload2 = ({
                         </svg>
                       ),
                       onClick: () => {
+                        setFiles((prev) =>
+                          prev.map((f) =>
+                            f.file.name === file.file.name
+                              ? {
+                                ...f,
+                                thumbnail: !f.thumbnail,
+                              }
+                              : f
+                          )
+                        );
+                      }
+                    },
+                    {
+                      label: 'Preview',
+                      icon: (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 576 512"
+                          fill="currentColor"
+                        >
+                          <path d="M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z" />
+                        </svg>
+                      ),
+                      onClick: () => {
+                        setFiles((prev) =>
+                          prev.map((f) =>
+                            f.file.name === file.file.name
+                              ? {
+                                ...f,
+                                thumbnail: !f.thumbnail,
+                              }
+                              : f
+                          )
+                        );
+                      }
+                    },
+                    {
+                      label: "Delete",
+                      icon: (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 448 512"
+                        >
+                          <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80c-15.1 0-29.4 7.125-38.4 19.25L112 64H16C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16 0-8.8-7.2-16-16-16zm-280 0l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zm248 64c-8.8 0-16 7.2-16 16v288c0 26.47-21.53 48-48 48H112c-26.47 0-48-21.5-48-48V144c0-8.8-7.16-16-16-16s-16 7.2-16 16v288c0 44.1 35.89 80 80 80h224c44.11 0 80-35.89 80-80V144c0-8.8-7.2-16-16-16zM144 416V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16z" />
+                        </svg>
+                      ),
+                      onClick: () => {
                         toast.custom(
                           (t) => (
                             <Toast
@@ -308,19 +415,7 @@ export const FileUpload2 = ({
                               variant="error"
                               title={`You're about to delete ${file.file.name}`}
                               message="Are you sure you want to delete this file? This action cannot be undone."
-                              primaryAction={async () => {
-                                let { error } = file.uploaded
-                                  ? await supabase.storage
-                                      .from(`${storagePath}`)
-                                      .remove([file.file.name])
-                                  : { error: null };
-
-                                if (error) toast.error(error.message);
-                                else
-                                  setFiles((prev) =>
-                                    prev.filter((f) => f.url !== file.url)
-                                  );
-                              }}
+                              primaryAction={() => handleFileDelete(file)}
                             />
                           ),
                           { position: "top-center" }
@@ -344,14 +439,36 @@ export const FileUpload2 = ({
         </div>
       )}
 
-      {state === "ready" && (
-        <button
-          onClick={handleUpload}
-          className="rw-button rw-button-gray-outline w-full"
-        >
-          Upload
-        </button>
+      {files && files.some(f => f.thumbnail) && (
+        <div className="relative animate-fade-in border border-zinc-500 p-2 rounded-lg">
+          <button
+            className="rw-button rw-button-small rw-button-red absolute top-1 right-1"
+            type="button"
+            onClick={() => {
+              setFiles((prev) =>
+                prev.map((f) => ({
+                  ...f,
+                  thumbnail: false,
+                }))
+              );
+            }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" className="rw-button-icon-start !mr-0">
+              <path d="M315.3 411.3c-6.253 6.253-16.37 6.253-22.63 0L160 278.6l-132.7 132.7c-6.253 6.253-16.37 6.253-22.63 0c-6.253-6.253-6.253-16.37 0-22.63L137.4 256L4.69 123.3c-6.253-6.253-6.253-16.37 0-22.63c6.253-6.253 16.37-6.253 22.63 0L160 233.4l132.7-132.7c6.253-6.253 16.37-6.253 22.63 0c6.253 6.253 6.253 16.37 0 22.63L182.6 256l132.7 132.7C321.6 394.9 321.6 405.1 315.3 411.3z" />
+            </svg>
+            <span className="sr-only">Close</span>
+          </button>
+          <img src={files.find(f => f.thumbnail)?.url} className="ascpect-square object-cover" />
+        </div>
       )}
+
+      <button
+        onClick={handleUpload}
+        disabled={files.filter(f => f.state == 'newfile').length < 1}
+        className="rw-button rw-button-gray-outline w-full"
+      >
+        Upload
+      </button>
     </div>
   );
 };

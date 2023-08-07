@@ -107,7 +107,7 @@
 
   .rw-button.disabled,
   .rw-button[disabled] {
-    @apply pointer-events-none cursor-not-allowed select-none opacity-50;
+    @apply !cursor-not-allowed select-none opacity-50;
   }
 
   .rw-button.disabled:hover,
@@ -164,10 +164,10 @@
   .rw-button.rw-button-gray {
     @apply border border-gray-500 bg-zinc-300 text-gray-700 dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-300;
   }
-  .rw-button.rw-button-gray:hover {
+  .rw-button.rw-button-gray:not([disabled]):hover {
     @apply border-gray-500 bg-zinc-400 text-gray-900 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white;
   }
-  .rw-button.rw-button-gray:focus {
+  .rw-button.rw-button-gray:not([disabled]):focus {
     @apply ring-1 ring-gray-300 dark:ring-zinc-700;
   }
 
@@ -175,10 +175,10 @@
   .rw-button.rw-button-gray-outline {
     @apply border border-zinc-700 ring-1 ring-transparent transition dark:border-zinc-500;
   }
-  .rw-button.rw-button-gray-outline:hover {
+  .rw-button.rw-button-gray-outline:not([disabled]):hover {
     @apply border-stone-800 ring-1 ring-zinc-700 dark:border-zinc-600 dark:ring-zinc-500;
   }
-  .rw-button.rw-button-gray-outline:focus {
+  .rw-button.rw-button-gray-outline:not([disabled]):focus {
     @apply border-stone-700 ring-1 ring-stone-400 dark:border-stone-500 dark:ring-stone-400;
   }
 
@@ -186,10 +186,10 @@
   .rw-button.rw-button-red {
     @apply bg-red-500 text-white;
   }
-  .rw-button.rw-button-red:hover {
+  .rw-button.rw-button-red:not([disabled]):hover {
     @apply bg-red-700 text-white;
   }
-  .rw-button.rw-button-red:focus {
+  .rw-button.rw-button-red:not([disabled]):focus {
     @apply ring-1 ring-red-300 dark:ring-red-800;
   }
 
@@ -197,10 +197,10 @@
   .rw-button.rw-button-red-outline {
     @apply border border-red-500 text-red-500;
   }
-  .rw-button.rw-button-red-outline:hover {
+  .rw-button.rw-button-red-outline:not([disabled]):hover {
     @apply bg-red-600 text-white;
   }
-  .rw-button.rw-button-red-outline:focus {
+  .rw-button.rw-button-red-outline:not([disabled]):focus {
     @apply outline-none ring-4 ring-red-700;
   }
 
@@ -208,10 +208,10 @@
   .rw-button.rw-button-green {
     @apply bg-pea-500 text-white;
   }
-  .rw-button.rw-button-green:hover {
+  .rw-button.rw-button-green:not([disabled]):hover {
     @apply bg-pea-600;
   }
-  .rw-button.rw-button-green:focus {
+  .rw-button.rw-button-green:not([disabled]):focus {
     @apply ring-pea-300 dark:ring-pea-800 outline-none ring-1;
   }
 
@@ -219,11 +219,11 @@
   .rw-button.rw-button-green-outline {
     @apply border-pea-500 text-pea-500 border;
   }
-  .rw-button.rw-button-green-outline:hover {
+  .rw-button.rw-button-green-outline:not([disabled]):hover {
     @apply bg-pea-600 text-white;
   }
-  .rw-button.rw-button-green-outline:focus,
-  .rw-button.rw-button-green-outline:focus-within {
+  .rw-button.rw-button-green-outline:not([disabled]):focus,
+  .rw-button.rw-button-green-outline:not([disabled]):focus-within {
     @apply ring-pea-300 dark:!ring-pea-800 outline-none ring-4;
   }
 
@@ -231,11 +231,11 @@
   .rw-button.rw-button-green-gradient {
     @apply from-pea-400 to-pea-600 dark:from-pea-300 dark:to-pea-500 dark:text-pea-950 bg-gradient-to-br text-white;
   }
-  .rw-button.rw-button-green-gradient:hover {
+  .rw-button.rw-button-green-gradient:not([disabled]):hover {
     @apply from-pea-500 to-pea-700 dark:from-pea-200 dark:to-pea-400;
   }
-  .rw-button.rw-button-green-gradient:focus,
-  .rw-button.rw-button-green-gradient:active {
+  .rw-button.rw-button-green-gradient:not([disabled]):focus,
+  .rw-button.rw-button-green-gradient:not([disabled]):active {
     @apply from-pea-600 to-pea-800 dark:from-pea-400 dark:to-pea-600 ring-0;
   }
   .rw-button.rw-button-green-gradient:disabled {
@@ -246,10 +246,10 @@
   .rw-button.rw-button-blue {
     @apply bg-blue-500 text-white;
   }
-  .rw-button.rw-button-blue:hover {
+  .rw-button.rw-button-blue:not([disabled]):hover {
     @apply bg-blue-600;
   }
-  .rw-button.rw-button-blue:focus {
+  .rw-button.rw-button-blue:not([disabled]):focus {
     @apply ring-1 ring-blue-300 dark:ring-blue-800;
   }
 
@@ -257,10 +257,10 @@
   .rw-button.rw-button-blue-outline {
     @apply border border-blue-500 text-blue-500;
   }
-  .rw-button.rw-button-blue-outline:hover {
+  .rw-button.rw-button-blue-outline:not([disabled]):hover {
     @apply bg-blue-600 text-white;
   }
-  .rw-button.rw-button-green-outline:focus {
+  .rw-button.rw-button-green-outline:not([disabled]):focus {
     @apply outline-none ring-4 ring-blue-800;
   }
 
@@ -268,10 +268,10 @@
   .rw-button.rw-button-yellow {
     @apply bg-yellow-500 text-white;
   }
-  .rw-button.rw-button-yellow:hover {
+  .rw-button.rw-button-yellow:not([disabled]):hover {
     @apply bg-yellow-600 text-white;
   }
-  .rw-button.rw-button-yellow:focus {
+  .rw-button.rw-button-yellow:not([disabled]):focus {
     @apply ring-1 ring-yellow-300 dark:ring-yellow-800;
   }
 

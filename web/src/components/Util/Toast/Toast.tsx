@@ -2,8 +2,8 @@ import { Toast as iToast, toast } from "@redwoodjs/web/dist/toast";
 
 interface ToastProps {
   t: iToast;
-  title?: string;
-  message?: string;
+  title?: string | React.ReactNode;
+  message?: string | React.ReactNode;
   variant?: "error" | "success" | "info" | "warning";
   actionType?: "YesNo" | "OkCancel" | "Ok";
   primaryAction?: (toast: iToast) => void;
@@ -20,9 +20,8 @@ const Toast = ({
 }: ToastProps) => {
   return (
     <div
-      className={`${
-        t.visible ? "animate-fly-in" : "animate-fade-out"
-      } rw-toast ${`rw-toast-${variant}`}`}
+      className={`${t.visible ? "animate-fly-in" : "animate-fade-out"
+        } rw-toast ${`rw-toast-${variant}`}`}
       role="alert"
     >
       <div className="flex items-center">
@@ -46,21 +45,20 @@ const Toast = ({
             toast.dismiss(t.id);
             primaryAction?.(t);
           }}
-          className={`rw-button rw-button-${
-            variant == "error"
+          className={`rw-button rw-button-${variant == "error"
               ? "red"
               : variant == "success"
-              ? "green"
-              : variant == "info"
-              ? "blue"
-              : "yellow"
-          } rw-button-small`}
+                ? "green"
+                : variant == "info"
+                  ? "blue"
+                  : "yellow"
+            } rw-button-small`}
         >
           {actionType === "Ok"
             ? "Ok"
             : actionType === "OkCancel"
-            ? "Ok"
-            : "Yes"}
+              ? "Ok"
+              : "Yes"}
         </button>
         {actionType !== "Ok" && (
           <button
