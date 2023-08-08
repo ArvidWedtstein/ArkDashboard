@@ -116,7 +116,7 @@ const Slideshow = ({
         ))}
       </div>
       {arrows && slides.length > 1 && (
-        <div className="absolute top-0 left-0 bottom-0 flex h-full w-full flex-row items-center justify-between font-black text-white text-opacity-75">
+        <div className="absolute top-0 left-0 flex h-full w-full flex-row items-center justify-between font-black text-white text-opacity-75">
           <button className="p-3" onClick={handlePrevSlide}>
             <svg
               xmlns="http://www.w3.org/2000/svg"

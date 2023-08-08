@@ -7,9 +7,8 @@ const drawSvgPath = (
   let pathString = "";
   coordinates.forEach((coordinate, index) => {
     const command = index === 0 ? "M" : "L";
-    pathString += `${command}${
-      (size.height / 100) * coordinate.lon + size.width / 100
-    } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
+    pathString += `${command}${(size.height / 100) * coordinate.lon + size.width / 100
+      } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
   });
   return pathString;
 };
@@ -268,14 +267,16 @@ const Map = ({
           style={{
             width: "100%",
             height: "100%",
-            transform: `scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`,
+            transform: `scale(${zoom}) translate(${panPosition.x.toFixed(1)}px, ${panPosition.y.toFixed(1)}px)`,
             transformOrigin: "center center",
           }}
         />
         <g
           x={0}
           y={0}
-          transform={`scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`}
+          style={{
+            transform: `scale(${zoom}) translate(${panPosition.x.toFixed(1)}px, ${panPosition.y.toFixed(1)}px)`,
+          }}
           width="100%"
           height="100%"
         >
@@ -286,7 +287,7 @@ const Map = ({
                 width: "100%",
                 cursor: "pointer",
                 height: "100%",
-                transform: `scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`,
+                transform: `scale(${zoom}) translate(${panPosition.x.toFixed(1)}px, ${panPosition.y.toFixed(1)}px)`,
                 transformOrigin: "center center",
               }}
               key={"map-pos-" + i}
@@ -312,7 +313,7 @@ const Map = ({
               pointerEvents: "none",
               width: "100%",
               height: "100%",
-              transform: `scale(${zoom}) translate(${panPosition.x}px, ${panPosition.y}px)`,
+              transform: `scale(${zoom}) translate(${panPosition.x.toFixed(1)}px, ${panPosition.y.toFixed(1)}px)`,
               transformOrigin: "center center",
             }}
             d={drawSvgPath(path.coords, size)}
