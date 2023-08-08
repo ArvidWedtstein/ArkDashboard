@@ -432,18 +432,7 @@ const BasespotForm = (props: BasespotFormProps) => {
               Images of the base
             </Label>
 
-            <FileUpload
-              multiple={true}
-              thumbnail={true}
-              defaultValue={props.basespot?.base_images.split(',').map(f => `M${props?.basespot?.map_id}-${props?.basespot?.id}/${f.trim()}`).join(',')}
-              name="base_images"
-              storagePath={`basespotimages`}
-              onUpload={(url) => {
-                setThumbnailUrl(url);
-              }}
-            />
 
-            {/* TODO: fix loading from private buckets */}
             <FileUpload2
               name="base_images"
               thumbnail

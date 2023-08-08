@@ -136,44 +136,6 @@ export const FileUpload2 = ({
       }
     }
 
-
-
-    // OLD
-    // defaultValue.split(",").map(async (url) => {
-    //   imageUrlToFile(
-    //     `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/${storagePath}/${url}`,
-    //     url
-    //   ).then((file) => {
-    //     onFileAdded?.(file);
-    //     setFiles((prev) => [
-    //       ...prev.filter((f) => f.file.name !== file.name),
-    //       {
-    //         file: file,
-    //         url: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/${storagePath}/${url}`,
-    //         state: "uploaded",
-    //         preview: false,
-    //         error:
-    //           maxSize && file.size > maxSize
-    //             ? {
-    //               type: "oversized",
-    //               message: `File is too large.${` Max size is ${formatBytes(
-    //                 maxSize
-    //               )}.`}`,
-    //             }
-    //             : !accept
-    //               .split(",")
-    //               .map((a) => a.trim().toUpperCase())
-    //               .includes(file.type.toUpperCase())
-    //               ? {
-    //                 type: "invalidType",
-    //                 message: `Invalid file type.`,
-    //               }
-    //               : null,
-    //       },
-    //     ]);
-    //   });
-    // });
-
     !!name && field.onChange(defaultValue);
     fetchImages();
   }, []);
