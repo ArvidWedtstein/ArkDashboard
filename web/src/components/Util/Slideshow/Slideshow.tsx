@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { BgColor } from "src/lib/formatters";
 
 interface ISlideshowProps {
@@ -7,6 +7,7 @@ interface ISlideshowProps {
   controls?: boolean;
   arrows?: boolean;
   autoPlay?: boolean;
+  imageTabs?: boolean;
   delay?: number;
   slide?: number;
   border?: boolean;
@@ -25,14 +26,15 @@ const Slideshow = ({
   controls = true,
   arrows = true,
   autoPlay = true,
+  imageTabs = false,
   delay = 5000,
   onSlideChange,
   slide = 0,
   border = true,
   ...props
 }: ISlideshowProps) => {
-  const [index, setIndex] = React.useState<number>(slide);
-  const timeoutRef = React.useRef(null);
+  const [index, setIndex] = useState<number>(slide);
+  const timeoutRef = useRef(null);
 
   const resetTimeout = useCallback(() => {
     if (timeoutRef.current) {
@@ -40,7 +42,7 @@ const Slideshow = ({
     }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const playSlideshow = () => {
       setIndex((prevIndex) => (prevIndex === slides.length - 1 ? 0 : prevIndex + 1));
       onSlideChange?.(index === slides.length - 1 ? 0 : index + 1);
@@ -56,19 +58,19 @@ const Slideshow = ({
     };
   }, [index, autoPlay, delay, resetTimeout, slides.length, onSlideChange]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (slide) {
       setIndex(slide);
     }
   }, [slide]);
 
-  const handlePrevSlide = React.useCallback(() => {
+  const handlePrevSlide = useCallback(() => {
     const prevIndex = index === 0 ? slides.length - 1 : index - 1;
     setIndex(prevIndex);
     onSlideChange?.(prevIndex);
   }, [index, slides.length, onSlideChange]);
 
-  const handleNextSlide = React.useCallback(() => {
+  const handleNextSlide = useCallback(() => {
     const nextIndex = index === slides.length - 1 ? 0 : index + 1;
     setIndex(nextIndex);
     onSlideChange?.(nextIndex);
@@ -76,7 +78,7 @@ const Slideshow = ({
 
 
   return (
-    <div className={clsx("relative my-0 w-full overflow-hidden", className)} {...props}>
+    <div className={clsx("relative my-0 w-full overflow-x-hidden", className)} {...props}>
       <div
         className={`whitespace-nowrap w-full transition-transform duration-500 ease-in-out`}
         style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}
@@ -114,7 +116,7 @@ const Slideshow = ({
         ))}
       </div>
       {arrows && slides.length > 1 && (
-        <div className="bg- absolute top-0 left-0 flex h-full w-full flex-row items-center justify-between font-black text-white text-opacity-75">
+        <div className="absolute top-0 left-0 bottom-0 flex h-full w-full flex-row items-center justify-between font-black text-white text-opacity-75">
           <button className="p-3" onClick={handlePrevSlide}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +140,7 @@ const Slideshow = ({
         </div>
       )}
       {controls && slides.length > 1 && (
-        <div className="relative bottom-0 w-full p-3 text-center">
+        <div className="relative w-full p-3 text-center">
           {slides.map(({ tabColor }, idx) => (
             <div
               key={`slide-control-${idx}`}
@@ -151,6 +153,26 @@ const Slideshow = ({
                 onSlideChange?.(idx);
               }}
             ></div>
+          ))}
+        </div>
+      )}
+      {imageTabs && (
+        <div className="relative grid grid-cols-5 flex-nowrap gap-4 overflow-hidden">
+          {slides.map(({ url, title }, idx) => (
+            <div
+              key={`image-slider-${idx}`}
+              className="rounded-lg border border-zinc-500 transition-all ease-in hover:rounded-[50px] cursor-pointer"
+              onClick={() => {
+                setIndex(idx);
+                onSlideChange?.(idx);
+              }}
+            >
+              <img
+                className="aspect-auto w-full rounded-lg object-cover"
+                src={url}
+                alt={title}
+              />
+            </div>
           ))}
         </div>
       )}

@@ -33,7 +33,6 @@ const BASESPOT_PUBLISH = gql`
 const Basespot = ({ basespot }: Props) => {
   const [images, setImages] =
     useState<{ url: string; error?: string; thumbnail: boolean }[]>(null);
-  const [currentModalImage, setCurrentModalImage] = useState(null);
   const { client: supabase, currentUser } = useAuth();
 
   const [publishBasespot] = useMutation(
@@ -53,25 +52,22 @@ const Basespot = ({ basespot }: Props) => {
     const baseURL = `M${basespot.map_id}-${basespot.id}`;
     try {
       if (
-        basespot.thumbnail &&
-        !images &&
-        !basespot.thumbnail.startsWith("http")
+        !images
       ) {
         const { data, error } = await supabase.storage
           .from(`basespotimages`)
           .createSignedUrls(
             [
-              `${baseURL}/${basespot.thumbnail}`,
               ...(basespot.base_images
                 ? basespot?.base_images
                   .split(",")
-                  .map((img) => `${baseURL}/${img}`)
+                  .map((img) => `${baseURL}/${img.trim()}`)
                 : []),
-            ],
+            ].concat(!basespot.base_images.includes(basespot.thumbnail) ? [`${baseURL}/${basespot.thumbnail}`] : []),
             60 * 60 * 24 * 365 * 10
           );
         if (error) {
-          toast.error(error.message);
+          return toast.error(error.message);
         }
         if (data) {
           setImages(
@@ -293,32 +289,8 @@ const Basespot = ({ basespot }: Props) => {
               <Slideshow
                 slides={images.map((img) => ({ url: img.url }))}
                 autoPlay={false}
-                onSlideChange={(index) => {
-                  if (images[index]) {
-                    setCurrentModalImage(images[index].url);
-                  }
-                }}
-                slide={
-                  images.findIndex((img) => img.url == currentModalImage) == -1 ? 0 : images.findIndex((img) => img.url == currentModalImage)
-                }
+                imageTabs={true}
               />
-              <div className="grid grid-cols-5 flex-nowrap gap-4 overflow-hidden">
-                {images.map((img, i) => (
-                  <div
-                    key={`image-${i}`}
-                    className="rounded-lg border border-zinc-500 transition-all ease-in hover:rounded-[50px]"
-                    onClick={() => {
-                      setCurrentModalImage(img.url);
-                    }}
-                  >
-                    <img
-                      className="aspect-auto w-full rounded-lg object-cover"
-                      src={img.url}
-                      alt=""
-                    />
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </section>
