@@ -283,7 +283,7 @@ const Sidebar = memo(({ }) => {
             title={item.name}
             activeClassName={`text-white ${item.color}`}
             matchSubPaths={true}
-            className="flex w-full flex-auto items-center justify-start gap-x-3.5 rounded-md py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"
+            className="flex w-full flex-auto items-center justify-start space-x-3.5 rounded-md py-2 px-2.5 text-left text-white outline-none hover:bg-zinc-400/30 hover:text-gray-100 focus:bg-stone-400 dark:hover:bg-zinc-400/30 dark:hover:text-white dark:focus:ring-white"
           >
             {Icon(item.name)}
             <span className="hidden md:block">{item.name}</span>

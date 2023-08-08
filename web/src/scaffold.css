@@ -418,9 +418,9 @@
   }
 
   /* Range */
+  /* input[type="range"].slider::-ms-track,  */
   input[type="range"].slider::-webkit-slider-runnable-track,
-  input[type="range"].slider::-moz-range-track,
-  input[type="range"].slider::-ms-track {
+  input[type="range"].slider::-moz-range-track {
     @apply h-6 appearance-none;
   }
   input[type="range"].slider::-webkit-slider-thumb,

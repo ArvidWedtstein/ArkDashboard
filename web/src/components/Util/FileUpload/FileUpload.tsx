@@ -90,54 +90,92 @@ export const FileUpload2 = ({
     }
   };
 
-  useEffect(() => {
-    if (defaultValue) {
-      // supabase.storage
-      // .from("timelineimages")
-      // .list(timelineSeasonBasespot.id?.toString())
-      // .then(({ data, error }) => {
-      //   if (error) throw error;
-      //   if (data) {
-      //     setImages(data.filter((f) => f.name !== ".emptyFolderPlaceholder"));
-      //   }
-      // });
 
-      !!name && field.onChange(defaultValue);
-      defaultValue.split(",").map(async (url) => {
-        imageUrlToFile(
-          `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/${storagePath}/${url}`,
-          url
-        ).then((file) => {
+  useEffect(() => {
+    const fetchImages = async () => {
+      if (!defaultValue) return;
+      try {
+        const { data, error } = await supabase.storage
+          .from(storagePath)
+          .createSignedUrls(
+            defaultValue.split(",").map((img) => img.trim()),
+            60 * 60 * 24 * 365 * 10,
+          );
+
+        if (error) {
+          toast.error(error.message);
+          return;
+        }
+
+        const promises = data.map(async ({ signedUrl, path }) => {
+          const file = await imageUrlToFile(signedUrl, path.split('/').pop());
+
+          const error =
+            maxSize && file.size > maxSize
+              ? { type: "oversized", message: `File is too large. Max size is ${formatBytes(maxSize)}.` }
+              : !accept.split(",").map((a) => a.trim().toUpperCase()).includes(file.type.toUpperCase())
+                ? { type: "invalidType", message: "Invalid file type." }
+                : null;
+
           onFileAdded?.(file);
-          setFiles((prev) => [
-            ...prev.filter((f) => f.file.name !== file.name),
-            {
-              file: file,
-              url: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/${storagePath}/${url}`,
-              state: "uploaded",
-              preview: false,
-              error:
-                maxSize && file.size > maxSize
-                  ? {
-                    type: "oversized",
-                    message: `File is too large.${` Max size is ${formatBytes(
-                      maxSize
-                    )}.`}`,
-                  }
-                  : !accept
-                    .split(",")
-                    .map((a) => a.trim().toUpperCase())
-                    .includes(file.type.toUpperCase())
-                    ? {
-                      type: "invalidType",
-                      message: `Invalid file type.`,
-                    }
-                    : null,
-            },
-          ]);
+          return {
+            file,
+            url: signedUrl,
+            state: "uploaded",
+            preview: false,
+            error,
+          }
         });
-      });
+
+        const newFiles = await Promise.all(promises) as iFile[];
+        setFiles((prev) =>
+          [...prev.filter((f) => !newFiles.some(nf => nf.file.name == f.file.name)), ...newFiles]
+        );
+      } catch (err) {
+        toast.error("Error fetching images: ", err)
+      }
     }
+
+
+
+    // OLD
+    // defaultValue.split(",").map(async (url) => {
+    //   imageUrlToFile(
+    //     `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/${storagePath}/${url}`,
+    //     url
+    //   ).then((file) => {
+    //     onFileAdded?.(file);
+    //     setFiles((prev) => [
+    //       ...prev.filter((f) => f.file.name !== file.name),
+    //       {
+    //         file: file,
+    //         url: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/${storagePath}/${url}`,
+    //         state: "uploaded",
+    //         preview: false,
+    //         error:
+    //           maxSize && file.size > maxSize
+    //             ? {
+    //               type: "oversized",
+    //               message: `File is too large.${` Max size is ${formatBytes(
+    //                 maxSize
+    //               )}.`}`,
+    //             }
+    //             : !accept
+    //               .split(",")
+    //               .map((a) => a.trim().toUpperCase())
+    //               .includes(file.type.toUpperCase())
+    //               ? {
+    //                 type: "invalidType",
+    //                 message: `Invalid file type.`,
+    //               }
+    //               : null,
+    //       },
+    //     ]);
+    //   });
+    // });
+
+    !!name && field.onChange(defaultValue);
+    fetchImages();
   }, []);
 
   const readFiles = (ifiles: FileList): void => {
