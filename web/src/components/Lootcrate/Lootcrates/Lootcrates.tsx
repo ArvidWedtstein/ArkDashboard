@@ -4,6 +4,7 @@ import ArkCard from "src/components/Util/ArkCard/ArkCard";
 
 import Lookup from "src/components/Util/Lookup/Lookup";
 import {
+  groupBy,
   removeDuplicates,
 } from "src/lib/formatters";
 
@@ -41,7 +42,7 @@ const LootcratesList = ({ lootcratesByMap: lootcrates, maps }: FindLootcrates) =
       filteredCrates = filteredCrates.map((crate) => ({
         ...crate,
         sets: (crate?.LootcrateSet).filter(
-          (set) => set.name == category
+          (set) => set.name.includes(category) || set.name.toLowerCase().includes(category.toLowerCase())
         ),
       }));
     }
@@ -62,7 +63,7 @@ const LootcratesList = ({ lootcratesByMap: lootcrates, maps }: FindLootcrates) =
 
   // https://ark.wiki.gg/wiki/Coordinates
   return (
-    <div className="m-3">
+    <article>
       <Form className="flex w-auto" onSubmit={onSubmit}>
         <nav className="flex flex-row space-x-2 justify-center w-full">
           <div className="rw-button-group !space-x-0 !w-full">
@@ -77,7 +78,7 @@ const LootcratesList = ({ lootcratesByMap: lootcrates, maps }: FindLootcrates) =
               defaultValue={map}
             // onSelect={(e) => setCurrentMap(e.value ? e.value : null)}
             />
-            <Lookup
+            {/* <Lookup
               name="category"
               className="rw-input !rounded-none mt-0"
               options={categoryItems.map((k) => ({
@@ -85,7 +86,7 @@ const LootcratesList = ({ lootcratesByMap: lootcrates, maps }: FindLootcrates) =
                 value: k,
               }))}
             // onSelect={(e) => setCurrentCategory(e.name)}
-            />
+            /> */}
 
             <Label name="search" className="sr-only">
               Search for item
@@ -106,40 +107,46 @@ const LootcratesList = ({ lootcratesByMap: lootcrates, maps }: FindLootcrates) =
         </nav>
       </Form>
 
-      {search && <p className="dark:text-white">Lootcrates with {search}</p>}
+      {search && <p className="dark:text-white text-black">Lootcrates with {search}</p>}
 
-      <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {daLootcrates.map((lootcrate, i) => (
-          <ArkCard
-            key={`lootcrate-${i}`}
-            className="border-t-2 "
-            style={{
-              borderColor: lootcrate.color ? lootcrate.color : "white",
-            }}
-            image={{
-              src: `https://images.squarespace-cdn.com/content/v1/5a77b6ab18b27d34acd418fe/1543032194681-R59KJT0WFQG43AFYSDXA/ark-survival-evolved-hd-wallpapers-hd-68984-8087136.png`,
-              alt: "test",
-              position: "70% 30%",
-            }}
-            icon={{
-              src: 'https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/f/f2/Purple_Beacon.png',
-            }}
-            title={lootcrate.name}
-            subtitle={lootcrate.Map.name}
-            ring={
-              lootcrate?.level_requirement &&
-                lootcrate.level_requirement["min"] > 0
-                ? `Lvl ${lootcrate.level_requirement["min"]}`
-                : null
-            }
-            button={{
-              text: "View",
-              link: routes.lootcrate({ id: lootcrate.id }),
-            }}
-          />
+      <div className="rw-segment-header rw-heading rw-heading-secondary p-0">
+        {Object.entries(groupBy(daLootcrates.map(l => ({ ...l, type: l.name.split(' ')[0] })), "type")).map(([k, v], i) => (
+          <div className="my-4 py-3 border-b border-zinc-500 animate-fade-in" key={i}>
+            <h1 className="rw-heading rw-heading-secondary">{k}</h1>
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4">
+              {v.map((lootcrate, d) => (
+                <ArkCard
+                  key={`lootcrate-${d}-${i}`}
+                  className="border-t-2 !bg-zinc-700"
+                  style={{
+                    borderColor: lootcrate.color ? lootcrate.color : "white",
+                  }}
+                  icon={{ src: k == 'Artifact' ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/artifact-of-the-${lootcrate.name.split(' ')[lootcrate.name.split(' ').length - 1].toLowerCase()}.webp` : 'https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/any-gun.webp' }}
+                  title={lootcrate.name}
+                  ring={
+                    lootcrate?.level_requirement &&
+                      lootcrate.level_requirement["min"] > 0 ? (
+                      <span
+                        title={`You need to be lvl ${lootcrate.level_requirement["min"]} to open this crate`}
+                        className="rw-badge rw-badge-yellow-outline"
+                      >
+                        Lvl {lootcrate.level_requirement["min"]}
+                      </span>
+                    ) : null
+                  }
+                  button={{
+                    link: routes.lootcrate({
+                      id: lootcrate.id.toString(),
+                    }),
+                    text: "View",
+                  }}
+                />
+              ))}
+            </div>
+          </div>
         ))}
       </div>
-    </div>
+    </article>
   );
 };
 
