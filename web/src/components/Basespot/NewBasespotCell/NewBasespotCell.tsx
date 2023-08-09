@@ -102,7 +102,6 @@ export const Success = ({
       error: <b>Failed to create new basespot.</b>,
     });
   };
-  console.log(basespotTypes)
   return (
     <div className="rw-segment">
       <div className="rw-segment-main">

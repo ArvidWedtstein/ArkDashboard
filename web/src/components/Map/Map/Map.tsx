@@ -417,12 +417,12 @@ const Map = ({ map }: Props) => {
         )}
 
         {Object.entries(groupBy(map.Lootcrate.map(l => ({ ...l, type: l.name.split(' ')[0] })), "type")).map(([k, v], i) => (
-          <div className="my-4 py-3 border-b border-zinc-500 animate-fade-in">
+          <div className="my-4 py-3 border-b border-zinc-500 animate-fade-in" key={i}>
             <h1 className="rw-heading rw-heading-secondary">{k}</h1>
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4" key={i}>
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4">
               {v.map((lootcrate, d) => (
                 <ArkCard
-                  key={`lootcrate-${i}`}
+                  key={`lootcrate-${d}-${i}`}
                   className="border-t-2 !bg-zinc-700"
                   style={{
                     borderColor: lootcrate.color ? lootcrate.color : "white",

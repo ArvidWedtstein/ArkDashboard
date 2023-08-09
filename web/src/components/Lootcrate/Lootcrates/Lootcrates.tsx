@@ -1,5 +1,5 @@
 import { navigate, parseSearch, routes } from "@redwoodjs/router";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import ArkCard from "src/components/Util/ArkCard/ArkCard";
 
 import Lookup from "src/components/Util/Lookup/Lookup";

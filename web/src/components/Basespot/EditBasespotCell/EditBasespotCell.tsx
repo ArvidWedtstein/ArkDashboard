@@ -25,6 +25,7 @@ export const QUERY = gql`
       updated_at
       type
       published
+      has_air
       level
       Map {
         img
@@ -57,6 +58,7 @@ const UPDATE_BASESPOT_MUTATION = gql`
       level
       turretsetup_images
       base_images
+      has_air
       updated_at
       type
     }
