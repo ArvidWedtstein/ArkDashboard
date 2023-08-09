@@ -102,13 +102,10 @@ export const Success = ({
       error: <b>Failed to create new basespot.</b>,
     });
   };
-
+  console.log(basespotTypes)
   return (
-    <div className="text-black dark:text-white">
-      <header className="py-3 px-4">
-        <h2 className="rw-heading rw-heading-secondary">New Basespot</h2>
-      </header>
-      <div className="p-4">
+    <div className="rw-segment">
+      <div className="rw-segment-main">
         <BasespotForm
           onSave={onSave}
           loading={loading}

@@ -37,8 +37,6 @@ export const QUERY = gql`
       img
     }
     basespotTypes {
-      id
-      name
       type
     }
   }

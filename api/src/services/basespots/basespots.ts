@@ -6,6 +6,7 @@ import type {
 
 import { db } from "src/lib/db";
 import { requireAuth } from "src/lib/auth";
+import { prismaVersion } from "@redwoodjs/api";
 
 const POSTS_PER_PAGE = 6;
 export const basespotPage: QueryResolvers["basespotPage"] = ({
@@ -38,9 +39,13 @@ export const basespotPage: QueryResolvers["basespotPage"] = ({
 
 export const basespotsTypes: QueryResolvers["basespotTypes"] = () => {
   // return db.basespot.findMany();
-  return db.basespot.findMany({
-    distinct: ["type"],
+  // return db.$queryRaw`SELECT type FROM Basespot;`;
+  return db.basespot.groupBy({
+    by: ["type"],
   });
+  // return db.basespot.findMany({
+  //   distinct: ["type"],
+  // });
 };
 
 export const basespots: QueryResolvers["basespots"] = () => {
