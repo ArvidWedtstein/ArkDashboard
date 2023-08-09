@@ -17,6 +17,7 @@ export const schema = gql`
     estimated_for_players: String
     type: String
     base_images: String
+    has_air: Boolean
     Profile: Profile
     Map: Map!
     Profile_Basespot_updated_byToProfile: Profile
@@ -24,9 +25,10 @@ export const schema = gql`
   }
 
   type BasespotPage {
-    basespots: [Basespot!]!
+    basespots: [Basespot]
     count: Int
   }
+
   type Query {
     basespots: [Basespot!]! @skipAuth
     basespot(id: String!): Basespot @requireAuth
@@ -52,6 +54,7 @@ export const schema = gql`
     level: String
     estimated_for_players: String
     type: String
+    has_air: Boolean
     base_images: String
   }
 
@@ -71,6 +74,7 @@ export const schema = gql`
     level: String
     estimated_for_players: String
     type: String
+    has_air: Boolean
     base_images: String
   }
 

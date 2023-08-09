@@ -12,10 +12,6 @@ export const basespotPage: QueryResolvers["basespotPage"] = ({
   page,
   map,
   type,
-}: {
-  page?: number;
-  map?: number;
-  type?: string;
 }) => {
   const offset = (page - 1) * POSTS_PER_PAGE;
   const types = type?.split(",").map((t) => t.trim());

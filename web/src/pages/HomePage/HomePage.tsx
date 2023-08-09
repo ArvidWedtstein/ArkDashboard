@@ -3,10 +3,6 @@ import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
-import FileUpload, {
-  FileUpload2,
-} from "src/components/Util/FileUpload/FileUpload";
-import Slider from "src/components/Util/Slider/Slider";
 
 const HomePage = () => {
   const { isAuthenticated, currentUser, client, reauthenticate } = useAuth();
@@ -273,27 +269,6 @@ const HomePage = () => {
             </div>
           </div>
         </section>
-        <div className="m-4">
-          <FileUpload
-            storagePath="timelineeventimages"
-            defaultValue={"0.44845431025828897.png"}
-            multiple
-            name="images"
-            onUpload={(e) => {
-              console.log(e);
-            }}
-            accept="image/png, image/jpeg, image/jpg"
-          />
-
-          <FileUpload2
-            multiple
-            thumbnail
-            maxSize={1024 * 1024}
-            defaultValue={"0.44845431025828897.png"}
-            storagePath="timelineeventimages"
-            accept="image/png, image/jpeg, image/jpg, image/webp"
-          />
-        </div>
       </div>
     </>
   );

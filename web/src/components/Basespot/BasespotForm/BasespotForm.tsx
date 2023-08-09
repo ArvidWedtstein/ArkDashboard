@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
 import Lookup from "src/components/Util/Lookup/Lookup";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
+import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
 
 type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
 
@@ -445,6 +446,23 @@ const BasespotForm = (props: BasespotFormProps) => {
           </>
         )}
 
+        <Label
+          name="has_air"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Has Air?
+        </Label>
+
+        <ToggleButton
+          className=""
+          name="has_air"
+          offLabel="no air"
+          onLabel="has air"
+        />
+
+        <FieldError name="has_air" className="rw-field-error" />
+
         {/* TODO: Fix select list for turretsetup images */}
         {/*
         <Label
@@ -463,19 +481,7 @@ const BasespotForm = (props: BasespotFormProps) => {
         />
 
         <FieldError name="turretsetup_image" className="rw-field-error" /> */}
-        {/*
-        <fieldset>
-          <legend className="rw-helper-text">Published status - {props.basespot.published.toString()}</legend>
 
-          <input id="draft" className="peer/draft rw-input" type="radio" name="published" defaultChecked={!props.basespot.published} />
-          <label htmlFor="draft" className="peer-checked/draft:text-pea-500 rw-label">Draft</label>
-
-          <input id="published" className="peer/published rw-input" type="radio" name="published" defaultChecked={props.basespot.published} />
-          <label htmlFor="published" className="peer-checked/published:text-pea-500 rw-label">Published</label>
-
-          <div className="hidden peer-checked/draft:block rw-helper-text">Drafts are only visible to administrators.</div>
-          <div className="hidden peer-checked/published:block rw-helper-text">Your post will be publicly visible on your site.</div>
-        </fieldset> */}
       </Form>
     </div>
   );
