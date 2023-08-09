@@ -69,7 +69,7 @@ const Lootcrate = ({ lootcrate }: Props) => {
                         <ul className="my-2 grid grid-cols-1 border-t border-gray-200 py-2 dark:border-gray-400 md:grid-cols-1 xl:grid-cols-2">
                           {e.LootcrateSetEntryItem.map(
                             (itm, itemindex) =>
-                              true && (
+                              (
                                 <li
                                   className="space-x-2"
                                   key={`itemlistitem-${itemindex}`}
