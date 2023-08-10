@@ -72,7 +72,7 @@ export const jsonTruncate = (obj: unknown, maxlength: number = 150) => {
 // });
 interface options {
   dateStyle?: "long" | "short" | "full" | "medium";
-  timeStyle?: "long" | "short" | "full" | "medium";
+  timeStyle?: "long" | "short" | "full" | "medium" | "none";
 }
 /**
  * Renders a formatted time tag element.
@@ -89,7 +89,7 @@ export const timeTag = (
   }
 
   const formattedDateTime = new Date(dateTime).toLocaleString("en-GB", {
-    timeStyle: timeStyle || "short",
+    timeStyle: timeStyle == 'none' ? undefined : timeStyle || "short",
     dateStyle: dateStyle || "long",
   });
 
@@ -169,9 +169,8 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
-    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-  }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+    }`;
 };
 
 /**
@@ -877,9 +876,9 @@ export const generatePDF = (crafts) => {
       tableX - cellPadding * 2,
       30 + crafts.length * 20,
       tableX +
-        (Object.keys(crafts[0]).length - 1) *
-          (tableSize.width / Object.keys(crafts[0]).length) +
-        columnWidths[Object.keys(crafts[0]).length - 1],
+      (Object.keys(crafts[0]).length - 1) *
+      (tableSize.width / Object.keys(crafts[0]).length) +
+      columnWidths[Object.keys(crafts[0]).length - 1],
       40 + (crafts.length - 1) * 20 + cellPadding,
       true,
       `0.9 0.9 0.9`
@@ -913,7 +912,7 @@ export const generatePDF = (crafts) => {
                     x:
                       tableX +
                       (Object.keys(crafts[0]).length - 1) *
-                        (tableSize.width / Object.keys(crafts[0]).length) +
+                      (tableSize.width / Object.keys(crafts[0]).length) +
                       columnWidths[Object.keys(crafts[0]).length - 1],
                     y: cellY + cellPadding,
                   },

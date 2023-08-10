@@ -114,20 +114,7 @@ const Map = ({
     };
   }, []);
 
-  const isInBounds = () => {
-    const rect = svgRef.current.getBoundingClientRect();
-    const imgRect = imgRef.current.getBoundingClientRect();
 
-    if (
-      imgRect.left / zoom < rect.left ||
-      imgRect.right / zoom > rect.right ||
-      imgRect.top / zoom < rect.top ||
-      imgRect.bottom / zoom > rect.bottom
-    )
-      return false;
-    else return true;
-    // return x > rect.left && x < rect.right && y > rect.top && y < rect.bottom;
-  };
   const handleWheel = (event: React.WheelEvent<SVGImageElement>) => {
     const minZoom = 1;
     const maxZoom = 5;
@@ -178,12 +165,6 @@ const Map = ({
 
     const dx = event.clientX - startPosition.x;
     const dy = event.clientY - startPosition.y;
-
-    // if (isInBounds()) {
-    //   setIsDragging(false);
-    //   console.info('out of bounds');
-    //   return;
-    // }
 
     setPanPosition((prevPosition) => ({
       x: prevPosition.x + dx / zoom,

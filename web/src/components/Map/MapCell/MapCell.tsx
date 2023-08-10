@@ -11,6 +11,7 @@ export const QUERY = gql`
       created_at
       name
       img
+      release_date
       MapCoordinate {
         latitude
         longitude
