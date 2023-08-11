@@ -42,27 +42,115 @@ const Map = ({
   submap = false,
   onPosClick,
 }: mapProps) => {
+  // TODO: fetch from db instead of hardcoding
+  const maps = {
+    1: {
+      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Valguero-Map.webp",
+      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Valguero-Map-Topographic.webp"
+    },
+    2: {
+      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheIsland-Map.webp",
+      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheIsland-Map-Topographic.webp"
+    },
+    3: {
+      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheCenter-Map.webp",
+      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheCenter-Map-Topographic.webp"
+    },
+    4: {
+      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Ragnarok-Map.webp",
+      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Ragnarok-Map-Topographic.webp"
+    },
+    5: {
+      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Aberration-Map.webp",
+      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Aberration-Map-Topographic.webp"
+    },
+    6: {
+      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Extinction-Map.webp",
+      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Extinction-Map-Topographic.webp"
+    },
+    7: {
+      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/ScorchedEarth-Map.webp",
+      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/ScorchedEarth-Map-Topographic.webp"
+    },
+    8: {
+      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis-Map.webp",
+      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis-Map-Topographic.webp"
+    },
+    9: {
+      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis2-Map.webp",
+      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis2-Map-Topographic.webp"
+    },
+    10: {
+      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/CrystalIsles-Map.webp",
+      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/CrystalIsles-Map-Topographic.webp"
+    },
+    11: {
+      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Map.webp",
+      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjodur-Map-Topographic.webp"
+    },
+    12: {
+      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/LostIsland-Map.webp",
+      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/LostIsland-Map-Topographic.webp"
+    },
+    13: {
+      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Map.webp",
+      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Jotunheim-Map-Topographic.webp",
+      "boundaries": [
+        {
+          "lat": 54.48,
+          "lon": 21.35,
+        },
+        {
+          "lat": 97.36,
+          "lon": 64.23,
+        }
+      ]
+    },
+    14: {
+      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Map.webp",
+      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Vanaheim-Map-Topographic.webp",
+      "boundaries": [
+        {
+          "lat": -9.15,
+          "lon": 62.5,
+        },
+        {
+          "lat": 33.73,
+          "lon": 105.38,
+        }
+      ]
+    },
+    15: {
+      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Map.webp",
+      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Asgard-Map-Topographic.webp",
+      "boundaries": [
+        {
+          "lat": 17.40,
+          "lon": 5.20,
+        },
+        {
+          "lat": 68.88,
+          "lon": 56.45,
+        }
+      ]
+    }
+  }
   const svgRef = useRef(null);
   const imgRef = useRef(null);
-  const maps = {
-    2: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheIsland-Map.webp",
-    3: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheCenter-Map.webp",
-    7: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/ScorchedEarth-Map.webp",
-    4: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Ragnarok-Map.webp",
-    5: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Aberration-Map.webp",
-    6: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Extinction-Map.webp",
-    1: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Valguero-Map.webp",
-    8: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis-Map.webp",
-    10: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/CrystalIsles-Map.webp",
-    11: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Map.webp",
-    12: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/LostIsland-Map.webp",
-    9: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis2-Map.webp",
-  };
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
   const [zoom, setZoom] = useState(1);
   const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
   const [map, setMap] = useState(map_id);
+  const [subMap, setSubMap] = useState<string | number>("");
+  const [mapType, setMapType] = useState<'drawn' | 'topographic'>('drawn');
+
+  const posToMap = (coord: number): number => (size.height / 100) * coord + size.height / 100
+  const calcRealmCorners = (coords: { lat: number; lon: number; }[]) => {
+    return !subMap || !coords ? '' : `M${posToMap(coords[0].lon)},${posToMap(coords[0].lat)} L${posToMap(coords[1].lon)},${posToMap(coords[0].lat)} L${posToMap(coords[1].lon)},${posToMap(coords[1].lat)} L${posToMap(coords[0].lon)},${posToMap(coords[1].lat)} z`
+  }
 
   const handleKeyUp = useCallback((event) => {
     if (
@@ -81,12 +169,34 @@ const Map = ({
   const reset = () => {
     setZoom(1);
     setMap(map_id);
+    setSubMap(disable_sub_map ? '' : 11);
+    setMapType('drawn');
     setPanPosition({ x: 0, y: 0 });
     setIsDragging(false);
     setStartPosition({ x: 0, y: 0 });
   };
 
   useEffect(() => {
+    // if (!canvasRef.current) return;
+    // const canvas = canvasRef.current;
+    // const ctx = canvas.getContext("2d");
+    // const img = imgRef.current;
+    // if (!ctx || !img) return;
+    // ctx.drawImage(img, 0, 0, size.width, size.height);
+    // canvas.addEventListener('mousedown', (e) => {
+    //   return handleMouseDown(e as unknown as React.MouseEvent<HTMLCanvasElement, MouseEvent>);
+    // });
+    // canvas.addEventListener('mousemove', (e) => {
+    //   return handleMouseMove(e as unknown as React.MouseEvent<HTMLCanvasElement, MouseEvent>);
+    // });
+    // canvas.addEventListener('mouseup', (e) => {
+    //   return handleMouseUp();
+    // });
+    // canvas.addEventListener('wheel', (e) => {
+    //   return handleWheel(e as unknown as React.WheelEvent<HTMLCanvasElement>);
+    // })
+
+
     if (!interactive || !svgRef.current) return;
     const handleResize = () => {
       // Reset pan position to center when the container size changes
@@ -115,11 +225,25 @@ const Map = ({
       if (svgRef.current) {
         svgRef.current.removeEventListener("mouseleave", handleMouseLeave);
       }
+
+      // if (canvasRef.current) {
+      //   canvas.removeEventListener('mousedown', (e) => {
+      //     return handleMouseDown(e as unknown as React.MouseEvent<HTMLCanvasElement, MouseEvent>);
+      //   });
+      //   canvas.removeEventListener('mousemove', (e) => {
+      //     return handleMouseMove(e as unknown as React.MouseEvent<HTMLCanvasElement, MouseEvent>);
+      //   });
+      //   canvas.removeEventListener('mouseup', (e) => {
+      //     return handleMouseUp();
+      //   });
+      //   canvas.removeEventListener('wheel', (e) => {
+      //     return handleWheel(e as unknown as React.WheelEvent<HTMLCanvasElement>);
+      //   });
+      // }
     };
   }, []);
 
-
-  const handleWheel = (event: React.WheelEvent<SVGImageElement>) => {
+  const handleWheel = (event: React.WheelEvent<SVGImageElement | HTMLCanvasElement>) => {
     const minZoom = 1;
     const maxZoom = 5;
     const { clientX, clientY } = event;
@@ -154,7 +278,7 @@ const Map = ({
   };
 
   const handleMouseDown = (
-    event: React.MouseEvent<SVGImageElement, MouseEvent>
+    event: React.MouseEvent<SVGImageElement | HTMLCanvasElement, MouseEvent>
   ) => {
     event.preventDefault();
     if (!interactive || !event.shiftKey) return;
@@ -163,7 +287,7 @@ const Map = ({
   };
 
   const handleMouseMove = (
-    event: React.MouseEvent<SVGImageElement, MouseEvent>
+    event: React.MouseEvent<SVGImageElement | HTMLCanvasElement, MouseEvent>
   ) => {
     if (!isDragging || !interactive || !event.shiftKey) return;
 
@@ -221,10 +345,10 @@ const Map = ({
         </select>
         {submap && (
           <select
-            value={map}
+            value={subMap}
             disabled={disable_sub_map}
             className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
-            onChange={(e) => setMap(parseInt(e.target.value))}
+            onChange={({ target: { value } }) => setSubMap((value == '11' || value == '') ? '' : parseInt(value))}
           >
             <option value={11}>Midgard</option>
             <option value={13}>Jotunheim</option>
@@ -232,6 +356,15 @@ const Map = ({
             <option value={15}>Asgard</option>
           </select>
         )}
+        <select
+          value={mapType}
+          disabled={disable_map && disable_sub_map}
+          className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
+          onChange={({ target: { value } }) => (value == 'drawn' || value == 'topographic') && setMapType(value)}
+        >
+          <option value={'drawn'}>Drawn</option>
+          <option value={'topographic'}>Topographic</option>
+        </select>
         <button
           className="rw-button rw-button-small rw-button-red first:!rounded-bl-none last:!rounded-br-none"
           onClick={() => {
@@ -242,6 +375,16 @@ const Map = ({
           Reset
         </button>
       </div>
+      {/* TODO: replace with canvas? */}
+      {/* <canvas
+        ref={canvasRef}
+        height={size.height}
+        width={size.width}
+        style={{
+          cursor: interactive ? (isDragging ? "grabbing" : "grab") : "default",
+        }}
+        className="border border-red-500"
+      /> */}
       <svg
         ref={svgRef}
         height={size.height}
@@ -258,7 +401,7 @@ const Map = ({
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
-          href={maps[map]}
+          href={maps[subMap !== '' ? subMap : map][mapType]}
           height={size.height}
           width={size.width}
           ref={imgRef}
@@ -269,6 +412,24 @@ const Map = ({
             transformOrigin: "center center",
           }}
         />
+        {subMap !== '' && mapType !== 'topographic' && (
+          <path
+            style={{
+              pointerEvents: "none",
+              width: "100%",
+              height: "100%",
+              transform: `scale(${zoom}) translate(${panPosition.x.toFixed(1)}px, ${panPosition.y.toFixed(1)}px)`,
+              transformOrigin: "center center",
+            }}
+            fill="#f00"
+            stroke="#f00"
+            strokeWidth="2"
+            strokeLinecap="round"
+            fillOpacity={0.2}
+            strokeOpacity={0.5}
+            d={calcRealmCorners(maps[subMap].boundaries)}
+          />
+        )}
         <g
           x={0}
           y={0}
@@ -281,7 +442,6 @@ const Map = ({
           {pos?.map((p, i) => (
             <circle
               style={{
-                // pointerEvents: "none",
                 width: "100%",
                 cursor: "pointer",
                 height: "100%",
@@ -296,8 +456,8 @@ const Map = ({
               x={0}
               onClick={() => onPosClick?.(p)}
               y={0}
-              cy={(size.height / 100) * p.lat + size.height / 100}
-              cx={(size.width / 100) * p.lon + size.width / 100}
+              cy={posToMap(p.lat)}
+              cx={posToMap(p.lon)}
               // r={((imageTransform.replace("scale(", "").replace(')', '')) as number * 2) * 2}
               r="3"
             >

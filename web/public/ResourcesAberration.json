@@ -1,5 +1,4 @@
 {
-  "$schema": "https://ark.wiki.gg/extensions/DataMaps/schemas/v0.16.json",
   "mixins": ["Maps/Standard group definitions"],
   "backgrounds": [
     { "name": "Drawn", "image": "Aberration Map.jpg" },

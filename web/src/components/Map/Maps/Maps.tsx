@@ -270,7 +270,7 @@ const MapsList = ({ maps }: FindMaps) => {
         {maps.map((map) => (
           <Link
             key={map.id}
-            to={routes.map({ id: map.id.toString() })}
+            to={routes.map({ id: map.id })}
             className="hover:ring-pea-500 rounded-lg hover:no-underline hover:ring-1"
           >
             <ArkCard

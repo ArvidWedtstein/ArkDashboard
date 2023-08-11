@@ -203,12 +203,12 @@ const Routes = () => {
           >
             <Route path="/maps/new" page={MapNewMapPage} name="newMap" />
             <Route
-              path="/maps/{id}/edit"
+              path="/maps/{id:Int}/edit"
               page={MapEditMapPage}
               name="editMap"
             />
           </Private>
-          <Route path="/maps/{id}" page={MapMapPage} name="map" />
+          <Route path="/maps/{id:Int}" page={MapMapPage} name="map" />
           <Route path="/maps" page={MapMapsPage} name="maps" />
         </Set>
         <Set
@@ -224,12 +224,12 @@ const Routes = () => {
           >
             <Route path="/items/new" page={ItemNewItemPage} name="newItem" />
             <Route
-              path="/items/{id}/edit"
+              path="/items/{id:Int}/edit"
               page={ItemEditItemPage}
               name="editItem"
             />
           </Private>
-          <Route path="/items/{id}" page={ItemItemPage} name="item" />
+          <Route path="/items/{id:Int}" page={ItemItemPage} name="item" />
           <Route path="/items" page={ItemItemsPage} name="items" />
         </Set>
         <Set

@@ -28,6 +28,10 @@ export const QUERY = gql`
         level_requirement
         color
       }
+      other_Map {
+        id
+        name
+      }
     }
   }
 `;

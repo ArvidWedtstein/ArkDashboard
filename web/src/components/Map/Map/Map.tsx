@@ -381,8 +381,20 @@ const Map = ({ map }: Props) => {
             {map.name.includes("The") ? map.name : `The ${map.name}`} Map
           </h2>
         </header>
-        <div className="rw-segment-main">
-          <div className="flex items-center justify-between rounded-lg border border-zinc-500 h-16 dark:text-white text-black mb-5 divide-x divide-zinc-500">
+        <div className="rw-segment-main dark:text-white text-black">
+          {(map?.other_Map && map.other_Map.length > 0) && (
+            <section>
+              <h6>Realms:</h6>
+              <div className="flex items-center gap-3">
+                {map.other_Map.map((submap, sm) => (
+                  <div className="flex flex-row p-3 border rounded-lg border-zinc-500" key={`submap-${sm}`}>
+                    <Link to={routes.map({ id: submap.id })} className="rw-link">{submap.name}</Link>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+          <div className="flex items-center justify-between rounded-lg border border-zinc-500 h-16 my-5 divide-x divide-zinc-500">
             <div className="h-16 px-4">
               <p className="text-xs leading-10 whitespace-nowrap dark:text-zinc-300 text-zinc-600">Released</p>
               <p className="text-sm leading-none font-medium -mt-0.5 whitespace-nowrap">{timeTag(map.release_date, { timeStyle: 'none' })}</p>
@@ -422,7 +434,7 @@ const Map = ({ map }: Props) => {
             <MapComp
               interactive={true}
               submap={true}
-              disable_sub_map={false}
+              disable_sub_map={map?.other_Map.length === 0}
               className="col-span-1 w-auto"
               disable_map={true}
               map_id={map.id}
