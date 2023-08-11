@@ -14,7 +14,9 @@ const drawSvgPath = (
 };
 interface mapProps {
   map_id?: number;
+  submap?: boolean;
   disable_map?: boolean;
+  disable_sub_map?: boolean;
   size?: { width: number; height: number };
   pos?: { lat: number; lon: number; color?: string; name?: string }[];
   className?: string;
@@ -30,12 +32,14 @@ interface mapProps {
 }
 const Map = ({
   disable_map = false,
+  disable_sub_map = true,
   map_id = 2,
   size = { width: 500, height: 500 },
   pos,
   className,
   path,
   interactive = false,
+  submap = false,
   onPosClick,
 }: mapProps) => {
   const svgRef = useRef(null);
@@ -215,6 +219,19 @@ const Map = ({
           <option value={2}>The Island</option>
           <option value={1}>Valguero</option>
         </select>
+        {submap && (
+          <select
+            value={map}
+            disabled={disable_sub_map}
+            className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
+            onChange={(e) => setMap(parseInt(e.target.value))}
+          >
+            <option value={11}>Midgard</option>
+            <option value={13}>Jotunheim</option>
+            <option value={14}>Vanaheim</option>
+            <option value={15}>Asgard</option>
+          </select>
+        )}
         <button
           className="rw-button rw-button-small rw-button-red first:!rounded-bl-none last:!rounded-br-none"
           onClick={() => {

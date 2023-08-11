@@ -421,6 +421,8 @@ const Map = ({ map }: Props) => {
 
             <MapComp
               interactive={true}
+              submap={true}
+              disable_sub_map={false}
               className="col-span-1 w-auto"
               disable_map={true}
               map_id={map.id}

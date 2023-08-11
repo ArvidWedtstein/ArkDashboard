@@ -183,8 +183,12 @@ model Map {
   updated_at             DateTime?                @db.Timestamptz(6)
   icon                   String?
   release_date           DateTime?                @db.Date
+  parent_map_id          BigInt?
+  description            String?
   Basespot               Basespot[]
   Lootcrate              Lootcrate[]
+  Map                    Map?                     @relation("MapToMap", fields: [parent_map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  other_Map              Map[]                    @relation("MapToMap")
   MapCoordinate          MapCoordinate[]
   MapNote                MapNote[]
   TimelineSeasonBasespot TimelineSeasonBasespot[]
