@@ -14,6 +14,7 @@ const drawSvgPath = (
 };
 interface mapProps {
   map_id?: number;
+  submap_id?: number;
   submap?: boolean;
   disable_map?: boolean;
   disable_sub_map?: boolean;
@@ -34,6 +35,7 @@ const Map = ({
   disable_map = false,
   disable_sub_map = true,
   map_id = 2,
+  submap_id = null,
   size = { width: 500, height: 500 },
   pos,
   className,
@@ -244,7 +246,7 @@ const Map = ({
   }, []);
 
   const handleWheel = (event: React.WheelEvent<SVGImageElement | HTMLCanvasElement>) => {
-    const minZoom = 1;
+    const minZoom = 0.5;
     const maxZoom = 5;
     const { clientX, clientY } = event;
 

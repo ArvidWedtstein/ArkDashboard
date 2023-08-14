@@ -1,6 +1,5 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
-import { useCallback, useState } from "react";
-import ArkCard from "src/components/Util/ArkCard/ArkCard";
+import { useCallback, useMemo, useState } from "react";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import MapComp from "src/components/Util/Map/Map";
 import { capitalizeSentence, groupBy, timeTag } from "src/lib/formatters";
@@ -325,49 +324,13 @@ const Map = ({ map }: Props) => {
     },
   });
 
-  const setCategory = useCallback(
-    (e, checked) => {
-      const category = e;
-      const color = categories[category].color;
-
-      let dataToAdd = [];
-
-      if (category === "notes") {
-        dataToAdd = map.MapNote;
-      } else {
-        for (const coordinate of map.MapCoordinate) {
-          if (coordinate.type === category) {
-            dataToAdd.push(coordinate);
-          }
-        }
-      }
-
-      const newDataToAdd = dataToAdd.flatMap((item) => ({
-        ...item,
-        category,
-        color,
-        name: `${category.replaceAll("_", " ")}\n${item.latitude}, ${item.longitude}`,
-      }));
-
-      setCategories((prevState) => ({
-        ...prevState,
-        [category]: {
-          ...prevState[category],
-          active: checked,
-        },
-      }));
-
-      setMapData((prevState) => {
-        if (checked) {
-          return [...prevState, ...newDataToAdd.map(d => ({ ...d, noterun: d.note_index && noterun.includes(d.note_index) }))];
-        } else {
-          return prevState.filter((item) => item.category !== category);
-        }
-      });
-
-    },
-    [categories, mapData, setCategories, setMapData]
-  );
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const types = useMemo(() => {
+    const groupedByType = groupBy(map.MapResource.filter(d => d.type != null && d.item_id == null), "type");
+    const groupedByItem = groupBy(map.MapResource.filter(d => d.item_id != null), "item_id");
+    // console.log(Object.entries({ notes: map.MapNote.map(f => ({ ...f, item_id: null, Item: null })), ...groupedByType, ...groupedByItem }).map(([key, value]) => ({ label: value.some(f => f.item_id == null) ? capitalizeSentence(key.replaceAll("_", " ")) : value[0].Item.name, image: value.some(f => f.item_id == null) ? categories[key]?.icon : `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value[0].Item.image}`, items: value, value: key.toString(), color: value[0].__typename == 'MapNote' || value.every(f => f.item_id == null) ? categories[key].color : value[0].Item.color })))
+    return Object.entries({ notes: map.MapNote.map(f => ({ ...f, item_id: null, Item: null })), ...groupedByType, ...groupedByItem }).map(([key, value]) => ({ label: value.some(f => f.item_id == null) ? capitalizeSentence(key.replaceAll("_", " ")) : value[0].Item.name, image: value.some(f => f.item_id == null) ? categories[key]?.icon : `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value[0].Item.image}`, items: value, value: key.toString(), color: value[0].__typename == 'MapNote' || value.every(f => f.item_id == null) ? categories[key].color : value[0].Item.color }));
+  }, []);
 
   const [noterun, setNoterun] = useState<number[]>(map.id === 2
     ? [57, 520, 242, 241, 201, 79, 238, 143, 301, 283, 284, 60]
@@ -401,33 +364,19 @@ const Map = ({ map }: Props) => {
             </div>
             <div className="h-16 px-4">
               <p className="text-xs leading-10 whitespace-nowrap dark:text-zinc-300 text-zinc-600">Notes</p>
-              <p className="text-sm leading-none font-medium -mt-0.5 whitespace-nowrap">{map?.MapNote.length ?? 0} Notes</p>
+              <p className="text-sm leading-none font-medium -mt-0.5 whitespace-nowrap">{map?.MapNote.length ?? 0} {map.id == 11 || map?.parent_map_id == 11 ? 'Runes' : 'Notes'}</p>
             </div>
-            <div className="h-16 px-4">
+            {/* <div className="h-16 px-4">
               <p className="text-xs leading-10 whitespace-nowrap dark:text-zinc-300 text-zinc-600">Lootcrates</p>
               <p className="text-sm leading-none font-medium -mt-0.5 whitespace-nowrap">{map.Lootcrate.length ?? 0} Lootcrates</p>
-            </div>
+            </div> */}
           </div>
           <div className="grid grid-flow-row gap-3 md:grid-cols-2">
             <CheckboxGroup
               size="md"
-              options={Object.entries(categories)
-                .filter(
-                  (c) =>
-                    map.MapCoordinate.filter((d) => d.type === c[0]) != null &&
-                    map.MapCoordinate.filter((d) => d.type === c[0]) != undefined &&
-                    map.MapCoordinate.filter((d) => d.type === c[0]).length > 0 || (c[0] === "notes" && map.MapNote.length > 0)
-                )
-                .map((category) => ({
-                  label: capitalizeSentence(category[0].replaceAll("_", " ")),
-                  value: category[0],
-                  image: category[1].icon,
-                }))}
+              options={types}
               onChange={(name, values) => {
-                setCategory(
-                  name,
-                  values.some((h) => h === name)
-                );
+                setSelectedTypes(values.filter(v => values.some((h) => h === v)))
               }}
             />
 
@@ -439,11 +388,7 @@ const Map = ({ map }: Props) => {
               disable_map={true}
               map_id={map.id}
               size={{ width: 500, height: 500 }}
-              pos={mapData.map((d) => ({
-                lat: d.latitude,
-                lon: d.longitude,
-                ...d,
-              }))}
+              pos={Object.values(types.filter(f => selectedTypes.find(v => v === f.value || v === f.label) ? true : false).flatMap(f => f.items.map(v => ({ ...v, lat: v.latitude, lon: v.longitude, color: f.color }))))}
               onPosClick={(e) => {
                 setNoterun((prevState) => {
                   if (prevState.includes(e.node_index)) {
@@ -474,8 +419,9 @@ const Map = ({ map }: Props) => {
             />
 
             {/* TODO: add transistion */}
+            {/* TODO: make groups, like itemmenu on materialgrid */}
             <ul className="rw-segment max-h-44 overflow-auto rounded-lg border bg-stone-300 text-sm font-medium text-gray-900 border-zinc-500 dark:bg-zinc-600 dark:text-white">
-              {mapData.sort((a, b) => (a.noterun === b.noterun) ? 0 : a.noterun ? -1 : 1).map((d, i) => (
+              {Object.values(types.filter(f => selectedTypes.find(v => v === f.value || v === f.label) ? true : false).flatMap(f => f.items.map(v => ({ ...v, ...f })))).map((d, i) => (
                 <li
                   key={`point- ${i}`}
                   className="w-full border-b border-gray-200 first:rounded-t-lg last:rounded-b-lg last:border-none dark:border-zinc-500 animate-fade-in"
@@ -504,10 +450,9 @@ const Map = ({ map }: Props) => {
                     }
                     style={{ borderLeftColor: d.color }}
                   >
-                    <span>{d?.name ? d.name.split("\n")[0] : ""} - {" "}</span>
-                    <span>{" "}{d.latitude.toFixed(1)},{" "}{d.longitude.toFixed(1)}</span>
+                    <span>{d?.label ? d.label.split("\n")[0] : ""} | {d.latitude.toFixed(1)},{" "}{d.longitude.toFixed(1)}</span>
 
-                    {d.noterun && (
+                    {d.note_index && (
                       <>
                         <span className="inline-flex place-self-end ml-auto">Noterun</span>
                         <input className="rw-input" type="checkbox" checked={checkedNotes.includes(d.note_index)} onChange={(e) => setCheckedNotes((prev) => {
@@ -531,7 +476,7 @@ const Map = ({ map }: Props) => {
         </Link>
       </section>
 
-      <section className="rw-segment-header rw-heading rw-heading-secondary">
+      {/* <section className="rw-segment-header rw-heading rw-heading-secondary">
         {map.Lootcrate.length > 0 && (
           <Link
             className="after:content-['_↗']"
@@ -576,7 +521,7 @@ const Map = ({ map }: Props) => {
             </div>
           </div>
         ))}
-      </section>
+      </section> */}
     </article>
   );
 };

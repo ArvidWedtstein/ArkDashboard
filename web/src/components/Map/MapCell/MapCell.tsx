@@ -12,22 +12,29 @@ export const QUERY = gql`
       name
       img
       release_date
-      MapCoordinate {
+      parent_map_id
+      MapResource {
+        item_id
         latitude
         longitude
         type
+        Item {
+          name,
+          image
+          color
+        }
       }
       MapNote {
         latitude
         longitude
         note_index
       }
-      Lootcrate {
-        id
-        name
-        level_requirement
-        color
-      }
+      # Lootcrate {
+      #   id
+      #   name
+      #   level_requirement
+      #   color
+      # }
       other_Map {
         id
         name
