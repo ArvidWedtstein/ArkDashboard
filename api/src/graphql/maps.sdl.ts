@@ -15,6 +15,7 @@ export const schema = gql`
     other_Map: [Map]!
     MapCoordinate: [MapCoordinate]!
     MapNote: [MapNote]!
+    MapResource: [MapResource]!
     TimelineSeasonBasespot: [TimelineSeasonBasespot]!
     TimelineSeasonEvent: [TimelineSeasonEvent]!
   }

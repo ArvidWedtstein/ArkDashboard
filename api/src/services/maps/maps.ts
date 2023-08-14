@@ -59,6 +59,9 @@ export const Map: MapRelationResolvers = {
   MapNote: (_obj, { root }) => {
     return db.map.findUnique({ where: { id: root?.id } }).MapNote();
   },
+  MapResource: (_obj, { root }) => {
+    return db.map.findUnique({ where: { id: root?.id } }).MapResource();
+  },
   TimelineSeasonBasespot: (_obj, { root }) => {
     return db.map
       .findUnique({ where: { id: root?.id } })
