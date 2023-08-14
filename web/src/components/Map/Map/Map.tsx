@@ -1,113 +1,22 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import MapComp from "src/components/Util/Map/Map";
-import { capitalizeSentence, groupBy, timeTag } from "src/lib/formatters";
+import {
+  SimplexNoise3D,
+  capitalizeSentence,
+  groupBy,
+  timeTag,
+} from "src/lib/formatters";
 
 import type { FindMapById } from "types/graphql";
-
 
 interface Props {
   map: NonNullable<FindMapById["map"]>;
 }
 
 const Map = ({ map }: Props) => {
-  const [mapData, setMapData] = useState<{ __typename: string, category: string, color?: string, latitude?: number, longitude?: number, name?: string, note_index?: number, noterun?: boolean }[]>([]);
   const [checkedNotes, setCheckedNotes] = useState<number[]>([]);
-
-
-
-
-  // const interval = 1000 / 60 // fps
-  // const noiseStr = 10
-  // const row = 15
-
-  // const canvas = document.querySelector('canvas')
-  // const ctx = canvas.getContext('2d')
-  // const simplex = new SimplexNoise()
-  // const grids = []
-
-  // function init() {
-  // for (let index = 0; index < Math.pow(row, 2); index++) {
-  //   const grid = new Grid(index, row)
-  //   grids.push(grid)
-  // }
-  // }
-
-  // function render() {
-  // let now, delta
-  // let then = Date.now()
-  // function frame(timestamp) {
-  //   requestAnimationFrame(frame)
-  //   now = Date.now()
-  //   delta = now - then
-  //   if (delta < interval) return
-  //   then = now - (delta % interval)
-
-  //   ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-  //   ctx.save()
-  //   ctx.translate(canvas.width, canvas.height)
-  //   ctx.rotate(Math.PI)
-
-  //   grids.forEach(grid => {
-  //     grid.resize(canvas.width, canvas.height)
-  //     grid.update(simplex, noiseStr, timestamp * 0.001)
-  //     grid.draw(ctx)
-  //   })
-
-  //   ctx.restore()
-  // }
-  // requestAnimationFrame(frame)
-  // }
-
-  // function resize() {
-  // canvas.width = canvas.height = Math.min(innerWidth, innerHeight)
-  // }
-
-  // window.addEventListener('resize', resize)
-  // window.addEventListener('DOMContentLoaded', () => {
-  // init()
-  // resize()
-  // render()
-  // })
-
-  // class Grid {
-  // constructor(index, rowCount) {
-  //   this.index = index
-  //   this.rowCount = rowCount
-
-  //   this.ex = this.index % this.rowCount
-  //   this.ey = Math.floor(this.index / this.rowCount)
-  // }
-  // resize(canvasWidth, canvasHeight) {
-  //   const minSize = Math.min(canvasWidth, canvasHeight)
-  //   this.size = minSize / this.rowCount
-  //   this.boxSize = this.size * (0.3 + 0.7 * this.noise)
-
-  //   this.sx = canvasWidth / 2 - minSize / 2
-  //   this.sy = canvasHeight / 2 - minSize / 2
-
-  //   this.x = this.sx + this.ex * this.size
-  //   this.y = this.sy + this.ey * this.size
-  // }
-  // update(simplex, noiseStr, time) {
-  //   this.noise = (simplex.noise3D(this.ex / noiseStr, this.ey / noiseStr, time) + 1) / 2
-  //   this.sizePercent = 0.1 + 0.89 * this.noise
-  //   this.boxSize = this.size * this.sizePercent
-  // }
-  // draw(ctx) {
-  //   ctx.lineWidth = 1
-  //   ctx.strokeStyle = '#f1f1f1'
-  //   ctx.fillStyle = '#191919'
-  //   ctx.fillRect(this.x, this.y, this.size, this.size)
-  //   ctx.strokeRect(this.x, this.y, this.size, this.size)
-
-  //   ctx.fillStyle = `rgba(241, 241, 241, ${this.sizePercent})`
-  //   ctx.fillRect(this.x, this.y, this.boxSize, this.boxSize)
-  // }
-  // }
-
 
   const [categories, setCategories] = useState({
     mutagen_bulb: {
@@ -326,15 +235,41 @@ const Map = ({ map }: Props) => {
 
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const types = useMemo(() => {
-    const groupedByType = groupBy(map.MapResource.filter(d => d.type != null && d.item_id == null), "type");
-    const groupedByItem = groupBy(map.MapResource.filter(d => d.item_id != null), "item_id");
+    const groupedByType = groupBy(
+      map.MapResource.filter((d) => d.type != null && d.item_id == null),
+      "type"
+    );
+    const groupedByItem = groupBy(
+      map.MapResource.filter((d) => d.item_id != null),
+      "item_id"
+    );
     // console.log(Object.entries({ notes: map.MapNote.map(f => ({ ...f, item_id: null, Item: null })), ...groupedByType, ...groupedByItem }).map(([key, value]) => ({ label: value.some(f => f.item_id == null) ? capitalizeSentence(key.replaceAll("_", " ")) : value[0].Item.name, image: value.some(f => f.item_id == null) ? categories[key]?.icon : `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value[0].Item.image}`, items: value, value: key.toString(), color: value[0].__typename == 'MapNote' || value.every(f => f.item_id == null) ? categories[key].color : value[0].Item.color })))
-    return Object.entries({ notes: map.MapNote.map(f => ({ ...f, item_id: null, Item: null })), ...groupedByType, ...groupedByItem }).map(([key, value]) => ({ label: value.some(f => f.item_id == null) ? capitalizeSentence(key.replaceAll("_", " ")) : value[0].Item.name, image: value.some(f => f.item_id == null) ? categories[key]?.icon : `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value[0].Item.image}`, items: value, value: key.toString(), color: value[0].__typename == 'MapNote' || value.every(f => f.item_id == null) ? categories[key].color : value[0].Item.color }));
+    return Object.entries({
+      notes: map.MapNote.map((f) => ({ ...f, item_id: null, Item: null })),
+      ...groupedByType,
+      ...groupedByItem,
+    }).map(([key, value]) => ({
+      label: value.some((f) => f.item_id == null)
+        ? capitalizeSentence(key.replaceAll("_", " "))
+        : value[0].Item.name,
+      image: value.some((f) => f.item_id == null)
+        ? categories[key]?.icon
+        : `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value[0].Item.image}`,
+      items: value,
+      value: key.toString(),
+      color:
+        value[0].__typename == "MapNote" ||
+        value.every((f) => f.item_id == null)
+          ? categories[key].color
+          : value[0].Item.color,
+    }));
   }, []);
 
-  const [noterun, setNoterun] = useState<number[]>(map.id === 2
-    ? [57, 520, 242, 241, 201, 79, 238, 143, 301, 283, 284, 60]
-    : []);
+  const [noterun, setNoterun] = useState<number[]>(
+    map.id === 2
+      ? [57, 520, 242, 241, 201, 79, 238, 143, 301, 283, 284, 60]
+      : []
+  );
 
   return (
     <article>
@@ -344,27 +279,44 @@ const Map = ({ map }: Props) => {
             {map.name.includes("The") ? map.name : `The ${map.name}`} Map
           </h2>
         </header>
-        <div className="rw-segment-main dark:text-white text-black">
-          {(map?.other_Map && map.other_Map.length > 0) && (
+        <div className="rw-segment-main text-black dark:text-white">
+          {map?.other_Map && map.other_Map.length > 0 && (
             <section>
               <h6>Realms:</h6>
               <div className="flex items-center gap-3">
                 {map.other_Map.map((submap, sm) => (
-                  <div className="flex flex-row p-3 border rounded-lg border-zinc-500" key={`submap-${sm}`}>
-                    <Link to={routes.map({ id: submap.id })} className="rw-link">{submap.name}</Link>
+                  <div
+                    className="flex flex-row rounded-lg border border-zinc-500 p-3"
+                    key={`submap-${sm}`}
+                  >
+                    <Link
+                      to={routes.map({ id: submap.id })}
+                      className="rw-link"
+                    >
+                      {submap.name}
+                    </Link>
                   </div>
                 ))}
               </div>
             </section>
           )}
-          <div className="flex items-center justify-between rounded-lg border border-zinc-500 h-16 my-5 divide-x divide-zinc-500">
+          <div className="my-5 flex h-16 items-center justify-between divide-x divide-zinc-500 rounded-lg border border-zinc-500">
             <div className="h-16 px-4">
-              <p className="text-xs leading-10 whitespace-nowrap dark:text-zinc-300 text-zinc-600">Released</p>
-              <p className="text-sm leading-none font-medium -mt-0.5 whitespace-nowrap">{timeTag(map.release_date, { timeStyle: 'none' })}</p>
+              <p className="whitespace-nowrap text-xs leading-10 text-zinc-600 dark:text-zinc-300">
+                Released
+              </p>
+              <p className="-mt-0.5 whitespace-nowrap text-sm font-medium leading-none">
+                {timeTag(map.release_date, { timeStyle: "none" })}
+              </p>
             </div>
             <div className="h-16 px-4">
-              <p className="text-xs leading-10 whitespace-nowrap dark:text-zinc-300 text-zinc-600">Notes</p>
-              <p className="text-sm leading-none font-medium -mt-0.5 whitespace-nowrap">{map?.MapNote.length ?? 0} {map.id == 11 || map?.parent_map_id == 11 ? 'Runes' : 'Notes'}</p>
+              <p className="whitespace-nowrap text-xs leading-10 text-zinc-600 dark:text-zinc-300">
+                Notes
+              </p>
+              <p className="-mt-0.5 whitespace-nowrap text-sm font-medium leading-none">
+                {map?.MapNote.length ?? 0}{" "}
+                {map.id == 11 || map?.parent_map_id == 11 ? "Runes" : "Notes"}
+              </p>
             </div>
             {/* <div className="h-16 px-4">
               <p className="text-xs leading-10 whitespace-nowrap dark:text-zinc-300 text-zinc-600">Lootcrates</p>
@@ -376,7 +328,9 @@ const Map = ({ map }: Props) => {
               size="md"
               options={types}
               onChange={(name, values) => {
-                setSelectedTypes(values.filter(v => values.some((h) => h === v)))
+                setSelectedTypes(
+                  values.filter((v) => values.some((h) => h === v))
+                );
               }}
             />
 
@@ -388,43 +342,68 @@ const Map = ({ map }: Props) => {
               disable_map={true}
               map_id={map.id}
               size={{ width: 500, height: 500 }}
-              pos={Object.values(types.filter(f => selectedTypes.find(v => v === f.value || v === f.label) ? true : false).flatMap(f => f.items.map(v => ({ ...v, lat: v.latitude, lon: v.longitude, color: f.color }))))}
+              pos={Object.values(
+                types
+                  .filter((f) =>
+                    selectedTypes.find((v) => v === f.value || v === f.label)
+                      ? true
+                      : false
+                  )
+                  .flatMap((f) =>
+                    f.items.map((v) => ({
+                      ...v,
+                      lat: v.latitude,
+                      lon: v.longitude,
+                      color: f.color,
+                    }))
+                  )
+              )}
               onPosClick={(e) => {
                 setNoterun((prevState) => {
                   if (prevState.includes(e.node_index)) {
                     return prevState.filter((p) => p !== e.node_index);
                   }
-                  return prevState
+                  return prevState;
                 });
               }}
               path={{
                 color: "#0000ff",
-                coords: noterun.map((b) => {
-                  if (map.MapNote && map.MapNote.length > 0) {
-                    let note = (map?.MapNote).find((j) => j.note_index === b);
-                    if (note) {
+                coords: noterun
+                  .map((b) => {
+                    if (map.MapNote && map.MapNote.length > 0) {
+                      let note = (map?.MapNote).find((j) => j.note_index === b);
+                      if (note) {
+                        return {
+                          lat: note?.latitude,
+                          lon: note.longitude,
+                        };
+                      }
+
                       return {
-                        lat: note?.latitude,
-                        lon: note.longitude,
+                        lat: -1,
+                        lon: -1,
                       };
                     }
-
-                    return {
-                      lat: -1,
-                      lon: -1,
-                    };
-                  }
-                }).filter((c) => c.lat !== -1 && c.lon !== -1),
+                  })
+                  .filter((c) => c.lat !== -1 && c.lon !== -1),
               }}
             />
 
             {/* TODO: add transistion */}
             {/* TODO: make groups, like itemmenu on materialgrid */}
-            <ul className="rw-segment max-h-44 overflow-auto rounded-lg border bg-stone-300 text-sm font-medium text-gray-900 border-zinc-500 dark:bg-zinc-600 dark:text-white">
-              {Object.values(types.filter(f => selectedTypes.find(v => v === f.value || v === f.label) ? true : false).flatMap(f => f.items.map(v => ({ ...v, ...f })))).map((d, i) => (
+            <ul className="rw-segment max-h-44 overflow-auto rounded-lg border border-zinc-500 bg-stone-300 text-sm font-medium text-gray-900 dark:bg-zinc-600 dark:text-white">
+              {Object.values(
+                types
+                  .filter((f) =>
+                    selectedTypes.find((v) => v === f.value || v === f.label)
+                      ? true
+                      : false
+                  )
+                  .flatMap((f) => f.items.map((v) => ({ ...v, ...f })))
+              ).map((d, i) => (
                 <li
                   key={`point- ${i}`}
-                  className="w-full border-b border-gray-200 first:rounded-t-lg last:rounded-b-lg last:border-none dark:border-zinc-500 animate-fade-in"
+                  className="animate-fade-in w-full border-b border-gray-200 first:rounded-t-lg last:rounded-b-lg last:border-none dark:border-zinc-500"
                 >
                   <button
                     onClick={() => {
@@ -432,32 +411,44 @@ const Map = ({ map }: Props) => {
                         `map-pos-${i}`
                       ) as unknown as SVGCircleElement;
                       if (c != null && !checkedNotes.includes(d.note_index)) {
-
-
                         c.setAttribute("fill", "antiquewhite");
-                        c.classList.toggle('animate-pulse')
-                        console.log(d)
+                        c.classList.toggle("animate-pulse");
+                        console.log(d);
                         setTimeout(() => {
                           c.setAttribute("fill", d.color);
-                          c.classList.toggle('animate-pulse')
+                          c.classList.toggle("animate-pulse");
                         }, 3000);
                       } else if (c != null) {
                         c.setAttribute("fill", "#59ff00");
                       }
                     }}
                     className={
-                      "w-full border-l-2 px-4 py-2 text-left capitalize inline-flex"
+                      "inline-flex w-full border-l-2 px-4 py-2 text-left capitalize"
                     }
                     style={{ borderLeftColor: d.color }}
                   >
-                    <span>{d?.label ? d.label.split("\n")[0] : ""} | {d.latitude.toFixed(1)},{" "}{d.longitude.toFixed(1)}</span>
+                    <span>
+                      {d?.label ? d.label.split("\n")[0] : ""} |{" "}
+                      {d.latitude.toFixed(1)}, {d.longitude.toFixed(1)}
+                    </span>
 
                     {d.note_index && (
                       <>
-                        <span className="inline-flex place-self-end ml-auto">Noterun</span>
-                        <input className="rw-input" type="checkbox" checked={checkedNotes.includes(d.note_index)} onChange={(e) => setCheckedNotes((prev) => {
-                          return e.target.checked ? [...prev, d.note_index] : prev.filter((p) => p !== d.note_index)
-                        })} />
+                        <span className="ml-auto inline-flex place-self-end">
+                          Noterun
+                        </span>
+                        <input
+                          className="rw-input"
+                          type="checkbox"
+                          checked={checkedNotes.includes(d.note_index)}
+                          onChange={(e) =>
+                            setCheckedNotes((prev) => {
+                              return e.target.checked
+                                ? [...prev, d.note_index]
+                                : prev.filter((p) => p !== d.note_index);
+                            })
+                          }
+                        />
                       </>
                     )}
                   </button>
