@@ -427,7 +427,7 @@ const Map = ({ map }: Props) => {
                   className="w-full border-b border-gray-200 first:rounded-t-lg last:rounded-b-lg last:border-none dark:border-zinc-500 animate-fade-in"
                 >
                   <button
-                    onClick={(e) => {
+                    onClick={() => {
                       let c: SVGCircleElement = document.getElementById(
                         `map-pos-${i}`
                       ) as unknown as SVGCircleElement;
@@ -436,7 +436,7 @@ const Map = ({ map }: Props) => {
 
                         c.setAttribute("fill", "antiquewhite");
                         c.classList.toggle('animate-pulse')
-
+                        console.log(d)
                         setTimeout(() => {
                           c.setAttribute("fill", d.color);
                           c.classList.toggle('animate-pulse')
