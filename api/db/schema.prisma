@@ -186,6 +186,8 @@ model Map {
   release_date           DateTime?                @db.Date
   parent_map_id          BigInt?
   description            String?
+  topographic_img        String?
+  boundaries             String?
   Basespot               Basespot[]
   Lootcrate              Lootcrate[]
   Map                    Map?                     @relation("MapToMap", fields: [parent_map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)

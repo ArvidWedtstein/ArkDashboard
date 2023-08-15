@@ -174,7 +174,7 @@ const Map = ({
   const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
   const [map, setMap] = useState(map_id);
   const [subMap, setSubMap] = useState<string | number>(submap_id || '');
-  const [mapType, setMapType] = useState<'drawn' | 'topographic'>('drawn');
+  const [mapType, setMapType] = useState<'img' | 'topographic_img'>('img');
 
   const posToMap = (coord: number): number => (size.height / 100) * coord + size.height / 100
   const calcRealmCorners = (coords: { lat: number; lon: number; }[]) => {
@@ -199,7 +199,7 @@ const Map = ({
     setZoom(1);
     setMap(map_id);
     setSubMap(submap_id);
-    setMapType('drawn');
+    setMapType('img');
     setPanPosition({ x: 0, y: 0 });
     setIsDragging(false);
     setStartPosition({ x: 0, y: 0 });
@@ -207,6 +207,10 @@ const Map = ({
 
   useEffect(() => {
     loadMaps();
+    // Notification.requestPermission();
+    // new Notification("test", {
+    //   image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis2-Map.webp",
+    // })
     // if (!canvasRef.current) return;
     // const canvas = canvasRef.current;
     // const ctx = canvas.getContext("2d");
@@ -340,6 +344,7 @@ const Map = ({
         className="rw-button-group rw-button-group-border m-0"
         role="menubar"
       >
+
         <button
           className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
           onClick={() => handleZoomButton("in")}
@@ -383,10 +388,10 @@ const Map = ({
           value={mapType}
           disabled={disable_map && disable_sub_map}
           className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
-          onChange={({ target: { value } }) => (value == 'drawn' || value == 'topographic') && setMapType(value)}
+          onChange={({ target: { value } }) => (value == 'img' || value == 'topographic_img') && setMapType(value)}
         >
-          <option value={'drawn'}>Drawn</option>
-          <option value={'topographic'}>Topographic</option>
+          <option value={'img'}>Drawn</option>
+          <option value={'topographic_img'}>Topographic</option>
         </select>
         <button
           className="rw-button rw-button-small rw-button-red first:!rounded-bl-none last:!rounded-br-none"
@@ -419,23 +424,25 @@ const Map = ({
         onKeyUp={handleKeyUp}
         xmlns="http://www.w3.org/2000/svg"
       >
-        <image
-          onWheel={handleWheel}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          href={maps[subMap !== '' ? subMap : map][mapType]}
-          height={size.height}
-          width={size.width}
-          ref={imgRef}
-          style={{
-            width: "100%",
-            height: "100%",
-            transform: `scale(${zoom}) translate(${panPosition.x.toFixed(1)}px, ${panPosition.y.toFixed(1)}px)`,
-            transformOrigin: "center center",
-          }}
-        />
-        {subMap !== '' && mapType !== 'topographic' && (
+        {data && (
+          <image
+            onWheel={handleWheel}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            href={data.maps.find(m => m.id === (subMap !== '' ? subMap : map))[mapType]}
+            height={size.height}
+            width={size.width}
+            ref={imgRef}
+            style={{
+              width: "100%",
+              height: "100%",
+              transform: `scale(${zoom}) translate(${panPosition.x.toFixed(1)}px, ${panPosition.y.toFixed(1)}px)`,
+              transformOrigin: "center center",
+            }}
+          />
+        )}
+        {subMap !== '' && mapType !== 'topographic_img' && (
           <path
             style={{
               pointerEvents: "none",
