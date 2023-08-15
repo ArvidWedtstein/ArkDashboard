@@ -169,9 +169,8 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
-    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-  }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+    }`;
 };
 
 /**
@@ -297,12 +296,14 @@ interface Material {
  * @returns {Array<any>} An array of objects representing the base materials required.
  */
 
+// TODO: FIX TYPES!
 export const getBaseMaterials = (
   baseMaterials: boolean = false,
   path: boolean = false,
   items: any[],
   ...objects: Array<any>
 ) => {
+
   let materials = [];
   const findBaseMaterials = (
     item: { ItemRecipeItem: CraftingRecipe[] },
@@ -877,9 +878,9 @@ export const generatePDF = (crafts) => {
       tableX - cellPadding * 2,
       30 + crafts.length * 20,
       tableX +
-        (Object.keys(crafts[0]).length - 1) *
-          (tableSize.width / Object.keys(crafts[0]).length) +
-        columnWidths[Object.keys(crafts[0]).length - 1],
+      (Object.keys(crafts[0]).length - 1) *
+      (tableSize.width / Object.keys(crafts[0]).length) +
+      columnWidths[Object.keys(crafts[0]).length - 1],
       40 + (crafts.length - 1) * 20 + cellPadding,
       true,
       `0.9 0.9 0.9`
@@ -913,7 +914,7 @@ export const generatePDF = (crafts) => {
                     x:
                       tableX +
                       (Object.keys(crafts[0]).length - 1) *
-                        (tableSize.width / Object.keys(crafts[0]).length) +
+                      (tableSize.width / Object.keys(crafts[0]).length) +
                       columnWidths[Object.keys(crafts[0]).length - 1],
                     y: cellY + cellPadding,
                   },
@@ -1275,19 +1276,19 @@ export class SimplexNoise3D {
 
     const gi0 =
       SimplexNoise3D.perm[
-        ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
+      ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
       ] % 12;
     const gi1 =
       SimplexNoise3D.perm[
-        ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
+      ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
       ] % 12;
     const gi2 =
       SimplexNoise3D.perm[
-        ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
+      ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
       ] % 12;
     const gi3 =
       SimplexNoise3D.perm[
-        ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
+      ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
       ] % 1;
 
     let n0, n1, n2, n3;

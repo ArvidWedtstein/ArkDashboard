@@ -1,4 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useLazyQuery } from "@apollo/client";
+
+const MAPQUERY = gql`
+  query FindMapsForMapComp {
+    maps {
+      id
+      name
+      img
+      other_Map {
+        id
+        name
+      }
+    }
+  }
+`;
 
 const drawSvgPath = (
   coordinates: { lat: number; lon: number }[],
@@ -15,7 +30,6 @@ const drawSvgPath = (
 interface mapProps {
   map_id?: number;
   submap_id?: number;
-  submap?: boolean;
   disable_map?: boolean;
   disable_sub_map?: boolean;
   size?: { width: number; height: number };
@@ -23,6 +37,7 @@ interface mapProps {
   className?: string;
   path?: { color?: string; coords: { lat: number; lon: number }[] };
   interactive?: boolean;
+  onSubMapChange?: (submap: number) => void;
   onPosClick?: (pos: {
     lat: number;
     lon: number;
@@ -41,9 +56,17 @@ const Map = ({
   className,
   path,
   interactive = false,
-  submap = false,
   onPosClick,
+  onSubMapChange,
 }: mapProps) => {
+  const [loadMaps, { called, loading, data }] = useLazyQuery(MAPQUERY, {
+    onCompleted: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
   // TODO: fetch from db instead of hardcoding
   const maps = {
     1: {
@@ -135,6 +158,10 @@ const Map = ({
           "lon": 56.45,
         }
       ]
+    },
+    16: {
+      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Map.webp",
+      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Map-Topographic.webp",
     }
   }
   const svgRef = useRef(null);
@@ -146,7 +173,7 @@ const Map = ({
   const [isDragging, setIsDragging] = useState(false);
   const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
   const [map, setMap] = useState(map_id);
-  const [subMap, setSubMap] = useState<string | number>("");
+  const [subMap, setSubMap] = useState<string | number>(submap_id || '');
   const [mapType, setMapType] = useState<'drawn' | 'topographic'>('drawn');
 
   const posToMap = (coord: number): number => (size.height / 100) * coord + size.height / 100
@@ -171,7 +198,7 @@ const Map = ({
   const reset = () => {
     setZoom(1);
     setMap(map_id);
-    setSubMap(disable_sub_map ? '' : 11);
+    setSubMap(submap_id);
     setMapType('drawn');
     setPanPosition({ x: 0, y: 0 });
     setIsDragging(false);
@@ -179,6 +206,7 @@ const Map = ({
   };
 
   useEffect(() => {
+    loadMaps();
     // if (!canvasRef.current) return;
     // const canvas = canvasRef.current;
     // const ctx = canvas.getContext("2d");
@@ -332,30 +360,23 @@ const Map = ({
           className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
           onChange={(e) => setMap(parseInt(e.target.value))}
         >
-          <option value={5}>Aberration</option>
-          <option value={10}>Crystal Isles</option>
-          <option value={6}>Extinction</option>
-          <option value={11}>Fjordur</option>
-          <option value={8}>Genesis</option>
-          <option value={9}>Genesis 2</option>
-          <option value={12}>Lost Island</option>
-          <option value={4}>Ragnarok</option>
-          <option value={7}>Scorched Earth</option>
-          <option value={3}>The Center</option>
-          <option value={2}>The Island</option>
-          <option value={1}>Valguero</option>
+          {data && data.maps.map((map: { id: number; name: string }) => (
+            <option key={map.id} value={map.id}>{map.name}</option>
+          ))}
         </select>
-        {submap && (
+        {data && data.maps.some(m => m.other_Map && m.other_Map.length > 0) && (submap_id || subMap) && (
           <select
             value={subMap}
             disabled={disable_sub_map}
             className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
-            onChange={({ target: { value } }) => setSubMap((value == '11' || value == '') ? '' : parseInt(value))}
+            onChange={({ target: { value } }) => {
+              onSubMapChange?.(parseInt(value));
+              setSubMap(parseInt(value));
+            }}
           >
-            <option value={11}>Midgard</option>
-            <option value={13}>Jotunheim</option>
-            <option value={14}>Vanaheim</option>
-            <option value={15}>Asgard</option>
+            {data && data.maps?.find(m => m.id === map || m.id === map_id).other_Map.map((map: { id: number; name: string }) => (
+              <option key={map.id} value={map.id}>{map.name}</option>
+            ))}
           </select>
         )}
         <select
@@ -437,6 +458,7 @@ const Map = ({
           y={0}
           style={{
             transform: `scale(${zoom}) translate(${panPosition.x.toFixed(1)}px, ${panPosition.y.toFixed(1)}px)`,
+            transformOrigin: "center center",
           }}
           width="100%"
           height="100%"
@@ -445,9 +467,9 @@ const Map = ({
             <circle
               style={{
                 width: "100%",
-                cursor: "pointer",
                 height: "100%",
-                transform: `scale(${zoom}) translate(${panPosition.x.toFixed(1)}px, ${panPosition.y.toFixed(1)}px)`,
+                cursor: "pointer",
+                // transform: `scale(${zoom}) translate(${panPosition.x.toFixed(1)}px, ${panPosition.y.toFixed(1)}px)`,
                 transformOrigin: "center center",
               }}
               key={"map-pos-" + i}

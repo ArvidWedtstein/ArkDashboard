@@ -16,6 +16,7 @@ interface Props {
 }
 
 const Map = ({ map }: Props) => {
+  const [notes, setNotes] = useState([]);
   const [checkedNotes, setCheckedNotes] = useState<number[]>([]);
 
   const [categories, setCategories] = useState({
@@ -233,6 +234,7 @@ const Map = ({ map }: Props) => {
     },
   });
 
+
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const types = useMemo(() => {
     const groupedByType = groupBy(
@@ -243,12 +245,11 @@ const Map = ({ map }: Props) => {
       map.MapResource.filter((d) => d.item_id != null),
       "item_id"
     );
-    // console.log(Object.entries({ notes: map.MapNote.map(f => ({ ...f, item_id: null, Item: null })), ...groupedByType, ...groupedByItem }).map(([key, value]) => ({ label: value.some(f => f.item_id == null) ? capitalizeSentence(key.replaceAll("_", " ")) : value[0].Item.name, image: value.some(f => f.item_id == null) ? categories[key]?.icon : `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value[0].Item.image}`, items: value, value: key.toString(), color: value[0].__typename == 'MapNote' || value.every(f => f.item_id == null) ? categories[key].color : value[0].Item.color })))
     return Object.entries({
-      notes: map.MapNote.map((f) => ({ ...f, item_id: null, Item: null })),
+      notes: notes ? notes.map((f) => ({ ...f, item_id: null, Item: null })) : [],
       ...groupedByType,
       ...groupedByItem,
-    }).map(([key, value]) => ({
+    }).filter(([k, v]) => v.length > 0).map(([key, value]) => ({
       label: value.some((f) => f.item_id == null)
         ? capitalizeSentence(key.replaceAll("_", " "))
         : value[0].Item.name,
@@ -259,7 +260,7 @@ const Map = ({ map }: Props) => {
       value: key.toString(),
       color:
         value[0].__typename == "MapNote" ||
-        value.every((f) => f.item_id == null)
+          value.every((f) => f.item_id == null)
           ? categories[key].color
           : value[0].Item.color,
     }));
@@ -336,11 +337,11 @@ const Map = ({ map }: Props) => {
 
             <MapComp
               interactive={true}
-              submap={true}
-              disable_sub_map={map?.other_Map.length === 0}
+              disable_sub_map={!(map?.other_Map && map.other_Map.length > 0)}
               className="col-span-1 w-auto"
+              map_id={map.parent_map_id ? map.parent_map_id : map.id}
+              submap_id={map.parent_map_id ? map.id : 16}
               disable_map={true}
-              map_id={map.id}
               size={{ width: 500, height: 500 }}
               pos={Object.values(
                 types
@@ -358,6 +359,9 @@ const Map = ({ map }: Props) => {
                     }))
                   )
               )}
+              onSubMapChange={(id) => {
+                setNotes(map.other_Map.find((f) => f.id === id)?.MapNote ?? []);
+              }}
               onPosClick={(e) => {
                 setNoterun((prevState) => {
                   if (prevState.includes(e.node_index)) {
@@ -370,7 +374,7 @@ const Map = ({ map }: Props) => {
                 color: "#0000ff",
                 coords: noterun
                   .map((b) => {
-                    if (map.MapNote && map.MapNote.length > 0) {
+                    if (map?.MapNote && map?.MapNote.length > 0) {
                       let note = (map?.MapNote).find((j) => j.note_index === b);
                       if (note) {
                         return {
