@@ -8,9 +8,6 @@ import { db } from "src/lib/db";
 
 export const maps: QueryResolvers["maps"] = () => {
   return db.map.findMany({
-    where: {
-      parent_map_id: null,
-    },
     orderBy: { name: "asc" },
   });
 };

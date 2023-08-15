@@ -7,6 +7,9 @@ const MAPQUERY = gql`
       id
       name
       img
+      topographic_img
+      parent_map_id
+      boundaries
       other_Map {
         id
         name
@@ -67,103 +70,7 @@ const Map = ({
       console.log(error);
     },
   });
-  // TODO: fetch from db instead of hardcoding
-  const maps = {
-    1: {
-      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Valguero-Map.webp",
-      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Valguero-Map-Topographic.webp"
-    },
-    2: {
-      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheIsland-Map.webp",
-      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheIsland-Map-Topographic.webp"
-    },
-    3: {
-      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheCenter-Map.webp",
-      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheCenter-Map-Topographic.webp"
-    },
-    4: {
-      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Ragnarok-Map.webp",
-      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Ragnarok-Map-Topographic.webp"
-    },
-    5: {
-      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Aberration-Map.webp",
-      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Aberration-Map-Topographic.webp"
-    },
-    6: {
-      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Extinction-Map.webp",
-      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Extinction-Map-Topographic.webp"
-    },
-    7: {
-      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/ScorchedEarth-Map.webp",
-      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/ScorchedEarth-Map-Topographic.webp"
-    },
-    8: {
-      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis-Map.webp",
-      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis-Map-Topographic.webp"
-    },
-    9: {
-      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis2-Map.webp",
-      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis2-Map-Topographic.webp"
-    },
-    10: {
-      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/CrystalIsles-Map.webp",
-      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/CrystalIsles-Map-Topographic.webp"
-    },
-    11: {
-      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Map.webp",
-      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjodur-Map-Topographic.webp"
-    },
-    12: {
-      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/LostIsland-Map.webp",
-      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/LostIsland-Map-Topographic.webp"
-    },
-    13: {
-      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Map.webp",
-      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Jotunheim-Map-Topographic.webp",
-      "boundaries": [
-        {
-          "lat": 54.48,
-          "lon": 21.35,
-        },
-        {
-          "lat": 97.36,
-          "lon": 64.23,
-        }
-      ]
-    },
-    14: {
-      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Map.webp",
-      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Vanaheim-Map-Topographic.webp",
-      "boundaries": [
-        {
-          "lat": -9.15,
-          "lon": 62.5,
-        },
-        {
-          "lat": 33.73,
-          "lon": 105.38,
-        }
-      ]
-    },
-    15: {
-      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Map.webp",
-      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Asgard-Map-Topographic.webp",
-      "boundaries": [
-        {
-          "lat": 17.40,
-          "lon": 5.20,
-        },
-        {
-          "lat": 68.88,
-          "lon": 56.45,
-        }
-      ]
-    },
-    16: {
-      "drawn": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Map.webp",
-      "topographic": "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Fjordur-Map-Topographic.webp",
-    }
-  }
+
   const svgRef = useRef(null);
   const imgRef = useRef(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -173,7 +80,7 @@ const Map = ({
   const [isDragging, setIsDragging] = useState(false);
   const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
   const [map, setMap] = useState(map_id);
-  const [subMap, setSubMap] = useState<string | number>(submap_id || '');
+  const [subMap, setSubMap] = useState<string | number>(submap_id || null);
   const [mapType, setMapType] = useState<'img' | 'topographic_img'>('img');
 
   const posToMap = (coord: number): number => (size.height / 100) * coord + size.height / 100
@@ -365,7 +272,7 @@ const Map = ({
           className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
           onChange={(e) => setMap(parseInt(e.target.value))}
         >
-          {data && data.maps.map((map: { id: number; name: string }) => (
+          {data && data.maps.filter(m => m.parent_map_id == null).map((map: { id: number; name: string }) => (
             <option key={map.id} value={map.id}>{map.name}</option>
           ))}
         </select>
@@ -413,6 +320,7 @@ const Map = ({
         }}
         className="border border-red-500"
       /> */}
+
       <svg
         ref={svgRef}
         height={size.height}
@@ -430,7 +338,7 @@ const Map = ({
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
-            href={data.maps.find(m => m.id === (subMap !== '' ? subMap : map))[mapType]}
+            href={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${data?.maps?.find(m => m.id === (submap_id ? subMap : map))[mapType] || ''}`}
             height={size.height}
             width={size.width}
             ref={imgRef}
@@ -442,7 +350,7 @@ const Map = ({
             }}
           />
         )}
-        {subMap !== '' && mapType !== 'topographic_img' && (
+        {subMap && mapType !== 'topographic_img' && data?.maps?.find(m => m.id === (submap_id ? subMap : map))?.boundaries != null && (
           <path
             style={{
               pointerEvents: "none",
@@ -457,7 +365,7 @@ const Map = ({
             strokeLinecap="round"
             fillOpacity={0.2}
             strokeOpacity={0.5}
-            d={calcRealmCorners(maps[subMap].boundaries)}
+            d={calcRealmCorners(JSON.parse(data?.maps?.find(m => m.id === (submap_id ? subMap : map))?.boundaries))}
           />
         )}
         <g

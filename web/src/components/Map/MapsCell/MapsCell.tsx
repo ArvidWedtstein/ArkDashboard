@@ -11,6 +11,7 @@ export const QUERY = gql`
       name
       img
       icon
+      parent_map_id
     }
   }
 `;
@@ -59,5 +60,5 @@ export const Failure = ({ error }: CellFailureProps) => (
 );
 
 export const Success = ({ maps }: CellSuccessProps<FindMaps>) => {
-  return <Maps maps={maps} />;
+  return <Maps maps={maps.filter(m => m.parent_map_id == null)} />;
 };
