@@ -20,7 +20,7 @@ export const QUERY = gql`
         longitude
         type
         Item {
-          name,
+          name
           image
           color
         }
@@ -48,7 +48,6 @@ export const QUERY = gql`
     }
   }
 `;
-
 
 // TODO: fix skeleton loader
 export const Loading = () => <div>Loading...</div>;

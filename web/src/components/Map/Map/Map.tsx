@@ -2,6 +2,7 @@ import { Link, routes, navigate } from "@redwoodjs/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import MapComp from "src/components/Util/Map/Map";
+import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 import {
   SimplexNoise3D,
   capitalizeSentence,
@@ -16,7 +17,6 @@ interface Props {
 }
 
 const Map = ({ map }: Props) => {
-  const [notes, setNotes] = useState([]);
   const [checkedNotes, setCheckedNotes] = useState<number[]>([]);
 
   const [categories, setCategories] = useState({
@@ -234,8 +234,8 @@ const Map = ({ map }: Props) => {
     },
   });
 
-
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  // TODO: filter notes by submap
   const types = useMemo(() => {
     const groupedByType = groupBy(
       map.MapResource.filter((d) => d.type != null && d.item_id == null),
@@ -246,24 +246,28 @@ const Map = ({ map }: Props) => {
       "item_id"
     );
     return Object.entries({
-      notes: notes ? notes.map((f) => ({ ...f, item_id: null, Item: null })) : [],
+      notes: map.MapNote
+        ? map.MapNote.map((f) => ({ ...f, item_id: null, Item: null }))
+        : [],
       ...groupedByType,
       ...groupedByItem,
-    }).filter(([k, v]) => v.length > 0).map(([key, value]) => ({
-      label: value.some((f) => f.item_id == null)
-        ? capitalizeSentence(key.replaceAll("_", " "))
-        : value[0].Item.name,
-      image: value.some((f) => f.item_id == null)
-        ? categories[key]?.icon
-        : `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value[0].Item.image}`,
-      items: value,
-      value: key.toString(),
-      color:
-        value[0].__typename == "MapNote" ||
+    })
+      .filter(([k, v]) => v.length > 0)
+      .map(([key, value]) => ({
+        label: value.some((f) => f.item_id == null)
+          ? capitalizeSentence(key.replaceAll("_", " "))
+          : value[0].Item.name,
+        image: value.some((f) => f.item_id == null)
+          ? categories[key]?.icon
+          : `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${value[0].Item.image}`,
+        items: value,
+        value: key.toString(),
+        color:
+          value[0].__typename == "MapNote" ||
           value.every((f) => f.item_id == null)
-          ? categories[key].color
-          : value[0].Item.color,
-    }));
+            ? categories[key].color
+            : value[0].Item.color,
+      }));
   }, []);
 
   const [noterun, setNoterun] = useState<number[]>(
@@ -281,26 +285,23 @@ const Map = ({ map }: Props) => {
           </h2>
         </header>
         <div className="rw-segment-main text-black dark:text-white">
-          {map?.other_Map && map.other_Map.length > 0 && (
+          <pre>{JSON.stringify(map.other_Map)}</pre>
+          {/* {(map.parent_map_id ||
+            (map?.other_Map && map.other_Map.length > 0)) && (
             <section>
               <h6>Realms:</h6>
-              <div className="flex items-center gap-3">
-                {map.other_Map.map((submap, sm) => (
-                  <div
-                    className="flex flex-row rounded-lg border border-zinc-500 p-3"
-                    key={`submap-${sm}`}
-                  >
-                    <Link
-                      to={routes.map({ id: submap.id })}
-                      className="rw-link"
-                    >
-                      {submap.name}
-                    </Link>
-                  </div>
+
+              <Tabs>
+                {map.other_Map.map((submap) => (
+                  <Tab
+                    key={submap.id}
+                    label={submap.name}
+                    link={routes.map({ id: submap.id })}
+                  />
                 ))}
-              </div>
+              </Tabs>
             </section>
-          )}
+          )} */}
           <div className="my-5 flex h-16 items-center justify-between divide-x divide-zinc-500 rounded-lg border border-zinc-500">
             <div className="h-16 px-4">
               <p className="whitespace-nowrap text-xs leading-10 text-zinc-600 dark:text-zinc-300">
@@ -360,7 +361,7 @@ const Map = ({ map }: Props) => {
                   )
               )}
               onSubMapChange={(id) => {
-                setNotes(map.other_Map.find((f) => f.id === id)?.MapNote ?? []);
+                console.log("set currentmap", id);
               }}
               onPosClick={(e) => {
                 setNoterun((prevState) => {
