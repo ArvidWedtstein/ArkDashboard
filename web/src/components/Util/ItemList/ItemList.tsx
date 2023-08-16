@@ -27,7 +27,7 @@ const ItemList = ({
       <button
         type="button"
         className="flex w-full items-center space-x-1 rounded-lg p-2 text-sm text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-        onClick={() => onSelect(item)}
+        onClick={() => onSelect?.(item)}
       >
         {item.icon && typeof item.icon == "string" ? (
           <img className="h-6 w-6 " src={item.icon} alt={``} loading="lazy" />

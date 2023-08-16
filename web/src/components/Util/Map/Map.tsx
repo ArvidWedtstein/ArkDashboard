@@ -63,17 +63,13 @@ const Map = ({
   onSubMapChange,
 }: mapProps) => {
   const [loadMaps, { called, loading, data }] = useLazyQuery(MAPQUERY, {
-    onCompleted: (data) => {
-      console.log(data);
-    },
     onError: (error) => {
-      console.log(error);
+      console.error(error);
     },
   });
 
   const svgRef = useRef(null);
   const imgRef = useRef(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [zoom, setZoom] = useState(1);
   const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
@@ -83,10 +79,21 @@ const Map = ({
   const [subMap, setSubMap] = useState<string | number>(submap_id || null);
   const [mapType, setMapType] = useState<'img' | 'topographic_img'>('img');
 
-  const posToMap = (coord: number): number => (size.height / 100) * coord + size.height / 100
+  const posToMap = (coord: number, boundaries?: { lat: number, lon: number }[]): number => {
+    // TODO: fix boundary calculations
+    return ((size.height / 100) * coord + size.height / 100);
+  }
   const calcRealmCorners = (coords: { lat: number; lon: number; }[]) => {
     return !subMap || !coords ? '' : `M${posToMap(coords[0].lon)},${posToMap(coords[0].lat)} L${posToMap(coords[1].lon)},${posToMap(coords[0].lat)} L${posToMap(coords[1].lon)},${posToMap(coords[1].lat)} L${posToMap(coords[0].lon)},${posToMap(coords[1].lat)} z`
   }
+
+  useEffect(() => {
+    if (!called && !loading) {
+      setMap(map_id);
+      setSubMap(submap_id);
+      loadMaps();
+    }
+  }, [called, loading, submap_id, map_id])
 
   const handleKeyUp = useCallback((event) => {
     if (
@@ -102,7 +109,7 @@ const Map = ({
     setStartPosition({ x: 0, y: 0 });
   }, []);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setZoom(1);
     setMap(map_id);
     setSubMap(submap_id);
@@ -110,34 +117,9 @@ const Map = ({
     setPanPosition({ x: 0, y: 0 });
     setIsDragging(false);
     setStartPosition({ x: 0, y: 0 });
-  };
+  }, [map_id, submap_id]);
 
   useEffect(() => {
-    loadMaps();
-    // Notification.requestPermission();
-    // new Notification("test", {
-    //   image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/Genesis2-Map.webp",
-    // })
-    // if (!canvasRef.current) return;
-    // const canvas = canvasRef.current;
-    // const ctx = canvas.getContext("2d");
-    // const img = imgRef.current;
-    // if (!ctx || !img) return;
-    // ctx.drawImage(img, 0, 0, size.width, size.height);
-    // canvas.addEventListener('mousedown', (e) => {
-    //   return handleMouseDown(e as unknown as React.MouseEvent<HTMLCanvasElement, MouseEvent>);
-    // });
-    // canvas.addEventListener('mousemove', (e) => {
-    //   return handleMouseMove(e as unknown as React.MouseEvent<HTMLCanvasElement, MouseEvent>);
-    // });
-    // canvas.addEventListener('mouseup', (e) => {
-    //   return handleMouseUp();
-    // });
-    // canvas.addEventListener('wheel', (e) => {
-    //   return handleWheel(e as unknown as React.WheelEvent<HTMLCanvasElement>);
-    // })
-
-
     if (!interactive || !svgRef.current) return;
     const handleResize = () => {
       // Reset pan position to center when the container size changes
@@ -166,21 +148,6 @@ const Map = ({
       if (svgRef.current) {
         svgRef.current.removeEventListener("mouseleave", handleMouseLeave);
       }
-
-      // if (canvasRef.current) {
-      //   canvas.removeEventListener('mousedown', (e) => {
-      //     return handleMouseDown(e as unknown as React.MouseEvent<HTMLCanvasElement, MouseEvent>);
-      //   });
-      //   canvas.removeEventListener('mousemove', (e) => {
-      //     return handleMouseMove(e as unknown as React.MouseEvent<HTMLCanvasElement, MouseEvent>);
-      //   });
-      //   canvas.removeEventListener('mouseup', (e) => {
-      //     return handleMouseUp();
-      //   });
-      //   canvas.removeEventListener('wheel', (e) => {
-      //     return handleWheel(e as unknown as React.WheelEvent<HTMLCanvasElement>);
-      //   });
-      // }
     };
   }, []);
 
@@ -246,30 +213,33 @@ const Map = ({
   };
 
   return (
-    <div className={"flex flex-col " + className}>
+    <div className={"relative flex flex-col " + className}>
       <div
-        className="rw-button-group rw-button-group-border m-0"
+        className="rw-button-group -space-x-0.5 m-0 w-full"
         role="menubar"
       >
-
         <button
           className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
           onClick={() => handleZoomButton("in")}
           disabled={zoom >= 5 || !interactive}
         >
-          +
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="rw-button-icon">
+            <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+          </svg>
         </button>
         <button
           className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
           onClick={() => handleZoomButton("out")}
           disabled={zoom == 1 || !interactive}
         >
-          -
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="rw-button-icon">
+            <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
+          </svg>
         </button>
         <select
           value={map}
           disabled={disable_map}
-          className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
+          className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none flex-grow"
           onChange={(e) => setMap(parseInt(e.target.value))}
         >
           {data && data.maps.filter(m => m.parent_map_id == null).map((map: { id: number; name: string }) => (
@@ -310,16 +280,6 @@ const Map = ({
           Reset
         </button>
       </div>
-      {/* TODO: replace with canvas? */}
-      {/* <canvas
-        ref={canvasRef}
-        height={size.height}
-        width={size.width}
-        style={{
-          cursor: interactive ? (isDragging ? "grabbing" : "grab") : "default",
-        }}
-        className="border border-red-500"
-      /> */}
 
       <svg
         ref={svgRef}
@@ -334,6 +294,7 @@ const Map = ({
       >
         {data && (
           <image
+            amplitude={0.5}
             onWheel={handleWheel}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -384,7 +345,6 @@ const Map = ({
                 width: "100%",
                 height: "100%",
                 cursor: "pointer",
-                // transform: `scale(${zoom}) translate(${panPosition.x.toFixed(1)}px, ${panPosition.y.toFixed(1)}px)`,
                 transformOrigin: "center center",
               }}
               key={"map-pos-" + i}
@@ -395,8 +355,8 @@ const Map = ({
               x={0}
               onClick={() => onPosClick?.(p)}
               y={0}
-              cy={posToMap(p.lat)}
-              cx={posToMap(p.lon)}
+              cy={posToMap(p.lat, mapType == 'topographic_img' ? JSON.parse(data?.maps?.find(m => m.id === (submap_id ? subMap : map))?.boundaries) : null)}
+              cx={posToMap(p.lon, mapType == 'topographic_img' ? JSON.parse(data?.maps?.find(m => m.id === (submap_id ? subMap : map))?.boundaries) : null)}
               // r={((imageTransform.replace("scale(", "").replace(')', '')) as number * 2) * 2}
               r="3"
             >

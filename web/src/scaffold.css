@@ -146,15 +146,18 @@
   }
 
   .rw-button .rw-button-icon-start,
-  .rw-button .rw-button-icon-end {
+  .rw-button .rw-button-icon-end,
+  .rw-button .rw-button-icon {
     @apply pointer-events-none w-3.5 fill-current leading-5;
   }
   .rw-button.rw-button-small .rw-button-icon-start,
-  .rw-button.rw-button-small .rw-button-icon-end {
+  .rw-button.rw-button-small .rw-button-icon-end,
+  .rw-button.rw-button-small .rw-button-icon {
     @apply w-3;
   }
   .rw-button.rw-button-large .rw-button-icon-start,
-  .rw-button.rw-button-large .rw-button-icon-end {
+  .rw-button.rw-button-large .rw-button-icon-end,
+  .rw-button.rw-button-large .rw-button-icon {
     @apply w-4;
   }
 

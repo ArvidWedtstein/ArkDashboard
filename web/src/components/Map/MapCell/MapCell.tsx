@@ -30,12 +30,6 @@ export const QUERY = gql`
         longitude
         note_index
       }
-      # Lootcrate {
-      #   id
-      #   name
-      #   level_requirement
-      #   color
-      # }
       other_Map {
         id
         name
@@ -43,6 +37,17 @@ export const QUERY = gql`
           latitude
           longitude
           note_index
+        }
+        MapResource {
+          item_id
+          latitude
+          longitude
+          type
+          Item {
+            name
+            image
+            color
+          }
         }
       }
     }

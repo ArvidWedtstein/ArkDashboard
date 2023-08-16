@@ -24,6 +24,11 @@ const Tabs = ({
     (props?.children[selectedTab] as React.ReactElement<ITabProps>).props.label
   );
 
+  useEffect(() => {
+    const tab = props?.children[selectedTab] as React.ReactElement<ITabProps>;
+    setActiveTab(tab.props.label);
+  }, [selectedTab])
+
   const onClickTabItem = useCallback(
     (tab: ITabProps, index: number) => {
       setActiveTab(tab.label);

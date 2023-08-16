@@ -1,10 +1,10 @@
-import { Link, routes, navigate } from "@redwoodjs/router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Link, routes } from "@redwoodjs/router";
+import { useMemo, useState } from "react";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
+import ItemList from "src/components/Util/ItemList/ItemList";
 import MapComp from "src/components/Util/Map/Map";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 import {
-  SimplexNoise3D,
   capitalizeSentence,
   groupBy,
   timeTag,
@@ -17,9 +17,16 @@ interface Props {
 }
 
 const Map = ({ map }: Props) => {
-  const [checkedNotes, setCheckedNotes] = useState<number[]>([]);
+  const [checkedItems, setCheckedItems] = useState<string[]>([]);
+  const [realm, setRealm] = useState<number>(map.other_Map ? map.other_Map.findIndex(m => m.id == 16) : null);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [noterun, setNoterun] = useState<number[]>(
+    map.id === 2
+      ? [57, 520, 242, 241, 201, 79, 238, 143, 301, 283, 284, 60]
+      : []
+  );
 
-  const [categories, setCategories] = useState({
+  const categories = {
     mutagen_bulb: {
       active: false,
       color: "#0284c7",
@@ -232,27 +239,22 @@ const Map = ({ map }: Props) => {
         </svg>
       ),
     },
-  });
+  };
 
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-  // TODO: filter notes by submap
+
   const types = useMemo(() => {
-    const groupedByType = groupBy(
-      map.MapResource.filter((d) => d.type != null && d.item_id == null),
-      "type"
-    );
-    const groupedByItem = groupBy(
-      map.MapResource.filter((d) => d.item_id != null),
-      "item_id"
-    );
-    return Object.entries({
-      notes: map.MapNote
-        ? map.MapNote.map((f) => ({ ...f, item_id: null, Item: null }))
-        : [],
+    const mapData = map.other_Map ? map.other_Map[realm] : map;
+    const resourceData = mapData.MapResource
+    const groupedByType = groupBy(resourceData.filter(d => d.type !== null && d.item_id == null), "type");
+    const groupedByItem = groupBy(resourceData.filter(d => d.item_id !== null), "item_id");
+    const notes = mapData.MapNote ?? [];
+
+    const categorizedTypes = Object.entries({
+      notes: notes.map(f => ({ ...f, item_id: null, Item: null, type: null })),
       ...groupedByType,
       ...groupedByItem,
     })
-      .filter(([k, v]) => v.length > 0)
+      .filter(([_, v]) => v.length > 0)
       .map(([key, value]) => ({
         label: value.some((f) => f.item_id == null)
           ? capitalizeSentence(key.replaceAll("_", " "))
@@ -264,17 +266,13 @@ const Map = ({ map }: Props) => {
         value: key.toString(),
         color:
           value[0].__typename == "MapNote" ||
-          value.every((f) => f.item_id == null)
+            value.every((f) => f.item_id == null)
             ? categories[key].color
             : value[0].Item.color,
       }));
-  }, []);
 
-  const [noterun, setNoterun] = useState<number[]>(
-    map.id === 2
-      ? [57, 520, 242, 241, 201, 79, 238, 143, 301, 283, 284, 60]
-      : []
-  );
+    return categorizedTypes;
+  }, [realm]);
 
   return (
     <article>
@@ -285,23 +283,27 @@ const Map = ({ map }: Props) => {
           </h2>
         </header>
         <div className="rw-segment-main text-black dark:text-white">
-          <pre>{JSON.stringify(map.other_Map)}</pre>
-          {/* {(map.parent_map_id ||
-            (map?.other_Map && map.other_Map.length > 0)) && (
-            <section>
-              <h6>Realms:</h6>
+          {
+            (map?.other_Map && map.other_Map.length > 0) && (
+              <section>
+                <h6>Realms:</h6>
 
-              <Tabs>
-                {map.other_Map.map((submap) => (
-                  <Tab
-                    key={submap.id}
-                    label={submap.name}
-                    link={routes.map({ id: submap.id })}
-                  />
-                ))}
-              </Tabs>
-            </section>
-          )} */}
+                <Tabs
+                  onSelect={(_, b) => {
+                    setRealm(b);
+                    setSelectedTypes([]);
+                  }}
+                  selectedTab={realm}
+                >
+                  {map.other_Map.map((submap) => (
+                    <Tab
+                      key={submap.id}
+                      label={submap.name}
+                    />
+                  ))}
+                </Tabs>
+              </section>
+            )}
           <div className="my-5 flex h-16 items-center justify-between divide-x divide-zinc-500 rounded-lg border border-zinc-500">
             <div className="h-16 px-4">
               <p className="whitespace-nowrap text-xs leading-10 text-zinc-600 dark:text-zinc-300">
@@ -313,23 +315,19 @@ const Map = ({ map }: Props) => {
             </div>
             <div className="h-16 px-4">
               <p className="whitespace-nowrap text-xs leading-10 text-zinc-600 dark:text-zinc-300">
-                Notes
+                {map.id == 11 || map?.parent_map_id == 11 ? "Runes" : "Notes"}
               </p>
               <p className="-mt-0.5 whitespace-nowrap text-sm font-medium leading-none">
-                {map?.MapNote.length ?? 0}{" "}
+                {map.other_Map && map.other_Map.length > 0 ? map.other_Map[realm]?.MapNote.length ?? 0 : map?.MapNote.length ?? 0}{" "}
                 {map.id == 11 || map?.parent_map_id == 11 ? "Runes" : "Notes"}
               </p>
             </div>
-            {/* <div className="h-16 px-4">
-              <p className="text-xs leading-10 whitespace-nowrap dark:text-zinc-300 text-zinc-600">Lootcrates</p>
-              <p className="text-sm leading-none font-medium -mt-0.5 whitespace-nowrap">{map.Lootcrate.length ?? 0} Lootcrates</p>
-            </div> */}
           </div>
           <div className="grid grid-flow-row gap-3 md:grid-cols-2">
             <CheckboxGroup
               size="md"
               options={types}
-              onChange={(name, values) => {
+              onChange={(_, values) => {
                 setSelectedTypes(
                   values.filter((v) => values.some((h) => h === v))
                 );
@@ -339,9 +337,9 @@ const Map = ({ map }: Props) => {
             <MapComp
               interactive={true}
               disable_sub_map={!(map?.other_Map && map.other_Map.length > 0)}
-              className="col-span-1 w-auto"
+              className="col-span-1 w-fit"
               map_id={map.parent_map_id ? map.parent_map_id : map.id}
-              submap_id={map.parent_map_id ? map.id : 16}
+              submap_id={map?.other_Map ? map.other_Map[realm]?.id : null}
               disable_map={true}
               size={{ width: 500, height: 500 }}
               pos={Object.values(
@@ -352,7 +350,7 @@ const Map = ({ map }: Props) => {
                       : false
                   )
                   .flatMap((f) =>
-                    f.items.map((v) => ({
+                    f.items.filter(i => !checkedItems.includes(`${i.type}|${i.latitude}-${i.longitude}`)).map((v) => ({
                       ...v,
                       lat: v.latitude,
                       lon: v.longitude,
@@ -361,7 +359,8 @@ const Map = ({ map }: Props) => {
                   )
               )}
               onSubMapChange={(id) => {
-                console.log("set currentmap", id);
+                setRealm(map.other_Map ? map.other_Map.findIndex(m => m.id == id) : null);
+                setSelectedTypes([]);
               }}
               onPosClick={(e) => {
                 setNoterun((prevState) => {
@@ -396,6 +395,8 @@ const Map = ({ map }: Props) => {
 
             {/* TODO: add transistion */}
             {/* TODO: make groups, like itemmenu on materialgrid */}
+            <ItemList options={[{ label: 'test', value: [{ label: 'test' }] }]} />
+
             <ul className="rw-segment max-h-44 overflow-auto rounded-lg border border-zinc-500 bg-stone-300 text-sm font-medium text-gray-900 dark:bg-zinc-600 dark:text-white">
               {Object.values(
                 types
@@ -410,32 +411,43 @@ const Map = ({ map }: Props) => {
                   key={`point- ${i}`}
                   className="animate-fade-in w-full border-b border-gray-200 first:rounded-t-lg last:rounded-b-lg last:border-none dark:border-zinc-500"
                 >
-                  <button
-                    onClick={() => {
+                  <div
+                    className={
+                      "inline-flex w-full border-l-2 p-2 text-left capitalize"
+                    }
+                    style={{ borderLeftColor: d.color }}
+                  >
+                    <input
+                      className="rw-input mr-2"
+                      type="checkbox"
+                      checked={checkedItems.includes(`${d.type}|${d.latitude}-${d.longitude}`)}
+                      onChange={(e) =>
+                        setCheckedItems((prev) => {
+                          return e.target.checked
+                            ? [...prev, `${d.type}|${d.latitude}-${d.longitude}`]
+                            : prev.filter((p) => p !== `${d.type}|${d.latitude}-${d.longitude}`);
+                        })
+                      }
+                    />
+
+                    <button onClick={() => {
                       let c: SVGCircleElement = document.getElementById(
                         `map-pos-${i}`
                       ) as unknown as SVGCircleElement;
-                      if (c != null && !checkedNotes.includes(d.note_index)) {
+                      if (c != null && !checkedItems.includes(`${d.type}|${d.latitude}-${d.longitude}`)) {
                         c.setAttribute("fill", "antiquewhite");
                         c.classList.toggle("animate-pulse");
-                        console.log(d);
                         setTimeout(() => {
                           c.setAttribute("fill", d.color);
                           c.classList.toggle("animate-pulse");
                         }, 3000);
                       } else if (c != null) {
-                        c.setAttribute("fill", "#59ff00");
+                        if (!checkedItems.includes(`${d.type}|${d.latitude}-${d.longitude}`)) c.setAttribute("fill", "#59ff00");
                       }
-                    }}
-                    className={
-                      "inline-flex w-full border-l-2 px-4 py-2 text-left capitalize"
-                    }
-                    style={{ borderLeftColor: d.color }}
-                  >
-                    <span>
+                    }}>
                       {d?.label ? d.label.split("\n")[0] : ""} |{" "}
                       {d.latitude.toFixed(1)}, {d.longitude.toFixed(1)}
-                    </span>
+                    </button>
 
                     {d.note_index && (
                       <>
@@ -445,18 +457,18 @@ const Map = ({ map }: Props) => {
                         <input
                           className="rw-input"
                           type="checkbox"
-                          checked={checkedNotes.includes(d.note_index)}
+                          checked={checkedItems.includes(`${d.type}|${d.latitude}-${d.longitude}`)}
                           onChange={(e) =>
-                            setCheckedNotes((prev) => {
+                            setCheckedItems((prev) => {
                               return e.target.checked
-                                ? [...prev, d.note_index]
-                                : prev.filter((p) => p !== d.note_index);
+                                ? [...prev, `${d.type}|${d.latitude}-${d.longitude}`]
+                                : prev.filter((p) => p !== `${d.type}|${d.latitude}-${d.longitude}`);
                             })
                           }
                         />
                       </>
                     )}
-                  </button>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -471,53 +483,14 @@ const Map = ({ map }: Props) => {
           Basespots
         </Link>
       </section>
-
-      {/* <section className="rw-segment-header rw-heading rw-heading-secondary">
-        {map.Lootcrate.length > 0 && (
-          <Link
-            className="after:content-['_↗']"
-            to={routes.lootcrates({ map: map.id })}
-          >
-            Lootcrates
-          </Link>
-        )}
-
-        {Object.entries(groupBy(map.Lootcrate.map(l => ({ ...l, type: l.name.split(' ')[0] })), "type")).map(([k, v], i) => (
-          <div className="my-4 py-3 border-b border-zinc-500 animate-fade-in" key={i}>
-            <h1 className="rw-heading rw-heading-secondary">{k}</h1>
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4">
-              {v.map((lootcrate, d) => (
-                <ArkCard
-                  key={`lootcrate - ${d} - ${i}`}
-                  className="border-t-2 !bg-zinc-700"
-                  style={{
-                    borderColor: lootcrate.color ? lootcrate.color : "white",
-                  }}
-                  icon={{ src: k == 'Artifact' ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/artifact-of-the-${lootcrate.name.split(' ')[lootcrate.name.split(' ').length - 1].toLowerCase()}.webp` : 'https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/any-gun.webp' }}
-                  title={lootcrate.name}
-                  ring={
-                    lootcrate?.level_requirement &&
-                      lootcrate.level_requirement["min"] > 0 ? (
-                      <span
-                        title={`You need to be lvl ${lootcrate.level_requirement["min"]} to open this crate`}
-                        className="rw-badge rw-badge-yellow-outline"
-                      >
-                        Lvl {lootcrate.level_requirement["min"]}
-                      </span>
-                    ) : null
-                  }
-                  button={{
-                    link: routes.lootcrate({
-                      id: lootcrate.id.toString(),
-                    }),
-                    text: "View",
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        ))}
-      </section> */}
+      <section className="rw-segment-header rw-heading rw-heading-secondary">
+        <Link
+          className="after:content-['_↗']"
+          to={routes.lootcrates({ map: map.id })}
+        >
+          Lootcrates
+        </Link>
+      </section>
     </article>
   );
 };
