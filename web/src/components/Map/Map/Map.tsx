@@ -4,11 +4,7 @@ import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import ItemList from "src/components/Util/ItemList/ItemList";
 import MapComp from "src/components/Util/Map/Map";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
-import {
-  capitalizeSentence,
-  groupBy,
-  timeTag,
-} from "src/lib/formatters";
+import { capitalizeSentence, groupBy, timeTag } from "src/lib/formatters";
 
 import type { FindMapById } from "types/graphql";
 
@@ -18,7 +14,9 @@ interface Props {
 
 const Map = ({ map }: Props) => {
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
-  const [realm, setRealm] = useState<number>(map.other_Map ? map.other_Map.findIndex(m => m.id == 16) : null);
+  const [realm, setRealm] = useState<number>(
+    map.other_Map ? map.other_Map.findIndex((m) => m.id == 16) : null
+  );
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [noterun, setNoterun] = useState<number[]>(
     map.id === 2
@@ -241,16 +239,26 @@ const Map = ({ map }: Props) => {
     },
   };
 
-
   const types = useMemo(() => {
     const mapData = map.other_Map ? map.other_Map[realm] : map;
-    const resourceData = mapData.MapResource
-    const groupedByType = groupBy(resourceData.filter(d => d.type !== null && d.item_id == null), "type");
-    const groupedByItem = groupBy(resourceData.filter(d => d.item_id !== null), "item_id");
+    const resourceData = mapData.MapResource;
+    const groupedByType = groupBy(
+      resourceData.filter((d) => d.type !== null && d.item_id == null),
+      "type"
+    );
+    const groupedByItem = groupBy(
+      resourceData.filter((d) => d.item_id !== null),
+      "item_id"
+    );
     const notes = mapData.MapNote ?? [];
 
     const categorizedTypes = Object.entries({
-      notes: notes.map(f => ({ ...f, item_id: null, Item: null, type: null })),
+      notes: notes.map((f) => ({
+        ...f,
+        item_id: null,
+        Item: null,
+        type: null,
+      })),
       ...groupedByType,
       ...groupedByItem,
     })
@@ -266,7 +274,7 @@ const Map = ({ map }: Props) => {
         value: key.toString(),
         color:
           value[0].__typename == "MapNote" ||
-            value.every((f) => f.item_id == null)
+          value.every((f) => f.item_id == null)
             ? categories[key].color
             : value[0].Item.color,
       }));
@@ -283,27 +291,23 @@ const Map = ({ map }: Props) => {
           </h2>
         </header>
         <div className="rw-segment-main text-black dark:text-white">
-          {
-            (map?.other_Map && map.other_Map.length > 0) && (
-              <section>
-                <h6>Realms:</h6>
+          {map?.other_Map && map.other_Map.length > 0 && (
+            <section>
+              <h6>Realms:</h6>
 
-                <Tabs
-                  onSelect={(_, b) => {
-                    setRealm(b);
-                    setSelectedTypes([]);
-                  }}
-                  selectedTab={realm}
-                >
-                  {map.other_Map.map((submap) => (
-                    <Tab
-                      key={submap.id}
-                      label={submap.name}
-                    />
-                  ))}
-                </Tabs>
-              </section>
-            )}
+              <Tabs
+                onSelect={(_, b) => {
+                  setRealm(b);
+                  setSelectedTypes([]);
+                }}
+                selectedTab={realm}
+              >
+                {map.other_Map.map((submap) => (
+                  <Tab key={submap.id} label={submap.name} />
+                ))}
+              </Tabs>
+            </section>
+          )}
           <div className="my-5 flex h-16 items-center justify-between divide-x divide-zinc-500 rounded-lg border border-zinc-500">
             <div className="h-16 px-4">
               <p className="whitespace-nowrap text-xs leading-10 text-zinc-600 dark:text-zinc-300">
@@ -318,7 +322,9 @@ const Map = ({ map }: Props) => {
                 {map.id == 11 || map?.parent_map_id == 11 ? "Runes" : "Notes"}
               </p>
               <p className="-mt-0.5 whitespace-nowrap text-sm font-medium leading-none">
-                {map.other_Map && map.other_Map.length > 0 ? map.other_Map[realm]?.MapNote.length ?? 0 : map?.MapNote.length ?? 0}{" "}
+                {map.other_Map && map.other_Map.length > 0
+                  ? map.other_Map[realm]?.MapNote.length ?? 0
+                  : map?.MapNote.length ?? 0}{" "}
                 {map.id == 11 || map?.parent_map_id == 11 ? "Runes" : "Notes"}
               </p>
             </div>
@@ -354,13 +360,23 @@ const Map = ({ map }: Props) => {
                       ...entry,
                       lat: entry.latitude,
                       lon: entry.longitude,
-                      color: `${f.color}${checkedItems.includes(`${entry.type}|${entry.latitude}-${entry.longitude}`) ? '1A' : 'FF'}`,
+                      color: `${f.color}${
+                        checkedItems.includes(
+                          `${entry.type}|${entry.latitude}-${entry.longitude}`
+                        )
+                          ? "1A"
+                          : "FF"
+                      }`,
                       image: entry.item_id !== null ? f.image : null,
                     }))
                   )
               )}
               onSubMapChange={(id) => {
-                setRealm(map.other_Map ? map.other_Map.findIndex(m => m.id == id) : null);
+                setRealm(
+                  map.other_Map
+                    ? map.other_Map.findIndex((m) => m.id == id)
+                    : null
+                );
                 setSelectedTypes([]);
               }}
               onPosClick={(e) => {
@@ -394,43 +410,30 @@ const Map = ({ map }: Props) => {
               }}
             />
 
-            {/* TODO: add transistion */}
-            {/* TODO: make groups, like itemmenu on materialgrid */}
-            {/* {Object.entries(
-                types
-                  .filter((f) =>
-                    selectedTypes.find((v) => v === f.value || v === f.label)
-                      ? true
-                      : false
-                  )
-                  .flatMap((f) => f.items.map((v) => ({ ...v, ...f })))
-              ).map(([k,v]) => ({
-                label: v.label,
-                value: v.items.map((i) => ({ label: i.Item.name, value: i.item_id})),
-              }))} */}
-            <ItemList onCheck={(e) => {
-              console.log(Object.entries(groupBy(
-                types
-                  .filter((f) =>
-                    selectedTypes.find((v) => v === f.value || v === f.label)
-                      ? true
-                      : false
-                  )
-                  .flatMap((f) => f.items.map((v) => ({ ...v, ...f }))), "label")).map(([k, v]) => ({
-                    label: k,
-                    value: v.map((i) => ({ label: i.label })),
-                  })))
-            }} options={Object.entries(groupBy(
-              types
-                .filter((f) =>
-                  selectedTypes.find((v) => v === f.value || v === f.label)
-                    ? true
-                    : false
+            <ItemList
+              onCheck={(e, d) =>
+                setCheckedItems((prev) => {
+                  return e.target.checked
+                    ? [...prev, d.id.toString()]
+                    : prev.filter((p) => p !== d.id);
+                })
+              }
+              options={Object.entries(
+                groupBy(
+                  types
+                    .filter((f) =>
+                      selectedTypes.find((v) => v === f.value || v === f.label)
+                        ? true
+                        : false
+                    )
+                    .flatMap((f) => f.items.map((v) => ({ ...v, ...f }))),
+                  "label"
                 )
-                .flatMap((f) => f.items.map((v) => ({ ...v, ...f }))), "label")).map(([k, v]) => ({
-                  label: k,
-                  value: v.map((i) => ({ label: i.label })),
-                }))} />
+              ).map(([k, v]) => ({
+                label: k,
+                value: v.map((i) => ({ label: i.label })),
+              }))}
+            />
 
             <ul className="rw-segment max-h-44 overflow-auto rounded-lg border border-zinc-500 bg-stone-300 text-sm font-medium text-gray-900 dark:bg-zinc-600 dark:text-white">
               {Object.values(
@@ -455,31 +458,51 @@ const Map = ({ map }: Props) => {
                     <input
                       className="rw-input mr-2"
                       type="checkbox"
-                      checked={checkedItems.includes(`${d.type}|${d.latitude}-${d.longitude}`)}
+                      checked={checkedItems.includes(
+                        `${d.type}|${d.latitude}-${d.longitude}`
+                      )}
                       onChange={(e) =>
                         setCheckedItems((prev) => {
                           return e.target.checked
-                            ? [...prev, `${d.type}|${d.latitude}-${d.longitude}`]
-                            : prev.filter((p) => p !== `${d.type}|${d.latitude}-${d.longitude}`);
+                            ? [
+                                ...prev,
+                                `${d.type}|${d.latitude}-${d.longitude}`,
+                              ]
+                            : prev.filter(
+                                (p) =>
+                                  p !== `${d.type}|${d.latitude}-${d.longitude}`
+                              );
                         })
                       }
                     />
 
-                    <button onClick={() => {
-                      let c: SVGCircleElement = document.getElementById(
-                        `map-pos-${i}`
-                      ) as unknown as SVGCircleElement;
-                      if (c != null && !checkedItems.includes(`${d.type}|${d.latitude}-${d.longitude}`)) {
-                        c.setAttribute("fill", "antiquewhite");
-                        c.classList.toggle("animate-pulse");
-                        setTimeout(() => {
-                          c.setAttribute("fill", d.color);
+                    <button
+                      onClick={() => {
+                        let c: SVGCircleElement = document.getElementById(
+                          `map-pos-${i}`
+                        ) as unknown as SVGCircleElement;
+                        if (
+                          c != null &&
+                          !checkedItems.includes(
+                            `${d.type}|${d.latitude}-${d.longitude}`
+                          )
+                        ) {
+                          c.setAttribute("fill", "antiquewhite");
                           c.classList.toggle("animate-pulse");
-                        }, 3000);
-                      } else if (c != null) {
-                        if (!checkedItems.includes(`${d.type}|${d.latitude}-${d.longitude}`)) c.setAttribute("fill", "#59ff00");
-                      }
-                    }}>
+                          setTimeout(() => {
+                            c.setAttribute("fill", d.color);
+                            c.classList.toggle("animate-pulse");
+                          }, 3000);
+                        } else if (c != null) {
+                          if (
+                            !checkedItems.includes(
+                              `${d.type}|${d.latitude}-${d.longitude}`
+                            )
+                          )
+                            c.setAttribute("fill", "#59ff00");
+                        }
+                      }}
+                    >
                       {d?.label ? d.label.split("\n")[0] : ""} |{" "}
                       {d.latitude.toFixed(1)}, {d.longitude.toFixed(1)}
                     </button>
@@ -492,12 +515,21 @@ const Map = ({ map }: Props) => {
                         <input
                           className="rw-input"
                           type="checkbox"
-                          checked={checkedItems.includes(`${d.type}|${d.latitude}-${d.longitude}`)}
+                          checked={checkedItems.includes(
+                            `${d.type}|${d.latitude}-${d.longitude}`
+                          )}
                           onChange={(e) =>
                             setCheckedItems((prev) => {
                               return e.target.checked
-                                ? [...prev, `${d.type}|${d.latitude}-${d.longitude}`]
-                                : prev.filter((p) => p !== `${d.type}|${d.latitude}-${d.longitude}`);
+                                ? [
+                                    ...prev,
+                                    `${d.type}|${d.latitude}-${d.longitude}`,
+                                  ]
+                                : prev.filter(
+                                    (p) =>
+                                      p !==
+                                      `${d.type}|${d.latitude}-${d.longitude}`
+                                  );
                             })
                           }
                         />
