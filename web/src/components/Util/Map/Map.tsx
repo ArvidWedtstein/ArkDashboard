@@ -25,8 +25,9 @@ const drawSvgPath = (
   let pathString = "";
   coordinates.forEach((coordinate, index) => {
     const command = index === 0 ? "M" : "L";
-    pathString += `${command}${(size.height / 100) * coordinate.lon + size.width / 100
-      } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
+    pathString += `${command}${
+      (size.height / 100) * coordinate.lon + size.width / 100
+    } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
   });
   return pathString;
 };
@@ -36,7 +37,14 @@ interface mapProps {
   disable_map?: boolean;
   disable_sub_map?: boolean;
   size?: { width: number; height: number };
-  pos?: { lat: number; lon: number; color?: string; image?: string; name?: string, opacity?: number }[];
+  pos?: {
+    lat: number;
+    lon: number;
+    color?: string;
+    image?: string;
+    name?: string;
+    opacity?: number;
+  }[];
   className?: string;
   path?: { color?: string; coords: { lat: number; lon: number }[] };
   interactive?: boolean;
@@ -77,15 +85,24 @@ const Map = ({
   const [startPosition, setStartPosition] = useState({ x: 0, y: 0 });
   const [map, setMap] = useState(map_id);
   const [subMap, setSubMap] = useState<string | number>(submap_id || null);
-  const [mapType, setMapType] = useState<'img' | 'topographic_img'>('img');
+  const [mapType, setMapType] = useState<"img" | "topographic_img">("img");
 
-  const posToMap = (coord: number, boundaries?: { lat: number, lon: number }[]): number => {
+  const posToMap = (
+    coord: number,
+    boundaries?: { lat: number; lon: number }[]
+  ): number => {
     // TODO: fix boundary calculations
-    return ((size.height / 100) * coord + size.height / 100);
-  }
-  const calcRealmCorners = (coords: { lat: number; lon: number; }[]) => {
-    return !subMap || !coords ? '' : `M${posToMap(coords[0].lon)},${posToMap(coords[0].lat)} L${posToMap(coords[1].lon)},${posToMap(coords[0].lat)} L${posToMap(coords[1].lon)},${posToMap(coords[1].lat)} L${posToMap(coords[0].lon)},${posToMap(coords[1].lat)} z`
-  }
+    return (size.height / 100) * coord + size.height / 100;
+  };
+  const calcRealmCorners = (coords: { lat: number; lon: number }[]) => {
+    return !subMap || !coords
+      ? ""
+      : `M${posToMap(coords[0].lon)},${posToMap(coords[0].lat)} L${posToMap(
+          coords[1].lon
+        )},${posToMap(coords[0].lat)} L${posToMap(coords[1].lon)},${posToMap(
+          coords[1].lat
+        )} L${posToMap(coords[0].lon)},${posToMap(coords[1].lat)} z`;
+  };
 
   useEffect(() => {
     if (!called && !loading) {
@@ -93,7 +110,7 @@ const Map = ({
     }
     setMap(map_id);
     setSubMap(submap_id);
-  }, [called, loading, submap_id, map_id])
+  }, [called, loading, submap_id, map_id]);
 
   const handleKeyUp = useCallback((event) => {
     if (
@@ -113,7 +130,7 @@ const Map = ({
     setZoom(1);
     setMap(map_id);
     setSubMap(submap_id);
-    setMapType('img');
+    setMapType("img");
     setPanPosition({ x: 0, y: 0 });
     setIsDragging(false);
     setStartPosition({ x: 0, y: 0 });
@@ -151,7 +168,9 @@ const Map = ({
     };
   }, []);
 
-  const handleWheel = (event: React.WheelEvent<SVGImageElement | HTMLCanvasElement>) => {
+  const handleWheel = (
+    event: React.WheelEvent<SVGImageElement | HTMLCanvasElement>
+  ) => {
     const minZoom = 0.5;
     const maxZoom = 5;
     const { clientX, clientY } = event;
@@ -214,16 +233,17 @@ const Map = ({
 
   return (
     <div className={"relative flex flex-col " + className}>
-      <div
-        className="rw-button-group -space-x-0.5 m-0 w-full"
-        role="menubar"
-      >
+      <div className="rw-button-group m-0 w-full -space-x-0.5" role="menubar">
         <button
           className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
           onClick={() => handleZoomButton("in")}
           disabled={zoom >= 5 || !interactive}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="rw-button-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 448 512"
+            className="rw-button-icon"
+          >
             <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
           </svg>
         </button>
@@ -232,43 +252,61 @@ const Map = ({
           onClick={() => handleZoomButton("out")}
           disabled={zoom == 1 || !interactive}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="rw-button-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 448 512"
+            className="rw-button-icon"
+          >
             <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
           </svg>
         </button>
         <select
           value={map}
           disabled={disable_map}
-          className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none flex-grow"
+          className="rw-button rw-button-small rw-button-gray flex-grow first:!rounded-bl-none last:!rounded-br-none"
           onChange={(e) => setMap(parseInt(e.target.value))}
         >
-          {data && data.maps.filter(m => m.parent_map_id == null).map((map: { id: number; name: string }) => (
-            <option key={map.id} value={map.id}>{map.name}</option>
-          ))}
+          {data &&
+            data.maps
+              .filter((m) => m.parent_map_id == null)
+              .map((map: { id: number; name: string }) => (
+                <option key={map.id} value={map.id}>
+                  {map.name}
+                </option>
+              ))}
         </select>
-        {data && data.maps.some(m => m.other_Map && m.other_Map.length > 0) && (submap_id || subMap) && (
-          <select
-            value={subMap}
-            disabled={disable_sub_map}
-            className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
-            onChange={({ target: { value } }) => {
-              onSubMapChange?.(parseInt(value));
-              setSubMap(parseInt(value));
-            }}
-          >
-            {data && data.maps?.find(m => m.id === map || m.id === map_id).other_Map.map((map: { id: number; name: string }) => (
-              <option key={map.id} value={map.id}>{map.name}</option>
-            ))}
-          </select>
-        )}
+        {data &&
+          data.maps.some((m) => m.other_Map && m.other_Map.length > 0) &&
+          (submap_id || subMap) && (
+            <select
+              value={subMap}
+              disabled={disable_sub_map}
+              className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
+              onChange={({ target: { value } }) => {
+                onSubMapChange?.(parseInt(value));
+                setSubMap(parseInt(value));
+              }}
+            >
+              {data &&
+                data.maps
+                  ?.find((m) => m.id === map || m.id === map_id)
+                  .other_Map.map((map: { id: number; name: string }) => (
+                    <option key={map.id} value={map.id}>
+                      {map.name}
+                    </option>
+                  ))}
+            </select>
+          )}
         <select
           value={mapType}
           disabled={disable_map && disable_sub_map}
           className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
-          onChange={({ target: { value } }) => (value == 'img' || value == 'topographic_img') && setMapType(value)}
+          onChange={({ target: { value } }) =>
+            (value == "img" || value == "topographic_img") && setMapType(value)
+          }
         >
-          <option value={'img'}>Drawn</option>
-          <option value={'topographic_img'}>Topographic</option>
+          <option value={"img"}>Drawn</option>
+          <option value={"topographic_img"}>Topographic</option>
         </select>
         <button
           className="rw-button rw-button-small rw-button-red first:!rounded-bl-none last:!rounded-br-none"
@@ -299,41 +337,59 @@ const Map = ({
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
-            href={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${data?.maps?.find(m => m.id === (submap_id ? subMap : map))[mapType] || ''}`}
+            href={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${
+              data?.maps?.find((m) => m.id === (submap_id ? subMap : map))[
+                mapType
+              ] || ""
+            }`}
             height={size.height}
             width={size.width}
             ref={imgRef}
             style={{
               width: "100%",
               height: "100%",
-              transform: `scale(${zoom}) translate(${panPosition.x.toFixed(1)}px, ${panPosition.y.toFixed(1)}px)`,
+              transform: `scale(${zoom}) translate(${panPosition.x.toFixed(
+                1
+              )}px, ${panPosition.y.toFixed(1)}px)`,
               transformOrigin: "center center",
             }}
           />
         )}
-        {subMap && mapType !== 'topographic_img' && data?.maps?.find(m => m.id === (submap_id ? subMap : map))?.boundaries != null && (
-          <path
-            style={{
-              pointerEvents: "none",
-              width: "100%",
-              height: "100%",
-              transform: `scale(${zoom}) translate(${panPosition.x.toFixed(1)}px, ${panPosition.y.toFixed(1)}px)`,
-              transformOrigin: "center center",
-            }}
-            fill="#f00"
-            stroke="#f00"
-            strokeWidth="2"
-            strokeLinecap="round"
-            fillOpacity={0.2}
-            strokeOpacity={0.5}
-            d={calcRealmCorners(JSON.parse(data?.maps?.find(m => m.id === (submap_id ? subMap : map))?.boundaries))}
-          />
-        )}
+        {subMap &&
+          mapType !== "topographic_img" &&
+          data?.maps?.find((m) => m.id === (submap_id ? subMap : map))
+            ?.boundaries != null && (
+            <path
+              style={{
+                pointerEvents: "none",
+                width: "100%",
+                height: "100%",
+                transform: `scale(${zoom}) translate(${panPosition.x.toFixed(
+                  1
+                )}px, ${panPosition.y.toFixed(1)}px)`,
+                transformOrigin: "center center",
+              }}
+              fill="#f00"
+              stroke="#f00"
+              strokeWidth="2"
+              strokeLinecap="round"
+              fillOpacity={0.2}
+              strokeOpacity={0.5}
+              d={calcRealmCorners(
+                JSON.parse(
+                  data?.maps?.find((m) => m.id === (submap_id ? subMap : map))
+                    ?.boundaries
+                )
+              )}
+            />
+          )}
         <g
           x={0}
           y={0}
           style={{
-            transform: `scale(${zoom}) translate(${panPosition.x.toFixed(1)}px, ${panPosition.y.toFixed(1)}px)`,
+            transform: `scale(${zoom}) translate(${panPosition.x.toFixed(
+              1
+            )}px, ${panPosition.y.toFixed(1)}px)`,
             transformOrigin: "center center",
           }}
           width="100%"
@@ -344,9 +400,27 @@ const Map = ({
               {p.image && p.image != null ? (
                 <image
                   href={p.image}
-                  width={6}
-                  y={posToMap(p.lat, mapType == 'topographic_img' ? JSON.parse(data?.maps?.find(m => m.id === (submap_id ? subMap : map))?.boundaries) : null)}
-                  x={posToMap(p.lon, mapType == 'topographic_img' ? JSON.parse(data?.maps?.find(m => m.id === (submap_id ? subMap : map))?.boundaries) : null)}
+                  width={9}
+                  y={posToMap(
+                    p.lat,
+                    mapType == "topographic_img"
+                      ? JSON.parse(
+                          data?.maps?.find(
+                            (m) => m.id === (submap_id ? subMap : map)
+                          )?.boundaries
+                        )
+                      : null
+                  )}
+                  x={posToMap(
+                    p.lon,
+                    mapType == "topographic_img"
+                      ? JSON.parse(
+                          data?.maps?.find(
+                            (m) => m.id === (submap_id ? subMap : map)
+                          )?.boundaries
+                        )
+                      : null
+                  )}
                   ref={imgRef}
                   opacity={p.opacity ?? 1}
                   stroke="black"
@@ -373,8 +447,26 @@ const Map = ({
                   x={0}
                   onClick={() => onPosClick?.(p)}
                   y={0}
-                  cy={posToMap(p.lat, mapType == 'topographic_img' ? JSON.parse(data?.maps?.find(m => m.id === (submap_id ? subMap : map))?.boundaries) : null)}
-                  cx={posToMap(p.lon, mapType == 'topographic_img' ? JSON.parse(data?.maps?.find(m => m.id === (submap_id ? subMap : map))?.boundaries) : null)}
+                  cy={posToMap(
+                    p.lat,
+                    mapType == "topographic_img"
+                      ? JSON.parse(
+                          data?.maps?.find(
+                            (m) => m.id === (submap_id ? subMap : map)
+                          )?.boundaries
+                        )
+                      : null
+                  )}
+                  cx={posToMap(
+                    p.lon,
+                    mapType == "topographic_img"
+                      ? JSON.parse(
+                          data?.maps?.find(
+                            (m) => m.id === (submap_id ? subMap : map)
+                          )?.boundaries
+                        )
+                      : null
+                  )}
                   // r={((imageTransform.replace("scale(", "").replace(')', '')) as number * 2) * 2}
                   r="3"
                 >
@@ -390,7 +482,9 @@ const Map = ({
               pointerEvents: "none",
               width: "100%",
               height: "100%",
-              transform: `scale(${zoom}) translate(${panPosition.x.toFixed(1)}px, ${panPosition.y.toFixed(1)}px)`,
+              transform: `scale(${zoom}) translate(${panPosition.x.toFixed(
+                1
+              )}px, ${panPosition.y.toFixed(1)}px)`,
               transformOrigin: "center center",
             }}
             d={drawSvgPath(path.coords, size)}
