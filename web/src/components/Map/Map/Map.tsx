@@ -350,11 +350,12 @@ const Map = ({ map }: Props) => {
                       : false
                   )
                   .flatMap((f) =>
-                    f.items.filter(i => !checkedItems.includes(`${i.type}|${i.latitude}-${i.longitude}`)).map((v) => ({
-                      ...v,
-                      lat: v.latitude,
-                      lon: v.longitude,
-                      color: f.color,
+                    f.items.map((entry) => ({
+                      ...entry,
+                      lat: entry.latitude,
+                      lon: entry.longitude,
+                      color: `${f.color}${checkedItems.includes(`${entry.type}|${entry.latitude}-${entry.longitude}`) ? '1A' : 'FF'}`,
+                      image: entry.item_id !== null ? f.image : null,
                     }))
                   )
               )}
@@ -395,7 +396,41 @@ const Map = ({ map }: Props) => {
 
             {/* TODO: add transistion */}
             {/* TODO: make groups, like itemmenu on materialgrid */}
-            <ItemList options={[{ label: 'test', value: [{ label: 'test' }] }]} />
+            {/* {Object.entries(
+                types
+                  .filter((f) =>
+                    selectedTypes.find((v) => v === f.value || v === f.label)
+                      ? true
+                      : false
+                  )
+                  .flatMap((f) => f.items.map((v) => ({ ...v, ...f })))
+              ).map(([k,v]) => ({
+                label: v.label,
+                value: v.items.map((i) => ({ label: i.Item.name, value: i.item_id})),
+              }))} */}
+            <ItemList onCheck={(e) => {
+              console.log(Object.entries(groupBy(
+                types
+                  .filter((f) =>
+                    selectedTypes.find((v) => v === f.value || v === f.label)
+                      ? true
+                      : false
+                  )
+                  .flatMap((f) => f.items.map((v) => ({ ...v, ...f }))), "label")).map(([k, v]) => ({
+                    label: k,
+                    value: v.map((i) => ({ label: i.label })),
+                  })))
+            }} options={Object.entries(groupBy(
+              types
+                .filter((f) =>
+                  selectedTypes.find((v) => v === f.value || v === f.label)
+                    ? true
+                    : false
+                )
+                .flatMap((f) => f.items.map((v) => ({ ...v, ...f }))), "label")).map(([k, v]) => ({
+                  label: k,
+                  value: v.map((i) => ({ label: i.label })),
+                }))} />
 
             <ul className="rw-segment max-h-44 overflow-auto rounded-lg border border-zinc-500 bg-stone-300 text-sm font-medium text-gray-900 dark:bg-zinc-600 dark:text-white">
               {Object.values(

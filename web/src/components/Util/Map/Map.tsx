@@ -36,7 +36,7 @@ interface mapProps {
   disable_map?: boolean;
   disable_sub_map?: boolean;
   size?: { width: number; height: number };
-  pos?: { lat: number; lon: number; color?: string; name?: string }[];
+  pos?: { lat: number; lon: number; color?: string; image?: string; name?: string, opacity?: number }[];
   className?: string;
   path?: { color?: string; coords: { lat: number; lon: number }[] };
   interactive?: boolean;
@@ -89,10 +89,10 @@ const Map = ({
 
   useEffect(() => {
     if (!called && !loading) {
-      setMap(map_id);
-      setSubMap(submap_id);
       loadMaps();
     }
+    setMap(map_id);
+    setSubMap(submap_id);
   }, [called, loading, submap_id, map_id])
 
   const handleKeyUp = useCallback((event) => {
@@ -340,28 +340,48 @@ const Map = ({
           height="100%"
         >
           {pos?.map((p, i) => (
-            <circle
-              style={{
-                width: "100%",
-                height: "100%",
-                cursor: "pointer",
-                transformOrigin: "center center",
-              }}
-              key={"map-pos-" + i}
-              id={"map-pos-" + i}
-              fill={p.color || "red"}
-              stroke="black"
-              className="hover:stroke-red-500"
-              x={0}
-              onClick={() => onPosClick?.(p)}
-              y={0}
-              cy={posToMap(p.lat, mapType == 'topographic_img' ? JSON.parse(data?.maps?.find(m => m.id === (submap_id ? subMap : map))?.boundaries) : null)}
-              cx={posToMap(p.lon, mapType == 'topographic_img' ? JSON.parse(data?.maps?.find(m => m.id === (submap_id ? subMap : map))?.boundaries) : null)}
-              // r={((imageTransform.replace("scale(", "").replace(')', '')) as number * 2) * 2}
-              r="3"
-            >
-              <title>{p.name}</title>
-            </circle>
+            <React.Fragment key={"map-pos-" + i}>
+              {p.image && p.image != null ? (
+                <image
+                  href={p.image}
+                  width={6}
+                  y={posToMap(p.lat, mapType == 'topographic_img' ? JSON.parse(data?.maps?.find(m => m.id === (submap_id ? subMap : map))?.boundaries) : null)}
+                  x={posToMap(p.lon, mapType == 'topographic_img' ? JSON.parse(data?.maps?.find(m => m.id === (submap_id ? subMap : map))?.boundaries) : null)}
+                  ref={imgRef}
+                  opacity={p.opacity ?? 1}
+                  stroke="black"
+                  style={{
+                    cursor: "pointer",
+                    transformOrigin: "center center",
+                  }}
+                  onClick={() => onPosClick?.(p)}
+                >
+                  <title>{p.name}</title>
+                </image>
+              ) : (
+                <circle
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    cursor: "pointer",
+                    transformOrigin: "center center",
+                  }}
+                  id={"map-pos-" + i}
+                  fill={p.color || "red"}
+                  stroke="black"
+                  className="hover:stroke-red-500"
+                  x={0}
+                  onClick={() => onPosClick?.(p)}
+                  y={0}
+                  cy={posToMap(p.lat, mapType == 'topographic_img' ? JSON.parse(data?.maps?.find(m => m.id === (submap_id ? subMap : map))?.boundaries) : null)}
+                  cx={posToMap(p.lon, mapType == 'topographic_img' ? JSON.parse(data?.maps?.find(m => m.id === (submap_id ? subMap : map))?.boundaries) : null)}
+                  // r={((imageTransform.replace("scale(", "").replace(')', '')) as number * 2) * 2}
+                  r="3"
+                >
+                  <title>{p.name}</title>
+                </circle>
+              )}
+            </React.Fragment>
           ))}
         </g>
         {pos?.length > 0 && path?.coords && (

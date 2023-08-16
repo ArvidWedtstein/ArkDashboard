@@ -13,20 +13,31 @@ interface ItemListProps {
   onSearch?: (search: string) => void;
   onSelect?: (item: Item) => void;
   defaultSearch?: boolean;
+  onCheck?: (event: React.ChangeEvent<HTMLInputElement>, item: Item) => void;
 }
 
 const ItemList = ({
   options,
   onSearch,
   onSelect,
+  onCheck,
   defaultSearch = true,
 }: ItemListProps) => {
   const [search, setSearch] = useState<string>("");
   const renderItem = (item: Item) => (
-    <li key={`${JSON.stringify(item)}-${Math.random()}`}>
+    <li key={`${JSON.stringify(item)}-${Math.random()}`} className="flex items-center p-2 space-x-1 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700 rounded-lg">
+      {onCheck && (
+        <input
+          className="rw-input"
+          type="checkbox"
+          onChange={(e) =>
+            onCheck?.(e, item)
+          }
+        />
+      )}
       <button
         type="button"
-        className="flex w-full items-center space-x-1 rounded-lg p-2 text-sm text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
+        className="flex w-full items-center space-x-1 text-sm transition duration-75"
         onClick={() => onSelect?.(item)}
       >
         {item.icon && typeof item.icon == "string" ? (
@@ -69,10 +80,10 @@ const ItemList = ({
                 ) : (
                   item.icon
                 )}
-                <span className="">
-                  {item.label == "null" ? "Otheraaaa" : item.label}
+                <span className="flex-grow">
+                  {item.label == "null" ? "Other" : item.label}
                 </span>
-                <span className="text-pea-800 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full text-xs dark:text-stone-300">
+                <span className="text-pea-800 pr-6 inline-flex h-3 items-center justify-center text-right rounded-full text-xs dark:text-stone-300">
                   {
                     (defaultSearch
                       ? item?.value?.filter(({ label }) =>
