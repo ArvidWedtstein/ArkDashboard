@@ -91,59 +91,60 @@ model Message {
 }
 
 model Dino {
-  id                             String     @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
-  created_at                     DateTime?  @default(now()) @db.Timestamptz(6)
+  id                             String         @id @default(dbgenerated("extensions.uuid_generate_v4()")) @db.Uuid
+  created_at                     DateTime?      @default(now()) @db.Timestamptz(6)
   name                           String
   synonyms                       String?
   description                    String?
   taming_notice                  String?
   can_destroy                    String[]
   base_stats                     Json?
-  exp_per_kill                   Float?     @default(0)
-  egg_min                        Float?     @default(0)
-  egg_max                        Float?     @default(0)
-  tdps                           Float?     @default(0)
-  maturation_time                Float?     @default(0)
-  incubation_time                Float?     @default(0)
-  affinity_needed                Float?     @default(0)
-  aff_inc                        Float?     @default(0)
-  flee_threshold                 Float?     @default(0)
+  exp_per_kill                   Float?         @default(0)
+  egg_min                        Float?         @default(0)
+  egg_max                        Float?         @default(0)
+  tdps                           Float?         @default(0)
+  maturation_time                Float?         @default(0)
+  incubation_time                Float?         @default(0)
+  affinity_needed                Float?         @default(0)
+  aff_inc                        Float?         @default(0)
+  flee_threshold                 Float?         @default(0)
   hitboxes                       Json?
-  food_consumption_base          Float?     @default(0)
-  food_consumption_mult          Float?     @default(0)
-  disable_ko                     Boolean?   @default(false)
-  violent_tame                   Boolean?   @default(false)
-  taming_ineffectiveness         Float?     @default(0)
-  disable_food                   Boolean?   @default(false)
-  disable_mult                   Boolean?   @default(false)
+  food_consumption_base          Float?         @default(0)
+  food_consumption_mult          Float?         @default(0)
+  disable_ko                     Boolean?       @default(false)
+  violent_tame                   Boolean?       @default(false)
+  taming_ineffectiveness         Float?         @default(0)
+  disable_food                   Boolean?       @default(false)
+  disable_mult                   Boolean?       @default(false)
   admin_note                     String?
   base_points                    Float?
   non_violent_food_affinity_mult Float?
-  non_violent_food_rate_mult     Float?     @default(0)
-  taming_interval                Float?     @default(0)
+  non_violent_food_rate_mult     Float?         @default(0)
+  taming_interval                Float?         @default(0)
   base_taming_time               Float?
-  disable_tame                   Boolean?   @default(false)
-  x_variant                      Boolean?   @default(false)
+  disable_tame                   Boolean?       @default(false)
+  x_variant                      Boolean?       @default(false)
   attack                         Json?
-  mounted_weaponry               Boolean?   @default(false)
-  ridable                        Boolean?   @default(false)
-  movement                       Json?      @default("null")
+  mounted_weaponry               Boolean?       @default(false)
+  ridable                        Boolean?       @default(false)
+  movement                       Json?          @default("null")
   type                           String[]
   carryable_by                   String[]
   icon                           String?
   image                          String?
   multipliers                    Json?
-  baby_food_consumption_mult     Float?     @default(0)
-  gestation_time                 Float?     @default(0)
-  mating_cooldown_min            BigInt?    @default(0)
-  mating_cooldown_max            BigInt?    @default(0)
-  temperament                    String?    @default("Passive")
+  baby_food_consumption_mult     Float?         @default(0)
+  gestation_time                 Float?         @default(0)
+  mating_cooldown_min            BigInt?        @default(0)
+  mating_cooldown_max            BigInt?        @default(0)
+  temperament                    String?        @default("Passive")
   diet                           String?
-  released                       DateTime?  @db.Date
-  tamable                        Boolean?   @default(true)
-  breedable                      Boolean?   @default(true)
+  released                       DateTime?      @db.Date
+  tamable                        Boolean?       @default(true)
+  breedable                      Boolean?       @default(true)
   bp                             String?
   DinoStat                       DinoStat[]
+  LootcrateMap                   LootcrateMap[]
 }
 
 model Item {
@@ -170,6 +171,7 @@ model Item {
   ItemRecipe_ItemRecipe_crafted_item_idToItem     ItemRecipe[]            @relation("ItemRecipe_crafted_item_idToItem")
   ItemRecipe_ItemRecipe_crafting_station_idToItem ItemRecipe[]            @relation("ItemRecipe_crafting_station_idToItem")
   ItemRecipeItem                                  ItemRecipeItem[]
+  LootcrateItem                                   LootcrateItem[]
   LootcrateSetEntryItem                           LootcrateSetEntryItem[]
   MapResource                                     MapResource[]
 
@@ -190,6 +192,7 @@ model Map {
   boundaries             String?
   Basespot               Basespot[]
   Lootcrate              Lootcrate[]
+  LootcrateMap           LootcrateMap[]
   Map                    Map?                     @relation("MapToMap", fields: [parent_map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   other_Map              Map[]                    @relation("MapToMap")
   MapCoordinate          MapCoordinate[]
@@ -436,10 +439,12 @@ model TimelineSeasonPerson {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Lootcrates {
-  id         BigInt    @id(map: "Lootcrates_pkey1") @default(autoincrement())
-  created_at DateTime  @default(now()) @db.Timestamptz(6)
-  updated_at DateTime? @default(now()) @db.Timestamptz(6)
-  name       String
+  id            BigInt          @id(map: "Lootcrates_pkey1") @default(autoincrement())
+  created_at    DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime?       @default(now()) @db.Timestamptz(6)
+  name          String
+  LootcrateItem LootcrateItem[]
+  LootcrateMap  LootcrateMap[]
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -457,6 +462,35 @@ model MapResource {
   Map        Map       @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([latitude, longitude, map_id, item_id, type], map: "latitude_longitude_map_id_item_id_type_idx")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model LootcrateItem {
+  id           BigInt     @id @default(autoincrement())
+  created_at   DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime?  @default(now()) @db.Timestamptz(6)
+  lootcrate_id BigInt
+  item_id      BigInt
+  category     String?
+  Item         Item       @relation(fields: [item_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Lootcrates   Lootcrates @relation(fields: [lootcrate_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model LootcrateMap {
+  id           BigInt     @id @default(autoincrement())
+  created_at   DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime?  @default(now()) @db.Timestamptz(6)
+  lootcrate_id BigInt
+  map_id       BigInt?
+  dino_id      String?    @db.Uuid
+  latitude     Float?
+  longitude    Float?
+  description  String?
+  Dino         Dino?      @relation(fields: [dino_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Lootcrates   Lootcrates @relation(fields: [lootcrate_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Map          Map?       @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum permission {
