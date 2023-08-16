@@ -66,30 +66,23 @@ export const updateProfile: MutationResolvers["updateProfile"] = ({
     }
   });
 
-  // validate(input.role_id, "role_id", {
-  //   custom: {
-  //     with: () => {
-  //       if (
-  //         input.role_id !== context.currentUser.role_id &&
-  //         !hasPermission({ permission: "user_update" })
-  //       ) {
-  //         throw new Error("You are not allowed to change your own role");
-  //       }
-  //     },
-  //     message: "You are not allowed to change your own role",
-  //   },
-  // });
-  return validateUniqueness(
-    "profile",
-    { username: input.username, $self: { id } },
-    { message: "That username is already taken" },
-    () => {
-      return db.profile.update({
-        data: input,
-        where: { id },
-      });
-    }
-  );
+  validate(input.role_id, "role_id", {
+    custom: {
+      with: () => {
+        if (
+          input.role_id !== context.currentUser.role_id &&
+          !hasPermission({ permission: "user_update" })
+        ) {
+          throw new Error("You are not allowed to change your own role");
+        }
+      },
+      message: "You are not allowed to change your own role",
+    },
+  });
+  return db.profile.update({
+    data: input,
+    where: { id },
+  });
 };
 
 export const deleteProfile: MutationResolvers["deleteProfile"] = ({ id }) => {
@@ -102,6 +95,11 @@ export const Profile: ProfileRelationResolvers = {
   Basespot: (_obj, { root }) => {
     return db.profile.findUnique({ where: { id: root?.id } }).Basespot();
   },
+  Basespot_Basespot_updated_byToProfile: (_obj, { root }) => {
+    return db.profile
+      .findUnique({ where: { id: root?.id } })
+      .Basespot_Basespot_updated_byToProfile();
+  },
   Message: (_obj, { root }) => {
     return db.profile.findUnique({ where: { id: root?.id } }).Message();
   },
@@ -109,12 +107,6 @@ export const Profile: ProfileRelationResolvers = {
     return db.profile
       .findUnique({ where: { id: root?.id } })
       .role_profile_role_idTorole();
-  },
-  Profile: (_obj, { root }) => {
-    return db.profile.findUnique({ where: { id: root?.id } }).Profile();
-  },
-  other_Profile: (_obj, { root }) => {
-    return db.profile.findUnique({ where: { id: root?.id } }).other_Profile();
   },
   Role_Role_created_byToProfile: (_obj, { root }) => {
     return db.profile

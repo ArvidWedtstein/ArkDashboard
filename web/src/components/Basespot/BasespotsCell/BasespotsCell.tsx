@@ -15,7 +15,7 @@ export const QUERY = gql`
         description
         latitude
         longitude
-        image
+        thumbnail
         created_at
         updated_at
         map_id
@@ -45,9 +45,9 @@ export const Loading = () => {
       role="status"
       className="flex animate-pulse flex-col space-y-8 md:items-center"
     >
-      <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700">
+      <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700">
         <svg
-          className="h-12 w-12 text-gray-200"
+          className="h-12 w-12 text-zinc-200"
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
           fill="currentColor"
@@ -58,12 +58,12 @@ export const Loading = () => {
       </div>
       <div className="w-full space-y-3">
         <div className="grid h-48 grid-cols-3 gap-3">
-          <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
-          <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
-          <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
-          <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
-          <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
-          <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
+          <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
+          <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
+          <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
+          <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
+          <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
+          <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
         </div>
       </div>
       <span className="sr-only">Loading...</span>
@@ -73,7 +73,7 @@ export const Loading = () => {
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center text-black dark:text-white">
+    <div className="text-center text-black dark:text-white text-black dark:text-white">
       {"No basespots yet. "}
       <Link to={routes.newBasespot()} className="rw-link">
         {"Create one?"}
@@ -84,7 +84,7 @@ export const Empty = () => {
 
 export const Failure = ({ error }: CellFailureProps) => {
   return (
-    <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
+    <div className="rw-cell-error flex items-center space-x-3">
       <svg
         className="h-12 w-12 fill-current"
         xmlns="http://www.w3.org/2000/svg"

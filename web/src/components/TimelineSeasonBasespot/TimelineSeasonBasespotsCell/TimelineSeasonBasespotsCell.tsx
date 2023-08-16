@@ -1,13 +1,12 @@
 import type { FindTimelineSeasonBasespots } from "types/graphql";
 
-import { Link, routes } from "@redwoodjs/router";
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import TimelineSeasonBasespots from "src/components/TimelineSeasonBasespot/TimelineSeasonBasespots";
 
 export const QUERY = gql`
   query FindTimelineSeasonBasespots($timeline_season_id: String!) {
-    timelineSeasonBasespots: timelineSeasonBasespots(
+    timelineSeasonBasespotsByTimelineSeasonId: timelineSeasonBasespotsByTimelineSeasonId(
       timeline_season_id: $timeline_season_id
     ) {
       id
@@ -31,26 +30,26 @@ export const QUERY = gql`
 export const Loading = () => (
   <div
     role="status"
-    className="grid animate-pulse grid-cols-4 gap-3 rounded border border-gray-200 p-4 shadow dark:border-gray-700 md:p-6"
+    className="grid animate-pulse grid-cols-4 gap-3 rounded border border-zinc-200 p-4 shadow dark:border-zinc-700 md:p-6"
   >
-    <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
-    <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
-    <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
-    <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
+    <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
+    <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
+    <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
+    <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
     <span className="sr-only">Loading...</span>
   </div>
 );
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">
+    <div className="text-center text-black dark:text-white">
       <p>No Basespots created yet.</p>
     </div>
   );
 };
 
 export const Failure = ({ error }: CellFailureProps) => (
-  <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
+  <div className="rw-cell-error flex items-center space-x-3">
     <svg
       className="h-12 w-12 fill-current"
       xmlns="http://www.w3.org/2000/svg"
@@ -68,11 +67,13 @@ export const Failure = ({ error }: CellFailureProps) => (
 );
 
 export const Success = ({
-  timelineSeasonBasespots,
+  timelineSeasonBasespotsByTimelineSeasonId,
 }: CellSuccessProps<FindTimelineSeasonBasespots>) => {
   return (
     <TimelineSeasonBasespots
-      timelineSeasonBasespots={timelineSeasonBasespots}
+      timelineSeasonBasespotsByTimelineSeasonId={
+        timelineSeasonBasespotsByTimelineSeasonId
+      }
     />
   );
 };

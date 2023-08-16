@@ -5,6 +5,7 @@ export const schema = gql`
     updated_at: DateTime
     user_id: String
     ingame_name: String
+    permission: String
     timeline_season_id: String!
     TimelineSeason: TimelineSeason!
     Profile: Profile

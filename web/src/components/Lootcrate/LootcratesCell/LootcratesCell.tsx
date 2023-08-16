@@ -37,6 +37,11 @@ export const QUERY = gql`
         }
       }
     }
+    maps {
+      id
+      name
+      icon
+    }
   }
 `;
 
@@ -46,15 +51,29 @@ export const beforeQuery = ({ map }: { map: string }) => {
 };
 
 export const Loading = () => (
-  <div className="m-4 flex items-center justify-center text-white">
-    <p className="mr-4">LOADING</p>
-    <div className="dot-revolution"></div>
+  <div role="status" className="animate-pulse">
+    <div className="mb-4 h-12 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700"></div>
+    <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+    </div>
+    <span className="sr-only">Loading...</span>
   </div>
 );
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">
+    <div className="text-center text-black dark:text-white">
       {"No lootcrates yet. "}
       <Link to={routes.newLootcrate()} className="rw-link">
         {"Create one?"}
@@ -64,7 +83,7 @@ export const Empty = () => {
 };
 
 export const Failure = ({ error, errorCode }: CellFailureProps) => (
-  <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
+  <div className="rw-cell-error flex items-center space-x-3">
     <svg
       className="h-12 w-12 fill-current"
       xmlns="http://www.w3.org/2000/svg"
@@ -85,6 +104,6 @@ export const Failure = ({ error, errorCode }: CellFailureProps) => (
   </div>
 );
 
-export const Success = ({ lootcratesByMap }: CellSuccessProps<FindLootcrates>) => {
-  return <Lootcrates lootcratesByMap={lootcratesByMap} />;
+export const Success = ({ lootcratesByMap, maps }: CellSuccessProps<FindLootcrates>) => {
+  return <Lootcrates lootcratesByMap={lootcratesByMap} maps={maps} />;
 };

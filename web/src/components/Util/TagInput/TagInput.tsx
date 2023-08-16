@@ -1,18 +1,24 @@
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { debounce } from "src/lib/formatters";
 
 interface TagInputProps {
   name?: string;
   defaultValue?: string;
 }
-const TagInput = ({ name, defaultValue = "" }) => {
+const TagInput = ({ name, defaultValue = "" }: TagInputProps) => {
   const [isFadingOut, setIsFadingOut] = useState<number>(-1);
   const [tags, setTags] = useState<string[]>(
     defaultValue?.trim()
       .split(", ")
       .filter((t) => t !== "")
   );
+
+  useEffect(() => {
+    setTags(defaultValue?.trim()
+      .split(", ")
+      .filter((t) => t !== ""))
+  }, [defaultValue])
 
   const handleKeyDown = (e) => {
     if (e.target.value.includes(',') || e.key === "Enter") {

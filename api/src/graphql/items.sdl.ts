@@ -24,6 +24,7 @@ export const schema = gql`
     ItemRecipe_ItemRecipe_crafting_station_idToItem: [ItemRecipe]!
     ItemRecipeItem: [ItemRecipeItem]!
     LootcrateSetEntryItem: [LootcrateSetEntryItem]!
+    MapResource: [MapResource]!
   }
 
   type ItemsPage {

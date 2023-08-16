@@ -11,12 +11,15 @@ import {
 
 import type {
   EditTimelineSeasonEventById,
+  NewTimelineSeasonEvent,
   UpdateTimelineSeasonEventInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import Lookup from "src/components/Util/Lookup/Lookup";
-import FileUpload from "src/components/Util/FileUpload/FileUpload";
-import { ForwardedRef, forwardRef, useState } from "react";
+import FileUpload, {
+  FileUpload2,
+} from "src/components/Util/FileUpload/FileUpload";
+import { useState } from "react";
 import TagInput from "src/components/Util/TagInput/TagInput";
 
 type FormTimelineSeasonEvent = NonNullable<
@@ -26,6 +29,7 @@ type FormTimelineSeasonEvent = NonNullable<
 interface TimelineSeasonEventFormProps {
   timelineSeasonEvent?: EditTimelineSeasonEventById["timelineSeasonEvent"];
   timeline_season_id?: string;
+  maps?: NewTimelineSeasonEvent["maps"];
   onSave: (
     data: UpdateTimelineSeasonEventInput,
     id?: FormTimelineSeasonEvent["id"]
@@ -39,12 +43,13 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
   const [raid, isRaid] = useState<boolean>(false);
   const onSubmit = (data: FormTimelineSeasonEvent) => {
     data.timeline_season_id = props.timeline_season_id;
-    data.images = files.join(", ");
-    props.onSave(data, props?.timelineSeasonEvent?.id);
+    // data.images = data.images + files.join(", ");
+    console.log(data);
+    // props.onSave(data, props?.timelineSeasonEvent?.id);
   };
 
   return (
-    <div className="rw-form-wrapper mt-3">
+    <div className="rw-form-wrapper">
       <Form<FormTimelineSeasonEvent>
         onSubmit={onSubmit}
         error={props.error}
@@ -93,92 +98,99 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
           <FieldError name="content" className="rw-field-error" />
         </div>
 
+        <Label
+          name="raid"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Raid?
+        </Label>
         <input
           type="checkbox"
           className="rw-input"
+          name="raid"
           checked={raid}
           onChange={(e) => isRaid(e.currentTarget.checked)}
         />
 
-        {/* TODO: Insert lookup with basespots on this season here */}
-        {raid && (
-          <Lookup
-            options={[
-              { label: "Crack", value: 1 },
-              { label: "Waterfall", value: 2 },
-            ]}
-            name="basespot_id"
-            defaultValue={props.timelineSeasonEvent?.map_id}
-            placeholder="Select a Base Spot"
-          />
-        )}
         <Lookup
-          options={[
-            { label: "Valguero", value: 1 },
-            { label: "The Island", value: 2 },
-            { label: "The Center", value: 3 },
-            { label: "Ragnarok", value: 4 },
-            { label: "Aberration", value: 5 },
-            { label: "Extinction", value: 6 },
-            { label: "Scorched Earth", value: 7 },
-            { label: "Genesis", value: 8 },
-            { label: "Genesis 2", value: 9 },
-            { label: "Crystal Isles", value: 10 },
-            { label: "Fjordur", value: 11 },
-            { label: "Lost Island", value: 12 },
-          ]}
+          options={props?.maps.map((map) => ({
+            label: map.name,
+            value: map.id,
+            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
+          }))}
           name="map_id"
           defaultValue={props.timelineSeasonEvent?.map_id}
           placeholder="Select a map"
         />
+
         <FieldError name="map_id" className="rw-field-error" />
 
-        {/* <Label
-          name="latitude"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Latitude
-        </Label>
+        {raid && (
+          <>
+            <Label
+              name="latitude"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Latitude
+            </Label>
 
-        <TextField
-          name="latitude"
-          defaultValue={props.timelineSeasonEvent?.latitude}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsNumber: true }}
-        />
+            <TextField
+              name="latitude"
+              defaultValue={props.timelineSeasonEvent?.latitude}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              validation={{ valueAsNumber: true }}
+              emptyAs={0}
+            />
 
-        <FieldError name="latitude" className="rw-field-error" />
+            <FieldError name="latitude" className="rw-field-error" />
 
-        <Label
-          name="longitude"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Longitude
-        </Label>
+            <Label
+              name="longitude"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Longitude
+            </Label>
 
-        <TextField
-          name="longitude"
-          defaultValue={props.timelineSeasonEvent?.longitude}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          validation={{ valueAsNumber: true }}
-        />
+            <TextField
+              name="longitude"
+              defaultValue={props.timelineSeasonEvent?.longitude}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              validation={{ valueAsNumber: true }}
+              emptyAs={0}
+            />
 
-        <FieldError name="longitude" className="rw-field-error" /> */}
+            <FieldError name="longitude" className="rw-field-error" />
+          </>
+        )}
 
-        <FileUpload
+        <FileUpload2
+          className="relative !w-full"
           storagePath="timelineeventimages"
+          defaultValue={props?.timelineSeasonEvent?.images}
+          multiple
+          name="images"
+        />
+        {/* <FileUpload
+          storagePath="timelineeventimages"
+          defaultValue={props?.timelineSeasonEvent?.images}
           multiple
           name="images"
           onUpload={(e) => {
             setFiles((prev) => [...prev, e]);
           }}
-        />
+        /> */}
 
-        <TagInput name="tags" defaultValue={props.timelineSeasonEvent?.tags || ""} />
+        <TagInput
+          name="tags"
+          defaultValue={`${props.timelineSeasonEvent?.tags || ""}${
+            raid ? "raid" : ""
+          }`}
+        />
 
         <FieldError name="tags" className="rw-field-error" />
         {/* <div className="relative max-w-sm">

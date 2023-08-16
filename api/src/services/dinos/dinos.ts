@@ -10,10 +10,6 @@ export const dinosPage: QueryResolvers["dinosPage"] = ({
   page = 1,
   search = "",
   category = "",
-}: {
-  page?: number;
-  search?: string;
-  category?: string;
 }) => {
   const dinos_per_page = 36;
   const offset = (page - 1) * dinos_per_page;

@@ -105,7 +105,11 @@ export const Success = ({
     input: UpdateUserRecipeInput,
     id: EditUserRecipeById["userRecipe"]["id"]
   ) => {
-    updateUserRecipe({ variables: { id, input } });
+    toast.promise(updateUserRecipe({ variables: { id, input } }), {
+      loading: "Updating userrecipe...",
+      success: "Userrecipe successfully updated",
+      error: <b>Failed to update userrecipe.</b>,
+    });
   };
 
   return (

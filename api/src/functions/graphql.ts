@@ -9,19 +9,6 @@ import { getCurrentUser } from "src/lib/auth";
 import { db } from "src/lib/db";
 import { logger } from "src/lib/logger";
 
-const ipAddress = ({ event }) => {
-  return (
-    event?.headers?.["client-ip"] ||
-    event?.requestContext?.identity?.sourceIp ||
-    "localhost"
-  );
-};
-
-const setIpAddress = async ({ event, context }) => {
-  context.ipAddress = ipAddress({ event });
-  return context;
-};
-
 export const handler = createGraphQLHandler({
   authDecoder,
   getCurrentUser,
@@ -44,7 +31,6 @@ export const handler = createGraphQLHandler({
     },
     // logErrors: true,
   },
-  context: setIpAddress,
   onException: () => {
     // Disconnect from your database with an unhandled exception.
     db.$disconnect();

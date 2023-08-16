@@ -1,28 +1,31 @@
+import { RWGqlError } from "@redwoodjs/forms";
 import {
-  Form,
-  FormError,
-  RWGqlError,
-} from "@redwoodjs/forms";
-import { useCallback, useMemo, useReducer, useState } from "react";
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
 
 import {
   formatNumber,
-  generatePDF,
   getBaseMaterials,
   groupBy,
   timeFormatL,
 } from "src/lib/formatters";
 import Table from "src/components/Util/Table/Table";
 import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
-import {
-  FindItemsMats,
-} from "types/graphql";
+import { FindItemsMats } from "types/graphql";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useAuth } from "src/auth";
-import { QUERY } from "../MaterialCalculatorCell";
-import UserRecipesCell from "src/components/UserRecipe/UserRecipesCell";
+import { ITEMRECIPEITEMQUERY, QUERY } from "../MaterialCalculatorCell";
+import UserRecipesCell, {
+  QUERY as USERRECIPEQUERY,
+} from "src/components/UserRecipe/UserRecipesCell";
 import ItemList from "src/components/Util/ItemList/ItemList";
+import { useLazyQuery } from "@apollo/client";
 
 const CREATE_USERRECIPE_MUTATION = gql`
   mutation CreateUserRecipe($input: CreateUserRecipeInput!) {
@@ -63,7 +66,43 @@ interface MaterialGridProps {
   error?: RWGqlError;
 }
 
+// TODO: change type
+const TreeBranch = memo(({ itemRecipe }: any) => {
+  const { Item, amount, crafting_time } = itemRecipe;
+  const imageUrl = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item?.image}`;
+  return (
+    <li className="relative -ml-1 -mr-1 inline-block list-none px-2 pt-4 text-center align-top before:absolute before:top-0 before:right-1/2 before:h-4 before:w-1/2 before:border-t before:border-zinc-500 before:content-[''] after:absolute after:top-0 after:right-auto after:left-1/2 after:h-4 after:w-1/2 after:border-t after:border-l after:border-zinc-500 after:content-[''] first:before:border-0 first:after:rounded-tl-2xl last:before:rounded-tr-2xl last:before:border-r last:before:border-zinc-500 last:after:border-0 only:pt-0 only:before:hidden only:after:hidden">
+      {Item && (
+        <div
+          className="animate-fade-in relative inline-flex h-16 w-16 items-center justify-center rounded-lg border border-zinc-500 p-2 text-center"
+          title={Item.name}
+        >
+          <img className="h-8 w-8" src={imageUrl} alt={Item.name} />
+          <div className="absolute bottom-0 right-0 inline-flex h-6 w-full items-end justify-end bg-transparent p-1 text-xs font-bold">
+            {formatNumber(amount)}
+          </div>
+          <div className="absolute top-0 right-0 inline-flex h-6 w-full items-start justify-end bg-transparent p-1 text-xs font-medium">
+            {timeFormatL(crafting_time, true)}
+          </div>
+        </div>
+      )}
+      {itemRecipe?.ItemRecipeItem?.length > 0 && (
+        <ul className="relative whitespace-nowrap py-4 text-center before:absolute before:top-0 before:left-1/2 before:h-4 before:w-0 before:border-l before:border-zinc-500 before:content-[''] after:clear-both after:table after:content-['']">
+          {itemRecipe?.ItemRecipeItem.map((subItemRecipe, i) => (
+            <TreeBranch
+              key={`subItem-${subItemRecipe?.Item?.id}`}
+              itemRecipe={subItemRecipe}
+            />
+          ))}
+        </ul>
+      )}
+    </li>
+  );
+});
+
 export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
+  const { currentUser, isAuthenticated, client } = useAuth();
+
   const categoriesIcons = {
     Armor: "cloth-shirt",
     Tool: "stone-pick",
@@ -75,24 +114,53 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     Consumable: "any-berry-seed",
   };
 
-  const { currentUser, isAuthenticated } = useAuth();
+  const [loadItems, { called, loading: load, data }] = useLazyQuery(
+    ITEMRECIPEITEMQUERY,
+    {
+      initialFetchPolicy: "cache-and-network",
+      nextFetchPolicy: "cache-only",
+      variables: {
+        ids: itemRecipes.map((f) => f.id),
+      },
+      onCompleted: (data) => {},
+      onError: (error) => {
+        console.error(error);
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (!called && !load) {
+      loadItems();
+    }
+  }, []);
 
   const [search, setSearch] = useState<string>("");
-
+  const [viewBaseMaterials, setViewBaseMaterials] = useState<boolean>(false);
   const [selectedCraftingStations, selectCraftingStations] = useState<number[]>(
     [107, 125]
   );
 
-  const [viewBaseMaterials, setViewBaseMaterials] = useState<boolean>(false);
-
-  type RecipeActionType = "ADD_AMOUNT_BY_NUM" | "CHANGE_AMOUNT" | "ADD_AMOUNT" | "REMOVE_AMOUNT" | "ADD" | "REMOVE" | "REMOVE_BY_ID" | "RESET";
+  type RecipeActionType =
+    | "ADD_AMOUNT_BY_NUM"
+    | "CHANGE_AMOUNT"
+    | "ADD"
+    | "REMOVE"
+    | "REMOVE_BY_ID"
+    | "RESET";
   interface RecipeAction {
     type: RecipeActionType;
     payload?: {
+      itemRecipeItems?: ItemRecipe["ItemRecipeItem"];
       amount?: number;
       index?: number;
       item?: ItemRecipe;
     };
+    payloads?: {
+      amount?: number;
+      index?: number;
+      item?: ItemRecipe;
+    }[];
   }
   interface RecipeState extends ItemRecipe {
     amount: number;
@@ -100,24 +168,28 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   const reducer = (state: RecipeState[], action: RecipeAction) => {
     const { type, payload } = action;
     switch (type) {
-      case "ADD_AMOUNT_BY_NUM": {
-        let itemIndex = state.findIndex((item) => item.id === payload.item.id);
+      case "ADD_AMOUNT_BY_NUM":
+      case "ADD": {
+        const itemIndex = state.findIndex(
+          (item) => item.id === payload.item.id
+        );
         const yields = payload.item?.yields || 1;
+        const amountToAdd = payload.amount || 1;
+
         if (itemIndex !== -1) {
           return state.map((item, i) =>
             i === itemIndex
-              ? {
-                ...item,
-                amount: item.amount + (payload.amount || 1) * yields,
-              }
+              ? { ...item, amount: item.amount + amountToAdd * yields }
               : item
           );
         }
+
         return [
           ...state,
           {
             ...payload.item,
-            amount: payload.amount || 1, //* yields,
+            amount:
+              type === "ADD_AMOUNT_BY_NUM" ? amountToAdd * yields : amountToAdd,
           },
         ];
       }
@@ -129,51 +201,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           );
         }
         return state;
-      }
-      case "ADD_AMOUNT": {
-        return state.map((item, i) => {
-          const yields = item?.yields || 1;
-          return i === payload.index
-            ? {
-              ...item,
-              amount: item.amount + yields,
-            }
-            : item;
-        });
-      }
-      case "REMOVE_AMOUNT": {
-        return state.map((item, i) => {
-          const yields = item?.yields || 1;
-          return i === payload.index
-            ? {
-              ...item,
-              amount:
-                item.amount - yields < 1 ? yields : item.amount - yields,
-            }
-            : item;
-        });
-      }
-      case "ADD": {
-        const itemIndex = state.findIndex((item) => item.id === payload.item.id);
-
-        const yields = payload.item?.yields || 1;
-        if (itemIndex !== -1) {
-          return state.map((item, i) =>
-            i === itemIndex
-              ? {
-                ...item,
-                amount: (item.amount || 0) + yields,
-              }
-              : item
-          );
-        }
-        return [
-          ...state,
-          {
-            ...payload.item,
-            amount: yields,
-          },
-        ];
       }
       case "REMOVE": {
         return state.filter((_, i) => i !== payload.index);
@@ -221,42 +248,56 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           .map((k) => recipePerCraftingstation[k][0]);
 
         if (itemRecipeFilteredByCraftingStation.length > 0) {
-          result.push(itemRecipeFilteredByCraftingStation[0]);
+          result.push({
+            ...itemRecipeFilteredByCraftingStation[0],
+            ItemRecipeItem:
+              data?.itemRecipeItemsByIds.filter(
+                (iri) =>
+                  iri.item_recipe_id ==
+                  itemRecipeFilteredByCraftingStation[0].id
+              ) || itemRecipeFilteredByCraftingStation[0].ItemRecipeItem,
+          });
         }
       } else {
         const craftingStation: ItemRecipe =
           recipePerCraftingstation[craftingStationIds[0]][0];
-        result.push(craftingStation);
+        result.push({
+          ...craftingStation,
+          ItemRecipeItem:
+            data?.itemRecipeItemsByIds.filter(
+              (iri) => iri.item_recipe_id == craftingStation.id
+            ) || craftingStation.ItemRecipeItem,
+        });
       }
     }
 
-    recipes.forEach((recipe) => {
-      setRecipes({ type: "REMOVE_BY_ID", payload: { item: recipe } });
-      let itemfound = result.find(
+    const modifiedRecipes = [...recipes];
+
+    for (const recipe of modifiedRecipes) {
+      const itemfound = result.find(
         (i) =>
           i.Item_ItemRecipe_crafted_item_idToItem.id ===
           recipe.Item_ItemRecipe_crafted_item_idToItem.id
       );
       if (itemfound) {
+        setRecipes({ type: "REMOVE_BY_ID", payload: { item: itemfound } });
+        const amountToAdd = recipe.amount || 0;
         setRecipes({
           type: "ADD_AMOUNT_BY_NUM",
-          payload: { item: itemfound, amount: recipe.amount }, // / itemfound.yields,
+          payload: {
+            item: {
+              ...itemfound,
+              ItemRecipeItem: data.itemRecipeItemsByIds.filter(
+                (iri) => iri.item_recipe_id == itemfound.id
+              ),
+            },
+            amount: amountToAdd / (itemfound.yields || 1),
+          },
         });
       }
-    });
+    }
     return result;
   }, [selectedCraftingStations]);
-
-  const categories = useMemo(() => {
-    return groupBy(
-      (items || [])
-        .map((f) => f.Item_ItemRecipe_crafted_item_idToItem)
-        .filter((item) =>
-          item.name.toLowerCase().includes(search.toLowerCase())
-        ),
-      "category"
-    );
-  }, [items, search]);
 
   const onAdd = ({ itemId }) => {
     if (!itemId) return;
@@ -266,7 +307,18 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     );
 
     if (!chosenItem) return toast.error("Item could not be found");
-    setRecipes({ type: "ADD", payload: { item: chosenItem } });
+    if (!data) return toast.error("Items not loaded");
+    setRecipes({
+      type: "ADD",
+      payload: {
+        item: {
+          ...chosenItem,
+          ItemRecipeItem: data.itemRecipeItemsByIds.filter(
+            (iri) => iri.item_recipe_id == chosenItem.id
+          ),
+        },
+      },
+    });
   };
 
   const mergeItemRecipe = useCallback(getBaseMaterials, [
@@ -275,13 +327,10 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
   ]);
 
   const [createRecipe, { loading }] = useMutation(CREATE_USERRECIPE_MUTATION, {
-    onCompleted: (data) => {
-      toast.success("Recipe created");
-    },
     onError: (error) => {
       toast.error(error.message);
     },
-    refetchQueries: [{ query: QUERY }],
+    refetchQueries: [{ query: USERRECIPEQUERY }],
     awaitRefetchQueries: true,
   });
 
@@ -290,22 +339,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
 
     if (!recipes.length) return toast.error("No items to save");
     try {
-      // TODO: Fix permission error
-      // const { data, error } = await client.from("UserRecipe").insert([
-      //   {
-      //     user_id: currentUser.id,
-      //     private: true,
-      //     name: "test",
-      //   },
-      // ]);
-
-      //       let { data, error } = await client.from("UserRecipe").select(`
-      //   user_id,
-      //   UserRecipeItemRecipe (
-      //     id
-      //   )
-      // `);
-
       const input = {
         created_at: new Date().toISOString(),
         user_id: currentUser.id,
@@ -317,49 +350,52 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           })),
         },
       };
-      createRecipe({ variables: { input } });
+      toast.promise(createRecipe({ variables: { input } }), {
+        loading: "Creating recipe...",
+        success: <b>Recipe saved!</b>,
+        error: <b>Failed to create recipe.</b>,
+      });
     } catch (error) {
       return console.error(error);
     }
   };
 
-  return (
-    <div className="mx-1 flex w-full flex-col gap-3">
-      <UserRecipesCell
-        onSelect={({ UserRecipeItemRecipe }) => {
-          UserRecipeItemRecipe.forEach(({ item_recipe_id, amount }) => {
-            let itemfound = items.find((item) => item.id === item_recipe_id);
-            if (itemfound) {
-              setRecipes({
-                type: "ADD_AMOUNT_BY_NUM",
-                payload: {
-                  item: itemfound,
-                  amount: amount,
-                },
-              });
-            }
+  const onRecipeSelect = async ({ UserRecipeItemRecipe }) => {
+    if (UserRecipeItemRecipe && UserRecipeItemRecipe.length > 0) {
+      UserRecipeItemRecipe.forEach(async ({ item_recipe_id, amount }) => {
+        let itemfound = items.find((item) => item.id === item_recipe_id);
+        if (itemfound && data) {
+          setRecipes({
+            type: "ADD",
+            payload: {
+              item: {
+                ...itemfound,
+                ItemRecipeItem: data.itemRecipeItemsByIds
+                  ? data.itemRecipeItemsByIds.filter(
+                      (iri) => iri.item_recipe_id === item_recipe_id
+                    )
+                  : [],
+              },
+              amount: amount,
+            },
           });
-        }}
-      />
+        }
+      });
+    }
+  };
 
-      <Form
-        onSubmit={onAdd}
-        error={error}
-        className="flex h-full w-full flex-col gap-3 sm:flex-row"
-      >
-        <FormError
-          error={error}
-          wrapperClassName="rw-form-error-wrapper"
-          titleClassName="rw-form-error-title"
-          listClassName="rw-form-error-list"
-        />
+  return (
+    <div className="mx-1 flex w-full max-w-full flex-col gap-3">
+      <UserRecipesCell onSelect={onRecipeSelect} />
+
+      <section className="flex h-full w-full flex-col gap-3 sm:flex-row">
         <div className="flex flex-col space-y-3">
           {isAuthenticated && (
             <button
               type="button"
               onClick={saveRecipe}
               className="rw-button rw-button-green"
-              disabled={loading}
+              disabled={loading || recipes.length === 0}
             >
               Save Recipe
               <svg
@@ -397,7 +433,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
             options={Object.entries(
               groupBy(
                 (items || [])
-                  .map((f) => f.Item_ItemRecipe_crafted_item_idToItem)
+                  .map((f) => f?.Item_ItemRecipe_crafted_item_idToItem)
                   .filter((item) =>
                     item.name.toLowerCase().includes(search.toLowerCase())
                   ),
@@ -408,21 +444,21 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
               value: v.every(({ type }) => !type)
                 ? v.map((itm) => ({
-                  ...itm,
-                  label: itm.name,
-                  icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                  value: [],
-                }))
+                    ...itm,
+                    label: itm.name,
+                    icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                    value: [],
+                  }))
                 : Object.entries(groupBy(v, "type")).map(([type, v2]) => {
-                  return {
-                    label: type,
-                    value: v2.map((itm) => ({
-                      label: itm.name,
-                      ...itm,
-                      icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                    })),
-                  };
-                }),
+                    return {
+                      label: type,
+                      value: v2.map((itm) => ({
+                        label: itm.name,
+                        ...itm,
+                        icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                      })),
+                    };
+                  }),
             }))}
             onSelect={(item) => {
               onAdd({ itemId: item.id });
@@ -430,8 +466,13 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           />
         </div>
         <div className="w-full">
-          <Table
-            rows={mergeItemRecipe(viewBaseMaterials, items, ...recipes).slice(0, 1)}
+          {/* <Table
+            rows={mergeItemRecipe(
+              viewBaseMaterials,
+              false,
+              items,
+              ...recipes
+            ).slice(0, 1)}
             className="animate-fade-in"
             toolbar={[
               <ToggleButton
@@ -456,30 +497,31 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               </button>,
             ]}
             columns={[
-              ...mergeItemRecipe(viewBaseMaterials, items, ...recipes).map(
-                ({ Item_ItemRecipe_crafted_item_idToItem, amount }) => ({
-                  field: Item_ItemRecipe_crafted_item_idToItem.id,
-                  header: Item_ItemRecipe_crafted_item_idToItem.name,
-                  className: "w-0 text-center",
-                  render: ({ value }) => {
-                    return (
-                      <div
-                        className="flex flex-col items-center justify-center"
-                        key={`${value}-${Item_ItemRecipe_crafted_item_idToItem.id}`}
-                      >
-                        <img
-                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafted_item_idToItem.image}`}
-                          className="h-6 w-6"
-                          loading="lazy"
-                        />
-                        <span className="text-sm">{formatNumber(amount)}</span>
-                      </div>
-                    );
-                  },
-                })
-              ),
+              ...(mergeItemRecipe(
+                viewBaseMaterials,
+                false,
+                items,
+                ...recipes
+              ).map(({ Item_ItemRecipe_crafted_item_idToItem, amount }) => ({
+                field: Item_ItemRecipe_crafted_item_idToItem.id,
+                header: Item_ItemRecipe_crafted_item_idToItem.name,
+                className: "w-0 text-center",
+                render: ({ value }) => (
+                  <div
+                    className="flex flex-col items-center justify-center"
+                    key={`${value}-${Item_ItemRecipe_crafted_item_idToItem.id}`}
+                  >
+                    <img
+                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafted_item_idToItem.image}`}
+                      className="h-6 w-6"
+                      loading="lazy"
+                    />
+                    <span className="text-sm">{formatNumber(amount)}</span>
+                  </div>
+                ),
+              })) as any),
             ]}
-          />
+          /> */}
 
           <div className="my-3 space-y-3">
             <ToggleButton
@@ -517,13 +559,44 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 ]);
               }}
             />
+
+            <ToggleButton
+              offLabel="Materials"
+              onLabel="Base materials"
+              checked={viewBaseMaterials}
+              onChange={(e) => setViewBaseMaterials(e.currentTarget.checked)}
+            />
           </div>
 
           <Table
-            rows={recipes}
-            className="animate-fade-in whitespace-nowrap"
+            rows={recipes.map((recipe, i) => {
+              return {
+                ...recipe,
+                collapseContent: (
+                  <div className="flex flex-col items-start justify-center gap-3 divide-y divide-zinc-500 p-4">
+                    <div className="tree">
+                      <ul className="relative whitespace-nowrap py-4 text-center after:clear-both after:table after:content-['']">
+                        {mergeItemRecipe(viewBaseMaterials, true, items, {
+                          ...recipe,
+                        }).map((itemrecipe, i) => (
+                          <TreeBranch
+                            key={`tree-${i}`}
+                            itemRecipe={itemrecipe}
+                          />
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ),
+              };
+            })}
+            className="animate-fade-in !divide-opacity-50 whitespace-nowrap"
             settings={{
-              summary: true,
+              columnSelector: true,
+              borders: {
+                vertical: true,
+                horizontal: true,
+              },
             }}
             columns={[
               {
@@ -534,7 +607,10 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                   <button
                     type="button"
                     onClick={() => {
-                      setRecipes({ type: "REMOVE", payload: { index: rowIndex } });
+                      setRecipes({
+                        type: "REMOVE",
+                        payload: { index: rowIndex },
+                      });
                     }}
                     className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-red-500"
                     title={`Remove ${name}`}
@@ -550,38 +626,78 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               {
                 field: "amount",
                 header: "Amount",
-                numeric: true,
+                datatype: "number",
+                aggregate: "sum",
                 className: "w-0 text-center",
-                render: ({ rowIndex, value }) => (
+                render: ({ rowIndex, value, row }) => (
                   <div
-                    className="flex flex-row items-center"
+                    className="flex w-fit flex-row items-center gap-x-2 self-center"
                     key={`materialcalculator-${rowIndex}}`}
                   >
                     <button
                       type="button"
                       disabled={value === 1}
-                      className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
-                      onClick={() => setRecipes({ type: "REMOVE_AMOUNT", payload: { index: rowIndex } })}
+                      className="relative inline-flex h-8 w-8 items-center justify-center rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
+                      onClick={() =>
+                        setRecipes({
+                          type: "CHANGE_AMOUNT",
+                          payload: {
+                            index: rowIndex,
+                            amount:
+                              value - row.yields < 1
+                                ? row.yields
+                                : value - row.yields,
+                          },
+                        })
+                      }
                     >
-                      -
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512"
+                        className="h-3.5 w-3.5"
+                        fill="currentColor"
+                      >
+                        <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
+                      </svg>
                     </button>
                     <input
                       type="text"
                       value={value}
-                      className="rw-input w-16 p-3 text-center"
+                      className="rw-input w-20 p-3 text-center"
                       onChange={(e) => {
                         setRecipes({
                           type: "CHANGE_AMOUNT",
-                          payload: { index: rowIndex, amount: parseInt(e.target.value) > 0 ? parseInt(e.target.value) : 1 },
+                          payload: {
+                            index: rowIndex,
+                            amount:
+                              parseInt(e.target.value) > 0
+                                ? parseInt(e.target.value)
+                                : 1,
+                          },
                         });
                       }}
                     />
                     <button
                       type="button"
-                      className="relative mx-2 h-8 w-8 rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
-                      onClick={() => setRecipes({ type: "ADD_AMOUNT", payload: { index: rowIndex } })}
+                      className="relative inline-flex h-8 w-8 items-center justify-center rounded-full border border-black text-lg font-semibold text-black hover:bg-white hover:text-black dark:border-white dark:text-white"
+                      onClick={() =>
+                        setRecipes({
+                          type: "CHANGE_AMOUNT",
+                          payload: {
+                            index: rowIndex,
+                            amount: value + row.yields,
+                          },
+                        })
+                      }
                     >
-                      +
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512"
+                        className="h-3.5 w-3.5"
+                        fill="currentColor"
+                      >
+                        <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                      </svg>
                     </button>
                   </div>
                 ),
@@ -589,59 +705,108 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               {
                 field: "crafting_time",
                 header: "Time pr item",
-                numeric: true,
+                datatype: "number",
+                aggregate: "sum",
                 className: "w-0 text-center",
                 valueFormatter: ({ row, value }) => value * row.amount,
                 render: ({ value }) => `${timeFormatL(value, true)}`,
               },
-              {
-                field: "Item_ItemRecipe_crafted_item_idToItem",
-                header: "Ingredients",
-                numeric: false,
-                render: ({ row }) => {
-                  return mergeItemRecipe(false, items, {
+              ...mergeItemRecipe(
+                viewBaseMaterials,
+                false,
+                items,
+                ...recipes
+              ).map(({ Item_ItemRecipe_crafted_item_idToItem }) => ({
+                field: Item_ItemRecipe_crafted_item_idToItem,
+                header: Item_ItemRecipe_crafted_item_idToItem.name,
+                type: "number",
+                aggregate: "sum" as const,
+                className: "w-0 text-center",
+                valueFormatter: ({ row, value }) => {
+                  const itm = mergeItemRecipe(false, false, items, {
                     ...row,
-                  })
-                    .sort(
-                      (a, b) =>
-                        a.Item_ItemRecipe_crafted_item_idToItem.id -
-                        b.Item_ItemRecipe_crafted_item_idToItem.id
-                    )
-                    .map(
-                      (
-                        {
-                          Item_ItemRecipe_crafted_item_idToItem: {
-                            id,
-                            name,
-                            image,
-                          },
-                          amount,
-                        },
-                        i
-                      ) => (
-                        <div
-                          className="inline-flex min-h-full min-w-[3rem] flex-col items-center justify-center"
-                          id={`${id}-${i * Math.random()}${i}`}
-                          key={`${id}-${i * Math.random()}${i}`}
-                        >
-                          <img
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                            className="h-6 w-6"
-                            title={name}
-                            alt={name}
-                          />
-                          <span className="text-sm text-black dark:text-white">
-                            {formatNumber(amount)}
-                          </span>
-                        </div>
-                      )
-                    );
+                  }).filter(
+                    (v) =>
+                      v.Item_ItemRecipe_crafted_item_idToItem.id ===
+                      Item_ItemRecipe_crafted_item_idToItem.id
+                  );
+                  return itm.length > 0 ? itm[0].amount : 0;
                 },
-              },
+                render: ({ row }) => {
+                  const itm = mergeItemRecipe(false, false, items, {
+                    ...row,
+                  }).filter(
+                    (v) =>
+                      v.Item_ItemRecipe_crafted_item_idToItem.id ===
+                      Item_ItemRecipe_crafted_item_idToItem.id
+                  );
+                  return (
+                    itm.length > 0 && (
+                      <div
+                        className="inline-flex min-h-full min-w-[3rem] flex-col items-center justify-center"
+                        key={`value`}
+                      >
+                        <img
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm[0].Item_ItemRecipe_crafted_item_idToItem.image}`}
+                          className="h-6 w-6"
+                        />
+                        <span className="text-sm text-black dark:text-white">
+                          {formatNumber(itm[0].amount)}
+                        </span>
+                      </div>
+                    )
+                  );
+                },
+              })),
+              // {
+              //   field: "Item_ItemRecipe_crafted_item_idToItem",
+              //   header: "Ingredients",
+              //   datatype: 'number',
+              //   aggregate: "sum",
+              //   render: ({ row }) => {
+              //     return mergeItemRecipe(viewBaseMaterials, false, items, {
+              //       ...row,
+              //     })
+              //       .sort(
+              //         (a, b) =>
+              //           a.Item_ItemRecipe_crafted_item_idToItem.id -
+              //           b.Item_ItemRecipe_crafted_item_idToItem.id
+              //       )
+              //       .map(
+              //         (
+              //           {
+              //             Item_ItemRecipe_crafted_item_idToItem: {
+              //               id,
+              //               name,
+              //               image,
+              //             },
+              //             amount,
+              //           },
+              //           i
+              //         ) => (
+              //           <div
+              //             className="inline-flex min-h-full min-w-[4rem] flex-col items-center justify-center"
+              //             id={`${id}-${i * Math.random()}${i}`}
+              //             key={`${id}-${i * Math.random()}${i}`}
+              //           >
+              //             <img
+              //               src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
+              //               className="h-6 w-6"
+              //               title={name}
+              //               alt={name}
+              //             />
+              //             <span className="text-sm text-black dark:text-white">
+              //               {formatNumber(amount)}
+              //             </span>
+              //           </div>
+              //         )
+              //       );
+              //   },
+              // },
             ]}
           />
         </div>
-      </Form>
+      </section>
     </div>
   );
 };

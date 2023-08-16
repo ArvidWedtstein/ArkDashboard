@@ -38,19 +38,19 @@ export const itemRecipes: QueryResolvers["itemRecipes"] = () => {
           type: true,
         },
       },
-      ItemRecipeItem: {
-        select: {
-          id: true,
-          amount: true,
-          Item: {
-            select: {
-              id: true,
-              name: true,
-              image: true,
-            },
-          },
-        },
-      },
+      // ItemRecipeItem: {
+      //   select: {
+      //     id: true,
+      //     amount: true,
+      //     Item: {
+      //       select: {
+      //         id: true,
+      //         name: true,
+      //         image: true,
+      //       },
+      //     },
+      //   },
+      // },
     },
   });
 };

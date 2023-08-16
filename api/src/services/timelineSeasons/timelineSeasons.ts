@@ -21,9 +21,27 @@ export const timelineSeasons: QueryResolvers["timelineSeasons"] = () => {
 };
 
 export const timelineSeason: QueryResolvers["timelineSeason"] = ({ id }) => {
-  return db.timelineSeason.findUnique({
-    where: { id },
+  return db.timelineSeason.findFirst({
+    where: {
+      AND: {
+        id,
+        OR: [
+          { id, created_by: context.currentUser?.id },
+          {
+            id,
+            TimelineSeasonPerson: {
+              some: { user_id: context.currentUser?.id },
+            },
+          },
+        ],
+      },
+    },
   });
+  // return db.timelineSeason.findUnique({
+  //   where: {
+  //     id,
+  //   },
+  // });
 };
 
 export const createTimelineSeason: MutationResolvers["createTimelineSeason"] =

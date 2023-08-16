@@ -6,6 +6,7 @@ import type {
 
 import { db } from "src/lib/db";
 import { validate, validateUniqueness } from "@redwoodjs/api";
+
 export const tribes: QueryResolvers["tribes"] = () => {
   return db.tribe.findMany({
     orderBy: { created_at: "desc" },

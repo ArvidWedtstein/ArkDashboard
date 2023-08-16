@@ -106,9 +106,7 @@ const MapInput = ({ name, control, register }: MapInputProps) => {
         </div>
         <div>
           <Map
-            url={
-              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/TheIsland-Map.webp"
-            }
+            map_id={2}
             pos={fields.map((cr: { lat?: number, lon?: number, id?: number | string }) => ({ lat: cr.lat, lon: cr.lon }))}
           />
         </div>

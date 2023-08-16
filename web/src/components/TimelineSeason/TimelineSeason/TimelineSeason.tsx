@@ -2,12 +2,12 @@ import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useState } from "react";
-import NewTimelineSeasonBasespot from "src/components/TimelineSeasonBasespot/NewTimelineSeasonBasespot/NewTimelineSeasonBasespot";
+import NewTimelineSeasonBasespotCell from "src/components/TimelineSeasonBasespot/NewTimelineSeasonBasespotCell";
 import TimelineSeasonBasespotsCell from "src/components/TimelineSeasonBasespot/TimelineSeasonBasespotsCell";
-import NewTimelineSeasonEvent from "src/components/TimelineSeasonEvent/NewTimelineSeasonEvent/NewTimelineSeasonEvent";
+import NewTimelineSeasonEventCell from "src/components/TimelineSeasonEvent/NewTimelineSeasonEventCell";
 import EditTimelineSeasonEventCell from "src/components/TimelineSeasonEvent/EditTimelineSeasonEventCell";
 import TimelineSeasonEventsCell from "src/components/TimelineSeasonEvent/TimelineSeasonEventsCell";
-import NewTimelineSeasonPerson from "src/components/TimelineSeasonPerson/NewTimelineSeasonPerson/NewTimelineSeasonPerson";
+import NewTimelineSeasonPersonCell from "src/components/TimelineSeasonPerson/NewTimelineSeasonPersonCell";
 import TimelineSeasonPeopleCell from "src/components/TimelineSeasonPerson/TimelineSeasonPeopleCell";
 import { FormModal } from "src/components/Util/Modal/Modal";
 import { timeTag } from "src/lib/formatters";
@@ -16,6 +16,7 @@ import type {
   DeleteTimelineSeasonMutationVariables,
   FindTimelineSeasonById,
 } from "types/graphql";
+import Toast from "src/components/Util/Toast/Toast";
 
 const DELETE_TIMELINE_SEASON_MUTATION = gql`
   mutation DeleteTimelineSeasonMutation($id: String!) {
@@ -32,7 +33,6 @@ interface Props {
 const TimelineSeason = ({ timelineSeason }: Props) => {
   const [deleteTimelineSeason] = useMutation(DELETE_TIMELINE_SEASON_MUTATION, {
     onCompleted: () => {
-      toast.success("TimelineSeason deleted");
       navigate(routes.timelineSeasons());
     },
     onError: (error) => {
@@ -41,11 +41,27 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
   });
 
   const onDeleteClick = (id: DeleteTimelineSeasonMutationVariables["id"]) => {
-    if (confirm("Are you sure you want to delete timelineSeason " + id + "?")) {
-      deleteTimelineSeason({ variables: { id } });
-    }
+    toast.custom((t) => (
+      <Toast
+        t={t}
+        title={<span>You're about to delete season <b>{id}</b></span>}
+        message={`Are you sure you want to delete timelineSeason ${id}?`}
+        primaryAction={() => {
+          toast.promise(
+            deleteTimelineSeason({ variables: { id } }),
+            {
+              loading: "deleting season...",
+              success: `Successfully deleted season`,
+              error: `Failed to delete season`,
+            }
+          );
+        }}
+        actionType="OkCancel"
+      />
+    ));
   };
 
+  // TODO: remove this hardcode
   const servers = {
     "Elite Ark": {
       icon: "https://eliteark.com/wp-content/uploads/2022/06/cropped-0_ark-logo.thumb_.png.36427f75c51aff4ecec55bba50fd194d.png",
@@ -64,14 +80,17 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
       badge: "rw-badge-green-outline",
     },
   };
-  type modalType = "timelineseasonevent" | "timelineseasonperson" | "timelineseasonbasespot" | "editevent" | "previewimage"
+  type modalType =
+    | "timelineseasonevent"
+    | "timelineseasonperson"
+    | "timelineseasonbasespot"
+    | "editevent"
+    | "previewimage";
   const [editEvent, setEditEvent] = useState<string | null>(null);
   const [openModal, setOpenModal] = React.useState<modalType>(null);
 
   return (
     <>
-      {/* TODO: add editforms here too */}
-
       <FormModal
         title={
           openModal === "timelineseasonperson"
@@ -86,16 +105,21 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
         onClose={() => setOpenModal(null)}
       >
         {openModal === "timelineseasonperson" && (
-          <NewTimelineSeasonPerson timeline_season_id={timelineSeason.id} />
+          <NewTimelineSeasonPersonCell timeline_season_id={timelineSeason.id} />
         )}
         {openModal === "timelineseasonbasespot" && (
-          <NewTimelineSeasonBasespot timeline_season_id={timelineSeason.id} />
+          <NewTimelineSeasonBasespotCell
+            timeline_season_id={timelineSeason.id}
+          />
         )}
         {openModal === "timelineseasonevent" && (
-          <NewTimelineSeasonEvent timeline_season_id={timelineSeason.id} />
+          <NewTimelineSeasonEventCell timeline_season_id={timelineSeason.id} />
         )}
         {openModal === "editevent" && (
-          <EditTimelineSeasonEventCell id={editEvent} />
+          <EditTimelineSeasonEventCell
+            id={editEvent}
+            timeline_season_id={timelineSeason.id}
+          />
         )}
         {openModal === "previewimage" && (
           <img src={editEvent} className="w-full rounded" />
@@ -159,8 +183,8 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
         </div>
       </header>
 
-      <div className="relative my-3 grid grid-flow-row grid-cols-4 md:grid-cols-6 gap-3 w-full">
-        <section className="bg-background text-black relative col-span-5 row-span-2 flex-grow !w-full flex-auto rounded-lg border border-zinc-500 font-semibold dark:bg-zinc-800 dark:text-white">
+      <div className="relative my-3 grid w-full grid-flow-row grid-cols-4 gap-3 md:grid-cols-6">
+        <section className="bg-background relative col-span-5 row-span-2 !w-full flex-auto flex-grow rounded-lg border border-zinc-500 font-semibold text-black dark:bg-zinc-800 dark:text-white">
           <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
             <p className="flex-1 underline underline-offset-8">Basespots</p>
             <button
@@ -180,7 +204,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           <TimelineSeasonBasespotsCell timeline_season_id={timelineSeason.id} />
         </section>
 
-        <section className="relative col-span-1 row-span-4 w-full space-y-3 flex-auto text-black dark:text-white">
+        <section className="relative col-span-1 row-span-4 w-full flex-auto space-y-3 text-black dark:text-white">
           <div className="mt-3 flex items-center justify-between">
             <p>Events</p>
             <button
@@ -197,13 +221,16 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
             </button>
           </div>
 
-          <TimelineSeasonEventsCell timeline_season_id={timelineSeason.id} setOpenModal={(id, type) => {
-            setOpenModal(type);
-            setEditEvent(id);
-          }} />
+          <TimelineSeasonEventsCell
+            timeline_season_id={timelineSeason.id}
+            setOpenModal={(id, type) => {
+              setOpenModal(type);
+              setEditEvent(id);
+            }}
+          />
         </section>
 
-        <section className="bg-background relative col-span-5 row-span-2 flex-auto w-full rounded-lg border border-zinc-500 font-semibold text-black dark:bg-zinc-800 dark:text-white">
+        <section className="bg-background relative col-span-5 row-span-2 w-full flex-auto rounded-lg border border-zinc-500 font-semibold text-black dark:bg-zinc-800 dark:text-white">
           <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
             <p className="flex-1 underline underline-offset-8">
               Persons in this season

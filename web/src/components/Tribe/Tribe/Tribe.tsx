@@ -1,43 +1,49 @@
+import { Link, routes, navigate } from "@redwoodjs/router";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
+import { useAuth } from "src/auth";
 
-import { Link, routes, navigate } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
-import { useAuth } from 'src/auth'
+import { timeTag } from "src/lib/formatters";
 
-import { timeTag, } from 'src/lib/formatters'
-
-import type { DeleteTribeMutationVariables, FindTribeById, permission } from 'types/graphql'
+import type {
+  DeleteTribeMutationVariables,
+  FindTribeById,
+  permission,
+} from "types/graphql";
 
 const DELETE_TRIBE_MUTATION = gql`
-  mutation DeleteTribeMutation($id: Int!) {
+  mutation DeleteTribeMutation($id: String!) {
     deleteTribe(id: $id) {
       id
     }
   }
-`
+`;
 
 interface Props {
-  tribe: NonNullable<FindTribeById['tribe']>
+  tribe: NonNullable<FindTribeById["tribe"]>;
 }
 
 const Tribe = ({ tribe }: Props) => {
   const { currentUser } = useAuth();
   const [deleteTribe] = useMutation(DELETE_TRIBE_MUTATION, {
     onCompleted: () => {
-      toast.success('Tribe deleted')
-      navigate(routes.tribes())
+      toast.success("Tribe deleted");
+      navigate(routes.tribes());
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error(error.message);
     },
-  })
+  });
 
-  const onDeleteClick = (id: DeleteTribeMutationVariables['id']) => {
-    if (currentUser &&
-      currentUser.permissions.some((p: permission) => p === "tribe_delete") && confirm('Are you sure you want to delete tribe ' + id + '?')) {
-      deleteTribe({ variables: { id } })
+  const onDeleteClick = (id: DeleteTribeMutationVariables["id"]) => {
+    if (
+      currentUser &&
+      currentUser.permissions.some((p: permission) => p === "tribe_delete") &&
+      confirm("Are you sure you want to delete tribe " + id + "?")
+    ) {
+      deleteTribe({ variables: { id } });
     }
-  }
+  };
 
   return (
     <>
@@ -52,31 +58,31 @@ const Tribe = ({ tribe }: Props) => {
             <tr>
               <th>Id</th>
               <td>{tribe.id}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Name</th>
               <td>{tribe.name}</td>
-            </tr><tr>
-              <th>Description</th>
-              <td>{tribe.description}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Created at</th>
               <td>{timeTag(tribe.created_at)}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Updated at</th>
               <td>{timeTag(tribe.updated_at)}</td>
-            </tr><tr>
+            </tr>
+            <tr>
               <th>Created by</th>
               <td>{tribe.Profile.full_name}</td>
-            </tr><tr>
-              <th>Updated by</th>
-              <td>{tribe.updated_by}</td>
             </tr>
           </tbody>
         </table>
       </div>
       <nav className="rw-button-group">
         {currentUser &&
-          currentUser.permissions.some((p: permission) => p === "tribe_update") && (
+          currentUser.permissions.some(
+            (p: permission) => p === "tribe_update"
+          ) && (
             <Link
               to={routes.editTribe({ id: tribe.id })}
               className="rw-button rw-button-blue"
@@ -85,7 +91,9 @@ const Tribe = ({ tribe }: Props) => {
             </Link>
           )}
         {currentUser &&
-          currentUser.permissions.some((p: permission) => p === "tribe_delete") && (
+          currentUser.permissions.some(
+            (p: permission) => p === "tribe_delete"
+          ) && (
             <button
               type="button"
               className="rw-button rw-button-red"
@@ -96,7 +104,7 @@ const Tribe = ({ tribe }: Props) => {
           )}
       </nav>
     </>
-  )
-}
+  );
+};
 
-export default Tribe
+export default Tribe;

@@ -13,16 +13,18 @@ import { toast } from "@redwoodjs/web/toast";
 import { RouteFocus } from "@redwoodjs/router";
 import { useAuth } from "src/auth";
 
-const WELCOME_MESSAGE = "Welcome back!";
-const REDIRECT = routes.home();
+type FormSigninPage = NonNullable<{
+  email: string;
+  password: string;
+}>;
 
 const SigninPage = () => {
-  const { isAuthenticated, loading, logIn, client } = useAuth();
+  const { isAuthenticated, loading, logIn } = useAuth();
   // const captcha = React.useRef(null);
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(REDIRECT);
+      navigate(routes.home());
     }
   }, [isAuthenticated]);
 
@@ -30,7 +32,7 @@ const SigninPage = () => {
     return null;
   }
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FormSigninPage) => {
     try {
       const response = await logIn({
         // provider: "discord",
@@ -40,15 +42,11 @@ const SigninPage = () => {
         //   redirectTo: window.history.back(),
         // },
       });
-      // const response = await client.auth.signInWithOAuth({
-      //   provider: "discord",
-      // });
-      // console.log("Authrespone", response);
+
       if (response?.error) {
         toast.error(response.error.message);
       } else {
-        toast.success(WELCOME_MESSAGE);
-        // navigate(REDIRECT);
+        toast.success("Welcome back!");
       }
     } catch (error) {
       toast.error(error);
@@ -66,7 +64,7 @@ const SigninPage = () => {
           </header>
 
           <div className="p-2">
-            <Form
+            <Form<FormSigninPage>
               onSubmit={onSubmit}
               className="rw-form-wrapper flex flex-col items-center justify-center"
             >

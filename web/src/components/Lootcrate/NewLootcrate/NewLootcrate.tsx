@@ -29,7 +29,11 @@ const NewLootcrate = () => {
   )
 
   const onSave = (input: CreateLootcrateInput) => {
-    createLootcrate({ variables: { input } })
+    toast.promise(createLootcrate({ variables: { input } }), {
+      loading: "Creating new lootcrate...",
+      success: "Lootcrate successfully created",
+      error: <b>Failed to create new lootcrate.</b>,
+    });
   }
 
   return (

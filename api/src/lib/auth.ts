@@ -21,6 +21,7 @@ type RedwoodUser = Record<string, any> & {
   avatar_url?: string;
   permissions?: string[];
   sub?: string;
+  banned_until?: Date;
 };
 
 /**
@@ -54,13 +55,13 @@ export const getCurrentUser = async (
       select: {
         id: true,
         updated_at: true,
-        updated_by: true,
         created_at: true,
         username: true,
         avatar_url: true,
         role_id: true,
         full_name: true,
         status: true,
+        banned_until: true,
         role_profile_role_idTorole: {
           select: {
             id: true,
@@ -72,6 +73,10 @@ export const getCurrentUser = async (
       // include: { role_profile_role_idTorole: true },
       where: { id: decoded.sub.toString() },
     });
+
+    if (user.banned_until && user.banned_until > new Date()) {
+      throw new AuthenticationError("You are banned");
+    }
     return {
       ...user,
       permissions: user?.role_profile_role_idTorole?.permissions || [],

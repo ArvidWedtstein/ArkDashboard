@@ -13,21 +13,32 @@ interface ItemListProps {
   onSearch?: (search: string) => void;
   onSelect?: (item: Item) => void;
   defaultSearch?: boolean;
+  onCheck?: (event: React.ChangeEvent<HTMLInputElement>, item: Item) => void;
 }
 
 const ItemList = ({
   options,
   onSearch,
   onSelect,
+  onCheck,
   defaultSearch = true,
 }: ItemListProps) => {
   const [search, setSearch] = useState<string>("");
   const renderItem = (item: Item) => (
-    <li key={`${JSON.stringify(item)}-${Math.random()}`}>
+    <li key={`${JSON.stringify(item)}-${Math.random()}`} className="flex items-center p-2 space-x-1 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700 rounded-lg">
+      {onCheck && (
+        <input
+          className="rw-input"
+          type="checkbox"
+          onChange={(e) =>
+            onCheck?.(e, item)
+          }
+        />
+      )}
       <button
         type="button"
-        className="flex w-full items-center space-x-1 rounded-lg p-2 text-sm text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700"
-        onClick={() => onSelect(item)}
+        className="flex w-full items-center space-x-1 text-sm transition duration-75"
+        onClick={() => onSelect?.(item)}
       >
         {item.icon && typeof item.icon == "string" ? (
           <img className="h-6 w-6 " src={item.icon} alt={``} loading="lazy" />
@@ -40,58 +51,62 @@ const ItemList = ({
   );
 
   const renderList = (item: Item) => (
-    <li key={`${JSON.stringify(item)}-${Math.random()}`}>
-      {item?.value &&
-        item?.value?.filter(({ label }) =>
-          label.toLowerCase().includes(defaultSearch ? search.toLowerCase() : "")
-        ).length > 0 ? (
-        <details
-          className="[&>summary:after]:open:rotate-90"
-          open={
-            !!search &&
-            item?.value?.filter(({ label }) =>
-              label
-                .toLowerCase()
-                .includes(defaultSearch ? search.toLowerCase() : "")
-            ).length == 1
-          }
-        >
-          <summary className="flex select-none items-center space-x-1 rounded-lg p-2 text-gray-900 after:absolute after:right-0 after:transform after:px-2 after:transition-transform after:duration-150 after:ease-in-out after:content-['>'] hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-            {item.icon && typeof item.icon == "string" ? (
-              <img
-                className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
-                src={item.icon}
-                alt={``}
-                loading="lazy"
-              />
-            ) : (
-              item.icon
-            )}
-            <span className="">
-              {item.label == "null" ? "Otheraaaa" : item.label}
-            </span>
-            <span className="text-pea-800 ml-2 inline-flex h-3 w-3 items-center justify-center rounded-full text-xs dark:text-stone-300">
-              {
-                (defaultSearch
-                  ? item?.value?.filter(({ label }) =>
-                    label.toLowerCase().includes(search.toLowerCase())
-                  )
-                  : item?.value
-                ).length
+    <React.Fragment key={`${JSON.stringify(item)}-${Math.random()}`}>
+      {
+        item?.value &&
+          item?.value?.filter(({ label }) =>
+            label.toLowerCase().includes(defaultSearch ? search.toLowerCase() : "")
+          ).length > 0 ? (
+          <li>
+            <details
+              className="[&>summary:after]:open:rotate-90"
+              open={
+                !!search &&
+                item?.value?.filter(({ label }) =>
+                  label
+                    .toLowerCase()
+                    .includes(defaultSearch ? search.toLowerCase() : "")
+                ).length == 1
               }
-            </span>
-          </summary>
+            >
+              <summary className="flex select-none items-center space-x-1 rounded-lg p-2 text-gray-900 after:absolute after:right-0 after:transform after:px-2 after:transition-transform after:duration-150 after:ease-in-out after:content-['>'] hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+                {item.icon && typeof item.icon == "string" ? (
+                  <img
+                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
+                    src={item.icon}
+                    alt={``}
+                    loading="lazy"
+                  />
+                ) : (
+                  item.icon
+                )}
+                <span className="flex-grow">
+                  {item.label == "null" ? "Other" : item.label}
+                </span>
+                <span className="text-pea-800 pr-6 inline-flex h-3 items-center justify-center text-right rounded-full text-xs dark:text-stone-300">
+                  {
+                    (defaultSearch
+                      ? item?.value?.filter(({ label }) =>
+                        label.toLowerCase().includes(search.toLowerCase())
+                      )
+                      : item?.value
+                    ).length
+                  }
+                </span>
+              </summary>
 
-          <ul className="py-2">{item?.value.map(renderList)}</ul>
-        </details>
-      ) : (
-        item?.label
-          .toLowerCase()
-          .includes(defaultSearch ? search.toLowerCase() : "") &&
-        renderItem(item)
-      )}
-    </li>
-  );
+              <ul className="py-2">{item?.value.map(renderList)}</ul>
+            </details>
+          </li>
+        ) : (
+          item?.label
+            .toLowerCase()
+            .includes(defaultSearch ? search.toLowerCase() : "") &&
+          renderItem(item)
+        )
+      }
+    </React.Fragment>
+  )
 
   return (
     <div className="relative max-h-screen w-fit max-w-[14rem] overflow-y-auto rounded-lg border border-zinc-500 bg-zinc-300 px-3 py-4 text-gray-900 will-change-scroll dark:bg-zinc-600 dark:text-white">
@@ -118,7 +133,7 @@ const ItemList = ({
                 ></path>
               </svg>
             </div>
-            <SearchField
+            <input
               className="rw-input w-full pl-10 dark:bg-zinc-700 dark:focus:bg-zinc-700"
               name="search"
               defaultValue={search}

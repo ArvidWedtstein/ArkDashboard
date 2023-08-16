@@ -6,10 +6,18 @@ export const schema = gql`
     img: String
     updated_at: DateTime
     icon: String
+    release_date: DateTime
+    parent_map_id: BigInt
+    description: String
+    topographic_img: String
+    boundaries: String
     Basespot: [Basespot]!
     Lootcrate: [Lootcrate]!
+    Map: Map
+    other_Map: [Map]!
     MapCoordinate: [MapCoordinate]!
     MapNote: [MapNote]!
+    MapResource: [MapResource]!
     TimelineSeasonBasespot: [TimelineSeasonBasespot]!
     TimelineSeasonEvent: [TimelineSeasonEvent]!
   }
@@ -25,6 +33,11 @@ export const schema = gql`
     img: String
     updated_at: DateTime
     icon: String
+    release_date: DateTime
+    parent_map_id: BigInt
+    description: String
+    topographic_img: String
+    boundaries: String
   }
 
   input UpdateMapInput {
@@ -33,6 +46,11 @@ export const schema = gql`
     img: String
     updated_at: DateTime
     icon: String
+    release_date: DateTime
+    parent_map_id: BigInt
+    description: String
+    topographic_img: String
+    boundaries: String
   }
 
   type Mutation {

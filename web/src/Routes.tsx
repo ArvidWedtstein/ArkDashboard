@@ -7,11 +7,10 @@
 // 'src/pages/HomePage/HomePage.js'         -> HomePage
 // 'src/pages/Admin/BooksPage/BooksPage.js' -> AdminBooksPage
 
-import { Set, Router, Route, Private } from "@redwoodjs/router";
+import { Set, Router, Route, Private } from '@redwoodjs/router'
 
-import ScaffoldLayout from "src/layouts/ScaffoldLayout";
-
-import MainLayout from "./layouts/MainLayout/MainLayout";
+import ScaffoldLayout from 'src/layouts/ScaffoldLayout';
+import MainLayout from "src/layouts/MainLayout/MainLayout";
 
 import { useAuth } from "./auth";
 
@@ -20,6 +19,7 @@ const Routes = () => {
     <Router useAuth={useAuth} pageLoadingDelay={0}>
       <Set wrap={MainLayout}>
         {/*whileLoadingPage*/}
+        <Route path="/terms" page={TermsPage} name="terms" />
         <Route
           path="/material-calculator"
           page={MaterialCalculatorPage}
@@ -84,12 +84,12 @@ const Routes = () => {
             name="newTimelineSeasonBasespot"
           />
           <Route
-            path="/timeline-season-basespots/{id}/edit"
+            path="/timeline-season-basespots/{id:Int}/edit"
             page={TimelineSeasonBasespotEditTimelineSeasonBasespotPage}
             name="editTimelineSeasonBasespot"
           />
           <Route
-            path="/timeline-season-basespots/{id}"
+            path="/timeline-season-basespots/{id:Int}"
             page={TimelineSeasonBasespotTimelineSeasonBasespotPage}
             name="timelineSeasonBasespot"
           />
@@ -122,11 +122,6 @@ const Routes = () => {
             page={UserRecipeUserRecipePage}
             name="userRecipe"
           />
-          <Route
-            path="/user-recipes"
-            page={UserRecipeUserRecipesPage}
-            name="userRecipes"
-          />
         </Set>
         <Set
           wrap={ScaffoldLayout}
@@ -135,16 +130,21 @@ const Routes = () => {
           buttonLabel="New ItemRecipe"
           buttonTo="newItemRecipe"
         >
-          <Route
-            path="/item-recipes/new"
-            page={ItemRecipeNewItemRecipePage}
-            name="newItemRecipe"
-          />
-          <Route
-            path="/item-recipes/{id}/edit"
-            page={ItemRecipeEditItemRecipePage}
-            name="editItemRecipe"
-          />
+          <Private
+            unauthenticated="home"
+            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
+          >
+            <Route
+              path="/item-recipes/new"
+              page={ItemRecipeNewItemRecipePage}
+              name="newItemRecipe"
+            />
+            <Route
+              path="/item-recipes/{id}/edit"
+              page={ItemRecipeEditItemRecipePage}
+              name="editItemRecipe"
+            />
+          </Private>
           <Route
             path="/item-recipes/{id}"
             page={ItemRecipeItemRecipePage}
@@ -163,16 +163,21 @@ const Routes = () => {
           buttonLabel="New Lootcrate"
           buttonTo="newLootcrate"
         >
-          <Route
-            path="/lootcrates/new"
-            page={LootcrateNewLootcratePage}
-            name="newLootcrate"
-          />
-          <Route
-            path="/lootcrates/{id}/edit"
-            page={LootcrateEditLootcratePage}
-            name="editLootcrate"
-          />
+          <Private
+            unauthenticated="home"
+            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
+          >
+            <Route
+              path="/lootcrates/new"
+              page={LootcrateNewLootcratePage}
+              name="newLootcrate"
+            />
+            <Route
+              path="/lootcrates/{id}/edit"
+              page={LootcrateEditLootcratePage}
+              name="editLootcrate"
+            />
+          </Private>
           <Route
             path="/lootcrates/{id}"
             page={LootcrateLootcratePage}
@@ -191,10 +196,30 @@ const Routes = () => {
           buttonLabel="New Map"
           buttonTo="newMap"
         >
-          <Route path="/maps/new" page={MapNewMapPage} name="newMap" />
-          <Route path="/maps/{id}/edit" page={MapEditMapPage} name="editMap" />
-          <Route path="/maps/{id}" page={MapMapPage} name="map" />
+          <Private
+            unauthenticated="home"
+            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
+          >
+            <Route path="/maps/new" page={MapNewMapPage} name="newMap" />
+            <Route
+              path="/maps/{id:Int}/edit"
+              page={MapEditMapPage}
+              name="editMap"
+            />
+          </Private>
+          <Route path="/maps/{id:Int}" page={MapMapPage} name="map" />
           <Route path="/maps" page={MapMapsPage} name="maps" />
+        </Set>
+        <Set wrap={ScaffoldLayout} title="MapResources" titleTo="mapResources" buttonLabel="New MapResource" buttonTo="newMapResource">
+          <Private
+            unauthenticated="home"
+            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
+          >
+            <Route path="/map-resources/new" page={MapResourceNewMapResourcePage} name="newMapResource" />
+            <Route path="/map-resources/{id:Int}/edit" page={MapResourceEditMapResourcePage} name="editMapResource" />
+          </Private>
+          <Route path="/map-resources/{id:Int}" page={MapResourceMapResourcePage} name="mapResource" />
+          <Route path="/map-resources" page={MapResourceMapResourcesPage} name="mapResources" />
         </Set>
         <Set
           wrap={ScaffoldLayout}
@@ -209,12 +234,12 @@ const Routes = () => {
           >
             <Route path="/items/new" page={ItemNewItemPage} name="newItem" />
             <Route
-              path="/items/{id}/edit"
+              path="/items/{id:Int}/edit"
               page={ItemEditItemPage}
               name="editItem"
             />
           </Private>
-          <Route path="/items/{id}" page={ItemItemPage} name="item" />
+          <Route path="/items/{id:Int}" page={ItemItemPage} name="item" />
           <Route path="/items" page={ItemItemsPage} name="items" />
         </Set>
         <Set
@@ -224,15 +249,48 @@ const Routes = () => {
           buttonLabel="New Dino"
           buttonTo="newDino"
         >
-          <Route path="/dinos/new" page={DinoNewDinoPage} name="newDino" />
-          <Route
-            path="/dinos/{id}/edit"
-            page={DinoEditDinoPage}
-            name="editDino"
-          />
+          <Private
+            unauthenticated="home"
+            roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
+          >
+            <Route path="/dinos/new" page={DinoNewDinoPage} name="newDino" />
+            <Route
+              path="/dinos/{id}/edit"
+              page={DinoEditDinoPage}
+              name="editDino"
+            />
+          </Private>
           <Route path="/dinos/{id}" page={DinoDinoPage} name="dino" />
           <Route path="/dinos" page={DinoDinosPage} name="dinos" />
         </Set>
+        {/* <Set
+          wrap={ScaffoldLayout}
+          title="DinoStats"
+          titleTo="dinoStats"
+          buttonLabel="New DinoStat"
+          buttonTo="newDinoStat"
+        >
+          <Route
+            path="/dino-stats/new"
+            page={DinoStatNewDinoStatPage}
+            name="newDinoStat"
+          />
+          <Route
+            path="/dino-stats/{id}/edit"
+            page={DinoStatEditDinoStatPage}
+            name="editDinoStat"
+          />
+          <Route
+            path="/dino-stats/{id}"
+            page={DinoStatDinoStatPage}
+            name="dinoStat"
+          />
+          <Route
+            path="/dino-stats"
+            page={DinoStatDinoStatsPage}
+            name="dinoStats"
+          />
+        </Set> */}
         <Set
           wrap={ScaffoldLayout}
           title="Profiles"
@@ -244,11 +302,6 @@ const Routes = () => {
             unauthenticated="home"
             roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
           >
-            <Route
-              path="/profiles/new"
-              page={ProfileNewProfilePage}
-              name="newProfile"
-            />
             <Route
               path="/profiles"
               page={ProfileProfilesPage}
@@ -274,13 +327,19 @@ const Routes = () => {
           buttonLabel="New Tribe"
           buttonTo="newTribe"
         >
-          <Route path="/tribes/new" page={TribeNewTribePage} name="newTribe" />
-          <Route
-            path="/tribes/{id:Int}/edit"
-            page={TribeEditTribePage}
-            name="editTribe"
-          />
-          <Route path="/tribes/{id:Int}" page={TribeTribePage} name="tribe" />
+          <Private unauthenticated="tribes">
+            <Route
+              path="/tribes/new"
+              page={TribeNewTribePage}
+              name="newTribe"
+            />
+            <Route
+              path="/tribes/{id}/edit"
+              page={TribeEditTribePage}
+              name="editTribe"
+            />
+          </Private>
+          <Route path="/tribes/{id}" page={TribeTribePage} name="tribe" />
           <Route path="/tribes" page={TribeTribesPage} name="tribes" />
         </Set>
 
@@ -291,16 +350,18 @@ const Routes = () => {
           buttonLabel="New Basespot"
           buttonTo="newBasespot"
         >
-          <Route
-            path="/basespots/new"
-            page={BasespotNewBasespotPage}
-            name="newBasespot"
-          />
-          <Route
-            path="/basespots/{id}/edit"
-            page={BasespotEditBasespotPage}
-            name="editBasespot"
-          />
+          <Private unauthenticated="home">
+            <Route
+              path="/basespots/new"
+              page={BasespotNewBasespotPage}
+              name="newBasespot"
+            />
+            <Route
+              path="/basespots/{id}/edit"
+              page={BasespotEditBasespotPage}
+              name="editBasespot"
+            />
+          </Private>
           <Route
             path="/basespots/{id}"
             page={BasespotBasespotPage}

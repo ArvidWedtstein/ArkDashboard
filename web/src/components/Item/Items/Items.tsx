@@ -16,7 +16,7 @@ import {
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import ArkCard from "src/components/Util/ArkCard/ArkCard";
-import Tabs from "src/components/Util/Tabs/Tabs";
+import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 
 import type { FindItems } from "types/graphql";
 
@@ -288,22 +288,22 @@ const ItemsList = ({
             <SearchField
               name="search"
               className="rw-input mt-0 w-full"
-              placeholder="Search..."
+              placeholder="Enter a item..."
               defaultValue={search}
               disabled={loading}
             />
             <Submit
-              className="rw-input rw-button rw-button-gray rounded-l-none"
+              className="rw-input rw-button rw-button-green rounded-l-none !border-none"
               disabled={loading}
             >
-              <span className="sr-only">Search</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
-                className="rw-button-icon-end !ml-0"
+                className="rw-button-icon-start"
               >
                 <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
               </svg>
+              <span className="hidden md:block">Search</span>
             </Submit>
           </div>
           <div className="rw-button-group">
@@ -318,7 +318,7 @@ const ItemsList = ({
             />
             <label
               htmlFor="list"
-              className="rw-button rw-button-gray peer-checked/list:border-pea-500 !rounded-r-none  border"
+              className="rw-button rw-button-gray peer-checked/list:border-pea-500 !rounded-r-none !rounded-l-lg border"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -352,13 +352,19 @@ const ItemsList = ({
           </div>
         </nav>
 
-        <Tabs
-          selectedTab={types.findIndex((t) => t.toLowerCase() === selectedType)}
-          onSelect={(e) => {
-            selectType(types[e].toLowerCase().toString());
-          }}
-          tabs={types.map((t) => ({ title: t, content: "" }))}
-        />
+        <div className="my-3">
+          {types.length > 0 && (
+            <Tabs
+              onSelect={(_, index) => {
+                selectType(types[index].toLowerCase().toString());
+              }}
+            >
+              {types.map((t) => (
+                <Tab label={t}></Tab>
+              ))}
+            </Tabs>
+          )}
+        </div>
       </Form>
 
       <div
@@ -375,7 +381,7 @@ const ItemsList = ({
             className="hover:border-pea-500 rounded-lg border border-transparent transition"
           >
             <ArkCard
-              className="h-full border border-gray-800 dark:border-gray-500" // bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-500 to-zinc-900
+              className="h-full border border-zinc-800 dark:border-zinc-500" // bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-500 to-zinc-900
               title={item.name}
               subtitle={item.type}
               content={view === "list" ? item.description : ""}
@@ -388,16 +394,11 @@ const ItemsList = ({
         ))}
       </div>
       {!loading && itemsPage.items.length === 0 && itemsPage.count === 0 && (
-        <div className="rw-text-center w-full">
+        <div className="text-center text-black dark:text-white w-full">
           {"No items yet. "}
           <Link to={routes.newItem()} className="rw-link">
             {"Create one?"}
           </Link>
-        </div>
-      )}
-      {loading === true && (
-        <div className="flex h-full w-full items-center justify-center bg-transparent">
-          <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>
         </div>
       )}
     </div>

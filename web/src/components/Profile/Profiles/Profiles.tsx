@@ -6,6 +6,7 @@ import { useAuth } from "src/auth";
 import { QUERY } from "src/components/Profile/ProfilesCell";
 import { ContextMenu } from "src/components/Util/ContextMenu/ContextMenu";
 import Table from "src/components/Util/Table/Table";
+import Tooltip from "src/components/Util/Tooltip/Tooltip";
 import { formatEnum, timeTag } from "src/lib/formatters";
 
 import type {
@@ -37,7 +38,31 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
     refetchQueries: [{ query: QUERY }],
     awaitRefetchQueries: true,
   });
-
+  const mapImages = {
+    TheIsland:
+      "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/62a15c04-bef2-45a2-a06a-c984d81c3c0b/dd391pu-a40aaf7b-b8e7-4d6d-b49d-aa97f4ad61d0.jpg",
+    TheCenter:
+      "https://cdn.akamai.steamstatic.com/steam/apps/473850/ss_f13c4990d4609d3fc89174f71858835a9f09aaa3.1920x1080.jpg?t=1508277712",
+    ScorchedEarth: "https://wallpapercave.com/wp/wp10504822.jpg",
+    Ragnarok:
+      "https://cdn.survivetheark.com/uploads/monthly_2016_10/large.580b5a9c3b586_Ragnarok02.jpg.6cfa8b30a81187caace6fecc1e9f0c31.jpg",
+    Aberration:
+      "https://cdn.images.express.co.uk/img/dynamic/143/590x/ARK-Survival-Evolved-849382.jpg",
+    Extinction:
+      "https://cdn.cloudflare.steamstatic.com/steam/apps/887380/ss_3c2c1d7c027c8beb54d2065afe3200e457c2867c.1920x1080.jpg?t=1594677636",
+    Valguero:
+      "https://i.pinimg.com/originals/0b/95/09/0b9509ddce658e3209ece1957053b27e.jpg",
+    Genesis:
+      "https://cdn.akamai.steamstatic.com/steam/apps/1646700/ss_c939dd546237cba9352807d4deebd79c4e29e547.1920x1080.jpg?t=1622514386",
+    CrystalIsles:
+      "https://cdn2.unrealengine.com/egs-crystalislesarkexpansionmap-studiowildcard-dlc-g1a-05-1920x1080-119682147.jpg?h=720&resize=1&w=1280",
+    Fjordur:
+      "https://cdn.cloudflare.steamstatic.com/steam/apps/1887560/ss_331869adb5f0c98e3f13b48189e280f8a0ba1616.1920x1080.jpg?t=1655054447",
+    LostIsland:
+      "https://dicendpads.com/wp-content/uploads/2021/12/Ark-Lost-Island.png",
+    Genesis2:
+      "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
+  };
   const onDeleteClick = (id: DeleteProfileMutationVariables["id"]) => {
     if (
       currentUser &&
@@ -50,6 +75,63 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
 
   return (
     <div className="rw-segment">
+      <div className="flex flex-wrap">
+        {profiles
+          .filter(
+            (profile) => !!profile.username && profile.full_name.length > 0
+          )
+          .map((profile) => (
+            <figure className="font-montserrat relative m-3 w-full max-w-xs overflow-hidden rounded-lg bg-zinc-700 text-left leading-6 text-white">
+              <img
+                // src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/sample60.jpg"
+                src={
+                  mapImages[
+                    Object.keys(mapImages)[
+                      Math.floor(Math.random() * Object.keys(mapImages).length)
+                    ]
+                  ]
+                }
+                alt={`${profile.full_name} bg-image`}
+                className=" max-w-full align-top opacity-80"
+              />
+              <figcaption className="before:border-skew relative flex w-full flex-col bg-zinc-700 p-6 before:absolute before:left-0 before:bottom-full before:h-0 before:w-0 before:border-transparent before:border-l-zinc-700 before:content-['']">
+                <img
+                  src={
+                    profile.avatar_url
+                      ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}`
+                      : `https://ui-avatars.com/api/?name=${profile?.full_name}`
+                  }
+                  alt={profile.full_name}
+                  className="absolute left-6 bottom-full aspect-square max-w-[90px] rounded-full opacity-100 shadow-lg"
+                />
+
+                <h2 className="mb-1 text-base font-normal">
+                  {profile.full_name}
+                  <span className="text-pea-500 block text-sm">
+                    {profile.role_profile_role_idTorole.name}
+                  </span>
+                </h2>
+                <p className="flex-auto text-sm tracking-wide opacity-80">
+                  {profile.biography}
+                </p>
+                <div className="justify-self-end">
+                  <a
+                    href="#"
+                    className="rw-button rw-button-blue-outline rw-button-small opacity-60 hover:opacity-100"
+                  >
+                    Follow
+                  </a>
+                  <a
+                    href="#"
+                    className="rw-button rw-button-gray-outline rw-button-small ml-2"
+                  >
+                    More Info
+                  </a>
+                </div>
+              </figcaption>
+            </figure>
+          ))}
+      </div>
       <Table
         rows={profiles}
         columns={[
@@ -68,15 +150,56 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
             header: "Avatar",
             render({ value, row }) {
               return (
-                <img
-                  className="h-10 w-10 rounded-full"
-                  src={
-                    value
-                      ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${value}`
-                      : `https://ui-avatars.com/api/?name=${row?.full_name}`
+                <Tooltip
+                  content={
+                    <figure className="font-montserrat relative w-full max-w-xs rounded-lg bg-zinc-700 text-left leading-6 text-white">
+                      <img
+                        // src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/sample60.jpg"
+                        src={
+                          mapImages[
+                            Object.keys(mapImages)[
+                              Math.floor(
+                                Math.random() * Object.keys(mapImages).length
+                              )
+                            ]
+                          ]
+                        }
+                        alt={`${row.full_name} bg-image`}
+                        className="max-w-full align-top opacity-80"
+                      />
+                      <figcaption className="before:border-skew relative w-full bg-zinc-700 before:absolute before:right-0 before:left-0 before:bottom-full before:h-0 before:w-0 before:border-transparent before:border-l-zinc-700 before:content-['']">
+                        <img
+                          src={
+                            value
+                              ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${value}`
+                              : `https://ui-avatars.com/api/?name=${row?.full_name}`
+                          }
+                          alt={row.full_name}
+                          className="absolute left-6 bottom-full aspect-square max-w-[90px] rounded-full opacity-100 shadow-lg"
+                        />
+                        <h2 className="mb-1 font-light">
+                          {row.full_name}
+                          <span className="text-pea-500 block text-xs">
+                            {row.role_profile_role_idTorole.name}
+                          </span>
+                        </h2>
+                        <p className="mb-2 flex-auto text-sm tracking-wide opacity-80">
+                          {row.biography}
+                        </p>
+                      </figcaption>
+                    </figure>
                   }
-                  alt="Profile Image"
-                />
+                >
+                  <img
+                    className="h-10 w-10 rounded-full"
+                    src={
+                      value
+                        ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/avatars/${value}`
+                        : `https://ui-avatars.com/api/?name=${row?.full_name}`
+                    }
+                    alt="Profile Image"
+                  />
+                </Tooltip>
               );
             },
           },

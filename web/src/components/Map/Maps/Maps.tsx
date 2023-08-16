@@ -270,7 +270,7 @@ const MapsList = ({ maps }: FindMaps) => {
         {maps.map((map) => (
           <Link
             key={map.id}
-            to={routes.map({ id: map.id.toString() })}
+            to={routes.map({ id: map.id })}
             className="hover:ring-pea-500 rounded-lg hover:no-underline hover:ring-1"
           >
             <ArkCard
@@ -284,8 +284,7 @@ const MapsList = ({ maps }: FindMaps) => {
               subtitle={
                 <div className="flex flex-row gap-1">
                   {Object.entries(map).map(([key, value]) => {
-                    if (!value || !mapData[key])
-                      return;
+                    if (!value || !mapData[key]) return;
 
                     return (
                       <svg

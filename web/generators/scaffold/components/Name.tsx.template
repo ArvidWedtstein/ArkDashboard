@@ -2,6 +2,7 @@
 import { Link, routes, navigate } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
+import Toast from "src/components/Util/Toast/Toast";
 
 import { ${formattersImports} } from 'src/lib/formatters'
 
@@ -31,9 +32,15 @@ const ${singularPascalName} = ({ ${singularCamelName} }: Props) => {
   })
 
   const onDeleteClick = (id: Delete${singularPascalName}MutationVariables['id']) => {
-    if (confirm('Are you sure you want to delete ${singularCamelName} ' + id + '?')) {
-      delete${singularPascalName}({ variables: { id } })
-    }
+    toast.custom((t) => (
+      <Toast
+        t={t}
+        title={`You are about to delete ${singularCamelName}`}
+        message={`Are you sure you want to delete ${singularCamelName}?`}
+        actionType="YesNo"
+        primaryAction={() => delete${singularPascalName}({ variables: { id } })}
+      />
+    ), { position: 'top-center' });
   }
 
   return (

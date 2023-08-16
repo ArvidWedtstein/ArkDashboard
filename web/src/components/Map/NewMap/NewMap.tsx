@@ -29,7 +29,11 @@ const NewMap = () => {
   )
 
   const onSave = (input: CreateMapInput) => {
-    createMap({ variables: { input } })
+    toast.promise(createMap({ variables: { input } }), {
+      loading: "Creating new map...",
+      success: "Map successfully created",
+      error: <b>Failed to create new map.</b>,
+    });
   }
 
   return (

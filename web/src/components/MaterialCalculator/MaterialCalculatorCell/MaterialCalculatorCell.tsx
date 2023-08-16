@@ -15,32 +15,49 @@ export const QUERY = gql`
         category
         type
       }
-      ItemRecipeItem {
-        id
-        amount
-        Item {
-          id
-          name
-          image
-        }
-      }
     }
   }
 `;
+// # ItemRecipeItem {
+//   #   id
+//   #   item_recipe_id
+//   #   amount
+//   #   Item {
+//   #     id
+//   #     name
+//   #     image
+//   #   }
+//   # }
+export const ITEMRECIPEITEMQUERY = gql`
+query FindRecipeItemsByIds($ids: [String!]) {
+    itemRecipeItemsByIds(ids: $ids) {
+      id
+      item_recipe_id
+      amount
+      Item {
+        id
+        name
+        image
+      }
+    }
+}
+`
 
-export const Loading = () => (
-  <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-transparent">
-    <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>
-    <p className="text-black dark:text-white">
-      This may take some time, please wait...
-    </p>
-  </div>
-);
+export const Loading = () => {
+  return (
+    <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-transparent">
+      <span className="inline-block h-16 w-16 animate-spin rounded-full border-t-4 border-r-2 border-black border-transparent dark:border-white"></span>
+      <p className="text-black dark:text-white">
+        This may take some time, please wait...
+      </p>
+    </div>
+  )
+};
 
 export const Empty = () => <div>Empty</div>;
 
 export const Failure = ({ error }: CellFailureProps) => (
-  <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
+  <div className="rw-cell-error flex items-center space-x-3">
     <svg
       className="h-12 w-12"
       fill="currentColor"

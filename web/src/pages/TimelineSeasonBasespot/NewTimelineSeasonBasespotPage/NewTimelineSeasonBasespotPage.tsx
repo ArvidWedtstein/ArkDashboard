@@ -1,7 +1,7 @@
-import NewTimelineSeasonBasespot from 'src/components/TimelineSeasonBasespot/NewTimelineSeasonBasespot'
+import NewTimelineSeasonBasespotCell from 'src/components/TimelineSeasonBasespot/NewTimelineSeasonBasespotCell'
 
 const NewTimelineSeasonBasespotPage = () => {
-  return <NewTimelineSeasonBasespot />
+  return <NewTimelineSeasonBasespotCell />
 }
 
 export default NewTimelineSeasonBasespotPage

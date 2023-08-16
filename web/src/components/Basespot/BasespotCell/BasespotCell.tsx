@@ -5,21 +5,21 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import Basespot from "src/components/Basespot/Basespot";
 
 export const QUERY = gql`
-  query FindBasespotById($id: BigInt!) {
+  query FindBasespotById($id: String!) {
     basespot: basespot(id: $id) {
       id
       name
       description
       latitude
       longitude
-      image
+      thumbnail
       created_at
       map_id
       estimated_for_players
-      defense_images
       created_by
-      turretsetup_image
-      updated_at
+      base_images
+      type
+      published
       Map {
         name
         img
@@ -28,13 +28,88 @@ export const QUERY = gql`
   }
 `;
 
-export const Loading = () => <div>Loading...</div>;
+export const Loading = () => (
+  <div role="status" className="flex animate-pulse flex-col space-y-8">
+    <div className="flex min-h-[200px] w-full flex-col rounded-lg border border-zinc-300 p-12 dark:border-zinc-700">
+      <div className="flex justify-between">
+        <div className="h-2.5 w-60 rounded-full bg-zinc-200 dark:bg-zinc-600" />
+        <div className="h-2.5 w-48 rounded-full bg-zinc-200 dark:bg-zinc-600" />
+      </div>
+      <div className="mt-6 flex w-fit flex-col space-y-2.5 md:mt-12">
+        <div className="h-5 w-48 rounded-full bg-zinc-200 dark:bg-zinc-600" />
+        <div className="flex w-full items-center space-x-2">
+          <div className="h-2.5 w-32 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+          <div className="h-2.5 w-24 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
+        </div>
+        <div className="flex w-full max-w-[480px] items-center space-x-2">
+          <div className="h-2.5 w-full rounded-full bg-zinc-200 dark:bg-zinc-700" />
+          <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          <div className="h-2.5 w-24 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+        </div>
+        <div className="flex w-full max-w-[400px] items-center space-x-2">
+          <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          <div className="h-2.5 w-80 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+          <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
+        </div>
+        <div className="flex w-full max-w-[480px] items-center space-x-2">
+          <div className="h-2.5 w-full rounded-full bg-zinc-200 dark:bg-zinc-700" />
+          <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          <div className="h-2.5 w-24 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+        </div>
+        <div className="flex w-full max-w-[440px] items-center space-x-2">
+          <div className="h-2.5 w-32 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          <div className="h-2.5 w-24 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          <div className="h-2.5 w-full rounded-full bg-zinc-200 dark:bg-zinc-700" />
+        </div>
+        <div className="flex w-full max-w-[360px] items-center space-x-2">
+          <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          <div className="h-2.5 w-80 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+          <div className="h-2.5 w-full rounded-full bg-zinc-300 dark:bg-zinc-600" />
+        </div>
+      </div>
+    </div>
+
+    <div className="flex">
+      <div className="aspect-square h-96 rounded-lg bg-zinc-200 dark:bg-zinc-600" />
+      <div className="flex w-full flex-col flex-wrap py-6 text-center lg:w-1/2 lg:flex-grow lg:pl-12 lg:text-left">
+        <div className="mb-10 flex flex-col items-center lg:items-start">
+          <div className="mb-5 h-12 w-12 rounded-full bg-zinc-200 dark:bg-zinc-600" />
+          <div className="flex-grow space-y-3">
+            <div className="h-2.5 w-40 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            <div className="h-2 w-60 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          </div>
+        </div>
+        <div className="mb-10 flex flex-col items-center lg:items-start">
+          <div className="mb-5 h-12 w-12 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          <div className="flex-grow space-y-3">
+            <div className="h-2.5 w-40 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            <div className="h-2 w-60 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr className="bg-zinc-200 dark:bg-zinc-700" />
+
+    <div className="flex flex-col items-center justify-center space-y-3 py-10">
+      <div className="h-2.5 w-60 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+      <div className="h-5 w-80 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+      <div className="grid grid-cols-3 gap-3 py-24">
+        <div className="aspect-square h-60 w-full rounded-lg bg-zinc-200 dark:bg-zinc-600" />
+        <div className="aspect-square h-60 w-full rounded-lg bg-zinc-200 dark:bg-zinc-600" />
+        <div className="aspect-square h-60 w-full rounded-lg bg-zinc-200 dark:bg-zinc-600" />
+      </div>
+    </div>
+    <span className="sr-only">Loading...</span>
+  </div>
+);
 
 export const Empty = () => <div>Basespot not found</div>;
 
 export const Failure = ({ error }: CellFailureProps) => {
   return (
-    <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
+    <div className="rw-cell-error flex items-center space-x-3">
       <svg
         className="h-12 w-12 fill-current"
         xmlns="http://www.w3.org/2000/svg"

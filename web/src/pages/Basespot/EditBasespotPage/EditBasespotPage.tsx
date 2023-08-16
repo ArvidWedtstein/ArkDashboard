@@ -1,7 +1,7 @@
 import EditBasespotCell from 'src/components/Basespot/EditBasespotCell'
 
 type BasespotPageProps = {
-  id: number
+  id: string
 }
 
 const EditBasespotPage = ({ id }: BasespotPageProps) => {

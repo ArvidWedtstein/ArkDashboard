@@ -26,7 +26,11 @@ const NewDino = () => {
   });
 
   const onSave = (input: CreateDinoInput & CreateDinoStatInput) => {
-    createDino({ variables: { input } });
+    toast.promise(createDino({ variables: { input } }), {
+      loading: "Creating new dino ...",
+      success: "Dino successfully created",
+      error: <b>Failed to create dino.</b>,
+    });
   };
 
   return (

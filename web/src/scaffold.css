@@ -1,11 +1,15 @@
 @import "tailwindcss/components";
 @layer components {
-  a:hover {
-    @apply dark:text-accent-500 text-accent-600 underline;
+  /* Link */
+  .rw-link {
+    @apply text-pea-500;
   }
-  span > a,
-  p > a {
-    @apply decoration-pea-500 underline;
+  .rw-link:hover {
+    @apply underline;
+  }
+  span > .rw-link,
+  p > .rw-link {
+    @apply decoration-pea-500 text-pea-500 underline underline-offset-4 transition ease-in-out hover:no-underline;
   }
 
   .rw-header {
@@ -13,7 +17,7 @@
   }
 
   .rw-segment {
-    @apply w-full overflow-hidden; /*  rounded-lg border border-gray-200  */
+    @apply w-full overflow-hidden;
     scrollbar-color: theme("colors.zinc.400") transparent;
     scroll-behavior: smooth;
   }
@@ -27,17 +31,13 @@
   .rw-segment::-webkit-scrollbar-button {
     @apply rounded-full border-[3px] border-solid border-transparent bg-zinc-400 bg-clip-content;
   }
-  .rw-segment-header {
-    @apply py-3 px-4 text-gray-700 dark:text-stone-200;
-  }
+
   .rw-segment-main {
     @apply p-4;
   }
-  .rw-link {
-    @apply text-blue-400 underline;
-  }
-  .rw-link:hover {
-    @apply text-blue-500;
+
+  .rw-segment-header {
+    @apply py-3 px-4 text-gray-700 dark:text-stone-200;
   }
 
   .rw-heading {
@@ -49,18 +49,23 @@
   .rw-heading.rw-heading-secondary {
     @apply text-sm;
   }
+
   .rw-heading .rw-link {
     @apply text-gray-600 no-underline;
   }
   .rw-heading .rw-link:hover {
     @apply text-gray-900 underline;
   }
+
   .rw-cell-error {
-    @apply text-sm font-semibold;
+    @apply animate-fly-in text-sm font-semibold;
   }
+
+  /* || FORM */
   .rw-form-wrapper {
     @apply -mt-4 text-sm;
   }
+  /* Form Error */
   .rw-cell-error,
   .rw-form-error-wrapper {
     @apply my-4 rounded border border-red-100 bg-red-50 p-4 text-red-600;
@@ -71,210 +76,6 @@
   .rw-form-error-list {
     @apply mt-2 list-inside list-disc;
   }
-  /* Form Section */
-  .rw-form-group {
-    @apply mt-2 flex flex-col items-start border-stone-500 pt-2 text-gray-900 dark:border-zinc-300 dark:text-stone-200 [&:not(details)]:border-t [&:not(fieldset)]:border-b [&:not(fieldset)]:pb-2;
-  }
-  .rw-form-group legend,
-  .rw-form-group summary {
-    @apply relative mb-2 pr-2 text-xl; /* list-decimal */
-  }
-  .rw-form-group:not(.custom) > div {
-    @apply flex flex-col items-start space-y-3 md:flex-row md:space-y-0 md:space-x-3;
-  }
-
-  .rw-button {
-    /* @apply flex cursor-pointer justify-center rounded border-0 bg-gray-200 py-1 px-4 text-xs font-semibold uppercase leading-loose tracking-wide text-gray-500 no-underline transition duration-100; */
-    @apply rounded-lg py-2.5 px-6 text-sm font-medium text-gray-900 transition duration-100 ease-in-out focus:outline-none disabled:pointer-events-none dark:text-white;
-  }
-  .rw-button-ark {
-    @apply bg-[#11667B] px-6 py-1 uppercase outline outline-1 outline-offset-1 outline-[#11667B] transition-colors duration-150 hover:outline-2 hover:outline-offset-0;
-  }
-
-  .rw-button.disabled,
-  .rw-button[disabled] {
-    @apply pointer-events-none cursor-not-allowed select-none opacity-50;
-  }
-  .rw-button.disabled:hover,
-  .rw-button[disabled]:hover {
-    @apply ring-0;
-  }
-  .rw-button:focus {
-    @apply outline-none ring-2;
-  }
-
-  /*
-  // ----------------------------
-  // Button Sizes
-  // ----------------------------
-  */
-  .rw-button.rw-button-small {
-    @apply rounded-sm py-1 px-2 text-xs;
-  }
-  .rw-button.rw-button-medium {
-    @apply rounded-lg py-1.5 px-4 text-sm;
-  }
-  .rw-button.rw-button-large {
-    @apply rounded-lg py-3 px-8 text-base;
-  }
-
-  /* .rw-button:has(.rw-button-icon) {
-    @apply inline-flex items-center justify-center;
-  } */
-  .rw-button:not(:empty) {
-    @apply inline-flex items-center justify-center;
-  }
-
-  .rw-button .rw-button-icon-start {
-    @apply pointer-events-none order-1 mr-2 w-5 fill-current text-xl leading-5;
-  }
-  .rw-button .rw-button-icon-end {
-    @apply pointer-events-none ml-2 w-5 fill-current text-xl leading-5;
-  }
-  /*
-  // ----------------------------
-  // Button Variants
-  // ----------------------------
-  */
-
-  /* Gray Outline Button */
-  .rw-button.rw-button-gray-outline {
-    @apply border border-stone-700 transition dark:border-gray-500;
-  }
-  .rw-button.rw-button-gray-outline:hover {
-    @apply border-stone-800 ring-1 ring-stone-700 dark:border-stone-600 dark:ring-stone-500;
-  }
-  .rw-button.rw-button-gray-outline:focus {
-    @apply border-stone-700 ring-1 ring-stone-400 dark:border-stone-500 dark:ring-stone-400;
-  }
-
-  /* Red Button */
-  .rw-button.rw-button-red {
-    @apply bg-red-500 text-white;
-  }
-  .rw-button.rw-button-red:hover {
-    @apply bg-red-700 text-white;
-  }
-  .rw-button.rw-button-red:focus {
-    @apply ring-red-300 dark:ring-red-800;
-  }
-
-  /* Red Outline Button */
-  .rw-button.rw-button-red-outline {
-    @apply border border-red-500 text-red-500;
-  }
-  .rw-button.rw-button-red-outline:hover {
-    @apply bg-red-600 text-white;
-  }
-  .rw-button.rw-button-red-outline:focus {
-    @apply outline-none ring-4 ring-red-700;
-  }
-
-  /* Green Button */
-  .rw-button.rw-button-green {
-    @apply bg-pea-500 text-white;
-  }
-  .rw-button.rw-button-green:hover {
-    @apply bg-pea-600;
-  }
-  .rw-button.rw-button-green:focus {
-    @apply ring-pea-300 dark:ring-pea-800 outline-none;
-  }
-
-  /* Green Outline Button */
-  .rw-button.rw-button-green-outline {
-    @apply border-pea-500 text-pea-500 border;
-  }
-  .rw-button.rw-button-green-outline:hover {
-    @apply bg-pea-600 text-white;
-  }
-  .rw-button.rw-button-green-outline:focus {
-    @apply ring-pea-800 outline-none ring-4;
-  }
-
-  /* Green Gradient Button */
-  .rw-button.rw-button-green-gradient {
-    @apply from-pea-400 to-pea-600 dark:from-pea-300 dark:to-pea-500 dark:text-pea-950 bg-gradient-to-br text-white;
-  }
-  .rw-button.rw-button-green-gradient:hover {
-    @apply from-pea-500 to-pea-700 dark:from-pea-200 dark:to-pea-400;
-  }
-  .rw-button.rw-button-green-gradient:focus,
-  .rw-button.rw-button-green-gradient:active {
-    @apply from-pea-600 to-pea-800 dark:from-pea-400 dark:to-pea-600 ring-0;
-  }
-  .rw-button.rw-button-green-gradient:disabled {
-    @apply from-pea-100 to-pea-300 text-pea-700 dark:from-pea-700 dark:text-pea-100 dark:to-pea-900;
-  }
-
-  /* Blue Button */
-  .rw-button.rw-button-blue {
-    @apply bg-blue-500 text-white;
-  }
-  .rw-button.rw-button-blue:hover {
-    @apply bg-blue-600;
-  }
-  .rw-button.rw-button-blue:focus {
-    @apply ring-blue-300 dark:ring-blue-800;
-  }
-
-  /* Blue Outline Button*/
-  .rw-button.rw-button-blue-outline {
-    @apply border border-blue-500 text-blue-500;
-    /* @apply border-pea-500 text-pea-500 rounded border-2 font-normal leading-tight transition duration-150 ease-in-out hover:bg-opacity-5; */
-  }
-  .rw-button.rw-button-blue-outline:hover {
-    @apply bg-blue-600 text-white;
-  }
-  .rw-button.rw-button-green-outline:focus {
-    @apply outline-none ring-4 ring-blue-800;
-  }
-
-  /* Yellow Button */
-  .rw-button.rw-button-yellow {
-    @apply bg-yellow-500 text-white;
-  }
-  .rw-button.rw-button-yellow:hover {
-    @apply bg-yellow-600 text-white;
-  }
-  .rw-button.rw-button-yellow:focus {
-    @apply ring-yellow-300 dark:ring-yellow-800;
-  }
-
-  /* Gray Button */
-  .rw-button.rw-button-gray {
-    @apply border border-gray-500 bg-zinc-300 text-gray-700 dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-300;
-  }
-  .rw-button.rw-button-gray:hover {
-    @apply border-gray-500 bg-zinc-400 text-gray-900 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white;
-  }
-  .rw-button.rw-button-gray:focus {
-    @apply ring ring-gray-300 dark:ring-zinc-700;
-  }
-
-  /* Button Group */
-  .rw-button-group {
-    @apply my-3 flex w-fit justify-center rounded-lg;
-  }
-  .rw-button-group > .rw-button:only-child,
-  .rw-button-group > .rw-input:only-child,
-  .rw-button-group > .rw-float-input:only-child {
-    @apply !rounded-lg;
-  }
-  .rw-button-group .rw-input,
-  .rw-button-group .rw-button {
-    @apply mt-0 rounded-none first:rounded-l-lg last:rounded-r-lg;
-  }
-  .rw-button-group .rw-float-input {
-    @apply mt-0 rounded-none first-of-type:rounded-l-lg last-of-type:rounded-r-lg;
-  }
-
-  .rw-button-group.rw-button-group-border .rw-input,
-  .rw-button-group.rw-button-group-border .rw-float-input,
-  .rw-button-group.rw-button-group-border .rw-button {
-    @apply not-firstlast:border-l-0 not-only:last:border-l-0 border border-zinc-500;
-  }
-
   .rw-form-wrapper .rw-button-group {
     @apply mt-8;
   }
@@ -287,18 +88,261 @@
   .rw-helper-text {
     @apply mt-2 text-xs text-gray-600 dark:text-stone-300;
   }
-  /*
-  // ----------------------------
-  // Input Variants
-  // ----------------------------
-  */
-  .rw-input {
-    @apply block rounded-lg border border-zinc-500 bg-zinc-50 px-4 py-2.5 text-sm text-gray-900 !placeholder-zinc-700 !outline-none invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 disabled:cursor-default disabled:text-gray-400 contrast-more:border-black contrast-more:placeholder-black dark:bg-zinc-600 dark:text-stone-200 dark:!placeholder-zinc-300 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white;
+  /* Form Collapsible Section */
+  .rw-form-group {
+    @apply mt-2 flex flex-col items-start border-stone-500 pt-2 text-gray-900 dark:border-zinc-300 dark:text-stone-200 [&:not(details)]:border-t [&:not(fieldset)]:border-b [&:not(fieldset)]:pb-2;
   }
+  .rw-form-group legend,
+  .rw-form-group summary {
+    @apply relative mb-2 pr-2 text-xl; /* list-decimal */
+  }
+  .rw-form-group:not(.custom) > div {
+    @apply flex flex-col items-start space-y-3 md:flex-row md:space-y-0 md:space-x-3;
+  }
+
+  /* || BUTTONS */
+  .rw-button {
+    @apply rounded-lg py-2.5 px-6 text-sm font-medium text-gray-900 transition duration-100 ease-in-out dark:text-white;
+  }
+
+  .rw-button.disabled,
+  .rw-button[disabled] {
+    @apply !cursor-not-allowed select-none opacity-50;
+  }
+
+  .rw-button.disabled:hover,
+  .rw-button[disabled]:hover {
+    @apply ring-0;
+  }
+
+  .rw-button:focus {
+    @apply outline-none ring-current;
+  }
+
+  .rw-button-ark {
+    @apply bg-[#11667B] px-6 py-1 uppercase outline outline-1 outline-offset-1 outline-[#11667B] transition-colors duration-150 hover:outline-2 hover:outline-offset-0;
+  }
+
+  /* Button Sizes */
+  .rw-button.rw-button-small {
+    @apply rounded-md py-1 px-2 text-xs;
+  }
+  .rw-button.rw-button-medium {
+    @apply py-1.5 px-4 text-sm;
+  }
+  .rw-button.rw-button-large {
+    @apply py-3 px-8 text-base;
+  }
+
+  /* Button Icon */
+  .rw-button:not(:empty) {
+    @apply inline-flex items-center justify-center;
+  }
+  .rw-button .rw-button-icon-start {
+    @apply mr-2;
+  }
+  .rw-button .rw-button-icon-end {
+    @apply ml-2;
+  }
+
+  .rw-button .rw-button-icon-start,
+  .rw-button .rw-button-icon-end,
+  .rw-button .rw-button-icon {
+    @apply pointer-events-none w-3.5 fill-current leading-5;
+  }
+  .rw-button.rw-button-small .rw-button-icon-start,
+  .rw-button.rw-button-small .rw-button-icon-end,
+  .rw-button.rw-button-small .rw-button-icon {
+    @apply w-3;
+  }
+  .rw-button.rw-button-large .rw-button-icon-start,
+  .rw-button.rw-button-large .rw-button-icon-end,
+  .rw-button.rw-button-large .rw-button-icon {
+    @apply w-4;
+  }
+
+  /* || Button Variants */
+
+  /* Gray Button */
+  .rw-button.rw-button-gray {
+    @apply border border-gray-500 bg-zinc-300 text-gray-700 dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-300;
+  }
+  .rw-button.rw-button-gray:not([disabled]):hover {
+    @apply border-gray-500 bg-zinc-400 text-gray-900 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white;
+  }
+  .rw-button.rw-button-gray:not([disabled]):focus {
+    @apply ring-1 ring-gray-300 dark:ring-zinc-700;
+  }
+
+  /* Gray Outline Button */
+  .rw-button.rw-button-gray-outline {
+    @apply border border-zinc-700 ring-1 ring-transparent transition dark:border-zinc-500;
+  }
+  .rw-button.rw-button-gray-outline:not([disabled]):hover {
+    @apply border-stone-800 ring-1 ring-zinc-700 dark:border-zinc-600 dark:ring-zinc-500;
+  }
+  .rw-button.rw-button-gray-outline:not([disabled]):focus {
+    @apply border-stone-700 ring-1 ring-stone-400 dark:border-stone-500 dark:ring-stone-400;
+  }
+
+  /* Red Button */
+  .rw-button.rw-button-red {
+    @apply bg-red-500 text-white;
+  }
+  .rw-button.rw-button-red:not([disabled]):hover {
+    @apply bg-red-700 text-white;
+  }
+  .rw-button.rw-button-red:not([disabled]):focus {
+    @apply ring-1 ring-red-300 dark:ring-red-800;
+  }
+
+  /* Red Outline Button */
+  .rw-button.rw-button-red-outline {
+    @apply border border-red-500 text-red-500;
+  }
+  .rw-button.rw-button-red-outline:not([disabled]):hover {
+    @apply bg-red-600 text-white;
+  }
+  .rw-button.rw-button-red-outline:not([disabled]):focus {
+    @apply outline-none ring-4 ring-red-700;
+  }
+
+  /* Green Button */
+  .rw-button.rw-button-green {
+    @apply bg-pea-500 text-white;
+  }
+  .rw-button.rw-button-green:not([disabled]):hover {
+    @apply bg-pea-600;
+  }
+  .rw-button.rw-button-green:not([disabled]):focus {
+    @apply ring-pea-300 dark:ring-pea-800 outline-none ring-1;
+  }
+
+  /* Green Outline Button */
+  .rw-button.rw-button-green-outline {
+    @apply border-pea-500 text-pea-500 border;
+  }
+  .rw-button.rw-button-green-outline:not([disabled]):hover {
+    @apply bg-pea-600 text-white;
+  }
+  .rw-button.rw-button-green-outline:not([disabled]):focus,
+  .rw-button.rw-button-green-outline:not([disabled]):focus-within {
+    @apply ring-pea-300 dark:!ring-pea-800 outline-none ring-4;
+  }
+
+  /* Green Gradient Button */
+  .rw-button.rw-button-green-gradient {
+    @apply from-pea-400 to-pea-600 dark:from-pea-300 dark:to-pea-500 dark:text-pea-950 bg-gradient-to-br text-white;
+  }
+  .rw-button.rw-button-green-gradient:not([disabled]):hover {
+    @apply from-pea-500 to-pea-700 dark:from-pea-200 dark:to-pea-400;
+  }
+  .rw-button.rw-button-green-gradient:not([disabled]):focus,
+  .rw-button.rw-button-green-gradient:not([disabled]):active {
+    @apply from-pea-600 to-pea-800 dark:from-pea-400 dark:to-pea-600 ring-0;
+  }
+  .rw-button.rw-button-green-gradient:disabled {
+    @apply from-pea-100 to-pea-300 text-pea-700 dark:from-pea-700 dark:text-pea-100 dark:to-pea-900;
+  }
+
+  /* Blue Button */
+  .rw-button.rw-button-blue {
+    @apply bg-blue-500 text-white;
+  }
+  .rw-button.rw-button-blue:not([disabled]):hover {
+    @apply bg-blue-600;
+  }
+  .rw-button.rw-button-blue:not([disabled]):focus {
+    @apply ring-1 ring-blue-300 dark:ring-blue-800;
+  }
+
+  /* Blue Outline Button*/
+  .rw-button.rw-button-blue-outline {
+    @apply border border-blue-500 text-blue-500;
+  }
+  .rw-button.rw-button-blue-outline:not([disabled]):hover {
+    @apply bg-blue-600 text-white;
+  }
+  .rw-button.rw-button-green-outline:not([disabled]):focus {
+    @apply outline-none ring-4 ring-blue-800;
+  }
+
+  /* Yellow Button */
+  .rw-button.rw-button-yellow {
+    @apply bg-yellow-500 text-white;
+  }
+  .rw-button.rw-button-yellow:not([disabled]):hover {
+    @apply bg-yellow-600 text-white;
+  }
+  .rw-button.rw-button-yellow:not([disabled]):focus {
+    @apply ring-1 ring-yellow-300 dark:ring-yellow-800;
+  }
+
+  /* Button Group */
+  .rw-button-group {
+    @apply my-3 flex w-fit justify-center rounded-lg;
+  }
+  .rw-button-group.rw-button-group-vertical {
+    @apply flex-col;
+  }
+  .rw-button-group > .rw-button,
+  .rw-button-group > .rw-input,
+  .rw-button-group > .rw-float-input {
+    @apply mt-0 rounded-none;
+  }
+  .rw-button-group > .rw-button:only-child,
+  .rw-button-group > .rw-input:only-child,
+  .rw-button-group > .rw-float-input:only-child {
+    @apply !rounded-lg;
+  }
+
+  /* Horizontal Button Group */
+  .rw-button-group:not(.rw-button-group-vertical) .rw-input,
+  .rw-button-group:not(.rw-button-group-vertical) .rw-button {
+    @apply first:rounded-l-lg last:rounded-r-lg;
+  }
+  .rw-button-group:not(.rw-button-group-vertical) .rw-float-input {
+    @apply first-of-type:rounded-l-lg last-of-type:rounded-r-lg;
+  }
+
+  .rw-button-group.rw-button-group-vertical .rw-input,
+  .rw-button-group.rw-button-group-vertical .rw-button {
+    @apply first:rounded-t-lg last:rounded-b-lg;
+  }
+
+  .rw-button-group.rw-button-group-border:not(.rw-button-group-vertical)
+    .rw-input,
+  .rw-button-group.rw-button-group-border:not(.rw-button-group-vertical)
+    .rw-float-input,
+  .rw-button-group.rw-button-group-border:not(.rw-button-group-vertical)
+    .rw-button {
+    @apply not-firstlast:border-l-0 not-only:last:border-l-0 border border-zinc-500;
+  }
+
+  .rw-button-group.rw-button-group-vertical.rw-button-group-border .rw-input,
+  .rw-button-group.rw-button-group-vertical.rw-button-group-border
+    .rw-float-input,
+  .rw-button-group.rw-button-group-vertical.rw-button-group-border .rw-button {
+    @apply not-firstlast:border-t-0 not-only:last:border-t-0 border border-zinc-500;
+  }
+
+  /* || INPUT FIELDS */
+  .rw-input {
+    @apply block rounded-lg border border-zinc-500 bg-zinc-50 px-4 py-2.5 text-sm text-gray-900 !placeholder-zinc-700 !placeholder-opacity-60 !outline-none [-moz-appearance:_textfield] invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 disabled:cursor-default disabled:text-gray-400 contrast-more:border-black contrast-more:placeholder-black dark:bg-zinc-600 dark:text-stone-200 dark:!placeholder-zinc-300 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white;
+  }
+
+  /* Input Sizes */
   .rw-input.rw-input-small {
     @apply py-1 px-2 text-xs;
   }
+  .rw-input.rw-input-medium {
+    @apply py-1.5 px-4 text-sm;
+  }
+  .rw-input.rw-input-large {
+    @apply py-3 px-8 text-base;
+  }
 
+  /* Float */
   .rw-float-input {
     @apply focus:border-pea-600 dark:focus:border-pea-500 block w-full appearance-none rounded-lg border border-zinc-500 bg-zinc-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:outline-none focus:ring-0 dark:bg-zinc-600 dark:text-white dark:placeholder-zinc-200;
   }
@@ -342,6 +386,24 @@
     @apply absolute top-0 left-1/2 inline translate-y-[2px] -translate-x-1/2 transform whitespace-pre content-['✓'];
   }
 
+  /* Checkbox Group Comp */
+  .rw-check-input:checked + .rw-check-tile {
+    @apply border-pea-500 text-pea-500 shadow-lg;
+  }
+  .rw-check-input:checked + .rw-check-tile::before {
+    @apply bg-pea-500 border-pea-500 scale-100 opacity-100;
+  }
+  .rw-check-input:checked + .rw-check-tile span {
+    @apply text-black dark:text-white;
+  }
+
+  .rw-check-tile:hover::before:not(.disabled) {
+    @apply scale-100 stroke-stone-100 text-stone-600 opacity-100 dark:text-stone-100;
+  }
+  .rw-check-tile::before {
+    @apply absolute top-1 left-1 block h-5 w-5 scale-0 transform rounded-full border bg-[url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='192'%20height='192'%20fill='%23FF0000'%20viewBox='0%200%20256%20256'%3E%3Crect%20width='256'%20height='256'%20fill='none'%3E%3C/rect%3E%3Cpolyline%20points='216%2072.005%20104%20184%2048%20128.005'%20fill='none'%20stroke='%23ffffff'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='32'%3E%3C/polyline%3E%3C/svg%3E")] bg-[length:12px_12px] bg-center bg-no-repeat opacity-0 transition-all duration-150 ease-in content-[''];
+  }
+
   /* Toggle */
   .rw-toggle {
     @apply h-6 w-11 rounded-full border border-gray-500 bg-zinc-300 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] dark:border-zinc-500 dark:bg-zinc-600;
@@ -349,7 +411,7 @@
 
   /* Radio */
   .rw-input[type="radio"] {
-    @apply ml-0 mr-1 mt-1 inline w-4;
+    @apply text-pea-600 dark:accent-pea-600 accent-pea-500 inline h-4 w-4 border-zinc-500;
   }
   .rw-check-radio-items {
     @apply flex justify-items-center;
@@ -359,9 +421,9 @@
   }
 
   /* Range */
+  /* input[type="range"].slider::-ms-track,  */
   input[type="range"].slider::-webkit-slider-runnable-track,
-  input[type="range"].slider::-moz-range-track,
-  input[type="range"].slider::-ms-track {
+  input[type="range"].slider::-moz-range-track {
     @apply h-6 appearance-none;
   }
   input[type="range"].slider::-webkit-slider-thumb,
@@ -388,11 +450,8 @@
   .rw-field-error {
     @apply mt-1 block text-xs font-semibold uppercase text-red-600;
   }
-  /*
-  // ----------------------------
-  // Badge Variants
-  // ----------------------------
-  */
+
+  /* || Badges */
   .rw-badge {
     @apply inline-flex items-center rounded px-2.5 py-0.5 text-xs font-medium;
   }
@@ -405,6 +464,22 @@
     @apply border border-red-400 bg-red-100 text-red-800 dark:bg-zinc-700 dark:text-red-400;
   }
 
+  /* Green Badge */
+  .rw-badge.rw-badge-green {
+    @apply bg-pea-100 text-pea-800 dark:bg-pea-900 dark:text-pea-300;
+  }
+  .rw-badge.rw-badge-green-outline {
+    @apply border-pea-400 bg-pea-100 text-pea-800 dark:text-pea-400 border dark:bg-zinc-700;
+  }
+
+  /* Yellow Badge */
+  .rw-badge.rw-badge-yellow {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300;
+  }
+  .rw-badge.rw-badge-yellow-outline {
+    @apply border border-yellow-400 bg-yellow-100 text-yellow-800 dark:bg-zinc-700 dark:text-yellow-400;
+  }
+
   /* Blue Badge */
   .rw-badge.rw-badge-blue {
     @apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300;
@@ -415,10 +490,35 @@
 
   /* Gray Badge */
   .rw-badge.rw-badge-gray {
-    @apply bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300;
+    @apply bg-zinc-100 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300;
   }
   .rw-badge.rw-badge-gray-outline {
     @apply border border-gray-500 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400;
+  }
+
+  /* || Toasts */
+  .rw-toast {
+    @apply mb-4 rounded-lg border-2 bg-zinc-50 p-4 text-black dark:bg-zinc-700 dark:text-white;
+  }
+
+  /* Info */
+  .rw-toast.rw-toast-info {
+    @apply border-blue-400 text-blue-800 dark:border-blue-800 dark:text-blue-400;
+  }
+
+  /* Success */
+  .rw-toast.rw-toast-success {
+    @apply text-pea-800 border-pea-300 dark:text-pea-400 dark:border-pea-600;
+  }
+
+  /* Warning */
+  .rw-toast.rw-toast-warning {
+    @apply border-yellow-300 text-yellow-800 dark:border-yellow-800 dark:text-yellow-400;
+  }
+
+  /* Error */
+  .rw-toast.rw-toast-error {
+    @apply border-red-300 text-red-800 dark:border-red-800 dark:text-red-400;
   }
 
   /* Table */
@@ -429,68 +529,27 @@
     min-width: 48rem;
   }
   .rw-table {
-    @apply w-full text-sm;
+    @apply w-full min-w-max table-auto text-sm;
+  }
+  .rw-table thead tr {
+    @apply bg-gray-200 text-sm uppercase leading-normal text-gray-600;
+  }
+  .rw-table tbody tr {
+    @apply border-b border-gray-200 text-black hover:bg-gray-100/10 dark:text-white;
   }
   .rw-table th,
   .rw-table td {
-    @apply px-3 py-2;
+    @apply whitespace-nowrap py-3 px-6 text-left;
   }
-  .rw-table td {
-    @apply bg-white text-gray-900 dark:bg-zinc-600 dark:text-stone-300;
-  }
-  /* .rw-table tr:nth-child(odd) td,
-  .rw-table tr:nth-child(odd) th {
-    @apply bg-gray-50 dark:bg-zinc-400;
-  }
-  .rw-table tr:nth-child(even) td,
-  .rw-table tr:nth-child(even) th {
-    @apply bg-white dark:bg-zinc-300;
-  } */
-  .rw-table thead tr {
-    @apply bg-gray-200 text-gray-600 dark:bg-zinc-600;
-  }
-  .rw-table th {
-    @apply text-left font-semibold text-black dark:text-white;
-  }
-  .rw-table thead th {
-    @apply text-left;
-  }
-  .rw-table tbody th {
-    @apply text-right;
-  }
-  @media (min-width: 768px) {
-    .rw-table tbody th {
-      @apply w-1/5;
-    }
-  }
-  .rw-table tbody tr {
-    @apply border-t border-gray-200 dark:border-zinc-300;
-  }
+
   .rw-table input {
     @apply ml-0;
   }
   .rw-table-actions {
-    @apply flex h-4 items-center justify-end pr-1;
-  }
-  .rw-table-actions .rw-button {
-    @apply bg-transparent;
-  }
-  .rw-table-actions .rw-button:hover {
-    @apply bg-gray-500 text-white;
-  }
-  .rw-table-actions .rw-button-blue {
-    @apply text-blue-500;
-  }
-  .rw-table-actions .rw-button-blue:hover {
-    @apply bg-blue-500 text-white;
-  }
-  .rw-table-actions .rw-button-red {
-    @apply text-red-600;
-  }
-  .rw-table-actions .rw-button-red:hover {
-    @apply bg-red-600 text-white;
+    @apply flex items-center justify-center;
   }
 
+  /* || PAGINATION */
   .rw-pagination-item,
   .rw-pagination-item[type="button"] {
     @apply border border-gray-400 bg-zinc-300 px-3 py-2 text-gray-500 hover:bg-zinc-200 hover:text-gray-700 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-opacity-70 dark:border-zinc-500 dark:bg-zinc-600 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-white;
@@ -507,150 +566,74 @@
     @apply border border-zinc-300 bg-zinc-100 px-3 py-2 font-bold text-gray-700 hover:bg-zinc-300 hover:text-gray-700 dark:border-zinc-500 dark:bg-zinc-500 dark:text-white dark:hover:bg-zinc-600 dark:hover:text-white;
   }
 
-  .rw-text-center {
-    @apply text-center text-black dark:text-white;
-  }
-
   /* Image */
   .rw-img-disable img {
     @apply opacity-40 brightness-[1.4] contrast-0 hue-rotate-[116deg] saturate-[.28] sepia;
   }
-  .rw-img-blur {
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-  .rw-img-blur::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    animation: pulse 2.5s infinite;
-    background-color: var(--text-color);
-  }
-  .rw-img-blur.loaded::before {
-    animation: none;
-    content: none;
-  }
-  .rw-img-blur img {
-    opacity: 0;
-    transition: opacity 250ms ease-in-out;
-  }
-  .rw-img-blur.loaded img {
-    opacity: 1;
-  }
-
-  .rw-check-input:checked + .rw-check-tile {
-    @apply border-pea-500 text-pea-500 shadow-lg;
-  }
-  .rw-check-input:checked + .rw-check-tile::before {
-    @apply bg-pea-500 border-pea-500 scale-100 opacity-100;
-  }
-  .rw-check-input:checked + .rw-check-tile span {
-    @apply text-black dark:text-white;
-  }
-
-  .rw-check-tile:hover::before:not(.disabled) {
-    @apply scale-100 stroke-stone-100 text-stone-600 opacity-100 dark:text-stone-100;
-  }
-  .rw-check-tile::before {
-    @apply absolute top-1 left-1 block h-5 w-5 scale-0 transform rounded-full border bg-[url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='192'%20height='192'%20fill='%23FF0000'%20viewBox='0%200%20256%20256'%3E%3Crect%20width='256'%20height='256'%20fill='none'%3E%3C/rect%3E%3Cpolyline%20points='216%2072.005%20104%20184%2048%20128.005'%20fill='none'%20stroke='%23ffffff'%20stroke-linecap='round'%20stroke-linejoin='round'%20stroke-width='32'%3E%3C/polyline%3E%3C/svg%3E")] bg-[length:12px_12px] bg-center bg-no-repeat opacity-0 transition-all duration-150 ease-in content-[''];
-  }
-
-  .dot-revolution {
-    position: relative;
-    width: 20px;
-    height: 20px;
-    /* border-radius: 5px; */
-    /* background-color: #9880ff; */
-    background: url("https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/hide.webp");
-    background-position: center;
-    background-size: cover;
-    color: #9880ff;
-  }
-  .dot-revolution::before,
-  .dot-revolution::after {
-    content: "";
-    display: inline-block;
-    position: absolute;
-  }
-  .dot-revolution::before {
-    left: 0;
-    top: -15px;
-    width: 20px;
-    height: 20px;
-    /* border-radius: 5px; */
-    /* background-color: #9880ff; */
-    background: url("https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/hide.webp");
-    background-position: center;
-    background-size: cover;
-    color: #9880ff;
-    transform-origin: 5px 20px;
-    animation: dot-revolution 1.4s linear infinite;
-  }
-  .dot-revolution::after {
-    left: 0;
-    top: -30px;
-    width: 20px;
-    height: 20px;
-    /* border-radius: 5px; */
-    /* background-color: #9880ff; */
-    background: url("https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/hide.webp");
-    background-position: center;
-    background-size: cover;
-    color: #9880ff;
-    transform-origin: 5px 35px;
-    animation: dot-revolution 1s linear infinite;
-  }
-
-  @keyframes dot-revolution {
-    0% {
-      transform: rotateZ(0deg) translate3d(0, 0, 0);
-    }
-    100% {
-      transform: rotateZ(360deg) translate3d(0, 0, 0);
-    }
-  }
-
-  @keyframes flyIn {
-    from {
-      transform: translateX(calc(100% + 1.5em));
-    }
-    to {
-      transform: translateX(0);
-    }
-  }
-  @keyframes flyOut {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(calc(100% + 1.5em));
-    }
-  }
-  @keyframes popUp {
-    from {
-      transform: scale(0);
-    }
-    to {
-      transform: scale(1);
-    }
-  }
-
-  @keyframes fillProgress {
-    0% {
-      transform: scale(1, 0);
-    }
-    100% {
-      transform: scale(1, 1);
-    }
-  }
-  @keyframes fill {
-    from {
-      transform: scaleX(0);
-    }
-    to {
-      transform: scaleX(1);
-    }
-  }
 }
-@import "tailwindcss/utilities";
+
+[data-tooltip] {
+  position: relative;
+  z-index: 2;
+  cursor: pointer;
+}
+.test {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hide the tooltip content by default */
+[data-tooltip]:before,
+[data-tooltip]:after {
+  visibility: hidden;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Position tooltip above the element */
+[data-tooltip]:before {
+  position: absolute;
+  bottom: 150%;
+  left: 50%;
+  margin-bottom: 5px;
+  margin-left: -80px;
+  padding: 7px;
+  width: 160px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #000;
+  background-color: hsla(0, 0%, 20%, 0.9);
+  color: #fff;
+  content: attr(data-tooltip);
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+/* Triangle hack to make tooltip look like a speech bubble */
+[data-tooltip]:after {
+  position: absolute;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -5px;
+  width: 0;
+  border-top: 5px solid #000;
+  border-top: 5px solid hsla(0, 0%, 20%, 0.9);
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+  content: " ";
+  font-size: 0;
+  line-height: 0;
+}
+
+/* Show tooltip content on hover */
+[data-tooltip]:hover:before,
+[data-tooltip]:hover:after {
+  visibility: visible;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+  filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}

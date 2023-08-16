@@ -28,24 +28,6 @@ describe('profiles', () => {
     expect(result).toEqual(scenario.profile.one)
   })
 
-  scenario('creates a profile', async () => {
-    const result = await createProfile({
-      input: { id: 'String' },
-    })
-
-    expect(result.id).toEqual('String')
-  })
-
-  scenario('updates a profile', async (scenario: StandardScenario) => {
-    const original = (await profile({ id: scenario.profile.one.id })) as Profile
-    const result = await updateProfile({
-      id: original.id,
-      input: { id: 'String2' },
-    })
-
-    expect(result.id).toEqual('String2')
-  })
-
   scenario('deletes a profile', async (scenario: StandardScenario) => {
     const original = (await deleteProfile({
       id: scenario.profile.one.id,

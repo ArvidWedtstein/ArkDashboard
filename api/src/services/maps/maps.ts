@@ -7,7 +7,9 @@ import type {
 import { db } from "src/lib/db";
 
 export const maps: QueryResolvers["maps"] = () => {
-  return db.map.findMany();
+  return db.map.findMany({
+    orderBy: { name: "asc" },
+  });
 };
 
 export const map: QueryResolvers["map"] = ({ id }) => {
@@ -42,11 +44,20 @@ export const Map: MapRelationResolvers = {
   Lootcrate: (_obj, { root }) => {
     return db.map.findUnique({ where: { id: root?.id } }).Lootcrate();
   },
+  Map: (_obj, { root }) => {
+    return db.map.findUnique({ where: { id: root?.id } }).Map();
+  },
+  other_Map: (_obj, { root }) => {
+    return db.map.findUnique({ where: { id: root?.id } }).other_Map();
+  },
   MapCoordinate: (_obj, { root }) => {
     return db.map.findUnique({ where: { id: root?.id } }).MapCoordinate();
   },
   MapNote: (_obj, { root }) => {
     return db.map.findUnique({ where: { id: root?.id } }).MapNote();
+  },
+  MapResource: (_obj, { root }) => {
+    return db.map.findUnique({ where: { id: root?.id } }).MapResource();
   },
   TimelineSeasonBasespot: (_obj, { root }) => {
     return db.map

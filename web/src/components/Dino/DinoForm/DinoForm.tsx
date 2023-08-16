@@ -46,6 +46,7 @@ const ITEMQUERY = gql`
   }
 `;
 const DinoForm = (props: DinoFormProps) => {
+  const [disableFood, setDisableFood] = useState(props.dino?.disable_food);
   const [loadItems, { called, loading, data }] = useLazyQuery(ITEMQUERY, {
     variables: { category: "Resource,Consumable" },
     onCompleted: (data) => {
@@ -68,14 +69,14 @@ const DinoForm = (props: DinoFormProps) => {
 
   // TODO: fix this
   const [basestat, setBasestat] = useState({
-    d: { b: 100, t: 2.5, w: 5.8, a: [{ b: 60 }] },
-    f: { b: 2000, t: 10, w: 200 },
-    h: { b: 710, t: 5.4, w: 142 },
-    m: { b: 100, t: 2.5, w: null, a: { s: { b: 546 } } },
+    d: { b: 0, t: 0, w: 0, a: [{ b: 0 }] },
+    f: { b: 0, t: 0, w: 0 },
+    h: { b: 0, t: 0, w: 0 },
+    m: { b: 0, t: 0, w: null, a: { s: { b: 0 } } },
     o: { b: null, t: null, w: null },
-    s: { b: 200, t: 10, w: 20 },
-    t: { b: 1150, t: null, w: 69 },
-    w: { b: 910, t: 4, w: 18.2 },
+    s: { b: 0, t: 0, w: 0 },
+    t: { b: 0, t: null, w: 0 },
+    w: { b: 0, t: 0, w: 0 },
   });
 
   const [movement, setMovement] = useState({
@@ -113,11 +114,28 @@ const DinoForm = (props: DinoFormProps) => {
     },
   });
 
-  const { register, control } = useForm({
+  type FormValues = {
+    attack: any[];
+    "DinoStat.create": { type: string; item_id: number; value: number }[];
+    wr: any[];
+  };
+  const { register, control } = useForm<FormValues>({
     defaultValues: {
       attack: [],
-      "DinoStat.create": [],
-      wr: [],
+      "DinoStat.create": [
+        {
+          type: "",
+          value: 0,
+          item_id: null,
+        },
+      ],
+      wr: props.dino.DinoStat.filter((f) => f.type === "weight_reduction") ?? [
+        {
+          type: "",
+          value: 0,
+          item_id: null,
+        },
+      ],
     },
   });
 
@@ -146,8 +164,8 @@ const DinoForm = (props: DinoFormProps) => {
   const [useFoundationUnit, setUseFoundationUnit] = useState(false);
 
   const onSubmit = (data: FormDino) => {
-    data.eats = eats.map((f) => f.id.toString());
-    data.drops = ["12"];
+    // data.eats = eats.map((f) => f.id.toString());
+    // data.drops = ["12"];
     console.log(data);
     // delete data.immobilized_by
     // Test Dino Object
@@ -330,18 +348,23 @@ const DinoForm = (props: DinoFormProps) => {
 
               {statFields
                 // .filter((ge) => ge.type === "gather_efficiency")
-                .map(
-                  (ge, index) =>
-                    ge.type === "gather_efficiency" && (
+                .map((ge, index) => {
+                  const g = ge as any;
+                  return (
+                    g.type === "gather_efficiency" && (
                       <div
                         className="rw-button-group justify-start"
                         role="group"
                         key={`ge-${index}`}
                       >
                         <Lookup
-                          {...register(`DinoStat.create.${index}.item_id`, {
-                            required: true,
-                          })}
+                          key={ge.id}
+                          {...register(
+                            `DinoStat.create.${index}.item_id` as const,
+                            {
+                              required: true,
+                            }
+                          )}
                           className="!mt-0 !rounded-none !rounded-l-md"
                           options={data.itemsByCategory.items
                             .filter((i) => i.category === "Resource")
@@ -352,7 +375,7 @@ const DinoForm = (props: DinoFormProps) => {
                               image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
                             }))}
                           search={true}
-                          defaultValue={ge.item_id}
+                          // defaultValue={ge.item_id}
                           filterFn={(item, search) => {
                             return item.label
                               .toLowerCase()
@@ -360,21 +383,24 @@ const DinoForm = (props: DinoFormProps) => {
                           }}
                         />
                         <NumberField
-                          {...register(`DinoStat.create.${index}.value`, {
-                            required: true,
-                            min: 0,
-                            max: 5,
-                            valueAsNumber: true,
-                          })}
+                          {...register(
+                            `DinoStat.create.${index}.value` as const,
+                            {
+                              required: true,
+                              min: 0,
+                              max: 5,
+                              valueAsNumber: true,
+                            }
+                          )}
                           className="rw-input mt-0 max-w-[7rem]"
-                          defaultValue={ge.value}
+                          defaultValue={g.value}
                         />
                         <TextField
                           {...register(`DinoStat.create.${index}.type`, {
                             required: false,
                           } as const)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
-                          defaultValue={ge.type}
+                          // defaultValue={g.type}
                         />
                         <button
                           type="button"
@@ -392,7 +418,8 @@ const DinoForm = (props: DinoFormProps) => {
                         </button>
                       </div>
                     )
-                )}
+                  );
+                })}
               <div className="rw-button-group justify-start">
                 <button
                   type="button"
@@ -425,9 +452,10 @@ const DinoForm = (props: DinoFormProps) => {
 
               {statFields
                 // .filter((stat) => stat.type === "weight_reduction")
-                .map(
-                  (wr, index) =>
-                    wr.type === "weight_reduction" && (
+                .map((wr, index) => {
+                  const w = wr as any;
+                  return (
+                    w.type === "weight_reduction" && (
                       <div
                         className="rw-button-group justify-start"
                         role="group"
@@ -445,7 +473,7 @@ const DinoForm = (props: DinoFormProps) => {
                               image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
                             }))}
                           search={true}
-                          defaultValue={wr.item_id}
+                          defaultValue={w.item_id}
                           filterFn={(item, search) => {
                             return item.label
                               .toLowerCase()
@@ -460,12 +488,12 @@ const DinoForm = (props: DinoFormProps) => {
                             valueAsNumber: true,
                           })}
                           className="rw-input mt-0 max-w-[7rem]"
-                          defaultValue={wr.value}
+                          defaultValue={w.value}
                         />
                         <TextField
                           {...register(`DinoStat.create.${index}.type`)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
-                          defaultValue={wr.type}
+                          defaultValue={w.type}
                         />
                         <button
                           type="button"
@@ -483,7 +511,8 @@ const DinoForm = (props: DinoFormProps) => {
                         </button>
                       </div>
                     )
-                )}
+                  );
+                })}
               <div className="rw-button-group justify-start">
                 <button
                   type="button"
@@ -848,9 +877,10 @@ const DinoForm = (props: DinoFormProps) => {
                 Saddle
               </Label>
 
-              {statFields.map(
-                (sd, index) =>
-                  sd.type === "saddle" && (
+              {statFields.map((sd, index) => {
+                const s = sd as any;
+                return (
+                  s.type === "saddle" && (
                     <div
                       className="rw-button-group justify-start"
                       role="group"
@@ -868,7 +898,7 @@ const DinoForm = (props: DinoFormProps) => {
                             image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
                           }))}
                         search={true}
-                        defaultValue={sd.item_id}
+                        defaultValue={s.item_id}
                         filterFn={(item, search) => {
                           return item.label
                             .toLowerCase()
@@ -883,12 +913,12 @@ const DinoForm = (props: DinoFormProps) => {
                           valueAsNumber: true,
                         })}
                         className="rw-input mt-0 max-w-[7rem]"
-                        defaultValue={sd.value}
+                        defaultValue={s.value}
                       />
                       <TextField
                         {...register(`DinoStat.create.${index}.type`)}
                         className="rw-input mt-0 hidden max-w-[7rem]"
-                        defaultValue={sd.type}
+                        defaultValue={s.type}
                       />
                       <button
                         type="button"
@@ -906,7 +936,8 @@ const DinoForm = (props: DinoFormProps) => {
                       </button>
                     </div>
                   )
-              )}
+                );
+              })}
               <div className="rw-button-group justify-start">
                 <button
                   type="button"
@@ -1026,9 +1057,10 @@ const DinoForm = (props: DinoFormProps) => {
 
               {statFields
                 // .filter((ge) => ge.type === "drops")
-                .map(
-                  (dr, index) =>
-                    dr.type === "drops" && (
+                .map((dr, index) => {
+                  const d = dr as any;
+                  return (
+                    d.type === "drops" && (
                       <div
                         className="rw-button-group !mt-0 justify-start"
                         role="group"
@@ -1042,17 +1074,17 @@ const DinoForm = (props: DinoFormProps) => {
                           options={
                             data
                               ? data.itemsByCategory.items
-                                .filter((i) => i.category === "Resource")
-                                .map((item) => ({
-                                  type: item.type,
-                                  label: item.name,
-                                  value: item.id,
-                                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                                }))
+                                  .filter((i) => i.category === "Resource")
+                                  .map((item) => ({
+                                    type: item.type,
+                                    label: item.name,
+                                    value: item.id,
+                                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                                  }))
                               : []
                           }
                           search={true}
-                          defaultValue={dr.item_id}
+                          defaultValue={d.item_id}
                           filterFn={(item, search) => {
                             return item.label
                               .toLowerCase()
@@ -1065,14 +1097,14 @@ const DinoForm = (props: DinoFormProps) => {
                           })}
                           emptyAs={null}
                           className="rw-input mt-0 hidden max-w-[7rem]"
-                          defaultValue={dr.value}
+                          defaultValue={d.value}
                         />
                         <TextField
                           {...register(`DinoStat.create.${index}.type`, {
                             required: false,
                           } as const)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
-                          defaultValue={dr.type}
+                          defaultValue={d.type}
                         />
                         <button
                           type="button"
@@ -1090,7 +1122,8 @@ const DinoForm = (props: DinoFormProps) => {
                         </button>
                       </div>
                     )
-                )}
+                  );
+                })}
               <div className="rw-button-group justify-start">
                 <button
                   type="button"
@@ -1269,29 +1302,30 @@ const DinoForm = (props: DinoFormProps) => {
 
               <FieldError name="aff_inc" className="rw-field-error" />
             </div>
-            <div>
-              {/* TODO: hide this when food is disabled */}
-              <Label
-                name="non_violent_food_affinity_mult"
-                className="rw-label"
-                errorClassName="rw-label rw-label-error"
-              >
-                Non violent food affinity multiplier
-              </Label>
+            {!disableFood && (
+              <div>
+                <Label
+                  name="non_violent_food_affinity_mult"
+                  className="rw-label"
+                  errorClassName="rw-label rw-label-error"
+                >
+                  Non violent food affinity multiplier
+                </Label>
 
-              <TextField
-                name="non_violent_food_affinity_mult"
-                defaultValue={props.dino?.non_violent_food_affinity_mult || 0}
-                className="rw-input"
-                errorClassName="rw-input rw-input-error"
-                validation={{ valueAsNumber: true }}
-              />
+                <TextField
+                  name="non_violent_food_affinity_mult"
+                  defaultValue={props.dino?.non_violent_food_affinity_mult || 0}
+                  className="rw-input"
+                  errorClassName="rw-input rw-input-error"
+                  validation={{ valueAsNumber: true }}
+                />
 
-              <FieldError
-                name="non_violent_food_affinity_mult"
-                className="rw-field-error"
-              />
-            </div>
+                <FieldError
+                  name="non_violent_food_affinity_mult"
+                  className="rw-field-error"
+                />
+              </div>
+            )}
           </div>
           <div>
             <div>
@@ -1545,6 +1579,10 @@ const DinoForm = (props: DinoFormProps) => {
               <CheckboxField
                 name="disable_food"
                 defaultChecked={props.dino?.disable_food}
+                checked={disableFood}
+                onChange={(e) => {
+                  setDisableFood(e.target.checked);
+                }}
                 className="rw-input"
                 errorClassName="rw-input rw-input-error"
               />
@@ -1566,13 +1604,13 @@ const DinoForm = (props: DinoFormProps) => {
                 options={
                   data
                     ? data.itemsByCategory.items
-                      .filter((i) => i.category === "Consumable")
-                      .map((item) => ({
-                        type: item.type,
-                        label: item.name,
-                        value: item.id,
-                        image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                      }))
+                        .filter((i) => i.category === "Consumable")
+                        .map((item) => ({
+                          type: item.type,
+                          label: item.name,
+                          value: item.id,
+                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                        }))
                     : []
                 }
                 search={true}

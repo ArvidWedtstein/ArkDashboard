@@ -14,7 +14,7 @@ import {
 } from "@redwoodjs/forms";
 
 import type { FindDinos } from "types/graphql";
-import Tabs from "src/components/Util/Tabs/Tabs";
+import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 
 const DinosList = ({ dinosPage }: FindDinos) => {
   let { search, category } = useParams();
@@ -31,7 +31,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
     );
   };
   const types = {
-    all: '',
+    all: "",
     ground:
       "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/f/f5/Slow.png",
     flyer:
@@ -45,57 +45,94 @@ const DinosList = ({ dinosPage }: FindDinos) => {
   return (
     <article className="">
       <Tabs
-        selectedTab={Object.keys(types).indexOf(category) === -1 ? 0 : Object.keys(types).indexOf(category)}
-        tabs={[{
-          title: "All",
-        }, {
-          title: "Ground",
-        }, {
-          title: "Flyer",
-        }, {
-          title: "Water",
-        }, {
-          title: "Amphibious",
-        }, {
-          title: "Boss",
-        }]} type="start" onSelect={(i) => {
-          navigate(
-            routes.dinos({
-              ...parseSearch(
-                Object.fromEntries(
-                  Object.entries({ category: i === 0 ? '' : Object.keys(types)[i] }).filter(([_, v]) => v != "")
-                ) as any
-              ),
-              page: 1,
-            })
-          );
-        }} />
+        selectedTab={
+          Object.keys(types).indexOf(category) === -1
+            ? 0
+            : Object.keys(types).indexOf(category)
+        }
+      >
+        <Tab
+          label="All"
+          link={routes.dinos({
+            ...parseSearch(
+              Object.fromEntries(
+                Object.entries({
+                  category: "",
+                }).filter(([_, v]) => v != "")
+              )
+            ),
+            page: 1,
+          })}
+        />
+        <Tab
+          label="Ground"
+          link={routes.dinos({
+            ...parseSearch(
+              Object.fromEntries(
+                Object.entries({
+                  category: "ground",
+                }).filter(([_, v]) => v != "")
+              )
+            ),
+            page: 1,
+          })}
+        />
+        <Tab
+          label="Flyer"
+          link={routes.dinos({
+            ...parseSearch(
+              Object.fromEntries(
+                Object.entries({
+                  category: "flyer",
+                }).filter(([_, v]) => v != "")
+              )
+            ),
+            page: 1,
+          })}
+        />
+        <Tab
+          label="Water"
+          link={routes.dinos({
+            ...parseSearch(
+              Object.fromEntries(
+                Object.entries({
+                  category: "water",
+                }).filter(([_, v]) => v != "")
+              )
+            ),
+            page: 1,
+          })}
+        />
+        <Tab
+          label="Amphibious"
+          link={routes.dinos({
+            ...parseSearch(
+              Object.fromEntries(
+                Object.entries({
+                  category: "amphibious",
+                }).filter(([_, v]) => v != "")
+              )
+            ),
+            page: 1,
+          })}
+        />
+        <Tab
+          label="Boss"
+          link={routes.dinos({
+            ...parseSearch(
+              Object.fromEntries(
+                Object.entries({
+                  category: "boss",
+                }).filter(([_, v]) => v != "")
+              )
+            ),
+            page: 1,
+          })}
+        />
+      </Tabs>
 
       <Form className="flex w-auto" onSubmit={onSubmit}>
-        <nav className="flex w-full flex-row justify-center rw-button-group">
-          {/* <Label name="category" className="sr-only">
-            Choose a category
-          </Label>
-          <SelectField
-            name="category"
-            className="rw-input mt-0 !rounded-l-lg"
-            defaultValue={category}
-            validation={{
-              required: false,
-              validate: {
-                matchesInitialValue: (value) => {
-                  return value !== "Choose a category" || "Select an Option";
-                },
-              },
-            }}
-          >
-            <option value="">Choose a category</option>
-            <option value="boss">Boss</option>
-            <option value="flyer">Flyer</option>
-            <option value="water">Water</option>
-            <option value="amphibious">Amphibious</option>
-            <option value="ground">Ground</option>
-          </SelectField> */}
+        <nav className="rw-button-group flex w-full flex-row justify-center">
           <div className="relative w-full">
             <Label name="search" className="sr-only">
               Search for dino
@@ -106,11 +143,15 @@ const DinosList = ({ dinosPage }: FindDinos) => {
               placeholder="Search for a dinosaur..."
               defaultValue={search}
             />
-            <Submit className="absolute top-0 right-0 h-full rw-button rw-button-blue rounded-l-none">
-              <span className="hidden md:block">Search</span>
-              <svg className="rw-button-icon-end !fill-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+            <Submit className="rw-button rw-button-green absolute top-0 right-0 h-full rounded-l-none">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                className="rw-button-icon-start"
+              >
+                <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
               </svg>
+              <span className="hidden md:block">Search</span>
             </Submit>
           </div>
         </nav>
@@ -119,7 +160,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
       <div className="3xl:grid-cols-6 grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4">
         {(dinosPage.count === 0 || dinosPage.dinos.length == 0) && (
           <div className="col-span-full">
-            <div className="rw-text-center">
+            <div className="text-center text-black dark:text-white">
               <p>No dinos found with that name</p>
             </div>
           </div>
@@ -128,7 +169,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
           ({ id, name, type, image, description, tamable, temperament }) => (
             <Link
               to={routes.dino({ id: id })}
-              className="relative flex h-full flex-1 flex-col overflow-hidden rounded-lg border border-black bg-white text-center dark:border-zinc-500 animate-fade-in"
+              className="animate-fade-in relative flex h-full flex-1 flex-col overflow-hidden rounded-lg border border-black bg-white text-center dark:border-zinc-500"
               key={`dino-${id}`}
             >
               <div

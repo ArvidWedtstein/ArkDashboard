@@ -9,6 +9,7 @@ interface ToggleButtonProps {
   offLabel?: string;
   className?: LabelHTMLAttributes<HTMLLabelElement>["className"];
   disabled?: boolean;
+  name?: string;
 }
 const ToggleButton = ({
   disabled,
@@ -18,7 +19,9 @@ const ToggleButton = ({
   offLabel,
   className = "",
   defaultChecked,
+  name,
 }: ToggleButtonProps) => {
+  const [isOn, setIsOn] = React.useState<boolean>(defaultChecked || false);
   const renderLabel = (label: string | undefined, isOn: boolean) => (
     <span
       className={clsx(
@@ -35,24 +38,27 @@ const ToggleButton = ({
   return (
     <label
       className={clsx(
-        "relative my-1 flex cursor-pointer items-center justify-start",
+        "relative my-1 flex w-fit cursor-pointer items-center justify-start",
         className
       )}
     >
       <input
         type="checkbox"
-        checked={checked}
-        defaultChecked={defaultChecked}
+        checked={isOn}
         disabled={disabled}
         readOnly={!onChange}
         className="peer sr-only"
-        onChange={onChange}
+        name={name}
+        onChange={(e) => {
+          setIsOn(e.target.checked);
+          onChange?.(e);
+        }}
       />
       <div className="rw-toggle peer-focus:ring-pea-300 dark:peer-focus:ring-pea-800 peer-checked:bg-pea-600 peer peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-disabled:cursor-not-allowed peer-disabled:bg-gray-200 peer-disabled:after:bg-zinc-400"></div>
       <span className="ml-3 inline-flex space-x-1 text-sm font-medium text-gray-600 peer-disabled:cursor-not-allowed dark:text-white">
-        {offLabel && renderLabel(offLabel, !checked)}
+        {offLabel && renderLabel(offLabel, !isOn)}
         {offLabel && onLabel && <span>/</span>}
-        {onLabel && renderLabel(onLabel, checked)}
+        {onLabel && renderLabel(onLabel, isOn)}
       </span>
     </label>
   );

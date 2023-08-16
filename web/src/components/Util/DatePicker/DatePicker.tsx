@@ -84,11 +84,11 @@ const DatePicker = () => {
   return (
     <div className="max-w-md mx-auto">
       <div className="flex justify-between mb-4">
-        <button className="px-2 py-1 bg-blue-500 text-white rounded" onClick={getPrevMonth}>
+        <button className="rw-button rw-button-medium rw-button-green-outline" onClick={getPrevMonth}>
           Previous Month
         </button>
         <div className="text-lg text-white">{monthYear}</div>
-        <button className="px-2 py-1 bg-blue-500 text-white rounded" onClick={getNextMonth}>
+        <button className="rw-button rw-button-medium rw-button-green-outline" onClick={getNextMonth}>
           Next Month
         </button>
       </div>

@@ -9,7 +9,11 @@ import Tabs from "src/components/Util/Tabs/Tabs";
 
 import { getWordType } from "src/lib/formatters";
 
-import type { DeleteItemMutationVariables, FindItemById, permission } from "types/graphql";
+import type {
+  DeleteItemMutationVariables,
+  FindItemById,
+  permission,
+} from "types/graphql";
 
 const DELETE_ITEM_MUTATION = gql`
   mutation DeleteItemMutation($id: BigInt!) {
@@ -164,7 +168,7 @@ const Item = ({ item }: Props) => {
 
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "gather_efficiency").length >
-          0 && (
+            0 && (
             <section className="rounded-lg bg-gray-200 p-4 dark:bg-zinc-600">
               <p className="my-1 text-lg">Gather Efficiency</p>
               <div className="flex flex-col">
@@ -223,7 +227,7 @@ const Item = ({ item }: Props) => {
 
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "weight_reduction").length >
-          0 && (
+            0 && (
             <section className="rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
               <p className="my-1 text-lg">Weight Reduction</p>
               <div className="flex flex-col">
@@ -381,94 +385,11 @@ const Item = ({ item }: Props) => {
           )}
         </section>
 
-        <section className="col-span-1 rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600">
-          <p className="mb-1 text-lg">{item.name} can be crafted in:</p>
-          <Tabs
-            tabs={item.ItemRecipe_ItemRecipe_crafted_item_idToItem.map(
-              ({
-                id,
-                Item_ItemRecipe_crafting_station_idToItem,
-                ItemRecipeItem,
-                yields,
-              }) => ({
-                title: (
-                  <p
-                    className="inline-flex items-center justify-center px-2"
-                    key={`recipe-${id}`}
-                  >
-                    <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafting_station_idToItem.image}`}
-                      className="w-8"
-                    />
-                    <span>
-                      {Item_ItemRecipe_crafting_station_idToItem.name}
-                    </span>
-                  </p>
-                ),
-                content: (
-                  <div className="">
-                    <div className="flex flex-row space-x-[0.1rem]">
-                      {/* <div className="border border-[#60728F] bg-[#0D2836] p-2 text-[#97FBFF]"> */}
-                      <div className="">
-                        <h1 className="mb-1 text-sm uppercase">
-                          Engram / Engram: {item.name} / {item.type}
-                        </h1>
-                        <div className="flex flex-row space-x-2 text-xs">
-                          <div className="relative">
-                            <img
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
-                              className="h-24 w-24 border border-[#11667B] bg-[#5C666D] p-1"
-                            />
-                            <div className="bg-pea-500 absolute -top-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white text-xs font-bold text-white dark:border-gray-900">
-                              {yields}
-                            </div>
-                          </div>
-                          <div className="flex flex-col justify-between">
-                            <p>{item.description}</p>
-                            <p className="mb-3">
-                              Engram Points: {item.engram_points}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      {/* <div className="border border-[#60728F] bg-[#0D2836] p-2 text-[#97FBFF]"> */}
-                      <div className="">
-                        <h1 className="mb-1 text-sm uppercase">
-                          Crafting Requirements
-                        </h1>
-                        <ul className="space-y-1 text-xs">
-                          {ItemRecipeItem.map(
-                            ({ Item: { name, id, image }, amount }, i) => (
-                              <li
-                                className="flex flex-row items-center justify-start"
-                                key={`${id}-${i}`}
-                              >
-                                <Link
-                                  className="inline-flex items-center justify-center space-x-1"
-                                  to={routes.item({ id: id.toString() })}
-                                >
-                                  <img
-                                    src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`}
-                                    className="w-5"
-                                  />
-                                  <span className="">{name}</span>
-                                </Link>
-                                <span className="">: {amount}</span>
-                              </li>
-                            )
-                          )}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                ),
-              })
-            )}
-          />
-        </section>
         <div className="col-span-full">
           <nav className="rw-button-group">
-            {currentUser?.permissions.some((p: permission) => p === "gamedata_update") && (
+            {currentUser?.permissions.some(
+              (p: permission) => p === "gamedata_update"
+            ) && (
               <Link
                 to={routes.editItem({ id: item.id.toString() })}
                 className="rw-button rw-button-blue"
@@ -476,7 +397,9 @@ const Item = ({ item }: Props) => {
                 Edit
               </Link>
             )}
-            {currentUser?.permissions.some((p: permission) => p === "gamedata_delete") && (
+            {currentUser?.permissions.some(
+              (p: permission) => p === "gamedata_delete"
+            ) && (
               <button
                 type="button"
                 className="rw-button rw-button-red"
@@ -555,9 +478,9 @@ const Item = ({ item }: Props) => {
                     self.findIndex(
                       (t) =>
                         t.LootcrateSetEntry.LootcrateSet.Lootcrate.id ===
-                        value.LootcrateSetEntry.LootcrateSet.Lootcrate.id &&
+                          value.LootcrateSetEntry.LootcrateSet.Lootcrate.id &&
                         t.LootcrateSetEntry.LootcrateSet.Lootcrate.id ===
-                        value.LootcrateSetEntry.LootcrateSet.Lootcrate.id
+                          value.LootcrateSetEntry.LootcrateSet.Lootcrate.id
                     )
                 )
                   .slice(0, 5)

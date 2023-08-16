@@ -50,7 +50,7 @@ const Counter = ({
   }, [count]);
 
   return (
-    <div
+    <span
       ref={countValueRef}
       className={clsx(className, {
         "animate-countup": endNumber !== count,
@@ -60,7 +60,7 @@ const Counter = ({
       {/* <div className="absolute left-1/2 bottom-0 transform -translate-x-1/2 text-lg text-gray-500 opacity-0 animate-fade-in-delayed">
           Counting
         </div> */}
-    </div>
+    </span>
   );
 };
 

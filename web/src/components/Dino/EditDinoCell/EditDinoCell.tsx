@@ -113,7 +113,7 @@ export const Loading = () => <div>Loading...</div>;
 
 export const Failure = ({ error }: CellFailureProps) => {
   return (
-    <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
+    <div className="rw-cell-error flex items-center space-x-3">
       <svg
         className="h-12 w-12 fill-current"
         xmlns="http://www.w3.org/2000/svg"
@@ -142,7 +142,11 @@ export const Success = ({ dino }: CellSuccessProps<EditDinoById>) => {
   });
 
   const onSave = (input: UpdateDinoInput, id: EditDinoById["dino"]["id"]) => {
-    updateDino({ variables: { id, input } });
+    toast.promise(updateDino({ variables: { id, input } }), {
+      loading: "Updating dino...",
+      success: "Dino successfully updated",
+      error: <b>Failed to update dino.</b>,
+    });
   };
 
   return (

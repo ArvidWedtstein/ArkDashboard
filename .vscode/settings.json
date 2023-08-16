@@ -5,9 +5,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
   "[prisma]": {
     "editor.formatOnSave": true
   },
@@ -16,5 +13,6 @@
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": false
     }
-  }
+  },
+  "css.lint.unknownAtRules": "ignore"
 }

@@ -39,10 +39,6 @@ export const formatNumber = (
   options?: Intl.NumberFormatOptions
 ): string => {
   return new Intl.NumberFormat("en-GB", options).format(num);
-  // const formattedNum = Math.round(num)
-  //   .toString()
-  //   .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  // return formattedNum;
 };
 
 export const truncate = (value: string | number, maxlength: number = 150) => {
@@ -76,7 +72,7 @@ export const jsonTruncate = (obj: unknown, maxlength: number = 150) => {
 // });
 interface options {
   dateStyle?: "long" | "short" | "full" | "medium";
-  timeStyle?: "long" | "short" | "full" | "medium";
+  timeStyle?: "long" | "short" | "full" | "medium" | "none";
 }
 /**
  * Renders a formatted time tag element.
@@ -93,7 +89,7 @@ export const timeTag = (
   }
 
   const formattedDateTime = new Date(dateTime).toLocaleString("en-GB", {
-    timeStyle: timeStyle || "short",
+    timeStyle: timeStyle == "none" ? undefined : timeStyle || "short",
     dateStyle: dateStyle || "long",
   });
 
@@ -173,9 +169,8 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
-    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-  }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+    }`;
 };
 
 /**
@@ -250,6 +245,47 @@ export const combineBySummingKeys = (...objects: object[]) => {
 //   681: turretTower.tek_turrets, // Tek Turret
 //   676: amountTekGen, // Tek Generator
 // }
+interface Item {
+  // Define the properties of the "Item" type based on your actual data structure.
+  id: number;
+  name: string;
+  image: string;
+  [key: string]: any;
+  // Add other properties here if needed.
+}
+interface CraftingRecipe {
+  // Define the properties of the "CraftingRecipe" type based on your actual data structure.
+  Item: Item;
+  amount: number;
+}
+interface Material {
+  __typename: string;
+  id: string;
+  crafting_station_id: number;
+  crafting_time: number;
+  yields: number;
+  Item_ItemRecipe_crafted_item_idToItem: {
+    __typename: string;
+    id: number;
+    name: string;
+    image: string;
+    category: string;
+    type: string;
+  };
+  ItemRecipeItem: {
+    __typename: string;
+    id: string;
+    item_recipe_id: string;
+    amount: number;
+    Item: {
+      __typename: string;
+      id: number;
+      name: string;
+      image: string;
+    };
+  }[];
+  amount: number;
+}
 /**
  * Calculates the base materials required to produce the specified objects.
  *
@@ -259,13 +295,21 @@ export const combineBySummingKeys = (...objects: object[]) => {
  *
  * @returns {Array<any>} An array of objects representing the base materials required.
  */
+
+// TODO: FIX TYPES!
 export const getBaseMaterials = (
   baseMaterials: boolean = false,
+  path: boolean = false,
   items: any[],
   ...objects: Array<any>
 ) => {
+
   let materials = [];
-  const findBaseMaterials = (item, amount, yields = 1) => {
+  const findBaseMaterials = (
+    item: { ItemRecipeItem: CraftingRecipe[] },
+    amount: number,
+    yields: number = 1
+  ) => {
     // If has no crafting recipe, return
     if (!item?.ItemRecipeItem || item.ItemRecipeItem.length === 0) {
       return;
@@ -297,37 +341,90 @@ export const getBaseMaterials = (
     // Loop through each recipe grouped on crafting station
     const recipeItems = item.ItemRecipeItem;
     for (const { Item, amount: recipeAmount } of recipeItems) {
-      try {
-        let newRecipe = items.find((i) => i.crafted_item_id === Item.id);
+      let newRecipe = items.find(
+        (i) => i.Item_ItemRecipe_crafted_item_idToItem.id === Item.id
+      );
 
-        if (!baseMaterials || !newRecipe?.ItemRecipeItem?.length || !Item) {
-          const materialId = newRecipe ? newRecipe.crafted_item_id : Item.id;
-          let material = materials.find(
-            (m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId
-          );
+      if (!baseMaterials || !newRecipe?.ItemRecipeItem?.length || !Item) {
+        const materialId = newRecipe
+          ? newRecipe.Item_ItemRecipe_crafted_item_idToItem.id
+          : Item.id;
 
-          const count = (recipeAmount * amount) / yields;
+        let material = materials.find(
+          (m) => m.Item_ItemRecipe_crafted_item_idToItem.id === materialId
+        );
 
-          if (material) {
-            material.amount += count;
-            // material.crafting_time += count * (newRecipe?.crafting_time || 1);
-          } else {
-            material = {
-              ...(newRecipe || { Item_ItemRecipe_crafted_item_idToItem: Item }),
-              amount: count,
-              crafting_time: count * (newRecipe?.crafting_time || 1),
-            };
-            materials.push(material);
-          }
-        } else if (newRecipe) {
-          findBaseMaterials(newRecipe, recipeAmount * amount, newRecipe.yields);
+        const count = (recipeAmount * amount) / yields;
+
+        if (material) {
+          material.amount += count;
+          // material.crafting_time += count * (newRecipe?.crafting_time || 1);
+        } else {
+          material = {
+            ...(newRecipe || { Item_ItemRecipe_crafted_item_idToItem: Item }),
+            amount: count,
+            crafting_time: count * (newRecipe?.crafting_time || 1),
+          };
+          materials.push(material);
         }
-      } catch (error) {}
+      } else if (newRecipe) {
+        findBaseMaterials(newRecipe, recipeAmount * amount, newRecipe.yields);
+      }
     }
   };
 
+  // TODO: Check for right recipe for selected crafting stations
+  const getRecipeById = (recipeId: number, crafting_stations?: any[]) => {
+    return items.find(
+      (recipe) => recipe.Item_ItemRecipe_crafted_item_idToItem.id === recipeId
+    );
+  };
+
+  const recipeTree = (recipe, amount: number = 1) => {
+    if (!recipe.ItemRecipeItem)
+      return {
+        ...recipe,
+        amount: recipe.amount * amount,
+        crafting_time: recipe.amount * (recipe.crafting_time || 1),
+      };
+
+    const processedItems = recipe.ItemRecipeItem.map((itemRecipeItem) => {
+      const processedItem = {
+        ...itemRecipeItem,
+        amount: (itemRecipeItem.amount * recipe.amount) / recipe.yields,
+        crafting_time:
+          (itemRecipeItem.amount / recipe.yields) * (recipe.crafting_time || 1),
+      };
+
+      const nestedRecipe = getRecipeById(itemRecipeItem.Item.id);
+
+      if (nestedRecipe) {
+        processedItem.Item = {
+          ...processedItem.Item,
+          ...nestedRecipe.Item_ItemRecipe_crafted_item_idToItem,
+        };
+
+        if (nestedRecipe.ItemRecipeItem) {
+          processedItem.ItemRecipeItem = nestedRecipe.ItemRecipeItem.map(
+            (nestedItemRecipeItem) =>
+              recipeTree(nestedItemRecipeItem, processedItem.amount)
+          );
+        }
+      }
+      return processedItem;
+    });
+    return {
+      ...recipe,
+      crafting_time: (recipe.crafting_time || 1) * amount,
+      Item: recipe.Item_ItemRecipe_crafted_item_idToItem,
+      ItemRecipeItem: processedItems,
+    };
+  };
+
   objects.forEach((item) => {
-    findBaseMaterials(item, item.amount, item.yields);
+    if (path) {
+      materials.push(recipeTree(item, item.amount));
+    } else findBaseMaterials(item, item.amount, item.yields);
   });
   return materials;
 };
@@ -453,6 +550,7 @@ export const rtf = (num: number, unit: Intl.RelativeTimeFormatUnit): string => {
     style: "long", // other values: "short" or "narrow"
   }).format(num, unit);
 };
+
 export const relativeDate = (
   date: Date,
   unit: Intl.RelativeTimeFormatUnit
@@ -565,10 +663,13 @@ export const getDateDiff = (date1: Date, date2: Date) => {
 
 export const formatXYtoLatLon = (
   map_id: number,
-  options: { x?: number; y?: number }
+  options: { x?: number; y?: number },
+  reverse: boolean = false
 ) => {
-  let subtract = 0;
-  let multiplier = 0;
+  let subtractX = 0;
+  let multiplierX = 0;
+  let subtractY = 0;
+  let multiplierY = 0;
 
   /**
    * Latitude corresponds to the Y coordinate,
@@ -578,74 +679,88 @@ export const formatXYtoLatLon = (
 
   switch (map_id) {
     case 1: //  Valguero
-      subtract = 50;
-      multiplier = 8160;
+      subtractX = 50;
+      multiplierX = 8160;
+      subtractY = 50;
+      multiplierY = 8160;
     case 2: // the island
-      subtract = 50;
-      multiplier = 8000;
+      subtractX = 50;
+      multiplierX = 8000;
+      subtractY = 50;
+      multiplierY = 8000;
     case 3: // the center
-      if (!!options.x) {
-        // lon
-        subtract = 55.1;
-        multiplier = 9600;
-      }
-      if (!!options.y) {
-        // lat
-        subtract = 30.34;
-        multiplier = 9584;
-      }
+      // lon
+      subtractX = 55.1;
+      multiplierX = 9600;
+
+      // lat
+      subtractY = 30.34;
+      multiplierY = 9584;
     case 4: // ragnarok
-      subtract = 50;
-      multiplier = 13100;
+      subtractX = 50;
+      multiplierX = 13100;
+      subtractY = 50;
+      multiplierY = 13100;
     case 5: // abberation
-      subtract = 50;
-      multiplier = 8000;
+      subtractX = 50;
+      multiplierX = 8000;
+      subtractY = 50;
+      multiplierY = 8000;
     case 6: // extinction
-      subtract = 50;
-      multiplier = 8000;
+      subtractX = 50;
+      multiplierX = 8000;
+      subtractY = 50;
+      multiplierY = 8000;
     case 7: // scorched earth
-      subtract = 50;
-      multiplier = 8000;
+      subtractX = 50;
+      multiplierX = 8000;
+      subtractY = 50;
+      multiplierY = 8000;
     case 8: // genesis part 1
-      subtract = 50;
-      multiplier = 10500;
+      subtractX = 50;
+      multiplierX = 10500;
+      subtractY = 50;
+      multiplierY = 10500;
     case 9: // genesis part 2
-      subtract = 50;
-      multiplier = 14500;
+      subtractX = 50;
+      multiplierX = 14500;
+      subtractY = 50;
+      multiplierY = 14500;
     case 10: // crystal isles
-      if (!!options.x) {
-        // lon
-        subtract = 50;
-        multiplier = 17000;
-      }
-      if (!!options.y) {
-        // lat
-        subtract = 48.75;
-        multiplier = 16000;
-      }
+      // lon
+      subtractX = 50;
+      multiplierX = 17000;
+
+      // lat
+      subtractY = 48.75;
+      multiplierY = 16000;
     case 11: // fjordur
-      subtract = 0;
-      multiplier = 0;
+      subtractX = 0;
+      multiplierX = 0;
+      subtractY = 0;
+      multiplierY = 0;
     case 12: // Lost island
-      if (options.x && !!options.x) {
-        // lon
-        subtract = 49.02;
-        multiplier = 15300;
-      }
-      if (options.y && !!options.y) {
-        // lat
-        subtract = 51.634;
-        multiplier = 15300;
-      }
+      // lon
+      subtractX = 49.02;
+      multiplierX = 15300;
+
+      // lat
+      subtractY = 51.634;
+      multiplierY = 15300;
   }
 
   // From Lat/Long to UE
   // return (options.x - subtract) * multiplier
 
   // From UE to Lat/Long
-  return Math.floor(
-    (options.x ? options.x : options.y) / multiplier + subtract
-  );
+  return {
+    lat: reverse
+      ? (options.y - subtractY) * multiplierY
+      : Math.floor(options.y / multiplierY + subtractY),
+    lon: reverse
+      ? (options.x - subtractX) * multiplierX
+      : Math.floor(options.x / multiplierX + subtractX),
+  };
 };
 
 /**
@@ -763,9 +878,9 @@ export const generatePDF = (crafts) => {
       tableX - cellPadding * 2,
       30 + crafts.length * 20,
       tableX +
-        (Object.keys(crafts[0]).length - 1) *
-          (tableSize.width / Object.keys(crafts[0]).length) +
-        columnWidths[Object.keys(crafts[0]).length - 1],
+      (Object.keys(crafts[0]).length - 1) *
+      (tableSize.width / Object.keys(crafts[0]).length) +
+      columnWidths[Object.keys(crafts[0]).length - 1],
       40 + (crafts.length - 1) * 20 + cellPadding,
       true,
       `0.9 0.9 0.9`
@@ -799,7 +914,7 @@ export const generatePDF = (crafts) => {
                     x:
                       tableX +
                       (Object.keys(crafts[0]).length - 1) *
-                        (tableSize.width / Object.keys(crafts[0]).length) +
+                      (tableSize.width / Object.keys(crafts[0]).length) +
                       columnWidths[Object.keys(crafts[0]).length - 1],
                     y: cellY + cellPadding,
                   },
@@ -864,6 +979,27 @@ export const generatePDF = (crafts) => {
  */
 export const removeDuplicates = (array: unknown[]): unknown[] => {
   return [...new Set(array)];
+};
+
+/**
+ * Returns color from red to green based on percentage
+ * @param percentage
+ * @returns
+ */
+export const getHexCodeFromPercentage = (percentage: number): string => {
+  // Ensure the input percentage is within the range [0, 100]
+  const normalizedPercentage = Math.min(100, Math.max(0, percentage));
+
+  // Calculate the RGB values based on the percentage
+  const red = (255 * (100 - normalizedPercentage)) / 100;
+  const green = (255 * normalizedPercentage) / 100;
+
+  // Convert RGB values to a hex code
+  const hexCode = `#${((red << 16) + (green << 8))
+    .toString(16)
+    .padStart(6, "0")}`;
+
+  return hexCode;
 };
 
 /**
@@ -1022,3 +1158,168 @@ export type EnsureKeyExists<T, K extends keyof T> = Array<
  */
 export type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
+
+export class SimplexNoise3D {
+  private static grad3: number[][] = [
+    [1, 1, 0],
+    [-1, 1, 0],
+    [1, -1, 0],
+    [-1, -1, 0],
+    [1, 0, 1],
+    [-1, 0, 1],
+    [1, 0, -1],
+    [-1, 0, -1],
+    [0, 1, 1],
+    [0, -1, 1],
+    [0, 1, -1],
+    [0, -1, -1],
+  ];
+
+  private static perm: number[] = [...Array(512)].map((_, i) => i % 256);
+
+  constructor(seed: number) {
+    const source = [...SimplexNoise3D.perm];
+    for (let i = 0; i < 256; i++) {
+      const r = i + Math.floor(Math.random() * (256 - i));
+      const temp = source[i];
+      source[i] = source[r];
+      source[r] = temp;
+    }
+    SimplexNoise3D.perm = [...source, ...source];
+  }
+
+  private static dot(g: number[], x: number, y: number, z: number): number {
+    return g[0] * x + g[1] * y + g[2] * z;
+  }
+
+  noise(xin: number, yin: number, zin: number): number {
+    const F3 = 1.0 / 3.0;
+    const G3 = 1.0 / 6.0;
+
+    const s = (xin + yin + zin) * F3;
+    const i = Math.floor(xin + s);
+    const j = Math.floor(yin + s);
+    const k = Math.floor(zin + s);
+
+    const t = (i + j + k) * G3;
+    const X0 = i - t;
+    const Y0 = j - t;
+    const Z0 = k - t;
+    const x0 = xin - X0;
+    const y0 = yin - Y0;
+    const z0 = zin - Z0;
+
+    let i1, j1, k1;
+    let i2, j2, k2;
+
+    if (x0 >= y0) {
+      if (y0 >= z0) {
+        i1 = 1;
+        j1 = 0;
+        k1 = 0;
+        i2 = 1;
+        j2 = 1;
+        k2 = 0;
+      } else if (x0 >= z0) {
+        i1 = 1;
+        j1 = 0;
+        k1 = 0;
+        i2 = 1;
+        j2 = 0;
+        k2 = 1;
+      } else {
+        i1 = 0;
+        j1 = 0;
+        k1 = 1;
+        i2 = 1;
+        j2 = 0;
+        k2 = 1;
+      }
+    } else {
+      if (y0 < z0) {
+        i1 = 0;
+        j1 = 0;
+        k1 = 1;
+        i2 = 0;
+        j2 = 1;
+        k2 = 1;
+      } else if (x0 < z0) {
+        i1 = 0;
+        j1 = 1;
+        k1 = 0;
+        i2 = 0;
+        j2 = 1;
+        k2 = 1;
+      } else {
+        i1 = 0;
+        j1 = 1;
+        k1 = 0;
+        i2 = 1;
+        j2 = 1;
+        k2 = 0;
+      }
+    }
+
+    const x1 = x0 - i1 + G3;
+    const y1 = y0 - j1 + G3;
+    const z1 = z0 - k1 + G3;
+    const x2 = x0 - i2 + 2.0 * G3;
+    const y2 = y0 - j2 + 2.0 * G3;
+    const z2 = z0 - k2 + 2.0 * G3;
+    const x3 = x0 - 1.0 + 3.0 * G3;
+    const y3 = y0 - 1.0 + 3.0 * G3;
+    const z3 = z0 - 1.0 + 3.0 * G3;
+
+    const ii = i & 255;
+    const jj = j & 255;
+    const kk = k & 255;
+
+    const gi0 =
+      SimplexNoise3D.perm[
+      ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
+      ] % 12;
+    const gi1 =
+      SimplexNoise3D.perm[
+      ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
+      ] % 12;
+    const gi2 =
+      SimplexNoise3D.perm[
+      ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
+      ] % 12;
+    const gi3 =
+      SimplexNoise3D.perm[
+      ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
+      ] % 1;
+
+    let n0, n1, n2, n3;
+    let t0 = 0.6 - x0 * x0 - y0 * y0 - z0 * z0;
+    if (t0 < 0) n0 = 0.0;
+    else {
+      t0 *= t0;
+      n0 = t0 * t0 * SimplexNoise3D.dot(SimplexNoise3D.grad3[gi0], x0, y0, z0);
+    }
+
+    let t1 = 0.6 - x1 * x1 - y1 * y1 - z1 * z1;
+    if (t1 < 0) n1 = 0.0;
+    else {
+      t1 *= t1;
+      n1 = t1 * t1 * SimplexNoise3D.dot(SimplexNoise3D.grad3[gi1], x1, y1, z1);
+    }
+
+    let t2 = 0.6 - x2 * x2 - y2 * y2 - z2 * z2;
+    if (t2 < 0) n2 = 0.0;
+    else {
+      t2 *= t2;
+      n2 = t2 * t2 * SimplexNoise3D.dot(SimplexNoise3D.grad3[gi2], x2, y2, z2);
+    }
+
+    let t3 = 0.6 - x3 * x3 - y3 * y3 - z3 * z3;
+    if (t3 < 0) n3 = 0.0;
+    else {
+      t3 *= t3;
+      n3 = t3 * t3 * SimplexNoise3D.dot(SimplexNoise3D.grad3[gi3], x3, y3, z3);
+    }
+
+    return 32.0 * (n0 + n1 + n2 + n3);
+  }
+}

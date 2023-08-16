@@ -1,11 +1,17 @@
 import clsx from "clsx";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { BgColor } from "src/lib/formatters";
 
 interface ISlideshowProps {
   className?: string;
   controls?: boolean;
+  arrows?: boolean;
   autoPlay?: boolean;
+  imageTabs?: boolean;
   delay?: number;
+  slide?: number;
+  border?: boolean;
+  onSlideChange?: (index: number) => void;
   slides: {
     url?: string;
     content?: React.ReactNode;
@@ -18,44 +24,69 @@ const Slideshow = ({
   slides,
   className,
   controls = true,
+  arrows = true,
   autoPlay = true,
+  imageTabs = false,
   delay = 5000,
+  onSlideChange,
+  slide = 0,
+  border = true,
   ...props
 }: ISlideshowProps) => {
-  const [index, setIndex] = React.useState<number>(0);
-  const timeoutRef = React.useRef(null);
+  const [index, setIndex] = useState<number>(slide);
+  const timeoutRef = useRef(null);
 
-  const resetTimeout = () => {
+  const resetTimeout = useCallback(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-  };
-  React.useEffect(() => {
-    if (!autoPlay || slides.length === 1) return;
-    resetTimeout();
-    timeoutRef.current = setTimeout(
-      () =>
-        setIndex((prevIndex) =>
-          prevIndex === slides.length - 1 ? 0 : prevIndex + 1
-        ),
-      delay
-    );
+  }, []);
+
+  useEffect(() => {
+    const playSlideshow = () => {
+      setIndex((prevIndex) => (prevIndex === slides.length - 1 ? 0 : prevIndex + 1));
+      onSlideChange?.(index === slides.length - 1 ? 0 : index + 1);
+    };
+
+    if (autoPlay && slides.length > 1) {
+      resetTimeout();
+      timeoutRef.current = window.setTimeout(playSlideshow, delay);
+    }
 
     return () => {
       resetTimeout();
     };
-  }, [index, autoPlay]);
+  }, [index, autoPlay, delay, resetTimeout, slides.length, onSlideChange]);
+
+  useEffect(() => {
+    if (slide) {
+      setIndex(slide);
+    }
+  }, [slide]);
+
+  const handlePrevSlide = useCallback(() => {
+    const prevIndex = index === 0 ? slides.length - 1 : index - 1;
+    setIndex(prevIndex);
+    onSlideChange?.(prevIndex);
+  }, [index, slides.length, onSlideChange]);
+
+  const handleNextSlide = useCallback(() => {
+    const nextIndex = index === slides.length - 1 ? 0 : index + 1;
+    setIndex(nextIndex);
+    onSlideChange?.(nextIndex);
+  }, [index, slides.length, onSlideChange]);
+
 
   return (
-    <div className={clsx("relative my-0 mx-auto", className)} {...props}>
+    <div className={clsx("relative my-0 w-full overflow-x-hidden", className)} {...props}>
       <div
-        className="whitespace-nowrap transition-transform duration-500 ease-in-out"
+        className={`whitespace-nowrap w-full transition-transform duration-500 ease-in-out`}
         style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}
       >
-        {slides.map((slide, index) => (
+        {slides.map((slide, idx) => (
           <div
-            className="relative inline-block h-[400px] w-full rounded"
-            key={`slide-${index}`}
+            className={`relative aspect-auto w-full max-h-[900px] inline-block rounded-lg ${border ? 'border border-zinc-500' : 'border-none'}`}
+            key={`slide-${idx}`}
           >
             {slide && (
               <>
@@ -66,14 +97,14 @@ const Slideshow = ({
                 ) : (
                   <img
                     src={slide.url}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover rounded-lg"
                     loading="lazy"
                   />
                 )}
 
                 {(slide.title || slide.subtitle) && (
                   <div className="absolute top-0 left-0 flex h-full w-full flex-col items-start justify-end">
-                    <div className="relative my-1 mx-3 divide-y rounded-lg bg-gray-700 bg-opacity-40 px-3 py-2 text-gray-300">
+                    <div className="relative my-1 mx-3 divide-y rounded-lg bg-zinc-700/60 bg-opacity-40 px-3 py-2 text-gray-300 border border-zinc-500 border-opacity-60">
                       <p className="text-sm font-medium">{slide.title}</p>
                       <p className="text-xs font-light">{slide.subtitle}</p>
                     </div>
@@ -84,16 +115,9 @@ const Slideshow = ({
           </div>
         ))}
       </div>
-      {controls && slides.length > 1 && (
-        <div className="bg- absolute top-0 left-0 flex h-full w-full flex-row items-center justify-between font-black text-white text-opacity-75">
-          <button
-            className="p-3"
-            onClick={() =>
-              setIndex((prevIndex) =>
-                prevIndex === 0 ? slides.length - 1 : prevIndex - 1
-              )
-            }
-          >
+      {arrows && slides.length > 1 && (
+        <div className="absolute top-0 left-0 flex h-full w-full flex-row items-center justify-between font-black text-white text-opacity-75">
+          <button className="p-3" onClick={handlePrevSlide}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 320 512"
@@ -103,14 +127,7 @@ const Slideshow = ({
               <path d="M234.8 36.25c3.438 3.141 5.156 7.438 5.156 11.75c0 3.891-1.406 7.781-4.25 10.86L53.77 256l181.1 197.1c6 6.5 5.625 16.64-.9062 22.61c-6.5 6-16.59 5.594-22.59-.8906l-192-208c-5.688-6.156-5.688-15.56 0-21.72l192-208C218.2 30.66 228.3 30.25 234.8 36.25z" />
             </svg>
           </button>
-          <button
-            className="p-3"
-            onClick={() =>
-              setIndex((prevIndex) =>
-                prevIndex === slides.length - 1 ? 0 : prevIndex + 1
-              )
-            }
-          >
+          <button className="p-3" onClick={handleNextSlide}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 320 512"
@@ -122,8 +139,8 @@ const Slideshow = ({
           </button>
         </div>
       )}
-      {controls && (
-        <div className="relative bottom-0 w-full p-3 text-center">
+      {controls && slides.length > 1 && (
+        <div className="relative w-full p-3 text-center">
           {slides.map(({ tabColor }, idx) => (
             <div
               key={`slide-control-${idx}`}
@@ -133,8 +150,29 @@ const Slideshow = ({
                 }`}
               onClick={() => {
                 setIndex(idx);
+                onSlideChange?.(idx);
               }}
             ></div>
+          ))}
+        </div>
+      )}
+      {imageTabs && (
+        <div className="relative grid grid-cols-5 flex-nowrap gap-4 overflow-hidden">
+          {slides.map(({ url, title }, idx) => (
+            <div
+              key={`image-slider-${idx}`}
+              className="rounded-lg border border-zinc-500 transition-all ease-in hover:rounded-[50px] cursor-pointer"
+              onClick={() => {
+                setIndex(idx);
+                onSlideChange?.(idx);
+              }}
+            >
+              <img
+                className="aspect-auto w-full rounded-lg object-cover"
+                src={url}
+                alt={title}
+              />
+            </div>
           ))}
         </div>
       )}
@@ -143,4 +181,7 @@ const Slideshow = ({
 };
 
 // https://tinloof.com/blog/how-to-build-an-auto-play-slideshow-with-react
-export default Slideshow;
+export default React.memo(Slideshow, (prevProps, nextProps) => {
+  // Memoize the component based on the slides prop
+  return prevProps.slides === nextProps.slides;
+});

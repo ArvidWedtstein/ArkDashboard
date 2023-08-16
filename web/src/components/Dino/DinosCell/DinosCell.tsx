@@ -51,7 +51,7 @@ export const Loading = () => (
 
 export const Empty = () => {
   return (
-    <div className="rw-text-center">
+    <div className="text-center text-black dark:text-white">
       {"No dinos yet. "}
       <Link to={routes.newDino()} className="rw-link">
         {"Create one?"}
@@ -62,7 +62,7 @@ export const Empty = () => {
 
 export const Failure = ({ error }: CellFailureProps) => {
   return (
-    <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
+    <div className="rw-cell-error flex items-center space-x-3">
       <svg
         className="h-12 w-12 fill-current"
         xmlns="http://www.w3.org/2000/svg"

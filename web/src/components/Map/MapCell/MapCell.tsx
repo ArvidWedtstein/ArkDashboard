@@ -4,6 +4,7 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Map from "src/components/Map/Map";
 
+// TODO: fetch notes for other maps/submaps
 export const QUERY = gql`
   query FindMapById($id: BigInt!) {
     map: map(id: $id) {
@@ -11,32 +12,55 @@ export const QUERY = gql`
       created_at
       name
       img
-      MapCoordinate {
+      release_date
+      parent_map_id
+      MapResource {
+        item_id
         latitude
         longitude
         type
+        Item {
+          name
+          image
+          color
+        }
       }
       MapNote {
         latitude
         longitude
         note_index
       }
-      Lootcrate {
+      other_Map {
         id
         name
-        level_requirement
-        color
+        MapNote {
+          latitude
+          longitude
+          note_index
+        }
+        MapResource {
+          item_id
+          latitude
+          longitude
+          type
+          Item {
+            name
+            image
+            color
+          }
+        }
       }
     }
   }
 `;
 
+// TODO: fix skeleton loader
 export const Loading = () => <div>Loading...</div>;
 
 export const Empty = () => <div>Map not found</div>;
 
 export const Failure = ({ error }: CellFailureProps) => (
-  <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
+  <div className="rw-cell-error flex items-center space-x-3">
     <svg
       className="h-12 w-12 fill-current"
       xmlns="http://www.w3.org/2000/svg"

@@ -6,22 +6,22 @@ import {
   FieldError,
   Submit,
   EmailField,
+  CheckboxField,
 } from "@redwoodjs/forms";
-import { Link, routes } from "@redwoodjs/router";
+import { Link, RouteFocus, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
 
+type FormSignupPage = NonNullable<{
+  email: string;
+  password: string;
+  terms: boolean;
+}>;
 const SignupPage = () => {
   const { isAuthenticated, signUp, client } = useAuth();
 
-  // focus on email box on page load
-  const emailRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    emailRef.current?.focus();
-  }, []);
-
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FormSignupPage) => {
     try {
       const response = await signUp({
         email: data.email,
@@ -45,7 +45,7 @@ const SignupPage = () => {
   };
   return (
     <>
-      <MetaTags title="Signup" />
+      <MetaTags title="Signup, the place to start your journey into ArkDashboard" />
 
       <div className="my-4 mx-auto max-w-lg p-4 text-gray-600 dark:text-white">
         <div className="w-full">
@@ -55,7 +55,7 @@ const SignupPage = () => {
             </h2>
           </header>
 
-          <Form
+          <Form<FormSignupPage>
             onSubmit={onSubmit}
             className="rw-form-wrapper my-4 flex flex-col items-center justify-center"
           >
@@ -67,7 +67,6 @@ const SignupPage = () => {
               Email
             </Label>
 
-            <input name="username" className="hidden" type="hidden" />
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <svg
@@ -81,26 +80,28 @@ const SignupPage = () => {
                   <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
                 </svg>
               </div>
-              <EmailField
-                name="email"
-                className="rw-input pl-10"
-                errorClassName="rw-input rw-input-error"
-                placeholder="ola@nordmann.com"
-                autoFocus
-                autoComplete="email"
-                validation={{
-                  required: {
-                    value: true,
-                    message: "Email is required",
-                  },
-                  pattern: {
-                    message: "Email must be valid",
-                    value: /[^@]+@[^\.]+\..+/,
-                  },
-                }}
-              />
-              <FieldError name="email" className="rw-field-error" />
+              <RouteFocus>
+                <EmailField
+                  name="email"
+                  className="rw-input pl-10"
+                  errorClassName="rw-input rw-input-error"
+                  placeholder="ola@nordmann.com"
+                  autoFocus
+                  autoComplete="email"
+                  validation={{
+                    required: {
+                      value: true,
+                      message: "Email is required",
+                    },
+                    pattern: {
+                      message: "Email must be valid",
+                      value: /[^@]+@[^\.]+\..+/,
+                    },
+                  }}
+                />
+              </RouteFocus>
             </div>
+            <FieldError name="email" className="rw-field-error" />
 
             <Label
               name="password"
@@ -123,21 +124,29 @@ const SignupPage = () => {
             />
             <FieldError name="password" className="rw-field-error" />
 
-            {/* TODO: add terms  */}
-            {/* <Label
-              name="terms"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              I agree with the{" "}
-              <a
-                href="#"
-                className="text-blue-600 hover:underline dark:text-blue-500"
+            <div className="mt-3 inline-flex space-x-2">
+              <Label
+                name="terms"
+                className="rw-label m-0"
+                errorClassName="rw-label m-0 rw-label-error"
               >
-                terms and conditions
-              </a>
-            </Label>
-            <CheckboxField name="terms" className="rw-input" /> */}
+                I agree with the{" "}
+                <Link to={routes.terms()} className="rw-link">
+                  terms and conditions
+                </Link>
+              </Label>
+              <CheckboxField
+                name="terms"
+                className="rw-input"
+                validation={{
+                  required: {
+                    value: true,
+                    message: "You must agree to the terms and conditions",
+                  },
+                }}
+              />
+            </div>
+            <FieldError name="terms" className="rw-field-error" />
 
             <Submit className="rw-button rw-button-blue my-3">Sign Up</Submit>
 

@@ -8,52 +8,88 @@ import { toast } from "@redwoodjs/web/toast";
 import BasespotForm from "src/components/Basespot/BasespotForm";
 
 export const QUERY = gql`
-  query EditBasespotById($id: BigInt!) {
+  query EditBasespotById($id: String!) {
     basespot: basespot(id: $id) {
       id
       name
       description
       latitude
       longitude
-      image
+      thumbnail
       created_at
       map_id
       estimated_for_players
-      defense_images
       created_by
-      turretsetup_image
+      turretsetup_images
+      base_images
       updated_at
+      type
+      published
+      has_air
+      level
       Map {
         img
       }
     }
+    maps {
+      id
+      name
+      icon
+      img
+    }
+    basespotTypes {
+      type
+    }
   }
 `;
 const UPDATE_BASESPOT_MUTATION = gql`
-  mutation UpdateBasespotMutation($id: BigInt!, $input: UpdateBasespotInput!) {
+  mutation UpdateBasespotMutation($id: String!, $input: UpdateBasespotInput!) {
     updateBasespot(id: $id, input: $input) {
       id
       name
       description
       latitude
       longitude
-      image
+      thumbnail
       created_at
       map_id
       estimated_for_players
-      defense_images
       created_by
-      turretsetup_image
+      level
+      turretsetup_images
+      base_images
+      has_air
       updated_at
+      type
     }
   }
 `;
 
-export const Loading = () => <div>Loading...</div>;
+export const Loading = () => (
+  <div role="status" className="flex animate-pulse flex-col space-y-8">
+    <div className="h-5 w-60 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+    <div className="flex flex-col gap-y-5">
+      <div className="flex flex-col gap-x-3 space-y-2 w-full">
+        <div className="h-2.5 w-24 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-12 w-72 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      </div>
+      <div className="flex flex-col gap-x-3 space-y-2 w-full">
+        <div className="h-2.5 w-24 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-20 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      </div>
+      <div className="flex flex-col gap-x-3 space-y-2 w-full">
+        <div className="h-2.5 w-24 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-12 w-72 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      </div>
+      <div className="h-96 w-96 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+    </div>
+    <span className="sr-only">Loading...</span>
+  </div>
+);
 
 export const Failure = ({ error }: CellFailureProps) => {
   return (
-    <div className="rw-cell-error animate-fly-in flex items-center space-x-3">
+    <div className="rw-cell-error flex items-center space-x-3">
       <svg
         className="h-12 w-12 fill-current"
         xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +107,7 @@ export const Failure = ({ error }: CellFailureProps) => {
   );
 };
 
-export const Success = ({ basespot }: CellSuccessProps<EditBasespotById>) => {
+export const Success = ({ basespot, maps, basespotTypes }: CellSuccessProps<EditBasespotById>) => {
   const [updateBasespot, { loading, error }] = useMutation(
     UPDATE_BASESPOT_MUTATION,
     {
@@ -89,22 +125,23 @@ export const Success = ({ basespot }: CellSuccessProps<EditBasespotById>) => {
     input: UpdateBasespotInput,
     id: EditBasespotById["basespot"]["id"]
   ) => {
-    updateBasespot({ variables: { id, input } });
+    toast.promise(updateBasespot({ variables: { id, input } }), {
+      loading: "Updating basespot...",
+      success: "Basespot successfully updated",
+      error: <b>Failed to update basespot.</b>,
+    });
   };
 
   return (
     <div className="rw-segment">
-      <header className="rw-segment-header">
-        <h2 className="rw-heading rw-heading-secondary">
-          Edit Basespot {basespot?.name}
-        </h2>
-      </header>
       <div className="rw-segment-main">
         <BasespotForm
           basespot={basespot}
           onSave={onSave}
           error={error}
           loading={loading}
+          basespotTypes={basespotTypes}
+          maps={maps}
         />
       </div>
     </div>

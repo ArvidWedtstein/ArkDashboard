@@ -6,21 +6,23 @@ import type {
 
 import { db } from "src/lib/db";
 import { requireAuth } from "src/lib/auth";
+import { prismaVersion } from "@redwoodjs/api";
 
 const POSTS_PER_PAGE = 6;
 export const basespotPage: QueryResolvers["basespotPage"] = ({
   page,
   map,
   type,
-}: {
-  page?: number;
-  map?: number;
-  type?: string;
 }) => {
   const offset = (page - 1) * POSTS_PER_PAGE;
+  const types = type?.split(",").map((t) => t.trim());
   const where = {
     ...(map && { map_id: map }),
-    ...(type && { type: type }),
+    ...(type && {
+      type: {
+        in: types,
+      },
+    }),
   };
   return {
     basespots: db.basespot.findMany({
@@ -33,6 +35,17 @@ export const basespotPage: QueryResolvers["basespotPage"] = ({
       where: where,
     }),
   };
+};
+
+export const basespotsTypes: QueryResolvers["basespotTypes"] = () => {
+  // return db.basespot.findMany();
+  // return db.$queryRaw`SELECT type FROM Basespot;`;
+  return db.basespot.groupBy({
+    by: ["type"],
+  });
+  // return db.basespot.findMany({
+  //   distinct: ["type"],
+  // });
 };
 
 export const basespots: QueryResolvers["basespots"] = () => {
@@ -78,6 +91,11 @@ export const Basespot: BasespotRelationResolvers = {
   },
   Map: (_obj, { root }) => {
     return db.basespot.findUnique({ where: { id: root?.id } }).Map();
+  },
+  Profile_Basespot_updated_byToProfile: (_obj, { root }) => {
+    return db.basespot
+      .findUnique({ where: { id: root?.id } })
+      .Profile_Basespot_updated_byToProfile();
   },
   TimelineSeasonBasespot: (_obj, { root }) => {
     return db.basespot

@@ -66,39 +66,23 @@ const TribeForm = (props: TribeFormProps) => {
 
         <FieldError name="name" className="rw-field-error" />
 
-        <Label
-          name="description"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Description
-        </Label>
-
-        <TextAreaField
-          name="description"
-          defaultValue={props.tribe?.description}
-          placeholder="Describe your tribe"
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="description" className="rw-field-error" />
-
-        {/* <div className="rw-button-group">
-          <Submit
-            disabled={
-              props.loading ||
-              !currentUser?.permissions.includes(
-                props?.tribe?.id
-                  ? "tribe_update"
-                  : ("tribe_create" as permission)
-              )
-            }
-            className="rw-button rw-button-blue"
-          >
-            Save
-          </Submit>
-        </div> */}
+        {props?.tribe?.id && (
+          <div className="rw-button-group">
+            <Submit
+              disabled={
+                props.loading ||
+                !currentUser?.permissions.includes(
+                  props?.tribe?.id
+                    ? "tribe_update"
+                    : ("tribe_create" as permission)
+                )
+              }
+              className="rw-button rw-button-blue"
+            >
+              Save
+            </Submit>
+          </div>
+        )}
       </Form>
     </div>
   );

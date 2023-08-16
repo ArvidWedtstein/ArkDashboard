@@ -10,13 +10,13 @@ export const schema = gql`
     status: user_status!
     role_id: String!
     created_at: DateTime
-    updated_by: String
     steam_user_id: String
+    banned_until: DateTime
+    email: String
     Basespot: [Basespot]!
+    Basespot_Basespot_updated_byToProfile: [Basespot]!
     Message: [Message]!
     role_profile_role_idTorole: Role!
-    Profile: Profile
-    other_Profile: [Profile]!
     Role_Role_created_byToProfile: [Role]!
     TimelineSeason: [TimelineSeason]!
     TimelineSeasonBasespot: [TimelineSeasonBasespot]!
@@ -47,8 +47,9 @@ export const schema = gql`
     status: user_status!
     role_id: String!
     created_at: DateTime
-    updated_by: String
     steam_user_id: String
+    banned_until: DateTime
+    email: String
   }
 
   input UpdateProfileInput {
@@ -61,8 +62,9 @@ export const schema = gql`
     status: user_status
     role_id: String
     created_at: DateTime
-    updated_by: String
     steam_user_id: String
+    banned_until: DateTime
+    email: String
   }
 
   type Mutation {

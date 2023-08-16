@@ -1,7 +1,7 @@
-import NewBasespot from 'src/components/Basespot/NewBasespot'
+import NewBasespotCell from 'src/components/Basespot/NewBasespotCell'
 
 const NewBasespotPage = () => {
-  return <NewBasespot />
+  return <NewBasespotCell />
 }
 
 export default NewBasespotPage

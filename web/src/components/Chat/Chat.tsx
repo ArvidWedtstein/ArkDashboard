@@ -102,6 +102,7 @@ const Chat = () => {
   const [messages, setMessages] = useState<any[]>([]); //<Message[]>
   const messagesRef = useRef<HTMLDivElement>(null);
   const formMethods = useForm();
+  const messageCooldown = useState(0);
 
   const groupMessages = (msgs: any[]) => {
     let groupedMessages = [];
@@ -250,6 +251,17 @@ const Chat = () => {
     };
   }, []);
   const handleSubmit = async (data) => {
+    setTimeout(() => {
+      messageCooldown[1](0);
+    }
+      , 1000);
+    if (messageCooldown[0] > 0) {
+      alert("You are sending messages too fast!");
+      return;
+    }
+    messageCooldown[1](messageCooldown[0] + 1);
+
+
     const { message } = data;
 
     if (typeof message === "string" && message.trim().length !== 0) {

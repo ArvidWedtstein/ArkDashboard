@@ -5,20 +5,16 @@ export const standard = defineScenario<Prisma.BasespotCreateArgs>({
   basespot: {
     one: {
       data: {
-        name: 'String',
-        description: 'String',
-        latitude: 4948551.965423993,
-        longitude: 477050.54582068307,
-        Map: { create: { name: 'String4762681' } },
+        latitude: 524857.5684509737,
+        longitude: 6841714.721721995,
+        Map: { create: { name: 'String6685201' } },
       },
     },
     two: {
       data: {
-        name: 'String',
-        description: 'String',
-        latitude: 8543344.174358694,
-        longitude: 3733796.3975089593,
-        Map: { create: { name: 'String9187137' } },
+        latitude: 5294820.848047348,
+        longitude: 6155133.017622953,
+        Map: { create: { name: 'String4264594' } },
       },
     },
   },

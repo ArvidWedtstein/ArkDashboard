@@ -70,7 +70,11 @@ export const Success = ({
     input: UpdateTimelineSeasonInput,
     id: EditTimelineSeasonById['timelineSeason']['id']
   ) => {
-    updateTimelineSeason({ variables: { id, input } })
+    toast.promise(updateTimelineSeason({ variables: { id, input } }), {
+      loading: "Updating season ...",
+      success: "Season successfully updated",
+      error: <b>Failed to update season.</b>,
+    });
   }
 
   return (

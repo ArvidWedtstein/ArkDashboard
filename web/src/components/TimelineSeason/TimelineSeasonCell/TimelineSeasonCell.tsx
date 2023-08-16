@@ -24,9 +24,9 @@ export const Loading = () => (
     role="status"
     className="flex animate-pulse flex-col space-y-8 md:items-center"
   >
-    <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700">
+    <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700">
       <svg
-        className="h-12 w-12 text-gray-200"
+        className="h-12 w-12 text-zinc-200"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
         fill="currentColor"
@@ -37,15 +37,15 @@ export const Loading = () => (
     </div>
     <div className="w-full space-y-3">
       <div className="grid h-48 grid-cols-4 gap-3">
-        <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
-        <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
-        <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
-        <div className="flex h-48 w-full items-center justify-center rounded bg-gray-300 dark:bg-gray-700"></div>
+        <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
+        <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
+        <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
+        <div className="flex h-48 w-full items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700"></div>
       </div>
       <div className="flex h-48 justify-start gap-3">
         <div className="w-fit space-y-3 p-3">
           <svg
-            className="h-16 w-16 text-gray-200 dark:text-gray-700"
+            className="h-16 w-16 text-zinc-200 dark:text-zinc-700"
             aria-hidden="true"
             fill="currentColor"
             viewBox="0 0 20 20"
@@ -57,11 +57,11 @@ export const Loading = () => (
               clipRule="evenodd"
             ></path>
           </svg>
-          <div className="mb-2.5 h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700"></div>
+          <div className="mb-2.5 h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
         </div>
         <div className="w-fit space-y-3 p-3">
           <svg
-            className="h-16 w-16 text-gray-200 dark:text-gray-700"
+            className="h-16 w-16 text-zinc-200 dark:text-zinc-700"
             aria-hidden="true"
             fill="currentColor"
             viewBox="0 0 20 20"
@@ -73,11 +73,11 @@ export const Loading = () => (
               clipRule="evenodd"
             ></path>
           </svg>
-          <div className="mb-2.5 h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700"></div>
+          <div className="mb-2.5 h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
         </div>
         <div className="w-fit space-y-3 p-3">
           <svg
-            className="h-16 w-16 text-gray-200 dark:text-gray-700"
+            className="h-16 w-16 text-zinc-200 dark:text-zinc-700"
             aria-hidden="true"
             fill="currentColor"
             viewBox="0 0 20 20"
@@ -89,11 +89,11 @@ export const Loading = () => (
               clipRule="evenodd"
             ></path>
           </svg>
-          <div className="mb-2.5 h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700"></div>
+          <div className="mb-2.5 h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
         </div>
         <div className="w-fit space-y-3 p-3">
           <svg
-            className="h-16 w-16 text-gray-200 dark:text-gray-700"
+            className="h-16 w-16 text-zinc-200 dark:text-zinc-700"
             aria-hidden="true"
             fill="currentColor"
             viewBox="0 0 20 20"
@@ -105,7 +105,7 @@ export const Loading = () => (
               clipRule="evenodd"
             ></path>
           </svg>
-          <div className="mb-2.5 h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700"></div>
+          <div className="mb-2.5 h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
         </div>
       </div>
     </div>
