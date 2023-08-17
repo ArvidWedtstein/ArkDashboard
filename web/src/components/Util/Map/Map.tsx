@@ -25,9 +25,8 @@ const drawSvgPath = (
   let pathString = "";
   coordinates.forEach((coordinate, index) => {
     const command = index === 0 ? "M" : "L";
-    pathString += `${command}${
-      (size.height / 100) * coordinate.lon + size.width / 100
-    } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
+    pathString += `${command}${(size.height / 100) * coordinate.lon + size.width / 100
+      } ${(size.width / 100) * coordinate.lat + size.height / 100} `;
   });
   return pathString;
 };
@@ -98,10 +97,10 @@ const Map = ({
     return !subMap || !coords
       ? ""
       : `M${posToMap(coords[0].lon)},${posToMap(coords[0].lat)} L${posToMap(
-          coords[1].lon
-        )},${posToMap(coords[0].lat)} L${posToMap(coords[1].lon)},${posToMap(
-          coords[1].lat
-        )} L${posToMap(coords[0].lon)},${posToMap(coords[1].lat)} z`;
+        coords[1].lon
+      )},${posToMap(coords[0].lat)} L${posToMap(coords[1].lon)},${posToMap(
+        coords[1].lat
+      )} L${posToMap(coords[0].lon)},${posToMap(coords[1].lat)} z`;
   };
 
   useEffect(() => {
@@ -337,11 +336,10 @@ const Map = ({
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
-            href={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${
-              data?.maps?.find((m) => m.id === (submap_id ? subMap : map))[
-                mapType
-              ] || ""
-            }`}
+            href={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${data?.maps?.find((m) => m.id === (submap_id ? subMap : map))[
+              mapType
+            ] || ""
+              }`}
             height={size.height}
             width={size.width}
             ref={imgRef}
@@ -396,33 +394,35 @@ const Map = ({
           height="100%"
         >
           {pos?.map((p, i) => (
-            <React.Fragment key={"map-pos-" + i}>
+            <React.Fragment key={`map-pos-${i}`}>
               {p.image && p.image != null ? (
                 <image
                   href={p.image}
                   width={9}
+                  id={`map-pos-${p.lat}-${p.lon}`}
                   y={posToMap(
                     p.lat,
                     mapType == "topographic_img"
                       ? JSON.parse(
-                          data?.maps?.find(
-                            (m) => m.id === (submap_id ? subMap : map)
-                          )?.boundaries
-                        )
+                        data?.maps?.find(
+                          (m) => m.id === (submap_id ? subMap : map)
+                        )?.boundaries
+                      )
                       : null
                   )}
                   x={posToMap(
                     p.lon,
                     mapType == "topographic_img"
                       ? JSON.parse(
-                          data?.maps?.find(
-                            (m) => m.id === (submap_id ? subMap : map)
-                          )?.boundaries
-                        )
+                        data?.maps?.find(
+                          (m) => m.id === (submap_id ? subMap : map)
+                        )?.boundaries
+                      )
                       : null
                   )}
                   ref={imgRef}
                   opacity={p.opacity ?? 1}
+                  className="rounded-full"
                   stroke="black"
                   style={{
                     cursor: "pointer",
@@ -440,7 +440,7 @@ const Map = ({
                     cursor: "pointer",
                     transformOrigin: "center center",
                   }}
-                  id={"map-pos-" + i}
+                  id={`map-pos-${p.lat}-${p.lon}`}
                   fill={p.color || "red"}
                   stroke="black"
                   className="hover:stroke-red-500"
@@ -451,20 +451,20 @@ const Map = ({
                     p.lat,
                     mapType == "topographic_img"
                       ? JSON.parse(
-                          data?.maps?.find(
-                            (m) => m.id === (submap_id ? subMap : map)
-                          )?.boundaries
-                        )
+                        data?.maps?.find(
+                          (m) => m.id === (submap_id ? subMap : map)
+                        )?.boundaries
+                      )
                       : null
                   )}
                   cx={posToMap(
                     p.lon,
                     mapType == "topographic_img"
                       ? JSON.parse(
-                          data?.maps?.find(
-                            (m) => m.id === (submap_id ? subMap : map)
-                          )?.boundaries
-                        )
+                        data?.maps?.find(
+                          (m) => m.id === (submap_id ? subMap : map)
+                        )?.boundaries
+                      )
                       : null
                   )}
                   // r={((imageTransform.replace("scale(", "").replace(')', '')) as number * 2) * 2}

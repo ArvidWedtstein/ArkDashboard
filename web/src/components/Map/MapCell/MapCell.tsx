@@ -66,22 +66,22 @@ export const Loading = () => (
       overflow="hidden"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <use href="#cube" x="128" y="320" stroke-width="2" opacity="0.3">
+      <use href="#cube" x="128" y="320" strokeWidth="2" opacity="0.3">
         <animate
           attributeName="stroke"
           dur="6s"
           repeatCount="indefinite"
-          values="#FF9AA2;#FFB7B2;#FFDAC1;#E2F0CB;#B5EAD7;#C7CEEA;#FF9AA2"
+          values="#92e3b0;#5bcd85;#34b364;#26934f;#34b364;#5bcd85;#92e3b0"
         />
       </use>
 
       <rect width="512" height="512" y="384" fill="url(#fade)" />
-      <use href="#cube" x="128" y="128" stroke-width="2">
+      <use href="#cube" x="128" y="128" strokeWidth="2">
         <animate
           attributeName="stroke"
           dur="6s"
           repeatCount="indefinite"
-          values="#FF9AA2;#FFB7B2;#FFDAC1;#E2F0CB;#B5EAD7;#C7CEEA;#FF9AA2"
+          values="#92e3b0;#5bcd85;#34b364;#26934f;#34b364;#5bcd85;#92e3b0"
         />
       </use>
 
@@ -89,15 +89,15 @@ export const Loading = () => (
         <g id="cube">
           <use
             href="#cube_outline"
-            stroke-linejoin="round"
-            stroke-width="16"
+            strokeLinejoin="round"
+            strokeWidth="16"
             fill="url(#stars)"
           />
-          <use href="#cube_base" stroke-width=".5" />
+          <use href="#cube_base" strokeWidth=".5" />
           <use
             href="#cube_outline"
-            stroke-linejoin="round"
-            stroke-width="6"
+            strokeLinejoin="round"
+            strokeWidth="6"
             stroke="#141417"
           />
         </g>
@@ -182,12 +182,12 @@ M128 128 L10 64 L10 192 L128 256Z"
           </path>
         </g>
         <linearGradient id="fade" gradientTransform="rotate(90)">
-          <stop offset="0" stop-color="#14141700" />
-          <stop offset="0.25" stop-color="#141417ff" />
+          <stop offset="0" stopColor="#14141700" />
+          <stop offset="0.25" stopColor="#141417ff" />
         </linearGradient>
         <linearGradient id="sky" gradientTransform="rotate(90)">
-          <stop offset="0.5" stop-color="#141417" />
-          <stop offset="1" stop-color="#40354a" />
+          <stop offset="0.5" stopColor="#141417" />
+          <stop offset="1" stopColor="#40354a" />
         </linearGradient>
 
         <pattern
@@ -271,7 +271,7 @@ M16 0 Q16 16 24 16 Q16 16 16 32 Q16 16 8 16 Q16 16 16 0Z"
         </circle>
         <circle id="star04" r="1" />
 
-        <path id="star10" stroke-width="2">
+        <path id="star10" strokeWidth="2">
           <animate
             attributeName="d"
             dur="5s"
@@ -288,7 +288,7 @@ M16 0 Q16 16 24 16 Q16 16 16 32 Q16 16 8 16 Q16 16 16 0Z"
             values="1; 1; 0.6; 0"
           />
         </path>
-        <path id="star11" stroke-width="3">
+        <path id="star11" strokeWidth="3">
           <animate
             attributeName="d"
             dur="6s"

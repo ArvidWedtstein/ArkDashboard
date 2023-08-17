@@ -208,10 +208,9 @@ const UserRecipeForm = (props: UserRecipeFormProps) => {
               })),
               icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
             }))}
-            onSelect={(e) => {
-              console.log(e);
+            onSelect={(_, item) => {
               let recipe = props.itemRecipes.find(
-                (f) => f.Item_ItemRecipe_crafted_item_idToItem.id == e.id
+                (f) => f.Item_ItemRecipe_crafted_item_idToItem.id == item.id
               );
               setRecipes([...recipes, recipe?.id]);
               append({

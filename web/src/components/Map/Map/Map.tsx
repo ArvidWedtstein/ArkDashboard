@@ -274,7 +274,7 @@ const Map = ({ map }: Props) => {
         value: key.toString(),
         color:
           value[0].__typename == "MapNote" ||
-          value.every((f) => f.item_id == null)
+            value.every((f) => f.item_id == null)
             ? categories[key].color
             : value[0].Item.color,
       }));
@@ -360,13 +360,12 @@ const Map = ({ map }: Props) => {
                       ...entry,
                       lat: entry.latitude,
                       lon: entry.longitude,
-                      color: `${f.color}${
-                        checkedItems.includes(
-                          `${entry.type}|${entry.latitude}-${entry.longitude}`
-                        )
-                          ? "1A"
-                          : "FF"
-                      }`,
+                      color: `${f.color}${checkedItems.includes(
+                        `${entry.type}|${entry.latitude}-${entry.longitude}`
+                      )
+                        ? "1A"
+                        : "FF"
+                        }`,
                       image: entry.item_id !== null ? f.image : null,
                     }))
                   )
@@ -380,6 +379,7 @@ const Map = ({ map }: Props) => {
                 setSelectedTypes([]);
               }}
               onPosClick={(e) => {
+                console.log(e)
                 setNoterun((prevState) => {
                   if (prevState.includes(e.node_index)) {
                     return prevState.filter((p) => p !== e.node_index);
@@ -411,31 +411,62 @@ const Map = ({ map }: Props) => {
             />
 
             <ItemList
-              onCheck={(e, d) =>
+              onSelect={(_, item) => {
+                let c: SVGCircleElement = document.getElementById(
+                  `map-pos-${item.lat}-${item.lon}`
+                ) as unknown as SVGCircleElement;
+                if (
+                  c != null &&
+                  !checkedItems.includes(
+                    item.id.toString()
+                  )
+                ) {
+                  const classNames = [
+                    'outline',
+                    'outline-offset-4',
+                    'outline-red-500',
+                    'animate-pulse',
+                  ];
+
+                  classNames.forEach((className) => c.classList.toggle(className));
+                  setTimeout(() => {
+                    classNames.forEach((className) => c.classList.toggle(className));
+                  }, 3000);
+                }
+              }}
+              onCheck={(e, d) => {
                 setCheckedItems((prev) => {
                   return e.target.checked
                     ? [...prev, d.id.toString()]
-                    : prev.filter((p) => p !== d.id);
+                    : prev.filter((p) => p !== d.id.toString());
                 })
+              }}
+              options={
+                Object.entries(
+                  groupBy(
+                    types
+                      .filter((f) =>
+                        selectedTypes.find((v) => v === f.value || v === f.label)
+                          ? true
+                          : false
+                      )
+                      .flatMap((f) => f.items.map((v) => ({ ...v, ...f }))),
+                    "label"
+                  )
+                ).map(([k, v]) => ({
+                  label: k,
+                  value: v.map((i) => ({
+                    label: `${i.latitude.toFixed(1)}, ${i.longitude.toFixed(1)}`,
+                    id: `${i.type}|${i.latitude}-${i.longitude}`,
+                    checked: checkedItems.includes(`${i.type}|${i.latitude}-${i.longitude}`),
+                    lat: i.latitude,
+                    lon: i.longitude,
+                  })),
+                }))
               }
-              options={Object.entries(
-                groupBy(
-                  types
-                    .filter((f) =>
-                      selectedTypes.find((v) => v === f.value || v === f.label)
-                        ? true
-                        : false
-                    )
-                    .flatMap((f) => f.items.map((v) => ({ ...v, ...f }))),
-                  "label"
-                )
-              ).map(([k, v]) => ({
-                label: k,
-                value: v.map((i) => ({ label: i.label })),
-              }))}
             />
 
-            <ul className="rw-segment max-h-44 overflow-auto rounded-lg border border-zinc-500 bg-stone-300 text-sm font-medium text-gray-900 dark:bg-zinc-600 dark:text-white">
+            {/* <ul className="rw-segment max-h-44 overflow-auto rounded-lg border border-zinc-500 bg-stone-300 text-sm font-medium text-gray-900 dark:bg-zinc-600 dark:text-white">
               {Object.values(
                 types
                   .filter((f) =>
@@ -465,13 +496,13 @@ const Map = ({ map }: Props) => {
                         setCheckedItems((prev) => {
                           return e.target.checked
                             ? [
-                                ...prev,
-                                `${d.type}|${d.latitude}-${d.longitude}`,
-                              ]
+                              ...prev,
+                              `${d.type}|${d.latitude}-${d.longitude}`,
+                            ]
                             : prev.filter(
-                                (p) =>
-                                  p !== `${d.type}|${d.latitude}-${d.longitude}`
-                              );
+                              (p) =>
+                                p !== `${d.type}|${d.latitude}-${d.longitude}`
+                            );
                         })
                       }
                     />
@@ -522,14 +553,14 @@ const Map = ({ map }: Props) => {
                             setCheckedItems((prev) => {
                               return e.target.checked
                                 ? [
-                                    ...prev,
-                                    `${d.type}|${d.latitude}-${d.longitude}`,
-                                  ]
+                                  ...prev,
+                                  `${d.type}|${d.latitude}-${d.longitude}`,
+                                ]
                                 : prev.filter(
-                                    (p) =>
-                                      p !==
-                                      `${d.type}|${d.latitude}-${d.longitude}`
-                                  );
+                                  (p) =>
+                                    p !==
+                                    `${d.type}|${d.latitude}-${d.longitude}`
+                                );
                             })
                           }
                         />
@@ -538,7 +569,7 @@ const Map = ({ map }: Props) => {
                   </div>
                 </li>
               ))}
-            </ul>
+            </ul> */}
           </div>
         </div>
       </div>

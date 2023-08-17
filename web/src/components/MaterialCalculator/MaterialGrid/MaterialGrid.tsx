@@ -122,7 +122,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       variables: {
         ids: itemRecipes.map((f) => f.id),
       },
-      onCompleted: (data) => {},
+      onCompleted: (data) => { },
       onError: (error) => {
         console.error(error);
       },
@@ -372,8 +372,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 ...itemfound,
                 ItemRecipeItem: data.itemRecipeItemsByIds
                   ? data.itemRecipeItemsByIds.filter(
-                      (iri) => iri.item_recipe_id === item_recipe_id
-                    )
+                    (iri) => iri.item_recipe_id === item_recipe_id
+                  )
                   : [],
               },
               amount: amount,
@@ -444,23 +444,23 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
               value: v.every(({ type }) => !type)
                 ? v.map((itm) => ({
-                    ...itm,
-                    label: itm.name,
-                    icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                    value: [],
-                  }))
+                  ...itm,
+                  label: itm.name,
+                  icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                  value: [],
+                }))
                 : Object.entries(groupBy(v, "type")).map(([type, v2]) => {
-                    return {
-                      label: type,
-                      value: v2.map((itm) => ({
-                        label: itm.name,
-                        ...itm,
-                        icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                      })),
-                    };
-                  }),
+                  return {
+                    label: type,
+                    value: v2.map((itm) => ({
+                      label: itm.name,
+                      ...itm,
+                      icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                    })),
+                  };
+                }),
             }))}
-            onSelect={(item) => {
+            onSelect={(_, item) => {
               onAdd({ itemId: item.id });
             }}
           />

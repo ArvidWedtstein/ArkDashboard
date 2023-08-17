@@ -1,17 +1,18 @@
-import { SearchField } from "@redwoodjs/forms";
 import { ReactNode, useState } from "react";
-import { debounce } from "src/lib/formatters";
+import { debounce, generateUniqueId } from "src/lib/formatters";
 
 interface Item {
   id?: string | number;
   label: string;
   value?: Item[];
   icon?: string | ReactNode;
+  checked?: boolean;
+  [key: string]: any; // Allow for custom props
 }
 interface ItemListProps {
   options: Item[];
   onSearch?: (search: string) => void;
-  onSelect?: (item: Item) => void;
+  onSelect?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: Item) => void;
   defaultSearch?: boolean;
   onCheck?: (event: React.ChangeEvent<HTMLInputElement>, item: Item) => void;
 }
@@ -24,21 +25,32 @@ const ItemList = ({
   defaultSearch = true,
 }: ItemListProps) => {
   const [search, setSearch] = useState<string>("");
+  const [openItemIds, setOpenItemIds] = useState<string[]>([]);// Store open item IDs
+
+  const toggleItemOpen = (itemId: string) => {
+    setOpenItemIds((prevOpenItemIds) =>
+      prevOpenItemIds.includes(itemId)
+        ? prevOpenItemIds.filter((id) => id !== itemId)
+        : [...prevOpenItemIds, itemId]
+    );
+  };
+
   const renderItem = (item: Item) => (
     <li key={`${JSON.stringify(item)}-${Math.random()}`} className="flex items-center p-2 space-x-1 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700 rounded-lg">
       {onCheck && (
         <input
           className="rw-input"
           type="checkbox"
-          onChange={(e) =>
-            onCheck?.(e, item)
-          }
+          defaultChecked={item.checked || false}
+          onChange={(e) => {
+            onCheck?.(e, item);
+          }}
         />
       )}
       <button
         type="button"
         className="flex w-full items-center space-x-1 text-sm transition duration-75"
-        onClick={() => onSelect?.(item)}
+        onClick={(e) => onSelect?.(e, item)}
       >
         {item.icon && typeof item.icon == "string" ? (
           <img className="h-6 w-6 " src={item.icon} alt={``} loading="lazy" />
@@ -50,67 +62,75 @@ const ItemList = ({
     </li>
   );
 
-  const renderList = (item: Item) => (
-    <React.Fragment key={`${JSON.stringify(item)}-${Math.random()}`}>
-      {
-        item?.value &&
-          item?.value?.filter(({ label }) =>
-            label.toLowerCase().includes(defaultSearch ? search.toLowerCase() : "")
-          ).length > 0 ? (
-          <li>
-            <details
-              className="[&>summary:after]:open:rotate-90"
-              open={
-                !!search &&
-                item?.value?.filter(({ label }) =>
-                  label
-                    .toLowerCase()
-                    .includes(defaultSearch ? search.toLowerCase() : "")
-                ).length == 1
-              }
-            >
-              <summary className="flex select-none items-center space-x-1 rounded-lg p-2 text-gray-900 after:absolute after:right-0 after:transform after:px-2 after:transition-transform after:duration-150 after:ease-in-out after:content-['>'] hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
-                {item.icon && typeof item.icon == "string" ? (
-                  <img
-                    className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
-                    src={item.icon}
-                    alt={``}
-                    loading="lazy"
-                  />
-                ) : (
-                  item.icon
-                )}
-                <span className="flex-grow">
-                  {item.label == "null" ? "Other" : item.label}
-                </span>
-                <span className="text-pea-800 pr-6 inline-flex h-3 items-center justify-center text-right rounded-full text-xs dark:text-stone-300">
-                  {
-                    (defaultSearch
-                      ? item?.value?.filter(({ label }) =>
-                        label.toLowerCase().includes(search.toLowerCase())
-                      )
-                      : item?.value
-                    ).length
-                  }
-                </span>
-              </summary>
+  const renderList = (item: Item, index: number) => {
+    const itemId = generateUniqueId();
+    const isOpen = openItemIds.includes(index.toString());
+    return (
+      <React.Fragment key={itemId}>
+        {
+          item?.value &&
+            item?.value?.filter(({ label }) =>
+              label.toLowerCase().includes(defaultSearch ? search.toLowerCase() : "")
+            ).length > 0 ? (
+            <li>
+              <details
+                className="[&>summary:after]:open:rotate-90"
+                open={
+                  !!search &&
+                  item?.value?.filter(({ label }) =>
+                    label
+                      .toLowerCase()
+                      .includes(defaultSearch ? search.toLowerCase() : "")
+                  ).length == 1 || isOpen
+                }
+              >
+                <summary
+                  onClick={() => {
+                    toggleItemOpen(index.toString());
+                  }}
+                  className="flex select-none items-center space-x-1 rounded-lg p-2 text-gray-900 after:absolute after:right-0 after:transform after:px-2 after:transition-transform after:duration-150 after:ease-in-out after:content-['>'] hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
+                  {item.icon && typeof item.icon == "string" ? (
+                    <img
+                      className="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 dark:text-gray-400"
+                      src={item.icon}
+                      alt={``}
+                      loading="lazy"
+                    />
+                  ) : (
+                    item.icon
+                  )}
+                  <span className="flex-grow">
+                    {item.label == "null" ? "Other" : item.label}
+                  </span>
+                  <span className="text-pea-800 pr-6 inline-flex h-2 items-center justify-center text-right rounded-full text-xs dark:text-stone-300">
+                    {
+                      (defaultSearch
+                        ? item?.value?.filter(({ label }) =>
+                          label.toLowerCase().includes(search.toLowerCase())
+                        )
+                        : item?.value
+                      ).length
+                    }
+                  </span>
+                </summary>
 
-              <ul className="py-2">{item?.value.map(renderList)}</ul>
-            </details>
-          </li>
-        ) : (
-          item?.label
-            .toLowerCase()
-            .includes(defaultSearch ? search.toLowerCase() : "") &&
-          renderItem(item)
-        )
-      }
-    </React.Fragment>
-  )
+                <ul className="py-2">{item?.value.map(renderList)}</ul>
+              </details>
+            </li>
+          ) : (
+            item?.label
+              .toLowerCase()
+              .includes(defaultSearch ? search.toLowerCase() : "") &&
+            renderItem(item)
+          )
+        }
+      </React.Fragment>
+    )
+  }
 
   return (
-    <div className="relative max-h-screen w-fit max-w-[14rem] overflow-y-auto rounded-lg border border-zinc-500 bg-zinc-300 px-3 py-4 text-gray-900 will-change-scroll dark:bg-zinc-600 dark:text-white">
-      <ul className="relative space-y-2 font-medium">
+    <div className="relative max-h-screen w-fit max-w-[14rem] overflow-y-auto overflow-x-hidden rounded-lg border border-zinc-500 bg-zinc-300 px-3 py-4 text-gray-900 will-change-scroll dark:bg-zinc-600 dark:text-white">
+      <ul className="relative space-y-1 font-medium">
         <li>
           <label className="sr-only mb-2 text-sm text-gray-900 dark:text-white">
             Search
@@ -154,7 +174,7 @@ const ItemList = ({
               No items found
             </li>
           ))}
-        {options.map((option) => renderList(option))}
+        {options.map((option, i) => renderList(option, i))}
       </ul>
     </div>
   );

@@ -591,6 +591,14 @@ export const getWordType = (word: string) => {
 export const random = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1) + min);
 
+
+export const generateUniqueId = (): string => {
+  const timestamp = Date.now().toString(36); // Convert current timestamp to base36 string
+  const randomString = Math.random().toString(36).substr(2, 5); // Generate random string
+  return `${timestamp}-${randomString}`;
+}
+
+
 export const arrRandNoRep = (arr: any[]) => {
   let lastElement = null;
   let randomIndex = null;
