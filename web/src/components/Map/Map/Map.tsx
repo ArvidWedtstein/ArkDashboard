@@ -379,7 +379,6 @@ const Map = ({ map }: Props) => {
                 setSelectedTypes([]);
               }}
               onPosClick={(e) => {
-                console.log(e)
                 setNoterun((prevState) => {
                   if (prevState.includes(e.node_index)) {
                     return prevState.filter((p) => p !== e.node_index);
