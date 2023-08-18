@@ -18,6 +18,8 @@ const Map = ({ map }: Props) => {
     map.other_Map ? map.other_Map.findIndex((m) => m.id == 16) : null
   );
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+
+  // TODO: remove hardcoded noterun and move it to db
   const [noterun, setNoterun] = useState<number[]>(
     map.id === 2
       ? [57, 520, 242, 241, 201, 79, 238, 143, 301, 283, 284, 60]
@@ -390,8 +392,9 @@ const Map = ({ map }: Props) => {
                 color: "#0000ff",
                 coords: noterun
                   .map((b) => {
-                    if (map?.MapNote && map?.MapNote.length > 0) {
-                      let note = (map?.MapNote).find((j) => j.note_index === b);
+                    const mapData = map.other_Map ? map.other_Map[realm] : map
+                    if (mapData?.MapNote && mapData?.MapNote.length > 0) {
+                      let note = (mapData?.MapNote).find((j) => j.note_index === b);
                       if (note) {
                         return {
                           lat: note?.latitude,
