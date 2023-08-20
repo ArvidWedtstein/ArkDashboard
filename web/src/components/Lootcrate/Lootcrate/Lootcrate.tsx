@@ -137,7 +137,7 @@ const Lootcrate = ({ lootcrate }: Props) => {
                                   className="inline-block h-6 w-6"
                                 />
                               )}
-                              <p className="space-x-1">
+                              <p className="space-x-1 dark:text-white">
                                 <span>{Math.floor(itm.value * 100)}%</span>
                                 <span>{itm.Item.name}</span>
                               </p>
