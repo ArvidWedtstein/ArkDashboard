@@ -17,7 +17,6 @@ export const schema = gql`
     cord_mult_lon: Float
     Basespot: [Basespot]!
     Lootcrate: [Lootcrate]!
-    LootcrateMap: [LootcrateMap]!
     Map: Map
     other_Map: [Map]!
     MapCoordinate: [MapCoordinate]!
