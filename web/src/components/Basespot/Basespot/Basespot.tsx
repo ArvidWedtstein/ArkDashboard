@@ -267,7 +267,23 @@ const Basespot = ({ basespot }: Props) => {
                 Lat, <strong>{basespot.longitude}</strong> Lon
               </span>
               {/* TODO: add copy command here */}
-              <button className="ml-1">Copy</button>
+              <button
+                className="ml-1"
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    `cheat SetPlayerPos ${Math.round(
+                      (basespot.latitude - basespot.Map.cord_shift_lat) *
+                        basespot.Map.cord_mult_lat
+                    )} 1000 ${Math.round(
+                      (basespot.longitude - basespot.Map.cord_shift_lon) *
+                        basespot.Map.cord_mult_lon
+                    )}`
+                  );
+                  toast.success("Copied to clipboard");
+                }}
+              >
+                Copy
+              </button>
             </p>
           </div>
           <div className="flex flex-col items-center space-y-3 lg:items-start">
