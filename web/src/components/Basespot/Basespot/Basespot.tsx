@@ -35,35 +35,34 @@ const Basespot = ({ basespot }: Props) => {
     useState<{ url: string; error?: string; thumbnail: boolean }[]>(null);
   const { client: supabase, currentUser } = useAuth();
 
-  const [publishBasespot] = useMutation(
-    BASESPOT_PUBLISH,
-    {
-      onCompleted: (data) => {
-        toast.success("Basespot successfully published");
-        navigate(routes.basespot({ id: data.updateBasespot.id.toString() }));
-      },
-      onError: (error) => {
-        toast.error(error.message);
-      },
-    }
-  );
+  const [publishBasespot] = useMutation(BASESPOT_PUBLISH, {
+    onCompleted: (data) => {
+      toast.success("Basespot successfully published");
+      navigate(routes.basespot({ id: data.updateBasespot.id.toString() }));
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   const getImage = useCallback(async () => {
     const baseURL = `M${basespot.map_id}-${basespot.id}`;
     try {
-      if (
-        !images
-      ) {
+      if (!images) {
         const { data, error } = await supabase.storage
           .from(`basespotimages`)
           .createSignedUrls(
             [
               ...(basespot.base_images
                 ? basespot?.base_images
-                  .split(",")
-                  .map((img) => `${baseURL}/${img.trim()}`)
+                    .split(",")
+                    .map((img) => `${baseURL}/${img.trim()}`)
                 : []),
-            ].concat(!basespot.base_images.includes(basespot.thumbnail) ? [`${baseURL}/${basespot.thumbnail}`] : []),
+            ].concat(
+              !basespot.base_images.includes(basespot.thumbnail)
+                ? [`${baseURL}/${basespot.thumbnail}`]
+                : []
+            ),
             60 * 60 * 24 * 365 * 10
           );
         if (error) {
@@ -91,22 +90,25 @@ const Basespot = ({ basespot }: Props) => {
   return (
     <article className="text-gray-700 dark:text-stone-200">
       <div className="mb-3 lg:flex lg:items-center lg:justify-between">
-        <div className="min-w-0 flex-1 font-semibold text-lg">Basespot</div>
+        <div className="min-w-0 flex-1 text-lg font-semibold">Basespot</div>
         <div className="flex space-x-2 lg:ml-4 lg:mt-0">
           {currentUser?.permissions.some(
             (p: permission) => p === "basespot_update"
           ) && (
-              <Link
-                to={routes.editBasespot({ id: basespot.id.toString() })}
-                className="rw-button rw-button-medium rw-button-gray-outline hidden sm:block"
-
+            <Link
+              to={routes.editBasespot({ id: basespot.id.toString() })}
+              className="rw-button rw-button-medium rw-button-gray-outline hidden sm:block"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                className="rw-button-icon-start"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="rw-button-icon-start">
-                  <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
-                </svg>
-                Edit
-              </Link>
-            )}
+                <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
+              </svg>
+              Edit
+            </Link>
+          )}
 
           <button
             type="button"
@@ -122,7 +124,8 @@ const Basespot = ({ basespot }: Props) => {
               // https://reddit.com/submit?url=
 
               if (
-                navigator.canShare({
+                navigator?.canShare &&
+                navigator?.canShare({
                   url: window.location.href,
                 })
               )
@@ -138,14 +141,25 @@ const Basespot = ({ basespot }: Props) => {
                   .catch(console.error);
             }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="rw-button-icon-start"><path d="M176 224h275.8l-158.1-131.7c-6.781-5.656-7.688-15.75-2.031-22.53c5.688-6.812 15.78-7.687 22.53-2.031l192 159.1C509.9 230.8 512 235.2 512 239.1c0 4.75-2.094 9.253-5.75 12.28l-192 159.1c-3 2.5-6.625 3.719-10.25 3.719c-4.562 0-9.125-1.969-12.28-5.75c-5.656-6.781-4.75-16.87 2.031-22.53l158.1-131.7H176c-79.41 0-144 64.59-144 143.1v31.1C32 440.8 24.84 448 16 448S0 440.8 0 432v-31.1C0 302.1 78.97 224 176 224z" /></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 512 512"
+              className="rw-button-icon-start"
+            >
+              <path d="M176 224h275.8l-158.1-131.7c-6.781-5.656-7.688-15.75-2.031-22.53c5.688-6.812 15.78-7.687 22.53-2.031l192 159.1C509.9 230.8 512 235.2 512 239.1c0 4.75-2.094 9.253-5.75 12.28l-192 159.1c-3 2.5-6.625 3.719-10.25 3.719c-4.562 0-9.125-1.969-12.28-5.75c-5.656-6.781-4.75-16.87 2.031-22.53l158.1-131.7H176c-79.41 0-144 64.59-144 143.1v31.1C32 440.8 24.84 448 16 448S0 440.8 0 432v-31.1C0 302.1 78.97 224 176 224z" />
+            </svg>
             Share
           </button>
 
           <button
             type="button"
             className="rw-button rw-button-medium rw-button-green"
-            disabled={basespot.published || !currentUser?.permissions.some((p: permission) => p === "basespot_update")}
+            disabled={
+              basespot.published ||
+              !currentUser?.permissions.some(
+                (p: permission) => p === "basespot_update"
+              )
+            }
             onClick={(e) => {
               e.preventDefault();
               publishBasespot({
@@ -158,7 +172,11 @@ const Basespot = ({ basespot }: Props) => {
               });
             }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="rw-button-icon-start">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 512 512"
+              className="rw-button-icon-start"
+            >
               <path d="M498.1 5.629C492.7 1.891 486.4 0 480 0c-5.461 0-10.94 1.399-15.88 4.223l-448 255.1C5.531 266.3-.6875 277.8 .0625 289.1s8.375 22.86 19.62 27.55l103.2 43.01l61.85 146.5C186.2 510.6 189.2 512 191.1 512c2.059 0 4.071-.8145 5.555-2.24l85.75-82.4l120.4 50.16c4.293 1.793 8.5 2.472 12.29 2.472c6.615 0 12.11-2.093 15.68-4.097c8.594-4.828 14.47-13.31 15.97-23.05l64-415.1C513.5 24.72 508.3 12.58 498.1 5.629zM32 288l380.1-217.2l-288.2 255.5L32 288zM200.7 462.3L151.1 344.9l229.5-203.4l-169.5 233.1c-2.906 4-3.797 9.094-2.438 13.84c1.374 4.75 4.844 8.594 9.438 10.41l34.4 13.76L200.7 462.3zM416.7 443.3l-167.7-66.56l225.7-310.3L416.7 443.3z" />
             </svg>
             Publish
@@ -169,15 +187,16 @@ const Basespot = ({ basespot }: Props) => {
       <header
         className="font-montserrat group flex min-h-[200px] w-full flex-col justify-between rounded-lg bg-cover bg-center bg-no-repeat p-12 text-white ring-1 ring-zinc-500"
         style={{
-          backgroundImage: `url(${images
-            ? images?.find((img) => img.thumbnail == true)?.url
-            : "https://images.placeholders.dev/?width=1055&height=200&text=ArkDashboard&bgColor=%23f7f6f6&textColor=%236d6e71"
-            })`,
+          backgroundImage: `url(${
+            images
+              ? images?.find((img) => img.thumbnail == true)?.url
+              : "https://images.placeholders.dev/?width=1055&height=200&text=ArkDashboard&bgColor=%23f7f6f6&textColor=%236d6e71"
+          })`,
         }}
       >
         <div className="flex justify-between pb-5">
           <Link
-            to={routes.map({ id: basespot.map_id.toString() })}
+            to={routes.map({ id: basespot.map_id })}
             className="rw-link text-xl font-bold uppercase tracking-[0.4rem] text-white opacity-90 transition ease-linear"
           >
             {basespot.Map.name}
@@ -242,9 +261,13 @@ const Basespot = ({ basespot }: Props) => {
             <h2 className="title-font text-lg font-medium text-gray-900 dark:text-stone-200">
               Coordinates
             </h2>
-            <p className="flex-grow text-base leading-relaxed">
-              This spot is located at <strong>{basespot.latitude}</strong> Lat,{" "}
-              <strong>{basespot.longitude}</strong> Lon
+            <p className="flex-grow select-none text-base leading-relaxed">
+              <span>
+                This spot is located at <strong>{basespot.latitude}</strong>{" "}
+                Lat, <strong>{basespot.longitude}</strong> Lon
+              </span>
+              {/* TODO: add copy command here */}
+              <button className="ml-1">Copy</button>
             </p>
           </div>
           <div className="flex flex-col items-center space-y-3 lg:items-start">
@@ -315,7 +338,7 @@ const Basespot = ({ basespot }: Props) => {
               autoPlay={true}
               slides={[
                 {
-                  title: 'Tip #1',
+                  title: "Tip #1",
                   content: (
                     <div className="flex justify-center px-5 py-12">
                       <div className="text-center lg:w-3/4 xl:w-1/2">
@@ -328,8 +351,10 @@ const Basespot = ({ basespot }: Props) => {
                           <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
                         </svg>
 
-                        <p className="text-black dark:text-white text-lg leading-relaxed whitespace-pre-wrap">
-                          Configure the turrets so that they have different ranges and different angles of fire. This will make it harder for raiders to find a blind spot.
+                        <p className="whitespace-pre-wrap text-lg leading-relaxed text-black dark:text-white">
+                          Configure the turrets so that they have different
+                          ranges and different angles of fire. This will make it
+                          harder for raiders to find a blind spot.
                         </p>
 
                         <span className="bg-pea-500 mt-8 inline-block h-1 w-10 rounded" />
@@ -338,7 +363,7 @@ const Basespot = ({ basespot }: Props) => {
                   ),
                 },
                 {
-                  title: 'Tip #2',
+                  title: "Tip #2",
                   content: (
                     <div className="flex justify-center px-5 py-12">
                       <div className="text-center lg:w-3/4 xl:w-1/2">
@@ -351,7 +376,7 @@ const Basespot = ({ basespot }: Props) => {
                           <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
                         </svg>
 
-                        <p className="text-black dark:text-white text-lg leading-relaxed">
+                        <p className="text-lg leading-relaxed text-black dark:text-white">
                           Build multiple turret walls if possible
                         </p>
 

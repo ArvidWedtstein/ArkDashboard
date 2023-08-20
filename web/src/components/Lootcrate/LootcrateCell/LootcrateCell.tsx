@@ -48,6 +48,7 @@ export const QUERY = gql`
   }
 `;
 
+// TODO: create skeleton loader
 export const Loading = () => <div>Loading...</div>;
 
 export const Empty = () => <div>Lootcrate not found</div>;

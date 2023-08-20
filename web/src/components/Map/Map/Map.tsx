@@ -15,7 +15,9 @@ interface Props {
 const Map = ({ map }: Props) => {
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
   const [realm, setRealm] = useState<number>(
-    map.other_Map ? map.other_Map.findIndex((m) => m.id == 16) : null
+    map.other_Map && map.other_Map.length > 0
+      ? map.other_Map.findIndex((m) => m.id == 16)
+      : null
   );
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
 
@@ -242,8 +244,10 @@ const Map = ({ map }: Props) => {
   };
 
   const types = useMemo(() => {
-    const mapData = map.other_Map ? map.other_Map[realm] : map;
-    const resourceData = mapData.MapResource;
+    const mapData =
+      map.other_Map && map.other_Map.length > 0 ? map.other_Map[realm] : map;
+    if (!mapData) return [];
+    const resourceData = mapData?.MapResource ?? [];
     const groupedByType = groupBy(
       resourceData.filter((d) => d.type !== null && d.item_id == null),
       "type"
@@ -252,7 +256,7 @@ const Map = ({ map }: Props) => {
       resourceData.filter((d) => d.item_id !== null),
       "item_id"
     );
-    const notes = mapData.MapNote ?? [];
+    const notes = mapData?.MapNote ?? [];
 
     const categorizedTypes = Object.entries({
       notes: notes.map((f) => ({
@@ -276,13 +280,13 @@ const Map = ({ map }: Props) => {
         value: key.toString(),
         color:
           value[0].__typename == "MapNote" ||
-            value.every((f) => f.item_id == null)
+          value.every((f) => f.item_id == null)
             ? categories[key].color
             : value[0].Item.color,
       }));
 
     return categorizedTypes;
-  }, [realm]);
+  }, [realm, map]);
 
   return (
     <article>
@@ -362,12 +366,13 @@ const Map = ({ map }: Props) => {
                       ...entry,
                       lat: entry.latitude,
                       lon: entry.longitude,
-                      color: `${f.color}${checkedItems.includes(
-                        `${entry.type}|${entry.latitude}-${entry.longitude}`
-                      )
-                        ? "1A"
-                        : "FF"
-                        }`,
+                      color: `${f.color}${
+                        checkedItems.includes(
+                          `${entry.type}|${entry.latitude}-${entry.longitude}`
+                        )
+                          ? "1A"
+                          : "FF"
+                      }`,
                       image: entry.item_id !== null ? f.image : null,
                     }))
                   )
@@ -392,9 +397,11 @@ const Map = ({ map }: Props) => {
                 color: "#0000ff",
                 coords: noterun
                   .map((b) => {
-                    const mapData = map.other_Map ? map.other_Map[realm] : map
+                    const mapData = map.other_Map ? map.other_Map[realm] : map;
                     if (mapData?.MapNote && mapData?.MapNote.length > 0) {
-                      let note = (mapData?.MapNote).find((j) => j.note_index === b);
+                      let note = (mapData?.MapNote).find(
+                        (j) => j.note_index === b
+                      );
                       if (note) {
                         return {
                           lat: note?.latitude,
@@ -417,22 +424,21 @@ const Map = ({ map }: Props) => {
                 let c: SVGCircleElement = document.getElementById(
                   `map-pos-${item.lat}-${item.lon}`
                 ) as unknown as SVGCircleElement;
-                if (
-                  c != null &&
-                  !checkedItems.includes(
-                    item.id.toString()
-                  )
-                ) {
+                if (c != null && !checkedItems.includes(item.id.toString())) {
                   const classNames = [
-                    'outline',
-                    'outline-offset-4',
-                    'outline-red-500',
-                    'animate-pulse',
+                    "outline",
+                    "outline-offset-4",
+                    "outline-red-500",
+                    "animate-pulse",
                   ];
 
-                  classNames.forEach((className) => c.classList.toggle(className));
+                  classNames.forEach((className) =>
+                    c.classList.toggle(className)
+                  );
                   setTimeout(() => {
-                    classNames.forEach((className) => c.classList.toggle(className));
+                    classNames.forEach((className) =>
+                      c.classList.toggle(className)
+                    );
                   }, 3000);
                 }
               }}
@@ -441,31 +447,31 @@ const Map = ({ map }: Props) => {
                   return e.target.checked
                     ? [...prev, d.id.toString()]
                     : prev.filter((p) => p !== d.id.toString());
-                })
+                });
               }}
-              options={
-                Object.entries(
-                  groupBy(
-                    types
-                      .filter((f) =>
-                        selectedTypes.find((v) => v === f.value || v === f.label)
-                          ? true
-                          : false
-                      )
-                      .flatMap((f) => f.items.map((v) => ({ ...v, ...f }))),
-                    "label"
-                  )
-                ).map(([k, v]) => ({
-                  label: k,
-                  value: v.map((i) => ({
-                    label: `${i.latitude.toFixed(1)}, ${i.longitude.toFixed(1)}`,
-                    id: `${i.type}|${i.latitude}-${i.longitude}`,
-                    checked: checkedItems.includes(`${i.type}|${i.latitude}-${i.longitude}`),
-                    lat: i.latitude,
-                    lon: i.longitude,
-                  })),
-                }))
-              }
+              options={Object.entries(
+                groupBy(
+                  types
+                    .filter((f) =>
+                      selectedTypes.find((v) => v === f.value || v === f.label)
+                        ? true
+                        : false
+                    )
+                    .flatMap((f) => f.items.map((v) => ({ ...v, ...f }))),
+                  "label"
+                )
+              ).map(([k, v]) => ({
+                label: k,
+                value: v.map((i) => ({
+                  label: `${i.latitude.toFixed(1)}, ${i.longitude.toFixed(1)}`,
+                  id: `${i.type}|${i.latitude}-${i.longitude}`,
+                  checked: checkedItems.includes(
+                    `${i.type}|${i.latitude}-${i.longitude}`
+                  ),
+                  lat: i.latitude,
+                  lon: i.longitude,
+                })),
+              }))}
             />
 
             {/* <ul className="rw-segment max-h-44 overflow-auto rounded-lg border border-zinc-500 bg-stone-300 text-sm font-medium text-gray-900 dark:bg-zinc-600 dark:text-white">

@@ -190,6 +190,10 @@ model Map {
   description            String?
   topographic_img        String?
   boundaries             String?
+  cord_shift_lat         Float?                   @default(50)
+  cord_shift_lon         Float?                   @default(50)
+  cord_mult_lat          Float?                   @default(8000)
+  cord_mult_lon          Float?                   @default(8000)
   Basespot               Basespot[]
   Lootcrate              Lootcrate[]
   LootcrateMap           LootcrateMap[]
@@ -479,18 +483,21 @@ model LootcrateItem {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model LootcrateMap {
-  id           BigInt     @id @default(autoincrement())
-  created_at   DateTime   @default(now()) @db.Timestamptz(6)
-  updated_at   DateTime?  @default(now()) @db.Timestamptz(6)
-  lootcrate_id BigInt
-  map_id       BigInt?
-  dino_id      String?    @db.Uuid
-  latitude     Float?
-  longitude    Float?
-  description  String?
-  Dino         Dino?      @relation(fields: [dino_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Lootcrates   Lootcrates @relation(fields: [lootcrate_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Map          Map?       @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                BigInt     @id @default(autoincrement())
+  created_at        DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime?  @default(now()) @db.Timestamptz(6)
+  lootcrate_id      BigInt
+  map_id            BigInt?
+  dino_id           String?    @db.Uuid
+  latitude          Float?
+  longitude         Float?
+  description       String?
+  level_requirement BigInt?    @default(0)
+  Dino              Dino?      @relation(fields: [dino_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Lootcrates        Lootcrates @relation(fields: [lootcrate_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Map               Map?       @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([lootcrate_id, map_id, latitude, longitude])
 }
 
 enum permission {
