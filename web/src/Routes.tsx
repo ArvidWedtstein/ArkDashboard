@@ -156,7 +156,7 @@ const Routes = () => {
             name="itemRecipes"
           />
         </Set>
-        <Set
+        {/* <Set
           wrap={ScaffoldLayout}
           title="Lootcrates"
           titleTo="lootcrates"
@@ -188,7 +188,7 @@ const Routes = () => {
             page={LootcrateLootcratesPage}
             name="lootcrates"
           />
-        </Set>
+        </Set> */}
         <Set
           wrap={ScaffoldLayout}
           title="Maps"
