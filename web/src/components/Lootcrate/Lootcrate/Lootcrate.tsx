@@ -153,6 +153,7 @@ const Lootcrate = ({ lootcrate }: Props) => {
           </div>
         )}
       </div>
+
       <nav className="rw-button-group">
         {currentUser &&
           currentUser?.permissions.some(
