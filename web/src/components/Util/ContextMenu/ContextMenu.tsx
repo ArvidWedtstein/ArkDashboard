@@ -63,7 +63,7 @@ export const ContextMenu = ({
 
     return { x: adjustedX, y: adjustedY };
   };
-
+  // https://stackoverflow.com/questions/14032568/create-a-div-next-to-the-cursor-position-on-click
   return (
     <div
       className={`-my-1 max-w-fit cursor-pointer rounded px-2 text-center hover:bg-zinc-700 hover:bg-opacity-50`}
@@ -86,8 +86,8 @@ export const ContextMenu = ({
         <div
           id="context-menu"
           style={{
-            top: points.y,
-            left: points.x,
+            top: points.y + 'px',
+            left: points.x + 'px',
             zIndex: 1000,
             transform: "translate(-50%, -50%)",
             position: "fixed",

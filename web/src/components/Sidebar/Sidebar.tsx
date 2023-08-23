@@ -147,19 +147,36 @@ const Icon = (icon: string) => {
       </svg>
     ),
     lootcrates: (
-      <>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 576 512"
-          className="h-4 w-4 fill-current stroke-current"
-        >
-          <path d="M448 32H128C57.31 32 0 89.31 0 160v256c0 35.35 28.65 64 64 64h448c35.35 0 64-28.65 64-64V160C576 89.31 518.7 32 448 32zM96 448H64c-17.64 0-32-14.36-32-32V288h64V448zM96 256H32V160c0-41.66 26.84-76.85 64-90.1V256zM448 448H128V288h64v48C192 362.5 213.5 384 240 384h96c26.5 0 48-21.5 48-48V288h64V448zM224 336v-128C224 199.1 231.1 192 240 192h96C344.9 192 352 199.1 352 208v128c0 8.875-7.125 16-16 16h-96C231.1 352 224 344.9 224 336zM448 256h-64V208C384 181.5 362.5 160 336 160h-96C213.5 160 192 181.5 192 208V256H128V64h320V256zM544 416c0 17.64-14.36 32-32 32h-32V288h64V416zM544 256h-64V69.9C517.2 83.15 544 118.3 544 160V256zM288 320c8.875 0 16-7.125 16-16v-64C304 231.1 296.9 224 288 224S272 231.1 272 240v64C272 312.9 279.1 320 288 320z" />
-        </svg>
-      </>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 576 512"
+        className="h-4 w-4 fill-current stroke-current"
+      >
+        <path d="M448 32H128C57.31 32 0 89.31 0 160v256c0 35.35 28.65 64 64 64h448c35.35 0 64-28.65 64-64V160C576 89.31 518.7 32 448 32zM96 448H64c-17.64 0-32-14.36-32-32V288h64V448zM96 256H32V160c0-41.66 26.84-76.85 64-90.1V256zM448 448H128V288h64v48C192 362.5 213.5 384 240 384h96c26.5 0 48-21.5 48-48V288h64V448zM224 336v-128C224 199.1 231.1 192 240 192h96C344.9 192 352 199.1 352 208v128c0 8.875-7.125 16-16 16h-96C231.1 352 224 344.9 224 336zM448 256h-64V208C384 181.5 362.5 160 336 160h-96C213.5 160 192 181.5 192 208V256H128V64h320V256zM544 416c0 17.64-14.36 32-32 32h-32V288h64V416zM544 256h-64V69.9C517.2 83.15 544 118.3 544 160V256zM288 320c8.875 0 16-7.125 16-16v-64C304 231.1 296.9 224 288 224S272 231.1 272 240v64C272 312.9 279.1 320 288 320z" />
+      </svg>
     ),
   };
   return icons[icon.toLowerCase()] || null;
 };
+// SECRET DINO ICON
+{/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" className="h-4 w-4 fill-current">
+<defs>
+  <linearGradient id="left-to-right">
+    <stop offset="0" stop-color="#ff0000">
+      <animate dur="0.5s" attributeName="offset" values="0; 1; 0;" />
+    </stop>
+    <stop offset="0" stop-color="#ffffff">
+      <animate dur="0.5s" attributeName="offset" begin="mouseover" end="mouseleave" values="0; 1; 0;" />
+    </stop>
+  </linearGradient>
+</defs>
+      <path d="M617.4 180.1l-86.63-26.62c-33.38-10.25-66.63 8.253-78.25 38.5H448c-70.75 0-128 57.26-128 128v63.1c0 17.62-14.38 31.1-32 31.1s-32-14.38-32-32V133.7C256 66.85 207.3 7.099 140.8 .5995C64.5-6.901 0 53.22 0 127.1v191.5c0 62.24 11.12 123.9 33 182.1c5.25 13.88 24.75 13.88 30 0C84.88 443.3 96 381.7 96 319.5V127.1c0-17.62 14.38-31.98 32-31.98S160 110.3 160 127.1v250.3c0 66.87 48.75 126.6 115.3 133.1c76.25 7.5 140.7-52.62 140.7-127.4L416 319.1c0-17.62 14.38-32 32-32h4.25c11 30.62 44.38 49.62 77.88 39.75l87-25.75C630.6 297.1 640 285.4 640 271.2V210.6C640 196.6 630.9 184.2 617.4 180.1z" />
+<path fill="url(#left-to-right)" stroke="currentColor" stroke-width="3" d="M528 223.1c-8.875 0-16-7.125-16-16s7.125-16 16-16S544 199.1 544 207.1S536.9 223.1 528 223.1z">
+</path>
+<path fill="url(#left-to-right)" stroke="currentColor" stroke-width="3" d="M528 287.1c-8.875 0-16-7.127-16-16c0-8.873 7.125-15.1 16-15.1S544 263.1 544 271.1C544 280.8 536.9 287.1 528 287.1z">
+</path>
+<path d="M528 287.1c-8.875 0-16-7.127-16-16c0-8.873 z"></path>
+    </svg> */}
 
 const Sidebar = memo(({ }) => {
   const { currentUser, isAuthenticated, logOut } = useAuth();
@@ -224,7 +241,7 @@ const Sidebar = memo(({ }) => {
             })}
           >
             <div className="relative">
-              {isAuthenticated ? (
+              {(isAuthenticated && currentUser) ? (
                 <img
                   src={
                     currentUser?.avatar_url
@@ -289,23 +306,6 @@ const Sidebar = memo(({ }) => {
             <span className="hidden md:block">{item.name}</span>
           </NavLink>
         ))}
-        {/* {navigation.map((item, index) => (
-          <div
-            className="flex flex-col items-center justify-start space-x-2 self-start text-white/70 transition-all hover:text-white sm:flex-row"
-            key={`sidebar-item-${index}`}
-          >
-            <NavLink
-              to={item.href}
-              title={item.name}
-              activeClassName={`text-white ring-2 ${item.color}`}
-              matchSubPaths={false}
-              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-zinc-500 text-white outline-none ring-1 ring-transparent hover:text-gray-100 hover:ring-stone-400 focus:ring-stone-400 dark:bg-zinc-700 dark:hover:text-white dark:hover:ring-white dark:focus:ring-white sm:my-2"
-            >
-              {Icon(item.name)} <span className="sr-only">{item.name}</span>
-            </NavLink>
-            <span className="text-sm">{item.name}</span>
-          </div>
-        ))} */}
       </div>
     </aside>
   );

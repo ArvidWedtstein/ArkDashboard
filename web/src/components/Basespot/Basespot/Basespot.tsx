@@ -55,8 +55,8 @@ const Basespot = ({ basespot }: Props) => {
             [
               ...(basespot.base_images
                 ? basespot?.base_images
-                    .split(",")
-                    .map((img) => `${baseURL}/${img.trim()}`)
+                  .split(",")
+                  .map((img) => `${baseURL}/${img.trim()}`)
                 : []),
             ].concat(
               !basespot.base_images.includes(basespot.thumbnail)
@@ -95,20 +95,20 @@ const Basespot = ({ basespot }: Props) => {
           {currentUser?.permissions.some(
             (p: permission) => p === "basespot_update"
           ) && (
-            <Link
-              to={routes.editBasespot({ id: basespot.id.toString() })}
-              className="rw-button rw-button-medium rw-button-gray-outline hidden sm:block"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-                className="rw-button-icon-start"
+              <Link
+                to={routes.editBasespot({ id: basespot.id.toString() })}
+                className="rw-button rw-button-medium rw-button-gray-outline hidden sm:block"
               >
-                <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
-              </svg>
-              Edit
-            </Link>
-          )}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                  className="rw-button-icon-start"
+                >
+                  <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
+                </svg>
+                Edit
+              </Link>
+            )}
 
           <button
             type="button"
@@ -187,11 +187,10 @@ const Basespot = ({ basespot }: Props) => {
       <header
         className="font-montserrat group flex min-h-[200px] w-full flex-col justify-between rounded-lg bg-cover bg-center bg-no-repeat p-12 text-white ring-1 ring-zinc-500"
         style={{
-          backgroundImage: `url(${
-            images
-              ? images?.find((img) => img.thumbnail == true)?.url
-              : "https://images.placeholders.dev/?width=1055&height=200&text=ArkDashboard&bgColor=%23f7f6f6&textColor=%236d6e71"
-          })`,
+          backgroundImage: `url(${images
+            ? images?.find((img) => img.thumbnail == true)?.url
+            : "https://images.placeholders.dev/?width=1055&height=200&text=ArkDashboard&bgColor=%23f7f6f6&textColor=%236d6e71"
+            })`,
         }}
       >
         <div className="flex justify-between pb-5">
@@ -268,21 +267,28 @@ const Basespot = ({ basespot }: Props) => {
               </span>
               {/* TODO: add copy command here */}
               <button
-                className="ml-1"
+                className="ml-1 rw-button"
                 onClick={() => {
                   navigator.clipboard.writeText(
                     `cheat SetPlayerPos ${Math.round(
                       (basespot.latitude - basespot.Map.cord_shift_lat) *
-                        basespot.Map.cord_mult_lat
+                      basespot.Map.cord_mult_lat
                     )} 1000 ${Math.round(
                       (basespot.longitude - basespot.Map.cord_shift_lon) *
-                        basespot.Map.cord_mult_lon
+                      basespot.Map.cord_mult_lon
                     )}`
                   );
                   toast.success("Copied to clipboard");
                 }}
               >
-                Copy
+                <svg xmlns="http://www.w3.org/2000/svg" className="rw-button-icon" viewBox="0 0 384 512">
+                  <path d="M112 128h160C280.8 128 288 120.8 288 112S280.8 96 272 96h-24.88C252.6 86.55 256 75.72 256 64c0-35.35-28.65-64-64-64S128 28.65 128 64c0 11.72 3.379 22.55 8.877 32H112C103.2 96 96 103.2 96 112S103.2 128 112 128zM192 32c17.64 0 32 14.36 32 32s-14.36 32-32 32S160 81.64 160 64S174.4 32 192 32zM320 64c-8.844 0-16 7.156-16 16S311.2 96 320 96c17.64 0 32 14.34 32 32v320c0 17.66-14.36 32-32 32H64c-17.64 0-32-14.34-32-32V128c0-17.66 14.36-32 32-32c8.844 0 16-7.156 16-16S72.84 64 64 64C28.7 64 0 92.72 0 128v320c0 35.28 28.7 64 64 64h256c35.3 0 64-28.72 64-64V128C384 92.72 355.3 64 320 64z" />
+                  <path stroke="currentColor" stroke-width="8" d="M123.3 319.4c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62l53.34 53.33C157.2 398.4 161.3 400 165.3 400s8.188-1.562 11.31-4.688l106.7-106.7c6.25-6.25 6.25-16.38 0-22.62s-16.38-6.25-22.62 0l-95.34 95.36L123.3 319.4z">
+                    <animate attributeName="stroke-dasharray" from="0 600" to="600 600" dur="0.5s" begin="0.5s" fill="remove" />
+                    <animate attributeName="fill" from="transparent" to="currentColor" dur="0.5s" begin="1s" fill="remove" />
+                  </path>
+                </svg>
+                <span className="sr-only">Copy</span>
               </button>
             </p>
           </div>

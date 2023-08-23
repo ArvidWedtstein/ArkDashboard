@@ -117,7 +117,6 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
               {` ${timelineSeasonBasespot?.TimelineSeason.server} ${timelineSeasonBasespot.TimelineSeason?.cluster} Season ${timelineSeasonBasespot.TimelineSeason.season}`}
             </p>
             <div className="flex flex-wrap justify-start space-x-1 md:space-y-1 xl:space-y-0">
-              {/* TODO: add check for if user is in current season */}
               {isAuthenticated && (
                 <>
                   {hasRole("timeline_update") ||
@@ -322,7 +321,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                     <abbr title="Longitude">Lon</abbr> on the map{" "}
                     <Link
                       to={routes.map({
-                        id: timelineSeasonBasespot.map_id?.toString(),
+                        id: timelineSeasonBasespot.map_id,
                       })}
                     >
                       {timelineSeasonBasespot?.Map?.name}
