@@ -20,7 +20,7 @@ import { FindItemsMats } from "types/graphql";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useAuth } from "src/auth";
-import { ITEMRECIPEITEMQUERY, QUERY } from "../MaterialCalculatorCell";
+import { ITEMRECIPEITEMQUERY } from "../MaterialCalculatorCell";
 import UserRecipesCell, {
   QUERY as USERRECIPEQUERY,
 } from "src/components/UserRecipe/UserRecipesCell";
@@ -122,7 +122,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       variables: {
         ids: itemRecipes.map((f) => f.id),
       },
-      onCompleted: (data) => { },
+      // onCompleted: (data) => { },
       onError: (error) => {
         console.error(error);
       },
@@ -711,7 +711,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 valueFormatter: ({ row, value }) => value * row.amount,
                 render: ({ value }) => `${timeFormatL(value, true)}`,
               },
-              ...mergeItemRecipe(
+              ...(mergeItemRecipe(
                 viewBaseMaterials,
                 false,
                 items,
@@ -757,7 +757,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                     )
                   );
                 },
-              })),
+              })) as unknown as { field: string; header: string; type: string }[]),
               // {
               //   field: "Item_ItemRecipe_crafted_item_idToItem",
               //   header: "Ingredients",

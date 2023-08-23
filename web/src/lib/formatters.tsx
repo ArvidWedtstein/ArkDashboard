@@ -245,26 +245,16 @@ export const combineBySummingKeys = (...objects: object[]) => {
 //   681: turretTower.tek_turrets, // Tek Turret
 //   676: amountTekGen, // Tek Generator
 // }
-interface Item {
-  // Define the properties of the "Item" type based on your actual data structure.
-  id: number;
-  name: string;
-  image: string;
-  [key: string]: any;
-  // Add other properties here if needed.
-}
-interface CraftingRecipe {
-  // Define the properties of the "CraftingRecipe" type based on your actual data structure.
-  Item: Item;
-  amount: number;
-}
-interface Material {
+
+
+
+type ItemRecipe = {
   __typename: string;
   id: string;
   crafting_station_id: number;
   crafting_time: number;
   yields: number;
-  Item_ItemRecipe_crafted_item_idToItem: {
+  Item_ItemRecipe_crafted_item_idToItem?: {
     __typename: string;
     id: number;
     name: string;
@@ -272,10 +262,9 @@ interface Material {
     category: string;
     type: string;
   };
-  ItemRecipeItem: {
+  ItemRecipeItem?: {
     __typename: string;
     id: string;
-    item_recipe_id: string;
     amount: number;
     Item: {
       __typename: string;
@@ -284,7 +273,9 @@ interface Material {
       image: string;
     };
   }[];
-  amount: number;
+};
+interface RecipeState extends ItemRecipe {
+  amount?: number;
 }
 /**
  * Calculates the base materials required to produce the specified objects.
@@ -293,20 +284,18 @@ interface Material {
  *                                     the function will return the direct materials.
  * @param {...Object} objects - The objects for which the base materials are to be calculated.
  *
- * @returns {Array<any>} An array of objects representing the base materials required.
+ * @returns {Array<RecipeState>} An array of objects representing the base materials required.
  */
-
-// TODO: FIX TYPES!
 export const getBaseMaterials = (
   baseMaterials: boolean = false,
   path: boolean = false,
-  items: any[],
-  ...objects: Array<any>
-) => {
+  items: ItemRecipe[],
+  ...objects: RecipeState[]
+): RecipeState[] => {
 
   let materials = [];
   const findBaseMaterials = (
-    item: { ItemRecipeItem: CraftingRecipe[] },
+    item: ItemRecipe,
     amount: number,
     yields: number = 1
   ) => {

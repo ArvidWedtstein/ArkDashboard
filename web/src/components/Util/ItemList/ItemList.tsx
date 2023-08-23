@@ -26,7 +26,6 @@ const ItemList = ({
 }: ItemListProps) => {
   const [search, setSearch] = useState<string>("");
   const [openItemIds, setOpenItemIds] = useState<string[]>([]);// Store open item IDs
-
   const toggleItemOpen = (itemId: string) => {
     setOpenItemIds((prevOpenItemIds) =>
       prevOpenItemIds.includes(itemId)
@@ -62,9 +61,9 @@ const ItemList = ({
     </li>
   );
 
-  const renderList = (item: Item, index: number) => {
+  const renderList = (item: Item, index: number, subindex?: number) => {
     const itemId = generateUniqueId();
-    const isOpen = openItemIds.includes(index.toString());
+    const isOpen = openItemIds.includes((index + (subindex ?? 0)).toString());
     return (
       <React.Fragment key={itemId}>
         {
@@ -86,7 +85,7 @@ const ItemList = ({
               >
                 <summary
                   onClick={() => {
-                    toggleItemOpen(index.toString());
+                    toggleItemOpen((index + (subindex ?? 0)).toString());
                   }}
                   className="flex select-none items-center space-x-1 rounded-lg p-2 text-gray-900 after:absolute after:right-0 after:transform after:px-2 after:transition-transform after:duration-150 after:ease-in-out after:content-['>'] hover:bg-gray-100 dark:text-white dark:hover:bg-zinc-700">
                   {item.icon && typeof item.icon == "string" ? (
@@ -114,7 +113,7 @@ const ItemList = ({
                   </span>
                 </summary>
 
-                <ul className="py-2">{item?.value.map(renderList)}</ul>
+                <ul className="py-2">{item?.value.map((f, i) => renderList(f, i, (subindex ?? 0) + index + 1))}</ul>
               </details>
             </li>
           ) : (
