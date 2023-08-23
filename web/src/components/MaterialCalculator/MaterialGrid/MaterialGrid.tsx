@@ -49,6 +49,7 @@ type ItemRecipe = {
     category: string;
     type: string;
   };
+  Item?: ItemRecipe["Item_ItemRecipe_crafted_item_idToItem"];
   ItemRecipeItem?: {
     __typename: string;
     id: string;
@@ -61,13 +62,16 @@ type ItemRecipe = {
     };
   }[];
 };
+interface RecipeState extends ItemRecipe {
+  // Item?: ItemRecipe["Item_ItemRecipe_crafted_item_idToItem"];
+  amount: number;
+}
 interface MaterialGridProps {
   itemRecipes: NonNullable<FindItemsMats["itemRecipes"]>;
   error?: RWGqlError;
 }
 
-// TODO: change type
-const TreeBranch = memo(({ itemRecipe }: any) => {
+const TreeBranch = memo(({ itemRecipe }: { itemRecipe: RecipeState }) => {
   const { Item, amount, crafting_time } = itemRecipe;
   const imageUrl = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item?.image}`;
   return (
@@ -91,7 +95,7 @@ const TreeBranch = memo(({ itemRecipe }: any) => {
           {itemRecipe?.ItemRecipeItem.map((subItemRecipe, i) => (
             <TreeBranch
               key={`subItem-${subItemRecipe?.Item?.id}`}
-              itemRecipe={subItemRecipe}
+              itemRecipe={subItemRecipe as RecipeState}
             />
           ))}
         </ul>
@@ -162,9 +166,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       item?: ItemRecipe;
     }[];
   }
-  interface RecipeState extends ItemRecipe {
-    amount: number;
-  }
+
   const reducer = (state: RecipeState[], action: RecipeAction) => {
     const { type, payload } = action;
     switch (type) {
@@ -581,7 +583,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                         }).map((itemrecipe, i) => (
                           <TreeBranch
                             key={`tree-${i}`}
-                            itemRecipe={itemrecipe}
+                            itemRecipe={itemrecipe as RecipeState}
                           />
                         ))}
                       </ul>

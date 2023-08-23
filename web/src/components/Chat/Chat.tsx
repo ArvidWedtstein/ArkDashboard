@@ -64,7 +64,6 @@ const Message = ({
       className="group flex px-5 pt-0 pb-11 aria-[owns=owner]:flex-row-reverse"
     >
       <div className="chat-msg-profile relative mt-auto -mb-5 flex-shrink-0">
-        {/* TODO: Replace with avatar component later */}
         <img
           className="h-10 w-10 rounded-full object-cover"
           src={

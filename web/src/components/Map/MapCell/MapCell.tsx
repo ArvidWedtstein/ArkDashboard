@@ -4,7 +4,6 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Map from "src/components/Map/Map";
 
-// TODO: fetch notes for other maps/submaps
 export const QUERY = gql`
   query FindMapById($id: BigInt!) {
     map: map(id: $id) {
