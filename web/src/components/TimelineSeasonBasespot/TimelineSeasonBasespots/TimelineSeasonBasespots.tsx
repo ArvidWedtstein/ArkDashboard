@@ -19,6 +19,7 @@ const TimelineSeasonBasespotsList = ({
                   "group relative flex h-auto w-full overflow-hidden rounded-lg"
                 }
               >
+                {/* TODO: use one image from basespot  */}
                 <img
                   className="h-full w-full object-cover transition-all duration-200 ease-in group-hover:scale-110"
                   src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/13/20220618173551_1.jpg?t=2023-06-28T09%3A03%3A09.582Z`}
@@ -40,6 +41,7 @@ const TimelineSeasonBasespotsList = ({
                   </div>
                 </div>
                 <span className="absolute right-3 top-3 z-10 rounded-[10px] bg-[#8b9ca380] py-1 px-3 text-xs text-white">
+                  {/* TODO: insert house-cracked/house icon here, depending if base is raided */}
                   {name}
                 </span>
               </Link>
