@@ -22,6 +22,1010 @@ Object.keys(lootmaps).forEach((map) => {
     [map]: lootmaps[map].lootcrate_beacons,
   });
 });
+let ids = {
+  TheIsland: [
+    {
+      id: "SupplyCrate_Cave_QualityTier1_C",
+      name: "Cave Beacon 1",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier2_C",
+      name: "Cave Beacon 2",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier3_C",
+      name: "Cave Beacon 3",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier4_C",
+      name: "Cave Beacon 4",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier1_C",
+      name: "Swamp Cave Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier2_C",
+      name: "Swamp Cave Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier3_C",
+      name: "Swamp Cave Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier1_C",
+      name: "Ice Cave Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier2_C",
+      name: "Ice Cave Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier3_C",
+      name: "Ice Cave Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier1_C",
+      name: "Underwater Caves Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier2_C",
+      name: "Underwater Caves Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier3_C",
+      name: "Underwater Caves Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_OceanInstant_C\n\n\nSupplyCrate_OceanInstant_High_C",
+      name: "Deep Sea Loot Crate",
+    },
+    {
+      id: "SupplyCrate_Level03_C",
+      name: "White Beacon",
+    },
+    {
+      id: "SupplyCrate_Level03_Double_C",
+      name: "White Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level15_C",
+      name: "Green Beacon",
+    },
+    {
+      id: "SupplyCrate_Level15_Double_C",
+      name: "Green Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level25_C",
+      name: "Blue Beacon",
+    },
+    {
+      id: "SupplyCrate_Level25_Double_C",
+      name: "Blue Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level35_C",
+      name: "Purple Beacon",
+    },
+    {
+      id: "SupplyCrate_Level35_Double_C",
+      name: "Purple Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level45_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "SupplyCrate_Level45_Double_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level60_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "SupplyCrate_Level60_Double_C",
+      name: "Red Beacon (Double items)",
+    },
+    {
+      id: "ArtifactCrate_1_C",
+      name: "Artifact Container Hunter",
+    },
+    {
+      id: "ArtifactCrate_2_C",
+      name: "Artifact Container Pack",
+    },
+    {
+      id: "ArtifactCrate_3_C",
+      name: "Artifact Container Massive",
+    },
+    {
+      id: "ArtifactCrate_4_C",
+      name: "Artifact Container Devious",
+    },
+    {
+      id: "ArtifactCrate_5_C",
+      name: "Artifact Container Clever",
+    },
+    {
+      id: "ArtifactCrate_6_C",
+      name: "Artifact Container Skylord",
+    },
+    {
+      id: "ArtifactCrate_7_C",
+      name: "Artifact Container Devourer",
+    },
+    {
+      id: "ArtifactCrate_8_C",
+      name: "Artifact Container Immune",
+    },
+    {
+      id: "ArtifactCrate_9_C",
+      name: "Artifact Container Strong",
+    },
+    {
+      id: "ArtifactCrate_10_C",
+      name: "Artifact Container Cunning",
+    },
+    {
+      id: "ArtifactCrate_11_C",
+      name: "Artifact Container Brute",
+    },
+    {
+      id: "BeaverDam_C",
+      name: "Beaver Dam",
+    },
+    {
+      id: "SupplyCrateBaseBP_Instantaneous_DamLogs_Child_C",
+      name: "Giant Beaver Dam Logs",
+    },
+    {
+      id: "SupplyCrateBaseBP_Instantaneous_DenLogs_Child2_C",
+      name: "Giant Beaver Dam",
+    },
+  ],
+  Event: [
+    {
+      id: "SupplyCrate_Gift_C",
+      name: "Raptor Claus Present",
+    },
+  ],
+  ScorchedEarth: [
+    {
+      id: "SupplyCrate_Cave_QualityTier1_ScorchedEarth_C",
+      name: "Cave Beacon 1",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier2_ScorchedEarth_C",
+      name: "Cave Beacon 2",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier3_ScorchedEarth_C",
+      name: "Cave Beacon 3",
+    },
+    {
+      id: "SupplyCrate_Level03_ScorchedEarth_C",
+      name: "White Beacon",
+    },
+    {
+      id: "SupplyCrate_Level03_Double_ScorchedEarth_C",
+      name: "White Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level15_ScorchedEarth_C",
+      name: "Green Beacon",
+    },
+    {
+      id: "SupplyCrate_Level15_Double_ScorchedEarth_C",
+      name: "Green Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level30_ScorchedEarth_C",
+      name: "Blue Beacon",
+    },
+    {
+      id: "SupplyCrate_Level30_Double_ScorchedEarth_C",
+      name: "Blue Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level45_ScorchedEarth_C",
+      name: "Purple Beacon",
+    },
+    {
+      id: "SupplyCrate_Level45_Double_ScorchedEarth_C",
+      name: "Purple Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level55_ScorchedEarth_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "SupplyCrate_Level55_Double_ScorchedEarth_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level70_ScorchedEarth_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "SupplyCrate_Level70_Double_ScorchedEarth_C",
+      name: "Red Beacon (Double items)",
+    },
+    {
+      id: "ArtifactCrate_SE_C",
+      name: "Artifact Container Destroyer",
+    },
+    {
+      id: "ArtifactCrate_2_SE_C",
+      name: "Artifact Container Gatekeeper",
+    },
+    {
+      id: "ArtifactCrate_3_SE_C",
+      name: "Artifact Container Crag",
+    },
+  ],
+  Ragnarok: [
+    {
+      id: "SupplyCrate_Chest_Treasure_JacksonL_C",
+      name: "Treasure Chest",
+    },
+  ],
+  RagnarokExtracrates: [
+    {
+      id: "SupplyCrate_Cave_QualityTier1_C",
+      name: "Cave Beacon 1",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier2_C",
+      name: "Cave Beacon 2",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier3_C",
+      name: "Cave Beacon 3",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier4_C",
+      name: "Cave Beacon 4",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier1_C",
+      name: "Swamp Cave Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier2_C",
+      name: "Swamp Cave Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier3_C",
+      name: "Swamp Cave Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier1_C",
+      name: "Ice Cave Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier2_C",
+      name: "Ice Cave Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier3_C",
+      name: "Ice Cave Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier1_C",
+      name: "Underwater Caves Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier2_C",
+      name: "Underwater Caves Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier3_C",
+      name: "Underwater Caves Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_OceanInstant_C\n\n\nSupplyCrate_OceanInstant_High_C",
+      name: "Deep Sea Loot Crate",
+    },
+    {
+      id: "SupplyCrate_Level03_C",
+      name: "White Beacon",
+    },
+    {
+      id: "SupplyCrate_Level03_Double_C",
+      name: "White Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level15_C",
+      name: "Green Beacon",
+    },
+    {
+      id: "SupplyCrate_Level15_Double_C",
+      name: "Green Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level25_C",
+      name: "Blue Beacon",
+    },
+    {
+      id: "SupplyCrate_Level25_Double_C",
+      name: "Blue Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level35_C",
+      name: "Purple Beacon",
+    },
+    {
+      id: "SupplyCrate_Level35_Double_C",
+      name: "Purple Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level45_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "SupplyCrate_Level45_Double_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level60_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "SupplyCrate_Level60_Double_C",
+      name: "Red Beacon (Double items)",
+    },
+    {
+      id: "ArtifactCrate_1_C",
+      name: "Artifact Container Hunter",
+    },
+    {
+      id: "ArtifactCrate_2_C",
+      name: "Artifact Container Pack",
+    },
+    {
+      id: "ArtifactCrate_3_C",
+      name: "Artifact Container Massive",
+    },
+    {
+      id: "ArtifactCrate_4_C",
+      name: "Artifact Container Devious",
+    },
+    {
+      id: "ArtifactCrate_5_C",
+      name: "Artifact Container Clever",
+    },
+    {
+      id: "ArtifactCrate_6_C",
+      name: "Artifact Container Skylord",
+    },
+    {
+      id: "ArtifactCrate_7_C",
+      name: "Artifact Container Devourer",
+    },
+    {
+      id: "ArtifactCrate_8_C",
+      name: "Artifact Container Immune",
+    },
+    {
+      id: "ArtifactCrate_9_C",
+      name: "Artifact Container Strong",
+    },
+    {
+      id: "ArtifactCrate_10_C",
+      name: "Artifact Container Cunning",
+    },
+    {
+      id: "ArtifactCrate_11_C",
+      name: "Artifact Container Brute",
+    },
+    {
+      id: "BeaverDam_C",
+      name: "Beaver Dam",
+    },
+    {
+      id: "SupplyCrateBaseBP_Instantaneous_DamLogs_Child_C",
+      name: "Giant Beaver Dam Logs",
+    },
+    {
+      id: "SupplyCrateBaseBP_Instantaneous_DenLogs_Child2_C",
+      name: "Giant Beaver Dam",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier1_ScorchedEarth_C",
+      name: "Cave Beacon 1",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier2_ScorchedEarth_C",
+      name: "Cave Beacon 2",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier3_ScorchedEarth_C",
+      name: "Cave Beacon 3",
+    },
+    {
+      id: "SupplyCrate_Level03_ScorchedEarth_C",
+      name: "White Beacon",
+    },
+    {
+      id: "SupplyCrate_Level03_Double_ScorchedEarth_C",
+      name: "White Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level15_ScorchedEarth_C",
+      name: "Green Beacon",
+    },
+    {
+      id: "SupplyCrate_Level15_Double_ScorchedEarth_C",
+      name: "Green Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level30_ScorchedEarth_C",
+      name: "Blue Beacon",
+    },
+    {
+      id: "SupplyCrate_Level30_Double_ScorchedEarth_C",
+      name: "Blue Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level45_ScorchedEarth_C",
+      name: "Purple Beacon",
+    },
+    {
+      id: "SupplyCrate_Level45_Double_ScorchedEarth_C",
+      name: "Purple Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level55_ScorchedEarth_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "SupplyCrate_Level55_Double_ScorchedEarth_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level70_ScorchedEarth_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "SupplyCrate_Level70_Double_ScorchedEarth_C",
+      name: "Red Beacon (Double items)",
+    },
+    {
+      id: "ArtifactCrate_SE_C",
+      name: "Artifact Container Destroyer",
+    },
+    {
+      id: "ArtifactCrate_2_SE_C",
+      name: "Artifact Container Gatekeeper",
+    },
+    {
+      id: "ArtifactCrate_3_SE_C",
+      name: "Artifact Container Crag",
+    },
+  ],
+  Aberration: [
+    {
+      id: "SupplyCrate_Cave_Aberration_Level10_C\n\nSupplyCrate_Cave_Aberration_Level10_Double_C",
+      name: "White Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level25_C\n\nSupplyCrate_Cave_Aberration_Level25_Double_C",
+      name: "Green Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level35_C\n\nSupplyCrate_Cave_Aberration_Level35_Double_C",
+      name: "Blue Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level50_C\n\nSupplyCrate_Cave_Aberration_Level50_Double_C",
+      name: "Purple Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level65_C\n\nSupplyCrate_Cave_Aberration_Level65_Double_C",
+      name: "Yellow Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level80_C\n\nSupplyCrate_Cave_Aberration_Level80_Double_C",
+      name: "Red Crate",
+    },
+    {
+      id: "SupplyCrate_Dungeon_Aberration_Level35_C",
+      name: "Blue Dungeon Crate",
+    },
+    {
+      id: "SupplyCrate_Dungeon_Aberration_Level50_C",
+      name: "Purple Dungeon Crate",
+    },
+    {
+      id: "SupplyCrate_Dungeon_Aberration_Level65_C",
+      name: "Yellow Dungeon Crate",
+    },
+    {
+      id: "SupplyCrate_Dungeon_Aberration_Level80_C",
+      name: "Red Dungeon Crate",
+    },
+    {
+      id: "SupplyCrate_Level35_Aberrant_Surface_C\n\nSupplyCrate_Level35_Aberrant_Surface_Double_C",
+      name: "Blue Surface Beacon",
+    },
+    {
+      id: "SupplyCrate_Level50_Aberrant_Surface_C\n\nSupplyCrate_Level50_Aberrant_Surface_Double_C",
+      name: "Purple Surface Beacon",
+    },
+    {
+      id: "SupplyCrate_Level65_Aberrant_Surface_C\n\nSupplyCrate_Level65_Aberrant_Surface_Double_C",
+      name: "Yellow Surface Beacon",
+    },
+    {
+      id: "SupplyCrate_Level80_Aberrant_Surface_C\n\nSupplyCrate_Level80_Aberrant_Surface_Double_C",
+      name: "Red Surface Beacon",
+    },
+    {
+      id: "ArtifactCrate_AB_C",
+      name: "Artifact Container Depths",
+    },
+    {
+      id: "ArtifactCrate_2_AB_C",
+      name: "Artifact Container Shadows",
+    },
+    {
+      id: "ArtifactCrate_3_AB_C",
+      name: "Artifact Container Stalker",
+    },
+    {
+      id: "ArtifactCrate_4_AB_C",
+      name: "Artifact Container Lost",
+    },
+  ],
+  Extinction: [
+    {
+      id: "SupplyCrate_Cave_QualityTier1_EX_C",
+      name: "Cave Loot Crate Blue",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier2_EX_C",
+      name: "Cave Loot Crate Yellow",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier3_EX_C",
+      name: "Cave Loot Crate Red",
+    },
+    {
+      id: "SupplyCrate_Base_Horde_Easy_C",
+      name: "Orbital Supply Drop Blue",
+    },
+    {
+      id: "SupplyCrate_Base_Horde_Medium_C",
+      name: "Orbital Supply Drop Yellow",
+    },
+    {
+      id: "SupplyCrate_Base_Horde_Hard_C",
+      name: "Orbital Supply Drop Red",
+    },
+    {
+      id: "SupplyCrate_Base_Horde_Legendary_C",
+      name: "Orbital Supply Drop Purple",
+    },
+    {
+      id: "ElementNode_Easy_Horde_C\nElementNode_Hard_Horde_C\nElementNode_Medium_Horde_C\nKingKaiju_ElementNode_C\n",
+      name: "Corrupt Element Node",
+    },
+    {
+      id: "ArtifactCrate_Desert_Kaiju_EX_C",
+      name: "Artifact Container Chaos",
+    },
+    {
+      id: "ArtifactCrate_ForestKaiju_EX_C",
+      name: "Artifact Container Growth",
+    },
+    {
+      id: "ArtifactCrate_IceKaiju_EX_C",
+      name: "Artifact Container Void",
+    },
+    {
+      id: "ArtifactCrate_KingKaiju_Alpha_EX_C",
+      name: "King Titan Alpha",
+    },
+    {
+      id: "ArtifactCrate_KingKaiju_Beta_EX_C",
+      name: "King Titan Beta",
+    },
+    {
+      id: "ArtifactCrate_KingKaiju_EX_C",
+      name: "King Titan Gamma",
+    },
+  ],
+  Valguero: [
+    {
+      id: "Val_SupplyCrate_Level35_C",
+      name: "Purple Beacon",
+    },
+    {
+      id: "Val_SupplyCrate_Level35_Double_C",
+      name: "Purple Beacon (Double items)",
+    },
+    {
+      id: "Val_SupplyCrate_Level45_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "Val_SupplyCrate_Level45_Double_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "Val_SupplyCrate_Level60_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "Val_SupplyCrate_Level60_Double_C",
+      name: "Red Beacon (Double items)",
+    },
+  ],
+  ValgueroExtracrates: [
+    {
+      id: "SupplyCrate_Cave_QualityTier1_C",
+      name: "Cave Beacon 1",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier2_C",
+      name: "Cave Beacon 2",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier3_C",
+      name: "Cave Beacon 3",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier4_C",
+      name: "Cave Beacon 4",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier1_C",
+      name: "Swamp Cave Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier2_C",
+      name: "Swamp Cave Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier3_C",
+      name: "Swamp Cave Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier1_C",
+      name: "Ice Cave Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier2_C",
+      name: "Ice Cave Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier3_C",
+      name: "Ice Cave Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier1_C",
+      name: "Underwater Caves Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier2_C",
+      name: "Underwater Caves Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier3_C",
+      name: "Underwater Caves Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_OceanInstant_C\n\n\nSupplyCrate_OceanInstant_High_C",
+      name: "Deep Sea Loot Crate",
+    },
+    {
+      id: "SupplyCrate_Level03_C",
+      name: "White Beacon",
+    },
+    {
+      id: "SupplyCrate_Level03_Double_C",
+      name: "White Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level15_C",
+      name: "Green Beacon",
+    },
+    {
+      id: "SupplyCrate_Level15_Double_C",
+      name: "Green Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level25_C",
+      name: "Blue Beacon",
+    },
+    {
+      id: "SupplyCrate_Level25_Double_C",
+      name: "Blue Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level35_C",
+      name: "Purple Beacon",
+    },
+    {
+      id: "SupplyCrate_Level35_Double_C",
+      name: "Purple Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level45_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "SupplyCrate_Level45_Double_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level60_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "SupplyCrate_Level60_Double_C",
+      name: "Red Beacon (Double items)",
+    },
+    {
+      id: "ArtifactCrate_1_C",
+      name: "Artifact Container Hunter",
+    },
+    {
+      id: "ArtifactCrate_2_C",
+      name: "Artifact Container Pack",
+    },
+    {
+      id: "ArtifactCrate_3_C",
+      name: "Artifact Container Massive",
+    },
+    {
+      id: "ArtifactCrate_4_C",
+      name: "Artifact Container Devious",
+    },
+    {
+      id: "ArtifactCrate_5_C",
+      name: "Artifact Container Clever",
+    },
+    {
+      id: "ArtifactCrate_6_C",
+      name: "Artifact Container Skylord",
+    },
+    {
+      id: "ArtifactCrate_7_C",
+      name: "Artifact Container Devourer",
+    },
+    {
+      id: "ArtifactCrate_8_C",
+      name: "Artifact Container Immune",
+    },
+    {
+      id: "ArtifactCrate_9_C",
+      name: "Artifact Container Strong",
+    },
+    {
+      id: "ArtifactCrate_10_C",
+      name: "Artifact Container Cunning",
+    },
+    {
+      id: "ArtifactCrate_11_C",
+      name: "Artifact Container Brute",
+    },
+    {
+      id: "BeaverDam_C",
+      name: "Beaver Dam",
+    },
+    {
+      id: "SupplyCrateBaseBP_Instantaneous_DamLogs_Child_C",
+      name: "Giant Beaver Dam Logs",
+    },
+    {
+      id: "SupplyCrateBaseBP_Instantaneous_DenLogs_Child2_C",
+      name: "Giant Beaver Dam",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level10_C\n\nSupplyCrate_Cave_Aberration_Level10_Double_C",
+      name: "White Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level25_C\n\nSupplyCrate_Cave_Aberration_Level25_Double_C",
+      name: "Green Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level35_C\n\nSupplyCrate_Cave_Aberration_Level35_Double_C",
+      name: "Blue Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level50_C\n\nSupplyCrate_Cave_Aberration_Level50_Double_C",
+      name: "Purple Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level65_C\n\nSupplyCrate_Cave_Aberration_Level65_Double_C",
+      name: "Yellow Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level80_C\n\nSupplyCrate_Cave_Aberration_Level80_Double_C",
+      name: "Red Crate",
+    },
+    {
+      id: "SupplyCrate_Dungeon_Aberration_Level35_C",
+      name: "Blue Dungeon Crate",
+    },
+    {
+      id: "SupplyCrate_Dungeon_Aberration_Level50_C",
+      name: "Purple Dungeon Crate",
+    },
+    {
+      id: "SupplyCrate_Dungeon_Aberration_Level65_C",
+      name: "Yellow Dungeon Crate",
+    },
+    {
+      id: "SupplyCrate_Dungeon_Aberration_Level80_C",
+      name: "Red Dungeon Crate",
+    },
+    {
+      id: "SupplyCrate_Level35_Aberrant_Surface_C\n\nSupplyCrate_Level35_Aberrant_Surface_Double_C",
+      name: "Blue Surface Beacon",
+    },
+    {
+      id: "SupplyCrate_Level50_Aberrant_Surface_C\n\nSupplyCrate_Level50_Aberrant_Surface_Double_C",
+      name: "Purple Surface Beacon",
+    },
+    {
+      id: "SupplyCrate_Level65_Aberrant_Surface_C\n\nSupplyCrate_Level65_Aberrant_Surface_Double_C",
+      name: "Yellow Surface Beacon",
+    },
+    {
+      id: "SupplyCrate_Level80_Aberrant_Surface_C\n\nSupplyCrate_Level80_Aberrant_Surface_Double_C",
+      name: "Red Surface Beacon",
+    },
+    {
+      id: "ArtifactCrate_AB_C",
+      name: "Artifact Container Depths",
+    },
+    {
+      id: "ArtifactCrate_2_AB_C",
+      name: "Artifact Container Shadows",
+    },
+    {
+      id: "ArtifactCrate_3_AB_C",
+      name: "Artifact Container Stalker",
+    },
+    {
+      id: "ArtifactCrate_4_AB_C",
+      name: "Artifact Container Lost",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier1_ScorchedEarth_C",
+      name: "Cave Beacon 1",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier2_ScorchedEarth_C",
+      name: "Cave Beacon 2",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier3_ScorchedEarth_C",
+      name: "Cave Beacon 3",
+    },
+    {
+      id: "SupplyCrate_Level03_ScorchedEarth_C",
+      name: "White Beacon",
+    },
+    {
+      id: "SupplyCrate_Level03_Double_ScorchedEarth_C",
+      name: "White Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level15_ScorchedEarth_C",
+      name: "Green Beacon",
+    },
+    {
+      id: "SupplyCrate_Level15_Double_ScorchedEarth_C",
+      name: "Green Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level30_ScorchedEarth_C",
+      name: "Blue Beacon",
+    },
+    {
+      id: "SupplyCrate_Level30_Double_ScorchedEarth_C",
+      name: "Blue Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level45_ScorchedEarth_C",
+      name: "Purple Beacon",
+    },
+    {
+      id: "SupplyCrate_Level45_Double_ScorchedEarth_C",
+      name: "Purple Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level55_ScorchedEarth_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "SupplyCrate_Level55_Double_ScorchedEarth_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level70_ScorchedEarth_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "SupplyCrate_Level70_Double_ScorchedEarth_C",
+      name: "Red Beacon (Double items)",
+    },
+    {
+      id: "ArtifactCrate_SE_C",
+      name: "Artifact Container Destroyer",
+    },
+    {
+      id: "ArtifactCrate_2_SE_C",
+      name: "Artifact Container Gatekeeper",
+    },
+    {
+      id: "ArtifactCrate_3_SE_C",
+      name: "Artifact Container Crag",
+    },
+  ],
+  Genesis2: [
+    {
+      id: "SupplyCrate_Space_01_Ambergris_C",
+      name: "White Supply Crate",
+    },
+    {
+      id: "SupplyCrate_Space_02_Crystal_C",
+      name: "Green Supply Crate",
+    },
+    {
+      id: "SupplyCrate_Space_03_Sulfur_C",
+      name: "Blue Supply Crate",
+    },
+    {
+      id: "SupplyCrate_Space_04_ElementShards_C",
+      name: "Purple Supply Crate",
+    },
+    {
+      id: "SupplyCrate_Space_05_Obsidian_C",
+      name: "Yellow Supply Crate",
+    },
+    {
+      id: "SupplyCrate_Space_06_Oil_C",
+      name: "Red Supply Crate",
+    },
+    {
+      id: "SupplyCrate_Space_07_ElementDust_C",
+      name: "Cyan Supply Crate",
+    },
+    {
+      id: "SupplyCrate_Space_08_BlackPearls_C",
+      name: "Orange Supply Crate",
+    },
+  ],
+  LostIsland: [
+    {
+      id: "SupplyCrate_Level45_LostIsland_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "SupplyCrate_Level45_LostIsland_Double_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level60_LostIsland_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "SupplyCrate_Level60_LostIsland_Double_C",
+      name: "Red Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Ruins_LostIsland_C",
+      name: "Ruins Dungeon Crate",
+    },
+  ],
+};
 
 console.log(lootcrate_beacons);
 function findCommonAndUniqueValues(lootcrate_beacons) {
