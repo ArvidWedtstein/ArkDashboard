@@ -1,52 +1,78 @@
 console.time("normal");
-const theisland = require("./web/public/ResourcesTheIsland.json");
-const valguero = require("./web/public/ResourcesValguero.json");
-const ragnarok = require("./web/public/ResourcesRagnarok.json");
-const aberration = require("./web/public/ResourcesAberration.json");
-const scorched = require("./web/public/ResourcesScorchedEarth.json");
-const lostisland = require("./web/public/ResourcesLostIsland.json");
+const TheIsland = require("./web/public/ResourcesTheIsland.json");
+const Valguero = require("./web/public/ResourcesValguero.json");
+const Ragnarok = require("./web/public/ResourcesRagnarok.json");
+const Aberration = require("./web/public/ResourcesAberration.json");
+const ScorchedEarth = require("./web/public/ResourcesScorchedEarth.json");
+const LostIsland = require("./web/public/ResourcesLostIsland.json");
 
-const lootcolor = ["yellow", "red", "blue", "purple", "green", "white"];
+const lootmaps = {
+  TheIsland: TheIsland,
+  Valguero: Valguero,
+  Ragnarok: Ragnarok,
+  Aberration: Aberration,
+  ScorchedEarth: ScorchedEarth,
+  LostIsland: LostIsland,
+};
+
 let lootcrate_beacons = {};
 
-lootcolor.forEach((color) => {
+Object.keys(lootmaps).forEach((map) => {
   Object.assign(lootcrate_beacons, {
-    [color]: {
-      TheIsland: theisland.lootcrate_beacons[color],
-      Valguero: valguero.lootcrate_beacons[color],
-      Ragnarok: ragnarok.lootcrate_beacons[color],
-      Aberration: aberration.lootcrate_beacons[color],
-      ScorchedEarth: scorched.lootcrate_beacons[color],
-      LostIsland: lostisland.lootcrate_beacons[color],
-    },
+    [map]: lootmaps[map].lootcrate_beacons,
   });
 });
+
 console.log(lootcrate_beacons);
-function findCommonItems(arrays) {
-  return arrays.reduce((acc, currArray) => {
-    return acc.filter((item) => currArray.includes(item));
+function findCommonAndUniqueValues(lootcrate_beacons) {
+  const colors = Object.keys(lootcrate_beacons.TheIsland);
+  const commonValues = {};
+  const uniqueValues = {};
+
+  colors.forEach((color) => {
+    const commonSet = new Set(lootcrate_beacons.TheIsland[color]);
+
+    for (const map in lootcrate_beacons) {
+      const valuesSet = new Set(lootcrate_beacons[map][color]);
+
+      // Find common values
+      commonSet.forEach((value) => {
+        if (!valuesSet.has(value)) {
+          commonSet.delete(value);
+        }
+      });
+    }
+
+    commonValues[color] = Array.from(commonSet);
+    uniqueValues[color] = [];
+
+    for (const map in lootcrate_beacons) {
+      lootcrate_beacons[map][color].forEach((value) => {
+        if (!commonSet.has(value)) {
+          uniqueValues[color].push({ map, value });
+        }
+      });
+    }
   });
+
+  return { commonValues, uniqueValues };
 }
 
-const result = {};
-
-for (const color in lootcrate_beacons) {
-  const otherColors = Object.keys(lootcrate_beacons).filter((c) => c !== color);
-  const commonItems = findCommonItems(
-    otherColors.map((c) => lootcrate_beacons[c][color])
-  );
-  const notInCommonItems = lootcrate_beacons[color][color].filter(
-    (item) => !commonItems.includes(item)
-  );
-
-  result[color] = {
-    common: commonItems,
-    notInCommon: notInCommonItems,
-  };
-}
-
-console.log("Items in common and not in common by color:", result);
-
+const result = findCommonAndUniqueValues(lootcrate_beacons);
+console.log("Common Values:", result.commonValues);
+// console.log("Unique Values:", result.uniqueValues);
+// require("fs").writeFile(
+//   `insert.txt`,
+//   [
+//     // `INSERT INTO public."Item" ("crafted_item_id", "item_id", "amount") VALUES`,
+//     JSON.stringify(result.commonValues, null, 4),
+//   ].join("\n"),
+//   (error) => {
+//     if (error) {
+//       throw error;
+//     }
+//   }
+// );
 return;
 const dinos = dadinos.map((x) => {
   return `
