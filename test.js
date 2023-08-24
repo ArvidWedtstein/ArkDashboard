@@ -3052,6 +3052,7 @@ function startTimer() {
     $("#ttStart").html("Start Timer");
   }
 }
+
 function stopTimer() {
   clearInterval(interval);
 }
