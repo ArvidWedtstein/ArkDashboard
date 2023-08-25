@@ -24,6 +24,22 @@ Object.keys(lootmaps).forEach((map) => {
   });
 });
 
+let gg = lootcrateitems.map((li) => {
+  return {
+    ...li,
+    items: li.items.flatMap((i) => i),
+  };
+});
+require("fs").writeFile(
+  `insert.txt`,
+  [JSON.stringify(gg, null, 4)].join("\n"),
+  (error) => {
+    if (error) {
+      throw error;
+    }
+  }
+);
+return;
 // Same data as MapLootcrates.json
 let ids = {
   TheIsland: [
@@ -1356,50 +1372,51 @@ let ids = {
   ],
 };
 
-let countCrates = 0;
-let countnonCrates = [];
-let data = {};
-let output = Object.entries(ids).map(([map, crates]) => {
-  Object.assign(data, {
-    [map]: crates.map((crate) => {
-      const item = lootcrateitems.find((lootcrate) =>
-        lootcrate.blueprint.includes(crate.id)
-      );
-      if (item) {
-        countCrates++;
-        return {
-          id: crate.id,
-          name: crate.name || item.name,
-          items: item.items,
-        };
-      } else {
-        countnonCrates.push(crate.id);
-      }
-    }),
-  });
-  return;
-});
+// let countCrates = 0;
+// let countnonCrates = [];
+// let data = {};
+// let output = Object.entries(ids).map(([map, crates]) => {
+//   Object.assign(data, {
+//     [map]: crates.map((crate) => {
+//       const item = lootcrateitems.find((lootcrate) =>
+//         lootcrate.blueprint.includes(crate.id)
+//       );
+//       if (item) {
+//         countCrates++;
+//         return {
+//           id: crate.id,
+//           name: crate.name || item.name,
+//           items: item.items,
+//         };
+//       } else {
+//         countnonCrates.push(crate.id);
+//       }
+//     }),
+//   });
+//   return;
+// });
 
-console.log(data);
-console.log(countnonCrates);
+// console.log(data);
+// console.log(countnonCrates);
 
-require("fs").writeFile(
-  `insert.txt`,
-  [JSON.stringify(data, null, 4)].join("\n"),
-  (error) => {
-    if (error) {
-      throw error;
-    }
-  }
-);
-return;
+// require("fs").writeFile(
+//   `insert.txt`,
+//   [JSON.stringify(data, null, 4)].join("\n"),
+//   (error) => {
+//     if (error) {
+//       throw error;
+//     }
+//   }
+// );
+// return;
+
 // function findCommonAndUniqueValues(lootcrate_beacons) {
-//   const colors = Object.keys(lootcrate_beacons.TheIsland);
+//   const maps = Object.keys(lootcrate_beacons);
 //   const commonValues = {};
 //   const uniqueValues = {};
 
-//   colors.forEach((color) => {
-//     const commonSet = new Set(lootcrate_beacons.TheIsland[color]);
+//   maps.forEach((map) => {
+//     const commonSet = new Set(lootcrate_beacons[map]);
 
 //     for (const map in lootcrate_beacons) {
 //       const valuesSet = new Set(lootcrate_beacons[map][color]);
@@ -1427,7 +1444,7 @@ return;
 //   return { commonValues, uniqueValues };
 // }
 
-// const result = findCommonAndUniqueValues(lootcrate_beacons);
+// const result = findCommonAndUniqueValues(lootcrateitems);
 // console.log("Common Values:", result.commonValues);
 // console.log("Unique Values:", result.uniqueValues);
 // require("fs").writeFile(
