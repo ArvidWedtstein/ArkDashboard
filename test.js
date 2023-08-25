@@ -23,6 +23,8 @@ Object.keys(lootmaps).forEach((map) => {
     [map]: lootmaps[map].lootcrate_beacons,
   });
 });
+
+// Same data as MapLootcrates.json
 let ids = {
   TheIsland: [
     {
