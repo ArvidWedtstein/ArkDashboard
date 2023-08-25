@@ -5,7 +5,36 @@ const Ragnarok = require("./web/public/ResourcesRagnarok.json");
 const Aberration = require("./web/public/ResourcesAberration.json");
 const ScorchedEarth = require("./web/public/ResourcesScorchedEarth.json");
 const LostIsland = require("./web/public/ResourcesLostIsland.json");
+const loot = require("./web/public/loot_crates.json");
 
+const output = loot.lootCrates.map((lootcrate) => {
+  return {
+    blueprint: lootcrate.bp,
+    name: lootcrate.name || "",
+    items: lootcrate.sets.map((set) => {
+      return set.entries.map((entry) => {
+        return entry.items.map((item) => {
+          return {
+            itemblueprint: item[1],
+            entryname: entry.name,
+            setname: set.name,
+            setcanRepeatItems: set.canRepeatItems,
+            setQtyMin: set.qtyScale.min,
+            setQtyMax: set.qtyScale.max,
+            setQtyPow: set.qtyScale.pow,
+            setweight: set.weight,
+            entryWeight: entry.weight,
+            entryQtyMin: entry.qty.min,
+            entryQtyMax: entry.qty.max,
+            entryQtyPow: entry.qty.pow,
+          };
+        });
+      });
+    }),
+  };
+});
+
+return;
 const lootmaps = {
   TheIsland: TheIsland,
   Valguero: Valguero,
