@@ -24,15 +24,118 @@ Object.keys(lootmaps).forEach((map) => {
   });
 });
 
-let gg = lootcrateitems.map((li) => {
+// let countCrates = 0;
+// let countnonCrates = [];
+// let data = {};
+// let output = Object.entries(ids).map(([map, crates]) => {
+//   Object.assign(data, {
+//     [map]: crates.map((crate) => {
+//       const item = lootcrateitems.find((lootcrate) =>
+//         lootcrate.blueprint.includes(crate.id)
+//       );
+//       if (item) {
+//         countCrates++;
+//         return {
+//           id: crate.id,
+//           name: crate.name || item.name,
+//           items: item.items,
+//         };
+//       } else {
+//         countnonCrates.push(crate.id);
+//       }
+//     }),
+//   });
+//   return;
+// });
+
+// console.log(countCrates);
+// console.log(countnonCrates);
+
+// require("fs").writeFile(
+//   `insert.txt`,
+//   [JSON.stringify(data, null, 4)].join("\n"),
+//   (error) => {
+//     if (error) {
+//       throw error;
+//     }
+//   }
+// );
+// return;
+
+function findCommonItemSetsWithThresholdAndLootcrates(lootcrates, threshold) {
+  if (lootcrates.length === 0) {
+    return [];
+  }
+
+  // Create a map to store itemIds as keys and their occurrences as values
+  const itemIdOccurrences = new Map();
+
+  // Count the occurrences of each itemId across all lootcrates
+  for (let i = 0; i < lootcrates.length; i++) {
+    const lootcrate = lootcrates[i];
+    for (const item of lootcrate.items) {
+      if (itemIdOccurrences.has(item.itemId)) {
+        itemIdOccurrences.set(
+          item.itemId,
+          itemIdOccurrences.get(item.itemId) + 1
+        );
+      } else {
+        itemIdOccurrences.set(item.itemId, 1);
+      }
+    }
+  }
+
+  // Get the itemIds that occurred in more than the specified threshold of lootcrates
+  const commonItemIds = [...itemIdOccurrences.entries()]
+    .filter(([itemId, occurrences]) => occurrences >= threshold)
+    .map(([itemId]) => itemId);
+
+  // Create sets of items using the common itemIds and store lootcrate information
+  const commonItemSets = [];
+  for (let i = 0; i < lootcrates.length; i++) {
+    const lootcrate = lootcrates[i];
+    const commonItems = lootcrate.items.filter((item) =>
+      commonItemIds.includes(item.itemId)
+    );
+    if (commonItems.length > 0) {
+      commonItemSets.push({
+        lootcrateIndex: i,
+        items: commonItems,
+      });
+    }
+  }
+
+  // Create a map to store which lootcrates use each common item set
+  const lootcratesUsingSet = new Map();
+  for (const commonItemSet of commonItemSets) {
+    for (const item of commonItemSet.items) {
+      if (lootcratesUsingSet.has(item.itemId)) {
+        lootcratesUsingSet.get(item.itemId).push(commonItemSet.lootcrateIndex);
+      } else {
+        lootcratesUsingSet.set(item.itemId, [commonItemSet.lootcrateIndex]);
+      }
+    }
+  }
+
   return {
-    ...li,
-    items: li.items.flatMap((i) => i),
+    commonItemSets: commonItemSets,
+    lootcratesUsingSet: lootcratesUsingSet,
   };
-});
+}
+
+const commonItemSets = findCommonItemSetsWithThresholdAndLootcrates(
+  lootcrateitems,
+  2
+);
+
+// TODO: check for map lootcrates in map specific json files from arkwiki
+console.log("Grouped Common ItemIds:", commonItemSets.commonItemSets);
 require("fs").writeFile(
   `insert.txt`,
-  [JSON.stringify(gg, null, 4)].join("\n"),
+  [
+    // `INSERT INTO public."Item" ("crafted_item_id", "item_id", "amount") VALUES`,
+    JSON.stringify(commonItemSets.commonItemSets, null, 4),
+  ].join("\n"),
   (error) => {
     if (error) {
       throw error;
@@ -40,6 +143,194 @@ require("fs").writeFile(
   }
 );
 return;
+
+// USED FOR GETTING ITEMS IN LOOTCRATES.JSON
+// const output = loot.lootCrates.map((lootcrate) => {
+//   return {
+//     blueprint: lootcrate.bp,
+//     name: lootcrate.name || "",
+//     items: lootcrate.sets.flatMap((set) => {
+//       return set.entries.map((entry) => {
+//         return entry.items.map((item) => {
+//           return {
+//             itemId: itemarray.find((i) => i.blueprint == item[1])?.id || null,
+//             itemName:
+//               itemarray.find((i) => i.blueprint == item[1])?.name || null,
+//             itemBlueprint: item[1],
+//             entryName: entry.name,
+//             setName: set.name,
+//             setCanRepeatItems: set.canRepeatItems,
+//             setQtyMin: set.qtyScale.min,
+//             setQtyMax: set.qtyScale.max,
+//             setQtyPow: set.qtyScale.pow,
+//             setWeight: set.weight,
+//             entryWeight: entry.weight,
+//             entryQtyMin: entry.qty.min,
+//             entryQtyMax: entry.qty.max,
+//             entryQtyPow: entry.qty.pow,
+//             entryQualityMin: entry.quality.min,
+//             entryQualityMax: entry.quality.max,
+//             entryQualityPow: entry.quality.pow,
+//           };
+//         });
+//       });
+//     }),
+//   };
+// });
+//
+// require("fs").writeFile(
+//   `insert.txt`,
+//   [JSON.stringify(output, null, 4)].join("\n"),
+//   (error) => {
+//     if (error) {
+//       throw error;
+//     }
+//   }
+// );
+
+const dinos = dadinos.map((x) => {
+  return `
+  UPDATE public."Dino"
+  SET bp = '${x.bp}'
+  WHERE name LIKE '${x.name}';`;
+
+  // return `
+  // UPDATE public."Dino"
+  // SET taming_ineffectiveness = ${x?.taming?.tamingIneffectiveness || 0},
+  // baby_food_consumption_mult = ${x?.taming?.babyFoodConsumptionMult || 0},
+  // gestation_time = ${x?.breeding?.gestationTime || 0},
+  // maturation_time = ${x?.breeding?.maturationTime || "maturation_time"},
+  // incubation_time = ${x?.breeding?.incubationTime || "incubation_time"},
+  // mating_cooldown_min = ${x?.breeding?.matingCooldownMin || 0},
+  // mating_cooldown_max = ${x?.breeding?.matingCooldownMax || 0},
+  // egg_min = ${x?.breeding?.eggTempMin || "egg_min"},
+  // egg_max = ${x?.breeding?.eggTempMax || "egg_max"}
+  // WHERE name LIKE '${x.name}';`;
+
+  return {
+    name: x.name,
+    taming_ineffectiveness: x?.taming?.tamingIneffectiveness || 0,
+    baby_food_consumption_mult: x?.taming?.babyFoodConsumptionMult || 0,
+    gestation_time: x?.breeding?.gestationTime || 0,
+    maturation_time: x?.breeding?.maturationTime || 0,
+    incubation_time: x?.breeding?.incubationTime || 0,
+    mating_cooldown_min: x?.breeding?.matingCooldownMin || 0,
+    mating_cooldown_max: x?.breeding?.matingCooldownMax || 0,
+    egg_min: x?.breeding?.eggTempMin || 0,
+    egg_max: x?.breeding?.eggTempMax || 0,
+  };
+});
+
+// const crates = Object.entries(dino).map(([k, v]) => {
+//   let d = v.mult
+//     ? `UPDATE public."Dino" SET multipliers = '[${JSON.stringify(
+//         v.mult || ""
+//       )}]' WHERE name LIKE '${v.name}';`
+//     : "";
+//   return d;
+// });
+
+// For downloading images
+// setInterval(function(){
+// if(images.length > i){
+//         srcList.push(images[i].src);
+//         var link = document.createElement("a");
+//         link.id=i;
+//         link.download = images[i].src;
+//         link.href = images[i].src;
+//         link.click();
+// 		link.remove();
+//         i++;
+//     }
+
+// 		Array.from(document.querySelectorAll("img.download-me")).forEach((img) => {
+//   var link = document.createElement('a');
+// link.href = img.currentSrc;
+// link.download = 'Download.jpg';
+// document.body.appendChild(link);
+// link.click();
+// document.body.removeChild(link);
+// });
+// },500);
+
+let color = {
+  white: "#ffffff",
+  green: "#1FD50E",
+  blue: "#0A3BE5",
+  purple: "#B60AE5",
+  yellow: "#FFD600",
+  red: "#EE0C0C",
+  cyan: "#0CDBEE",
+  orange: "#F58508",
+};
+let map = {
+  "The Island": 2,
+  "The Center": 3,
+  "Scorched Earth": 7,
+  Ragnarok: 4,
+  Aberration: 5,
+  Extinction: 6,
+  Valguero: 1,
+  Genesis: 8,
+  "Genesis 2": 9,
+  Fjordur: 11,
+  "Crystal Isles": 10,
+  "Lost Island": 12,
+};
+
+// const dd = d2.dinos.map((x) => {
+//   if (x?.eats && x.eats !== null) {
+//     return x.eats
+//       .filter((d) => !isNaN(d))
+//       .map((y) => {
+//         return `('${x.id}', ${parseInt(y)}, 'food'),`;
+//       })
+//       .join("\n");
+//   }
+//   return "";
+//   // return `INSERT INTO public."DinoEffWeight" ("dino_id", "item_id", "value", "is_gather_eff")`;
+// });
+// const dd = items
+//   .filter((x) => x.name.includes("Saddle"))
+//   .map((x) => {
+//     return `
+//   UPDATE public."Item"
+//   SET type = '${x.type}'
+//   WHERE id = ${x.id};`;
+//   });
+require("fs").writeFile(
+  `insert.txt`,
+  [
+    // `INSERT INTO public."Item" ("crafted_item_id", "item_id", "amount") VALUES`,
+    ...dinos,
+  ].join("\n"),
+  (error) => {
+    if (error) {
+      throw error;
+    }
+  }
+);
+return;
+console.timeEnd("normal");
+const g = {
+  items: fff,
+};
+
+const chunkSize = 50;
+for (let i = 0; i < fff.length; i += chunkSize) {
+  const chunk = fff.slice(i, i + chunkSize);
+  // do whatever
+  require("fs").writeFile(`insert${i}.txt`, chunk.join("\n"), (error) => {
+    if (error) {
+      throw error;
+    }
+  });
+}
+console.time("optimized");
+
+console.timeEnd("optimized");
+return;
+
 // Same data as MapLootcrates.json
 let ids = {
   TheIsland: [
@@ -1371,283 +1662,6 @@ let ids = {
     },
   ],
 };
-
-// let countCrates = 0;
-// let countnonCrates = [];
-// let data = {};
-// let output = Object.entries(ids).map(([map, crates]) => {
-//   Object.assign(data, {
-//     [map]: crates.map((crate) => {
-//       const item = lootcrateitems.find((lootcrate) =>
-//         lootcrate.blueprint.includes(crate.id)
-//       );
-//       if (item) {
-//         countCrates++;
-//         return {
-//           id: crate.id,
-//           name: crate.name || item.name,
-//           items: item.items,
-//         };
-//       } else {
-//         countnonCrates.push(crate.id);
-//       }
-//     }),
-//   });
-//   return;
-// });
-
-// console.log(data);
-// console.log(countnonCrates);
-
-// require("fs").writeFile(
-//   `insert.txt`,
-//   [JSON.stringify(data, null, 4)].join("\n"),
-//   (error) => {
-//     if (error) {
-//       throw error;
-//     }
-//   }
-// );
-// return;
-
-// function findCommonAndUniqueValues(lootcrate_beacons) {
-//   const maps = Object.keys(lootcrate_beacons);
-//   const commonValues = {};
-//   const uniqueValues = {};
-
-//   maps.forEach((map) => {
-//     const commonSet = new Set(lootcrate_beacons[map]);
-
-//     for (const map in lootcrate_beacons) {
-//       const valuesSet = new Set(lootcrate_beacons[map][color]);
-
-//       // Find common values
-//       commonSet.forEach((value) => {
-//         if (!valuesSet.has(value)) {
-//           commonSet.delete(value);
-//         }
-//       });
-//     }
-
-//     commonValues[color] = Array.from(commonSet);
-//     uniqueValues[color] = [];
-
-//     for (const map in lootcrate_beacons) {
-//       lootcrate_beacons[map][color].forEach((value) => {
-//         if (!commonSet.has(value)) {
-//           uniqueValues[color].push({ map, value });
-//         }
-//       });
-//     }
-//   });
-
-//   return { commonValues, uniqueValues };
-// }
-
-// const result = findCommonAndUniqueValues(lootcrateitems);
-// console.log("Common Values:", result.commonValues);
-// console.log("Unique Values:", result.uniqueValues);
-// require("fs").writeFile(
-//   `insert.txt`,
-//   [
-//     // `INSERT INTO public."Item" ("crafted_item_id", "item_id", "amount") VALUES`,
-//     JSON.stringify(result.commonValues, null, 4),
-//   ].join("\n"),
-//   (error) => {
-//     if (error) {
-//       throw error;
-//     }
-//   }
-// );
-return;
-
-// USED FOR GETTING ITEMS IN LOOTCRATES.JSON
-// const output = loot.lootCrates.map((lootcrate) => {
-//   return {
-//     blueprint: lootcrate.bp,
-//     name: lootcrate.name || "",
-//     items: lootcrate.sets.flatMap((set) => {
-//       return set.entries.map((entry) => {
-//         return entry.items.map((item) => {
-//           return {
-//             itemId: itemarray.find((i) => i.blueprint == item[1])?.id || null,
-//             itemName:
-//               itemarray.find((i) => i.blueprint == item[1])?.name || null,
-//             itemBlueprint: item[1],
-//             entryName: entry.name,
-//             setName: set.name,
-//             setCanRepeatItems: set.canRepeatItems,
-//             setQtyMin: set.qtyScale.min,
-//             setQtyMax: set.qtyScale.max,
-//             setQtyPow: set.qtyScale.pow,
-//             setWeight: set.weight,
-//             entryWeight: entry.weight,
-//             entryQtyMin: entry.qty.min,
-//             entryQtyMax: entry.qty.max,
-//             entryQtyPow: entry.qty.pow,
-//             entryQualityMin: entry.quality.min,
-//             entryQualityMax: entry.quality.max,
-//             entryQualityPow: entry.quality.pow,
-//           };
-//         });
-//       });
-//     }),
-//   };
-// });
-//
-// require("fs").writeFile(
-//   `insert.txt`,
-//   [JSON.stringify(output, null, 4)].join("\n"),
-//   (error) => {
-//     if (error) {
-//       throw error;
-//     }
-//   }
-// );
-
-const dinos = dadinos.map((x) => {
-  return `
-  UPDATE public."Dino"
-  SET bp = '${x.bp}'
-  WHERE name LIKE '${x.name}';`;
-
-  // return `
-  // UPDATE public."Dino"
-  // SET taming_ineffectiveness = ${x?.taming?.tamingIneffectiveness || 0},
-  // baby_food_consumption_mult = ${x?.taming?.babyFoodConsumptionMult || 0},
-  // gestation_time = ${x?.breeding?.gestationTime || 0},
-  // maturation_time = ${x?.breeding?.maturationTime || "maturation_time"},
-  // incubation_time = ${x?.breeding?.incubationTime || "incubation_time"},
-  // mating_cooldown_min = ${x?.breeding?.matingCooldownMin || 0},
-  // mating_cooldown_max = ${x?.breeding?.matingCooldownMax || 0},
-  // egg_min = ${x?.breeding?.eggTempMin || "egg_min"},
-  // egg_max = ${x?.breeding?.eggTempMax || "egg_max"}
-  // WHERE name LIKE '${x.name}';`;
-
-  return {
-    name: x.name,
-    taming_ineffectiveness: x?.taming?.tamingIneffectiveness || 0,
-    baby_food_consumption_mult: x?.taming?.babyFoodConsumptionMult || 0,
-    gestation_time: x?.breeding?.gestationTime || 0,
-    maturation_time: x?.breeding?.maturationTime || 0,
-    incubation_time: x?.breeding?.incubationTime || 0,
-    mating_cooldown_min: x?.breeding?.matingCooldownMin || 0,
-    mating_cooldown_max: x?.breeding?.matingCooldownMax || 0,
-    egg_min: x?.breeding?.eggTempMin || 0,
-    egg_max: x?.breeding?.eggTempMax || 0,
-  };
-});
-
-// const crates = Object.entries(dino).map(([k, v]) => {
-//   let d = v.mult
-//     ? `UPDATE public."Dino" SET multipliers = '[${JSON.stringify(
-//         v.mult || ""
-//       )}]' WHERE name LIKE '${v.name}';`
-//     : "";
-//   return d;
-// });
-
-// For downloading images
-// setInterval(function(){
-// if(images.length > i){
-//         srcList.push(images[i].src);
-//         var link = document.createElement("a");
-//         link.id=i;
-//         link.download = images[i].src;
-//         link.href = images[i].src;
-//         link.click();
-// 		link.remove();
-//         i++;
-//     }
-
-// 		Array.from(document.querySelectorAll("img.download-me")).forEach((img) => {
-//   var link = document.createElement('a');
-// link.href = img.currentSrc;
-// link.download = 'Download.jpg';
-// document.body.appendChild(link);
-// link.click();
-// document.body.removeChild(link);
-// });
-// },500);
-
-let color = {
-  white: "#ffffff",
-  green: "#1FD50E",
-  blue: "#0A3BE5",
-  purple: "#B60AE5",
-  yellow: "#FFD600",
-  red: "#EE0C0C",
-  cyan: "#0CDBEE",
-  orange: "#F58508",
-};
-let map = {
-  "The Island": 2,
-  "The Center": 3,
-  "Scorched Earth": 7,
-  Ragnarok: 4,
-  Aberration: 5,
-  Extinction: 6,
-  Valguero: 1,
-  Genesis: 8,
-  "Genesis 2": 9,
-  Fjordur: 11,
-  "Crystal Isles": 10,
-  "Lost Island": 12,
-};
-
-// const dd = d2.dinos.map((x) => {
-//   if (x?.eats && x.eats !== null) {
-//     return x.eats
-//       .filter((d) => !isNaN(d))
-//       .map((y) => {
-//         return `('${x.id}', ${parseInt(y)}, 'food'),`;
-//       })
-//       .join("\n");
-//   }
-//   return "";
-//   // return `INSERT INTO public."DinoEffWeight" ("dino_id", "item_id", "value", "is_gather_eff")`;
-// });
-// const dd = items
-//   .filter((x) => x.name.includes("Saddle"))
-//   .map((x) => {
-//     return `
-//   UPDATE public."Item"
-//   SET type = '${x.type}'
-//   WHERE id = ${x.id};`;
-//   });
-require("fs").writeFile(
-  `insert.txt`,
-  [
-    // `INSERT INTO public."Item" ("crafted_item_id", "item_id", "amount") VALUES`,
-    ...dinos,
-  ].join("\n"),
-  (error) => {
-    if (error) {
-      throw error;
-    }
-  }
-);
-return;
-console.timeEnd("normal");
-const g = {
-  items: fff,
-};
-
-const chunkSize = 50;
-for (let i = 0; i < fff.length; i += chunkSize) {
-  const chunk = fff.slice(i, i + chunkSize);
-  // do whatever
-  require("fs").writeFile(`insert${i}.txt`, chunk.join("\n"), (error) => {
-    if (error) {
-      throw error;
-    }
-  });
-}
-console.time("optimized");
-
-console.timeEnd("optimized");
-return;
-
 function calcXP(theXpk, level, night = false) {
   return parsePercision(theXpk * ((level - 1) / 10 + 1) * 4 * XPMultiplier);
 }
@@ -1752,426 +1766,7 @@ function initTamingNotice() {
     );
   }
 }
-function initTaming() {
-  $("#taming").append(`<div class="row jcsb">
-    <div><h2 style="clear:both" class="ib marginBottomS">Taming Calculator</h2>${
-      method == "n"
-        ? ' <span class="bigPill bigPillReverse ib">Passive</span>'
-        : ""
-    }</div>
-    </div>`);
-  initTamingNotice();
-  $("#taming").append(`<div class="ttRowH ttRH row light bold">
-      <div class="flex2 noMob">
-        Food
-      </div>
-      <div class="flex1 jccenter">
-        Selected Food / Max
-      </div>
-      <div class="flex1 jccenter">
-        Time
-      </div>
-      <div class="flex2 tteff">
-        Effectiveness
-      </div>
-      <div class="ttexp noMob"></div>
-    </div>
 
-  <div class="item tameSetting ttRow">
-    <div class="itemImage" style="">
-      <a href="/item/341/sanguine-elixir"><img src="/media/item/Sanguine_Elixir.png" width="42" height="42" alt="Sanguine Elixir"></a>
-    </div>
-    <div class="itemLabel white bold"><input type="checkbox" id="sanguineElixir" name="sanguineElixir">  <label for="sanguineElixir">Use Sanguine Elixir</label> <span class="lightPill">NEW</span> <span class="bold light small marginTopSS">Increases taming by 30%</span></div>
-  </div>
-
-  <div id="tamingTable"></div>
-
-  <div id="tamingExcess" class="lightbox warningBox center">Too much food was used. Excess food is being ignored.</div>
-
-  <div id="tamingWarning" class="lightbox">
-    <div class="miniBarWrap" style="margin:.1em 0 .3em"><div class="miniBar" style="width:0%;background-color:#FFF"></div></div>
-    <div class="center light">Not enough food.</div>
-  </div>
-
-  <div id="tamingResults">
-    <div class="center light marginTop2 bold marginBottomSS">With Selected Food:</div>
-    <div class="lightbox rCol ${
-      method != "n" ? "attachedBottom" : ""
-    }" style="justify-content:center;gap:1.5em;">
-      <div class="rowItem">
-        <div class="center marginBottom marginTopS" style="align-self:center">
-          <div class="bigNum light">TOTAL TIME: <span class="white" id="totalTime"></span></div>
-        </div>
-
-        <div class="starveTimer widget collapsed lightbox pad0">
-          <div class="row pad bold widgetH jcsb">
-            <div class="row acenter">
-              <img src="/media/item/Food.png" width="26" height="26" alt="ARK: Survival Evolved Food Icon" class="marginRightS">
-              Starve Timer&nbsp;&nbsp;<span class="tameSecsLeft widgetHCO light"></span> </div>
-              <div class="arrow down"></div>
-          </div>
-          <div class="pad widgetB">
-            <div class="marginBottom2 flex jccenter">
-              <div class="lightbox">
-                <div class="marginBottomS light center">Enter your creature's Food stat:</div>
-
-                <div class="row acenter">
-                  <img src="/media/item/Food.png" width="34" height="34" alt="ARK: Survival Evolved Food Icon" class="marginRightS">
-                  <span class="kindabig">FOOD</span>
-
-                  <div class="center marginLeft2 marginRightSS">
-                    <input type="text" value="" class="currentFood whiteinput narc" style="width:4em;font-weight:bold;" />
-                    <div class="light marginTopSS">Current</div>
-                  </div>
-                  <div class="center">
-                    <input type="text" value="" class="maxFood whiteinput narc" style="width:4em;font-weight:bold;" />
-                    <div class="light marginTopSS">Max</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="row jcsb r">
-              <div class="meterStatus actionColor right"></div>
-              <div class="row starveMeter" style="padding-bottom:1.5em">
-                <div class="row" data-tooltip title="This is the point at which your creature's food value reaches 0. Once it is nearing 0, feed it all required food. It will immediately eat as much as possible and then eat the remainder at a normal pace.">
-                  <div>
-                    <div class="starveSecsLeft timeRemaining">&nbsp;</div>
-                  </div>
-                  <div class="smaller paddedS asc">
-                    <div class="light">UNTIL</div>
-                    <div>STARVED</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="miniBarWrap marginBottomS"><div class="miniBar" style="width:100%"></div></div>
-            <div class="row jcsb" style="align-items:flex-start">
-              <div class="row">
-                <div class="rowItemN">
-                  <div class="tameSecsLeft timeRemaining">&nbsp;</div>
-                </div>
-                <div class="rowItemN smaller paddedS asc">
-                  <div class="light">UNTIL</div>
-                  <div>TAMED</div>
-                </div>
-              </div>
-              <div class="right light" data-tooltip title="Based on your selected food, this is the total food value that this creature must consume to be tamed.">Food required to eat: <span class="maxUnits"></span></div>
-            </div>
-            <div class="row marginTop2">
-              <div class="rowItem">
-                <div class="row">
-                  <div class="rowItemN">
-                    <input type="text" value="5" class="alarm whiteinput" style="width:2em;text-align:center;font-weight:bold;" />
-                  </div>
-                  <div class="rowItem light paddedS">
-                    ALARM <br />(mins. before)
-                  </div>
-                </div>
-              </div>
-              <div class="rowItem right">
-                <button class="timerStart actionButton bold uppercase">Start Timer</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="starveNote light small marginTop">Starve taming reduces the risk of losing resources by feeding a creature only once it is hungry enough to eat everything at once (or, eat as much as it can). Once you've selected the food you'll be taming with, enter the creature's current and max food values, then start the timer. <a href="https://help.dododex.com/en/article/how-to-starve-tame-in-ark-survival-evolved" class="">Learn more</a></div>
-
-      </div>
-      <div class="flex1 row">
-        <div class="rowItem center lvlsec">
-          <div class="light">Lvl <span class="bigNum white" id="baseLevel"></span></div>
-          <div class="light">Current</div>
-        </div>
-        <div class="rowItemN padded lvlsec">
-          <div class="arrow right"></div>
-        </div>
-        <div class="row flex2">
-          <div class="rowItem">
-            <div class="ringHolder">
-              <div class="ringText light white bigNum">+<span id="gainedLevels"></span></div>
-              <svg
-                 class="progress-ring"
-                 width="60"
-                 height="60">
-                <circle
-                  class="progress-ring__circle"
-                  stroke="#bbff77"
-                  strokeWidth="4"
-                  fill="#bbff7718"
-                  r="28"
-                  cx="30"
-                  cy="30"/>
-              </svg>
-            </div>
-            <div class="marginTopS center">
-              <div class="bigNum action"> <span id="effectiveness"></span><sup class="sup">%</sup></div>
-              <div class="light">Taming Eff.</div>
-            </div>
-          </div>
-          <div class="rowItem center lvlsec">
-            <div class="light">Lvl <span class="bigNum white" id="bonusLevel"></span></div>
-            <div class="light">With Bonus</div>
-          </div>
-        </div>
-        <div class="rowItemN padded lvlsec">
-          <div class="arrow right"></div>
-        </div>
-        <div class="rowItem center lvlsec">
-          <div class="light">Lvl <span class="bigNum white" id="maxLevel"></span></div>
-          <div class="light">Max After Taming <a href="https://help.dododex.com/en/article/how-do-creature-levels-work-in-ark-survival-evolved" data-tooltip title="Creatures can gain 73 levels after taming, but ARK: Genesis-exclusive creatures and X-creatures can gain 88 levels. In single player, all creatures gain 88 levels after taming."><i class="fas fa-question-circle"></i></a></div>
-        </div>
-      </div>
-    </div>
-  `);
-  if (method != "n") {
-    $("#taming").append(`
-      <div class="lightbox rCol attachedTop" style="justify-content:center;background-color:#375E79;gap:1.5em;">
-        <div class="rowItem">
-
-          <div id="torporTimer" class="widget collapsed tt lightbox pad0">
-            <div class="row pad bold widgetH jcsb">
-              <div class="row acenter">
-                <img src="/media/item/Torpor.png" width="26" height="26" alt="ARK: Survival Evolved Torpor Icon" class="marginRightS">
-                Torpor Timer&nbsp;<span class="ttTimeRemaining widgetHCO light"></span> </div>
-                <div class="arrow down"></div>
-            </div>
-            <div class="pad widgetB">
-              <div class="row marginBottomS gridGap2" style="justify-content:center;">
-                <div class="rowItem">
-                  <a id="useNarcotics" class="button">
-                    <div class="center">
-                      <span class="bigNum">+</span>
-                      <img src="/media/item/Narcotics.png" width="30" height="30" alt="Narcotics" style="vertical-align:middle;" />
-                    </div>
-                    <div class="marginTopS small bold">Narcotics</div>
-                    <div class="small light">40 Torpor</div>
-                  </a>
-                  <div class="narc marginTopS" id="narcoticsUsed">&nbsp;</div>
-                </div>
-                <div class="rowItem">
-                  <a id="useNarcoberries" class="button">
-                    <div class="center">
-                      <span class="bigNum">+</span>
-                      <img src="/media/item/Narcoberry.png" width="30" height="30" alt="Narcoberry" style="vertical-align:middle;" />
-                    </div>
-                    <div class="marginTopS small bold">Narcoberries</div>
-                    <div class="small light">7.5 Torpor</div>
-                  </a>
-                  <div class="narc marginTopS" id="narcoberriesUsed">&nbsp;</div>
-                </div>
-                <div class="rowItem">
-                  <a id="useAscerbic" class="button">
-                    <div class="center">
-                      <span class="bigNum">+</span>
-                      <img src="/media/item/Ascerbic_Mushroom.png" width="30" height="30" alt="Bio Toxin" style="vertical-align:middle;" />
-                    </div>
-                    <div class="marginTopS small bold">Aserbic Mushrooms</div>
-                    <div class="small light">25 Torpor</div>
-                  </a>
-                  <div class="narc marginTopS" id="ascerbicUsed">&nbsp;</div>
-                </div>
-                <div class="rowItem">
-                  <a id="useBiotoxins" class="button">
-                    <div class="center">
-                      <span class="bigNum">+</span>
-                      <img src="/media/item/Bio_Toxin.png" width="30" height="30" alt="Bio Toxin" style="vertical-align:middle;" />
-                    </div>
-                    <div class="marginTopS small bold">Bio Toxin</div>
-                    <div class="small light">80 Torpor</div>
-                  </a>
-                  <div class="narc marginTopS" id="biotoxinsUsed">&nbsp;</div>
-                </div>
-
-              </div>
-
-              <div style="text-align:right;"><input type="text" id="ttUnits" value="" class="whiteinput narc" style="width:4em;font-weight:bold;" /></div>
-              <div class="miniBarWrap marginTopS marginBottomS"><div class="miniBar" style="width:100%"></div></div>
-              <div class="row jcsb">
-                <div class="row">
-                  <div class="rowItemN">
-                    <div id="ttTimeRemaining" class="ttTimeRemaining timeRemaining">&nbsp;</div>
-                  </div>
-                  <div class="rowItemN smaller paddedS asc">
-                    <div class="light">UNTIL</div>
-                    <div>CONSCIOUS</div>
-                  </div>
-                </div>
-                <div class="right light"><span class="ttMaxUnits"></span></div>
-              </div>
-              <div class="row marginTop2">
-                <div class="rowItem">
-                  <div class="row">
-                    <div class="rowItemN">
-                      <input type="text" id="ttAlarm" value="5" class="whiteinput" style="width:2em;text-align:center;font-weight:bold;" />
-                    </div>
-                    <div class="rowItem light paddedS">
-                      ALARM <br />(mins. before)
-                    </div>
-                  </div>
-                </div>
-                <div class="rowItem right">
-                  <button id="ttStart" class="actionButton bold uppercase">Start Timer</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="light small marginTop">Track this creature's torpor and narcotic consumpion over time. <a href="https://help.dododex.com/en/article/how-to-use-a-torpor-timer-in-ark-survival-evolved" class="">Learn more</a></div>
-          <div class="marginTop2">
-            <div class="row acenter">
-              <h3 style="margin:0 0.4em 0 0">Torpor Drain Rate:</h3>
-              <div id="trClass" class="bigPill marginRightS">
-                <img src="/media/item/Torpor.png" width="20" height="20" alt="ARK: Survival Evolved Torpor Icon" class="marginRightS"> <span></span>
-              </div>
-              <span class="bigNum light"><span id="torporDeplPS"></span>/s</span>
-            </div>
-            <div class="light small marginTopS" id="trClassNote"></div>
-          </div>
-        </div>
-        <div class="rowItem">
-          <div>
-            <h3 class="marginTop0">Narcotics Needed</h3>
-            <div class="row" id="narcsNeeded">
-              <div class="rowItem center paddedS">
-                <div class="marginBottomS"><img src="/media/item/Narcotics.png" width="30" height="30" alt="Narcotics" /></div>
-                <div class="bigNum" id="narcsMin"></div>
-                <div class="marginTopS small bold">Narcotics</div>
-              </div>
-              <div class="rowItem center paddedS">
-                <div class="marginBottomS"><img src="/media/item/Narcoberry.png" width="30" height="30" alt="Narcoberry" /></div>
-                <div class="bigNum" id="narcBMin"></div>
-                <div class="marginTopS small bold">Narcoberries</div>
-              </div>
-              <div class="rowItem center paddedS">
-                <div class="marginBottomS"><img src="/media/item/Ascerbic_Mushroom.png" width="30" height="30" alt="Bio Toxin" /></div>
-                <div class="bigNum" id="ascerbicmushroomsMin"></div>
-                <div class="marginTopS small bold">Aserbic Mushrooms</div>
-              </div>
-              <div class="rowItem center paddedS">
-                <div class="marginBottomS"><img src="/media/item/Bio_Toxin.png" width="30" height="30" alt="Bio Toxin" /></div>
-                <div class="bigNum" id="biotoxinsMin"></div>
-                <div class="marginTopS small bold">Bio Toxin</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `);
-  }
-  $("#taming").append(`
-  </div>
-  `);
-  circle = document.querySelector(".progress-ring__circle");
-  radius = circle.r.baseVal.value;
-  circumference = radius * 2 * Math.PI;
-  circle.style.strokeDasharray = `${circumference} ${circumference}`;
-  circle.style.strokeDashoffset = `${circumference}`;
-  processTamingTable();
-  torporTimerInit();
-  starveTimerInit();
-  processTameInput();
-}
-function processTamingTable() {
-  var level = Settings.get("level");
-  taming = calcData(CREATURES[creatureID], level, method);
-  for (var i in taming.food) {
-    taming.food[i].results = calcTame(CREATURES[creatureID], taming.food, i);
-  }
-  $("#tamingTable").empty();
-  var numCollapsed = taming.food.length - MAX_FOOD_COLLAPSED;
-  var i = 0;
-  $(taming.food).each(function () {
-    if (typeof this.l == "string") {
-      var labelHTML =
-        '<div class="bold light small uppercase marginTopSS">' +
-        this.l +
-        "</div>";
-    } else {
-      var labelHTML = "";
-    }
-    var effectiveness = Math.round(this.results.effectiveness * 10) / 10;
-    var image = getImage(this.nameFormatted);
-    $("#tamingTable").append(`
-      <div class="ttRow" ${
-        i >= MAX_FOOD_COLLAPSED && numCollapsed > 1
-          ? 'style="display:none" data-ref="ttHidden"'
-          : ""
-      } data-ttrow="${this.key}">
-      <div class="ttBH">
-        <div class="ttB1 flex2">
-          <div class="item">
-            <div class="itemImage">
-              <img src="${image}" width="42" height="42" alt="${this.nameFormatted}">
-            </div>
-            <div class="itemLabel white bold">${
-              this.nameFormatted
-            } ${labelHTML}</div>
-          </div>
-        </div>
-        <div class="ttB2 flex1 jccenter bold kindabig">
-          <input type="number" value="${
-            this.use
-          }" maxlength="6" size="5" min="0" max="${this.max}" class="whiteinput attachedRight use${this.use == 0 ? " empty" : ""}" placeholder="0">
-          <div class="small light button useExclusive">${this.max}</div>
-        </div>
-        <div class="ttB3 flex1 jccenter bold">
-          ${timeFormat(this.seconds)}
-        </div>
-        <div class="ttB4 flex2 row tteff">
-          <div class="rowItem">
-            <div><span class="bold">${effectiveness}%</span> <span class="light">+${this.results.gainedLevels} Lvl (${level + this.results.gainedLevels})</span></div>
-            <div class="miniBarWrap" style="margin:.1em 0 .3em"><div class="miniBar" style="width:${effectiveness}%;background-color:#FFF"></div></div>
-          </div>
-        </div>
-        <div class="ttB5 ttexp">
-          <div class="arrow down" />
-        </div>
-      </div>
-      <div class="ttRow2">
-        <div class="row padVS light">
-          <div class="tt21">
-            <div class="row">
-              <div>Per Item:</div>
-              <div class="paddedS">
-                ${
-                  this.df ? "" : Math.round(this.food * 10) / 10 + " Food<br />"
-                }
-                ${Math.round(this.percentPer * 10) / 10}% Taming
-              </div>
-            </div>
-          </div>
-          ${
-            typeof this.interval1 == "number"
-              ? `<div class="tt22 jccenter center">
-              ~${timeFormat(this.interval1)}<br/>First Interval
-            </div>
-            <div class="tt22 jccenter center">
-              ${timeFormat(this.secondsPer)}<br/>Remaining Intervals
-            </div>
-            `
-              : `<div class="tt22 jccenter center">
-              ${timeFormat(this.secondsPer)}<br/>Intervals
-            </div>
-            <div class="tt23 noMob"></div>
-            `
-          }
-        </div>
-      </div>
-    </div>`);
-    i++;
-  });
-  if (numCollapsed > 0) {
-    $("#tamingTable").append(
-      `<div class="ttRow button rc0" id="ttLoad">Show ${numCollapsed} More</div>`
-    );
-    $("#ttLoad").click(function () {
-      var theElems = $("[data-ref=ttHidden]");
-      $(theElems).fadeIn(300);
-      $(this).hide();
-    });
-  }
-}
 function processTameInput() {
   console.log("processTameInput()");
   var level = Settings.get("level");
