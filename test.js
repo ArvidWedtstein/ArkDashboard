@@ -6,6 +6,15 @@ const Aberration = require("./web/public/ResourcesAberration.json");
 const ScorchedEarth = require("./web/public/ResourcesScorchedEarth.json");
 const LostIsland = require("./web/public/ResourcesLostIsland.json");
 const lootcrateitems = require("./web/public/lootcrateitems.json");
+const maplootcrates = require("./web/public/MapLootcrates.json");
+var partition = function (arr, length) {
+  var result = [];
+  for (var i = 0; i < arr.length; i++) {
+    if (i % length === 0) result.push([]);
+    result[result.length - 1].push(arr[i]);
+  }
+  return result;
+};
 
 const lootmaps = {
   TheIsland: TheIsland,
@@ -150,8 +159,8 @@ return;
 //     blueprint: lootcrate.bp,
 //     name: lootcrate.name || "",
 //     items: lootcrate.sets.flatMap((set) => {
-//       return set.entries.map((entry) => {
-//         return entry.items.map((item) => {
+//       return set.entries.flatMap((entry) => {
+//         return entry.items.flatMap((item) => {
 //           return {
 //             itemId: itemarray.find((i) => i.blueprint == item[1])?.id || null,
 //             itemName:
@@ -171,6 +180,7 @@ return;
 //             entryQualityMin: entry.quality.min,
 //             entryQualityMax: entry.quality.max,
 //             entryQualityPow: entry.quality.pow,
+//             bpChance: entry.bpChance || 0,
 //           };
 //         });
 //       });
