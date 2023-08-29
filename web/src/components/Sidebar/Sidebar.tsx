@@ -196,11 +196,11 @@ const Sidebar = memo(({ }) => {
       href: routes.materialCalculator(),
       color: "!ring-red-400 !bg-red-500",
     },
-    {
-      name: "GTW",
-      href: routes.gtw(),
-      color: "!ring-lime-400 !bg-lime-500",
-    },
+    // {
+    //   name: "GTW",
+    //   href: routes.gtw(),
+    //   color: "!ring-lime-400 !bg-lime-500",
+    // },
     {
       name: "Tribes",
       href: routes.tribes(),

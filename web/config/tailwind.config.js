@@ -14,10 +14,6 @@ module.exports = {
         "2xl": "1536px",
         "3xl": "1600px",
       },
-      backgroundColor: {
-        boxGradBefore: "linear-gradient(#ffffff, #ffffff, #e3e3e3)",
-        boxShadowGrad: "linear-gradient(rgba(0,0,0,0.075), transparent)",
-      },
       borderWidth: {
         skew: "55px 0 0 320px",
       },
@@ -32,8 +28,20 @@ module.exports = {
         "fill-up":
           "fillProgess 2s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
         fill: "fill 2s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
+        ripple: "ripple 0.6s linear infinite",
+        "ripple-hover": "ripple 0.6s linear forwards",
       },
       keyframes: {
+        ripple: {
+          "0%": {
+            boxShadow:
+              "0 0 0 0 rgba(#FFFFFF, 0.1), 0 0 0 20px rgba(#FFFFFF, 0.1), 0 0 0 40px rgba(#FFFFFF, 0.1), 0 0 0 60px rgba(#FFFFFF, 0.1)",
+          },
+          "100%": {
+            boxShadow:
+              "0 0 0 20px rgba(#FFFFFF, 0.1), 0 0 0 40px rgba(#FFFFFF, 0.1), 0 0 0 60px rgba(#FFFFFF, 0.1), 0 0 0 80px rgba(#FFFFFF, 0)",
+          },
+        },
         progress: {
           "0%": {
             "stroke-dasharray": "0 100",
