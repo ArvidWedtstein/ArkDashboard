@@ -162,9 +162,9 @@ const Routes = () => {
             roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
           >
             <Route path="/lootcrates/new" page={LootcrateNewLootcratePage} name="newLootcrate" />
-            <Route path="/lootcrates/{id}/edit" page={LootcrateEditLootcratePage} name="editLootcrate" />
+            <Route path="/lootcrates/{id:Int}/edit" page={LootcrateEditLootcratePage} name="editLootcrate" />
           </Private>
-          <Route path="/lootcrates/{id}" page={LootcrateLootcratePage} name="lootcrate" />
+          <Route path="/lootcrates/{id:Int}" page={LootcrateLootcratePage} name="lootcrate" />
           <Route path="/lootcrates" page={LootcrateLootcratesPage} name="lootcrates" />
         </Set>
         <Set

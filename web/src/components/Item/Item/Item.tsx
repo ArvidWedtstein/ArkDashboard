@@ -467,7 +467,8 @@ const Item = ({ item }: Props) => {
               </ol>
             </li>
 
-            <li className="flex flex-col">
+            {/* TODO: show maps where this item exists */}
+            {/* <li className="flex flex-col">
               <span className="rounded-lg p-2 font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                 Found In
               </span>
@@ -500,7 +501,7 @@ const Item = ({ item }: Props) => {
                     </Link>
                   ))}
               </div>
-            </li>
+            </li> */}
           </ul>
         </div>
       </aside>

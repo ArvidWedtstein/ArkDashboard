@@ -4,6 +4,7 @@ import { toast } from "@redwoodjs/web/dist/toast";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
 
+// https://codepen.io/tjramage/pen/yOEbyw
 const HomePage = () => {
   const { isAuthenticated, currentUser, client, reauthenticate } = useAuth();
 
