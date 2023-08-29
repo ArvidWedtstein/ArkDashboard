@@ -41,17 +41,14 @@ export const Map: MapRelationResolvers = {
   Basespot: (_obj, { root }) => {
     return db.map.findUnique({ where: { id: root?.id } }).Basespot();
   },
-  Lootcrate: (_obj, { root }) => {
-    return db.map.findUnique({ where: { id: root?.id } }).Lootcrate();
+  LootcrateMap: (_obj, { root }) => {
+    return db.map.findUnique({ where: { id: root?.id } }).LootcrateMap();
   },
   Map: (_obj, { root }) => {
     return db.map.findUnique({ where: { id: root?.id } }).Map();
   },
   other_Map: (_obj, { root }) => {
     return db.map.findUnique({ where: { id: root?.id } }).other_Map();
-  },
-  MapCoordinate: (_obj, { root }) => {
-    return db.map.findUnique({ where: { id: root?.id } }).MapCoordinate();
   },
   MapNote: (_obj, { root }) => {
     return db.map.findUnique({ where: { id: root?.id } }).MapNote();

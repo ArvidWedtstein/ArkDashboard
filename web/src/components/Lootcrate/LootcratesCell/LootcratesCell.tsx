@@ -1,88 +1,82 @@
-import type { FindLootcrates } from "types/graphql";
+import type { FindLootcrates } from 'types/graphql'
 
-import { Link, routes } from "@redwoodjs/router";
-import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
+import { Link, routes } from '@redwoodjs/router'
+import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 
-import Lootcrates from "src/components/Lootcrate/Lootcrates";
-import { toast } from "@redwoodjs/web/dist/toast";
+import Lootcrates from 'src/components/Lootcrate/Lootcrates'
 
 export const QUERY = gql`
-  query FindLootcrates($map: String) {
-    lootcratesByMap(map: $map) {
+  query FindLootcrates {
+    lootcrates {
       id
       created_at
       updated_at
       name
-      map_id
-      level_requirement
-      decay_time
-      no_repeat_in_sets
-      quality_multiplier
+      blueprint
+      required_level
+      quality_mult
       set_qty
+      repeat_in_sets
       color
-      Map {
-        id
-        name
-      }
-      LootcrateSet {
-        id
-        name
-        LootcrateSetEntry {
-          LootcrateSetEntryItem {
-            Item {
-              id
-              name
-            }
-          }
-        }
-      }
-    }
-    maps {
-      id
-      name
-      icon
     }
   }
-`;
-
-
-export const beforeQuery = ({ map }: { map: string }) => {
-  return { variables: { map } };
-};
+`
 
 export const Loading = () => (
-  <div role="status" className="animate-pulse">
-    <div className="mb-4 h-12 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700"></div>
-    <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+  <div
+    role="status"
+    className="max-w-sm animate-pulse rounded border border-gray-200 p-4 shadow dark:border-gray-700 md:p-6"
+  >
+    <div className="mb-4 flex h-48 items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700">
+      <svg
+        className="h-12 w-12 text-zinc-200 dark:text-zinc-600"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        fill="currentColor"
+        viewBox="0 0 640 512"
+      >
+        <path d="M480 80C480 35.82 515.8 0 560 0C604.2 0 640 35.82 640 80C640 124.2 604.2 160 560 160C515.8 160 480 124.2 480 80zM0 456.1C0 445.6 2.964 435.3 8.551 426.4L225.3 81.01C231.9 70.42 243.5 64 256 64C268.5 64 280.1 70.42 286.8 81.01L412.7 281.7L460.9 202.7C464.1 196.1 472.2 192 480 192C487.8 192 495 196.1 499.1 202.7L631.1 419.1C636.9 428.6 640 439.7 640 450.9C640 484.6 612.6 512 578.9 512H55.91C25.03 512 .0006 486.1 .0006 456.1L0 456.1z" />
+      </svg>
+    </div>
+    <div className="mb-4 h-2.5 w-48 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
+    <div className="mb-2.5 h-2 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
+    <div className="mb-2.5 h-2 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
+    <div className="h-2 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
+    <div className="mt-4 flex items-center space-x-3">
+      <svg
+        className="h-14 w-14 text-zinc-200 dark:text-zinc-700"
+        aria-hidden="true"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fillRule="evenodd"
+          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+          clipRule="evenodd"
+        ></path>
+      </svg>
+      <div>
+        <div className="mb-2 h-2.5 w-32 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
+        <div className="h-2 w-48 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
+      </div>
     </div>
     <span className="sr-only">Loading...</span>
   </div>
-);
+)
 
 export const Empty = () => {
   return (
     <div className="text-center text-black dark:text-white">
-      {"No lootcrates yet. "}
+      {'No lootcrates yet. '}
       <Link to={routes.newLootcrate()} className="rw-link">
-        {"Create one?"}
+        {'Create one?'}
       </Link>
     </div>
-  );
-};
+  )
+}
 
-export const Failure = ({ error, errorCode }: CellFailureProps) => (
+export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error flex items-center space-x-3">
     <svg
       className="h-12 w-12 fill-current"
@@ -95,15 +89,11 @@ export const Failure = ({ error, errorCode }: CellFailureProps) => (
       <p className="text-lg font-bold leading-snug">
         Some unexpected shit happend
       </p>
-      <p className="text-sm">
-        {errorCode === "GRAPHQL_VALIDATION_FAILED"
-          ? "Failed to fetch data"
-          : error?.message}
-      </p>
+      <p className="text-sm">{error?.message}</p>
     </div>
   </div>
-);
+)
 
-export const Success = ({ lootcratesByMap, maps }: CellSuccessProps<FindLootcrates>) => {
-  return <Lootcrates lootcratesByMap={lootcratesByMap} maps={maps} />;
-};
+export const Success = ({ lootcrates }: CellSuccessProps<FindLootcrates>) => {
+  return <Lootcrates lootcrates={lootcrates} />
+}

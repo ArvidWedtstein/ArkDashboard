@@ -134,10 +134,8 @@ export const Item: ItemRelationResolvers = {
   ItemRecipeItem: (_obj, { root }) => {
     return db.item.findUnique({ where: { id: root?.id } }).ItemRecipeItem();
   },
-  LootcrateSetEntryItem: (_obj, { root }) => {
-    return db.item
-      .findUnique({ where: { id: root?.id } })
-      .LootcrateSetEntryItem();
+  LootcrateItem: (_obj, { root }) => {
+    return db.item.findUnique({ where: { id: root?.id } }).LootcrateItem();
   },
   MapResource: (_obj, { root }) => {
     return db.item.findUnique({ where: { id: root?.id } }).MapResource();

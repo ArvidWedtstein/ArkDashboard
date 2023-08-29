@@ -19,7 +19,6 @@ const NewLootcrate = () => {
     CREATE_LOOTCRATE_MUTATION,
     {
       onCompleted: () => {
-        toast.success('Lootcrate created')
         navigate(routes.lootcrates())
       },
       onError: (error) => {
@@ -30,10 +29,10 @@ const NewLootcrate = () => {
 
   const onSave = (input: CreateLootcrateInput) => {
     toast.promise(createLootcrate({ variables: { input } }), {
-      loading: "Creating new lootcrate...",
-      success: "Lootcrate successfully created",
-      error: <b>Failed to create new lootcrate.</b>,
-    });
+      loading: 'Creating new Lootcrate...',
+      success: 'Lootcrate successfully created',
+      error: <b>Failed to create new Lootcrate.</b>,
+    })
   }
 
   return (

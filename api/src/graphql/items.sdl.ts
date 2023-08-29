@@ -19,11 +19,12 @@ export const schema = gql`
     affinity: Float
     torpor_duration: Float
     damage: Float
+    blueprint: String
     DinoStat: [DinoStat]!
     ItemRecipe_ItemRecipe_crafted_item_idToItem: [ItemRecipe]!
     ItemRecipe_ItemRecipe_crafting_station_idToItem: [ItemRecipe]!
     ItemRecipeItem: [ItemRecipeItem]!
-    LootcrateSetEntryItem: [LootcrateSetEntryItem]!
+    LootcrateItem: [LootcrateItem]!
     MapResource: [MapResource]!
   }
 
@@ -63,6 +64,7 @@ export const schema = gql`
     affinity: Float
     torpor_duration: Float
     damage: Float
+    blueprint: String
   }
 
   input UpdateItemInput {
@@ -84,6 +86,7 @@ export const schema = gql`
     affinity: Float
     torpor_duration: Float
     damage: Float
+    blueprint: String
   }
 
   type Mutation {

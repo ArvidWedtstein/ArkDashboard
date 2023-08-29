@@ -156,39 +156,17 @@ const Routes = () => {
             name="itemRecipes"
           />
         </Set>
-        {/* <Set
-          wrap={ScaffoldLayout}
-          title="Lootcrates"
-          titleTo="lootcrates"
-          buttonLabel="New Lootcrate"
-          buttonTo="newLootcrate"
-        >
+        <Set wrap={ScaffoldLayout} title="Lootcrates" titleTo="lootcrates" buttonLabel="New Lootcrate" buttonTo="newLootcrate">
           <Private
             unauthenticated="home"
             roles="f0c1b8e9-5f27-4430-ad8f-5349f83339c0"
           >
-            <Route
-              path="/lootcrates/new"
-              page={LootcrateNewLootcratePage}
-              name="newLootcrate"
-            />
-            <Route
-              path="/lootcrates/{id}/edit"
-              page={LootcrateEditLootcratePage}
-              name="editLootcrate"
-            />
+            <Route path="/lootcrates/new" page={LootcrateNewLootcratePage} name="newLootcrate" />
+            <Route path="/lootcrates/{id}/edit" page={LootcrateEditLootcratePage} name="editLootcrate" />
           </Private>
-          <Route
-            path="/lootcrates/{id}"
-            page={LootcrateLootcratePage}
-            name="lootcrate"
-          />
-          <Route
-            path="/lootcrates"
-            page={LootcrateLootcratesPage}
-            name="lootcrates"
-          />
-        </Set> */}
+          <Route path="/lootcrates/{id}" page={LootcrateLootcratePage} name="lootcrate" />
+          <Route path="/lootcrates" page={LootcrateLootcratesPage} name="lootcrates" />
+        </Set>
         <Set
           wrap={ScaffoldLayout}
           title="Maps"

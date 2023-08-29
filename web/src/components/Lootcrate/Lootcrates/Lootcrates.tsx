@@ -1,192 +1,129 @@
-import { navigate, parseSearch, routes } from "@redwoodjs/router";
-import { useCallback, useMemo, useState } from "react";
-import ArkCard from "src/components/Util/ArkCard/ArkCard";
+import { Link, routes } from '@redwoodjs/router'
+import { useMutation } from '@redwoodjs/web'
+import { toast } from '@redwoodjs/web/toast'
 
-import Lookup from "src/components/Util/Lookup/Lookup";
-import { groupBy, removeDuplicates } from "src/lib/formatters";
+import { QUERY } from 'src/components/Lootcrate/LootcratesCell'
+import {
+  checkboxInputTag,
+  jsonTruncate,
+  timeTag,
+  truncate,
+} from 'src/lib/formatters'
+import Toast from 'src/components/Util/Toast/Toast'
 
-import type { FindLootcrates } from "types/graphql";
-import { useParams } from "@redwoodjs/router";
-import { Form, Label, SearchField, Submit } from "@redwoodjs/forms";
+import type {
+  DeleteLootcrateMutationVariables,
+  FindLootcrates,
+} from 'types/graphql'
 
-const LootcratesList = ({
-  lootcratesByMap: lootcrates,
-  maps,
-}: FindLootcrates) => {
-  let { map, category, search } = useParams();
-  const [categoryItems, setCategoryItems] = useState([]);
-
-  const daLootcrates = useMemo(() => {
-    let filteredCrates = lootcrates;
-
-    if (map) {
-      filteredCrates = filteredCrates.filter(
-        (crate) => crate?.Map && crate.Map.id === parseInt(map)
-      );
-      setCategoryItems(
-        removeDuplicates(
-          filteredCrates
-            .map((crate) => crate?.LootcrateSet)
-            .flat()
-            .map((set) => set?.name)
-        )
-      );
+const DELETE_LOOTCRATE_MUTATION = gql`
+  mutation DeleteLootcrateMutation($id: BigInt!) {
+    deleteLootcrate(id: $id) {
+      id
     }
+  }
+`
 
-    if (category) {
-      filteredCrates = filteredCrates.map((crate) => ({
-        ...crate,
-        sets: (crate?.LootcrateSet).filter(
-          (set) =>
-            set.name.includes(category) ||
-            set.name.toLowerCase().includes(category.toLowerCase())
-        ),
-      }));
-    }
+const LootcratesList = ({ lootcrates }: FindLootcrates) => {
+  const [deleteLootcrate] = useMutation(DELETE_LOOTCRATE_MUTATION, {
+    onCompleted: () => {
+      toast.success('Lootcrate deleted')
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+    // This refetches the query on the list page. Read more about other ways to
+    // update the cache over here:
+    // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
+    refetchQueries: [{ query: QUERY }],
+    awaitRefetchQueries: true,
+  })
 
-    if (search) {
-      filteredCrates = filteredCrates.filter(
-        (crate) =>
-          crate?.name?.toLowerCase().includes(search.toLowerCase()) ||
-          crate?.LootcrateSet?.some((set) =>
-            set?.LootcrateSetEntry.some((entry) =>
-              entry?.LootcrateSetEntryItem.some((item) =>
-                item.Item.name.toLowerCase().includes(search.toLowerCase())
-              )
-            )
-          )
-      );
-    }
-    return filteredCrates;
-  }, [category, map, search]);
+  const onDeleteClick = (id: DeleteLootcrateMutationVariables['id']) => {
+    toast.custom(
+      (t) => (
+        <Toast
+          t={t}
+          title={`You are about to delete lootcrate`}
+          message={`Are you sure you want to delete lootcrate {id}?`}
+          actionType="YesNo"
+          primaryAction={() => deleteLootcrate({ variables: { id } })}
+        />
+      ),
+      { position: 'top-center' }
+    )
+  }
 
-  const onSubmit = useCallback((data) => {
-    navigate(
-      routes.lootcrates({
-        ...parseSearch(
-          Object.fromEntries(
-            Object.entries(data).filter(([_, v]) => v != "" && v != undefined)
-          ) as any
-        ),
-      })
-    );
-  }, []);
-
-  // https://ark.wiki.gg/wiki/Coordinates
   return (
-    <article>
-      <Form className="flex w-auto" onSubmit={onSubmit}>
-        <nav className="flex w-full flex-row justify-center space-x-2">
-          <div className="rw-button-group !w-full !space-x-0">
-            <Label name="map" className="sr-only">
-              Choose a Map
-            </Label>
-            <Lookup
-              name="map"
-              className="rw-input mt-0 !rounded-none !rounded-l-lg"
-              options={
-                maps?.map((map) => ({
-                  label: map.name,
-                  value: Number(map.id),
-                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
-                })) || []
-              }
-              placeholder="Choose Map"
-              defaultValue={map}
-              // onSelect={(e) => setCurrentMap(e.value ? e.value : null)}
-            />
-            {/* <Lookup
-              name="category"
-              className="rw-input !rounded-none mt-0"
-              options={categoryItems.map((k) => ({
-                label: k,
-                value: k,
-              }))}
-            // onSelect={(e) => setCurrentCategory(e.name)}
-            /> */}
+    <div className="rw-segment rw-table-wrapper-responsive">
+      <table className="rw-table">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Created at</th>
+            <th>Updated at</th>
+            <th>Name</th>
+            <th>Blueprint</th>
+            <th>Required level</th>
+            <th>Quality mult</th>
+            <th>Set qty</th>
+            <th>Repeat in sets</th>
+            <th>Color</th>
+            <th>&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          {lootcrates.map((lootcrate) => (
+            <tr key={lootcrate.id}>
+              <td>{truncate(lootcrate.id)}</td>
+              <td>{timeTag(lootcrate.created_at)}</td>
+              <td>{timeTag(lootcrate.updated_at)}</td>
+              <td>{truncate(lootcrate.name)}</td>
+              <td>{truncate(lootcrate.blueprint)}</td>
+              <td>{truncate(lootcrate.required_level)}</td>
+              <td>{jsonTruncate(lootcrate.quality_mult)}</td>
+              <td>{jsonTruncate(lootcrate.set_qty)}</td>
+              <td>{checkboxInputTag(lootcrate.repeat_in_sets)}</td>
+              <td>{truncate(lootcrate.color)}</td>
+              <td>
+                <nav className="rw-table-actions">
+                  <Link
+                    to={routes.lootcrate({ id: lootcrate.id })}
+                    title={'Show lootcrate ' + lootcrate.id + ' detail'}
+                    className="rw-button rw-button-small"
+                  >
+                    Show
+                  </Link>
+                  <Link
+                    to={routes.editLootcrate({ id: lootcrate.id })}
+                    title={'Edit lootcrate ' + lootcrate.id}
+                    className="rw-button rw-button-small rw-button-blue"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                      className="rw-button-icon-start"
+                    >
+                      <path d="M493.2 56.26l-37.51-37.51C443.2 6.252 426.8 0 410.5 0c-16.38 0-32.76 6.25-45.26 18.75L45.11 338.9c-8.568 8.566-14.53 19.39-17.18 31.21l-27.61 122.8C-1.7 502.1 6.158 512 15.95 512c1.047 0 2.116-.1034 3.198-.3202c0 0 84.61-17.95 122.8-26.93c11.54-2.717 21.87-8.523 30.25-16.9l321.2-321.2C518.3 121.7 518.2 81.26 493.2 56.26zM149.5 445.2c-4.219 4.219-9.252 7.039-14.96 8.383c-24.68 5.811-69.64 15.55-97.46 21.52l22.04-98.01c1.332-5.918 4.303-11.31 8.594-15.6l247.6-247.6l82.76 82.76L149.5 445.2zM470.7 124l-50.03 50.02l-82.76-82.76l49.93-49.93C393.9 35.33 401.9 32 410.5 32s16.58 3.33 22.63 9.375l37.51 37.51C483.1 91.37 483.1 111.6 470.7 124z" />
+                    </svg>
+                    Edit
+                  </Link>
+                  <button
+                    type="button"
+                    title={'Delete lootcrate ' + lootcrate.id}
+                    className="rw-button rw-button-small rw-button-red"
+                    onClick={() => onDeleteClick(lootcrate.id)}
+                  >
+                    Delete
+                  </button>
+                </nav>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
 
-            <Label name="search" className="sr-only">
-              Search for item
-            </Label>
-            <SearchField
-              name="search"
-              className="rw-input mt-0 !w-full"
-              placeholder="Search..."
-              defaultValue={search}
-              validation={{
-                shouldUnregister: true,
-              }}
-            />
-            <Submit className="rw-button rw-button-gray rounded-l-none">
-              Search
-            </Submit>
-          </div>
-        </nav>
-      </Form>
-
-      {search && (
-        <p className="text-black dark:text-white">Lootcrates with {search}</p>
-      )}
-
-      <div className="rw-segment-header rw-heading rw-heading-secondary p-0">
-        {Object.entries(
-          groupBy(
-            daLootcrates.map((l) => ({ ...l, type: l.name.split(" ")[0] })),
-            "type"
-          )
-        ).map(([k, v], i) => (
-          <div
-            className="animate-fade-in my-4 border-b border-zinc-500 py-3"
-            key={i}
-          >
-            <h1 className="rw-heading rw-heading-secondary">{k}</h1>
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-4">
-              {v.map((lootcrate, d) => (
-                <ArkCard
-                  key={`lootcrate-${d}-${i}`}
-                  style={{
-                    borderStyle: "solid",
-                    borderWidth: "1px",
-                    borderImage: `linear-gradient(180deg, rgba(0, 0, 0, 0), ${
-                      lootcrate.color ? lootcrate.color : "white"
-                    }, rgba(0, 0, 0, 0)) 0 100%`,
-                  }}
-                  icon={{
-                    src:
-                      k == "Artifact"
-                        ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/artifact-of-the-${lootcrate.name
-                            .split(" ")
-                            [
-                              lootcrate.name.split(" ").length - 1
-                            ].toLowerCase()}.webp`
-                        : "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/any-gun.webp",
-                  }}
-                  title={lootcrate.name}
-                  ring={
-                    lootcrate?.level_requirement &&
-                    lootcrate.level_requirement["min"] > 0 ? (
-                      <span
-                        title={`You need to be lvl ${lootcrate.level_requirement["min"]} to open this crate`}
-                        className="rw-badge rw-badge-yellow-outline"
-                      >
-                        Lvl {lootcrate.level_requirement["min"]}
-                      </span>
-                    ) : null
-                  }
-                  button={{
-                    link: routes.lootcrate({
-                      id: lootcrate.id.toString(),
-                    }),
-                    text: "View",
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </article>
-  );
-};
-
-export default LootcratesList;
+export default LootcratesList
