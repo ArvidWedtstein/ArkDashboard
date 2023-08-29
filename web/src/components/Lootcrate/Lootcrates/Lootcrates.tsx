@@ -45,7 +45,7 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
         <Toast
           t={t}
           title={`You are about to delete lootcrate`}
-          message={`Are you sure you want to delete lootcrate {id}?`}
+          message={`Are you sure you want to delete lootcrate ${id}?`}
           actionType="YesNo"
           primaryAction={() => deleteLootcrate({ variables: { id } })}
         />
@@ -56,17 +56,23 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
 
   return (
     <div className="rw-segment rw-table-wrapper-responsive">
+      <ul className="test grid w-full bg-[#b7ccc3]">
+        {lootcrates.map((lootcrate) => (
+          <li className="relative" key={lootcrate.id}>
+            <div className='absolute w-1/2 mt-[14%] transform-gpu -skew-y-[30deg] p-3 font-montserrat'>
+              <h2 className='text-xl'>{lootcrate.name}</h2>
+              <p className='text-3xl'>LVL {lootcrate.required_level}</p>
+            </div>
+            <img className="duration-300 hover:bottom-0 absolute left-1/2 w-1/2 -bottom-3.5 -translate-x-1/2" src='https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/5/52/White_Beacon.png' alt='' />
+          </li>
+        ))}
+      </ul>
       <table className="rw-table">
         <thead>
           <tr>
             <th>Id</th>
-            <th>Created at</th>
-            <th>Updated at</th>
             <th>Name</th>
-            <th>Blueprint</th>
             <th>Required level</th>
-            <th>Quality mult</th>
-            <th>Set qty</th>
             <th>Repeat in sets</th>
             <th>Color</th>
             <th>&nbsp;</th>
@@ -76,13 +82,8 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
           {lootcrates.map((lootcrate) => (
             <tr key={lootcrate.id}>
               <td>{truncate(lootcrate.id)}</td>
-              <td>{timeTag(lootcrate.created_at)}</td>
-              <td>{timeTag(lootcrate.updated_at)}</td>
               <td>{truncate(lootcrate.name)}</td>
-              <td>{truncate(lootcrate.blueprint)}</td>
               <td>{truncate(lootcrate.required_level)}</td>
-              <td>{jsonTruncate(lootcrate.quality_mult)}</td>
-              <td>{jsonTruncate(lootcrate.set_qty)}</td>
               <td>{checkboxInputTag(lootcrate.repeat_in_sets)}</td>
               <td>{truncate(lootcrate.color)}</td>
               <td>
