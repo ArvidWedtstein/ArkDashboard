@@ -15,6 +15,7 @@ import type {
   DeleteLootcrateMutationVariables,
   FindLootcrates,
 } from 'types/graphql'
+import clsx from 'clsx'
 
 const DELETE_LOOTCRATE_MUTATION = gql`
   mutation DeleteLootcrateMutation($id: BigInt!) {
@@ -56,14 +57,29 @@ const LootcratesList = ({ lootcrates }: FindLootcrates) => {
 
   return (
     <div className="rw-segment rw-table-wrapper-responsive">
-      <ul className="test grid w-full bg-[#b7ccc3]">
+      <ul
+        className={`test grid grid-cols-9 w-full bg-[#b7ccc3] bg-[length:calc(200%_/_9)]`}
+        style={{
+          backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 600 1040' xmlns='http://www.w3.org/2000/svg' fill-rule='evenodd' clip-rule='evenodd' stroke-linejoin='round' stroke-miterlimit='2'%3E%3Cpath d='M0 0l300 173.205v346.41L0 346.41V0z' fill='url(%23_Linear1)'/%3E%3Cpath d='M300 519.615L600 692.82v346.411L300 866.025v-346.41z' fill='url(%23_Linear2)'/%3E%3Cpath d='M600 0L300 173.205v346.41L600 346.41V0z' fill='url(%23_Linear3)'/%3E%3Cpath d='M300 519.615L0 692.82v346.411l300-173.206v-346.41z' fill='url(%23_Linear4)'/%3E%3Cdefs%3E%3ClinearGradient id='_Linear1' x1='0' y1='0' x2='1' y2='0' gradientUnits='userSpaceOnUse' gradientTransform='rotate(-30 646.41 173.205) scale(346.41)'%3E%3Cstop offset='0' stop-color='%23b7ccc3'/%3E%3Cstop offset='1' stop-color='%23cde2d9'/%3E%3C/linearGradient%3E%3ClinearGradient id='_Linear2' x1='0' y1='0' x2='1' y2='0' gradientUnits='userSpaceOnUse' gradientTransform='rotate(-30 1766.025 -126.796) scale(346.41)'%3E%3Cstop offset='0' stop-color='%23b7ccc3'/%3E%3Cstop offset='1' stop-color='%23cde2d9'/%3E%3C/linearGradient%3E%3ClinearGradient id='_Linear3' x1='0' y1='0' x2='1' y2='0' gradientUnits='userSpaceOnUse' gradientTransform='rotate(-150 346.41 92.82) scale(346.41)'%3E%3Cstop offset='0' stop-color='%23e8dad1'/%3E%3Cstop offset='1' stop-color='%23fff0e7'/%3E%3C/linearGradient%3E%3ClinearGradient id='_Linear4' x1='0' y1='0' x2='1' y2='0' gradientUnits='userSpaceOnUse' gradientTransform='rotate(-150 266.025 392.82) scale(346.41)'%3E%3Cstop offset='0' stop-color='%23e8dad1'/%3E%3Cstop offset='1' stop-color='%23fff0e7'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E")`,
+        }}
+      >
         {lootcrates.map((lootcrate) => (
-          <li className="relative" key={lootcrate.id}>
+          <li
+            className={"relative col-end-[span_2] [&:nth-child(8n-7)]:col-start-2 pb-[86.6%]"}
+            key={lootcrate.id}
+          >
             <div className='absolute w-1/2 mt-[14%] transform-gpu -skew-y-[30deg] p-3 font-montserrat'>
-              <h2 className='text-xl'>{lootcrate.name}</h2>
-              <p className='text-3xl'>LVL {lootcrate.required_level}</p>
+              <h2 className='text-md md:text-xl'>{lootcrate.name}</h2>
+              <p className='text-lg md:text-3xl'>LVL {lootcrate.required_level}</p>
             </div>
-            <img className="duration-300 hover:bottom-0 absolute left-1/2 w-1/2 -bottom-3.5 -translate-x-1/2" src='https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/5/52/White_Beacon.png' alt='' />
+            <img
+              className={clsx(`duration-300 hover:bottom-0 absolute left-1/2 w-1/2 -bottom-3.5 -translate-x-1/2 transition-all`)}
+              src='https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/5/52/White_Beacon.png'
+              alt=''
+              style={{
+                filter: `drop-shadow(0 80px 30px ${lootcrate.color || '#FF0000'}33)`
+              }}
+            />
           </li>
         ))}
       </ul>
