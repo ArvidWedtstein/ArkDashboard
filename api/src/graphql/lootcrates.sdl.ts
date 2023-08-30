@@ -18,7 +18,7 @@ export const schema = gql`
   type Query {
     lootcrates: [Lootcrate!]! @skipAuth
     lootcrate(id: BigInt!): Lootcrate @skipAuth
-    lootcratesByMap(map: String): [Lootcrate!]! @skipAuth
+    lootcratesByMap(map: String, search: String): [Lootcrate!]! @skipAuth
   }
   input CreateLootcrateInput {
     created_at: DateTime!

@@ -6,18 +6,24 @@ import type {
 
 import { db } from "src/lib/db";
 
-export const lootcratesByMap = ({ map }: { map?: string }) => {
-  return !!map
+export const lootcratesByMap = ({
+  map,
+  search,
+}: {
+  map?: string;
+  search?: string;
+}) => {
+  return !!map && !!search
     ? db.lootcrate.findMany({
         orderBy: { created_at: "desc" },
         where: {
           OR: [
             {
               LootcrateMap: {
-                every: {
+                some: {
                   Map: {
                     name: {
-                      contains: map,
+                      contains: search,
                       mode: "insensitive",
                     },
                   },
@@ -29,6 +35,24 @@ export const lootcratesByMap = ({ map }: { map?: string }) => {
                 some: {
                   map_id: {
                     equals: parseInt(map),
+                  },
+                },
+              },
+            },
+            {
+              name: {
+                mode: "insensitive",
+                contains: search,
+              },
+            },
+            {
+              LootcrateItem: {
+                some: {
+                  Item: {
+                    name: {
+                      mode: "insensitive",
+                      contains: search,
+                    },
                   },
                 },
               },

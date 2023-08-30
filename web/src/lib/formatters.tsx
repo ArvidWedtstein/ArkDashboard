@@ -971,10 +971,10 @@ export const generatePDF = (crafts) => {
 /**
  * Removes duplicates from an array and returns a new array.
  * @note  function only works on arrays containing primitive data types
- * @param {Array} arr - The input array.
- * @return {Array} - The array with duplicates removed.
+ * @param {T} arr - The input array.
+ * @return {T} - The array with duplicates removed.
  */
-export const removeDuplicates = (array: unknown[]): unknown[] => {
+export const removeDuplicates = <T extends {}>(array: T[]): T[] => {
   return [...new Set(array)];
 };
 

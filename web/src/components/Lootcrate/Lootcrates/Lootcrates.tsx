@@ -11,46 +11,8 @@ import type {
 
 
 const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
-  let { map, category, search } = useParams();
-  const [categoryItems, setCategoryItems] = useState([]);
-
-
-  useEffect(() => {
-    if (map) {
-
-      setCategoryItems(
-        removeDuplicates(
-          lootcratesByMap.map((crate) => crate?.name.split(' ')[0])
-        ).filter((k) => k != undefined && k != "")
-      );
-    }
-
-    // if (category) {
-    //   filteredCrates = filteredCrates.map((crate) => ({
-    //     ...crate,
-    //     sets: (crate?.LootcrateSet).filter(
-    //       (set) =>
-    //         set.name.includes(category) ||
-    //         set.name.toLowerCase().includes(category.toLowerCase())
-    //     ),
-    //   }));
-    // }
-
-    // if (search) {
-    //   filteredCrates = filteredCrates.filter(
-    //     (crate) =>
-    //       crate?.name?.toLowerCase().includes(search.toLowerCase()) ||
-    //       crate?.LootcrateSet?.some((set) =>
-    //         set?.LootcrateSetEntry.some((entry) =>
-    //           entry?.LootcrateSetEntryItem.some((item) =>
-    //             item.Item.name.toLowerCase().includes(search.toLowerCase())
-    //           )
-    //         )
-    //       )
-    //   );
-    // }
-  }, [map, search])
-
+  let { map, search } = useParams();
+  console.log(lootcratesByMap.length)
   const onSubmit = useCallback((data) => {
     navigate(
       routes.lootcrates({
@@ -86,11 +48,12 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
             <Lookup
               name="category"
               className="rw-input !rounded-none mt-0"
-              options={categoryItems.map((k) => ({
-                label: k,
-                value: k,
-              }))}
-            // onSelect={(e) => setCurrentCategory(e.name)}
+              options={removeDuplicates(
+                lootcratesByMap.filter((k) => k != undefined && k?.name != "").map((crate) => ({
+                  label: crate?.name.split(' ')[0],
+                  value: crate?.name.split(' ')[0],
+                }))
+              )}
             />
 
             <Label name="search" className="sr-only">
@@ -100,7 +63,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
               name="search"
               className="rw-input mt-0 !w-full"
               placeholder="Search..."
-              // defaultValue={search}
+              defaultValue={search}
               validation={{
                 shouldUnregister: true,
               }}
