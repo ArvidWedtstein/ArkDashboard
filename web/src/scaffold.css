@@ -577,10 +577,6 @@
   z-index: 2;
   cursor: pointer;
 }
-.test {
-  display: flex;
-  flex-direction: column;
-}
 
 /* Hide the tooltip content by default */
 [data-tooltip]:before,

@@ -6,18 +6,21 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import Lootcrates from 'src/components/Lootcrate/Lootcrates'
 
 export const QUERY = gql`
-  query FindLootcrates {
-    lootcrates {
+  query FindLootcrates(
+    $map: String
+  ) {
+    lootcratesByMap(map: $map) {
       id
-      created_at
-      updated_at
       name
       blueprint
       required_level
-      quality_mult
-      set_qty
-      repeat_in_sets
       color
+      image
+    }
+    maps {
+      id
+      name
+      icon
     }
   }
 `
@@ -94,6 +97,6 @@ export const Failure = ({ error }: CellFailureProps) => (
   </div>
 )
 
-export const Success = ({ lootcrates }: CellSuccessProps<FindLootcrates>) => {
-  return <Lootcrates lootcrates={lootcrates} />
+export const Success = ({ lootcratesByMap, maps }: CellSuccessProps<FindLootcrates>) => {
+  return <Lootcrates lootcratesByMap={lootcratesByMap} maps={maps} />
 }

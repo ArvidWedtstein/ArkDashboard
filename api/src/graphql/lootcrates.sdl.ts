@@ -10,6 +10,7 @@ export const schema = gql`
     set_qty: JSON
     repeat_in_sets: Boolean
     color: String
+    image: String
     LootcrateItem: [LootcrateItem]!
     LootcrateMap: [LootcrateMap]!
   }
@@ -17,8 +18,8 @@ export const schema = gql`
   type Query {
     lootcrates: [Lootcrate!]! @skipAuth
     lootcrate(id: BigInt!): Lootcrate @skipAuth
+    lootcratesByMap(map: String): [Lootcrate!]! @skipAuth
   }
-
   input CreateLootcrateInput {
     created_at: DateTime!
     updated_at: DateTime
@@ -29,6 +30,7 @@ export const schema = gql`
     set_qty: JSON
     repeat_in_sets: Boolean
     color: String
+    image: String
   }
 
   input UpdateLootcrateInput {
@@ -41,6 +43,7 @@ export const schema = gql`
     set_qty: JSON
     repeat_in_sets: Boolean
     color: String
+    image: String
   }
 
   type Mutation {
