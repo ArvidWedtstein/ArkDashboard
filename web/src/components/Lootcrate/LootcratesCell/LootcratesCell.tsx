@@ -1,14 +1,12 @@
-import type { FindLootcrates } from 'types/graphql'
+import type { FindLootcrates } from "types/graphql";
 
-import { Link, routes } from '@redwoodjs/router'
-import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
+import { Link, routes } from "@redwoodjs/router";
+import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
-import Lootcrates from 'src/components/Lootcrate/Lootcrates'
+import Lootcrates from "src/components/Lootcrate/Lootcrates";
 
 export const QUERY = gql`
-  query FindLootcrates(
-    $map: String
-  ) {
+  query FindLootcrates($map: String) {
     lootcratesByMap(map: $map) {
       id
       name
@@ -23,7 +21,7 @@ export const QUERY = gql`
       icon
     }
   }
-`
+`;
 
 export const Loading = () => (
   <div
@@ -66,18 +64,18 @@ export const Loading = () => (
     </div>
     <span className="sr-only">Loading...</span>
   </div>
-)
+);
 
 export const Empty = () => {
   return (
     <div className="text-center text-black dark:text-white">
-      {'No lootcrates yet. '}
+      {"No lootcrates yet. "}
       <Link to={routes.newLootcrate()} className="rw-link">
-        {'Create one?'}
+        {"Create one?"}
       </Link>
     </div>
-  )
-}
+  );
+};
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error flex items-center space-x-3">
@@ -95,8 +93,11 @@ export const Failure = ({ error }: CellFailureProps) => (
       <p className="text-sm">{error?.message}</p>
     </div>
   </div>
-)
+);
 
-export const Success = ({ lootcratesByMap, maps }: CellSuccessProps<FindLootcrates>) => {
-  return <Lootcrates lootcratesByMap={lootcratesByMap} maps={maps} />
-}
+export const Success = ({
+  lootcratesByMap,
+  maps,
+}: CellSuccessProps<FindLootcrates>) => {
+  return <Lootcrates lootcratesByMap={lootcratesByMap} maps={maps} />;
+};

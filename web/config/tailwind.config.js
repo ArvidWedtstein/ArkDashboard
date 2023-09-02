@@ -34,12 +34,12 @@ module.exports = {
       keyframes: {
         ripple: {
           "0%": {
-            boxShadow:
-              "0 0 0 0 rgba(#FFFFFF, 0.1), 0 0 0 20px rgba(#FFFFFF, 0.1), 0 0 0 40px rgba(#FFFFFF, 0.1), 0 0 0 60px rgba(#FFFFFF, 0.1)",
+            "box-shadow":
+              "0 0 0 0 rgba(255,255,255, 0.1), 0 0 0 20px rgba(255,255,255, 0.1), 0 0 0 40px rgba(255,255,255, 0.1), 0 0 0 60px rgba(255,255,255, 0.1)",
           },
           "100%": {
-            boxShadow:
-              "0 0 0 20px rgba(#FFFFFF, 0.1), 0 0 0 40px rgba(#FFFFFF, 0.1), 0 0 0 60px rgba(#FFFFFF, 0.1), 0 0 0 80px rgba(#FFFFFF, 0)",
+            "box-shadow":
+              "0 0 0 20px rgba(255,255,255, 0.1), 0 0 0 40px rgba(255,255,255, 0.1), 0 0 0 60px rgba(255,255,255, 0.1), 0 0 0 80px rgba(255,255,255, 0)",
           },
         },
         progress: {
