@@ -173,12 +173,12 @@ const Lookup = ({
             {children
               ? children
               : selectedOptionRef?.current
-                ? selectedOptionRef?.current?.label
-                : placeholder}
+              ? selectedOptionRef?.current?.label
+              : placeholder}
           </>
         )}
 
-        <div className="pointer-events-none flex select-auto flex-row">
+        <div className="pointer-events-none ml-auto flex select-auto flex-row">
           <label htmlFor={name}>
             <svg
               className="pointer-events-none ml-2 h-4 w-4"
@@ -223,72 +223,72 @@ const Lookup = ({
             ) : null}
             {!group
               ? filteredOptions.map((option) => (
-                <li
-                  key={option.value + Math.random()}
-                  onClick={() => handleOptionSelect(option)}
-                  className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-zinc-600/70 dark:hover:text-white"
-                >
-                  {"image" in option && (
-                    <img
-                      className="mr-2 h-6 w-6 rounded-full"
-                      src={option.image}
-                      alt=""
-                    />
-                  )}
-                  {option.label}
-                </li>
-              ))
-              : Object.keys(filteredOptions).map((key, i) => {
-                return (
-                  <li key={key}>
-                    <div
-                      onClick={() => toggleOpen(i)}
-                      className="flex items-center justify-between border-t border-b-2 border-gray-200 px-4 pb-2 pt-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      <span className="mr-2 font-semibold">{key}</span>
-                      <svg
-                        className="h-4 w-4"
-                        aria-hidden="true"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d={
-                            openIndexesRef?.current?.includes(i)
-                              ? "M19 16L12 9l-7 7"
-                              : "M19 9l-7 7-7-7"
-                          }
-                        ></path>
-                      </svg>
-                    </div>
-                    {openIndexesRef?.current?.includes(i) && (
-                      <ul className="">
-                        {filteredOptions[key].map((option, i) => (
-                          <li
-                            key={i}
-                            onClick={() => handleOptionSelect(option)}
-                            className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                          >
-                            {"image" in option && (
-                              <img
-                                className="mr-2 h-6 w-6 rounded-full"
-                                src={option.image}
-                                alt=""
-                              />
-                            )}
-                            {option.label}
-                          </li>
-                        ))}
-                      </ul>
+                  <li
+                    key={option.value + Math.random()}
+                    onClick={() => handleOptionSelect(option)}
+                    className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-zinc-600/70 dark:hover:text-white"
+                  >
+                    {"image" in option && (
+                      <img
+                        className="mr-2 h-6 w-6 rounded-full"
+                        src={option.image}
+                        alt=""
+                      />
                     )}
+                    {option.label}
                   </li>
-                );
-              })}
+                ))
+              : Object.keys(filteredOptions).map((key, i) => {
+                  return (
+                    <li key={key}>
+                      <div
+                        onClick={() => toggleOpen(i)}
+                        className="flex items-center justify-between border-t border-b-2 border-gray-200 px-4 pb-2 pt-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white"
+                      >
+                        <span className="mr-2 font-semibold">{key}</span>
+                        <svg
+                          className="h-4 w-4"
+                          aria-hidden="true"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d={
+                              openIndexesRef?.current?.includes(i)
+                                ? "M19 16L12 9l-7 7"
+                                : "M19 9l-7 7-7-7"
+                            }
+                          ></path>
+                        </svg>
+                      </div>
+                      {openIndexesRef?.current?.includes(i) && (
+                        <ul className="">
+                          {filteredOptions[key].map((option, i) => (
+                            <li
+                              key={i}
+                              onClick={() => handleOptionSelect(option)}
+                              className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                            >
+                              {"image" in option && (
+                                <img
+                                  className="mr-2 h-6 w-6 rounded-full"
+                                  src={option.image}
+                                  alt=""
+                                />
+                              )}
+                              {option.label}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  );
+                })}
           </ul>
         </div>
       ) : null}

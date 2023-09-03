@@ -1938,7 +1938,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                         ].map(({ name, sub, icon }, i) => (
                           <li
                             key={`taming-stage-${i}`}
-                            className="[&>*]:fill-secondary-button [&>*]:border-secondary-button flex items-center space-x-2.5 [&>*]:dark:border-white [&>*]:dark:fill-white [&:last-of-type>svg]:hidden"
+                            className="flex items-center space-x-2.5 [&>*]:border-zinc-500 [&>*]:fill-zinc-500 [&>*]:dark:border-white [&>*]:dark:fill-white [&:last-of-type>svg]:hidden"
                           >
                             <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border p-1 md:h-12 md:w-12 md:p-3">
                               {icon}

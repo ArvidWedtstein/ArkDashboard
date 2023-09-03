@@ -23,7 +23,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
   }, []);
   return (
     <div className="rw-segment">
-      <Form className="flex w-auto" onSubmit={onSubmit}>
+      <Form className="flex w-full" onSubmit={onSubmit}>
         <nav className="flex w-full flex-row justify-center space-x-2">
           <div className="rw-button-group !w-full !space-x-0">
             <Label name="map" className="sr-only">
@@ -45,6 +45,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
             <Lookup
               name="category"
               className="rw-input mt-0 !rounded-none"
+              placeholder="Type"
               options={removeDuplicates(
                 lootcratesByMap
                   .filter((k) => k != undefined && k?.name != "")
@@ -67,7 +68,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                 shouldUnregister: true,
               }}
             />
-            <Submit className="rw-button rw-button-gray rounded-l-none">
+            <Submit className="rw-button rw-button-green rounded-l-none">
               Search
             </Submit>
           </div>
@@ -77,41 +78,25 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
         {lootcratesByMap
           .filter((m) => m.name != null && m.name != "")
           .map(({ id, name, required_level, image, color }) => (
-            <div
-              className="job-card rounded-lg bg-[#1c1c24] py-5 px-4"
+            <Link
+              to={routes.lootcrate({ id })}
+              className="rounded-lg bg-zinc-400 py-5 px-4 dark:bg-zinc-800"
               key={id}
             >
-              <div className="job-card-header flex items-start">
+              <div className="flex items-start">
                 <img
                   style={{ backgroundColor: color || "#2e2882" }}
                   className="h-12 w-12 rounded-lg object-contain p-2.5"
                   src={
                     image && image.length > 0
                       ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Lootcrate/${image}`
-                      : "White_Beacon.webp"
+                      : "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Lootcrate/White_Beacon.webp"
                   }
                 />
-                {/* <svg
-                viewBox="0 -13 512 512"
-                xmlns="http://www.w3.org/2000/svg"
-                style={{ backgroundColor: "#2e2882" }}
-                className="w-12 rounded-lg p-2.5"
-              >
-                <g fill="#feb0a5">
-                  <path d="M256 92.5l127.7 91.6L512 92 383.7 0 256 91.5 128.3 0 0 92l128.3 92zm0 0M256 275.9l-127.7-91.5L0 276.4l128.3 92L256 277l127.7 91.5 128.3-92-128.3-92zm0 0"></path>
-                  <path d="M127.7 394.1l128.4 92 128.3-92-128.3-92zm0 0"></path>
-                </g>
-                <path
-                  d="M512 92L383.7 0 256 91.5v1l127.7 91.6zm0 0M512 276.4l-128.3-92L256 275.9v1l127.7 91.5zm0 0M256 486.1l128.4-92-128.3-92zm0 0"
-                  fill="#feb0a5"
-                ></path>
-              </svg> */}
-                <div className="menu-dot ml-auto mr-2 h-1 w-1 rounded-full bg-[#9b9ba5] p-0 shadow-[-6px_0_0_0_rgb(155,155,165),6px_0_0_0_rgb(155,155,165)]"></div>
+                <div className="ml-auto mr-2 h-1 w-1 rounded-full bg-[#9b9ba5] p-0 shadow-[-6px_0_0_0_rgb(155,155,165),6px_0_0_0_rgb(155,155,165)]"></div>
               </div>
-              <div className="job-card-title mt-4 text-sm font-semibold">
-                {name}
-              </div>
-              <div className="job-card-subtitle mt-3.5 text-xs text-gray-300">
+              <div className="mt-4 text-sm font-semibold">{name}</div>
+              <div className="mt-3.5 text-xs text-gray-300">
                 The User Experience Designer position exists to create
                 compelling and digital user experience through excellent
                 design...
@@ -122,20 +107,13 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                     Lvl {required_level}
                   </button>
                 )}
-                {/* <button className="search-buttons detail-button rw-badge rw-badge-gray-outline">
-                  Min. 1 Year
-                </button>
-                <button className="search-buttons detail-button rw-badge rw-badge-gray-outline">
-                  Senior Level
-                </button> */}
               </div>
               <div className="mt-1 flex w-full items-center justify-between space-x-3">
                 <button className="rw-button rw-button-green-outline f">
-                  Apply Now
+                  Learn more
                 </button>
-                <button className="rw-button rw-button-gray">Messages</button>
               </div>
-            </div>
+            </Link>
           ))}
       </div>
       {/* <ul

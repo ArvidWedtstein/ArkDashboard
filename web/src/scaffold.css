@@ -102,7 +102,7 @@
 
   /* || BUTTONS */
   .rw-button {
-    @apply rounded-lg py-2.5 px-6 text-sm font-medium text-gray-900 transition duration-100 ease-in-out dark:text-white;
+    @apply rounded-lg py-2.5 px-6 text-sm font-medium text-gray-900 dark:text-white;
   }
 
   .rw-button.disabled,
@@ -451,10 +451,7 @@
     @apply mt-1 block text-xs font-semibold uppercase text-red-600;
   }
 
-  /* || Badges */
-  .rw-badge {
-    @apply inline-flex items-center rounded px-2.5 py-0.5 text-xs font-medium;
-  }
+  /* || Badge Colors */
 
   /* Red Badge */
   .rw-badge.rw-badge-red {
