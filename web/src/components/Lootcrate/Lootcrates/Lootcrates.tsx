@@ -1,7 +1,7 @@
 import { Form, Label, SearchField, Submit } from "@redwoodjs/forms";
 import { navigate, useParams } from "@redwoodjs/router";
 import { Link, routes, parseSearch } from "@redwoodjs/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import Lookup from "src/components/Util/Lookup/Lookup";
 import { removeDuplicates } from "src/lib/formatters";
 
@@ -9,7 +9,7 @@ import type { FindLootcrates } from "types/graphql";
 
 const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
   let { map, search } = useParams();
-  console.log(lootcratesByMap.length);
+
   const onSubmit = useCallback((data) => {
     navigate(
       routes.lootcrates({
@@ -24,56 +24,80 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
   return (
     <div className="rw-segment">
       <Form className="flex w-full" onSubmit={onSubmit}>
-        <nav className="flex w-full flex-row justify-center space-x-2">
-          <div className="rw-button-group !w-full !space-x-0">
-            <Label name="map" className="sr-only">
-              Choose a Map
-            </Label>
-            <Lookup
-              name="map"
-              className="rw-input mt-0 min-w-[10rem] !rounded-none !rounded-l-lg"
-              options={
-                maps?.map((map) => ({
-                  label: map.name,
-                  value: Number(map.id),
-                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
-                })) || []
-              }
-              placeholder="Map"
-              defaultValue={map}
-            />
-            <Lookup
-              name="category"
-              className="rw-input mt-0 !rounded-none"
-              placeholder="Type"
-              options={removeDuplicates(
-                lootcratesByMap
-                  .filter((k) => k != undefined && k?.name != "")
-                  .map((crate) => ({
-                    label: crate?.name.split(" ")[0],
-                    value: crate?.name.split(" ")[0],
-                  }))
-              )}
-            />
-
-            <Label name="search" className="sr-only">
-              Search for item
-            </Label>
-            <SearchField
-              name="search"
-              className="rw-input mt-0 !w-full"
-              placeholder="Search..."
-              defaultValue={search}
-              validation={{
-                shouldUnregister: true,
-              }}
-            />
-            <Submit className="rw-button rw-button-green rounded-l-none">
-              Search
-            </Submit>
+        <nav className="rw-button-group relative w-full !space-x-0">
+          <Label name="map" className="sr-only">
+            Choose a Map
+          </Label>
+          <div className="h-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 576 512"
+              className="absolute left-3 top-1/2 z-10 w-5 -translate-y-1/2 fill-black dark:fill-zinc-400"
+            >
+              <path d="M568.1 34.76c-4.406-2.969-9.982-3.554-14.94-1.616L409.6 90.67L179 32.51C175.9 31.67 172.5 31.89 169.5 33.01l-159.1 59.44C4.141 94.79 0 100.8 0 107.4v356.5c0 5.344 2.672 10.35 7.109 13.32s9.972 3.553 14.89 1.521l152.3-63.08l222.1 63.62C397.9 479.8 399.4 480 400.9 480c1.906 0 3.797-.3438 5.594-1l159.1-59.44C571.9 417.2 576 411.3 576 404.6V48.01C576 42.69 573.4 37.76 568.1 34.76zM192 68.79l192 48.42v325.3L192 387.6V68.79zM32 118.5l128-47.79v316.3l-128 53.02V118.5zM544 393.5l-128 47.8V122.4c.1914-.0684 .4043 .0391 .5938-.0371L544 71.61V393.5z" />
+            </svg>
           </div>
+          <Lookup
+            search={true}
+            name="map"
+            className="rw-input mt-0 min-w-[10rem] !rounded-none !rounded-l-lg pl-10"
+            options={
+              maps?.map((map) => ({
+                label: map.name,
+                value: Number(map.id),
+                image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
+              })) || []
+            }
+            placeholder="Map"
+            defaultValue={map}
+            filterFn={(item, search) =>
+              item.label.toLowerCase().includes(search.toLowerCase())
+            }
+          />
+          <Lookup
+            name="category"
+            className="rw-input mt-0 !rounded-none border-l-transparent"
+            placeholder="Type"
+            options={removeDuplicates(
+              lootcratesByMap
+                .filter((k) => k != undefined && k?.name != "")
+                .map((crate) => ({
+                  label: crate?.name.split(" ")[0],
+                  value: crate?.name.split(" ")[0],
+                }))
+            )}
+          />
+          <Label name="search" className="sr-only">
+            Search
+          </Label>
+          <SearchField
+            name="search"
+            list="searchlist"
+            className="rw-input mt-0 !w-full !rounded-r-lg border-l-transparent"
+            placeholder="Search..."
+            defaultValue={search}
+            validation={{
+              shouldUnregister: true,
+            }}
+          />
+          <datalist id="searchlist">
+            {maps?.map((map) => (
+              <option key={map.id} value={map.name} />
+            ))}
+          </datalist>
+          <Submit className="rw-button rw-button-green absolute top-0 right-0 h-full rounded-l-none">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 512 512"
+              className="rw-button-icon-start"
+            >
+              <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
+            </svg>
+            <span className="hidden md:block">Search</span>
+          </Submit>
         </nav>
       </Form>
+
       <div className={`grid w-full grid-cols-3 gap-6 text-white`}>
         {lootcratesByMap
           .filter((m) => m.name != null && m.name != "")
@@ -116,34 +140,6 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
             </Link>
           ))}
       </div>
-      {/* <ul
-        className={`grid grid-cols-9 w-full bg-[#171717] bg-[length:calc(200%_/_9)]`}
-        style={{
-          backgroundImage: `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 600 1040' xmlns='http://www.w3.org/2000/svg' fill-rule='evenodd' clip-rule='evenodd' stroke-linejoin='round' stroke-miterlimit='2'%3E%3Cpath d='M0 0l300 173.205v346.41L0 346.41V0z' fill='url(%23_Linear1)'/%3E%3Cpath d='M300 519.615L600 692.82v346.411L300 866.025v-346.41z' fill='url(%23_Linear2)'/%3E%3Cpath d='M600 0L300 173.205v346.41L600 346.41V0z' fill='url(%23_Linear3)'/%3E%3Cpath d='M300 519.615L0 692.82v346.411l300-173.206v-346.41z' fill='url(%23_Linear4)'/%3E%3Cdefs%3E%3ClinearGradient id='_Linear1' x1='0' y1='0' x2='1' y2='0' gradientUnits='userSpaceOnUse' gradientTransform='rotate(-30 646.41 173.205) scale(346.41)'%3E%3Cstop offset='0' stop-color='%23171717'/%3E%3Cstop offset='1' stop-color='%23cde2d9'/%3E%3C/linearGradient%3E%3ClinearGradient id='_Linear2' x1='0' y1='0' x2='1' y2='0' gradientUnits='userSpaceOnUse' gradientTransform='rotate(-30 1766.025 -126.796) scale(346.41)'%3E%3Cstop offset='0' stop-color='%23171717'/%3E%3Cstop offset='1' stop-color='%23cde2d9'/%3E%3C/linearGradient%3E%3ClinearGradient id='_Linear3' x1='0' y1='0' x2='1' y2='0' gradientUnits='userSpaceOnUse' gradientTransform='rotate(-150 346.41 92.82) scale(346.41)'%3E%3Cstop offset='0' stop-color='%23e8dad1'/%3E%3Cstop offset='1' stop-color='%23fff0e7'/%3E%3C/linearGradient%3E%3ClinearGradient id='_Linear4' x1='0' y1='0' x2='1' y2='0' gradientUnits='userSpaceOnUse' gradientTransform='rotate(-150 266.025 392.82) scale(346.41)'%3E%3Cstop offset='0' stop-color='%23e8dad1'/%3E%3Cstop offset='1' stop-color='%23fff0e7'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E")`,
-        }}
-      >
-        {lootcratesByMap.map(({ id, name, required_level, image, color }) => (
-          <li
-            className={"relative col-end-[span_2] [&:nth-child(8n-7)]:col-start-2 pb-[86.6%]"}
-            key={id}
-          >
-            <Link to={routes.lootcrate({ id })} className='absolute w-1/2 mt-[14%] transform-gpu -skew-y-[30deg] p-3 font-montserrat text-md md:text-xl'>
-              <h2 className=''>{name}</h2>
-              <p className=''>LVL {required_level}</p>
-            </Link>
-            <Link to={routes.lootcrate({ id })}>
-              <img
-                className={`hover:cursor-pointer duration-300 hover:bottom-0 absolute left-1/2 w-1/3 -bottom-3.5 -translate-x-1/2 transition-all will-change-transform hover:!drop-shadow-none`}
-                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Lootcrate/${image || "White_Beacon.webp"}`}
-                alt=''
-                style={{
-                  filter: `drop-shadow(0 80px 20px ${color || '#000000'}33)`
-                }}
-              />
-            </Link>
-          </li>
-        ))}
-      </ul> */}
     </div>
   );
 };

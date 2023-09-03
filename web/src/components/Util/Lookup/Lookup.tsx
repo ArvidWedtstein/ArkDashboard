@@ -71,7 +71,7 @@ const Lookup = ({
         : options;
     const sorted = sortFn ? filtered.sort(sortFn) : filtered;
     const grouped = !!group ? groupBy(sorted, group) : sorted;
-    if (Object.keys(grouped).length === 1) {
+    if (Object.keys(grouped).length === 1 && group) {
       openIndexesRef.current = [0];
     }
     return grouped as any[];
@@ -101,7 +101,7 @@ const Lookup = ({
     selectedOptionRef.current = null;
 
     setSearchTerm(event.target.value);
-    onChange && onChange(event);
+    onChange?.(event);
   };
 
   // Handle option select
@@ -118,7 +118,7 @@ const Lookup = ({
     selectedOptionRef.current = null;
 
     setSearchTerm("");
-    onSelect && onSelect({ label: null, value: null });
+    onSelect?.({ label: null, value: null });
     !!name && field.onChange(null);
   };
 
@@ -131,9 +131,10 @@ const Lookup = ({
       openIndexesRef.current = openIndexesRef.current.filter(
         (i) => i !== index
       );
-    } else {
-      openIndexesRef.current = [...openIndexesRef.current, index];
+      return;
     }
+
+    openIndexesRef.current = [...openIndexesRef.current, index];
   };
 
   return (
@@ -154,7 +155,10 @@ const Lookup = ({
             name={name}
             id={name}
             value={searchTerm}
-            onChange={onChange}
+            onChange={(e) => {
+              handleInputChange(e);
+              onChange?.(e);
+            }}
             placeholder={placeholder || "Search..."}
             className="flex w-full items-center bg-transparent outline-none"
             disabled={disabled}
