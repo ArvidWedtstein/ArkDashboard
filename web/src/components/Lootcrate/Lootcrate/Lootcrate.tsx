@@ -1,14 +1,14 @@
-import { Link, routes, navigate } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
-import Toast from 'src/components/Util/Toast/Toast'
+import { Link, routes, navigate } from "@redwoodjs/router";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
+import Toast from "src/components/Util/Toast/Toast";
 
-import { checkboxInputTag, jsonDisplay, timeTag } from 'src/lib/formatters'
+import { checkboxInputTag, jsonDisplay, timeTag } from "src/lib/formatters";
 
 import type {
   DeleteLootcrateMutationVariables,
   FindLootcrateById,
-} from 'types/graphql'
+} from "types/graphql";
 
 const DELETE_LOOTCRATE_MUTATION = gql`
   mutation DeleteLootcrateMutation($id: BigInt!) {
@@ -16,24 +16,24 @@ const DELETE_LOOTCRATE_MUTATION = gql`
       id
     }
   }
-`
+`;
 
 interface Props {
-  lootcrate: NonNullable<FindLootcrateById['lootcrate']>
+  lootcrate: NonNullable<FindLootcrateById["lootcrate"]>;
 }
 
 const Lootcrate = ({ lootcrate }: Props) => {
   const [deleteLootcrate] = useMutation(DELETE_LOOTCRATE_MUTATION, {
     onCompleted: () => {
-      toast.success('Lootcrate deleted')
-      navigate(routes.lootcrates())
+      toast.success("Lootcrate deleted");
+      navigate(routes.lootcrates());
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error(error.message);
     },
-  })
+  });
 
-  const onDeleteClick = (id: DeleteLootcrateMutationVariables['id']) => {
+  const onDeleteClick = (id: DeleteLootcrateMutationVariables["id"]) => {
     toast.custom(
       (t) => (
         <Toast
@@ -44,9 +44,9 @@ const Lootcrate = ({ lootcrate }: Props) => {
           primaryAction={() => deleteLootcrate({ variables: { id } })}
         />
       ),
-      { position: 'top-center' }
-    )
-  }
+      { position: "top-center" }
+    );
+  };
 
   return (
     <>
@@ -77,6 +77,10 @@ const Lootcrate = ({ lootcrate }: Props) => {
             <tr>
               <th>Blueprint</th>
               <td>{lootcrate.blueprint}</td>
+            </tr>
+            <tr>
+              <th>Image</th>
+              <td>{lootcrate.image}</td>
             </tr>
             <tr>
               <th>Required level</th>
@@ -117,7 +121,7 @@ const Lootcrate = ({ lootcrate }: Props) => {
         </button>
       </nav>
     </>
-  )
-}
+  );
+};
 
-export default Lootcrate
+export default Lootcrate;

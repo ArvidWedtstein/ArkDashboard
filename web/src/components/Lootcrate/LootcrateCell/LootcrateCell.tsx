@@ -1,8 +1,8 @@
-import type { FindLootcrateById } from 'types/graphql'
+import type { FindLootcrateById } from "types/graphql";
 
-import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
+import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
-import Lootcrate from 'src/components/Lootcrate/Lootcrate'
+import Lootcrate from "src/components/Lootcrate/Lootcrate";
 
 export const QUERY = gql`
   query FindLootcrateById($id: BigInt!) {
@@ -17,9 +17,10 @@ export const QUERY = gql`
       set_qty
       repeat_in_sets
       color
+      image
     }
   }
-`
+`;
 
 export const Loading = () => (
   <div
@@ -62,9 +63,9 @@ export const Loading = () => (
     </div>
     <span className="sr-only">Loading...</span>
   </div>
-)
+);
 
-export const Empty = () => <div>Lootcrate not found</div>
+export const Empty = () => <div>Lootcrate not found</div>;
 
 export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error flex items-center space-x-3">
@@ -82,8 +83,8 @@ export const Failure = ({ error }: CellFailureProps) => (
       <p className="text-sm">{error?.message}</p>
     </div>
   </div>
-)
+);
 
 export const Success = ({ lootcrate }: CellSuccessProps<FindLootcrateById>) => {
-  return <Lootcrate lootcrate={lootcrate} />
-}
+  return <Lootcrate lootcrate={lootcrate} />;
+};

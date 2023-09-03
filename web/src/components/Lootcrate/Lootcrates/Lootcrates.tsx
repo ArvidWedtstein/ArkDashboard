@@ -113,16 +113,14 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                   className="h-12 w-12 rounded-lg object-contain p-2.5"
                   src={
                     image && image.length > 0
-                      ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Lootcrate/${image}`
-                      : "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Lootcrate/White_Beacon.webp"
+                      ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`
+                      : "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/White_Beacon.webp"
                   }
                 />
                 <div className="ml-auto mr-2 h-1 w-1 rounded-full bg-[#9b9ba5] p-0 shadow-[-6px_0_0_0_rgb(155,155,165),6px_0_0_0_rgb(155,155,165)]"></div>
               </div>
               <div className="mt-4 text-sm font-semibold">{name}</div>
-              <div className="mt-3.5 text-xs text-gray-300">
-                {image?.toString()}
-              </div>
+              <div className="mt-3.5 text-xs text-gray-300"></div>
               <div className="my-2 flex items-start space-x-1">
                 {required_level > 0 && required_level != null && (
                   <button className="rw-badge rw-badge-gray-outline">
