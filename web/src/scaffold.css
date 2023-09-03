@@ -16,11 +16,6 @@
     @apply flex justify-between py-4 px-8;
   }
 
-  .rw-segment {
-    @apply w-full overflow-hidden;
-    scrollbar-color: theme("colors.zinc.400") transparent;
-    scroll-behavior: smooth;
-  }
   .rw-segment::-webkit-scrollbar {
     height: initial;
   }

@@ -144,6 +144,12 @@ module.exports = {
           lineHeight: theme("lineHeight.4"),
           fontWeight: theme("fontWeight.medium"),
         },
+        ".rw-segment": {
+          width: "100%",
+          overflow: "hidden",
+          scrollBehavior: "smooth",
+          scrollbarColor: `${theme("colors.zinc.400")} transparent`,
+        },
       });
     }),
   ],

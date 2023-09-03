@@ -215,7 +215,7 @@ const Lookup = ({
       </div>
 
       {isComponentVisible ? (
-        <div className="absolute top-0 z-10 mt-10 w-60 select-none rounded-lg border border-zinc-500 bg-white shadow transition-all duration-300 ease-in-out dark:bg-zinc-700">
+        <div className="absolute top-0 z-10 mt-10 w-60 origin-top-right select-none rounded-lg border border-zinc-500 bg-white shadow transition-all duration-300 ease-in-out dark:bg-zinc-700">
           <ul
             className="relative z-10 max-h-48 overflow-y-auto py-1 text-gray-700 dark:text-gray-200"
             aria-labelledby="dropdownButton"

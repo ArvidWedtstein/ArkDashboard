@@ -51,6 +51,20 @@ const ${singularPascalName} = ({ ${singularCamelName} }: Props) => {
             ${singularPascalName} {${singularCamelName}.id} Detail
           </h2>
         </header>
+
+        <div className="mt-6 border-t border-gray-100">
+          <dl className="divide-y divide-gray-100">
+            <% columns.forEach(column => { %><div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+              <dt className="text-sm font-medium leading-6 text-gray-900 dark:text-white"><%= column.label %></dt><%
+              if (column.displayFunction) { %>
+              <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-zinc-400 sm:col-span-2 sm:mt-0">{${column.displayFunction}(${singularCamelName}.${column.name})}</dd><%
+              } else { %>
+              <dd className="mt-1 text-sm leading-6 text-gray-700 dark:text-zinc-400 sm:col-span-2 sm:mt-0">{${singularCamelName}.${column.name}}</dd><%
+              } %>
+            </div><% }) %>
+          </dl>
+        </div>
+
         <table className="rw-table">
           <tbody>
             <% columns.forEach(column => { %><tr>

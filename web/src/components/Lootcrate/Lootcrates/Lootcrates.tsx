@@ -98,13 +98,13 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
         </nav>
       </Form>
 
-      <div className={`grid w-full grid-cols-3 gap-6 text-white`}>
+      <div className="mt-3 grid w-full grid-cols-3 gap-6 text-white">
         {lootcratesByMap
           .filter((m) => m.name != null && m.name != "")
           .map(({ id, name, required_level, image, color }) => (
             <Link
               to={routes.lootcrate({ id })}
-              className="rounded-lg bg-zinc-400 py-5 px-4 dark:bg-zinc-800"
+              className="rounded-lg bg-zinc-400 py-5 px-4 shadow-lg dark:bg-zinc-800"
               key={id}
             >
               <div className="flex items-start">
@@ -121,9 +121,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
               </div>
               <div className="mt-4 text-sm font-semibold">{name}</div>
               <div className="mt-3.5 text-xs text-gray-300">
-                The User Experience Designer position exists to create
-                compelling and digital user experience through excellent
-                design...
+                {image?.toString()}
               </div>
               <div className="my-2 flex items-start space-x-1">
                 {required_level > 0 && required_level != null && (
