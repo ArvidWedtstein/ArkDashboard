@@ -7,6 +7,8 @@ import type {
   DeleteTimelineSeasonEventMutationVariables,
   FindTimelineSeasonEvents,
 } from "types/graphql";
+import TimelineSeasonEventForm from "../TimelineSeasonEventForm/TimelineSeasonEventForm";
+import NewTimelineSeasonEventCell from "../NewTimelineSeasonEventCell";
 
 const DELETE_TIMELINE_SEASON_EVENT_MUTATION = gql`
   mutation DeleteTimelineSeasonEventMutation($id: String!) {
@@ -162,6 +164,7 @@ const TimelineSeasonEventsList = ({
             )
           )}
       </ul>
+      <NewTimelineSeasonEventCell timeline_season_id={timelineSeasonEvents[0].id} />
     </div>
   );
 };
