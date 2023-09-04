@@ -83,7 +83,7 @@ const LootcratesList = ({
         ...parseSearch(
           Object.fromEntries(
             Object.entries(data).filter(([_, v]) => v != "" && v != undefined)
-          ) as any
+          ) as Record<string, string>
         ),
       })
     );

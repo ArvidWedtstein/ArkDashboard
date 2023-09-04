@@ -521,7 +521,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                     <span className="text-sm">{formatNumber(amount)}</span>
                   </div>
                 ),
-              })) as any),
+              })) as Record<string, string>),
             ]}
           /> */}
 
@@ -719,9 +719,9 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 items,
                 ...recipes
               ).map(({ Item_ItemRecipe_crafted_item_idToItem }) => ({
-                field: Item_ItemRecipe_crafted_item_idToItem,
+                field: Item_ItemRecipe_crafted_item_idToItem.name,
                 header: Item_ItemRecipe_crafted_item_idToItem.name,
-                type: "number",
+                datatype: "number",
                 aggregate: "sum" as const,
                 className: "w-0 text-center",
                 valueFormatter: ({ row, value }) => {

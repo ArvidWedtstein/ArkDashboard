@@ -24,7 +24,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
         ...parseSearch(
           Object.fromEntries(
             Object.entries(e).filter(([_, v]) => v != "")
-          ) as any
+          ) as Record<string, string>
         ),
         page: 1,
       })

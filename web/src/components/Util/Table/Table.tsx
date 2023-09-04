@@ -45,15 +45,15 @@ type TableColumn = {
    * Indicates type of column
    */
   datatype?:
-    | "number"
-    | "boolean"
-    | "date"
-    | "symbol"
-    | "function"
-    | "string"
-    | "bigint"
-    | "undefined"
-    | "object";
+  | "number"
+  | "boolean"
+  | "date"
+  | "symbol"
+  | "function"
+  | "string"
+  | "bigint"
+  | "undefined"
+  | "object";
   /**
    * The CSS class name for the column.
    */
@@ -227,7 +227,7 @@ const Table = ({
 
   const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(
     mergedSettings.pagination.rowsPerPage ||
-      mergedSettings.pagination.pageSizeOptions[0]
+    mergedSettings.pagination.pageSizeOptions[0]
   );
 
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -528,23 +528,23 @@ const Table = ({
 
     const valueFormatted = valueFormatter
       ? valueFormatter({
-          value: cellData,
-          row: rowData,
-          columnIndex,
-        })
+        value: cellData,
+        row: rowData,
+        columnIndex,
+      })
       : isNaN(cellData)
-      ? cellData?.amount || cellData
-      : cellData;
+        ? cellData?.amount || cellData
+        : cellData;
 
     const content = render
       ? render({
-          columnIndex,
-          rowIndex,
-          value: valueFormatted,
-          field: field,
-          header,
-          row: rowData,
-        })
+        columnIndex,
+        rowIndex,
+        value: valueFormatted,
+        field: field,
+        header,
+        row: rowData,
+      })
       : valueFormatted;
 
     return (
@@ -585,8 +585,8 @@ const Table = ({
               checked={
                 header
                   ? PaginatedData.every((row) =>
-                      selectedRows.includes(row.row_id)
-                    )
+                    selectedRows.includes(row.row_id)
+                  )
                   : isSelected(datarow.row_id)
               }
               onChange={(e) => handleRowSelect(e, datarow?.row_id)}
@@ -722,7 +722,6 @@ const Table = ({
                 valueFormatter,
               });
 
-              // TODO: fix. doesn't work on itemcolumns on materialcalculator
               const key = `${field}-${header}`; // Use a unique identifier for the key
               return (
                 <td
@@ -735,8 +734,8 @@ const Table = ({
                   {datatype === "number"
                     ? formatNumber(aggregatedValue)
                     : index === 0
-                    ? "Total"
-                    : ""}
+                      ? "Total"
+                      : ""}
                 </td>
               );
             }
@@ -799,7 +798,7 @@ const Table = ({
       } else if (
         dir === "next" &&
         currentPage <
-          Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
+        Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
       ) {
         setCurrentPage(currentPage + 1);
       }
@@ -1206,11 +1205,10 @@ const Table = ({
               PaginatedData.map((datarow, i) => (
                 <React.Fragment key={datarow.row_id}>
                   <tr
-                    className={`z-10 overflow-x-auto ${
-                      mergedSettings.borders.vertical
-                        ? "divide-x divide-gray-400 divide-opacity-30 dark:divide-zinc-800"
-                        : ""
-                    }`}
+                    className={`z-10 overflow-x-auto ${mergedSettings.borders.vertical
+                      ? "divide-x divide-gray-400 divide-opacity-30 dark:divide-zinc-800"
+                      : ""
+                      }`}
                   >
                     {dataRows.some((row) => row.collapseContent) &&
                       tableSelect({
@@ -1254,9 +1252,8 @@ const Table = ({
                   </tr>
                   {datarow?.collapseContent && (
                     <tr
-                      className={`transition ease-in ${
-                        isRowOpen(datarow.row_id) ? "table-row" : "hidden"
-                      }`}
+                      className={`transition ease-in ${isRowOpen(datarow.row_id) ? "table-row" : "hidden"
+                        }`}
                     >
                       <td
                         colSpan={100}

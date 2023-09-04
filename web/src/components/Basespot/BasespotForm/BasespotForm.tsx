@@ -37,7 +37,6 @@ interface BasespotFormProps {
 
 const BasespotForm = (props: BasespotFormProps) => {
   const formMethods = useForm<FormBasespot>();
-  const [thumbnailUrl, setThumbnailUrl] = useState(null);
 
   const [map, setMap] = useState(props?.basespot?.map_id || 2);
 

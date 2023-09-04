@@ -7,23 +7,29 @@ import { removeDuplicates } from "src/lib/formatters";
 
 import type { FindLootcrates } from "types/graphql";
 
+type FormFindLootcrates = NonNullable<{
+  map: string;
+  category: string;
+  search: string;
+}>;
+
 const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
   let { map, search } = useParams();
 
-  const onSubmit = useCallback((data) => {
+  const onSubmit = useCallback((data: FormFindLootcrates) => {
     navigate(
       routes.lootcrates({
         ...parseSearch(
           Object.fromEntries(
             Object.entries(data).filter(([_, v]) => v != "" && v != undefined)
-          ) as any
+          ) as Record<string, string>
         ),
       })
     );
   }, []);
   return (
     <div className="rw-segment">
-      <Form className="flex w-full" onSubmit={onSubmit}>
+      <Form<FormFindLootcrates> className="flex w-full" onSubmit={onSubmit}>
         <nav className="rw-button-group relative w-full !space-x-0">
           <Label name="map" className="sr-only">
             Choose a Map
