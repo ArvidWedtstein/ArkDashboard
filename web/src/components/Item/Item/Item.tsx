@@ -151,7 +151,7 @@ const Item = ({ item }: Props) => {
             <div className="flex flex-col">
               <div className="py-4 px-8 text-sm font-normal text-gray-700 dark:text-white">
                 <div className="mb-4 inline-block">
-                  {(item?.stats as any[]).map(({ id, value }, i) => {
+                  {(item?.stats as { id: number, value: number }[]).map(({ id, value }, i) => {
                     if (!ItemStats[id])
                       return <div key={`${id}${value}${i}`}></div>;
                     return (
