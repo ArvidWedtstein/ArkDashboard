@@ -38,6 +38,7 @@ interface TimelineSeasonPersonFormProps {
 
 const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
   const onSubmit = (data: FormTimelineSeasonPerson) => {
+
     data.timeline_season_id = props.timeline_season_id;
     props.onSave(data, props?.timelineSeasonPerson?.id);
   };

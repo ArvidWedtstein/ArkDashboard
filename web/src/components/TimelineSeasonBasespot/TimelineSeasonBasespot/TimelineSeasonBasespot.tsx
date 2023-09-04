@@ -254,7 +254,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                             {timeTag(created_at)}
                           </p>
                           <p className="inline-flex gap-x-1">
-                            {tags && tags.split(',').map(t => <span className="rw-badge rw-badge-gray">#{t}</span>)}
+                            {tags && tags.split(',').map(t => <span key={`tag-${t}-${id}`} className="rw-badge rw-badge-gray">#{t}</span>)}
                           </p>
                         </div>
                       </div>
@@ -272,7 +272,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
               {timelineSeasonBasespot.map_id && (
                 <Map
                   disable_map={true}
-                  className="h-full w-full object-cover object-center"
+                  className="h-full w-fit object-cover object-center"
                   map_id={timelineSeasonBasespot.map_id}
                   size={{ width: 500, height: 500 }}
                   pos={[
