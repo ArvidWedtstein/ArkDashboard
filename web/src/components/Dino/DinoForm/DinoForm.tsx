@@ -1827,6 +1827,7 @@ const DinoForm = (props: DinoFormProps) => {
           ))}
         </div>
         <label className="relative inline-flex cursor-pointer items-center">
+          {/* TODO: change this to togglebutton */}
           <input
             type="checkbox"
             checked={useFoundationUnit}

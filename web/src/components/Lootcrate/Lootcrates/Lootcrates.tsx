@@ -1,7 +1,16 @@
-import { Form, Label, SearchField, Submit } from "@redwoodjs/forms";
+import {
+  CheckboxField,
+  Form,
+  Label,
+  RadioField,
+  SearchField,
+  Submit,
+} from "@redwoodjs/forms";
 import { navigate, useParams } from "@redwoodjs/router";
 import { Link, routes, parseSearch } from "@redwoodjs/router";
-import { useCallback } from "react";
+import { CheckmarkIcon } from "@redwoodjs/web/dist/toast";
+import { useCallback, useState } from "react";
+import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import Lookup from "src/components/Util/Lookup/Lookup";
 import { removeDuplicates } from "src/lib/formatters";
 
@@ -16,6 +25,44 @@ type FormFindLootcrates = NonNullable<{
 const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
   let { map, search } = useParams();
 
+  const filters = [
+    {
+      id: "color",
+      name: "Color",
+      options: [
+        { value: "white", label: "White", checked: false },
+        { value: "beige", label: "Beige", checked: false },
+        { value: "blue", label: "Blue", checked: true },
+        { value: "brown", label: "Brown", checked: false },
+        { value: "green", label: "Green", checked: false },
+        { value: "purple", label: "Purple", checked: false },
+      ],
+    },
+    {
+      id: "category",
+      name: "Category",
+      options: [
+        { value: "new-arrivals", label: "New Arrivals", checked: false },
+        { value: "sale", label: "Sale", checked: false },
+        { value: "travel", label: "Travel", checked: true },
+        { value: "organization", label: "Organization", checked: false },
+        { value: "accessories", label: "Accessories", checked: false },
+      ],
+    },
+    {
+      id: "size",
+      name: "Size",
+      options: [
+        { value: "2l", label: "2L", checked: false },
+        { value: "6l", label: "6L", checked: false },
+        { value: "12l", label: "12L", checked: false },
+        { value: "18l", label: "18L", checked: false },
+        { value: "20l", label: "20L", checked: false },
+        { value: "40l", label: "40L", checked: true },
+      ],
+    },
+  ];
+
   const onSubmit = useCallback((data: FormFindLootcrates) => {
     navigate(
       routes.lootcrates({
@@ -29,8 +76,11 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
   }, []);
   return (
     <div className="rw-segment">
-      <Form<FormFindLootcrates> className="flex w-full" onSubmit={onSubmit}>
-        <nav className="rw-button-group relative w-full !space-x-0">
+      <Form<FormFindLootcrates>
+        className="grid w-full grid-cols-6 gap-x-3"
+        onSubmit={onSubmit}
+      >
+        <nav className="rw-button-group relative col-span-6 w-full !space-x-0">
           <Label name="map" className="sr-only">
             Choose a Map
           </Label>
@@ -102,46 +152,158 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
             <span className="hidden md:block">Search</span>
           </Submit>
         </nav>
-      </Form>
+        <div className="col-span-2 flex flex-col md:col-span-1">
+          <Disclosure title="Category">
+            <div className="flex flex-col space-y-5">
+              <div className="flex items-center space-x-2">
+                <CheckboxField name="type" className="rw-input" />
+                <Label
+                  name="type"
+                  className="rw-sublabel"
+                  errorClassName="rw-sublabel rw-label-error"
+                >
+                  Supply Drop
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <CheckboxField name="type" className="rw-input" />
+                <Label
+                  name="type"
+                  className="rw-sublabel"
+                  errorClassName="rw-sublabel rw-label-error"
+                >
+                  Artifact
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <CheckboxField name="type" className="rw-input" />
+                <Label
+                  name="type"
+                  className="rw-sublabel"
+                  errorClassName="rw-sublabel rw-label-error"
+                >
+                  Boss
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <CheckboxField name="type" className="rw-input" />
+                <Label
+                  name="type"
+                  className="rw-sublabel"
+                  errorClassName="rw-sublabel rw-label-error"
+                >
+                  Underwater
+                </Label>
+              </div>
+            </div>
+          </Disclosure>
+          <Disclosure title="Color">
+            <div className="flex flex-col space-y-5">
+              <div className="flex items-center space-x-2">
+                <CheckboxField name="color" className="rw-input" />
+                <Label
+                  name="color"
+                  className="rw-sublabel"
+                  errorClassName="rw-sublabel rw-label-error"
+                >
+                  Red
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <CheckboxField name="color" className="rw-input" />
+                <Label
+                  name="color"
+                  className="rw-sublabel"
+                  errorClassName="rw-sublabel rw-label-error"
+                >
+                  Blue
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <CheckboxField name="color" className="rw-input" />
+                <Label
+                  name="color"
+                  className="rw-sublabel"
+                  errorClassName="rw-sublabel rw-label-error"
+                >
+                  Yellow
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <CheckboxField name="color" className="rw-input" />
+                <Label
+                  name="color"
+                  className="rw-sublabel"
+                  errorClassName="rw-sublabel rw-label-error"
+                >
+                  White
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <CheckboxField name="color" className="rw-input" />
+                <Label
+                  name="color"
+                  className="rw-sublabel"
+                  errorClassName="rw-sublabel rw-label-error"
+                >
+                  Purple
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <CheckboxField name="color" className="rw-input" />
+                <Label
+                  name="color"
+                  className="rw-sublabel"
+                  errorClassName="rw-sublabel rw-label-error"
+                >
+                  Orange
+                </Label>
+              </div>
+            </div>
+          </Disclosure>
+        </div>
 
-      <div className="mt-3 grid w-full grid-cols-3 gap-6 text-white">
-        {lootcratesByMap
-          .filter((m) => m.name != null && m.name != "")
-          .map(({ id, name, required_level, image, color }) => (
-            <Link
-              to={routes.lootcrate({ id })}
-              className="rounded-lg bg-zinc-400 py-5 px-4 shadow-lg dark:bg-zinc-800"
-              key={id}
-            >
-              <div className="flex items-start">
-                <img
-                  style={{ backgroundColor: color || "#2e2882" }}
-                  className="h-12 w-12 rounded-lg object-contain p-2.5"
-                  src={
-                    image && image.length > 0
-                      ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`
-                      : "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/White_Beacon.webp"
-                  }
-                />
-                <div className="ml-auto mr-2 h-1 w-1 rounded-full bg-[#9b9ba5] p-0 shadow-[-6px_0_0_0_rgb(155,155,165),6px_0_0_0_rgb(155,155,165)]"></div>
-              </div>
-              <div className="mt-4 text-sm font-semibold">{name}</div>
-              <div className="mt-3.5 text-xs text-gray-300"></div>
-              <div className="my-2 flex items-start space-x-1">
-                {required_level > 0 && required_level != null && (
-                  <button className="rw-badge rw-badge-gray-outline">
-                    Lvl {required_level}
-                  </button>
-                )}
-              </div>
-              <div className="mt-1 flex w-full items-center justify-between space-x-3">
-                <button className="rw-button rw-button-green-outline f">
-                  Learn more
-                </button>
-              </div>
-            </Link>
-          ))}
-      </div>
+        <div className="col-span-4 md:col-span-5">
+          <div className="mt-3 grid w-full grid-cols-1 gap-6 text-white md:grid-cols-2 lg:grid-cols-3">
+            {lootcratesByMap
+              .filter((m) => m.name != null && m.name != "")
+              .map(({ id, name, required_level, image, color }) => (
+                <Link
+                  to={routes.lootcrate({ id })}
+                  className="rounded-lg bg-zinc-400 py-5 px-4 shadow-lg dark:bg-zinc-800"
+                  key={id}
+                >
+                  <div className="flex items-start">
+                    <img
+                      style={{ backgroundColor: color || "#2e2882" }}
+                      className="h-12 w-12 rounded-lg object-contain p-2.5"
+                      src={
+                        image && image.length > 0
+                          ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${image}`
+                          : "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/White_Beacon.webp"
+                      }
+                    />
+                    <div className="ml-auto mr-2 h-1 w-1 rounded-full bg-[#9b9ba5] p-0 shadow-[-6px_0_0_0_rgb(155,155,165),6px_0_0_0_rgb(155,155,165)]"></div>
+                  </div>
+                  <div className="mt-4 text-sm font-semibold">{name}</div>
+                  <div className="mt-3.5 text-xs text-gray-300"></div>
+                  <div className="my-2 flex items-start space-x-1">
+                    {required_level > 0 && required_level != null && (
+                      <button className="rw-badge rw-badge-gray-outline">
+                        Lvl {required_level}
+                      </button>
+                    )}
+                  </div>
+                  <div className="mt-1 flex w-full items-center justify-between space-x-3">
+                    <button className="rw-button rw-button-green-outline f">
+                      Learn more
+                    </button>
+                  </div>
+                </Link>
+              ))}
+          </div>
+        </div>
+      </Form>
     </div>
   );
 };

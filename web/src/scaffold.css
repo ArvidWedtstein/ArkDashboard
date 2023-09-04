@@ -77,7 +77,11 @@
   .rw-label {
     @apply mt-4 inline-block text-left font-semibold uppercase tracking-wide text-gray-600 dark:text-stone-300;
   }
-  .rw-label.rw-label-error {
+  .rw-sublabel {
+    @apply inline-block text-left font-normal text-gray-600 dark:text-stone-300;
+  }
+  .rw-label.rw-label-error,
+  .rw-sublabel.rw-label-error {
     @apply text-red-600;
   }
   .rw-helper-text {
@@ -371,7 +375,7 @@
   .rw-checkbox,
   .rw-input[type="checkbox"],
   .rw-input.rw-checkbox[type="checkbox"] {
-    @apply relative ml-0 mr-1 block h-6 w-6 cursor-pointer appearance-none rounded p-2 transition duration-200 focus:outline-none;
+    @apply focus:outline-pea-500 relative ml-0 mr-1 block h-6 w-6 cursor-pointer appearance-none rounded p-2 transition duration-200;
   }
   .rw-input.rw-input-small[type="checkbox"] {
     @apply h-4 w-4 p-1;
@@ -409,7 +413,7 @@
     @apply text-pea-600 dark:accent-pea-600 accent-pea-500 inline h-4 w-4 border-zinc-500;
   }
   .rw-check-radio-items {
-    @apply flex justify-items-center;
+    @apply flex items-center justify-items-center space-x-1 text-zinc-800 dark:text-zinc-200;
   }
   .rw-check-radio-item-none {
     @apply text-gray-600;
