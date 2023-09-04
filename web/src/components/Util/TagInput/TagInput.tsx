@@ -5,8 +5,12 @@ import { debounce } from "src/lib/formatters";
 interface TagInputProps {
   name?: string;
   defaultValue?: string;
+  placeholder?: string;
+  className?: string;
+  inputClassName?: string;
+  tagClassName?: string;
 }
-const TagInput = ({ name, defaultValue = "" }: TagInputProps) => {
+const TagInput = ({ name, defaultValue = "", placeholder = " ", className, inputClassName = "rw-float-input peer", tagClassName = "inline-flex items-center rounded border border-zinc-500 bg-gray-100 px-2 py-1 text-sm font-medium text-gray-800 dark:bg-zinc-700 dark:text-gray-300" }: TagInputProps) => {
   const [isFadingOut, setIsFadingOut] = useState<number>(-1);
   const [tags, setTags] = useState<string[]>(
     defaultValue?.trim()
@@ -29,12 +33,12 @@ const TagInput = ({ name, defaultValue = "" }: TagInputProps) => {
 
   return (
     <>
-      <div className="flex flex-wrap gap-1 text-gray-600 dark:text-zinc-200">
+      <div className={clsx("flex flex-wrap gap-1 text-gray-600 dark:text-zinc-200", className)}>
         {tags.map((tag, idx) => (
           <span
             key={`${tag}-${idx}`}
             className={clsx(
-              "inline-flex items-center rounded border border-zinc-500 bg-gray-100 px-2 py-1 text-sm font-medium text-gray-800 dark:bg-zinc-700 dark:text-gray-300",
+              tagClassName,
               {
                 "animate-fade-out": isFadingOut === idx,
               }
@@ -73,11 +77,11 @@ const TagInput = ({ name, defaultValue = "" }: TagInputProps) => {
       </div>
       <div className="relative max-w-sm">
         <input
-          className="rw-float-input peer"
-          placeholder=" "
+          className={inputClassName}
+          placeholder={placeholder}
           onKeyDown={handleKeyDown}
         />
-        <label className="rw-float-label">Tags</label>
+        {!!!placeholder && <label className="rw-float-label">Tags</label>}
       </div>
       <input type="hidden" name={name} value={tags.join(", ")} />
     </>
