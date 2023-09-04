@@ -197,6 +197,22 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
               </div>
             </div>
           </Disclosure>
+          <Disclosure title="Map">
+            <div className="flex flex-col space-y-5">
+              {maps?.map(({ id, name }) => (
+                <div className="flex items-center space-x-2" key={id}>
+                  <CheckboxField name="map" className="rw-input" />
+                  <Label
+                    name="map"
+                    className="rw-sublabel"
+                    errorClassName="rw-sublabel rw-label-error"
+                  >
+                    {name}
+                  </Label>
+                </div>
+              ))}
+            </div>
+          </Disclosure>
           <Disclosure title="Color">
             <div className="flex flex-col space-y-5">
               <div className="flex items-center space-x-2">
