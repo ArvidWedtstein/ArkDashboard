@@ -139,10 +139,13 @@ module.exports = {
           display: "inline-flex",
           alignItems: "center",
           borderRadius: theme("borderRadius.DEFAULT"),
-          padding: "2px 10px",
+          padding: "4px 10px",
           fontSize: theme("fontSize.xs"),
           lineHeight: theme("lineHeight.4"),
           fontWeight: theme("fontWeight.medium"),
+        },
+        ".rw-badge-small": {
+          padding: "2px 6px",
         },
         ".rw-segment": {
           width: "100%",

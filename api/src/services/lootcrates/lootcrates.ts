@@ -13,7 +13,7 @@ export const lootcratesByMap = ({
   map?: string;
   search?: string;
 }) => {
-  return !!map && !!search
+  return !!search
     ? db.lootcrate.findMany({
         orderBy: { created_at: "desc" },
         where: {

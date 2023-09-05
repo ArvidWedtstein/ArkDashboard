@@ -2,16 +2,14 @@ import {
   CheckboxField,
   Form,
   Label,
-  RadioField,
   SearchField,
   Submit,
 } from "@redwoodjs/forms";
 import { navigate, useParams } from "@redwoodjs/router";
 import { Link, routes, parseSearch } from "@redwoodjs/router";
-import { CheckmarkIcon } from "@redwoodjs/web/dist/toast";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
-import Lookup from "src/components/Util/Lookup/Lookup";
+import Lookup, { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
 import { removeDuplicates } from "src/lib/formatters";
 
 import type { FindLootcrates } from "types/graphql";
@@ -93,8 +91,22 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
               <path d="M568.1 34.76c-4.406-2.969-9.982-3.554-14.94-1.616L409.6 90.67L179 32.51C175.9 31.67 172.5 31.89 169.5 33.01l-159.1 59.44C4.141 94.79 0 100.8 0 107.4v356.5c0 5.344 2.672 10.35 7.109 13.32s9.972 3.553 14.89 1.521l152.3-63.08l222.1 63.62C397.9 479.8 399.4 480 400.9 480c1.906 0 3.797-.3438 5.594-1l159.1-59.44C571.9 417.2 576 411.3 576 404.6V48.01C576 42.69 573.4 37.76 568.1 34.76zM192 68.79l192 48.42v325.3L192 387.6V68.79zM32 118.5l128-47.79v316.3l-128 53.02V118.5zM544 393.5l-128 47.8V122.4c.1914-.0684 .4043 .0391 .5938-.0371L544 71.61V393.5z" />
             </svg>
           </div>
-          <Lookup
-            search={true}
+          <MultiSelectLookup
+            name="map"
+            search
+            placeholder="Map"
+            className="rw-input mt-0 min-w-[10rem] !rounded-none !rounded-l-lg pl-10"
+            defaultValue={map}
+            options={
+              maps?.map((map) => ({
+                label: map.name,
+                value: Number(map.id),
+                image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
+              })) || []
+            }
+          />
+          {/* <Lookup
+            search
             name="map"
             className="rw-input mt-0 min-w-[10rem] !rounded-none !rounded-l-lg pl-10"
             options={
@@ -109,7 +121,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
             filterFn={(item, search) =>
               item.label.toLowerCase().includes(search.toLowerCase())
             }
-          />
+          /> */}
           <Lookup
             name="category"
             className="rw-input mt-0 !rounded-none border-l-transparent"
@@ -152,7 +164,8 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
             <span className="hidden md:block">Search</span>
           </Submit>
         </nav>
-        <div className="col-span-2 flex flex-col md:col-span-1">
+
+        <div className="col-span-2 flex flex-col md:col-span-1 mt-3">
           <Disclosure title="Category">
             <div className="flex flex-col space-y-5">
               <div className="flex items-center space-x-2">
