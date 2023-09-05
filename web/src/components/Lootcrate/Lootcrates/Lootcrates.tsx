@@ -10,7 +10,7 @@ import { Link, routes, parseSearch } from "@redwoodjs/router";
 import { useCallback } from "react";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import Lookup, { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
-import { removeDuplicates } from "src/lib/formatters";
+import { getDistinctValues, hexToColorName, removeDuplicates } from "src/lib/formatters";
 
 import type { FindLootcrates } from "types/graphql";
 
@@ -22,46 +22,7 @@ type FormFindLootcrates = NonNullable<{
 const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
   let { map, search } = useParams();
 
-  const filters = [
-    {
-      id: "color",
-      name: "Color",
-      options: [
-        { value: "white", label: "White", checked: false },
-        { value: "beige", label: "Beige", checked: false },
-        { value: "blue", label: "Blue", checked: true },
-        { value: "brown", label: "Brown", checked: false },
-        { value: "green", label: "Green", checked: false },
-        { value: "purple", label: "Purple", checked: false },
-      ],
-    },
-    {
-      id: "category",
-      name: "Category",
-      options: [
-        { value: "new-arrivals", label: "New Arrivals", checked: false },
-        { value: "sale", label: "Sale", checked: false },
-        { value: "travel", label: "Travel", checked: true },
-        { value: "organization", label: "Organization", checked: false },
-        { value: "accessories", label: "Accessories", checked: false },
-      ],
-    },
-    {
-      id: "size",
-      name: "Size",
-      options: [
-        { value: "2l", label: "2L", checked: false },
-        { value: "6l", label: "6L", checked: false },
-        { value: "12l", label: "12L", checked: false },
-        { value: "18l", label: "18L", checked: false },
-        { value: "20l", label: "20L", checked: false },
-        { value: "40l", label: "40L", checked: true },
-      ],
-    },
-  ];
-
   const onSubmit = useCallback((data: FormFindLootcrates) => {
-    console.log(data)
     navigate(
       routes.lootcrates({
         ...parseSearch(
@@ -209,7 +170,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
             <div className="flex flex-col space-y-5">
               {maps?.map(({ id, name }) => (
                 <div className="flex items-center space-x-2" key={id}>
-                  <CheckboxField name="map" className="rw-input" value={id} />
+                  <CheckboxField name="map" className="rw-input" value={id} defaultChecked={map.includes(id.toString())} />
                   <Label
                     name="map"
                     className="rw-sublabel"
@@ -223,6 +184,18 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
           </Disclosure>
           <Disclosure title="Color">
             <div className="flex flex-col space-y-5">
+              {getDistinctValues(lootcratesByMap.filter((c) => c.color != null), "color").map((color) => (
+                <div className="flex items-center space-x-2">
+                  <CheckboxField name="color" className="rw-input" value={color} />
+                  <Label
+                    name="color"
+                    className="rw-sublabel"
+                    errorClassName="rw-sublabel rw-label-error"
+                  >
+                    {color}
+                  </Label>
+                </div>
+              ))}
               <div className="flex items-center space-x-2">
                 <CheckboxField name="color" className="rw-input" />
                 <Label

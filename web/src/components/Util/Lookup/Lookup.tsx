@@ -532,7 +532,7 @@ export const MultiSelectLookup = ({
                     type="text"
                     value={searchTerm}
                     onChange={handleInputChange}
-                    placeholder={placeholder || "Search..."}
+                    placeholder={"Search..."}
                     className="rw-input flex w-full items-center border-none !rounded-b-none outline-none grow dark:bg-zinc-700"
                     disabled={disabled}
                   />
@@ -568,9 +568,7 @@ export const MultiSelectLookup = ({
                     e.stopPropagation();
                     handleOptionChange(option)
                   }}
-                  className={clsx("flex items-center py-2 px-4 hover:bg-zinc-100 dark:hover:bg-zinc-600/90 dark:hover:text-white", {
-                    "dark:bg-zinc-600/30 bg-zinc-100/30": selectedOptions && selectedOptions.length > 0 && selectedOptions.some((o) => o?.value === option.value),
-                  })}
+                  className={"flex items-center py-2 px-4 hover:bg-zinc-100 dark:hover:bg-zinc-600/90 dark:hover:text-white"}
                 >
                   {"image" in option && (
                     <img
