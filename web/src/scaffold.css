@@ -315,7 +315,7 @@
     .rw-float-input,
   .rw-button-group.rw-button-group-border:not(.rw-button-group-vertical)
     .rw-button {
-    @apply not-firstlast:border-l-0 not-only:last:border-l-0 border border-zinc-500;
+    @apply not-firstlast:!border-l-0 not-only:last:!border-l-0 border border-zinc-500;
   }
 
   .rw-button-group.rw-button-group-vertical.rw-button-group-border .rw-input,

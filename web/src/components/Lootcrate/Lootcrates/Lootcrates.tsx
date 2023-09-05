@@ -94,6 +94,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
           <MultiSelectLookup
             name="map"
             search
+            multiple
             placeholder="Map"
             className="rw-input mt-0 min-w-[10rem] !rounded-none !rounded-l-lg pl-10"
             defaultValue={map}

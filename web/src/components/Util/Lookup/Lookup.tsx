@@ -311,6 +311,7 @@ interface ILookupMultiSelect {
   className?: string;
   group?: string;
   displayAsAmount?: boolean;
+  multiple?: boolean;
   onChange?: ChangeEventHandler | undefined;
   options: {
     label: string;
@@ -339,6 +340,7 @@ export const MultiSelectLookup = ({
   disabled = false,
   clearable = true,
   displayAsAmount = false,
+  multiple = false,
   name,
   group,
   onSelect,
@@ -362,10 +364,11 @@ export const MultiSelectLookup = ({
   );
 
   const filteredOptions = useMemo(() => {
-    const filtered =
-      filterFn && searchTerm
+    const filtered = searchTerm
+      ? filterFn
         ? options.filter((option) => filterFn(option, searchTerm))
-        : options.filter((option) => option.label.toLowerCase().includes(searchTerm.toLowerCase()));
+        : options.filter((option) => option.label.toLowerCase().includes(searchTerm.toLowerCase()))
+      : options;
     const sorted = sortFn ? filtered.sort(sortFn) : filtered;
     const grouped = !!group ? groupBy(sorted, group) : sorted;
 
@@ -387,28 +390,21 @@ export const MultiSelectLookup = ({
   const openIndexesRef = useRef<number[]>([]);
 
   const handleOptionChange = (option: ArrayElement<ILookupMultiSelect["options"]>) => {
-    try {
-      setSelectedOptions((prevState) => {
-        if (prevState.some((o) => o?.value === option.value)) {
-          return prevState.filter((item) => item?.value !== option.value && item !== null);
-        }
-        return [...prevState, option];
-      });
+    if (!option) return;
 
+    const isSelected = selectedOptions.some((o) => o?.value === option.value);
 
-      !!name && field.onChange(selectedOptions.some((o) => o?.value === option.value)
-        ? selectedOptions.filter((item) => item.value !== option.value && item !== null)
-        : [...selectedOptions, option]);
+    const updateOptions = isSelected
+      ? selectedOptions.filter((item) => item?.value !== option.value && item !== null)
+      : [...selectedOptions.filter((item) => item !== null), option]
 
+    setSelectedOptions(updateOptions);
 
-      onSelect?.(
-        selectedOptions.some((o) => o?.value === option.value)
-          ? selectedOptions.filter((item) => item.value !== option.value && item !== null)
-          : [...selectedOptions, option]
-      );
-    } catch (error) {
-      console.error(error)
+    if (!!name) {
+      field.onChange(multiple ? updateOptions.map((o) => o?.value) : option.value);
     }
+
+    onSelect?.(multiple ? updateOptions : [option]);
   };
 
   // Handle input change
@@ -467,12 +463,34 @@ export const MultiSelectLookup = ({
           }
         )}
       >
-        <p className="whitespace-nowrap truncate">{displayAsAmount ? `${selectedOptions.length} Selected` : selectedOptions.length > 0
+        {name && (
+          <input
+            type="text"
+            name={name}
+            id={name}
+            value={selectedOptions.map((o) => o?.value).join(",")}
+            onChange={(e) => { }}
+            className="hidden"
+            disabled={disabled}
+          />
+        )}
+        <p className="whitespace-nowrap truncate max-w-xs">{displayAsAmount ? `${selectedOptions.length} Selected` : selectedOptions.filter(o => o != null).length > 0
           ? selectedOptions.filter(o => o != null).map((o) => o?.label).join(", ")
           : placeholder}
         </p>
 
         <div className="ml-auto pointer-events-none flex select-none flex-row">
+          {clearable && selectedOptions.filter((d) => d != null).length > 0 && (
+            <svg
+              onClick={handleClearSelection}
+              fill="currentColor"
+              className="pointer-events-auto ml-2 h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 320 512"
+            >
+              <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z" />
+            </svg>
+          )}
           <label htmlFor={name}>
             <svg
               className="ml-2 h-4 w-4"
@@ -489,54 +507,43 @@ export const MultiSelectLookup = ({
               ></path>
             </svg>
           </label>
-          {clearable && (
-            <svg
-              onClick={handleClearSelection}
-              fill="currentColor"
-              className="pointer-events-auto ml-2 h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 320 512"
-            >
-              <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z" />
-            </svg>
-          )}
         </div>
       </div>
       {isComponentVisible ? (
-        <div className="absolute top-full min-w-[15rem] left-0 z-30 origin-top-right rounded-lg select-none shadow bg-white transition-all duration-300 ease-in-out w-full space-y-1.5 border border-zinc-500 dark:bg-zinc-700">
+        <div className="absolute top-full min-w-[15rem] left-0 z-30 origin-top-right rounded-lg select-none shadow bg-white transition-all duration-300 ease-in-out w-full space-y-1.5 border border-zinc-500 dark:bg-zinc-800">
           <ul
             className="relative z-10 max-h-48 overflow-y-auto text-gray-700 dark:text-gray-200"
             aria-labelledby="dropdownButton"
           >
             <li
-              onClick={handleSelectAll}
-              className={"flex items-center py-2 px-4 hover:bg-zinc-100 dark:hover:bg-zinc-600/90 dark:hover:text-white"}
+              className={"sticky top-0 left-0 flex items-center rounded-t-lg shadow-md"}
             >
-              <span className="grow">Select All</span>
-
-              {selectedOptions.length === options.length && (
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="w-5 h-5 shrink-0">
-                  <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-                </svg>
-              )}
+              <div className="rw-button-group my-0 w-full rounded-none border-b border-zinc-500">
+                {search && (
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={handleInputChange}
+                    placeholder={placeholder || "Search..."}
+                    className="rw-input flex w-full items-center border-none !rounded-b-none outline-none grow dark:bg-zinc-700"
+                    disabled={disabled}
+                  />
+                )}
+                <button
+                  type="button"
+                  onClick={handleSelectAll}
+                  className={clsx("dark:!bg-zinc-700 rw-button rw-button-gray !border-0 !border-l border-zinc-500 !rounded-b-none transition ease-in-out", {
+                    "!ring-1 !text-pea-500 ring-inset !ring-pea-500": selectedOptions.length === options.length && options.length > 0,
+                  })}
+                  title="Select All"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="rw-button-icon">
+                    <path d="M475.3 164.7c-6.25-6.25-16.38-6.25-22.62 0L192 425.4L59.31 292.7c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62l144 144C183.8 462.4 187.9 464 192 464s8.188-1.562 11.31-4.688l272-272C481.6 181.1 481.6 170.9 475.3 164.7zM180.7 235.3C183.8 238.4 187.9 240 192 240s8.188-1.562 11.31-4.688l176-176c6.25-6.25 6.25-16.38 0-22.62s-16.38-6.25-22.62 0L192 201.4L123.3 132.7c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62L180.7 235.3z" />
+                  </svg>
+                  <span className="sr-only">Select All</span>
+                </button>
+              </div>
             </li>
-
-            {search && (
-              <li
-                className="flex items-center mb-2"
-              >
-                <input
-                  type="text"
-                  name={name}
-                  id={name}
-                  value={searchTerm}
-                  onChange={handleInputChange}
-                  placeholder={placeholder || "Search..."}
-                  className="rw-input flex w-full items-center outline-none !rounded-none border-x-0 shadow"
-                  disabled={disabled}
-                />
-              </li>
-            )}
 
             {!options || options.length == 0 ? (
               <li className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-zinc-700/50 dark:hover:text-white">
@@ -550,17 +557,19 @@ export const MultiSelectLookup = ({
                   key={option.value + Math.random()}
                   onClick={(e) => {
                     e.preventDefault();
+                    e.persist();
+                    e.stopPropagation();
                     handleOptionChange(option)
                   }}
                   className={clsx("flex items-center py-2 px-4 hover:bg-zinc-100 dark:hover:bg-zinc-600/90 dark:hover:text-white", {
-                    "dark:bg-zinc-600/50 bg-zinc-100/50": selectedOptions && selectedOptions.length > 0 && selectedOptions.some((o) => o?.value === option.value),
+                    "dark:bg-zinc-600/30 bg-zinc-100/30": selectedOptions && selectedOptions.length > 0 && selectedOptions.some((o) => o?.value === option.value),
                   })}
                 >
                   {"image" in option && (
                     <img
                       className="mr-2 h-6 w-6 rounded-full"
                       src={option.image}
-                      alt=""
+                      alt={option.label}
                     />
                   )}
                   <span className="grow">{option.label}</span>
@@ -607,6 +616,8 @@ export const MultiSelectLookup = ({
                             key={i}
                             onClick={(e) => {
                               e.preventDefault();
+                              e.persist();
+                              e.stopPropagation();
                               handleOptionChange(option)
                             }}
                             className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
