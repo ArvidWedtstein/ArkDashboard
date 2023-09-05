@@ -10,7 +10,11 @@ import { Link, routes, parseSearch } from "@redwoodjs/router";
 import { useCallback } from "react";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import Lookup, { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
-import { getDistinctValues, hexToColorName, removeDuplicates } from "src/lib/formatters";
+import {
+  getDistinctValues,
+  hexToColorName,
+  removeDuplicates,
+} from "src/lib/formatters";
 
 import type { FindLootcrates } from "types/graphql";
 
@@ -121,11 +125,15 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
           </Submit>
         </nav>
 
-        <div className="col-span-2 flex flex-col md:col-span-1 mt-3">
+        <div className="col-span-2 mt-3 flex flex-col md:col-span-1">
           <Disclosure title="Category">
             <div className="flex flex-col space-y-5">
               <div className="flex items-center space-x-2">
-                <CheckboxField name="type" className="rw-input" value="Supply Drop" />
+                <CheckboxField
+                  name="type"
+                  className="rw-input"
+                  value="Supply Drop"
+                />
                 <Label
                   name="type"
                   className="rw-sublabel"
@@ -135,7 +143,11 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
-                <CheckboxField name="type" className="rw-input" value="Artifact" />
+                <CheckboxField
+                  name="type"
+                  className="rw-input"
+                  value="Artifact"
+                />
                 <Label
                   name="type"
                   className="rw-sublabel"
@@ -155,7 +167,11 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
-                <CheckboxField name="type" className="rw-input" value="Underwater" />
+                <CheckboxField
+                  name="type"
+                  className="rw-input"
+                  value="Underwater"
+                />
                 <Label
                   name="type"
                   className="rw-sublabel"
@@ -170,7 +186,12 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
             <div className="flex flex-col space-y-5">
               {maps?.map(({ id, name }) => (
                 <div className="flex items-center space-x-2" key={id}>
-                  <CheckboxField name="map" className="rw-input" value={id} defaultChecked={map.includes(id.toString())} />
+                  <CheckboxField
+                    name="map"
+                    className="rw-input"
+                    value={id}
+                    defaultChecked={map && map.includes(id.toString())}
+                  />
                   <Label
                     name="map"
                     className="rw-sublabel"
@@ -184,9 +205,16 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
           </Disclosure>
           <Disclosure title="Color">
             <div className="flex flex-col space-y-5">
-              {getDistinctValues(lootcratesByMap.filter((c) => c.color != null), "color").map((color) => (
+              {getDistinctValues(
+                lootcratesByMap.filter((c) => c.color != null),
+                "color"
+              ).map((color) => (
                 <div className="flex items-center space-x-2">
-                  <CheckboxField name="color" className="rw-input" value={color} />
+                  <CheckboxField
+                    name="color"
+                    className="rw-input"
+                    value={color}
+                  />
                   <Label
                     name="color"
                     className="rw-sublabel"
@@ -262,9 +290,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
 
         <div className="col-span-4 md:col-span-5">
           <div className="mt-3 grid w-full grid-cols-1 gap-6 text-white md:grid-cols-2 lg:grid-cols-3">
-            {lootcratesByMap.length == 0 && (
-              <p>No lootcrates found</p>
-            )}
+            {lootcratesByMap.length == 0 && <p>No lootcrates found</p>}
             {lootcratesByMap
               .filter((m) => m.name != null && m.name != "")
               .map(({ id, name, required_level, image, color }) => (

@@ -26,7 +26,7 @@ export const QUERY = gql`
 export const Loading = () => (
   <div
     role="status"
-    className="max-w-sm animate-pulse rounded border border-gray-200 p-4 shadow dark:border-gray-700 md:p-6"
+    className="max-w-sm animate-pulse overflow-hidden rounded border border-gray-200 p-4 shadow dark:border-gray-700 md:p-6"
   >
     <div className="mb-4 flex h-48 items-center justify-center rounded bg-zinc-300 dark:bg-zinc-700">
       <svg

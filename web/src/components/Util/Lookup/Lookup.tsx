@@ -70,7 +70,9 @@ const Lookup = ({
     const filtered =
       filterFn && searchTerm
         ? options.filter((option) => filterFn(option, searchTerm))
-        : options.filter((option) => option.label.toLowerCase().includes(searchTerm.toLowerCase()));
+        : options.filter((option) =>
+            option.label.toLowerCase().includes(searchTerm.toLowerCase())
+          );
     const sorted = sortFn ? filtered.sort(sortFn) : filtered;
     const grouped = !!group ? groupBy(sorted, group) : sorted;
     if (Object.keys(grouped).length === 1 && group) {
@@ -177,8 +179,8 @@ const Lookup = ({
             {children
               ? children
               : selectedOptionRef?.current
-                ? selectedOptionRef?.current?.label
-                : placeholder}
+              ? selectedOptionRef?.current?.label
+              : placeholder}
           </>
         )}
 
@@ -227,72 +229,72 @@ const Lookup = ({
             ) : null}
             {!group
               ? filteredOptions.map((option) => (
-                <li
-                  key={option.value + Math.random()}
-                  onClick={() => handleOptionSelect(option)}
-                  className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-zinc-600/70 dark:hover:text-white"
-                >
-                  {"image" in option && (
-                    <img
-                      className="mr-2 h-6 w-6 rounded-full"
-                      src={option.image}
-                      alt=""
-                    />
-                  )}
-                  {option.label}
-                </li>
-              ))
-              : Object.keys(filteredOptions).map((key, i) => {
-                return (
-                  <li key={key}>
-                    <div
-                      onClick={() => toggleOpen(i)}
-                      className="flex items-center justify-between border-t border-b-2 border-gray-200 px-4 pb-2 pt-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      <span className="mr-2 font-semibold">{key}</span>
-                      <svg
-                        className="h-4 w-4"
-                        aria-hidden="true"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d={
-                            openIndexesRef?.current?.includes(i)
-                              ? "M19 16L12 9l-7 7"
-                              : "M19 9l-7 7-7-7"
-                          }
-                        ></path>
-                      </svg>
-                    </div>
-                    {openIndexesRef?.current?.includes(i) && (
-                      <ul className="">
-                        {filteredOptions[key].map((option, i) => (
-                          <li
-                            key={i}
-                            onClick={() => handleOptionSelect(option)}
-                            className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                          >
-                            {"image" in option && (
-                              <img
-                                className="mr-2 h-6 w-6 rounded-full"
-                                src={option.image}
-                                alt=""
-                              />
-                            )}
-                            {option.label}
-                          </li>
-                        ))}
-                      </ul>
+                  <li
+                    key={option.value + Math.random()}
+                    onClick={() => handleOptionSelect(option)}
+                    className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-zinc-600/70 dark:hover:text-white"
+                  >
+                    {"image" in option && (
+                      <img
+                        className="mr-2 h-6 w-6 rounded-full"
+                        src={option.image}
+                        alt=""
+                      />
                     )}
+                    {option.label}
                   </li>
-                );
-              })}
+                ))
+              : Object.keys(filteredOptions).map((key, i) => {
+                  return (
+                    <li key={key}>
+                      <div
+                        onClick={() => toggleOpen(i)}
+                        className="flex items-center justify-between border-t border-b-2 border-gray-200 px-4 pb-2 pt-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white"
+                      >
+                        <span className="mr-2 font-semibold">{key}</span>
+                        <svg
+                          className="h-4 w-4"
+                          aria-hidden="true"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d={
+                              openIndexesRef?.current?.includes(i)
+                                ? "M19 16L12 9l-7 7"
+                                : "M19 9l-7 7-7-7"
+                            }
+                          ></path>
+                        </svg>
+                      </div>
+                      {openIndexesRef?.current?.includes(i) && (
+                        <ul className="">
+                          {filteredOptions[key].map((option, i) => (
+                            <li
+                              key={i}
+                              onClick={() => handleOptionSelect(option)}
+                              className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                            >
+                              {"image" in option && (
+                                <img
+                                  className="mr-2 h-6 w-6 rounded-full"
+                                  src={option.image}
+                                  alt=""
+                                />
+                              )}
+                              {option.label}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  );
+                })}
           </ul>
         </div>
       ) : null}
@@ -353,7 +355,9 @@ export const MultiSelectLookup = ({
   const { ref, setIsComponentVisible, isComponentVisible } =
     useComponentVisible(false);
 
-  const [selectedOptions, setSelectedOptions] = useState<ILookupMultiSelect["options"]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<
+    ILookupMultiSelect["options"]
+  >([]);
 
   const { field } = !!name && useController({ name: name });
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -366,8 +370,10 @@ export const MultiSelectLookup = ({
         return filterFn(option, searchTerm);
       }
 
-      return !searchTerm || option.label.toLowerCase().includes(lowercaseSearchterm);
-    })
+      return (
+        !searchTerm || option.label.toLowerCase().includes(lowercaseSearchterm)
+      );
+    });
 
     const sorted = sortFn ? filtered.sort(sortFn) : filtered;
     const grouped = group ? groupBy(sorted, group) : sorted;
@@ -381,13 +387,15 @@ export const MultiSelectLookup = ({
 
   // Update selectedOption when defaultValue changes
   useEffect(() => {
-    const valuesToSelect: string[] = defaultValue
-      .split(',')
-      .map((s) => s.trim())
-      .slice(0, multiple ? undefined : 1);
+    const valuesToSelect: string[] =
+      defaultValue
+        ?.split(",")
+        .map((s) => s.trim())
+        .slice(0, multiple ? undefined : 1) || [];
 
-    const selected = options.filter((option) =>
-      valuesToSelect.includes(option.value.toString()) || option.selected
+    const selected = options.filter(
+      (option) =>
+        valuesToSelect.includes(option.value.toString()) || option.selected
     );
 
     setSelectedOptions(selected);
@@ -396,19 +404,32 @@ export const MultiSelectLookup = ({
 
   const openIndexesRef = useRef<number[]>([]);
 
-  const handleOptionChange = (option: ArrayElement<ILookupMultiSelect["options"]>) => {
+  const handleOptionChange = (
+    option: ArrayElement<ILookupMultiSelect["options"]>
+  ) => {
     if (!option) return;
 
     const isSelected = selectedOptions.some((o) => o?.value === option.value);
 
     const updateOptions = isSelected
-      ? selectedOptions.filter((item) => item?.value !== option.value && item !== null)
-      : [...selectedOptions.filter((item) => item !== null && item !== undefined), option]
-    console.log(updateOptions)
+      ? selectedOptions.filter(
+          (item) => item?.value !== option.value && item !== null
+        )
+      : [
+          ...selectedOptions.filter(
+            (item) => item !== null && item !== undefined
+          ),
+          option,
+        ];
+    console.log(updateOptions);
     setSelectedOptions(updateOptions);
 
     if (!!name) {
-      field.onChange(multiple ? updateOptions.filter(f => f != null).map((o) => o?.value) : option.value);
+      field.onChange(
+        multiple
+          ? updateOptions.filter((f) => f != null).map((o) => o?.value)
+          : option.value
+      );
     }
 
     onSelect?.(multiple ? updateOptions : [option]);
@@ -446,9 +467,9 @@ export const MultiSelectLookup = ({
   };
 
   /**
- * @description For toggling the open state of the groups
- * @param index
- */
+   * @description For toggling the open state of the groups
+   * @param index
+   */
   const toggleOpen = (index) => {
     if (openIndexesRef.current.includes(index)) {
       openIndexesRef.current = openIndexesRef.current.filter(
@@ -457,7 +478,6 @@ export const MultiSelectLookup = ({
       return;
     }
   };
-
 
   return (
     <div className="relative flex w-fit items-center text-white" ref={ref}>
@@ -476,18 +496,30 @@ export const MultiSelectLookup = ({
             type="text"
             name={name}
             id={name}
-            value={selectedOptions && selectedOptions.filter(o => o != null).map((o) => o?.value).join(",")}
-            onChange={(e) => { }}
+            value={
+              selectedOptions &&
+              selectedOptions
+                .filter((o) => o != null)
+                .map((o) => o?.value)
+                .join(",")
+            }
+            onChange={(e) => {}}
             className="hidden"
             disabled={disabled}
           />
         )}
-        <p className="whitespace-nowrap truncate max-w-xs">{displayAsAmount ? `${selectedOptions.length} Selected` : selectedOptions.filter(o => o != null).length > 0
-          ? selectedOptions.filter(o => o != null && o?.label != null).map((o) => o?.label).join(", ")
-          : placeholder}
+        <p className="max-w-xs truncate whitespace-nowrap">
+          {displayAsAmount
+            ? `${selectedOptions.length} Selected`
+            : selectedOptions.filter((o) => o != null).length > 0
+            ? selectedOptions
+                .filter((o) => o != null && o?.label != null)
+                .map((o) => o?.label)
+                .join(", ")
+            : placeholder}
         </p>
 
-        <div className="ml-auto pointer-events-none flex select-none flex-row">
+        <div className="pointer-events-none ml-auto flex select-none flex-row">
           {clearable && selectedOptions.filter((d) => d != null).length > 0 && (
             <svg
               onClick={handleClearSelection}
@@ -518,13 +550,15 @@ export const MultiSelectLookup = ({
         </div>
       </div>
       {isComponentVisible ? (
-        <div className="absolute top-full min-w-[15rem] left-0 z-30 origin-top-right rounded-lg select-none shadow bg-white transition-all duration-300 ease-in-out w-full space-y-1.5 border border-zinc-500 dark:bg-zinc-800">
+        <div className="absolute top-full left-0 z-30 w-full min-w-[15rem] origin-top-right select-none space-y-1.5 rounded-lg border border-zinc-500 bg-white shadow transition-all duration-300 ease-in-out dark:bg-zinc-800">
           <ul
             className="relative z-10 max-h-48 overflow-y-auto text-gray-700 dark:text-gray-200"
             aria-labelledby="dropdownButton"
           >
             <li
-              className={"sticky top-0 left-0 flex items-center rounded-t-lg shadow-md"}
+              className={
+                "sticky top-0 left-0 flex items-center rounded-t-lg shadow-md"
+              }
             >
               <div className="rw-button-group my-0 w-full rounded-none border-b border-zinc-500">
                 {search && (
@@ -533,19 +567,28 @@ export const MultiSelectLookup = ({
                     value={searchTerm}
                     onChange={handleInputChange}
                     placeholder={"Search..."}
-                    className="rw-input flex w-full items-center border-none !rounded-b-none outline-none grow dark:bg-zinc-700"
+                    className="rw-input flex w-full grow items-center !rounded-b-none border-none outline-none dark:bg-zinc-700"
                     disabled={disabled}
                   />
                 )}
                 <button
                   type="button"
                   onClick={handleSelectAll}
-                  className={clsx("dark:!bg-zinc-700 rw-button rw-button-gray !border-0 !border-l border-zinc-500 !rounded-b-none transition ease-in-out", {
-                    "!ring-1 !text-pea-500 ring-inset !ring-pea-500": selectedOptions.length === options.length && options.length > 0,
-                  })}
+                  className={clsx(
+                    "rw-button rw-button-gray !rounded-b-none !border-0 !border-l border-zinc-500 transition ease-in-out dark:!bg-zinc-700",
+                    {
+                      "!text-pea-500 !ring-pea-500 !ring-1 ring-inset":
+                        selectedOptions.length === options.length &&
+                        options.length > 0,
+                    }
+                  )}
                   title="Select All"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="rw-button-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 512 512"
+                    className="rw-button-icon"
+                  >
                     <path d="M475.3 164.7c-6.25-6.25-16.38-6.25-22.62 0L192 425.4L59.31 292.7c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62l144 144C183.8 462.4 187.9 464 192 464s8.188-1.562 11.31-4.688l272-272C481.6 181.1 481.6 170.9 475.3 164.7zM180.7 235.3C183.8 238.4 187.9 240 192 240s8.188-1.562 11.31-4.688l176-176c6.25-6.25 6.25-16.38 0-22.62s-16.38-6.25-22.62 0L192 201.4L123.3 132.7c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62L180.7 235.3z" />
                   </svg>
                   <span className="sr-only">Select All</span>
@@ -561,86 +604,98 @@ export const MultiSelectLookup = ({
 
             {!group
               ? filteredOptions.map((option) => (
-                <li
-                  key={option.value + Math.random()}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleOptionChange(option)
-                  }}
-                  className={"flex items-center py-2 px-4 hover:bg-zinc-100 dark:hover:bg-zinc-600/90 dark:hover:text-white"}
-                >
-                  {"image" in option && (
-                    <img
-                      className="mr-2 h-6 w-6 rounded-full"
-                      src={option.image}
-                      alt={option.label}
-                    />
-                  )}
-                  <span className="grow">{option.label}</span>
+                  <li
+                    key={option.value + Math.random()}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleOptionChange(option);
+                    }}
+                    className={
+                      "flex items-center py-2 px-4 hover:bg-zinc-100 dark:hover:bg-zinc-600/90 dark:hover:text-white"
+                    }
+                  >
+                    {"image" in option && (
+                      <img
+                        className="mr-2 h-6 w-6 rounded-full"
+                        src={option.image}
+                        alt={option.label}
+                      />
+                    )}
+                    <span className="grow">{option.label}</span>
 
-                  {selectedOptions.some((o) => o?.value === option.value) && (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="w-5 h-5 shrink-0">
-                      <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-                    </svg>
-                  )}
-                </li>
-              ))
-              : Object.keys(filteredOptions).map((key, i) => {
-                return (
-                  <li key={key}>
-                    <div
-                      onClick={() => toggleOpen(i)}
-                      className="flex items-center justify-between border-t border-b-2 border-gray-200 px-4 pb-2 pt-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      <span className="mr-2 font-semibold">{key}</span>
+                    {selectedOptions.some((o) => o?.value === option.value) && (
                       <svg
-                        className="h-4 w-4"
-                        aria-hidden="true"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                        className="h-5 w-5 shrink-0"
                       >
                         <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d={
-                            openIndexesRef?.current?.includes(i)
-                              ? "M19 16L12 9l-7 7"
-                              : "M19 9l-7 7-7-7"
-                          }
-                        ></path>
+                          fillRule="evenodd"
+                          d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                          clipRule="evenodd"
+                        />
                       </svg>
-                    </div>
-                    {openIndexesRef?.current?.includes(i) && (
-                      <ul className="">
-                        {filteredOptions[key].map((option, i) => (
-                          <li
-                            key={i}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              handleOptionChange(option)
-                            }}
-                            className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                          >
-                            {"image" in option && (
-                              <img
-                                className="mr-2 h-6 w-6 rounded-full"
-                                src={option.image}
-                                alt=""
-                              />
-                            )}
-                            {option.label}
-                          </li>
-                        ))}
-                      </ul>
                     )}
                   </li>
-                );
-              })}
+                ))
+              : Object.keys(filteredOptions).map((key, i) => {
+                  return (
+                    <li key={key}>
+                      <div
+                        onClick={() => toggleOpen(i)}
+                        className="flex items-center justify-between border-t border-b-2 border-gray-200 px-4 pb-2 pt-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white"
+                      >
+                        <span className="mr-2 font-semibold">{key}</span>
+                        <svg
+                          className="h-4 w-4"
+                          aria-hidden="true"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d={
+                              openIndexesRef?.current?.includes(i)
+                                ? "M19 16L12 9l-7 7"
+                                : "M19 9l-7 7-7-7"
+                            }
+                          ></path>
+                        </svg>
+                      </div>
+                      {openIndexesRef?.current?.includes(i) && (
+                        <ul className="">
+                          {filteredOptions[key].map((option, i) => (
+                            <li
+                              key={i}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleOptionChange(option);
+                              }}
+                              className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                            >
+                              {"image" in option && (
+                                <img
+                                  className="mr-2 h-6 w-6 rounded-full"
+                                  src={option.image}
+                                  alt=""
+                                />
+                              )}
+                              {option.label}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  );
+                })}
           </ul>
         </div>
       ) : null}
