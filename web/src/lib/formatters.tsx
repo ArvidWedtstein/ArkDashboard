@@ -169,8 +169,9 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-    }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+  }`;
 };
 
 /**
@@ -461,80 +462,6 @@ export const distance = (
   const lonDiff = lon1 - lon2;
   return (latDiff ** 2 + lonDiff ** 2) ** 0.5;
 };
-
-
-/**
- * @description Returns the distinct values of an array of objects based on a given key.
- */
-export const getDistinctValues = <T extends Record<string, any>, K extends keyof T>(
-  array: T[],
-  key: K
-): T[K][] => {
-  const distinctValues: T[K][] = [];
-  const uniqueSet = new Set<T[K]>();
-
-  for (const item of array) {
-    const value = item[key];
-    if (!uniqueSet.has(value)) {
-      distinctValues.push(value);
-      uniqueSet.add(value);
-    }
-  }
-
-  return distinctValues;
-};
-
-// TODO: fix color functions
-export const hexToColorName = (hex: string): string | null => {
-  // Define a list of base colors with their hex values
-  const baseColors: Record<string, string> = {
-    "Purple": "#800080",
-    "Red": "#FF0000",
-    "Yellow": "#FFFF00",
-    // Add more base colors and hex values as needed
-  };
-
-  // Remove the "#" symbol from the input hex code if present
-  const cleanedHex = hex.replace(/^#/, '');
-
-  // Initialize variables to store the closest color and its difference
-  let closestColor: string | null = null;
-  let closestDifference: number | null = null;
-
-  // Iterate through the base colors and find the closest match
-  for (const color in baseColors) {
-    if (baseColors.hasOwnProperty(color)) {
-      const baseHex = baseColors[color].replace(/^#/, '');
-      const difference = calculateHexDifference(cleanedHex, baseHex);
-
-      if (closestDifference === null || difference < closestDifference) {
-        closestColor = color;
-        closestDifference = difference;
-      }
-    }
-  }
-
-  return closestColor;
-}
-
-// Helper function to calculate the difference between two hex values
-const calculateHexDifference = (hex1: string, hex2: string): number => {
-  const r1 = parseInt(hex1.slice(0, 2), 16);
-  const g1 = parseInt(hex1.slice(2, 4), 16);
-  const b1 = parseInt(hex1.slice(4, 6), 16);
-
-  const r2 = parseInt(hex2.slice(0, 2), 16);
-  const g2 = parseInt(hex2.slice(2, 4), 16);
-  const b2 = parseInt(hex2.slice(4, 6), 16);
-
-  const diff = Math.sqrt(
-    Math.pow(r1 - r2, 2) +
-    Math.pow(g1 - g2, 2) +
-    Math.pow(b1 - b2, 2)
-  );
-
-  return diff;
-}
 
 /**
  * Formats the given number of seconds into a string representation
@@ -944,9 +871,9 @@ export const generatePDF = (crafts) => {
       tableX - cellPadding * 2,
       30 + crafts.length * 20,
       tableX +
-      (Object.keys(crafts[0]).length - 1) *
-      (tableSize.width / Object.keys(crafts[0]).length) +
-      columnWidths[Object.keys(crafts[0]).length - 1],
+        (Object.keys(crafts[0]).length - 1) *
+          (tableSize.width / Object.keys(crafts[0]).length) +
+        columnWidths[Object.keys(crafts[0]).length - 1],
       40 + (crafts.length - 1) * 20 + cellPadding,
       true,
       `0.9 0.9 0.9`
@@ -980,7 +907,7 @@ export const generatePDF = (crafts) => {
                     x:
                       tableX +
                       (Object.keys(crafts[0]).length - 1) *
-                      (tableSize.width / Object.keys(crafts[0]).length) +
+                        (tableSize.width / Object.keys(crafts[0]).length) +
                       columnWidths[Object.keys(crafts[0]).length - 1],
                     y: cellY + cellPadding,
                   },
@@ -1342,19 +1269,19 @@ export class SimplexNoise3D {
 
     const gi0 =
       SimplexNoise3D.perm[
-      ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
+        ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
       ] % 12;
     const gi1 =
       SimplexNoise3D.perm[
-      ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
+        ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
       ] % 12;
     const gi2 =
       SimplexNoise3D.perm[
-      ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
+        ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
       ] % 12;
     const gi3 =
       SimplexNoise3D.perm[
-      ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
+        ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
       ] % 1;
 
     let n0, n1, n2, n3;

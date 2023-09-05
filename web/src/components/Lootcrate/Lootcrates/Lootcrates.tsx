@@ -7,14 +7,11 @@ import {
 } from "@redwoodjs/forms";
 import { navigate, useParams } from "@redwoodjs/router";
 import { Link, routes, parseSearch } from "@redwoodjs/router";
+import clsx from "clsx";
 import { useCallback } from "react";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import Lookup, { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
-import {
-  getDistinctValues,
-  hexToColorName,
-  removeDuplicates,
-} from "src/lib/formatters";
+import { removeDuplicates } from "src/lib/formatters";
 
 import type { FindLootcrates } from "types/graphql";
 
@@ -27,6 +24,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
   let { map, search } = useParams();
 
   const onSubmit = useCallback((data: FormFindLootcrates) => {
+    console.log(data);
     navigate(
       routes.lootcrates({
         ...parseSearch(
@@ -205,85 +203,27 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
           </Disclosure>
           <Disclosure title="Color">
             <div className="flex flex-col space-y-5">
-              {getDistinctValues(
-                lootcratesByMap.filter((c) => c.color != null),
-                "color"
+              {removeDuplicates(
+                lootcratesByMap
+                  .filter((c) => c.color != null)
+                  .map((l) => l.color)
               ).map((color) => (
-                <div className="flex items-center space-x-2">
-                  <CheckboxField
-                    name="color"
-                    className="rw-input"
-                    value={color}
-                  />
+                <div className="flex items-center space-x-2" key={color}>
+                  <CheckboxField name={color} className="rw-input" />
                   <Label
-                    name="color"
+                    name={color}
                     className="rw-sublabel"
                     errorClassName="rw-sublabel rw-label-error"
                   >
-                    {color}
+                    <div
+                      className={
+                        "h-5 w-5 rounded-full ring-1 ring-inset ring-zinc-500"
+                      }
+                      style={{ backgroundColor: color }}
+                    />
                   </Label>
                 </div>
               ))}
-              <div className="flex items-center space-x-2">
-                <CheckboxField name="color" className="rw-input" />
-                <Label
-                  name="color"
-                  className="rw-sublabel"
-                  errorClassName="rw-sublabel rw-label-error"
-                >
-                  Red
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <CheckboxField name="color" className="rw-input" />
-                <Label
-                  name="color"
-                  className="rw-sublabel"
-                  errorClassName="rw-sublabel rw-label-error"
-                >
-                  Blue
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <CheckboxField name="color" className="rw-input" />
-                <Label
-                  name="color"
-                  className="rw-sublabel"
-                  errorClassName="rw-sublabel rw-label-error"
-                >
-                  Yellow
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <CheckboxField name="color" className="rw-input" />
-                <Label
-                  name="color"
-                  className="rw-sublabel"
-                  errorClassName="rw-sublabel rw-label-error"
-                >
-                  White
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <CheckboxField name="color" className="rw-input" />
-                <Label
-                  name="color"
-                  className="rw-sublabel"
-                  errorClassName="rw-sublabel rw-label-error"
-                >
-                  Purple
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <CheckboxField name="color" className="rw-input" />
-                <Label
-                  name="color"
-                  className="rw-sublabel"
-                  errorClassName="rw-sublabel rw-label-error"
-                >
-                  Orange
-                </Label>
-              </div>
             </div>
           </Disclosure>
         </div>
