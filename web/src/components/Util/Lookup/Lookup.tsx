@@ -335,42 +335,42 @@ interface ILookupMultiSelect {
 }
 export const MultiSelectLookup = ({
   options,
-  search = false,
+  name,
+  defaultValue,
   className,
+  group,
+  placeholder,
+  search = false,
   disabled = false,
   clearable = true,
   displayAsAmount = false,
   multiple = false,
-  name,
-  group,
   onSelect,
   onChange,
   filterFn,
   sortFn,
-  placeholder,
-  defaultValue,
 }: ILookupMultiSelect) => {
   const { ref, setIsComponentVisible, isComponentVisible } =
     useComponentVisible(false);
-  const [selectedOptions, setSelectedOptions] = useState<ILookupMultiSelect["options"]>(
-    options.filter((option) => option.selected).map((option) => option)
-  );
+
+  const [selectedOptions, setSelectedOptions] = useState<ILookupMultiSelect["options"]>([]);
 
   const { field } = !!name && useController({ name: name });
-  const [searchTerm, setSearchTerm] = useState<string>(
-    defaultValue && options.length > 0
-      ? options?.find((option) => option?.value === defaultValue)?.label
-      : ""
-  );
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const filteredOptions = useMemo(() => {
-    const filtered = searchTerm
-      ? filterFn
-        ? options.filter((option) => filterFn(option, searchTerm))
-        : options.filter((option) => option.label.toLowerCase().includes(searchTerm.toLowerCase()))
-      : options;
+    const lowercaseSearchterm = searchTerm.toLowerCase();
+
+    const filtered = options.filter((option) => {
+      if (searchTerm && filterFn) {
+        return filterFn(option, searchTerm);
+      }
+
+      return !searchTerm || option.label.toLowerCase().includes(lowercaseSearchterm);
+    })
+
     const sorted = sortFn ? filtered.sort(sortFn) : filtered;
-    const grouped = !!group ? groupBy(sorted, group) : sorted;
+    const grouped = group ? groupBy(sorted, group) : sorted;
 
     // For collapsing the group if there is only one group
     if (Object.keys(grouped).length === 1 && group) {
@@ -381,10 +381,17 @@ export const MultiSelectLookup = ({
 
   // Update selectedOption when defaultValue changes
   useEffect(() => {
-    const selected = options.find((option) => option.value == defaultValue);
+    const valuesToSelect: string[] = defaultValue
+      .split(',')
+      .map((s) => s.trim())
+      .slice(0, multiple ? undefined : 1);
 
-    setSelectedOptions([selected] || defaultValue);
-    !!name && field.onChange(defaultValue);
+    const selected = options.filter((option) =>
+      valuesToSelect.includes(option.value.toString()) || option.selected
+    );
+
+    setSelectedOptions(selected);
+    !!name && field.onChange(multiple ? valuesToSelect : valuesToSelect[0]);
   }, [defaultValue]);
 
   const openIndexesRef = useRef<number[]>([]);
@@ -396,12 +403,12 @@ export const MultiSelectLookup = ({
 
     const updateOptions = isSelected
       ? selectedOptions.filter((item) => item?.value !== option.value && item !== null)
-      : [...selectedOptions.filter((item) => item !== null), option]
-
+      : [...selectedOptions.filter((item) => item !== null && item !== undefined), option]
+    console.log(updateOptions)
     setSelectedOptions(updateOptions);
 
     if (!!name) {
-      field.onChange(multiple ? updateOptions.map((o) => o?.value) : option.value);
+      field.onChange(multiple ? updateOptions.filter(f => f != null).map((o) => o?.value) : option.value);
     }
 
     onSelect?.(multiple ? updateOptions : [option]);
@@ -424,6 +431,7 @@ export const MultiSelectLookup = ({
       onSelect?.([]);
       return;
     }
+
     onSelect?.(options);
     !!name && field.onChange(options.map((o) => o?.value));
     setSearchTerm("");
@@ -432,9 +440,9 @@ export const MultiSelectLookup = ({
 
   const handleClearSelection = () => {
     setSelectedOptions([]);
-    onSelect?.([]);
-    !!name && field.onChange(null);
     setSearchTerm("");
+    onSelect?.([]);
+    name && field.onChange(null);
   };
 
   /**
@@ -468,14 +476,14 @@ export const MultiSelectLookup = ({
             type="text"
             name={name}
             id={name}
-            value={selectedOptions.map((o) => o?.value).join(",")}
+            value={selectedOptions && selectedOptions.filter(o => o != null).map((o) => o?.value).join(",")}
             onChange={(e) => { }}
             className="hidden"
             disabled={disabled}
           />
         )}
         <p className="whitespace-nowrap truncate max-w-xs">{displayAsAmount ? `${selectedOptions.length} Selected` : selectedOptions.filter(o => o != null).length > 0
-          ? selectedOptions.filter(o => o != null).map((o) => o?.label).join(", ")
+          ? selectedOptions.filter(o => o != null && o?.label != null).map((o) => o?.label).join(", ")
           : placeholder}
         </p>
 
@@ -557,7 +565,6 @@ export const MultiSelectLookup = ({
                   key={option.value + Math.random()}
                   onClick={(e) => {
                     e.preventDefault();
-                    e.persist();
                     e.stopPropagation();
                     handleOptionChange(option)
                   }}
@@ -616,7 +623,6 @@ export const MultiSelectLookup = ({
                             key={i}
                             onClick={(e) => {
                               e.preventDefault();
-                              e.persist();
                               e.stopPropagation();
                               handleOptionChange(option)
                             }}

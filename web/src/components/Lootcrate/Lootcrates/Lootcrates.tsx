@@ -16,7 +16,6 @@ import type { FindLootcrates } from "types/graphql";
 
 type FormFindLootcrates = NonNullable<{
   map: string;
-  category: string;
   search: string;
 }>;
 
@@ -62,6 +61,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
   ];
 
   const onSubmit = useCallback((data: FormFindLootcrates) => {
+    console.log(data)
     navigate(
       routes.lootcrates({
         ...parseSearch(
@@ -141,7 +141,6 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
           </Label>
           <SearchField
             name="search"
-            list="searchlist"
             className="rw-input mt-0 !w-full !rounded-r-lg border-l-transparent"
             placeholder="Search..."
             defaultValue={search}
@@ -149,11 +148,6 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
               shouldUnregister: true,
             }}
           />
-          <datalist id="searchlist">
-            {maps?.map((map) => (
-              <option key={map.id} value={map.name} />
-            ))}
-          </datalist>
           <Submit className="rw-button rw-button-green absolute top-0 right-0 h-full rounded-l-none">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -170,7 +164,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
           <Disclosure title="Category">
             <div className="flex flex-col space-y-5">
               <div className="flex items-center space-x-2">
-                <CheckboxField name="type" className="rw-input" />
+                <CheckboxField name="type" className="rw-input" value="Supply Drop" />
                 <Label
                   name="type"
                   className="rw-sublabel"
@@ -180,7 +174,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
-                <CheckboxField name="type" className="rw-input" />
+                <CheckboxField name="type" className="rw-input" value="Artifact" />
                 <Label
                   name="type"
                   className="rw-sublabel"
@@ -190,7 +184,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
-                <CheckboxField name="type" className="rw-input" />
+                <CheckboxField name="type" className="rw-input" value="Boss" />
                 <Label
                   name="type"
                   className="rw-sublabel"
@@ -200,7 +194,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
-                <CheckboxField name="type" className="rw-input" />
+                <CheckboxField name="type" className="rw-input" value="Underwater" />
                 <Label
                   name="type"
                   className="rw-sublabel"
@@ -215,7 +209,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
             <div className="flex flex-col space-y-5">
               {maps?.map(({ id, name }) => (
                 <div className="flex items-center space-x-2" key={id}>
-                  <CheckboxField name="map" className="rw-input" />
+                  <CheckboxField name="map" className="rw-input" value={id} />
                   <Label
                     name="map"
                     className="rw-sublabel"
@@ -295,6 +289,9 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
 
         <div className="col-span-4 md:col-span-5">
           <div className="mt-3 grid w-full grid-cols-1 gap-6 text-white md:grid-cols-2 lg:grid-cols-3">
+            {lootcratesByMap.length == 0 && (
+              <p>No lootcrates found</p>
+            )}
             {lootcratesByMap
               .filter((m) => m.name != null && m.name != "")
               .map(({ id, name, required_level, image, color }) => (

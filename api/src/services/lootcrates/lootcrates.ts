@@ -13,6 +13,9 @@ export const lootcratesByMap = ({
   map?: string;
   search?: string;
 }) => {
+  console.log("map", map);
+  console.log("search", search);
+
   return !!search
     ? db.lootcrate.findMany({
         orderBy: { created_at: "desc" },
@@ -30,15 +33,17 @@ export const lootcratesByMap = ({
                 },
               },
             },
-            {
-              LootcrateMap: {
-                some: {
-                  map_id: {
-                    equals: parseInt(map),
+            !isNaN(parseInt(map))
+              ? {
+                  LootcrateMap: {
+                    some: {
+                      map_id: {
+                        equals: parseInt(map),
+                      },
+                    },
                   },
-                },
-              },
-            },
+                }
+              : {},
             {
               name: {
                 mode: "insensitive",

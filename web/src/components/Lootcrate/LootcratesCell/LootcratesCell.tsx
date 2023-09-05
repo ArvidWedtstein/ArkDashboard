@@ -6,8 +6,8 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import Lootcrates from "src/components/Lootcrate/Lootcrates";
 
 export const QUERY = gql`
-  query FindLootcrates($map: String) {
-    lootcratesByMap(map: $map) {
+  query FindLootcrates($map: String, $search: String) {
+    lootcratesByMap(map: $map, search: $search) {
       id
       name
       blueprint
