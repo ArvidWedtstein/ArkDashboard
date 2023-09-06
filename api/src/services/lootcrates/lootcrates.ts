@@ -13,63 +13,56 @@ export const lootcratesByMap = ({
   map?: string;
   search?: string;
 }) => {
-  console.log("map", map);
-  console.log("search", search);
-
-  return !!search
-    ? db.lootcrate.findMany({
-        orderBy: { created_at: "desc" },
-        where: {
-          OR: [
-            {
+  const lootcrates = db.lootcrate.findMany({
+    orderBy: { name: "asc" },
+    where: {
+      OR: [
+        {
+          LootcrateMap: {
+            some: {
+              Map: {
+                name: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+            },
+          },
+        },
+        !isNaN(parseInt(map))
+          ? {
               LootcrateMap: {
                 some: {
-                  Map: {
-                    name: {
-                      contains: search,
-                      mode: "insensitive",
-                    },
+                  map_id: {
+                    equals: parseInt(map),
                   },
                 },
               },
-            },
-            !isNaN(parseInt(map))
-              ? {
-                  LootcrateMap: {
-                    some: {
-                      map_id: {
-                        equals: parseInt(map),
-                      },
-                    },
-                  },
-                }
-              : {},
-            {
-              name: {
-                mode: "insensitive",
-                contains: search,
-              },
-            },
-            {
-              LootcrateItem: {
-                some: {
-                  Item: {
-                    name: {
-                      mode: "insensitive",
-                      contains: search,
-                    },
-                  },
+            }
+          : {},
+        {
+          name: {
+            mode: "insensitive",
+            contains: search,
+          },
+        },
+        {
+          LootcrateItem: {
+            some: {
+              Item: {
+                name: {
+                  mode: "insensitive",
+                  contains: search,
                 },
               },
             },
-          ],
+          },
         },
-      })
-    : db.lootcrate.findMany({
-        orderBy: {
-          name: "asc",
-        },
-      });
+      ],
+    },
+  });
+
+  return lootcrates;
 };
 
 export const lootcrates: QueryResolvers["lootcrates"] = () => {

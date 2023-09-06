@@ -20,6 +20,7 @@ export const itemsPage: QueryResolvers["itemsPage"] = ({
   type?: string;
   items_per_page?: number;
 }) => {
+  // https://www.prisma.io/docs/guides/performance-and-optimization/query-optimization-performance
   const offset = (page - 1) * items_per_page;
   // validateWithSync(() => {
   //   if (

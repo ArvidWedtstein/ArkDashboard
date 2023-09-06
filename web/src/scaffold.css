@@ -292,7 +292,7 @@
   .rw-button-group > .rw-button:only-child,
   .rw-button-group > .rw-input:only-child,
   .rw-button-group > .rw-float-input:only-child {
-    @apply !rounded-lg;
+    @apply rounded-lg;
   }
 
   /* Horizontal Button Group */

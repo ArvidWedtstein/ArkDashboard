@@ -7,7 +7,6 @@ import {
 } from "@redwoodjs/forms";
 import { navigate, useParams } from "@redwoodjs/router";
 import { Link, routes, parseSearch } from "@redwoodjs/router";
-import clsx from "clsx";
 import { useCallback } from "react";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import Lookup, { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
@@ -18,10 +17,12 @@ import type { FindLootcrates } from "types/graphql";
 type FormFindLootcrates = NonNullable<{
   map: string;
   search: string;
+  color: string;
+  type: string;
 }>;
 
 const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
-  let { map, search } = useParams();
+  let { map, search, color, type } = useParams();
 
   const onSubmit = useCallback((data: FormFindLootcrates) => {
     console.log(data);
@@ -37,6 +38,69 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
   }, []);
   return (
     <div className="rw-segment">
+      <div className="flex items-baseline justify-between border-b border-gray-200 text-white pb-6 pt-24">
+        <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">New Arrivals</h1>
+
+        <div className="flex items-center">
+          <div className="relative inline-block text-left">
+            <div>
+              <button className="group inline-flex justify-center text-sm font-medium text-gray-700 dark:text-white hover:text-gray-900">
+                Sort
+              </button>
+            </div>
+
+            <ul className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="py-1">
+                {[{ name: 'test', href: 'https://google.com' }].map((option) => (
+                  <li key={option.name}>
+                    <a
+                      href={option.href}
+                      className={"active:bg-gray-100 block px-4 py-2 text-sm disabled:font-medium disabled:text-gray-900"}
+                    >
+                      {option.name}
+                    </a>
+                  </li>
+                ))}
+              </div>
+            </ul>
+          </div>
+
+          <button type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
+            <span className="sr-only">View grid</span>
+          </button>
+          <button
+            type="button"
+            className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
+          >
+            <span className="sr-only">Filters</span>
+          </button>
+        </div>
+      </div>
+
+      <section aria-labelledby="products-heading" className="pb-24 pt-6">
+        <h2 id="products-heading" className="sr-only">
+          Products
+        </h2>
+
+        <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+          {/* Filters */}
+          <form className="hidden lg:block">
+            <h3 className="sr-only">Categories</h3>
+            <ul role="list" className="space-y-4 border-b border-gray-200 pb-6 text-sm font-medium text-gray-900">
+              {[].map((category) => (
+                <li key={category.name}>
+                  <a href={category.href}>{category.name}</a>
+                </li>
+              ))}
+            </ul>
+
+
+          </form>
+
+          {/* Product grid */}
+          <div className="lg:col-span-3">{/* Your content */}</div>
+        </div>
+      </section>
       <Form<FormFindLootcrates>
         className="grid w-full grid-cols-6 gap-x-3"
         onSubmit={onSubmit}
@@ -61,6 +125,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
             placeholder="Map"
             className="rw-input mt-0 min-w-[10rem] !rounded-none !rounded-l-lg pl-10"
             defaultValue={map}
+            closeOnSelect
             options={
               maps?.map((map) => ({
                 label: map.name,
@@ -69,23 +134,6 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
               })) || []
             }
           />
-          {/* <Lookup
-            search
-            name="map"
-            className="rw-input mt-0 min-w-[10rem] !rounded-none !rounded-l-lg pl-10"
-            options={
-              maps?.map((map) => ({
-                label: map.name,
-                value: Number(map.id),
-                image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
-              })) || []
-            }
-            placeholder="Map"
-            defaultValue={map}
-            filterFn={(item, search) =>
-              item.label.toLowerCase().includes(search.toLowerCase())
-            }
-          /> */}
           <Lookup
             name="category"
             className="rw-input mt-0 !rounded-none border-l-transparent"
@@ -124,16 +172,20 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
         </nav>
 
         <div className="col-span-2 mt-3 flex flex-col md:col-span-1">
-          <Disclosure title="Category">
+          <Disclosure title="Type">
             <div className="flex flex-col space-y-5">
               <div className="flex items-center space-x-2">
                 <CheckboxField
                   name="type"
+                  id="type-supply-drop"
                   className="rw-input"
-                  value="Supply Drop"
+                  errorClassName="rw-input rw-input-error"
+                  defaultChecked={type && type.includes('Supply Drop')}
                 />
                 <Label
                   name="type"
+                  defaultValue={"Supply Drop"}
+                  htmlFor="type-supply-drop"
                   className="rw-sublabel"
                   errorClassName="rw-sublabel rw-label-error"
                 >
@@ -143,21 +195,25 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
               <div className="flex items-center space-x-2">
                 <CheckboxField
                   name="type"
-                  className="rw-input"
-                  value="Artifact"
+                  id="type-artifact"
+                  className="rw-input text-indigo-600 focus:ring-indigo-500"
+                  errorClassName="rw-input rw-input-error"
+                  defaultChecked={type && type.includes('Artifact')}
                 />
                 <Label
                   name="type"
                   className="rw-sublabel"
+                  htmlFor="type-artifact"
                   errorClassName="rw-sublabel rw-label-error"
                 >
                   Artifact
                 </Label>
               </div>
               <div className="flex items-center space-x-2">
-                <CheckboxField name="type" className="rw-input" value="Boss" />
+                <CheckboxField name="type" id="type-boss" className="rw-input" errorClassName="rw-input rw-input-error" defaultChecked={type && type.includes('Boss')} />
                 <Label
                   name="type"
+                  htmlFor="type-boss"
                   className="rw-sublabel"
                   errorClassName="rw-sublabel rw-label-error"
                 >
@@ -166,12 +222,15 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
               </div>
               <div className="flex items-center space-x-2">
                 <CheckboxField
+                  id="type-underwater"
                   name="type"
                   className="rw-input"
-                  value="Underwater"
+                  errorClassName="rw-input rw-input-error"
+                  defaultChecked={type && type.includes('Underwater')}
                 />
                 <Label
                   name="type"
+                  htmlFor="type-underwater"
                   className="rw-sublabel"
                   errorClassName="rw-sublabel rw-label-error"
                 >
@@ -185,13 +244,16 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
               {maps?.map(({ id, name }) => (
                 <div className="flex items-center space-x-2" key={id}>
                   <CheckboxField
+                    id={`map-${id}`}
                     name="map"
-                    className="rw-input"
                     value={id}
                     defaultChecked={map && map.includes(id.toString())}
+                    className="rw-input"
+                    errorClassName="rw-input rw-input-error"
                   />
                   <Label
                     name="map"
+                    htmlFor={`map-${id}`}
                     className="rw-sublabel"
                     errorClassName="rw-sublabel rw-label-error"
                   >
@@ -207,11 +269,12 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                 lootcratesByMap
                   .filter((c) => c.color != null)
                   .map((l) => l.color)
-              ).map((color) => (
-                <div className="flex items-center space-x-2" key={color}>
-                  <CheckboxField name={color} className="rw-input" />
+              ).map((HexColor) => (
+                <div className="flex items-center space-x-2" key={`color-${HexColor}`}>
+                  <CheckboxField name="color" className="rw-input" errorClassName="rw-input rw-input-error" id={`color-${HexColor}`} value={HexColor} defaultChecked={color && color.includes(HexColor)} />
                   <Label
-                    name={color}
+                    name="color"
+                    htmlFor={`color-${HexColor}`}
                     className="rw-sublabel"
                     errorClassName="rw-sublabel rw-label-error"
                   >
@@ -219,7 +282,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                       className={
                         "h-5 w-5 rounded-full ring-1 ring-inset ring-zinc-500"
                       }
-                      style={{ backgroundColor: color }}
+                      style={{ backgroundColor: HexColor }}
                     />
                   </Label>
                 </div>
