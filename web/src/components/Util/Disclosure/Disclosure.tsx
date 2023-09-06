@@ -5,8 +5,8 @@ interface IDisclosureProps {
 
 const Disclosure = ({ title, children }: IDisclosureProps) => {
   return (
-    <details className="border-t border-gray-200 py-6 transition-all duration-300 ease-in-out [&>summary>svg]:open:rotate-45">
-      <summary className="-my-3 flex items-center justify-between text-white transition-all duration-300 ease-in-out">
+    <details className="border-t border-zinc-500 py-6 transition-all duration-300 ease-in-out [&>summary>svg]:open:rotate-45">
+      <summary className="-my-3 flex items-center justify-between dark:text-white text-zinc-900 transition-all duration-300 ease-in-out">
         <span className="rw-label !mt-0 grow">{title}</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"

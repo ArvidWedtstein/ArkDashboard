@@ -9,26 +9,32 @@ import { db } from "src/lib/db";
 export const lootcratesByMap = ({
   map,
   search,
+  type,
+  color,
 }: {
   map?: string;
   search?: string;
+  type?: string;
+  color?: string;
 }) => {
   const lootcrates = db.lootcrate.findMany({
     orderBy: { name: "asc" },
     where: {
       OR: [
-        {
-          LootcrateMap: {
-            some: {
-              Map: {
-                name: {
-                  contains: search,
-                  mode: "insensitive",
+        search
+          ? {
+              LootcrateMap: {
+                some: {
+                  Map: {
+                    name: {
+                      contains: search,
+                      mode: "insensitive",
+                    },
+                  },
                 },
               },
-            },
-          },
-        },
+            }
+          : {},
         !isNaN(parseInt(map))
           ? {
               LootcrateMap: {
@@ -40,24 +46,36 @@ export const lootcratesByMap = ({
               },
             }
           : {},
-        {
-          name: {
-            mode: "insensitive",
-            contains: search,
-          },
-        },
-        {
-          LootcrateItem: {
-            some: {
-              Item: {
-                name: {
-                  mode: "insensitive",
-                  contains: search,
+        search
+          ? {
+              name: {
+                mode: "insensitive",
+                contains: search,
+              },
+            }
+          : {},
+        search
+          ? {
+              LootcrateItem: {
+                some: {
+                  Item: {
+                    name: {
+                      mode: "insensitive",
+                      contains: search,
+                    },
+                  },
                 },
               },
-            },
-          },
-        },
+            }
+          : {},
+        color
+          ? {
+              color: {
+                in: color.split(","),
+              },
+            }
+          : {},
+        type ? {} : {},
       ],
     },
   });

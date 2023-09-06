@@ -48,7 +48,7 @@ const MapResourcesList = ({ mapResources }: FindMapResources) => {
       { position: 'top-center' }
     )
   }
-
+  // TODO: fix
   return (
     <div className="rw-segment rw-table-wrapper-responsive">
       <table className="rw-table">
