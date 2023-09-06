@@ -41,26 +41,27 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
   const { openModal } = useContext(ModalContext);
   return (
     <div className="rw-segment">
-      <Modal
-        content={
-          <p>test</p>
-        }
-      />
+      <Modal content={<p>test</p>} />
 
-      <Form<FormFindLootcrates>
-        className="w-full"
-        onSubmit={onSubmit}
-      >
-        <div className="flex flex-col sm:flex-row items-baseline justify-between border-b border-zinc-500 text-gray-900 dark:text-white pb-6 pt-24 md:pt-6">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white py-3 sm:p-0">Lootcrates</h1>
+      <Form<FormFindLootcrates> className="w-full" onSubmit={onSubmit}>
+        <div className="flex flex-col items-baseline justify-between border-b border-zinc-500 pb-6 pt-24 text-gray-900 dark:text-white sm:flex-row md:pt-6">
+          <h1 className="py-3 text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:p-0">
+            Lootcrates
+          </h1>
 
           <div className="flex items-center">
-            <button type="button" className="ml-5 rw-button rw-button-gray-outline">
+            <button
+              type="button"
+              className="rw-button rw-button-gray-outline ml-5"
+            >
               <span className="sr-only">View grid</span>
               Sort
             </button>
 
-            <button type="button" className="ml-5 rw-button rw-button-gray-outline">
+            <button
+              type="button"
+              className="rw-button rw-button-gray-outline ml-5"
+            >
               <span className="sr-only">View grid</span>
               Grid
             </button>
@@ -68,7 +69,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
             <button
               type="button"
               onClick={() => openModal()}
-              className="ml-4 rw-button rw-button-gray-outline lg:!hidden sm:ml-6"
+              className="rw-button rw-button-gray-outline ml-4 sm:ml-6 lg:!hidden"
             >
               Filter
               <span className="sr-only">Filters</span>
@@ -80,7 +81,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
 
             <SearchField
               name="search"
-              className="rw-input ml-4 sm:ml-6 !mt-0 !w-full grow"
+              className="rw-input ml-4 !mt-0 !w-full grow sm:ml-6"
               placeholder="Search..."
               defaultValue={search}
             />
@@ -114,7 +115,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                       id="type-supply-drop"
                       className="rw-input"
                       errorClassName="rw-input rw-input-error"
-                      defaultChecked={type && type.includes('Supply Drop')}
+                      defaultChecked={type && type.includes("Supply Drop")}
                     />
                     <Label
                       name="type"
@@ -132,7 +133,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                       id="type-artifact"
                       className="rw-input"
                       errorClassName="rw-input rw-input-error"
-                      defaultChecked={type && type.includes('Artifact')}
+                      defaultChecked={type && type.includes("Artifact")}
                     />
                     <Label
                       name="type"
@@ -144,7 +145,13 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <CheckboxField name="type" id="type-boss" className="rw-input" errorClassName="rw-input rw-input-error" defaultChecked={type && type.includes('Boss')} />
+                    <CheckboxField
+                      name="type"
+                      id="type-boss"
+                      className="rw-input"
+                      errorClassName="rw-input rw-input-error"
+                      defaultChecked={type && type.includes("Boss")}
+                    />
                     <Label
                       name="type"
                       htmlFor="type-boss"
@@ -160,7 +167,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                       name="type"
                       className="rw-input"
                       errorClassName="rw-input rw-input-error"
-                      defaultChecked={type && type.includes('Underwater')}
+                      defaultChecked={type && type.includes("Underwater")}
                     />
                     <Label
                       name="type"
@@ -204,8 +211,18 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                       .filter((c) => c.color != null)
                       .map((l) => l.color)
                   ).map((HexColor) => (
-                    <div className="flex items-center space-x-2" key={`color-${HexColor}`}>
-                      <CheckboxField name="color" className="rw-input" errorClassName="rw-input rw-input-error" id={`color-${HexColor}`} value={HexColor} defaultChecked={color && color.includes(HexColor)} />
+                    <div
+                      className="flex items-center space-x-2"
+                      key={`color-${HexColor}`}
+                    >
+                      <CheckboxField
+                        name="color"
+                        className="rw-input"
+                        errorClassName="rw-input rw-input-error"
+                        id={`color-${HexColor}`}
+                        value={HexColor}
+                        defaultChecked={color && color.includes(HexColor)}
+                      />
                       <Label
                         name="color"
                         htmlFor={`color-${HexColor}`}
@@ -225,9 +242,9 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
               </Disclosure>
             </div>
 
-            {/* Product grid */}
+            {/* Lootcrate grid */}
             <div className="lg:col-span-3">
-              <div className="grid w-full grid-cols-1 gap-6 dark:text-white text-zinc-900 lg:grid-cols-2 xl:grid-cols-3">
+              <div className="grid w-full grid-cols-1 gap-6 text-zinc-900 dark:text-white lg:grid-cols-2 xl:grid-cols-3">
                 {lootcratesByMap.length == 0 && <p>No lootcrates found</p>}
                 {lootcratesByMap
                   .filter((m) => m.name != null && m.name != "")
