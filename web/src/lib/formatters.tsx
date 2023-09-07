@@ -144,21 +144,31 @@ export const isDate = (dateString: string | Date | number): boolean => {
 };
 
 /**
- * Sorts an array of objects based on the value of a property
+ * Sorts an array of objects based on a specified property and sorting order.
  *
- * @param {string} property - The property name to sort the objects by
- * @returns {(a, b) => number} A comparison function that can be passed to `Array.sort` method.
+ * @template ItemType
+ * @param {Array<ItemType>} array - The array to be sorted.
+ * @param {string} property - The name of the property to sort by.
+ * @param {boolean} ascending - If true, sorts the array in ascending order; otherwise, in descending order.
+ * @returns {Array<ItemType>} - The sorted array.
  */
-export const dynamicSort = (property: string) => {
-  const sortOrder = property[0] === "-" ? -1 : 1;
-  const sortKey = property[0] === "-" ? property.substring(1) : property;
+export const dynamicSort = <T extends {}>(array: Array<T>, property: string, ascending: boolean = true): Array<T> =>
+  (property != "" && array) ? [...array].sort((a: T, b: T) => {
+    const aValue = a[property];
+    const bValue = b[property];
 
-  return (a, b) => {
-    const result =
-      a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
-    return result * sortOrder;
-  };
-};
+    if (ascending) {
+      if (aValue < bValue) return -1;
+      if (aValue > bValue) return 1;
+      return 0;
+    } else {
+      if (aValue > bValue) return -1;
+      if (aValue < bValue) return 1;
+      return 0;
+    }
+  }) : array;
+
+
 /**
  *
  * @param a bytes
@@ -169,9 +179,8 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
-    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-  }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+    }`;
 };
 
 /**
@@ -871,9 +880,9 @@ export const generatePDF = (crafts) => {
       tableX - cellPadding * 2,
       30 + crafts.length * 20,
       tableX +
-        (Object.keys(crafts[0]).length - 1) *
-          (tableSize.width / Object.keys(crafts[0]).length) +
-        columnWidths[Object.keys(crafts[0]).length - 1],
+      (Object.keys(crafts[0]).length - 1) *
+      (tableSize.width / Object.keys(crafts[0]).length) +
+      columnWidths[Object.keys(crafts[0]).length - 1],
       40 + (crafts.length - 1) * 20 + cellPadding,
       true,
       `0.9 0.9 0.9`
@@ -907,7 +916,7 @@ export const generatePDF = (crafts) => {
                     x:
                       tableX +
                       (Object.keys(crafts[0]).length - 1) *
-                        (tableSize.width / Object.keys(crafts[0]).length) +
+                      (tableSize.width / Object.keys(crafts[0]).length) +
                       columnWidths[Object.keys(crafts[0]).length - 1],
                     y: cellY + cellPadding,
                   },
@@ -1269,19 +1278,19 @@ export class SimplexNoise3D {
 
     const gi0 =
       SimplexNoise3D.perm[
-        ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
+      ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
       ] % 12;
     const gi1 =
       SimplexNoise3D.perm[
-        ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
+      ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
       ] % 12;
     const gi2 =
       SimplexNoise3D.perm[
-        ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
+      ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
       ] % 12;
     const gi3 =
       SimplexNoise3D.perm[
-        ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
+      ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
       ] % 1;
 
     let n0, n1, n2, n3;

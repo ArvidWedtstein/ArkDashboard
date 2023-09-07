@@ -167,10 +167,10 @@
     @apply border border-gray-500 bg-zinc-300 text-gray-700 dark:border-zinc-500 dark:bg-zinc-600 dark:text-stone-300;
   }
   .rw-button.rw-button-gray:not([disabled]):hover {
-    @apply border-gray-500 bg-zinc-400 text-gray-900 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white;
+    @apply border-gray-500 bg-zinc-400 text-gray-900 dark:border-zinc-500 dark:bg-zinc-700 dark:text-white;
   }
   .rw-button.rw-button-gray:not([disabled]):focus {
-    @apply ring-1 ring-gray-300 dark:ring-zinc-700;
+    @apply outline-0;
   }
 
   /* Gray Outline Button */
