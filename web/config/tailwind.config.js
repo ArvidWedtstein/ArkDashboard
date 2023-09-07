@@ -82,7 +82,7 @@ module.exports = {
             transform: "translateX(0)",
           },
           to: {
-            transform: "translateX(calc(100 % +1.5em))",
+            transform: "translateX(calc(100% + 1.5em))",
             display: "none",
           },
         },

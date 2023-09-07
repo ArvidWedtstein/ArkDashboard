@@ -376,7 +376,7 @@ const ItemsList = ({
       >
         {itemsPage.items.map((item, i) => (
           <Link
-            to={routes.item({ id: item.id.toString() })}
+            to={routes.item({ id: item.id })}
             key={`item-${i}`}
             className="hover:border-pea-500 rounded-lg border border-transparent transition"
           >

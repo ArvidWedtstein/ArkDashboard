@@ -22,7 +22,7 @@ export const schema = gql`
     lootcratesByMap(
       map: String
       search: String
-      types: String
+      type: String
       color: String
     ): [Lootcrate!]! @skipAuth
   }

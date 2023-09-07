@@ -147,7 +147,7 @@
   .rw-button .rw-button-icon-start,
   .rw-button .rw-button-icon-end,
   .rw-button .rw-button-icon {
-    @apply pointer-events-none w-3.5 fill-current leading-5;
+    @apply pointer-events-none w-3.5 fill-current stroke-current leading-5;
   }
   .rw-button.rw-button-small .rw-button-icon-start,
   .rw-button.rw-button-small .rw-button-icon-end,
@@ -226,7 +226,7 @@
   }
   .rw-button.rw-button-green-outline:not([disabled]):focus,
   .rw-button.rw-button-green-outline:not([disabled]):focus-within {
-    @apply ring-pea-300 dark:!ring-pea-800 outline-none ring-4;
+    @apply ring-pea-300 dark:!ring-pea-500/50 ring-2;
   }
 
   /* Green Gradient Button */
