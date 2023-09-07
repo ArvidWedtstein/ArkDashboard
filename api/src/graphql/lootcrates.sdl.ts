@@ -11,6 +11,7 @@ export const schema = gql`
     repeat_in_sets: Boolean
     color: String
     image: String
+    type: String
     LootcrateItem: [LootcrateItem]!
     LootcrateMap: [LootcrateMap]!
   }
@@ -18,7 +19,12 @@ export const schema = gql`
   type Query {
     lootcrates: [Lootcrate!]! @skipAuth
     lootcrate(id: BigInt!): Lootcrate @skipAuth
-    lootcratesByMap(map: String, search: String): [Lootcrate!]! @skipAuth
+    lootcratesByMap(
+      map: String
+      search: String
+      types: String
+      color: String
+    ): [Lootcrate!]! @skipAuth
   }
   input CreateLootcrateInput {
     created_at: DateTime!
@@ -31,6 +37,7 @@ export const schema = gql`
     repeat_in_sets: Boolean
     color: String
     image: String
+    type: String
   }
 
   input UpdateLootcrateInput {
@@ -44,6 +51,7 @@ export const schema = gql`
     repeat_in_sets: Boolean
     color: String
     image: String
+    type: String
   }
 
   type Mutation {

@@ -50,6 +50,7 @@ const Lootcrate = ({ lootcrate }: Props) => {
 
   return (
     <>
+      {/* TODO: fix */}
       <div className="rw-segment">
         <header className="rw-segment-header">
           <h2 className="rw-heading rw-heading-secondary">

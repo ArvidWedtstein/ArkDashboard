@@ -19,12 +19,13 @@ type FormFindLootcrates = NonNullable<{
   map: string;
   search: string;
   color: string;
-  type: string;
+  types: string;
 }>;
 
 const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
-  let { map, search, color, type } = useParams();
+  let { map, search, color, types } = useParams();
 
+  console.log(lootcratesByMap)
   const onSubmit = useCallback((data: FormFindLootcrates) => {
     console.log(data);
     navigate(
@@ -115,7 +116,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                       id="type-supply-drop"
                       className="rw-input"
                       errorClassName="rw-input rw-input-error"
-                      defaultChecked={type && type.includes("Supply Drop")}
+                      defaultChecked={types && types.includes("Supply Drop")}
                     />
                     <Label
                       name="type"
@@ -133,7 +134,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                       id="type-artifact"
                       className="rw-input"
                       errorClassName="rw-input rw-input-error"
-                      defaultChecked={type && type.includes("Artifact")}
+                      defaultChecked={types && types.includes("Artifact")}
                     />
                     <Label
                       name="type"
@@ -150,7 +151,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                       id="type-boss"
                       className="rw-input"
                       errorClassName="rw-input rw-input-error"
-                      defaultChecked={type && type.includes("Boss")}
+                      defaultChecked={types && types.includes("Boss")}
                     />
                     <Label
                       name="type"
@@ -167,7 +168,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
                       name="type"
                       className="rw-input"
                       errorClassName="rw-input rw-input-error"
-                      defaultChecked={type && type.includes("Underwater")}
+                      defaultChecked={types && types.includes("Underwater")}
                     />
                     <Label
                       name="type"

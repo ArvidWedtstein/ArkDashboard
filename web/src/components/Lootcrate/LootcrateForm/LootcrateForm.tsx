@@ -158,6 +158,41 @@ const LootcrateForm = (props: LootcrateFormProps) => {
 
         <FieldError name="color" className="rw-field-error" />
 
+        <Label
+          name="image"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Image
+        </Label>
+
+        {/* TODO: image lookup */}
+        <TextField
+          name="image"
+          defaultValue={props.lootcrate?.image}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+
+        <FieldError name="image" className="rw-field-error" />
+
+        <Label
+          name="type"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Type
+        </Label>
+
+        <TextField
+          name="type"
+          defaultValue={props.lootcrate?.type}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
+
+        <FieldError name="type" className="rw-field-error" />
+
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">
             Save

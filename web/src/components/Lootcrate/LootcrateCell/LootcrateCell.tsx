@@ -18,6 +18,7 @@ export const QUERY = gql`
       repeat_in_sets
       color
       image
+      type
     }
   }
 `;

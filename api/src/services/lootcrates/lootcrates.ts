@@ -6,18 +6,160 @@ import type {
 
 import { db } from "src/lib/db";
 
-export const lootcratesByMap = ({
+export const lootcratesByMap = async ({
   map,
   search,
-  type,
+  types,
   color,
 }: {
   map?: string;
   search?: string;
-  type?: string;
+  types?: string;
   color?: string;
 }) => {
-  const lootcrates = db.lootcrate.findMany({
+  console.log("PARAMS", { map, search, types, color });
+
+  // return db.lootcrate.findMany({
+  //   orderBy: {
+  //     name: "asc",
+  //   },
+  // });
+
+  console.log(
+    "SEARCH MAP",
+    search
+      ? {
+          LootcrateMap: {
+            some: {
+              Map: {
+                name: {
+                  contains: search,
+                  mode: "insensitive",
+                },
+              },
+            },
+          },
+        }
+      : {}
+  );
+
+  console.log(
+    "SEARCH NAME",
+    search
+      ? {
+          name: {
+            mode: "insensitive",
+            contains: search,
+          },
+        }
+      : {}
+  );
+
+  console.log(
+    "SEARCH ITEM",
+    search
+      ? {
+          LootcrateItem: {
+            some: {
+              Item: {
+                name: {
+                  mode: "insensitive",
+                  contains: search,
+                },
+              },
+            },
+          },
+        }
+      : {}
+  );
+
+  console.log(
+    "SEARCH COLOR",
+    color
+      ? {
+          color: {
+            in: color.split(","),
+          },
+        }
+      : {}
+  );
+
+  console.log(
+    "SEARCH TYPE",
+    types
+      ? {
+          type: {
+            in: types.split(","),
+          },
+        }
+      : {}
+  );
+  console.info("WHERE", {
+    OR: [
+      search
+        ? {
+            LootcrateMap: {
+              some: {
+                Map: {
+                  name: {
+                    contains: search,
+                    mode: "insensitive",
+                  },
+                },
+              },
+            },
+          }
+        : {},
+      !isNaN(parseInt(map))
+        ? {
+            LootcrateMap: {
+              some: {
+                map_id: {
+                  equals: parseInt(map),
+                },
+              },
+            },
+          }
+        : {},
+      search
+        ? {
+            name: {
+              mode: "insensitive",
+              contains: search,
+            },
+          }
+        : {},
+      search
+        ? {
+            LootcrateItem: {
+              some: {
+                Item: {
+                  name: {
+                    mode: "insensitive",
+                    contains: search,
+                  },
+                },
+              },
+            },
+          }
+        : {},
+      color
+        ? {
+            color: {
+              in: color.split(","),
+            },
+          }
+        : {},
+      types
+        ? {
+            type: {
+              in: types.split(","),
+            },
+          }
+        : {},
+    ],
+  });
+  return db.lootcrate.findMany({
     orderBy: { name: "asc" },
     where: {
       OR: [
@@ -68,19 +210,23 @@ export const lootcratesByMap = ({
               },
             }
           : {},
-        color
-          ? {
-              color: {
-                in: color.split(","),
-              },
-            }
-          : {},
-        type ? {} : {},
+        // color
+        //   ? {
+        //       color: {
+        //         in: color.split(","),
+        //       },
+        //     }
+        //   : {},
+        // types
+        //   ? {
+        //       type: {
+        //         in: types.split(","),
+        //       },
+        //     }
+        //   : {},
       ],
     },
   });
-
-  return lootcrates;
 };
 
 export const lootcrates: QueryResolvers["lootcrates"] = () => {

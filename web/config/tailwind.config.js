@@ -139,7 +139,7 @@ module.exports = {
           display: "inline-flex",
           alignItems: "center",
           borderRadius: theme("borderRadius.DEFAULT"),
-          padding: "4px 10px",
+          padding: `${theme("spacing.1")} ${theme("spacing[2.5]")}`,
           fontSize: theme("fontSize.xs"),
           lineHeight: theme("lineHeight.4"),
           fontWeight: theme("fontWeight.medium"),

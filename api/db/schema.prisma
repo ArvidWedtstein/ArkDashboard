@@ -215,6 +215,7 @@ model Lootcrate {
   repeat_in_sets Boolean?        @default(false)
   color          String?
   image          String?
+  type           String?
   LootcrateItem  LootcrateItem[]
   LootcrateMap   LootcrateMap[]
 

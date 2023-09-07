@@ -20,6 +20,8 @@ export const QUERY = gql`
       set_qty
       repeat_in_sets
       color
+      image
+      type
     }
   }
 `
@@ -39,6 +41,8 @@ const UPDATE_LOOTCRATE_MUTATION = gql`
       set_qty
       repeat_in_sets
       color
+      image
+      type
     }
   }
 `
