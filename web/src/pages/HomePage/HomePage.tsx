@@ -3,6 +3,7 @@ import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { ReactElement, ReactNode, useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
+import Lookup, { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
 
 // https://codepen.io/tjramage/pen/yOEbyw
 const HomePage = () => {
@@ -112,6 +113,7 @@ const HomePage = () => {
         ogContentUrl="https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj"
         ogType="website"
       />
+
       <div className='hidden md:block h-screen relative -z-10 will-change-scroll'>
         <div id="bg" className="will-change-transform h-screen w-full -z-10 left-0 right-0 fixed bg-[url('https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/13/20220616235414_1.jpg')] bg-no-repeat bg-cover bg-center scale-100">
           <div className="fixed left-1/2 -ml-5 bottom-0 animate-bounce opacity-100 h-10 w-10">
@@ -129,6 +131,62 @@ const HomePage = () => {
           </div>
         </div>
         <div id="shade" className="opacity-0 bg-black/80 z-10 h-screen fixed w-full" />
+      </div>
+      <div className="w-full inline-grid grid-cols-2">
+        {/* <Lookup options={[
+          {
+            label: "Basespots",
+            value: "basespots"
+          },
+          {
+            label: "Dinos",
+            value: "dinos"
+          },
+          {
+            label: "Items",
+            value: "items"
+          },
+          {
+            label: "Material Calculator",
+            value: "material-calculator"
+          }
+        ]} className="!ml-auto rw-input float-right" /> */}
+        <MultiSelectLookup options={[
+          {
+            label: "Basespots",
+            value: "basespots"
+          },
+          {
+            label: "Dinos",
+            value: "dinos"
+          },
+          {
+            label: "Items",
+            value: "items"
+          },
+          {
+            label: "Material Calculator",
+            value: "material-calculator"
+          }
+        ]} />
+        <MultiSelectLookup options={[
+          {
+            label: "Basespots",
+            value: "basespots"
+          },
+          {
+            label: "Dinos",
+            value: "dinos"
+          },
+          {
+            label: "Items",
+            value: "items"
+          },
+          {
+            label: "Material Calculator",
+            value: "material-calculator"
+          }
+        ]} className="justify-self-end" />
       </div>
 
       <div className="container-xl overflow-hidden text-center bg-gradient-to-t from-black via-black to-black/60">

@@ -78,6 +78,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
   const [images, setImages] = useState([]);
   const [currentModalImage, setCurrentModalImage] = useState(null);
 
+  // !TODO: consider switching to useEffect?
   useLayoutEffect(() => {
     supabase.storage
       .from("timelineimages")
