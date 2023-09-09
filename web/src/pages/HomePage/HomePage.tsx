@@ -10,49 +10,46 @@ const HomePage = () => {
   const { isAuthenticated, currentUser, client, reauthenticate } = useAuth();
 
   useEffect(() => {
-    window.addEventListener('scroll', () => {
-
+    window.addEventListener("scroll", () => {
       let Num = window.scrollY / 500;
-      let Num2 = window.scrollY * .0004; // higher number for more zoom
+      let Num2 = window.scrollY * 0.0004; // higher number for more zoom
       let Num2mod = Num2 + 1;
-      let Num3 = window.scrollY * .2; // Title speed
+      let Num3 = window.scrollY * 0.2; // Title speed
       let Num3mod = Num3 + 1;
 
-      document.querySelectorAll('#shade').forEach((el: HTMLElement) => {
-        el.style.opacity = `${Num}`
+      document.querySelectorAll("#shade").forEach((el: HTMLElement) => {
+        el.style.opacity = `${Num}`;
       });
-      document.querySelectorAll('#bg').forEach((el: HTMLElement) => {
-        el.style.transform = `scale(${Num2mod})`
+      document.querySelectorAll("#bg").forEach((el: HTMLElement) => {
+        el.style.transform = `scale(${Num2mod})`;
       });
-      document.querySelectorAll('#text').forEach((el: HTMLElement) => {
-        el.style.marginTop = `${Num3mod}px`
+      document.querySelectorAll("#text").forEach((el: HTMLElement) => {
+        el.style.marginTop = `${Num3mod}px`;
       });
-      return
-    })
-
+      return;
+    });
 
     return () => {
-      window.removeEventListener('scroll', () => {
-
+      window.removeEventListener("scroll", () => {
         let Num = window.scrollY / 500;
-        let Num2 = window.scrollY * .0004; // higher number for more zoom
+        let Num2 = window.scrollY * 0.0004; // higher number for more zoom
         let Num2mod = Num2 + 1;
-        let Num3 = window.scrollY * .2; // Title speed
+        let Num3 = window.scrollY * 0.2; // Title speed
         let Num3mod = Num3 + 1;
 
-        document.querySelectorAll('#shade').forEach((el: HTMLElement) => {
-          el.style.opacity = `${Num}`
+        document.querySelectorAll("#shade").forEach((el: HTMLElement) => {
+          el.style.opacity = `${Num}`;
         });
-        document.querySelectorAll('#bg').forEach((el: HTMLElement) => {
-          el.style.transform = `scale(${Num2mod})`
+        document.querySelectorAll("#bg").forEach((el: HTMLElement) => {
+          el.style.transform = `scale(${Num2mod})`;
         });
-        document.querySelectorAll('#text').forEach((el: HTMLElement) => {
-          el.style.marginTop = `${Num3mod}px`
+        document.querySelectorAll("#text").forEach((el: HTMLElement) => {
+          el.style.marginTop = `${Num3mod}px`;
         });
-        return
-      })
-    }
-  }, [])
+        return;
+      });
+    };
+  }, []);
   // useEffect(() => {
   //   const {
   //     data: { subscription },
@@ -114,25 +111,43 @@ const HomePage = () => {
         ogType="website"
       />
 
-      <div className='hidden md:block h-screen relative -z-10 will-change-scroll'>
-        <div id="bg" className="will-change-transform h-screen w-full -z-10 left-0 right-0 fixed bg-[url('https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/13/20220616235414_1.jpg')] bg-no-repeat bg-cover bg-center scale-100">
-          <div className="fixed left-1/2 -ml-5 bottom-0 animate-bounce opacity-100 h-10 w-10">
+      <div className="relative -z-10 hidden h-screen will-change-scroll md:block">
+        <div
+          id="bg"
+          className="fixed left-0 right-0 -z-10 h-screen w-full scale-100 bg-[url('https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/13/20220616235414_1.jpg')] bg-cover bg-center bg-no-repeat will-change-transform"
+        >
+          <div className="fixed left-1/2 bottom-0 -ml-5 h-10 w-10 animate-bounce opacity-100">
             <svg height="25" width="50">
-              <polygon points="0,0 25,10 50,0 25,25" fill="rgba(0,0,0,.5)" strokeWidth="0" stroke="rgba(255,255,255,.3)" />
+              <polygon
+                points="0,0 25,10 50,0 25,25"
+                fill="rgba(0,0,0,.5)"
+                strokeWidth="0"
+                stroke="rgba(255,255,255,.3)"
+              />
             </svg>
           </div>
-          <div className="table w-full h-full">
+          <div className="table h-full w-full">
             <div className="table-cell w-full align-middle">
-              <div id="text" className="z-10 w-full text-center text-white bg-black/60 p-16 font-montserrat will-change-contents">
-                <h1 className="text-7xl mb-1 font-extrabold -tracking-wide">Ark Dashboard</h1>
-                <p className="leading-6 pb-5 pt-3 border-t border-white/20 w-8/12 mx-auto text-gray-200 block">Welcome fellow survivor!</p>
+              <div
+                id="text"
+                className="font-montserrat z-10 w-full bg-black/60 p-16 text-center text-white will-change-contents"
+              >
+                <h1 className="mb-1 text-7xl font-extrabold -tracking-wide">
+                  Ark Dashboard
+                </h1>
+                <p className="mx-auto block w-8/12 border-t border-white/20 pb-5 pt-3 leading-6 text-gray-200">
+                  Welcome fellow survivor!
+                </p>
               </div>
             </div>
           </div>
         </div>
-        <div id="shade" className="opacity-0 bg-black/80 z-10 h-screen fixed w-full" />
+        <div
+          id="shade"
+          className="fixed z-10 h-screen w-full bg-black/80 opacity-0"
+        />
       </div>
-      <div className="w-full inline-grid grid-cols-2">
+      <div className="inline-grid w-full grid-cols-2">
         {/* <Lookup options={[
           {
             label: "Basespots",
@@ -151,45 +166,36 @@ const HomePage = () => {
             value: "material-calculator"
           }
         ]} className="!ml-auto rw-input float-right" /> */}
-        <MultiSelectLookup options={[
-          {
-            label: "Basespots",
-            value: "basespots"
-          },
-          {
-            label: "Dinos",
-            value: "dinos"
-          },
-          {
-            label: "Items",
-            value: "items"
-          },
-          {
-            label: "Material Calculator",
-            value: "material-calculator"
-          }
-        ]} />
-        <MultiSelectLookup options={[
-          {
-            label: "Basespots",
-            value: "basespots"
-          },
-          {
-            label: "Dinos",
-            value: "dinos"
-          },
-          {
-            label: "Items",
-            value: "items"
-          },
-          {
-            label: "Material Calculator",
-            value: "material-calculator"
-          }
-        ]} className="justify-self-end" />
+
+        <MultiSelectLookup
+          options={[
+            {
+              label: "Basespots",
+              value: "basespots",
+              type: "1",
+            },
+            {
+              label: "Dinos",
+              value: "dinos",
+              type: "1",
+            },
+            {
+              label: "Items",
+              value: "items",
+              type: "test",
+            },
+            {
+              label: "Material Calculator",
+              value: "material-calculator",
+              type: "test",
+            },
+          ]}
+          groupBy="type"
+          className="justify-self-end"
+        />
       </div>
 
-      <div className="container-xl overflow-hidden text-center bg-gradient-to-t from-black via-black to-black/60">
+      <div className="container-xl overflow-hidden bg-gradient-to-t from-black via-black to-black/60 text-center">
         <section className="font-montserrat mx-auto mb-12 max-w-screen-xl p-6">
           <div className="!animate-ripple mb-8 rounded-lg border border-gray-200 bg-gray-50 p-8 dark:border-zinc-700 dark:bg-gradient-to-tr dark:from-zinc-800 dark:to-zinc-900 md:p-12">
             <h1 className="mb-2 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl">
@@ -374,7 +380,7 @@ const HomePage = () => {
               </p>
               <details className="transition-all duration-200">
                 <summary>How to Use the Calculator</summary>
-                <p className="m-1 border-l pl-5 animate-fade-in">
+                <p className="animate-fade-in m-1 border-l pl-5">
                   Simply select the item you want to craft from the dropdown
                   list, and the calculator will show you the materials and steps
                   needed to craft it. You can also filter the list by item type

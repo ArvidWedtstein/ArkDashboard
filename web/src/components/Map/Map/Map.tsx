@@ -268,7 +268,7 @@ const Map = ({ map }: Props) => {
       ...groupedByType,
       ...groupedByItem,
     })
-      .filter(([_, v]) => v.length > 0)
+      .filter(([k, v]) => v.length > 0 && k !== null)
       .map(([key, value]) => ({
         label: value.some((f) => f.item_id == null)
           ? capitalizeSentence(key.replaceAll("_", " "))
@@ -281,7 +281,7 @@ const Map = ({ map }: Props) => {
         color:
           value[0].__typename == "MapNote" ||
           value.every((f) => f.item_id == null)
-            ? categories[key].color
+            ? categories[key]?.color
             : value[0].Item.color,
       }));
 
