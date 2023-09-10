@@ -1,3 +1,4 @@
+import { Form, Submit } from "@redwoodjs/forms";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
@@ -147,7 +148,12 @@ const HomePage = () => {
           className="fixed z-10 h-screen w-full bg-black/80 opacity-0"
         />
       </div>
-      <div className="inline-grid w-full grid-cols-2">
+      <Form
+        onSubmit={(e) => {
+          console.log(e);
+        }}
+        className="inline-grid w-full grid-cols-2"
+      >
         {/* <Lookup options={[
           {
             label: "Basespots",
@@ -168,6 +174,7 @@ const HomePage = () => {
         ]} className="!ml-auto rw-input float-right" /> */}
 
         <MultiSelectLookup
+          name="test"
           options={[
             {
               label: "Basespots",
@@ -188,12 +195,59 @@ const HomePage = () => {
               label: "Material Calculator",
               value: "material-calculator",
               type: "test",
+              disabled: true,
+            },
+            {
+              label: "Basespots",
+              value: "basespots2",
+              type: "1",
+            },
+            {
+              label: "Dinos",
+              value: "dinos2",
+              type: "1",
+            },
+            {
+              label: "Items",
+              value: "items2",
+              type: "test",
+            },
+            {
+              label: "Material Calculator",
+              value: "material-calculator2",
+              type: "test",
+              disabled: true,
+            },
+            {
+              label: "Basespots",
+              value: "basespots3",
+              type: "1",
+            },
+            {
+              label: "Dinos",
+              value: "dinos3",
+              type: "1",
+            },
+            {
+              label: "Items",
+              value: "items3",
+              type: "test2",
+            },
+            {
+              label: "Material Calculator",
+              value: "material-calculator3",
+              type: "test",
+              disabled: true,
             },
           ]}
-          groupBy="type"
-          className="justify-self-end"
+          search
+          defaultValue={"basespots,items"}
+          multiple
+          disableClearable
+          closeOnSelect={true}
         />
-      </div>
+        <Submit className="rw-button rw-button-gray">test</Submit>
+      </Form>
 
       <div className="container-xl overflow-hidden bg-gradient-to-t from-black via-black to-black/60 text-center">
         <section className="font-montserrat mx-auto mb-12 max-w-screen-xl p-6">

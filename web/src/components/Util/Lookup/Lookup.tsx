@@ -305,15 +305,14 @@ const Lookup = ({
 export default Lookup;
 
 interface ILookupMultiSelect {
-  defaultValue?: any;
-  search?: boolean;
-  disabled?: boolean;
-  clearable?: boolean;
+  defaultValue?: string;
   name?: string;
   className?: string;
   btnClassName?: string;
   groupBy?: string;
-  displayAsAmount?: boolean;
+  disabled?: boolean;
+  search?: boolean;
+  disableClearable?: boolean;
   multiple?: boolean;
   closeOnSelect?: boolean;
   options: {
@@ -323,6 +322,9 @@ interface ILookupMultiSelect {
     disabled?: boolean; // TODO: implement
     [key: string]: string | object | number | boolean | undefined;
   }[];
+  customDisplay?: (
+    selectedOptions: ILookupMultiSelect["options"]
+  ) => React.ReactNode;
   onChange?: ChangeEventHandler | undefined;
   onSelect?: (
     value: ArrayElement<ILookupMultiSelect["options"]>["value"][]
@@ -331,10 +333,6 @@ interface ILookupMultiSelect {
     option: { label: string; value: value; image?: string },
     searchTerm: string
   ) => boolean;
-  sortFn?: (
-    a: { label: string; value: value; image?: string },
-    b: { label: string; value: value; image?: string }
-  ) => number;
   placeholder?: string;
 }
 
@@ -345,18 +343,16 @@ export const MultiSelectLookup = ({
   defaultValue,
   className,
   btnClassName,
-  groupBy: group,
   placeholder,
   search = false,
   disabled = false,
-  clearable = true,
-  displayAsAmount = false,
+  disableClearable = false,
   multiple = false,
   closeOnSelect = false,
+  customDisplay,
   onSelect,
   onChange,
   filterFn,
-  sortFn,
 }: ILookupMultiSelect) => {
   // https://codepen.io/JohnReynolds57/pen/LJxXbE
 
@@ -396,7 +392,6 @@ export const MultiSelectLookup = ({
     setMenuPosition({ top: dropdownTop, left: dropdownLeft });
   };
 
-  // TODO: fix single select
   const { field } = !!name && useController({ name: name });
   const [searchTerm, setSearchTerm] = useState<string>("");
 
@@ -413,24 +408,8 @@ export const MultiSelectLookup = ({
       );
     });
 
-    const sorted = sortFn ? filtered.sort(sortFn) : filtered;
-    const grouped = group
-      ? Object.entries(groupBy(sorted, group)).reduce(
-          (result, [group, data]) => {
-            return result.concat(data.map((item) => ({ ...item, group })));
-          },
-          []
-        )
-      : sorted.map((g) => ({ ...g, group: null }));
-
-    // For collapsing the group if there is only one group
-    if (Object.keys(grouped).length === 1 && group) {
-      openIndexesRef.current = [0];
-    }
-
-    // TODO: fix this type
-    return grouped;
-  }, [options, searchTerm, filterFn, sortFn]);
+    return filtered;
+  }, [options, searchTerm, filterFn]);
 
   // Update selectedOption when defaultValue changes
   useEffect(() => {
@@ -443,14 +422,12 @@ export const MultiSelectLookup = ({
     const selected = options.filter((option) =>
       valuesToSelect.includes(option.value.toString())
     );
-
+    console.log("open");
     setSelectedOptions(selected);
     !!name && field.onChange(multiple ? valuesToSelect : valuesToSelect[0]);
 
     updateLayout();
   }, [defaultValue]);
-
-  const openIndexesRef = useRef<number[]>([]);
 
   const handleOptionChange = useCallback(
     (option: ArrayElement<ILookupMultiSelect["options"]>) => {
@@ -490,17 +467,18 @@ export const MultiSelectLookup = ({
   };
 
   const handleSelectAll = () => {
-    if (selectedOptions.length === options.length) {
+    if (selectedOptions.length === options.filter((o) => !o.disabled).length) {
       setSelectedOptions([]);
       !!name && field.onChange(null);
       onSelect?.([]);
       return;
     }
 
-    onSelect?.(options);
-    !!name && field.onChange(options.map((o) => o?.value));
+    onSelect?.(options.filter((o) => !o.disabled));
+    !!name &&
+      field.onChange(options.filter((o) => !o.disabled).map((o) => o?.value));
     setSearchTerm("");
-    setSelectedOptions(options);
+    setSelectedOptions(options.filter((o) => !o.disabled));
   };
 
   const handleClearSelection = () => {
@@ -508,21 +486,6 @@ export const MultiSelectLookup = ({
     setSearchTerm("");
     onSelect?.([]);
     name && field.onChange(null);
-  };
-
-  /**
-   * @description For toggling the open state of the groups
-   * @param index
-   */
-  const toggleOpen = (index: number) => {
-    if (openIndexesRef.current.includes(index)) {
-      openIndexesRef.current = openIndexesRef.current.filter(
-        (i) => i !== index
-      );
-      return;
-    }
-
-    openIndexesRef.current = [...openIndexesRef.current, index];
   };
 
   return (
@@ -534,6 +497,7 @@ export const MultiSelectLookup = ({
       ref={ref}
     >
       <button
+        type="button"
         onClick={() => {
           if (!disabled) {
             setIsComponentVisible(!isComponentVisible);
@@ -551,48 +515,30 @@ export const MultiSelectLookup = ({
           }
         )}
       >
-        {/* FIX: Not needed? */}
-        {/* TODO: test to ensure its really not needed */}
-        {/* {name && (
-          <input
-            type="text"
-            name={name}
-            id={name}
-            value={
-              selectedOptions &&
-              selectedOptions
-                .filter((o) => o != null)
-                .map((o) => o?.value)
-                .join(",")
-            }
-            onChange={(e) => { }}
-            className="hidden"
-            disabled={disabled}
-          />
-        )} */}
-        <p className="max-w-xs truncate whitespace-nowrap">
-          {displayAsAmount
-            ? `${selectedOptions.length} Selected`
+        <div className="flex max-w-xs truncate whitespace-nowrap">
+          {customDisplay
+            ? customDisplay(selectedOptions)
             : selectedOptions.filter((o) => o != null).length > 0
             ? selectedOptions
                 .filter((o) => o != null && o?.label != null)
                 .map((o) => o?.label)
                 .join(", ")
             : placeholder}
-        </p>
+        </div>
 
         <div className="pointer-events-none ml-auto flex select-none flex-row">
-          {clearable && selectedOptions.filter((d) => d != null).length > 0 && (
-            <svg
-              onClick={handleClearSelection}
-              fill="currentColor"
-              className="pointer-events-auto ml-2 h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 320 512"
-            >
-              <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z" />
-            </svg>
-          )}
+          {!disableClearable &&
+            selectedOptions.filter((d) => d != null).length > 0 && (
+              <svg
+                onClick={handleClearSelection}
+                fill="currentColor"
+                className="pointer-events-auto ml-2 h-4 w-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 320 512"
+              >
+                <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z" />
+              </svg>
+            )}
           <label htmlFor={name}>
             <svg
               className="ml-2 h-4 w-4"
@@ -620,263 +566,104 @@ export const MultiSelectLookup = ({
           left: `${menuPosition.left}px`,
         }}
         className={clsx(
-          "absolute z-30 w-fit min-w-[15rem] max-w-full select-none space-y-1.5 rounded-lg border border-zinc-500 bg-white shadow transition-all duration-300 ease-in-out dark:bg-zinc-800",
+          "absolute z-30 w-fit min-w-[15rem] max-w-full select-none rounded-lg border border-zinc-500 bg-white shadow transition-all duration-300 ease-in-out dark:bg-zinc-800",
           {
             invisible: !isComponentVisible,
             visible: isComponentVisible,
           }
         )}
       >
+        <div className="rw-button-group my-0 w-full rounded-none border-b border-zinc-500">
+          {search && (
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={handleInputChange}
+              placeholder={"Search..."}
+              className="rw-input flex w-full grow items-center !rounded-b-none border-none outline-none dark:bg-zinc-700"
+              disabled={disabled}
+            />
+          )}
+          {multiple && (
+            <button
+              type="button"
+              onClick={handleSelectAll}
+              className={clsx(
+                "rw-button rw-button-gray !rounded-b-none !border-0 !border-l border-zinc-500 transition ease-in-out dark:!bg-zinc-700",
+                {
+                  "!text-pea-500 !ring-pea-500 !ring-1 ring-inset":
+                    selectedOptions.length === options.length &&
+                    options.length > 0,
+                }
+              )}
+              title="Select All"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                className="rw-button-icon"
+              >
+                <path d="M475.3 164.7c-6.25-6.25-16.38-6.25-22.62 0L192 425.4L59.31 292.7c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62l144 144C183.8 462.4 187.9 464 192 464s8.188-1.562 11.31-4.688l272-272C481.6 181.1 481.6 170.9 475.3 164.7zM180.7 235.3C183.8 238.4 187.9 240 192 240s8.188-1.562 11.31-4.688l176-176c6.25-6.25 6.25-16.38 0-22.62s-16.38-6.25-22.62 0L192 201.4L123.3 132.7c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62L180.7 235.3z" />
+              </svg>
+              <span className="sr-only">Select All</span>
+            </button>
+          )}
+        </div>
+
         <ul
-          className="relative z-10 max-h-48 overflow-y-auto text-gray-700 dark:text-gray-200"
+          className="relative z-10 max-h-48 space-y-1.5 overflow-y-auto pt-0 text-gray-700 dark:text-gray-200"
           aria-labelledby="dropdownButton"
         >
-          {multiple ||
-            (search && (
-              <li className="sticky top-0 left-0 flex items-center rounded-t-lg shadow-md">
-                <div className="rw-button-group my-0 w-full rounded-none border-b border-zinc-500">
-                  {search && (
-                    <input
-                      type="text"
-                      value={searchTerm}
-                      onChange={handleInputChange}
-                      placeholder={"Search..."}
-                      className="rw-input flex w-full grow items-center !rounded-b-none border-none outline-none dark:bg-zinc-700"
-                      disabled={disabled}
-                    />
-                  )}
-                  {multiple && (
-                    <button
-                      type="button"
-                      onClick={handleSelectAll}
-                      className={clsx(
-                        "rw-button rw-button-gray !rounded-b-none !border-0 !border-l border-zinc-500 transition ease-in-out dark:!bg-zinc-700",
-                        {
-                          "!text-pea-500 !ring-pea-500 !ring-1 ring-inset":
-                            selectedOptions.length === options.length &&
-                            options.length > 0,
-                        }
-                      )}
-                      title="Select All"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 512 512"
-                        className="rw-button-icon"
-                      >
-                        <path d="M475.3 164.7c-6.25-6.25-16.38-6.25-22.62 0L192 425.4L59.31 292.7c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62l144 144C183.8 462.4 187.9 464 192 464s8.188-1.562 11.31-4.688l272-272C481.6 181.1 481.6 170.9 475.3 164.7zM180.7 235.3C183.8 238.4 187.9 240 192 240s8.188-1.562 11.31-4.688l176-176c6.25-6.25 6.25-16.38 0-22.62s-16.38-6.25-22.62 0L192 201.4L123.3 132.7c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62L180.7 235.3z" />
-                      </svg>
-                      <span className="sr-only">Select All</span>
-                    </button>
-                  )}
-                </div>
-              </li>
-            ))}
-
           {!options || options.length == 0 ? (
             <li className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-zinc-700/50 dark:hover:text-white">
               No options available
             </li>
           ) : null}
 
-          {group
-            ? filteredOptions.map((option) => (
-                <li
-                  key={option.value + Math.random()}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (!closeOnSelect) {
-                      e.stopPropagation();
-                    }
-                    handleOptionChange(option);
-                  }}
-                  className="flex items-center py-2 px-4 first:rounded-t-lg last:rounded-b-lg hover:bg-zinc-100 dark:hover:bg-zinc-600/90 dark:hover:text-white"
-                >
-                  {"image" in option && !option.group && (
-                    <img
-                      className="mr-2 h-6 w-6 rounded-full"
-                      src={option.image}
-                      alt={option.label}
-                    />
-                  )}
-                  <span className="grow">{option.label}</span>
-
-                  {selectedOptions.some((o) => o?.value === option.value) && (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                      className="h-5 w-5 shrink-0"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  )}
-                </li>
-              ))
-            : Object.keys(filteredOptions).map((key, i) => {
-                return (
-                  <li
-                    key={key}
-                    className="[&:first-child>div]:rounded-t-lg [&:last-child>div]:rounded-b-lg"
-                  >
-                    <div
-                      onClick={() => toggleOpen(i)}
-                      className="flex items-center justify-between px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-600/90 dark:hover:text-white"
-                    >
-                      <span className="mr-2 font-semibold">{key}</span>
-                      <svg
-                        className="h-4 w-4"
-                        aria-hidden="true"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d={
-                            openIndexesRef?.current?.includes(i)
-                              ? "M19 16L12 9l-7 7"
-                              : "M19 9l-7 7-7-7"
-                          }
-                        ></path>
-                      </svg>
-                    </div>
-                    {openIndexesRef?.current?.includes(i) && (
-                      <ul className="">
-                        {filteredOptions[key].map((option, i) => (
-                          <li
-                            key={i}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              if (!closeOnSelect) {
-                                e.stopPropagation();
-                              }
-                              handleOptionChange(option);
-                            }}
-                            className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                          >
-                            {"image" in option && (
-                              <img
-                                className="mr-2 h-6 w-6 rounded-full"
-                                src={option.image}
-                                alt=""
-                              />
-                            )}
-                            {option.label}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                );
+          {filteredOptions.map((option, i) => (
+            <li
+              key={`option-${i}-${option.value}`}
+              onClick={(e) => {
+                if (option.disabled) return;
+                if (!closeOnSelect) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+                handleOptionChange(option);
+              }}
+              className={clsx("flex items-center py-2 px-4 last:rounded-b-lg", {
+                "cursor-not-allowed text-zinc-500/50": option.disabled,
+                "hover:bg-zinc-200 dark:hover:bg-zinc-600/90 dark:hover:text-white":
+                  !option.disabled,
               })}
-          {/* {!group
-            ? filteredOptions.map((option) => (
-                <li
-                  key={option.value + Math.random()}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (!closeOnSelect) {
-                      e.stopPropagation();
-                    }
-                    handleOptionChange(option);
-                  }}
-                  className="flex items-center py-2 px-4 first:rounded-t-lg last:rounded-b-lg hover:bg-zinc-100 dark:hover:bg-zinc-600/90 dark:hover:text-white"
-                >
-                  {"image" in option && (
-                    <img
-                      className="mr-2 h-6 w-6 rounded-full"
-                      src={option.image}
-                      alt={option.label}
-                    />
-                  )}
-                  <span className="grow">{option.label}</span>
+            >
+              {"image" in option && !option.group && (
+                <img
+                  className="mr-2 h-6 w-6 rounded-full"
+                  src={option.image}
+                  alt={option.label}
+                />
+              )}
 
-                  {selectedOptions.some((o) => o?.value === option.value) && (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                      className="h-5 w-5 shrink-0"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  )}
-                </li>
-              ))
-            : Object.keys(filteredOptions).map((key, i) => {
-                return (
-                  <li
-                    key={key}
-                    className="[&:first-child>div]:rounded-t-lg [&:last-child>div]:rounded-b-lg"
-                  >
-                    <div
-                      onClick={() => toggleOpen(i)}
-                      className="flex items-center justify-between px-4 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-600/90 dark:hover:text-white"
-                    >
-                      <span className="mr-2 font-semibold">{key}</span>
-                      <svg
-                        className="h-4 w-4"
-                        aria-hidden="true"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d={
-                            openIndexesRef?.current?.includes(i)
-                              ? "M19 16L12 9l-7 7"
-                              : "M19 9l-7 7-7-7"
-                          }
-                        ></path>
-                      </svg>
-                    </div>
-                    {openIndexesRef?.current?.includes(i) && (
-                      <ul className="">
-                        {filteredOptions[key].map((option, i) => (
-                          <li
-                            key={i}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              if (!closeOnSelect) {
-                                e.stopPropagation();
-                              }
-                              handleOptionChange(option);
-                            }}
-                            className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                          >
-                            {"image" in option && (
-                              <img
-                                className="mr-2 h-6 w-6 rounded-full"
-                                src={option.image}
-                                alt=""
-                              />
-                            )}
-                            {option.label}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                );
-              })} */}
+              <span className="grow">{option.label}</span>
+
+              {selectedOptions.some((o) => o?.value === option.value) && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  className="h-5 w-5 shrink-0"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              )}
+            </li>
+          ))}
         </ul>
       </div>
     </div>
