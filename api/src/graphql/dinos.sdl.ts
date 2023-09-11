@@ -57,13 +57,21 @@ export const schema = gql`
 
   type DinosPage {
     dinos: [Dino!]!
+    diets: [JSON]!
+    temperaments: [JSON]!
     count: Int!
   }
 
   type Query {
     dinos: [Dino!]! @skipAuth
     dino(id: String!): Dino @skipAuth
-    dinosPage(page: Int, search: String, category: String): DinosPage @skipAuth
+    dinosPage(
+      page: Int
+      search: String
+      type: String
+      diet: String
+      temperament: String
+    ): DinosPage @skipAuth
   }
 
   input CreateDinoInput {

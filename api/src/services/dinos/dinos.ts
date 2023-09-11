@@ -9,7 +9,9 @@ import { db } from "src/lib/db";
 export const dinosPage: QueryResolvers["dinosPage"] = ({
   page = 1,
   search = "",
-  category = "",
+  diet = "",
+  temperament = "",
+  type = "",
 }) => {
   const dinos_per_page = 36;
   const offset = (page - 1) * dinos_per_page;
@@ -20,20 +22,40 @@ export const dinosPage: QueryResolvers["dinosPage"] = ({
       skip: offset,
       orderBy: { name: "asc" },
       where: {
-        OR: [
-          { name: { contains: search, mode: "insensitive" } },
-          { synonyms: { contains: search, mode: "insensitive" } },
+        AND: [
+          {
+            OR: [
+              { name: { contains: search, mode: "insensitive" } },
+              { synonyms: { contains: search, mode: "insensitive" } },
+            ],
+          },
+          !!type ? { type: { hasSome: type.split(",") } } : {},
+          !!diet ? { diet: { in: diet.split(",") } } : {},
+          !!temperament ? { temperament: { in: temperament.split(",") } } : {},
         ],
-        AND: [!!category ? { type: { has: category } } : {}],
       },
+    }),
+    temperaments: db.dino.findMany({
+      select: { temperament: true },
+      distinct: ["temperament"],
+    }),
+    diets: db.dino.findMany({
+      select: { diet: true },
+      distinct: ["diet"],
     }),
     count: db.dino.count({
       where: {
-        OR: [
-          { name: { contains: search, mode: "insensitive" } },
-          { synonyms: { contains: search, mode: "insensitive" } },
+        AND: [
+          {
+            OR: [
+              { name: { contains: search, mode: "insensitive" } },
+              { synonyms: { contains: search, mode: "insensitive" } },
+            ],
+          },
+          !!type ? { type: { hasSome: type.split(",") } } : {},
+          !!diet ? { diet: { in: diet.split(",") } } : {},
+          !!temperament ? { temperament: { in: temperament.split(",") } } : {},
         ],
-        AND: [!!category ? { type: { has: category } } : {}],
       },
     }),
   };

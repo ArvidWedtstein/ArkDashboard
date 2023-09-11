@@ -7,8 +7,8 @@ import Dinos from "src/components/Dino/Dinos";
 import Pagination from "src/components/Util/Pagination/Pagination";
 
 export const QUERY = gql`
-  query FindDinos($page: Int, $search: String, $category: String) {
-    dinosPage(page: $page, search: $search, category: $category) {
+  query FindDinos($page: Int, $search: String, $type: String, $diet: String, $temperament: String) {
+    dinosPage(page: $page, search: $search, type: $type, diet: $diet, temperament: $temperament) {
       dinos {
         id
         name
@@ -18,14 +18,16 @@ export const QUERY = gql`
         temperament
         image
       }
+      diets
+      temperaments
       count
     }
   }
 `;
 
-export const beforeQuery = ({ page, search, category }) => {
+export const beforeQuery = ({ page, search, type, diet, temperament }) => {
   page = parseInt(page) ? parseInt(page, 10) : 1;
-  return { variables: { page, search, category } };
+  return { variables: { page, search, type, diet, temperament } };
 };
 
 export const Loading = () => (
