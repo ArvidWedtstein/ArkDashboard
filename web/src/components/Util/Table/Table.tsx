@@ -827,7 +827,7 @@ const Table = ({
         type="button"
         disabled={isNaN(page)}
         onClick={() => setCurrentPage(isNaN(page) ? 1 : page)}
-        className={clsx("rw-pagination-item", {
+        className={clsx("rw-pagination-item -mx-px", {
           "rw-pagination-item-active": currentPage === page,
         })}
       >

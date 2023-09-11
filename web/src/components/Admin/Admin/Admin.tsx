@@ -415,6 +415,10 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
             },
           ]}
         />
+
+        <hr className="flex justify-center relative">
+          <span className="font-semibold text-base px-3"></span>
+        </hr>
       </div>
       {/* <div className="flex items-center mb-5">
             <p className="bg-blue-100 text-blue-800 text-sm font-semibold inline-flex items-center p-1.5 rounded dark:bg-blue-200 dark:text-blue-800">8.7</p>
