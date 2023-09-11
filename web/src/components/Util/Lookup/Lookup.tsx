@@ -81,8 +81,8 @@ const Lookup = ({
       filterFn && searchTerm
         ? options.filter((option) => filterFn(option, searchTerm))
         : options.filter((option) =>
-            option.label.toLowerCase().includes(searchTerm.toLowerCase())
-          );
+          option.label.toLowerCase().includes(searchTerm.toLowerCase())
+        );
     const sorted = sortFn ? filtered.sort(sortFn) : filtered;
     const grouped = !!group ? groupBy(sorted, group) : sorted;
     if (Object.keys(grouped).length === 1 && group) {
@@ -179,8 +179,8 @@ const Lookup = ({
             {children
               ? children
               : selectedOptionRef?.current
-              ? selectedOptionRef?.current?.label
-              : placeholder}
+                ? selectedOptionRef?.current?.label
+                : placeholder}
           </>
         )}
 
@@ -229,72 +229,72 @@ const Lookup = ({
             ) : null}
             {!group
               ? filteredOptions.map((option) => (
-                  <li
-                    key={option.value + Math.random()}
-                    onClick={() => handleOptionSelect(option)}
-                    className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-zinc-600/70 dark:hover:text-white"
-                  >
-                    {"image" in option && (
-                      <img
-                        className="mr-2 h-6 w-6 rounded-full"
-                        src={option.image}
-                        alt=""
-                      />
-                    )}
-                    {option.label}
-                  </li>
-                ))
+                <li
+                  key={option.value + Math.random()}
+                  onClick={() => handleOptionSelect(option)}
+                  className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-zinc-600/70 dark:hover:text-white"
+                >
+                  {"image" in option && (
+                    <img
+                      className="mr-2 h-6 w-6 rounded-full"
+                      src={option.image}
+                      alt=""
+                    />
+                  )}
+                  {option.label}
+                </li>
+              ))
               : Object.keys(filteredOptions).map((key, i) => {
-                  return (
-                    <li key={key}>
-                      <div
-                        onClick={() => toggleOpen(i)}
-                        className="flex items-center justify-between border-t border-b-2 border-gray-200 px-4 pb-2 pt-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white"
+                return (
+                  <li key={key}>
+                    <div
+                      onClick={() => toggleOpen(i)}
+                      className="flex items-center justify-between border-t border-b-2 border-gray-200 px-4 pb-2 pt-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white"
+                    >
+                      <span className="mr-2 font-semibold">{key}</span>
+                      <svg
+                        className="h-4 w-4"
+                        aria-hidden="true"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        <span className="mr-2 font-semibold">{key}</span>
-                        <svg
-                          className="h-4 w-4"
-                          aria-hidden="true"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d={
-                              openIndexesRef?.current?.includes(i)
-                                ? "M19 16L12 9l-7 7"
-                                : "M19 9l-7 7-7-7"
-                            }
-                          ></path>
-                        </svg>
-                      </div>
-                      {openIndexesRef?.current?.includes(i) && (
-                        <ul className="">
-                          {filteredOptions[key].map((option, i) => (
-                            <li
-                              key={i}
-                              onClick={() => handleOptionSelect(option)}
-                              className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                            >
-                              {"image" in option && (
-                                <img
-                                  className="mr-2 h-6 w-6 rounded-full"
-                                  src={option.image}
-                                  alt=""
-                                />
-                              )}
-                              {option.label}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </li>
-                  );
-                })}
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d={
+                            openIndexesRef?.current?.includes(i)
+                              ? "M19 16L12 9l-7 7"
+                              : "M19 9l-7 7-7-7"
+                          }
+                        ></path>
+                      </svg>
+                    </div>
+                    {openIndexesRef?.current?.includes(i) && (
+                      <ul className="">
+                        {filteredOptions[key].map((option, i) => (
+                          <li
+                            key={i}
+                            onClick={() => handleOptionSelect(option)}
+                            className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                          >
+                            {"image" in option && (
+                              <img
+                                className="mr-2 h-6 w-6 rounded-full"
+                                src={option.image}
+                                alt=""
+                              />
+                            )}
+                            {option.label}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              })}
           </ul>
         </div>
       ) : null}
@@ -305,7 +305,7 @@ const Lookup = ({
 export default Lookup;
 
 interface ILookupMultiSelect {
-  defaultValue?: string;
+  defaultValue?: string[];
   name?: string;
   className?: string;
   btnClassName?: string;
@@ -315,17 +315,22 @@ interface ILookupMultiSelect {
   disableClearable?: boolean;
   multiple?: boolean;
   closeOnSelect?: boolean;
+  inputValue?: string
+  limitTags?: number;
   options: {
     label: string;
     value: string | object | number;
     image?: string;
-    disabled?: boolean; // TODO: implement
+    disabled?: boolean;
     [key: string]: string | object | number | boolean | undefined;
   }[];
   customDisplay?: (
     selectedOptions: ILookupMultiSelect["options"]
   ) => React.ReactNode;
-  onChange?: ChangeEventHandler | undefined;
+  onInputChange?: (
+    event: React.ChangeEvent<HTMLInputElement>,
+    newInputValue: string
+  ) => void;
   onSelect?: (
     value: ArrayElement<ILookupMultiSelect["options"]>["value"][]
   ) => void;
@@ -336,7 +341,6 @@ interface ILookupMultiSelect {
   placeholder?: string;
 }
 
-// TODO: add renderOption prop?
 export const MultiSelectLookup = ({
   options,
   name,
@@ -344,6 +348,8 @@ export const MultiSelectLookup = ({
   className,
   btnClassName,
   placeholder,
+  inputValue,
+  limitTags,
   search = false,
   disabled = false,
   disableClearable = false,
@@ -351,17 +357,18 @@ export const MultiSelectLookup = ({
   closeOnSelect = false,
   customDisplay,
   onSelect,
-  onChange,
+  onInputChange,
   filterFn,
 }: ILookupMultiSelect) => {
-  // https://codepen.io/JohnReynolds57/pen/LJxXbE
-
   const { ref, setIsComponentVisible, isComponentVisible } =
     useComponentVisible(false);
 
   const [selectedOptions, setSelectedOptions] = useState<
     ILookupMultiSelect["options"]
   >([]);
+
+  const { field } = !!name && useController({ name: name });
+  const [searchTerm, setSearchTerm] = useState<string>(inputValue || "");
 
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
 
@@ -392,9 +399,6 @@ export const MultiSelectLookup = ({
     setMenuPosition({ top: dropdownTop, left: dropdownLeft });
   };
 
-  const { field } = !!name && useController({ name: name });
-  const [searchTerm, setSearchTerm] = useState<string>("");
-
   const filteredOptions = useMemo(() => {
     const lowercaseSearchterm = searchTerm.toLowerCase();
 
@@ -413,33 +417,37 @@ export const MultiSelectLookup = ({
 
   // Update selectedOption when defaultValue changes
   useEffect(() => {
+    setSearchTerm
     const valuesToSelect: string[] =
       defaultValue
-        ?.split(",")
         .map((s) => s.trim())
         .slice(0, multiple ? undefined : 1) || [];
 
     const selected = options.filter((option) =>
       valuesToSelect.includes(option.value.toString())
     );
-    console.log("open");
+
     setSelectedOptions(selected);
     !!name && field.onChange(multiple ? valuesToSelect : valuesToSelect[0]);
 
     updateLayout();
   }, [defaultValue]);
 
-  const handleOptionChange = useCallback(
-    (option: ArrayElement<ILookupMultiSelect["options"]>) => {
-      if (!option) return;
+  const handleOptionSelect = useCallback(
+    (event: React.MouseEvent<HTMLLIElement>, option: ArrayElement<ILookupMultiSelect["options"]>) => {
+      if (!closeOnSelect) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      if (!option || option.disabled) return;
 
       const isSelected = selectedOptions.some((o) => o?.value === option.value);
 
       const updateOptions = isSelected
         ? selectedOptions.filter((item) => item?.value !== option.value)
         : multiple
-        ? [...selectedOptions, option]
-        : [option];
+          ? [...selectedOptions, option]
+          : [option];
 
       setSelectedOptions(updateOptions);
 
@@ -447,7 +455,7 @@ export const MultiSelectLookup = ({
         field.onChange(
           multiple
             ? updateOptions.filter((f) => f != null).map((o) => o?.value)
-            : option.value
+            : [option.value]
         );
       }
 
@@ -457,19 +465,15 @@ export const MultiSelectLookup = ({
   );
 
   // Handle input change
-  const handleInputChange = (event) => {
-    if (!event.target.value) {
-      setSearchTerm("");
-    }
-
-    setSearchTerm(event.target.value);
-    onChange?.(event);
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value || "");
+    onInputChange?.(event, event.target.value);
   };
 
   const handleSelectAll = () => {
     if (selectedOptions.length === options.filter((o) => !o.disabled).length) {
       setSelectedOptions([]);
-      !!name && field.onChange(null);
+      !!name && field.onChange([]);
       onSelect?.([]);
       return;
     }
@@ -477,7 +481,7 @@ export const MultiSelectLookup = ({
     onSelect?.(options.filter((o) => !o.disabled));
     !!name &&
       field.onChange(options.filter((o) => !o.disabled).map((o) => o?.value));
-    setSearchTerm("");
+
     setSelectedOptions(options.filter((o) => !o.disabled));
   };
 
@@ -485,8 +489,18 @@ export const MultiSelectLookup = ({
     setSelectedOptions([]);
     setSearchTerm("");
     onSelect?.([]);
-    name && field.onChange(null);
+    name && field.onChange([]);
   };
+
+  const toggleLookup = () => {
+    if (!disabled) {
+      setIsComponentVisible(!isComponentVisible);
+
+      if (!isComponentVisible) {
+        updateLayout();
+      }
+    }
+  }
 
   return (
     <div
@@ -498,17 +512,9 @@ export const MultiSelectLookup = ({
     >
       <button
         type="button"
-        onClick={() => {
-          if (!disabled) {
-            setIsComponentVisible(!isComponentVisible);
-
-            if (!isComponentVisible) {
-              updateLayout();
-            }
-          }
-        }}
+        onClick={toggleLookup}
         className={clsx(
-          "rw-input flex h-full select-none items-center text-center transition ease-in hover:border-zinc-400",
+          "rw-input flex h-full select-none items-center text-center dark:bg-zinc-600 bg-zinc-50 transition ease-in hover:border-zinc-400",
           btnClassName,
           {
             "cursor-not-allowed": disabled,
@@ -519,11 +525,11 @@ export const MultiSelectLookup = ({
           {customDisplay
             ? customDisplay(selectedOptions)
             : selectedOptions.filter((o) => o != null).length > 0
-            ? selectedOptions
+              ? `${selectedOptions
                 .filter((o) => o != null && o?.label != null)
-                .map((o) => o?.label)
-                .join(", ")
-            : placeholder}
+                .map((o) => o?.label).slice(0, (limitTags && !isComponentVisible) ? limitTags : undefined)
+                .join(", ")} ${limitTags && selectedOptions.length - limitTags > 0 && !isComponentVisible ? `+${selectedOptions.length - limitTags}` : ""}`
+              : placeholder}
         </div>
 
         <div className="pointer-events-none ml-auto flex select-none flex-row">
@@ -614,23 +620,19 @@ export const MultiSelectLookup = ({
           className="relative z-10 max-h-48 space-y-1.5 overflow-y-auto pt-0 text-gray-700 dark:text-gray-200"
           aria-labelledby="dropdownButton"
         >
-          {!options || options.length == 0 ? (
-            <li className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-zinc-700/50 dark:hover:text-white">
-              No options available
+          {!options || filteredOptions.length == 0 ? (
+            <li className="flex items-center py-2 px-4 text-zinc-500/70">
+              No options
             </li>
           ) : null}
 
-          {filteredOptions.map((option, i) => (
+          {filteredOptions.map((option) => (
             <li
-              key={`option-${i}-${option.value}`}
-              onClick={(e) => {
-                if (option.disabled) return;
-                if (!closeOnSelect) {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }
-                handleOptionChange(option);
-              }}
+              key={`option-${option.value}`}
+              onClick={(e) => handleOptionSelect(e, option)}
+              aria-checked={selectedOptions.some(
+                (o) => o?.value === option.value
+              )}
               className={clsx("flex items-center py-2 px-4 last:rounded-b-lg", {
                 "cursor-not-allowed text-zinc-500/50": option.disabled,
                 "hover:bg-zinc-200 dark:hover:bg-zinc-600/90 dark:hover:text-white":

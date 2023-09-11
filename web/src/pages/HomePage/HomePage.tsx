@@ -241,9 +241,9 @@ const HomePage = () => {
             },
           ]}
           search
-          defaultValue={"basespots,items"}
+          defaultValue={["basespots", "items"]}
           multiple
-          disableClearable
+          // disableClearable
           closeOnSelect={true}
         />
         <Submit className="rw-button rw-button-gray">test</Submit>
