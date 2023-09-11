@@ -20,7 +20,7 @@ import FileUpload, {
 } from "src/components/Util/FileUpload/FileUpload";
 import { useEffect, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
-import Lookup from "src/components/Util/Lookup/Lookup";
+import Lookup, { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
 
@@ -47,7 +47,7 @@ const BasespotForm = (props: BasespotFormProps) => {
     data.published = publish;
 
     console.log(data);
-    // props.onSave(data, props?.basespot?.id);
+    props.onSave(data, props?.basespot?.id);
   };
 
   useEffect(() => {
@@ -167,8 +167,10 @@ const BasespotForm = (props: BasespotFormProps) => {
           Map
         </Label>
 
-        <Lookup
-          defaultValue={props.basespot?.map_id || map}
+        <MultiSelectLookup
+          name="map_id"
+          disabled={props.loading}
+          defaultValue={[props.basespot?.map_id.toString() || map.toString()]}
           options={
             props?.maps.map((map) => ({
               label: map.name,
@@ -177,20 +179,19 @@ const BasespotForm = (props: BasespotFormProps) => {
             })) || []
           }
           onSelect={(e) => {
-            if (!e || !e.value) return setMap(null);
-            setMap(parseInt(e.value.toString()));
-            formMethods.setValue("map_id", parseInt(e.value.toString()));
+            if (!e[0] || !e[0].value) return setMap(null);
+            setMap(parseInt(e[0].value.toString()));
+            // formMethods.setValue("map_id", parseInt(e[0].value.toString()));
           }}
-          name="map_id"
-          disabled={props.loading}
         />
 
         <FieldError name="map_id" className="rw-field-error" />
 
         <MapPicker
           className="mt-3"
-          url={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${props?.maps?.find((x) => x.id === map)?.img
-            }`}
+          url={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${
+            props?.maps?.find((x) => x.id === map)?.img
+          }`}
           valueProp={{ ...props?.basespot }}
           onChanges={(e) => {
             formMethods.setValue("latitude", e.latitude);
@@ -255,23 +256,8 @@ const BasespotForm = (props: BasespotFormProps) => {
           options={
             props.basespotTypes
               ? props?.basespotTypes.map((type) => ({
-                value: type.type.toLowerCase(),
-                label: type.type,
-                image: (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-12"
-                    viewBox="0 0 576 512"
-                    fill="currentColor"
-                  >
-                    <path d="M320 33.8V160H48.5C100.2 82.8 188.1 32 288 32c10.8 0 21.5 .6 32 1.8zM352 160V39.1C424.9 55.7 487.2 99.8 527.5 160H352zM29.9 192H96V320H0c0-46 10.8-89.4 29.9-128zM192 320H128V192H448V320H384v32H576v80c0 26.5-21.5 48-48 48H352V352c0-35.3-28.7-64-64-64s-64 28.7-64 64V480H48c-26.5 0-48-21.5-48-48V352H192V320zm288 0V192h66.1c19.2 38.6 29.9 82 29.9 128H480z" />
-                  </svg>
-                ),
-              }))
-              : [
-                {
-                  value: "cave",
-                  label: "Cave",
+                  value: type.type.toLowerCase(),
+                  label: type.type,
                   image: (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -282,36 +268,51 @@ const BasespotForm = (props: BasespotFormProps) => {
                       <path d="M320 33.8V160H48.5C100.2 82.8 188.1 32 288 32c10.8 0 21.5 .6 32 1.8zM352 160V39.1C424.9 55.7 487.2 99.8 527.5 160H352zM29.9 192H96V320H0c0-46 10.8-89.4 29.9-128zM192 320H128V192H448V320H384v32H576v80c0 26.5-21.5 48-48 48H352V352c0-35.3-28.7-64-64-64s-64 28.7-64 64V480H48c-26.5 0-48-21.5-48-48V352H192V320zm288 0V192h66.1c19.2 38.6 29.9 82 29.9 128H480z" />
                     </svg>
                   ),
-                },
-                {
-                  value: "waterfall",
-                  label: "Waterfall",
-                  image:
-                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-double-doorframe.webp",
-                },
-                {
-                  value: "floating island",
-                  label: "Floating Island",
-                  image:
-                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-dinosaur-gateway.webp",
-                },
-                {
-                  value: "rathole",
-                  label: "Rathole",
-                  image: (
-                    <svg
-                      version="1.0"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-20 w-20"
-                      viewBox="0 0 376.000000 270.000000"
-                    >
-                      <g
-                        transform="translate(0.000000,270.000000) scale(0.100000,-0.100000)"
+                }))
+              : [
+                  {
+                    value: "cave",
+                    label: "Cave",
+                    image: (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-12"
+                        viewBox="0 0 576 512"
                         fill="currentColor"
-                        stroke="none"
                       >
-                        <path
-                          d="M1185 1651 c-77 -19 -152 -88 -173 -160 -17 -54 -17 -808 0 -862 15
+                        <path d="M320 33.8V160H48.5C100.2 82.8 188.1 32 288 32c10.8 0 21.5 .6 32 1.8zM352 160V39.1C424.9 55.7 487.2 99.8 527.5 160H352zM29.9 192H96V320H0c0-46 10.8-89.4 29.9-128zM192 320H128V192H448V320H384v32H576v80c0 26.5-21.5 48-48 48H352V352c0-35.3-28.7-64-64-64s-64 28.7-64 64V480H48c-26.5 0-48-21.5-48-48V352H192V320zm288 0V192h66.1c19.2 38.6 29.9 82 29.9 128H480z" />
+                      </svg>
+                    ),
+                  },
+                  {
+                    value: "waterfall",
+                    label: "Waterfall",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-double-doorframe.webp",
+                  },
+                  {
+                    value: "floating island",
+                    label: "Floating Island",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-dinosaur-gateway.webp",
+                  },
+                  {
+                    value: "rathole",
+                    label: "Rathole",
+                    image: (
+                      <svg
+                        version="1.0"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-20 w-20"
+                        viewBox="0 0 376.000000 270.000000"
+                      >
+                        <g
+                          transform="translate(0.000000,270.000000) scale(0.100000,-0.100000)"
+                          fill="currentColor"
+                          stroke="none"
+                        >
+                          <path
+                            d="M1185 1651 c-77 -19 -152 -88 -173 -160 -17 -54 -17 -808 0 -862 15
              -51 69 -114 122 -142 41 -22 44 -22 635 -25 679 -3 669 -4 746 73 72 72 75 90
              75 525 0 435 -3 453 -75 525 -60 60 -122 78 -262 73 -101 -3 -106 -4 -129 -31
              l-24 -28 0 -277 c0 -215 -3 -291 -15 -336 -38 -146 -162 -235 -313 -224 -123
@@ -321,30 +322,30 @@ const BasespotForm = (props: BasespotFormProps) => {
              -38 21 -427 0 -389 -1 -399 -21 -427 -11 -15 -36 -38 -54 -50 l-33 -23 -591 0
              c-666 0 -638 -3 -683 76 -22 39 -23 44 -23 424 0 380 1 385 23 424 34 60 74
              76 189 76 l97 0 3 -302z"
-                        />
-                      </g>
-                    </svg>
-                  ),
-                },
-                {
-                  value: "underwater rathole",
-                  label: "Underwater Rathole",
-                  image:
-                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-hatchframe.webp",
-                },
-                {
-                  value: "underwater cave",
-                  label: "Underwater Cave",
-                  image:
-                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/giant-stone-hatchframe.webp",
-                },
-                {
-                  value: "ceiling",
-                  label: "Ceiling",
-                  image:
-                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/giant-stone-hatchframe.webp",
-                },
-              ]
+                          />
+                        </g>
+                      </svg>
+                    ),
+                  },
+                  {
+                    value: "underwater rathole",
+                    label: "Underwater Rathole",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-hatchframe.webp",
+                  },
+                  {
+                    value: "underwater cave",
+                    label: "Underwater Cave",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/giant-stone-hatchframe.webp",
+                  },
+                  {
+                    value: "ceiling",
+                    label: "Ceiling",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/giant-stone-hatchframe.webp",
+                  },
+                ]
           }
         />
 
@@ -432,12 +433,19 @@ const BasespotForm = (props: BasespotFormProps) => {
               Images of the base
             </Label>
 
-
             <FileUpload2
               name="base_images"
               thumbnail
               multiple
-              defaultValue={props.basespot?.base_images.split(',').map(f => `M${props?.basespot?.map_id}-${props?.basespot?.id}/${f.trim()}`).join(',')}
+              defaultValue={props.basespot?.base_images
+                .split(",")
+                .map(
+                  (f) =>
+                    `M${props?.basespot?.map_id}-${
+                      props?.basespot?.id
+                    }/${f.trim()}`
+                )
+                .join(",")}
               storagePath={`basespotimages`}
             />
 
@@ -480,7 +488,6 @@ const BasespotForm = (props: BasespotFormProps) => {
         />
 
         <FieldError name="turretsetup_image" className="rw-field-error" /> */}
-
       </Form>
     </div>
   );
