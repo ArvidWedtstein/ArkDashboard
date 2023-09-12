@@ -217,7 +217,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
             titleClassName="rw-form-error-title"
             listClassName="rw-form-error-list"
           />
-          <div className="shadow-lg border border-zinc-500 rounded-lg overflow-hidden">
+          <div className="overflow-hidden">
             <TextField
               name="title"
               defaultValue={props.timelineSeasonEvent?.title}
@@ -267,8 +267,9 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
             </div>
           </div>
         </Form>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 };
 

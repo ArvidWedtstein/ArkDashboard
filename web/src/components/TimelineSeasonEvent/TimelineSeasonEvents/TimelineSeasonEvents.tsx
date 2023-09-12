@@ -164,7 +164,9 @@ const TimelineSeasonEventsList = ({
             )
           )}
       </ul>
-      <NewTimelineSeasonEventCell timeline_season_id={timelineSeasonEvents[0].id} />
+      <div className="shadow-lg border border-zinc-500 rounded-lg ">
+        <NewTimelineSeasonEventCell timeline_season_id={timelineSeasonEvents[0].id} />
+      </div>
     </div>
   );
 };
