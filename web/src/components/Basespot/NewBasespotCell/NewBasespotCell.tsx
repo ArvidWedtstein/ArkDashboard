@@ -11,6 +11,7 @@ import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 
 import BasespotForm from "src/components/Basespot/BasespotForm";
+import { useAuth } from "src/auth";
 
 export const QUERY = gql`
   query NewBasespot {
@@ -32,6 +33,8 @@ const CREATE_BASESPOT_MUTATION = gql`
   mutation CreateBasespotMutation($input: CreateBasespotInput!) {
     createBasespot(input: $input) {
       id
+      map_id
+      base_images
     }
   }
 `;
@@ -82,10 +85,17 @@ export const Success = ({
   basespotTypes,
   maps,
 }: CellSuccessProps<NewBasespot>) => {
+  const { client: supabase } = useAuth();
   const [createBasespot, { loading, error }] = useMutation(
     CREATE_BASESPOT_MUTATION,
     {
-      onCompleted: (data) => {
+      onCompleted: ({ createBasespot }) => {
+        let files: string[] = createBasespot.base_images.split(',');
+        files.forEach((file) => {
+          supabase.storage
+            .from('basespotimages')
+            .move(`temp/${file}`, `M${createBasespot.map_id}-${createBasespot.id}/${file}`)
+        });
         navigate(routes.basespots());
       },
       onError: (error) => {

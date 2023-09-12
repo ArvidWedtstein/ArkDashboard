@@ -74,50 +74,33 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
           to={routes.newBasespot()}
           className="rw-button rw-button-green-outline"
         >
-          New Basespot
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 448 512"
-            className="rw-button-icon-end"
+            className="rw-button-icon-start"
           >
             <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
           </svg>
+          New Basespot
         </Link>
 
-        <Lookup
+        <MultiSelectLookup
           options={maps.map((map) => ({
             label: map.name,
             value: map.id.toString(),
             image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
           }))}
           placeholder="Choose a Map"
-          defaultValue={parseInt(map)}
+          defaultValue={[map]}
           onSelect={(e) => {
             setParams({
-              ...(e.value && { map: e.value.toString() }),
+              ...(e[0].value && { map: e[0].value.toString() }),
               ...(params.type && { type: params.type }),
             });
           }}
         />
-        {/* <MultiSelectLookup
-          options={[
-            { label: "Rathole", value: "rathole", selected: params.type?.includes("rathole") },
-            { label: "Cave", value: "cave", selected: params.type?.includes("cave") },
-            { label: "Cliff", value: "cliff", selected: params.type?.includes("cliff") },
-            { label: "Open", value: "open", selected: params.type?.includes("open") },
-            { label: "Waterfall", value: "waterfall", selected: params.type?.includes("waterfall") },
-            { label: "Underwater", value: "underwater", selected: params.type?.includes("underwater") },
-          ]}
-          onSelect={(e) => {
-            debounce(() => {
-              setParams({
-                ...(e && { type: e.join(',').toString() }),
-                ...(params.map && { map: params.map.toString() }),
-              });
-            }, 1000)();
-          }}
-        /> */}
-        <Lookup
+
+        <MultiSelectLookup
           options={[
             { label: "Rathole", value: "rathole" },
             { label: "Cave", value: "cave" },
@@ -126,11 +109,11 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
             { label: "Waterfall", value: "waterfall" },
             { label: "Underwater", value: "underwater" },
           ]}
+          defaultValue={[type]}
           placeholder="Choose a type"
-          defaultValue={type}
           onSelect={(e) => {
             setParams({
-              ...(e.value && { type: e.value.toString() }),
+              ...(e[0].value && { type: e[0].value.toString() }),
               ...(params.map && { map: params.map.toString() }),
             });
           }}

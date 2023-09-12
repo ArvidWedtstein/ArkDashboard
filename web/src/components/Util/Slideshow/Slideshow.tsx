@@ -85,7 +85,7 @@ const Slideshow = ({
       >
         {slides.map((slide, idx) => (
           <div
-            className={`relative aspect-auto w-full max-h-[900px] inline-block rounded-lg ${border ? 'border border-zinc-500' : 'border-none'}`}
+            className={`relative aspect-auto w-full max-h-[900px] h-fit overflow-y-hidden inline-block rounded-lg ${border ? 'border border-zinc-500' : 'border-none'}`}
             key={`slide-${idx}`}
           >
             {slide && (
@@ -97,7 +97,7 @@ const Slideshow = ({
                 ) : (
                   <img
                     src={slide.url}
-                    className="h-full w-full object-cover rounded-lg"
+                    className="h-full max-h-fit w-full object-cover rounded-lg object-center"
                     loading="lazy"
                   />
                 )}

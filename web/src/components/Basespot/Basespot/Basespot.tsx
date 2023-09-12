@@ -5,15 +5,22 @@ import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "src/auth";
 import Map from "src/components/Util/Map/Map";
 import Slideshow from "src/components/Util/Slideshow/Slideshow";
+import Toast from "src/components/Util/Toast/Toast";
 
 import { timeTag } from "src/lib/formatters";
 
-import type { FindBasespotById, permission } from "types/graphql";
+import type { DeleteBasespotMutationVariables, FindBasespotById, permission } from "types/graphql";
 
 interface Props {
   basespot: NonNullable<FindBasespotById["basespot"]>;
 }
-
+const DELETE_BASESPOT_MUTATION = gql`
+  mutation DeleteBasespotMutation($id: String!) {
+    deleteBasespot(id: $id) {
+      id
+    }
+  }
+`;
 const BASESPOT_PUBLISH = gql`
   mutation PublishBasespotMutation($id: String!, $input: UpdateBasespotInput!) {
     updateBasespot(id: $id, input: $input) {
@@ -45,6 +52,29 @@ const Basespot = ({ basespot }: Props) => {
     },
   });
 
+  const [deleteBasespot] = useMutation(DELETE_BASESPOT_MUTATION, {
+    onCompleted: () => {
+      toast.success("Basespot deleted");
+      navigate(routes.basespots());
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const onDeleteClick = (id: DeleteBasespotMutationVariables["id"]) => {
+    toast.custom((t) => (
+      <Toast
+        t={t}
+        title={"Are you sure you want to delete basespot?"}
+        message={<p>Are you sure you want to delete basespot {id}?</p>}
+        primaryAction={() => deleteBasespot({ variables: { id } })}
+        actionType="YesNo"
+      />
+    ));
+  };
+
+
   const getImage = useCallback(async () => {
     const baseURL = `M${basespot.map_id}-${basespot.id}`;
     try {
@@ -53,13 +83,13 @@ const Basespot = ({ basespot }: Props) => {
           .from(`basespotimages`)
           .createSignedUrls(
             [
-              ...(basespot.base_images
+              ...(basespot?.base_images
                 ? basespot?.base_images
                   .split(",")
                   .map((img) => `${baseURL}/${img.trim()}`)
                 : []),
             ].concat(
-              !basespot.base_images.includes(basespot.thumbnail)
+              !basespot?.base_images?.includes(basespot.thumbnail)
                 ? [`${baseURL}/${basespot.thumbnail}`]
                 : []
             ),
@@ -109,6 +139,7 @@ const Basespot = ({ basespot }: Props) => {
                 Edit
               </Link>
             )}
+
 
           <button
             type="button"

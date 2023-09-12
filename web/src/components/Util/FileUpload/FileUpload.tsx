@@ -204,6 +204,11 @@ export const FileUpload2 = ({
   };
 
   const handleUpload = () => {
+    !!name &&
+      field.onChange(
+        files
+          .map((f) => f.file.name)
+          .join(","));
     files
       .filter((f) => f.error == null && f.state === "newfile")
       .forEach(async ({ file }) => {
@@ -267,7 +272,7 @@ export const FileUpload2 = ({
         files
           .filter((f) => f.url !== file.url)
           .map((f) => f.file.name)
-          .join(", ")
+          .join(",")
       );
   };
 
@@ -538,6 +543,7 @@ export const FileUpload2 = ({
 
       <button
         onClick={handleUpload}
+        type="button"
         disabled={files.filter((f) => f.state == "newfile").length < 1}
         className="rw-button rw-button-gray-outline w-full"
       >
@@ -769,7 +775,6 @@ const FileUpload = ({
     setState(4);
     stateDisplay();
   };
-
   const copy = async () => {
     const copyButton: HTMLButtonElement = elRef?.current.querySelector(
       "[data-action='copy']"

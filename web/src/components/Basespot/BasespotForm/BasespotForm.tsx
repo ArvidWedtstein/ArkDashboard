@@ -10,19 +10,26 @@ import {
 } from "@redwoodjs/forms";
 
 import type {
+  DeleteBasespotMutationVariables,
   EditBasespotById,
   NewBasespot,
   UpdateBasespotInput,
+  permission,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import FileUpload, {
+import {
   FileUpload2,
 } from "src/components/Util/FileUpload/FileUpload";
 import { useEffect, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
-import Lookup, { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
+import { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
+import { useMutation } from "@apollo/client";
+import { toast } from "@redwoodjs/web/dist/toast";
+import { navigate, routes } from "@redwoodjs/router";
+import Toast from "src/components/Util/Toast/Toast";
+import { useAuth } from "src/auth";
 
 type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
 
@@ -35,19 +42,48 @@ interface BasespotFormProps {
   loading: boolean;
 }
 
+const DELETE_BASESPOT_MUTATION = gql`
+  mutation DeleteBasespotMutation($id: String!) {
+    deleteBasespot(id: $id) {
+      id
+    }
+  }
+`;
+
 const BasespotForm = (props: BasespotFormProps) => {
+  const { currentUser } = useAuth();
   const formMethods = useForm<FormBasespot>();
 
   const [map, setMap] = useState(props?.basespot?.map_id || 2);
 
   const onSubmit = (data: FormBasespot, publish?: boolean) => {
     data.map_id = parseInt(data.map_id.toString() || map.toString());
-    // if (thumbnailUrl) data.thumbnail = thumbnailUrl;
 
     data.published = publish;
 
-    console.log(data);
     props.onSave(data, props?.basespot?.id);
+  };
+
+  const [deleteBasespot] = useMutation(DELETE_BASESPOT_MUTATION, {
+    onCompleted: () => {
+      toast.success("Basespot deleted");
+      navigate(routes.basespots());
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const onDeleteClick = (id: DeleteBasespotMutationVariables["id"]) => {
+    toast.custom((t) => (
+      <Toast
+        t={t}
+        title={"Are you sure you want to delete basespot?"}
+        message={<p>Are you sure you want to delete basespot {id}?</p>}
+        primaryAction={() => deleteBasespot({ variables: { id } })}
+        actionType="YesNo"
+      />
+    ));
   };
 
   useEffect(() => {
@@ -86,6 +122,24 @@ const BasespotForm = (props: BasespotFormProps) => {
             {props.basespot?.name}
           </h2>
           <div className="flex space-x-2">
+            {(currentUser?.permissions.some(
+              (p: permission) => p === "basespot_delete"
+            ) && props?.basespot?.id) && (
+                <button
+                  type="button"
+                  onClick={() => onDeleteClick(props?.basespot?.id)}
+                  className="rw-button rw-button-medium rw-button-red-outline hidden sm:block"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 448 512"
+                    className="rw-button-icon-start"
+                  >
+                    <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80c-15.1 0-29.4 7.125-38.4 19.25L112 64H16C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16 0-8.8-7.2-16-16-16zm-280 0l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zm248 64c-8.8 0-16 7.2-16 16v288c0 26.47-21.53 48-48 48H112c-26.47 0-48-21.5-48-48V144c0-8.8-7.16-16-16-16s-16 7.2-16 16v288c0 44.1 35.89 80 80 80h224c44.11 0 80-35.89 80-80V144c0-8.8-7.2-16-16-16zM144 416V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16z" />
+                  </svg>
+                  Delete
+                </button>
+              )}
             <button
               type="button"
               className="rw-button rw-button-medium rw-button-red-outline hidden sm:block"
@@ -189,9 +243,8 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <MapPicker
           className="mt-3"
-          url={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${
-            props?.maps?.find((x) => x.id === map)?.img
-          }`}
+          url={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${props?.maps?.find((x) => x.id === map)?.img
+            }`}
           valueProp={{ ...props?.basespot }}
           onChanges={(e) => {
             formMethods.setValue("latitude", e.latitude);
@@ -256,8 +309,23 @@ const BasespotForm = (props: BasespotFormProps) => {
           options={
             props.basespotTypes
               ? props?.basespotTypes.map((type) => ({
-                  value: type.type.toLowerCase(),
-                  label: type.type,
+                value: type.type.toLowerCase(),
+                label: type.type,
+                image: (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-12"
+                    viewBox="0 0 576 512"
+                    fill="currentColor"
+                  >
+                    <path d="M320 33.8V160H48.5C100.2 82.8 188.1 32 288 32c10.8 0 21.5 .6 32 1.8zM352 160V39.1C424.9 55.7 487.2 99.8 527.5 160H352zM29.9 192H96V320H0c0-46 10.8-89.4 29.9-128zM192 320H128V192H448V320H384v32H576v80c0 26.5-21.5 48-48 48H352V352c0-35.3-28.7-64-64-64s-64 28.7-64 64V480H48c-26.5 0-48-21.5-48-48V352H192V320zm288 0V192h66.1c19.2 38.6 29.9 82 29.9 128H480z" />
+                  </svg>
+                ),
+              }))
+              : [
+                {
+                  value: "cave",
+                  label: "Cave",
                   image: (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -268,51 +336,36 @@ const BasespotForm = (props: BasespotFormProps) => {
                       <path d="M320 33.8V160H48.5C100.2 82.8 188.1 32 288 32c10.8 0 21.5 .6 32 1.8zM352 160V39.1C424.9 55.7 487.2 99.8 527.5 160H352zM29.9 192H96V320H0c0-46 10.8-89.4 29.9-128zM192 320H128V192H448V320H384v32H576v80c0 26.5-21.5 48-48 48H352V352c0-35.3-28.7-64-64-64s-64 28.7-64 64V480H48c-26.5 0-48-21.5-48-48V352H192V320zm288 0V192h66.1c19.2 38.6 29.9 82 29.9 128H480z" />
                     </svg>
                   ),
-                }))
-              : [
-                  {
-                    value: "cave",
-                    label: "Cave",
-                    image: (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-12"
-                        viewBox="0 0 576 512"
+                },
+                {
+                  value: "waterfall",
+                  label: "Waterfall",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-double-doorframe.webp",
+                },
+                {
+                  value: "floating island",
+                  label: "Floating Island",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-dinosaur-gateway.webp",
+                },
+                {
+                  value: "rathole",
+                  label: "Rathole",
+                  image: (
+                    <svg
+                      version="1.0"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-20 w-20"
+                      viewBox="0 0 376.000000 270.000000"
+                    >
+                      <g
+                        transform="translate(0.000000,270.000000) scale(0.100000,-0.100000)"
                         fill="currentColor"
+                        stroke="none"
                       >
-                        <path d="M320 33.8V160H48.5C100.2 82.8 188.1 32 288 32c10.8 0 21.5 .6 32 1.8zM352 160V39.1C424.9 55.7 487.2 99.8 527.5 160H352zM29.9 192H96V320H0c0-46 10.8-89.4 29.9-128zM192 320H128V192H448V320H384v32H576v80c0 26.5-21.5 48-48 48H352V352c0-35.3-28.7-64-64-64s-64 28.7-64 64V480H48c-26.5 0-48-21.5-48-48V352H192V320zm288 0V192h66.1c19.2 38.6 29.9 82 29.9 128H480z" />
-                      </svg>
-                    ),
-                  },
-                  {
-                    value: "waterfall",
-                    label: "Waterfall",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-double-doorframe.webp",
-                  },
-                  {
-                    value: "floating island",
-                    label: "Floating Island",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-dinosaur-gateway.webp",
-                  },
-                  {
-                    value: "rathole",
-                    label: "Rathole",
-                    image: (
-                      <svg
-                        version="1.0"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-20 w-20"
-                        viewBox="0 0 376.000000 270.000000"
-                      >
-                        <g
-                          transform="translate(0.000000,270.000000) scale(0.100000,-0.100000)"
-                          fill="currentColor"
-                          stroke="none"
-                        >
-                          <path
-                            d="M1185 1651 c-77 -19 -152 -88 -173 -160 -17 -54 -17 -808 0 -862 15
+                        <path
+                          d="M1185 1651 c-77 -19 -152 -88 -173 -160 -17 -54 -17 -808 0 -862 15
              -51 69 -114 122 -142 41 -22 44 -22 635 -25 679 -3 669 -4 746 73 72 72 75 90
              75 525 0 435 -3 453 -75 525 -60 60 -122 78 -262 73 -101 -3 -106 -4 -129 -31
              l-24 -28 0 -277 c0 -215 -3 -291 -15 -336 -38 -146 -162 -235 -313 -224 -123
@@ -322,30 +375,30 @@ const BasespotForm = (props: BasespotFormProps) => {
              -38 21 -427 0 -389 -1 -399 -21 -427 -11 -15 -36 -38 -54 -50 l-33 -23 -591 0
              c-666 0 -638 -3 -683 76 -22 39 -23 44 -23 424 0 380 1 385 23 424 34 60 74
              76 189 76 l97 0 3 -302z"
-                          />
-                        </g>
-                      </svg>
-                    ),
-                  },
-                  {
-                    value: "underwater rathole",
-                    label: "Underwater Rathole",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-hatchframe.webp",
-                  },
-                  {
-                    value: "underwater cave",
-                    label: "Underwater Cave",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/giant-stone-hatchframe.webp",
-                  },
-                  {
-                    value: "ceiling",
-                    label: "Ceiling",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/giant-stone-hatchframe.webp",
-                  },
-                ]
+                        />
+                      </g>
+                    </svg>
+                  ),
+                },
+                {
+                  value: "underwater rathole",
+                  label: "Underwater Rathole",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-hatchframe.webp",
+                },
+                {
+                  value: "underwater cave",
+                  label: "Underwater Cave",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/giant-stone-hatchframe.webp",
+                },
+                {
+                  value: "ceiling",
+                  label: "Ceiling",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/giant-stone-hatchframe.webp",
+                },
+              ]
           }
         />
 
@@ -358,6 +411,7 @@ const BasespotForm = (props: BasespotFormProps) => {
         >
           Difficulty
         </Label>
+
         <CheckboxGroup
           name="level"
           form={true}
@@ -423,35 +477,31 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <FieldError name="estimated_for_players" className="rw-field-error" />
 
-        {props.basespot?.id && (
-          <>
-            <Label
-              name="base_images"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Images of the base
-            </Label>
+        <Label
+          name="base_images"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Images of the base
+        </Label>
 
-            <FileUpload2
-              name="base_images"
-              thumbnail
-              multiple
-              defaultValue={props.basespot?.base_images
-                .split(",")
-                .map(
-                  (f) =>
-                    `M${props?.basespot?.map_id}-${
-                      props?.basespot?.id
-                    }/${f.trim()}`
-                )
-                .join(",")}
-              storagePath={`basespotimages`}
-            />
+        {/* TODO: make old files show here when editing */}
+        <FileUpload2
+          name="base_images"
+          thumbnail
+          multiple
+          defaultValue={props?.basespot?.base_images
+            ?.split(",")
+            .map(
+              (f) =>
+                `M${props?.basespot?.map_id}-${props?.basespot?.id
+                }/${f.trim()}`
+            )
+            .join(",")}
+          storagePath={props.basespot?.id ? `basespotimages` : 'basespotimages/temp'}
+        />
 
-            <FieldError name="base_images" className="rw-field-error" />
-          </>
-        )}
+        <FieldError name="base_images" className="rw-field-error" />
 
         <Label
           name="has_air"
@@ -466,6 +516,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           name="has_air"
           offLabel="no air"
           onLabel="has air"
+          defaultChecked={props.basespot?.has_air || true}
         />
 
         <FieldError name="has_air" className="rw-field-error" />
