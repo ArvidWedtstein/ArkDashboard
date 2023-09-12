@@ -32,6 +32,7 @@ type TableDataRow = {
   collapseContent?: React.ReactNode;
 } & Readonly<Omit<Record<string, any>, "row_id" | "collapseContent">>;
 
+
 type TableColumn = {
   /**
    * The header text for the column.
@@ -111,6 +112,7 @@ type TableColumn = {
   }) => React.ReactNode;
 };
 
+
 type TableSettings = {
   /**
    * Indicates whether the search feature is enabled.
@@ -162,7 +164,7 @@ type TableSettings = {
   };
 };
 
-interface TableProps {
+interface TableProps<T> {
   /**
    * The column configurations for the table.
    */
@@ -184,13 +186,13 @@ interface TableProps {
    */
   toolbar?: React.ReactNode[];
 }
-const Table = ({
+const Table = <T extends any>({
   columns,
   rows: dataRows,
   className,
   settings = {},
   toolbar = [],
-}: TableProps) => {
+}: TableProps<T>) => {
   const defaultSettings: TableSettings = {
     search: false,
     header: true,

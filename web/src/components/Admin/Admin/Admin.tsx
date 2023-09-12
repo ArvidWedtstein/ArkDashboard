@@ -1,6 +1,9 @@
+import { set } from "@redwoodjs/forms";
+import { Link } from "@redwoodjs/router";
 import { MetaTags, useMutation } from "@redwoodjs/web";
-import { toast } from "@redwoodjs/web/dist/toast";
-import { useMemo, useRef } from "react";
+import { CheckmarkIcon, toast } from "@redwoodjs/web/dist/toast";
+import clsx from "clsx";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Chart from "src/components/Util/Chart/Chart";
 import StatCard from "src/components/Util/StatCard/StatCard";
 import Table from "src/components/Util/Table/Table";
@@ -10,6 +13,8 @@ import {
   getHexCodeFromPercentage,
   groupBy,
   relativeDate,
+  timeFormatL,
+  timeTag,
   truncate,
 } from "src/lib/formatters";
 import { FindAdminData } from "types/graphql";
@@ -27,7 +32,7 @@ const UPDATE_PROFILE_MUTATION = gql`
 `;
 
 const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
-  const [updateUser, { loading, error }] = useMutation(
+  const [updateUser, { loading }] = useMutation(
     UPDATE_PROFILE_MUTATION,
     {
       onError: (error) => {
@@ -35,6 +40,73 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
       },
     }
   );
+
+  type CommitAuthor = {
+    login: string;
+    id: number;
+    node_id: string;
+    avatar_url: string;
+    gravatar_id: string;
+    url: string;
+    html_url: string;
+    followers_url: string;
+    following_url: string;
+    gists_url: string;
+    starred_url: string;
+    subscriptions_url: string;
+    organizations_url: string;
+    repos_url: string;
+    events_url: string;
+    received_events_url: string;
+    type: string;
+    site_admin: boolean;
+  }
+  type Commit = {
+    author: CommitAuthor;
+    comments_url: string;
+    sha: string;
+    node_id: string;
+    url: string;
+    commit: {
+      author: {
+        name: string;
+        email: string;
+        date: string;
+      };
+      comment_count: number;
+      committer: {
+        name: string;
+        email: string;
+        date: string;
+      };
+      message: string;
+      tree: {
+        sha: string;
+        url: string;
+      };
+      url: string;
+      verification: {
+        payload: string;
+        reason: string;
+        signature: string;
+        verified: boolean;
+      };
+    };
+    committer: CommitAuthor;
+    html_url: string;
+    parents: {
+      sha: string;
+      url: string;
+      html_url: string;
+    }[];
+  }
+  const [githubCommits, setGithubCommits] = useState<Commit[]>([]);
+  // Fetch Github data
+  useEffect(() => {
+    fetch('https://api.github.com/repos/arvidwedtstein/ArkDashboard/commits?sha=1bc1c549eb8573f1719432e7e66ce34dca8b35bc')
+      .then(response => response.json())
+      .then(data => setGithubCommits(data))
+  }, []);
 
   const optimizedBasespots = useMemo(() => {
     return basespots.map((base) => {
@@ -104,6 +176,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
 
     return groupedDates;
   };
+
   return (
     <>
       <MetaTags title="Admin" description="Admin page" />
@@ -118,12 +191,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               100,
               { maximumSignificantDigits: 3 }
             )}
-            subtext={`${formatNumber(
-              (optimizedBasespots.filter((b) => b.progress == 100).length /
-                optimizedBasespots.length) *
-              100,
-              { maximumSignificantDigits: 3 }
-            )} / 100`}
+            valueDisplay="percent"
           />
           <StatCard
             stat={"Goal: 20 basespots per map"}
@@ -142,6 +210,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
             ).toPrecision(3)}
           />
           <StatCard stat={"Test"} value={10} />
+
           <Chart
             options={{ verticalLabels: true, horizontalLabels: true }}
             className="rounded-lg border border-transparent bg-gray-200 text-black shadow-lg transition ease-in-out dark:bg-zinc-700 dark:text-white"
@@ -186,7 +255,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               header: "Description",
               field: "description",
               sortable: true,
-              valueFormatter: ({ value }) => truncate(value, 70),
+              valueFormatter: ({ value }) => truncate(value.toString(), 70),
             },
             {
               header: "Map",
@@ -198,17 +267,17 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               field: "progress",
               render: ({ value, row }) => {
                 let color = "bg-red-500";
-                switch (true) {
-                  case value <= 20:
-                    color = "bg-red-500";
-                  case value <= 40 && value > 20:
-                    color = "bg-orange-500";
-                  case value > 40 && value <= 60:
-                    color = "bg-yellow-500";
-                  case value > 60 && value <= 80:
-                    color = "bg-lime-500";
-                  case value <= 100 && value > 80:
-                    color = "bg-green-500";
+
+                if (value <= 20) {
+                  color = "bg-red-500";
+                } else if (value <= 40 && value > 20) {
+                  color = "bg-orange-500";
+                } else if (value > 40 && value <= 60) {
+                  color = "bg-yellow-500";
+                } else if (value > 60 && value <= 80) {
+                  color = "bg-lime-500";
+                } else if (value <= 100 && value > 80) {
+                  color = "bg-green-500";
                 }
 
                 return (
@@ -222,7 +291,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                           value
                         )}]`}
                         style={{ width: `${value}%` }}
-                      ></div>
+                      />
                     </div>
                     <span className="hidden text-sm font-medium text-gray-500 dark:text-gray-400 md:block">
                       {value}%
@@ -234,7 +303,14 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
           ]}
         />
 
-        <hr className="my-3 bg-zinc-500" />
+        <div className="relative my-12 px-4 max-w-2xl mx-auto">
+          <div className="flex items-center absolute inset-0">
+            <div className="border-t border-zinc-500 w-full" />
+          </div>
+          <div className="flex justify-center relative dark:text-white text-black">
+            <span className="font-semibold text-base px-3 dark:bg-zinc-900 bg-white">Users</span>
+          </div>
+        </div>
 
         <Table
           rows={profiles}
@@ -286,7 +362,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                   >
                     <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
                   </svg>
-                  {relativeDate(new Date(value), "days")}
+                  {relativeDate(new Date(value))}
                 </span>
               ),
             },
@@ -361,7 +437,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                     >
                       <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
                     </svg>
-                    {relativeDate(new Date(value), "days")}
+                    {relativeDate(new Date(value))}
                   </span>
                 ),
             },
@@ -416,9 +492,70 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
           ]}
         />
 
-        <hr className="flex justify-center relative">
-          <span className="font-semibold text-base px-3"></span>
-        </hr>
+        <div className="relative my-12 px-4 max-w-2xl mx-auto">
+          <div className="flex items-center absolute inset-0">
+            <div className="border-t border-zinc-500 w-full" />
+          </div>
+          <div className="flex justify-center relative dark:text-white text-black">
+            <span className="font-semibold text-base px-3 dark:bg-zinc-900 bg-white">Commits</span>
+          </div>
+        </div>
+
+        <Table
+          rows={githubCommits}
+          settings={{
+            pagination: {
+              enabled: true,
+              rowsPerPage: 10,
+              pageSizeOptions: [10, 25, 50, 100],
+            },
+          }}
+          columns={[
+            {
+              header: "User",
+              field: "committer",
+              sortable: true,
+              render: ({ value }) => (
+                <div className="flex items-center gap-x-4">
+                  <img src={value.avatar_url} className="h-8 w-8 rounded-full" />
+                  <span className="font-medium text-sm leading-6 text-ellipsis whitespace-nowrap">{value.login}</span>
+                </div>
+              )
+            },
+            {
+              header: "Commit",
+              field: "commit",
+              render: ({ value }) => (
+                <div className="flex gap-x-3 items-center leading-6">
+                  <a target="_blank" href={`https://github.com/ArvidWedtstein/ArkDashboard/commit/${value.tree.sha}`} className="font-mono text-sm leading-6 text-ellipsis whitespace-nowrap">{value.tree.sha.slice(0, 7)}</a>
+                  <span className="rw-badge rw-badge-gray-outline">dev</span>
+                </div>
+              )
+            },
+            {
+              header: "Changes",
+              field: "commit.message",
+              render: ({ value }) => (
+                <div className="flex items-center gap-x-3">
+                  {/* <div className={clsx("p-1 rounded-full flex-none", {
+                    "text-pea-500 bg-pea-500/20": value.verified,
+                    "text-red-500 bg-red-500/20": !value.verified
+                  })}>
+                    <div className="bg-current rounded-full w-1.5 h-1.5" />
+                  </div> */}
+                  <span className="text-sm leading-6 whitespace-pre-line">{value}</span>
+                </div>
+              )
+            },
+            {
+              header: "Commited at",
+              field: "commit.author.date",
+              sortable: true,
+              datatype: "date",
+              render: ({ value }) => relativeDate(value)
+            },
+          ]}
+        />
       </div>
       {/* <div className="flex items-center mb-5">
             <p className="bg-blue-100 text-blue-800 text-sm font-semibold inline-flex items-center p-1.5 rounded dark:bg-blue-200 dark:text-blue-800">8.7</p>

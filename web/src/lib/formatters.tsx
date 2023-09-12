@@ -539,6 +539,14 @@ export const getWeekDates = (date?: Date): [Date, Date] => {
   return [start, end];
 };
 
+
+/**
+ * TODO: remove
+ * @deprecated not in use
+ * @param num
+ * @param unit
+ * @returns
+ */
 export const rtf = (num: number, unit: Intl.RelativeTimeFormatUnit): string => {
   return new Intl.RelativeTimeFormat("en", {
     localeMatcher: "best fit", // other values: "lookup"
@@ -547,17 +555,33 @@ export const rtf = (num: number, unit: Intl.RelativeTimeFormatUnit): string => {
   }).format(num, unit);
 };
 
+/**
+ *
+ * @param date
+ * @param unit
+ * @returns
+ */
 export const relativeDate = (
-  date: Date,
-  unit: Intl.RelativeTimeFormatUnit
+  date: Date | string,
 ): string => {
-  const daysDifference = Math.round(
-    (date.getTime() - new Date().getTime()) / 86400000
-  );
-  return new Intl.RelativeTimeFormat("en", {
-    localeMatcher: "lookup",
-    numeric: "auto",
-  }).format(daysDifference, unit);
+
+  const now = new Date().getTime();
+  const diffInSeconds = Math.floor((now - new Date(date).getTime()) / 1000);
+
+  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto', localeMatcher: 'best fit' });
+
+  if (diffInSeconds < 60) {
+    return rtf.format(-diffInSeconds, 'second');
+  } else if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60);
+    return rtf.format(-minutes, 'minute');
+  } else if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600);
+    return rtf.format(-hours, 'hour');
+  } else {
+    const days = Math.floor(diffInSeconds / 86400);
+    return rtf.format(-days, 'day');
+  }
 };
 
 /**

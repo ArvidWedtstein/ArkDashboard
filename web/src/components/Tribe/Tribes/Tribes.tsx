@@ -132,7 +132,7 @@ const TribesList = ({ tribes }: FindTribes) => {
               field: "created_at",
               header: "Created At",
               sortable: true,
-              valueFormatter: ({ value }) => timeTag(value),
+              valueFormatter: ({ value }) => timeTag(value.toString()),
             },
             {
               field: "Profile",

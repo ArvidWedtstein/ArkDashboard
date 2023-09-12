@@ -468,62 +468,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           />
         </div>
         <div className="w-full">
-          {/* <Table
-            rows={mergeItemRecipe(
-              viewBaseMaterials,
-              false,
-              items,
-              ...recipes
-            ).slice(0, 1)}
-            className="animate-fade-in"
-            toolbar={[
-              <ToggleButton
-                className=""
-                offLabel="Materials"
-                onLabel="Base materials"
-                checked={viewBaseMaterials}
-                onChange={(e) => setViewBaseMaterials(e.currentTarget.checked)}
-              />,
-              <button
-                className="rw-button rw-button-gray rw-button-small"
-                onClick={() =>
-                  generatePDF(
-                    recipes.map((r) => ({
-                      name: r.Item_ItemRecipe_crafted_item_idToItem.name,
-                      amount: r.amount,
-                    }))
-                  )
-                }
-              >
-                PDF
-              </button>,
-            ]}
-            columns={[
-              ...(mergeItemRecipe(
-                viewBaseMaterials,
-                false,
-                items,
-                ...recipes
-              ).map(({ Item_ItemRecipe_crafted_item_idToItem, amount }) => ({
-                field: Item_ItemRecipe_crafted_item_idToItem.id,
-                header: Item_ItemRecipe_crafted_item_idToItem.name,
-                className: "w-0 text-center",
-                render: ({ value }) => (
-                  <div
-                    className="flex flex-col items-center justify-center"
-                    key={`${value}-${Item_ItemRecipe_crafted_item_idToItem.id}`}
-                  >
-                    <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafted_item_idToItem.image}`}
-                      className="h-6 w-6"
-                      loading="lazy"
-                    />
-                    <span className="text-sm">{formatNumber(amount)}</span>
-                  </div>
-                ),
-              })) as Record<string, string>),
-            ]}
-          /> */}
 
           <div className="my-3 space-y-3">
             <ToggleButton
@@ -710,7 +654,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 datatype: "number",
                 aggregate: "sum",
                 className: "w-0 text-center",
-                valueFormatter: ({ row, value }) => value * row.amount,
+                valueFormatter: ({ row, value }) => parseInt(value.toString()) * row.amount,
                 render: ({ value }) => `${timeFormatL(value, true)}`,
               },
               ...(mergeItemRecipe(

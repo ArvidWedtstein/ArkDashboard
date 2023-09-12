@@ -6,6 +6,7 @@ type StatCardProps = React.HTMLAttributes<HTMLDivElement> & {
   value: number | string;
   subtext?: string | number;
   chart?: boolean;
+  valueDisplay?: "percent" | "number";
   icon?: React.ReactNode;
   iconBackground?: string | BgColor;
   text?: string | number;
@@ -20,6 +21,7 @@ const StatCard = ({
   iconBackground,
   circleColor,
   subtext,
+  valueDisplay = "number",
   ...props
 }: StatCardProps) => {
   return (
@@ -33,8 +35,8 @@ const StatCard = ({
             <h5 className="text-xs font-bold uppercase text-gray-400">
               {stat}
             </h5>
-            {subtext && <span className="text-xl font-bold">{subtext}</span>}
-            {value && <span className="text-xl font-bold">{value}</span>}
+            {subtext && <span className="block text-xl font-bold">{subtext}</span>}
+            {value && <span className="block text-xl font-bold">{valueDisplay === 'number' ? value : `${value} / 100`}</span>}
           </div>
           {icon && (
             <div className="relative w-auto flex-initial">
