@@ -8,25 +8,25 @@ import {
   CheckboxField,
   Submit,
   ColorField,
-} from '@redwoodjs/forms'
+} from "@redwoodjs/forms";
 
-import type { EditLootcrateById, UpdateLootcrateInput } from 'types/graphql'
-import type { RWGqlError } from '@redwoodjs/forms'
-import Input from 'src/components/Util/Input/Input'
+import type { EditLootcrateById, UpdateLootcrateInput } from "types/graphql";
+import type { RWGqlError } from "@redwoodjs/forms";
+import Input from "src/components/Util/Input/Input";
 
-type FormLootcrate = NonNullable<EditLootcrateById['lootcrate']>
+type FormLootcrate = NonNullable<EditLootcrateById["lootcrate"]>;
 
 interface LootcrateFormProps {
-  lootcrate?: EditLootcrateById['lootcrate']
-  onSave: (data: UpdateLootcrateInput, id?: FormLootcrate['id']) => void
-  error: RWGqlError
-  loading: boolean
+  lootcrate?: EditLootcrateById["lootcrate"];
+  onSave: (data: UpdateLootcrateInput, id?: FormLootcrate["id"]) => void;
+  error: RWGqlError;
+  loading: boolean;
 }
 
 const LootcrateForm = (props: LootcrateFormProps) => {
   const onSubmit = (data: FormLootcrate) => {
-    props.onSave(data, props?.lootcrate?.id)
-  }
+    props.onSave(data, props?.lootcrate?.id);
+  };
 
   return (
     <div className="rw-form-wrapper">
@@ -81,14 +81,10 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           Required level
         </Label>
 
-
-        <div className='flex flex-col space-y-5'>
-
+        <div className="flex flex-col space-y-5">
           <Input name="Test" />
 
-
           <Input name="Test" type="2" />
-
 
           <Input name="Test" type="3" />
 
@@ -97,7 +93,7 @@ const LootcrateForm = (props: LootcrateFormProps) => {
               name="start_date"
               className="rw-float-input peer"
               errorClassName="rw-float-input rw-input-error"
-              placeholder=''
+              placeholder=""
             />
             <Label
               name="start_date"
@@ -109,7 +105,9 @@ const LootcrateForm = (props: LootcrateFormProps) => {
             {/* https://mui.com/material-ui/react-text-field/ */}
             <FieldError name="start_date" className="rw-field-error" />
           </div>
-          <div className="rw-input-underline relative max-w-sm rounded-t bg-black/10 dark:bg-white/10 p-1">
+
+          {/* TODO: move this to input component */}
+          <div className="rw-input-underline max-w-sm">
             <TextField
               name="name"
               className="border-1 focus:border-pea-600 dark:focus:border-pea-500 peer block w-full appearance-none rounded-lg border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white"
@@ -134,9 +132,7 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           errorClassName="rw-input rw-input-error"
         /> */}
 
-        <p className="rw-helper-text">
-          Required level to open this lootcrate
-        </p>
+        <p className="rw-helper-text">Required level to open this lootcrate</p>
 
         <FieldError name="required_level" className="rw-field-error" />
 
@@ -267,7 +263,7 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         </div>
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default LootcrateForm
+export default LootcrateForm;

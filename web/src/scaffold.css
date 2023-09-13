@@ -350,7 +350,7 @@
 
   /* Underline */
   .rw-input-underline {
-    @apply relative;
+    @apply relative rounded-t bg-black/10 p-1 transition-colors dark:bg-white/5 hover:dark:bg-white/10;
   }
   .rw-input-underline:focus-within::after {
     @apply scale-x-100;
