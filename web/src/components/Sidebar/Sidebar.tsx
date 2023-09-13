@@ -216,7 +216,7 @@ const Icon = (icon: string) => {
     </svg> */
 }
 
-const Sidebar = memo(({}) => {
+const Sidebar = memo(({ }) => {
   const { currentUser, isAuthenticated, logOut } = useAuth();
   const navigation = [
     {

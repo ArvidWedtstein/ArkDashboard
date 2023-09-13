@@ -342,10 +342,10 @@
 
   /* Float */
   .rw-float-input {
-    @apply focus:border-pea-600 dark:focus:border-pea-500 block w-full appearance-none rounded-lg border border-zinc-500 bg-zinc-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:outline-none focus:ring-0 dark:bg-zinc-600 dark:text-white dark:placeholder-zinc-200;
+    @apply focus:after:border-b-pea-500 block w-full appearance-none rounded border border-zinc-500 bg-zinc-300 px-2.5 pb-2.5 pt-4 text-sm text-gray-900 transition-colors after:absolute after:inset-0 after:border-b-2 after:content-[''] focus:outline-none focus:ring-0 dark:bg-zinc-600 dark:text-white;
   }
   .rw-float-label {
-    @apply peer-focus:text-pea-600 peer-focus:dark:text-pea-500 absolute top-4 left-1 z-[2] origin-[0] -translate-y-4 scale-75 transform px-2 text-sm text-gray-500 duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-4 peer-focus:-translate-y-4 peer-focus:scale-75 dark:text-gray-400;
+    @apply absolute top-4 left-1 z-[2] origin-[0] -translate-y-4 scale-75 transform px-2 text-sm text-gray-500 transition-all duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-4 peer-focus:-translate-y-4 peer-focus:scale-75 dark:text-gray-400;
   }
 
   /* Underline */
@@ -356,10 +356,10 @@
     @apply scale-x-100;
   }
   .rw-input-underline::before {
-    @apply pointer-events-none absolute left-0 top-0 right-0 bottom-0 border-b transition-colors duration-200 ease-in-out content-['\00a0'];
+    @apply pointer-events-none absolute inset-0 border-b transition-colors duration-200 ease-in-out content-['\00a0'];
   }
   .rw-input-underline::after {
-    @apply border-pea-500 pointer-events-none absolute top-0 left-0 bottom-0 right-0 z-10 block h-full w-full scale-x-0 transform border-b-2 transition-transform duration-200 ease-out content-[''];
+    @apply border-pea-500 pointer-events-none absolute inset-0 z-10 block h-full w-full scale-x-0 transform border-b-2 transition-transform duration-200 ease-out content-[''];
   }
 
   /* Select */

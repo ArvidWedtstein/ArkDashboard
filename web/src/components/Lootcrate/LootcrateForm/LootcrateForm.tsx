@@ -7,10 +7,12 @@ import {
   TextAreaField,
   CheckboxField,
   Submit,
+  ColorField,
 } from '@redwoodjs/forms'
 
 import type { EditLootcrateById, UpdateLootcrateInput } from 'types/graphql'
 import type { RWGqlError } from '@redwoodjs/forms'
+import Input from 'src/components/Util/Input/Input'
 
 type FormLootcrate = NonNullable<EditLootcrateById['lootcrate']>
 
@@ -79,12 +81,62 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           Required level
         </Label>
 
-        <TextField
+
+        <div className='flex flex-col space-y-5'>
+
+          <Input name="Test" />
+
+
+          <Input name="Test" type="2" />
+
+
+          <Input name="Test" type="3" />
+
+          <div className="relative max-w-sm">
+            <TextField
+              name="start_date"
+              className="rw-float-input peer"
+              errorClassName="rw-float-input rw-input-error"
+              placeholder=''
+            />
+            <Label
+              name="start_date"
+              className="rw-float-label"
+              errorClassName="rw-float-label rw-label-error"
+            >
+              Start date
+            </Label>
+
+            <FieldError name="start_date" className="rw-field-error" />
+          </div>
+          <div className="rw-input-underline relative max-w-sm rounded-t bg-black/10 dark:bg-white/10 p-1">
+            <TextField
+              name="name"
+              className="border-1 focus:border-pea-600 dark:focus:border-pea-500 peer block w-full appearance-none rounded-lg border-gray-300 bg-transparent px-2.5 pb-2.5 pt-4 text-sm text-gray-900 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white"
+              errorClassName="rw-input rw-input-error"
+              placeholder=" "
+            />
+            <Label
+              name="name"
+              className="peer-focus:text-pea-600 peer-focus:dark:text-pea-500 absolute top-4 left-1 z-10 origin-[0] -translate-y-4 scale-75 transform px-2 text-sm text-gray-500 duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-4 peer-focus:-translate-y-4 peer-focus:scale-75 dark:text-gray-400"
+              errorClassName="rw-label rw-label-error"
+            >
+              Name
+            </Label>
+            <FieldError name="name" className="rw-field-error" />
+          </div>
+        </div>
+
+        {/* <TextField
           name="required_level"
           defaultValue={props.lootcrate?.required_level}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
-        />
+        /> */}
+
+        <p className="rw-helper-text">
+          Required level to open this lootcrate
+        </p>
 
         <FieldError name="required_level" className="rw-field-error" />
 
@@ -93,7 +145,7 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
-          Quality mult
+          Quality multiplier
         </Label>
 
         <TextAreaField
@@ -148,6 +200,13 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         >
           Color
         </Label>
+
+        <ColorField
+          name="color"
+          defaultValue={props.lootcrate?.color}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+        />
 
         <TextField
           name="color"
