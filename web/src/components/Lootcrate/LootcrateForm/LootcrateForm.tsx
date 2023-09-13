@@ -106,7 +106,7 @@ const LootcrateForm = (props: LootcrateFormProps) => {
             >
               Start date
             </Label>
-
+            {/* https://mui.com/material-ui/react-text-field/ */}
             <FieldError name="start_date" className="rw-field-error" />
           </div>
           <div className="rw-input-underline relative max-w-sm rounded-t bg-black/10 dark:bg-white/10 p-1">
