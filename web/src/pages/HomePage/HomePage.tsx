@@ -151,7 +151,7 @@ const HomePage = () => {
 
       <div className="container-xl overflow-hidden bg-gradient-to-t from-black via-black to-black/60 text-center">
         <section className="font-montserrat mx-auto mb-12 max-w-screen-xl p-6">
-          <div className="!animate-ripple mb-8 rounded-lg border border-gray-200 bg-gray-50 p-8 dark:border-zinc-700 dark:bg-gradient-to-tr dark:from-zinc-800 dark:to-zinc-900 md:p-12">
+          <div className="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-8 dark:border-zinc-700 dark:bg-gradient-to-tr dark:from-zinc-800 dark:to-zinc-900 md:p-12">
             <h1 className="mb-2 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl">
               Welcome Home Bob!
             </h1>

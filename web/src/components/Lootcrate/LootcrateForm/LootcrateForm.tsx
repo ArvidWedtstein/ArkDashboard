@@ -46,7 +46,6 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           validation={{ required: true }}
         />
 
-
         <Input
           name="blueprint"
           defaultValue={props.lootcrate?.blueprint}
@@ -61,42 +60,21 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           helperText="Required level to open this lootcrate"
         />
 
-
-        <Label
+        <Input
           name="quality_mult"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Quality multiplier
-        </Label>
-
-        <TextAreaField
-          name="quality_mult"
+          label="Quality multiplier"
           defaultValue={JSON.stringify(props.lootcrate?.quality_mult)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
           validation={{ valueAsJSON: true }}
         />
 
-        <FieldError name="quality_mult" className="rw-field-error" />
-
-        <Label
+        <Input
           name="set_qty"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Set qty
-        </Label>
-
-        <TextAreaField
-          name="set_qty"
+          label="Set Quantity"
           defaultValue={JSON.stringify(props.lootcrate?.set_qty)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
           validation={{ valueAsJSON: true }}
         />
 
-        <FieldError name="set_qty" className="rw-field-error" />
+        <Input name="color" defaultValue={props.lootcrate?.color} />
 
         <Label
           name="repeat_in_sets"
@@ -105,74 +83,17 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         >
           Repeat in sets
         </Label>
-
         <CheckboxField
           name="repeat_in_sets"
           defaultChecked={props.lootcrate?.repeat_in_sets}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
         />
-
         <FieldError name="repeat_in_sets" className="rw-field-error" />
 
-        <Label
-          name="color"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Color
-        </Label>
+        <Input name="image" defaultValue={props.lootcrate?.image} />
 
-        <ColorField
-          name="color"
-          defaultValue={props.lootcrate?.color}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <TextField
-          name="color"
-          defaultValue={props.lootcrate?.color}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="color" className="rw-field-error" />
-
-        <Label
-          name="image"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Image
-        </Label>
-
-        {/* TODO: image lookup */}
-        <TextField
-          name="image"
-          defaultValue={props.lootcrate?.image}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="image" className="rw-field-error" />
-
-        <Label
-          name="type"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Type
-        </Label>
-
-        <TextField
-          name="type"
-          defaultValue={props.lootcrate?.type}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="type" className="rw-field-error" />
+        <Input name="type" defaultValue={props.lootcrate?.type} />
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">
@@ -187,8 +108,8 @@ const LootcrateForm = (props: LootcrateFormProps) => {
             </svg>
           </Submit>
         </div>
-      </Form >
-    </div >
+      </Form>
+    </div>
   );
 };
 

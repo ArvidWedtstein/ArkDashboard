@@ -1,14 +1,46 @@
-import { ColorField, FieldError, InputField, InputFieldProps, Label, useErrorStyles, useRegister } from "@redwoodjs/forms";
-
+import {
+  ColorField,
+  FieldError,
+  InputField,
+  InputFieldProps,
+  Label,
+} from "@redwoodjs/forms";
 
 type InputProps = {
-  type?: "number" | "button" | "time" | "image" | "text" | "hidden" | "color" | "search" | "date" | "datetime-local" | "email" | "file" | "month" | "password" | "radio" | "range" | "reset" | "submit" | "tel" | "url" | "week"
+  type?:
+    | "number"
+    | "button"
+    | "time"
+    | "image"
+    | "text"
+    | "hidden"
+    | "color"
+    | "search"
+    | "date"
+    | "datetime-local"
+    | "email"
+    | "file"
+    | "month"
+    | "password"
+    | "radio"
+    | "range"
+    | "reset"
+    | "submit"
+    | "tel"
+    | "url"
+    | "week";
   helperText?: string;
   label?: string;
 } & Omit<InputFieldProps, "type">;
-const Input = ({ name, type = "text", label, helperText, ...props }: InputProps) => {
+const Input = ({
+  name,
+  type = "text",
+  label,
+  helperText,
+  ...props
+}: InputProps) => {
   return (
-    <div className="max-w-sm w min-w-fit w-fit mt-5">
+    <div className="w mt-5 w-fit min-w-fit max-w-sm">
       <div className="rw-input-underline">
         <InputField
           type={type}
@@ -17,27 +49,30 @@ const Input = ({ name, type = "text", label, helperText, ...props }: InputProps)
           {...props}
           errorClassName="peer rw-input-error" // TODO: fix input error
           placeholder=""
-          aria-describedby={helperText ? `${name}-helper-text` : ''}
+          aria-describedby={helperText ? `${name}-helper-text` : ""}
         />
         <Label
           name={name}
-          className="capitalize peer-focus-within:text-pea-600 peer-focus-within:dark:text-pea-500 peer-placeholder-shown:top-4 peer-placeholder-shown:-translate-y-0 peer-placeholder-shown:scale-100 peer-focus-within:top-4 peer-focus-within:-translate-y-4 peer-focus-within:scale-75"
-
+          className="peer-focus-within:text-pea-500 peer-focus-within:dark:text-pea-400 capitalize peer-placeholder-shown:top-4 peer-placeholder-shown:-translate-y-0 peer-placeholder-shown:scale-100 peer-focus-within:top-4 peer-focus-within:-translate-y-4 peer-focus-within:scale-75"
           errorClassName="rw-label rw-label-error"
         >
           {label ?? name}
         </Label>
       </div>
       <FieldError name={name} className="rw-field-error" />
-      {helperText && <p className="rw-helper-text" id={`${name}-helper-text`}>{helperText}</p>}
+      {helperText && (
+        <p className="rw-helper-text" id={`${name}-helper-text`}>
+          {helperText}
+        </p>
+      )}
     </div>
   );
 };
 
 export default Input;
 
-
-{/* <div className="relative inline-flex flex-col">
+{
+  /* <div className="relative inline-flex flex-col">
       <div className="relative inline-flex items-center rounded text-base font-normal leading-6 dark:text-zinc-300 text-zinc-700">
         <fieldset
           className="relative border m-0 min-w-[0%] max-w-full transition-colors overflow-hidden rounded-[inherit] border-zinc-500 text-left text-current focus:outline-0 hover:border-zinc-300">
@@ -57,8 +92,8 @@ export default Input;
           </legend>
         </fieldset>
       </div>
-    </div> */}
-
+    </div> */
+}
 
 //   <div className="relative max-w-sm">
 //   <TextField
