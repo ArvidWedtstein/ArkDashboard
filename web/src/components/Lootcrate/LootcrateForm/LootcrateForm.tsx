@@ -39,135 +39,28 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           listClassName="rw-form-error-list"
         />
 
-        <Label
-          name="name"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Name
-        </Label>
-
-        <TextField
+        <Input
           name="name"
           defaultValue={props.lootcrate?.name}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
+          helperText="Required level to open this lootcrate"
           validation={{ required: true }}
         />
 
-        <FieldError name="name" className="rw-field-error" />
 
-        <Label
-          name="blueprint"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Blueprint
-        </Label>
-
-        <TextField
+        <Input
           name="blueprint"
           defaultValue={props.lootcrate?.blueprint}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
+          helperText="Lootcrate blueprint"
         />
 
-        <FieldError name="blueprint" className="rw-field-error" />
-
-        <Label
+        <Input
           name="required_level"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Required level
-        </Label>
+          label="Required Level"
+          type="number"
+          defaultValue={0}
+          helperText="Required level to open this lootcrate"
+        />
 
-        <div className="flex flex-col space-y-5">
-          <Input name="Test" />
-
-
-
-          <div className="relative max-w-sm">
-            <TextField
-              name="start_date"
-              className="rw-float-input peer"
-              errorClassName="rw-float-input rw-input-error"
-              placeholder=""
-            />
-            <Label
-              name="start_date"
-              className="rw-float-label"
-              errorClassName="rw-float-label rw-label-error"
-            >
-              Start date
-            </Label>
-            {/* https://mui.com/material-ui/react-text-field/ */}
-            <FieldError name="start_date" className="rw-field-error" />
-          </div>
-
-          {/* TODO: move this to input component */}
-          <div className="rw-input-underline max-w-sm">
-            <TextField
-              name="name"
-              className="peer"
-              errorClassName="rw-input rw-input-error"
-              placeholder=""
-            />
-            <Label
-              name="name"
-              className="peer-focus-within:text-pea-600 peer-focus-within:dark:text-pea-500 peer-placeholder-shown:top-4 peer-placeholder-shown:-translate-y-0 peer-placeholder-shown:scale-100 peer-focus-within:top-4 peer-focus-within:-translate-y-4 peer-focus-within:scale-75"
-            >
-              Name
-            </Label>
-            <FieldError name="name" className="rw-field-error" />
-          </div>
-          <div className="rw-input-underline small max-w-sm">
-            <TextAreaField
-              name="names"
-              className="peer"
-              errorClassName="rw-input rw-input-error"
-              placeholder=""
-            />
-            <Label
-              name="names"
-              className="peer-focus-within:text-pea-600 peer-focus-within:dark:text-pea-500 peer-placeholder-shown:top-4 peer-placeholder-shown:-translate-y-0 peer-placeholder-shown:scale-100 peer-focus-within:top-4 peer-focus-within:-translate-y-4 peer-focus-within:scale-75"
-
-              errorClassName="rw-label rw-label-error"
-            >
-              Names
-            </Label>
-            <FieldError name="name" className="rw-field-error" />
-            {/* <p>Helper text</p> */}
-          </div>
-          <div className="rw-input-underline max-w-sm">
-            <NumberField
-              name="name2"
-              className="peer"
-              errorClassName="rw-input rw-input-error"
-              // disabled
-              placeholder=""
-            />
-            <Label
-              name="name2"
-              className="peer-focus-within:text-pea-600 peer-focus-within:dark:text-pea-500 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-75 peer-focus-within:top-4 peer-focus-within:-translate-y-4 peer-focus-within:scale-75"
-              errorClassName="rw-label rw-label-error"
-            >
-              Name
-            </Label>
-            <FieldError name="name" className="rw-field-error" />
-          </div>
-        </div>
-
-        {/* <TextField
-          name="required_level"
-          defaultValue={props.lootcrate?.required_level}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        /> */}
-
-        <p className="rw-helper-text">Required level to open this lootcrate</p>
-
-        <FieldError name="required_level" className="rw-field-error" />
 
         <Label
           name="quality_mult"
@@ -294,8 +187,8 @@ const LootcrateForm = (props: LootcrateFormProps) => {
             </svg>
           </Submit>
         </div>
-      </Form>
-    </div>
+      </Form >
+    </div >
   );
 };
 
