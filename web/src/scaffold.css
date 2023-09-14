@@ -329,6 +329,7 @@
   .rw-input {
     @apply block rounded-lg border border-zinc-500 bg-zinc-50 px-4 py-2.5 text-sm text-gray-900 !placeholder-zinc-700 !placeholder-opacity-60 !outline-none [-moz-appearance:_textfield] invalid:border-red-500 focus:border-stone-500 focus:ring-0 focus:ring-stone-500 disabled:cursor-default disabled:text-gray-400 contrast-more:border-black contrast-more:placeholder-black dark:bg-zinc-600 dark:text-stone-200 dark:!placeholder-zinc-300 dark:focus:border-zinc-400 dark:focus:bg-zinc-600 dark:focus:ring-stone-200 dark:contrast-more:border-white;
   }
+
   /* Input Sizes */
   .rw-input.rw-input-small {
     @apply py-1 px-2 text-xs;
@@ -350,16 +351,32 @@
 
   /* Underline */
   .rw-input-underline {
-    @apply relative rounded-t bg-black/10 p-1 transition-colors dark:bg-white/5 hover:dark:bg-white/10;
+    @apply relative;
+  }
+  .rw-input-underline textarea,
+  .rw-input-underline input {
+    @apply block w-full rounded-t border-b border-black/40 bg-black/[.06] px-3 pb-2 pt-6 text-base text-gray-900 transition-colors duration-200 placeholder:opacity-0 hover:border-black/80 hover:bg-black/[.09] focus:bg-black/[.06] focus:outline-none focus:ring-0 dark:border-white/70 dark:bg-white/[.09] dark:text-white dark:hover:border-white dark:hover:bg-white/[.13] dark:focus:bg-white/[.09];
+  }
+  .rw-input-underline textarea:disabled,
+  .rw-input-underline input:disabled {
+    @apply pointer-events-none select-none border-dotted text-white/50 hover:border-black/40 hover:bg-black/[.06] dark:hover:border-white/70 dark:hover:bg-white/[.09];
+  }
+  .rw-input-underline.small textarea,
+  .rw-input-underline.small input {
+    @apply px-3 pt-5 pb-1;
+  }
+  .rw-input-underline label {
+    @apply absolute top-4 left-1 z-10 origin-[0] -translate-y-4 scale-75 transform px-2 text-base text-gray-500 duration-300 will-change-transform dark:text-gray-400;
   }
   .rw-input-underline:focus-within::after {
     @apply scale-x-100;
   }
-  .rw-input-underline::before {
-    @apply pointer-events-none absolute inset-0 border-b transition-colors duration-200 ease-in-out content-['\00a0'];
+  /* TODO: DEBUG */
+  .rw-input-underline p {
+    @apply mt-1 text-left text-xs leading-6 tracking-wide text-black/60 dark:text-white/70;
   }
   .rw-input-underline::after {
-    @apply border-pea-500 pointer-events-none absolute inset-0 z-10 block h-full w-full scale-x-0 transform border-b-2 transition-transform duration-200 ease-out content-[''];
+    @apply border-pea-500 pointer-events-none absolute inset-0 block h-full w-full scale-x-0 transform border-b-2 transition-transform duration-200 ease-out content-['\00a0'];
   }
 
   /* Select */
@@ -417,6 +434,11 @@
   .rw-check-radio-item-none {
     @apply text-gray-600;
   }
+
+  /* Number */
+  /* input[type="number"] {
+    @apply [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none;
+  } */
 
   /* Range */
   /* input[type="range"].slider::-ms-track,  */
