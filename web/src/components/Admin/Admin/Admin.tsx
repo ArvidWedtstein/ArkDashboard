@@ -32,14 +32,11 @@ const UPDATE_PROFILE_MUTATION = gql`
 `;
 
 const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
-  const [updateUser, { loading }] = useMutation(
-    UPDATE_PROFILE_MUTATION,
-    {
-      onError: (error) => {
-        console.error(`Failed updating user: ${error.message}`);
-      },
-    }
-  );
+  const [updateUser, { loading }] = useMutation(UPDATE_PROFILE_MUTATION, {
+    onError: (error) => {
+      console.error(`Failed updating user: ${error.message}`);
+    },
+  });
 
   type CommitAuthor = {
     login: string;
@@ -60,7 +57,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
     received_events_url: string;
     type: string;
     site_admin: boolean;
-  }
+  };
   type Commit = {
     author: CommitAuthor;
     comments_url: string;
@@ -99,13 +96,15 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
       url: string;
       html_url: string;
     }[];
-  }
+  };
   const [githubCommits, setGithubCommits] = useState<Commit[]>([]);
   // Fetch Github data
   useEffect(() => {
-    fetch('https://api.github.com/repos/arvidwedtstein/ArkDashboard/commits?sha=1bc1c549eb8573f1719432e7e66ce34dca8b35bc')
-      .then(response => response.json())
-      .then(data => setGithubCommits(data))
+    fetch(
+      "https://api.github.com/repos/arvidwedtstein/ArkDashboard/commits?sha=1bc1c549eb8573f1719432e7e66ce34dca8b35bc"
+    )
+      .then((response) => response.json())
+      .then((data) => setGithubCommits(data));
   }, []);
 
   const optimizedBasespots = useMemo(() => {
@@ -188,7 +187,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
             value={formatNumber(
               (optimizedBasespots.filter((b) => b.progress == 100).length /
                 optimizedBasespots.length) *
-              100,
+                100,
               { maximumSignificantDigits: 3 }
             )}
             valueDisplay="percent"
@@ -303,12 +302,14 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
           ]}
         />
 
-        <div className="relative my-12 px-4 max-w-2xl mx-auto">
-          <div className="flex items-center absolute inset-0">
-            <div className="border-t border-zinc-500 w-full" />
+        <div className="relative my-12 mx-auto max-w-2xl px-4">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-zinc-500" />
           </div>
-          <div className="flex justify-center relative dark:text-white text-black">
-            <span className="font-semibold text-base px-3 dark:bg-zinc-900 bg-white">Users</span>
+          <div className="relative flex justify-center text-black dark:text-white">
+            <span className="bg-white px-3 text-base font-semibold dark:bg-zinc-900">
+              Users
+            </span>
           </div>
         </div>
 
@@ -390,7 +391,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                                   input: {
                                     banned_until: new Date(
                                       new Date().getTime() +
-                                      1000 * 60 * 60 * 24 * 7
+                                        1000 * 60 * 60 * 24 * 7
                                     ),
                                   },
                                 },
@@ -445,9 +446,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               header: "Role",
               field: "role_id",
               sortable: true,
-              render: (
-                { value, row }
-              ) => (
+              render: ({ value, row }) => (
                 <select
                   className="rw-input rw-input-small"
                   disabled={loading}
@@ -457,7 +456,13 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                       <Toast
                         t={t}
                         title={`You're about to change ${row.username}'s role`}
-                        message={`Are you sure you want to change ${row.username}'s role from ${roles.find((r) => r.id == value)?.name} to ${roles.find((r) => r.id == e.target.value)?.name}?`}
+                        message={`Are you sure you want to change ${
+                          row.username
+                        }'s role from ${
+                          roles.find((r) => r.id == value)?.name
+                        } to ${
+                          roles.find((r) => r.id == e.target.value)?.name
+                        }?`}
                         actionType="OkCancel"
                         primaryAction={() => {
                           toast.promise(
@@ -492,12 +497,14 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
           ]}
         />
 
-        <div className="relative my-12 px-4 max-w-2xl mx-auto">
-          <div className="flex items-center absolute inset-0">
-            <div className="border-t border-zinc-500 w-full" />
+        <div className="relative my-12 mx-auto max-w-2xl px-4">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-zinc-500" />
           </div>
-          <div className="flex justify-center relative dark:text-white text-black">
-            <span className="font-semibold text-base px-3 dark:bg-zinc-900 bg-white">Commits</span>
+          <div className="relative flex justify-center text-black dark:text-white">
+            <span className="bg-white px-3 text-base font-semibold dark:bg-zinc-900">
+              Commits
+            </span>
           </div>
         </div>
 
@@ -517,20 +524,31 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
               sortable: true,
               render: ({ value }) => (
                 <div className="flex items-center gap-x-4">
-                  <img src={value.avatar_url} className="h-8 w-8 rounded-full" />
-                  <span className="font-medium text-sm leading-6 text-ellipsis whitespace-nowrap">{value.login}</span>
+                  <img
+                    src={value.avatar_url}
+                    className="h-8 w-8 rounded-full"
+                  />
+                  <span className="text-ellipsis whitespace-nowrap text-sm font-medium leading-6">
+                    {value.login}
+                  </span>
                 </div>
-              )
+              ),
             },
             {
               header: "Commit",
               field: "commit",
               render: ({ value }) => (
-                <div className="flex gap-x-3 items-center leading-6">
-                  <a target="_blank" href={`https://github.com/ArvidWedtstein/ArkDashboard/commit/${value.tree.sha}`} className="font-mono text-sm leading-6 text-ellipsis whitespace-nowrap">{value.tree.sha.slice(0, 7)}</a>
+                <div className="flex items-center gap-x-3 leading-6">
+                  <a
+                    target="_blank"
+                    href={`https://github.com/ArvidWedtstein/ArkDashboard/commit/${value.tree.sha}`}
+                    className="text-ellipsis whitespace-nowrap font-mono text-sm leading-6"
+                  >
+                    {value.tree.sha.slice(0, 7)}
+                  </a>
                   <span className="rw-badge rw-badge-gray-outline">dev</span>
                 </div>
-              )
+              ),
             },
             {
               header: "Changes",
@@ -543,16 +561,18 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                   })}>
                     <div className="bg-current rounded-full w-1.5 h-1.5" />
                   </div> */}
-                  <span className="text-sm leading-6 whitespace-pre-line">{value}</span>
+                  <span className="whitespace-pre-line text-sm leading-6">
+                    {value}
+                  </span>
                 </div>
-              )
+              ),
             },
             {
               header: "Commited at",
               field: "commit.author.date",
               sortable: true,
               datatype: "date",
-              render: ({ value }) => relativeDate(value)
+              render: ({ value }) => relativeDate(value),
             },
           ]}
         />
