@@ -152,6 +152,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
    * - Taming Efficiency: TE = 1 / ( 1 + [number of food eaten] + [damage taken])
    * - Creature stat: (base value × (1 + stat level wild × Increase per wild-level as % of B × Increase per wild level modifier) × TamedBaseHealthMultiplier × (1 + Imprinting Bonus when tamed × 0.2 × IBM) + Additive taming-bonus × Additive taming-bonus modifier) × (1 + Taming Effectiveness × Multiplicative taming-bonus × Multiplicative taming-bonus modifier) × (1 + player leveled stat × Increase per domesticated level as % of Vpt × Increase per domesticated level modifier)
    * - Melee damage: Weapon Base Damage * Weapon Damage Quality Multiplier * Survivor Melee Damage Multiplier * Server Settings: Player Damage
+   * - Oxygen under water:  Oxygen / 3 = time in seconds
    */
 
   const onDeleteClick = (id: DeleteDinoMutationVariables["id"]) => {
@@ -802,8 +803,6 @@ const Dino = ({ dino, itemsByIds }: Props) => {
     if (!state.foods || state.foods.length == 0) return null;
     let effectiveness = 100;
 
-
-
     const narcotics = itemsByIds.filter((f) =>
       [121, 123, 713, 719].includes(f.id)
     );
@@ -1240,21 +1239,21 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                           header: "Base",
                           className: "text-center",
                           valueFormatter: ({ value }) =>
-                            value ? formatNumber(Number(value / 300)) : "-",
+                            value ? formatNumber(Number(parseInt(value.toString()) / 300)) : "-",
                         },
                         {
                           field: "sprint",
                           header: "Sprint",
                           className: "text-center",
                           valueFormatter: ({ value }) =>
-                            value ? formatNumber(Number(value / 300)) : "-",
+                            value ? formatNumber(Number(parseInt(value.toString()) / 300)) : "-",
                         },
                         {
                           field: "swim",
                           header: "Swim",
                           className: "text-center",
                           valueFormatter: ({ value }) =>
-                            value ? formatNumber(Number(value / 300)) : "-",
+                            value ? formatNumber(Number(parseInt(value.toString()) / 300)) : "-",
                         },
                         {
                           field: "format",
@@ -1938,7 +1937,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                         ].map(({ name, sub, icon }, i) => (
                           <li
                             key={`taming-stage-${i}`}
-                            className="[&>*]:fill-secondary-button [&>*]:border-secondary-button flex items-center space-x-2.5 [&>*]:dark:border-white [&>*]:dark:fill-white [&:last-of-type>svg]:hidden"
+                            className="flex items-center space-x-2.5 [&>*]:border-zinc-500 [&>*]:fill-zinc-500 [&>*]:dark:border-white [&>*]:dark:fill-white [&:last-of-type>svg]:hidden"
                           >
                             <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border p-1 md:h-12 md:w-12 md:p-3">
                               {icon}
@@ -2399,7 +2398,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
                                           ({ Item, amount }, i) => (
                                             <Link
                                               to={routes.item({
-                                                id: Item.id.toString(),
+                                                id: Item.id,
                                               })}
                                               className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
                                               title={Item.name}
@@ -2429,7 +2428,7 @@ const Dino = ({ dino, itemsByIds }: Props) => {
 
                                       <Link
                                         to={routes.item({
-                                          id: itemid.toString(),
+                                          id: itemid,
                                         })}
                                         className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
                                         title={name}

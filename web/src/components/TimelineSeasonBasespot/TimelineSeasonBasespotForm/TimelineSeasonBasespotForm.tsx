@@ -5,7 +5,6 @@ import {
   Label,
   DatetimeLocalField,
   TextField,
-  Submit,
 } from "@redwoodjs/forms";
 
 import type {
@@ -14,7 +13,7 @@ import type {
   UpdateTimelineSeasonBasespotInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import Lookup from "src/components/Util/Lookup/Lookup";
+import { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
 
 
 type FormTimelineSeasonBasespot = NonNullable<
@@ -106,13 +105,13 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
           Basespot
         </Label>
 
-        <Lookup
+        <MultiSelectLookup
           options={props?.basespots.map((bs) => ({
             label: bs.name,
             value: bs.id,
           })) || []}
           name="basespot_id"
-          defaultValue={props.timelineSeasonBasespot?.basespot_id}
+          defaultValue={[props.timelineSeasonBasespot?.basespot_id]}
           placeholder="Select a basespot"
           className="mt-3"
         />
@@ -120,14 +119,14 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
         <FieldError name="basespot_id" className="rw-field-error" />
 
 
-        <Lookup
+        <MultiSelectLookup
           options={props?.maps.map((map) => ({
             label: map.name,
             value: map.id,
             image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`
           })) || []}
           name="map_id"
-          defaultValue={props.timelineSeasonBasespot?.map_id}
+          defaultValue={[props.timelineSeasonBasespot?.map_id.toString()]}
           placeholder="Select a map"
           className="mt-3"
         />

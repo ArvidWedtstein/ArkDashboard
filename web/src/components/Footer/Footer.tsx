@@ -1,12 +1,15 @@
-import { Link } from "@redwoodjs/router";
+import { Link, routes } from "@redwoodjs/router";
 
 const Footer = () => {
   return (
-    <footer className="bg-zinc-700 px-4 py-6 md:flex md:items-center md:justify-between">
-      <span className="w-full text-sm text-gray-300 sm:text-center">
-        Game content and materials are trademarks and copyrights of their
-        respective publisher and its licensors. © {new Date().getFullYear()}{" "}
-        <b>Arvid Wedtstein</b>. All Rights Reserved.
+    <footer className="select-none bg-zinc-700 px-4 py-6 text-sm md:flex md:items-center md:justify-between">
+      <Link className="rw-link text-gray-300" to={routes.terms()}>
+        Terms & conditions
+      </Link>
+      <span className="text-gray-300 sm:text-center">
+        Game content are trademarks and copyrights of their respective publisher
+        and its licensors. © {new Date().getFullYear()} <b>Arvid Wedtstein</b>.
+        All Rights Reserved.
       </span>
       <div className="mt-4 flex space-x-6 sm:items-center sm:justify-center md:mt-0">
         <a

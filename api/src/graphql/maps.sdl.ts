@@ -11,11 +11,14 @@ export const schema = gql`
     description: String
     topographic_img: String
     boundaries: String
+    cord_shift_lat: Float
+    cord_shift_lon: Float
+    cord_mult_lat: Float
+    cord_mult_lon: Float
     Basespot: [Basespot]!
-    Lootcrate: [Lootcrate]!
+    LootcrateMap: [LootcrateMap]!
     Map: Map
     other_Map: [Map]!
-    MapCoordinate: [MapCoordinate]!
     MapNote: [MapNote]!
     MapResource: [MapResource]!
     TimelineSeasonBasespot: [TimelineSeasonBasespot]!
@@ -38,6 +41,10 @@ export const schema = gql`
     description: String
     topographic_img: String
     boundaries: String
+    cord_shift_lat: Float
+    cord_shift_lon: Float
+    cord_mult_lat: Float
+    cord_mult_lon: Float
   }
 
   input UpdateMapInput {
@@ -51,6 +58,10 @@ export const schema = gql`
     description: String
     topographic_img: String
     boundaries: String
+    cord_shift_lat: Float
+    cord_shift_lon: Float
+    cord_mult_lat: Float
+    cord_mult_lon: Float
   }
 
   type Mutation {

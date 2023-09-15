@@ -1,12 +1,56 @@
+import { Form, Submit } from "@redwoodjs/forms";
 import { Link, routes } from "@redwoodjs/router";
 import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
-import { useEffect, useRef, useState } from "react";
+import { ReactElement, ReactNode, useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
+import Lookup, { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
 
+// https://codepen.io/tjramage/pen/yOEbyw
 const HomePage = () => {
   const { isAuthenticated, currentUser, client, reauthenticate } = useAuth();
 
+  useEffect(() => {
+    window.addEventListener("scroll", () => {
+      let Num = window.scrollY / 500;
+      let Num2 = window.scrollY * 0.0004; // higher number for more zoom
+      let Num2mod = Num2 + 1;
+      let Num3 = window.scrollY * 0.2; // Title speed
+      let Num3mod = Num3 + 1;
+
+      document.querySelectorAll("#shade").forEach((el: HTMLElement) => {
+        el.style.opacity = `${Num}`;
+      });
+      document.querySelectorAll("#bg").forEach((el: HTMLElement) => {
+        el.style.transform = `scale(${Num2mod})`;
+      });
+      document.querySelectorAll("#text").forEach((el: HTMLElement) => {
+        el.style.marginTop = `${Num3mod}px`;
+      });
+      return;
+    });
+
+    return () => {
+      window.removeEventListener("scroll", () => {
+        let Num = window.scrollY / 500;
+        let Num2 = window.scrollY * 0.0004; // higher number for more zoom
+        let Num2mod = Num2 + 1;
+        let Num3 = window.scrollY * 0.2; // Title speed
+        let Num3mod = Num3 + 1;
+
+        document.querySelectorAll("#shade").forEach((el: HTMLElement) => {
+          el.style.opacity = `${Num}`;
+        });
+        document.querySelectorAll("#bg").forEach((el: HTMLElement) => {
+          el.style.transform = `scale(${Num2mod})`;
+        });
+        document.querySelectorAll("#text").forEach((el: HTMLElement) => {
+          el.style.marginTop = `${Num3mod}px`;
+        });
+        return;
+      });
+    };
+  }, []);
   // useEffect(() => {
   //   const {
   //     data: { subscription },
@@ -67,7 +111,45 @@ const HomePage = () => {
         ogContentUrl="https://drive.google.com/uc?export=view&id=1BH3u85NhncIhphAyl2_FR312CnVoKdYj"
         ogType="website"
       />
-      <div className="container-xl overflow-hidden text-center">
+
+      <div className="relative -z-10 hidden h-screen will-change-scroll md:block">
+        <div
+          id="bg"
+          className="fixed left-0 right-0 -z-10 h-screen w-full scale-100 bg-[url('https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/timelineimages/13/20220616235414_1.jpg')] bg-cover bg-center bg-no-repeat will-change-transform"
+        >
+          <div className="fixed left-1/2 bottom-0 -ml-5 h-10 w-10 animate-bounce opacity-100">
+            <svg height="25" width="50">
+              <polygon
+                points="0,0 25,10 50,0 25,25"
+                fill="rgba(0,0,0,.5)"
+                strokeWidth="0"
+                stroke="rgba(255,255,255,.3)"
+              />
+            </svg>
+          </div>
+          <div className="table h-full w-full">
+            <div className="table-cell w-full align-middle">
+              <div
+                id="text"
+                className="font-montserrat z-10 w-full bg-black/60 p-16 text-center text-white will-change-contents"
+              >
+                <h1 className="mb-1 text-7xl font-extrabold -tracking-wide">
+                  Ark Dashboard
+                </h1>
+                <p className="mx-auto block w-8/12 border-t border-white/20 pb-5 pt-3 leading-6 text-gray-200">
+                  Welcome fellow survivor!
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          id="shade"
+          className="fixed z-10 h-screen w-full bg-black/80 opacity-0"
+        />
+      </div>
+
+      <div className="container-xl overflow-hidden bg-gradient-to-t from-black via-black to-black/60 text-center">
         <section className="font-montserrat mx-auto mb-12 max-w-screen-xl p-6">
           <div className="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-8 dark:border-zinc-700 dark:bg-gradient-to-tr dark:from-zinc-800 dark:to-zinc-900 md:p-12">
             <h1 className="mb-2 text-3xl font-extrabold text-gray-900 dark:text-white md:text-5xl">
@@ -108,7 +190,6 @@ const HomePage = () => {
               href="#"
               className="rw-badge rw-badge-gray mb-2 text-indigo-800 dark:!text-indigo-400"
             >
-              {/* TODO: insert fort icon here */}
               <svg
                 className="mr-1.5 h-2.5 w-2.5"
                 aria-hidden="true"
@@ -251,9 +332,9 @@ const HomePage = () => {
                 and steps needed for any item in ARK Survival Evolved. Never
                 waste resources on failed crafting attempts again!
               </p>
-              <details className="transition">
+              <details className="transition-all duration-200">
                 <summary>How to Use the Calculator</summary>
-                <p className="m-1 border-l pl-5">
+                <p className="animate-fade-in m-1 border-l pl-5">
                   Simply select the item you want to craft from the dropdown
                   list, and the calculator will show you the materials and steps
                   needed to craft it. You can also filter the list by item type

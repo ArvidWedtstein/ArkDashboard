@@ -14,7 +14,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import type { EditDinoById, UpdateDinoInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import Lookup from "src/components/Util/Lookup/Lookup";
+import Lookup, { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { truncate } from "src/lib/formatters";
 import { toast } from "@redwoodjs/web/toast";
@@ -357,7 +357,7 @@ const DinoForm = (props: DinoFormProps) => {
                         role="group"
                         key={`ge-${index}`}
                       >
-                        <Lookup
+                        <MultiSelectLookup
                           key={ge.id}
                           {...register(
                             `DinoStat.create.${index}.item_id` as const,
@@ -375,7 +375,7 @@ const DinoForm = (props: DinoFormProps) => {
                               image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
                             }))}
                           search={true}
-                          // defaultValue={ge.item_id}
+                          // defaultValue={[ge.item_id]}
                           filterFn={(item, search) => {
                             return item.label
                               .toLowerCase()
@@ -400,7 +400,7 @@ const DinoForm = (props: DinoFormProps) => {
                             required: false,
                           } as const)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
-                          // defaultValue={g.type}
+                        // defaultValue={g.type}
                         />
                         <button
                           type="button"
@@ -461,7 +461,7 @@ const DinoForm = (props: DinoFormProps) => {
                         role="group"
                         key={`wr-${index}`}
                       >
-                        <Lookup
+                        <MultiSelectLookup
                           {...register(`DinoStat.create.${index}.item_id`)}
                           className="!mt-0 !rounded-none !rounded-l-md"
                           options={data.itemsByCategory.items
@@ -473,7 +473,7 @@ const DinoForm = (props: DinoFormProps) => {
                               image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
                             }))}
                           search={true}
-                          defaultValue={w.item_id}
+                          defaultValue={[w.item_id]}
                           filterFn={(item, search) => {
                             return item.label
                               .toLowerCase()
@@ -886,7 +886,7 @@ const DinoForm = (props: DinoFormProps) => {
                       role="group"
                       key={`wr-${index}`}
                     >
-                      <Lookup
+                      <MultiSelectLookup
                         {...register(`DinoStat.create.${index}.item_id`)}
                         className="!mt-0 !rounded-none !rounded-l-md"
                         options={data.itemsByCategory.items
@@ -898,7 +898,7 @@ const DinoForm = (props: DinoFormProps) => {
                             image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
                           }))}
                         search={true}
-                        defaultValue={s.item_id}
+                        defaultValue={[s.item_id]}
                         filterFn={(item, search) => {
                           return item.label
                             .toLowerCase()
@@ -1066,7 +1066,7 @@ const DinoForm = (props: DinoFormProps) => {
                         role="group"
                         key={`drops-${index}`}
                       >
-                        <Lookup
+                        <MultiSelectLookup
                           {...register(`DinoStat.create.${index}.item_id`, {
                             required: true,
                           })}
@@ -1074,17 +1074,17 @@ const DinoForm = (props: DinoFormProps) => {
                           options={
                             data
                               ? data.itemsByCategory.items
-                                  .filter((i) => i.category === "Resource")
-                                  .map((item) => ({
-                                    type: item.type,
-                                    label: item.name,
-                                    value: item.id,
-                                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                                  }))
+                                .filter((i) => i.category === "Resource")
+                                .map((item) => ({
+                                  type: item.type,
+                                  label: item.name,
+                                  value: item.id,
+                                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                                }))
                               : []
                           }
                           search={true}
-                          defaultValue={d.item_id}
+                          defaultValue={[d.item_id]}
                           filterFn={(item, search) => {
                             return item.label
                               .toLowerCase()
@@ -1600,17 +1600,17 @@ const DinoForm = (props: DinoFormProps) => {
                 Eats
               </Label>
 
-              <Lookup
+              <MultiSelectLookup
                 options={
                   data
                     ? data.itemsByCategory.items
-                        .filter((i) => i.category === "Consumable")
-                        .map((item) => ({
-                          type: item.type,
-                          label: item.name,
-                          value: item.id,
-                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                        }))
+                      .filter((i) => i.category === "Consumable")
+                      .map((item) => ({
+                        type: item.type,
+                        label: item.name,
+                        value: item.id,
+                        image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                      }))
                     : []
                 }
                 search={true}
@@ -1618,7 +1618,7 @@ const DinoForm = (props: DinoFormProps) => {
                 onSelect={(e) => {
                   setEats((d) => [
                     ...d,
-                    { id: e.value, name: e.label, img: e.image },
+                    { id: e[0].value, name: e[0].label, img: e[0].image },
                   ]);
                 }}
               />
@@ -1827,6 +1827,7 @@ const DinoForm = (props: DinoFormProps) => {
           ))}
         </div>
         <label className="relative inline-flex cursor-pointer items-center">
+          {/* TODO: change this to togglebutton */}
           <input
             type="checkbox"
             checked={useFoundationUnit}

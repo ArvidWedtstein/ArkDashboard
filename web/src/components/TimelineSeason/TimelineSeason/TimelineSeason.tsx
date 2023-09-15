@@ -44,17 +44,18 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
     toast.custom((t) => (
       <Toast
         t={t}
-        title={<span>You're about to delete season <b>{id}</b></span>}
+        title={
+          <span>
+            You're about to delete season <b>{id}</b>
+          </span>
+        }
         message={`Are you sure you want to delete timelineSeason ${id}?`}
         primaryAction={() => {
-          toast.promise(
-            deleteTimelineSeason({ variables: { id } }),
-            {
-              loading: "deleting season...",
-              success: `Successfully deleted season`,
-              error: `Failed to delete season`,
-            }
-          );
+          toast.promise(deleteTimelineSeason({ variables: { id } }), {
+            loading: "deleting season...",
+            success: `Successfully deleted season`,
+            error: `Failed to delete season`,
+          });
         }}
         actionType="OkCancel"
       />
@@ -96,10 +97,10 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           openModal === "timelineseasonperson"
             ? "Add person"
             : openModal === "timelineseasonbasespot"
-              ? "Add Basespot"
-              : openModal === "timelineseasonevent"
-                ? "Add Event"
-                : ""
+            ? "Add Basespot"
+            : openModal === "timelineseasonevent"
+            ? "Add Event"
+            : ""
         }
         isOpen={openModal !== null}
         onClose={() => setOpenModal(null)}
@@ -139,8 +140,9 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
               {timelineSeason.server}{" "}
               {timelineSeason.cluster && (
                 <span
-                  className={`rw-badge align-middle ${servers[timelineSeason.server]?.badge
-                    }`}
+                  className={`rw-badge align-middle ${
+                    servers[timelineSeason.server]?.badge
+                  }`}
                 >
                   {timelineSeason.cluster}{" "}
                   <span className="mx-2 border-l border-current"></span> Season{" "}
@@ -184,7 +186,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
       </header>
 
       <div className="relative my-3 grid w-full grid-flow-row grid-cols-4 gap-3 md:grid-cols-6">
-        <section className="bg-background relative col-span-5 row-span-2 !w-full flex-auto flex-grow rounded-lg border border-zinc-500 font-semibold text-black dark:bg-zinc-800 dark:text-white">
+        <section className="relative col-span-5 row-span-2 !w-full flex-auto flex-grow rounded-lg border border-zinc-500 bg-white font-semibold text-black dark:bg-zinc-800 dark:text-white">
           <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
             <p className="flex-1 underline underline-offset-8">Basespots</p>
             <button
@@ -230,7 +232,7 @@ const TimelineSeason = ({ timelineSeason }: Props) => {
           />
         </section>
 
-        <section className="bg-background relative col-span-5 row-span-2 w-full flex-auto rounded-lg border border-zinc-500 font-semibold text-black dark:bg-zinc-800 dark:text-white">
+        <section className="relative col-span-5 row-span-2 w-full flex-auto rounded-lg border border-zinc-500 bg-white font-semibold text-black dark:bg-zinc-800 dark:text-white">
           <div className="mb-0 inline-flex w-full items-center space-x-3 p-3">
             <p className="flex-1 underline underline-offset-8">
               Persons in this season

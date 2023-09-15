@@ -1,69 +1,67 @@
 export const schema = gql`
   type Lootcrate {
-    id: String!
-    created_at: DateTime
+    id: BigInt!
+    created_at: DateTime!
     updated_at: DateTime
-    blueprint: String!
-    name: String
-    map_id: BigInt!
-    level_requirement: JSON
-    decay_time: JSON
-    no_repeat_in_sets: Boolean
-    quality_multiplier: JSON
+    name: String!
+    blueprint: String
+    required_level: BigInt
+    quality_mult: JSON
     set_qty: JSON
+    repeat_in_sets: Boolean
     color: String
-    latitude: Float
-    longitude: Float
-    Map: Map!
-    LootcrateSet: [LootcrateSet]!
+    image: String
+    type: String
+    LootcrateItem: [LootcrateItem]!
+    LootcrateMap: [LootcrateMap]!
   }
 
   type Query {
     lootcrates: [Lootcrate!]! @skipAuth
-    lootcrate(id: String!): Lootcrate @skipAuth
-    lootcratesByMap(map: String): [Lootcrate!]! @skipAuth
+    lootcrate(id: BigInt!): Lootcrate @skipAuth
+    lootcratesByMap(
+      map: String
+      search: String
+      type: String
+      color: String
+    ): [Lootcrate!]! @skipAuth
   }
-
   input CreateLootcrateInput {
-    created_at: DateTime
+    created_at: DateTime!
     updated_at: DateTime
-    blueprint: String!
-    name: String
-    map_id: BigInt!
-    level_requirement: JSON
-    decay_time: JSON
-    no_repeat_in_sets: Boolean
-    quality_multiplier: JSON
+    name: String!
+    blueprint: String
+    required_level: BigInt
+    quality_mult: JSON
     set_qty: JSON
+    repeat_in_sets: Boolean
     color: String
-    latitude: Float
-    longitude: Float
+    image: String
+    type: String
   }
 
   input UpdateLootcrateInput {
     created_at: DateTime
     updated_at: DateTime
-    blueprint: String
     name: String
-    map_id: BigInt
-    level_requirement: JSON
-    decay_time: JSON
-    no_repeat_in_sets: Boolean
-    quality_multiplier: JSON
+    blueprint: String
+    required_level: BigInt
+    quality_mult: JSON
     set_qty: JSON
+    repeat_in_sets: Boolean
     color: String
-    latitude: Float
-    longitude: Float
+    image: String
+    type: String
   }
 
   type Mutation {
     createLootcrate(input: CreateLootcrateInput!): Lootcrate!
       @requireAuth
       @hasPermission(permission: "gamedata_create")
-    updateLootcrate(id: String!, input: UpdateLootcrateInput!): Lootcrate!
+    updateLootcrate(id: BigInt!, input: UpdateLootcrateInput!): Lootcrate!
       @requireAuth
       @hasPermission(permission: "gamedata_update")
-    deleteLootcrate(id: String!): Lootcrate!
+    deleteLootcrate(id: BigInt!): Lootcrate!
       @requireAuth
       @hasPermission(permission: "gamedata_delete")
   }

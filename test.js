@@ -1,6 +1,203 @@
 console.time("normal");
+const TheIsland = require("./web/public/ResourcesTheIsland.json");
+const Valguero = require("./web/public/ResourcesValguero.json");
+const Ragnarok = require("./web/public/ResourcesRagnarok.json");
+const Aberration = require("./web/public/ResourcesAberration.json");
+const ScorchedEarth = require("./web/public/ResourcesScorchedEarth.json");
+const LostIsland = require("./web/public/ResourcesLostIsland.json");
+const lootcrateitems = require("./web/public/lootcrateitems.json");
+const maplootcrates = require("./web/public/MapLootcrates.json");
+var partition = function (arr, length) {
+  var result = [];
+  for (var i = 0; i < arr.length; i++) {
+    if (i % length === 0) result.push([]);
+    result[result.length - 1].push(arr[i]);
+  }
+  return result;
+};
 
+const lootmaps = {
+  TheIsland: TheIsland,
+  Valguero: Valguero,
+  Ragnarok: Ragnarok,
+  Aberration: Aberration,
+  ScorchedEarth: ScorchedEarth,
+  LostIsland: LostIsland,
+};
+
+let lootcrate_beacons = {};
+
+Object.keys(lootmaps).forEach((map) => {
+  Object.assign(lootcrate_beacons, {
+    [map]: lootmaps[map].lootcrate_beacons,
+  });
+});
+
+// let countCrates = 0;
+// let countnonCrates = [];
+// let data = {};
+// let output = Object.entries(ids).map(([map, crates]) => {
+//   Object.assign(data, {
+//     [map]: crates.map((crate) => {
+//       const item = lootcrateitems.find((lootcrate) =>
+//         lootcrate.blueprint.includes(crate.id)
+//       );
+//       if (item) {
+//         countCrates++;
+//         return {
+//           id: crate.id,
+//           name: crate.name || item.name,
+//           items: item.items,
+//         };
+//       } else {
+//         countnonCrates.push(crate.id);
+//       }
+//     }),
+//   });
+//   return;
+// });
+
+// console.log(countCrates);
+// console.log(countnonCrates);
+
+// require("fs").writeFile(
+//   `insert.txt`,
+//   [JSON.stringify(data, null, 4)].join("\n"),
+//   (error) => {
+//     if (error) {
+//       throw error;
+//     }
+//   }
+// );
+// return;
+
+function findCommonItemSetsWithThresholdAndLootcrates(lootcrates, threshold) {
+  if (lootcrates.length === 0) {
+    return [];
+  }
+
+  // Create a map to store itemIds as keys and their occurrences as values
+  const itemIdOccurrences = new Map();
+
+  // Count the occurrences of each itemId across all lootcrates
+  for (let i = 0; i < lootcrates.length; i++) {
+    const lootcrate = lootcrates[i];
+    for (const item of lootcrate.items) {
+      if (itemIdOccurrences.has(item.itemId)) {
+        itemIdOccurrences.set(
+          item.itemId,
+          itemIdOccurrences.get(item.itemId) + 1
+        );
+      } else {
+        itemIdOccurrences.set(item.itemId, 1);
+      }
+    }
+  }
+
+  // Get the itemIds that occurred in more than the specified threshold of lootcrates
+  const commonItemIds = [...itemIdOccurrences.entries()]
+    .filter(([itemId, occurrences]) => occurrences >= threshold)
+    .map(([itemId]) => itemId);
+
+  // Create sets of items using the common itemIds and store lootcrate information
+  const commonItemSets = [];
+  for (let i = 0; i < lootcrates.length; i++) {
+    const lootcrate = lootcrates[i];
+    const commonItems = lootcrate.items.filter((item) =>
+      commonItemIds.includes(item.itemId)
+    );
+    if (commonItems.length > 0) {
+      commonItemSets.push({
+        lootcrateIndex: i,
+        items: commonItems,
+      });
+    }
+  }
+
+  // Create a map to store which lootcrates use each common item set
+  const lootcratesUsingSet = new Map();
+  for (const commonItemSet of commonItemSets) {
+    for (const item of commonItemSet.items) {
+      if (lootcratesUsingSet.has(item.itemId)) {
+        lootcratesUsingSet.get(item.itemId).push(commonItemSet.lootcrateIndex);
+      } else {
+        lootcratesUsingSet.set(item.itemId, [commonItemSet.lootcrateIndex]);
+      }
+    }
+  }
+
+  return {
+    commonItemSets: commonItemSets,
+    lootcratesUsingSet: lootcratesUsingSet,
+  };
+}
+
+const commonItemSets = findCommonItemSetsWithThresholdAndLootcrates(
+  lootcrateitems,
+  2
+);
+
+// TODO: check for map lootcrates in map specific json files from arkwiki
+console.log("Grouped Common ItemIds:", commonItemSets.commonItemSets);
+require("fs").writeFile(
+  `insert.txt`,
+  [
+    // `INSERT INTO public."Item" ("crafted_item_id", "item_id", "amount") VALUES`,
+    JSON.stringify(commonItemSets.commonItemSets, null, 4),
+  ].join("\n"),
+  (error) => {
+    if (error) {
+      throw error;
+    }
+  }
+);
 return;
+
+// USED FOR GETTING ITEMS IN LOOTCRATES.JSON
+// const output = loot.lootCrates.map((lootcrate) => {
+//   return {
+//     blueprint: lootcrate.bp,
+//     name: lootcrate.name || "",
+//     items: lootcrate.sets.flatMap((set) => {
+//       return set.entries.flatMap((entry) => {
+//         return entry.items.flatMap((item) => {
+//           return {
+//             itemId: itemarray.find((i) => i.blueprint == item[1])?.id || null,
+//             itemName:
+//               itemarray.find((i) => i.blueprint == item[1])?.name || null,
+//             itemBlueprint: item[1],
+//             entryName: entry.name,
+//             setName: set.name,
+//             setCanRepeatItems: set.canRepeatItems,
+//             setQtyMin: set.qtyScale.min,
+//             setQtyMax: set.qtyScale.max,
+//             setQtyPow: set.qtyScale.pow,
+//             setWeight: set.weight,
+//             entryWeight: entry.weight,
+//             entryQtyMin: entry.qty.min,
+//             entryQtyMax: entry.qty.max,
+//             entryQtyPow: entry.qty.pow,
+//             entryQualityMin: entry.quality.min,
+//             entryQualityMax: entry.quality.max,
+//             entryQualityPow: entry.quality.pow,
+//             bpChance: entry.bpChance || 0,
+//           };
+//         });
+//       });
+//     }),
+//   };
+// });
+//
+// require("fs").writeFile(
+//   `insert.txt`,
+//   [JSON.stringify(output, null, 4)].join("\n"),
+//   (error) => {
+//     if (error) {
+//       throw error;
+//     }
+//   }
+// );
+
 const dinos = dadinos.map((x) => {
   return `
   UPDATE public."Dino"
@@ -144,6 +341,1337 @@ console.time("optimized");
 console.timeEnd("optimized");
 return;
 
+// Same data as MapLootcrates.json
+let ids = {
+  TheIsland: [
+    {
+      id: "SupplyCrate_Cave_QualityTier1_C",
+      name: "Cave Beacon 1",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier2_C",
+      name: "Cave Beacon 2",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier3_C",
+      name: "Cave Beacon 3",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier4_C",
+      name: "Cave Beacon 4",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier1_C",
+      name: "Swamp Cave Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier2_C",
+      name: "Swamp Cave Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier3_C",
+      name: "Swamp Cave Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier1_C",
+      name: "Ice Cave Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier2_C",
+      name: "Ice Cave Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier3_C",
+      name: "Ice Cave Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier1_C",
+      name: "Underwater Caves Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier2_C",
+      name: "Underwater Caves Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier3_C",
+      name: "Underwater Caves Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_OceanInstant_C",
+      name: "Deep Sea Loot Crate",
+    },
+    {
+      id: "SupplyCrate_Level03_C",
+      name: "White Beacon",
+    },
+    {
+      id: "SupplyCrate_Level03_Double_C",
+      name: "White Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level15_C",
+      name: "Green Beacon",
+    },
+    {
+      id: "SupplyCrate_Level15_Double_C",
+      name: "Green Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level25_C",
+      name: "Blue Beacon",
+    },
+    {
+      id: "SupplyCrate_Level25_Double_C",
+      name: "Blue Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level35_C",
+      name: "Purple Beacon",
+    },
+    {
+      id: "SupplyCrate_Level35_Double_C",
+      name: "Purple Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level45_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "SupplyCrate_Level45_Double_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level60_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "SupplyCrate_Level60_Double_C",
+      name: "Red Beacon (Double items)",
+    },
+    {
+      id: "ArtifactCrate_1_C",
+      name: "Artifact Container Hunter",
+    },
+    {
+      id: "ArtifactCrate_2_C",
+      name: "Artifact Container Pack",
+    },
+    {
+      id: "ArtifactCrate_3_C",
+      name: "Artifact Container Massive",
+    },
+    {
+      id: "ArtifactCrate_4_C",
+      name: "Artifact Container Devious",
+    },
+    {
+      id: "ArtifactCrate_5_C",
+      name: "Artifact Container Clever",
+    },
+    {
+      id: "ArtifactCrate_6_C",
+      name: "Artifact Container Skylord",
+    },
+    {
+      id: "ArtifactCrate_7_C",
+      name: "Artifact Container Devourer",
+    },
+    {
+      id: "ArtifactCrate_8_C",
+      name: "Artifact Container Immune",
+    },
+    {
+      id: "ArtifactCrate_9_C",
+      name: "Artifact Container Strong",
+    },
+    {
+      id: "ArtifactCrate_10_C",
+      name: "Artifact Container Cunning",
+    },
+    {
+      id: "ArtifactCrate_11_C",
+      name: "Artifact Container Brute",
+    },
+    {
+      id: "BeaverDam_C",
+      name: "Beaver Dam",
+    },
+    {
+      id: "SupplyCrateBaseBP_Instantaneous_DamLogs_Child_C",
+      name: "Giant Beaver Dam Logs",
+    },
+    {
+      id: "SupplyCrateBaseBP_Instantaneous_DenLogs_Child2_C",
+      name: "Giant Beaver Dam",
+    },
+  ],
+  Event: [
+    {
+      id: "SupplyCrate_Gift_C",
+      name: "Raptor Claus Present",
+    },
+  ],
+  ScorchedEarth: [
+    {
+      id: "SupplyCrate_Cave_QualityTier1_ScorchedEarth_C",
+      name: "Cave Beacon 1",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier2_ScorchedEarth_C",
+      name: "Cave Beacon 2",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier3_ScorchedEarth_C",
+      name: "Cave Beacon 3",
+    },
+    {
+      id: "SupplyCrate_Level03_ScorchedEarth_C",
+      name: "White Beacon",
+    },
+    {
+      id: "SupplyCrate_Level03_Double_ScorchedEarth_C",
+      name: "White Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level15_ScorchedEarth_C",
+      name: "Green Beacon",
+    },
+    {
+      id: "SupplyCrate_Level15_Double_ScorchedEarth_C",
+      name: "Green Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level30_ScorchedEarth_C",
+      name: "Blue Beacon",
+    },
+    {
+      id: "SupplyCrate_Level30_Double_ScorchedEarth_C",
+      name: "Blue Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level45_ScorchedEarth_C",
+      name: "Purple Beacon",
+    },
+    {
+      id: "SupplyCrate_Level45_Double_ScorchedEarth_C",
+      name: "Purple Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level55_ScorchedEarth_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "SupplyCrate_Level55_Double_ScorchedEarth_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level70_ScorchedEarth_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "SupplyCrate_Level70_Double_ScorchedEarth_C",
+      name: "Red Beacon (Double items)",
+    },
+    {
+      id: "ArtifactCrate_SE_C",
+      name: "Artifact Container Destroyer",
+    },
+    {
+      id: "ArtifactCrate_2_SE_C",
+      name: "Artifact Container Gatekeeper",
+    },
+    {
+      id: "ArtifactCrate_3_SE_C",
+      name: "Artifact Container Crag",
+    },
+  ],
+  Ragnarok: [
+    {
+      id: "SupplyCrate_Chest_Treasure_JacksonL_C",
+      name: "Treasure Chest",
+    },
+  ],
+  RagnarokExtracrates: [
+    {
+      id: "SupplyCrate_Cave_QualityTier1_C",
+      name: "Cave Beacon 1",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier2_C",
+      name: "Cave Beacon 2",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier3_C",
+      name: "Cave Beacon 3",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier4_C",
+      name: "Cave Beacon 4",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier1_C",
+      name: "Swamp Cave Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier2_C",
+      name: "Swamp Cave Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier3_C",
+      name: "Swamp Cave Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier1_C",
+      name: "Ice Cave Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier2_C",
+      name: "Ice Cave Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier3_C",
+      name: "Ice Cave Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier1_C",
+      name: "Underwater Caves Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier2_C",
+      name: "Underwater Caves Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier3_C",
+      name: "Underwater Caves Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_OceanInstant_C",
+      name: "Deep Sea Loot Crate",
+    },
+    {
+      id: "SupplyCrate_Level03_C",
+      name: "White Beacon",
+    },
+    {
+      id: "SupplyCrate_Level03_Double_C",
+      name: "White Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level15_C",
+      name: "Green Beacon",
+    },
+    {
+      id: "SupplyCrate_Level15_Double_C",
+      name: "Green Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level25_C",
+      name: "Blue Beacon",
+    },
+    {
+      id: "SupplyCrate_Level25_Double_C",
+      name: "Blue Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level35_C",
+      name: "Purple Beacon",
+    },
+    {
+      id: "SupplyCrate_Level35_Double_C",
+      name: "Purple Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level45_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "SupplyCrate_Level45_Double_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level60_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "SupplyCrate_Level60_Double_C",
+      name: "Red Beacon (Double items)",
+    },
+    {
+      id: "ArtifactCrate_1_C",
+      name: "Artifact Container Hunter",
+    },
+    {
+      id: "ArtifactCrate_2_C",
+      name: "Artifact Container Pack",
+    },
+    {
+      id: "ArtifactCrate_3_C",
+      name: "Artifact Container Massive",
+    },
+    {
+      id: "ArtifactCrate_4_C",
+      name: "Artifact Container Devious",
+    },
+    {
+      id: "ArtifactCrate_5_C",
+      name: "Artifact Container Clever",
+    },
+    {
+      id: "ArtifactCrate_6_C",
+      name: "Artifact Container Skylord",
+    },
+    {
+      id: "ArtifactCrate_7_C",
+      name: "Artifact Container Devourer",
+    },
+    {
+      id: "ArtifactCrate_8_C",
+      name: "Artifact Container Immune",
+    },
+    {
+      id: "ArtifactCrate_9_C",
+      name: "Artifact Container Strong",
+    },
+    {
+      id: "ArtifactCrate_10_C",
+      name: "Artifact Container Cunning",
+    },
+    {
+      id: "ArtifactCrate_11_C",
+      name: "Artifact Container Brute",
+    },
+    {
+      id: "BeaverDam_C",
+      name: "Beaver Dam",
+    },
+    {
+      id: "SupplyCrateBaseBP_Instantaneous_DamLogs_Child_C",
+      name: "Giant Beaver Dam Logs",
+    },
+    {
+      id: "SupplyCrateBaseBP_Instantaneous_DenLogs_Child2_C",
+      name: "Giant Beaver Dam",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier1_ScorchedEarth_C",
+      name: "Cave Beacon 1",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier2_ScorchedEarth_C",
+      name: "Cave Beacon 2",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier3_ScorchedEarth_C",
+      name: "Cave Beacon 3",
+    },
+    {
+      id: "SupplyCrate_Level03_ScorchedEarth_C",
+      name: "White Beacon",
+    },
+    {
+      id: "SupplyCrate_Level03_Double_ScorchedEarth_C",
+      name: "White Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level15_ScorchedEarth_C",
+      name: "Green Beacon",
+    },
+    {
+      id: "SupplyCrate_Level15_Double_ScorchedEarth_C",
+      name: "Green Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level30_ScorchedEarth_C",
+      name: "Blue Beacon",
+    },
+    {
+      id: "SupplyCrate_Level30_Double_ScorchedEarth_C",
+      name: "Blue Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level45_ScorchedEarth_C",
+      name: "Purple Beacon",
+    },
+    {
+      id: "SupplyCrate_Level45_Double_ScorchedEarth_C",
+      name: "Purple Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level55_ScorchedEarth_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "SupplyCrate_Level55_Double_ScorchedEarth_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level70_ScorchedEarth_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "SupplyCrate_Level70_Double_ScorchedEarth_C",
+      name: "Red Beacon (Double items)",
+    },
+    {
+      id: "ArtifactCrate_SE_C",
+      name: "Artifact Container Destroyer",
+    },
+    {
+      id: "ArtifactCrate_2_SE_C",
+      name: "Artifact Container Gatekeeper",
+    },
+    {
+      id: "ArtifactCrate_3_SE_C",
+      name: "Artifact Container Crag",
+    },
+  ],
+  Aberration: [
+    {
+      id: "SupplyCrate_Cave_Aberration_Level10_C",
+      name: "White Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level10_Double_C",
+      name: "White Crate (Double)",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level25_C",
+      name: "Green Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level25_Double_C",
+      name: "Green Crate (Double)",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level35_C",
+      name: "Blue Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level35_Double_C",
+      name: "Blue Crate (Double)",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level50_C",
+      name: "Purple Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level50_Double_C",
+      name: "Purple Crate (Double)",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level65_C",
+      name: "Yellow Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level65_Double_C",
+      name: "Yellow Crate (Double)",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level80_C",
+      name: "Red Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level80_Double_C",
+      name: "Red Crate (Double)",
+    },
+    {
+      id: "SupplyCrate_Dungeon_Aberration_Level35_C",
+      name: "Blue Dungeon Crate",
+    },
+    {
+      id: "SupplyCrate_Dungeon_Aberration_Level50_C",
+      name: "Purple Dungeon Crate",
+    },
+    {
+      id: "SupplyCrate_Dungeon_Aberration_Level65_C",
+      name: "Yellow Dungeon Crate",
+    },
+    {
+      id: "SupplyCrate_Dungeon_Aberration_Level80_C",
+      name: "Red Dungeon Crate",
+    },
+    {
+      id: "SupplyCrate_Level35_Aberrant_Surface_C",
+      name: "Blue Surface Beacon",
+    },
+    {
+      id: "SupplyCrate_Level35_Aberrant_Surface_Double_C",
+      name: "Blue Surface Beacon (Double)",
+    },
+    {
+      id: "SupplyCrate_Level50_Aberrant_Surface_C",
+      name: "Purple Surface Beacon",
+    },
+    {
+      id: "SupplyCrate_Level50_Aberrant_Surface_Double_C",
+      name: "Purple Surface Beacon (Double)",
+    },
+    {
+      id: "SupplyCrate_Level65_Aberrant_Surface_C",
+      name: "Yellow Surface Beacon",
+    },
+    {
+      id: "SupplyCrate_Level65_Aberrant_Surface_Double_C",
+      name: "Yellow Surface Beacon (Double)",
+    },
+    {
+      id: "SupplyCrate_Level80_Aberrant_Surface_C",
+      name: "Red Surface Beacon",
+    },
+    {
+      id: "SupplyCrate_Level80_Aberrant_Surface_Double_C",
+      name: "Red Surface Beacon (Double)",
+    },
+    {
+      id: "ArtifactCrate_AB_C",
+      name: "Artifact Container Depths",
+    },
+    {
+      id: "ArtifactCrate_2_AB_C",
+      name: "Artifact Container Shadows",
+    },
+    {
+      id: "ArtifactCrate_3_AB_C",
+      name: "Artifact Container Stalker",
+    },
+    {
+      id: "ArtifactCrate_4_AB_C",
+      name: "Artifact Container Lost",
+    },
+  ],
+  Extinction: [
+    {
+      id: "SupplyCrate_Cave_QualityTier1_EX_C",
+      name: "Cave Loot Crate Blue",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier2_EX_C",
+      name: "Cave Loot Crate Yellow",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier3_EX_C",
+      name: "Cave Loot Crate Red",
+    },
+    {
+      id: "SupplyCrate_Base_Horde_Easy_C",
+      name: "Orbital Supply Drop Blue",
+    },
+    {
+      id: "SupplyCrate_Base_Horde_Medium_C",
+      name: "Orbital Supply Drop Yellow",
+    },
+    {
+      id: "SupplyCrate_Base_Horde_Hard_C",
+      name: "Orbital Supply Drop Red",
+    },
+    {
+      id: "SupplyCrate_Base_Horde_Legendary_C",
+      name: "Orbital Supply Drop Purple",
+    },
+    {
+      id: "ElementNode_Easy_Horde_C",
+      name: "Corrupt Element Node",
+    },
+    {
+      id: "ElementNode_Hard_Horde_C",
+      name: "Corrupt Element Node",
+    },
+    {
+      id: "ElementNode_Medium_Horde_C",
+      name: "Corrupt Element Node",
+    },
+    {
+      id: "KingKaiju_ElementNode_C",
+      name: "Corrupt Element Node",
+    },
+    {
+      id: "ArtifactCrate_Desert_Kaiju_EX_C",
+      name: "Artifact Container Chaos",
+    },
+    {
+      id: "ArtifactCrate_ForestKaiju_EX_C",
+      name: "Artifact Container Growth",
+    },
+    {
+      id: "ArtifactCrate_IceKaiju_EX_C",
+      name: "Artifact Container Void",
+    },
+    {
+      id: "ArtifactCrate_KingKaiju_Alpha_EX_C",
+      name: "King Titan Alpha",
+    },
+    {
+      id: "ArtifactCrate_KingKaiju_Beta_EX_C",
+      name: "King Titan Beta",
+    },
+    {
+      id: "ArtifactCrate_KingKaiju_EX_C",
+      name: "King Titan Gamma",
+    },
+  ],
+  Valguero: [
+    {
+      id: "Val_SupplyCrate_Level35_C",
+      name: "Purple Beacon",
+    },
+    {
+      id: "Val_SupplyCrate_Level35_Double_C",
+      name: "Purple Beacon (Double items)",
+    },
+    {
+      id: "Val_SupplyCrate_Level45_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "Val_SupplyCrate_Level45_Double_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "Val_SupplyCrate_Level60_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "Val_SupplyCrate_Level60_Double_C",
+      name: "Red Beacon (Double items)",
+    },
+  ],
+  ValgueroExtracrates: [
+    {
+      id: "SupplyCrate_Cave_QualityTier1_C",
+      name: "Cave Beacon 1",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier2_C",
+      name: "Cave Beacon 2",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier3_C",
+      name: "Cave Beacon 3",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier4_C",
+      name: "Cave Beacon 4",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier1_C",
+      name: "Swamp Cave Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier2_C",
+      name: "Swamp Cave Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier3_C",
+      name: "Swamp Cave Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier1_C",
+      name: "Ice Cave Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier2_C",
+      name: "Ice Cave Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier3_C",
+      name: "Ice Cave Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier1_C",
+      name: "Underwater Caves Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier2_C",
+      name: "Underwater Caves Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier3_C",
+      name: "Underwater Caves Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_OceanInstant_C",
+      name: "Deep Sea Loot Crate",
+    },
+    {
+      id: "SupplyCrate_Level03_C",
+      name: "White Beacon",
+    },
+    {
+      id: "SupplyCrate_Level03_Double_C",
+      name: "White Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level15_C",
+      name: "Green Beacon",
+    },
+    {
+      id: "SupplyCrate_Level15_Double_C",
+      name: "Green Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level25_C",
+      name: "Blue Beacon",
+    },
+    {
+      id: "SupplyCrate_Level25_Double_C",
+      name: "Blue Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level35_C",
+      name: "Purple Beacon",
+    },
+    {
+      id: "SupplyCrate_Level35_Double_C",
+      name: "Purple Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level45_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "SupplyCrate_Level45_Double_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level60_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "SupplyCrate_Level60_Double_C",
+      name: "Red Beacon (Double items)",
+    },
+    {
+      id: "ArtifactCrate_1_C",
+      name: "Artifact Container Hunter",
+    },
+    {
+      id: "ArtifactCrate_2_C",
+      name: "Artifact Container Pack",
+    },
+    {
+      id: "ArtifactCrate_3_C",
+      name: "Artifact Container Massive",
+    },
+    {
+      id: "ArtifactCrate_4_C",
+      name: "Artifact Container Devious",
+    },
+    {
+      id: "ArtifactCrate_5_C",
+      name: "Artifact Container Clever",
+    },
+    {
+      id: "ArtifactCrate_6_C",
+      name: "Artifact Container Skylord",
+    },
+    {
+      id: "ArtifactCrate_7_C",
+      name: "Artifact Container Devourer",
+    },
+    {
+      id: "ArtifactCrate_8_C",
+      name: "Artifact Container Immune",
+    },
+    {
+      id: "ArtifactCrate_9_C",
+      name: "Artifact Container Strong",
+    },
+    {
+      id: "ArtifactCrate_10_C",
+      name: "Artifact Container Cunning",
+    },
+    {
+      id: "ArtifactCrate_11_C",
+      name: "Artifact Container Brute",
+    },
+    {
+      id: "BeaverDam_C",
+      name: "Beaver Dam",
+    },
+    {
+      id: "SupplyCrateBaseBP_Instantaneous_DamLogs_Child_C",
+      name: "Giant Beaver Dam Logs",
+    },
+    {
+      id: "SupplyCrateBaseBP_Instantaneous_DenLogs_Child2_C",
+      name: "Giant Beaver Dam",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level10_C",
+      name: "White Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level10_Double_C",
+      name: "White Crate (Double)",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level25_C",
+      name: "Green Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level25_Double_C",
+      name: "Green Crate (Double)",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level35_C",
+      name: "Blue Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level35_Double_C",
+      name: "Blue Crate (Double)",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level50_C",
+      name: "Purple Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level50_Double_C",
+      name: "Purple Crate (Double)",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level65_C",
+      name: "Yellow Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level65_Double_C",
+      name: "Yellow Crate (Double)",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level80_C",
+      name: "Red Crate",
+    },
+    {
+      id: "SupplyCrate_Cave_Aberration_Level80_Double_C",
+      name: "Red Crate (Double)",
+    },
+    {
+      id: "SupplyCrate_Dungeon_Aberration_Level35_C",
+      name: "Blue Dungeon Crate",
+    },
+    {
+      id: "SupplyCrate_Dungeon_Aberration_Level50_C",
+      name: "Purple Dungeon Crate",
+    },
+    {
+      id: "SupplyCrate_Dungeon_Aberration_Level65_C",
+      name: "Yellow Dungeon Crate",
+    },
+    {
+      id: "SupplyCrate_Dungeon_Aberration_Level80_C",
+      name: "Red Dungeon Crate",
+    },
+    {
+      id: "SupplyCrate_Level35_Aberrant_Surface_C",
+      name: "Blue Surface Beacon",
+    },
+    {
+      id: "SupplyCrate_Level35_Aberrant_Surface_Double_C",
+      name: "Blue Surface Beacon (Double)",
+    },
+    {
+      id: "SupplyCrate_Level50_Aberrant_Surface_C",
+      name: "Purple Surface Beacon",
+    },
+    {
+      id: "SupplyCrate_Level50_Aberrant_Surface_Double_C",
+      name: "Purple Surface Beacon (Double)",
+    },
+    {
+      id: "SupplyCrate_Level65_Aberrant_Surface_C",
+      name: "Yellow Surface Beacon",
+    },
+    {
+      id: "SupplyCrate_Level65_Aberrant_Surface_Double_C",
+      name: "Yellow Surface Beacon (Double)",
+    },
+    {
+      id: "SupplyCrate_Level80_Aberrant_Surface_C",
+      name: "Red Surface Beacon",
+    },
+    {
+      id: "SupplyCrate_Level80_Aberrant_Surface_Double_C",
+      name: "Red Surface Beacon (Double)",
+    },
+    {
+      id: "ArtifactCrate_AB_C",
+      name: "Artifact Container Depths",
+    },
+    {
+      id: "ArtifactCrate_2_AB_C",
+      name: "Artifact Container Shadows",
+    },
+    {
+      id: "ArtifactCrate_3_AB_C",
+      name: "Artifact Container Stalker",
+    },
+    {
+      id: "ArtifactCrate_4_AB_C",
+      name: "Artifact Container Lost",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier1_ScorchedEarth_C",
+      name: "Cave Beacon 1",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier2_ScorchedEarth_C",
+      name: "Cave Beacon 2",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier3_ScorchedEarth_C",
+      name: "Cave Beacon 3",
+    },
+    {
+      id: "SupplyCrate_Level03_ScorchedEarth_C",
+      name: "White Beacon",
+    },
+    {
+      id: "SupplyCrate_Level03_Double_ScorchedEarth_C",
+      name: "White Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level15_ScorchedEarth_C",
+      name: "Green Beacon",
+    },
+    {
+      id: "SupplyCrate_Level15_Double_ScorchedEarth_C",
+      name: "Green Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level30_ScorchedEarth_C",
+      name: "Blue Beacon",
+    },
+    {
+      id: "SupplyCrate_Level30_Double_ScorchedEarth_C",
+      name: "Blue Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level45_ScorchedEarth_C",
+      name: "Purple Beacon",
+    },
+    {
+      id: "SupplyCrate_Level45_Double_ScorchedEarth_C",
+      name: "Purple Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level55_ScorchedEarth_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "SupplyCrate_Level55_Double_ScorchedEarth_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level70_ScorchedEarth_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "SupplyCrate_Level70_Double_ScorchedEarth_C",
+      name: "Red Beacon (Double items)",
+    },
+    {
+      id: "ArtifactCrate_SE_C",
+      name: "Artifact Container Destroyer",
+    },
+    {
+      id: "ArtifactCrate_2_SE_C",
+      name: "Artifact Container Gatekeeper",
+    },
+    {
+      id: "ArtifactCrate_3_SE_C",
+      name: "Artifact Container Crag",
+    },
+  ],
+  Genesis2: [
+    {
+      id: "SupplyCrate_Space_01_Ambergris_C",
+      name: "White Supply Crate",
+    },
+    {
+      id: "SupplyCrate_Space_02_Crystal_C",
+      name: "Green Supply Crate",
+    },
+    {
+      id: "SupplyCrate_Space_03_Sulfur_C",
+      name: "Blue Supply Crate",
+    },
+    {
+      id: "SupplyCrate_Space_04_ElementShards_C",
+      name: "Purple Supply Crate",
+    },
+    {
+      id: "SupplyCrate_Space_05_Obsidian_C",
+      name: "Yellow Supply Crate",
+    },
+    {
+      id: "SupplyCrate_Space_06_Oil_C",
+      name: "Red Supply Crate",
+    },
+    {
+      id: "SupplyCrate_Space_07_ElementDust_C",
+      name: "Cyan Supply Crate",
+    },
+    {
+      id: "SupplyCrate_Space_08_BlackPearls_C",
+      name: "Orange Supply Crate",
+    },
+  ],
+  LostIsland: [
+    {
+      id: "SupplyCrate_Level45_LostIsland_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "SupplyCrate_Level45_LostIsland_Double_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level60_LostIsland_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "SupplyCrate_Level60_LostIsland_Double_C",
+      name: "Red Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Ruins_LostIsland_C",
+      name: "Ruins Dungeon Crate",
+    },
+  ],
+  LostIslandExtracrates: [
+    {
+      id: "SupplyCrate_Cave_QualityTier1_C",
+      name: "Cave Beacon 1",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier2_C",
+      name: "Cave Beacon 2",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier3_C",
+      name: "Cave Beacon 3",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier4_C",
+      name: "Cave Beacon 4",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier1_C",
+      name: "Swamp Cave Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier2_C",
+      name: "Swamp Cave Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_SwampCaveTier3_C",
+      name: "Swamp Cave Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier1_C",
+      name: "Ice Cave Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier2_C",
+      name: "Ice Cave Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_IceCaveTier3_C",
+      name: "Ice Cave Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier1_C",
+      name: "Underwater Caves Loot Crate blue",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier2_C",
+      name: "Underwater Caves Loot Crate yellow",
+    },
+    {
+      id: "SupplyCrate_UnderwaterCaveTier3_C",
+      name: "Underwater Caves Loot Crate red",
+    },
+    {
+      id: "SupplyCrate_OceanInstant_C",
+      name: "Deep Sea Loot Crate",
+    },
+    {
+      id: "SupplyCrate_Level03_C",
+      name: "White Beacon",
+    },
+    {
+      id: "SupplyCrate_Level03_Double_C",
+      name: "White Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level15_C",
+      name: "Green Beacon",
+    },
+    {
+      id: "SupplyCrate_Level15_Double_C",
+      name: "Green Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level25_C",
+      name: "Blue Beacon",
+    },
+    {
+      id: "SupplyCrate_Level25_Double_C",
+      name: "Blue Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level35_C",
+      name: "Purple Beacon",
+    },
+    {
+      id: "SupplyCrate_Level35_Double_C",
+      name: "Purple Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level45_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "SupplyCrate_Level45_Double_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level60_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "SupplyCrate_Level60_Double_C",
+      name: "Red Beacon (Double items)",
+    },
+    {
+      id: "ArtifactCrate_1_C",
+      name: "Artifact Container Hunter",
+    },
+    {
+      id: "ArtifactCrate_2_C",
+      name: "Artifact Container Pack",
+    },
+    {
+      id: "ArtifactCrate_3_C",
+      name: "Artifact Container Massive",
+    },
+    {
+      id: "ArtifactCrate_4_C",
+      name: "Artifact Container Devious",
+    },
+    {
+      id: "ArtifactCrate_5_C",
+      name: "Artifact Container Clever",
+    },
+    {
+      id: "ArtifactCrate_6_C",
+      name: "Artifact Container Skylord",
+    },
+    {
+      id: "ArtifactCrate_7_C",
+      name: "Artifact Container Devourer",
+    },
+    {
+      id: "ArtifactCrate_8_C",
+      name: "Artifact Container Immune",
+    },
+    {
+      id: "ArtifactCrate_9_C",
+      name: "Artifact Container Strong",
+    },
+    {
+      id: "ArtifactCrate_10_C",
+      name: "Artifact Container Cunning",
+    },
+    {
+      id: "ArtifactCrate_11_C",
+      name: "Artifact Container Brute",
+    },
+    {
+      id: "BeaverDam_C",
+      name: "Beaver Dam",
+    },
+    {
+      id: "SupplyCrateBaseBP_Instantaneous_DamLogs_Child_C",
+      name: "Giant Beaver Dam Logs",
+    },
+    {
+      id: "SupplyCrateBaseBP_Instantaneous_DenLogs_Child2_C",
+      name: "Giant Beaver Dam",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier1_ScorchedEarth_C",
+      name: "Cave Beacon 1",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier2_ScorchedEarth_C",
+      name: "Cave Beacon 2",
+    },
+    {
+      id: "SupplyCrate_Cave_QualityTier3_ScorchedEarth_C",
+      name: "Cave Beacon 3",
+    },
+    {
+      id: "SupplyCrate_Level03_ScorchedEarth_C",
+      name: "White Beacon",
+    },
+    {
+      id: "SupplyCrate_Level03_Double_ScorchedEarth_C",
+      name: "White Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level15_ScorchedEarth_C",
+      name: "Green Beacon",
+    },
+    {
+      id: "SupplyCrate_Level15_Double_ScorchedEarth_C",
+      name: "Green Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level30_ScorchedEarth_C",
+      name: "Blue Beacon",
+    },
+    {
+      id: "SupplyCrate_Level30_Double_ScorchedEarth_C",
+      name: "Blue Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level45_ScorchedEarth_C",
+      name: "Purple Beacon",
+    },
+    {
+      id: "SupplyCrate_Level45_Double_ScorchedEarth_C",
+      name: "Purple Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level55_ScorchedEarth_C",
+      name: "Yellow Beacon",
+    },
+    {
+      id: "SupplyCrate_Level55_Double_ScorchedEarth_C",
+      name: "Yellow Beacon (Double items)",
+    },
+    {
+      id: "SupplyCrate_Level70_ScorchedEarth_C",
+      name: "Red Beacon",
+    },
+    {
+      id: "SupplyCrate_Level70_Double_ScorchedEarth_C",
+      name: "Red Beacon (Double items)",
+    },
+    {
+      id: "ArtifactCrate_SE_C",
+      name: "Artifact Container Destroyer",
+    },
+    {
+      id: "ArtifactCrate_2_SE_C",
+      name: "Artifact Container Gatekeeper",
+    },
+    {
+      id: "ArtifactCrate_3_SE_C",
+      name: "Artifact Container Crag",
+    },
+  ],
+};
 function calcXP(theXpk, level, night = false) {
   return parsePercision(theXpk * ((level - 1) / 10 + 1) * 4 * XPMultiplier);
 }
@@ -248,426 +1776,7 @@ function initTamingNotice() {
     );
   }
 }
-function initTaming() {
-  $("#taming").append(`<div class="row jcsb">
-    <div><h2 style="clear:both" class="ib marginBottomS">Taming Calculator</h2>${
-      method == "n"
-        ? ' <span class="bigPill bigPillReverse ib">Passive</span>'
-        : ""
-    }</div>
-    </div>`);
-  initTamingNotice();
-  $("#taming").append(`<div class="ttRowH ttRH row light bold">
-      <div class="flex2 noMob">
-        Food
-      </div>
-      <div class="flex1 jccenter">
-        Selected Food / Max
-      </div>
-      <div class="flex1 jccenter">
-        Time
-      </div>
-      <div class="flex2 tteff">
-        Effectiveness
-      </div>
-      <div class="ttexp noMob"></div>
-    </div>
 
-  <div class="item tameSetting ttRow">
-    <div class="itemImage" style="">
-      <a href="/item/341/sanguine-elixir"><img src="/media/item/Sanguine_Elixir.png" width="42" height="42" alt="Sanguine Elixir"></a>
-    </div>
-    <div class="itemLabel white bold"><input type="checkbox" id="sanguineElixir" name="sanguineElixir">  <label for="sanguineElixir">Use Sanguine Elixir</label> <span class="lightPill">NEW</span> <span class="bold light small marginTopSS">Increases taming by 30%</span></div>
-  </div>
-
-  <div id="tamingTable"></div>
-
-  <div id="tamingExcess" class="lightbox warningBox center">Too much food was used. Excess food is being ignored.</div>
-
-  <div id="tamingWarning" class="lightbox">
-    <div class="miniBarWrap" style="margin:.1em 0 .3em"><div class="miniBar" style="width:0%;background-color:#FFF"></div></div>
-    <div class="center light">Not enough food.</div>
-  </div>
-
-  <div id="tamingResults">
-    <div class="center light marginTop2 bold marginBottomSS">With Selected Food:</div>
-    <div class="lightbox rCol ${
-      method != "n" ? "attachedBottom" : ""
-    }" style="justify-content:center;gap:1.5em;">
-      <div class="rowItem">
-        <div class="center marginBottom marginTopS" style="align-self:center">
-          <div class="bigNum light">TOTAL TIME: <span class="white" id="totalTime"></span></div>
-        </div>
-
-        <div class="starveTimer widget collapsed lightbox pad0">
-          <div class="row pad bold widgetH jcsb">
-            <div class="row acenter">
-              <img src="/media/item/Food.png" width="26" height="26" alt="ARK: Survival Evolved Food Icon" class="marginRightS">
-              Starve Timer&nbsp;&nbsp;<span class="tameSecsLeft widgetHCO light"></span> </div>
-              <div class="arrow down"></div>
-          </div>
-          <div class="pad widgetB">
-            <div class="marginBottom2 flex jccenter">
-              <div class="lightbox">
-                <div class="marginBottomS light center">Enter your creature's Food stat:</div>
-
-                <div class="row acenter">
-                  <img src="/media/item/Food.png" width="34" height="34" alt="ARK: Survival Evolved Food Icon" class="marginRightS">
-                  <span class="kindabig">FOOD</span>
-
-                  <div class="center marginLeft2 marginRightSS">
-                    <input type="text" value="" class="currentFood whiteinput narc" style="width:4em;font-weight:bold;" />
-                    <div class="light marginTopSS">Current</div>
-                  </div>
-                  <div class="center">
-                    <input type="text" value="" class="maxFood whiteinput narc" style="width:4em;font-weight:bold;" />
-                    <div class="light marginTopSS">Max</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="row jcsb r">
-              <div class="meterStatus actionColor right"></div>
-              <div class="row starveMeter" style="padding-bottom:1.5em">
-                <div class="row" data-tooltip title="This is the point at which your creature's food value reaches 0. Once it is nearing 0, feed it all required food. It will immediately eat as much as possible and then eat the remainder at a normal pace.">
-                  <div>
-                    <div class="starveSecsLeft timeRemaining">&nbsp;</div>
-                  </div>
-                  <div class="smaller paddedS asc">
-                    <div class="light">UNTIL</div>
-                    <div>STARVED</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="miniBarWrap marginBottomS"><div class="miniBar" style="width:100%"></div></div>
-            <div class="row jcsb" style="align-items:flex-start">
-              <div class="row">
-                <div class="rowItemN">
-                  <div class="tameSecsLeft timeRemaining">&nbsp;</div>
-                </div>
-                <div class="rowItemN smaller paddedS asc">
-                  <div class="light">UNTIL</div>
-                  <div>TAMED</div>
-                </div>
-              </div>
-              <div class="right light" data-tooltip title="Based on your selected food, this is the total food value that this creature must consume to be tamed.">Food required to eat: <span class="maxUnits"></span></div>
-            </div>
-            <div class="row marginTop2">
-              <div class="rowItem">
-                <div class="row">
-                  <div class="rowItemN">
-                    <input type="text" value="5" class="alarm whiteinput" style="width:2em;text-align:center;font-weight:bold;" />
-                  </div>
-                  <div class="rowItem light paddedS">
-                    ALARM <br />(mins. before)
-                  </div>
-                </div>
-              </div>
-              <div class="rowItem right">
-                <button class="timerStart actionButton bold uppercase">Start Timer</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="starveNote light small marginTop">Starve taming reduces the risk of losing resources by feeding a creature only once it is hungry enough to eat everything at once (or, eat as much as it can). Once you've selected the food you'll be taming with, enter the creature's current and max food values, then start the timer. <a href="https://help.dododex.com/en/article/how-to-starve-tame-in-ark-survival-evolved" class="">Learn more</a></div>
-
-      </div>
-      <div class="flex1 row">
-        <div class="rowItem center lvlsec">
-          <div class="light">Lvl <span class="bigNum white" id="baseLevel"></span></div>
-          <div class="light">Current</div>
-        </div>
-        <div class="rowItemN padded lvlsec">
-          <div class="arrow right"></div>
-        </div>
-        <div class="row flex2">
-          <div class="rowItem">
-            <div class="ringHolder">
-              <div class="ringText light white bigNum">+<span id="gainedLevels"></span></div>
-              <svg
-                 class="progress-ring"
-                 width="60"
-                 height="60">
-                <circle
-                  class="progress-ring__circle"
-                  stroke="#bbff77"
-                  strokeWidth="4"
-                  fill="#bbff7718"
-                  r="28"
-                  cx="30"
-                  cy="30"/>
-              </svg>
-            </div>
-            <div class="marginTopS center">
-              <div class="bigNum action"> <span id="effectiveness"></span><sup class="sup">%</sup></div>
-              <div class="light">Taming Eff.</div>
-            </div>
-          </div>
-          <div class="rowItem center lvlsec">
-            <div class="light">Lvl <span class="bigNum white" id="bonusLevel"></span></div>
-            <div class="light">With Bonus</div>
-          </div>
-        </div>
-        <div class="rowItemN padded lvlsec">
-          <div class="arrow right"></div>
-        </div>
-        <div class="rowItem center lvlsec">
-          <div class="light">Lvl <span class="bigNum white" id="maxLevel"></span></div>
-          <div class="light">Max After Taming <a href="https://help.dododex.com/en/article/how-do-creature-levels-work-in-ark-survival-evolved" data-tooltip title="Creatures can gain 73 levels after taming, but ARK: Genesis-exclusive creatures and X-creatures can gain 88 levels. In single player, all creatures gain 88 levels after taming."><i class="fas fa-question-circle"></i></a></div>
-        </div>
-      </div>
-    </div>
-  `);
-  if (method != "n") {
-    $("#taming").append(`
-      <div class="lightbox rCol attachedTop" style="justify-content:center;background-color:#375E79;gap:1.5em;">
-        <div class="rowItem">
-
-          <div id="torporTimer" class="widget collapsed tt lightbox pad0">
-            <div class="row pad bold widgetH jcsb">
-              <div class="row acenter">
-                <img src="/media/item/Torpor.png" width="26" height="26" alt="ARK: Survival Evolved Torpor Icon" class="marginRightS">
-                Torpor Timer&nbsp;<span class="ttTimeRemaining widgetHCO light"></span> </div>
-                <div class="arrow down"></div>
-            </div>
-            <div class="pad widgetB">
-              <div class="row marginBottomS gridGap2" style="justify-content:center;">
-                <div class="rowItem">
-                  <a id="useNarcotics" class="button">
-                    <div class="center">
-                      <span class="bigNum">+</span>
-                      <img src="/media/item/Narcotics.png" width="30" height="30" alt="Narcotics" style="vertical-align:middle;" />
-                    </div>
-                    <div class="marginTopS small bold">Narcotics</div>
-                    <div class="small light">40 Torpor</div>
-                  </a>
-                  <div class="narc marginTopS" id="narcoticsUsed">&nbsp;</div>
-                </div>
-                <div class="rowItem">
-                  <a id="useNarcoberries" class="button">
-                    <div class="center">
-                      <span class="bigNum">+</span>
-                      <img src="/media/item/Narcoberry.png" width="30" height="30" alt="Narcoberry" style="vertical-align:middle;" />
-                    </div>
-                    <div class="marginTopS small bold">Narcoberries</div>
-                    <div class="small light">7.5 Torpor</div>
-                  </a>
-                  <div class="narc marginTopS" id="narcoberriesUsed">&nbsp;</div>
-                </div>
-                <div class="rowItem">
-                  <a id="useAscerbic" class="button">
-                    <div class="center">
-                      <span class="bigNum">+</span>
-                      <img src="/media/item/Ascerbic_Mushroom.png" width="30" height="30" alt="Bio Toxin" style="vertical-align:middle;" />
-                    </div>
-                    <div class="marginTopS small bold">Aserbic Mushrooms</div>
-                    <div class="small light">25 Torpor</div>
-                  </a>
-                  <div class="narc marginTopS" id="ascerbicUsed">&nbsp;</div>
-                </div>
-                <div class="rowItem">
-                  <a id="useBiotoxins" class="button">
-                    <div class="center">
-                      <span class="bigNum">+</span>
-                      <img src="/media/item/Bio_Toxin.png" width="30" height="30" alt="Bio Toxin" style="vertical-align:middle;" />
-                    </div>
-                    <div class="marginTopS small bold">Bio Toxin</div>
-                    <div class="small light">80 Torpor</div>
-                  </a>
-                  <div class="narc marginTopS" id="biotoxinsUsed">&nbsp;</div>
-                </div>
-
-              </div>
-
-              <div style="text-align:right;"><input type="text" id="ttUnits" value="" class="whiteinput narc" style="width:4em;font-weight:bold;" /></div>
-              <div class="miniBarWrap marginTopS marginBottomS"><div class="miniBar" style="width:100%"></div></div>
-              <div class="row jcsb">
-                <div class="row">
-                  <div class="rowItemN">
-                    <div id="ttTimeRemaining" class="ttTimeRemaining timeRemaining">&nbsp;</div>
-                  </div>
-                  <div class="rowItemN smaller paddedS asc">
-                    <div class="light">UNTIL</div>
-                    <div>CONSCIOUS</div>
-                  </div>
-                </div>
-                <div class="right light"><span class="ttMaxUnits"></span></div>
-              </div>
-              <div class="row marginTop2">
-                <div class="rowItem">
-                  <div class="row">
-                    <div class="rowItemN">
-                      <input type="text" id="ttAlarm" value="5" class="whiteinput" style="width:2em;text-align:center;font-weight:bold;" />
-                    </div>
-                    <div class="rowItem light paddedS">
-                      ALARM <br />(mins. before)
-                    </div>
-                  </div>
-                </div>
-                <div class="rowItem right">
-                  <button id="ttStart" class="actionButton bold uppercase">Start Timer</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="light small marginTop">Track this creature's torpor and narcotic consumpion over time. <a href="https://help.dododex.com/en/article/how-to-use-a-torpor-timer-in-ark-survival-evolved" class="">Learn more</a></div>
-          <div class="marginTop2">
-            <div class="row acenter">
-              <h3 style="margin:0 0.4em 0 0">Torpor Drain Rate:</h3>
-              <div id="trClass" class="bigPill marginRightS">
-                <img src="/media/item/Torpor.png" width="20" height="20" alt="ARK: Survival Evolved Torpor Icon" class="marginRightS"> <span></span>
-              </div>
-              <span class="bigNum light"><span id="torporDeplPS"></span>/s</span>
-            </div>
-            <div class="light small marginTopS" id="trClassNote"></div>
-          </div>
-        </div>
-        <div class="rowItem">
-          <div>
-            <h3 class="marginTop0">Narcotics Needed</h3>
-            <div class="row" id="narcsNeeded">
-              <div class="rowItem center paddedS">
-                <div class="marginBottomS"><img src="/media/item/Narcotics.png" width="30" height="30" alt="Narcotics" /></div>
-                <div class="bigNum" id="narcsMin"></div>
-                <div class="marginTopS small bold">Narcotics</div>
-              </div>
-              <div class="rowItem center paddedS">
-                <div class="marginBottomS"><img src="/media/item/Narcoberry.png" width="30" height="30" alt="Narcoberry" /></div>
-                <div class="bigNum" id="narcBMin"></div>
-                <div class="marginTopS small bold">Narcoberries</div>
-              </div>
-              <div class="rowItem center paddedS">
-                <div class="marginBottomS"><img src="/media/item/Ascerbic_Mushroom.png" width="30" height="30" alt="Bio Toxin" /></div>
-                <div class="bigNum" id="ascerbicmushroomsMin"></div>
-                <div class="marginTopS small bold">Aserbic Mushrooms</div>
-              </div>
-              <div class="rowItem center paddedS">
-                <div class="marginBottomS"><img src="/media/item/Bio_Toxin.png" width="30" height="30" alt="Bio Toxin" /></div>
-                <div class="bigNum" id="biotoxinsMin"></div>
-                <div class="marginTopS small bold">Bio Toxin</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `);
-  }
-  $("#taming").append(`
-  </div>
-  `);
-  circle = document.querySelector(".progress-ring__circle");
-  radius = circle.r.baseVal.value;
-  circumference = radius * 2 * Math.PI;
-  circle.style.strokeDasharray = `${circumference} ${circumference}`;
-  circle.style.strokeDashoffset = `${circumference}`;
-  processTamingTable();
-  torporTimerInit();
-  starveTimerInit();
-  processTameInput();
-}
-function processTamingTable() {
-  var level = Settings.get("level");
-  taming = calcData(CREATURES[creatureID], level, method);
-  for (var i in taming.food) {
-    taming.food[i].results = calcTame(CREATURES[creatureID], taming.food, i);
-  }
-  $("#tamingTable").empty();
-  var numCollapsed = taming.food.length - MAX_FOOD_COLLAPSED;
-  var i = 0;
-  $(taming.food).each(function () {
-    if (typeof this.l == "string") {
-      var labelHTML =
-        '<div class="bold light small uppercase marginTopSS">' +
-        this.l +
-        "</div>";
-    } else {
-      var labelHTML = "";
-    }
-    var effectiveness = Math.round(this.results.effectiveness * 10) / 10;
-    var image = getImage(this.nameFormatted);
-    $("#tamingTable").append(`
-      <div class="ttRow" ${
-        i >= MAX_FOOD_COLLAPSED && numCollapsed > 1
-          ? 'style="display:none" data-ref="ttHidden"'
-          : ""
-      } data-ttrow="${this.key}">
-      <div class="ttBH">
-        <div class="ttB1 flex2">
-          <div class="item">
-            <div class="itemImage">
-              <img src="${image}" width="42" height="42" alt="${this.nameFormatted}">
-            </div>
-            <div class="itemLabel white bold">${
-              this.nameFormatted
-            } ${labelHTML}</div>
-          </div>
-        </div>
-        <div class="ttB2 flex1 jccenter bold kindabig">
-          <input type="number" value="${
-            this.use
-          }" maxlength="6" size="5" min="0" max="${this.max}" class="whiteinput attachedRight use${this.use == 0 ? " empty" : ""}" placeholder="0">
-          <div class="small light button useExclusive">${this.max}</div>
-        </div>
-        <div class="ttB3 flex1 jccenter bold">
-          ${timeFormat(this.seconds)}
-        </div>
-        <div class="ttB4 flex2 row tteff">
-          <div class="rowItem">
-            <div><span class="bold">${effectiveness}%</span> <span class="light">+${this.results.gainedLevels} Lvl (${level + this.results.gainedLevels})</span></div>
-            <div class="miniBarWrap" style="margin:.1em 0 .3em"><div class="miniBar" style="width:${effectiveness}%;background-color:#FFF"></div></div>
-          </div>
-        </div>
-        <div class="ttB5 ttexp">
-          <div class="arrow down" />
-        </div>
-      </div>
-      <div class="ttRow2">
-        <div class="row padVS light">
-          <div class="tt21">
-            <div class="row">
-              <div>Per Item:</div>
-              <div class="paddedS">
-                ${
-                  this.df ? "" : Math.round(this.food * 10) / 10 + " Food<br />"
-                }
-                ${Math.round(this.percentPer * 10) / 10}% Taming
-              </div>
-            </div>
-          </div>
-          ${
-            typeof this.interval1 == "number"
-              ? `<div class="tt22 jccenter center">
-              ~${timeFormat(this.interval1)}<br/>First Interval
-            </div>
-            <div class="tt22 jccenter center">
-              ${timeFormat(this.secondsPer)}<br/>Remaining Intervals
-            </div>
-            `
-              : `<div class="tt22 jccenter center">
-              ${timeFormat(this.secondsPer)}<br/>Intervals
-            </div>
-            <div class="tt23 noMob"></div>
-            `
-          }
-        </div>
-      </div>
-    </div>`);
-    i++;
-  });
-  if (numCollapsed > 0) {
-    $("#tamingTable").append(
-      `<div class="ttRow button rc0" id="ttLoad">Show ${numCollapsed} More</div>`
-    );
-    $("#ttLoad").click(function () {
-      var theElems = $("[data-ref=ttHidden]");
-      $(theElems).fadeIn(300);
-      $(this).hide();
-    });
-  }
-}
 function processTameInput() {
   console.log("processTameInput()");
   var level = Settings.get("level");
@@ -1741,6 +2850,7 @@ function startTimer() {
     $("#ttStart").html("Start Timer");
   }
 }
+
 function stopTimer() {
   clearInterval(interval);
 }

@@ -78,6 +78,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
   const [images, setImages] = useState([]);
   const [currentModalImage, setCurrentModalImage] = useState(null);
 
+  // !TODO: consider switching to useEffect?
   useLayoutEffect(() => {
     supabase.storage
       .from("timelineimages")
@@ -117,7 +118,6 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
               {` ${timelineSeasonBasespot?.TimelineSeason.server} ${timelineSeasonBasespot.TimelineSeason?.cluster} Season ${timelineSeasonBasespot.TimelineSeason.season}`}
             </p>
             <div className="flex flex-wrap justify-start space-x-1 md:space-y-1 xl:space-y-0">
-              {/* TODO: add check for if user is in current season */}
               {isAuthenticated && (
                 <>
                   {hasRole("timeline_update") ||
@@ -255,7 +255,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                             {timeTag(created_at)}
                           </p>
                           <p className="inline-flex gap-x-1">
-                            {tags && tags.split(',').map(t => <span className="rw-badge rw-badge-gray">#{t}</span>)}
+                            {tags && tags.split(',').map(t => <span key={`tag-${t}-${id}`} className="rw-badge rw-badge-gray">#{t}</span>)}
                           </p>
                         </div>
                       </div>
@@ -273,7 +273,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
               {timelineSeasonBasespot.map_id && (
                 <Map
                   disable_map={true}
-                  className="h-full w-full object-cover object-center"
+                  className="h-full w-fit object-cover object-center"
                   map_id={timelineSeasonBasespot.map_id}
                   size={{ width: 500, height: 500 }}
                   pos={[
@@ -322,7 +322,7 @@ const TimelineSeasonBasespot = ({ timelineSeasonBasespot }: Props) => {
                     <abbr title="Longitude">Lon</abbr> on the map{" "}
                     <Link
                       to={routes.map({
-                        id: timelineSeasonBasespot.map_id?.toString(),
+                        id: timelineSeasonBasespot.map_id,
                       })}
                     >
                       {timelineSeasonBasespot?.Map?.name}

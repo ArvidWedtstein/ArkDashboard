@@ -12,12 +12,12 @@ interface IArkCard {
     link: string;
   };
   image?:
-  | {
-    src: string;
-    alt?: string;
-    position?: string | number | (string & {});
-  }
-  | string;
+    | {
+        src: string;
+        alt?: string;
+        position?: string | number | (string & {});
+      }
+    | string;
   icon?: {
     src: string;
     alt?: string;
@@ -48,11 +48,12 @@ const ArkCard = memo<IArkCard>(
             typeof image === "string"
               ? `${image}`
               : image
-                ? `url('${image.src}')`
-                : "",
+              ? `url('${image.src}')`
+              : "",
           backgroundSize: "cover",
-          backgroundPosition: `${typeof image !== "string" ? image?.position ?? "center" : "center"
-            }`,
+          backgroundPosition: `${
+            typeof image !== "string" ? image?.position ?? "center" : "center"
+          }`,
         }}
       >
         <div
@@ -72,7 +73,7 @@ const ArkCard = memo<IArkCard>(
                   alt={icon.alt ?? "icon"}
                   title={icon.alt ?? "icon"}
                   loading="lazy"
-                  className="lg:object-fit h-full w-full rounded-2xl object-scale-down"
+                  className="lg:object-fit h-full w-full rounded-lg object-scale-down"
                 />
               </div>
             )}

@@ -13,7 +13,7 @@ export const QUERY = gql`
       id
       created_at
       name
-      MapCoordinate {
+      MapResource {
         latitude
         longitude
         type
@@ -33,7 +33,7 @@ const UPDATE_MAP_MUTATION = gql`
       id
       created_at
       name
-      MapCoordinate {
+      MapResource {
         latitude
         longitude
         type

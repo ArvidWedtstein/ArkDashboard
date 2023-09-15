@@ -1,7 +1,7 @@
 import LootcrateCell from 'src/components/Lootcrate/LootcrateCell'
 
 type LootcratePageProps = {
-  id: string
+  id: number
 }
 
 const LootcratePage = ({ id }: LootcratePageProps) => {

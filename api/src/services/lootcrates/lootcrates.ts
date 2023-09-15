@@ -5,37 +5,97 @@ import type {
 } from "types/graphql";
 
 import { db } from "src/lib/db";
-// TODO: Make a query for getting lootcrates that contains a specific item
 
-export const lootcratesByMap = ({ map }: { map?: string }) => {
-  return !!map
-    ? db.lootcrate.findMany({
-        orderBy: { created_at: "desc" },
-        where: {
-          OR: [
-            {
-              Map: {
-                name: {
-                  contains: map,
-                  mode: "insensitive",
-                },
-              },
-            },
-            {
-              Map: {
-                id: {
-                  equals: parseInt(map),
-                },
-              },
-            },
-          ],
-        },
-      })
-    : db.lootcrate.findMany();
+export const lootcratesByMap = async ({
+  map,
+  search,
+  type,
+  color,
+}: {
+  map?: string;
+  search?: string;
+  type?: string;
+  color?: string;
+}) => {
+  return db.lootcrate.findMany({
+    orderBy: { name: "asc" },
+    where:
+      map || search || type || color
+        ? {
+            OR: [
+              type
+                ? {
+                    type: {
+                      in: type.split(","),
+                    },
+                  }
+                : {},
+              search
+                ? {
+                    LootcrateMap: {
+                      some: {
+                        Map: {
+                          name: {
+                            contains: search,
+                            mode: "insensitive",
+                          },
+                        },
+                      },
+                    },
+                  }
+                : {},
+              !isNaN(parseInt(map))
+                ? {
+                    LootcrateMap: {
+                      some: {
+                        map_id: {
+                          equals: parseInt(map),
+                        },
+                      },
+                    },
+                  }
+                : {},
+              search
+                ? {
+                    name: {
+                      mode: "insensitive",
+                      contains: search,
+                    },
+                  }
+                : {},
+              search
+                ? {
+                    LootcrateItem: {
+                      some: {
+                        Item: {
+                          name: {
+                            mode: "insensitive",
+                            contains: search,
+                          },
+                        },
+                      },
+                    },
+                  }
+                : {},
+              color
+                ? {
+                    color: {
+                      in: color.split(","),
+                    },
+                  }
+                : {},
+            ],
+          }
+        : {},
+  });
 };
 
 export const lootcrates: QueryResolvers["lootcrates"] = () => {
-  return db.lootcrate.findMany();
+  return db.lootcrate.findMany({
+    orderBy: {
+      name: "asc",
+    },
+  });
 };
 
 export const lootcrate: QueryResolvers["lootcrate"] = ({ id }) => {
@@ -71,10 +131,10 @@ export const deleteLootcrate: MutationResolvers["deleteLootcrate"] = ({
 };
 
 export const Lootcrate: LootcrateRelationResolvers = {
-  Map: (_obj, { root }) => {
-    return db.lootcrate.findUnique({ where: { id: root?.id } }).Map();
+  LootcrateItem: (_obj, { root }) => {
+    return db.lootcrate.findUnique({ where: { id: root?.id } }).LootcrateItem();
   },
-  LootcrateSet: (_obj, { root }) => {
-    return db.lootcrate.findUnique({ where: { id: root?.id } }).LootcrateSet();
+  LootcrateMap: (_obj, { root }) => {
+    return db.lootcrate.findUnique({ where: { id: root?.id } }).LootcrateMap();
   },
 };

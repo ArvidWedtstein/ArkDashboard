@@ -28,13 +28,12 @@ describe('lootcrates', () => {
     expect(result).toEqual(scenario.lootcrate.one)
   })
 
-  scenario('creates a lootcrate', async (scenario: StandardScenario) => {
+  scenario('creates a lootcrate', async () => {
     const result = await createLootcrate({
-      input: { blueprint: 'String', map_id: scenario.lootcrate.two.map_id },
+      input: { name: 'String' },
     })
 
-    expect(result.blueprint).toEqual('String')
-    expect(result.map_id).toEqual(scenario.lootcrate.two.map_id)
+    expect(result.name).toEqual('String')
   })
 
   scenario('updates a lootcrate', async (scenario: StandardScenario) => {
@@ -43,10 +42,10 @@ describe('lootcrates', () => {
     })) as Lootcrate
     const result = await updateLootcrate({
       id: original.id,
-      input: { blueprint: 'String2' },
+      input: { name: 'String2' },
     })
 
-    expect(result.blueprint).toEqual('String2')
+    expect(result.name).toEqual('String2')
   })
 
   scenario('deletes a lootcrate', async (scenario: StandardScenario) => {

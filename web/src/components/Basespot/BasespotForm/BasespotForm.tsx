@@ -10,19 +10,24 @@ import {
 } from "@redwoodjs/forms";
 
 import type {
+  DeleteBasespotMutationVariables,
   EditBasespotById,
   NewBasespot,
   UpdateBasespotInput,
+  permission,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import FileUpload, {
-  FileUpload2,
-} from "src/components/Util/FileUpload/FileUpload";
+import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import { useEffect, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
-import Lookup from "src/components/Util/Lookup/Lookup";
+import { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
+import { useMutation } from "@apollo/client";
+import { toast } from "@redwoodjs/web/dist/toast";
+import { navigate, routes } from "@redwoodjs/router";
+import Toast from "src/components/Util/Toast/Toast";
+import { useAuth } from "src/auth";
 
 type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
 
@@ -35,20 +40,48 @@ interface BasespotFormProps {
   loading: boolean;
 }
 
+const DELETE_BASESPOT_MUTATION = gql`
+  mutation DeleteBasespotMutation($id: String!) {
+    deleteBasespot(id: $id) {
+      id
+    }
+  }
+`;
+
 const BasespotForm = (props: BasespotFormProps) => {
+  const { currentUser } = useAuth();
   const formMethods = useForm<FormBasespot>();
-  const [thumbnailUrl, setThumbnailUrl] = useState(null);
 
   const [map, setMap] = useState(props?.basespot?.map_id || 2);
 
   const onSubmit = (data: FormBasespot, publish?: boolean) => {
     data.map_id = parseInt(data.map_id.toString() || map.toString());
-    // if (thumbnailUrl) data.thumbnail = thumbnailUrl;
 
     data.published = publish;
 
-    console.log(data);
-    // props.onSave(data, props?.basespot?.id);
+    props.onSave(data, props?.basespot?.id);
+  };
+
+  const [deleteBasespot] = useMutation(DELETE_BASESPOT_MUTATION, {
+    onCompleted: () => {
+      toast.success("Basespot deleted");
+      navigate(routes.basespots());
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const onDeleteClick = (id: DeleteBasespotMutationVariables["id"]) => {
+    toast.custom((t) => (
+      <Toast
+        t={t}
+        title={"Are you sure you want to delete basespot?"}
+        message={<p>Are you sure you want to delete basespot {id}?</p>}
+        primaryAction={() => deleteBasespot({ variables: { id } })}
+        actionType="YesNo"
+      />
+    ));
   };
 
   useEffect(() => {
@@ -87,6 +120,24 @@ const BasespotForm = (props: BasespotFormProps) => {
             {props.basespot?.name}
           </h2>
           <div className="flex space-x-2">
+            {(currentUser?.permissions.some(
+              (p: permission) => p === "basespot_delete"
+            ) && props?.basespot?.id) && (
+                <button
+                  type="button"
+                  onClick={() => onDeleteClick(props?.basespot?.id)}
+                  className="rw-button rw-button-medium rw-button-red-outline hidden sm:block"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 448 512"
+                    className="rw-button-icon-start"
+                  >
+                    <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80c-15.1 0-29.4 7.125-38.4 19.25L112 64H16C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16 0-8.8-7.2-16-16-16zm-280 0l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zm248 64c-8.8 0-16 7.2-16 16v288c0 26.47-21.53 48-48 48H112c-26.47 0-48-21.5-48-48V144c0-8.8-7.16-16-16-16s-16 7.2-16 16v288c0 44.1 35.89 80 80 80h224c44.11 0 80-35.89 80-80V144c0-8.8-7.2-16-16-16zM144 416V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16zm96 0V192c0-8.844-7.156-16-16-16s-16 7.2-16 16v224c0 8.844 7.156 16 16 16s16-7.2 16-16z" />
+                  </svg>
+                  Delete
+                </button>
+              )}
             <button
               type="button"
               className="rw-button rw-button-medium rw-button-red-outline hidden sm:block"
@@ -168,8 +219,10 @@ const BasespotForm = (props: BasespotFormProps) => {
           Map
         </Label>
 
-        <Lookup
-          defaultValue={props.basespot?.map_id || map}
+        <MultiSelectLookup
+          name="map_id"
+          disabled={props.loading}
+          defaultValue={[props.basespot?.map_id.toString() || map.toString()]}
           options={
             props?.maps.map((map) => ({
               label: map.name,
@@ -178,12 +231,10 @@ const BasespotForm = (props: BasespotFormProps) => {
             })) || []
           }
           onSelect={(e) => {
-            if (!e || !e.value) return setMap(null);
-            setMap(parseInt(e.value.toString()));
-            formMethods.setValue("map_id", parseInt(e.value.toString()));
+            if (!e[0] || !e[0].value) return setMap(null);
+            setMap(parseInt(e[0].value.toString()));
+            // formMethods.setValue("map_id", parseInt(e[0].value.toString()));
           }}
-          name="map_id"
-          disabled={props.loading}
         />
 
         <FieldError name="map_id" className="rw-field-error" />
@@ -358,6 +409,7 @@ const BasespotForm = (props: BasespotFormProps) => {
         >
           Difficulty
         </Label>
+
         <CheckboxGroup
           name="level"
           form={true}
@@ -423,28 +475,30 @@ const BasespotForm = (props: BasespotFormProps) => {
 
         <FieldError name="estimated_for_players" className="rw-field-error" />
 
-        {props.basespot?.id && (
-          <>
-            <Label
-              name="base_images"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Images of the base
-            </Label>
+        <Label
+          name="base_images"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Images of the base
+        </Label>
 
+        <FileUpload
+          name="base_images"
+          thumbnail
+          multiple
+          defaultValue={props?.basespot?.base_images
+            ?.split(",")
+            .map(
+              (f) =>
+                `M${props?.basespot?.map_id}-${props?.basespot?.id
+                }/${f.trim()}`
+            )
+            .join(",")}
+          storagePath={props.basespot?.id ? `basespotimages` : 'basespotimages/temp'}
+        />
 
-            <FileUpload2
-              name="base_images"
-              thumbnail
-              multiple
-              defaultValue={props.basespot?.base_images.split(',').map(f => `M${props?.basespot?.map_id}-${props?.basespot?.id}/${f.trim()}`).join(',')}
-              storagePath={`basespotimages`}
-            />
-
-            <FieldError name="base_images" className="rw-field-error" />
-          </>
-        )}
+        <FieldError name="base_images" className="rw-field-error" />
 
         <Label
           name="has_air"
@@ -459,6 +513,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           name="has_air"
           offLabel="no air"
           onLabel="has air"
+          defaultChecked={props.basespot?.has_air || true}
         />
 
         <FieldError name="has_air" className="rw-field-error" />
@@ -481,7 +536,6 @@ const BasespotForm = (props: BasespotFormProps) => {
         />
 
         <FieldError name="turretsetup_image" className="rw-field-error" /> */}
-
       </Form>
     </div>
   );

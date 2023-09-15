@@ -86,9 +86,9 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
                 // src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/sample60.jpg"
                 src={
                   mapImages[
-                    Object.keys(mapImages)[
-                      Math.floor(Math.random() * Object.keys(mapImages).length)
-                    ]
+                  Object.keys(mapImages)[
+                  Math.floor(Math.random() * Object.keys(mapImages).length)
+                  ]
                   ]
                 }
                 alt={`${profile.full_name} bg-image`}
@@ -157,11 +157,11 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
                         // src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/sample60.jpg"
                         src={
                           mapImages[
-                            Object.keys(mapImages)[
-                              Math.floor(
-                                Math.random() * Object.keys(mapImages).length
-                              )
-                            ]
+                          Object.keys(mapImages)[
+                          Math.floor(
+                            Math.random() * Object.keys(mapImages).length
+                          )
+                          ]
                           ]
                         }
                         alt={`${row.full_name} bg-image`}
@@ -207,13 +207,13 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
             field: "updated_at",
             header: "Last Updated",
             sortable: true,
-            valueFormatter: ({ value }) => timeTag(value),
+            valueFormatter: ({ value }) => timeTag(value.toString()),
           },
           {
             field: "created_at",
             header: "Created",
             sortable: true,
-            valueFormatter: ({ value }) => timeTag(value),
+            valueFormatter: ({ value }) => timeTag(value.toString()),
           },
           {
             field: "role_id",

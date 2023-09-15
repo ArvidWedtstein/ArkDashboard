@@ -30,9 +30,12 @@ export const Modal = ({ image, title, content }: iModal) => {
         closeModal();
       }}
     >
-      <div className="relative top-1/2 left-1/2 max-h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2" onClick={(e) => {
-        e.stopPropagation();
-      }}>
+      <div
+        className="relative top-1/2 left-1/2 max-h-full w-full max-w-6xl -translate-x-1/2 transform lg:-translate-y-1/2"
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <div className="relative rounded-lg bg-white shadow dark:bg-zinc-700">
           <div className="flex items-start justify-between rounded-t border-b p-4 dark:border-gray-600">
             {title && (
@@ -100,7 +103,7 @@ export const FormModal = ({ title, isOpen, children, onClose }: iModalForm) => {
   return (
     <dialog
       className={clsx(
-        `animate-pop-up text-text-950 z-10 flex flex-col gap-3 rounded-lg bg-zinc-200 p-3 ring-1 ring-zinc-500 backdrop:blur-[3px] dark:bg-zinc-900`,
+        `animate-pop-up z-10 flex flex-col gap-3 rounded-lg bg-zinc-200 p-3 text-zinc-900 ring-1 ring-zinc-500 backdrop:blur-[3px] dark:bg-zinc-900`,
         {
           hidden: isOpen === false,
         }
@@ -177,8 +180,8 @@ const ModalContext = createContext<{
   closeModal: () => void;
   modalOpen: boolean;
 }>({
-  openModal: () => { },
-  closeModal: () => { },
+  openModal: () => {},
+  closeModal: () => {},
   modalOpen: false,
 });
 

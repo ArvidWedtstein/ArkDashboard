@@ -30,15 +30,16 @@ export const userRecipesByID: QueryResolvers["userRecipesByID"] = ({
 };
 
 export const userRecipes: QueryResolvers["userRecipes"] = () => {
+  const userID =  context?.currentUser?.id || context?.currentUser?.sub;
   return db.userRecipe.findMany({
     orderBy: {
       created_at: "desc",
     },
     where: {
       OR: [
-        {
+        userID && {
           user_id: {
-            equals: context?.currentUser?.id || context?.currentUser.sub,
+            equals: userID,
           },
         },
         {

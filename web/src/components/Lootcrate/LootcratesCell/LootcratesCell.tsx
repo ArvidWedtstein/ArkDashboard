@@ -4,38 +4,17 @@ import { Link, routes } from "@redwoodjs/router";
 import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 
 import Lootcrates from "src/components/Lootcrate/Lootcrates";
-import { toast } from "@redwoodjs/web/dist/toast";
 
 export const QUERY = gql`
-  query FindLootcrates($map: String) {
-    lootcratesByMap(map: $map) {
+  query FindLootcrates($map: String, $search: String, $type: String, $color: String) {
+    lootcratesByMap(map: $map, search: $search, type: $type, color: $color) {
       id
-      created_at
-      updated_at
       name
-      map_id
-      level_requirement
-      decay_time
-      no_repeat_in_sets
-      quality_multiplier
-      set_qty
+      blueprint
+      required_level
       color
-      Map {
-        id
-        name
-      }
-      LootcrateSet {
-        id
-        name
-        LootcrateSetEntry {
-          LootcrateSetEntryItem {
-            Item {
-              id
-              name
-            }
-          }
-        }
-      }
+      image
+      type
     }
     maps {
       id
@@ -45,27 +24,65 @@ export const QUERY = gql`
   }
 `;
 
-
-export const beforeQuery = ({ map }: { map: string }) => {
-  return { variables: { map } };
-};
-
 export const Loading = () => (
-  <div role="status" className="animate-pulse">
-    <div className="mb-4 h-12 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700"></div>
-    <div className="mt-8 mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
-      <div className="h-56 rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+  <div
+    role="status"
+    className="w-full animate-pulse overflow-hidden p-4 md:p-6"
+  >
+    <div className="mb-4 h-5 w-48 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+    <div className="flex ml-auto justify-end mb-3 space-x-5">
+      <div className="h-4 w-48 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+      <div className="h-4 w-24 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+      <div className="h-4 w-60 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+      <div className="h-4 w-28 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+    </div>
+
+    <div className="h-0.5 w-full bg-zinc-200 dark:bg-zinc-700" />
+
+    <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4 w-full mt-3">
+      <div className="flex flex-col space-y-5">
+        <div className="flex justify-between border-t border-zinc-500 py-5">
+          <div className="h-2 w-20 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 500 500"
+            className="h-4 w-4 fill-zinc-200 dark:fill-zinc-600"
+          >
+            <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+          </svg>
+        </div>
+        <div className="flex justify-between border-t border-zinc-500 py-5">
+          <div className="h-2 w-20 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 500 500"
+            className="h-4 w-4 fill-zinc-200 dark:fill-zinc-600"
+          >
+            <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+          </svg>
+        </div>
+        <div className="flex justify-between border-t border-zinc-500 py-5">
+          <div className="h-2 w-20 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 500 500"
+            className="h-4 w-4 fill-zinc-200 dark:fill-zinc-600"
+          >
+            <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+          </svg>
+        </div>
+      </div>
+      <div className="grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 grid w-full gap-6 lg:col-span-3">
+        <div className="h-48 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-48 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-48 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-48 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-48 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-48 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-48 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-48 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-48 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700" />
+      </div>
     </div>
     <span className="sr-only">Loading...</span>
   </div>
@@ -82,7 +99,7 @@ export const Empty = () => {
   );
 };
 
-export const Failure = ({ error, errorCode }: CellFailureProps) => (
+export const Failure = ({ error }: CellFailureProps) => (
   <div className="rw-cell-error flex items-center space-x-3">
     <svg
       className="h-12 w-12 fill-current"
@@ -95,15 +112,14 @@ export const Failure = ({ error, errorCode }: CellFailureProps) => (
       <p className="text-lg font-bold leading-snug">
         Some unexpected shit happend
       </p>
-      <p className="text-sm">
-        {errorCode === "GRAPHQL_VALIDATION_FAILED"
-          ? "Failed to fetch data"
-          : error?.message}
-      </p>
+      <p className="text-sm">{error?.message}</p>
     </div>
   </div>
 );
 
-export const Success = ({ lootcratesByMap, maps }: CellSuccessProps<FindLootcrates>) => {
+export const Success = ({
+  lootcratesByMap,
+  maps,
+}: CellSuccessProps<FindLootcrates>) => {
   return <Lootcrates lootcratesByMap={lootcratesByMap} maps={maps} />;
 };

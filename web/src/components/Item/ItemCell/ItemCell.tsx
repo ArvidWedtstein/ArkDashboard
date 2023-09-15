@@ -19,19 +19,6 @@ export const QUERY = gql`
       color
       type
       category
-      LootcrateSetEntryItem {
-        LootcrateSetEntry {
-          id
-          LootcrateSet {
-            id
-            Lootcrate {
-              id
-              name
-              color
-            }
-          }
-        }
-      }
       DinoStat {
         Dino {
           id
@@ -64,7 +51,19 @@ export const QUERY = gql`
     }
   }
 `;
-
+// LootcrateSetEntryItem {
+//   LootcrateSetEntry {
+//     id
+//     LootcrateSet {
+//       id
+//       Lootcrate {
+//         id
+//         name
+//         color
+//       }
+//     }
+//   }
+// }
 // TODO: fix skeletonloader
 export const Loading = () => <div>Loading...</div>;
 

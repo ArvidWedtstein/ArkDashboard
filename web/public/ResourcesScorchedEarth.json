@@ -1,5 +1,4 @@
 {
-  "$schema": "https://ark.wiki.gg/extensions/DataMaps/schemas/v0.16.json",
   "mixins": ["Maps/Standard group definitions", "Maps/Scorched Earth obelisks"],
   "backgrounds": [
     { "name": "Drawn", "image": "Scorched Earth Map.jpg" },

@@ -20,7 +20,7 @@ import { FindItemsMats } from "types/graphql";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { useAuth } from "src/auth";
-import { ITEMRECIPEITEMQUERY, QUERY } from "../MaterialCalculatorCell";
+import { ITEMRECIPEITEMQUERY } from "../MaterialCalculatorCell";
 import UserRecipesCell, {
   QUERY as USERRECIPEQUERY,
 } from "src/components/UserRecipe/UserRecipesCell";
@@ -49,6 +49,7 @@ type ItemRecipe = {
     category: string;
     type: string;
   };
+  Item?: ItemRecipe["Item_ItemRecipe_crafted_item_idToItem"];
   ItemRecipeItem?: {
     __typename: string;
     id: string;
@@ -61,13 +62,16 @@ type ItemRecipe = {
     };
   }[];
 };
+interface RecipeState extends ItemRecipe {
+  // Item?: ItemRecipe["Item_ItemRecipe_crafted_item_idToItem"];
+  amount: number;
+}
 interface MaterialGridProps {
   itemRecipes: NonNullable<FindItemsMats["itemRecipes"]>;
   error?: RWGqlError;
 }
 
-// TODO: change type
-const TreeBranch = memo(({ itemRecipe }: any) => {
+const TreeBranch = memo(({ itemRecipe }: { itemRecipe: RecipeState }) => {
   const { Item, amount, crafting_time } = itemRecipe;
   const imageUrl = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item?.image}`;
   return (
@@ -91,7 +95,7 @@ const TreeBranch = memo(({ itemRecipe }: any) => {
           {itemRecipe?.ItemRecipeItem.map((subItemRecipe, i) => (
             <TreeBranch
               key={`subItem-${subItemRecipe?.Item?.id}`}
-              itemRecipe={subItemRecipe}
+              itemRecipe={subItemRecipe as RecipeState}
             />
           ))}
         </ul>
@@ -122,7 +126,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       variables: {
         ids: itemRecipes.map((f) => f.id),
       },
-      onCompleted: (data) => {},
+      // onCompleted: (data) => { },
       onError: (error) => {
         console.error(error);
       },
@@ -162,9 +166,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       item?: ItemRecipe;
     }[];
   }
-  interface RecipeState extends ItemRecipe {
-    amount: number;
-  }
+
   const reducer = (state: RecipeState[], action: RecipeAction) => {
     const { type, payload } = action;
     switch (type) {
@@ -372,8 +374,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 ...itemfound,
                 ItemRecipeItem: data.itemRecipeItemsByIds
                   ? data.itemRecipeItemsByIds.filter(
-                      (iri) => iri.item_recipe_id === item_recipe_id
-                    )
+                    (iri) => iri.item_recipe_id === item_recipe_id
+                  )
                   : [],
               },
               amount: amount,
@@ -444,84 +446,28 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
               value: v.every(({ type }) => !type)
                 ? v.map((itm) => ({
-                    ...itm,
-                    label: itm.name,
-                    icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                    value: [],
-                  }))
+                  ...itm,
+                  label: itm.name,
+                  icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                  value: [],
+                }))
                 : Object.entries(groupBy(v, "type")).map(([type, v2]) => {
-                    return {
-                      label: type,
-                      value: v2.map((itm) => ({
-                        label: itm.name,
-                        ...itm,
-                        icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                      })),
-                    };
-                  }),
+                  return {
+                    label: type,
+                    value: v2.map((itm) => ({
+                      label: itm.name,
+                      ...itm,
+                      icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                    })),
+                  };
+                }),
             }))}
-            onSelect={(item) => {
+            onSelect={(_, item) => {
               onAdd({ itemId: item.id });
             }}
           />
         </div>
         <div className="w-full">
-          {/* <Table
-            rows={mergeItemRecipe(
-              viewBaseMaterials,
-              false,
-              items,
-              ...recipes
-            ).slice(0, 1)}
-            className="animate-fade-in"
-            toolbar={[
-              <ToggleButton
-                className=""
-                offLabel="Materials"
-                onLabel="Base materials"
-                checked={viewBaseMaterials}
-                onChange={(e) => setViewBaseMaterials(e.currentTarget.checked)}
-              />,
-              <button
-                className="rw-button rw-button-gray rw-button-small"
-                onClick={() =>
-                  generatePDF(
-                    recipes.map((r) => ({
-                      name: r.Item_ItemRecipe_crafted_item_idToItem.name,
-                      amount: r.amount,
-                    }))
-                  )
-                }
-              >
-                PDF
-              </button>,
-            ]}
-            columns={[
-              ...(mergeItemRecipe(
-                viewBaseMaterials,
-                false,
-                items,
-                ...recipes
-              ).map(({ Item_ItemRecipe_crafted_item_idToItem, amount }) => ({
-                field: Item_ItemRecipe_crafted_item_idToItem.id,
-                header: Item_ItemRecipe_crafted_item_idToItem.name,
-                className: "w-0 text-center",
-                render: ({ value }) => (
-                  <div
-                    className="flex flex-col items-center justify-center"
-                    key={`${value}-${Item_ItemRecipe_crafted_item_idToItem.id}`}
-                  >
-                    <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafted_item_idToItem.image}`}
-                      className="h-6 w-6"
-                      loading="lazy"
-                    />
-                    <span className="text-sm">{formatNumber(amount)}</span>
-                  </div>
-                ),
-              })) as any),
-            ]}
-          /> */}
 
           <div className="my-3 space-y-3">
             <ToggleButton
@@ -581,7 +527,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                         }).map((itemrecipe, i) => (
                           <TreeBranch
                             key={`tree-${i}`}
-                            itemRecipe={itemrecipe}
+                            itemRecipe={itemrecipe as RecipeState}
                           />
                         ))}
                       </ul>
@@ -708,18 +654,18 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 datatype: "number",
                 aggregate: "sum",
                 className: "w-0 text-center",
-                valueFormatter: ({ row, value }) => value * row.amount,
+                valueFormatter: ({ row, value }) => parseInt(value.toString()) * row.amount,
                 render: ({ value }) => `${timeFormatL(value, true)}`,
               },
-              ...mergeItemRecipe(
+              ...(mergeItemRecipe(
                 viewBaseMaterials,
                 false,
                 items,
                 ...recipes
               ).map(({ Item_ItemRecipe_crafted_item_idToItem }) => ({
-                field: Item_ItemRecipe_crafted_item_idToItem,
+                field: Item_ItemRecipe_crafted_item_idToItem.name,
                 header: Item_ItemRecipe_crafted_item_idToItem.name,
-                type: "number",
+                datatype: "number",
                 aggregate: "sum" as const,
                 className: "w-0 text-center",
                 valueFormatter: ({ row, value }) => {
@@ -757,7 +703,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                     )
                   );
                 },
-              })),
+              })) as unknown as { field: string; header: string; type: string }[]),
               // {
               //   field: "Item_ItemRecipe_crafted_item_idToItem",
               //   header: "Ingredients",

@@ -23,6 +23,10 @@ export const QUERY = gql`
       Map {
         name
         img
+        cord_shift_lat
+        cord_shift_lon
+        cord_mult_lat
+        cord_mult_lon
       }
     }
   }

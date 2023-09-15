@@ -12,15 +12,14 @@ export const itemsPage: QueryResolvers["itemsPage"] = ({
   search = "",
   category = "",
   type = "",
-  items_per_page = 36,
 }: {
   page: number;
   search?: string;
   category?: string;
   type?: string;
-  items_per_page?: number;
 }) => {
-  const offset = (page - 1) * items_per_page;
+  // https://www.prisma.io/docs/guides/performance-and-optimization/query-optimization-performance
+  const offset = (page - 1) * 36;
   // validateWithSync(() => {
   //   if (
   //     !context.currentUser.permissions.some((d) => d.includes("items:read"))
@@ -30,20 +29,25 @@ export const itemsPage: QueryResolvers["itemsPage"] = ({
   // });
   return {
     items: db.item.findMany({
-      take: items_per_page,
+      take: 36,
       skip: offset,
       orderBy: { name: "asc" },
       where: {
         AND: [
           { name: { startsWith: search, mode: "insensitive" } },
-          category
-            ? { category: { contains: category, mode: "insensitive" } }
-            : {},
+          category ? { category: { in: category.split(",") } } : {},
           type ? { type: { contains: type, mode: "insensitive" } } : {},
           { visible: true },
         ],
       },
     }),
+    // categories: db.item.findMany({
+    //   select: { category: true },
+    //   distinct: ["category"],
+    //   where: {
+    //     visible: true,
+    //   },
+    // }),
     count: db.item.count({
       where: {
         AND: [
@@ -134,10 +138,8 @@ export const Item: ItemRelationResolvers = {
   ItemRecipeItem: (_obj, { root }) => {
     return db.item.findUnique({ where: { id: root?.id } }).ItemRecipeItem();
   },
-  LootcrateSetEntryItem: (_obj, { root }) => {
-    return db.item
-      .findUnique({ where: { id: root?.id } })
-      .LootcrateSetEntryItem();
+  LootcrateItem: (_obj, { root }) => {
+    return db.item.findUnique({ where: { id: root?.id } }).LootcrateItem();
   },
   MapResource: (_obj, { root }) => {
     return db.item.findUnique({ where: { id: root?.id } }).MapResource();

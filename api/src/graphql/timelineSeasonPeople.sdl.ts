@@ -1,7 +1,7 @@
 export const schema = gql`
   type TimelineSeasonPerson {
     id: String!
-    created_at: DateTime!
+    created_at: DateTime
     updated_at: DateTime
     user_id: String
     ingame_name: String
@@ -18,10 +18,11 @@ export const schema = gql`
   }
 
   input CreateTimelineSeasonPersonInput {
-    created_at: DateTime!
+    created_at: DateTime
     updated_at: DateTime
     user_id: String
     ingame_name: String
+    permission: String
     timeline_season_id: String!
   }
 
@@ -30,6 +31,7 @@ export const schema = gql`
     updated_at: DateTime
     user_id: String
     ingame_name: String
+    permission: String
     timeline_season_id: String
   }
 

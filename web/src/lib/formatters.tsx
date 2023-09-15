@@ -144,21 +144,31 @@ export const isDate = (dateString: string | Date | number): boolean => {
 };
 
 /**
- * Sorts an array of objects based on the value of a property
+ * Sorts an array of objects based on a specified property and sorting order.
  *
- * @param {string} property - The property name to sort the objects by
- * @returns {(a, b) => number} A comparison function that can be passed to `Array.sort` method.
+ * @template ItemType
+ * @param {Array<ItemType>} array - The array to be sorted.
+ * @param {string} property - The name of the property to sort by.
+ * @param {boolean} ascending - If true, sorts the array in ascending order; otherwise, in descending order.
+ * @returns {Array<ItemType>} - The sorted array.
  */
-export const dynamicSort = (property: string) => {
-  const sortOrder = property[0] === "-" ? -1 : 1;
-  const sortKey = property[0] === "-" ? property.substring(1) : property;
+export const dynamicSort = <T extends {}>(array: Array<T>, property: string, ascending: boolean = true): Array<T> =>
+  (property != "" && array) ? [...array].sort((a: T, b: T) => {
+    const aValue = a[property];
+    const bValue = b[property];
 
-  return (a, b) => {
-    const result =
-      a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
-    return result * sortOrder;
-  };
-};
+    if (ascending) {
+      if (aValue < bValue) return -1;
+      if (aValue > bValue) return 1;
+      return 0;
+    } else {
+      if (aValue > bValue) return -1;
+      if (aValue < bValue) return 1;
+      return 0;
+    }
+  }) : array;
+
+
 /**
  *
  * @param a bytes
@@ -245,26 +255,14 @@ export const combineBySummingKeys = (...objects: object[]) => {
 //   681: turretTower.tek_turrets, // Tek Turret
 //   676: amountTekGen, // Tek Generator
 // }
-interface Item {
-  // Define the properties of the "Item" type based on your actual data structure.
-  id: number;
-  name: string;
-  image: string;
-  [key: string]: any;
-  // Add other properties here if needed.
-}
-interface CraftingRecipe {
-  // Define the properties of the "CraftingRecipe" type based on your actual data structure.
-  Item: Item;
-  amount: number;
-}
-interface Material {
+
+type ItemRecipe = {
   __typename: string;
   id: string;
   crafting_station_id: number;
   crafting_time: number;
   yields: number;
-  Item_ItemRecipe_crafted_item_idToItem: {
+  Item_ItemRecipe_crafted_item_idToItem?: {
     __typename: string;
     id: number;
     name: string;
@@ -272,10 +270,9 @@ interface Material {
     category: string;
     type: string;
   };
-  ItemRecipeItem: {
+  ItemRecipeItem?: {
     __typename: string;
     id: string;
-    item_recipe_id: string;
     amount: number;
     Item: {
       __typename: string;
@@ -284,7 +281,9 @@ interface Material {
       image: string;
     };
   }[];
-  amount: number;
+};
+interface RecipeState extends ItemRecipe {
+  amount?: number;
 }
 /**
  * Calculates the base materials required to produce the specified objects.
@@ -293,20 +292,17 @@ interface Material {
  *                                     the function will return the direct materials.
  * @param {...Object} objects - The objects for which the base materials are to be calculated.
  *
- * @returns {Array<any>} An array of objects representing the base materials required.
+ * @returns {Array<RecipeState>} An array of objects representing the base materials required.
  */
-
-// TODO: FIX TYPES!
 export const getBaseMaterials = (
   baseMaterials: boolean = false,
   path: boolean = false,
-  items: any[],
-  ...objects: Array<any>
-) => {
-
+  items: ItemRecipe[],
+  ...objects: RecipeState[]
+): RecipeState[] => {
   let materials = [];
   const findBaseMaterials = (
-    item: { ItemRecipeItem: CraftingRecipe[] },
+    item: ItemRecipe,
     amount: number,
     yields: number = 1
   ) => {
@@ -543,6 +539,14 @@ export const getWeekDates = (date?: Date): [Date, Date] => {
   return [start, end];
 };
 
+
+/**
+ * TODO: remove
+ * @deprecated not in use
+ * @param num
+ * @param unit
+ * @returns
+ */
 export const rtf = (num: number, unit: Intl.RelativeTimeFormatUnit): string => {
   return new Intl.RelativeTimeFormat("en", {
     localeMatcher: "best fit", // other values: "lookup"
@@ -551,17 +555,33 @@ export const rtf = (num: number, unit: Intl.RelativeTimeFormatUnit): string => {
   }).format(num, unit);
 };
 
+/**
+ *
+ * @param date
+ * @param unit
+ * @returns
+ */
 export const relativeDate = (
-  date: Date,
-  unit: Intl.RelativeTimeFormatUnit
+  date: Date | string,
 ): string => {
-  const daysDifference = Math.round(
-    (date.getTime() - new Date().getTime()) / 86400000
-  );
-  return new Intl.RelativeTimeFormat("en", {
-    localeMatcher: "lookup",
-    numeric: "auto",
-  }).format(daysDifference, unit);
+
+  const now = new Date().getTime();
+  const diffInSeconds = Math.floor((now - new Date(date).getTime()) / 1000);
+
+  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto', localeMatcher: 'best fit' });
+
+  if (diffInSeconds < 60) {
+    return rtf.format(-diffInSeconds, 'second');
+  } else if (diffInSeconds < 3600) {
+    const minutes = Math.floor(diffInSeconds / 60);
+    return rtf.format(-minutes, 'minute');
+  } else if (diffInSeconds < 86400) {
+    const hours = Math.floor(diffInSeconds / 3600);
+    return rtf.format(-hours, 'hour');
+  } else {
+    const days = Math.floor(diffInSeconds / 86400);
+    return rtf.format(-days, 'day');
+  }
 };
 
 /**
@@ -590,6 +610,12 @@ export const getWordType = (word: string) => {
  */
 export const random = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1) + min);
+
+export const generateUniqueId = (): string => {
+  const timestamp = Date.now().toString(36); // Convert current timestamp to base36 string
+  const randomString = Math.random().toString(36).substr(2, 5); // Generate random string
+  return `${timestamp}-${randomString}`;
+};
 
 export const arrRandNoRep = (arr: any[]) => {
   let lastElement = null;
@@ -974,10 +1000,10 @@ export const generatePDF = (crafts) => {
 /**
  * Removes duplicates from an array and returns a new array.
  * @note  function only works on arrays containing primitive data types
- * @param {Array} arr - The input array.
- * @return {Array} - The array with duplicates removed.
+ * @param {T} arr - The input array.
+ * @return {T} - The array with duplicates removed.
  */
-export const removeDuplicates = (array: unknown[]): unknown[] => {
+export const removeDuplicates = <T extends {}>(array: T[]): T[] => {
   return [...new Set(array)];
 };
 

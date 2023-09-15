@@ -125,7 +125,7 @@ const MapInput = ({ name, control, register }: MapInputProps) => {
   );
 };
 const MapForm = (props: MapFormProps) => {
-  // TODO: Fix inputs
+  // TODO: Fix inputs / Move inputs to own form
   // <DeepPartial<FormMap>>
   const { register, control, setValue } = useForm();
 

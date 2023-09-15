@@ -225,13 +225,13 @@ describe('dynamicSort', () => {
       { name: 'Peter', age: 10 },
     ]
 
-    expect(objects.sort(dynamicSort('name'))).toEqual([
+    expect(dynamicSort(objects, 'name', false)).toEqual([
       { name: 'John', age: 30 },
       { name: 'Mary', age: 20 },
       { name: 'Peter', age: 10 },
     ])
 
-    expect(objects.sort(dynamicSort('age'))).toEqual([
+    expect(dynamicSort(objects, 'age', true)).toEqual([
       { name: 'Peter', age: 10 },
       { name: 'Mary', age: 20 },
       { name: 'John', age: 30 },
