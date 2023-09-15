@@ -6,16 +6,19 @@ import {
   SearchField,
   SelectField,
   Submit,
+  TextField,
 } from "@redwoodjs/forms";
 import { navigate, useParams } from "@redwoodjs/router";
 import { Link, routes, parseSearch } from "@redwoodjs/router";
 import clsx from "clsx";
 import { useCallback, useContext, useMemo, useState } from "react";
+import { useAuth } from "src/auth";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
+import Input from "src/components/Util/Input/Input";
 import { Modal, ModalContext } from "src/components/Util/Modal/Modal";
 import { dynamicSort, removeDuplicates } from "src/lib/formatters";
 
-import type { FindLootcrates } from "types/graphql";
+import type { FindLootcrates, permission } from "types/graphql";
 
 type FormFindLootcrates = NonNullable<{
   map: string;
@@ -25,6 +28,7 @@ type FormFindLootcrates = NonNullable<{
 }>;
 
 const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
+  const { currentUser } = useAuth();
   let { map, search, color, types } = useParams();
 
   const [view, setView] = useState<"grid" | "list">("grid");
@@ -147,7 +151,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
       <Modal content={Filters} />
 
       <div className="flex flex-col items-baseline justify-between border-b border-zinc-500 pb-6 pt-24 text-gray-900 dark:text-white sm:flex-row md:pt-6">
-        <h1 className="py-3 text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:p-0">
+        <h1 className="py-3 text-4xl font-bold tracking-tight align-text-bottom text-gray-900 dark:text-white sm:p-0">
           Lootcrates
         </h1>
 
@@ -280,6 +284,21 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
             </svg>
             <span className="hidden md:block">Search</span>
           </Submit>
+
+          {currentUser?.permissions.some(
+            (p: permission) => p === "gamedata_create"
+          ) && (
+              <Link to={routes.newLootcrate()} className="rw-button rw-button-green ml-5">
+                New
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 448 512"
+                  className="rw-button-icon-end h-4 w-4 fill-current stroke-current"
+                >
+                  <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+                </svg>
+              </Link>
+            )}
         </div>
       </div>
 
@@ -338,7 +357,7 @@ const LootcratesList = ({ lootcratesByMap, maps }: FindLootcrates) => {
           ))}
         </div>
       </section>
-    </Form>
+    </Form >
   );
 };
 

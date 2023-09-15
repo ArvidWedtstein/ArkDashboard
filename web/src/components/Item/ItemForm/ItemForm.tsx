@@ -16,7 +16,7 @@ import type { EditItemById, UpdateItemInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { useEffect, useState } from "react";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
-import Lookup from "src/components/Util/Lookup/Lookup";
+import Lookup, { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
 import { useLazyQuery } from "@apollo/client";
 
 type FormItem = NonNullable<EditItemById["item"]>;
@@ -410,7 +410,7 @@ const ItemForm = (props: ItemFormProps) => {
                       key={`recipe-${index}`}
                     >
                       {/* TODO: Group By crafting station */}
-                      <Lookup
+                      <MultiSelectLookup
                         // {...register(
                         //   `ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.item_id`,
                         //   {
@@ -418,7 +418,6 @@ const ItemForm = (props: ItemFormProps) => {
                         //   }
                         // )}
                         name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.item_id`}
-                        group={"category"}
                         options={data.itemsByCategory.items.map((item) => ({
                           category: item.category,
                           type: item.type,
@@ -428,7 +427,7 @@ const ItemForm = (props: ItemFormProps) => {
                         }))}
                         search={true}
                         className="!mt-0 !rounded-none !rounded-l-md"
-                        defaultValue={recipe.item_id}
+                        defaultValue={[recipe.item_id.toString()]}
                         filterFn={(item, search) => {
                           if (!search) return true;
                           return item.label
@@ -488,16 +487,6 @@ const ItemForm = (props: ItemFormProps) => {
                   </button>
                 </div>
 
-                {/* <Lookup
-                  items={arkitems.items.filter((item) => item.type === 'Resource').map((item) => ({
-                    ...item, image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.name
-                      .replaceAll(" ", "-")
-                      .replace("plant-species-y", "plant-species-y-trap")}.png`
-                  }))}
-                  search={true}
-                  name="recipe"
-                  onSelect={(e) => setRecipe({ type: "ADD", item: { ...e, amount: 1 } })} //  setRecipe((d) => [...d, e])
-                /> */}
 
                 {/* <div className="mt-2 flex flex-col">
                   {recipe.map((rec) => (

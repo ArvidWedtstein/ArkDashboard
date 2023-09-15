@@ -8,6 +8,10 @@ type StatCardProps = React.HTMLAttributes<HTMLDivElement> & {
   chart?: boolean;
   valueDisplay?: "percent" | "number";
   icon?: React.ReactNode;
+  /**
+   * @default "bg-pink-500"
+   * @type {BgColor}
+   */
   iconBackground?: string | BgColor;
   text?: string | number;
   circleColor?: StrokeColor;
@@ -36,7 +40,7 @@ const StatCard = ({
               {stat}
             </h5>
             {subtext && <span className="block text-xl font-bold">{subtext}</span>}
-            {value && <span className="block text-xl font-bold">{valueDisplay === 'number' ? value : `${value} / 100`}</span>}
+            {!!value.toString() && <span className="block text-xl font-bold">{valueDisplay === 'number' ? value : `${value} / 100`}</span>}
           </div>
           {icon && (
             <div className="relative w-auto flex-initial">

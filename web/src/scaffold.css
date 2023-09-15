@@ -102,7 +102,7 @@
 
   /* || BUTTONS */
   .rw-button {
-    @apply rounded-lg py-2.5 px-4 text-sm font-medium text-gray-900 dark:text-white;
+    @apply box-border rounded-lg py-2.5 px-4 text-sm font-medium text-gray-900 dark:text-white;
   }
 
   .rw-button.disabled,
@@ -136,7 +136,7 @@
 
   /* Button Icon */
   .rw-button:not(:empty) {
-    @apply inline-flex items-center justify-center;
+    @apply inline-flex items-center justify-center -space-x-px;
   }
   .rw-button .rw-button-icon-start {
     @apply mr-2;
@@ -282,12 +282,32 @@
   .rw-button-group {
     @apply my-3 flex w-fit justify-center rounded-lg;
   }
+
+  .rw-button-group:not(.rw-button-group-vertical) > .rw-button:not(:last-child),
+  .rw-button-group:not(.rw-button-group-vertical) > .rw-input:not(:last-child),
+  .rw-button-group:not(.rw-button-group-vertical)
+    > .rw-float-input:not(:last-child),
+  .rw-button-group:not(.rw-button-group-vertical)
+    > .rw-input-underline:not(:last-child) {
+    @apply rounded-r-none;
+  }
+  .rw-button-group:not(.rw-button-group-vertical)
+    > .rw-button:not(:first-child),
+  .rw-button-group:not(.rw-button-group-vertical) > .rw-input:not(:first-child),
+  .rw-button-group:not(.rw-button-group-vertical)
+    > .rw-float-input:not(:first-child),
+  .rw-button-group:not(.rw-button-group-vertical)
+    > .rw-input-underline:not(:first-child) {
+    @apply -ml-px rounded-l-none !border-l-transparent;
+  }
+
   .rw-button-group.rw-button-group-vertical {
     @apply flex-col;
   }
   .rw-button-group > .rw-button,
   .rw-button-group > .rw-input,
-  .rw-button-group > .rw-float-input {
+  .rw-button-group > .rw-float-input,
+  .rw-button-group > .rw-input-underline {
     @apply mt-0 rounded-none;
   }
   .rw-button-group > .rw-button:only-child,
@@ -298,6 +318,7 @@
 
   /* Horizontal Button Group */
   .rw-button-group:not(.rw-button-group-vertical) > .rw-input,
+  .rw-button-group:not(.rw-button-group-vertical) > .rw-input-underline,
   .rw-button-group:not(.rw-button-group-vertical) > .rw-button {
     @apply first:rounded-l-lg last:rounded-r-lg;
   }
@@ -306,12 +327,15 @@
   }
 
   .rw-button-group.rw-button-group-vertical .rw-input,
+  .rw-button-group.rw-button-group-vertical .rw-input-underline,
   .rw-button-group.rw-button-group-vertical .rw-button {
     @apply first:rounded-t-lg last:rounded-b-lg;
   }
 
   .rw-button-group.rw-button-group-border:not(.rw-button-group-vertical)
     .rw-input,
+  .rw-button-group.rw-button-group-border:not(.rw-button-group-vertical)
+    .rw-input-underline,
   .rw-button-group.rw-button-group-border:not(.rw-button-group-vertical)
     .rw-float-input,
   .rw-button-group.rw-button-group-border:not(.rw-button-group-vertical)
@@ -320,6 +344,8 @@
   }
 
   .rw-button-group.rw-button-group-vertical.rw-button-group-border .rw-input,
+  .rw-button-group.rw-button-group-vertical.rw-button-group-border
+    .rw-input-underline,
   .rw-button-group.rw-button-group-vertical.rw-button-group-border
     .rw-float-input,
   .rw-button-group.rw-button-group-vertical.rw-button-group-border .rw-button {

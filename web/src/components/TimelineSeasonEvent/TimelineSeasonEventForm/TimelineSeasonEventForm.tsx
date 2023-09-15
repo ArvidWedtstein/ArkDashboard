@@ -6,7 +6,6 @@ import {
   TextField,
   Submit,
   TextAreaField,
-  CheckboxField,
 } from "@redwoodjs/forms";
 
 import type {
@@ -15,13 +14,10 @@ import type {
   UpdateTimelineSeasonEventInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import Lookup from "src/components/Util/Lookup/Lookup";
-import {
-  FileUpload2,
-} from "src/components/Util/FileUpload/FileUpload";
+import { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
+import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import { useState } from "react";
 import TagInput from "src/components/Util/TagInput/TagInput";
-import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
 
 type FormTimelineSeasonEvent = NonNullable<
   EditTimelineSeasonEventById["timelineSeasonEvent"]
@@ -115,14 +111,14 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
             onChange={(e) => isRaid(e.currentTarget.checked)}
           />
 
-          <Lookup
+          <MultiSelectLookup
             options={props?.maps.map((map) => ({
               label: map.name,
               value: map.id,
               image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
             }))}
             name="map_id"
-            defaultValue={props.timelineSeasonEvent?.map_id}
+            defaultValue={[props.timelineSeasonEvent?.map_id.toString()]}
             placeholder="Select a map"
           />
 
@@ -170,7 +166,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
             </>
           )}
 
-          <FileUpload2
+          <FileUpload
             className="relative !w-full"
             storagePath="timelineeventimages"
             defaultValue={props?.timelineSeasonEvent?.images}
@@ -240,7 +236,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
               inputClassName="dark:text-zinc-300 text-zinc-500 text-sm py-0 px-3 outline-none bg-transparent"
               defaultValue={`${props.timelineSeasonEvent?.tags || ""}${raid ? "raid" : ""}`}
             />
-            <FileUpload2
+            <FileUpload
               className="relative !w-full border-none !bg-transparent !rounded-none"
               storagePath="timelineeventimages"
               defaultValue={props?.timelineSeasonEvent?.images}

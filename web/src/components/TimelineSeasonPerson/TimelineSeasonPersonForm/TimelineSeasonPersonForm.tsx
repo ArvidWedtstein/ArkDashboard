@@ -3,22 +3,17 @@ import {
   FormError,
   FieldError,
   Label,
-  DatetimeLocalField,
   TextField,
   Submit,
-  CheckboxField,
   SelectField,
 } from "@redwoodjs/forms";
-
-import { timeTag as formatDatetime } from "src/lib/formatters";
-
 import type {
   EditTimelineSeasonPersonById,
   NewTimelineSeasonPerson,
   UpdateTimelineSeasonPersonInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import Lookup from "src/components/Util/Lookup/Lookup";
+import { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
 
 type FormTimelineSeasonPerson = NonNullable<
   EditTimelineSeasonPersonById["timelineSeasonPerson"]
@@ -63,13 +58,13 @@ const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
               User
             </Label>
 
-            <Lookup
+            <MultiSelectLookup
               name="user_id"
               options={props?.profiles.map((user) => ({
                 label: user.username,
                 value: user.id,
               }))}
-              defaultValue={props.timelineSeasonPerson?.user_id}
+              defaultValue={[props.timelineSeasonPerson?.user_id]}
             />
 
             <FieldError name="user_id" className="rw-field-error" />

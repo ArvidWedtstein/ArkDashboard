@@ -40,6 +40,7 @@ type TableColumn = {
   header?: string;
   /**
    * The field name for the column.
+   * TODO: make this type one of the keys of TableDataRow
    */
   field: string;
   /**

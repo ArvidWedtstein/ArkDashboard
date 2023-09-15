@@ -8,27 +8,27 @@ import {
 
 type InputProps = {
   type?:
-    | "number"
-    | "button"
-    | "time"
-    | "image"
-    | "text"
-    | "hidden"
-    | "color"
-    | "search"
-    | "date"
-    | "datetime-local"
-    | "email"
-    | "file"
-    | "month"
-    | "password"
-    | "radio"
-    | "range"
-    | "reset"
-    | "submit"
-    | "tel"
-    | "url"
-    | "week";
+  | "number"
+  | "button"
+  | "time"
+  | "image"
+  | "text"
+  | "hidden"
+  | "color"
+  | "search"
+  | "date"
+  | "datetime-local"
+  | "email"
+  | "file"
+  | "month"
+  | "password"
+  | "radio"
+  | "range"
+  | "reset"
+  | "submit"
+  | "tel"
+  | "url"
+  | "week";
   helperText?: string;
   label?: string;
 } & Omit<InputFieldProps, "type">;
@@ -40,7 +40,7 @@ const Input = ({
   ...props
 }: InputProps) => {
   return (
-    <div className="w mt-5 w-fit min-w-fit max-w-sm">
+    <div className=" mt-5 w-fit min-w-fit max-w-sm">
       <div className="rw-input-underline">
         <InputField
           type={type}

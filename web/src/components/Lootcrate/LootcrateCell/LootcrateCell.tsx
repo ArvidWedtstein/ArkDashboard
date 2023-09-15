@@ -19,6 +19,31 @@ export const QUERY = gql`
       color
       image
       type
+      LootcrateMap {
+        description
+        map_id
+        positions
+        Map {
+          name
+          icon
+        }
+      }
+      LootcrateItem {
+        id
+        Item {
+          name
+          image
+        }
+        set_name
+        set_qty_scale
+        set_weight
+        set_can_repeat_items
+        entry_quality
+        entry_name
+        entry_qty
+        entry_weight
+        bp_chance
+      }
     }
   }
 `;

@@ -17,9 +17,7 @@ import type {
   permission,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import {
-  FileUpload2,
-} from "src/components/Util/FileUpload/FileUpload";
+import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import { useEffect, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
 import { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
@@ -485,8 +483,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           Images of the base
         </Label>
 
-        {/* TODO: make old files show here when editing */}
-        <FileUpload2
+        <FileUpload
           name="base_images"
           thumbnail
           multiple
