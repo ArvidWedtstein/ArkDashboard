@@ -1,7 +1,7 @@
 import { Link, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
-
+import { useAuth } from "src/auth";
 import { QUERY } from '${importComponentNamesCell}'
 import { ${listFormattersImports} } from 'src/lib/formatters'
 import Toast from "src/components/Util/Toast/Toast";
@@ -17,6 +17,7 @@ const DELETE_${singularConstantName}_MUTATION = gql`
 `
 
 const ${pluralPascalName}List = ({ ${pluralCamelName} }: Find${pluralPascalName}) => {
+  const { currentUser } = useAuth();
   const [delete${singularPascalName}] = useMutation(DELETE_${singularConstantName}_MUTATION, {
     onCompleted: () => {
       toast.success('${singularPascalName} deleted')
@@ -66,6 +67,9 @@ const ${pluralPascalName}List = ({ ${pluralCamelName} }: Find${pluralPascalName}
                   >
                     Show
                   </Link>
+                   {currentUser?.permissions.some(
+          (p: permission) => p === "gamedata_update"
+        ) && (
                   <Link
                     to={routes.${editRouteName}({ id: ${singularCamelName}.id })}
                     title={'Edit ${singularCamelName} ' + ${singularCamelName}.id}
@@ -76,6 +80,10 @@ const ${pluralPascalName}List = ({ ${pluralCamelName} }: Find${pluralPascalName}
                     </svg>
                     Edit
                   </Link>
+        )}
+                   {currentUser?.permissions.some(
+          (p: permission) => p === "gamedata_delete"
+        ) && (
                   <button
                     type="button"
                     title={'Delete ${singularCamelName} ' + ${singularCamelName}.id}
@@ -91,6 +99,7 @@ const ${pluralPascalName}List = ({ ${pluralCamelName} }: Find${pluralPascalName}
                     </svg>
                     Delete
                   </button>
+        )}
                 </nav>
               </td>
             </tr>

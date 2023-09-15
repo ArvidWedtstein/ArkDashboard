@@ -1,12 +1,14 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
-import { CheckmarkIcon, toast } from "@redwoodjs/web/toast";
+import { toast } from "@redwoodjs/web/toast";
+import { JSXElementConstructor, ReactElement, useMemo } from "react";
 import { useAuth } from "src/auth";
 import StatCard from "src/components/Util/StatCard/StatCard";
 import Table from "src/components/Util/Table/Table";
+import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 import Toast from "src/components/Util/Toast/Toast";
 
-import { checkboxInputTag, jsonDisplay, timeTag } from "src/lib/formatters";
+import { checkboxInputTag, groupBy, jsonDisplay, timeTag } from "src/lib/formatters";
 
 import type {
   DeleteLootcrateMutationVariables,
@@ -53,14 +55,75 @@ const Lootcrate = ({ lootcrate }: Props) => {
     );
   };
 
-  return (
+  type qty = { min: number; max: number; pow?: number }
+  /**
+   * FORMULAS
+   *
+   * Randomized Quality:
+   * For each item stat used by that item, a Randomized Quality(RQ) is generated between 0 and AQ*RO,
+   * where RO is the Randomizer Range Override specific to that stat and item type.
+   * The RQ is used to determine the overall item quality and the value of that stat.
+   *
+   * Item Stat Value:
+   * The actual value of individual stats are determined by their RQ, Initial Value Constant(IV), State Modifier Scale(MS), Default Modified Value(DM), and Randomizer Range Multiplier(RM) as:
+   * IV + IV*MS*DM + IV*MS*RM*RQ
+   *
+   * Item Cost:
+   * The final Cost of the item is calculated based on Base Cost(BC), Resource Requirement Rating Scale(RS), Crafting Resources Requirements Multiplier(CM), which is determined by item quality, and Item Rating(IR) as:
+   * BC+(BC*IR*RS*CM*0.3)
+   *
+   * Item Quality:
+   * Each stat's individual item quality is calculated as (RQ^2/(AQ*RO))*RV, where RV is the Rating Value Modifier specific to that stat and item.
+   * The item quality of each stat is then averaged together to get the Item Rating(IR) and compared to the Random Multiplier Threshold to determine quality.
+   * An Item's Quality tier determines the multipliers applied to the XP gained from crafting or repairing the item and to the crafting cost for the item (including repair costs).
+   *
+   * NOTE: Double Crates have Arbitrary Value multiplied by 2
+   */
 
+
+
+  const calculatedLootcrateDrops = useMemo(() => {
+    const sets = Object.entries(groupBy(lootcrate.LootcrateItem, 'set_name')).map(([set, v]) => {
+      const entries = Object.entries(groupBy(v, 'entry_name'))
+      return {
+        set,
+        entries: entries[1].length,
+        collapseContent: (
+          <div className="p-3">
+            <p>The tier set "{set}" contains exactly {(entries[1][1][0].set_qty_scale as qty).min !== (entries[1][1][0].set_qty_scale as qty).max ? `at least ${(entries[1][1][0].set_qty_scale as qty).min} and at most ${(entries[1][1][0].set_qty_scale as qty).max}` : `exactly ${(entries[1][1][0].set_qty_scale as qty).min}`} of the following entries.</p>
+            <Tabs>
+              {entries.map(([entry, items]) => (
+                <Tab label={entry}>
+                  <div className="py-2">
+                    <p>The item entry "{entry}" contains {(items[0].entry_qty as qty).min !== (items[0].entry_qty as qty).max ? `at least ${(items[0].entry_qty as qty).min} and at most ${(items[0].entry_qty as qty).max}` : `exactly ${(items[0].entry_qty as qty).min}`} of the following items.</p>
+                    <div className="py-3 grid gap-1 grid-flow-row grid-cols-4">
+                      {items.map((item) => (
+                        <Link to={routes.item({ id: item.Item.id })} className="max-w-xs inline-flex space-x-1 items-center p-1 rounded dark:bg-zinc-500 bg-zinc-200  flex-1">
+                          <img src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.Item.image}`} className="w-8 h-8" />
+                          <span>{item.Item.name}</span>
+                        </Link>
+                      ))}
+                    </div>
+                    <p className="rw-badge rw-badge-yellow-outline">{(items[0].entry_quality as qty).min === 0 ? `only as blueprint` : `as item or as blueprint with quality ${(items[0].entry_quality as qty).min * 100}%`}</p>
+                  </div>
+                </Tab>
+              ))}
+            </Tabs>
+          </div>
+        )
+      }
+    })
+
+    return sets
+  }, [lootcrate])
+
+  return (
     <article className="rw-segment">
       <div className="grid w-full grid-cols-2 gap-3 text-gray-700 dark:text-white">
         <section className="col-span-2 grid w-full grid-flow-col gap-2 rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600">
           <div className="w-full">
             <img
-              className="w-auto max-w-6xl"
+              className="w-auto max-w-6xl max-h-36"
               src={
                 lootcrate.image && lootcrate.image.length > 0
                   ? `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${lootcrate.image}`
@@ -76,80 +139,52 @@ const Lootcrate = ({ lootcrate }: Props) => {
             <StatCard stat={"Type"} value={lootcrate.type} chart={false} />
             <StatCard stat={"Maps"} value={lootcrate.LootcrateMap.length} chart={false} />
             <StatCard stat={"Items"} value={lootcrate.LootcrateItem.length} chart={false} />
+            <StatCard stat={"Sets"} value={`${(lootcrate.set_qty as qty).min}-${(lootcrate.set_qty as qty).max}`} chart={false} />
+            <StatCard stat={"Quality"} value={`${(lootcrate.quality_mult as qty).min * 100}% - ${(lootcrate.quality_mult as qty).max * 100}%`} chart={false} />
           </div>
         </section>
 
-        <section className="rounded-lg bg-gray-200 p-4 dark:bg-zinc-600">
-          <Table rows={lootcrate.LootcrateItem} columns={[
+        <Table
+          rows={calculatedLootcrateDrops}
+          columns={[
             {
-              field: "set_name",
+              field: "set",
               header: 'Set'
-            }
-          ]} />
-          <table className="rw-table">
-            <tbody>
-              <tr>
-                <th>Id</th>
-                <td>{lootcrate.id}</td>
-              </tr>
-              <tr>
-                <th>Created at</th>
-                <td>{timeTag(lootcrate.created_at)}</td>
-              </tr>
-              <tr>
-                <th>Updated at</th>
-                <td>{timeTag(lootcrate.updated_at)}</td>
-              </tr>
-              <tr>
-                <th>Name</th>
-                <td>{lootcrate.name}</td>
-              </tr>
-              <tr>
-                <th>Blueprint</th>
-                <td>{lootcrate.blueprint}</td>
-              </tr>
-              <tr>
-                <th>Image</th>
-                <td>{lootcrate.image}</td>
-              </tr>
-              <tr>
-                <th>Required level</th>
-                <td>{lootcrate.required_level}</td>
-              </tr>
-              <tr>
-                <th>Quality mult</th>
-                <td>{jsonDisplay(lootcrate.quality_mult)}</td>
-              </tr>
-              <tr>
-                <th>Set qty</th>
-                <td>{jsonDisplay(lootcrate.set_qty)}</td>
-              </tr>
-              <tr>
-                <th>Repeat in sets</th>
-                <td>{checkboxInputTag(lootcrate.repeat_in_sets)}</td>
-              </tr>
-              <tr>
-                <th>Color</th>
-                <td>{lootcrate.color}</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
+            },
+            {
+              field: "entries",
+              header: 'Entries',
+              render: ({ value }) => (
+                <span className="rw-badge rw-badge-small rw-badge-gray">{value}</span>
+              )
+            },
+          ]}
+        />
+
+        {/* TODO: add map component */}
       </div>
       <nav className="rw-button-group">
-        <Link
-          to={routes.editLootcrate({ id: lootcrate.id })}
-          className="rw-button rw-button-blue"
-        >
-          Edit
-        </Link>
-        <button
-          type="button"
-          className="rw-button rw-button-red"
-          onClick={() => onDeleteClick(lootcrate.id)}
-        >
-          Delete
-        </button>
+        {currentUser?.permissions.some(
+          (p: permission) => p === "gamedata_update"
+        ) && (
+            <Link
+              to={routes.editLootcrate({ id: lootcrate.id })}
+              className="rw-button rw-button-blue"
+            >
+              Edit
+            </Link>
+          )}
+        {currentUser?.permissions.some(
+          (p: permission) => p === "gamedata_delete"
+        ) && (
+            <button
+              type="button"
+              className="rw-button rw-button-red"
+              onClick={() => onDeleteClick(lootcrate.id)}
+            >
+              Delete
+            </button>
+          )}
       </nav>
     </article>
   );

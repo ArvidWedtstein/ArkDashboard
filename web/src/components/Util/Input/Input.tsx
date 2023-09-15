@@ -56,7 +56,7 @@ const Input = ({
           className="peer-focus-within:text-pea-500 peer-focus-within:dark:text-pea-400 capitalize peer-placeholder-shown:top-4 peer-placeholder-shown:-translate-y-0 peer-placeholder-shown:scale-100 peer-focus-within:top-4 peer-focus-within:-translate-y-4 peer-focus-within:scale-75"
           errorClassName="rw-label rw-label-error"
         >
-          {label ?? name}
+          {label ?? name} {props.required && "*"}
         </Label>
       </div>
       <FieldError name={name} className="rw-field-error" />

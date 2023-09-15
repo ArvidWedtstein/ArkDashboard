@@ -11,7 +11,7 @@ describe('Table', () => {
     expect(() => {
       render(<Table columns={[{
         field: 'test',
-        label: 'test',
+        header: 'test',
       }]} rows={[{ test: 'tewstg' }]} />)
     }).not.toThrow()
   })
@@ -31,7 +31,7 @@ describe('Table', () => {
         <Table
           columns={[{
             field: 'test',
-            label: 'test',
+            header: 'test',
           }]}
           rows={[{ test: 'tewstg' }, { test: '12321' }, { test: 'row3' }, { test: 'rosdg' }, { test: 'tewstg' }, { test: '12321' }, { test: 'row3' }, { test: 'rosdg' }, { test: 'tewstg' }, { test: '12321' }, { test: 'row3' }, { test: 'rosdg' }, { test: 'tewstg' }, { test: '12321' }, { test: 'row3' }, { test: 'rosdg' }]}
         />

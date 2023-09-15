@@ -16,7 +16,6 @@ export const QUERY = gql`
       quality_mult
       set_qty
       repeat_in_sets
-      color
       image
       type
       LootcrateMap {
@@ -31,6 +30,7 @@ export const QUERY = gql`
       LootcrateItem {
         id
         Item {
+          id
           name
           image
         }

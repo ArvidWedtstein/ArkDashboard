@@ -519,7 +519,8 @@ const Table = <T extends any>({
         "rounded-br-lg":
           rowIndex === PaginatedData.length - 1 &&
           columnIndex === columns.length - 1 &&
-          !columnSettings.some((col) => col.aggregate),
+          !columnSettings.some((col) => col.aggregate) &&
+          !dataRows.some((row) => row.collapseContent),
       }
     );
 
@@ -577,7 +578,8 @@ const Table = <T extends any>({
             !header && isSelected(datarow.row_id),
           "first:rounded-bl-lg":
             rowIndex === PaginatedData.length - 1 &&
-            !columnSettings.some((col) => col.aggregate),
+            !columnSettings.some((col) => col.aggregate) &&
+            !datarow.collapseContent,
         })}
         scope="col"
       >

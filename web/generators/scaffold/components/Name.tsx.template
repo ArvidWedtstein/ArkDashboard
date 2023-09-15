@@ -2,6 +2,7 @@
 import { Link, routes, navigate } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
+import { useAuth } from "src/auth";
 import Toast from "src/components/Util/Toast/Toast";
 
 import { ${formattersImports} } from 'src/lib/formatters'
@@ -21,6 +22,7 @@ interface Props {
 }
 
 const ${singularPascalName} = ({ ${singularCamelName} }: Props) => {
+  const { currentUser } = useAuth();
   const [delete${singularPascalName}] = useMutation(DELETE_${singularConstantName}_MUTATION, {
     onCompleted: () => {
       toast.success('${singularPascalName} deleted')
@@ -79,6 +81,9 @@ const ${singularPascalName} = ({ ${singularCamelName} }: Props) => {
         </table>
       </div>
       <nav className="rw-button-group">
+       {currentUser?.permissions.some(
+          (p: permission) => p === "gamedata_update"
+        ) && (
         <Link
           to={routes.${editRouteName}({ id: ${singularCamelName}.id })}
           className="rw-button rw-button-gray"
@@ -92,6 +97,10 @@ const ${singularPascalName} = ({ ${singularCamelName} }: Props) => {
           </svg>
           Edit
         </Link>
+        )}
+         {currentUser?.permissions.some(
+          (p: permission) => p === "gamedata_delete"
+        ) && (
         <button
           type="button"
           className="rw-button rw-button-red"
@@ -106,6 +115,7 @@ const ${singularPascalName} = ({ ${singularCamelName} }: Props) => {
           </svg>
           Delete
         </button>
+        )}
       </nav>
     </>
   )
