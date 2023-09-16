@@ -3,7 +3,7 @@ import { BgColor, StrokeColor } from "src/lib/formatters";
 
 type StatCardProps = React.HTMLAttributes<HTMLDivElement> & {
   stat: string;
-  value: number | string;
+  value?: number | string;
   subtext?: string | number;
   chart?: boolean;
   valueDisplay?: "percent" | "number";
@@ -39,14 +39,21 @@ const StatCard = ({
             <h5 className="text-xs font-bold uppercase text-gray-400">
               {stat}
             </h5>
-            {subtext && <span className="block text-xl font-bold">{subtext}</span>}
-            {!!value.toString() && <span className="block text-xl font-bold">{valueDisplay === 'number' ? value : `${value} / 100`}</span>}
+            {subtext && (
+              <span className="block text-xl font-bold">{subtext}</span>
+            )}
+            {!!value?.toString() && (
+              <span className="block text-xl font-bold">
+                {valueDisplay === "number" ? value : `${value} / 100`}
+              </span>
+            )}
           </div>
           {icon && (
             <div className="relative w-auto flex-initial">
               <div
-                className={`inline-flex h-12 w-12 items-center justify-center rounded-full p-3 text-center text-white shadow-lg ${iconBackground || "bg-pink-500"
-                  }`}
+                className={`inline-flex h-12 w-12 items-center justify-center rounded-full p-3 text-center text-white shadow-lg ${
+                  iconBackground || "bg-pink-500"
+                }`}
               >
                 <div className="h-4 w-4 text-current">{icon}</div>
               </div>

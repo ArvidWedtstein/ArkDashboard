@@ -6,7 +6,12 @@ import type { CellSuccessProps, CellFailureProps } from "@redwoodjs/web";
 import Lootcrates from "src/components/Lootcrate/Lootcrates";
 
 export const QUERY = gql`
-  query FindLootcrates($map: String, $search: String, $type: String, $color: String) {
+  query FindLootcrates(
+    $map: String
+    $search: String
+    $type: String
+    $color: String
+  ) {
     lootcratesByMap(map: $map, search: $search, type: $type, color: $color) {
       id
       name
@@ -30,7 +35,7 @@ export const Loading = () => (
     className="w-full animate-pulse overflow-hidden p-4 md:p-6"
   >
     <div className="mb-4 h-5 w-48 rounded-full bg-zinc-200 dark:bg-zinc-700" />
-    <div className="flex ml-auto justify-end mb-3 space-x-5">
+    <div className="ml-auto mb-3 flex justify-end space-x-5">
       <div className="h-4 w-48 rounded-full bg-zinc-200 dark:bg-zinc-700" />
       <div className="h-4 w-24 rounded-full bg-zinc-200 dark:bg-zinc-700" />
       <div className="h-4 w-60 rounded-full bg-zinc-200 dark:bg-zinc-700" />
@@ -39,7 +44,7 @@ export const Loading = () => (
 
     <div className="h-0.5 w-full bg-zinc-200 dark:bg-zinc-700" />
 
-    <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4 w-full mt-3">
+    <div className="mt-3 grid w-full grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
       <div className="flex flex-col space-y-5">
         <div className="flex justify-between border-t border-zinc-500 py-5">
           <div className="h-2 w-20 rounded-full bg-zinc-200 dark:bg-zinc-700" />
@@ -72,7 +77,7 @@ export const Loading = () => (
           </svg>
         </div>
       </div>
-      <div className="grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 grid w-full gap-6 lg:col-span-3">
+      <div className="grid w-full grid-cols-1 gap-6 lg:col-span-3 lg:grid-cols-2 xl:grid-cols-3">
         <div className="h-48 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700" />
         <div className="h-48 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700" />
         <div className="h-48 w-full rounded-lg bg-zinc-200 dark:bg-zinc-700" />

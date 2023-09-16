@@ -2,6 +2,7 @@ import { RWGqlError } from "@redwoodjs/forms";
 import {
   memo,
   useCallback,
+  useDeferredValue,
   useEffect,
   useMemo,
   useReducer,
@@ -126,7 +127,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
       variables: {
         ids: itemRecipes.map((f) => f.id),
       },
-      // onCompleted: (data) => { },
       onError: (error) => {
         console.error(error);
       },
@@ -139,7 +139,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
     }
   }, []);
 
-  const [search, setSearch] = useState<string>("");
+  const [query, setQuery] = useState<string>("");
+  const deferredQuery = useDeferredValue(query);
   const [viewBaseMaterials, setViewBaseMaterials] = useState<boolean>(false);
   const [selectedCraftingStations, selectCraftingStations] = useState<number[]>(
     [107, 125]
@@ -374,8 +375,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 ...itemfound,
                 ItemRecipeItem: data.itemRecipeItemsByIds
                   ? data.itemRecipeItemsByIds.filter(
-                    (iri) => iri.item_recipe_id === item_recipe_id
-                  )
+                      (iri) => iri.item_recipe_id === item_recipe_id
+                    )
                   : [],
               },
               amount: amount,
@@ -431,13 +432,15 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
 
           <ItemList
             defaultSearch={false}
-            onSearch={(e) => setSearch(e)}
+            onSearch={(e) => setQuery(e)}
             options={Object.entries(
               groupBy(
                 (items || [])
                   .map((f) => f?.Item_ItemRecipe_crafted_item_idToItem)
                   .filter((item) =>
-                    item.name.toLowerCase().includes(search.toLowerCase())
+                    item.name
+                      .toLowerCase()
+                      .includes(deferredQuery.toLowerCase())
                   ),
                 "category"
               )
@@ -446,21 +449,21 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
               value: v.every(({ type }) => !type)
                 ? v.map((itm) => ({
-                  ...itm,
-                  label: itm.name,
-                  icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                  value: [],
-                }))
+                    ...itm,
+                    label: itm.name,
+                    icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                    value: [],
+                  }))
                 : Object.entries(groupBy(v, "type")).map(([type, v2]) => {
-                  return {
-                    label: type,
-                    value: v2.map((itm) => ({
-                      label: itm.name,
-                      ...itm,
-                      icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                    })),
-                  };
-                }),
+                    return {
+                      label: type,
+                      value: v2.map((itm) => ({
+                        label: itm.name,
+                        ...itm,
+                        icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                      })),
+                    };
+                  }),
             }))}
             onSelect={(_, item) => {
               onAdd({ itemId: item.id });
@@ -468,7 +471,6 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
           />
         </div>
         <div className="w-full">
-
           <div className="my-3 space-y-3">
             <ToggleButton
               offLabel="Mortar And Pestle"
@@ -654,7 +656,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 datatype: "number",
                 aggregate: "sum",
                 className: "w-0 text-center",
-                valueFormatter: ({ row, value }) => parseInt(value.toString()) * row.amount,
+                valueFormatter: ({ row, value }) =>
+                  parseInt(value.toString()) * row.amount,
                 render: ({ value }) => `${timeFormatL(value, true)}`,
               },
               ...(mergeItemRecipe(
@@ -703,7 +706,11 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                     )
                   );
                 },
-              })) as unknown as { field: string; header: string; type: string }[]),
+              })) as unknown as {
+                field: string;
+                header: string;
+                type: string;
+              }[]),
               // {
               //   field: "Item_ItemRecipe_crafted_item_idToItem",
               //   header: "Ingredients",

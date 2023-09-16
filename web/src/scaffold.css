@@ -283,24 +283,6 @@
     @apply my-3 flex w-fit justify-center rounded-lg;
   }
 
-  .rw-button-group:not(.rw-button-group-vertical) > .rw-button:not(:last-child),
-  .rw-button-group:not(.rw-button-group-vertical) > .rw-input:not(:last-child),
-  .rw-button-group:not(.rw-button-group-vertical)
-    > .rw-float-input:not(:last-child),
-  .rw-button-group:not(.rw-button-group-vertical)
-    > .rw-input-underline:not(:last-child) {
-    @apply rounded-r-none;
-  }
-  .rw-button-group:not(.rw-button-group-vertical)
-    > .rw-button:not(:first-child),
-  .rw-button-group:not(.rw-button-group-vertical) > .rw-input:not(:first-child),
-  .rw-button-group:not(.rw-button-group-vertical)
-    > .rw-float-input:not(:first-child),
-  .rw-button-group:not(.rw-button-group-vertical)
-    > .rw-input-underline:not(:first-child) {
-    @apply -ml-px rounded-l-none !border-l-transparent;
-  }
-
   .rw-button-group.rw-button-group-vertical {
     @apply flex-col;
   }
