@@ -1,12 +1,6 @@
 console.time("normal");
-const TheIsland = require("./web/public/ResourcesTheIsland.json");
-const Valguero = require("./web/public/ResourcesValguero.json");
-const Ragnarok = require("./web/public/ResourcesRagnarok.json");
-const Aberration = require("./web/public/ResourcesAberration.json");
-const ScorchedEarth = require("./web/public/ResourcesScorchedEarth.json");
-const LostIsland = require("./web/public/ResourcesLostIsland.json");
-const lootcrateitems = require("./web/public/lootcrateitems.json");
-const maplootcrates = require("./web/public/MapLootcrates.json");
+const Valg = require("./web/public/biomes.json");
+
 var partition = function (arr, length) {
   var result = [];
   for (var i = 0; i < arr.length; i++) {
@@ -16,23 +10,46 @@ var partition = function (arr, length) {
   return result;
 };
 
-const lootmaps = {
-  TheIsland: TheIsland,
-  Valguero: Valguero,
-  Ragnarok: Ragnarok,
-  Aberration: Aberration,
-  ScorchedEarth: ScorchedEarth,
-  LostIsland: LostIsland,
-};
+/**
+ * For extracting biomes to MapRegions table
+ */
 
-let lootcrate_beacons = {};
-
-Object.keys(lootmaps).forEach((map) => {
-  Object.assign(lootcrate_beacons, {
-    [map]: lootmaps[map].lootcrate_beacons,
+let biomes = [
+  `INSERT INTO public."MapRegion" ("map_id", "name", "wind", "temperature", "priority", "outside", "start_x", "start_y", "start_z", "end_x", "end_y", "end_z") VALUES`,
+];
+Valg.biomes.forEach((x) => {
+  x.boxes.forEach((y) => {
+    biomes.push(
+      `(2, '${x.name.replaceAll("'", "''")}', ${
+        x?.wind
+          ? x.wind?.override
+            ? x.wind.override
+            : x.wind?.final
+            ? x.wind?.final[0]
+            : null
+          : null
+      }, ${
+        x?.temperature
+          ? x.temperature?.override ??
+            (x.temperature?.initial
+              ? x.temperature?.initial[2]
+              : x.temperature?.final
+              ? x.temperature.final[0]
+              : x.temperature?.override ?? null)
+          : null
+      }, ${x.priority}, ${x.isOutside}, ${y.start.x}, ${y.start.y}, ${
+        y.start.z
+      }, ${y.end.x}, ${y.end.y}, ${y.end.z})`
+    );
   });
 });
 
+require("fs").writeFile(`insert.txt`, biomes.join(",\n"), (error) => {
+  if (error) {
+    throw error;
+  }
+});
+return;
 // let countCrates = 0;
 // let countnonCrates = [];
 // let data = {};
