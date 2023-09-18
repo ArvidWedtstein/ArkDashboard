@@ -44,11 +44,17 @@ interface mapProps {
     image?: string;
     name?: string;
     opacity?: number;
+    /**
+     * Used to determine which node to use for the selected map
+     */
+    map_id?: number;
   }[];
   className?: string;
   path?: { color?: string; coords: { lat: number; lon: number }[] };
   interactive?: boolean;
   onSubMapChange?: (submap: number) => void;
+  onMapChange?: (map: number) => void;
+  mapFilter?: (map: { id: number; name: string }) => boolean;
   onPosClick?: (pos: {
     lat: number;
     lon: number;
@@ -68,7 +74,9 @@ const Map = ({
   className,
   path,
   interactive = false,
+  mapFilter,
   onPosClick,
+  onMapChange,
   onSubMapChange,
 }: mapProps) => {
   const [loadMaps, { called, loading, data }] = useLazyQuery(MAPQUERY, {
@@ -118,8 +126,9 @@ const Map = ({
       !interactive ||
       event.code !== "ShiftLeft" ||
       event.code !== "ShiftRight"
-    )
+    ) {
       return;
+    }
 
     setZoom(1);
     setPanPosition({ x: 0, y: 0 });
@@ -247,9 +256,10 @@ const Map = ({
           >
             <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
           </svg>
+          <span className="sr-only">Zoom In</span>
         </button>
         <button
-          className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
+          className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none !border-l-transparent last:!rounded-br-none"
           onClick={() => handleZoomButton("out")}
           disabled={zoom == 1 || !interactive}
         >
@@ -260,16 +270,20 @@ const Map = ({
           >
             <path d="M432 256C432 264.8 424.8 272 416 272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h384C424.8 240 432 247.2 432 256z" />
           </svg>
+          <span className="sr-only">Zoom Out</span>
         </button>
         <select
           value={map}
           disabled={disable_map}
-          className="rw-button rw-button-small rw-button-gray flex-grow first:!rounded-bl-none last:!rounded-br-none"
-          onChange={(e) => setMap(parseInt(e.target.value))}
+          className="rw-button rw-button-small rw-button-gray flex-grow first:!rounded-bl-none last:!rounded-br-none !border-l-transparent"
+          onChange={(e) => {
+            onMapChange?.(parseInt(e.target.value));
+            setMap(parseInt(e.target.value));
+          }}
         >
           {data &&
             data.maps
-              .filter((m) => m.parent_map_id == null)
+              .filter((m) => m.parent_map_id == null && (mapFilter ? mapFilter({ id: m.id, name: m.name }) : true))
               .map((map: { id: number; name: string }) => (
                 <option key={map.id} value={map.id}>
                   {map.name}
@@ -277,8 +291,7 @@ const Map = ({
               ))}
         </select>
         {data &&
-          data.maps.some((m) => m.other_Map && m.other_Map.length > 0) &&
-          (submap_id || subMap) && (
+          data.maps.some((m) => m.other_Map && m.other_Map.length > 0 && m.id === map) && (
             <select
               value={subMap}
               disabled={disable_sub_map}
@@ -301,7 +314,7 @@ const Map = ({
         <select
           value={mapType}
           disabled={disable_map_type}
-          className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none !border-l-transparent"
+          className="rw-button rw-button-small rw-button-gray first:!rounded-bl-none last:!rounded-br-none"
           onChange={({ target: { value } }) =>
             (value == "img" || value == "topographic_img") && setMapType(value)
           }
@@ -338,7 +351,7 @@ const Map = ({
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
-            href={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${data?.maps?.find((m) => m.id === (submap_id ? subMap : map))[
+            href={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${data?.maps?.find((m) => m.id === (data.maps.find((m) => m.id === map)?.other_Map.length > 0 ? subMap ?? 16 : map))[
               mapType
             ] || ""
               }`}
@@ -395,7 +408,7 @@ const Map = ({
           width="100%"
           height="100%"
         >
-          {pos?.map((p, i) => (
+          {pos.filter(p => p?.map_id ? (p?.map_id === map || p.map_id === subMap) : true)?.map((p, i) => (
             <React.Fragment key={`map-pos-${i}`}>
               {p.image && p.image != null ? (
                 <image

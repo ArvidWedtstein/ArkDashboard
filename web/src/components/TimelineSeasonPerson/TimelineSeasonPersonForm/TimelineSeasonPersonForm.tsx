@@ -13,7 +13,7 @@ import type {
   UpdateTimelineSeasonPersonInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 
 type FormTimelineSeasonPerson = NonNullable<
   EditTimelineSeasonPersonById["timelineSeasonPerson"]
@@ -58,7 +58,7 @@ const TimelineSeasonPersonForm = (props: TimelineSeasonPersonFormProps) => {
               User
             </Label>
 
-            <MultiSelectLookup
+            <Lookup
               name="user_id"
               options={props?.profiles.map((user) => ({
                 label: user.username,

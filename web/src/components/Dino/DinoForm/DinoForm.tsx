@@ -14,7 +14,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import type { EditDinoById, UpdateDinoInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import Lookup, { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { truncate } from "src/lib/formatters";
 import { toast } from "@redwoodjs/web/toast";
@@ -357,7 +357,7 @@ const DinoForm = (props: DinoFormProps) => {
                         role="group"
                         key={`ge-${index}`}
                       >
-                        <MultiSelectLookup
+                        <Lookup
                           key={ge.id}
                           {...register(
                             `DinoStat.create.${index}.item_id` as const,
@@ -461,7 +461,7 @@ const DinoForm = (props: DinoFormProps) => {
                         role="group"
                         key={`wr-${index}`}
                       >
-                        <MultiSelectLookup
+                        <Lookup
                           {...register(`DinoStat.create.${index}.item_id`)}
                           className="!mt-0 !rounded-none !rounded-l-md"
                           options={data.itemsByCategory.items
@@ -886,7 +886,7 @@ const DinoForm = (props: DinoFormProps) => {
                       role="group"
                       key={`wr-${index}`}
                     >
-                      <MultiSelectLookup
+                      <Lookup
                         {...register(`DinoStat.create.${index}.item_id`)}
                         className="!mt-0 !rounded-none !rounded-l-md"
                         options={data.itemsByCategory.items
@@ -1066,7 +1066,7 @@ const DinoForm = (props: DinoFormProps) => {
                         role="group"
                         key={`drops-${index}`}
                       >
-                        <MultiSelectLookup
+                        <Lookup
                           {...register(`DinoStat.create.${index}.item_id`, {
                             required: true,
                           })}
@@ -1600,7 +1600,7 @@ const DinoForm = (props: DinoFormProps) => {
                 Eats
               </Label>
 
-              <MultiSelectLookup
+              <Lookup
                 options={
                   data
                     ? data.itemsByCategory.items

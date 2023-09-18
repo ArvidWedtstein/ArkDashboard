@@ -16,7 +16,7 @@ import type {
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import Avatar from "src/components/Util/Avatar/Avatar";
-import { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { useAuth } from "src/auth";
 
 type FormProfile = NonNullable<EditProfileById["profile"]>;
@@ -264,7 +264,7 @@ const ProfileForm = (props: ProfileFormProps) => {
                         Role
                       </Label>
 
-                      <MultiSelectLookup
+                      <Lookup
                         name="role_id"
                         defaultValue={[props.profile?.role_id.toString()]}
                         options={

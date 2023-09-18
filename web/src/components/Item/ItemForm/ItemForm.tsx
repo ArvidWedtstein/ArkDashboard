@@ -16,7 +16,7 @@ import type { EditItemById, UpdateItemInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
 import { useEffect, useState } from "react";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
-import Lookup, { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { useLazyQuery } from "@apollo/client";
 
 type FormItem = NonNullable<EditItemById["item"]>;
@@ -410,7 +410,7 @@ const ItemForm = (props: ItemFormProps) => {
                       key={`recipe-${index}`}
                     >
                       {/* TODO: Group By crafting station */}
-                      <MultiSelectLookup
+                      <Lookup
                         // {...register(
                         //   `ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.item_id`,
                         //   {

@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@redwoodjs/testing/web'
 import React from 'react';
 
-import { MultiSelectLookup } from './Lookup'
+import { Lookup } from './Lookup'
 
 //   Improve this test with help from the Redwood Testing Doc:
 //    https://redwoodjs.com/docs/testing#testing-components
@@ -12,10 +12,10 @@ const mockOptions = [
   // Add more mock options as needed
 ];
 
-describe('MultiSelectLookup Component', () => {
+describe('Lookup Component', () => {
   it('renders with placeholder when no options are selected', () => {
     render(
-      <MultiSelectLookup
+      <Lookup
         options={mockOptions}
         placeholder="Select options"
       />
@@ -27,7 +27,7 @@ describe('MultiSelectLookup Component', () => {
 
   it('displays selected options', () => {
     render(
-      <MultiSelectLookup
+      <Lookup
         options={mockOptions}
         defaultValue={mockOptions.slice(0, 2).map(o => o.value)} // Simulate two selected options
       />
@@ -44,7 +44,7 @@ describe('MultiSelectLookup Component', () => {
     const onSelectMock = jest.fn();
 
     render(
-      <MultiSelectLookup
+      <Lookup
         options={mockOptions}
         onSelect={onSelectMock}
       />
@@ -62,7 +62,7 @@ describe('MultiSelectLookup Component', () => {
     const onSelectMock = jest.fn();
 
     render(
-      <MultiSelectLookup
+      <Lookup
         options={mockOptions}
         defaultValue={mockOptions.slice(0, 2).map(o => o.value)}
         onSelect={onSelectMock}

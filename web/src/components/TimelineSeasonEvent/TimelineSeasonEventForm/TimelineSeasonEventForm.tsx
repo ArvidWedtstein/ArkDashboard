@@ -14,7 +14,7 @@ import type {
   UpdateTimelineSeasonEventInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import { useState } from "react";
 import TagInput from "src/components/Util/TagInput/TagInput";
@@ -111,7 +111,7 @@ const TimelineSeasonEventForm = (props: TimelineSeasonEventFormProps) => {
             onChange={(e) => isRaid(e.currentTarget.checked)}
           />
 
-          <MultiSelectLookup
+          <Lookup
             options={props?.maps.map((map) => ({
               label: map.name,
               value: map.id,

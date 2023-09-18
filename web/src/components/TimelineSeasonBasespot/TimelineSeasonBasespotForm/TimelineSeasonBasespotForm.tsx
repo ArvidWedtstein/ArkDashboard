@@ -13,7 +13,7 @@ import type {
   UpdateTimelineSeasonBasespotInput,
 } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 
 
 type FormTimelineSeasonBasespot = NonNullable<
@@ -105,7 +105,7 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
           Basespot
         </Label>
 
-        <MultiSelectLookup
+        <Lookup
           options={props?.basespots.map((bs) => ({
             label: bs.name,
             value: bs.id,
@@ -119,7 +119,7 @@ const TimelineSeasonBasespotForm = (props: TimelineSeasonBasespotFormProps) => {
         <FieldError name="basespot_id" className="rw-field-error" />
 
 
-        <MultiSelectLookup
+        <Lookup
           options={props?.maps.map((map) => ({
             label: map.name,
             value: map.id,

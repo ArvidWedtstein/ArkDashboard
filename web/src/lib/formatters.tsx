@@ -1059,6 +1059,23 @@ export const groupBy = <T extends {}>(
 
 type NestedKey<T> = string | (string | number)[];
 
+/**
+ *
+ * @param obj
+ * @param nestedKey
+ * @returns
+ * @example
+ * const obj = {
+ * a: {
+ *  b: {
+ *   c: 1,
+ * },
+ * },
+ * };
+ * getValueByNestedKey(obj, "a.b.c"); // 1
+ * getValueByNestedKey(obj, ["a", "b", "c"]); // 1
+ * getValueByNestedKey(obj, "a.b.d"); // undefined
+ */
 export const getValueByNestedKey = <T extends object>(
   obj: T,
   nestedKey: NestedKey<T>

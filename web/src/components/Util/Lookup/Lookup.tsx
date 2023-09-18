@@ -10,301 +10,14 @@ import {
   useState,
 } from "react";
 import useComponentVisible from "../../useComponentVisible";
-import { ArrayElement, groupBy } from "src/lib/formatters";
+import { ArrayElement } from "src/lib/formatters";
 import clsx from "clsx";
+
+
 type value = string | object | number | null | undefined;
+
+
 interface ILookup {
-  defaultValue?: any;
-  children?: React.ReactNode[];
-  className?: string;
-  search?: boolean;
-  group?: string;
-  name?: string;
-  disabled?: boolean;
-  clearable?: boolean;
-  options?: {
-    label: string;
-    value: string | object | number;
-    image?: string;
-  }[];
-  onSelect?: (value: ArrayElement<ILookup["options"]>) => void;
-  onChange?: ChangeEventHandler | undefined;
-  placeholder?: string;
-  filterFn?: (
-    option: { label: string; value: value; image?: string },
-    searchTerm: string
-  ) => boolean;
-  sortFn?: (
-    a: { label: string; value: value; image?: string },
-    b: { label: string; value: value; image?: string }
-  ) => number;
-}
-
-const Lookup = ({
-  defaultValue,
-  children,
-  className,
-  onSelect,
-  search = false,
-  group,
-  name,
-  disabled = false,
-  clearable = true,
-  options,
-  placeholder,
-  onChange,
-  filterFn,
-  sortFn,
-}: ILookup) => {
-  const { ref, isComponentVisible, setIsComponentVisible } =
-    useComponentVisible(false);
-
-  const hasOptions = options.length > 0;
-
-  const { field } = !!name && useController({ name: name });
-  const [searchTerm, setSearchTerm] = useState<string>(
-    defaultValue && hasOptions
-      ? options?.find((option) => option?.value === defaultValue)?.label
-      : ""
-  );
-
-  const openIndexesRef = useRef<number[]>([]);
-  const selectedOptionRef = useRef(
-    defaultValue && hasOptions
-      ? options.find((option) => option.value === defaultValue)
-      : null
-  );
-
-  // Run filter and sort functions when options or searchTerm changes
-  const filteredOptions = useMemo(() => {
-    const filtered =
-      filterFn && searchTerm
-        ? options.filter((option) => filterFn(option, searchTerm))
-        : options.filter((option) =>
-          option.label.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-    const sorted = sortFn ? filtered.sort(sortFn) : filtered;
-    const grouped = !!group ? groupBy(sorted, group) : sorted;
-    if (Object.keys(grouped).length === 1 && group) {
-      openIndexesRef.current = [0];
-    }
-
-    return grouped as any;
-  }, [options, searchTerm, filterFn, sortFn]);
-
-  // Update selectedOption when defaultValue changes
-  useEffect(() => {
-    const selected = options.find((option) => option.value == defaultValue);
-
-    selectedOptionRef.current = selected || defaultValue;
-    !!name && field.onChange(defaultValue);
-  }, [defaultValue]);
-
-  // Handle input change
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    selectedOptionRef.current = null;
-
-    setSearchTerm(event.target.value || "");
-    onChange?.(event);
-  };
-
-  // Handle option select
-  const handleOptionSelect = (option) => {
-    selectedOptionRef.current = option;
-
-    setSearchTerm(option.label);
-    onSelect?.(option);
-    !!name && field.onChange(option.value);
-  };
-
-  // Handle option clear
-  const handleOptionClear = () => {
-    selectedOptionRef.current = null;
-
-    setSearchTerm("");
-    onSelect?.({ label: null, value: null });
-    !!name && field.onChange(null);
-  };
-
-  /**
-   * @description For toggling the open state of the groups
-   * @param index
-   */
-  const toggleOpen = (index) => {
-    if (openIndexesRef.current.includes(index)) {
-      openIndexesRef.current = openIndexesRef.current.filter(
-        (i) => i !== index
-      );
-      return;
-    }
-  };
-
-  return (
-    <div className="relative flex w-fit items-center" ref={ref}>
-      <div
-        onClick={() => !disabled && setIsComponentVisible(!isComponentVisible)}
-        className={clsx(
-          "rw-input flex h-full select-none items-center text-center transition ease-in hover:border-zinc-400",
-          className,
-          {
-            "cursor-not-allowed": disabled,
-          }
-        )}
-      >
-        {search ? (
-          <input
-            type="text"
-            name={name}
-            id={name}
-            value={searchTerm}
-            onChange={(e) => {
-              handleInputChange(e);
-              onChange?.(e);
-            }}
-            placeholder={placeholder || "Search..."}
-            className="flex w-full items-center bg-transparent outline-none"
-            disabled={disabled}
-          />
-        ) : (
-          <>
-            <input
-              type="text"
-              name={name}
-              id={name}
-              value={searchTerm}
-              className="hidden"
-              onChange={handleInputChange}
-              disabled={disabled}
-            />
-            {children
-              ? children
-              : selectedOptionRef?.current
-                ? selectedOptionRef?.current?.label
-                : placeholder}
-          </>
-        )}
-
-        <div className="pointer-events-none ml-auto flex select-auto flex-row">
-          <label htmlFor={name}>
-            <svg
-              className="pointer-events-none ml-2 h-4 w-4"
-              aria-hidden="true"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d={isComponentVisible ? "M19 16L12 9l-7 7" : "M19 9l-7 7-7-7"}
-              ></path>
-            </svg>
-          </label>
-          {!!selectedOptionRef.current && clearable && (
-            <svg
-              onClick={handleOptionClear}
-              fill="currentColor"
-              className="pointer-events-auto ml-2 h-4 w-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 320 512"
-            >
-              <path d="M310.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L160 210.7 54.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L114.7 256 9.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 301.3 265.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L205.3 256 310.6 150.6z" />
-            </svg>
-          )}
-        </div>
-      </div>
-
-      {isComponentVisible ? (
-        <div className="absolute top-0 z-10 mt-10 w-60 origin-top-right select-none rounded-lg border border-zinc-500 bg-white shadow transition-all duration-300 ease-in-out dark:bg-zinc-700">
-          <ul
-            className="relative z-10 max-h-48 overflow-y-auto py-1 text-gray-700 dark:text-gray-200"
-            aria-labelledby="dropdownButton"
-          >
-            {!hasOptions ? (
-              <li className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-zinc-700/50 dark:hover:text-white">
-                No options available
-              </li>
-            ) : null}
-            {!group
-              ? filteredOptions.map((option) => (
-                <li
-                  key={option.value + Math.random()}
-                  onClick={() => handleOptionSelect(option)}
-                  className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-zinc-600/70 dark:hover:text-white"
-                >
-                  {"image" in option && (
-                    <img
-                      className="mr-2 h-6 w-6 rounded-full"
-                      src={option.image}
-                      alt=""
-                    />
-                  )}
-                  {option.label}
-                </li>
-              ))
-              : Object.keys(filteredOptions).map((key, i) => {
-                return (
-                  <li key={key}>
-                    <div
-                      onClick={() => toggleOpen(i)}
-                      className="flex items-center justify-between border-t border-b-2 border-gray-200 px-4 pb-2 pt-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white"
-                    >
-                      <span className="mr-2 font-semibold">{key}</span>
-                      <svg
-                        className="h-4 w-4"
-                        aria-hidden="true"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d={
-                            openIndexesRef?.current?.includes(i)
-                              ? "M19 16L12 9l-7 7"
-                              : "M19 9l-7 7-7-7"
-                          }
-                        ></path>
-                      </svg>
-                    </div>
-                    {openIndexesRef?.current?.includes(i) && (
-                      <ul className="">
-                        {filteredOptions[key].map((option, i) => (
-                          <li
-                            key={i}
-                            onClick={() => handleOptionSelect(option)}
-                            className="flex items-center py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                          >
-                            {"image" in option && (
-                              <img
-                                className="mr-2 h-6 w-6 rounded-full"
-                                src={option.image}
-                                alt=""
-                              />
-                            )}
-                            {option.label}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                );
-              })}
-          </ul>
-        </div>
-      ) : null}
-    </div>
-  );
-};
-
-export default Lookup;
-
-interface ILookupMultiSelect {
   defaultValue?: string[];
   name?: string;
   className?: string;
@@ -325,13 +38,13 @@ interface ILookupMultiSelect {
     [key: string]: string | object | number | boolean | undefined;
   }[];
   customDisplay?: (
-    selectedOptions: ILookupMultiSelect["options"]
+    selectedOptions: ILookup["options"]
   ) => React.ReactNode;
   onInputChange?: (
     event: React.ChangeEvent<HTMLInputElement>,
     newInputValue: string
   ) => void;
-  onSelect?: (options: ILookupMultiSelect["options"]) => void;
+  onSelect?: (options: ILookup["options"]) => void;
   filterFn?: (
     option: { label: string; value: value; image?: string },
     searchTerm: string
@@ -339,7 +52,7 @@ interface ILookupMultiSelect {
   placeholder?: string;
 }
 
-export const MultiSelectLookup = ({
+export const Lookup = ({
   options,
   name,
   defaultValue,
@@ -357,12 +70,12 @@ export const MultiSelectLookup = ({
   onSelect,
   onInputChange,
   filterFn,
-}: ILookupMultiSelect) => {
+}: ILookup) => {
   const { ref, setIsComponentVisible, isComponentVisible } =
     useComponentVisible(false);
 
   const [selectedOptions, setSelectedOptions] = useState<
-    ILookupMultiSelect["options"]
+    ILookup["options"]
   >([]);
 
   const { field } = !!name && useController({ name: name });
@@ -433,7 +146,7 @@ export const MultiSelectLookup = ({
   const handleOptionSelect = useCallback(
     (
       event: React.MouseEvent<HTMLLIElement>,
-      option: ArrayElement<ILookupMultiSelect["options"]>
+      option: ArrayElement<ILookup["options"]>
     ) => {
       if (!closeOnSelect) {
         event.preventDefault();
@@ -683,3 +396,4 @@ export const MultiSelectLookup = ({
     </div>
   );
 };
+
