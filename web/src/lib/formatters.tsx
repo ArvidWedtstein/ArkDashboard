@@ -101,7 +101,7 @@ export const timeTag = (
 };
 
 export const checkboxInputTag = (checked: boolean) => {
-  return <input type="checkbox" checked={checked} disabled />;
+  return <input type="checkbox" className="rw-checkbox" checked={checked} disabled />;
 };
 
 /**

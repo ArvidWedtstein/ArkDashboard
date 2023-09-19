@@ -198,6 +198,7 @@ model Map {
   Map                    Map?                     @relation("MapToMap", fields: [parent_map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   other_Map              Map[]                    @relation("MapToMap")
   MapNote                MapNote[]
+  MapRegion              MapRegion[]
   MapResource            MapResource[]
   TimelineSeasonBasespot TimelineSeasonBasespot[]
   TimelineSeasonEvent    TimelineSeasonEvent[]
@@ -441,6 +442,28 @@ model LootcrateMap {
   Map          Map       @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([map_id, lootcrate_id])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model MapRegion {
+  id          BigInt    @id(map: "MapRegions_pkey") @default(autoincrement())
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime? @default(now()) @db.Timestamptz(6)
+  name        String?
+  map_id      BigInt
+  wind        Decimal?  @db.Decimal
+  temperature Decimal?  @db.Decimal
+  priority    BigInt?
+  outside     Boolean?  @default(true)
+  start_x     Decimal?  @db.Decimal
+  start_y     Decimal?  @db.Decimal
+  start_z     Decimal?  @db.Decimal
+  end_x       Decimal?  @db.Decimal
+  end_y       Decimal?  @db.Decimal
+  end_z       Decimal?  @db.Decimal
+  Map         Map       @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([map_id, start_x, start_y, start_z, end_x, end_y, end_z])
 }
 
 /// The underlying view does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
