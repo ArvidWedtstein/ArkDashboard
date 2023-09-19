@@ -782,10 +782,10 @@ export const formatXYtoLatLon = (
   return {
     lat: reverse
       ? (options.y - subtractY) * multiplierY
-      : Math.floor(options.y / multiplierY + subtractY),
+      : Math.floor((options.y / multiplierY) + subtractY),
     lon: reverse
       ? (options.x - subtractX) * multiplierX
-      : Math.floor(options.x / multiplierX + subtractX),
+      : Math.floor((options.x / multiplierX) + subtractX),
   };
 };
 

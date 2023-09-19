@@ -3,7 +3,7 @@ import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 import { useAuth } from 'src/auth'
 import { QUERY } from 'src/components/MapRegion/MapRegionsCell'
-import { checkboxInputTag, timeTag, truncate } from 'src/lib/formatters'
+import { checkboxInputTag, formatXYtoLatLon, timeTag, truncate } from 'src/lib/formatters'
 import Toast from 'src/components/Util/Toast/Toast'
 
 import type {
@@ -11,6 +11,7 @@ import type {
   FindMapRegionsByMap,
   permission,
 } from 'types/graphql'
+import { useEffect } from 'react'
 
 const DELETE_MAP_REGION_MUTATION = gql`
   mutation DeleteMapRegionMutation($id: BigInt!) {
@@ -22,43 +23,75 @@ const DELETE_MAP_REGION_MUTATION = gql`
 
 const MapRegionsList = ({ mapRegionsByMap }: FindMapRegionsByMap) => {
   const { currentUser } = useAuth()
-  const [deleteMapRegion] = useMutation(DELETE_MAP_REGION_MUTATION, {
-    onCompleted: () => {
-      toast.success('MapRegion deleted')
-    },
-    onError: (error) => {
-      toast.error(error.message)
-    },
-    // This refetches the query on the list page. Read more about other ways to
-    // update the cache over here:
-    // https://www.apollographql.com/docs/react/data/mutations/#making-all-other-cache-updates
-    refetchQueries: [{ query: QUERY }],
-    awaitRefetchQueries: true,
-  })
 
-  const onDeleteClick = (id: DeleteMapRegionMutationVariables['id']) => {
-    toast.custom(
-      (t) => (
-        <Toast
-          t={t}
-          title={`You are about to delete mapRegion`}
-          message={`Are you sure you want to delete mapRegion {id}?`}
-          actionType="YesNo"
-          primaryAction={() => deleteMapRegion({ variables: { id } })}
-        />
-      ),
-      { position: 'top-center' }
-    )
-  }
-  const xy = (x: number, y: number, multX: number, multY: number, shiftX: number, shiftY: number) => {
+  const posToMap = (
+    coord: number,
+  ): number => {
+    return (500 / 100) * coord + 500 / 100;
+  };
+  const calcRealmCorners = (coords: { lat: number; lon: number }[], ctx) => {
+    return !coords
+      ? null
+      : `M${posToMap(coords[0].lon)},${posToMap(coords[0].lat)} L${posToMap(
+        coords[1].lon
+      )},${posToMap(coords[0].lat)} L${posToMap(coords[1].lon)},${posToMap(
+        coords[1].lat
+      )} L${posToMap(coords[0].lon)},${posToMap(coords[1].lat)} z`;
+  };
+
+  const LatLon = (x: number, y: number) => {
     return {
-      lat: Math.floor(y / multY + shiftY),
-      lon: Math.floor(x / multX + shiftX),
+      lat: (y / mapRegionsByMap[0].Map.cord_mult_lat) + mapRegionsByMap[0].Map.cord_shift_lat,
+      lon: (x / mapRegionsByMap[0].Map.cord_mult_lon) + mapRegionsByMap[0].Map.cord_shift_lon,
     }
   }
+  /**
+   * Coord to lat lon
+   *
+   * Latitude corresponds to the Y coordinate, and Longitude corresponds to X.
+   * To convert the Lat/Long map coordinates to UE coordinates, simply subtract the shift value, and multiply by the right multiplier from the following table.
+   *
+   *
+   */
+
+  useEffect(() => {
+    const canvas = document.getElementById('map') as HTMLCanvasElement
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const img = new Image();
+    canvas.width = 500;
+    canvas.height = 500;
+    img.src = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${mapRegionsByMap[0].Map.img}`;
+    img.onload = () => {
+
+      ctx.globalCompositeOperation = 'destination-over';
+      ctx.drawImage(img, 0, 0, 500, 500);
+    }
+    ctx.globalCompositeOperation = 'source-over';
+    mapRegionsByMap.forEach((mapRegion) => {
+      const start = LatLon(mapRegion.start_x, mapRegion.start_y)
+      const end = LatLon(mapRegion.end_x, mapRegion.end_y)
+      ctx.beginPath();
+      ;
+      ctx.moveTo(posToMap(start.lon), posToMap(start.lat));
+      ctx.lineTo(posToMap(end.lon), posToMap(start.lat));
+      ctx.lineTo(posToMap(end.lon), posToMap(end.lat));
+      ctx.lineTo(posToMap(start.lon), posToMap(end.lat));
+      ctx.lineTo(posToMap(start.lon), posToMap(start.lat));
+      ctx.strokeStyle = 'red';
+      ctx.stroke();
+    });
+
+    ctx.fillStyle = 'blue';
+    ctx.fillRect(75, 75, 100, 100);
+
+  }, [])
+
   return (
     <div className="rw-segment">
+      <canvas id="map">
 
+      </canvas>
       <table className="rw-table">
         <thead>
           <tr>
@@ -69,10 +102,10 @@ const MapRegionsList = ({ mapRegionsByMap }: FindMapRegionsByMap) => {
             <th>Temperature</th>
             <th>Priority</th>
             <th>Outside</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Lat</th>
-            <th>Lon</th>
+            <th>Start Lat</th>
+            <th>Start Lon</th>
+            <th>End Lat</th>
+            <th>End Lon</th>
             <th>End Coord</th>
           </tr>
         </thead>
@@ -86,10 +119,10 @@ const MapRegionsList = ({ mapRegionsByMap }: FindMapRegionsByMap) => {
               <td>{truncate(mapRegion.temperature)}</td>
               <td>{truncate(mapRegion.priority)}</td>
               <td>{checkboxInputTag(mapRegion.outside)}</td>
-              <td>{`${mapRegion.start_x} - ${mapRegion.start_z}`}</td>
-              <td>{`${mapRegion.end_x} - ${mapRegion.end_z}`}</td>
-              <td>{xy(mapRegion.start_x, mapRegion.start_z, mapRegion.Map.cord_mult_lon, mapRegion.Map.cord_mult_lat, mapRegion.Map.cord_shift_lon, mapRegion.Map.cord_shift_lat).lat}</td>
-              <td>{xy(mapRegion.start_x, mapRegion.start_z, mapRegion.Map.cord_mult_lon, mapRegion.Map.cord_mult_lat, mapRegion.Map.cord_shift_lon, mapRegion.Map.cord_shift_lat).lon}</td>
+              <td>{LatLon(mapRegion.start_x, mapRegion.start_y).lat}</td>
+              <td>{LatLon(mapRegion.start_x, mapRegion.start_y).lon}</td>
+              <td>{LatLon(mapRegion.end_x, mapRegion.end_y).lat}</td>
+              <td>{LatLon(mapRegion.end_x, mapRegion.end_y).lon}</td>
               <td>{`${mapRegion.end_x} - ${mapRegion.end_z}`}</td>
             </tr>
           ))}
