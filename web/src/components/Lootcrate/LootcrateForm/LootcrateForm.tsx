@@ -57,20 +57,21 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           label="Required Level"
           type="number"
           defaultValue={0}
+          min={0}
           helperText="Required level to open this lootcrate"
         />
 
         <Input
           name="quality_mult"
           label="Quality multiplier"
-          defaultValue={JSON.stringify(props.lootcrate?.quality_mult)}
+          defaultValue={JSON.stringify(props.lootcrate?.quality_mult ?? { min: 0, max: 0, pow: 0 })}
           validation={{ valueAsJSON: true }}
         />
 
         <Input
           name="set_qty"
           label="Set Quantity"
-          defaultValue={JSON.stringify(props.lootcrate?.set_qty)}
+          defaultValue={JSON.stringify(props.lootcrate?.set_qty ?? { min: 0, max: 0, pow: 0 })}
           validation={{ valueAsJSON: true }}
         />
 
