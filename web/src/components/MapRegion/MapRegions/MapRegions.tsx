@@ -76,7 +76,7 @@ const MapRegionsList = ({ mapRegionsByMap }: FindMapRegionsByMap) => {
       };
       // TODO: fix
       return (
-        lat >=  &&
+        // lat >=  &&
         lat <= corners.topright.lat &&
         lon >= corners.bottomleft.lon &&
         lon <= corners.topright.lon
