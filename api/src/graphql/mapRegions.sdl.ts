@@ -19,8 +19,9 @@ export const schema = gql`
   }
 
   type Query {
-    mapRegions: [MapRegion!]! @requireAuth
-    mapRegion(id: BigInt!): MapRegion @requireAuth
+    mapRegions: [MapRegion!]! @skipAuth
+    mapRegion(id: BigInt!): MapRegion @skipAuth
+    mapRegionsByMap(map_id: BigInt!): [MapRegion]! @skipAuth
   }
 
   input CreateMapRegionInput {
@@ -58,9 +59,14 @@ export const schema = gql`
   }
 
   type Mutation {
-    createMapRegion(input: CreateMapRegionInput!): MapRegion! @requireAuth
+    createMapRegion(input: CreateMapRegionInput!): MapRegion!
+      @requireAuth
+      @hasPermission(permission: "gamedata_create")
     updateMapRegion(id: BigInt!, input: UpdateMapRegionInput!): MapRegion!
       @requireAuth
-    deleteMapRegion(id: BigInt!): MapRegion! @requireAuth
+      @hasPermission(permission: "gamedata_update")
+    deleteMapRegion(id: BigInt!): MapRegion!
+      @requireAuth
+      @hasPermission(permission: "gamedata_delete")
   }
-`
+`;

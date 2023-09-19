@@ -1,4 +1,4 @@
-import type { FindMapRegions } from 'types/graphql'
+import type { FindMapRegionsByMap } from 'types/graphql'
 
 import { Link, routes } from '@redwoodjs/router'
 import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
@@ -6,11 +6,9 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import MapRegions from 'src/components/MapRegion/MapRegions'
 
 export const QUERY = gql`
-  query FindMapRegions {
-    mapRegions {
+  query FindMapRegionsByMap($map_id: BigInt!) {
+    mapRegionsByMap: mapRegionsByMap(map_id: $map_id) {
       id
-      created_at
-      updated_at
       name
       map_id
       wind
@@ -23,6 +21,13 @@ export const QUERY = gql`
       end_x
       end_y
       end_z
+      Map {
+        img
+        cord_mult_lat
+        cord_mult_lon
+        cord_shift_lat
+        cord_shift_lon
+      }
     }
   }
 `
@@ -99,6 +104,6 @@ export const Failure = ({ error }: CellFailureProps) => (
   </div>
 )
 
-export const Success = ({ mapRegions }: CellSuccessProps<FindMapRegions>) => {
-  return <MapRegions mapRegions={mapRegions} />
+export const Success = ({ mapRegionsByMap }: CellSuccessProps<FindMapRegionsByMap>) => {
+  return <MapRegions mapRegionsByMap={mapRegionsByMap} />
 }
