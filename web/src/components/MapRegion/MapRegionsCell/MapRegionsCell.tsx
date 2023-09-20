@@ -22,7 +22,7 @@ export const QUERY = gql`
       end_y
       end_z
       Map {
-        img
+        topographic_img
         cord_mult_lat
         cord_mult_lon
         cord_shift_lat

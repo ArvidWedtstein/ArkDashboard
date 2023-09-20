@@ -13,6 +13,7 @@ import Toast from "src/components/Util/Toast/Toast";
 
 import type { FindMapRegionsByMap, permission } from "types/graphql";
 import { useEffect, useMemo } from "react";
+import Disclosure from "src/components/Util/Disclosure/Disclosure";
 
 const DELETE_MAP_REGION_MUTATION = gql`
   mutation DeleteMapRegionMutation($id: BigInt!) {
@@ -215,45 +216,47 @@ const MapRegionsList = ({ mapRegionsByMap }: FindMapRegionsByMap) => {
   return (
     <div className="rw-segment">
       <div className="relative">
-        <img className="absolute top-0 left-0 bottom-0 w-[500px] h-[500px] -z-10" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${mapRegionsByMap[0].Map.img}`} alt="" decoding="async" />
+        <img className="absolute top-0 left-0 bottom-0 w-[500px] h-[500px] -z-10" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${mapRegionsByMap[0].Map.topographic_img}`} alt="" decoding="async" />
         <canvas id="map" width={500} height={500} className="relative" />
       </div>
-      <table className="rw-table relative">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Map id</th>
-            <th>Wind</th>
-            <th>Temperature</th>
-            <th>Priority</th>
-            <th>Outside</th>
-            <th>Start Lat</th>
-            <th>Start Lon</th>
-            <th>End Lat</th>
-            <th>End Lon</th>
-            <th>End Coord</th>
-          </tr>
-        </thead>
-        <tbody>
-          {mapRegionsByMap.map((mapRegion) => (
-            <tr key={mapRegion.id}>
-              <td>{truncate(mapRegion.id)}</td>
-              <td>{truncate(mapRegion.name)}</td>
-              <td>{truncate(mapRegion.map_id)}</td>
-              <td>{truncate(mapRegion.wind)}</td>
-              <td>{truncate(mapRegion.temperature)}</td>
-              <td>{truncate(mapRegion.priority)}</td>
-              <td>{checkboxInputTag(mapRegion.outside)}</td>
-              <td>{LatLon(mapRegion.start_x, mapRegion.start_y).lat}</td>
-              <td>{LatLon(mapRegion.start_x, mapRegion.start_y).lon}</td>
-              <td>{LatLon(mapRegion.end_x, mapRegion.end_y).lat}</td>
-              <td>{LatLon(mapRegion.end_x, mapRegion.end_y).lon}</td>
-              <td>{`${mapRegion.end_x} - ${mapRegion.end_z}`}</td>
+      <Disclosure title="Map Regions">
+        <table className="rw-table relative">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Map id</th>
+              <th>Wind</th>
+              <th>Temperature</th>
+              <th>Priority</th>
+              <th>Outside</th>
+              <th>Start Lat</th>
+              <th>Start Lon</th>
+              <th>End Lat</th>
+              <th>End Lon</th>
+              <th>End Coord</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {mapRegionsByMap.map((mapRegion) => (
+              <tr key={mapRegion.id}>
+                <td>{truncate(mapRegion.id)}</td>
+                <td>{truncate(mapRegion.name)}</td>
+                <td>{truncate(mapRegion.map_id)}</td>
+                <td>{truncate(mapRegion.wind)}</td>
+                <td>{truncate(mapRegion.temperature)}</td>
+                <td>{truncate(mapRegion.priority)}</td>
+                <td>{checkboxInputTag(mapRegion.outside)}</td>
+                <td>{LatLon(mapRegion.start_x, mapRegion.start_y).lat}</td>
+                <td>{LatLon(mapRegion.start_x, mapRegion.start_y).lon}</td>
+                <td>{LatLon(mapRegion.end_x, mapRegion.end_y).lat}</td>
+                <td>{LatLon(mapRegion.end_x, mapRegion.end_y).lon}</td>
+                <td>{`${mapRegion.end_x} - ${mapRegion.end_z}`}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Disclosure>
     </div>
   );
 };

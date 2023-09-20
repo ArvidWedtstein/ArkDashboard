@@ -1,5 +1,5 @@
 console.time("normal");
-const Valg = require("./web/public/biomes.json");
+const Valg = require("./web/public/radiation_zones.json");
 
 var partition = function (arr, length) {
   var result = [];
@@ -15,33 +15,38 @@ var partition = function (arr, length) {
  */
 
 let biomes = [
-  `INSERT INTO public."MapRegion" ("map_id", "name", "wind", "temperature", "priority", "outside", "start_x", "start_y", "start_z", "end_x", "end_y", "end_z") VALUES`,
+  `INSERT INTO public."MapRegion" ("map_id", "name", "wind", "temperature", "priority", "outside", "start_x", "start_y", "start_z", "end_x", "end_y", "end_z", "radiation") VALUES`,
 ];
-Valg.biomes.forEach((x) => {
-  x.boxes.forEach((y) => {
-    biomes.push(
-      `(2, '${x.name.replaceAll("'", "''")}', ${
-        x?.wind
-          ? x.wind?.override
-            ? x.wind.override
-            : x.wind?.final
-            ? x.wind?.final[0]
-            : null
-          : null
-      }, ${
-        x?.temperature
-          ? x.temperature?.override ??
-            (x.temperature?.initial
-              ? x.temperature?.initial[2]
-              : x.temperature?.final
-              ? x.temperature.final[0]
-              : x.temperature?.override ?? null)
-          : null
-      }, ${x.priority}, ${x.isOutside}, ${y.start.x}, ${y.start.y}, ${
-        y.start.z
-      }, ${y.end.x}, ${y.end.y}, ${y.end.z})`
-    );
-  });
+// Valg.biomes.forEach((x) => {
+//   x.boxes.forEach((y) => {
+//     biomes.push(
+//       `(2, '${x.name.replaceAll("'", "''")}', ${
+//         x?.wind
+//           ? x.wind?.override
+//             ? x.wind.override
+//             : x.wind?.final
+//             ? x.wind?.final[0]
+//             : null
+//           : null
+//       }, ${
+//         x?.temperature
+//           ? x.temperature?.override ??
+//             (x.temperature?.initial
+//               ? x.temperature?.initial[2]
+//               : x.temperature?.final
+//               ? x.temperature.final[0]
+//               : x.temperature?.override ?? null)
+//           : null
+//       }, ${x.priority}, ${x.isOutside}, ${y.start.x}, ${y.start.y}, ${
+//         y.start.z
+//       }, ${y.end.x}, ${y.end.y}, ${y.end.z})`
+//     );
+//   });
+// });
+Valg.radiationVolumes.forEach((x) => {
+  biomes.push(
+    `(1, null, null, null, 2, false, ${x.start.x}, ${x.start.y}, ${x.start.z}, ${x.end.x}, ${x.end.y}, ${x.end.z}, true)`
+  );
 });
 
 require("fs").writeFile(`insert.txt`, biomes.join(",\n"), (error) => {
