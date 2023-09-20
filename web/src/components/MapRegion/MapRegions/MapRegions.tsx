@@ -31,28 +31,7 @@ const MapRegionsList = ({ mapRegionsByMap }: FindMapRegionsByMap) => {
   const posToMap = (coord: number): number => {
     return (canvasHeight / 100) * coord + canvasWidth / 100;
   };
-  // const calcCorners = (coords: { lat: number; lon: number }[]) => {
-  //   return !coords
-  //     ? null
-  //     : {
-  //         topleft: {
-  //           lat: Math.max(...coords.map((coord) => coord.lat)),
-  //           lon: Math.min(...coords.map((coord) => coord.lon)),
-  //         },
-  //         topright: {
-  //           lat: Math.max(...coords.map((coord) => coord.lat)),
-  //           lon: Math.max(...coords.map((coord) => coord.lon)),
-  //         },
-  //         bottomleft: {
-  //           lat: Math.min(...coords.map((coord) => coord.lat)),
-  //           lon: Math.min(...coords.map((coord) => coord.lon)),
-  //         },
-  //         bottomright: {
-  //           lat: Math.min(...coords.map((coord) => coord.lat)),
-  //           lon: Math.max(...coords.map((coord) => coord.lon)),
-  //         },
-  //       };
-  // };
+
   const LatLon = (x: number, y: number) => {
     return {
       lat:
