@@ -789,6 +789,101 @@ export const formatXYtoLatLon = (
   };
 };
 
+
+interface SvgPath {
+  pathData: string;
+}
+
+export const mergeOverlappingSvgPaths = (paths: SvgPath[]): SvgPath => {
+  // Combine all path data into one string
+  const allPathData = paths.map((path) => path.pathData).join('');
+
+  // Split the path data into individual commands
+  const commands = allPathData.split(/(?=[A-Za-z])/).filter(Boolean);
+
+  // Initialize variables to store the merged path data
+  let mergedPathData = '';
+  let currentCommand = '';
+  let currentArgs: string[] = [];
+
+  // Helper function to append a command and its arguments to the merged path
+  const appendCommand = () => {
+    if (currentCommand) {
+      mergedPathData += currentCommand + currentArgs.join(' ');
+      currentArgs = [];
+      currentCommand = '';
+    }
+  };
+
+  // Iterate through the commands
+  for (const command of commands) {
+    if (/^[A-Za-z]$/.test(command)) {
+      // If a new command is encountered, append the previous one
+      appendCommand();
+      currentCommand = command;
+    } else {
+      // Otherwise, accumulate arguments
+      currentArgs.push(command);
+    }
+  }
+
+  // Append the last command
+  appendCommand();
+  console.log(mergedPathData);
+  return { pathData: mergedPathData };
+}
+
+
+interface Point {
+  x: number;
+  y: number;
+}
+
+interface Rectangle {
+  topLeft: Point;
+  topRight: Point;
+  bottomLeft: Point;
+  bottomRight: Point;
+}
+/**
+ *
+ * @param start
+ * @param end
+ * @example <caption>Example usage of calculateCorners.</caption>
+ * // returns { topLeft: { x: 0, y: 0 }, topRight: { x: 10, y: 0 }, bottomLeft: { x: 0, y: 10 }, bottomRight: { x: 10, y: 10 } }
+ * calculateCorners({ x: 0, y: 0 }, { x: 10, y: 10 });
+ *
+ * @returns  {Rectangle} coordinates
+ */
+export const calculateCorners = (start: Point, end: Point): Rectangle => {
+  const topLeft: Point = {
+    x: Math.min(start.x, end.x),
+    y: Math.min(start.y, end.y),
+  };
+
+  const topRight: Point = {
+    x: Math.max(start.x, end.x),
+    y: Math.min(start.y, end.y),
+  };
+
+  const bottomLeft: Point = {
+    x: Math.min(start.x, end.x),
+    y: Math.max(start.y, end.y),
+  };
+
+  const bottomRight: Point = {
+    x: Math.max(start.x, end.x),
+    y: Math.max(start.y, end.y),
+  };
+
+  return {
+    topLeft,
+    topRight,
+    bottomLeft,
+    bottomRight,
+  };
+}
+
 /**
  * Generates a pdf from an array of your choice
  */

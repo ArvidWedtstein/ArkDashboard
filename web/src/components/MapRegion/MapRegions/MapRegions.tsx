@@ -1,15 +1,18 @@
 import { useAuth } from "src/auth";
 import {
+  calculateCorners,
   checkboxInputTag,
   dynamicSort,
   formatXYtoLatLon,
+  groupBy,
+  mergeOverlappingSvgPaths,
   timeTag,
   truncate,
 } from "src/lib/formatters";
 import Toast from "src/components/Util/Toast/Toast";
 
 import type { FindMapRegionsByMap, permission } from "types/graphql";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 const DELETE_MAP_REGION_MUTATION = gql`
   mutation DeleteMapRegionMutation($id: BigInt!) {
@@ -22,8 +25,10 @@ const DELETE_MAP_REGION_MUTATION = gql`
 const MapRegionsList = ({ mapRegionsByMap }: FindMapRegionsByMap) => {
   const { currentUser } = useAuth();
 
+  let canvasWidth = 500;
+  let canvasHeight = 500;
   const posToMap = (coord: number): number => {
-    return (500 / 100) * coord + 500 / 100;
+    return (canvasHeight / 100) * coord + canvasWidth / 100;
   };
   // const calcCorners = (coords: { lat: number; lon: number }[]) => {
   //   return !coords
@@ -65,102 +70,124 @@ const MapRegionsList = ({ mapRegionsByMap }: FindMapRegionsByMap) => {
    *
    *
    */
+  const groupedRegions = useMemo(() => {
+    const regions = groupBy(mapRegionsByMap, "name");
+    return Object.keys(regions).map((key) => {
+      return {
+        name: key,
+        regions: regions[key],
+      };
+    });
+  }, [])
 
   const isInside = (lat: number, lon: number) => {
-    return mapRegionsByMap.filter((mapRegion) => {
-      const corners = {
-        topleft: LatLon(mapRegion.start_x, mapRegion.start_y),
-        topright: LatLon(mapRegion.start_x, mapRegion.end_y),
-        bottomleft: LatLon(mapRegion.end_x, mapRegion.start_y),
-        bottomright: LatLon(mapRegion.end_x, mapRegion.end_y),
-      };
-      // TODO: fix
-      return (
-        // lat >=  &&
-        lat <= corners.topright.lat &&
-        lon >= corners.bottomleft.lon &&
-        lon <= corners.topright.lon
-      );
-    });
+    return groupedRegions.map((group) => {
+      if (group.regions.some((mapRegion) => {
+        const corners = calculateCorners({ x: mapRegion.start_x, y: mapRegion.start_y }, { x: mapRegion.end_x, y: mapRegion.end_y })
+
+        const pos1 = LatLon(corners.topLeft.x, corners.topLeft.y)
+        const pos2 = LatLon(corners.topRight.x, corners.topRight.y)
+        const pos3 = LatLon(corners.bottomLeft.x, corners.bottomLeft.y)
+        const pos4 = LatLon(corners.bottomRight.x, corners.bottomRight.y)
+
+        return (
+          lat > Math.min(pos1.lat, pos2.lat, pos3.lat, pos4.lat) &&
+          lat < Math.max(pos1.lat, pos2.lat, pos3.lat, pos4.lat) &&
+          lon > Math.min(pos1.lon, pos2.lon, pos3.lon, pos4.lon) &&
+          lon < Math.max(pos1.lon, pos2.lon, pos3.lon, pos4.lon)
+        )
+      })) {
+        return group
+      }
+    }).filter((region) => region !== undefined).flat();
   };
   useEffect(() => {
     const canvas = document.getElementById("map") as HTMLCanvasElement;
     const ctx = canvas.getContext("2d");
 
     const onMouseMove = (e: MouseEvent) => {
-      // console.log(e.offsetX, e.offsetY);
+      ctx.globalCompositeOperation = "source-over";
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       const lat = (e.offsetY / 500) * 100;
       const lon = (e.offsetX / 500) * 100;
 
-      isInside(lat, lon).forEach((mapRegion) => {
-        const corners = {
-          topleft: LatLon(mapRegion.start_x, mapRegion.start_y),
-          topright: LatLon(mapRegion.start_x, mapRegion.end_y),
-          bottomleft: LatLon(mapRegion.end_x, mapRegion.start_y),
-          bottomright: LatLon(mapRegion.end_x, mapRegion.end_y),
-        };
-        ctx.beginPath();
-        ctx.moveTo(
-          posToMap(corners.bottomleft.lon),
-          posToMap(corners.bottomleft.lat)
-        );
-        ctx.lineTo(
-          posToMap(corners.bottomright.lon),
-          posToMap(corners.bottomright.lat)
-        );
-        ctx.lineTo(
-          posToMap(corners.topright.lon),
-          posToMap(corners.topright.lat)
-        );
-        ctx.lineTo(
-          posToMap(corners.topleft.lon),
-          posToMap(corners.topleft.lat)
-        );
-        ctx.lineTo(
-          posToMap(corners.bottomleft.lon),
-          posToMap(corners.bottomleft.lat)
-        );
-        ctx.fillStyle = `rgba(${mapRegion.name.includes("water") ? 0 : 255},0,${
-          mapRegion.name.includes("water") ? 255 : 0
-        },${mapRegion.priority / 1000})`;
-        ctx.fill();
-        ctx.stroke();
+      const regionsInside = isInside(lat, lon).sort((a, b) => a.regions[0].priority - b.regions[0].priority)
+
+
+      if (regionsInside.length === 0 || regionsInside.some(d => d.regions.length === 0)) return;
+      ctx.globalCompositeOperation = "source-over";
+      ctx.filter = "blur(4px)";
+      ctx.fillStyle = "rgba(255,0,0,0.5)";
+
+      // const newpaths = mergeOverlappingSvgPaths(regionsInside[0].regions.flatMap((mapRegion) => {
+      //   const corners = calculateCorners({ x: mapRegion.start_x, y: mapRegion.start_y }, { x: mapRegion.end_x, y: mapRegion.end_y })
+
+      //   const pos1 = LatLon(corners.topLeft.x, corners.topLeft.y)
+      //   const pos2 = LatLon(corners.topRight.x, corners.topRight.y)
+      //   const pos3 = LatLon(corners.bottomLeft.x, corners.bottomLeft.y)
+      //   const pos4 = LatLon(corners.bottomRight.x, corners.bottomRight.y)
+
+      //   return { pathData: `M${posToMap(pos1.lon)} ${posToMap(pos1.lat)} L${posToMap(pos2.lon)} ${posToMap(pos2.lat)} L${posToMap(pos4.lon)} ${posToMap(pos4.lat)} L${posToMap(pos3.lon)} ${posToMap(pos3.lat)} L${posToMap(pos1.lon)} ${posToMap(pos1.lat)} Z` }
+      // }));
+
+      // ctx.strokeStyle = "rgba(255,255,255,1)";
+      // ctx.fill(new Path2D(newpaths.pathData.split("Z")[0]));
+      // ctx.stroke(new Path2D(newpaths.pathData.split("Z")[0]));
+
+      ctx.lineJoin = "miter";
+      ctx.lineWidth = 1
+      const path = new Path2D();
+      regionsInside[0].regions.forEach((mapRegion, i) => {
+
+        const corners = calculateCorners({ x: mapRegion.start_x, y: mapRegion.start_y }, { x: mapRegion.end_x, y: mapRegion.end_y })
+
+        const pos1 = LatLon(corners.topLeft.x, corners.topLeft.y)
+        const pos2 = LatLon(corners.topRight.x, corners.topRight.y)
+        const pos3 = LatLon(corners.bottomLeft.x, corners.bottomLeft.y)
+        const pos4 = LatLon(corners.bottomRight.x, corners.bottomRight.y)
+
+        path.addPath(new Path2D(`M${posToMap(pos1.lon)} ${posToMap(pos1.lat)} L${posToMap(pos2.lon)} ${posToMap(pos2.lat)} L${posToMap(pos4.lon)} ${posToMap(pos4.lat)} L${posToMap(pos3.lon)} ${posToMap(pos3.lat)} L${posToMap(pos1.lon)} ${posToMap(pos1.lat)} Z`))
       });
+      // ctx.strokeStyle = "rgba(255,255,255,1)";
+      ctx.fill(path, "nonzero");
+      // ctx.stroke(path);
+
+      ctx.filter = "blur(0px)"
+      ctx.fillStyle = "rgba(0,0,0,1)";
+      ctx.font = "24px arial";
+      ctx.fillText(regionsInside[0].name, 5, 25);
     };
     canvas.addEventListener("mousemove", onMouseMove);
+    canvas.addEventListener("mouseleave", () => {
+      ctx.globalCompositeOperation = "source-over";
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const img = new Image();
-    canvas.width = 500;
-    canvas.height = 500;
-    img.src = `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${mapRegionsByMap[0].Map.img}`;
-    img.onload = () => {
-      ctx.globalCompositeOperation = "destination-over";
-      ctx.drawImage(img, 0, 0, 500, 500);
-    };
+
+
     ctx.globalCompositeOperation = "source-over";
     dynamicSort(mapRegionsByMap, "priority").forEach((mapRegion) => {
       const start = LatLon(mapRegion.start_x, mapRegion.start_y);
       const end = LatLon(mapRegion.end_x, mapRegion.end_y);
-      ctx.beginPath();
-      // console.table({
-      //   topleft: {
-      //     lat: start.lat,
-      //     lon: start.lon,
-      //   },
-      //   topright: {
-      //     lat: start.lat,
-      //     lon: end.lon,
-      //   },
-      //   bottomleft: {
-      //     lat: end.lat,
-      //     lon: start.lon,
-      //   },
-      //   bottomright: {
-      //     lat: end.lat,
-      //     lon: end.lon,
-      //   },
-      // });
+      // ctx.beginPath();
 
+      // if (mapRegion.name.includes("Lava Cave")) {
+      //   const corners = calculateCorners({ x: mapRegion.start_x, y: mapRegion.start_y }, { x: mapRegion.end_x, y: mapRegion.end_y })
+
+      //   const pos1 = LatLon(corners.topLeft.x, corners.topLeft.y)
+      //   const pos2 = LatLon(corners.topRight.x, corners.topRight.y)
+      //   const pos3 = LatLon(corners.bottomLeft.x, corners.bottomLeft.y)
+      //   const pos4 = LatLon(corners.bottomRight.x, corners.bottomRight.y)
+
+      //   ctx.moveTo(posToMap(pos1.lon), posToMap(pos1.lat));
+      //   ctx.lineTo(posToMap(pos2.lon), posToMap(pos2.lat));
+      //   ctx.lineTo(posToMap(pos4.lon), posToMap(pos4.lat));
+      //   ctx.lineTo(posToMap(pos3.lon), posToMap(pos3.lat));
+      //   ctx.lineTo(posToMap(pos1.lon), posToMap(pos1.lat));
+      //   ctx.fillStyle = `rgba(${mapRegion.name.includes("water") ? 0 : 255},0,${mapRegion.name.includes("water") ? 255 : 0
+      //     },${mapRegion.priority / 1000})`;
+      //   ctx.fill();
+      // }
       // ctx.moveTo(posToMap(start.lon), posToMap(start.lat));
       // ctx.lineTo(posToMap(end.lon), posToMap(start.lat));
       // ctx.lineTo(posToMap(end.lon), posToMap(end.lat));
@@ -178,13 +205,20 @@ const MapRegionsList = ({ mapRegionsByMap }: FindMapRegionsByMap) => {
 
     return () => {
       canvas.removeEventListener("mousemove", onMouseMove);
+      canvas.removeEventListener("mouseleave", () => {
+        ctx.globalCompositeOperation = "source-over";
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      });
     };
   }, []);
 
   return (
     <div className="rw-segment">
-      <canvas id="map" />
-      <table className="rw-table">
+      <div className="relative">
+        <img className="absolute top-0 left-0 bottom-0 w-[500px] h-[500px] -z-10" src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${mapRegionsByMap[0].Map.img}`} alt="" decoding="async" />
+        <canvas id="map" width={500} height={500} className="relative" />
+      </div>
+      <table className="rw-table relative">
         <thead>
           <tr>
             <th>Id</th>
