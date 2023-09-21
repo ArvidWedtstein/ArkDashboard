@@ -5,7 +5,6 @@ import clsx from "clsx";
 import { useState } from "react";
 import { useAuth } from "src/auth";
 import StatCard from "src/components/Util/StatCard/StatCard";
-import Tabs from "src/components/Util/Tabs/Tabs";
 
 import { getWordType } from "src/lib/formatters";
 
@@ -115,10 +114,18 @@ const Item = ({ item }: Props) => {
       <div className="grid w-full grid-cols-2 gap-3 text-gray-700 dark:text-white">
         <section className="col-span-2 grid w-full grid-flow-col gap-2 rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600">
           <div className="w-full">
-            <img
-              className="w-auto max-w-6xl"
-              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
-            />
+            <div className="inline-flex">
+              <Link className="rw-button rw-button-small rw-button-gray mb-2 h-fit" to={routes.items()}>
+                <span className="sr-only">Back</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="rw-button-icon">
+                  <path d="M447.1 256C447.1 264.8 440.8 272 432 272H68.17l135.7 149.3c5.938 6.531 5.453 16.66-1.078 22.59C199.7 446.6 195.8 448 192 448c-4.344 0-8.688-1.75-11.84-5.25l-160-176c-5.547-6.094-5.547-15.41 0-21.5l160-176c5.969-6.562 16.09-7 22.61-1.094c6.531 5.938 7.016 16.06 1.078 22.59L68.17 240H432C440.8 240 447.1 247.2 447.1 256z" />
+                </svg>
+              </Link>
+              <img
+                className="w-auto max-w-6xl"
+                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
+              />
+            </div>
             <h4 className="my-1 text-2xl font-semibold">{item.name}</h4>
             <p className="text-sm italic">
               (
@@ -289,101 +296,103 @@ const Item = ({ item }: Props) => {
             </section>
           )}
 
-        <section className="col-span-2 flex h-64 gap-4 overflow-hidden rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600">
-          {item.ItemRecipe_ItemRecipe_crafted_item_idToItem.map(
-            (
-              {
-                id,
-                Item_ItemRecipe_crafting_station_idToItem,
-                ItemRecipeItem,
-                yields,
-              },
-              i
-            ) => (
-              <div
-                className={clsx(
-                  "flex h-full flex-row items-center transition-all duration-500 ease-in-out",
-                  {
-                    "flex-grow": activeTab === i,
-                    "flex-grow-0": activeTab !== i,
-                  }
-                )}
-                key={`recipe-${id}`}
-                // style={{
-                //   background: 'url("https://cdn.akamai.steamstatic.com/steam/apps/473850/ss_f13c4990d4609d3fc89174f71858835a9f09aaa3.1920x1080.jpg?t=1508277712")',
-                //   backgroundSize: "auto",
-                //   backgroundRepeat: 'no-repeat',
-                //   backgroundPosition: 'left',
-                // }}
-                onClick={() => setActiveTab(i)}
-              >
-                <div className="relative flex h-full flex-1 flex-row space-x-4 overflow-hidden rounded-lg bg-zinc-300 p-4 dark:bg-zinc-700">
-                  <div className="animate-fade-in flex h-full items-center justify-center transition-colors">
-                    <img
-                      src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafting_station_idToItem.image}`}
-                      className="h-16 w-16"
-                    />
-                  </div>
-
-                  <div
-                    className={clsx(
-                      "flex flex-row items-center gap-2 border-l border-zinc-600 px-4 dark:border-zinc-200",
-                      {
-                        hidden: activeTab !== i,
-                        block: activeTab === i,
-                      }
-                    )}
-                  >
-                    <div className="flex flex-row flex-wrap gap-2">
-                      {ItemRecipeItem.map(({ Item, amount }, i) => (
-                        <Link
-                          to={routes.item({ id: Item.id })}
-                          className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
-                          title={Item.name}
-                          key={`recipe-${Item.id}`}
-                        >
-                          <img
-                            className="h-10 w-10"
-                            src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
-                            alt={Item.name}
-                          />
-                          <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
-                            {amount}
-                          </div>
-                        </Link>
-                      ))}
+        {item.ItemRecipe_ItemRecipe_crafted_item_idToItem.length > 0 && (
+          <section className="col-span-2 flex h-64 gap-4 overflow-hidden rounded-lg border border-zinc-500 bg-gray-200 p-4 dark:bg-zinc-600">
+            {item.ItemRecipe_ItemRecipe_crafted_item_idToItem.map(
+              (
+                {
+                  id,
+                  Item_ItemRecipe_crafting_station_idToItem,
+                  ItemRecipeItem,
+                  yields,
+                },
+                i
+              ) => (
+                <div
+                  className={clsx(
+                    "flex h-full flex-row items-center transition-all duration-500 ease-in-out",
+                    {
+                      "flex-grow": activeTab === i,
+                      "flex-grow-0": activeTab !== i,
+                    }
+                  )}
+                  key={`recipe-${id}`}
+                  // style={{
+                  //   background: 'url("https://cdn.akamai.steamstatic.com/steam/apps/473850/ss_f13c4990d4609d3fc89174f71858835a9f09aaa3.1920x1080.jpg?t=1508277712")',
+                  //   backgroundSize: "auto",
+                  //   backgroundRepeat: 'no-repeat',
+                  //   backgroundPosition: 'left',
+                  // }}
+                  onClick={() => setActiveTab(i)}
+                >
+                  <div className="relative flex h-full flex-1 flex-row space-x-4 overflow-hidden rounded-lg bg-zinc-300 p-4 dark:bg-zinc-700">
+                    <div className="animate-fade-in flex h-full items-center justify-center transition-colors">
+                      <img
+                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item_ItemRecipe_crafting_station_idToItem.image}`}
+                        className="h-16 w-16"
+                      />
                     </div>
 
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 448 512"
-                      fill="currentColor"
-                      className="h-12 w-12"
+                    <div
+                      className={clsx(
+                        "flex flex-row items-center gap-2 border-l border-zinc-600 px-4 dark:border-zinc-200",
+                        {
+                          hidden: activeTab !== i,
+                          block: activeTab === i,
+                        }
+                      )}
                     >
-                      <path d="M427.8 266.8l-160 176C264.7 446.3 260.3 448 256 448c-3.844 0-7.703-1.375-10.77-4.156c-6.531-5.938-7.016-16.06-1.078-22.59L379.8 272H16c-8.844 0-15.1-7.155-15.1-15.1S7.156 240 16 240h363.8l-135.7-149.3c-5.938-6.531-5.453-16.66 1.078-22.59c6.547-5.906 16.66-5.469 22.61 1.094l160 176C433.4 251.3 433.4 260.7 427.8 266.8z" />
-                    </svg>
-
-                    <Link
-                      to={routes.item({ id: item.id })}
-                      className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
-                      title={item.name}
-                      key={`recipe-${item.id}`}
-                    >
-                      <img
-                        className="h-10 w-10"
-                        src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
-                        alt={item.name}
-                      />
-                      <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
-                        {yields}
+                      <div className="flex flex-row flex-wrap gap-2">
+                        {ItemRecipeItem.map(({ Item, amount }, i) => (
+                          <Link
+                            to={routes.item({ id: Item.id })}
+                            className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
+                            title={Item.name}
+                            key={`recipe-${Item.id}`}
+                          >
+                            <img
+                              className="h-10 w-10"
+                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${Item.image}`}
+                              alt={Item.name}
+                            />
+                            <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
+                              {amount}
+                            </div>
+                          </Link>
+                        ))}
                       </div>
-                    </Link>
+
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 448 512"
+                        fill="currentColor"
+                        className="h-12 w-12"
+                      >
+                        <path d="M427.8 266.8l-160 176C264.7 446.3 260.3 448 256 448c-3.844 0-7.703-1.375-10.77-4.156c-6.531-5.938-7.016-16.06-1.078-22.59L379.8 272H16c-8.844 0-15.1-7.155-15.1-15.1S7.156 240 16 240h363.8l-135.7-149.3c-5.938-6.531-5.453-16.66 1.078-22.59c6.547-5.906 16.66-5.469 22.61 1.094l160 176C433.4 251.3 433.4 260.7 427.8 266.8z" />
+                      </svg>
+
+                      <Link
+                        to={routes.item({ id: item.id })}
+                        className="animate-fade-in relative rounded-lg border border-zinc-500 p-2 text-center"
+                        title={item.name}
+                        key={`recipe-${item.id}`}
+                      >
+                        <img
+                          className="h-10 w-10"
+                          src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`}
+                          alt={item.name}
+                        />
+                        <div className="absolute -bottom-1 -right-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-xs font-bold">
+                          {yields}
+                        </div>
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )
-          )}
-        </section>
+              )
+            )}
+          </section>
+        )}
 
         <div className="col-span-full">
           <nav className="rw-button-group">
@@ -426,92 +435,76 @@ const Item = ({ item }: Props) => {
         </div>
       </div>
 
-      <aside id="separator-sidebar" className="w-72" aria-label="Sidebar">
-        <div className="overflow-y-auto rounded-lg border border-zinc-500 bg-gray-200 px-3 py-4 dark:bg-zinc-600">
-          <ul className="space-y-2 divide-y divide-gray-300">
-            <li className="flex flex-col">
-              <span className="rounded-lg p-2 font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                Unlocked by
-              </span>
-              <ol className="ml-4 flex flex-col">
-                {item.DinoStat.filter((ds) => ds.type === "engrams")
-                  .sort((a, b) => a.Dino.name.localeCompare(b.Dino.name))
-                  .map((d) => (
-                    <li
-                      className="space-x-2 py-0.5"
-                      key={`bossdino-${d.Dino.id}`}
-                    >
-                      <Link
+      {item.DinoStat.filter((ds) => ds.type === "engrams").length > 0 && (
+        <aside id="separator-sidebar" className="w-72" aria-label="Sidebar">
+          <div className="overflow-y-auto rounded-lg border border-zinc-500 bg-gray-200 px-3 py-4 dark:bg-zinc-600">
+            <ul className="space-y-2 divide-y divide-gray-300">
+              <li className="flex flex-col">
+                <span className="rounded-lg p-2 font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                  Unlocked by
+                </span>
+                <ol className="ml-4 flex flex-col">
+                  {item.DinoStat.filter((ds) => ds.type === "engrams")
+                    .sort((a, b) => a.Dino.name.localeCompare(b.Dino.name))
+                    .map((d) => (
+                      <li
+                        className="space-x-2 py-0.5"
                         key={`bossdino-${d.Dino.id}`}
-                        to={routes.dino({
-                          id: d.Dino.id.toString(),
-                        })}
-                        className="text-sm font-medium text-gray-800 dark:text-stone-300"
                       >
-                        {d.Dino.name
-                          .replace("(Alpha)", "")
-                          .replace("(Beta)", "")
-                          .replace("(Gamma)", "")
-                          .trimEnd()}
-                      </Link>
-                      <span
-                        className={clsx(
-                          "rounded border px-1 py-0.5 text-xs font-medium dark:bg-zinc-700",
-                          {
-                            "border-red-400 bg-red-100 text-red-800 dark:text-red-400":
-                              d.Dino.name.includes("Alpha"),
-                            "border-yellow-300 bg-yellow-100 text-yellow-800 dark:text-yellow-300":
-                              d.Dino.name.includes("Beta"),
-                            "border-green-400 bg-green-100 text-green-800 dark:text-green-400":
-                              d.Dino.name.includes("Gamma"),
-                          }
-                        )}
-                      >
-                        {d.Dino.name.match(/(Gamma|Beta|Alpha)/g)[0]}
-                      </span>
-                    </li>
-                  ))}
-              </ol>
-            </li>
+                        <Link
+                          key={`bossdino-${d.Dino.id}`}
+                          to={routes.dino({
+                            id: d.Dino.id.toString(),
+                          })}
+                          className="text-sm font-medium text-gray-800 dark:text-stone-300"
+                        >
+                          {d.Dino.name
+                            .replace("(Alpha)", "")
+                            .replace("(Beta)", "")
+                            .replace("(Gamma)", "")
+                            .trimEnd()}
+                        </Link>
+                        <span
+                          className={clsx(
+                            "rounded border px-1 py-0.5 text-xs font-medium dark:bg-zinc-700",
+                            {
+                              "border-red-400 bg-red-100 text-red-800 dark:text-red-400":
+                                d.Dino.name.includes("Alpha"),
+                              "border-yellow-300 bg-yellow-100 text-yellow-800 dark:text-yellow-300":
+                                d.Dino.name.includes("Beta"),
+                              "border-green-400 bg-green-100 text-green-800 dark:text-green-400":
+                                d.Dino.name.includes("Gamma"),
+                            }
+                          )}
+                        >
+                          {d.Dino.name.match(/(Gamma|Beta|Alpha)/g)[0]}
+                        </span>
+                      </li>
+                    ))}
+                </ol>
+              </li>
 
-            {/* TODO: show maps where this item exists */}
-            {/* <li className="flex flex-col">
-              <span className="rounded-lg p-2 font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                Found In
-              </span>
-              <div className="ml-4 flex flex-col">
-                {item?.LootcrateSetEntryItem.filter(
-                  (value, index, self) =>
-                    index ===
-                    self.findIndex(
-                      (t) =>
-                        t.LootcrateSetEntry.LootcrateSet.Lootcrate.id ===
-                        value.LootcrateSetEntry.LootcrateSet.Lootcrate.id &&
-                        t.LootcrateSetEntry.LootcrateSet.Lootcrate.id ===
-                        value.LootcrateSetEntry.LootcrateSet.Lootcrate.id
-                    )
-                )
-                  .slice(0, 5)
-                  .map((g) => (
-                    <Link
-                      key={`lootcrate-${g.LootcrateSetEntry.id}-${g.LootcrateSetEntry.LootcrateSet.Lootcrate.id}`}
-                      to={routes.lootcrate({
-                        id: g.LootcrateSetEntry.LootcrateSet.Lootcrate.id.toString(),
-                      })}
-                      className="rounded border px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:text-white"
-                      style={{
-                        borderColor:
-                          g.LootcrateSetEntry.LootcrateSet.Lootcrate.color,
-                      }}
-                    >
-                      {g.LootcrateSetEntry.LootcrateSet.Lootcrate.name}
-                    </Link>
-                  ))}
-              </div>
-            </li> */}
-          </ul>
-        </div>
-      </aside>
+
+              {/* TODO: show maps where this item exists */}
+              <li className="flex flex-col">
+                <span className="rounded-lg p-2 font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                  Found Where?
+                </span>
+                <div className="flex flex-col">
+                  <Link
+                    to={routes.lootcrate({
+                      id: 1,
+                    })}
+                    className="rounded border px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:text-white"
+                  >
+                    test
+                  </Link>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </aside>
+      )}
     </article>
   );
 };

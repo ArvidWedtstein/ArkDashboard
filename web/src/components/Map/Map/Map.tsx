@@ -280,7 +280,7 @@ const Map = ({ map }: Props) => {
         value: key.toString(),
         color:
           value[0].__typename == "MapNote" ||
-          value.every((f) => f.item_id == null)
+            value.every((f) => f.item_id == null)
             ? categories[key]?.color
             : value[0].Item.color,
       }));
@@ -306,7 +306,7 @@ const Map = ({ map }: Props) => {
                   setRealm(b);
                   setSelectedTypes([]);
                 }}
-                selectedTab={realm}
+                selectedTabIndex={realm}
               >
                 {map.other_Map.map((submap) => (
                   <Tab key={submap.id} label={submap.name} />
@@ -366,13 +366,12 @@ const Map = ({ map }: Props) => {
                       ...entry,
                       lat: entry.latitude,
                       lon: entry.longitude,
-                      color: `${f.color}${
-                        checkedItems.includes(
-                          `${entry.type}|${entry.latitude}-${entry.longitude}`
-                        )
+                      color: `${f.color}${checkedItems.includes(
+                        `${entry.type}|${entry.latitude}-${entry.longitude}`
+                      )
                           ? "1A"
                           : "FF"
-                      }`,
+                        }`,
                       image: entry.item_id !== null ? f.image : null,
                     }))
                   )

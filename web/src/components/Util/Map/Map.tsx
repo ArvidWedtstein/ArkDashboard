@@ -408,7 +408,7 @@ const Map = ({
           width="100%"
           height="100%"
         >
-          {pos.filter(p => p?.map_id ? (p?.map_id === map || p.map_id === subMap) : true)?.map((p, i) => (
+          {pos && pos?.filter(p => p?.map_id ? (p?.map_id === map || p.map_id === subMap) : true)?.map((p, i) => (
             <React.Fragment key={`map-pos-${i}`}>
               {p.image && p.image != null ? (
                 <image
