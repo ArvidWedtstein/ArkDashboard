@@ -4,6 +4,7 @@ import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
 import { useState } from "react";
 import { useAuth } from "src/auth";
+import Map from "src/components/Util/Map/Map";
 import StatCard from "src/components/Util/StatCard/StatCard";
 
 import { getWordType } from "src/lib/formatters";
@@ -154,13 +155,13 @@ const Item = ({ item }: Props) => {
             <StatCard stat={"Category"} value={item.category} chart={false} />
           </div>
 
-          {item.stats && (
+          {item.stats && (item?.stats as { id: number, value: number }[]).filter(f => f.id != 1).length > 0 && (
             <div className="flex flex-col">
               <div className="py-4 px-8 text-sm font-normal text-gray-700 dark:text-white">
                 <div className="mb-4 inline-block">
-                  {(item?.stats as { id: number, value: number }[]).map(({ id, value }, i) => {
+                  {(item?.stats as { id: number, value: number }[]).filter(f => f.id != 1).map(({ id, value }, i) => {
                     if (!ItemStats[id])
-                      return <div key={`${id}${value}${i}`}></div>;
+                      return null;
                     return (
                       <p key={`${id}${value}${i}`}>
                         <strong>{ItemStats[id].name}</strong>: {value}
@@ -176,7 +177,7 @@ const Item = ({ item }: Props) => {
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "gather_efficiency").length >
           0 && (
-            <section className="rounded-lg bg-gray-200 p-4 dark:bg-zinc-600">
+            <section className="rounded-lg bg-gray-200 p-4 dark:bg-zinc-600 ring-1 ring-zinc-500 ring-inset">
               <p className="my-1 text-lg">Gather Efficiency</p>
               <div className="flex flex-col">
                 {item.DinoStat.filter((g) => g.type === "gather_efficiency")
@@ -235,20 +236,21 @@ const Item = ({ item }: Props) => {
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "weight_reduction").length >
           0 && (
-            <section className="rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
+            <section className="rounded-lg bg-stone-300 p-4 dark:bg-zinc-600 ring-1 ring-zinc-500 ring-inset">
               <p className="my-1 text-lg">Weight Reduction</p>
-              <div className="flex flex-col">
+              <div className="flex flex-col space-y-1">
                 {item.DinoStat.filter((g) => g.type === "weight_reduction")
                   .sort((a, b) => b.value - a.value)
                   .slice(0, 10)
                   .map((wr, i) => (
                     <div
-                      className="flex items-center"
+                      className="flex items-center space-x-1"
                       key={`weight-reduction-${i}`}
                     >
+                      <img src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${wr.Dino.image}`} className="h-8 w-8 rounded-full bg-zinc-500 p-1" />
                       <Link
                         to={routes.dino({ id: wr.Dino.id })}
-                        className="mr-2 w-20 text-sm"
+                        className="w-fit text-sm"
                       >
                         {wr.Dino.name}
                       </Link>
@@ -276,19 +278,21 @@ const Item = ({ item }: Props) => {
         {item.DinoStat &&
           item.DinoStat.filter((g) => g.type === "drops").length > 0 && (
             <section className="rounded-lg">
-              <div className="w-fit rounded-lg bg-stone-300 p-4 dark:bg-zinc-600">
-                <p className="my-1 text-lg">Dinos that drop {item.name}</p>
+              <div className="w-fit rounded-lg bg-stone-300 p-4 dark:bg-zinc-600 shadow-lg ring-1 ring-zinc-500 ring-inset">
+                <p className="my-1 text-lg select-none">Dinos that drop {item.name}</p>
                 <div className="flex flex-col">
                   {item.DinoStat.filter((g) => g.type === "drops")
                     .sort((a, b) => b.value - a.value)
                     .slice(0, 10)
-                    .map((d, i) => (
+                    .map(({ Dino: { id, name, image } }, i) => (
                       <Link
                         key={`drops-${i}`}
-                        to={routes.dino({ id: d.Dino.id })}
+                        to={routes.dino({ id: id })}
                         className="mr-2 w-20 text-sm"
+                        title={name}
                       >
-                        {d.Dino.name}
+                        <img src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/${image}`} className="h-12 w-12 rounded-full bg-zinc-500 p-1" />
+                        {name}
                       </Link>
                     ))}
                 </div>
@@ -394,6 +398,23 @@ const Item = ({ item }: Props) => {
           </section>
         )}
 
+        {item.MapResource && (
+          <section className="col-span-full">
+            <Map
+              className="w-fit"
+              mapFilter={(m) => item.MapResource.some(f => f.map_id === m.id)}
+              interactive
+              pos={item.MapResource.map((r) => ({
+                lat: r.latitude,
+                lon: r.longitude,
+                map_id: r.map_id,
+                name: item.name,
+                image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
+              }))}
+            />
+          </section>
+        )}
+
         <div className="col-span-full">
           <nav className="rw-button-group">
             {currentUser?.permissions.some(
@@ -486,7 +507,7 @@ const Item = ({ item }: Props) => {
 
 
               {/* TODO: show maps where this item exists */}
-              <li className="flex flex-col">
+              {/* <li className="flex flex-col">
                 <span className="rounded-lg p-2 font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                   Found Where?
                 </span>
@@ -500,7 +521,7 @@ const Item = ({ item }: Props) => {
                     test
                   </Link>
                 </div>
-              </li>
+              </li> */}
             </ul>
           </div>
         </aside>

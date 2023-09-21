@@ -6,8 +6,8 @@ import type { CellSuccessProps, CellFailureProps } from '@redwoodjs/web'
 import MapResources from 'src/components/MapResource/MapResources'
 
 export const QUERY = gql`
-  query FindMapResourcesByMap($map_id: BigInt!) {
-    mapResources: mapResourcesByMap(map_id: $map_id) {
+  query FindMapResourcesByMap($map_id: BigInt, $item_id: BigInt) {
+    mapResources: mapResourcesByMap(map_id: $map_id, item_id: $item_id) {
       id
       created_at
       updated_at

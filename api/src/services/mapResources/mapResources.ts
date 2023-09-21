@@ -8,9 +8,19 @@ import { db } from "src/lib/db";
 
 export const mapResourcesByMap: QueryResolvers["mapResourcesByMap"] = ({
   map_id,
+  item_id,
 }) => {
   return db.mapResource.findMany({
-    where: { map_id },
+    where: {
+      OR: [
+        {
+          map_id,
+        },
+        {
+          item_id,
+        },
+      ],
+    },
   });
 };
 export const mapResources: QueryResolvers["mapResources"] = () => {

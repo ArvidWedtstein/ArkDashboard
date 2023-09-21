@@ -23,9 +23,16 @@ export const QUERY = gql`
         Dino {
           id
           name
+          image
         }
         value
         rank
+        type
+      }
+      MapResource {
+        map_id
+        latitude
+        longitude
         type
       }
       ItemRecipe_ItemRecipe_crafted_item_idToItem {
@@ -51,19 +58,7 @@ export const QUERY = gql`
     }
   }
 `;
-// LootcrateSetEntryItem {
-//   LootcrateSetEntry {
-//     id
-//     LootcrateSet {
-//       id
-//       Lootcrate {
-//         id
-//         name
-//         color
-//       }
-//     }
-//   }
-// }
+
 // TODO: fix skeletonloader
 export const Loading = () => <div>Loading...</div>;
 

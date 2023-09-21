@@ -15,7 +15,7 @@ export const schema = gql`
   type Query {
     mapResources: [MapResource!]! @skipAuth
     mapResource(id: BigInt!): MapResource @skipAuth
-    mapResourcesByMap(map_id: BigInt!): [MapResource] @skipAuth
+    mapResourcesByMap(map_id: BigInt, item_id: BigInt): [MapResource] @skipAuth
   }
 
   input CreateMapResourceInput {
