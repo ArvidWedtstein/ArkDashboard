@@ -258,11 +258,11 @@ const Routes = () => {
             page={MapResourceMapResourcePage}
             name="mapResource"
           />
-          {/* <Route
+          <Route
             path="/map-resources"
             page={MapResourceMapResourcesPage}
             name="mapResources"
-          /> */}
+          />
         </Set>
         <Set
           wrap={ScaffoldLayout}

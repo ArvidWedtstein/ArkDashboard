@@ -4,7 +4,6 @@ import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { ReactElement, ReactNode, useEffect, useRef, useState } from "react";
 import { useAuth } from "src/auth";
-import Lookup, { MultiSelectLookup } from "src/components/Util/Lookup/Lookup";
 
 // https://codepen.io/tjramage/pen/yOEbyw
 const HomePage = () => {

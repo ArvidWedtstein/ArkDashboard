@@ -12,6 +12,7 @@ import debounce from "lodash.debounce";
 import { toast } from "@redwoodjs/web/dist/toast";
 import FibonacciSphere from "src/components/Util/FibonacciSphere/FibonacciSphere";
 import { SimplexNoise3D } from "src/lib/formatters";
+import Input from "src/components/Util/Input/Input";
 
 interface GTWPageProps {
   error: RWGqlError;
@@ -244,6 +245,7 @@ const GtwPage = (props: GTWPageProps) => {
   }
   const debouncedChangeHandler = useMemo(() => debounce(handlechange, 500), []);
 
+  // MATRIX GRID
   // const ref = useRef<HTMLCanvasElement>(null);
   // useEffect(() => {
   //   if (ref.current) {
@@ -345,43 +347,35 @@ const GtwPage = (props: GTWPageProps) => {
       />
 
       <div className="container-xl m-3 text-center">
-        <FibonacciSphere
+        {/* <FibonacciSphere
           animate={true}
           text={ArkDinos.filter((f) => hasLetters(f.toString(), word))}
           className="h-1/3 w-1/3 text-white"
-        />
-        <Form error={props.error} className="m-6 p-3">
+        /> */}
+        <div className="text-center">
+          <h1 className="rw-label p-3 text-center text-2xl text-black dark:text-white">
+            {getWord(word)}
+          </h1>
+        </div>
+        <Form error={props.error} className="m-6 p-3 flex justify-center">
           <FormError
             error={props.error}
             wrapperClassName="rw-form-error-wrapper"
             titleClassName="rw-form-error-title"
             listClassName="rw-form-error-list"
           />
-          <Label
-            name="scrambledWord"
-            className="rw-label my-3"
-            errorClassName="rw-label rw-label-error"
-          >
-            Scrambled Word:
-          </Label>
 
-          <TextField
-            name="scrambledWord"
+          <Input
             typeof="text"
-            className="rw-input"
-            errorClassName="rw-input rw-input-error"
+            type="text"
+            name="scrambledWord"
+            label="Scrambled Dino Word"
+            placeholder="Scrambled Word:"
             onInput={(event) => {
               debouncedChangeHandler(event);
             }}
           />
-
-          <FieldError name="scrambledWord" className="rw-field-error" />
         </Form>
-        <div className="text-center">
-          <h1 className="rw-label p-3 text-center text-2xl text-black dark:text-white">
-            {getWord(word)}
-          </h1>
-        </div>
         {/* <canvas ref={ref}></canvas> */}
       </div>
     </>
