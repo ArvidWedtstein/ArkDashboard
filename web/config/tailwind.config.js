@@ -23,6 +23,7 @@ module.exports = {
         "fade-out": "fadeout 0.5s linear forwards",
         "fly-in": "flyIn 0.3s ease-out",
         "fly-out": "flyOut 0.3s ease-out",
+        "fly-in-top": "flyInTop 0.1s ease-out",
         "pop-up":
           "popUp 0.5s cubic-bezier(0.165, 0.840, 0.440, 1.000) forwards",
         "fill-up":
@@ -100,6 +101,14 @@ module.exports = {
           },
           to: {
             transform: "scaleX(1)",
+          },
+        },
+        flyInTop: {
+          from: {
+            transform: "translateY(calc(-100% + 1.5em))",
+          },
+          to: {
+            transform: "translateY(0)",
           },
         },
       },

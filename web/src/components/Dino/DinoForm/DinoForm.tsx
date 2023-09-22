@@ -19,6 +19,8 @@ import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { truncate } from "src/lib/formatters";
 import { toast } from "@redwoodjs/web/toast";
 import { useLazyQuery } from "@apollo/client";
+import Disclosure from "src/components/Util/Disclosure/Disclosure";
+import Stepper, { Step } from "src/components/Util/Stepper/Stepper";
 
 type FormDino = NonNullable<EditDinoById["dino"]>;
 
@@ -129,7 +131,7 @@ const DinoForm = (props: DinoFormProps) => {
           item_id: null,
         },
       ],
-      wr: props.dino.DinoStat.filter((f) => f.type === "weight_reduction") ?? [
+      wr: props?.dino?.DinoStat.filter((f) => f.type === "weight_reduction") ?? [
         {
           type: "",
           value: 0,
@@ -274,30 +276,7 @@ const DinoForm = (props: DinoFormProps) => {
 
         <FieldError name="description" className="rw-field-error" />
 
-        <details className="rw-form-group group">
-          <summary className="inline-flex items-center">
-            Other
-            <svg
-              className="ml-1 h-4 w-4"
-              aria-hidden="true"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                className="group-open:block [&:not(open)]:hidden"
-                d="M19 9l-7 7-7-7"
-              ></path>
-              <path
-                className="group-open:hidden [&:not(open)]:block"
-                d="M9 5l7 7-7 7"
-              ></path>
-            </svg>
-          </summary>
+        <Disclosure className="mt-5" title="Other" text_size="text-lg">
           <div>
             <div>
               <Label
@@ -365,17 +344,18 @@ const DinoForm = (props: DinoFormProps) => {
                               required: true,
                             }
                           )}
-                          className="!mt-0 !rounded-none !rounded-l-md"
+                          btnClassName="!rounded-none !rounded-l-md border-r-transparent"
                           options={data.itemsByCategory.items
                             .filter((i) => i.category === "Resource")
                             .map((item) => ({
                               type: item.type,
                               label: item.name,
                               value: item.id,
-                              image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                              image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
                             }))}
                           search={true}
                           // defaultValue={[ge.item_id]}
+                          closeOnSelect={true}
                           filterFn={(item, search) => {
                             return item.label
                               .toLowerCase()
@@ -470,7 +450,7 @@ const DinoForm = (props: DinoFormProps) => {
                               type: item.type,
                               label: item.name,
                               value: item.id,
-                              image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                              image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
                             }))}
                           search={true}
                           defaultValue={[w.item_id]}
@@ -606,43 +586,43 @@ const DinoForm = (props: DinoFormProps) => {
                     value: "t",
                     label: "Thatch",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/thatch-wall.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/thatch-wall.webp",
                   },
                   {
                     value: "w",
                     label: "Wood",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/wooden-wall.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/wooden-wall.webp",
                   },
                   {
                     value: "a",
                     label: "Adobe",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/adobe-wall.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/adobe-wall.webp",
                   },
                   {
                     value: "s",
                     label: "Stone",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-wall.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-wall.webp",
                   },
                   {
                     value: "g",
                     label: "Greenhouse",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/greenhouse-wall.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/greenhouse-wall.webp",
                   },
                   {
                     value: "m",
                     label: "Metal",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/metal-wall.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/metal-wall.webp",
                   },
                   {
                     value: "tk",
                     label: "Tek",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/tek-wall.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/tek-wall.webp",
                   },
                 ]}
               />
@@ -717,6 +697,7 @@ const DinoForm = (props: DinoFormProps) => {
           </div>
           <div>
             <div>
+              {/* TODO: replace with multiselectlookup? */}
               <Label
                 name="carryable_by"
                 className="rw-label"
@@ -733,79 +714,79 @@ const DinoForm = (props: DinoFormProps) => {
                     value: "e85015a5-8694-44e6-81d3-9e1fdd06061d",
                     label: "Pteranodon",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_pteranodon.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_pteranodon.webp",
                   },
                   {
                     value: "1e7966e7-d63d-483d-a541-1a6d8cf739c8",
                     label: "Tropeognathus",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_tropeognathus.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tropeognathus.webp",
                   },
                   {
                     value: "b8e304b3-ab46-4232-9226-c713e5a0d22c",
                     label: "Tapejara",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_tapejara.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tapejara.webp",
                   },
                   {
                     value: "da86d88a-3171-4fc9-b96d-79e8f59f1601",
                     label: "Griffin",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_griffin.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_griffin.webp",
                   },
                   {
                     value: "147922ce-912d-4ab6-b4b6-712a42a9d939",
                     label: "Desmodus",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_desmodus.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_desmodus.webp",
                   },
                   {
                     value: "28971d02-8375-4bf5-af20-6acb20bf7a76",
                     label: "Argentavis",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_argentavis.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_argentavis.webp",
                   },
                   {
                     value: "f924e5d6-832a-4fb3-abc0-2fa42481cee1",
                     label: "Crystal Wyvern",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_crystalwyvern.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_crystalwyvern.webp",
                   },
                   {
                     value: "7aec6bf6-357e-44ec-8647-3943ca34e666",
                     label: "Wyvern",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_wyvern.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_wyvern.webp",
                   },
                   {
                     value: "2b938227-61c2-4230-b7da-5d4d55f639ae",
                     label: "Quetzal",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_quetzal.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_quetzal.webp",
                   },
                   {
                     value: "b1d6f790-d15c-4813-a6c8-9e6f62fafb52",
                     label: "Tusoteuthis",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_tusoteuthis.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tusoteuthis.webp",
                   },
                   {
                     value: "d670e948-055e-45e1-adf3-e56d63236238",
                     label: "Karkinos",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_karkinos.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_karkinos.webp",
                   },
                   {
                     value: "52156470-6075-487b-a042-2f1d0d88536c",
                     label: "Kaprosuchus",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_kaprosuchus.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_kaprosuchus.webp",
                   },
                   {
                     value: "f723f861-0aa3-40b5-b2d4-6c48ec0ca683",
                     label: "Procoptodon",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_procoptodon.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_procoptodon.webp",
                   },
                   {
                     value: "human",
@@ -816,7 +797,7 @@ const DinoForm = (props: DinoFormProps) => {
                     value: "94708e56-483b-4eef-ad35-2b9ce0e9c669",
                     label: "Gigantopithecus",
                     image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/creature_gigantopithecus.png",
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_gigantopithecus.webp",
                   },
                 ]}
               />
@@ -958,7 +939,24 @@ const DinoForm = (props: DinoFormProps) => {
               {/* </>)} */}
             </div>
           </div>
-        </details>
+        </Disclosure>
+
+        <Stepper>
+          <Step title="test1">
+            <p>test</p>
+          </Step>
+          <Step title="test2" optional>
+            <p>test2</p>
+          </Step>
+          <Step title="test3">
+            <p>test3</p>
+          </Step>
+        </Stepper>
+        <Disclosure title="Stats" text_size="text-lg">
+          <div>
+
+          </div>
+        </Disclosure>
 
         <Label
           name="base_stats"
@@ -1034,15 +1032,8 @@ const DinoForm = (props: DinoFormProps) => {
         <fieldset className="rw-form-group">
           <legend className="inline-flex space-x-3">
             <span>Death</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 512 512"
-              className="w-6"
-            >
-              <path
-                fill="currentColor"
-                d="M160 192C124.7 192 96 220.7 96 256c0 35.33 28.67 64 64 64s64-28.67 64-64C224 220.7 195.3 192 160 192zM160 288C142.3 288 128 273.7 128 256c0-17.7 14.3-32 32-32s32 14.3 32 32C192 273.7 177.7 288 160 288zM256 0C114.6 0 0 100.3 0 224c0 70.13 36.88 132.6 94.5 173.7c9.75 6.875 15.25 18.02 13.5 29.89l-7.125 21.27C90.63 480 113.8 512 146.5 512h219c32.75 0 55.88-32 45.63-63.13l-7.094-21.27c-1.75-11.75 3.75-23.02 13.5-29.89C475.2 356.6 512 294.1 512 224C512 100.3 397.4 0 256 0zM398.9 371.6c-19.62 14-29.88 37.13-26.62 60.38c.7441 4.096-.4238 .2578 8.5 26.88c2.25 7.277-1.291 21-15.25 21H320v-48c0-8.801-7.199-16-16-16s-16 7.199-16 16v48H224v-48c0-8.801-7.199-16-16-16s-16 7.199-16 16v48H146.5c-11.34 0-18.57-11.04-15.25-21C140.2 432.3 139 436.1 139.8 432c3.25-23.25-7-46.38-26.62-60.38C61.5 334.9 32 281.1 32 224c0-105.9 100.5-192 224-192s224 86.13 224 192C480 281.1 450.5 334.9 398.9 371.6zM352 192c-35.33 0-64 28.67-64 64c0 35.33 28.67 64 64 64s64-28.67 64-64C416 220.7 387.3 192 352 192zM352 288c-17.7 0-32-14.3-32-32c0-17.7 14.3-32 32-32s32 14.3 32 32C384 273.7 369.7 288 352 288z"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-5 fill-current">
+              <path d="M432 480h-416C7.164 480 0 487.2 0 496C0 504.8 7.164 512 16 512h416c8.836 0 16-7.164 16-16C448 487.2 440.8 480 432 480zM48 448C56.84 448 64 440.8 64 432V192c0-88.22 71.78-160 160-160s160 71.78 160 160v240c0 8.844 7.156 16 16 16s16-7.156 16-16l-.0012-240C415.1 86.12 329.9 0 223.1 0S31.1 86.13 31.1 192L32 432C32 440.8 39.16 448 48 448zM223.1 352C232.8 352 240 344.8 240 336v-128h64C312.8 208 320 200.8 320 192s-7.156-16-16-16h-64v-64c0-8.844-7.174-16-16.02-16S208 103.2 208 112v64h-64C135.2 176 128 183.2 128 192s7.156 16 16 16h64v128C208 344.8 215.2 352 223.1 352z" />
             </svg>
           </legend>
           <div>

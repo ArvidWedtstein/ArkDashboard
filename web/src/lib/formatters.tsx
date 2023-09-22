@@ -1247,12 +1247,14 @@ type Colors =
 type Luminance = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 export type BgColor = `bg-${Colors}-${Luminance}`;
 export type TextColor = `text-${Colors}-${Luminance}`;
+export type TextSize = `text-${Size}`;
 export type FillColor = `fill-${Colors}-${Luminance}`;
 export type StrokeColor = `stroke-${Colors}-${Luminance}`;
 export type Color = `${Colors}-${Luminance}`;
 
 type Distance = 0.5 | 1 | 1.5 | 2 | 2.5 | 3 | 3.5 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 type Breakpoints = "xs:" | "sm:" | "md:" | "lg:" | "xl:" | "";
+type Size = "xs" | "sm" | "md" | "lg" | "xl";
 type Space = `${Breakpoints}space-${"x" | "y"}-${Distance}`;
 type Padding = `${Breakpoints}p-${Distance}`;
 

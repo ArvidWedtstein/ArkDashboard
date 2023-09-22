@@ -128,7 +128,7 @@ export const Lookup = ({
 
   // Update selectedOption when defaultValue changes
   useEffect(() => {
-    setSearchTerm;
+    setSearchTerm("");
     const valuesToSelect: string[] =
       defaultValue?.map((s) => s?.trim()).slice(0, multiple ? undefined : 1) ||
       [];
@@ -148,10 +148,8 @@ export const Lookup = ({
       event: React.MouseEvent<HTMLLIElement>,
       option: ArrayElement<ILookup["options"]>
     ) => {
-      if (!closeOnSelect) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
+      event.preventDefault();
+
       if (!option || option.disabled) return;
 
       const isSelected = selectedOptions.some((o) => o?.value === option.value);
@@ -173,6 +171,10 @@ export const Lookup = ({
       }
 
       onSelect?.(updateOptions);
+
+      if (closeOnSelect && !isSelected) {
+        setIsComponentVisible(false);
+      }
     },
     [selectedOptions, multiple, onSelect]
   );
@@ -210,6 +212,7 @@ export const Lookup = ({
       setIsComponentVisible(!isComponentVisible);
 
       if (!isComponentVisible) {
+
         updateLayout();
       }
     }
@@ -227,7 +230,7 @@ export const Lookup = ({
         type="button"
         onClick={toggleLookup}
         className={clsx(
-          "rw-input flex h-full select-none items-center bg-zinc-50 text-center transition ease-in hover:border-zinc-400 dark:bg-zinc-600",
+          "rw-input group/lookup min-w-[10rem] flex h-full select-none items-center bg-zinc-50 text-center transition ease-in hover:border-zinc-400 dark:bg-zinc-600",
           btnClassName,
           {
             "cursor-not-allowed": disabled,
@@ -254,13 +257,13 @@ export const Lookup = ({
               : placeholder}
         </div>
 
-        <div className="pointer-events-none ml-auto flex select-none flex-row">
+        <div className="pointer-events-none ml-auto flex select-none flex-row transition-all">
           {!disableClearable &&
             selectedOptions.filter((d) => d != null).length > 0 && (
               <svg
                 onClick={handleClearSelection}
                 fill="currentColor"
-                className="pointer-events-auto ml-2 h-4 w-4"
+                className={"pointer-events-auto ml-2 h-4 w-4 group-focus/lookup:visible group-hover/lookup:visible invisible"}
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 320 512"
               >
@@ -302,7 +305,7 @@ export const Lookup = ({
         )}
       >
         {(search || multiple) && (
-          <div className="rw-button-group my-0 w-full rounded-none border-b border-zinc-500">
+          <div className="rw-button-group !my-0 w-full rounded-none border-b border-zinc-500">
             {search && (
               <input
                 type="text"
@@ -341,7 +344,7 @@ export const Lookup = ({
         )}
 
         <ul
-          className="relative z-10 max-h-48 space-y-1.5 overflow-y-auto pt-0 text-gray-700 dark:text-gray-200"
+          className="relative z-10 max-h-48 space-y-1 overflow-y-auto pt-0 text-gray-700 dark:text-gray-200 will-change-scroll"
           aria-labelledby="dropdownButton"
         >
           {!options || filteredOptions.length == 0 ? (
