@@ -40,6 +40,7 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         />
 
         <Input
+          className="mt-5"
           name="name"
           defaultValue={props.lootcrate?.name}
           helperText="Required level to open this lootcrate"
@@ -47,12 +48,14 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         />
 
         <Input
+          className="mt-5"
           name="blueprint"
           defaultValue={props.lootcrate?.blueprint}
           helperText="Lootcrate blueprint"
         />
 
         <Input
+          className="mt-5"
           name="required_level"
           label="Required Level"
           type="number"
@@ -62,20 +65,30 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         />
 
         <Input
+          className="mt-5"
           name="quality_mult"
           label="Quality multiplier"
-          defaultValue={JSON.stringify(props.lootcrate?.quality_mult ?? { min: 0, max: 0, pow: 0 })}
+          defaultValue={JSON.stringify(
+            props.lootcrate?.quality_mult ?? { min: 0, max: 0, pow: 0 }
+          )}
           validation={{ valueAsJSON: true }}
         />
 
         <Input
+          className="mt-5"
           name="set_qty"
           label="Set Quantity"
-          defaultValue={JSON.stringify(props.lootcrate?.set_qty ?? { min: 0, max: 0, pow: 0 })}
+          defaultValue={JSON.stringify(
+            props.lootcrate?.set_qty ?? { min: 0, max: 0, pow: 0 }
+          )}
           validation={{ valueAsJSON: true }}
         />
 
-        <Input name="color" defaultValue={props.lootcrate?.color} />
+        <Input
+          className="mt-5"
+          name="color"
+          defaultValue={props.lootcrate?.color}
+        />
 
         <Label
           name="repeat_in_sets"
@@ -92,9 +105,17 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         />
         <FieldError name="repeat_in_sets" className="rw-field-error" />
 
-        <Input name="image" defaultValue={props.lootcrate?.image} />
+        <Input
+          className="mt-5"
+          name="image"
+          defaultValue={props.lootcrate?.image}
+        />
 
-        <Input name="type" defaultValue={props.lootcrate?.type} />
+        <Input
+          className="mt-5"
+          name="type"
+          defaultValue={props.lootcrate?.type}
+        />
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">

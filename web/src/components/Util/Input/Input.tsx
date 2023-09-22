@@ -1,46 +1,50 @@
 import {
-  ColorField,
   FieldError,
   InputField,
   InputFieldProps,
   Label,
 } from "@redwoodjs/forms";
+import clsx from "clsx";
 
 type InputProps = {
   type?:
-  | "number"
-  | "button"
-  | "time"
-  | "image"
-  | "text"
-  | "hidden"
-  | "color"
-  | "search"
-  | "date"
-  | "datetime-local"
-  | "email"
-  | "file"
-  | "month"
-  | "password"
-  | "radio"
-  | "range"
-  | "reset"
-  | "submit"
-  | "tel"
-  | "url"
-  | "week";
+    | "number"
+    | "button"
+    | "time"
+    | "image"
+    | "text"
+    | "hidden"
+    | "color"
+    | "search"
+    | "date"
+    | "datetime-local"
+    | "email"
+    | "file"
+    | "month"
+    | "password"
+    | "radio"
+    | "range"
+    | "reset"
+    | "submit"
+    | "tel"
+    | "url"
+    | "week";
   helperText?: string;
   label?: string;
+  icon?: React.ReactNode;
 } & Omit<InputFieldProps, "type">;
+
 const Input = ({
   name,
   type = "text",
   label,
   helperText,
+  className,
+  icon,
   ...props
 }: InputProps) => {
   return (
-    <div className=" mt-5 w-fit min-w-fit max-w-sm">
+    <div className={clsx(`w-fit min-w-fit max-w-sm`, className)}>
       <div className="rw-input-underline">
         <InputField
           type={type}
@@ -53,10 +57,13 @@ const Input = ({
         />
         <Label
           name={name}
-          className="peer-focus-within:text-pea-500 peer-focus-within:dark:text-pea-400 capitalize peer-placeholder-shown:top-4 peer-placeholder-shown:-translate-y-0 peer-placeholder-shown:scale-100 peer-focus-within:top-4 peer-focus-within:-translate-y-4 peer-focus-within:scale-75"
-          errorClassName="rw-label rw-label-error"
+          className="peer-focus-within:text-pea-500 peer-focus-within:dark:text-pea-400 inline-flex items-center space-x-1 capitalize peer-placeholder-shown:top-4 peer-placeholder-shown:-translate-y-0 peer-placeholder-shown:scale-100 peer-focus-within:top-4 peer-focus-within:-translate-y-4 peer-focus-within:scale-75"
+          errorClassName="rw-label-error"
         >
-          {label ?? name} {props.required && "*"}
+          {icon && icon}
+          <span>
+            {label ?? name} {props.required && "*"}
+          </span>
         </Label>
       </div>
       <FieldError name={name} className="rw-field-error" />

@@ -21,6 +21,7 @@ import { toast } from "@redwoodjs/web/toast";
 import { useLazyQuery } from "@apollo/client";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import Stepper, { Step } from "src/components/Util/Stepper/Stepper";
+import Input from "src/components/Util/Input/Input";
 
 type FormDino = NonNullable<EditDinoById["dino"]>;
 
@@ -131,7 +132,9 @@ const DinoForm = (props: DinoFormProps) => {
           item_id: null,
         },
       ],
-      wr: props?.dino?.DinoStat.filter((f) => f.type === "weight_reduction") ?? [
+      wr: props?.dino?.DinoStat.filter(
+        (f) => f.type === "weight_reduction"
+      ) ?? [
         {
           type: "",
           value: 0,
@@ -208,73 +211,83 @@ const DinoForm = (props: DinoFormProps) => {
           listClassName="rw-form-error-list"
         />
 
-        <div className="flex flex-row items-start space-x-3">
-          <div>
+        <Stepper>
+          <Step title="General">
+            <div className="flex flex-row items-start space-x-3">
+              <div>
+                <Label
+                  name="name"
+                  className="rw-label"
+                  errorClassName="rw-label rw-label-error"
+                >
+                  Name
+                </Label>
+
+                <TextField
+                  name="name"
+                  defaultValue={props.dino?.name}
+                  className="rw-input"
+                  errorClassName="rw-input rw-input-error"
+                  validation={{ required: true }}
+                />
+
+                <FieldError name="name" className="rw-field-error" />
+              </div>
+              <div>
+                <Label
+                  name="synonyms"
+                  className="rw-label"
+                  errorClassName="rw-label rw-label-error"
+                >
+                  Synonyms
+                </Label>
+
+                <TextField
+                  name="synonyms"
+                  defaultValue={props.dino?.synonyms}
+                  className="rw-input"
+                  errorClassName="rw-input rw-input-error"
+                  validation={{
+                    required: false,
+                    pattern: {
+                      value: /^[A-Za-z\s,]+$/, // Regex pattern to allow only letters, spaces, and commas
+                      message:
+                        "Uh oh! Your dino is getting tongue-tied! Only text is allowed, no dino roars or growls!",
+                    },
+                  }}
+                />
+                <p className="rw-helper-text">
+                  Other names for this dino, comma seperated
+                </p>
+
+                <FieldError name="synonyms" className="rw-field-error" />
+              </div>
+            </div>
+
             <Label
-              name="name"
+              name="description"
               className="rw-label"
               errorClassName="rw-label rw-label-error"
             >
-              Name
+              Description
             </Label>
 
-            <TextField
-              name="name"
-              defaultValue={props.dino?.name}
+            <TextAreaField
+              name="description"
+              defaultValue={props.dino?.description}
               className="rw-input"
               errorClassName="rw-input rw-input-error"
-              validation={{ required: true }}
             />
 
-            <FieldError name="name" className="rw-field-error" />
-          </div>
-          <div>
-            <Label
-              name="synonyms"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Synonyms
-            </Label>
-
-            <TextField
-              name="synonyms"
-              defaultValue={props.dino?.synonyms}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-              validation={{
-                required: false,
-                pattern: {
-                  value: /^[A-Za-z\s,]+$/, // Regex pattern to allow only letters, spaces, and commas
-                  message:
-                    "Uh oh! Your dino is getting tongue-tied! Only text is allowed, no dino roars or growls!",
-                },
-              }}
-            />
-            <p className="rw-helper-text">
-              Other names for this dino, comma seperated
-            </p>
-
-            <FieldError name="synonyms" className="rw-field-error" />
-          </div>
-        </div>
-
-        <Label
-          name="description"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Description
-        </Label>
-
-        <TextAreaField
-          name="description"
-          defaultValue={props.dino?.description}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-        />
-
-        <FieldError name="description" className="rw-field-error" />
+            <FieldError name="description" className="rw-field-error" />
+          </Step>
+          <Step title="test2" optional>
+            <p>test2</p>
+          </Step>
+          <Step title="test3">
+            <p>test3</p>
+          </Step>
+        </Stepper>
 
         <Disclosure className="mt-5" title="Other" text_size="text-lg">
           <div>
@@ -380,7 +393,7 @@ const DinoForm = (props: DinoFormProps) => {
                             required: false,
                           } as const)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
-                        // defaultValue={g.type}
+                          // defaultValue={g.type}
                         />
                         <button
                           type="button"
@@ -941,32 +954,289 @@ const DinoForm = (props: DinoFormProps) => {
           </div>
         </Disclosure>
 
-        <Stepper>
-          <Step title="test1">
-            <p>test</p>
-          </Step>
-          <Step title="test2" optional>
-            <p>test2</p>
-          </Step>
-          <Step title="test3">
-            <p>test3</p>
-          </Step>
-        </Stepper>
         <Disclosure title="Stats" text_size="text-lg">
           <div>
-
-          </div>
-        </Disclosure>
-
-        <Label
-          name="base_stats"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Base stats
-        </Label>
-
-        <div className="flex flex-col capitalize text-white">
+            <Label
+              name="base_stats"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Base stats
+            </Label>
+            {/* TODO: fix columns for base stats */}
+            <div className="grid w-fit grid-cols-3 divide-x divide-zinc-500 text-white">
+              <div className="grid grid-rows-[8]">
+                <Input
+                  type="text"
+                  name="health"
+                  label="Base Health"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="stamina"
+                  label="Base Stamina"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="torpidity"
+                  label="Base Torpidity"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/torpidity.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="oxygen"
+                  label="Base Oxygen"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="food"
+                  label="Base Food"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="weight"
+                  label="Base Weight"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="melee_damage"
+                  label="Base Melee Damage"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="movement_speed"
+                  label="Base Movement Speed"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+              </div>
+              <div className="grid grid-rows-[8]">
+                <Input
+                  type="text"
+                  name="health"
+                  label="Wild Health"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="stamina"
+                  label="Wild Stamina"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="torpidity"
+                  label="Wild Torpidity"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/torpidity.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="oxygen"
+                  label="Wild Oxygen"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="food"
+                  label="Wild Food"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="weight"
+                  label="Wild Weight"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="melee_damage"
+                  label="Wild Melee Damage"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="movement_speed"
+                  label="Wild Movement Speed"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+              </div>
+              <div className="grid grid-rows-[8]">
+                <Input
+                  type="text"
+                  name="health"
+                  label="Tamed Health"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="stamina"
+                  label="Tamed Stamina"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="torpidity"
+                  label="Tamed Torpidity"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/torpidity.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="oxygen"
+                  label="Tamed Oxygen"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="food"
+                  label="Tamed Food"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="weight"
+                  label="Tamed Weight"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="melee_damage"
+                  label="Tamed Melee Damage"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <Input
+                  type="text"
+                  name="movement_speed"
+                  label="Tamed Movement Speed"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+              </div>
+            </div>
+            {/* <div className="flex flex-col capitalize text-white">
           <div className="flex flex-row items-center space-x-1">
             <p className="w-5"></p>
             <p className="w-20">Base</p>
@@ -1025,14 +1295,20 @@ const DinoForm = (props: DinoFormProps) => {
               ))}
             </div>
           ))}
-        </div>
+        </div> */}
 
-        <FieldError name="base_stats" className="rw-field-error" />
+            <FieldError name="base_stats" className="rw-field-error" />
+          </div>
+        </Disclosure>
 
         <fieldset className="rw-form-group">
           <legend className="inline-flex space-x-3">
             <span>Death</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-5 fill-current">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+              className="w-5 fill-current"
+            >
               <path d="M432 480h-416C7.164 480 0 487.2 0 496C0 504.8 7.164 512 16 512h416c8.836 0 16-7.164 16-16C448 487.2 440.8 480 432 480zM48 448C56.84 448 64 440.8 64 432V192c0-88.22 71.78-160 160-160s160 71.78 160 160v240c0 8.844 7.156 16 16 16s16-7.156 16-16l-.0012-240C415.1 86.12 329.9 0 223.1 0S31.1 86.13 31.1 192L32 432C32 440.8 39.16 448 48 448zM223.1 352C232.8 352 240 344.8 240 336v-128h64C312.8 208 320 200.8 320 192s-7.156-16-16-16h-64v-64c0-8.844-7.174-16-16.02-16S208 103.2 208 112v64h-64C135.2 176 128 183.2 128 192s7.156 16 16 16h64v128C208 344.8 215.2 352 223.1 352z" />
             </svg>
           </legend>
@@ -1065,13 +1341,13 @@ const DinoForm = (props: DinoFormProps) => {
                           options={
                             data
                               ? data.itemsByCategory.items
-                                .filter((i) => i.category === "Resource")
-                                .map((item) => ({
-                                  type: item.type,
-                                  label: item.name,
-                                  value: item.id,
-                                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                                }))
+                                  .filter((i) => i.category === "Resource")
+                                  .map((item) => ({
+                                    type: item.type,
+                                    label: item.name,
+                                    value: item.id,
+                                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                                  }))
                               : []
                           }
                           search={true}
@@ -1595,13 +1871,13 @@ const DinoForm = (props: DinoFormProps) => {
                 options={
                   data
                     ? data.itemsByCategory.items
-                      .filter((i) => i.category === "Consumable")
-                      .map((item) => ({
-                        type: item.type,
-                        label: item.name,
-                        value: item.id,
-                        image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                      }))
+                        .filter((i) => i.category === "Consumable")
+                        .map((item) => ({
+                          type: item.type,
+                          label: item.name,
+                          value: item.id,
+                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                        }))
                     : []
                 }
                 search={true}
