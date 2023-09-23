@@ -21,7 +21,7 @@ import { toast } from "@redwoodjs/web/toast";
 import { useLazyQuery } from "@apollo/client";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import Stepper, { Step } from "src/components/Util/Stepper/Stepper";
-import Input from "src/components/Util/Input/Input";
+import Input, { Input2 } from "src/components/Util/Input/Input";
 
 type FormDino = NonNullable<EditDinoById["dino"]>;
 
@@ -281,8 +281,258 @@ const DinoForm = (props: DinoFormProps) => {
 
             <FieldError name="description" className="rw-field-error" />
           </Step>
-          <Step title="test2" optional>
-            <p>test2</p>
+
+          <Step title="Taming">
+            <Input type="textarea" name="taming_notice" rows={3} />
+
+            <Input2 />
+
+            <Label
+              name="taming_notice"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Taming notice
+            </Label>
+
+            <TextAreaField
+              name="taming_notice"
+              defaultValue={props.dino?.taming_notice}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+            />
+
+            <FieldError name="taming_notice" className="rw-field-error" />
+
+            <Label
+              name="tamable"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Tamable
+            </Label>
+
+            <CheckboxField
+              name="tamable"
+              defaultChecked={props.dino?.tamable}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+            />
+            <p className="rw-helper-text">If this dino is tamable</p>
+
+            <FieldError name="tamable" className="rw-field-error" />
+
+            <Label
+              name="disable_ko"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Disable ko
+            </Label>
+
+            <CheckboxField
+              name="disable_ko"
+              defaultChecked={props.dino?.disable_ko}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+            />
+            <p className="rw-helper-text">Can this dino be KO'd?</p>
+            <FieldError name="disable_ko" className="rw-field-error" />
+
+            <Label
+              name="violent_tame"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Violent tame
+            </Label>
+
+            <CheckboxField
+              name="violent_tame"
+              defaultChecked={props.dino?.violent_tame}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+            />
+            <p className="rw-helper-text">Is this dino aggressive?</p>
+            <FieldError name="violent_tame" className="rw-field-error" />
+
+            <Label
+              name="tdps"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Torpor Depletion per second
+            </Label>
+
+            <TextField
+              name="tdps"
+              defaultValue={props.dino?.tdps || 0}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              emptyAs={0}
+              validation={{ valueAsNumber: true }}
+            />
+
+            <FieldError name="tdps" className="rw-field-error" />
+
+            <Label
+              name="affinity_needed"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Affinity needed
+            </Label>
+
+            <TextField
+              name="affinity_needed"
+              defaultValue={props.dino?.affinity_needed || 0}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              validation={{ valueAsNumber: true }}
+            />
+
+            <FieldError name="affinity_needed" className="rw-field-error" />
+
+            <Label
+              name="aff_inc"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Affinity Increase Per Level
+            </Label>
+
+            <TextField
+              name="aff_inc"
+              defaultValue={props.dino?.aff_inc || 0}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              validation={{ valueAsNumber: true }}
+            />
+
+            <FieldError name="aff_inc" className="rw-field-error" />
+
+            {!disableFood && (
+              <>
+                <Label
+                  name="non_violent_food_affinity_mult"
+                  className="rw-label"
+                  errorClassName="rw-label rw-label-error"
+                >
+                  Non violent food affinity multiplier
+                </Label>
+
+                <TextField
+                  name="non_violent_food_affinity_mult"
+                  defaultValue={props.dino?.non_violent_food_affinity_mult || 0}
+                  className="rw-input"
+                  errorClassName="rw-input rw-input-error"
+                  validation={{ valueAsNumber: true }}
+                />
+
+                <FieldError
+                  name="non_violent_food_affinity_mult"
+                  className="rw-field-error"
+                />
+              </>
+            )}
+
+            <Label
+              name="hitboxes"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Hitboxes
+            </Label>
+
+            <TextAreaField
+              name="hitboxes"
+              defaultValue={JSON.stringify(props.dino?.hitboxes)}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              emptyAs={"undefined"}
+              validation={{ valueAsJSON: true }}
+            />
+
+            <FieldError name="hitboxes" className="rw-field-error" />
+
+            <Label
+              name="flee_threshold"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Flee threshold
+            </Label>
+
+            <TextField
+              name="flee_threshold"
+              defaultValue={props.dino?.flee_threshold}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              validation={{ valueAsNumber: true }}
+            />
+            <p className="rw-helper-text">
+              Chances of this dino fleeing while being tamed
+            </p>
+            <FieldError name="flee_threshold" className="rw-field-error" />
+
+            <Label
+              name="base_taming_time"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Base taming time
+            </Label>
+
+            <TextField
+              name="base_taming_time"
+              defaultValue={props.dino?.base_taming_time}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              emptyAs={0}
+              validation={{ valueAsNumber: true }}
+            />
+
+            <FieldError name="base_taming_time" className="rw-field-error" />
+
+            <Label
+              name="taming_interval"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Taming interval
+            </Label>
+
+            <TextField
+              name="taming_interval"
+              defaultValue={props.dino?.taming_interval}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              validation={{ valueAsNumber: true }}
+            />
+
+            <FieldError name="taming_interval" className="rw-field-error" />
+
+            <Label
+              name="taming_ineffectiveness"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Taming bonus attribute
+            </Label>
+
+            <TextField
+              name="taming_ineffectiveness"
+              defaultValue={props.dino?.taming_ineffectiveness}
+              className="rw-input"
+              errorClassName="rw-input rw-input-error"
+              emptyAs={0}
+              validation={{ valueAsNumber: true }}
+            />
+
+            <FieldError
+              name="taming_ineffectiveness"
+              className="rw-field-error"
+            />
           </Step>
           <Step title="test3">
             <p>test3</p>
@@ -291,24 +541,6 @@ const DinoForm = (props: DinoFormProps) => {
 
         <Disclosure className="mt-5" title="Other" text_size="text-lg">
           <div>
-            <div>
-              <Label
-                name="taming_notice"
-                className="rw-label"
-                errorClassName="rw-label rw-label-error"
-              >
-                Taming notice
-              </Label>
-
-              <TextAreaField
-                name="taming_notice"
-                defaultValue={props.dino?.taming_notice}
-                className="rw-input"
-                errorClassName="rw-input rw-input-error"
-              />
-
-              <FieldError name="taming_notice" className="rw-field-error" />
-            </div>
             <div>
               <Label
                 name="admin_note"

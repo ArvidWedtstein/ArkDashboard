@@ -150,6 +150,7 @@ module.exports = {
   },
   plugins: [
     require("@tailwindcss/typography"),
+    require("autoprefixer"),
     plugin(({ addVariant, addComponents, theme }) => {
       addVariant("dataready", '&[data-ready="true"]');
       addVariant("not-last", "&:not(:last-child)");
