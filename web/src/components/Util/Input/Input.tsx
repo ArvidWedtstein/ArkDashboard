@@ -110,15 +110,11 @@ export const Input2 = () => {
     <div className="relative m-0 inline-flex min-w-0 flex-col p-0 align-top text-white">
       <label
         className={clsx(
-          "absolute left-0 top-0 block max-w-full origin-top-left translate-x-3.5 transform overflow-hidden text-ellipsis font-normal leading-6 transition",
-          {
-            "pointer-events-auto -translate-y-2 scale-75":
-              focus || value.length > 0,
-            "pointer-events-none translate-y-4 scale-100":
-              !focus && value.length === 0,
-          }
+          "absolute left-0 top-0 z-10 block origin-top-left translate-x-3.5 transform overflow-hidden text-ellipsis font-normal leading-6 transition focus-within:-translate-y-2",
+          focus || value.length > 0
+            ? "pointer-events-auto max-w-[133%-32px] -translate-y-2 scale-75 select-none"
+            : "pointer-events-none max-w-[100%-24px] translate-y-4 scale-100"
         )}
-        data-shrink="false"
         htmlFor="outlined-basic"
         id="outlined-basic-label"
       >
@@ -138,7 +134,7 @@ export const Input2 = () => {
         <fieldset
           aria-hidden="true"
           className={clsx(
-            "pointer-events-none absolute inset-0 -top-1 m-0 overflow-hidden rounded px-2 text-left peer-hover:border-2 peer-hover:border-zinc-300",
+            "pointer-events-none absolute inset-0 -top-1 m-0 min-w-0 overflow-hidden rounded px-2 text-left peer-hover:border-2 peer-hover:border-zinc-300",
             {
               "top-0 border-2 border-zinc-300": focus || value.length > 0,
               "border border-zinc-500 ": !focus && value.length === 0,
@@ -147,14 +143,14 @@ export const Input2 = () => {
         >
           <legend
             className={clsx(
-              "invisible block h-[11px] w-auto flex-nowrap overflow-hidden",
+              "invisible block h-[11px] w-auto flex-nowrap overflow-hidden transition-all duration-75",
               {
                 "max-w-full": focus || value.length > 0,
                 "max-w-[0.01px]": !focus && value.length === 0,
               }
             )}
           >
-            <span className="visible inline-block text-xs opacity-0">
+            <span className="visible inline-block pl-1 text-xs opacity-0">
               Outlined
             </span>
           </legend>
@@ -165,26 +161,26 @@ export const Input2 = () => {
 };
 {
   // <div className="relative inline-flex flex-col">
-  //     <div className="relative inline-flex items-center rounded text-base font-normal leading-6 text-zinc-700 dark:text-zinc-300">
-  //       <fieldset className="relative m-0 min-w-[0%] max-w-full overflow-hidden rounded-[inherit] border border-zinc-500 text-left text-current transition-colors hover:border-zinc-300 focus:outline-0">
-  //         <input
-  //           id={name}
-  //           className="peer pointer-events-auto box-content block w-full min-w-0 border-0 bg-transparent px-3 py-3 placeholder:opacity-0 focus:outline-none focus:placeholder:opacity-0"
-  //           type="text"
-  //           placeholder=""
-  //           name={name}
-  //         />
-  //         <legend className="invisible ml-2 block h-3 w-auto max-w-full whitespace-nowrap p-0 transition-all duration-300 peer-placeholder-shown:max-w-[.01px] peer-focus-within:max-w-full peer-placeholder-shown:[&>label]:translate-y-6 peer-placeholder-shown:[&>label]:scale-100 peer-focus-within:[&>label]:-translate-y-1 peer-focus-within:[&>label]:scale-75">
-  //           <label
-  //             htmlFor={name}
-  //             className="pointer-events-none visible relative z-10 m-0 inline-block origin-[top_left_0px] -translate-y-1 scale-75 transform select-none px-1.5 text-base transition-transform duration-300"
-  //           >
-  //             Name
-  //           </label>
-  //         </legend>
-  //       </fieldset>
-  //     </div>
+  //   <div className="relative inline-flex items-center rounded text-base font-normal leading-6 text-zinc-700 dark:text-zinc-300">
+  //     <fieldset className="relative m-0 min-w-[0%] max-w-full overflow-hidden rounded-[inherit] border border-zinc-500 text-left text-current transition-colors hover:border-zinc-300 focus:outline-0">
+  //       <input
+  //         id={name}
+  //         className="peer pointer-events-auto box-content block w-full min-w-0 border-0 bg-transparent px-3 py-3 placeholder:opacity-0 focus:outline-none focus:placeholder:opacity-0"
+  //         type="text"
+  //         placeholder=""
+  //         name={name}
+  //       />
+  //       <legend className="invisible ml-2 block h-3 w-auto max-w-full whitespace-nowrap p-0 transition-all duration-300 peer-placeholder-shown:max-w-[.01px] peer-focus-within:max-w-full peer-placeholder-shown:[&>label]:translate-y-6 peer-placeholder-shown:[&>label]:scale-100 peer-focus-within:[&>label]:-translate-y-1 peer-focus-within:[&>label]:scale-75">
+  //         <label
+  //           htmlFor={name}
+  //           className="pointer-events-none visible relative z-10 m-0 inline-block origin-[top_left_0px] -translate-y-1 scale-75 transform select-none px-1.5 text-base transition-transform duration-300"
+  //         >
+  //           Name
+  //         </label>
+  //       </legend>
+  //     </fieldset>
   //   </div>
+  // </div>;
 }
 
 //   <div className="relative max-w-sm">

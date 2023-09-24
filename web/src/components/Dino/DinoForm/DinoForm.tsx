@@ -285,8 +285,9 @@ const DinoForm = (props: DinoFormProps) => {
           <Step title="Taming">
             <Input type="textarea" name="taming_notice" rows={3} />
 
-            <Input2 />
-
+            <div className="mt-3">
+              <Input2 />
+            </div>
             <Label
               name="taming_notice"
               className="rw-label"
