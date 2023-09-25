@@ -21,7 +21,8 @@ import { toast } from "@redwoodjs/web/toast";
 import { useLazyQuery } from "@apollo/client";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import Stepper, { Step } from "src/components/Util/Stepper/Stepper";
-import Input, { Input2 } from "src/components/Util/Input/Input";
+import Input, { InputOutlined } from "src/components/Util/Input/Input";
+import Switch from "src/components/Util/Switch/Switch";
 
 type FormDino = NonNullable<EditDinoById["dino"]>;
 
@@ -135,12 +136,12 @@ const DinoForm = (props: DinoFormProps) => {
       wr: props?.dino?.DinoStat.filter(
         (f) => f.type === "weight_reduction"
       ) ?? [
-        {
-          type: "",
-          value: 0,
-          item_id: null,
-        },
-      ],
+          {
+            type: "",
+            value: 0,
+            item_id: null,
+          },
+        ],
     },
   });
 
@@ -283,98 +284,22 @@ const DinoForm = (props: DinoFormProps) => {
           </Step>
 
           <Step title="Taming">
-            <Input type="textarea" name="taming_notice" rows={3} />
 
-            <div className="mt-3">
-              <Input2 />
-            </div>
-            <Label
-              name="taming_notice"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Taming notice
-            </Label>
+            <InputOutlined label="Taming Notice" margin="none" name="taming_notice" defaultValue={props.dino?.taming_notice} rows={3} helperText="Some info about the taming process of this dino" type="textarea" />
 
-            <TextAreaField
-              name="taming_notice"
-              defaultValue={props.dino?.taming_notice}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-            />
 
-            <FieldError name="taming_notice" className="rw-field-error" />
+            <Switch name="tamable" onLabel="Tamable" defaultChecked={props.dino?.tamable} />
 
-            <Label
-              name="tamable"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Tamable
-            </Label>
 
-            <CheckboxField
-              name="tamable"
-              defaultChecked={props.dino?.tamable}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-            />
-            <p className="rw-helper-text">If this dino is tamable</p>
-
-            <FieldError name="tamable" className="rw-field-error" />
-
-            <Label
-              name="disable_ko"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Disable ko
-            </Label>
-
-            <CheckboxField
-              name="disable_ko"
-              defaultChecked={props.dino?.disable_ko}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-            />
+            <Switch name="disable_ko" onLabel="Disable KO" defaultChecked={props.dino?.disable_ko} />
             <p className="rw-helper-text">Can this dino be KO'd?</p>
-            <FieldError name="disable_ko" className="rw-field-error" />
 
-            <Label
-              name="violent_tame"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Violent tame
-            </Label>
 
-            <CheckboxField
-              name="violent_tame"
-              defaultChecked={props.dino?.violent_tame}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-            />
+            <Switch name="violent_tame" onLabel="Violent tame" defaultChecked={props.dino?.violent_tame} />
             <p className="rw-helper-text">Is this dino aggressive?</p>
-            <FieldError name="violent_tame" className="rw-field-error" />
 
-            <Label
-              name="tdps"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Torpor Depletion per second
-            </Label>
-
-            <TextField
-              name="tdps"
-              defaultValue={props.dino?.tdps || 0}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-              emptyAs={0}
-              validation={{ valueAsNumber: true }}
-            />
-
-            <FieldError name="tdps" className="rw-field-error" />
+            {/* TODO: make decimal pattern */}
+            <InputOutlined label="Torpor Depletion per second" inputMode="decimal" emptyAs={0} min={0} margin="dense" name="tdps" defaultValue={props.dino?.tdps || 0} helperText="How much torpidity this dino looses per second" type="text" />
 
             <Label
               name="affinity_needed"
@@ -626,7 +551,7 @@ const DinoForm = (props: DinoFormProps) => {
                             required: false,
                           } as const)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
-                          // defaultValue={g.type}
+                        // defaultValue={g.type}
                         />
                         <button
                           type="button"
@@ -1574,13 +1499,13 @@ const DinoForm = (props: DinoFormProps) => {
                           options={
                             data
                               ? data.itemsByCategory.items
-                                  .filter((i) => i.category === "Resource")
-                                  .map((item) => ({
-                                    type: item.type,
-                                    label: item.name,
-                                    value: item.id,
-                                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                                  }))
+                                .filter((i) => i.category === "Resource")
+                                .map((item) => ({
+                                  type: item.type,
+                                  label: item.name,
+                                  value: item.id,
+                                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                                }))
                               : []
                           }
                           search={true}
@@ -2104,13 +2029,13 @@ const DinoForm = (props: DinoFormProps) => {
                 options={
                   data
                     ? data.itemsByCategory.items
-                        .filter((i) => i.category === "Consumable")
-                        .map((item) => ({
-                          type: item.type,
-                          label: item.name,
-                          value: item.id,
-                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                        }))
+                      .filter((i) => i.category === "Consumable")
+                      .map((item) => ({
+                        type: item.type,
+                        label: item.name,
+                        value: item.id,
+                        image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                      }))
                     : []
                 }
                 search={true}

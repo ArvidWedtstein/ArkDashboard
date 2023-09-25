@@ -22,12 +22,12 @@ import { useEffect, useState } from "react";
 import MapPicker from "src/components/Util/MapPicker/MapPicker";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
-import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
 import { useMutation } from "@apollo/client";
 import { toast } from "@redwoodjs/web/dist/toast";
 import { navigate, routes } from "@redwoodjs/router";
 import Toast from "src/components/Util/Toast/Toast";
 import { useAuth } from "src/auth";
+import Switch from "src/components/Util/Switch/Switch";
 
 type FormBasespot = NonNullable<EditBasespotById["basespot"]>;
 
@@ -508,7 +508,7 @@ const BasespotForm = (props: BasespotFormProps) => {
           Has Air?
         </Label>
 
-        <ToggleButton
+        <Switch
           className=""
           name="has_air"
           offLabel="no air"

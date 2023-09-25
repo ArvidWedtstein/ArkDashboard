@@ -20,6 +20,7 @@ import { useContext, useMemo, useState } from "react";
 import clsx from "clsx";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import { Modal, ModalContext } from "src/components/Util/Modal/Modal";
+import { Input2 } from "src/components/Util/Input/Input";
 
 const DinosList = ({ dinosPage }: FindDinos) => {
   let { search, temperament, diet, type } = useParams();
@@ -117,7 +118,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
             ))}
           </div>
         </Disclosure>
-        {/* <Disclosure title="Temperament">
+        <Disclosure title="Temperament">
           <div className="flex flex-col space-y-5">
             {(dinosPage.temperaments as { temperament: string }[]).filter(({ temperament }) => temperament != null).map(({ temperament: dinotemperament }) => (
               <div className="flex items-center space-x-2" key={`dino-temp-${dinotemperament}`}>
@@ -140,7 +141,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
               </div>
             ))}
           </div>
-        </Disclosure> */}
+        </Disclosure>
       </>
     ),
     []

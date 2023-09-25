@@ -11,7 +11,7 @@ interface ToggleButtonProps {
   disabled?: boolean;
   name?: string;
 }
-const ToggleButton = ({
+const Switch = ({
   disabled,
   checked,
   onChange,
@@ -21,7 +21,7 @@ const ToggleButton = ({
   defaultChecked,
   name,
 }: ToggleButtonProps) => {
-  const [isOn, setIsOn] = React.useState<boolean>(defaultChecked || false);
+  const [isOn, setIsOn] = React.useState<boolean>(checked || defaultChecked || false);
   const renderLabel = (label: string | undefined, isOn: boolean) => (
     <span
       className={clsx(
@@ -64,4 +64,4 @@ const ToggleButton = ({
   );
 };
 
-export default ToggleButton;
+export default Switch;

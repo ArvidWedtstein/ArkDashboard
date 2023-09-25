@@ -27,10 +27,6 @@
     @apply rounded-full border-[3px] border-solid border-transparent bg-zinc-400 bg-clip-content;
   }
 
-  .rw-segment-main {
-    @apply p-4;
-  }
-
   .rw-segment-header {
     @apply py-3 px-4 text-gray-700 dark:text-stone-200;
   }

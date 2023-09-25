@@ -175,6 +175,9 @@ module.exports = {
           scrollBehavior: "smooth",
           scrollbarColor: `${theme("colors.zinc.400")} transparent`,
         },
+        ".rw-segment-main": {
+          padding: `${theme("spacing.4")}`,
+        },
       });
     }),
   ],

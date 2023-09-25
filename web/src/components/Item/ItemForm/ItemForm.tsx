@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { useLazyQuery } from "@apollo/client";
+import { Input2 } from "src/components/Util/Input/Input";
 
 type FormItem = NonNullable<EditItemById["item"]>;
 

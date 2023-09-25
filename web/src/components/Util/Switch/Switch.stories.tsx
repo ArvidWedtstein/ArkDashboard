@@ -13,7 +13,7 @@
 
 import type { ComponentMeta } from '@storybook/react'
 
-import ToggleButton from './ToggleButton'
+import ToggleButton from './Switch'
 
 export const generated = () => {
   return <ToggleButton />

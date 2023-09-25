@@ -16,7 +16,7 @@ import {
   timeFormatL,
 } from "src/lib/formatters";
 import Table from "src/components/Util/Table/Table";
-import ToggleButton from "src/components/Util/ToggleButton/ToggleButton";
+import ToggleButton from "src/components/Util/Switch/Switch";
 import { FindItemsMats } from "types/graphql";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/dist/toast";
@@ -27,6 +27,7 @@ import UserRecipesCell, {
 } from "src/components/UserRecipe/UserRecipesCell";
 import ItemList from "src/components/Util/ItemList/ItemList";
 import { useLazyQuery } from "@apollo/client";
+import Switch from "src/components/Util/Switch/Switch";
 
 const CREATE_USERRECIPE_MUTATION = gql`
   mutation CreateUserRecipe($input: CreateUserRecipeInput!) {
@@ -375,8 +376,8 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
                 ...itemfound,
                 ItemRecipeItem: data.itemRecipeItemsByIds
                   ? data.itemRecipeItemsByIds.filter(
-                      (iri) => iri.item_recipe_id === item_recipe_id
-                    )
+                    (iri) => iri.item_recipe_id === item_recipe_id
+                  )
                   : [],
               },
               amount: amount,
@@ -449,21 +450,21 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${categoriesIcons[k]}.webp`,
               value: v.every(({ type }) => !type)
                 ? v.map((itm) => ({
-                    ...itm,
-                    label: itm.name,
-                    icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                    value: [],
-                  }))
+                  ...itm,
+                  label: itm.name,
+                  icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                  value: [],
+                }))
                 : Object.entries(groupBy(v, "type")).map(([type, v2]) => {
-                    return {
-                      label: type,
-                      value: v2.map((itm) => ({
-                        label: itm.name,
-                        ...itm,
-                        icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
-                      })),
-                    };
-                  }),
+                  return {
+                    label: type,
+                    value: v2.map((itm) => ({
+                      label: itm.name,
+                      ...itm,
+                      icon: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${itm.image}`,
+                    })),
+                  };
+                }),
             }))}
             onSelect={(_, item) => {
               onAdd({ itemId: item.id });
@@ -472,7 +473,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
         </div>
         <div className="w-full">
           <div className="my-3 space-y-3">
-            <ToggleButton
+            <Switch
               offLabel="Mortar And Pestle"
               onLabel="Chemistry Bench"
               checked={selectedCraftingStations.includes(607)}
@@ -490,7 +491,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               }}
             />
 
-            <ToggleButton
+            <Switch
               offLabel="Refining Forge"
               onLabel="Industrial Forge"
               checked={selectedCraftingStations.includes(600)}
@@ -508,7 +509,7 @@ export const MaterialGrid = ({ error, itemRecipes }: MaterialGridProps) => {
               }}
             />
 
-            <ToggleButton
+            <Switch
               offLabel="Materials"
               onLabel="Base materials"
               checked={viewBaseMaterials}

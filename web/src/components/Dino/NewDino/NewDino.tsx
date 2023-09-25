@@ -2,7 +2,8 @@ import { navigate, routes } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 
-import DinoForm from "src/components/Dino/DinoForm";
+
+import DinoForm from "../DinoForm/DinoForm";
 
 import type { CreateDinoInput, CreateDinoStatInput } from "types/graphql";
 

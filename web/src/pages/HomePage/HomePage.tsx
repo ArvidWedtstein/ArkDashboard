@@ -135,6 +135,7 @@ const HomePage = () => {
                 <h1 className="mb-1 text-7xl font-extrabold -tracking-wide">
                   Ark Dashboard
                 </h1>
+
                 <p className="mx-auto block w-8/12 border-t border-white/20 pb-5 pt-3 leading-6 text-gray-200">
                   Welcome fellow survivor!
                 </p>
@@ -161,11 +162,13 @@ const HomePage = () => {
               </Link>{" "}
               locations, material calculator and much more
             </p>
+
             <Link
               to={routes.signup()}
               className="rw-button rw-button-green-outline"
             >
               Get Started
+
               <svg
                 className="ml-2 h-3.5 w-3.5"
                 aria-hidden="true"
