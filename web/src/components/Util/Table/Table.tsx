@@ -9,11 +9,11 @@ import clsx from "clsx";
 import useComponentVisible from "src/components/useComponentVisible";
 import { Form, SelectField, Submit, TextField } from "@redwoodjs/forms";
 import { toast } from "@redwoodjs/web/dist/toast";
-type Filter = {
+type Filter<Row extends Record<string, any>> = {
   /**
    * The column name.
    */
-  column: TableColumn["field"];
+  column: TableColumn<Row>["field"];
   /**
    * The filter operator.
    */
@@ -25,37 +25,35 @@ type Filter = {
 };
 /**
  * Represents a row of data in the table.
- * @typedef {Object.<string, any>} TableDataRow
  */
+
 type TableDataRow = {
   readonly row_id?: string;
   collapseContent?: React.ReactNode;
 } & Readonly<Omit<Record<string, any>, "row_id" | "collapseContent">>;
 
-
-type TableColumn = {
+type TableColumn<Row extends TableDataRow> = {
   /**
    * The header text for the column.
    */
   header?: string;
   /**
    * The field name for the column.
-   * TODO: make this type one of the keys of TableDataRow
    */
-  field: string;
+  field: keyof Row & string;
   /**
    * Indicates type of column
    */
   datatype?:
-  | "number"
-  | "boolean"
-  | "date"
-  | "symbol"
-  | "function"
-  | "string"
-  | "bigint"
-  | "undefined"
-  | "object";
+    | "number"
+    | "boolean"
+    | "date"
+    | "symbol"
+    | "function"
+    | "string"
+    | "bigint"
+    | "undefined"
+    | "object";
   /**
    * The CSS class name for the column.
    */
@@ -94,7 +92,7 @@ type TableColumn = {
    * @param options.row - The current row data.
    * @returns The formatted value.
    */
-  valueFormatter?: (options: { value: any; row: TableDataRow }) => any;
+  valueFormatter?: (options: { value: any; row: Row }) => any;
   /**
    * A function to render custom content in the column.
    *
@@ -106,13 +104,12 @@ type TableColumn = {
    */
   render?: (options: {
     value: any;
-    row: TableDataRow;
+    row: TableDataRow & Row;
     rowIndex: number;
     field: string;
     header: string;
   }) => React.ReactNode;
 };
-
 
 type TableSettings = {
   /**
@@ -165,15 +162,15 @@ type TableSettings = {
   };
 };
 
-interface TableProps<T> {
+interface TableProps<Row extends Record<string, any>> {
   /**
    * The column configurations for the table.
    */
-  columns?: TableColumn[] | null;
+  columns?: TableColumn<Row>[] | null;
   /**
    * The data rows for the table.
    */
-  rows: TableDataRow[];
+  rows: Row[]; // TableDataRow
   /**
    * The CSS class name for the table.
    */
@@ -187,13 +184,13 @@ interface TableProps<T> {
    */
   toolbar?: React.ReactNode[];
 }
-const Table = <T extends any>({
+const Table = <Row extends Record<string, any>>({
   columns,
   rows: dataRows,
   className,
   settings = {},
   toolbar = [],
-}: TableProps<T>) => {
+}: TableProps<Row>) => {
   const defaultSettings: TableSettings = {
     search: false,
     header: true,
@@ -211,13 +208,8 @@ const Table = <T extends any>({
     },
   };
   const mergedSettings = { ...defaultSettings, ...settings };
-  const [columnSettings, setColumnSettings] = useState<TableColumn[]>(
-    columns || []
-  );
 
-  useEffect(() => {
-    setColumnSettings(columns || []);
-  }, [columns]);
+  const columnSettings = columns || [];
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<TableDataRow["row_id"][]>(
@@ -230,15 +222,15 @@ const Table = <T extends any>({
 
   const [selectedPageSizeOption, setSelectedPageSizeOption] = useState(
     mergedSettings.pagination.rowsPerPage ||
-    mergedSettings.pagination.pageSizeOptions[0]
+      mergedSettings.pagination.pageSizeOptions[0]
   );
 
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [filters, setFilters] = useState<Filter[]>([]);
+  const [filters, setFilters] = useState<Filter<Row>[]>([]);
   const [sort, setSort] = useState<{
-    column: TableColumn["field"];
+    column: TableColumn<Row>["field"];
     direction: "asc" | "desc";
-    columnDataType: TableColumn["datatype"];
+    columnDataType: TableColumn<Row>["datatype"];
   }>({
     column: "",
     direction: "asc",
@@ -246,9 +238,9 @@ const Table = <T extends any>({
   });
 
   const sortData = (
-    data: TableDataRow[],
-    column: TableColumn["field"],
-    columnDataType: TableColumn["datatype"],
+    data: Row[],
+    column: TableColumn<Row>["field"],
+    columnDataType: TableColumn<Row>["datatype"],
     direction: "asc" | "desc"
   ) => {
     if (column) {
@@ -268,16 +260,18 @@ const Table = <T extends any>({
           columnDataType = typeof c;
         }
         if (columnDataType === "number") {
-          return (c - d) * sortDirection;
+          return (
+            (parseInt(c.toString()) - parseInt(d.toString())) * sortDirection
+          );
         } else if (columnDataType === "boolean") {
           return (c === d ? 0 : c ? 1 : -1) * sortDirection;
         } else if (columnDataType === "string") {
-          return c.localeCompare(d) * sortDirection;
+          return c.toString().localeCompare(d.toString()) * sortDirection;
         } else if (columnDataType === "date") {
-          if (typeof c === "string") c = new Date(c);
-          if (typeof d === "string") d = new Date(d);
+          if (typeof c === "string") c = new Date(c).getTime();
+          if (typeof d === "string") d = new Date(d).getTime();
 
-          return d.getTime() - c.getTime();
+          return (d as number) - (c as number);
         }
 
         // If data types don't match or are not supported, return 0
@@ -331,10 +325,10 @@ const Table = <T extends any>({
     const filterLookup = {};
     filters.forEach((filter) => {
       const { column } = filter;
-      if (!filterLookup[column]) {
-        filterLookup[column] = [];
+      if (!filterLookup[column as any]) {
+        filterLookup[column as any] = [];
       }
-      filterLookup[column].push(filter);
+      filterLookup[column as any].push(filter);
     });
 
     return data.filter((row) => {
@@ -405,7 +399,9 @@ const Table = <T extends any>({
     } = event;
 
     if (targetId === "checkbox-all-select") {
-      setSelectedRows(checked ? PaginatedData.map((row) => row.row_id) : []);
+      setSelectedRows(
+        checked ? PaginatedData.map((row) => row.row_id.toString()) : []
+      );
       return;
     }
 
@@ -498,9 +494,9 @@ const Table = <T extends any>({
     rowData: TableDataRow;
     cellData: any;
     rowIndex: number;
-    field: string;
+    field: TableColumn<Row>["field"];
     header: string;
-    datatype: TableColumn["datatype"];
+    datatype: TableColumn<Row>["datatype"];
     [key: string]: any;
   }) => {
     const rowSelected = isSelected(rowData.row_id);
@@ -532,23 +528,23 @@ const Table = <T extends any>({
 
     const valueFormatted = valueFormatter
       ? valueFormatter({
-        value: cellData,
-        row: rowData,
-        columnIndex,
-      })
+          value: cellData,
+          row: rowData,
+          columnIndex,
+        })
       : isNaN(cellData)
-        ? cellData?.amount || cellData
-        : cellData;
+      ? cellData?.amount || cellData
+      : cellData;
 
     const content = render
       ? render({
-        columnIndex,
-        rowIndex,
-        value: valueFormatted,
-        field: field,
-        header,
-        row: rowData,
-      })
+          columnIndex,
+          rowIndex,
+          value: valueFormatted,
+          field: field,
+          header,
+          row: rowData,
+        })
       : valueFormatted;
 
     return (
@@ -565,7 +561,7 @@ const Table = <T extends any>({
     select = false,
   }: {
     header?: boolean;
-    datarow?: TableDataRow | null;
+    datarow?: TableDataRow;
     rowIndex?: number;
     select?: boolean;
   }) => {
@@ -590,8 +586,8 @@ const Table = <T extends any>({
               checked={
                 header
                   ? PaginatedData.every((row) =>
-                    selectedRows.includes(row.row_id)
-                  )
+                      selectedRows.includes(row.row_id.toString())
+                    )
                   : isSelected(datarow.row_id)
               }
               onChange={(e) => handleRowSelect(e, datarow?.row_id)}
@@ -625,12 +621,12 @@ const Table = <T extends any>({
     aggregationType,
     valueFormatter,
   }: {
-    field: TableColumn["field"];
-    aggregationType: TableColumn["aggregate"];
-    valueFormatter: TableColumn["valueFormatter"];
+    field: TableColumn<Row>["field"];
+    aggregationType: TableColumn<Row>["aggregate"];
+    valueFormatter: TableColumn<Row>["valueFormatter"];
   }) => {
     const filteredData = PaginatedData.filter(
-      (r) => !selectedRows.length || selectedRows.includes(r.row_id)
+      (r) => !selectedRows.length || selectedRows.includes(r.row_id.toString())
     );
 
     switch (aggregationType) {
@@ -739,8 +735,8 @@ const Table = <T extends any>({
                   {datatype === "number"
                     ? formatNumber(aggregatedValue)
                     : index === 0
-                      ? "Total"
-                      : ""}
+                    ? "Total"
+                    : ""}
                 </td>
               );
             }
@@ -803,7 +799,7 @@ const Table = <T extends any>({
       } else if (
         dir === "next" &&
         currentPage <
-        Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
+          Math.ceil(SortedFilteredData.length / selectedPageSizeOption)
       ) {
         setCurrentPage(currentPage + 1);
       }
@@ -923,7 +919,7 @@ const Table = <T extends any>({
 
   const copyToClipboard = () => {
     const textToCopy = SortedFilteredData.filter((row) =>
-      selectedRows.includes(row.row_id)
+      selectedRows.includes(row.row_id.toString())
     )
       .map((row) => {
         return Object.entries(row)
@@ -944,7 +940,7 @@ const Table = <T extends any>({
     toast.success("Copied to clipboard");
   };
 
-  const addFilter = (e: Filter) => {
+  const addFilter = (e: Filter<Row>) => {
     setFilters((prev) => [
       ...prev,
       {
@@ -991,7 +987,7 @@ const Table = <T extends any>({
               open={isComponentVisible}
               onClose={() => setIsComponentVisible(false)}
             >
-              <Form<Filter>
+              <Form<Filter<Row>>
                 className="flex flex-col"
                 method="dialog"
                 onSubmit={(e) => {
@@ -1208,12 +1204,13 @@ const Table = <T extends any>({
           >
             {dataRows &&
               PaginatedData.map((datarow, i) => (
-                <React.Fragment key={datarow.row_id}>
+                <React.Fragment key={datarow.row_id.toString()}>
                   <tr
-                    className={`z-10 overflow-x-auto ${mergedSettings.borders.vertical
-                      ? "divide-x divide-gray-400 divide-opacity-30 dark:divide-zinc-800"
-                      : ""
-                      }`}
+                    className={`z-10 overflow-x-auto ${
+                      mergedSettings.borders.vertical
+                        ? "divide-x divide-gray-400 divide-opacity-30 dark:divide-zinc-800"
+                        : ""
+                    }`}
                   >
                     {dataRows.some((row) => row.collapseContent) &&
                       tableSelect({
@@ -1257,8 +1254,11 @@ const Table = <T extends any>({
                   </tr>
                   {datarow?.collapseContent && (
                     <tr
-                      className={`transition ease-in ${isRowOpen(datarow.row_id) ? "table-row" : "hidden"
-                        }`}
+                      className={`transition ease-in ${
+                        isRowOpen(datarow.row_id.toString())
+                          ? "table-row"
+                          : "hidden"
+                      }`}
                     >
                       <td
                         colSpan={100}

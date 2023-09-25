@@ -136,12 +136,12 @@ const DinoForm = (props: DinoFormProps) => {
       wr: props?.dino?.DinoStat.filter(
         (f) => f.type === "weight_reduction"
       ) ?? [
-          {
-            type: "",
-            value: 0,
-            item_id: null,
-          },
-        ],
+        {
+          type: "",
+          value: 0,
+          item_id: null,
+        },
+      ],
     },
   });
 
@@ -284,22 +284,48 @@ const DinoForm = (props: DinoFormProps) => {
           </Step>
 
           <Step title="Taming">
+            <InputOutlined
+              label="Taming Notice"
+              margin="none"
+              name="taming_notice"
+              defaultValue={props.dino?.taming_notice}
+              rows={3}
+              helperText="Some info about the taming process of this dino"
+              type="textarea"
+            />
 
-            <InputOutlined label="Taming Notice" margin="none" name="taming_notice" defaultValue={props.dino?.taming_notice} rows={3} helperText="Some info about the taming process of this dino" type="textarea" />
+            <Switch
+              name="tamable"
+              onLabel="Tamable"
+              defaultChecked={props.dino?.tamable}
+            />
 
-
-            <Switch name="tamable" onLabel="Tamable" defaultChecked={props.dino?.tamable} />
-
-
-            <Switch name="disable_ko" onLabel="Disable KO" defaultChecked={props.dino?.disable_ko} />
+            <Switch
+              name="disable_ko"
+              onLabel="Disable KO"
+              defaultChecked={props.dino?.disable_ko}
+            />
             <p className="rw-helper-text">Can this dino be KO'd?</p>
 
-
-            <Switch name="violent_tame" onLabel="Violent tame" defaultChecked={props.dino?.violent_tame} />
+            <Switch
+              name="violent_tame"
+              onLabel="Violent tame"
+              defaultChecked={props.dino?.violent_tame}
+            />
             <p className="rw-helper-text">Is this dino aggressive?</p>
 
             {/* TODO: make decimal pattern */}
-            <InputOutlined label="Torpor Depletion per second" inputMode="decimal" emptyAs={0} min={0} margin="dense" name="tdps" defaultValue={props.dino?.tdps || 0} helperText="How much torpidity this dino looses per second" type="text" />
+            <InputOutlined
+              label="Torpor Depletion per second"
+              inputMode="decimal"
+              emptyAs={0}
+              min={0}
+              margin="dense"
+              name="tdps"
+              defaultValue={props.dino?.tdps || 0}
+              helperText="How much torpidity this dino looses per second"
+              type="text"
+            />
 
             <Label
               name="affinity_needed"
@@ -551,7 +577,7 @@ const DinoForm = (props: DinoFormProps) => {
                             required: false,
                           } as const)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
-                        // defaultValue={g.type}
+                          // defaultValue={g.type}
                         />
                         <button
                           type="button"
@@ -1499,13 +1525,13 @@ const DinoForm = (props: DinoFormProps) => {
                           options={
                             data
                               ? data.itemsByCategory.items
-                                .filter((i) => i.category === "Resource")
-                                .map((item) => ({
-                                  type: item.type,
-                                  label: item.name,
-                                  value: item.id,
-                                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                                }))
+                                  .filter((i) => i.category === "Resource")
+                                  .map((item) => ({
+                                    type: item.type,
+                                    label: item.name,
+                                    value: item.id,
+                                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                                  }))
                               : []
                           }
                           search={true}
@@ -2029,13 +2055,13 @@ const DinoForm = (props: DinoFormProps) => {
                 options={
                   data
                     ? data.itemsByCategory.items
-                      .filter((i) => i.category === "Consumable")
-                      .map((item) => ({
-                        type: item.type,
-                        label: item.name,
-                        value: item.id,
-                        image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                      }))
+                        .filter((i) => i.category === "Consumable")
+                        .map((item) => ({
+                          type: item.type,
+                          label: item.name,
+                          value: item.id,
+                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                        }))
                     : []
                 }
                 search={true}

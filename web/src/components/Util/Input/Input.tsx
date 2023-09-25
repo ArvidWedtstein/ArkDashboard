@@ -11,6 +11,7 @@ import {
 } from "@redwoodjs/forms";
 import clsx from "clsx";
 import { useState } from "react";
+import { ArrayElement } from "src/lib/formatters";
 
 type InputProps = {
   helperText?: string;
@@ -21,30 +22,38 @@ type InputProps = {
   fullWidth?: boolean;
   margin?: "none" | "dense" | "normal";
   type?:
-  | "number"
-  | "button"
-  | "time"
-  | "image"
-  | "text"
-  | "hidden"
-  | "color"
-  | "search"
-  | "date"
-  | "datetime-local"
-  | "email"
-  | "file"
-  | "month"
-  | "password"
-  | "radio"
-  | "range"
-  | "reset"
-  | "submit"
-  | "tel"
-  | "url"
-  | "week"
-  | "textarea";
-  onFocus?: (e: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLTextAreaElement>) => void;
-  onBlur?: (e: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLTextAreaElement>) => void;
+    | "number"
+    | "button"
+    | "time"
+    | "image"
+    | "text"
+    | "hidden"
+    | "color"
+    | "search"
+    | "date"
+    | "datetime-local"
+    | "email"
+    | "file"
+    | "month"
+    | "password"
+    | "radio"
+    | "range"
+    | "reset"
+    | "submit"
+    | "tel"
+    | "url"
+    | "week"
+    | "textarea";
+  onFocus?: (
+    e:
+      | React.FocusEvent<HTMLInputElement>
+      | React.FocusEvent<HTMLTextAreaElement>
+  ) => void;
+  onBlur?: (
+    e:
+      | React.FocusEvent<HTMLInputElement>
+      | React.FocusEvent<HTMLTextAreaElement>
+  ) => void;
 } & Omit<InputFieldProps, "type"> &
   Omit<TextAreaFieldProps, "type">;
 
@@ -127,16 +136,24 @@ export const InputOutlined = ({
   const { field } = useController({ name: name, rules: validation, ...props });
 
   const isLeftIcon = icon && iconPosition == "left";
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLTextAreaElement>) => {
+  const handleFocus = (
+    e:
+      | React.FocusEvent<HTMLInputElement>
+      | React.FocusEvent<HTMLTextAreaElement>
+  ) => {
     setFocus(true);
-    console.log(field.value)
+    console.log(field.value);
     props.onFocus?.(e);
   };
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement> | React.FocusEvent<HTMLTextAreaElement>) => {
+  const handleBlur = (
+    e:
+      | React.FocusEvent<HTMLInputElement>
+      | React.FocusEvent<HTMLTextAreaElement>
+  ) => {
     setFocus(false);
     field.onBlur();
-    console.log(field.value)
+    console.log(field.value);
     props.onBlur?.(e);
   };
 
@@ -144,42 +161,57 @@ export const InputOutlined = ({
     className: `pointer-events-none absolute left-0 top-0 z-10 block origin-top-left max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis font-normal leading-6 transition duration-200 text-base`,
     errorClassName: `pointer-events-none absolute left-0 top-0 z-10 block origin-top-left max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis font-normal leading-6 transition duration-200 text-base !text-red-600`,
     name,
-  })
+  });
+
   return (
-    <div className={clsx("relative mx-0 inline-flex min-w-0 flex-col p-0 align-top text-black dark:text-white max-w-sm", {
-      "pointer-events-none text-black/50 dark:text-white/50": disabled,
-      "w-full": fullWidth,
-      "mt-2 mb-1": margin === "dense",
-      "mt-4 mb-2": margin === "normal",
-      "mt-0 mb-0": margin == "none",
-    })}>
+    <div
+      className={clsx(
+        "relative mx-0 inline-flex min-w-0 max-w-sm flex-col p-0 align-top text-black dark:text-white",
+        {
+          "pointer-events-none text-black/50 dark:text-white/50": disabled,
+          "w-full": fullWidth,
+          "mt-2 mb-1": margin === "dense",
+          "mt-4 mb-2": margin === "normal",
+          "mt-0 mb-0": margin == "none",
+        }
+      )}
+    >
       <Label
         style={labelStyle}
-        className={clsx(
-          labelClassName, {
-          "!pointer-events-auto !max-w-[calc(133%-32px)] !scale-75 !-translate-y-2 !select-none !translate-x-3.5": focus || !!field.value,
-          "translate-x-8": isLeftIcon
-        }
-        )}
+        className={clsx(labelClassName, {
+          "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
+            focus || !!field.value,
+          "translate-x-8": isLeftIcon,
+        })}
         name={name}
         htmlFor={`input-${name}`}
       >
         {label ?? name} {required && " *"}
       </Label>
-      <div className={clsx("relative box-content inline-flex font-normal cursor-text items-center rounded text-base leading-6", {
-        "pl-3.5": isLeftIcon,
-        "pr-3.5": icon && !isLeftIcon,
-      })}>
+      <div
+        className={clsx(
+          "relative box-content inline-flex cursor-text items-center rounded text-base font-normal leading-6",
+          {
+            "pl-3.5": isLeftIcon,
+            "pr-3.5": icon && !isLeftIcon,
+          }
+        )}
+      >
         {isLeftIcon && (
-          <div className="flex h-[0.01em] max-h-[2em] whitespace-nowrap mr-2 items-center text-black/70 dark:text-white/70">{icon}</div>
+          <div className="mr-2 flex h-[0.01em] max-h-[2em] items-center whitespace-nowrap text-black/70 dark:text-white/70">
+            {icon}
+          </div>
         )}
         {type === "textarea" ? (
           <TextAreaField
             name={name}
-            className={clsx("peer box-content block m-0 w-full h-6 overflow-hidden rounded border-0 px-3.5 py-4 text-base bg-transparent font-[inherit] disabled:pointer-events-none focus:outline-none min-w-0", {
-              "pl-0": isLeftIcon,
-              "pr-0": icon && !isLeftIcon,
-            })}
+            className={clsx(
+              "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none disabled:pointer-events-none",
+              {
+                "pl-0": isLeftIcon,
+                "pr-0": icon && !isLeftIcon,
+              }
+            )}
             {...field}
             {...props}
             onFocus={handleFocus}
@@ -193,10 +225,13 @@ export const InputOutlined = ({
             aria-invalid="false"
             id={`input-${name}`}
             type={type}
-            className={clsx("peer box-content block m-0 w-full h-6 overflow-hidden rounded border-0 px-3.5 py-4 text-base bg-transparent font-[inherit] disabled:pointer-events-none focus:outline-none min-w-0", {
-              "pl-0": isLeftIcon,
-              "pr-0": icon && !isLeftIcon,
-            })}
+            className={clsx(
+              "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none disabled:pointer-events-none",
+              {
+                "pl-0": isLeftIcon,
+                "pr-0": icon && !isLeftIcon,
+              }
+            )}
             {...field}
             {...props}
             errorClassName="peer rw-input-error"
@@ -207,7 +242,9 @@ export const InputOutlined = ({
           />
         )}
         {icon && !isLeftIcon && (
-          <div className="flex h-[0.01em] max-h-[2em] whitespace-nowrap ml-2 items-center text-black/70 dark:text-white/70">{icon}</div>
+          <div className="ml-2 flex h-[0.01em] max-h-[2em] items-center whitespace-nowrap text-black/70 dark:text-white/70">
+            {icon}
+          </div>
         )}
         <fieldset
           aria-hidden="true"
@@ -215,16 +252,16 @@ export const InputOutlined = ({
             inset: "-5px 0px 0px",
           }}
           className={clsx(
-            "transition duration-75 pointer-events-none absolute m-0 min-w-0 overflow-hidden border peer-invalid:!border-red-500 peer-focus:border-2 peer-focus:border-zinc-300 peer-hover:border-2 peer-hover:border-zinc-300 border-zinc-500 rounded px-2 text-left peer-disabled:border peer-disabled:border-zinc-500",
+            "pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded border border-zinc-500 px-2 text-left transition duration-75 peer-invalid:!border-red-500 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
             {
               "top-0": focus || !!field.value,
             }
           )}
         >
           <legend
-            style={{ float: 'unset', height: '11px' }}
+            style={{ float: "unset", height: "11px" }}
             className={clsx(
-              "invisible block w-auto p-0 whitespace-nowrap !text-xs overflow-hidden transition-all duration-75 max-w-[.01px]",
+              "invisible block w-auto max-w-[.01px] overflow-hidden whitespace-nowrap p-0 !text-xs transition-all duration-75",
               {
                 "!max-w-full": focus || !!field.value,
               }
@@ -238,7 +275,12 @@ export const InputOutlined = ({
       </div>
       <FieldError name={name} className="rw-field-error" />
       {helperText && (
-        <p id={`${name}-helper-text`} className="text-black/70 dark:text-white/70 font-normal text-left mt-0.5 mx-3 mb-0 tracking-wide leading-6 text-xs">{helperText}</p>
+        <p
+          id={`${name}-helper-text`}
+          className="mx-3 mt-0.5 mb-0 text-left text-xs font-normal leading-6 tracking-wide text-black/70 dark:text-white/70"
+        >
+          {helperText}
+        </p>
       )}
     </div>
   );

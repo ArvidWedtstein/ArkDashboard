@@ -101,7 +101,9 @@ export const timeTag = (
 };
 
 export const checkboxInputTag = (checked: boolean) => {
-  return <input type="checkbox" className="rw-checkbox" checked={checked} disabled />;
+  return (
+    <input type="checkbox" className="rw-checkbox" checked={checked} disabled />
+  );
 };
 
 /**
@@ -152,22 +154,27 @@ export const isDate = (dateString: string | Date | number): boolean => {
  * @param {boolean} ascending - If true, sorts the array in ascending order; otherwise, in descending order.
  * @returns {Array<ItemType>} - The sorted array.
  */
-export const dynamicSort = <T extends {}>(array: Array<T>, property: string, ascending: boolean = true): Array<T> =>
-  (property != "" && array) ? [...array].sort((a: T, b: T) => {
-    const aValue = a[property];
-    const bValue = b[property];
+export const dynamicSort = <T extends {}>(
+  array: Array<T>,
+  property: string,
+  ascending: boolean = true
+): Array<T> =>
+  property != "" && array
+    ? [...array].sort((a: T, b: T) => {
+        const aValue = a[property];
+        const bValue = b[property];
 
-    if (ascending) {
-      if (aValue < bValue) return -1;
-      if (aValue > bValue) return 1;
-      return 0;
-    } else {
-      if (aValue > bValue) return -1;
-      if (aValue < bValue) return 1;
-      return 0;
-    }
-  }) : array;
-
+        if (ascending) {
+          if (aValue < bValue) return -1;
+          if (aValue > bValue) return 1;
+          return 0;
+        } else {
+          if (aValue > bValue) return -1;
+          if (aValue < bValue) return 1;
+          return 0;
+        }
+      })
+    : array;
 
 /**
  *
@@ -179,8 +186,9 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-    }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+  }`;
 };
 
 /**
@@ -539,7 +547,6 @@ export const getWeekDates = (date?: Date): [Date, Date] => {
   return [start, end];
 };
 
-
 /**
  * TODO: remove
  * @deprecated not in use
@@ -561,26 +568,26 @@ export const rtf = (num: number, unit: Intl.RelativeTimeFormatUnit): string => {
  * @param unit
  * @returns
  */
-export const relativeDate = (
-  date: Date | string,
-): string => {
-
+export const relativeDate = (date: Date | string): string => {
   const now = new Date().getTime();
   const diffInSeconds = Math.floor((now - new Date(date).getTime()) / 1000);
 
-  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto', localeMatcher: 'best fit' });
+  const rtf = new Intl.RelativeTimeFormat("en", {
+    numeric: "auto",
+    localeMatcher: "best fit",
+  });
 
   if (diffInSeconds < 60) {
-    return rtf.format(-diffInSeconds, 'second');
+    return rtf.format(-diffInSeconds, "second");
   } else if (diffInSeconds < 3600) {
     const minutes = Math.floor(diffInSeconds / 60);
-    return rtf.format(-minutes, 'minute');
+    return rtf.format(-minutes, "minute");
   } else if (diffInSeconds < 86400) {
     const hours = Math.floor(diffInSeconds / 3600);
-    return rtf.format(-hours, 'hour');
+    return rtf.format(-hours, "hour");
   } else {
     const days = Math.floor(diffInSeconds / 86400);
-    return rtf.format(-days, 'day');
+    return rtf.format(-days, "day");
   }
 };
 
@@ -782,13 +789,12 @@ export const formatXYtoLatLon = (
   return {
     lat: reverse
       ? (options.y - subtractY) * multiplierY
-      : Math.floor((options.y / multiplierY) + subtractY),
+      : Math.floor(options.y / multiplierY + subtractY),
     lon: reverse
       ? (options.x - subtractX) * multiplierX
-      : Math.floor((options.x / multiplierX) + subtractX),
+      : Math.floor(options.x / multiplierX + subtractX),
   };
 };
-
 
 interface SvgPath {
   pathData: string;
@@ -796,22 +802,22 @@ interface SvgPath {
 
 export const mergeOverlappingSvgPaths = (paths: SvgPath[]): SvgPath => {
   // Combine all path data into one string
-  const allPathData = paths.map((path) => path.pathData).join('');
+  const allPathData = paths.map((path) => path.pathData).join("");
 
   // Split the path data into individual commands
   const commands = allPathData.split(/(?=[A-Za-z])/).filter(Boolean);
 
   // Initialize variables to store the merged path data
-  let mergedPathData = '';
-  let currentCommand = '';
+  let mergedPathData = "";
+  let currentCommand = "";
   let currentArgs: string[] = [];
 
   // Helper function to append a command and its arguments to the merged path
   const appendCommand = () => {
     if (currentCommand) {
-      mergedPathData += currentCommand + currentArgs.join(' ');
+      mergedPathData += currentCommand + currentArgs.join(" ");
       currentArgs = [];
-      currentCommand = '';
+      currentCommand = "";
     }
   };
 
@@ -831,8 +837,7 @@ export const mergeOverlappingSvgPaths = (paths: SvgPath[]): SvgPath => {
   appendCommand();
   console.log(mergedPathData);
   return { pathData: mergedPathData };
-}
-
+};
 
 interface Point {
   x: number;
@@ -882,7 +887,7 @@ export const calculateCorners = (start: Point, end: Point): Rectangle => {
     bottomLeft,
     bottomRight,
   };
-}
+};
 
 /**
  * Generates a pdf from an array of your choice
@@ -999,9 +1004,9 @@ export const generatePDF = (crafts) => {
       tableX - cellPadding * 2,
       30 + crafts.length * 20,
       tableX +
-      (Object.keys(crafts[0]).length - 1) *
-      (tableSize.width / Object.keys(crafts[0]).length) +
-      columnWidths[Object.keys(crafts[0]).length - 1],
+        (Object.keys(crafts[0]).length - 1) *
+          (tableSize.width / Object.keys(crafts[0]).length) +
+        columnWidths[Object.keys(crafts[0]).length - 1],
       40 + (crafts.length - 1) * 20 + cellPadding,
       true,
       `0.9 0.9 0.9`
@@ -1035,7 +1040,7 @@ export const generatePDF = (crafts) => {
                     x:
                       tableX +
                       (Object.keys(crafts[0]).length - 1) *
-                      (tableSize.width / Object.keys(crafts[0]).length) +
+                        (tableSize.width / Object.keys(crafts[0]).length) +
                       columnWidths[Object.keys(crafts[0]).length - 1],
                     y: cellY + cellPadding,
                   },
@@ -1416,19 +1421,19 @@ export class SimplexNoise3D {
 
     const gi0 =
       SimplexNoise3D.perm[
-      ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
+        ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
       ] % 12;
     const gi1 =
       SimplexNoise3D.perm[
-      ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
+        ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
       ] % 12;
     const gi2 =
       SimplexNoise3D.perm[
-      ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
+        ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
       ] % 12;
     const gi3 =
       SimplexNoise3D.perm[
-      ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
+        ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
       ] % 1;
 
     let n0, n1, n2, n3;
