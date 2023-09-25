@@ -258,7 +258,8 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
             },
             {
               header: "Map",
-              field: "Map.name",
+              field: "Map",
+              valueFormatter: ({ value }) => value.name,
               sortable: true,
             },
             {
@@ -553,7 +554,8 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
             },
             {
               header: "Changes",
-              field: "commit.message",
+              field: "commit",
+              valueFormatter: ({ value }) => value.message,
               render: ({ value }) => (
                 <div className="flex items-center gap-x-3">
                   {/* <div className={clsx("p-1 rounded-full flex-none", {
@@ -570,7 +572,8 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
             },
             {
               header: "Commited at",
-              field: "commit.author.date",
+              field: "commit",
+              valueFormatter: ({ value }) => value.author.date,
               sortable: true,
               datatype: "date",
               render: ({ value }) => relativeDate(value),

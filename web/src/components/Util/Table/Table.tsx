@@ -247,13 +247,16 @@ const Table = <Row extends Record<string, any>>({
       const sortDirection = direction === "desc" ? -1 : 1;
       const sortKey = column.startsWith("-") ? column.substring(1) : column;
 
+      // TODO: remove . split feature
       data.sort((a, b) => {
-        let c = sortKey.includes(".")
-          ? getValueByNestedKey(a, sortKey)
-          : a[sortKey];
-        let d = sortKey.includes(".")
-          ? getValueByNestedKey(b, sortKey)
-          : b[sortKey];
+        let c = a[sortKey];
+        let d = b[sortKey];
+        // let c = sortKey.includes(".")
+        //   ? getValueByNestedKey(a, sortKey)
+        //   : a[sortKey];
+        // let d = sortKey.includes(".")
+        //   ? getValueByNestedKey(b, sortKey)
+        //   : b[sortKey];
 
         // Compare based on data type
         if (!columnDataType) {
@@ -1236,10 +1239,10 @@ const Table = <Row extends Record<string, any>>({
                         ) =>
                           cellRenderer({
                             rowData: datarow,
-                            cellData:
-                              field && field.toString()?.includes(".")
-                                ? getValueByNestedKey(datarow, field)
-                                : datarow[field],
+                            cellData: datarow[field],
+                            // cellData: field && field.toString()?.includes(".")
+                            //   ? getValueByNestedKey(datarow, field)
+                            //   : datarow[field],
                             columnIndex: index,
                             header,
                             rowIndex: i,
