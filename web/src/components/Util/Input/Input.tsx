@@ -22,28 +22,28 @@ type InputProps = {
   fullWidth?: boolean;
   margin?: "none" | "dense" | "normal";
   type?:
-  | "number"
-  | "button"
-  | "time"
-  | "image"
-  | "text"
-  | "hidden"
-  | "color"
-  | "search"
-  | "date"
-  | "datetime-local"
-  | "email"
-  | "file"
-  | "month"
-  | "password"
-  | "radio"
-  | "range"
-  | "reset"
-  | "submit"
-  | "tel"
-  | "url"
-  | "week"
-  | "textarea";
+    | "number"
+    | "button"
+    | "time"
+    | "image"
+    | "text"
+    | "hidden"
+    | "color"
+    | "search"
+    | "date"
+    | "datetime-local"
+    | "email"
+    | "file"
+    | "month"
+    | "password"
+    | "radio"
+    | "range"
+    | "reset"
+    | "submit"
+    | "tel"
+    | "url"
+    | "week"
+    | "textarea";
   onFocus?: (
     e:
       | React.FocusEvent<HTMLInputElement>
@@ -123,6 +123,8 @@ export const InputOutlined = ({
   className,
   inputClassName,
   icon,
+  defaultValue,
+  value,
   iconPosition = "left",
   required,
   validation,
@@ -133,7 +135,12 @@ export const InputOutlined = ({
 }: InputProps) => {
   const [focus, setFocus] = useState(false);
 
-  const { field } = useController({ name: name, rules: validation, ...props });
+  const { field } = useController({
+    name: name,
+    rules: validation,
+    defaultValue: defaultValue || value || "",
+    ...props,
+  });
 
   const isLeftIcon = icon && iconPosition == "left";
   const handleFocus = (
@@ -150,8 +157,9 @@ export const InputOutlined = ({
       | React.FocusEvent<HTMLInputElement>
       | React.FocusEvent<HTMLTextAreaElement>
   ) => {
-    setFocus(false);
+    setFocus(e.target.value !== "");
     field.onBlur();
+
     props.onBlur?.(e);
   };
 
@@ -178,7 +186,7 @@ export const InputOutlined = ({
         style={labelStyle}
         className={clsx(labelClassName, {
           "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
-            focus || !isEmpty(field?.value || ""),
+            focus || !isEmpty(field?.value),
           "translate-x-8": isLeftIcon,
         })}
         name={name}
@@ -210,13 +218,17 @@ export const InputOutlined = ({
                 "pr-0": icon && !isLeftIcon,
               }
             )}
+            onChange={(e) => {
+              field.onChange(e);
+              props.onChange?.(e);
+            }}
             {...field}
-            {...props}
             onFocus={handleFocus}
             onBlur={handleBlur}
             errorClassName="peer rw-input-error"
             aria-describedby={helperText ? `${name}-helper-text` : null}
             aria-multiline={true}
+            {...props}
           />
         ) : (
           <InputField
@@ -230,13 +242,17 @@ export const InputOutlined = ({
                 "pr-0": icon && !isLeftIcon,
               }
             )}
-            {...field}
-            {...props}
             errorClassName="peer rw-input-error"
             disabled={disabled}
+            onChange={(e) => {
+              field.onChange(e);
+              props.onChange?.(e);
+            }}
+            {...field}
             onFocus={handleFocus}
             onBlur={handleBlur}
             aria-describedby={helperText ? `${name}-helper-text` : null}
+            {...props}
           />
         )}
         {icon && !isLeftIcon && (
@@ -252,7 +268,7 @@ export const InputOutlined = ({
           className={clsx(
             "pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded border border-zinc-500 px-2 text-left transition duration-75 peer-invalid:!border-red-500 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
             {
-              "top-0": focus || !isEmpty(field?.value || ""),
+              "top-0": focus || !isEmpty(field?.value),
             }
           )}
         >
@@ -261,7 +277,7 @@ export const InputOutlined = ({
             className={clsx(
               "invisible block w-auto max-w-[.01px] overflow-hidden whitespace-nowrap p-0 !text-xs transition-all duration-75",
               {
-                "!max-w-full": focus || !isEmpty(field?.value || ""),
+                "!max-w-full": focus || !isEmpty(field?.value),
               }
             )}
           >

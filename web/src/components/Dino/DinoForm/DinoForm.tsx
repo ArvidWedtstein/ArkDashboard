@@ -50,7 +50,9 @@ const ITEMQUERY = gql`
   }
 `;
 const DinoForm = (props: DinoFormProps) => {
-  const [disableFood, setDisableFood] = useState(props.dino?.disable_food ?? false);
+  const [disableFood, setDisableFood] = useState(
+    props.dino?.disable_food ?? false
+  );
   const [loadItems, { called, loading, data }] = useLazyQuery(ITEMQUERY, {
     variables: { category: "Resource,Consumable" },
     onCompleted: (data) => {
@@ -136,12 +138,12 @@ const DinoForm = (props: DinoFormProps) => {
       wr: props?.dino?.DinoStat.filter(
         (f) => f.type === "weight_reduction"
       ) ?? [
-          {
-            type: "",
-            value: 0,
-            item_id: null,
-          },
-        ],
+        {
+          type: "",
+          value: 0,
+          item_id: null,
+        },
+      ],
     },
   });
 
@@ -214,72 +216,39 @@ const DinoForm = (props: DinoFormProps) => {
         <Stepper>
           <Step title="General">
             <div className="flex flex-row items-start space-x-3">
-              <div>
-                <Label
-                  name="name"
-                  className="rw-label"
-                  errorClassName="rw-label rw-label-error"
-                >
-                  Name
-                </Label>
+              <InputOutlined
+                label="Name"
+                margin="normal"
+                name="name"
+                defaultValue={props.dino?.name}
+                helperText="Dinos name"
+                validation={{ required: true }}
+              />
 
-                <TextField
-                  name="name"
-                  defaultValue={props.dino?.name}
-                  className="rw-input"
-                  errorClassName="rw-input rw-input-error"
-                  validation={{ required: true }}
-                />
-
-                <FieldError name="name" className="rw-field-error" />
-              </div>
-              <div>
-                <Label
-                  name="synonyms"
-                  className="rw-label"
-                  errorClassName="rw-label rw-label-error"
-                >
-                  Synonyms
-                </Label>
-
-                <TextField
-                  name="synonyms"
-                  defaultValue={props.dino?.synonyms}
-                  className="rw-input"
-                  errorClassName="rw-input rw-input-error"
-                  validation={{
-                    required: false,
-                    pattern: {
-                      value: /^[A-Za-z\s,]+$/, // Regex pattern to allow only letters, spaces, and commas
-                      message:
-                        "Uh oh! Your dino is getting tongue-tied! Only text is allowed, no dino roars or growls!",
-                    },
-                  }}
-                />
-                <p className="rw-helper-text">
-                  Other names for this dino, comma seperated
-                </p>
-
-                <FieldError name="synonyms" className="rw-field-error" />
-              </div>
+              <InputOutlined
+                label="Synonyms"
+                margin="normal"
+                name="synonyms"
+                defaultValue={props.dino?.synonyms}
+                helperText="Other names for this dino, comma seperated"
+                validation={{
+                  required: false,
+                  pattern: {
+                    value: /^[A-Za-z\s,]+$/, // Regex pattern to allow only letters, spaces, and commas
+                    message:
+                      "Uh oh! Your dino is getting tongue-tied! Only text is allowed, no dino roars or growls!",
+                  },
+                }}
+              />
             </div>
-
-            <Label
-              name="description"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Description
-            </Label>
-
-            <TextAreaField
+            <InputOutlined
+              label="Description"
+              margin="normal"
               name="description"
               defaultValue={props.dino?.description}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
+              rows={3}
+              type="textarea"
             />
-
-            <FieldError name="description" className="rw-field-error" />
 
             <InputOutlined
               label="Admin Note"
@@ -293,7 +262,6 @@ const DinoForm = (props: DinoFormProps) => {
           </Step>
 
           <Step title="Taming" className="flex flex-col">
-
             <InputOutlined
               label="Taming Notice"
               margin="normal"
@@ -327,112 +295,91 @@ const DinoForm = (props: DinoFormProps) => {
             {/* TODO: make decimal pattern */}
             <InputOutlined
               label="Torpor Depletion per second"
-              inputMode="decimal"
-              emptyAs={0}
               min={0}
               margin="normal"
               name="tdps"
-              defaultValue={props.dino?.tdps || 0}
+              defaultValue={props.dino?.tdps}
               helperText="How much torpidity this dino looses per second"
-              type="text"
+              type="number"
               validation={{ valueAsNumber: true }}
             />
-
 
             <InputOutlined
               label="Affinity needed"
-              inputMode="decimal"
-              emptyAs={0}
               min={0}
               margin="normal"
               name="affinity_needed"
-              defaultValue={props.dino?.affinity_needed || 0}
+              defaultValue={props.dino?.affinity_needed}
               helperText="Base Affinity needed to tame this dino. This will later be multiplied by the affinity increase per level"
-              type="text"
+              type="number"
               validation={{ valueAsNumber: true }}
             />
 
-
             <InputOutlined
               label="Affinity Increase Per Level"
-              inputMode="decimal"
-              emptyAs={0}
               min={0}
+              emptyAs={0}
               margin="normal"
               name="aff_inc"
-              defaultValue={props.dino?.aff_inc || 0}
+              defaultValue={props.dino?.aff_inc}
               helperText="Affinity increase (per level).  "
-              type="text"
+              type="number"
               validation={{ valueAsNumber: true }}
             />
 
             {/* TODO: disable if disableFood? */}
             <InputOutlined
               label="Non violent food affinity multiplier"
-              inputMode="decimal"
-              emptyAs={0}
               min={0}
               margin="normal"
               name="non_violent_food_affinity_mult"
-              defaultValue={props.dino?.non_violent_food_affinity_mult || 0}
-              type="text"
+              defaultValue={props.dino?.non_violent_food_affinity_mult}
+              type="number"
               validation={{ valueAsNumber: true }}
             />
-
 
             <InputOutlined
               label="Flee Threshold"
               name="flee_threshold"
-              inputMode="decimal"
-              emptyAs={0}
               min={0}
               margin="normal"
-              defaultValue={props.dino?.flee_threshold || 0}
+              defaultValue={props.dino?.flee_threshold}
               helperText="Chance of this dino fleeing while being tamed"
-              type="text"
+              type="number"
               validation={{ valueAsNumber: true }}
             />
-
 
             <InputOutlined
               label="Base Taming Time"
               name="base_taming_time"
-              inputMode="decimal"
-              emptyAs={0}
               min={0}
               margin="normal"
-              defaultValue={props.dino?.base_taming_time || 0}
+              defaultValue={props.dino?.base_taming_time}
               helperText="Base taming time in seconds"
-              type="text"
+              type="number"
               validation={{ valueAsNumber: true }}
             />
-
 
             <InputOutlined
               label="Taming Interval"
               name="taming_interval"
-              inputMode="decimal"
-              emptyAs={0}
               min={0}
               margin="normal"
-              defaultValue={props.dino?.taming_interval || 0}
+              defaultValue={props.dino?.taming_interval}
               helperText="Taming interval in seconds"
-              type="text"
+              type="number"
               validation={{ valueAsNumber: true }}
             />
 
             <InputOutlined
               label="Taming Ineffectiveness"
               name="taming_ineffectiveness"
-              inputMode="decimal"
-              emptyAs={0}
               min={0}
               margin="normal"
-              defaultValue={props.dino?.taming_ineffectiveness || 0}
-              type="text"
+              defaultValue={props.dino?.taming_ineffectiveness}
+              type="number"
               validation={{ valueAsNumber: true }}
             />
-
 
             {/* TODO: make hitboxes input */}
             {/* <Label
@@ -462,7 +409,6 @@ const DinoForm = (props: DinoFormProps) => {
         <Disclosure className="mt-5" title="Other" text_size="text-lg">
           <div>
             <div>
-
               {/* TODO: convert this to DinoStat Form */}
               <Label
                 name="DinoStat.create.0.item_id"
@@ -492,7 +438,7 @@ const DinoForm = (props: DinoFormProps) => {
                               required: true,
                             }
                           )}
-                          className="!rounded-none !rounded-l-md border-r-transparent !w-full"
+                          className="!w-full !rounded-none !rounded-l-md border-r-transparent"
                           options={data.itemsByCategory.items
                             .filter((i) => i.category === "Resource")
                             .map((item) => ({
@@ -528,7 +474,7 @@ const DinoForm = (props: DinoFormProps) => {
                             required: false,
                           } as const)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
-                        // defaultValue={g.type}
+                          // defaultValue={g.type}
                         />
                         <button
                           type="button"
@@ -1476,13 +1422,13 @@ const DinoForm = (props: DinoFormProps) => {
                           options={
                             data
                               ? data.itemsByCategory.items
-                                .filter((i) => i.category === "Resource")
-                                .map((item) => ({
-                                  type: item.type,
-                                  label: item.name,
-                                  value: item.id,
-                                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                                }))
+                                  .filter((i) => i.category === "Resource")
+                                  .map((item) => ({
+                                    type: item.type,
+                                    label: item.name,
+                                    value: item.id,
+                                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                                  }))
                               : []
                           }
                           search={true}
@@ -1562,7 +1508,7 @@ const DinoForm = (props: DinoFormProps) => {
           </div>
         </fieldset>
 
-        <details className="rw-form-group group">
+        {/* <details className="rw-form-group group">
           <summary className="inline-flex items-center">
             Taming
             <svg
@@ -1836,7 +1782,7 @@ const DinoForm = (props: DinoFormProps) => {
               />
             </div>
           </div>
-        </details>
+        </details> */}
 
         <details className="rw-form-group group">
           <summary className="inline-flex items-center">
@@ -2006,13 +1952,13 @@ const DinoForm = (props: DinoFormProps) => {
                 options={
                   data
                     ? data.itemsByCategory.items
-                      .filter((i) => i.category === "Consumable")
-                      .map((item) => ({
-                        type: item.type,
-                        label: item.name,
-                        value: item.id,
-                        image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                      }))
+                        .filter((i) => i.category === "Consumable")
+                        .map((item) => ({
+                          type: item.type,
+                          label: item.name,
+                          value: item.id,
+                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                        }))
                     : []
                 }
                 search={true}

@@ -1,17 +1,10 @@
 import { set, useController } from "@redwoodjs/forms";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import useComponentVisible from "../../useComponentVisible";
 import { ArrayElement } from "src/lib/formatters";
 import clsx from "clsx";
 
-
 type value = string | object | number | null | undefined;
-
 
 interface ILookup {
   defaultValue?: string[];
@@ -51,7 +44,7 @@ interface ILookup {
   ) => boolean;
   placeholder?: string;
 }
-
+// TODO: add free solo
 export const Lookup = ({
   options,
   name,
@@ -75,11 +68,10 @@ export const Lookup = ({
   const { ref, setIsComponentVisible, isComponentVisible } =
     useComponentVisible(false);
 
-
   // Convert this to store all options instead and set selected to the ones that are selected
-  const [selectedOptions, setSelectedOptions] = useState<
-    ILookup["options"]
-  >([]);
+  const [selectedOptions, setSelectedOptions] = useState<ILookup["options"]>(
+    []
+  );
 
   const { field } = !!name && useController({ name: name });
   const [searchTerm, setSearchTerm] = useState<string>(inputValue || "");
@@ -115,7 +107,6 @@ export const Lookup = ({
     setMenuPosition({ top: dropdownTop, left: dropdownLeft });
   };
 
-
   const filteredOptions = useMemo(() => {
     const lowercaseSearchterm = searchTerm.toLowerCase();
 
@@ -132,21 +123,24 @@ export const Lookup = ({
     return filtered;
   }, [options, searchTerm, filterFn]);
 
-
   useEffect(() => {
-    setSelectedOptions((prev) => prev.map((option) => {
-      if (searchTerm && filterFn) {
-        return ({
-          ...option,
-          inSearch: filterFn(option, searchTerm)
-        });
-      }
+    setSelectedOptions((prev) =>
+      prev.map((option) => {
+        if (searchTerm && filterFn) {
+          return {
+            ...option,
+            inSearch: filterFn(option, searchTerm),
+          };
+        }
 
-      return ({
-        ...option,
-        inSearch: !searchTerm || option.label.toLowerCase().includes(searchTerm.toLowerCase())
-      });
-    }))
+        return {
+          ...option,
+          inSearch:
+            !searchTerm ||
+            option.label.toLowerCase().includes(searchTerm.toLowerCase()),
+        };
+      })
+    );
   }, [options, searchTerm, filterFn]);
 
   // Update selectedOption when defaultValue changes
@@ -163,7 +157,9 @@ export const Lookup = ({
       return {
         ...option,
         selected: isSelected,
-        inSearch: !searchTerm || option.label.toLowerCase().includes(searchTerm.toLowerCase())
+        inSearch:
+          !searchTerm ||
+          option.label.toLowerCase().includes(searchTerm.toLowerCase()),
       };
     });
 
@@ -182,7 +178,9 @@ export const Lookup = ({
 
       if (!option || option.disabled) return;
 
-      const isSelected = selectedOptions.some((o) => o?.value === option.value && o?.selected);
+      const isSelected = selectedOptions.some(
+        (o) => o?.value === option.value && o?.selected
+      );
 
       const updateOptions = selectedOptions.map((o) => {
         if (o?.value === option.value) {
@@ -195,13 +193,15 @@ export const Lookup = ({
         return multiple ? o : { ...o, selected: false };
       });
 
-      console.log(updateOptions.filter((f) => f.selected))
+      console.log(updateOptions.filter((f) => f.selected));
       setSelectedOptions(updateOptions);
 
       if (!!name) {
         field.onChange(
           multiple
-            ? updateOptions.filter((f) => f != null && f.selected).map((o) => o?.value)
+            ? updateOptions
+                .filter((f) => f != null && f.selected)
+                .map((o) => o?.value)
             : [option.value]
         );
       }
@@ -259,9 +259,7 @@ export const Lookup = ({
     }
   };
 
-  const handleFocus = (
-    e: React.FocusEvent<HTMLInputElement>
-  ) => {
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     if (!disabled) {
       setIsComponentVisible(!isComponentVisible);
 
@@ -271,7 +269,6 @@ export const Lookup = ({
       }
     }
   };
-
 
   return (
     <div
@@ -283,7 +280,7 @@ export const Lookup = ({
     >
       <div
         className={clsx(
-          "relative mx-0 inline-flex min-w-0 w-full flex-col p-0 align-top text-black dark:text-white",
+          "relative mx-0 inline-flex w-full min-w-0 flex-col p-0 align-top text-black dark:text-white"
           // {
           //   "pointer-events-none text-black/50 dark:text-white/50": disabled,
           //   "mt-2 mb-1": margin === "dense",
@@ -293,37 +290,75 @@ export const Lookup = ({
         )}
       >
         <label
-          className={clsx("pointer-events-none absolute left-0 top-0 z-10 block origin-top-left max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis font-normal leading-6 transition duration-200 text-base", {
-            "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none": isComponentVisible || selectedOptions.filter((o) => o != null && o.selected).length > 0 || searchTerm.length > 0,
-          })}
+          className={clsx(
+            "pointer-events-none absolute left-0 top-0 z-10 block max-w-[calc(100%-24px)] origin-top-left translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis text-base font-normal leading-6 transition duration-200",
+            {
+              "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
+                isComponentVisible ||
+                selectedOptions.filter((o) => o != null && o.selected).length >
+                  0 ||
+                searchTerm.length > 0,
+            }
+          )}
           htmlFor={`input-${name}`}
         >
           Test
           {/* {label ?? name} {required && " *"} */}
         </label>
         <div
-          className={clsx("relative box-border inline-flex cursor-text items-center rounded text-base font-normal leading-6 p-2 w-full flex-wrap", btnClassName, {
-            "pr-10": !disableClearable && selectedOptions.filter((d) => d != null && d.selected).length == 0,
-            "pr-12": !disableClearable && selectedOptions.filter((d) => d != null && d.selected).length > 0,
-          })}
+          className={clsx(
+            "relative box-border inline-flex w-full cursor-text flex-wrap items-center rounded p-2 text-base font-normal leading-6",
+            btnClassName,
+            {
+              "pr-10":
+                !disableClearable &&
+                selectedOptions.filter((d) => d != null && d.selected).length ==
+                  0,
+              "pr-12":
+                !disableClearable &&
+                selectedOptions.filter((d) => d != null && d.selected).length >
+                  0,
+            }
+          )}
         >
           {/* Chips */}
-          {renderTags != null ? renderTags(selectedOptions.filter((o) => o != null && o.selected)) : multiple && selectedOptions.filter((o) => o != null && o.selected).length > 0 && selectedOptions.filter((o) => o != null && o.selected).map((option) => (
-            <div role="button" className="relative bg-white/10 max-w-[calc(100%-6px)] m-0.5 align-middle select-none appearance-none text-xs inline-flex items-center justify-center whitespace-nowrap h-8 rounded-2xl outline-0 box-border">
-              <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">{option.label}</span>
-              {!readOnly && (
-                <svg onClick={(e) => handleOptionSelect(e, option)} className="text-white/60 inline-block w-4 h-4 fill-current shrink-0 select-none mr-1 -ml-1.5 hover:text-white/40 transition-colors text-base" viewBox="0 0 24 24" focusable="false" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
-                </svg>
-              )}
-            </div>
-          ))}
+          {renderTags != null
+            ? renderTags(selectedOptions.filter((o) => o != null && o.selected))
+            : multiple &&
+              selectedOptions.filter((o) => o != null && o.selected).length >
+                0 &&
+              selectedOptions
+                .filter((o) => o != null && o.selected)
+                .map((option) => (
+                  <div
+                    role="button"
+                    className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
+                  >
+                    <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
+                      {option.label}
+                    </span>
+                    {!readOnly && (
+                      <svg
+                        onClick={(e) => handleOptionSelect(e, option)}
+                        className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
+                        viewBox="0 0 24 24"
+                        focusable="false"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
+                      </svg>
+                    )}
+                  </div>
+                ))}
 
           <input
             aria-invalid="false"
             id={`input-${name}`}
             type="text"
-            className={"peer m-0 box-content block h-6 w-0 min-w-[30px] grow rounded border-0 bg-transparent py-2 px-1 font-[inherit] text-base focus:outline-none disabled:pointer-events-none"}
+            className={
+              "peer m-0 box-content block h-6 w-0 min-w-[30px] grow rounded border-0 bg-transparent py-2 px-1 font-[inherit] text-base focus:outline-none disabled:pointer-events-none"
+            }
             disabled={disabled}
             value={internalValue}
             readOnly={readOnly}
@@ -335,10 +370,15 @@ export const Lookup = ({
 
           <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
             {!disableClearable &&
-              selectedOptions.filter((d) => d != null && d.selected).length > 0 && (
-                <button type="button" onClick={handleClearSelection} className="peer-hover:visible peer-focus:visible relative box-border hover:bg-white/10 transition rounded-full p-1 -mr-0.5 inline-flex justify-center items-center appearance-none">
+              selectedOptions.filter((d) => d != null && d.selected).length >
+                0 && (
+                <button
+                  type="button"
+                  onClick={handleClearSelection}
+                  className="relative -mr-0.5 box-border inline-flex appearance-none items-center justify-center rounded-full p-1 transition hover:bg-white/10 peer-hover:visible peer-focus:visible"
+                >
                   <svg
-                    className="h-4 w-4 fill-current shrink-0 select-none"
+                    className="h-4 w-4 shrink-0 select-none fill-current"
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                     focusable="false"
@@ -350,7 +390,7 @@ export const Lookup = ({
             <button
               type="button"
               onClick={toggleLookup}
-              className="hover:bg-white/10 transition rounded-full p-1 inline-flex justify-center relative -mr-0.5 items-center appearance-none"
+              className="relative -mr-0.5 inline-flex appearance-none items-center justify-center rounded-full p-1 transition hover:bg-white/10"
             >
               <svg
                 className="h-4 w-4"
@@ -376,7 +416,11 @@ export const Lookup = ({
             className={clsx(
               "pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded border border-zinc-500 px-2 text-left transition duration-75 peer-invalid:!border-red-500 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
               {
-                "top-0": isComponentVisible || selectedOptions.filter((o) => o != null && o.selected).length > 0 || searchTerm.length > 0,
+                "top-0":
+                  isComponentVisible ||
+                  selectedOptions.filter((o) => o != null && o.selected)
+                    .length > 0 ||
+                  searchTerm.length > 0,
               }
             )}
           >
@@ -385,13 +429,15 @@ export const Lookup = ({
               className={clsx(
                 "invisible block w-auto max-w-[.01px] overflow-hidden whitespace-nowrap p-0 !text-xs transition-all duration-75",
                 {
-                  "!max-w-full": isComponentVisible || selectedOptions.filter((o) => o != null && o.selected).length > 0 || searchTerm.length > 0
+                  "!max-w-full":
+                    isComponentVisible ||
+                    selectedOptions.filter((o) => o != null && o.selected)
+                      .length > 0 ||
+                    searchTerm.length > 0,
                 }
               )}
             >
-              <span className="visible inline-block px-1 opacity-0">
-                Test
-              </span>
+              <span className="visible inline-block px-1 opacity-0">Test</span>
             </legend>
           </fieldset>
         </div>
@@ -515,10 +561,11 @@ export const Lookup = ({
         )} */}
 
         <ul
-          className="relative z-10 max-h-48 space-y-1 overflow-y-auto pt-0 text-gray-700 dark:text-gray-200 will-change-scroll"
+          className="relative z-10 max-h-48 space-y-1 overflow-y-auto pt-0 text-gray-700 will-change-scroll dark:text-gray-200"
           aria-labelledby="dropdownButton"
         >
-          {!options || selectedOptions.filter((option) => {
+          {!options ||
+          selectedOptions.filter((option) => {
             if (filterSelectedOptions) {
               return !option?.selected && option?.inSearch;
             }
@@ -530,54 +577,58 @@ export const Lookup = ({
             </li>
           ) : null}
 
-          {selectedOptions.filter((option) => {
-            if (filterSelectedOptions) {
-              return !option?.selected && option?.inSearch;
-            }
+          {selectedOptions
+            .filter((option) => {
+              if (filterSelectedOptions) {
+                return !option?.selected && option?.inSearch;
+              }
 
-            return option.inSearch;
-          }).map((option) => (
-            <li
-              key={`option-${option.value}`}
-              onClick={(e) => handleOptionSelect(e, option)}
-              aria-checked={option.selected}
-              className={clsx("flex items-center py-2 px-4 last:rounded-b-lg", {
-                "cursor-not-allowed text-zinc-500/50": option.disabled,
-                "hover:bg-zinc-200 dark:hover:bg-zinc-600/90 dark:hover:text-white":
-                  !option.disabled,
-                "first:rounded-t-lg": !search && !multiple,
-              })}
-            >
-              {"image" in option && !option.group && (
-                <img
-                  className="mr-2 h-6 w-6 rounded-full"
-                  src={option.image}
-                  alt={option.label}
-                />
-              )}
-
-              <span className="grow">{option.label}</span>
-
-              {option.selected && (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
-                  className="h-5 w-5 shrink-0"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                    clipRule="evenodd"
+              return option.inSearch;
+            })
+            .map((option) => (
+              <li
+                key={`option-${option.value}`}
+                onClick={(e) => handleOptionSelect(e, option)}
+                aria-checked={option.selected}
+                className={clsx(
+                  "flex items-center py-2 px-4 last:rounded-b-lg",
+                  {
+                    "cursor-not-allowed text-zinc-500/50": option.disabled,
+                    "hover:bg-zinc-200 dark:hover:bg-zinc-600/90 dark:hover:text-white":
+                      !option.disabled,
+                    "first:rounded-t-lg": !search && !multiple,
+                  }
+                )}
+              >
+                {"image" in option && !option.group && (
+                  <img
+                    className="mr-2 h-6 w-6 rounded-full"
+                    src={option.image}
+                    alt={option.label}
                   />
-                </svg>
-              )}
-            </li>
-          ))}
+                )}
+
+                <span className="grow">{option.label}</span>
+
+                {option.selected && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                    className="h-5 w-5 shrink-0"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                )}
+              </li>
+            ))}
         </ul>
       </div>
     </div>
   );
 };
-
