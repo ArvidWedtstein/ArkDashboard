@@ -11,7 +11,7 @@ import {
 } from "@redwoodjs/forms";
 import clsx from "clsx";
 import { useState } from "react";
-import { ArrayElement } from "src/lib/formatters";
+import { ArrayElement, isEmpty } from "src/lib/formatters";
 
 type InputProps = {
   helperText?: string;
@@ -22,28 +22,28 @@ type InputProps = {
   fullWidth?: boolean;
   margin?: "none" | "dense" | "normal";
   type?:
-    | "number"
-    | "button"
-    | "time"
-    | "image"
-    | "text"
-    | "hidden"
-    | "color"
-    | "search"
-    | "date"
-    | "datetime-local"
-    | "email"
-    | "file"
-    | "month"
-    | "password"
-    | "radio"
-    | "range"
-    | "reset"
-    | "submit"
-    | "tel"
-    | "url"
-    | "week"
-    | "textarea";
+  | "number"
+  | "button"
+  | "time"
+  | "image"
+  | "text"
+  | "hidden"
+  | "color"
+  | "search"
+  | "date"
+  | "datetime-local"
+  | "email"
+  | "file"
+  | "month"
+  | "password"
+  | "radio"
+  | "range"
+  | "reset"
+  | "submit"
+  | "tel"
+  | "url"
+  | "week"
+  | "textarea";
   onFocus?: (
     e:
       | React.FocusEvent<HTMLInputElement>
@@ -142,7 +142,6 @@ export const InputOutlined = ({
       | React.FocusEvent<HTMLTextAreaElement>
   ) => {
     setFocus(true);
-    console.log(field.value);
     props.onFocus?.(e);
   };
 
@@ -153,7 +152,6 @@ export const InputOutlined = ({
   ) => {
     setFocus(false);
     field.onBlur();
-    console.log(field.value);
     props.onBlur?.(e);
   };
 
@@ -180,7 +178,7 @@ export const InputOutlined = ({
         style={labelStyle}
         className={clsx(labelClassName, {
           "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
-            focus || !!field.value,
+            focus || !isEmpty(field?.value || ""),
           "translate-x-8": isLeftIcon,
         })}
         name={name}
@@ -254,7 +252,7 @@ export const InputOutlined = ({
           className={clsx(
             "pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded border border-zinc-500 px-2 text-left transition duration-75 peer-invalid:!border-red-500 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
             {
-              "top-0": focus || !!field.value,
+              "top-0": focus || !isEmpty(field?.value || ""),
             }
           )}
         >
@@ -263,7 +261,7 @@ export const InputOutlined = ({
             className={clsx(
               "invisible block w-auto max-w-[.01px] overflow-hidden whitespace-nowrap p-0 !text-xs transition-all duration-75",
               {
-                "!max-w-full": focus || !!field.value,
+                "!max-w-full": focus || !isEmpty(field?.value || ""),
               }
             )}
           >
@@ -277,7 +275,7 @@ export const InputOutlined = ({
       {helperText && (
         <p
           id={`${name}-helper-text`}
-          className="mx-3 mt-0.5 mb-0 text-left text-xs font-normal leading-6 tracking-wide text-black/70 dark:text-white/70"
+          className="mx-3 mt-0.5 mb-0 text-left text-xs font-normal leading-5 tracking-wide text-black/70 dark:text-white/70"
         >
           {helperText}
         </p>

@@ -8,14 +8,17 @@ interface Step {
   optional?: boolean;
   children?: React.ReactNode;
   icon?: React.ReactNode;
+  className?: string;
 }
 interface IStepperProps {
   children?: React.ReactNode;
   completion?: boolean;
 }
 
-export const Step = ({ title, description, optional, children }: Step) => {
-  return <></>;
+export const Step = ({ title, description, optional, children, className }: Step) => {
+  return <div className={className}>
+    {children}
+  </div>;
 };
 
 const Stepper = ({ children, completion = false }: IStepperProps) => {
@@ -49,8 +52,8 @@ const Stepper = ({ children, completion = false }: IStepperProps) => {
       completedSteps.findIndex((step) => step == prev) !== -1
         ? completedSteps.findIndex((step) => step == prev)
         : prev == (Array.isArray(children) ? children : [children]).length - 1
-        ? Math.max(...completedSteps) + 1
-        : prev
+          ? Math.max(...completedSteps) + 1
+          : prev
     );
   };
   return (
@@ -64,7 +67,7 @@ const Stepper = ({ children, completion = false }: IStepperProps) => {
                   type="button"
                   disabled={
                     (Array.isArray(children) ? children : [children]).length ===
-                      completedSteps.length || !completion
+                    completedSteps.length || !completion
                   }
                   className="font-montserrat flex items-center space-x-2"
                   onClick={() => setCurrentStep(index)}
@@ -98,18 +101,18 @@ const Stepper = ({ children, completion = false }: IStepperProps) => {
                 </button>
                 {index !==
                   (Array.isArray(children) ? children : [children]).length -
-                    1 && (
-                  <div className="relative h-px w-full grow overflow-hidden bg-zinc-500">
-                    <span
-                      className={clsx(
-                        "bg-pea-500 absolute left-0 bottom-0 top-0 w-full -translate-x-full transition-transform duration-300 ease-in-out",
-                        {
-                          "translate-x-0": index < currentStep,
-                        }
-                      )}
-                    />
-                  </div>
-                )}
+                  1 && (
+                    <div className="relative h-px w-full grow overflow-hidden bg-zinc-500">
+                      <span
+                        className={clsx(
+                          "bg-pea-500 absolute left-0 bottom-0 top-0 w-full -translate-x-full transition-transform duration-300 ease-in-out",
+                          {
+                            "translate-x-0": index < currentStep,
+                          }
+                        )}
+                      />
+                    </div>
+                  )}
               </React.Fragment>
             );
           }
@@ -119,7 +122,7 @@ const Stepper = ({ children, completion = false }: IStepperProps) => {
       <div className="my-3">
         {(Array.isArray(children) ? children : [children]).map(
           ({ props: step }, index) => {
-            if (index === currentStep) return step.children;
+            if (index === currentStep) return <Step {...step} />;
           }
         )}
       </div>
@@ -127,43 +130,43 @@ const Stepper = ({ children, completion = false }: IStepperProps) => {
       <div className="flex items-center justify-between">
         {completedSteps.length !==
           (Array.isArray(children) ? children : [children]).length && (
-          <>
-            <button
-              type="button"
-              className="rw-button rw-button-gray-outline rw-button-medium"
-              disabled={currentStep == 0}
-              onClick={() => prevStep()}
-            >
-              Back
-            </button>
-            <div className="inline-flex items-center space-x-3">
-              {completion && (
-                <button
-                  type="button"
-                  className="rw-button rw-button-gray-outline rw-button-medium"
-                  onClick={() => nextStep()}
-                >
-                  Next
-                </button>
-              )}
+            <>
               <button
                 type="button"
                 className="rw-button rw-button-gray-outline rw-button-medium"
-                disabled={completedSteps.includes(currentStep) && completion}
-                onClick={() => {
-                  completeStep(currentStep);
-                }}
+                disabled={currentStep == 0}
+                onClick={() => prevStep()}
               >
-                {completedSteps.length ==
-                (Array.isArray(children) ? children : [children]).length - 1
-                  ? "Finish"
-                  : completion
-                  ? "Complete"
-                  : "Next"}
+                Back
               </button>
-            </div>
-          </>
-        )}
+              <div className="inline-flex items-center space-x-3">
+                {completion && (
+                  <button
+                    type="button"
+                    className="rw-button rw-button-gray-outline rw-button-medium"
+                    onClick={() => nextStep()}
+                  >
+                    Next
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="rw-button rw-button-gray-outline rw-button-medium"
+                  disabled={completedSteps.includes(currentStep) && completion}
+                  onClick={() => {
+                    completeStep(currentStep);
+                  }}
+                >
+                  {completedSteps.length ==
+                    (Array.isArray(children) ? children : [children]).length - 1
+                    ? "Finish"
+                    : completion
+                      ? "Complete"
+                      : "Next"}
+                </button>
+              </div>
+            </>
+          )}
       </div>
     </div>
   );

@@ -153,7 +153,9 @@ const Dino = ({ dino, itemsByIds }: Props) => {
    * - Creature stat: (base value × (1 + stat level wild × Increase per wild-level as % of B × Increase per wild level modifier) × TamedBaseHealthMultiplier × (1 + Imprinting Bonus when tamed × 0.2 × IBM) + Additive taming-bonus × Additive taming-bonus modifier) × (1 + Taming Effectiveness × Multiplicative taming-bonus × Multiplicative taming-bonus modifier) × (1 + player leveled stat × Increase per domesticated level as % of Vpt × Increase per domesticated level modifier)
    * - Melee damage: Weapon Base Damage * Weapon Damage Quality Multiplier * Survivor Melee Damage Multiplier * Server Settings: Player Damage
    * - Oxygen under water:  Oxygen / 3 = time in seconds
-   */
+   *
+   * https://ark.fandom.com/wiki/Module:TamingTable/creatures
+  **/
 
   const onDeleteClick = (id: DeleteDinoMutationVariables["id"]) => {
     toast.custom((t) => (

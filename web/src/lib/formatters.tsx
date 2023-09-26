@@ -15,16 +15,7 @@ export const formatEnum = (values: string | string[] | null | undefined) => {
   return output;
 };
 
-/**
- * @description Capitalize the first letter of each word in a string
- * @param sentence
- * @returns Capitalized string
- */
-export const capitalizeSentence = (sentence: string) => {
-  return sentence.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
-    letter.toUpperCase()
-  );
-};
+
 
 export const jsonDisplay = (obj: unknown) => {
   return (
@@ -34,6 +25,30 @@ export const jsonDisplay = (obj: unknown) => {
   );
 };
 
+
+export const isEmpty = (input: unknown): boolean => {
+  if (input === null || input === undefined) {
+    return true;
+  }
+
+  // For strings, trim and check if the length is zero
+  if (typeof input === 'string') {
+    return input.trim().length === 0;
+  }
+
+  // For arrays, check if the length is zero
+  if (Array.isArray(input)) {
+    return input.length === 0;
+  }
+
+  // For objects, check if it has no own properties
+  if (typeof input === 'object') {
+    return Object.keys(input).length === 0;
+  }
+
+  // For other types, consider them non-empty
+  return false;
+}
 export const formatNumber = (
   num: number,
   options?: Intl.NumberFormatOptions
@@ -161,19 +176,19 @@ export const dynamicSort = <T extends {}>(
 ): Array<T> =>
   property != "" && array
     ? [...array].sort((a: T, b: T) => {
-        const aValue = a[property];
-        const bValue = b[property];
+      const aValue = a[property];
+      const bValue = b[property];
 
-        if (ascending) {
-          if (aValue < bValue) return -1;
-          if (aValue > bValue) return 1;
-          return 0;
-        } else {
-          if (aValue > bValue) return -1;
-          if (aValue < bValue) return 1;
-          return 0;
-        }
-      })
+      if (ascending) {
+        if (aValue < bValue) return -1;
+        if (aValue > bValue) return 1;
+        return 0;
+      } else {
+        if (aValue > bValue) return -1;
+        if (aValue < bValue) return 1;
+        return 0;
+      }
+    })
     : array;
 
 /**
@@ -186,9 +201,8 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
-    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-  }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+    }`;
 };
 
 /**
@@ -200,6 +214,19 @@ export const formatBytes = (a, b = 2) => {
 export const capitalize = (string: string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
+
+
+/**
+ * @description Capitalize the first letter of each word in a string
+ * @param sentence
+ * @returns Capitalized string
+ */
+export const capitalizeSentence = (sentence: string) => {
+  return sentence.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
+    letter.toUpperCase()
+  );
+};
+
 
 /**
  *
@@ -1004,9 +1031,9 @@ export const generatePDF = (crafts) => {
       tableX - cellPadding * 2,
       30 + crafts.length * 20,
       tableX +
-        (Object.keys(crafts[0]).length - 1) *
-          (tableSize.width / Object.keys(crafts[0]).length) +
-        columnWidths[Object.keys(crafts[0]).length - 1],
+      (Object.keys(crafts[0]).length - 1) *
+      (tableSize.width / Object.keys(crafts[0]).length) +
+      columnWidths[Object.keys(crafts[0]).length - 1],
       40 + (crafts.length - 1) * 20 + cellPadding,
       true,
       `0.9 0.9 0.9`
@@ -1040,7 +1067,7 @@ export const generatePDF = (crafts) => {
                     x:
                       tableX +
                       (Object.keys(crafts[0]).length - 1) *
-                        (tableSize.width / Object.keys(crafts[0]).length) +
+                      (tableSize.width / Object.keys(crafts[0]).length) +
                       columnWidths[Object.keys(crafts[0]).length - 1],
                     y: cellY + cellPadding,
                   },
@@ -1421,19 +1448,19 @@ export class SimplexNoise3D {
 
     const gi0 =
       SimplexNoise3D.perm[
-        ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
+      ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
       ] % 12;
     const gi1 =
       SimplexNoise3D.perm[
-        ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
+      ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
       ] % 12;
     const gi2 =
       SimplexNoise3D.perm[
-        ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
+      ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
       ] % 12;
     const gi3 =
       SimplexNoise3D.perm[
-        ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
+      ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
       ] % 1;
 
     let n0, n1, n2, n3;
