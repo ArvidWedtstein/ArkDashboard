@@ -1,4 +1,4 @@
-import { set, useController } from "@redwoodjs/forms";
+import { RegisterOptions, set, useController } from "@redwoodjs/forms";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useComponentVisible from "../../useComponentVisible";
 import { ArrayElement } from "src/lib/formatters";
@@ -8,26 +8,28 @@ type value = string | object | number | null | undefined;
 
 interface ILookup {
   defaultValue?: string[];
+  label?: string;
   name?: string;
   className?: string;
   btnClassName?: string;
   groupBy?: string;
   disabled?: boolean;
+  helperText?: string;
   search?: boolean;
   disableClearable?: boolean;
   readOnly?: boolean;
   filterSelectedOptions?: boolean;
   multiple?: boolean;
+  required?: boolean;
   closeOnSelect?: boolean;
   inputValue?: string;
+  validation?: RegisterOptions;
   // limitTags?: number;
   options: {
     label: string;
     value: string | object | number;
     image?: string;
     disabled?: boolean;
-    selected?: boolean;
-    inSearch?: boolean;
     [key: string]: string | object | number | boolean | undefined;
   }[];
   renderTags?: (
@@ -47,15 +49,19 @@ interface ILookup {
 // TODO: add free solo
 export const Lookup = ({
   options,
+  label,
   name,
   defaultValue,
   className,
   btnClassName,
   placeholder,
   inputValue,
+  helperText,
+  validation,
   search = false,
   disabled = false,
   readOnly = false,
+  required = false,
   disableClearable = false,
   multiple = false,
   closeOnSelect = false,
@@ -69,11 +75,15 @@ export const Lookup = ({
     useComponentVisible(false);
 
   // Convert this to store all options instead and set selected to the ones that are selected
-  const [selectedOptions, setSelectedOptions] = useState<ILookup["options"]>(
+  interface ILookupOptions extends ArrayElement<ILookup["options"]> {
+    selected: boolean;
+    inSearch: boolean;
+  }
+  const [selectedOptions, setSelectedOptions] = useState<ILookupOptions[]>(
     []
   );
 
-  const { field } = !!name && useController({ name: name });
+  const { field } = !!name && useController({ name: name, defaultValue, rules: validation });
   const [searchTerm, setSearchTerm] = useState<string>(inputValue || "");
   const [internalValue, setInternalValue] = useState<string>("");
 
@@ -107,21 +117,21 @@ export const Lookup = ({
     setMenuPosition({ top: dropdownTop, left: dropdownLeft });
   };
 
-  const filteredOptions = useMemo(() => {
-    const lowercaseSearchterm = searchTerm.toLowerCase();
+  // const filteredOptions = useMemo(() => {
+  //   const lowercaseSearchterm = searchTerm.toLowerCase();
 
-    const filtered = options.filter((option) => {
-      if (searchTerm && filterFn) {
-        return filterFn(option, searchTerm);
-      }
+  //   const filtered = options.filter((option) => {
+  //     if (searchTerm && filterFn) {
+  //       return filterFn(option, searchTerm);
+  //     }
 
-      return (
-        !searchTerm || option.label.toLowerCase().includes(lowercaseSearchterm)
-      );
-    });
+  //     return (
+  //       !searchTerm || option.label.toLowerCase().includes(lowercaseSearchterm)
+  //     );
+  //   });
 
-    return filtered;
-  }, [options, searchTerm, filterFn]);
+  //   return filtered;
+  // }, [options, searchTerm, filterFn]);
 
   useEffect(() => {
     setSelectedOptions((prev) =>
@@ -151,7 +161,7 @@ export const Lookup = ({
       defaultValue?.map((s) => s?.trim()).slice(0, multiple ? undefined : 1) ||
       [];
 
-    const selected: ILookup["options"] = options.map((option) => {
+    const selected: ILookupOptions[] = options.map((option) => {
       const isSelected = valuesToSelect.includes(option.value.toString());
 
       return {
@@ -200,8 +210,8 @@ export const Lookup = ({
         field.onChange(
           multiple
             ? updateOptions
-                .filter((f) => f != null && f.selected)
-                .map((o) => o?.value)
+              .filter((f) => f != null && f.selected)
+              .map((o) => o?.value)
             : [option.value]
         );
       }
@@ -296,14 +306,13 @@ export const Lookup = ({
               "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
                 isComponentVisible ||
                 selectedOptions.filter((o) => o != null && o.selected).length >
-                  0 ||
+                0 ||
                 searchTerm.length > 0,
             }
           )}
           htmlFor={`input-${name}`}
         >
-          Test
-          {/* {label ?? name} {required && " *"} */}
+          {label ?? name} {required && " *"}
         </label>
         <div
           className={clsx(
@@ -313,11 +322,11 @@ export const Lookup = ({
               "pr-10":
                 !disableClearable &&
                 selectedOptions.filter((d) => d != null && d.selected).length ==
-                  0,
+                0,
               "pr-12":
                 !disableClearable &&
                 selectedOptions.filter((d) => d != null && d.selected).length >
-                  0,
+                0,
             }
           )}
         >
@@ -325,32 +334,32 @@ export const Lookup = ({
           {renderTags != null
             ? renderTags(selectedOptions.filter((o) => o != null && o.selected))
             : multiple &&
-              selectedOptions.filter((o) => o != null && o.selected).length >
-                0 &&
-              selectedOptions
-                .filter((o) => o != null && o.selected)
-                .map((option) => (
-                  <div
-                    role="button"
-                    className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
-                  >
-                    <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
-                      {option.label}
-                    </span>
-                    {!readOnly && (
-                      <svg
-                        onClick={(e) => handleOptionSelect(e, option)}
-                        className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
-                        viewBox="0 0 24 24"
-                        focusable="false"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
-                      </svg>
-                    )}
-                  </div>
-                ))}
+            selectedOptions.filter((o) => o != null && o.selected).length >
+            0 &&
+            selectedOptions
+              .filter((o) => o != null && o.selected)
+              .map((option) => (
+                <div
+                  role="button"
+                  className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
+                >
+                  <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
+                    {option.label}
+                  </span>
+                  {!readOnly && (
+                    <svg
+                      onClick={(e) => handleOptionSelect(e, option)}
+                      className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
+                      viewBox="0 0 24 24"
+                      focusable="false"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
+                    </svg>
+                  )}
+                </div>
+              ))}
 
           <input
             aria-invalid="false"
@@ -362,6 +371,7 @@ export const Lookup = ({
             disabled={disabled}
             value={internalValue}
             readOnly={readOnly}
+            required={required}
             placeholder={placeholder}
             onChange={handleInputChange}
             onFocus={handleFocus}
@@ -371,7 +381,7 @@ export const Lookup = ({
           <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
             {!disableClearable &&
               selectedOptions.filter((d) => d != null && d.selected).length >
-                0 && (
+              0 && (
                 <button
                   type="button"
                   onClick={handleClearSelection}
@@ -437,10 +447,18 @@ export const Lookup = ({
                 }
               )}
             >
-              <span className="visible inline-block px-1 opacity-0">Test</span>
+              <span className="visible inline-block px-1 opacity-0">{label ?? name} {required && " *"}</span>
             </legend>
           </fieldset>
         </div>
+        {helperText && (
+          <p
+            id={`${name}-helper-text`}
+            className="mx-3 mt-0.5 mb-0 text-left text-xs font-normal leading-5 tracking-wide text-black/70 dark:text-white/70"
+          >
+            {helperText}
+          </p>
+        )}
       </div>
 
       {/* <button
@@ -565,13 +583,13 @@ export const Lookup = ({
           aria-labelledby="dropdownButton"
         >
           {!options ||
-          selectedOptions.filter((option) => {
-            if (filterSelectedOptions) {
-              return !option?.selected && option?.inSearch;
-            }
+            selectedOptions.filter((option) => {
+              if (filterSelectedOptions) {
+                return !option?.selected && option?.inSearch;
+              }
 
-            return option.inSearch;
-          }).length == 0 ? (
+              return option.inSearch;
+            }).length == 0 ? (
             <li className="flex items-center py-2 px-4 text-zinc-500/70 dark:text-zinc-300/70">
               No options
             </li>

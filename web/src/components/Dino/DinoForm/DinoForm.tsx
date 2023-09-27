@@ -213,7 +213,6 @@ const DinoForm = (props: DinoFormProps) => {
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
-        <Alert />
         <Stepper>
           <Step title="General">
             <div className="flex flex-row items-start space-x-3">
@@ -402,8 +401,508 @@ const DinoForm = (props: DinoFormProps) => {
 
             <FieldError name="hitboxes" className="rw-field-error" /> */}
           </Step>
-          <Step title="Farming">
-            <p>test3</p>
+          <Step title="Stats">
+            <Lookup
+              name="can_destroy"
+              label="Can Destroy"
+              helperText="Structuretypes this dino can destroy"
+              options={[
+                { label: 'Thatch', value: 't', image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/thatch-wall.webp" },
+                { label: 'Wood', value: 'w', image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/wooden-wall.webp" },
+                { label: 'Adobe', value: 'a', image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/adobe-wall.webp" },
+                { label: 'Stone', value: 's', image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/stone-wall.webp" },
+                { label: 'Greenhouse', value: 'g', image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/greenhouse-wall.webp" },
+                { label: 'Metal', value: 'm', image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/metal-wall.webp" },
+                { label: 'Tek', value: 'tk', image: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/tek-wall.webp" },
+              ]}
+            />
+
+            <FieldError name="can_destroy" className="rw-field-error" />
+
+
+            <Label
+              name="base_stats"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Base stats
+            </Label>
+            {/* TODO: find a better solution for this crap */}
+            <div className="grid w-fit grid-cols-3 divide-x divide-zinc-500 text-white">
+              <div className="grid grid-rows-[8]">
+                <InputOutlined
+                  type="text"
+                  name="health"
+                  label="Base Health"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="stamina"
+                  label="Base Stamina"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="torpidity"
+                  label="Base Torpidity"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/torpidity.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="oxygen"
+                  label="Base Oxygen"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="food"
+                  label="Base Food"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="weight"
+                  label="Base Weight"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="melee_damage"
+                  label="Base Melee Damage"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="movement_speed"
+                  label="Base Movement Speed"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+              </div>
+              <div className="grid grid-rows-[8]">
+                <InputOutlined
+                  type="text"
+                  name="health"
+                  label="Wild Health"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="stamina"
+                  label="Wild Stamina"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="torpidity"
+                  label="Wild Torpidity"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/torpidity.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="oxygen"
+                  label="Wild Oxygen"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="food"
+                  label="Wild Food"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="weight"
+                  label="Wild Weight"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="melee_damage"
+                  label="Wild Melee Damage"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="movement_speed"
+                  label="Wild Movement Speed"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+              </div>
+              <div className="grid grid-rows-[8]">
+                <InputOutlined
+                  type="text"
+                  name="health"
+                  label="Tamed Health"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="stamina"
+                  label="Tamed Stamina"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="torpidity"
+                  label="Tamed Torpidity"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/torpidity.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="oxygen"
+                  label="Tamed Oxygen"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="food"
+                  label="Tamed Food"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="weight"
+                  label="Tamed Weight"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="melee_damage"
+                  label="Tamed Melee Damage"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+                <InputOutlined
+                  type="text"
+                  name="movement_speed"
+                  label="Tamed Movement Speed"
+                  icon={
+                    <img
+                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp"
+                      className="h-4"
+                    />
+                  }
+                />
+              </div>
+            </div>
+
+
+            <Lookup
+              multiple
+              label="Carryable By"
+              name="carryable_by"
+              options={[
+                {
+                  value: "e85015a5-8694-44e6-81d3-9e1fdd06061d",
+                  label: "Pteranodon",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_pteranodon.webp",
+                },
+                {
+                  value: "1e7966e7-d63d-483d-a541-1a6d8cf739c8",
+                  label: "Tropeognathus",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tropeognathus.webp",
+                },
+                {
+                  value: "b8e304b3-ab46-4232-9226-c713e5a0d22c",
+                  label: "Tapejara",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tapejara.webp",
+                },
+                {
+                  value: "da86d88a-3171-4fc9-b96d-79e8f59f1601",
+                  label: "Griffin",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_griffin.webp",
+                },
+                {
+                  value: "147922ce-912d-4ab6-b4b6-712a42a9d939",
+                  label: "Desmodus",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_desmodus.webp",
+                },
+                {
+                  value: "28971d02-8375-4bf5-af20-6acb20bf7a76",
+                  label: "Argentavis",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_argentavis.webp",
+                },
+                {
+                  value: "f924e5d6-832a-4fb3-abc0-2fa42481cee1",
+                  label: "Crystal Wyvern",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_crystalwyvern.webp",
+                },
+                {
+                  value: "7aec6bf6-357e-44ec-8647-3943ca34e666",
+                  label: "Wyvern",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_wyvern.webp",
+                },
+                {
+                  value: "2b938227-61c2-4230-b7da-5d4d55f639ae",
+                  label: "Quetzal",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_quetzal.webp",
+                },
+                {
+                  value: "b1d6f790-d15c-4813-a6c8-9e6f62fafb52",
+                  label: "Tusoteuthis",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tusoteuthis.webp",
+                },
+                {
+                  value: "d670e948-055e-45e1-adf3-e56d63236238",
+                  label: "Karkinos",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_karkinos.webp",
+                },
+                {
+                  value: "52156470-6075-487b-a042-2f1d0d88536c",
+                  label: "Kaprosuchus",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_kaprosuchus.webp",
+                },
+                {
+                  value: "f723f861-0aa3-40b5-b2d4-6c48ec0ca683",
+                  label: "Procoptodon",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_procoptodon.webp",
+                },
+                {
+                  value: "human",
+                  label: "Human",
+                  image: "https://www.dododex.com/media/item/Pet.png",
+                },
+                {
+                  value: "94708e56-483b-4eef-ad35-2b9ce0e9c669",
+                  label: "Gigantopithecus",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_gigantopithecus.webp",
+                },
+              ]}
+            />
+
+            {/* <Label
+  name="carryable_by"
+  className="rw-label"
+  errorClassName="rw-label rw-label-error"
+>
+  Carryable by
+</Label>
+            <CheckboxGroup
+              name="carryable_by"
+              defaultValue={props.dino?.carryable_by}
+              options={[
+                {
+                  value: "e85015a5-8694-44e6-81d3-9e1fdd06061d",
+                  label: "Pteranodon",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_pteranodon.webp",
+                },
+                {
+                  value: "1e7966e7-d63d-483d-a541-1a6d8cf739c8",
+                  label: "Tropeognathus",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tropeognathus.webp",
+                },
+                {
+                  value: "b8e304b3-ab46-4232-9226-c713e5a0d22c",
+                  label: "Tapejara",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tapejara.webp",
+                },
+                {
+                  value: "da86d88a-3171-4fc9-b96d-79e8f59f1601",
+                  label: "Griffin",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_griffin.webp",
+                },
+                {
+                  value: "147922ce-912d-4ab6-b4b6-712a42a9d939",
+                  label: "Desmodus",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_desmodus.webp",
+                },
+                {
+                  value: "28971d02-8375-4bf5-af20-6acb20bf7a76",
+                  label: "Argentavis",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_argentavis.webp",
+                },
+                {
+                  value: "f924e5d6-832a-4fb3-abc0-2fa42481cee1",
+                  label: "Crystal Wyvern",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_crystalwyvern.webp",
+                },
+                {
+                  value: "7aec6bf6-357e-44ec-8647-3943ca34e666",
+                  label: "Wyvern",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_wyvern.webp",
+                },
+                {
+                  value: "2b938227-61c2-4230-b7da-5d4d55f639ae",
+                  label: "Quetzal",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_quetzal.webp",
+                },
+                {
+                  value: "b1d6f790-d15c-4813-a6c8-9e6f62fafb52",
+                  label: "Tusoteuthis",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_tusoteuthis.webp",
+                },
+                {
+                  value: "d670e948-055e-45e1-adf3-e56d63236238",
+                  label: "Karkinos",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_karkinos.webp",
+                },
+                {
+                  value: "52156470-6075-487b-a042-2f1d0d88536c",
+                  label: "Kaprosuchus",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_kaprosuchus.webp",
+                },
+                {
+                  value: "f723f861-0aa3-40b5-b2d4-6c48ec0ca683",
+                  label: "Procoptodon",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_procoptodon.webp",
+                },
+                {
+                  value: "human",
+                  label: "Human",
+                  image: "https://www.dododex.com/media/item/Pet.png",
+                },
+                {
+                  value: "94708e56-483b-4eef-ad35-2b9ce0e9c669",
+                  label: "Gigantopithecus",
+                  image:
+                    "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Dino/creature_gigantopithecus.webp",
+                },
+              ]}
+            /> */}
+
+            <FieldError name="carryable_by" className="rw-field-error" />
           </Step>
         </Stepper>
 
@@ -411,6 +910,61 @@ const DinoForm = (props: DinoFormProps) => {
           <div>
             <div>
               {/* TODO: convert this to DinoStat Form */}
+              {/* TODO: Find solution for this stuff */}
+              {/* Add for fits_through, gather_eff, weight_red and the other types */}
+
+              {/* <Label
+                name="fits_through"
+                className="rw-label"
+                errorClassName="rw-label rw-label-error"
+              >
+                Fits through
+              </Label>
+
+              <CheckboxGroup
+                name="fits_through"
+                defaultValue={props.dino?.fits_through}
+                options={[
+                  {
+                    value: "322",
+                    label: "Doorframe",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-doorframe.png",
+                  },
+                  {
+                    value: "1066",
+                    label: "Double Doorframe",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-double-doorframe.png",
+                  },
+                  {
+                    value: "143",
+                    label: "Dinosaur Gateway",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-dinosaur-gateway.png",
+                  },
+                  {
+                    value: "381",
+                    label: "Behemoth Dino Gateway",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/behemoth-stone-dinosaur-gateway.png",
+                  },
+                  {
+                    value: "316",
+                    label: "Hatchframe",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-hatchframe.png",
+                  },
+                  {
+                    value: "619",
+                    label: "Giant Hatchframe",
+                    image:
+                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/giant-stone-hatchframe.png",
+                  },
+                ]}
+              />
+
+              <FieldError name="fits_through" className="rw-field-error" /> */}
               <Label
                 name="DinoStat.create.0.item_id"
                 className="rw-label"
@@ -607,63 +1161,7 @@ const DinoForm = (props: DinoFormProps) => {
               <FieldError name="weight_reduction" className="rw-field-error" />
             </div>
           </div>
-          <div>
-            {/* <div>
-              <Label
-                name="fits_through"
-                className="rw-label"
-                errorClassName="rw-label rw-label-error"
-              >
-                Fits through
-              </Label>
-
-              <CheckboxGroup
-                name="fits_through"
-                defaultValue={props.dino?.fits_through}
-                options={[
-                  {
-                    value: "322",
-                    label: "Doorframe",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-doorframe.png",
-                  },
-                  {
-                    value: "1066",
-                    label: "Double Doorframe",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-double-doorframe.png",
-                  },
-                  {
-                    value: "143",
-                    label: "Dinosaur Gateway",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-dinosaur-gateway.png",
-                  },
-                  {
-                    value: "381",
-                    label: "Behemoth Dino Gateway",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/behemoth-stone-dinosaur-gateway.png",
-                  },
-                  {
-                    value: "316",
-                    label: "Hatchframe",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stone-hatchframe.png",
-                  },
-                  {
-                    value: "619",
-                    label: "Giant Hatchframe",
-                    image:
-                      "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/giant-stone-hatchframe.png",
-                  },
-                ]}
-              />
-
-              <FieldError name="fits_through" className="rw-field-error" />
-            </div> */}
-          </div>
-          <div>
+          {/* <div>
             <div>
               <Label
                 name="can_destroy"
@@ -724,7 +1222,7 @@ const DinoForm = (props: DinoFormProps) => {
 
               <FieldError name="can_destroy" className="rw-field-error" />
             </div>
-          </div>
+          </div> */}
           <div>
             <div>
               {/* TODO: fix */}
@@ -793,7 +1291,7 @@ const DinoForm = (props: DinoFormProps) => {
           <div>
             <div>
               {/* TODO: replace with multiselectlookup? */}
-              <Label
+              {/* <Label
                 name="carryable_by"
                 className="rw-label"
                 errorClassName="rw-label rw-label-error"
@@ -897,7 +1395,7 @@ const DinoForm = (props: DinoFormProps) => {
                 ]}
               />
 
-              <FieldError name="carryable_by" className="rw-field-error" />
+              <FieldError name="carryable_by" className="rw-field-error" /> */}
             </div>
           </div>
           <div>
@@ -1038,15 +1536,14 @@ const DinoForm = (props: DinoFormProps) => {
 
         <Disclosure title="Stats" text_size="text-lg">
           <div>
-            <Label
+            {/* <Label
               name="base_stats"
               className="rw-label"
               errorClassName="rw-label rw-label-error"
             >
               Base stats
-            </Label>
-            {/* TODO: fix columns for base stats */}
-            <div className="grid w-fit grid-cols-3 divide-x divide-zinc-500 text-white">
+            </Label> */}
+            {/* <div className="grid w-fit grid-cols-3 divide-x divide-zinc-500 text-white">
               <div className="grid grid-rows-[8]">
                 <Input
                   type="text"
@@ -1317,7 +1814,7 @@ const DinoForm = (props: DinoFormProps) => {
                   }
                 />
               </div>
-            </div>
+            </div> */}
             {/* <div className="flex flex-col capitalize text-white">
           <div className="flex flex-row items-center space-x-1">
             <p className="w-5"></p>
