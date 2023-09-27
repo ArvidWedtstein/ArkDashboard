@@ -23,6 +23,7 @@ import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import Stepper, { Step } from "src/components/Util/Stepper/Stepper";
 import Input, { InputOutlined } from "src/components/Util/Input/Input";
 import Switch from "src/components/Util/Switch/Switch";
+import Alert from "src/components/Util/Alert/Alert";
 
 type FormDino = NonNullable<EditDinoById["dino"]>;
 
@@ -138,12 +139,12 @@ const DinoForm = (props: DinoFormProps) => {
       wr: props?.dino?.DinoStat.filter(
         (f) => f.type === "weight_reduction"
       ) ?? [
-        {
-          type: "",
-          value: 0,
-          item_id: null,
-        },
-      ],
+          {
+            type: "",
+            value: 0,
+            item_id: null,
+          },
+        ],
     },
   });
 
@@ -212,7 +213,7 @@ const DinoForm = (props: DinoFormProps) => {
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
-
+        <Alert />
         <Stepper>
           <Step title="General">
             <div className="flex flex-row items-start space-x-3">
@@ -474,7 +475,7 @@ const DinoForm = (props: DinoFormProps) => {
                             required: false,
                           } as const)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
-                          // defaultValue={g.type}
+                        // defaultValue={g.type}
                         />
                         <button
                           type="button"
@@ -1422,13 +1423,13 @@ const DinoForm = (props: DinoFormProps) => {
                           options={
                             data
                               ? data.itemsByCategory.items
-                                  .filter((i) => i.category === "Resource")
-                                  .map((item) => ({
-                                    type: item.type,
-                                    label: item.name,
-                                    value: item.id,
-                                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                                  }))
+                                .filter((i) => i.category === "Resource")
+                                .map((item) => ({
+                                  type: item.type,
+                                  label: item.name,
+                                  value: item.id,
+                                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                                }))
                               : []
                           }
                           search={true}
@@ -1952,13 +1953,13 @@ const DinoForm = (props: DinoFormProps) => {
                 options={
                   data
                     ? data.itemsByCategory.items
-                        .filter((i) => i.category === "Consumable")
-                        .map((item) => ({
-                          type: item.type,
-                          label: item.name,
-                          value: item.id,
-                          image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                        }))
+                      .filter((i) => i.category === "Consumable")
+                      .map((item) => ({
+                        type: item.type,
+                        label: item.name,
+                        value: item.id,
+                        image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                      }))
                     : []
                 }
                 search={true}
