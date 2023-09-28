@@ -1,4 +1,4 @@
-import { RegisterOptions, set, useController } from "@redwoodjs/forms";
+import { FieldError, RegisterOptions, set, useController } from "@redwoodjs/forms";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useComponentVisible from "../../useComponentVisible";
 import { ArrayElement } from "src/lib/formatters";
@@ -21,10 +21,12 @@ interface ILookup {
   filterSelectedOptions?: boolean;
   multiple?: boolean;
   required?: boolean;
+  selectOnFocus?: boolean;
   closeOnSelect?: boolean;
+  freeSolo?: boolean;
   inputValue?: string;
   validation?: RegisterOptions;
-  // limitTags?: number;
+  margin?: "none" | "dense" | "normal";
   options: {
     label: string;
     value: string | object | number;
@@ -58,6 +60,9 @@ export const Lookup = ({
   inputValue,
   helperText,
   validation,
+  margin = "normal",
+  freeSolo = false,
+  selectOnFocus = false,
   search = false,
   disabled = false,
   readOnly = false,
@@ -94,7 +99,6 @@ export const Lookup = ({
     if (!ref?.current) return;
 
     const spaceingToButton = 4;
-    // const btn = ref.current.firstChild as HTMLButtonElement;
     const btn = ref.current.firstChild as HTMLDivElement;
     const menu = ref.current.lastChild as HTMLDivElement;
 
@@ -102,7 +106,8 @@ export const Lookup = ({
     const menuBounds = menu.getBoundingClientRect();
 
     let dropdownLeft = btnBounds.left;
-    let dropdownTop = btn.offsetTop + btnBounds.height + spaceingToButton;
+    console.log(btnBounds.left, btn.offsetTop)
+    let dropdownTop = btnBounds.top + btnBounds.height + spaceingToButton;
 
     // Flip dropdown to right if it goes off screen
     if (dropdownLeft + menuBounds.width > window.innerWidth) {
@@ -203,7 +208,6 @@ export const Lookup = ({
         return multiple ? o : { ...o, selected: false };
       });
 
-      console.log(updateOptions.filter((f) => f.selected));
       setSelectedOptions(updateOptions);
 
       if (!!name) {
@@ -271,7 +275,12 @@ export const Lookup = ({
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     if (!disabled) {
-      setIsComponentVisible(!isComponentVisible);
+
+      if (selectOnFocus) {
+        e.target.select();
+      }
+
+      setIsComponentVisible(true);
 
       if (!isComponentVisible) {
         setSearchTerm("");
@@ -283,20 +292,20 @@ export const Lookup = ({
   return (
     <div
       className={clsx(
-        "relative flex w-fit items-center text-black dark:text-white",
+        "relative flex min-w-[10rem] w-fit items-center text-black dark:text-white",
         className
       )}
       ref={ref}
     >
       <div
         className={clsx(
-          "relative mx-0 inline-flex w-full min-w-0 flex-col p-0 align-top text-black dark:text-white"
-          // {
-          //   "pointer-events-none text-black/50 dark:text-white/50": disabled,
-          //   "mt-2 mb-1": margin === "dense",
-          //   "mt-4 mb-2": margin === "normal",
-          //   "mt-0 mb-0": margin == "none",
-          // }
+          "relative mx-0 inline-flex w-full min-w-0 flex-col p-0 align-top text-black dark:text-white",
+          {
+            "pointer-events-none text-black/50 dark:text-white/50": disabled,
+            "mt-2 mb-1": margin === "dense",
+            "mt-4 mb-2": margin === "normal",
+            "mt-0 mb-0": margin == "none",
+          }
         )}
       >
         <label
@@ -437,7 +446,7 @@ export const Lookup = ({
             <legend
               style={{ float: "unset", height: "11px" }}
               className={clsx(
-                "invisible block w-auto max-w-[.01px] overflow-hidden whitespace-nowrap p-0 !text-xs transition-all duration-75",
+                "invisible block w-auto max-w-[.01px] overflow-hidden whitespace-nowrap !p-0 !text-xs transition-all duration-75",
                 {
                   "!max-w-full":
                     isComponentVisible ||
@@ -451,6 +460,10 @@ export const Lookup = ({
             </legend>
           </fieldset>
         </div>
+
+        {!!name && (
+          <FieldError name={name} className="rw-field-error" />
+        )}
         {helperText && (
           <p
             id={`${name}-helper-text`}
@@ -532,7 +545,7 @@ export const Lookup = ({
           left: `${menuPosition.left}px`,
         }}
         className={clsx(
-          "absolute z-30 w-fit min-w-[15rem] max-w-full select-none rounded-lg border border-zinc-500 bg-white shadow transition-all duration-300 ease-in-out dark:bg-zinc-800",
+          "fixed z-30 w-fit min-w-[15rem] max-w-full select-none rounded-lg border border-zinc-500 bg-white shadow transition-all duration-300 ease-in-out dark:bg-zinc-800",
           {
             invisible: !isComponentVisible,
             visible: isComponentVisible,

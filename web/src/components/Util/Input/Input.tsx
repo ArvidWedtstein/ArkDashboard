@@ -7,13 +7,13 @@ import {
   TextAreaFieldProps,
   useController,
   useErrorStyles,
-  useRegister,
 } from "@redwoodjs/forms";
 import clsx from "clsx";
 import { useState } from "react";
-import { ArrayElement, isEmpty } from "src/lib/formatters";
+import { isEmpty } from "src/lib/formatters";
 
 type InputProps = {
+  name?: string;
   helperText?: string;
   label?: string;
   icon?: React.ReactNode;
@@ -22,28 +22,28 @@ type InputProps = {
   fullWidth?: boolean;
   margin?: "none" | "dense" | "normal";
   type?:
-    | "number"
-    | "button"
-    | "time"
-    | "image"
-    | "text"
-    | "hidden"
-    | "color"
-    | "search"
-    | "date"
-    | "datetime-local"
-    | "email"
-    | "file"
-    | "month"
-    | "password"
-    | "radio"
-    | "range"
-    | "reset"
-    | "submit"
-    | "tel"
-    | "url"
-    | "week"
-    | "textarea";
+  | "number"
+  | "button"
+  | "time"
+  | "image"
+  | "text"
+  | "hidden"
+  | "color"
+  | "search"
+  | "date"
+  | "datetime-local"
+  | "email"
+  | "file"
+  | "month"
+  | "password"
+  | "radio"
+  | "range"
+  | "reset"
+  | "submit"
+  | "tel"
+  | "url"
+  | "week"
+  | "textarea";
   onFocus?: (
     e:
       | React.FocusEvent<HTMLInputElement>
@@ -54,8 +54,8 @@ type InputProps = {
       | React.FocusEvent<HTMLInputElement>
       | React.FocusEvent<HTMLTextAreaElement>
   ) => void;
-} & Omit<InputFieldProps, "type"> &
-  Omit<TextAreaFieldProps, "type">;
+} & Omit<InputFieldProps, "type" | "name"> &
+  Omit<TextAreaFieldProps, "type" | "name">;
 
 const Input = ({
   name,
@@ -135,12 +135,12 @@ export const InputOutlined = ({
 }: InputProps) => {
   const [focus, setFocus] = useState(false);
 
-  const { field } = useController({
+  const { field } = !!name ? useController({
     name: name,
     rules: validation,
     defaultValue: defaultValue || value || "",
     ...props,
-  });
+  }) : { field: null };
 
   const isLeftIcon = icon && iconPosition == "left";
   const handleFocus = (
@@ -158,7 +158,7 @@ export const InputOutlined = ({
       | React.FocusEvent<HTMLTextAreaElement>
   ) => {
     setFocus(e.target.value !== "");
-    field.onBlur();
+    !!name && field.onBlur();
 
     props.onBlur?.(e);
   };
@@ -208,7 +208,31 @@ export const InputOutlined = ({
             {icon}
           </div>
         )}
-        {type === "textarea" ? (
+        {!!!name ? (
+          <input
+            aria-invalid="false"
+            id={`input-${name}`}
+            type={type}
+            className={clsx(
+              "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none disabled:pointer-events-none",
+              {
+                "pl-0": isLeftIcon,
+                "pr-0": icon && !isLeftIcon,
+              }
+            )}
+            errorClassName="peer rw-input-error"
+            disabled={disabled}
+            onChange={(e) => {
+              !!name && field.onChange(e);
+              props?.onChange?.(e);
+            }}
+            {...field}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            aria-describedby={helperText ? `${name}-helper-text` : null}
+            {...props}
+          />
+        ) : type === "textarea" ? (
           <TextAreaField
             name={name}
             className={clsx(
