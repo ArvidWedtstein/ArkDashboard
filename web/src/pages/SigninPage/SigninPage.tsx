@@ -12,6 +12,7 @@ import { MetaTags } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { RouteFocus } from "@redwoodjs/router";
 import { useAuth } from "src/auth";
+import { InputOutlined } from "src/components/Util/Input/Input";
 
 type FormSigninPage = NonNullable<{
   email: string;
@@ -66,9 +67,39 @@ const SigninPage = () => {
           <div className="p-2">
             <Form<FormSigninPage>
               onSubmit={onSubmit}
-              className="rw-form-wrapper flex flex-col items-center justify-center"
+              className="rw-form-wrapper flex flex-col items-center justify-center flex flex-col"
             >
-              <Label
+              <InputOutlined
+                name="email"
+                label="Email"
+                type="email"
+                autoFocus
+                placeholder="ola@nordmann.com"
+                autoComplete="email"
+                validation={{
+                  required: {
+                    value: true,
+                    message: "Email is required",
+                  },
+                  pattern: {
+                    message: "Email must be valid",
+                    value: /[^@]+@[^\.]+\..+/,
+                  },
+                }}
+                icon={
+                  <svg
+                    aria-hidden="true"
+                    className="h-5 w-5 text-gray-500 dark:text-gray-400"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                  </svg>
+                }
+              />
+              {/* <Label
                 name="email"
                 className="rw-label"
                 errorClassName="rw-label rw-label-error"
@@ -109,9 +140,21 @@ const SigninPage = () => {
                   />
                 </RouteFocus>
                 <FieldError name="email" className="rw-field-error" />
-              </div>
+              </div> */}
 
-              <Label
+              <InputOutlined
+                name="password"
+                label="Password"
+                type="password"
+                autoComplete="current-password"
+                validation={{
+                  required: {
+                    value: true,
+                    message: "Password is required",
+                  },
+                }}
+              />
+              {/* <Label
                 name="password"
                 className="rw-label"
                 errorClassName="rw-label rw-label-error"
@@ -130,7 +173,7 @@ const SigninPage = () => {
                   },
                 }}
               />
-              <FieldError name="password" className="rw-field-error" />
+              <FieldError name="password" className="rw-field-error" /> */}
 
               <div className="rw-link mt-1">
                 <Link to={routes.forgotPassword()} className="rw-forgot-link">
