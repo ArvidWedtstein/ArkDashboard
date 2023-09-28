@@ -1,4 +1,9 @@
-import { FieldError, RegisterOptions, set, useController } from "@redwoodjs/forms";
+import {
+  FieldError,
+  RegisterOptions,
+  set,
+  useController,
+} from "@redwoodjs/forms";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useComponentVisible from "../../useComponentVisible";
 import { ArrayElement } from "src/lib/formatters";
@@ -84,11 +89,10 @@ export const Lookup = ({
     selected: boolean;
     inSearch: boolean;
   }
-  const [selectedOptions, setSelectedOptions] = useState<ILookupOptions[]>(
-    []
-  );
+  const [selectedOptions, setSelectedOptions] = useState<ILookupOptions[]>([]);
 
-  const { field } = !!name && useController({ name: name, defaultValue, rules: validation });
+  const { field } =
+    !!name && useController({ name: name, defaultValue, rules: validation });
   const [searchTerm, setSearchTerm] = useState<string>(inputValue || "");
   const [internalValue, setInternalValue] = useState<string>("");
 
@@ -99,14 +103,14 @@ export const Lookup = ({
     if (!ref?.current) return;
 
     const spaceingToButton = 4;
-    const btn = ref.current.firstChild as HTMLDivElement;
+    const btn = (ref.current.firstChild as HTMLDivElement)
+      .children[1] as HTMLDivElement;
     const menu = ref.current.lastChild as HTMLDivElement;
 
     const btnBounds = btn.getBoundingClientRect();
     const menuBounds = menu.getBoundingClientRect();
 
     let dropdownLeft = btnBounds.left;
-    console.log(btnBounds.left, btn.offsetTop)
     let dropdownTop = btnBounds.top + btnBounds.height + spaceingToButton;
 
     // Flip dropdown to right if it goes off screen
@@ -121,22 +125,6 @@ export const Lookup = ({
 
     setMenuPosition({ top: dropdownTop, left: dropdownLeft });
   };
-
-  // const filteredOptions = useMemo(() => {
-  //   const lowercaseSearchterm = searchTerm.toLowerCase();
-
-  //   const filtered = options.filter((option) => {
-  //     if (searchTerm && filterFn) {
-  //       return filterFn(option, searchTerm);
-  //     }
-
-  //     return (
-  //       !searchTerm || option.label.toLowerCase().includes(lowercaseSearchterm)
-  //     );
-  //   });
-
-  //   return filtered;
-  // }, [options, searchTerm, filterFn]);
 
   useEffect(() => {
     setSelectedOptions((prev) =>
@@ -214,8 +202,8 @@ export const Lookup = ({
         field.onChange(
           multiple
             ? updateOptions
-              .filter((f) => f != null && f.selected)
-              .map((o) => o?.value)
+                .filter((f) => f != null && f.selected)
+                .map((o) => o?.value)
             : [option.value]
         );
       }
@@ -275,7 +263,6 @@ export const Lookup = ({
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     if (!disabled) {
-
       if (selectOnFocus) {
         e.target.select();
       }
@@ -292,7 +279,7 @@ export const Lookup = ({
   return (
     <div
       className={clsx(
-        "relative flex min-w-[10rem] w-fit items-center text-black dark:text-white",
+        "relative flex w-fit min-w-[10rem] items-center text-black dark:text-white",
         className
       )}
       ref={ref}
@@ -315,7 +302,7 @@ export const Lookup = ({
               "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
                 isComponentVisible ||
                 selectedOptions.filter((o) => o != null && o.selected).length >
-                0 ||
+                  0 ||
                 searchTerm.length > 0,
             }
           )}
@@ -331,11 +318,11 @@ export const Lookup = ({
               "pr-10":
                 !disableClearable &&
                 selectedOptions.filter((d) => d != null && d.selected).length ==
-                0,
+                  0,
               "pr-12":
                 !disableClearable &&
                 selectedOptions.filter((d) => d != null && d.selected).length >
-                0,
+                  0,
             }
           )}
         >
@@ -343,32 +330,32 @@ export const Lookup = ({
           {renderTags != null
             ? renderTags(selectedOptions.filter((o) => o != null && o.selected))
             : multiple &&
-            selectedOptions.filter((o) => o != null && o.selected).length >
-            0 &&
-            selectedOptions
-              .filter((o) => o != null && o.selected)
-              .map((option) => (
-                <div
-                  role="button"
-                  className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
-                >
-                  <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
-                    {option.label}
-                  </span>
-                  {!readOnly && (
-                    <svg
-                      onClick={(e) => handleOptionSelect(e, option)}
-                      className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
-                      viewBox="0 0 24 24"
-                      focusable="false"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
-                    </svg>
-                  )}
-                </div>
-              ))}
+              selectedOptions.filter((o) => o != null && o.selected).length >
+                0 &&
+              selectedOptions
+                .filter((o) => o != null && o.selected)
+                .map((option) => (
+                  <div
+                    role="button"
+                    className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
+                  >
+                    <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
+                      {option.label}
+                    </span>
+                    {!readOnly && (
+                      <svg
+                        onClick={(e) => handleOptionSelect(e, option)}
+                        className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
+                        viewBox="0 0 24 24"
+                        focusable="false"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
+                      </svg>
+                    )}
+                  </div>
+                ))}
 
           <input
             aria-invalid="false"
@@ -390,7 +377,7 @@ export const Lookup = ({
           <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
             {!disableClearable &&
               selectedOptions.filter((d) => d != null && d.selected).length >
-              0 && (
+                0 && (
                 <button
                   type="button"
                   onClick={handleClearSelection}
@@ -456,14 +443,14 @@ export const Lookup = ({
                 }
               )}
             >
-              <span className="visible inline-block px-1 opacity-0">{label ?? name} {required && " *"}</span>
+              <span className="visible inline-block px-1 opacity-0">
+                {label ?? name} {required && " *"}
+              </span>
             </legend>
           </fieldset>
         </div>
 
-        {!!name && (
-          <FieldError name={name} className="rw-field-error" />
-        )}
+        {!!name && <FieldError name={name} className="rw-field-error" />}
         {helperText && (
           <p
             id={`${name}-helper-text`}
@@ -596,13 +583,13 @@ export const Lookup = ({
           aria-labelledby="dropdownButton"
         >
           {!options ||
-            selectedOptions.filter((option) => {
-              if (filterSelectedOptions) {
-                return !option?.selected && option?.inSearch;
-              }
+          selectedOptions.filter((option) => {
+            if (filterSelectedOptions) {
+              return !option?.selected && option?.inSearch;
+            }
 
-              return option.inSearch;
-            }).length == 0 ? (
+            return option.inSearch;
+          }).length == 0 ? (
             <li className="flex items-center py-2 px-4 text-zinc-500/70 dark:text-zinc-300/70">
               No options
             </li>

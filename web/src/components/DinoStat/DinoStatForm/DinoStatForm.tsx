@@ -16,6 +16,7 @@ import { InputOutlined } from "src/components/Util/Input/Input";
 type FormDinoStat = NonNullable<EditDinoStatById["dinoStat"]>;
 
 interface DinoStatFormProps {
+  dino_id?: FormDinoStat["dino_id"];
   dinoStat?: EditDinoStatById["dinoStat"];
   onSave: (data: UpdateDinoStatInput, id?: FormDinoStat["id"]) => void;
   error: RWGqlError;
@@ -37,23 +38,32 @@ const DinoStatForm = (props: DinoStatFormProps) => {
           listClassName="rw-form-error-list"
         />
 
-        {/* <div className="flex flex-col space-y-3">
-
-        </div> */}
         <div className="flex flex-row space-x-3">
           {/* TODO: insert items here */}
-          <Lookup options={[]} name="item_id" defaultValue={[props.dinoStat?.item_id.toString()]} label="Item" validation={{ required: true }} />
-          <Lookup options={[
-            { value: "food", label: "Food" },
-            { value: "gather_efficiency", label: "Gather Efficiency" },
-            { value: "weight_reduction", label: "Weight Reduction" },
-            { value: "immobilized_by", label: "Immobilized By" },
-            { value: "fits_through", label: "Fits Through" },
-            { value: "drops", label: "Drops" },
-            { value: "saddle", label: "Saddle" },
-            { value: "bossrecipe", label: "Bossrecipe" },
-            { value: "engrams", label: "Engrams" },
-          ]} name="type" defaultValue={[props.dinoStat?.type]} label="Type" />
+          <Lookup
+            options={[]}
+            name="item_id"
+            defaultValue={[props.dinoStat?.item_id.toString()]}
+            label="Item"
+            validation={{ required: true }}
+          />
+          <Lookup
+            options={[
+              { value: "food", label: "Food" },
+              { value: "gather_efficiency", label: "Gather Efficiency" },
+              { value: "weight_reduction", label: "Weight Reduction" },
+              { value: "immobilized_by", label: "Immobilized By" },
+              { value: "fits_through", label: "Fits Through" },
+              { value: "drops", label: "Drops" },
+              { value: "saddle", label: "Saddle" },
+              { value: "bossrecipe", label: "Bossrecipe" },
+              { value: "engrams", label: "Engrams" },
+            ]}
+            name="type"
+            defaultValue={[props.dinoStat?.type]}
+            closeOnSelect
+            label="Type"
+          />
         </div>
         <Label
           name="dino_id"
@@ -65,7 +75,7 @@ const DinoStatForm = (props: DinoStatFormProps) => {
 
         <TextField
           name="dino_id"
-          defaultValue={props.dinoStat?.dino_id}
+          defaultValue={props?.dinoStat?.dino_id ?? props.dino_id}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ required: true }}
