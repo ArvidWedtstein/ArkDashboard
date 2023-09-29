@@ -186,7 +186,7 @@ export const InputOutlined = ({
         style={labelStyle}
         className={clsx(labelClassName, {
           "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
-            focus || !isEmpty(field?.value),
+            focus || !isEmpty(field?.value) || !!props?.placeholder,
           "translate-x-8": isLeftIcon,
         })}
         name={name}
@@ -292,7 +292,7 @@ export const InputOutlined = ({
           className={clsx(
             "pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded border border-zinc-500 px-2 text-left transition duration-75 peer-invalid:!border-red-500 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
             {
-              "top-0": focus || !isEmpty(field?.value),
+              "top-0": focus || !isEmpty(field?.value) || !!props?.placeholder,
             }
           )}
         >
@@ -301,7 +301,7 @@ export const InputOutlined = ({
             className={clsx(
               "invisible block w-auto max-w-[.01px] overflow-hidden whitespace-nowrap p-0 !text-xs transition-all duration-75",
               {
-                "!max-w-full": focus || !isEmpty(field?.value),
+                "!max-w-full": focus || !isEmpty(field?.value) || !!props?.placeholder,
               }
             )}
           >

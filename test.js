@@ -1,5 +1,5 @@
 console.time("normal");
-const Valg = require("./web/public/radiation_zones.json");
+const Valg = require("./web/public/species.json");
 
 var partition = function (arr, length) {
   var result = [];
@@ -17,6 +17,7 @@ var partition = function (arr, length) {
 let biomes = [
   `INSERT INTO public."MapRegion" ("map_id", "name", "wind", "temperature", "priority", "outside", "start_x", "start_y", "start_z", "end_x", "end_y", "end_z", "radiation") VALUES`,
 ];
+
 // Valg.biomes.forEach((x) => {
 //   x.boxes.forEach((y) => {
 //     biomes.push(
@@ -43,17 +44,45 @@ let biomes = [
 //     );
 //   });
 // });
-Valg.radiationVolumes.forEach((x) => {
-  biomes.push(
-    `(1, null, null, null, 2, false, ${x.start.x}, ${x.start.y}, ${x.start.z}, ${x.end.x}, ${x.end.y}, ${x.end.z}, true)`
-  );
-});
+// Valg.radiationVolumes.forEach((x) => {
+//   biomes.push(
+//     `(1, null, null, null, 2, false, ${x.start.x}, ${x.start.y}, ${x.start.z}, ${x.end.x}, ${x.end.y}, ${x.end.z}, true)`
+//   );
+// });
 
-require("fs").writeFile(`insert.txt`, biomes.join(",\n"), (error) => {
+require("fs").writeFile(`insert.txt`, speciesAttacks.join("\n"), (error) => {
   if (error) {
     throw error;
   }
 });
+
+[
+  "isBigDino",
+  "isBossDino",
+  "isCarnivore",
+  "canBeTorpid",
+  "allowRiding",
+  "canBeDragged",
+  "canDrag",
+  "doStepDamage",
+  "isTameable",
+  "allowMountedWeaponry",
+  "isAmphibious",
+  "isWaterDino",
+  "canBeWildTrappedWithFishBasket",
+  "canBeTamedWithFishBasket",
+  "allowFlyerLandedRider",
+  "canMountOnHumans",
+  "isFlyerDino",
+  "preventNeuter",
+  "isCorrupted",
+  "isRaidDino",
+  "isRobot",
+  "preventCharacterBasing",
+  "flyerAllowRidingInCaves",
+  "dieIfLeftWater",
+  "allowCarryFlyerDinos",
+];
 return;
 // let countCrates = 0;
 // let countnonCrates = [];

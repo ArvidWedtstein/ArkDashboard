@@ -143,6 +143,10 @@ model Dino {
   tamable                        Boolean?   @default(true)
   breedable                      Boolean?   @default(true)
   bp                             String?
+  default_dmg                    Float?     @default(0)
+  default_swing_radius           Float?     @default(0)
+  targeting_team_name            String?
+  flags                          Json?      @default("[]")
   DinoStat                       DinoStat[]
 }
 
@@ -461,6 +465,7 @@ model MapRegion {
   end_x       Decimal?  @db.Decimal
   end_y       Decimal?  @db.Decimal
   end_z       Decimal?  @db.Decimal
+  radiation   Boolean?  @default(false)
   Map         Map       @relation(fields: [map_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([map_id, start_x, start_y, start_z, end_x, end_y, end_z])

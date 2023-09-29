@@ -4,8 +4,6 @@ import {
   FieldError,
   Label,
   TextField,
-  TextAreaField,
-  CheckboxField,
   Submit,
   useForm,
   useFieldArray,
@@ -55,6 +53,7 @@ const DinoForm = (props: DinoFormProps) => {
   const [disableFood, setDisableFood] = useState(
     props.dino?.disable_food ?? false
   );
+
   const [loadItems, { called, loading, data }] = useLazyQuery(ITEMQUERY, {
     variables: { category: "Resource,Consumable" },
     onCompleted: (data) => {
@@ -76,7 +75,7 @@ const DinoForm = (props: DinoFormProps) => {
   // https://www.apollographql.com/docs/react/api/react/hooks/#uselazyquery
 
   // TODO: fix this
-  const [basestat, setBasestat] = useState({
+  const [basestat, setBasestat] = useState(props.dino?.base_stats ?? {
     d: { b: 0, t: 0, w: 0, a: [{ b: 0 }] },
     f: { b: 0, t: 0, w: 0 },
     h: { b: 0, t: 0, w: 0 },
@@ -87,7 +86,42 @@ const DinoForm = (props: DinoFormProps) => {
     w: { b: 0, t: 0, w: 0 },
   });
 
-  const [movement, setMovement] = useState({
+  type Movement = {
+    d?: {
+      walk?: {
+        base?: number;
+        sprint?: number;
+      };
+      swim?: {
+        base?: number;
+        sprint?: number;
+      };
+      fly?: {
+        base?: number;
+        sprint?: number;
+      };
+    };
+    w?: {
+      walk?: {
+        base?: number;
+        sprint?: number;
+      };
+      swim?: {
+        base?: number;
+        sprint?: number;
+      };
+      fly?: {
+        base?: number;
+        sprint?: number;
+      };
+    };
+    staminaRates: {
+      sprint?: number;
+      swimOrFly?: number;
+    };
+  }
+
+  const [movement, setMovement] = useState<Movement>((props.dino?.movement as Movement) ?? {
     w: {
       walk: {
         base: 0,
@@ -140,12 +174,12 @@ const DinoForm = (props: DinoFormProps) => {
       wr: props?.dino?.DinoStat.filter(
         (f) => f.type === "weight_reduction"
       ) ?? [
-        {
-          type: "",
-          value: 0,
-          item_id: null,
-        },
-      ],
+          {
+            type: "",
+            value: 0,
+            item_id: null,
+          },
+        ],
     },
   });
 
@@ -167,7 +201,6 @@ const DinoForm = (props: DinoFormProps) => {
     name: "attack", // the name of the field array in your form data
   });
 
-  const statEntries = useMemo(() => Object.entries(basestat), [basestat]);
 
   const [eats, setEats] = useState([]);
 
@@ -292,9 +325,145 @@ const DinoForm = (props: DinoFormProps) => {
               className="mt-5"
               defaultChecked={props.dino?.disable_mult}
             />
+
+
+
+            <Label
+              name="type"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Dino Type
+            </Label>
+
+            <CheckboxGroup
+              name="type"
+              defaultValue={props.dino?.type}
+              validation={{
+                required: true,
+              }}
+              options={[
+                {
+                  value: "flyer",
+                  label: "Flyer",
+                  image:
+                    "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/7/78/Landing.png",
+                },
+                {
+                  value: "ground",
+                  label: "Ground",
+                  image:
+                    "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/f/f5/Slow.png",
+                },
+                {
+                  value: "water",
+                  label: "Water",
+                  image:
+                    "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/9/9d/Water.png",
+                },
+                {
+                  value: "amphibious",
+                  label: "Amphibious",
+                  image:
+                    "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/4/44/Swim_Mode.png",
+                },
+                {
+                  value: "boss",
+                  label: "Boss",
+                  image:
+                    "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/5/50/Cowardice.png",
+                },
+              ]}
+            />
+
+            <FieldError name="type" className="rw-field-error" />
+
+            <Lookup
+              label="Temperament"
+              name="temperament"
+              search
+              options={[
+                { value: 'Aggressive', label: 'Aggressive' },
+                { value: 'Angry', label: 'Angry' },
+                { value: 'Cowardly', label: 'Cowardly' },
+                { value: 'Curious', label: 'Curious' },
+                { value: 'Defensive', label: 'Defensive' },
+                { value: 'Doctile', label: 'Doctile' },
+                { value: 'Elusive', label: 'Elusive' },
+                { value: 'Evasive', label: 'Evasive' },
+                { value: 'Evasive, Aggressive when attacked', label: 'Evasive, Aggressive when attacked' },
+                { value: 'Extemely Territorial', label: 'Extemely Territorial' },
+                { value: 'Fearful', label: 'Fearful' },
+                { value: 'Flippant', label: 'Flippant' },
+                { value: 'Friendly', label: 'Friendly' },
+                { value: 'Highly Aggressive', label: 'Highly Aggressive' },
+                { value: 'Languorous', label: 'Languorous' },
+                { value: 'Loyal', label: 'Loyal' },
+                { value: 'Naive', label: 'Naive' },
+                { value: 'Neutral', label: 'Neutral' },
+                { value: 'Nocturnally Aggressive', label: 'Nocturnally Aggressive' },
+                { value: 'Oblivious', label: 'Oblivious' },
+                { value: 'Opportunistic', label: 'Opportunistic' },
+                { value: 'Passive', label: 'Passive' },
+                { value: 'Patient', label: 'Patient' },
+                { value: 'Reactive', label: 'Reactive' },
+                { value: 'Short-Tempered', label: 'Short-Tempered' },
+                { value: 'Skittish', label: 'Skittish' },
+                { value: 'Stupid', label: 'Stupid' },
+                { value: 'Territorial', label: 'Territorial' },
+              ]}
+            />
+
+            <Lookup
+
+              label="Target Team"
+              name="targeting_team_name"
+              options={[
+                { value: 'Herbivores', label: 'Herbivores' },
+                { value: 'Herbivore_Small', label: 'Herbivore Small' },
+                { value: 'Herbivores_Medium', label: 'Herbivores Medium' },
+                { value: 'Herbivores_Medium_Aggressive', label: 'Herbivores Medium Aggressive' },
+                { value: 'Herbivores_Large', label: 'Herbivores Large' },
+                { value: 'Herbivores_Large_Aggressive', label: 'Herbivores Large Aggressive' },
+                { value: 'Herbivores_Large_Aggressive_PlayersOrAggressors', label: 'Herbivores Large Aggressive PlayersOrAggressors' },
+                { value: 'Herbivore_Water', label: 'Herbivore Water' },
+                { value: 'TargetOnlyPlayers', label: 'TargetOnlyPlayers' },
+                { value: 'Carnivores_Medium_TargetPlayerOrTamed', label: 'Carnivores Medium TargetPlayerOrTamed' },
+                { value: 'Robot_Neutral', label: 'Robot Neutral' },
+                { value: 'Carnivores_Medium', label: 'Carnivores Medium' },
+                { value: 'Carnivore_Water_PlayerOrTamed', label: 'Carnivore Water PlayerOrTamed' },
+                { value: 'Carnivore_Water', label: 'Carnivores Water' },
+                { value: 'Carnivores_High', label: 'Carnivores High' },
+                { value: 'Carnivores_Low', label: 'Carnivores Low' },
+                { value: 'Bot', label: 'Bot' },
+              ]}
+            />
+
+            <InputOutlined
+              label="Release Date"
+              margin="normal"
+              name="released"
+              defaultValue={props.dino?.released || null}
+              placeholder="YYYY-MM-DD"
+              type="date"
+            />
+
+            <br />
+
+            <InputOutlined
+              label="Blueprint"
+              name="bp"
+              margin="normal"
+              defaultValue={props.dino?.bp}
+              type="text"
+            />
+
+            {/* TODO: add newer fields. */}
+            {/* FIELD checklist:
+            ["flags","multipliers","default_dmg","default_swing_radius","hitboxes","targeting_team_name","icon","image"*/}
           </Step>
 
-          <Step title="Food" className="flex flex-col-reverse">
+          <Step title="Food" className="flex flex-col-reverse" optional>
             <Switch
               name="disable_food"
               onLabel="Disable Food?"
@@ -304,10 +473,39 @@ const DinoForm = (props: DinoFormProps) => {
               }}
             />
 
+            <Lookup
+              label="Diet"
+              name="diet"
+              options={[
+                { value: 'Sanguivore', label: 'Sanguivore' },
+                { value: 'Minerals', label: 'Minerals' },
+                { value: 'Flame Eater', label: 'Flame Eater' },
+                { value: 'Herbivore', label: 'Herbivore' },
+                { value: 'Piscivore', label: 'Piscivore' },
+                { value: 'Coprophagic', label: 'Coprophagic' },
+                { value: 'Carnivore', label: 'Carnivore' },
+                { value: 'Bottom Feeder', label: 'Bottom Feeder' },
+                { value: 'Sweet Tooth', label: 'Sweet Tooth' },
+                { value: 'Carrion-Feeder', label: 'Carrion Feeder' },
+                { value: 'Sanguinivore', label: 'Sanguinivore' },
+                { value: 'Omnivore', label: 'Omnivore' },
+              ]}
+            />
+
+
             <InputOutlined
               name="food_consumption_base"
               label="Food consumption base multiplier"
               defaultValue={props.dino?.food_consumption_base}
+              type="number"
+              emptyAs={0}
+              validation={{ valueAsNumber: true }}
+              margin="normal"
+            />
+            <InputOutlined
+              name="food_consumption_mult"
+              label="Food consumption base multiplier"
+              defaultValue={props.dino?.food_consumption_mult}
               type="number"
               emptyAs={0}
               validation={{ valueAsNumber: true }}
@@ -324,7 +522,7 @@ const DinoForm = (props: DinoFormProps) => {
             />
           </Step>
 
-          <Step title="Taming" className="flex flex-col">
+          <Step title="Taming" className="flex flex-col" optional>
             <InputOutlined
               label="Taming Notice"
               margin="normal"
@@ -1064,9 +1262,134 @@ const DinoForm = (props: DinoFormProps) => {
             />
 
             {/* TODO: add info box here about base point */}
+
+
+            <div className="flex flex-row items-start space-x-3">
+              <InputOutlined
+                name="default_dmg"
+                label="Default Damage"
+                defaultValue={props.dino?.default_dmg || 0}
+                type="number"
+                margin="normal"
+              />
+
+              <InputOutlined
+                name="default_swing_radius"
+                label="Default Swing Radius"
+                defaultValue={props.dino?.default_swing_radius || 0}
+                type="number"
+                margin="normal"
+              />
+            </div>
+            {/* https://react-hook-form.com/docs/usefieldarray */}
+            <Label
+              name="attack"
+              className="rw-label"
+              errorClassName="rw-label rw-label-error"
+            >
+              Attacks
+            </Label>
+
+            {attackFields.map((atk, index) => (
+              <div
+                className="rw-button-group !mt-0 justify-start"
+                role="group"
+                key={`attack-${index}`}
+              >
+                <input
+                  {...register(`attack.${index}.name`, { required: true })}
+                  type="text"
+                  className="rw-input mt-0"
+                  defaultValue={atk.name}
+                  placeholder={"Name of attack"}
+                />
+                <input
+                  {...register(`attack.${index}.dmg`, { required: false })}
+                  type="number"
+                  className="rw-input mt-0 max-w-[8rem]"
+                  defaultValue={atk.dmg}
+                  placeholder={"Damage"}
+                />
+                <input
+                  {...register(`attack.${index}.radius`, { required: false })}
+                  type="number"
+                  className="rw-input mt-0 max-w-[8rem]"
+                  defaultValue={atk.radius}
+                  placeholder={"Radius"}
+                />
+                <input
+                  {...register(`attack.${index}.stamina`, { required: false })}
+                  type="number"
+                  className="rw-input mt-0 max-w-[8rem]"
+                  defaultValue={atk.stamina}
+                  placeholder={"Stamina drained per use"}
+                />
+                <input
+                  {...register(`attack.${index}.interval`, { required: false })}
+                  type="number"
+                  className="rw-input mt-0 max-w-[8rem]"
+                  defaultValue={atk.interval}
+                  placeholder={"Cooldown"}
+                />
+                <button
+                  type="button"
+                  className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
+                  onClick={() => removeAttack(index)}
+                >
+                  Remove
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 448 512"
+                    className="rw-button-icon-end"
+                  >
+                    <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
+                  </svg>
+                </button>
+              </div>
+            ))}
+            <div className="rw-button-group justify-start">
+              <button
+                type="button"
+                className="rw-button rw-button-gray"
+                onClick={() =>
+                  appendAttack({
+                    name: "",
+                    dmg: null,
+                    radius: null,
+                    stamina: null,
+                    interval: null,
+                  })
+                }
+              >
+                Add Attack
+              </button>
+            </div>
+            {/*
+        <TextField
+          name="attack"
+          defaultValue={JSON.stringify(props.dino?.attack)}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          emptyAs={"undefined"}
+          validation={{ valueAsJSON: true }}
+        /> */}
+
+            <FieldError name="attack" className="rw-field-error" />
           </Step>
 
-          <Step title="Breeding">
+          <Step title="Mating">
+            <Switch
+              name="breedable"
+              onLabel="Breedable"
+              defaultChecked={props.dino?.breedable}
+              helperText="Is this dino breedable?"
+            />
+
+            <FieldError
+              name="breedable"
+              className="rw-field-error"
+            />
+
             <div className="flex flex-row items-start space-x-3">
               <InputOutlined
                 name="egg_min"
@@ -1089,17 +1412,51 @@ const DinoForm = (props: DinoFormProps) => {
 
             <div className="flex flex-row items-start space-x-3">
               <InputOutlined
-                name="maturation_time"
-                label="Maturation time"
-                defaultValue={props.dino?.egg_min || 0}
+                name="mating_cooldown_min"
+                label="Mating cooldown minimum"
+                defaultValue={props.dino?.mating_cooldown_min || 0}
                 type="number"
                 margin="normal"
               />
 
               <InputOutlined
+                name="mating_cooldown_max"
+                label="Mating cooldown maximum"
+                defaultValue={props.dino?.mating_cooldown_max || 0}
+                type="number"
+                margin="normal"
+              />
+            </div>
+
+            <div className="flex flex-row items-start space-x-3">
+              <InputOutlined
                 name="incubation_time"
                 label="Incubation time"
                 defaultValue={props.dino?.incubation_time}
+                type="number"
+                margin="normal"
+              />
+
+              <InputOutlined
+                name="maturation_time"
+                label="Maturation time"
+                defaultValue={props.dino?.maturation_time || 0}
+                type="number"
+                margin="normal"
+              />
+
+              <InputOutlined
+                name="gestation_time"
+                label="Gestation time"
+                defaultValue={props.dino?.gestation_time || 0}
+                type="number"
+                margin="normal"
+              />
+
+              <InputOutlined
+                name="baby_food_consumption_mult"
+                label="Baby food consumption multiplier"
+                defaultValue={props.dino?.baby_food_consumption_mult || 0}
                 type="number"
                 margin="normal"
               />
@@ -1290,7 +1647,7 @@ const DinoForm = (props: DinoFormProps) => {
                             required: false,
                           } as const)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
-                          // defaultValue={g.type}
+                        // defaultValue={g.type}
                         />
                         <button
                           type="button"
@@ -1448,13 +1805,13 @@ const DinoForm = (props: DinoFormProps) => {
                           options={
                             data
                               ? data.itemsByCategory.items
-                                  .filter((i) => i.category === "Resource")
-                                  .map((item) => ({
-                                    type: item.type,
-                                    label: item.name,
-                                    value: item.id,
-                                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                                  }))
+                                .filter((i) => i.category === "Resource")
+                                .map((item) => ({
+                                  type: item.type,
+                                  label: item.name,
+                                  value: item.id,
+                                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                                }))
                               : []
                           }
                           search={true}
@@ -1620,13 +1977,13 @@ const DinoForm = (props: DinoFormProps) => {
             options={
               data
                 ? data.itemsByCategory.items
-                    .filter((i) => i.category === "Consumable")
-                    .map((item) => ({
-                      type: item.type,
-                      label: item.name,
-                      value: item.id,
-                      image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                    }))
+                  .filter((i) => i.category === "Consumable")
+                  .map((item) => ({
+                    type: item.type,
+                    label: item.name,
+                    value: item.id,
+                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                  }))
                 : []
             }
             search={true}
@@ -1664,285 +2021,7 @@ const DinoForm = (props: DinoFormProps) => {
 
         <Disclosure title="Stats" text_size="text-lg">
           <div>
-            {/* <Label
-              name="base_stats"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Base stats
-            </Label> */}
-            {/* <div className="grid w-fit grid-cols-3 divide-x divide-zinc-500 text-white">
-              <div className="grid grid-rows-[8]">
-                <Input
-                  type="text"
-                  name="health"
-                  label="Base Health"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="stamina"
-                  label="Base Stamina"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="torpidity"
-                  label="Base Torpidity"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/torpidity.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="oxygen"
-                  label="Base Oxygen"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="food"
-                  label="Base Food"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="weight"
-                  label="Base Weight"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="melee_damage"
-                  label="Base Melee Damage"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="movement_speed"
-                  label="Base Movement Speed"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-              </div>
-              <div className="grid grid-rows-[8]">
-                <Input
-                  type="text"
-                  name="health"
-                  label="Wild Health"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="stamina"
-                  label="Wild Stamina"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="torpidity"
-                  label="Wild Torpidity"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/torpidity.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="oxygen"
-                  label="Wild Oxygen"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="food"
-                  label="Wild Food"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="weight"
-                  label="Wild Weight"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="melee_damage"
-                  label="Wild Melee Damage"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="movement_speed"
-                  label="Wild Movement Speed"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-              </div>
-              <div className="grid grid-rows-[8]">
-                <Input
-                  type="text"
-                  name="health"
-                  label="Tamed Health"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="stamina"
-                  label="Tamed Stamina"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="torpidity"
-                  label="Tamed Torpidity"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/torpidity.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="oxygen"
-                  label="Tamed Oxygen"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="food"
-                  label="Tamed Food"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="weight"
-                  label="Tamed Weight"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="melee_damage"
-                  label="Tamed Melee Damage"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <Input
-                  type="text"
-                  name="movement_speed"
-                  label="Tamed Movement Speed"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-              </div>
-            </div> */}
+
             {/* <div className="flex flex-col capitalize text-white">
           <div className="flex flex-row items-center space-x-1">
             <p className="w-5"></p>
@@ -2008,149 +2087,7 @@ const DinoForm = (props: DinoFormProps) => {
           </div>
         </Disclosure>
 
-        <Label
-          name="attack"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Attacks
-        </Label>
 
-        {attackFields.map((atk, index) => (
-          <div
-            className="rw-button-group !mt-0 justify-start"
-            role="group"
-            key={`attack-${index}`}
-          >
-            <input
-              {...register(`attack.${index}.name`, { required: true })}
-              type="text"
-              className="rw-input mt-0"
-              defaultValue={atk.name}
-              placeholder={"Name of attack"}
-            />
-            <input
-              {...register(`attack.${index}.dmg`, { required: false })}
-              type="number"
-              className="rw-input mt-0 max-w-[8rem]"
-              defaultValue={atk.dmg}
-              placeholder={"Damage"}
-            />
-            <input
-              {...register(`attack.${index}.radius`, { required: false })}
-              type="number"
-              className="rw-input mt-0 max-w-[8rem]"
-              defaultValue={atk.radius}
-              placeholder={"Radius"}
-            />
-            <input
-              {...register(`attack.${index}.stamina`, { required: false })}
-              type="number"
-              className="rw-input mt-0 max-w-[8rem]"
-              defaultValue={atk.stamina}
-              placeholder={"Stamina drained per use"}
-            />
-            <input
-              {...register(`attack.${index}.interval`, { required: false })}
-              type="number"
-              className="rw-input mt-0 max-w-[8rem]"
-              defaultValue={atk.interval}
-              placeholder={"Cooldown"}
-            />
-            <button
-              type="button"
-              className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
-              onClick={() => removeAttack(index)}
-            >
-              Remove
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                className="rw-button-icon-end"
-              >
-                <path d="M432 64h-96l-33.63-44.75C293.4 7.125 279.1 0 264 0h-80C168.9 0 154.6 7.125 145.6 19.25L112 64h-96C7.201 64 0 71.2 0 80c0 8.799 7.201 16 16 16h416c8.801 0 16-7.201 16-16C448 71.2 440.8 64 432 64zM152 64l19.25-25.62C174.3 34.38 179 32 184 32h80c5 0 9.75 2.375 12.75 6.375L296 64H152zM400 128C391.2 128 384 135.2 384 144v288c0 26.47-21.53 48-48 48h-224C85.53 480 64 458.5 64 432v-288C64 135.2 56.84 128 48 128S32 135.2 32 144v288C32 476.1 67.89 512 112 512h224c44.11 0 80-35.89 80-80v-288C416 135.2 408.8 128 400 128zM144 416V192c0-8.844-7.156-16-16-16S112 183.2 112 192v224c0 8.844 7.156 16 16 16S144 424.8 144 416zM240 416V192c0-8.844-7.156-16-16-16S208 183.2 208 192v224c0 8.844 7.156 16 16 16S240 424.8 240 416zM336 416V192c0-8.844-7.156-16-16-16S304 183.2 304 192v224c0 8.844 7.156 16 16 16S336 424.8 336 416z" />
-              </svg>
-            </button>
-          </div>
-        ))}
-        <div className="rw-button-group justify-start">
-          <button
-            type="button"
-            className="rw-button rw-button-gray"
-            onClick={() =>
-              appendAttack({
-                name: "",
-                dmg: null,
-                radius: null,
-                stamina: null,
-                interval: null,
-              })
-            }
-          >
-            Add Attack
-          </button>
-        </div>
-        {/*
-        <TextField
-          name="attack"
-          defaultValue={JSON.stringify(props.dino?.attack)}
-          className="rw-input"
-          errorClassName="rw-input rw-input-error"
-          emptyAs={"undefined"}
-          validation={{ valueAsJSON: true }}
-        /> */}
-
-        <FieldError name="attack" className="rw-field-error" />
-
-        <Label
-          name="type"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Dino Type {props.dino?.type}
-        </Label>
-
-        <CheckboxGroup
-          name="type"
-          defaultValue={props.dino?.type}
-          validation={{
-            required: true,
-          }}
-          options={[
-            {
-              value: "flyer",
-              label: "Flyer",
-              image:
-                "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/7/78/Landing.png",
-            },
-            {
-              value: "ground",
-              label: "Ground",
-              image:
-                "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/f/f5/Slow.png",
-            },
-            {
-              value: "water",
-              label: "Water",
-              image:
-                "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/9/9d/Water.png",
-            },
-            {
-              value: "amphibious",
-              label: "Amphibious",
-              image:
-                "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/4/44/Swim_Mode.png",
-            },
-            {
-              value: "boss",
-              label: "Boss",
-              image:
-                "https://static.wikia.nocookie.net/arksurvivalevolved_gamepedia/images/5/50/Cowardice.png",
-            },
-          ]}
-        />
-
-        <FieldError name="type" className="rw-field-error" />
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">

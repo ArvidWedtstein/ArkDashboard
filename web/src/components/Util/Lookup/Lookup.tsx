@@ -74,7 +74,7 @@ export const Lookup = ({
   required = false,
   disableClearable = false,
   multiple = false,
-  closeOnSelect = false,
+  closeOnSelect = true,
   filterSelectedOptions = false,
   renderTags,
   onSelect,
@@ -202,8 +202,8 @@ export const Lookup = ({
         field.onChange(
           multiple
             ? updateOptions
-                .filter((f) => f != null && f.selected)
-                .map((o) => o?.value)
+              .filter((f) => f != null && f.selected)
+              .map((o) => o?.value)
             : [option.value]
         );
       }
@@ -302,7 +302,7 @@ export const Lookup = ({
               "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
                 isComponentVisible ||
                 selectedOptions.filter((o) => o != null && o.selected).length >
-                  0 ||
+                0 ||
                 searchTerm.length > 0,
             }
           )}
@@ -318,11 +318,11 @@ export const Lookup = ({
               "pr-10":
                 !disableClearable &&
                 selectedOptions.filter((d) => d != null && d.selected).length ==
-                  0,
+                0,
               "pr-12":
                 !disableClearable &&
                 selectedOptions.filter((d) => d != null && d.selected).length >
-                  0,
+                0,
             }
           )}
         >
@@ -330,32 +330,32 @@ export const Lookup = ({
           {renderTags != null
             ? renderTags(selectedOptions.filter((o) => o != null && o.selected))
             : multiple &&
-              selectedOptions.filter((o) => o != null && o.selected).length >
-                0 &&
-              selectedOptions
-                .filter((o) => o != null && o.selected)
-                .map((option) => (
-                  <div
-                    role="button"
-                    className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
-                  >
-                    <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
-                      {option.label}
-                    </span>
-                    {!readOnly && (
-                      <svg
-                        onClick={(e) => handleOptionSelect(e, option)}
-                        className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
-                        viewBox="0 0 24 24"
-                        focusable="false"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
-                      </svg>
-                    )}
-                  </div>
-                ))}
+            selectedOptions.filter((o) => o != null && o.selected).length >
+            0 &&
+            selectedOptions
+              .filter((o) => o != null && o.selected)
+              .map((option) => (
+                <div
+                  role="button"
+                  className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
+                >
+                  <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
+                    {option.label}
+                  </span>
+                  {!readOnly && (
+                    <svg
+                      onClick={(e) => handleOptionSelect(e, option)}
+                      className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
+                      viewBox="0 0 24 24"
+                      focusable="false"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
+                    </svg>
+                  )}
+                </div>
+              ))}
 
           <input
             aria-invalid="false"
@@ -377,7 +377,7 @@ export const Lookup = ({
           <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
             {!disableClearable &&
               selectedOptions.filter((d) => d != null && d.selected).length >
-                0 && (
+              0 && (
                 <button
                   type="button"
                   onClick={handleClearSelection}
@@ -583,13 +583,13 @@ export const Lookup = ({
           aria-labelledby="dropdownButton"
         >
           {!options ||
-          selectedOptions.filter((option) => {
-            if (filterSelectedOptions) {
-              return !option?.selected && option?.inSearch;
-            }
+            selectedOptions.filter((option) => {
+              if (filterSelectedOptions) {
+                return !option?.selected && option?.inSearch;
+              }
 
-            return option.inSearch;
-          }).length == 0 ? (
+              return option.inSearch;
+            }).length == 0 ? (
             <li className="flex items-center py-2 px-4 text-zinc-500/70 dark:text-zinc-300/70">
               No options
             </li>
@@ -609,12 +609,12 @@ export const Lookup = ({
                 onClick={(e) => handleOptionSelect(e, option)}
                 aria-checked={option.selected}
                 className={clsx(
-                  "flex items-center py-2 px-4 last:rounded-b-lg",
+                  "flex items-center py-2 px-4 last:rounded-b-lg first:rounded-t-lg",
                   {
                     "cursor-not-allowed text-zinc-500/50": option.disabled,
                     "hover:bg-zinc-200 dark:hover:bg-zinc-600/90 dark:hover:text-white":
                       !option.disabled,
-                    "first:rounded-t-lg": !search && !multiple,
+                    // "first:rounded-t-lg": !search && !multiple,
                   }
                 )}
               >

@@ -52,6 +52,10 @@ export const schema = gql`
     tamable: Boolean
     breedable: Boolean
     bp: String
+    default_dmg: Float
+    default_swing_radius: Float
+    targeting_team_name: String
+    flags: JSON
     DinoStat: [DinoStat]!
   }
 
@@ -126,6 +130,10 @@ export const schema = gql`
     tamable: Boolean
     breedable: Boolean
     bp: String
+    default_dmg: Float
+    default_swing_radius: Float
+    targeting_team_name: String
+    flags: JSON
   }
 
   input UpdateDinoInput {
@@ -180,6 +188,10 @@ export const schema = gql`
     tamable: Boolean
     breedable: Boolean
     bp: String
+    default_dmg: Float
+    default_swing_radius: Float
+    targeting_team_name: String
+    flags: JSON
   }
 
   type Mutation {
