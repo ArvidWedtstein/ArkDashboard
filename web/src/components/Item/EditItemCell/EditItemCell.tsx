@@ -26,6 +26,7 @@ export const QUERY = gql`
       color
       category
       type
+      visible
     }
   }
 `;
