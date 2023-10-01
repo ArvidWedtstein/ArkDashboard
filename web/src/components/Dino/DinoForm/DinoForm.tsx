@@ -19,7 +19,7 @@ import { toast } from "@redwoodjs/web/toast";
 import { useLazyQuery } from "@apollo/client";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import Stepper, { Step } from "src/components/Util/Stepper/Stepper";
-import Input, { InputOutlined } from "src/components/Util/Input/Input";
+import { InputOutlined } from "src/components/Util/Input/Input";
 import Switch from "src/components/Util/Switch/Switch";
 import Alert from "src/components/Util/Alert/Alert";
 import NewDinoStat from "src/components/DinoStat/NewDinoStat/NewDinoStat";
@@ -57,7 +57,6 @@ const DinoForm = (props: DinoFormProps) => {
   const [loadItems, { called, loading, data }] = useLazyQuery(ITEMQUERY, {
     variables: { category: "Resource,Consumable" },
     onCompleted: (data) => {
-      console.log(data);
       toast.success("Items loaded");
     },
     onError: (error) => {
@@ -75,16 +74,18 @@ const DinoForm = (props: DinoFormProps) => {
   // https://www.apollographql.com/docs/react/api/react/hooks/#uselazyquery
 
   // TODO: fix this
-  const [basestat, setBasestat] = useState(props.dino?.base_stats ?? {
-    d: { b: 0, t: 0, w: 0, a: [{ b: 0 }] },
-    f: { b: 0, t: 0, w: 0 },
-    h: { b: 0, t: 0, w: 0 },
-    m: { b: 0, t: 0, w: null, a: { s: { b: 0 } } },
-    o: { b: null, t: null, w: null },
-    s: { b: 0, t: 0, w: 0 },
-    t: { b: 0, t: null, w: 0 },
-    w: { b: 0, t: 0, w: 0 },
-  });
+  const [basestat, setBasestat] = useState(
+    props.dino?.base_stats ?? {
+      d: { b: 0, t: 0, w: 0, a: [{ b: 0 }] },
+      f: { b: 0, t: 0, w: 0 },
+      h: { b: 0, t: 0, w: 0 },
+      m: { b: 0, t: 0, w: null, a: { s: { b: 0 } } },
+      o: { b: null, t: null, w: null },
+      s: { b: 0, t: 0, w: 0 },
+      t: { b: 0, t: null, w: 0 },
+      w: { b: 0, t: 0, w: 0 },
+    }
+  );
 
   type Movement = {
     d?: {
@@ -119,42 +120,44 @@ const DinoForm = (props: DinoFormProps) => {
       sprint?: number;
       swimOrFly?: number;
     };
-  }
+  };
 
-  const [movement, setMovement] = useState<Movement>((props.dino?.movement as Movement) ?? {
-    w: {
-      walk: {
-        base: 0,
-        sprint: 0,
+  const [movement, setMovement] = useState<Movement>(
+    (props.dino?.movement as Movement) ?? {
+      w: {
+        walk: {
+          base: 0,
+          sprint: 0,
+        },
+        swim: {
+          base: 0,
+          sprint: 0,
+        },
+        fly: {
+          base: 0,
+          sprint: 0,
+        },
       },
-      swim: {
-        base: 0,
-        sprint: 0,
+      d: {
+        walk: {
+          base: 0,
+          sprint: 0,
+        },
+        swim: {
+          base: 0,
+          sprint: 0,
+        },
+        fly: {
+          base: 0,
+          sprint: 0,
+        },
       },
-      fly: {
-        base: 0,
+      staminaRates: {
         sprint: 0,
+        swimOrFly: 0,
       },
-    },
-    d: {
-      walk: {
-        base: 0,
-        sprint: 0,
-      },
-      swim: {
-        base: 0,
-        sprint: 0,
-      },
-      fly: {
-        base: 0,
-        sprint: 0,
-      },
-    },
-    staminaRates: {
-      sprint: 0,
-      swimOrFly: 0,
-    },
-  });
+    }
+  );
 
   type FormValues = {
     attack: any[];
@@ -174,12 +177,12 @@ const DinoForm = (props: DinoFormProps) => {
       wr: props?.dino?.DinoStat.filter(
         (f) => f.type === "weight_reduction"
       ) ?? [
-          {
-            type: "",
-            value: 0,
-            item_id: null,
-          },
-        ],
+        {
+          type: "",
+          value: 0,
+          item_id: null,
+        },
+      ],
     },
   });
 
@@ -200,7 +203,6 @@ const DinoForm = (props: DinoFormProps) => {
     control,
     name: "attack", // the name of the field array in your form data
   });
-
 
   const [eats, setEats] = useState([]);
 
@@ -247,7 +249,7 @@ const DinoForm = (props: DinoFormProps) => {
           titleClassName="rw-form-error-title"
           listClassName="rw-form-error-list"
         />
-        <Stepper>
+        <Stepper completion>
           <Step title="General">
             <div className="flex flex-row items-start space-x-3">
               <InputOutlined
@@ -326,8 +328,6 @@ const DinoForm = (props: DinoFormProps) => {
               defaultChecked={props.dino?.disable_mult}
             />
 
-
-
             <Label
               name="type"
               className="rw-label"
@@ -383,59 +383,82 @@ const DinoForm = (props: DinoFormProps) => {
               name="temperament"
               search
               options={[
-                { value: 'Aggressive', label: 'Aggressive' },
-                { value: 'Angry', label: 'Angry' },
-                { value: 'Cowardly', label: 'Cowardly' },
-                { value: 'Curious', label: 'Curious' },
-                { value: 'Defensive', label: 'Defensive' },
-                { value: 'Doctile', label: 'Doctile' },
-                { value: 'Elusive', label: 'Elusive' },
-                { value: 'Evasive', label: 'Evasive' },
-                { value: 'Evasive, Aggressive when attacked', label: 'Evasive, Aggressive when attacked' },
-                { value: 'Extemely Territorial', label: 'Extemely Territorial' },
-                { value: 'Fearful', label: 'Fearful' },
-                { value: 'Flippant', label: 'Flippant' },
-                { value: 'Friendly', label: 'Friendly' },
-                { value: 'Highly Aggressive', label: 'Highly Aggressive' },
-                { value: 'Languorous', label: 'Languorous' },
-                { value: 'Loyal', label: 'Loyal' },
-                { value: 'Naive', label: 'Naive' },
-                { value: 'Neutral', label: 'Neutral' },
-                { value: 'Nocturnally Aggressive', label: 'Nocturnally Aggressive' },
-                { value: 'Oblivious', label: 'Oblivious' },
-                { value: 'Opportunistic', label: 'Opportunistic' },
-                { value: 'Passive', label: 'Passive' },
-                { value: 'Patient', label: 'Patient' },
-                { value: 'Reactive', label: 'Reactive' },
-                { value: 'Short-Tempered', label: 'Short-Tempered' },
-                { value: 'Skittish', label: 'Skittish' },
-                { value: 'Stupid', label: 'Stupid' },
-                { value: 'Territorial', label: 'Territorial' },
+                { value: "Aggressive", label: "Aggressive" },
+                { value: "Angry", label: "Angry" },
+                { value: "Cowardly", label: "Cowardly" },
+                { value: "Curious", label: "Curious" },
+                { value: "Defensive", label: "Defensive" },
+                { value: "Doctile", label: "Doctile" },
+                { value: "Elusive", label: "Elusive" },
+                { value: "Evasive", label: "Evasive" },
+                {
+                  value: "Evasive, Aggressive when attacked",
+                  label: "Evasive, Aggressive when attacked",
+                },
+                {
+                  value: "Extemely Territorial",
+                  label: "Extemely Territorial",
+                },
+                { value: "Fearful", label: "Fearful" },
+                { value: "Flippant", label: "Flippant" },
+                { value: "Friendly", label: "Friendly" },
+                { value: "Highly Aggressive", label: "Highly Aggressive" },
+                { value: "Languorous", label: "Languorous" },
+                { value: "Loyal", label: "Loyal" },
+                { value: "Naive", label: "Naive" },
+                { value: "Neutral", label: "Neutral" },
+                {
+                  value: "Nocturnally Aggressive",
+                  label: "Nocturnally Aggressive",
+                },
+                { value: "Oblivious", label: "Oblivious" },
+                { value: "Opportunistic", label: "Opportunistic" },
+                { value: "Passive", label: "Passive" },
+                { value: "Patient", label: "Patient" },
+                { value: "Reactive", label: "Reactive" },
+                { value: "Short-Tempered", label: "Short-Tempered" },
+                { value: "Skittish", label: "Skittish" },
+                { value: "Stupid", label: "Stupid" },
+                { value: "Territorial", label: "Territorial" },
               ]}
             />
 
             <Lookup
-
               label="Target Team"
               name="targeting_team_name"
               options={[
-                { value: 'Herbivores', label: 'Herbivores' },
-                { value: 'Herbivore_Small', label: 'Herbivore Small' },
-                { value: 'Herbivores_Medium', label: 'Herbivores Medium' },
-                { value: 'Herbivores_Medium_Aggressive', label: 'Herbivores Medium Aggressive' },
-                { value: 'Herbivores_Large', label: 'Herbivores Large' },
-                { value: 'Herbivores_Large_Aggressive', label: 'Herbivores Large Aggressive' },
-                { value: 'Herbivores_Large_Aggressive_PlayersOrAggressors', label: 'Herbivores Large Aggressive PlayersOrAggressors' },
-                { value: 'Herbivore_Water', label: 'Herbivore Water' },
-                { value: 'TargetOnlyPlayers', label: 'TargetOnlyPlayers' },
-                { value: 'Carnivores_Medium_TargetPlayerOrTamed', label: 'Carnivores Medium TargetPlayerOrTamed' },
-                { value: 'Robot_Neutral', label: 'Robot Neutral' },
-                { value: 'Carnivores_Medium', label: 'Carnivores Medium' },
-                { value: 'Carnivore_Water_PlayerOrTamed', label: 'Carnivore Water PlayerOrTamed' },
-                { value: 'Carnivore_Water', label: 'Carnivores Water' },
-                { value: 'Carnivores_High', label: 'Carnivores High' },
-                { value: 'Carnivores_Low', label: 'Carnivores Low' },
-                { value: 'Bot', label: 'Bot' },
+                { value: "Herbivores", label: "Herbivores" },
+                { value: "Herbivore_Small", label: "Herbivore Small" },
+                { value: "Herbivores_Medium", label: "Herbivores Medium" },
+                {
+                  value: "Herbivores_Medium_Aggressive",
+                  label: "Herbivores Medium Aggressive",
+                },
+                { value: "Herbivores_Large", label: "Herbivores Large" },
+                {
+                  value: "Herbivores_Large_Aggressive",
+                  label: "Herbivores Large Aggressive",
+                },
+                {
+                  value: "Herbivores_Large_Aggressive_PlayersOrAggressors",
+                  label: "Herbivores Large Aggressive PlayersOrAggressors",
+                },
+                { value: "Herbivore_Water", label: "Herbivore Water" },
+                { value: "TargetOnlyPlayers", label: "TargetOnlyPlayers" },
+                {
+                  value: "Carnivores_Medium_TargetPlayerOrTamed",
+                  label: "Carnivores Medium TargetPlayerOrTamed",
+                },
+                { value: "Robot_Neutral", label: "Robot Neutral" },
+                { value: "Carnivores_Medium", label: "Carnivores Medium" },
+                {
+                  value: "Carnivore_Water_PlayerOrTamed",
+                  label: "Carnivore Water PlayerOrTamed",
+                },
+                { value: "Carnivore_Water", label: "Carnivores Water" },
+                { value: "Carnivores_High", label: "Carnivores High" },
+                { value: "Carnivores_Low", label: "Carnivores Low" },
+                { value: "Bot", label: "Bot" },
               ]}
             />
 
@@ -477,21 +500,20 @@ const DinoForm = (props: DinoFormProps) => {
               label="Diet"
               name="diet"
               options={[
-                { value: 'Sanguivore', label: 'Sanguivore' },
-                { value: 'Minerals', label: 'Minerals' },
-                { value: 'Flame Eater', label: 'Flame Eater' },
-                { value: 'Herbivore', label: 'Herbivore' },
-                { value: 'Piscivore', label: 'Piscivore' },
-                { value: 'Coprophagic', label: 'Coprophagic' },
-                { value: 'Carnivore', label: 'Carnivore' },
-                { value: 'Bottom Feeder', label: 'Bottom Feeder' },
-                { value: 'Sweet Tooth', label: 'Sweet Tooth' },
-                { value: 'Carrion-Feeder', label: 'Carrion Feeder' },
-                { value: 'Sanguinivore', label: 'Sanguinivore' },
-                { value: 'Omnivore', label: 'Omnivore' },
+                { value: "Sanguivore", label: "Sanguivore" },
+                { value: "Minerals", label: "Minerals" },
+                { value: "Flame Eater", label: "Flame Eater" },
+                { value: "Herbivore", label: "Herbivore" },
+                { value: "Piscivore", label: "Piscivore" },
+                { value: "Coprophagic", label: "Coprophagic" },
+                { value: "Carnivore", label: "Carnivore" },
+                { value: "Bottom Feeder", label: "Bottom Feeder" },
+                { value: "Sweet Tooth", label: "Sweet Tooth" },
+                { value: "Carrion-Feeder", label: "Carrion Feeder" },
+                { value: "Sanguinivore", label: "Sanguinivore" },
+                { value: "Omnivore", label: "Omnivore" },
               ]}
             />
-
 
             <InputOutlined
               name="food_consumption_base"
@@ -641,25 +663,12 @@ const DinoForm = (props: DinoFormProps) => {
               validation={{ valueAsNumber: true }}
             />
 
-            {/* TODO: make hitboxes input */}
-            {/* <Label
+            <InputOutlined
               name="hitboxes"
-              className="rw-label"
-              errorClassName="rw-label rw-label-error"
-            >
-              Hitboxes
-            </Label>
-
-            <TextAreaField
-              name="hitboxes"
-              defaultValue={JSON.stringify(props.dino?.hitboxes)}
-              className="rw-input"
-              errorClassName="rw-input rw-input-error"
-              emptyAs={"undefined"}
+              label="Hitboxes"
+              defaultValue={JSON.stringify(props.dino?.hitboxes, null, 2)}
               validation={{ valueAsJSON: true }}
             />
-
-            <FieldError name="hitboxes" className="rw-field-error" /> */}
           </Step>
           <Step title="Stats">
             <Label
@@ -669,278 +678,56 @@ const DinoForm = (props: DinoFormProps) => {
             >
               Base stats
             </Label>
-            {/* TODO: find a better solution for this crap */}
-            <div className="grid w-fit grid-cols-3 divide-x divide-zinc-500 text-white">
-              <div className="grid grid-rows-[8]">
-                <InputOutlined
-                  type="text"
-                  name="health"
-                  label="Base Health"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="stamina"
-                  label="Base Stamina"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="torpidity"
-                  label="Base Torpidity"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/torpidity.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="oxygen"
-                  label="Base Oxygen"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="food"
-                  label="Base Food"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="weight"
-                  label="Base Weight"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="melee_damage"
-                  label="Base Melee Damage"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="movement_speed"
-                  label="Base Movement Speed"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-              </div>
-              <div className="grid grid-rows-[8]">
-                <InputOutlined
-                  type="text"
-                  name="health"
-                  label="Wild Health"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="stamina"
-                  label="Wild Stamina"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="torpidity"
-                  label="Wild Torpidity"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/torpidity.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="oxygen"
-                  label="Wild Oxygen"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="food"
-                  label="Wild Food"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="weight"
-                  label="Wild Weight"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="melee_damage"
-                  label="Wild Melee Damage"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="movement_speed"
-                  label="Wild Movement Speed"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-              </div>
-              <div className="grid grid-rows-[8]">
-                <InputOutlined
-                  type="text"
-                  name="health"
-                  label="Tamed Health"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="stamina"
-                  label="Tamed Stamina"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="torpidity"
-                  label="Tamed Torpidity"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/torpidity.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="oxygen"
-                  label="Tamed Oxygen"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="food"
-                  label="Tamed Food"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="weight"
-                  label="Tamed Weight"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="melee_damage"
-                  label="Tamed Melee Damage"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-                <InputOutlined
-                  type="text"
-                  name="movement_speed"
-                  label="Tamed Movement Speed"
-                  icon={
-                    <img
-                      src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp"
-                      className="h-4"
-                    />
-                  }
-                />
-              </div>
+            <div className="grid w-fit grid-rows-[8] text-white">
+              {Object.entries(basestat).map(([statChar, statVariants]) => (
+                <div className="my-1 grid grid-cols-4">
+                  {Object.entries(statVariants).map(
+                    ([variantChar, variants]) => {
+                      const stat = {
+                        s: "Stamina",
+                        w: "Weight",
+                        o: "Oxygen",
+                        d: "Melee Damage",
+                        f: "Food",
+                        m: "Movement Speed",
+                        t: "Torpidity",
+                        h: "Health",
+                      }[statChar];
+
+                      const variant = {
+                        b: "Base",
+                        w: "Wild",
+                        t: "Tamed",
+                        a: "Additive",
+                      }[variantChar];
+                      return (
+                        <InputOutlined
+                          type="text"
+                          label={`${variant} ${stat}`}
+                          icon={
+                            <img
+                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${stat
+                                .toLowerCase()
+                                .replaceAll(" ", "_")}.webp`}
+                              className="h-4"
+                            />
+                          }
+                          defaultValue={variants?.toString() ?? 0}
+                          onChange={(e) => {
+                            setBasestat((prev: object) => ({
+                              ...prev,
+                              [statChar]: {
+                                ...prev[statChar],
+                                [variantChar]: e.target.value,
+                              },
+                            }));
+                          }}
+                        />
+                      );
+                    }
+                  )}
+                </div>
+              ))}
             </div>
 
             <div className="flex flex-row items-start space-x-3">
@@ -1263,7 +1050,6 @@ const DinoForm = (props: DinoFormProps) => {
 
             {/* TODO: add info box here about base point */}
 
-
             <div className="flex flex-row items-start space-x-3">
               <InputOutlined
                 name="default_dmg"
@@ -1385,10 +1171,7 @@ const DinoForm = (props: DinoFormProps) => {
               helperText="Is this dino breedable?"
             />
 
-            <FieldError
-              name="breedable"
-              className="rw-field-error"
-            />
+            <FieldError name="breedable" className="rw-field-error" />
 
             <div className="flex flex-row items-start space-x-3">
               <InputOutlined
@@ -1647,7 +1430,7 @@ const DinoForm = (props: DinoFormProps) => {
                             required: false,
                           } as const)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
-                        // defaultValue={g.type}
+                          // defaultValue={g.type}
                         />
                         <button
                           type="button"
@@ -1805,13 +1588,13 @@ const DinoForm = (props: DinoFormProps) => {
                           options={
                             data
                               ? data.itemsByCategory.items
-                                .filter((i) => i.category === "Resource")
-                                .map((item) => ({
-                                  type: item.type,
-                                  label: item.name,
-                                  value: item.id,
-                                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                                }))
+                                  .filter((i) => i.category === "Resource")
+                                  .map((item) => ({
+                                    type: item.type,
+                                    label: item.name,
+                                    value: item.id,
+                                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                                  }))
                               : []
                           }
                           search={true}
@@ -1964,130 +1747,7 @@ const DinoForm = (props: DinoFormProps) => {
               {/* </>)} */}
             </div>
           </div>
-
-          <Label
-            name="eats"
-            className="rw-label"
-            errorClassName="rw-label rw-label-error"
-          >
-            Eats
-          </Label>
-
-          <Lookup
-            options={
-              data
-                ? data.itemsByCategory.items
-                  .filter((i) => i.category === "Consumable")
-                  .map((item) => ({
-                    type: item.type,
-                    label: item.name,
-                    value: item.id,
-                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                  }))
-                : []
-            }
-            search={true}
-            name="eats"
-            onSelect={(e) => {
-              setEats((d) => [
-                ...d,
-                { id: e[0].value, name: e[0].label, img: e[0].image },
-              ]);
-            }}
-          />
-
-          {eats.length > 0 ? (
-            <div className="mt-2 w-48 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:border-zinc-500 dark:bg-zinc-600 dark:text-white">
-              {eats.map((food, i) => (
-                <button
-                  key={`food-${i}`}
-                  onClick={() =>
-                    setEats((d) => d.filter((g) => g.id !== food.id))
-                  }
-                  className="transition-color block w-full cursor-pointer px-2 py-1 first:rounded-t-lg last:rounded-b-lg hover:ring hover:ring-red-500"
-                >
-                  {food.name}
-                </button>
-              ))}
-            </div>
-          ) : (
-            <p className="rw-helper-text">
-              No food added yet. Does this dino even eat?
-            </p>
-          )}
-
-          <FieldError name="eats" className="rw-field-error" />
         </Disclosure>
-
-        <Disclosure title="Stats" text_size="text-lg">
-          <div>
-
-            {/* <div className="flex flex-col capitalize text-white">
-          <div className="flex flex-row items-center space-x-1">
-            <p className="w-5"></p>
-            <p className="w-20">Base</p>
-            <p className="w-20">Wild inc.</p>
-            <p className="w-20">Tamed inc.</p>
-          </div>
-          {statEntries.map(([stat, value], index) => (
-            <div
-              className="flex flex-row items-center space-x-1"
-              key={`stat-${index}`}
-            >
-              <img
-                title={
-                  {
-                    s: "Stamina",
-                    w: "Weight",
-                    o: "Oxygen",
-                    d: "Melee Damage",
-                    f: "Food",
-                    m: "Movement Speed",
-                    t: "Torpidity",
-                    h: "Health",
-                  }[stat]
-                }
-                className="h-6 w-6"
-                src={
-                  {
-                    s: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/stamina.webp",
-                    w: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp",
-                    o: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/oxygen.webp",
-                    d: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp",
-                    f: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/food.webp",
-                    m: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/movement_speed.webp",
-                    t: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/torpidity.webp",
-                    h: "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp",
-                  }[stat]
-                }
-                alt=""
-              />
-              {["b", "w", "t"].map((label, i) => (
-                <input
-                  key={`${label}-${i}`}
-                  className="rw-input w-20"
-                  defaultValue={JSON.stringify(value[label])}
-                  placeholder={label}
-                  onChange={(e) =>
-                    setBasestat((b) => ({
-                      ...b,
-                      [stat]: {
-                        ...b[stat],
-                        [label]: Number(e.target.value),
-                      },
-                    }))
-                  }
-                />
-              ))}
-            </div>
-          ))}
-        </div> */}
-
-            {/* <FieldError name="base_stats" className="rw-field-error" /> */}
-          </div>
-        </Disclosure>
-
-
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">

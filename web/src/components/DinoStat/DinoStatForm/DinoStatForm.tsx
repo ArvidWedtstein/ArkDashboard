@@ -15,6 +15,7 @@ import { InputOutlined } from "src/components/Util/Input/Input";
 
 type FormDinoStat = NonNullable<EditDinoStatById["dinoStat"]>;
 
+// highlight-start
 interface DinoStatFormProps {
   dino_id?: FormDinoStat["dino_id"];
   dinoStat?: EditDinoStatById["dinoStat"];
@@ -22,7 +23,9 @@ interface DinoStatFormProps {
   error: RWGqlError;
   loading: boolean;
 }
+// highlight-end
 
+// highlight-next-line
 const DinoStatForm = (props: DinoStatFormProps) => {
   const onSubmit = (data: FormDinoStat) => {
     props.onSave(data, props?.dinoStat?.id);
