@@ -178,6 +178,13 @@ const ItemForm = (props: ItemFormProps) => {
             defaultValue={props.item?.max_stack || 1}
             validation={{ valueAsNumber: true }}
           />
+
+          <InputOutlined
+            name="blueprint"
+            label="Blueprint"
+            margin="normal"
+            defaultValue={props.item?.blueprint}
+          />
         </div>
         <Switch
           onLabel="Visible"
@@ -191,7 +198,8 @@ const ItemForm = (props: ItemFormProps) => {
           defaultChecked={craftable}
           onChange={(e) => setCraftable(e.target.checked)}
         />
-        {/* ["food","torpor","visible","affinity","torpor_duration","damage"","stats","health","blueprint","type","category"] */}
+        {/* TODO: add fields */}
+        {/* ["food","torpor","affinity","torpor_duration","damage"","stats","health","blueprint","type","category"] */}
         {craftable && (
           <fieldset className="rw-form-group">
             <legend>Crafting</legend>
