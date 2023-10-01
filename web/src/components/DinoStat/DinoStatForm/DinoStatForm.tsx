@@ -41,6 +41,7 @@ const DinoStatForm = (props: DinoStatFormProps) => {
         <div className="flex flex-row space-x-3">
           {/* TODO: insert items here */}
           <Lookup
+            margin="none"
             options={[]}
             name="item_id"
             defaultValue={[props.dinoStat?.item_id.toString()]}
@@ -48,6 +49,7 @@ const DinoStatForm = (props: DinoStatFormProps) => {
             validation={{ required: true }}
           />
           <Lookup
+            margin="none"
             options={[
               { value: "food", label: "Food" },
               { value: "gather_efficiency", label: "Gather Efficiency" },

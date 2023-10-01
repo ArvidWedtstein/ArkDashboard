@@ -22,28 +22,28 @@ type InputProps = {
   fullWidth?: boolean;
   margin?: "none" | "dense" | "normal";
   type?:
-  | "number"
-  | "button"
-  | "time"
-  | "image"
-  | "text"
-  | "hidden"
-  | "color"
-  | "search"
-  | "date"
-  | "datetime-local"
-  | "email"
-  | "file"
-  | "month"
-  | "password"
-  | "radio"
-  | "range"
-  | "reset"
-  | "submit"
-  | "tel"
-  | "url"
-  | "week"
-  | "textarea";
+    | "number"
+    | "button"
+    | "time"
+    | "image"
+    | "text"
+    | "hidden"
+    | "color"
+    | "search"
+    | "date"
+    | "datetime-local"
+    | "email"
+    | "file"
+    | "month"
+    | "password"
+    | "radio"
+    | "range"
+    | "reset"
+    | "submit"
+    | "tel"
+    | "url"
+    | "week"
+    | "textarea";
   onFocus?: (
     e:
       | React.FocusEvent<HTMLInputElement>
@@ -135,12 +135,14 @@ export const InputOutlined = ({
 }: InputProps) => {
   const [focus, setFocus] = useState(false);
 
-  const { field } = !!name ? useController({
-    name: name,
-    rules: validation,
-    defaultValue: defaultValue || value || "",
-    ...props,
-  }) : { field: null };
+  const { field } = !!name
+    ? useController({
+        name: name,
+        rules: validation,
+        defaultValue: defaultValue || value || "",
+        ...props,
+      })
+    : { field: null };
 
   const isLeftIcon = icon && iconPosition == "left";
   const handleFocus = (
@@ -187,7 +189,7 @@ export const InputOutlined = ({
         className={clsx(labelClassName, {
           "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
             focus || !isEmpty(field?.value) || !!props?.placeholder,
-          "translate-x-8": isLeftIcon,
+          "translate-x-10": isLeftIcon,
         })}
         name={name}
         htmlFor={`input-${name}`}
@@ -301,7 +303,8 @@ export const InputOutlined = ({
             className={clsx(
               "invisible block w-auto max-w-[.01px] overflow-hidden whitespace-nowrap p-0 !text-xs transition-all duration-75",
               {
-                "!max-w-full": focus || !isEmpty(field?.value) || !!props?.placeholder,
+                "!max-w-full":
+                  focus || !isEmpty(field?.value) || !!props?.placeholder,
               }
             )}
           >
