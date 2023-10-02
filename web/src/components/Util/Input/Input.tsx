@@ -22,28 +22,28 @@ type InputProps = {
   fullWidth?: boolean;
   margin?: "none" | "dense" | "normal";
   type?:
-    | "number"
-    | "button"
-    | "time"
-    | "image"
-    | "text"
-    | "hidden"
-    | "color"
-    | "search"
-    | "date"
-    | "datetime-local"
-    | "email"
-    | "file"
-    | "month"
-    | "password"
-    | "radio"
-    | "range"
-    | "reset"
-    | "submit"
-    | "tel"
-    | "url"
-    | "week"
-    | "textarea";
+  | "number"
+  | "button"
+  | "time"
+  | "image"
+  | "text"
+  | "hidden"
+  | "color"
+  | "search"
+  | "date"
+  | "datetime-local"
+  | "email"
+  | "file"
+  | "month"
+  | "password"
+  | "radio"
+  | "range"
+  | "reset"
+  | "submit"
+  | "tel"
+  | "url"
+  | "week"
+  | "textarea";
   onFocus?: (
     e:
       | React.FocusEvent<HTMLInputElement>
@@ -137,11 +137,11 @@ export const InputOutlined = ({
 
   const { field } = !!name
     ? useController({
-        name: name,
-        rules: validation,
-        defaultValue: defaultValue || value || "",
-        ...props,
-      })
+      name: name,
+      rules: validation,
+      defaultValue: defaultValue || value || "",
+      ...props,
+    })
     : { field: null };
 
   const isLeftIcon = icon && iconPosition == "left";
@@ -222,7 +222,13 @@ export const InputOutlined = ({
                 "pr-0": icon && !isLeftIcon,
               }
             )}
-            errorClassName="peer rw-input-error"
+            errorClassName={clsx(
+              "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error",
+              {
+                "pl-0": isLeftIcon,
+                "pr-0": icon && !isLeftIcon,
+              }
+            )}
             disabled={disabled}
             onChange={(e) => {
               !!name && field.onChange(e);
@@ -251,7 +257,13 @@ export const InputOutlined = ({
             {...field}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            errorClassName="peer rw-input-error"
+            errorClassName={clsx(
+              "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error",
+              {
+                "pl-0": isLeftIcon,
+                "pr-0": icon && !isLeftIcon,
+              }
+            )}
             aria-describedby={helperText ? `${name}-helper-text` : null}
             aria-multiline={true}
             {...props}
@@ -268,7 +280,13 @@ export const InputOutlined = ({
                 "pr-0": icon && !isLeftIcon,
               }
             )}
-            errorClassName="peer rw-input-error"
+            errorClassName={clsx(
+              "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error",
+              {
+                "pl-0": isLeftIcon,
+                "pr-0": icon && !isLeftIcon,
+              }
+            )}
             disabled={disabled}
             onChange={(e) => {
               field.onChange(e);
@@ -292,7 +310,7 @@ export const InputOutlined = ({
             inset: "-5px 0px 0px",
           }}
           className={clsx(
-            "pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded border border-zinc-500 px-2 text-left transition duration-75 peer-invalid:!border-red-500 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
+            "pointer-events-none !peer-invalid:border-red-500 absolute m-0 min-w-0 overflow-hidden rounded border border-zinc-500 px-2 text-left transition duration-75 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
             {
               "top-0": focus || !isEmpty(field?.value) || !!props?.placeholder,
             }

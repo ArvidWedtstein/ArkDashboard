@@ -27,6 +27,8 @@ export const QUERY = gql`
         color
         category
         type
+        blueprint
+        visible
       }
       count
     }

@@ -17,7 +17,6 @@ interface ILookup {
   name?: string;
   className?: string;
   btnClassName?: string;
-  groupBy?: string;
   disabled?: boolean;
   helperText?: string;
   search?: boolean;
@@ -28,7 +27,6 @@ interface ILookup {
   required?: boolean;
   selectOnFocus?: boolean;
   closeOnSelect?: boolean;
-  freeSolo?: boolean;
   inputValue?: string;
   validation?: RegisterOptions;
   margin?: "none" | "dense" | "normal";
@@ -39,6 +37,7 @@ interface ILookup {
     disabled?: boolean;
     [key: string]: string | object | number | boolean | undefined;
   }[];
+  groupBy?: (option: ILookup["options"][0]) => string;
   renderTags?: (
     selectedOptions: Readonly<ILookup["options"]>
   ) => React.ReactNode;
@@ -53,7 +52,9 @@ interface ILookup {
   ) => boolean;
   placeholder?: string;
 }
-// TODO: add free solo
+
+// TODO: fix error styles
+// TODO: fix menu position
 export const Lookup = ({
   options,
   label,
@@ -66,9 +67,7 @@ export const Lookup = ({
   helperText,
   validation,
   margin = "normal",
-  freeSolo = false,
   selectOnFocus = false,
-  search = false,
   disabled = false,
   readOnly = false,
   required = false,
@@ -76,6 +75,7 @@ export const Lookup = ({
   multiple = false,
   closeOnSelect = true,
   filterSelectedOptions = false,
+  groupBy,
   renderTags,
   onSelect,
   onInputChange,
@@ -226,21 +226,6 @@ export const Lookup = ({
     setInternalValue(event.target.value || "");
     onInputChange?.(event, event.target.value);
   };
-
-  // const handleSelectAll = () => {
-  //   if (selectedOptions.length === options.filter((o) => !o.disabled).length) {
-  //     setSelectedOptions([]);
-  //     !!name && field.onChange([]);
-  //     onSelect?.([]);
-  //     return;
-  //   }
-
-  //   onSelect?.(options.filter((o) => !o.disabled));
-  //   !!name &&
-  //     field.onChange(options.filter((o) => !o.disabled).map((o) => o?.value));
-
-  //   setSelectedOptions(options.map((o) => ({ ...o, selected: !o.disabled })));
-  // };
 
   const handleClearSelection = () => {
     setSelectedOptions((prev) => prev.map((o) => ({ ...o, selected: false })));
@@ -528,59 +513,25 @@ export const Lookup = ({
       <div
         role="menu"
         style={{
+          position: "fixed",
           top: `${menuPosition.top}px`,
           left: `${menuPosition.left}px`,
+          // position: "absolute",
+          // transform: `translate(${0 || menuPosition.left}px, ${menuPosition.top}px)`, TODO: gain absolute position here, so dropdown does not go with scroll
+          // inset: '0px auto auto 0px'
         }}
         className={clsx(
-          "fixed z-30 w-fit min-w-[15rem] max-w-full select-none rounded-lg border border-zinc-500 bg-white shadow transition-all duration-300 ease-in-out dark:bg-zinc-800",
+          "z-30 w-fit min-w-[15rem] max-w-full select-none overflow-hidden rounded-lg border border-zinc-500 bg-white shadow transition-all duration-300 ease-in-out dark:bg-zinc-800",
           {
             invisible: !isComponentVisible,
             visible: isComponentVisible,
           }
         )}
       >
-        {/* {(search || multiple) && (
-          <div className="rw-button-group !my-0 w-full rounded-none border-b border-zinc-500">
-            {search && (
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={handleInputChange}
-                placeholder={"Search..."}
-                className="rw-input flex w-full grow items-center !rounded-b-none border-none outline-none dark:bg-zinc-700"
-                disabled={disabled}
-              />
-            )}
-            {multiple && (
-              <button
-                type="button"
-                onClick={handleSelectAll}
-                className={clsx(
-                  "rw-button rw-button-gray !rounded-b-none !border-0 !border-l border-zinc-500 transition ease-in-out dark:!bg-zinc-700",
-                  {
-                    "!text-pea-500 !ring-pea-500 !ring-1 ring-inset":
-                      selectedOptions.length === options.length &&
-                      options.length > 0,
-                  }
-                )}
-                title="Select All"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 512 512"
-                  className="rw-button-icon"
-                >
-                  <path d="M475.3 164.7c-6.25-6.25-16.38-6.25-22.62 0L192 425.4L59.31 292.7c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62l144 144C183.8 462.4 187.9 464 192 464s8.188-1.562 11.31-4.688l272-272C481.6 181.1 481.6 170.9 475.3 164.7zM180.7 235.3C183.8 238.4 187.9 240 192 240s8.188-1.562 11.31-4.688l176-176c6.25-6.25 6.25-16.38 0-22.62s-16.38-6.25-22.62 0L192 201.4L123.3 132.7c-6.25-6.25-16.38-6.25-22.62 0s-6.25 16.38 0 22.62L180.7 235.3z" />
-                </svg>
-                <span className="sr-only">Select All</span>
-              </button>
-            )}
-          </div>
-        )} */}
-
         <ul
           className="relative z-10 max-h-48 space-y-1 overflow-y-auto pt-0 text-gray-700 will-change-scroll dark:text-gray-200"
           aria-labelledby="dropdownButton"
+          role="listbox"
         >
           {!options ||
             selectedOptions.filter((option) => {
@@ -595,7 +546,76 @@ export const Lookup = ({
             </li>
           ) : null}
 
-          {selectedOptions
+          {groupBy && Object.entries(selectedOptions
+            .filter((option) => {
+              if (filterSelectedOptions) {
+                return !option?.selected && option?.inSearch;
+              }
+
+              return option.inSearch;
+            }).reduce((acc, obj) => {
+              let groupKey: any = obj; // Use 'any' type for indexing
+              // console.log(acc, obj, groupBy(obj))
+              groupKey = groupBy(obj);
+
+              if (!acc.hasOwnProperty(groupKey)) {
+                acc[groupKey] = [];
+              }
+
+              acc[groupKey].push(obj);
+              return acc;
+            }, {})).map(([groupTitle, groupedItems]: [groupedTitle: string, groupedItems: ILookupOptions[]]) => {
+              return (
+                <li className="overflow-hidden" key={`group-${groupTitle}`}>
+                  <div className="px-2 py-1">{groupTitle}</div>
+                  <ul>
+                    {groupedItems.map((option, index) => (
+                      <li
+                        key={`${groupTitle}-option-${option.value}-${index}`}
+                        onClick={(e) => handleOptionSelect(e, option)}
+                        aria-checked={option.selected}
+                        aria-disabled={option.disabled}
+                        className={clsx(
+                          "flex items-center py-2 px-4",
+                          {
+                            "cursor-not-allowed text-zinc-500/50": option.disabled,
+                            "hover:bg-zinc-200 dark:hover:bg-zinc-600/90 dark:hover:text-white":
+                              !option.disabled,
+                          }
+                        )}
+                      >
+                        {"image" in option && (
+                          <img
+                            className="mr-2 h-6 w-6"
+                            src={option.image}
+                            alt={option.label}
+                          />
+                        )}
+
+                        <span className="grow">{option.label}</span>
+
+                        {option.selected && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            aria-hidden="true"
+                            className="h-5 w-5 shrink-0"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              )
+            })}
+          {!groupBy && selectedOptions
             .filter((option) => {
               if (filterSelectedOptions) {
                 return !option?.selected && option?.inSearch;
@@ -608,19 +628,19 @@ export const Lookup = ({
                 key={`option-${option.value}`}
                 onClick={(e) => handleOptionSelect(e, option)}
                 aria-checked={option.selected}
+                aria-disabled={option.disabled}
                 className={clsx(
                   "flex items-center py-2 px-4 last:rounded-b-lg first:rounded-t-lg",
                   {
                     "cursor-not-allowed text-zinc-500/50": option.disabled,
                     "hover:bg-zinc-200 dark:hover:bg-zinc-600/90 dark:hover:text-white":
                       !option.disabled,
-                    // "first:rounded-t-lg": !search && !multiple,
                   }
                 )}
               >
-                {"image" in option && !option.group && (
+                {"image" in option && (
                   <img
-                    className="mr-2 h-6 w-6 rounded-full"
+                    className="mr-2 h-6 w-6"
                     src={option.image}
                     alt={option.label}
                   />

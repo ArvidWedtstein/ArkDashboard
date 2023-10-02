@@ -76,8 +76,8 @@ const ItemForm = (props: ItemFormProps) => {
     //       },
     //     })
     //   );
-
-    props.onSave(data, props?.item?.id);
+    console.log(data)
+    // props.onSave(data, props?.item?.id);
   };
 
   const [craftable, setCraftable] = useState(false);
@@ -161,8 +161,8 @@ const ItemForm = (props: ItemFormProps) => {
             label="Weight"
             margin="normal"
             type="number"
-            defaultValue={props.item?.weight || 0}
-            validation={{ valueAsNumber: true }}
+            defaultValue={props.item?.weight ?? 0}
+            validation={{ valueAsNumber: true, setValueAs: (v) => Number(v) }}
             icon={
               <img
                 src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
@@ -186,6 +186,86 @@ const ItemForm = (props: ItemFormProps) => {
             defaultValue={props.item?.blueprint}
           />
         </div>
+        <div className="flex flex-wrap space-x-1">
+          <Lookup
+            defaultValue={[props.item?.category]}
+            name="category"
+            label="Category"
+            options={[
+              { value: "Armor", label: "Armor" },
+              { value: "Consumable", label: "Consumable" },
+              { value: "Fertilizer", label: "Fertilizer", disabled: true },
+              { value: "Other", label: "Other" },
+              { value: "Resource", label: "Resource" },
+              { value: "Structure", label: "Structure" },
+              { value: "Tool", label: "Tool" },
+              { value: "Weapon", label: "Weapon", disabled: true },
+            ]}
+            validation={{
+              required: true,
+            }}
+            groupBy={(e) => e.disabled ? 'Other' : 'None'}
+          />
+
+          <Lookup
+            defaultValue={[props.item?.type]}
+            name="type"
+            label="type"
+            options={[
+              { value: "Attachment", label: "Attachment" },
+              { value: "Chitin", label: "Chitin" },
+              { value: "Cloth", label: "Cloth" },
+              { value: "Flak", label: "Flak" },
+              { value: "Fur", label: "Fur" },
+              { value: "Ghillie", label: "Ghillie" },
+              { value: "Hazard", label: "Hazard" },
+              { value: "Hide", label: "Hide" },
+              { value: "Riot", label: "Riot" },
+              { value: "Saddle", label: "Saddle" },
+              { value: "Scuba", label: "Scuba" },
+              { value: "Tek", label: "Tek" },
+              { value: "Other", label: "Other" },
+              { value: "Dish", label: "Dish" },
+              { value: "Drug", label: "Drug" },
+              { value: "Egg", label: "Egg" },
+              { value: "Food", label: "Food" },
+              { value: "Fungus", label: "Fungus" },
+              { value: "Meat", label: "Meat" },
+              { value: "Plant", label: "Plant" },
+              { value: "Seed", label: "Seed" },
+              { value: "Tool", label: "Tool" },
+              { value: "Other", label: "Other" },
+              { value: "Feces", label: "Feces" },
+              { value: "Adobe", label: "Adobe" },
+              { value: "Building", label: "Building" },
+              { value: "Crafting", label: "Crafting" },
+              { value: "Electrical", label: "Electrical" },
+              { value: "Elevator", label: "Elevator" },
+              { value: "Greenhouse", label: "Greenhouse" },
+              { value: "Metal", label: "Metal" },
+              { value: "Stone", label: "Stone" },
+              { value: "Tek", label: "Tek" },
+              { value: "Thatch", label: "Thatch" },
+              { value: "Utility", label: "Utility" },
+              { value: "Vehicle", label: "Vehicle" },
+              { value: "Wood", label: "Wood" },
+              { value: "Artifact", label: "Artifact" },
+              { value: "Coloring", label: "Coloring" },
+              { value: "Navigation", label: "Navigation" },
+              { value: "Tool", label: "Tool" },
+              { value: "Utility", label: "Utility" },
+              { value: "Ammunition", label: "Ammunition" },
+              { value: "Arrow", label: "Arrow" },
+              { value: "Attachment", label: "Attachment" },
+              { value: "Explosive", label: "Explosive" },
+              { value: "Gun", label: "Gun" },
+              { value: "Other", label: "Other" },
+              { value: "Shield", label: "Shield" },
+              { value: "Tool", label: "Tool" },
+            ]}
+          />
+        </div>
+
         <Switch
           onLabel="Visible"
           defaultChecked={props.item?.visible}
@@ -199,7 +279,7 @@ const ItemForm = (props: ItemFormProps) => {
           onChange={(e) => setCraftable(e.target.checked)}
         />
         {/* TODO: add fields */}
-        {/* ["food","torpor","affinity","torpor_duration","damage"","stats","health","blueprint","type","category"] */}
+        {/* ["food","torpor","affinity","torpor_duration","damage"","stats","health"] */}
         {craftable && (
           <fieldset className="rw-form-group">
             <legend>Crafting</legend>
@@ -487,127 +567,6 @@ const ItemForm = (props: ItemFormProps) => {
             </div>
           </fieldset>
         )}
-
-        <Label
-          name="category"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Category
-        </Label>
-
-        <SelectField
-          name="category"
-          className="rw-input"
-          defaultValue={props.item?.category}
-          errorClassName="rw-input rw-input-error"
-          validation={{
-            required: true,
-          }}
-        >
-          <option>Armor</option>
-          <option>Consumable</option>
-          <option>Fertilizer</option>
-          <option>Other</option>
-          <option>Resource</option>
-          <option>Structure</option>
-          <option>Tool</option>
-          <option>Weapon</option>
-        </SelectField>
-
-        <FieldError name="category" className="rw-field-error" />
-
-        <Label
-          name="type"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Type
-        </Label>
-
-        <SelectField
-          name="type"
-          className="rw-input"
-          defaultValue={props.item?.type}
-          errorClassName="rw-input rw-input-error"
-          validation={{
-            required: false,
-          }}
-        >
-          <optgroup label="Armor">
-            <option>Attachment</option>
-            <option>Chitin</option>
-            <option>Cloth</option>
-            <option>Flak</option>
-            <option>Fur</option>
-            <option>Ghillie</option>
-            <option>Hazard</option>
-            <option>Hide</option>
-            <option>Riot</option>
-            <option>Saddle</option>
-            <option>Scuba</option>
-            <option>Tek</option>
-            <option value={null}>Other</option>
-          </optgroup>
-          <optgroup label="Consumable">
-            <option>Dish</option>
-            <option>Drug</option>
-            <option>Egg</option>
-            <option>Food</option>
-            <option>Fungus</option>
-            <option>Meat</option>
-            <option>Other</option>
-            <option>Plant</option>
-            <option>Seed</option>
-            <option>Tool</option>
-          </optgroup>
-          <optgroup label="Fertilizer">
-            <option>Feces</option>
-          </optgroup>
-          <optgroup label="Other">
-            <option>Artifact</option>
-            <option>Coloring</option>
-            <option>Navigation</option>
-            <option>Other</option>
-            <option>Tool</option>
-            <option>Utility</option>
-          </optgroup>
-          <optgroup label="Resource">
-            <option>Other</option>
-          </optgroup>
-          <optgroup label="Structure">
-            <option>Adobe</option>
-            <option>Building</option>
-            <option>Crafting</option>
-            <option>Electrical</option>
-            <option>Elevator</option>
-            <option>Greenhouse</option>
-            <option>Metal</option>
-            <option>Stone</option>
-            <option>Tek</option>
-            <option>Thatch</option>
-            <option>Utility</option>
-            <option>Vehicle</option>
-            <option>Wood</option>
-            <option value={null}>Other</option>
-          </optgroup>
-          <optgroup label="Tool">
-            <option value={null}>Other</option>
-          </optgroup>
-          <optgroup label="Weapon">
-            <option>Ammunition</option>
-            <option>Arrow</option>
-            <option>Attachment</option>
-            <option>Explosive</option>
-            <option>Gun</option>
-            <option>Other</option>
-            <option>Shield</option>
-            <option>Tool</option>
-            <option value={null}>Other stuff</option>
-          </optgroup>
-        </SelectField>
-
-        <FieldError name="type" className="rw-field-error" />
 
         <Label
           name="stats"
