@@ -76,7 +76,7 @@ const ItemForm = (props: ItemFormProps) => {
     //       },
     //     })
     //   );
-    console.log(data)
+    console.log(data);
     // props.onSave(data, props?.item?.id);
   };
 
@@ -204,7 +204,7 @@ const ItemForm = (props: ItemFormProps) => {
             validation={{
               required: true,
             }}
-            groupBy={(e) => e.disabled ? 'Other' : 'None'}
+            groupBy={(e) => (e.disabled ? "Other" : "None")}
           />
 
           <Lookup
@@ -347,102 +347,104 @@ const ItemForm = (props: ItemFormProps) => {
                             value: 606,
                             label: "Beer Barrel",
                             image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/beer-barrel.png",
+                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/beer-barrel.webp",
                           },
                           {
                             value: 39,
                             label: "Campfire",
                             image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/campfire.png",
+                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/campfire.webp",
                           },
                           {
                             value: 607,
                             label: "Chemistry Bench",
                             image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/chemistry-bench.png",
+                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/chemistry-bench.webp",
                           },
                           {
                             value: 128,
                             label: "Cooking Pot",
                             image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/cooking-pot.png",
+                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/cooking-pot.webp",
                           },
                           {
                             value: 127,
                             label: "Compost Bin",
                             image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/compost-bin.png",
+                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/compost-bin.webp",
                           },
                           {
                             value: 185,
                             label: "Fabricator",
                             image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/fabricator.png",
+                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/fabricator.webp",
                           },
                           {
                             value: 601,
                             label: "Industrial Cooker",
                             image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-cooker.png",
+                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-cooker.webp",
                           },
                           {
                             value: 600,
                             label: "Industrial Forge",
                             image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-forge.png",
+                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-forge.webp",
                           },
                           {
                             value: 360,
                             label: "Industrial Grill",
                             image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-grill.png",
+                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-grill.webp",
                           },
                           {
                             value: 618,
                             label: "Industrial Grinder",
                             image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-grinder.png",
+                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/industrial-grinder.webp",
                           },
                           {
                             value: 107,
                             label: "Mortar And Pestle",
                             image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/mortar-and-pestle.png",
+                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/mortar-and-pestle.webp",
                           },
                           {
                             value: 125,
                             label: "Refining Forge",
                             image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/refining-forge.png",
+                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/refining-forge.webp",
                           },
                           {
                             value: 126,
                             label: "Smithy",
                             image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/smithy.png",
+                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/smithy.webp",
                           },
                           {
                             value: 652,
                             label: "Tek Replicator",
                             image:
-                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/tek-replicator.png",
+                              "https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/tek-replicator.webp",
                           },
                         ]}
                       />
                       <div
-                        className="rw-button-group justify-start"
+                        className="rw-button-group items-center justify-start"
                         role="group"
                         key={`recipe-${index}`}
                       >
                         {/* TODO: Group By crafting station */}
                         <Lookup
-                          // {...register(
-                          //   `ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.item_id`,
-                          //   {
-                          //     required: true,
-                          //   }
-                          // )}
+                          margin="none"
+                          {...register(
+                            `ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.item_id`,
+                            {
+                              required: true,
+                            }
+                          )}
                           name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.item_id`}
+                          label={"Item"}
                           options={data.itemsByCategory.items.map((item) => ({
                             category: item.category,
                             type: item.type,
@@ -450,7 +452,6 @@ const ItemForm = (props: ItemFormProps) => {
                             value: item.id,
                             image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
                           }))}
-                          search={true}
                           className="!mt-0 !rounded-none !rounded-l-md"
                           defaultValue={[recipe.item_id.toString()]}
                           filterFn={(item, search) => {
@@ -460,8 +461,9 @@ const ItemForm = (props: ItemFormProps) => {
                               .includes(search.toLowerCase());
                           }}
                         />
-                        <NumberField
-                          className="rw-input mt-0"
+                        <InputOutlined
+                          type="number"
+                          label="Amount"
                           defaultValue={recipe.amount}
                           {...register(
                             `ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.amount`,
@@ -470,8 +472,10 @@ const ItemForm = (props: ItemFormProps) => {
                             }
                           )}
                         />
-                        <NumberField
-                          className="rw-input mt-0"
+
+                        <InputOutlined
+                          type="number"
+                          label="Yields"
                           defaultValue={recipe.yields}
                           {...register(
                             `ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.yields`,
@@ -480,6 +484,7 @@ const ItemForm = (props: ItemFormProps) => {
                             }
                           )}
                         />
+
                         <FieldError
                           name={`ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert.${index}.yields`}
                           className="rw-field-error"
@@ -487,7 +492,7 @@ const ItemForm = (props: ItemFormProps) => {
 
                         <button
                           type="button"
-                          className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
+                          className="rw-button rw-button-red rw-button-large !ml-0 rounded-none  !rounded-r-md"
                           onClick={() => removeRecipe(index)}
                         >
                           Remove Recipe
@@ -578,11 +583,46 @@ const ItemForm = (props: ItemFormProps) => {
 
         {statFields.map((stat, index) => (
           <div
-            className="rw-button-group !mt-0 justify-start"
+            className="rw-button-group mt-2 justify-start"
             role="group"
             key={`stat-${index}`}
           >
-            <select
+            <Lookup
+              margin="none"
+              defaultValue={[stat.id]}
+              label="Stat Type"
+              {...register(`stats.${index}.id`)}
+              options={[
+                { value: 2, label: "Armor" },
+                { value: 3, label: "Hypothermal Insulation" },
+                { value: 4, label: "Hyperthermal Insulation" },
+                { value: 5, label: "Durability" },
+                { value: 7, label: "Health" },
+                { value: 8, label: "Food" },
+                { value: 6, label: "Weapon Damage" },
+                { value: 9, label: "Spoils" },
+                { value: 10, label: "Torpor" },
+                { value: 15, label: "Affinity" },
+                { value: 16, label: "Ammo" },
+                { value: 12, label: "Stamina" },
+                { value: 13, label: "Cooldown" },
+                { value: 14, label: "Fertilizer Points" },
+                { value: 17, label: "Weight Reduction" },
+                { value: 18, label: "Fuel" },
+                { value: 19, label: "Gather" },
+                { value: 11, label: "Water" },
+                { value: 20, label: "Other" },
+              ]}
+            />
+
+            {/* TODO: fix */}
+            <InputOutlined
+              label={"Value"}
+              {...register(`stats.${index}.value`)}
+              type="number"
+              defaultValue={stat.value}
+            />
+            {/* <select
               className="rw-input mt-0"
               defaultValue={stat.id}
               {...register(`stats.${index}.id`)}
@@ -620,10 +660,10 @@ const ItemForm = (props: ItemFormProps) => {
               type="number"
               className="rw-input mt-0"
               defaultValue={stat.value}
-            />
+            /> */}
             <button
               type="button"
-              className="rw-button rw-button-red !ml-0 rounded-none !rounded-r-md"
+              className="rw-button rw-button-red rw-button-large !ml-0 rounded-none !rounded-r-md"
               onClick={() => removeStat(index)}
             >
               Remove Stat
