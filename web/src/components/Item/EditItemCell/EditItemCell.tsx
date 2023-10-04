@@ -28,6 +28,12 @@ export const QUERY = gql`
       type
       blueprint
       visible
+      affinity
+      food
+      torpor
+      torpor_duration
+      damage
+      health
     }
   }
 `;

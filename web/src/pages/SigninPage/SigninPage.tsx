@@ -55,7 +55,7 @@ const SigninPage = () => {
   };
 
   return (
-    <article className="text-gray-600 dark:text-white">
+    <article className="text-gray-600 dark:text-white sm:p-8 p-2">
       <MetaTags title="Login" />
       <header className="mt-4 text-center">
         <h2 className="rw-heading-secondary text-lg font-semibold">Signin</h2>
@@ -71,7 +71,6 @@ const SigninPage = () => {
               label="Email"
               type="email"
               autoFocus
-              placeholder="ola@nordmann.com"
               autoComplete="email"
               validation={{
                 required: {
@@ -135,82 +134,6 @@ const SigninPage = () => {
         </div>
       </div>
     </article>
-    // <>
-    //   <MetaTags title="Login" />
-
-    //   <div className="my-4 mx-auto max-w-lg p-4 text-gray-600 dark:text-white">
-    //     <div className="w-full text-center">
-    //       <header className="p-2">
-    //         <h2 className="text-lg font-semibold">Login</h2>
-    //       </header>
-
-    //       <div className="p-2">
-    //         <Form<FormSigninPage>
-    //           onSubmit={onSubmit}
-    //           className="rw-form-wrapper flex flex flex-col flex-col items-center justify-center"
-    //         >
-    //           <InputOutlined
-    //             name="email"
-    //             label="Email"
-    //             type="email"
-    //             autoFocus
-    //             placeholder="ola@nordmann.com"
-    //             autoComplete="email"
-    //             validation={{
-    //               required: {
-    //                 value: true,
-    //                 message: "Email is required",
-    //               },
-    //               pattern: {
-    //                 message: "Email must be valid",
-    //                 value: /[^@]+@[^\.]+\..+/,
-    //               },
-    //             }}
-    //             icon={
-    //               <svg
-    //                 aria-hidden="true"
-    //                 className="h-5 w-5"
-    //                 fill="currentColor"
-    //                 viewBox="0 0 20 20"
-    //                 xmlns="http://www.w3.org/2000/svg"
-    //               >
-    //                 <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-    //                 <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-    //               </svg>
-    //             }
-    //           />
-
-    //           <InputOutlined
-    //             name="password"
-    //             label="Password"
-    //             type="password"
-    //             autoComplete="current-password"
-    //             validation={{
-    //               required: {
-    //                 value: true,
-    //                 message: "Password is required",
-    //               },
-    //             }}
-    //           />
-
-    //           <div className="rw-link mt-1">
-    //             <Link to={routes.forgotPassword()} className="rw-forgot-link">
-    //               Forgot da Password?
-    //             </Link>
-    //           </div>
-
-    //           <Submit className="rw-button rw-button-blue my-3">Login</Submit>
-    //         </Form>
-    //       </div>
-    //       <div className="space-x-2 text-gray-300 dark:text-stone-300">
-    //         <span>Don&apos;t have an account?</span>
-    //         <Link to={routes.signup()} className="rw-link">
-    //           Sign up!
-    //         </Link>
-    //       </div>
-    //     </div>
-    //   </div>
-    // </>
   );
 };
 

@@ -9,9 +9,8 @@ import {
   useErrorStyles,
 } from "@redwoodjs/forms";
 import clsx from "clsx";
-import { useState } from "react";
+import { CSSProperties, useState } from "react";
 import { isEmpty } from "src/lib/formatters";
-
 type InputProps = {
   name?: string;
   helperText?: string;
@@ -54,6 +53,13 @@ type InputProps = {
       | React.FocusEvent<HTMLInputElement>
       | React.FocusEvent<HTMLTextAreaElement>
   ) => void;
+  InputProps?: {
+    startAdornment?: React.ReactNode;
+    endAdornment?: React.ReactNode;
+  };
+  sx?: {
+    borderRadius?: CSSProperties["borderRadius"];
+  }
 } & Omit<InputFieldProps, "type" | "name"> &
   Omit<TextAreaFieldProps, "type" | "name">;
 
@@ -131,10 +137,11 @@ export const InputOutlined = ({
   disabled,
   fullWidth,
   margin = "none",
+  InputProps,
   ...props
 }: InputProps) => {
   const [focus, setFocus] = useState(false);
-
+  // TODO: fix SX
   const { field } = !!name
     ? useController({
       name: name,
@@ -144,7 +151,6 @@ export const InputOutlined = ({
     })
     : { field: null };
 
-  const isLeftIcon = icon && iconPosition == "left";
   const handleFocus = (
     e:
       | React.FocusEvent<HTMLInputElement>
@@ -175,6 +181,7 @@ export const InputOutlined = ({
     <div
       className={clsx(
         "relative mx-0 inline-flex min-w-0 max-w-sm flex-col p-0 align-top text-black dark:text-white",
+        className,
         {
           "pointer-events-none text-black/50 dark:text-white/50": disabled,
           "w-full": fullWidth,
@@ -189,7 +196,7 @@ export const InputOutlined = ({
         className={clsx(labelClassName, {
           "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
             focus || !isEmpty(field?.value) || !!props?.placeholder,
-          "translate-x-10": isLeftIcon,
+          "translate-x-10": !!InputProps?.startAdornment,
         })}
         name={name}
         htmlFor={`input-${name}`}
@@ -200,14 +207,14 @@ export const InputOutlined = ({
         className={clsx(
           "relative box-content inline-flex cursor-text items-center rounded text-base font-normal leading-6",
           {
-            "pl-3.5": isLeftIcon,
-            "pr-3.5": icon && !isLeftIcon,
+            "pl-3.5": !!InputProps?.startAdornment,
+            "pr-3.5": !!InputProps?.endAdornment,
           }
         )}
       >
-        {isLeftIcon && (
+        {!!InputProps?.startAdornment && (
           <div className="mr-2 flex h-[0.01em] max-h-[2em] items-center whitespace-nowrap text-black/70 dark:text-white/70">
-            {icon}
+            {InputProps?.startAdornment}
           </div>
         )}
         {!!!name ? (
@@ -218,22 +225,18 @@ export const InputOutlined = ({
             className={clsx(
               "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none disabled:pointer-events-none",
               {
-                "pl-0": isLeftIcon,
-                "pr-0": icon && !isLeftIcon,
+                "pl-0": !!InputProps?.startAdornment,
+                "pr-0": !!InputProps?.endAdornment,
               }
             )}
             errorClassName={clsx(
               "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error",
               {
-                "pl-0": isLeftIcon,
-                "pr-0": icon && !isLeftIcon,
+                "pl-0": !!InputProps?.startAdornment,
+                "pr-0": !!InputProps?.endAdornment,
               }
             )}
             disabled={disabled}
-            onChange={(e) => {
-              !!name && field.onChange(e);
-              props?.onChange?.(e);
-            }}
             {...field}
             onFocus={handleFocus}
             onBlur={handleBlur}
@@ -246,13 +249,17 @@ export const InputOutlined = ({
             className={clsx(
               "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none disabled:pointer-events-none",
               {
-                "pl-0": isLeftIcon,
-                "pr-0": icon && !isLeftIcon,
+                "pl-0": !!InputProps?.startAdornment,
+                "pr-0": !!InputProps?.endAdornment,
               }
             )}
             onChange={(e) => {
               field.onChange(e);
               props.onChange?.(e);
+            }}
+            onInput={(e) => {
+              field.onChange(e);
+              props.onInput?.(e);
             }}
             {...field}
             onFocus={handleFocus}
@@ -260,8 +267,8 @@ export const InputOutlined = ({
             errorClassName={clsx(
               "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error",
               {
-                "pl-0": isLeftIcon,
-                "pr-0": icon && !isLeftIcon,
+                "pl-0": !!InputProps?.startAdornment,
+                "pr-0": !!InputProps?.endAdornment,
               }
             )}
             aria-describedby={helperText ? `${name}-helper-text` : null}
@@ -276,21 +283,25 @@ export const InputOutlined = ({
             className={clsx(
               "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none disabled:pointer-events-none",
               {
-                "pl-0": isLeftIcon,
-                "pr-0": icon && !isLeftIcon,
+                "pl-0": !!InputProps?.startAdornment,
+                "pr-0": !!InputProps?.endAdornment,
               }
             )}
             errorClassName={clsx(
               "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error",
               {
-                "pl-0": isLeftIcon,
-                "pr-0": icon && !isLeftIcon,
+                "pl-0": !!InputProps?.startAdornment,
+                "pr-0": !!InputProps?.endAdornment,
               }
             )}
             disabled={disabled}
             onChange={(e) => {
               field.onChange(e);
               props.onChange?.(e);
+            }}
+            onInput={(e) => {
+              field.onChange(e);
+              props.onInput?.(e);
             }}
             {...field}
             onFocus={handleFocus}
@@ -299,9 +310,9 @@ export const InputOutlined = ({
             {...props}
           />
         )}
-        {icon && !isLeftIcon && (
+        {InputProps?.endAdornment && (
           <div className="ml-2 flex h-[0.01em] max-h-[2em] items-center whitespace-nowrap text-black/70 dark:text-white/70">
-            {icon}
+            {InputProps?.endAdornment}
           </div>
         )}
         <fieldset

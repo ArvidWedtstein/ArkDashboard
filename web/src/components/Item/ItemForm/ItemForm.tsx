@@ -163,12 +163,15 @@ const ItemForm = (props: ItemFormProps) => {
             type="number"
             defaultValue={props.item?.weight ?? 0}
             validation={{ valueAsNumber: true, setValueAs: (v) => Number(v) }}
-            icon={
-              <img
+            InputProps={{
+              startAdornment: (<img
                 src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
                 className="w-5"
-              />
-            }
+              />),
+            }}
+            sx={{
+              borderRadius: '0.375rem 0 0 0.375rem'
+            }}
           />
           <InputOutlined
             name="max_stack"
@@ -184,6 +187,48 @@ const ItemForm = (props: ItemFormProps) => {
             label="Blueprint"
             margin="normal"
             defaultValue={props.item?.blueprint}
+          />
+        </div>
+        <div className="flex flex-wrap space-x-1">
+          <InputOutlined
+            name="affinity"
+            label="Affinity"
+            margin="normal"
+            type="number"
+            defaultValue={props.item?.affinity}
+          />
+          <InputOutlined
+            name="health"
+            label="Health"
+            margin="normal"
+            type="number"
+            defaultValue={props.item?.health}
+          />
+
+          <InputOutlined
+            name="damage"
+            label="Damage"
+            margin="normal"
+            defaultValue={props.item?.damage}
+          />
+        </div>
+        <div className="flex flex-wrap">
+          <InputOutlined
+            name="torpor"
+            label="Torpor"
+            margin="normal"
+            // className="![&>*]:rounded-r-none"
+            defaultValue={props.item?.torpor}
+          />
+          <InputOutlined
+            name="torpor_duration"
+            label="Torpor Duration"
+            margin="normal"
+            defaultValue={props.item?.torpor_duration}
+            InputProps={{
+              endAdornment: "s"
+            }}
+            iconPosition="right"
           />
         </div>
         <div className="flex flex-wrap space-x-1">
@@ -210,7 +255,7 @@ const ItemForm = (props: ItemFormProps) => {
           <Lookup
             defaultValue={[props.item?.type]}
             name="type"
-            label="type"
+            label="Type"
             options={[
               { value: "Attachment", label: "Attachment" },
               { value: "Chitin", label: "Chitin" },
