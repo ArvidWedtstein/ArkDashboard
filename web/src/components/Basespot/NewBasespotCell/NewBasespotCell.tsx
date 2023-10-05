@@ -105,7 +105,6 @@ export const Success = ({
   );
 
   const onSave = (input: CreateBasespotInput) => {
-    // TODO: Get images here somehow
     toast.promise(createBasespot({ variables: { input } }), {
       loading: "Creating new basespot...",
       success: "Basespot successfully created",

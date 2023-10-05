@@ -378,6 +378,106 @@ export const ColorInput = () => {
       return 'Invalid format';
     }
   }
+  function colorToHex(color) {
+    // Handle RGB format
+    if (/^rgb\(/.test(color)) {
+      const rgbValues = color.match(/\d+/g);
+      if (rgbValues.length === 3) {
+        const [r, g, b] = rgbValues.map(Number);
+        const hex = ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
+        return `#${hex}`;
+      }
+    }
+
+    // Handle HSL format
+    if (/^hsl\(/.test(color)) {
+      const hslValues = color.match(/\d+/g);
+      if (hslValues.length === 3) {
+        const [h, s, l] = hslValues.map(Number);
+        const hslToRgb = (h, s, l) => {
+          h /= 360;
+          s /= 100;
+          l /= 100;
+          let r, g, b;
+          if (s === 0) {
+            r = g = b = l;
+          } else {
+            const hue2rgb = (p, q, t) => {
+              if (t < 0) t += 1;
+              if (t > 1) t -= 1;
+              if (t < 1 / 6) return p + (q - p) * 6 * t;
+              if (t < 1 / 2) return q;
+              if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+              return p;
+            };
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1 / 3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1 / 3);
+          }
+          return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        };
+        const [r, g, b] = hslToRgb(h, s, l);
+        const hex = ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
+        return `#${hex}`;
+      }
+    }
+
+    // Handle HWB format
+    if (/^hwb\(/.test(color)) {
+      const hwbValues = color.match(/\d+/g);
+      const [h2, w2, b2] = hwbValues.map(Number);
+
+      console.log(h2, w2, b2)
+      // Convert HWB to HEX (Note: This is a simplified example)
+      const h = h2;
+      const w = w2 / 100;
+      const b = b2 / 100;
+      const s = 1 - w / (1 - b);
+      const l = (1 - b) * (1 - s / 2);
+      const c = 2 * (1 - l) - 1;
+      const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+      const m = l - c / 2;
+      let r, g, bValue;
+
+      if (h >= 0 && h < 60) {
+        r = c;
+        g = x;
+        bValue = 0;
+      } else if (h >= 60 && h < 120) {
+        r = x;
+        g = c;
+        bValue = 0;
+      } else if (h >= 120 && h < 180) {
+        r = 0;
+        g = c;
+        bValue = x;
+      } else if (h >= 180 && h < 240) {
+        r = 0;
+        g = x;
+        bValue = c;
+      } else if (h >= 240 && h < 300) {
+        r = x;
+        g = 0;
+        bValue = c;
+      } else {
+        r = c;
+        g = 0;
+        bValue = x;
+      }
+
+      r = Math.round((r + m) * 255);
+      g = Math.round((g + m) * 255);
+      bValue = Math.round((bValue + m) * 255);
+
+      const hex = `#${(1 << 24 | r << 16 | g << 8 | bValue).toString(16).slice(1)}`;
+      console.log(hex)
+      return hex;
+    }
+
+    return color;
+  }
   const HslToHex = (color: string) => {
     const hslValues = color.replace('hsl(', '').split(',').map((val) => parseFloat(val));
     const h = hslValues[0];
@@ -420,6 +520,7 @@ export const ColorInput = () => {
 
     return `#${(1 << 24 | r << 16 | g << 8 | bValue).toString(16).slice(1)}`;
   }
+
   const convertColor = (currentformat: string) => {
     switch (currentformat) {
       case 'rgb':
@@ -716,7 +817,7 @@ export const ColorInput = () => {
           setColor(hexToColor(e.target.value, format?.find((item) => item.active).value));
         }, 500)}
         type="color"
-        value={color}
+        value={colorToHex(color)}
       />
       <input
         className="rw-input max-w-[4rem] select-none border-l-0"

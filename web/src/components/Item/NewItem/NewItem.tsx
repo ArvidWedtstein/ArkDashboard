@@ -1,6 +1,7 @@
 import { navigate, routes } from '@redwoodjs/router'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
+import { useAuth } from 'src/auth'
 
 import ItemForm from 'src/components/Item/ItemForm'
 
@@ -10,16 +11,24 @@ const CREATE_ITEM_MUTATION = gql`
   mutation CreateItemMutation($input: CreateItemInput!) {
     createItem(input: $input) {
       id
+      image
     }
   }
 `
 
 
 const NewItem = () => {
+  const { client: supabase } = useAuth();
   const [createItem, { loading, error }] = useMutation(
     CREATE_ITEM_MUTATION,
     {
-      onCompleted: (data) => {
+      onCompleted: ({ createItem }) => {
+        let files: string[] = createItem.image.split(',');
+        files.forEach((file) => {
+          supabase.storage
+            .from('arkimages')
+            .move(`temp/${file}`, `Item/${file}`)
+        });
         toast.success('Item created')
         navigate(routes.items())
       },

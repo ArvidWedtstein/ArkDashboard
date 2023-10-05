@@ -146,9 +146,9 @@ const ItemForm = (props: ItemFormProps) => {
               placeholder="#ff0000"
               defaultValue={props.item?.color}
             />
-            <ColorInput />
+            {/* TODO: test */}
+            {/* <ColorInput /> */}
           </div>
-          {/* TODO: fix images upload from temp */}
           <FileUpload
             name="image"
             label="Image"
