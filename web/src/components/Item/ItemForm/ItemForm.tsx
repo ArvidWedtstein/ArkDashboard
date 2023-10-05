@@ -5,11 +5,8 @@ import {
   Label,
   TextField,
   Submit,
-  SelectField,
-  ColorField,
   useFieldArray,
   useForm,
-  NumberField,
 } from "@redwoodjs/forms";
 
 import type { EditItemById, UpdateItemInput } from "types/graphql";
@@ -18,9 +15,13 @@ import { useEffect, useState } from "react";
 import CheckboxGroup from "src/components/Util/CheckSelect/CheckboxGroup";
 import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { useLazyQuery } from "@apollo/client";
-import { InputOutlined } from "src/components/Util/Input/Input";
+import { ColorInput, InputOutlined } from "src/components/Util/Input/Input";
 import FileUpload from "src/components/Util/FileUpload/FileUpload";
 import Switch from "src/components/Util/Switch/Switch";
+import EditItemRecipeCell from "src/components/ItemRecipe/EditItemRecipeCell";
+import ItemRecipesList from "src/components/ItemRecipe/ItemRecipes/ItemRecipes";
+import ItemRecipesCell from "src/components/ItemRecipe/ItemRecipesCell";
+import NewItemRecipe from "src/components/ItemRecipe/NewItemRecipe/NewItemRecipe";
 
 type FormItem = NonNullable<EditItemById["item"]>;
 
@@ -145,6 +146,7 @@ const ItemForm = (props: ItemFormProps) => {
               placeholder="#ff0000"
               defaultValue={props.item?.color}
             />
+            <ColorInput />
           </div>
           {/* TODO: fix images upload from temp */}
           <FileUpload
@@ -164,13 +166,10 @@ const ItemForm = (props: ItemFormProps) => {
             defaultValue={props.item?.weight ?? 0}
             validation={{ valueAsNumber: true, setValueAs: (v) => Number(v) }}
             InputProps={{
-              startAdornment: (<img
+              endAdornment: (<img
                 src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
                 className="w-5"
               />),
-            }}
-            sx={{
-              borderRadius: '0.375rem 0 0 0.375rem'
             }}
           />
           <InputOutlined
@@ -203,6 +202,12 @@ const ItemForm = (props: ItemFormProps) => {
             margin="normal"
             type="number"
             defaultValue={props.item?.health}
+            InputProps={{
+              endAdornment: (<img
+                src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp"
+                className="w-5"
+              />),
+            }}
           />
 
           <InputOutlined
@@ -210,6 +215,12 @@ const ItemForm = (props: ItemFormProps) => {
             label="Damage"
             margin="normal"
             defaultValue={props.item?.damage}
+            InputProps={{
+              endAdornment: (<img
+                src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
+                className="w-5"
+              />),
+            }}
           />
         </div>
         <div className="flex flex-wrap">
@@ -217,8 +228,13 @@ const ItemForm = (props: ItemFormProps) => {
             name="torpor"
             label="Torpor"
             margin="normal"
-            // className="![&>*]:rounded-r-none"
             defaultValue={props.item?.torpor}
+            InputProps={{
+              style: {
+                borderRadius: '0.375rem 0 0 0.375rem',
+                marginRight: '-0.5px'
+              }
+            }}
           />
           <InputOutlined
             name="torpor_duration"
@@ -226,11 +242,15 @@ const ItemForm = (props: ItemFormProps) => {
             margin="normal"
             defaultValue={props.item?.torpor_duration}
             InputProps={{
-              endAdornment: "s"
+              endAdornment: "s",
+              style: {
+                borderRadius: '0 0.375rem 0.375rem 0',
+                marginLeft: '-0.5px'
+              }
             }}
-            iconPosition="right"
           />
         </div>
+
         <div className="flex flex-wrap space-x-1">
           <Lookup
             defaultValue={[props.item?.category]}
@@ -323,8 +343,16 @@ const ItemForm = (props: ItemFormProps) => {
           defaultChecked={craftable}
           onChange={(e) => setCraftable(e.target.checked)}
         />
-        {/* TODO: add fields */}
-        {/* ["food","torpor","affinity","torpor_duration","damage"","stats","health"] */}
+
+        {/* TODO: show list of itemrecipes */}
+        {craftable && (<>
+          {props.item?.id ? (
+            <ItemRecipesCell />
+          ) : (
+            <NewItemRecipe />
+          )}
+        </>)}
+
         {craftable && (
           <fieldset className="rw-form-group">
             <legend>Crafting</legend>
@@ -479,7 +507,6 @@ const ItemForm = (props: ItemFormProps) => {
                         role="group"
                         key={`recipe-${index}`}
                       >
-                        {/* TODO: Group By crafting station */}
                         <Lookup
                           margin="none"
                           {...register(
@@ -495,7 +522,7 @@ const ItemForm = (props: ItemFormProps) => {
                             type: item.type,
                             label: item.name,
                             value: item.id,
-                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image}`,
+                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image?.replaceAll(' ', '-')}`,
                           }))}
                           className="!mt-0 !rounded-none !rounded-l-md"
                           defaultValue={[recipe.item_id.toString()]}

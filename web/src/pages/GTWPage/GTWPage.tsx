@@ -12,13 +12,14 @@ import debounce from "lodash.debounce";
 import { toast } from "@redwoodjs/web/dist/toast";
 import FibonacciSphere from "src/components/Util/FibonacciSphere/FibonacciSphere";
 import { SimplexNoise3D } from "src/lib/formatters";
-import Input from "src/components/Util/Input/Input";
+import { InputOutlined } from "src/components/Util/Input/Input";
 
 interface GTWPageProps {
   error: RWGqlError;
   loading: boolean;
 }
 const GtwPage = (props: GTWPageProps) => {
+  // TODO: Replace with data from db
   const ArkDinos = [
     "Ankylosaurus",
     "Argentavis",
@@ -365,8 +366,7 @@ const GtwPage = (props: GTWPageProps) => {
             listClassName="rw-form-error-list"
           />
 
-          <Input
-            typeof="text"
+          <InputOutlined
             type="text"
             name="scrambledWord"
             label="Scrambled Dino Word"

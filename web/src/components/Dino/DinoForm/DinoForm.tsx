@@ -177,12 +177,12 @@ const DinoForm = (props: DinoFormProps) => {
       wr: props?.dino?.DinoStat.filter(
         (f) => f.type === "weight_reduction"
       ) ?? [
-        {
-          type: "",
-          value: 0,
-          item_id: null,
-        },
-      ],
+          {
+            type: "",
+            value: 0,
+            item_id: null,
+          },
+        ],
     },
   });
 
@@ -704,14 +704,16 @@ const DinoForm = (props: DinoFormProps) => {
                         <InputOutlined
                           type="text"
                           label={`${variant} ${stat}`}
-                          icon={
-                            <img
-                              src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${stat
-                                .toLowerCase()
-                                .replaceAll(" ", "_")}.webp`}
-                              className="h-4"
-                            />
-                          }
+                          InputProps={{
+                            startAdornment: (
+                              <img
+                                src={`https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${stat
+                                  .toLowerCase()
+                                  .replaceAll(" ", "_")}.webp`}
+                                className="h-4"
+                              />
+                            )
+                          }}
                           defaultValue={variants?.toString() ?? 0}
                           onChange={(e) => {
                             setBasestat((prev: object) => ({
@@ -1430,7 +1432,7 @@ const DinoForm = (props: DinoFormProps) => {
                             required: false,
                           } as const)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
-                          // defaultValue={g.type}
+                        // defaultValue={g.type}
                         />
                         <button
                           type="button"
@@ -1588,13 +1590,13 @@ const DinoForm = (props: DinoFormProps) => {
                           options={
                             data
                               ? data.itemsByCategory.items
-                                  .filter((i) => i.category === "Resource")
-                                  .map((item) => ({
-                                    type: item.type,
-                                    label: item.name,
-                                    value: item.id,
-                                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                                  }))
+                                .filter((i) => i.category === "Resource")
+                                .map((item) => ({
+                                  type: item.type,
+                                  label: item.name,
+                                  value: item.id,
+                                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                                }))
                               : []
                           }
                           search={true}

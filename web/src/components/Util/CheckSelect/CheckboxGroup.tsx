@@ -37,6 +37,7 @@ const CheckboxGroup = ({
     single: false,
   },
 }: CheckboxGroupProps) => {
+  // TODO: fix errorStyles for checkbox group
   const [selectedOptions, setSelectedOptions] = useState<string[]>(
     () => validation.single ? defaultValue as string[] : [defaultValue] as string[]
   );

@@ -3,17 +3,13 @@ import {
   FormError,
   FieldError,
   Label,
-  TextField,
-  TextAreaField,
   CheckboxField,
   Submit,
-  ColorField,
-  NumberField,
 } from "@redwoodjs/forms";
 
 import type { EditLootcrateById, UpdateLootcrateInput } from "types/graphql";
 import type { RWGqlError } from "@redwoodjs/forms";
-import Input from "src/components/Util/Input/Input";
+import { InputOutlined } from "src/components/Util/Input/Input";
 
 type FormLootcrate = NonNullable<EditLootcrateById["lootcrate"]>;
 
@@ -39,7 +35,7 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           listClassName="rw-form-error-list"
         />
 
-        <Input
+        <InputOutlined
           className="mt-5"
           name="name"
           defaultValue={props.lootcrate?.name}
@@ -47,14 +43,14 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           validation={{ required: true }}
         />
 
-        <Input
+        <InputOutlined
           className="mt-5"
           name="blueprint"
           defaultValue={props.lootcrate?.blueprint}
           helperText="Lootcrate blueprint"
         />
 
-        <Input
+        <InputOutlined
           className="mt-5"
           name="required_level"
           label="Required Level"
@@ -64,7 +60,7 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           helperText="Required level to open this lootcrate"
         />
 
-        <Input
+        <InputOutlined
           className="mt-5"
           name="quality_mult"
           label="Quality multiplier"
@@ -74,7 +70,7 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           validation={{ valueAsJSON: true }}
         />
 
-        <Input
+        <InputOutlined
           className="mt-5"
           name="set_qty"
           label="Set Quantity"
@@ -84,7 +80,7 @@ const LootcrateForm = (props: LootcrateFormProps) => {
           validation={{ valueAsJSON: true }}
         />
 
-        <Input
+        <InputOutlined
           className="mt-5"
           name="color"
           defaultValue={props.lootcrate?.color}
@@ -105,13 +101,14 @@ const LootcrateForm = (props: LootcrateFormProps) => {
         />
         <FieldError name="repeat_in_sets" className="rw-field-error" />
 
-        <Input
+        {/* TODO: fix image lookup / upload */}
+        <InputOutlined
           className="mt-5"
           name="image"
           defaultValue={props.lootcrate?.image}
         />
 
-        <Input
+        <InputOutlined
           className="mt-5"
           name="type"
           defaultValue={props.lootcrate?.type}
