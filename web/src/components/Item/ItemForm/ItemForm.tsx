@@ -153,7 +153,7 @@ const ItemForm = (props: ItemFormProps) => {
             name="image"
             label="Image"
             defaultValue={props?.item?.image}
-            storagePath={props.item?.id ? `arkimages/Item` : "arkimages/temp"}
+            storagePath={`arkimages/Item`}
           />
         </div>
 
@@ -166,10 +166,12 @@ const ItemForm = (props: ItemFormProps) => {
             defaultValue={props.item?.weight ?? 0}
             validation={{ valueAsNumber: true, setValueAs: (v) => Number(v) }}
             InputProps={{
-              endAdornment: (<img
-                src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
-                className="w-5"
-              />),
+              endAdornment: (
+                <img
+                  src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/weight.webp"
+                  className="w-5"
+                />
+              ),
             }}
           />
           <InputOutlined
@@ -203,10 +205,12 @@ const ItemForm = (props: ItemFormProps) => {
             type="number"
             defaultValue={props.item?.health}
             InputProps={{
-              endAdornment: (<img
-                src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp"
-                className="w-5"
-              />),
+              endAdornment: (
+                <img
+                  src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/health.webp"
+                  className="w-5"
+                />
+              ),
             }}
           />
 
@@ -216,10 +220,12 @@ const ItemForm = (props: ItemFormProps) => {
             margin="normal"
             defaultValue={props.item?.damage}
             InputProps={{
-              endAdornment: (<img
-                src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
-                className="w-5"
-              />),
+              endAdornment: (
+                <img
+                  src="https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/melee_damage.webp"
+                  className="w-5"
+                />
+              ),
             }}
           />
         </div>
@@ -231,9 +237,9 @@ const ItemForm = (props: ItemFormProps) => {
             defaultValue={props.item?.torpor}
             InputProps={{
               style: {
-                borderRadius: '0.375rem 0 0 0.375rem',
-                marginRight: '-0.5px'
-              }
+                borderRadius: "0.375rem 0 0 0.375rem",
+                marginRight: "-0.5px",
+              },
             }}
           />
           <InputOutlined
@@ -244,9 +250,9 @@ const ItemForm = (props: ItemFormProps) => {
             InputProps={{
               endAdornment: "s",
               style: {
-                borderRadius: '0 0.375rem 0.375rem 0',
-                marginLeft: '-0.5px'
-              }
+                borderRadius: "0 0.375rem 0.375rem 0",
+                marginLeft: "-0.5px",
+              },
             }}
           />
         </div>
@@ -345,13 +351,9 @@ const ItemForm = (props: ItemFormProps) => {
         />
 
         {/* TODO: show list of itemrecipes */}
-        {craftable && (<>
-          {props.item?.id ? (
-            <ItemRecipesCell />
-          ) : (
-            <NewItemRecipe />
-          )}
-        </>)}
+        {craftable && (
+          <>{props.item?.id ? <ItemRecipesCell /> : <NewItemRecipe />}</>
+        )}
 
         {craftable && (
           <fieldset className="rw-form-group">
@@ -522,7 +524,10 @@ const ItemForm = (props: ItemFormProps) => {
                             type: item.type,
                             label: item.name,
                             value: item.id,
-                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image?.replaceAll(' ', '-')}`,
+                            image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Item/${item.image?.replaceAll(
+                              " ",
+                              "-"
+                            )}`,
                           }))}
                           className="!mt-0 !rounded-none !rounded-l-md"
                           defaultValue={[recipe.item_id.toString()]}

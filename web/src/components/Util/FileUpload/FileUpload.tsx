@@ -68,6 +68,7 @@ const FileUpload = ({
   const { client: supabase } = useAuth();
   const [files, setFiles] = useState<iFile[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  // TODO: add support for mulitple file uploads
   const { field } = !!name && useController({ name: name });
 
   const imageUrlToFile = async (imageUrl: string, fileName: string) => {

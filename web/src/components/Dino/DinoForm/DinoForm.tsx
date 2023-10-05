@@ -23,6 +23,7 @@ import { InputOutlined } from "src/components/Util/Input/Input";
 import Switch from "src/components/Util/Switch/Switch";
 import Alert from "src/components/Util/Alert/Alert";
 import NewDinoStat from "src/components/DinoStat/NewDinoStat/NewDinoStat";
+import FileUpload from "src/components/Util/FileUpload/FileUpload";
 
 type FormDino = NonNullable<EditDinoById["dino"]>;
 
@@ -177,12 +178,12 @@ const DinoForm = (props: DinoFormProps) => {
       wr: props?.dino?.DinoStat.filter(
         (f) => f.type === "weight_reduction"
       ) ?? [
-          {
-            type: "",
-            value: 0,
-            item_id: null,
-          },
-        ],
+        {
+          type: "",
+          value: 0,
+          item_id: null,
+        },
+      ],
     },
   });
 
@@ -275,6 +276,19 @@ const DinoForm = (props: DinoFormProps) => {
                       "Uh oh! Your dino is getting tongue-tied! Only text is allowed, no dino roars or growls!",
                   },
                 }}
+              />
+
+              <FileUpload
+                name="image"
+                label="Image"
+                defaultValue={props?.dino?.image}
+                storagePath={`arkimages/Dino`}
+              />
+              <FileUpload
+                name="icon"
+                label="Icon"
+                defaultValue={props?.dino?.icon}
+                storagePath={"arkimages/Dino"}
               />
             </div>
 
@@ -712,7 +726,7 @@ const DinoForm = (props: DinoFormProps) => {
                                   .replaceAll(" ", "_")}.webp`}
                                 className="h-4"
                               />
-                            )
+                            ),
                           }}
                           defaultValue={variants?.toString() ?? 0}
                           onChange={(e) => {
@@ -1432,7 +1446,7 @@ const DinoForm = (props: DinoFormProps) => {
                             required: false,
                           } as const)}
                           className="rw-input mt-0 hidden max-w-[7rem]"
-                        // defaultValue={g.type}
+                          // defaultValue={g.type}
                         />
                         <button
                           type="button"
@@ -1590,13 +1604,13 @@ const DinoForm = (props: DinoFormProps) => {
                           options={
                             data
                               ? data.itemsByCategory.items
-                                .filter((i) => i.category === "Resource")
-                                .map((item) => ({
-                                  type: item.type,
-                                  label: item.name,
-                                  value: item.id,
-                                  image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
-                                }))
+                                  .filter((i) => i.category === "Resource")
+                                  .map((item) => ({
+                                    type: item.type,
+                                    label: item.name,
+                                    value: item.id,
+                                    image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/${item.image}`,
+                                  }))
                               : []
                           }
                           search={true}

@@ -1,11 +1,11 @@
-import { navigate, routes } from '@redwoodjs/router'
-import { useMutation } from '@redwoodjs/web'
-import { toast } from '@redwoodjs/web/toast'
-import { useAuth } from 'src/auth'
+import { navigate, routes } from "@redwoodjs/router";
+import { useMutation } from "@redwoodjs/web";
+import { toast } from "@redwoodjs/web/toast";
+import { useAuth } from "src/auth";
 
-import ItemForm from 'src/components/Item/ItemForm'
+import ItemForm from "src/components/Item/ItemForm";
 
-import type { CreateItemInput } from 'types/graphql'
+import type { CreateItemInput } from "types/graphql";
 
 const CREATE_ITEM_MUTATION = gql`
   mutation CreateItemMutation($input: CreateItemInput!) {
@@ -14,30 +14,18 @@ const CREATE_ITEM_MUTATION = gql`
       image
     }
   }
-`
-
+`;
 
 const NewItem = () => {
-  const { client: supabase } = useAuth();
-  const [createItem, { loading, error }] = useMutation(
-    CREATE_ITEM_MUTATION,
-    {
-      onCompleted: ({ createItem }) => {
-        let files: string[] = createItem.image.split(',');
-        files.forEach((file) => {
-          supabase.storage
-            .from('arkimages')
-            .move(`temp/${file}`, `Item/${file}`)
-        });
-        toast.success('Item created')
-        navigate(routes.items())
-      },
-      onError: (error) => {
-        toast.error(error.message)
-      },
-    }
-  )
-
+  const [createItem, { loading, error }] = useMutation(CREATE_ITEM_MUTATION, {
+    onCompleted: ({ createItem }) => {
+      toast.success("Item created");
+      navigate(routes.items());
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   const onSave = async (input: CreateItemInput) => {
     toast.promise(createItem({ variables: { input } }), {
@@ -45,7 +33,7 @@ const NewItem = () => {
       success: "Item successfully created",
       error: <b>Failed to create item.</b>,
     });
-  }
+  };
 
   return (
     <div className="rw-segment">
@@ -56,7 +44,7 @@ const NewItem = () => {
         <ItemForm onSave={onSave} loading={loading} error={error} />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default NewItem
+export default NewItem;

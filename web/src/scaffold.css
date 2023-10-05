@@ -200,7 +200,7 @@
     @apply bg-red-600 text-white;
   }
   .rw-button.rw-button-red-outline:not([disabled]):focus {
-    @apply outline-none ring-4 ring-red-700;
+    @apply outline-none ring-0 ring-red-700;
   }
 
   /* Green Button */

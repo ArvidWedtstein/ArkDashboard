@@ -19,28 +19,28 @@ type InputProps = {
   fullWidth?: boolean;
   margin?: "none" | "dense" | "normal";
   type?:
-  | "number"
-  | "button"
-  | "time"
-  | "image"
-  | "text"
-  | "hidden"
-  | "color"
-  | "search"
-  | "date"
-  | "datetime-local"
-  | "email"
-  | "file"
-  | "month"
-  | "password"
-  | "radio"
-  | "range"
-  | "reset"
-  | "submit"
-  | "tel"
-  | "url"
-  | "week"
-  | "textarea";
+    | "number"
+    | "button"
+    | "time"
+    | "image"
+    | "text"
+    | "hidden"
+    | "color"
+    | "search"
+    | "date"
+    | "datetime-local"
+    | "email"
+    | "file"
+    | "month"
+    | "password"
+    | "radio"
+    | "range"
+    | "reset"
+    | "submit"
+    | "tel"
+    | "url"
+    | "week"
+    | "textarea";
   onFocus?: (
     e:
       | React.FocusEvent<HTMLInputElement>
@@ -58,7 +58,6 @@ type InputProps = {
   };
 } & Omit<InputFieldProps, "type" | "name"> &
   Omit<TextAreaFieldProps, "type" | "name">;
-
 
 export const InputOutlined = ({
   name,
@@ -80,11 +79,11 @@ export const InputOutlined = ({
   const [focus, setFocus] = useState(false);
   const { field } = !!name
     ? useController({
-      name: name,
-      rules: validation,
-      defaultValue: defaultValue || value || "",
-      ...props,
-    })
+        name: name,
+        rules: validation,
+        defaultValue: defaultValue || value || "",
+        ...props,
+      })
     : { field: null };
 
   const handleFocus = (
@@ -246,12 +245,14 @@ export const InputOutlined = ({
         )}
         <fieldset
           aria-hidden="true"
-          style={{
-            ...InputProps?.style,
-            inset: "-5px 0px 0px",
-          } as CSSProperties}
+          style={
+            {
+              ...InputProps?.style,
+              inset: "-5px 0px 0px",
+            } as CSSProperties
+          }
           className={clsx(
-            "pointer-events-none !peer-invalid:border-red-500 absolute m-0 min-w-0 overflow-hidden rounded border border-zinc-500 px-2 text-left transition duration-75 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
+            "!peer-invalid:border-red-500 pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded border border-zinc-500 px-2 text-left transition duration-75 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
             {
               "top-0": focus || !isEmpty(field?.value) || !!props?.placeholder,
             }
@@ -273,7 +274,7 @@ export const InputOutlined = ({
           </legend>
         </fieldset>
       </div>
-      <FieldError name={name} className="rw-field-error" />
+      {!!name && <FieldError name={name} className="rw-field-error" />}
       {helperText && (
         <p
           id={`${name}-helper-text`}
@@ -287,28 +288,28 @@ export const InputOutlined = ({
 };
 
 export const ColorInput = () => {
-  const [color, setColor] = useState('#000000');
+  const [color, setColor] = useState("#000000");
   const [format, setFormat] = useState([
     {
-      value: 'hex',
-      label: 'HEX',
-      active: true
+      value: "hex",
+      label: "HEX",
+      active: true,
     },
     {
-      value: 'rgb',
-      label: 'RGB',
-      active: false
+      value: "rgb",
+      label: "RGB",
+      active: false,
     },
     {
-      value: 'hwb',
-      label: 'HWB',
-      active: false
+      value: "hwb",
+      label: "HWB",
+      active: false,
     },
     {
-      value: 'hsl',
-      label: 'HSL',
-      active: false
-    }
+      value: "hsl",
+      label: "HSL",
+      active: false,
+    },
   ]);
 
   const handleColorChange = (event) => {
@@ -316,20 +317,23 @@ export const ColorInput = () => {
   };
 
   const arrayRotate = <T extends {}>(arr: T[], count: number = 1) => {
-    const len = arr.length
-    arr.push(...arr.splice(0, (-count % len + len) % len))
-    return arr
-  }
+    const len = arr.length;
+    arr.push(...arr.splice(0, ((-count % len) + len) % len));
+    return arr;
+  };
 
   const swapColor = () => {
-    let newFormat = arrayRotate(format).map((item, index) => ({ ...item, active: index === 0 }));
+    let newFormat = arrayRotate(format).map((item, index) => ({
+      ...item,
+      active: index === 0,
+    }));
     setFormat(newFormat);
     convertColor(newFormat?.find((item) => item.active).value);
   };
 
-  function hexToColor(hex, format = 'rgb') {
+  function hexToColor(hex, format = "rgb") {
     // Remove the hash symbol if present
-    hex = hex.replace(/^#/, '');
+    hex = hex.replace(/^#/, "");
 
     // Parse the hex value into RGB components
     const bigint = parseInt(hex, 16);
@@ -337,13 +341,15 @@ export const ColorInput = () => {
     const g = (bigint >> 8) & 255;
     const b = bigint & 255;
 
-    if (format === 'rgb') {
+    if (format === "rgb") {
       return `rgb(${r}, ${g}, ${b})`;
-    } else if (format === 'hsl') {
+    } else if (format === "hsl") {
       // Convert RGB to HSL
       const max = Math.max(r, g, b) / 255;
       const min = Math.min(r, g, b) / 255;
-      let h, s, l = (max + min) / 2;
+      let h,
+        s,
+        l = (max + min) / 2;
 
       if (max === min) {
         h = s = 0; // achromatic
@@ -352,9 +358,15 @@ export const ColorInput = () => {
         s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
 
         switch (max) {
-          case r / 255: h = (g / 255 - b / 255) / d + (g < b ? 6 : 0); break;
-          case g / 255: h = (b / 255 - r / 255) / d + 2; break;
-          case b / 255: h = (r / 255 - g / 255) / d + 4; break;
+          case r / 255:
+            h = (g / 255 - b / 255) / d + (g < b ? 6 : 0);
+            break;
+          case g / 255:
+            h = (b / 255 - r / 255) / d + 2;
+            break;
+          case b / 255:
+            h = (r / 255 - g / 255) / d + 4;
+            break;
         }
 
         h /= 6;
@@ -365,7 +377,7 @@ export const ColorInput = () => {
       s = Math.round(s * 100);
       l = Math.round(l * 100);
       return `hsl(${h}, ${s}%, ${l}%)`;
-    } else if (format === 'hwb') {
+    } else if (format === "hwb") {
       // Convert RGB to HWB
       const max = Math.max(r, g, b) / 255;
       const min = Math.min(r, g, b) / 255;
@@ -373,9 +385,11 @@ export const ColorInput = () => {
       const bValue = 1 - max;
       const w = (1 - max) * 100;
 
-      return `hwb(${Math.round(r / 255 * 360)}, ${Math.round(g / 255 * 100)}%, ${Math.round(b / 255 * 100)}%, ${w}%)`;
+      return `hwb(${Math.round((r / 255) * 360)}, ${Math.round(
+        (g / 255) * 100
+      )}%, ${Math.round((b / 255) * 100)}%, ${w}%)`;
     } else {
-      return 'Invalid format';
+      return "Invalid format";
     }
   }
   function colorToHex(color) {
@@ -384,7 +398,9 @@ export const ColorInput = () => {
       const rgbValues = color.match(/\d+/g);
       if (rgbValues.length === 3) {
         const [r, g, b] = rgbValues.map(Number);
-        const hex = ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
+        const hex = ((1 << 24) | (r << 16) | (g << 8) | b)
+          .toString(16)
+          .slice(1);
         return `#${hex}`;
       }
     }
@@ -416,10 +432,16 @@ export const ColorInput = () => {
             g = hue2rgb(p, q, h);
             b = hue2rgb(p, q, h - 1 / 3);
           }
-          return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+          return [
+            Math.round(r * 255),
+            Math.round(g * 255),
+            Math.round(b * 255),
+          ];
         };
         const [r, g, b] = hslToRgb(h, s, l);
-        const hex = ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
+        const hex = ((1 << 24) | (r << 16) | (g << 8) | b)
+          .toString(16)
+          .slice(1);
         return `#${hex}`;
       }
     }
@@ -429,7 +451,7 @@ export const ColorInput = () => {
       const hwbValues = color.match(/\d+/g);
       const [h2, w2, b2] = hwbValues.map(Number);
 
-      console.log(h2, w2, b2)
+      console.log(h2, w2, b2);
       // Convert HWB to HEX (Note: This is a simplified example)
       const h = h2;
       const w = w2 / 100;
@@ -437,7 +459,7 @@ export const ColorInput = () => {
       const s = 1 - w / (1 - b);
       const l = (1 - b) * (1 - s / 2);
       const c = 2 * (1 - l) - 1;
-      const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+      const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
       const m = l - c / 2;
       let r, g, bValue;
 
@@ -471,20 +493,25 @@ export const ColorInput = () => {
       g = Math.round((g + m) * 255);
       bValue = Math.round((bValue + m) * 255);
 
-      const hex = `#${(1 << 24 | r << 16 | g << 8 | bValue).toString(16).slice(1)}`;
-      console.log(hex)
+      const hex = `#${((1 << 24) | (r << 16) | (g << 8) | bValue)
+        .toString(16)
+        .slice(1)}`;
+      console.log(hex);
       return hex;
     }
 
     return color;
   }
   const HslToHex = (color: string) => {
-    const hslValues = color.replace('hsl(', '').split(',').map((val) => parseFloat(val));
+    const hslValues = color
+      .replace("hsl(", "")
+      .split(",")
+      .map((val) => parseFloat(val));
     const h = hslValues[0];
     const s = hslValues[1] / 100;
     const l = hslValues[2] / 100;
     const c = (1 - Math.abs(2 * l - 1)) * s;
-    const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
     const m = l - c / 2;
     let r, g, bValue;
 
@@ -518,30 +545,35 @@ export const ColorInput = () => {
     g = Math.round((g + m) * 255);
     bValue = Math.round((bValue + m) * 255);
 
-    return `#${(1 << 24 | r << 16 | g << 8 | bValue).toString(16).slice(1)}`;
-  }
+    return `#${((1 << 24) | (r << 16) | (g << 8) | bValue)
+      .toString(16)
+      .slice(1)}`;
+  };
 
   const convertColor = (currentformat: string) => {
     switch (currentformat) {
-      case 'rgb':
-        if (color.startsWith('#')) {
+      case "rgb":
+        if (color.startsWith("#")) {
           // Convert HEX to RGB
-          let hex = color.replace(/^#/, ''); // Remove the '#' symbol if present
+          let hex = color.replace(/^#/, ""); // Remove the '#' symbol if present
           let r = parseInt(hex.slice(0, 2), 16);
           let g = parseInt(hex.slice(2, 4), 16);
           let b = parseInt(hex.slice(4, 6), 16);
           console.log(`RGB: ${r}, ${g}, ${b}`);
           setColor(`rgb(${r}, ${g}, ${b})`);
-        } else if (color.startsWith('hwb')) {
+        } else if (color.startsWith("hwb")) {
           // Convert HWB to RGB (Note: This is a simplified example)
-          const hwbValues = color.replace('hwb(', '').split(',').map((val) => parseFloat(val));
+          const hwbValues = color
+            .replace("hwb(", "")
+            .split(",")
+            .map((val) => parseFloat(val));
           const h = hwbValues[0];
           const w = hwbValues[1];
           const b1 = hwbValues[2];
           const i = Math.floor(h / 60);
           const f = h / 60 - i;
           const q = 1 - w;
-          const p = 1 - (b1 * q);
+          const p = 1 - b1 * q;
           let r, g, b;
 
           switch (i) {
@@ -583,14 +615,14 @@ export const ColorInput = () => {
 
           console.log(`RGB: ${r}, ${g}, ${b}`);
           setColor(`rgb(${r}, ${g}, ${b})`);
-        } else if (color.startsWith('hsl')) {
+        } else if (color.startsWith("hsl")) {
           // Convert HSL to RGB (Note: This is a simplified example)
-          const hslValues = color.split(',').map((val) => parseFloat(val));
+          const hslValues = color.split(",").map((val) => parseFloat(val));
           const h = hslValues[0];
           const s = hslValues[1] / 100;
           const l = hslValues[2] / 100;
           const c = (1 - Math.abs(2 * l - 1)) * s;
-          const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+          const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
           const m = l - c / 2;
           let r, g, b;
 
@@ -627,30 +659,38 @@ export const ColorInput = () => {
           console.log(`RGB: ${r}, ${g}, ${b}`);
           setColor(`rgb(${r}, ${g}, ${b})`);
         } else {
-          console.error('Invalid input format for RGB conversion');
+          console.error("Invalid input format for RGB conversion");
         }
         break;
 
-      case 'hex':
-        if (color.startsWith('rgb')) {
+      case "hex":
+        if (color.startsWith("rgb")) {
           // Convert RGB to HEX (Note: This is a simplified example)
-          const rgbValues = color.replace('rgb(', '').split(',').map((val) => parseInt(val));
+          const rgbValues = color
+            .replace("rgb(", "")
+            .split(",")
+            .map((val) => parseInt(val));
           const r = rgbValues[0];
           const g = rgbValues[1];
           const b = rgbValues[2];
-          const hex = `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
+          const hex = `#${((1 << 24) | (r << 16) | (g << 8) | b)
+            .toString(16)
+            .slice(1)}`;
           console.log(`HEX: ${hex}`);
           setColor(hex);
-        } else if (color.startsWith('hwb')) {
+        } else if (color.startsWith("hwb")) {
           // Convert HWB to HEX (Note: This is a simplified example)
-          const hwbValues = color.replace('hwb(', '').split(',').map((val) => parseFloat(val));
+          const hwbValues = color
+            .replace("hwb(", "")
+            .split(",")
+            .map((val) => parseFloat(val));
           const h = hwbValues[0];
           const w = hwbValues[1] / 100;
           const b = hwbValues[2] / 100;
           const s = 1 - w / (1 - b);
           const l = (1 - b) * (1 - s / 2);
           const c = 2 * (1 - l) - 1;
-          const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+          const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
           const m = l - c / 2;
           let r, g, bValue;
 
@@ -684,22 +724,24 @@ export const ColorInput = () => {
           g = Math.round((g + m) * 255);
           bValue = Math.round((bValue + m) * 255);
 
-          const hex = `#${(1 << 24 | r << 16 | g << 8 | bValue).toString(16).slice(1)}`;
+          const hex = `#${((1 << 24) | (r << 16) | (g << 8) | bValue)
+            .toString(16)
+            .slice(1)}`;
           console.log(`HEX: ${hex}`);
           setColor(hex);
-        } else if (color.startsWith('hsl')) {
+        } else if (color.startsWith("hsl")) {
           // Convert HSL to HEX (Note: This is a simplified example)
 
           setColor(HslToHex(color));
         } else {
-          console.error('Invalid input format for HEX conversion');
+          console.error("Invalid input format for HEX conversion");
         }
         break;
 
-      case 'hwb':
-        if (color.startsWith('#')) {
+      case "hwb":
+        if (color.startsWith("#")) {
           // Convert HEX to HWB (Note: This is a simplified example)
-          const hex = color.replace(/^#/, ''); // Remove the '#' symbol if present
+          const hex = color.replace(/^#/, ""); // Remove the '#' symbol if present
           const r = parseInt(hex.slice(0, 2), 16) / 255;
           const g = parseInt(hex.slice(2, 4), 16) / 255;
           const b = parseInt(hex.slice(4, 6), 16) / 255;
@@ -727,12 +769,14 @@ export const ColorInput = () => {
 
           console.log(`HWB: ${h}, ${w}%, ${bValue}%`);
           setColor(`hwb(${h}, ${w}%, ${bValue}%)`);
-        } else if (color.startsWith('hsl')) {
-
-          console.log('HSL', arrayRotate(format, -1)[0].value);
+        } else if (color.startsWith("hsl")) {
+          console.log("HSL", arrayRotate(format, -1)[0].value);
           // Convert HSL to HWB (Note: This is a simplified example)
-          const hslValues = color.replace('hsl(', '').split(',').map((val) => parseFloat(val));
-          console.log("HSLVALUES", hslValues)
+          const hslValues = color
+            .replace("hsl(", "")
+            .split(",")
+            .map((val) => parseFloat(val));
+          console.log("HSLVALUES", hslValues);
 
           let h = (hslValues[0] % 360) / 360;
           let s = Math.min(1, Math.max(0, hslValues[1] / 100));
@@ -743,17 +787,19 @@ export const ColorInput = () => {
           const w = (1 - s) * l;
           const bValue = 1 - l;
           console.log(`HWB: ${h * 360}, ${W}%, ${B}%`);
-          console.log(`HWB: ${h}, ${Math.round(w * 100)}%, ${Math.round(bValue * 100)}%`);
+          console.log(
+            `HWB: ${h}, ${Math.round(w * 100)}%, ${Math.round(bValue * 100)}%`
+          );
           setColor(`hwb(${h * 360} ${Math.floor(W)}% ${Math.floor(B)}%)`);
         } else {
-          console.error('Invalid input format for HWB conversion');
+          console.error("Invalid input format for HWB conversion");
         }
         break;
 
-      case 'hsl':
-        if (color.startsWith('#')) {
+      case "hsl":
+        if (color.startsWith("#")) {
           // Convert HEX to HSL (Note: This is a simplified example)
-          const hex = color.replace(/^#/, ''); // Remove the '#' symbol if present
+          const hex = color.replace(/^#/, ""); // Remove the '#' symbol if present
           const r = parseInt(hex.slice(0, 2), 16) / 255;
           const g = parseInt(hex.slice(2, 4), 16) / 255;
           const b = parseInt(hex.slice(4, 6), 16) / 255;
@@ -787,34 +833,51 @@ export const ColorInput = () => {
 
           console.log(`HSL: ${h}, ${s}%, ${l}%`);
           setColor(`hsl(${h}, ${s}%, ${l}%)`);
-        } else if (color.startsWith('hwb')) {
+        } else if (color.startsWith("hwb")) {
           // Convert HWB to HSL (Note: This is a simplified example)
-          const hwbValues = color.replace('hwb(', '').split(' ').map((val) => parseFloat(val));
+          const hwbValues = color
+            .replace("hwb(", "")
+            .split(" ")
+            .map((val) => parseFloat(val));
           const h = hwbValues[0];
           const w = hwbValues[1] / 100;
           const b = hwbValues[2] / 100;
           const s = 1 - w / (1 - b);
           const l = (1 - b) * (1 - s / 2);
-          console.log(`HSL: ${h}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%`);
-          setColor(`hsl(${h}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`);
+          console.log(
+            `HSL: ${h}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%`
+          );
+          setColor(
+            `hsl(${h}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`
+          );
         } else {
-          console.error('Invalid input format for HSL conversion');
+          console.error("Invalid input format for HSL conversion");
         }
         break;
 
       default:
-        console.error('Invalid format');
+        console.error("Invalid format");
         break;
     }
   };
 
   return (
     <div className="rw-button-group">
-      <input type="text" value={color} onChange={handleColorChange} className="rw-input border-r-none" />
       <input
-        className="rw-input p-0 max-w-[2rem] h-full border-l-0 appearance-none border-none"
+        type="text"
+        value={color}
+        onChange={handleColorChange}
+        className="rw-input border-r-none"
+      />
+      <input
+        className="rw-input h-full max-w-[2rem] appearance-none border-l-0 border-none p-0"
         onChange={debounce((e) => {
-          setColor(hexToColor(e.target.value, format?.find((item) => item.active).value));
+          setColor(
+            hexToColor(
+              e.target.value,
+              format?.find((item) => item.active).value
+            )
+          );
         }, 500)}
         type="color"
         value={colorToHex(color)}
@@ -824,14 +887,22 @@ export const ColorInput = () => {
         readOnly
         value={format?.find((item) => item.active).label}
       />
-      <button type="button" className="rw-button rw-button-gray -ml-px" onClick={swapColor}>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="rw-button-icon">
+      <button
+        type="button"
+        className="rw-button rw-button-gray -ml-px"
+        onClick={swapColor}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 512 512"
+          className="rw-button-icon"
+        >
           <path d="M464 32C455.2 32 448 39.16 448 48v129.3C416.2 99.72 340.6 48 256 48c-102 0-188.3 72.91-205.1 173.3C49.42 230.1 55.3 238.3 64.02 239.8C64.91 239.9 65.8 240 66.67 240c7.672 0 14.45-5.531 15.77-13.34C96.69 141.7 169.7 80 256 80c72.49 0 137.3 44.88 163.6 112H304C295.2 192 288 199.2 288 208S295.2 224 304 224h160C472.8 224 480 216.8 480 208v-160C480 39.16 472.8 32 464 32zM447.1 272.2c-8.766-1.562-16.97 4.406-18.42 13.12C415.3 370.3 342.3 432 255.1 432c-72.49 0-137.3-44.88-163.6-112H208C216.8 320 224 312.8 224 304S216.8 288 208 288h-160C39.16 288 32 295.2 32 304v160C32 472.8 39.16 480 48 480S64 472.8 64 464v-129.3C95.84 412.3 171.4 464 256 464c101.1 0 188.3-72.91 205.1-173.3C462.6 281.9 456.7 273.7 447.1 272.2z" />
         </svg>
       </button>
     </div>
   );
-}
+};
 
 // const Input = ({
 //   name,
