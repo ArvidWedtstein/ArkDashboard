@@ -56,7 +56,7 @@ type InputProps = {
     endAdornment?: React.ReactNode;
     style?: CSSProperties;
   };
-  variant?: "outlined" | "filled" | "standard";
+  // variant?: "outlined" | "filled" | "standard";
 } & Omit<InputFieldProps, "type" | "name"> &
   Omit<TextAreaFieldProps, "type" | "name">;
 // TODO: check up required validation. doesnt work
@@ -74,7 +74,6 @@ export const InputOutlined = ({
   disabled,
   fullWidth,
   margin = "none",
-  variant = "outlined",
   InputProps,
   ...props
 }: InputProps) => {
@@ -109,13 +108,13 @@ export const InputOutlined = ({
   };
 
   const { className: labelClassName, style: labelStyle } = useErrorStyles({
-    className: `pointer-events-none absolute left-0 top-0 z-10 block origin-top-left max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis font-normal leading-6 transition duration-200 text-base`,
+    className: `pointer-events-none absolute text-base origin-top-left z-10 transform will-change-transform duration-200 transition left-0 top-0 block max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 overflow-hidden text-ellipsis font-normal leading-6`,
     errorClassName: `pointer-events-none absolute left-0 top-0 z-10 block origin-top-left max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis font-normal leading-6 transition duration-200 text-base !text-red-600`,
     name,
   });
   // relative block w-full rounded-t border-b border-black/40 bg-black/[.06] px-3 pb-2 pt-6 text-base text-gray-900 transition-colors duration-200 placeholder:opacity-0 hover:border-black/80 hover:bg-black/[.09] focus:bg-black/[.06] focus:outline-none focus:ring-0 dark:border-white/70 dark:bg-white/[.09] dark:hover:border-white dark:hover:bg-white/[.13] dark:focus:bg-white/[.09];
   const { className: inputClassNames, style: inputStyle } = useErrorStyles({
-    className: `peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none disabled:pointer-events-none`,
+    className: `peer m-0 h-6 min-w-0 w-full box-content overflow-hidden block text-base font-[inherit] focus:outline-none disabled:pointer-events-none px-3.5 rounded border-0 bg-transparent py-4`,
     errorClassName: `peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error`,
     name,
   })

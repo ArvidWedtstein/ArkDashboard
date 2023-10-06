@@ -17,6 +17,7 @@ import clsx from "clsx";
 import { useEffect, useState } from "react";
 import ArkCard from "src/components/Util/ArkCard/ArkCard";
 import { InputOutlined } from "src/components/Util/Input/Input";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 
 import type { FindItems } from "types/graphql";
@@ -142,10 +143,117 @@ const ItemsList = ({
       <Form className="w-auto" onSubmit={onSubmit}>
         <nav className="flex flex-row justify-center space-x-2">
           <div className="rw-button-group w-full !space-x-0">
-            <Label name="category" className="sr-only">
-              Choose a category
-            </Label>
-            <SelectField
+            <Lookup
+              label="Category"
+              name="category"
+              margin="none"
+              options={[
+                { value: 'resource', label: 'Resources' },
+                { value: 'structure', label: 'Structures' },
+                { value: 'armor', label: 'Armor' },
+                { value: 'weapon', label: 'Weapons' },
+                { value: 'consumable', label: 'Consumable' },
+                { value: 'tool', label: 'Tools' },
+                { value: 'fertilizer', label: 'Fertilizer' },
+                { value: 'other', label: 'Other' },
+              ]}
+              defaultValue={[category]}
+              disabled={loading}
+              InputProps={{
+                style: {
+                  borderRadius: "0.375rem 0 0 0.375rem",
+                  marginRight: "-0.5px",
+                },
+              }}
+              onSelect={(e) => {
+                switch (e[0].value.toString()) {
+                  case "structure":
+                    setTypes([
+                      "Tek",
+                      "Building",
+                      "Crafting",
+                      "Electrical",
+                      "Vehicle",
+                      "Elevator",
+                      "Adobe",
+                      "Utility",
+                      "Greenhouse",
+                      "Metal",
+                      "Wood",
+                      "Thatch",
+                      "Stone",
+                    ]);
+                    break;
+                  case "armor":
+                    setTypes([
+                      "Tek",
+                      "Riot",
+                      "Flak",
+                      "Hazard",
+                      "Scuba",
+                      "Fur",
+                      "Ghillie",
+                      "Chitin",
+                      "Desert",
+                      "Hide",
+                      "Cloth",
+                      "Saddle",
+                      "Attachment",
+                    ]);
+                    break;
+                  case "weapon":
+                    setTypes([
+                      "Explosive",
+                      "Ammunition",
+                      "Arrow",
+                      "Tool",
+                      "Attachment",
+                      "Shield",
+                      "Melee",
+                      "Gun",
+                      "Other",
+                    ]);
+                    break;
+                  case "consumable":
+                    setTypes([
+                      "Dish",
+                      "Drug",
+                      "Egg",
+                      "Food",
+                      "Fungus",
+                      "Meat",
+                      "Plant",
+                      "Seed",
+                      "Tool",
+                      "Other",
+                    ]);
+                    break;
+                  case "tool":
+                    setTypes([]);
+                    break;
+                  case "other":
+                    setTypes([
+                      "Navigation",
+                      "Other",
+                      "Artifact",
+                      "Tool",
+                      "Coloring",
+                      "Utility",
+                    ]);
+                    break;
+                  case "resource":
+                    setTypes([]);
+                    break;
+                  case "fertilizer":
+                    setTypes(["Feces"]);
+                    break;
+                  default:
+                    setTypes([]);
+                    break;
+                }
+              }}
+            />
+            {/* <SelectField
               name="category"
               className="rw-input mt-0 !rounded-l-lg"
               defaultValue={category}
@@ -255,9 +363,36 @@ const ItemsList = ({
               <option value="tool">Tools</option>
               <option value="fertilizer">Fertilizer</option>
               <option value="other">Other</option>
-            </SelectField>
+            </SelectField> */}
 
             {types.length > 0 && (
+              <Lookup
+                name="type"
+                margin="none"
+                value={[selectedType]}
+                options={types.map((type) => ({
+                  value: type.toLowerCase().toString(),
+                  label: type,
+                }))}
+
+                onSelect={(e) => {
+                  console.log(e[0].value.toString())
+                  selectType(e[0].value.toString());
+                }}
+                disabled={loading}
+                validation={{
+                  deps: ["category"],
+                  required: false,
+                }}
+                InputProps={{
+                  style: {
+                    borderRadius: "0",
+                    marginRight: "-0.5px",
+                  },
+                }}
+              />
+            )}
+            {/* {types.length > 0 && (
               <SelectField
                 name="type"
                 className="rw-input mt-0"
@@ -283,7 +418,7 @@ const ItemsList = ({
                   </option>
                 ))}
               </SelectField>
-            )}
+            )} */}
             <InputOutlined
               fullWidth
               name="search"
@@ -292,9 +427,24 @@ const ItemsList = ({
               disabled={loading}
               InputProps={{
                 style: {
-                  borderRadius: "0",
+                  borderRadius: "0 0.375rem 0.375rem 0",
                   marginRight: "-0.5px",
                 },
+                endAdornment: (
+                  <Submit
+                    className="rw-button rw-button-green"
+                    disabled={loading}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                      className="rw-button-icon-start"
+                    >
+                      <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
+                    </svg>
+                    <span className="hidden md:block">Search</span>
+                  </Submit>
+                )
               }}
             />
             {/* <SearchField
@@ -304,7 +454,7 @@ const ItemsList = ({
               defaultValue={search}
               disabled={loading}
             /> */}
-            <Submit
+            {/* <Submit
               className="rw-input rw-button rw-button-green rounded-l-none !border-none"
               disabled={loading}
             >
@@ -316,7 +466,7 @@ const ItemsList = ({
                 <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
               </svg>
               <span className="hidden md:block">Search</span>
-            </Submit>
+            </Submit> */}
           </div>
           <div className="rw-button-group">
             <input
@@ -330,7 +480,7 @@ const ItemsList = ({
             />
             <label
               htmlFor="list"
-              className="rw-button rw-button-gray peer-checked/list:border-pea-500 !rounded-r-none !rounded-l-lg border"
+              className="rw-button rw-button-gray-outline peer-checked/list:border-pea-500 !rounded-r-none !rounded-l-lg border"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -351,7 +501,7 @@ const ItemsList = ({
             />
             <label
               htmlFor="grid"
-              className="rw-button rw-button-gray peer-checked/grid:border-pea-500 border"
+              className="rw-button rw-button-gray-outline peer-checked/grid:border-pea-500 border"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -367,8 +517,12 @@ const ItemsList = ({
         <div className="my-3">
           {types.length > 0 && (
             <Tabs
+              selectedTabIndex={types.findIndex(
+                (t) => t.toLowerCase() === selectedType
+              )}
               onSelect={(_, index) => {
-                selectType(types[index].toLowerCase().toString());
+                if (!types[index]) return;
+                selectType(types[index]?.toLowerCase().toString());
               }}
             >
               {types.map((t) => (

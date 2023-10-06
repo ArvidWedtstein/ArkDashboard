@@ -4,7 +4,7 @@ import {
   set,
   useController,
 } from "@redwoodjs/forms";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
 import useComponentVisible from "../../useComponentVisible";
 import { ArrayElement, debounce } from "src/lib/formatters";
 import clsx from "clsx";
@@ -13,6 +13,7 @@ type value = string | object | number | null | undefined;
 
 interface ILookup {
   defaultValue?: string[];
+  value?: string[];
   label?: string;
   name?: string;
   className?: string;
@@ -50,6 +51,11 @@ interface ILookup {
     option: { label: string; value: value; image?: string },
     searchTerm: string
   ) => boolean;
+  InputProps?: {
+    startAdornment?: React.ReactNode;
+    endAdornment?: React.ReactNode;
+    style?: CSSProperties;
+  };
   placeholder?: string;
 }
 
@@ -61,6 +67,7 @@ export const Lookup = ({
   label,
   name,
   defaultValue,
+  value,
   className,
   btnClassName,
   placeholder,
@@ -76,6 +83,7 @@ export const Lookup = ({
   multiple = false,
   closeOnSelect = true,
   filterlookupOptions = false,
+  InputProps,
   groupBy,
   renderTags,
   onSelect,
@@ -92,7 +100,7 @@ export const Lookup = ({
   const [lookupOptions, setLookupOptions] = useState<ILookupOptions[]>([]);
 
   const { field } =
-    !!name && useController({ name: name, defaultValue, rules: validation });
+    !!name && useController({ name: name, defaultValue: defaultValue || value, rules: validation });
   const [searchTerm, setSearchTerm] = useState<string>(inputValue || "");
   const [internalValue, setInternalValue] = useState<string>("");
 
@@ -151,7 +159,7 @@ export const Lookup = ({
     setSearchTerm("");
     setInternalValue("");
     const valuesToSelect: string[] =
-      defaultValue?.map((s) => s?.trim()).slice(0, multiple ? undefined : 1) ||
+      (value ?? defaultValue)?.map((s) => s?.trim()).slice(0, multiple ? undefined : 1) ||
       [];
 
     const selected: ILookupOptions[] = options.map((option) => {
@@ -168,9 +176,9 @@ export const Lookup = ({
 
     setLookupOptions(selected);
     !!name && field.onChange(multiple ? valuesToSelect : valuesToSelect[0]);
-
+    setInternalValue(multiple ? "" : options?.find((e) => e.value === valuesToSelect[0])?.label ?? "");
     updateLayout();
-  }, [defaultValue]);
+  }, [defaultValue, value]);
 
   const handleOptionSelect = useCallback(
     (
@@ -435,6 +443,7 @@ export const Lookup = ({
           <fieldset
             aria-hidden="true"
             style={{
+              ...InputProps?.style,
               inset: "-5px 0px 0px",
             }}
             className={clsx(
