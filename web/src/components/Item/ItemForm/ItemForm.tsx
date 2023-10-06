@@ -78,7 +78,7 @@ const ItemForm = (props: ItemFormProps) => {
     //     })
     //   );
     console.log(data);
-    // props.onSave(data, props?.item?.id);
+    props.onSave(data, props?.item?.id);
   };
 
   const [craftable, setCraftable] = useState(false);
@@ -86,7 +86,7 @@ const ItemForm = (props: ItemFormProps) => {
   const { register, control } = useForm({
     defaultValues: {
       stats: [],
-      "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert": [], // || props?.item?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
+      // "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert": [], // || props?.item?.ItemRecipe_ItemRecipe_crafted_item_idToItem ||
     },
   });
   const {
@@ -97,14 +97,14 @@ const ItemForm = (props: ItemFormProps) => {
     control,
     name: "stats", // the name of the field array in your form data
   });
-  const {
-    fields: recipeFields,
-    append: appendRecipe,
-    remove: removeRecipe,
-  } = useFieldArray({
-    control,
-    name: "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert", // the name of the field array in your form data
-  });
+  // const {
+  //   fields: recipeFields,
+  //   append: appendRecipe,
+  //   remove: removeRecipe,
+  // } = useFieldArray({
+  //   control,
+  //   name: "ItemRecipe_ItemRecipe_crafted_item_idToItem.upsert", // the name of the field array in your form data
+  // });
 
   return (
     <div className="rw-form-wrapper">
@@ -127,7 +127,13 @@ const ItemForm = (props: ItemFormProps) => {
               label="Name"
               defaultValue={props.item?.name}
               margin="normal"
-              validation={{ required: true }}
+              type="text"
+              validation={{
+                required: true, minLength: 3, pattern: {
+                  value: /^[a-zA-Z0-9 ]*$/i,
+                  message: "Invalid name",
+                }
+              }}
             />
 
             <InputOutlined
@@ -145,6 +151,12 @@ const ItemForm = (props: ItemFormProps) => {
               type="text"
               placeholder="#ff0000"
               defaultValue={props.item?.color}
+              validation={{
+                pattern: {
+                  value: /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i,
+                  message: "Invalid color",
+                },
+              }}
             />
             {/* TODO: test */}
             {/* <ColorInput /> */}
@@ -218,6 +230,8 @@ const ItemForm = (props: ItemFormProps) => {
             name="damage"
             label="Damage"
             margin="normal"
+            type="number"
+            validation={{ valueAsNumber: true }}
             defaultValue={props.item?.damage}
             InputProps={{
               endAdornment: (
@@ -234,7 +248,9 @@ const ItemForm = (props: ItemFormProps) => {
             name="torpor"
             label="Torpor"
             margin="normal"
+            type="number"
             defaultValue={props.item?.torpor}
+            validation={{ valueAsNumber: true }}
             InputProps={{
               style: {
                 borderRadius: "0.375rem 0 0 0.375rem",
@@ -246,6 +262,8 @@ const ItemForm = (props: ItemFormProps) => {
             name="torpor_duration"
             label="Torpor Duration"
             margin="normal"
+            type="number"
+            validation={{ valueAsNumber: true }}
             defaultValue={props.item?.torpor_duration}
             InputProps={{
               endAdornment: "s",
@@ -343,7 +361,7 @@ const ItemForm = (props: ItemFormProps) => {
           name="visible"
           helperText="Is this item visible to the public?"
         />
-
+        {/* TODO: checkj why dis reset category and type */}
         <Switch
           onLabel="Craftable"
           defaultChecked={craftable}
@@ -397,7 +415,7 @@ const ItemForm = (props: ItemFormProps) => {
                   Recipe
                 </Label>
 
-                {recipeFields.map(
+                {/* {recipeFields.map(
                   (
                     recipe: {
                       id?: number | string;
@@ -593,7 +611,7 @@ const ItemForm = (props: ItemFormProps) => {
                   >
                     Add Recipe
                   </button>
-                </div>
+                </div> */}
 
                 {/* <div className="mt-2 flex flex-col">
                   {recipe.map((rec) => (

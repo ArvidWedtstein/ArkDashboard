@@ -103,7 +103,7 @@ const Tabs = memo(({
 
   useEffect(() => {
     onClickTabItem(selectedTabIndex);
-  }, [selectedTabIndex, onClickTabItem]);
+  }, [selectedTabIndex]);
 
 
   return (

@@ -55,6 +55,7 @@ interface ILookup {
 
 // TODO: fix error styles
 // TODO: fix menu position
+// TODO: add InputField props for react-form-hook integration
 export const Lookup = ({
   options,
   label,
@@ -203,7 +204,7 @@ export const Lookup = ({
             ? updateOptions
               .filter((f) => f != null && f.selected)
               .map((o) => o?.value)
-            : [option.value]
+            : option.value
         );
       }
 
@@ -266,8 +267,10 @@ export const Lookup = ({
         onClick={(e) => handleOptionSelect(e, option)}
         aria-checked={option.selected}
         aria-disabled={option.disabled}
-        className={clsx("flex items-center py-2 px-4 last:rounded-b-lg first:rounded-t-lg", {
+        // TODO: add check if group is over or under
+        className={clsx("flex items-center py-2 px-4 last:rounded-b-lg", {
           "cursor-not-allowed text-zinc-500/50": option.disabled,
+          "first:rounded-t-lg": index == 0 && !groupBy,
           "hover:bg-zinc-200 dark:hover:bg-zinc-600/90 dark:hover:text-white": !option.disabled,
         })}
       >

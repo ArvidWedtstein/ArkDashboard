@@ -16,6 +16,7 @@ import {
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import ArkCard from "src/components/Util/ArkCard/ArkCard";
+import { InputOutlined } from "src/components/Util/Input/Input";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 
 import type { FindItems } from "types/graphql";
@@ -27,7 +28,7 @@ const ItemsList = ({
   loading?: boolean;
 }) => {
   let { search, category, type } = useParams();
-  const [types, setTypes] = useState([]);
+  const [types, setTypes] = useState<string[]>([]);
   useEffect(() => {
     switch (category) {
       case "structure":
@@ -134,7 +135,7 @@ const ItemsList = ({
     );
   };
   const [view, setView] = useState<"grid" | "list">("grid");
-  const [selectedType, selectType] = useState(type);
+  const [selectedType, selectType] = useState(type || "");
   // const groupedItems = useMemo(() => groupBy(itemsPage.items, "category"), [itemsPage.items])
   return (
     <div className="rw-segment overflow-hidden">
@@ -260,7 +261,6 @@ const ItemsList = ({
               <SelectField
                 name="type"
                 className="rw-input mt-0"
-                // defaultValue={selectedType}
                 value={selectedType}
                 onChange={(e) => {
                   selectType(e.target.value);
@@ -269,7 +269,6 @@ const ItemsList = ({
                 validation={{
                   deps: ["category"],
                   required: false,
-                  shouldUnregister: true,
                   validate: {
                     matchesInitialValue: (value) => {
                       return value !== "Choose a type" || "Select an Option";
@@ -285,13 +284,26 @@ const ItemsList = ({
                 ))}
               </SelectField>
             )}
-            <SearchField
+            <InputOutlined
+              fullWidth
+              name="search"
+              type="search"
+              defaultValue={search}
+              disabled={loading}
+              InputProps={{
+                style: {
+                  borderRadius: "0",
+                  marginRight: "-0.5px",
+                },
+              }}
+            />
+            {/* <SearchField
               name="search"
               className="rw-input mt-0 w-full"
               placeholder="Enter a item..."
               defaultValue={search}
               disabled={loading}
-            />
+            /> */}
             <Submit
               className="rw-input rw-button rw-button-green rounded-l-none !border-none"
               disabled={loading}
@@ -360,7 +372,7 @@ const ItemsList = ({
               }}
             >
               {types.map((t) => (
-                <Tab label={t}></Tab>
+                <Tab key={t} label={t}></Tab>
               ))}
             </Tabs>
           )}

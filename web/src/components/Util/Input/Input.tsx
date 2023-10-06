@@ -19,28 +19,28 @@ type InputProps = {
   fullWidth?: boolean;
   margin?: "none" | "dense" | "normal";
   type?:
-    | "number"
-    | "button"
-    | "time"
-    | "image"
-    | "text"
-    | "hidden"
-    | "color"
-    | "search"
-    | "date"
-    | "datetime-local"
-    | "email"
-    | "file"
-    | "month"
-    | "password"
-    | "radio"
-    | "range"
-    | "reset"
-    | "submit"
-    | "tel"
-    | "url"
-    | "week"
-    | "textarea";
+  | "number"
+  | "button"
+  | "time"
+  | "image"
+  | "text"
+  | "hidden"
+  | "color"
+  | "search"
+  | "date"
+  | "datetime-local"
+  | "email"
+  | "file"
+  | "month"
+  | "password"
+  | "radio"
+  | "range"
+  | "reset"
+  | "submit"
+  | "tel"
+  | "url"
+  | "week"
+  | "textarea";
   onFocus?: (
     e:
       | React.FocusEvent<HTMLInputElement>
@@ -56,9 +56,10 @@ type InputProps = {
     endAdornment?: React.ReactNode;
     style?: CSSProperties;
   };
+  variant?: "outlined" | "filled" | "standard";
 } & Omit<InputFieldProps, "type" | "name"> &
   Omit<TextAreaFieldProps, "type" | "name">;
-
+// TODO: check up required validation. doesnt work
 export const InputOutlined = ({
   name,
   type = "text",
@@ -73,17 +74,18 @@ export const InputOutlined = ({
   disabled,
   fullWidth,
   margin = "none",
+  variant = "outlined",
   InputProps,
   ...props
 }: InputProps) => {
   const [focus, setFocus] = useState(false);
   const { field } = !!name
     ? useController({
-        name: name,
-        rules: validation,
-        defaultValue: defaultValue || value || "",
-        ...props,
-      })
+      name: name,
+      rules: validation,
+      defaultValue: defaultValue || value || "",
+      ...props,
+    })
     : { field: null };
 
   const handleFocus = (
@@ -111,6 +113,12 @@ export const InputOutlined = ({
     errorClassName: `pointer-events-none absolute left-0 top-0 z-10 block origin-top-left max-w-[calc(100%-24px)] translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis font-normal leading-6 transition duration-200 text-base !text-red-600`,
     name,
   });
+  // relative block w-full rounded-t border-b border-black/40 bg-black/[.06] px-3 pb-2 pt-6 text-base text-gray-900 transition-colors duration-200 placeholder:opacity-0 hover:border-black/80 hover:bg-black/[.09] focus:bg-black/[.06] focus:outline-none focus:ring-0 dark:border-white/70 dark:bg-white/[.09] dark:hover:border-white dark:hover:bg-white/[.13] dark:focus:bg-white/[.09];
+  const { className: inputClassNames, style: inputStyle } = useErrorStyles({
+    className: `peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none disabled:pointer-events-none`,
+    errorClassName: `peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error`,
+    name,
+  })
 
   return (
     <div
@@ -119,7 +127,7 @@ export const InputOutlined = ({
         className,
         {
           "pointer-events-none text-black/50 dark:text-white/50": disabled,
-          "w-full": fullWidth,
+          "w-full max-w-full": fullWidth,
           "mt-2 mb-1": margin === "dense",
           "mt-4 mb-2": margin === "normal",
           "mt-0 mb-0": margin == "none",
@@ -157,13 +165,11 @@ export const InputOutlined = ({
             aria-invalid="false"
             id={`input-${name}`}
             type={type}
-            className={clsx(
-              "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none disabled:pointer-events-none",
-              {
-                "pl-0": !!InputProps?.startAdornment,
-                "pr-0": !!InputProps?.endAdornment,
-              }
-            )}
+            className={clsx(inputClassNames, {
+              "pl-0": !!InputProps?.startAdornment,
+              "pr-0": !!InputProps?.endAdornment,
+            })}
+            style={inputStyle}
             disabled={disabled}
             {...field}
             onFocus={handleFocus}
@@ -174,20 +180,11 @@ export const InputOutlined = ({
         ) : type === "textarea" ? (
           <TextAreaField
             name={name}
-            className={clsx(
-              "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none disabled:pointer-events-none",
-              {
-                "pl-0": !!InputProps?.startAdornment,
-                "pr-0": !!InputProps?.endAdornment,
-              }
-            )}
-            errorClassName={clsx(
-              "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error",
-              {
-                "pl-0": !!InputProps?.startAdornment,
-                "pr-0": !!InputProps?.endAdornment,
-              }
-            )}
+            className={clsx(inputClassNames, {
+              "pl-0": !!InputProps?.startAdornment,
+              "pr-0": !!InputProps?.endAdornment,
+            })}
+            style={inputStyle}
             onChange={(e) => {
               field.onChange(e);
               props.onChange?.(e);
@@ -208,20 +205,11 @@ export const InputOutlined = ({
             aria-invalid="false"
             id={`input-${name}`}
             type={type}
-            className={clsx(
-              "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none disabled:pointer-events-none",
-              {
-                "pl-0": !!InputProps?.startAdornment,
-                "pr-0": !!InputProps?.endAdornment,
-              }
-            )}
-            errorClassName={clsx(
-              "peer m-0 box-content block h-6 w-full min-w-0 overflow-hidden rounded border-0 bg-transparent px-3.5 py-4 font-[inherit] text-base focus:outline-none rw-input-error",
-              {
-                "pl-0": !!InputProps?.startAdornment,
-                "pr-0": !!InputProps?.endAdornment,
-              }
-            )}
+            className={clsx(inputClassNames, {
+              "pl-0": !!InputProps?.startAdornment,
+              "pr-0": !!InputProps?.endAdornment,
+            })}
+            style={inputStyle}
             disabled={disabled}
             onChange={(e) => {
               field.onChange(e);
