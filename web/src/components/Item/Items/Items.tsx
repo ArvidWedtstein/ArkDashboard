@@ -253,117 +253,6 @@ const ItemsList = ({
                 }
               }}
             />
-            {/* <SelectField
-              name="category"
-              className="rw-input mt-0 !rounded-l-lg"
-              defaultValue={category}
-              disabled={loading}
-              onChange={(e) => {
-                switch (e.target.value) {
-                  case "structure":
-                    setTypes([
-                      "Tek",
-                      "Building",
-                      "Crafting",
-                      "Electrical",
-                      "Vehicle",
-                      "Elevator",
-                      "Adobe",
-                      "Utility",
-                      "Greenhouse",
-                      "Metal",
-                      "Wood",
-                      "Thatch",
-                      "Stone",
-                    ]);
-                    break;
-                  case "armor":
-                    setTypes([
-                      "Tek",
-                      "Riot",
-                      "Flak",
-                      "Hazard",
-                      "Scuba",
-                      "Fur",
-                      "Ghillie",
-                      "Chitin",
-                      "Desert",
-                      "Hide",
-                      "Cloth",
-                      "Saddle",
-                      "Attachment",
-                    ]);
-                    break;
-                  case "weapon":
-                    setTypes([
-                      "Explosive",
-                      "Ammunition",
-                      "Arrow",
-                      "Tool",
-                      "Attachment",
-                      "Shield",
-                      "Melee",
-                      "Gun",
-                      "Other",
-                    ]);
-                    break;
-                  case "consumable":
-                    setTypes([
-                      "Dish",
-                      "Drug",
-                      "Egg",
-                      "Food",
-                      "Fungus",
-                      "Meat",
-                      "Plant",
-                      "Seed",
-                      "Tool",
-                      "Other",
-                    ]);
-                    break;
-                  case "tool":
-                    setTypes([]);
-                    break;
-                  case "other":
-                    setTypes([
-                      "Navigation",
-                      "Other",
-                      "Artifact",
-                      "Tool",
-                      "Coloring",
-                      "Utility",
-                    ]);
-                    break;
-                  case "resource":
-                    setTypes([]);
-                    break;
-                  case "fertilizer":
-                    setTypes(["Feces"]);
-                    break;
-                  default:
-                    setTypes([]);
-                    break;
-                }
-              }}
-              validation={{
-                required: false,
-                validate: {
-                  matchesInitialValue: (value) => {
-                    return value !== "Choose a category" || "Select an Option";
-                  },
-                },
-              }}
-            >
-              <option value="">Choose a category</option>
-              <option value="resource">Resources</option>
-              <option value="structure">Structures</option>
-              <option value="armor">Armor</option>
-              <option value="weapon">Weapons</option>
-              <option value="consumable">Consumable</option>
-              <option value="tool">Tools</option>
-              <option value="fertilizer">Fertilizer</option>
-              <option value="other">Other</option>
-            </SelectField> */}
 
             {types.length > 0 && (
               <Lookup
@@ -392,33 +281,7 @@ const ItemsList = ({
                 }}
               />
             )}
-            {/* {types.length > 0 && (
-              <SelectField
-                name="type"
-                className="rw-input mt-0"
-                value={selectedType}
-                onChange={(e) => {
-                  selectType(e.target.value);
-                }}
-                disabled={loading}
-                validation={{
-                  deps: ["category"],
-                  required: false,
-                  validate: {
-                    matchesInitialValue: (value) => {
-                      return value !== "Choose a type" || "Select an Option";
-                    },
-                  },
-                }}
-              >
-                <option value="">Choose a type</option>
-                {types.map((type) => (
-                  <option key={type} value={type.toLowerCase().toString()}>
-                    {type}
-                  </option>
-                ))}
-              </SelectField>
-            )} */}
+
             <InputOutlined
               fullWidth
               name="search"
@@ -448,26 +311,6 @@ const ItemsList = ({
                 )
               }}
             />
-            {/* <SearchField
-              name="search"
-              className="rw-input mt-0 w-full"
-              placeholder="Enter a item..."
-              defaultValue={search}
-              disabled={loading}
-            /> */}
-            {/* <Submit
-              className="rw-input rw-button rw-button-green rounded-l-none !border-none"
-              disabled={loading}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-                className="rw-button-icon-start"
-              >
-                <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
-              </svg>
-              <span className="hidden md:block">Search</span>
-            </Submit> */}
           </div>
           <div className="rw-button-group">
             <input

@@ -20,9 +20,12 @@ import { useContext, useMemo, useState } from "react";
 import clsx from "clsx";
 import Disclosure from "src/components/Util/Disclosure/Disclosure";
 import { Modal, ModalContext } from "src/components/Util/Modal/Modal";
-import { Input2 } from "src/components/Util/Input/Input";
+import { InputOutlined } from "src/components/Util/Input/Input";
+import { Lookup } from "src/components/Util/Lookup/Lookup";
 
-const DinosList = ({ dinosPage }: FindDinos) => {
+const DinosList = ({ dinosPage, loading }: FindDinos & {
+  loading: boolean;
+}) => {
   let { search, temperament, diet, type } = useParams();
 
   type FormFindDnios = NonNullable<{
@@ -155,33 +158,38 @@ const DinosList = ({ dinosPage }: FindDinos) => {
           Dinos
         </h1>
 
-        <div className="flex items-center">
+        <div className="flex items-center justify-center space-x-2">
           <div className="rw-button-group ml-5">
-            <SelectField
-              className="rw-input capitalize"
+            <Lookup
+              label="Sort by"
+              margin="none"
+              className="capitalize hidden sm:block"
               name="sort"
-              defaultValue={sort.column}
-              onChange={(e) => {
+              defaultValue={[sort.column]}
+              disabled={loading}
+              onSelect={(e) => {
                 setSort((prev) => ({
                   ...prev,
-                  column: e.target.value,
+                  column: e[0].value.toString(),
                 }));
               }}
-            >
-              {Object.keys(dinosPage.dinos[0] || {})
+              closeOnSelect
+              options={Object.keys(dinosPage.dinos[0] || {})
                 .filter(
                   (c) => !["__typename", "id", "image", "blueprint"].includes(c)
                 )
-                .map((key) => (
-                  <option className="capitalize" key={key} value={key}>
-                    {key}
-                  </option>
-                ))}
-            </SelectField>
+                .map((key) => ({ value: key, label: key }))}
+              InputProps={{
+                style: {
+                  borderRadius: "0.375rem 0 0 0.375rem",
+                  marginRight: "-1px",
+                },
+              }}
+            />
 
             <button
               type="button"
-              className="rw-button rw-button-gray !border-l-transparent transition-all duration-150 ease-in-out"
+              className="rw-button rw-button-gray-outline -mr-px transition-all duration-150 ease-in-out"
               onClick={() => {
                 setSort((prev) => ({
                   ...prev,
@@ -203,9 +211,49 @@ const DinosList = ({ dinosPage }: FindDinos) => {
                 <path d="M32.05 224h255.9c28.36 0 42.73-34.5 22.62-54.62l-127.1-128c-12.5-12.5-32.86-12.5-45.36 0L9.304 169.4C-10.69 189.5 3.682 224 32.05 224zM160 63.98L287.1 192h-255.9L160 63.98z" />
               </svg>
             </button>
+
+            <button
+              type="button"
+              onClick={() => openModal()}
+              className="rw-button rw-button-gray-outline lg:!hidden"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="rw-button-icon">
+                <path d="M479.3 32H32.7C5.213 32-9.965 63.28 7.375 84.19L192 306.8V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C286.5 478.6 291.3 480 295.9 480C308.3 480 320 470.2 320 455.1V306.8l184.6-222.6C521.1 63.28 506.8 32 479.3 32zM295.4 286.4L288 295.3v145.3l-64-44.79V295.3L32.7 64h446.6l.6934-.2422L295.4 286.4z" />
+              </svg>
+              <span className="sr-only">Filters</span>
+            </button>
+
+            <InputOutlined
+              fullWidth
+              name="search"
+              type="search"
+              label="Search"
+              defaultValue={search}
+              disabled={loading}
+              InputProps={{
+                style: {
+                  borderRadius: "0 0.375rem 0.375rem 0",
+                },
+                endAdornment: (
+                  <Submit
+                    className="rw-button rw-button-green"
+                    disabled={loading}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 512 512"
+                      className="rw-button-icon-start"
+                    >
+                      <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
+                    </svg>
+                    <span className="hidden md:block">Search</span>
+                  </Submit>
+                )
+              }}
+            />
           </div>
 
-          <div className="rw-button-group ml-5">
+          <div className="rw-button-group">
             <input
               type="radio"
               id="list"
@@ -226,7 +274,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
             />
             <label
               htmlFor="list"
-              className="rw-button rw-button-gray peer-checked/list:!border-pea-500 h-full !rounded-r-none !rounded-l-lg border peer-checked/grid:border-r-0"
+              className="rw-button !py-4 rw-button-gray-outline peer-checked/list:!border-pea-500 h-full !rounded-r-none !rounded-l-lg border peer-checked/grid:border-r-0"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -238,7 +286,7 @@ const DinosList = ({ dinosPage }: FindDinos) => {
             </label>
             <label
               htmlFor="grid"
-              className="rw-button rw-button-gray peer-checked/grid:!border-pea-500 border peer-checked/list:!border-l-0"
+              className="rw-button !py-4 rw-button-gray-outline peer-checked/grid:!border-pea-500 border peer-checked/list:!border-l-0"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -249,41 +297,6 @@ const DinosList = ({ dinosPage }: FindDinos) => {
               </svg>
             </label>
           </div>
-
-          <button
-            type="button"
-            onClick={() => openModal()}
-            className="rw-button rw-button-gray-outline ml-4 sm:ml-6 lg:!hidden"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="rw-button-icon">
-              <path d="M479.3 32H32.7C5.213 32-9.965 63.28 7.375 84.19L192 306.8V400c0 7.828 3.812 15.17 10.25 19.66l80 55.98C286.5 478.6 291.3 480 295.9 480C308.3 480 320 470.2 320 455.1V306.8l184.6-222.6C521.1 63.28 506.8 32 479.3 32zM295.4 286.4L288 295.3v145.3l-64-44.79V295.3L32.7 64h446.6l.6934-.2422L295.4 286.4z" />
-            </svg>
-            <span className="sr-only">Filters</span>
-          </button>
-
-          <Label name="search" className="sr-only">
-            Search
-          </Label>
-
-          <SearchField
-            name="search"
-            className="rw-input ml-4 !mt-0 hidden !w-full grow sm:ml-6 lg:block"
-            placeholder="Search..."
-            defaultValue={search}
-          />
-
-          <FieldError name="search" className="rw-field-error" />
-
-          <Submit className="rw-button rw-button-green ml-2 bg-clip-padding">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 512 512"
-              className="rw-button-icon-start"
-            >
-              <path d="M507.3 484.7l-141.5-141.5C397 306.8 415.1 259.7 415.1 208c0-114.9-93.13-208-208-208S-.0002 93.13-.0002 208S93.12 416 207.1 416c51.68 0 98.85-18.96 135.2-50.15l141.5 141.5C487.8 510.4 491.9 512 496 512s8.188-1.562 11.31-4.688C513.6 501.1 513.6 490.9 507.3 484.7zM208 384C110.1 384 32 305 32 208S110.1 32 208 32S384 110.1 384 208S305 384 208 384z" />
-            </svg>
-            <span className="hidden md:block">Search</span>
-          </Submit>
         </div>
       </div>
 
