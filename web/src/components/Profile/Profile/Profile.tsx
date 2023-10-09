@@ -3,6 +3,8 @@ import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
 import Avatar from "src/components/Util/Avatar/Avatar";
+import Chart, { ChartContainer } from "src/components/Util/Chart/Chart";
+import { PieChart } from "src/components/Util/PieChart/PieChart";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 
 import { combineBySummingKeys, groupBy } from "src/lib/formatters";
@@ -186,7 +188,7 @@ const Profile = ({ profile }: Props) => {
                         key={`${type}-row-${i}`}
                         className="grid grid-cols-4 gap-x-16 border-b border-gray-200 px-4 py-5 text-sm text-zinc-700 dark:border-zinc-500"
                       >
-                        <div className="capitalize text-gray-500 dark:text-gray-400">
+                        <div className="capitalize text-gray-500 dark:text-zinc-300">
                           {type}
                         </div>
                         {perms
@@ -264,6 +266,19 @@ const Profile = ({ profile }: Props) => {
               </Tab>
             </Tabs>
           </div>
+
+          <Chart labels={['Test', 'tert2', 'monday']} data={[3, 6, 8, 3]} options={{
+            verticalLines: true,
+            horizontalLines: true,
+            horizontalLabels: true,
+            verticalLabels: true,
+          }} />
+          <ChartContainer xAxis={[
+            {
+              scaleType: 'band',
+              data: ['A', 'B', 'C']
+            }
+          ]} />
 
           {currentUser && currentUser.id === profile.id && (
             <nav className="rw-button-group">

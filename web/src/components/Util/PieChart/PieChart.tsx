@@ -94,7 +94,7 @@ export const PieChart = ({
   // }, [grid]);
 
   useEffect(() => {
-    if (!items) return;
+    if (!items || items.length < 1) return;
     setTimeout(() => {
       let pies: NodeListOf<SVGCircleElement> = document.querySelectorAll("circle:not(#piebg)");
       let lastlength = 0;
@@ -102,13 +102,14 @@ export const PieChart = ({
       if (!pies) return;
       pies.forEach((pie, i) => {
         let totallength = pie.getTotalLength();
-        let strokedash = (Math.abs(items[i].percent) * totallength) / 100;
+        let percent = pie.getAttribute("data-percent");
+        let strokedash = (Math.abs(parseInt(percent)) * totallength) / 100;
         pies[i].setAttribute(
           "stroke-dasharray",
           `${strokedash} ${totallength}`
         );
+
         pies[i].setAttribute("stroke-dashoffset", `-${lastlength}`);
-        pies[i].setAttribute("stroke", items[i].color);
         lastlength = strokedash + lastlength;
       });
     }, 100);
@@ -122,7 +123,6 @@ export const PieChart = ({
         xmlns="http://www.w3.org/2000/svg"
       >
         {" "}
-        {/* width={size} height={size} */}
         {backgroundColor && (
           <circle
             id="piebg"
@@ -136,8 +136,7 @@ export const PieChart = ({
           />
         )}
         {items &&
-          items
-            .sort((a, b) => b.percent - a.percent)
+          items?.sort((a, b) => b.percent - a.percent)
             .map((item, index) => (
               <circle
                 key={index}
@@ -148,7 +147,10 @@ export const PieChart = ({
                 r={(hollowPercentage / 100) * (20 - fill / 2)}
                 strokeLinecap="butt"
                 strokeWidth={fill}
+                data-percent={item.percent}
+                data-color={item.color}
                 transform="rotate(-90) translate(-20)"
+                stroke={item.color}
               />
             ))}
         {/* {text && (
