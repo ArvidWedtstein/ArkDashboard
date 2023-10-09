@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import ReactDOM from "react-dom";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 type iModal = {
@@ -13,7 +14,8 @@ type iModal = {
 };
 export const Modal = ({ image, title, content }: iModal) => {
   const { modalOpen, closeModal } = useContext(ModalContext);
-  return (
+
+  return ReactDOM.createPortal(
     <div
       tabIndex={-1}
       role="dialog"
@@ -79,7 +81,8 @@ export const Modal = ({ image, title, content }: iModal) => {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
@@ -90,7 +93,7 @@ interface iModalForm {
   children?: React.ReactNode;
 }
 export const FormModal = ({ title, isOpen, children, onClose }: iModalForm) => {
-  const modalRef = React.useRef<HTMLDialogElement>(null);
+  const modalRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
     if (isOpen == true && !modalRef?.current.open)
@@ -180,8 +183,8 @@ const ModalContext = createContext<{
   closeModal: () => void;
   modalOpen: boolean;
 }>({
-  openModal: () => {},
-  closeModal: () => {},
+  openModal: () => { },
+  closeModal: () => { },
   modalOpen: false,
 });
 
