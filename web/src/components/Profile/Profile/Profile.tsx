@@ -93,7 +93,7 @@ const Profile = ({ profile }: Props) => {
                         new Date(profile.created_at).getFullYear() +
                         (new Date().getMonth() -
                           new Date(profile.created_at).getMonth()) /
-                        12
+                          12
                       ).toPrecision(1)}
                     </span>
                     <span className="text-sm text-gray-600 dark:text-stone-300">
@@ -241,7 +241,7 @@ const Profile = ({ profile }: Props) => {
               </Tab>
               <Tab label="Seasons">
                 <div className="mb-6 px-4 py-5 dark:text-gray-300">
-                  <div className="overflow-hidden rounded-lg grid grid-cols-2 justify-center gap-1">
+                  <div className="grid grid-cols-2 justify-center gap-1 overflow-hidden rounded-lg">
                     {profile.TimelineSeasonPerson.map((season) => (
                       <Link
                         to={routes.timelineSeason({
@@ -267,18 +267,35 @@ const Profile = ({ profile }: Props) => {
             </Tabs>
           </div>
 
-          <Chart labels={['Test', 'tert2', 'monday']} data={[3, 6, 8, 3]} options={{
-            verticalLines: true,
-            horizontalLines: true,
-            horizontalLabels: true,
-            verticalLabels: true,
-          }} />
-          <ChartContainer xAxis={[
-            {
-              scaleType: 'band',
-              data: ['A', 'B', 'C']
-            }
-          ]} />
+          <Chart
+            labels={["Test", "tert2", "monday"]}
+            data={[3, 6, 8, 3]}
+            options={{
+              verticalLines: true,
+              horizontalLines: true,
+              horizontalLabels: true,
+              verticalLabels: true,
+            }}
+          />
+          <ChartContainer
+            xAxis={[
+              {
+                scaleType: "band",
+                data: [
+                  "group A",
+                  "group B",
+                  "group C",
+                  "group d",
+                  "group e",
+                  "group f",
+                ],
+              },
+            ]}
+            series={[
+              { data: [4, 3, 5, 6, 8, 9] },
+              { data: [1, 6, 3, 0, 3, 5] },
+            ]}
+          />
 
           {currentUser && currentUser.id === profile.id && (
             <nav className="rw-button-group">
