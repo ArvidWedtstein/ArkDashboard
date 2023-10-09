@@ -1,3 +1,4 @@
+import { Link } from "@redwoodjs/router";
 import { navigate, routes } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
@@ -75,13 +76,13 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
 
   return (
     <div className="rw-segment">
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap gap-3 mb-3">
         {profiles
           .filter(
             (profile) => !!profile.username && profile.full_name.length > 0
           )
           .map((profile) => (
-            <figure className="font-montserrat relative m-3 w-full max-w-xs overflow-hidden rounded-lg bg-zinc-700 text-left leading-6 text-white">
+            <figure key={profile.id} className="font-montserrat relative w-full max-w-xs overflow-hidden rounded-lg bg-zinc-700 text-left leading-6 text-white">
               <img
                 // src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/331810/sample60.jpg"
                 src={
@@ -102,7 +103,7 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
                       : `https://ui-avatars.com/api/?name=${profile?.full_name}`
                   }
                   alt={profile.full_name}
-                  className="absolute left-6 bottom-full aspect-square max-w-[90px] rounded-full opacity-100 shadow-lg"
+                  className="absolute left-6 bottom-full aspect-square w-full h-fit max-w-[90px] max-h-[90px] rounded-full opacity-100 shadow-lg"
                 />
 
                 <h2 className="mb-1 text-base font-normal">
@@ -121,12 +122,12 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
                   >
                     Follow
                   </a>
-                  <a
-                    href="#"
+                  <Link
+                    to={routes.profile({ id: profile.id })}
                     className="rw-button rw-button-gray-outline rw-button-small ml-2"
                   >
                     More Info
-                  </a>
+                  </Link>
                 </div>
               </figcaption>
             </figure>
@@ -175,7 +176,7 @@ const ProfilesList = ({ profiles }: FindProfiles) => {
                               : `https://ui-avatars.com/api/?name=${row?.full_name}`
                           }
                           alt={row.full_name}
-                          className="absolute left-6 bottom-full aspect-square max-w-[90px] rounded-full opacity-100 shadow-lg"
+                          className="absolute left-6 bottom-full aspect-square max-w-[90px] max-h-[90px] rounded-full opacity-100 shadow-lg"
                         />
                         <h2 className="mb-1 font-light">
                           {row.full_name}
