@@ -1,13 +1,13 @@
 import {
   FieldError,
   RegisterOptions,
-  set,
   useController,
 } from "@redwoodjs/forms";
 import { CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
 import useComponentVisible from "../../useComponentVisible";
 import { ArrayElement, debounce } from "src/lib/formatters";
 import clsx from "clsx";
+import ReactDOM from "react-dom";
 
 type value = string | object | number | null | undefined;
 
@@ -60,8 +60,6 @@ interface ILookup {
 }
 
 // TODO: fix error styles
-// TODO: fix menu position
-// TODO: add InputField props for react-form-hook integration
 export const Lookup = ({
   options,
   label,
@@ -489,77 +487,79 @@ export const Lookup = ({
       </div>
 
       {/* Dropdown Menu */}
-      <div
-        role="menu"
-        style={{
-          position: "fixed",
-          top: `${menuPosition.top}px`,
-          left: `${menuPosition.left}px`,
-          // position: "absolute",
-          // transform: `translate(${0 || menuPosition.left}px, ${menuPosition.top}px)`, TODO: gain absolute position here, so dropdown does not go with scroll
-          // inset: '0px auto auto 0px'
-        }}
-        className={clsx(
-          "z-30 w-fit min-w-[15rem] max-w-full select-none overflow-hidden rounded-lg border border-zinc-500 bg-white shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800",
-          {
-            invisible: !isComponentVisible,
-            visible: isComponentVisible,
-          }
-        )}
-      >
-        <ul
-          className="relative z-10 max-h-48 space-y-1 overflow-y-auto pt-0 text-gray-700 will-change-scroll dark:text-gray-200"
-          aria-labelledby="dropdownButton"
-          role="listbox"
+      {ReactDOM.createPortal(
+        <div
+          role="menu"
+          style={{
+            top: `${menuPosition.top}px`,
+            left: `${menuPosition.left}px`,
+            position: "absolute",
+            // transform: `translate(${0 || menuPosition.left}px, ${menuPosition.top}px)`, TODO: gain absolute position here, so dropdown does not go with scroll
+            // inset: '0px auto auto 0px'
+          }}
+          className={clsx(
+            "z-30 w-fit min-w-[15rem] max-w-full select-none overflow-hidden rounded-lg border border-zinc-500 bg-white shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800",
+            {
+              invisible: !isComponentVisible,
+              visible: isComponentVisible,
+            }
+          )}
         >
-          {!options ||
-            lookupOptions.filter((option) => {
-              if (filterlookupOptions) {
-                return !option?.selected && option?.inSearch;
-              }
+          <ul
+            className="relative z-10 max-h-48 space-y-1 overflow-y-auto pt-0 text-gray-700 will-change-scroll dark:text-gray-200"
+            aria-labelledby="dropdownButton"
+            role="listbox"
+          >
+            {!options ||
+              lookupOptions.filter((option) => {
+                if (filterlookupOptions) {
+                  return !option?.selected && option?.inSearch;
+                }
 
-              return option.inSearch;
-            }).length == 0 && (
-              <li className="flex items-center py-2 px-4 text-zinc-500/70 dark:text-zinc-300/70">
-                No options
-              </li>
-            )}
+                return option.inSearch;
+              }).length == 0 && (
+                <li className="flex items-center py-2 px-4 text-zinc-500/70 dark:text-zinc-300/70">
+                  No options
+                </li>
+              )}
 
-          {groupBy ? Object.entries(lookupOptions
-            .filter((option) => {
-              if (filterlookupOptions) {
-                return !option?.selected && option?.inSearch;
-              }
-
-              return option.inSearch;
-            }).reduce((acc, obj) => {
-              let groupKey: any = obj; // Use 'any' type for indexing
-
-              groupKey = groupBy(obj);
-
-              if (!acc.hasOwnProperty(groupKey)) {
-                acc[groupKey] = [];
-              }
-
-              acc[groupKey].push(obj);
-              return acc;
-            }, {})).map(([groupTitle, groupedItems]: [groupedTitle: string, groupedItems: ILookupOptions[]]) => (
-              <li className="overflow-hidden" key={`group-${groupTitle}`}>
-                <div className="px-2 py-1">{groupTitle}</div>
-                <ul>
-                  {groupedItems.map(renderOption)}
-                </ul>
-              </li>
-            )) : lookupOptions
+            {groupBy ? Object.entries(lookupOptions
               .filter((option) => {
                 if (filterlookupOptions) {
                   return !option?.selected && option?.inSearch;
                 }
 
                 return option.inSearch;
-              }).map(renderOption)}
-        </ul>
-      </div>
+              }).reduce((acc, obj) => {
+                let groupKey: any = obj; // Use 'any' type for indexing
+
+                groupKey = groupBy(obj);
+
+                if (!acc.hasOwnProperty(groupKey)) {
+                  acc[groupKey] = [];
+                }
+
+                acc[groupKey].push(obj);
+                return acc;
+              }, {})).map(([groupTitle, groupedItems]: [groupedTitle: string, groupedItems: ILookupOptions[]]) => (
+                <li className="overflow-hidden" key={`group-${groupTitle}`}>
+                  <div className="px-2 py-1">{groupTitle}</div>
+                  <ul>
+                    {groupedItems.map(renderOption)}
+                  </ul>
+                </li>
+              )) : lookupOptions
+                .filter((option) => {
+                  if (filterlookupOptions) {
+                    return !option?.selected && option?.inSearch;
+                  }
+
+                  return option.inSearch;
+                }).map(renderOption)}
+          </ul>
+        </div>,
+        document.body
+      )}
     </div>
   );
 };

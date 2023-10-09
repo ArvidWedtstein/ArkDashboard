@@ -423,6 +423,7 @@ const ItemsList = ({
               fullWidth
               name="search"
               type="search"
+              label="Search"
               defaultValue={search}
               disabled={loading}
               InputProps={{
