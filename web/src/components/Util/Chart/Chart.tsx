@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useRef } from "react";
 import Tooltip from "../Tooltip/Tooltip";
+import { formatNumber } from "src/lib/formatters";
 
 interface ChartProps {
   labels: string[];
@@ -182,14 +183,13 @@ const Chart = ({
             labelY.setAttribute("x", `-15`);
             labelY.setAttribute(
               "y",
-              `${
-                height -
-                margin -
-                ((i - yAxisMin) / yAxisRange) * (height - 2 * margin)
+              `${height -
+              margin -
+              ((i - yAxisMin) / yAxisRange) * (height - 2 * margin)
               }`
             );
             labelY.setAttribute("font-size", `${max - min > 10 ? 12 : 8}`);
-            labelY.setAttribute("text-anchor", "right");
+            labelY.setAttribute("textAnchor", "right");
             labelY.setAttribute("alignment-baseline", "middle");
             labelY.setAttribute("fill", "white");
             labelY.textContent = i.toFixed(1).toString();
@@ -200,12 +200,12 @@ const Chart = ({
             const yLine = line(
               0,
               height -
-                margin -
-                ((i - yAxisMin) / yAxisRange) * (height - 2 * margin),
+              margin -
+              ((i - yAxisMin) / yAxisRange) * (height - 2 * margin),
               width,
               height -
-                margin -
-                ((i - yAxisMin) / yAxisRange) * (height - 2 * margin)
+              margin -
+              ((i - yAxisMin) / yAxisRange) * (height - 2 * margin)
             );
             yLine.setAttribute("stroke", "#ffffff");
             yLine.setAttribute("stroke-opacity", "0.2");
@@ -375,20 +375,25 @@ export default Chart;
 type ChartContainerProps = {
   xAxis?: {
     data?: string[] | number[];
+    label?: string;
     scaleType?: "linear" | "log" | "time" | "band" | "point" | "ordinal";
-    id?: string;
+    dataKey?: string;
     valueFormatter?: (value: string | number) => string;
   }[];
   yAxis?: {
-    id: string;
-    data: string[] | number[];
+    id?: string;
+    data?: string[] | number[];
+    label?: string;
     scaleType?: "linear" | "log" | "time" | "band" | "point" | "ordinal";
     valueFormatter?: (value: string | number) => string;
   }[];
+  dataset?: {
+    [key: string]: number | string;
+  }[];
   series?: {
-    id?: string;
-    name?: string;
-    data: number[];
+    dataKey?: string;
+    label?: string;
+    data?: number[];
     type?: "line" | "bar" | "pie";
     yAxisId?: string; // One of yAxis ids
     color?: string;
@@ -401,72 +406,122 @@ export const ChartContainer = ({
   xAxis,
   yAxis,
   series,
+  dataset,
   width = 600,
   height = 400,
 }: ChartContainerProps) => {
-  const genAxis = () => {};
-
-  const generateChartValues = (arr) => {
-    // Find the maximum value in the input array
-    const maxValue = Math.max(...arr);
-
-    // Create an array to store the generated values
-    const chartValues = [];
-
-    // Calculate the step size for interpolation
-    const step = maxValue / (arr.length - 1);
-
-    // Generate values between max value and 0
-    for (let i = 0; i < arr.length; i++) {
-      chartValues.push(maxValue - step * i);
-    }
-
-    return chartValues;
-  };
   const paddingX = 50;
+  const paddingY = 50;
+  const labelsNumber = dataset
+    ? xAxis.map(d => d.dataKey).length
+    : xAxis.map(d => d.data.length).reduce((partialSum, a) => partialSum + a, 0);
+  const labelStep = (width - paddingX * 2) / labelsNumber;
+  const barGap = 3;
+  const barSeriesGap = 10;
+  const max = Math.max(...series.flatMap((d) => d?.data ? d.data :
+    dataset.flatMap((s) =>
+      Object.entries(s).filter(([k, v]) => k == d.dataKey || "")
+        .map(([_, v]) => parseInt(v.toString())))), 0);
+  const min = Math.min(...series.flatMap((d) => d?.data ? d.data :
+    dataset.flatMap((s) =>
+      Object.entries(s).filter(([k, v]) => k == d.dataKey || "")
+        .map(([_, v]) => parseInt(v.toString())))), 0);
+
+  const createEvenAxisRange = (min: number, max: number, stepSize: number = 0.5) => {
+    const range = [];
+    for (let i = min; i <= max + stepSize; i += stepSize) {
+      range.push(i);
+    }
+    return range;
+  }
   return (
     <svg
       width={width}
       height={height}
-      viewBox="0 0 600 400"
-      className="stroke-white"
+      viewBox={`0 0 ${width} ${height}`}
     >
       <title>test</title>
       <desc>test</desc>
+
+      {/* Bars */}
+      <g clipPath="url(#:r30:-clip-path)" style={{ shapeRendering: 'crispEdges', transition: 'opacity 0.2s ease-in 0s, fill 0.2s ease-in 0s' }}>
+        {/* {xAxis?.map((axis, axisIndex) => {
+          return axis?.data.map((group, index) => {
+            const groupX = paddingX + index * labelStep;
+            return series.map((serie, serieindex) => {
+              const barHeight = ((serie.data[index] - min) / (max - min)) * (height - 2 * paddingY);
+              let barWidth = (labelStep / series.length - barGap);
+              let x = groupX + serieindex * (barWidth + barGap);
+
+              // Add gap between groups
+              x += serieindex == 0 ? barSeriesGap : 0;
+              x -= serieindex == series.length - 1 ? barSeriesGap : 0;
+              // Add gap between the bars in same group
+              x += serieindex * barGap;
+              barWidth -= barSeriesGap;
+
+              const y = height - paddingY - barHeight;
+
+              return (
+                <rect
+                  data-value={serie.data[index]}
+                  x={x}
+                  y={y}
+                  height={barHeight}
+                  width={barWidth}
+                  style={{ fill: serie.color || 'white', stroke: 'none' }}
+                />
+              )
+            })
+          })
+        })} */}
+      </g>
+
+      {/* X-Axis Labels */}
       {xAxis?.length > 0 && (
         <g
-          transform="translate(0, 350)"
+          transform={`translate(0, ${height - paddingY})`}
           className="MuiChartsAxis-root MuiChartsAxis-directionX MuiChartsAxis-bottom css-1da9t35"
         >
           <line
             x1={paddingX}
             x2={width - paddingX}
-            className="MuiChartsAxis-line css-sj8i6k"
+            className="stroke-1 stroke-white"
+            style={{ shapeRendering: 'crispEdges' }}
           />
           {xAxis?.map((axis) => {
             let labels = [];
-            for (let i = 0; i < axis.data.length + 1; i++) {
-              let x =
-                paddingX + i * ((width - paddingX * 2) / axis.data.length);
+            const labelsNumber = xAxis.map(d => dataset ? dataset.length : d?.data.length).reduce((partialSum, a) => partialSum + a, 0);
+            const labelStep = (width - paddingX * 2) / (labelsNumber);
+            for (let i = 0; i <= labelsNumber; i++) {
+              const x = paddingX + i * labelStep;
+
               labels.push(
                 <g
+                  key={`x-axis-${i}`}
                   transform={`translate(${x}, 0)`}
-                  className="MuiChartsAxis-tickContainer"
+                  className="MuiChartsAxis-tickContainer text-white"
                 >
                   <line
                     y2="6"
-                    className="MuiChartsAxis-tick css-1akpp5l"
-                  ></line>
-                  <text
-                    x="3"
-                    stroke="none"
-                    fill="white"
-                    y="15"
-                    transform-origin="0px 0px"
-                    className="MuiChartsAxis-tickLabel text-white"
-                  >
-                    {axis.data[i]}
-                  </text>
+                    className="MuiChartsAxis-tick css-1akpp5l stroke-white"
+                    style={{ shapeRendering: 'crispEdges' }}
+                  />
+                  {(axis?.dataKey && dataset && dataset[i]) && (
+                    <text
+                      // Center text in the middle of the tick
+                      x={+labelStep / 2}
+                      stroke="none"
+                      fill="white"
+                      y="9"
+                      transform-origin={`0px 0px`}
+                      textAnchor="middle"
+                      dominantBaseline="hanging"
+                      className="text-xs font-normal tracking-wide"
+                    >
+                      {dataset ? dataset[i][axis.dataKey] : axis?.data[i]}
+                    </text>
+                  )}
                 </g>
               );
             }
@@ -474,167 +529,96 @@ export const ChartContainer = ({
           })}
         </g>
       )}
-      {xAxis?.length > 0 && !yAxis && (
+
+      {/* Y-Axis */}
+      {xAxis?.length > 0 && (
         <g
           transform={`translate(${paddingX}, 0)`}
+          height={height}
+          capHeight={height - paddingY}
           className="MuiChartsAxis-root MuiChartsAxis-directionX MuiChartsAxis-bottom css-1da9t35"
         >
           <line
-            y1={paddingX}
-            y2={height - paddingX}
-            className="MuiChartsAxis-line css-sj8i6k"
+            // TODO: set y1 to the max value
+            y1={paddingY}
+            y2={height - paddingY}
+            className="stroke-1 stroke-white"
+            style={{ shapeRendering: 'crispEdges' }}
           />
-          {generateChartValues(series.flatMap((d) => d.data)).map((value) => (
-            <g
-              transform={`translate(0, ${value})`}
-              className="MuiChartsAxis-tickContainer"
-            >
-              <line y2="6" className="MuiChartsAxis-tick css-1akpp5l"></line>
-              <text
-                x="3"
-                stroke="none"
-                fill="white"
-                y="15"
-                transform-origin="0px 0px"
-                className="MuiChartsAxis-tickLabel text-white"
+          {/* TODO: adjust stepsize automatically */}
+          {createEvenAxisRange(min, max, 50).sort((a, b) => b - a).reverse().map((value, idx) => {
+            const y = height -
+              paddingY -
+              ((value - min) / (max - min)) * (height - 2 * paddingY);
+
+            const valueFormatter = (value) => {
+              if (value > 1000) {
+                return `${value / 1000}k`;
+              }
+              return value;
+            }
+            return (
+              <g
+                key={`y-axis-${value}`}
+                transform={`translate(0, ${y})`}
+                className="text-xs text-white font-normal tracking-wide"
               >
-                {value}
+                <line x2="-6" className="MuiChartsAxis-tick css-1akpp5l stroke-white" style={{ shapeRendering: 'crispEdges' }}></line>
+                <text
+                  x="-8"
+                  stroke="none"
+                  fill="white"
+                  y="0"
+                  transform-origin="-8px 0px"
+                  textAnchor="end"
+                  dominantBaseline="central"
+                  className="MuiChartsAxis-tickLabel text-end"
+                >
+                  {formatNumber(valueFormatter(value),
+                    { maximumSignificantDigits: 2, compactDisplay: 'short' }
+                  )}
+                </text>
+              </g>
+            )
+          })}
+          {yAxis?.filter(y => y.label).map((axis) => {
+
+            const barHeight = ((3 - min) / (max - min)) * (height - 2 * paddingY)
+            const maxY = height -
+              paddingY -
+              (((max - min) - min) / (max - min)) * (height - 2 * paddingY);
+
+            return (
+              <text
+                key={`y-axis-label-${axis.label}`}
+                x={maxY - barHeight / 2}
+                y="-30px"
+                dominantBaseline="auto"
+                textAnchor="middle"
+                className="text-sm fill-white font-normal stroke-none transform -rotate-90"
+              >
+                {axis.label}
               </text>
-            </g>
-          ))}
+            )
+          })}
         </g>
       )}
-      {/* <g clipPath="url(#:r1eb:-clip-path)">
-        <g></g>
-        <g>
-          <path
-            d="M50,318.71C55.948,318.293,61.897,317.875,67.845,317.057C73.793,316.239,79.742,313.802,85.69,313.802C91.654,313.802,97.619,316.638,103.584,316.638C109.532,316.638,115.48,312.725,121.429,310.92C127.377,309.116,133.325,307.192,139.273,305.811C145.222,304.43,151.17,304.168,157.118,302.634C163.083,301.095,169.048,299.231,175.012,296.582C180.961,293.94,186.909,290.007,192.857,286.769C198.805,283.531,204.754,280.632,210.702,277.154C216.65,273.676,222.599,268.628,228.547,265.903C234.512,263.171,240.476,262.038,246.441,260.799C252.389,259.563,258.337,259.092,264.286,258.472C270.234,257.852,276.182,258.008,282.131,257.08C288.079,256.151,294.027,251.067,299.976,249.062C305.94,247.051,311.905,246.836,317.869,245.045C323.818,243.259,329.766,240.589,335.714,238.338C341.663,236.088,347.611,231.543,353.559,231.543C359.508,231.543,365.456,231.823,371.404,232.382C377.369,232.943,383.333,244.651,389.298,244.651C395.246,244.651,401.195,241.06,407.143,239.133C413.091,237.206,419.039,233.09,424.988,233.09C430.936,233.09,436.884,234.29,442.833,234.29C448.797,234.29,454.762,233.68,460.727,233.68C466.675,233.68,472.623,234.73,478.571,234.73C484.52,234.73,490.468,232.725,496.416,231.73C502.365,230.735,508.313,230.535,514.261,228.76C520.226,226.98,526.19,223.372,532.155,221.05C538.103,218.734,544.052,216.787,550,214.841"
-            className="MuiLineElement-root MuiLineElement-series-auto-generated-id-0 css-1b3bmv"
-          ></path>
-          <path
-            d="M50,346.09C55.948,340.857,61.897,335.624,67.845,332.3C73.793,328.977,79.742,326.149,85.69,326.149C91.654,326.149,97.619,327.493,103.584,327.493C109.532,327.493,115.48,321.297,121.429,318.599C127.377,315.902,133.325,313.327,139.273,311.311C145.222,309.294,151.17,308.692,157.118,306.5C163.083,304.302,169.048,301.101,175.012,298.131C180.961,295.168,186.909,291.872,192.857,288.704C198.805,285.536,204.754,282.853,210.702,279.124C216.65,275.394,222.599,269.945,228.547,266.327C234.512,262.699,240.476,259.437,246.441,257.397C252.389,255.363,258.337,254.851,264.286,254.091C270.234,253.33,276.182,253.672,282.131,252.836C288.079,251.999,294.027,247.192,299.976,244.713C305.94,242.227,311.905,242.097,317.869,237.944C323.818,233.802,329.766,225.77,335.714,219.859C341.663,213.948,347.611,206.98,353.559,202.478C359.508,197.976,365.456,192.846,371.404,192.846C377.369,192.846,383.333,210.371,389.298,210.371C395.246,210.371,401.195,195.948,407.143,188.904C413.091,181.861,419.039,168.983,424.988,168.11C430.936,167.237,436.884,167.173,442.833,166.8C448.797,166.426,454.762,166.49,460.727,165.87C466.675,165.252,472.623,162.247,478.571,160.78C484.52,159.313,490.468,158.348,496.416,157.07C502.365,155.792,508.313,155.316,514.261,153.11C520.226,150.898,526.19,146.285,532.155,143.802C538.103,141.326,544.052,139.775,550,138.224"
-            className="MuiLineElement-root MuiLineElement-series-auto-generated-id-1 css-m2g13d"
-          ></path>
-          <path
-            d="M50,338.11C55.948,340.089,61.897,342.068,67.845,342.08C73.793,342.092,79.742,342.098,85.69,342.098C91.654,342.098,97.619,338.991,103.584,336.507C109.532,334.029,115.48,329.744,121.429,327.225C127.377,324.705,133.325,323.379,139.273,321.388C145.222,319.397,151.17,317.604,157.118,315.278C163.083,312.944,169.048,310.081,175.012,307.402C180.961,304.731,186.909,302.014,192.857,299.226C198.805,296.438,204.754,293.789,210.702,290.675C216.65,287.56,222.599,283.417,228.547,280.54C234.512,277.654,240.476,275.607,246.441,273.396C252.389,271.19,258.337,269.907,264.286,267.287C270.234,264.667,276.182,260.333,282.131,257.676C288.079,255.018,294.027,253.657,299.976,251.342C305.94,249.021,311.905,246.013,317.869,243.764C323.818,241.52,329.766,239.848,335.714,237.859C341.663,235.871,347.611,231.833,353.559,231.833C359.508,231.833,365.456,233.673,371.404,237.352C377.369,241.041,383.333,255.976,389.298,255.976C395.246,255.976,401.195,253.403,407.143,252.455C413.091,251.508,419.039,251.008,424.988,250.29C430.936,249.572,436.884,249.226,442.833,248.15C448.797,247.071,454.762,245.91,460.727,243.82C466.675,241.736,472.623,237.845,478.571,235.64C484.52,233.435,490.468,232.087,496.416,230.59C502.365,229.093,508.313,228.061,514.261,226.66C520.226,225.255,526.19,223.379,532.155,222.172C538.103,220.967,544.052,220.193,550,219.419"
-            className="MuiLineElement-root MuiLineElement-series-auto-generated-id-2 css-7mtcwn"
-          ></path>
+      {series && (
+        <g className="transform translate-y-4 fill-white" transform={`translate(${paddingX}, 0)`}>
+          {series.filter(f => f.dataKey)?.map((serie, index) => {
+            return (
+              <g key={`legend-${serie.dataKey}`} className="inline-flex items-center space-x-2" transform={`translate(${paddingX + (((width - 2 * paddingX) / series.length) * index)}, 0)`}>
+                <rect width="12" height="12" fill={"#ff0000"} />
+                <text className="text-base font-normal tracking-wide fill-white transform translate-x-4 align-middle capitalize translate-y-1" dominantBaseline="central">{serie.label}</text>
+              </g>
+            )
+          })}
         </g>
-      </g> */}
-      {/* <g
-        transform="translate(50, 0)"
-        className="MuiChartsAxis-root MuiChartsAxis-directionY MuiChartsAxis-left css-1da9t35"
-      >
-        <line
-          y1="350"
-          y2="100"
-          className="MuiChartsAxis-line css-sj8i6k"
-        ></line>
-        <g
-          transform="translate(0, 350)"
-          className="MuiChartsAxis-tickContainer"
-        >
-          <line x2="-6" className="MuiChartsAxis-tick css-1akpp5l"></line>
-          <text
-            x="-8"
-            y="0"
-            transform-origin="-8px 0px"
-            className="MuiChartsAxis-tickLabel text-white"
-          >
-            25,000
-          </text>
-        </g>
-        <g
-          transform="translate(0, 300)"
-          className="MuiChartsAxis-tickContainer"
-        >
-          <line x2="-6" className="MuiChartsAxis-tick css-1akpp5l"></line>
-          <text
-            x="-8"
-            y="0"
-            transform-origin="-8px 0px"
-            className="MuiChartsAxis-tickLabel text-white"
-          >
-            30,000
-          </text>
-        </g>
-        <g
-          transform="translate(0, 250)"
-          className="MuiChartsAxis-tickContainer"
-        >
-          <line x2="-6" className="MuiChartsAxis-tick css-1akpp5l"></line>
-          <text
-            x="-8"
-            y="0"
-            transform-origin="-8px 0px"
-            className="MuiChartsAxis-tickLabel text-white"
-          >
-            35,000
-          </text>
-        </g>
-        <g
-          transform="translate(0, 200)"
-          className="MuiChartsAxis-tickContainer"
-        >
-          <line x2="-6" className="MuiChartsAxis-tick css-1akpp5l"></line>
-          <text
-            x="-8"
-            y="0"
-            transform-origin="-8px 0px"
-            className="MuiChartsAxis-tickLabel text-white"
-          >
-            40,000
-          </text>
-        </g>
-        <g
-          transform="translate(0, 150)"
-          className="MuiChartsAxis-tickContainer"
-        >
-          <line x2="-6" className="MuiChartsAxis-tick css-1akpp5l"></line>
-          <text
-            x="-8"
-            y="0"
-            transform-origin="-8px 0px"
-            className="MuiChartsAxis-tickLabel text-white"
-          >
-            45,000
-          </text>
-        </g>
-        <g
-          transform="translate(0, 100)"
-          className="MuiChartsAxis-tickContainer"
-        >
-          <line x2="-6" className="MuiChartsAxis-tick css-1akpp5l"></line>
-          <text
-            x="-8"
-            y="0"
-            transform-origin="-8px 0px"
-            className="MuiChartsAxis-tickLabel text-white"
-          >
-            50,000
-          </text>
-        </g>
-      </g> */}
-      {/* <g className="MuiChartsLegend-root MuiChartsLegend-row css-u9urbm">
-        <g className="MuiChartsLegend-series css-g7dree">
-          <rect className="MuiChartsLegend-mark css-dotzn4"></rect>
-          <text className="MuiChartsLegend-label css-12yoiof">
-            French GDP per capita
-          </text>
-        </g>
-        <g className="MuiChartsLegend-series css-1ul774o">
-          <rect className="MuiChartsLegend-mark css-booo1k"></rect>
-          <text className="MuiChartsLegend-label css-12yoiof">
-            German GDP per capita
-          </text>
-        </g>
-        <g className="MuiChartsLegend-series css-16aubni">
-          <rect className="MuiChartsLegend-mark css-1nwlj7h"></rect>
-          <text className="MuiChartsLegend-label css-12yoiof">
-            UK GDP per capita
-          </text>
-        </g>
-      </g> */}
+      )}
+
+      <clipPath id=":r30:-clip-path">
+        <rect x={paddingX} y="0" width={width} height={height} />
+      </clipPath>
     </svg>
   );
 };
