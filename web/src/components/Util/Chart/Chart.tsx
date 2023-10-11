@@ -479,6 +479,7 @@ export const ChartContainer = ({
 
       {/* Bars */}
       <g clipPath="url(#:r30:-clip-path)" style={{ shapeRendering: 'crispEdges', transition: 'opacity 0.2s ease-in 0s, fill 0.2s ease-in 0s' }} transform={`translate(50, 0)`}>
+        <rect x="0" y="0" width={width} height={height} fill="transparent" />
         {xAxisData?.map((axis, axisIndex) => {
           return axis?.data.map((group, index) => {
             console.log(labelStep)
