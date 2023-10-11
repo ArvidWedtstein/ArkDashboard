@@ -478,19 +478,50 @@ export const ChartContainer = ({
       <desc>test</desc>
 
       {/* Bars */}
-      <g clipPath="url(#:r30:-clip-path)" style={{ shapeRendering: 'crispEdges', transition: 'opacity 0.2s ease-in 0s, fill 0.2s ease-in 0s' }} transform={`translate(50, 0)`}>
-        <rect x="0" y="0" width={width} height={height} fill="transparent" />
+      <g
+        clipPath="url(#:r30:-clip-path)"
+        style={{ shapeRendering: 'crispEdges', transition: 'opacity 0.2s ease-in 0s, fill 0.2s ease-in 0s' }}
+        transform={`translate(${paddingX}, 0)`}
+      // onMouseMove={(e) => {
+      //   const target = e.target as HTMLDivElement;
+      //   const value = target.getAttribute('data-value');
+
+      //   // if (!value) return
+      //   const x = e.clientX;
+      //   const y = e.clientY;
+
+      //   // console.log(value, x, y)
+      //   // if (document.getElementById('marker')) return;
+      //   const markerPath = `M0 ${height - y} L${x} ${height - paddingY} L0 ${height - paddingY} L0 ${height} Z`;
+      //   let marker = document.getElementById('marker') ? document.getElementById('marker') : document.createElementNS("http://www.w3.org/2000/svg", "path");
+      //   marker.setAttribute("d", markerPath);
+      //   marker.setAttribute("fill", "#ffffff");
+      //   marker.setAttribute("fill-opacity", "0.2");
+      //   marker.style.pointerEvents = 'none';
+      //   marker.id = "marker"
+
+      //   e.currentTarget.appendChild(marker);
+      // }}
+      // onMouseOut={(e) => {
+      //   const target = e.currentTarget as SVGGElement;
+      //   const marker = document.getElementById('marker');
+      //   if (marker) {
+      //     target.removeChild(marker);
+      //   }
+      // }}
+      >
+        <rect x="0" y={0} width={width - 2 * paddingX} height={height - 2 * paddingY} fill="transparent" />
         {xAxisData?.map((axis, axisIndex) => {
           return axis?.data.map((group, index) => {
             console.log(labelStep)
-            const groupX = paddingX + index * labelStep;
+            const groupX = index * labelStep;
 
             return (
-              <g height={height} transform={`translate(${groupX}, 0)`}>
+              <g transform={`translate(${groupX}, 0)`}>
                 {dataSeries.map((serie, serieindex) => {
                   const barHeight = ((serie.data[index] - min) / (max - min)) * (height - 2 * paddingY);
 
-                  const barWidth = (labelStep - barGap * (serie.data.length - 1)) / serie.data.length;
+                  const barWidth = (labelStep - barGap * (serie.data.length - 1));
 
                   const x = serieindex * (barWidth + barGap) + barSeriesGap;
                   const y = height - paddingY - barHeight;
@@ -498,18 +529,15 @@ export const ChartContainer = ({
 
 
                   return (
-                    <>
-                      <circle cx={100} cy={numberToChartY(80)} r="3" fill="red" />
-                      <rect
-                        key={`bar-${serie.dataKey}-${index}`}
-                        data-value={serie.data[index]}
-                        x={x}
-                        y={y}
-                        height={barHeight}
-                        width={barWidth}
-                        style={{ fill: serie.color || 'white', stroke: 'none' }}
-                      />
-                    </>
+                    <rect
+                      key={`bar-${serie.dataKey}-${index}`}
+                      data-value={serie.data[index]}
+                      x={x}
+                      y={y}
+                      height={barHeight}
+                      width={barWidth}
+                      style={{ fill: serie.color || 'white', stroke: 'none', shapeRendering: 'crispEdges' }}
+                    />
                   )
                 })}
               </g>
