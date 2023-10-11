@@ -278,6 +278,7 @@ const Profile = ({ profile }: Props) => {
             }}
           />
           <ChartContainer
+            height={300}
             xAxis={[
               {
                 scaleType: "band",

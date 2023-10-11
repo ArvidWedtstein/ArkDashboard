@@ -410,30 +410,64 @@ export const ChartContainer = ({
   width = 600,
   height = 400,
 }: ChartContainerProps) => {
+
+
+  const dataSeries = dataset ? series?.map((s) => {
+    return {
+      ...s,
+      data: dataset?.map((d) => parseInt(d[s.dataKey].toString())),
+    };
+  }) : series;
+
+  const xAxisData = xAxis?.map((x) => {
+    return {
+      ...x,
+      data: dataset?.map((d) => d[x.dataKey]),
+    };
+  });
+
   const paddingX = 50;
   const paddingY = 50;
-  const labelsNumber = dataset
-    ? xAxis.map(d => d.dataKey).length
-    : xAxis.map(d => d.data.length).reduce((partialSum, a) => partialSum + a, 0);
+  const labelsNumber = xAxisData.map(d => d?.data.length).reduce((partialSum, a) => partialSum + a, 0);
   const labelStep = (width - paddingX * 2) / labelsNumber;
   const barGap = 3;
   const barSeriesGap = 10;
-  const max = Math.max(...series.flatMap((d) => d?.data ? d.data :
-    dataset.flatMap((s) =>
-      Object.entries(s).filter(([k, v]) => k == d.dataKey || "")
-        .map(([_, v]) => parseInt(v.toString())))), 0);
-  const min = Math.min(...series.flatMap((d) => d?.data ? d.data :
-    dataset.flatMap((s) =>
-      Object.entries(s).filter(([k, v]) => k == d.dataKey || "")
-        .map(([_, v]) => parseInt(v.toString())))), 0);
 
-  const createEvenAxisRange = (min: number, max: number, stepSize: number = 0.5) => {
-    const range = [];
-    for (let i = min; i <= max + stepSize; i += stepSize) {
-      range.push(i);
-    }
-    return range;
+
+  const max = Math.max(...dataSeries.flatMap((d) => d?.data));
+  const min = Math.min(...dataSeries.flatMap((d) => d?.data), 0);
+
+  const numberToChartY = (value: number): number => {
+    return height - paddingY - ((value - min) / (max - min)) * (height - 2 * paddingY);
   }
+
+  const yAxisRange = () => {
+    // Determine the ideal number of steps based on chart height
+    const idealStepCount = (height - 2 * paddingY) / 50;
+
+    // Calculate the raw step size
+    const rawStepSize = max / idealStepCount;
+
+    // Calculate a rounded step size for even steps
+    const stepExponent = Math.floor(Math.log10(rawStepSize));
+    const stepMultiplier = Math.pow(10, stepExponent);
+
+    const stepSize = Math.ceil(rawStepSize / stepMultiplier) * stepMultiplier;
+
+    // Calculate the number of steps based on the rounded step size
+    const stepCount = Math.ceil(max / stepSize);
+
+    // Generate yAxis values with even steps
+    const yAxisValues: number[] = [];
+
+    for (let i = 0; i <= stepCount; i++) {
+      yAxisValues.push(i * stepSize);
+    }
+
+    return yAxisValues;
+  }
+
+
   return (
     <svg
       width={width}
@@ -444,44 +478,49 @@ export const ChartContainer = ({
       <desc>test</desc>
 
       {/* Bars */}
-      <g clipPath="url(#:r30:-clip-path)" style={{ shapeRendering: 'crispEdges', transition: 'opacity 0.2s ease-in 0s, fill 0.2s ease-in 0s' }}>
-        {/* {xAxis?.map((axis, axisIndex) => {
+      <g clipPath="url(#:r30:-clip-path)" style={{ shapeRendering: 'crispEdges', transition: 'opacity 0.2s ease-in 0s, fill 0.2s ease-in 0s' }} transform={`translate(50, 0)`}>
+        {xAxisData?.map((axis, axisIndex) => {
           return axis?.data.map((group, index) => {
+            console.log(labelStep)
             const groupX = paddingX + index * labelStep;
-            return series.map((serie, serieindex) => {
-              const barHeight = ((serie.data[index] - min) / (max - min)) * (height - 2 * paddingY);
-              let barWidth = (labelStep / series.length - barGap);
-              let x = groupX + serieindex * (barWidth + barGap);
 
-              // Add gap between groups
-              x += serieindex == 0 ? barSeriesGap : 0;
-              x -= serieindex == series.length - 1 ? barSeriesGap : 0;
-              // Add gap between the bars in same group
-              x += serieindex * barGap;
-              barWidth -= barSeriesGap;
+            return (
+              <g height={height} transform={`translate(${groupX}, 0)`}>
+                {dataSeries.map((serie, serieindex) => {
+                  const barHeight = ((serie.data[index] - min) / (max - min)) * (height - 2 * paddingY);
 
-              const y = height - paddingY - barHeight;
+                  const barWidth = (labelStep - barGap * (serie.data.length - 1)) / serie.data.length;
 
-              return (
-                <rect
-                  data-value={serie.data[index]}
-                  x={x}
-                  y={y}
-                  height={barHeight}
-                  width={barWidth}
-                  style={{ fill: serie.color || 'white', stroke: 'none' }}
-                />
-              )
-            })
+                  const x = serieindex * (barWidth + barGap) + barSeriesGap;
+                  const y = height - paddingY - barHeight;
+
+
+
+                  return (
+                    <>
+                      <circle cx={100} cy={numberToChartY(80)} r="3" fill="red" />
+                      <rect
+                        key={`bar-${serie.dataKey}-${index}`}
+                        data-value={serie.data[index]}
+                        x={x}
+                        y={y}
+                        height={barHeight}
+                        width={barWidth}
+                        style={{ fill: serie.color || 'white', stroke: 'none' }}
+                      />
+                    </>
+                  )
+                })}
+              </g>
+            )
           })
-        })} */}
+        })}
       </g>
 
       {/* X-Axis Labels */}
       {xAxis?.length > 0 && (
         <g
           transform={`translate(0, ${height - paddingY})`}
-          className="MuiChartsAxis-root MuiChartsAxis-directionX MuiChartsAxis-bottom css-1da9t35"
         >
           <line
             x1={paddingX}
@@ -489,16 +528,15 @@ export const ChartContainer = ({
             className="stroke-1 stroke-white"
             style={{ shapeRendering: 'crispEdges' }}
           />
-          {xAxis?.map((axis) => {
+          {xAxisData?.map((axis) => {
             let labels = [];
-            const labelsNumber = xAxis.map(d => dataset ? dataset.length : d?.data.length).reduce((partialSum, a) => partialSum + a, 0);
-            const labelStep = (width - paddingX * 2) / (labelsNumber);
+
             for (let i = 0; i <= labelsNumber; i++) {
               const x = paddingX + i * labelStep;
 
               labels.push(
                 <g
-                  key={`x-axis-${i}`}
+                  key={`x - axis - ${i} `}
                   transform={`translate(${x}, 0)`}
                   className="MuiChartsAxis-tickContainer text-white"
                 >
@@ -531,84 +569,83 @@ export const ChartContainer = ({
       )}
 
       {/* Y-Axis */}
-      {xAxis?.length > 0 && (
-        <g
-          transform={`translate(${paddingX}, 0)`}
-          height={height}
-          capHeight={height - paddingY}
-          className="MuiChartsAxis-root MuiChartsAxis-directionX MuiChartsAxis-bottom css-1da9t35"
-        >
-          <line
-            // TODO: set y1 to the max value
-            y1={paddingY}
-            y2={height - paddingY}
-            className="stroke-1 stroke-white"
-            style={{ shapeRendering: 'crispEdges' }}
-          />
-          {/* TODO: adjust stepsize automatically */}
-          {createEvenAxisRange(min, max, 50).sort((a, b) => b - a).reverse().map((value, idx) => {
-            const y = height -
-              paddingY -
-              ((value - min) / (max - min)) * (height - 2 * paddingY);
+      <g
+        transform={`translate(${paddingX}, 0)`}
+        height={height}
+        capHeight={height - paddingY}
+      >
+        <line
+          // TODO: set y1 to the max value
+          y1={paddingY}
+          y2={height - paddingY}
+          className="stroke-1 stroke-white"
+          style={{ shapeRendering: 'crispEdges' }}
+        />
+        {/* TODO: adjust stepsize automatically */}
+        {yAxisRange().map((value, idx) => {
 
-            const valueFormatter = (value) => {
-              if (value > 1000) {
-                return `${value / 1000}k`;
-              }
-              return value;
+          const y = numberToChartY(value);
+          console.log('Y', y, value)
+          const valueFormatter = (value) => {
+            if (value > 1000) {
+              return `${value / 1000} k`;
             }
-            return (
-              <g
-                key={`y-axis-${value}`}
-                transform={`translate(0, ${y})`}
-                className="text-xs text-white font-normal tracking-wide"
-              >
-                <line x2="-6" className="MuiChartsAxis-tick css-1akpp5l stroke-white" style={{ shapeRendering: 'crispEdges' }}></line>
-                <text
-                  x="-8"
-                  stroke="none"
-                  fill="white"
-                  y="0"
-                  transform-origin="-8px 0px"
-                  textAnchor="end"
-                  dominantBaseline="central"
-                  className="MuiChartsAxis-tickLabel text-end"
-                >
-                  {formatNumber(valueFormatter(value),
-                    { maximumSignificantDigits: 2, compactDisplay: 'short' }
-                  )}
-                </text>
-              </g>
-            )
-          })}
-          {yAxis?.filter(y => y.label).map((axis) => {
+            return value;
+          }
 
-            const barHeight = ((3 - min) / (max - min)) * (height - 2 * paddingY)
-            const maxY = height -
-              paddingY -
-              (((max - min) - min) / (max - min)) * (height - 2 * paddingY);
-
-            return (
+          if (y < 0) return null;
+          return (
+            <g
+              key={`y - axis - ${value} `}
+              transform={`translate(0, ${y})`}
+              className="text-xs text-white font-normal tracking-wide"
+            >
+              <line x2="-6" className="MuiChartsAxis-tick css-1akpp5l stroke-white" style={{ shapeRendering: 'crispEdges' }} />
               <text
-                key={`y-axis-label-${axis.label}`}
-                x={maxY - barHeight / 2}
-                y="-30px"
-                dominantBaseline="auto"
-                textAnchor="middle"
-                className="text-sm fill-white font-normal stroke-none transform -rotate-90"
+                x="-8"
+                stroke="none"
+                fill="white"
+                y="0"
+                transform-origin="-8px 0px"
+                textAnchor="end"
+                dominantBaseline="central"
+                className="MuiChartsAxis-tickLabel text-end"
               >
-                {axis.label}
+                {formatNumber(valueFormatter(value),
+                  { maximumSignificantDigits: 2, compactDisplay: 'short' }
+                )}
               </text>
-            )
-          })}
-        </g>
-      )}
+            </g>
+          )
+        })}
+        {yAxis?.filter(y => y.label).map((axis) => {
+
+          const barHeight = ((3 - min) / (max - min)) * (height - 2 * paddingY)
+          const maxY = height -
+            paddingY -
+            (((max - min) - min) / (max - min)) * (height - 2 * paddingY);
+
+          return (
+            <text
+              key={`y - axis - label - ${axis.label} `}
+              x={maxY - barHeight / 2}
+              y="-30px"
+              dominantBaseline="auto"
+              textAnchor="middle"
+              className="text-sm fill-white font-normal stroke-none transform -rotate-90"
+            >
+              {axis.label}
+            </text>
+          )
+        })}
+      </g>
+      {/* Labels */}
       {series && (
         <g className="transform translate-y-4 fill-white" transform={`translate(${paddingX}, 0)`}>
-          {series.filter(f => f.dataKey)?.map((serie, index) => {
+          {dataSeries?.map((serie, index) => {
             return (
-              <g key={`legend-${serie.dataKey}`} className="inline-flex items-center space-x-2" transform={`translate(${paddingX + (((width - 2 * paddingX) / series.length) * index)}, 0)`}>
-                <rect width="12" height="12" fill={"#ff0000"} />
+              <g key={`legend - ${serie.dataKey} `} className="inline-flex items-center space-x-2" transform={`translate(${paddingX + (((width - 2 * paddingX) / series.length) * index)}, 0)`}>
+                <rect width="12" height="12" fill={serie.color || "#ff0000"} />
                 <text className="text-base font-normal tracking-wide fill-white transform translate-x-4 align-middle capitalize translate-y-1" dominantBaseline="central">{serie.label}</text>
               </g>
             )
@@ -617,7 +654,7 @@ export const ChartContainer = ({
       )}
 
       <clipPath id=":r30:-clip-path">
-        <rect x={paddingX} y="0" width={width} height={height} />
+        <rect x={0} y={0} width={width} height={height} />
       </clipPath>
     </svg>
   );
