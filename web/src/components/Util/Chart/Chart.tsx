@@ -372,21 +372,18 @@ const Chart = ({
 
 export default Chart;
 
+
+type AxisData = {
+  id?: string;
+  data?: (string | number)[];
+  label?: string;
+  scaleType?: "linear" | "log" | "time" | "band" | "point" | "ordinal";
+  dataKey?: string;
+  valueFormatter?: (value: string | number) => string;
+}[]
 type ChartContainerProps = {
-  xAxis?: {
-    data?: string[] | number[];
-    label?: string;
-    scaleType?: "linear" | "log" | "time" | "band" | "point" | "ordinal";
-    dataKey?: string;
-    valueFormatter?: (value: string | number) => string;
-  }[];
-  yAxis?: {
-    id?: string;
-    data?: string[] | number[];
-    label?: string;
-    scaleType?: "linear" | "log" | "time" | "band" | "point" | "ordinal";
-    valueFormatter?: (value: string | number) => string;
-  }[];
+  xAxis?: AxisData;
+  yAxis?: AxisData;
   dataset?: {
     [key: string]: number | string;
   }[];
@@ -419,32 +416,39 @@ export const ChartContainer = ({
     };
   }) : series;
 
-  const xAxisData = xAxis?.map((x) => {
+  const xAxisData = xAxis?.filter(x => x.scaleType != null)?.map((x) => {
     return {
       ...x,
       data: dataset?.map((d) => d[x.dataKey]),
     };
   });
+  const yAxisData = yAxis?.filter(y => y.scaleType != null)?.map((y) => {
+    return {
+      ...y,
+      data: dataset?.map((d) => d[y.dataKey]),
+    };
+  });
+
 
   const paddingX = 50;
   const paddingY = 50;
-  const labelsNumber = xAxisData.map(d => d?.data.length).reduce((partialSum, a) => partialSum + a, 0);
-  const labelStep = (width - paddingX * 2) / labelsNumber;
   const barGap = 3;
   const barSeriesGap = 10;
+  const categoryGapRatio = 0.5;
+  const barGapRatio = 0.1;
 
 
   const max = Math.max(...dataSeries.flatMap((d) => d?.data));
   const min = Math.min(...dataSeries.flatMap((d) => d?.data), 0);
 
-  const numberToChartY = (value: number): number => {
-    return height - paddingY - ((value - min) / (max - min)) * (height - 2 * paddingY);
+  const numberToChart = (value: number, isXAxis: boolean = true): number => {
+    return isXAxis ? height - paddingY - ((value - min) / (max - min)) * (height - 2 * paddingY) : width - paddingX - ((value - min) / (max - min)) * (width - 2 * paddingX);
   }
 
-  const yAxisRange = () => {
+  const generateAxisRange = (isXAxis: boolean = true) => {
     // Determine the ideal number of steps based on chart height
-    const idealStepCount = (height - 2 * paddingY) / 50;
-
+    const idealStepCount = (isXAxis ? (width - 2 * paddingX) : (height - 2 * paddingY)) / 50;
+    console.log('GEN VALUES FOR', isXAxis ? 'X' : 'Y')
     // Calculate the raw step size
     const rawStepSize = max / idealStepCount;
 
@@ -458,24 +462,127 @@ export const ChartContainer = ({
     const stepCount = Math.ceil(max / stepSize);
 
     // Generate yAxis values with even steps
-    const yAxisValues: number[] = [];
+    const axisValues: number[] = [];
 
     for (let i = 0; i <= stepCount; i++) {
-      yAxisValues.push(i * stepSize);
+      axisValues.push(i * stepSize);
     }
 
-    return yAxisValues;
+    return axisValues;
+  }
+
+  function calculateBarDimensions(data, width, height, barGapRatio, categoryGapRatio, orientation) {
+    // Determine the number of data points and categories
+    const numDataPoints = data.length;
+    const numCategories = data[0].data.length;
+
+    // Calculate the width of a single category and single bar based on orientation
+    const isHorizontal = orientation === 'horizontal';
+    const totalWidth = isHorizontal ? width : height;
+
+    const categoryWidth = (totalWidth * (1 - categoryGapRatio)) / numCategories;
+    const barWidth = (categoryWidth * (1 - barGapRatio)) / numDataPoints;
+
+    // Initialize an array to store the bar positions
+    const barPositions = [];
+
+    // Calculate the position of each bar within its category
+    for (let i = 0; i < numDataPoints; i++) {
+      const categoryPositions = [];
+      for (let j = 0; j < numCategories; j++) {
+        const position = isHorizontal
+          ? j * categoryWidth + (i * barWidth) + (j * barGapRatio * barWidth)
+          : j * categoryWidth + (i * barWidth) + (i * barGapRatio * categoryWidth);
+        categoryPositions.push(position);
+      }
+      barPositions.push(categoryPositions);
+    }
+
+    return { barWidth, barPositions, categoryWidth };
   }
 
 
+  //           for (let i = 0; i < dataSeries.length; i++) {
+  //             for (let j = 0; j < dataSeries[i].data.length; j++) {
+  //               const x = barPositions[i][j];
+  //               const y = height - dataSeries[i].data[j]; // Assuming data represents bar heights
+  //               const barHeight = dataSeries[i].data[j];
+  //               console.table({
+  //                 x,
+  //                 y,
+  //                 barHeight,
+  //                 barWidth
+  //               })
+
+
+  //               bars.push(
+  //                 // <rect key={`bar-${i}-${j}`} x={x} y={y} width={barWidth} height={barHeight} fill="blue" />
+  //                 <rect
+  //                   // key={`bar-${groupIndex * dataSeries.length + serieindex}`}
+  //                   data-value={4}
+  //                   x={x}
+  //                   y={y}
+  //                   // y={initialBarPosition + barIndex * totalCategoryWidth}
+  //                   width={barWidth}
+  //                   // height={barHeight}
+  //                   height={barHeight}
+  //                   style={{ fill: 'blue' || 'white', stroke: 'none', shapeRendering: 'crispEdges' }}
+  //                 />
+  //               );
+  //             }
+  //           }
+
+  const generateLabelsAxisRange = (axisData: AxisData, isXAxis: boolean = true) => {
+    const labelsNumber = axisData.map(d => d?.data.length).reduce((partialSum, a) => partialSum + a, 0);
+    console.log(labelsNumber, axisData)
+    const labelStep = (isXAxis ? width - paddingX * 2 : height - paddingY * 2) / labelsNumber;
+    return axisData?.map((axis) => {
+      let labels = [];
+
+      for (let i = 0; i <= labelsNumber; i++) {
+        const xy = (isXAxis ? paddingX : paddingY) + i * labelStep;
+
+        labels.push(
+          <g
+            key={`${isXAxis ? 'x' : 'y'} - axis - ${i} `}
+            transform={`translate(${isXAxis ? xy : 0}, ${isXAxis ? 0 : xy})`}
+            className="text-white"
+          >
+            <line
+              y2={`${isXAxis ? -6 : 0}px`}
+              x2={`${isXAxis ? 0 : -6}px`}
+              className="stroke-white"
+              style={{ shapeRendering: 'crispEdges' }}
+            />
+            {(axis?.dataKey && dataset && dataset[i]) && (
+              <text
+                // Center text in the middle of the tick
+                x={`${isXAxis ? +labelStep / 2 : -8}px`}
+                y={`${isXAxis ? 9 : +labelStep / 2}px`} // +labelStep / 2 to center text
+                stroke="none"
+                fill="white"
+                transform-origin={`${isXAxis ? 0 : -8}px 0px`}
+                textAnchor={isXAxis ? "middle" : 'end'}
+                dominantBaseline={isXAxis ? "hanging" : 'central'}
+                className="text-xs font-normal tracking-wide"
+              >
+                {dataset ? dataset[i][axis.dataKey] : axis?.data[i]}
+              </text>
+            )}
+          </g>
+        );
+      }
+      return labels;
+    })
+  }
   return (
     <svg
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}
     >
-      <title>test</title>
-      <desc>test</desc>
+      <title></title>
+      <desc></desc>
 
       {/* Bars */}
       <g
@@ -510,54 +617,163 @@ export const ChartContainer = ({
       //   }
       // }}
       >
-        <rect x="0" y={0} width={width - 2 * paddingX} height={height - 2 * paddingY} fill="transparent" />
-        {xAxisData?.map((axis, axisIndex) => {
-          return axis?.data.map((group, index) => {
-            console.log(labelStep)
-            const groupX = index * labelStep;
+        <rect x="0" y={paddingY} width={width - 2 * paddingX} height={height - 2 * paddingY} fill="transparent" />
+        {xAxisData.filter(x => x.data.filter(x => x).length > 0).length > 0
+          ? xAxisData?.map((axis, axisIndex) => {
 
-            return (
-              <g transform={`translate(${groupX}, 0)`}>
-                {dataSeries.map((serie, serieindex) => {
-                  const barHeight = ((serie.data[index] - min) / (max - min)) * (height - 2 * paddingY);
+            const labelsNumber = xAxisData.map(d => d?.data.length).reduce((partialSum, a) => partialSum + a, 0);
+            const labelStep = (width - paddingX * 2) / labelsNumber;
+            return axis?.data.map((group, index) => {
+              const groupX = index * labelStep;
+              console.log(xAxisData)
+              return (
+                <g transform={`translate(${groupX}, 0)`}>
+                  {dataSeries.map((serie, serieindex) => {
+                    const barHeight = ((serie.data[index] - min) / (max - min)) * (height - 2 * paddingY);
 
-                  const barWidth = (labelStep - barGap * (serie.data.length - 1));
+                    const barWidth = (labelStep - barGap * (serie.data.length - 1));
 
-                  const x = serieindex * (barWidth + barGap) + barSeriesGap;
-                  const y = height - paddingY - barHeight;
+                    const x = serieindex * (barWidth + barGap) + barSeriesGap;
+                    const y = height - paddingY - barHeight;
+
+                    return (
+                      <rect
+                        key={`bar-${serie.dataKey}-${index}`}
+                        data-value={serie.data[index]}
+                        x={x}
+                        y={y}
+                        height={barHeight}
+                        width={barWidth}
+                        style={{ fill: serie.color || 'white', stroke: 'none', shapeRendering: 'crispEdges' }}
+                      />
+                    )
+                  })}
+                </g>
+              )
+            })
+          })
+          : yAxisData?.map((axis, axisIndex) => {
+            const labelsNumber = yAxisData.map(d => d?.data.length).reduce((partialSum, a) => partialSum + a, 0);
+            // const labelStep = (height - paddingY * 2) / labelsNumber;
+            const { barWidth, barPositions, categoryWidth } = calculateBarDimensions(dataSeries, width - (paddingX * 2), height - (paddingY * 2), barGapRatio, categoryGapRatio, 'vertical');
 
 
+            // const categoryWidth = (height * (1 - categoryGapRatio)) / labelsNumber;
+            // const barWidth2 = (categoryWidth * (1 - barGapRatio)) / dataSeries.length;
+            let orientation = 'vertical'
+            const bars = [];
+            for (let j = 0; j < dataSeries[0].data.length; j++) {
+              const categoryBars = [];
+              for (let i = 0; i < dataSeries.length; i++) {
+                const x = orientation === 'horizontal' ? barPositions[i][j] : j * categoryWidth;
+                const y = orientation === 'horizontal' ? j * categoryWidth : barPositions[i][j];
+                const rectWidth = orientation === 'horizontal' ? barWidth : categoryWidth;
+                const rectHeight = orientation === 'horizontal' ? categoryWidth : barWidth;
+                let colors = ["red", "green", "blue", "yellow"]
+                categoryBars.push(
+                  <rect key={`bar-${i}-${j}`} x={orientation === 'horizontal' ? 1 : 0} y={paddingY + y} width={rectWidth} height={rectHeight} fill={colors[i]} />
+                );
+              }
+              bars.push(<g transform={`translate(0, ${j * categoryWidth})`} key={`category-${j}`}>{categoryBars}</g>);
+            }
 
-                  return (
+
+            return bars
+            return axis?.data.map((group, groupIndex) => {
+              // Calculate the width of a single category (group of bars)
+              const categoryHeight = ((height - paddingY * 2) * (1 - categoryGapRatio)) / dataSeries.length;
+              const groupY = paddingY + categoryHeight; // groupIndex * labelStep
+
+
+              // Calculate the bar width within a category
+              const barSize = (categoryHeight * (1 - barGapRatio)) / labelsNumber;
+
+              // return (
+              //   <g transform={`translate(0, ${groupY})`}>
+              //     {
+              return dataSeries.map((serie, serieindex) => {
+
+
+                const barWidthS = ((serie.data[groupIndex] - min) / (max - min)) * (width - 2 * paddingX);
+
+                // const barHeight = labelStep - ( - 1) * (labelsNumber - 1);
+
+
+                const barIndex = groupIndex * dataSeries.length + serieindex
+                // console.log('CATEGORY HEIGHT', categoryHeight, groupIndex * labelStep, dataSeries)
+                const x = 0;
+                // const y = barIndex * (barHeight + (height - paddingY) * barGapRatio);
+                const y = barPositions[serieindex][groupIndex];
+                return (
+                  <>
                     <rect
-                      key={`bar-${serie.dataKey}-${index}`}
-                      data-value={serie.data[index]}
+                      key={`bar-${groupIndex * dataSeries.length + serieindex}`}
+                      data-value={serie.data[groupIndex]}
                       x={x}
-                      y={y}
-                      height={barHeight}
-                      width={barWidth}
+                      // y={paddingY + (serieindex * categoryHeight + (groupIndex * barSize) + (groupIndex * barGapRatio * categoryHeight))}
+                      y={paddingY + y}
+                      // width={barWidth}
+                      width={width}
+                      // height={barHeight}
+                      height={barWidth}
                       style={{ fill: serie.color || 'white', stroke: 'none', shapeRendering: 'crispEdges' }}
                     />
-                  )
-                })}
-              </g>
-            )
-          })
-        })}
+                  </>
+                )
+              })
+              // }
+              // </g>
+              // )
+            })
+          })}
       </g>
 
       {/* X-Axis Labels */}
-      {xAxis?.length > 0 && (
-        <g
-          transform={`translate(0, ${height - paddingY})`}
-        >
-          <line
-            x1={paddingX}
-            x2={width - paddingX}
-            className="stroke-1 stroke-white"
-            style={{ shapeRendering: 'crispEdges' }}
-          />
-          {xAxisData?.map((axis) => {
+      <g
+        transform={`translate(0, ${height - paddingY})`}
+      >
+        <line
+          x1={paddingX}
+          x2={width - paddingX}
+          className="stroke-1 stroke-white"
+          style={{ shapeRendering: 'crispEdges' }}
+        />
+        {xAxisData.filter(x => x?.data.length > 0).length > 0 ? generateLabelsAxisRange(xAxisData, true) : generateAxisRange(true).reverse().map((value, idx) => {
+
+          const x = numberToChart(value, true);
+          const valueFormatter = (value) => {
+            if (value > 1000) {
+              return `${value / 1000} k`;
+            }
+            return value;
+          }
+
+          if (x < 0) return null;
+          return (
+            <g
+              key={`x - axis - ${value} `}
+              transform={`translate(${x}, 0)`}
+              className="text-xs font-normal tracking-wide"
+            >
+              <line x2={0} y2={6} className="stroke-white" style={{ shapeRendering: 'crispEdges' }} />
+              <text
+                x="0"
+                stroke="none"
+                fill="white"
+                y="0"
+                transform-origin="-8px 0px"
+                textAnchor="end"
+                dominantBaseline="central"
+                className="MuiChartsAxis-tickLabel text-end"
+              >
+                {formatNumber(valueFormatter(value),
+                  { maximumSignificantDigits: 2, compactDisplay: 'short' }
+                )}
+              </text>
+            </g>
+          )
+        })}
+        {/* {xAxisData?.map((axis) => {
             let labels = [];
 
             for (let i = 0; i <= labelsNumber; i++) {
@@ -593,15 +809,12 @@ export const ChartContainer = ({
               );
             }
             return labels;
-          })}
-        </g>
-      )}
+          })} */}
+      </g>
 
       {/* Y-Axis */}
       <g
         transform={`translate(${paddingX}, 0)`}
-        height={height}
-        capHeight={height - paddingY}
       >
         <line
           // TODO: set y1 to the max value
@@ -610,11 +823,9 @@ export const ChartContainer = ({
           className="stroke-1 stroke-white"
           style={{ shapeRendering: 'crispEdges' }}
         />
-        {/* TODO: adjust stepsize automatically */}
-        {yAxisRange().map((value, idx) => {
+        {yAxisData.filter(y => y.data.length > 0).length > 0 ? generateLabelsAxisRange(yAxisData, false) : generateAxisRange(false).map((value, idx) => {
 
-          const y = numberToChartY(value);
-          console.log('Y', y, value)
+          const y = numberToChart(value, false);
           const valueFormatter = (value) => {
             if (value > 1000) {
               return `${value / 1000} k`;
