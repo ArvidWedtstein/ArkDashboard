@@ -279,7 +279,7 @@ const Profile = ({ profile }: Props) => {
           />
           <ChartContainer
             // height={300}
-            yAxis={[
+            xAxis={[
               {
                 scaleType: "band",
                 // data: [
@@ -287,10 +287,11 @@ const Profile = ({ profile }: Props) => {
                 //   "Group B",
                 //   "Group C"
                 // ],
+                label: 'test',
                 dataKey: "month",
               },
             ]}
-            xAxis={[
+            yAxis={[
               {
                 label: "Y Axis",
               }

@@ -44,6 +44,7 @@ describe('formatEnum', () => {
   })
 })
 
+
 describe('truncate', () => {
   it('truncates really long strings', () => {
     expect(truncate('na '.repeat(1000) + 'batman').length).toBeLessThan(1000)
