@@ -3,7 +3,8 @@ import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
 import Avatar from "src/components/Util/Avatar/Avatar";
-import Chart, { ChartContainer } from "src/components/Util/Chart/Chart";
+import Chart, { ChartContainer, LineChart as Linechart2 } from "src/components/Util/Chart/Chart";
+import LineChart from "src/components/Util/LineChart/LineChart";
 import { PieChart } from "src/components/Util/PieChart/PieChart";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 
@@ -278,119 +279,147 @@ const Profile = ({ profile }: Props) => {
             }}
           />
           <ChartContainer
-            // height={300}
-            // yAxis={[
-            //   {
-            //     scaleType: "band",
-            //     label: 'test',
-            //     dataKey: "month",
-            //   },
-            // ]}
-            // xAxis={[
-            //   {
-            //     label: "Y Axis",
-            //   }
-            // ]}
-            // dataset={[
-            //   {
-            //     london: 24,
-            //     paris: 57,
-            //     newYork: 86,
-            //     seoul: 21,
-            //     month: 'Jan',
-            //   },
-            //   {
-            //     london: 50,
-            //     paris: 52,
-            //     newYork: 78,
-            //     seoul: 28,
-            //     month: 'Feb',
-            //   },
-            //   {
-            //     london: 47,
-            //     paris: 53,
-            //     newYork: 106,
-            //     seoul: 41,
-            //     month: 'Mar',
-            //   },
-            //   {
-            //     london: 54,
-            //     paris: 56,
-            //     newYork: 92,
-            //     seoul: 73,
-            //     month: 'Apr',
-            //   },
-            //   {
-            //     london: 57,
-            //     paris: 69,
-            //     newYork: 92,
-            //     seoul: 99,
-            //     month: 'May',
-            //   },
-            //   {
-            //     london: 60,
-            //     paris: 63,
-            //     newYork: 103,
-            //     seoul: 144,
-            //     month: 'June',
-            //   },
-            //   {
-            //     london: 59,
-            //     paris: 60,
-            //     newYork: 105,
-            //     seoul: 319,
-            //     month: 'July',
-            //   },
-            //   {
-            //     london: 65,
-            //     paris: 60,
-            //     newYork: 106,
-            //     seoul: 249,
-            //     month: 'Aug',
-            //   },
-            //   {
-            //     london: 51,
-            //     paris: 51,
-            //     newYork: 95,
-            //     seoul: 131,
-            //     month: 'Sept',
-            //   },
-            //   {
-            //     london: 60,
-            //     paris: 65,
-            //     newYork: 97,
-            //     seoul: 55,
-            //     month: 'Oct',
-            //   },
-            //   {
-            //     london: 67,
-            //     paris: 64,
-            //     newYork: 76,
-            //     seoul: 48,
-            //     month: 'Nov',
-            //   },
-            //   {
-            //     london: 61,
-            //     paris: 70,
-            //     newYork: 103,
-            //     seoul: 20,
-            //     month: 'Dec',
-            //   },
-            // ]}
-            // series={[
-            //   { dataKey: 'london', label: 'London' },
-            //   { dataKey: 'newYork', label: 'New York' },
-            //   { dataKey: 'paris', label: 'Paris' },
-            //   { dataKey: 'seoul', label: 'Seoul' },
-            // ]}
+            height={300}
+            xAxis={[
+              {
+                scaleType: "band",
+                label: 'test',
+                dataKey: "month",
+              },
+            ]}
+            yAxis={[
+              {
+                label: "Y Axis",
+              }
+            ]}
+            dataset={[
+              {
+                london: 24,
+                paris: 57,
+                newYork: 86,
+                seoul: 21,
+                month: 'Jan',
+              },
+              {
+                london: 50,
+                paris: 52,
+                newYork: 78,
+                seoul: 28,
+                month: 'Feb',
+              },
+              {
+                london: 47,
+                paris: 53,
+                newYork: 106,
+                seoul: 41,
+                month: 'Mar',
+              },
+              {
+                london: 54,
+                paris: 56,
+                newYork: 92,
+                seoul: 73,
+                month: 'Apr',
+              },
+              {
+                london: 57,
+                paris: 69,
+                newYork: 92,
+                seoul: 99,
+                month: 'May',
+              },
+              {
+                london: 60,
+                paris: 63,
+                newYork: 103,
+                seoul: 144,
+                month: 'June',
+              },
+              {
+                london: 59,
+                paris: 60,
+                newYork: 105,
+                seoul: 319,
+                month: 'July',
+              },
+              {
+                london: 65,
+                paris: 60,
+                newYork: 106,
+                seoul: 249,
+                month: 'Aug',
+              },
+              {
+                london: 51,
+                paris: 51,
+                newYork: 95,
+                seoul: 131,
+                month: 'Sept',
+              },
+              {
+                london: 60,
+                paris: 65,
+                newYork: 97,
+                seoul: 55,
+                month: 'Oct',
+              },
+              {
+                london: 67,
+                paris: 64,
+                newYork: 76,
+                seoul: 48,
+                month: 'Nov',
+              },
+              {
+                london: 61,
+                paris: 70,
+                newYork: 103,
+                seoul: 20,
+                month: 'Dec',
+              },
+            ]}
             series={[
-              { data: [3, 4, 1, 6, 5], stack: 'A', label: 'Series A1' },
-              { data: [4, 3, 1, 5, 8], stack: 'A', label: 'Series A2' },
-              { data: [4, 2, 5, 4, 1], stack: 'B', label: 'Series B1' },
-              { data: [2, 8, 1, 3, 1], stack: 'B', label: 'Series B2' },
-              { data: [10, 6, 5, 8, 9], label: 'Series C1' },
+              { dataKey: 'london', label: 'London' },
+              { dataKey: 'newYork', label: 'New York' },
+              { dataKey: 'paris', label: 'Paris' },
+              { dataKey: 'seoul', label: 'Seoul' },
             ]}
           />
+
+          <Linechart2
+            // xAxis={[{ data: [0, 2.5, 3, 5, 8, 10] }]}
+            series={[
+              {
+                data: [0, 3, 5, 1, 5, 2, 10, 6],
+                area: false,
+              },
+            ]}
+            width={500}
+            height={300}
+          />
+
+          {/* <LineChart items={[
+            {
+              colorHEX: '#ff0000',
+              name: 'test',
+              percent: 20,
+            },
+            {
+              colorHEX: '#00ff00',
+              name: 'test2',
+              percent: 40
+            },
+            {
+              colorHEX: '#0000ff',
+              name: 'test3',
+              percent: 39
+            },
+            {
+              colorHEX: '#ffff00',
+              name: 'test4',
+              percent: 1
+            }
+          ]} /> */}
 
           {currentUser && currentUser.id === profile.id && (
             <nav className="rw-button-group">
