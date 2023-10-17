@@ -1129,6 +1129,82 @@ export const removeDuplicates = <T extends {}>(array: T[]): T[] => {
   return [...new Set(array)];
 };
 
+export const svgArc = (
+  centerX: number,
+  centerY: number,
+  radiusX: number,
+  radiusY: number,
+  startAngle: number,
+  endAngle: number,
+  largeArcFlag: boolean = false,
+  sweepFlag: boolean = true
+): string => {
+  // Convert angles from degrees to radians
+  startAngle = (startAngle * Math.PI) / 180;
+  endAngle = (endAngle * Math.PI) / 180;
+
+  // Calculate the start and end points of the arc
+  const startX = centerX + radiusX * Math.cos(startAngle);
+  const startY = centerY + radiusY * Math.sin(startAngle);
+  const endX = centerX + radiusX * Math.cos(endAngle);
+  const endY = centerY + radiusY * Math.sin(endAngle);
+
+  // Use the A command to create the arc path
+  const arcCommand = `A ${radiusX} ${radiusY} 0 ${largeArcFlag ? 1 : 0
+    } ${sweepFlag ? 1 : 0} ${endX} ${endY}`;
+
+  // Construct the full path command
+  const pathData = `M ${startX} ${startY} ${arcCommand}`;
+
+  return pathData;
+}
+
+export const generateChartColors = (seriesCount: number) => {
+  const baseColors = [];
+  const colorThreshold = 100; // Adjust as needed
+
+  for (let i = 0; i < seriesCount; i++) {
+    let r, g, b;
+    do {
+      r = Math.floor(Math.random() * 256);
+      g = Math.floor(Math.random() * 256);
+      b = Math.floor(Math.random() * 256);
+    } while (
+      baseColors.some((color) => {
+        const [cr, cg, cb] = color
+          .match(/\d+/g)
+          .map((c) => parseInt(c, 10));
+        return (
+          Math.abs(r - cr) < colorThreshold &&
+          Math.abs(g - cg) < colorThreshold &&
+          Math.abs(b - cb) < colorThreshold
+        );
+      })
+    );
+
+    baseColors.push(`rgb(${r}, ${g}, ${b})`);
+  }
+
+  // Ensure the colors are visible on a dark background
+  const darkBackgroundColors = baseColors.map((color) => {
+    let [r, g, b] = color.match(/\d+/g).map((c) => parseInt(c, 10));
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+    if (luminance > 0.5) {
+      // If the color is too light for a dark background, make it darker
+      const ratio = 0.8; // Adjust as needed
+      r = Math.floor(r * ratio);
+      g = Math.floor(g * ratio);
+      b = Math.floor(b * ratio);
+      return `rgb(${r}, ${g}, ${b})`;
+    } else {
+      return color;
+    }
+  });
+
+  return darkBackgroundColors;
+}
+
 /**
  * Returns color from red to green based on percentage
  * @param percentage

@@ -3,9 +3,7 @@ import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
 import Avatar from "src/components/Util/Avatar/Avatar";
-import Chart, { ChartContainer, LineChart as Linechart2 } from "src/components/Util/Chart/Chart";
-import LineChart from "src/components/Util/LineChart/LineChart";
-import { PieChart } from "src/components/Util/PieChart/PieChart";
+import Chart, { ChartContainer, LineChart as Linechart2, PieChart } from "src/components/Util/Chart/Chart";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 
 import { combineBySummingKeys, groupBy } from "src/lib/formatters";
@@ -391,35 +389,33 @@ const Profile = ({ profile }: Props) => {
             series={[
               {
                 data: [0, 3, 5, 1, 5, 2, 10, 6],
-                area: false,
+                area: true,
+                // showMark: ({ index }) => index % 2 === 0,
               },
             ]}
             width={500}
             height={300}
           />
 
-          {/* <LineChart items={[
-            {
-              colorHEX: '#ff0000',
-              name: 'test',
-              percent: 20,
-            },
-            {
-              colorHEX: '#00ff00',
-              name: 'test2',
-              percent: 40
-            },
-            {
-              colorHEX: '#0000ff',
-              name: 'test3',
-              percent: 39
-            },
-            {
-              colorHEX: '#ffff00',
-              name: 'test4',
-              percent: 1
-            }
-          ]} /> */}
+          <PieChart
+            series={[
+              {
+                data: [
+                  { id: 0, value: 25, label: 'series A' },
+                  { id: 1, value: 6, label: 'series B' },
+                  { id: 2, value: 3, label: 'series C' },
+                ],
+                paddingAngle: 5,
+                // startAngle: 30,
+                // endAngle: 360,
+                innerRadius: 200,
+                outerRadius: 100,
+                cornerRadius: 5,
+              }
+            ]}
+            width={500}
+            height={500}
+          />
 
           {currentUser && currentUser.id === profile.id && (
             <nav className="rw-button-group">

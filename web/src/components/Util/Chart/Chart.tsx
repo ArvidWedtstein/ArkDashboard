@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useRef } from "react";
-import { formatNumber, groupBy } from "src/lib/formatters";
+import { formatNumber, generateChartColors, groupBy, svgArc } from "src/lib/formatters";
 
 interface ChartProps {
   labels: string[];
@@ -459,21 +459,28 @@ const numberToChart = (chartData: ChartContainerProps & {
     : height - paddingY - ((value - min) / (max - min)) * (height - 2 * paddingY);
 }
 
-/**
- * Generates the numbers and lines for the axis
- * @param isXAxis
- * @returns
- */
-const generateAxisRange = (chartData: ChartContainerProps & {
+
+type AxisValue = {
+  x: number | null;
+  y: number | null;
+  value: number;
+  xText: number;
+  yText: number;
+  textAnchor: 'middle' | 'end';
+  dominantBaseline: 'hanging' | 'central';
+  xLine: number;
+  yLine: number;
+}
+const generateAxisRangeValues = (chartData: ChartContainerProps & {
   paddingX: number;
   paddingY: number;
   max: number;
   min: number;
-}, isXAxis: boolean = true) => {
+}, isXAxis: boolean = true): AxisValue[] => {
   const { width, height, paddingX, paddingY, max, min } = chartData;
 
   // Determine the ideal number of steps based on chart height
-  const idealStepCount = (isXAxis ? (width - 2 * paddingX) : (height - 2 * paddingY)) / (isXAxis ? (width / width) * 25 : 50);
+  const idealStepCount = (isXAxis ? (width - 2 * paddingX) : (height - 2 * paddingY)) / 50;
 
   // Calculate the raw step size
   const rawStepSize = (max - min) / idealStepCount;
@@ -487,39 +494,60 @@ const generateAxisRange = (chartData: ChartContainerProps & {
   // Calculate the number of steps based on the rounded step size
   const stepCount = Math.ceil((max - min) / stepSize);
 
-  // Generate yAxis values with even steps
-  const axisValues = [];
-  for (let i = 0; i <= stepCount; i++) {
+  // Generate Axis values with even steps
+  return Array.from({ length: stepCount + 1 }, (_, i) => {
     const value = min + i * stepSize;
     const xy = isXAxis ? width - numberToChart(chartData, value, isXAxis) : numberToChart(chartData, value, isXAxis);
 
-    if (xy > 0) {
-      axisValues.push(
-        <g
-          key={`${isXAxis ? 'x' : 'y'}-axis-${value} `}
-          transform={`translate(${isXAxis ? xy : 0}, ${isXAxis ? 0 : xy})`}
-          className="text-xs font-normal tracking-wide"
-        >
-          <line x2={isXAxis ? 0 : -6} y2={isXAxis ? 6 : 0} className="stroke-white" style={{ shapeRendering: 'crispEdges' }} />
-          <text
-            // +labelStep / 2 to center text
-            stroke="none"
-            x={isXAxis ? 0 : -8}
-            y={isXAxis ? 9 : 0}
-            transform-origin={`${isXAxis ? 0 : -8}px ${isXAxis ? 9 : 0}px`}
-            textAnchor={isXAxis ? 'middle' : 'end'}
-            dominantBaseline={isXAxis ? 'hanging' : 'central'}
-            className="text-xs font-normal tracking-wide fill-white"
-          // style={{ transformOrigin: `${isXAxis ? 0 : -8}px ${isXAxis ? 9 : 0}px` }}
-          >
-            {formatNumber(value, { notation: 'compact' })}
-          </text>
-        </g>
-      );
+    return {
+      x: isXAxis ? xy : null,
+      y: isXAxis ? null : xy,
+      value: value,
+      xText: isXAxis ? 0 : -8,
+      yText: isXAxis ? 9 : 0,
+      textAnchor: isXAxis ? 'middle' : 'end',
+      dominantBaseline: isXAxis ? 'hanging' : 'central',
+      xLine: isXAxis ? 0 : -6,
+      yLine: isXAxis ? 6 : 0,
     }
-  }
+  }) as AxisValue[];
+}
 
-  return axisValues;
+/**
+ * Generates the numbers and lines for the axis
+ * @param isXAxis
+ * @returns
+ */
+const generateAxisRange = (chartData: ChartContainerProps & {
+  paddingX: number;
+  paddingY: number;
+  max: number;
+  min: number;
+}, isXAxis: boolean = true) => {
+  return generateAxisRangeValues(chartData, isXAxis).map((axisValue) => {
+    return (
+      <g
+        key={`${isXAxis ? 'x' : 'y'}-axis-${axisValue.value} `}
+        transform={`translate(${isXAxis ? axisValue.x : 0}, ${isXAxis ? 0 : axisValue.y})`}
+        className="text-xs font-normal tracking-wide"
+      >
+        <line x2={isXAxis ? 0 : -6} y2={isXAxis ? 6 : 0} className="stroke-white" style={{ shapeRendering: 'crispEdges' }} />
+        <text
+          // +labelStep / 2 to center text
+          stroke="none"
+          x={isXAxis ? 0 : -8}
+          y={isXAxis ? 9 : 0}
+          transform-origin={`${isXAxis ? 0 : -8}px ${isXAxis ? 9 : 0}px`}
+          textAnchor={isXAxis ? 'middle' : 'end'}
+          dominantBaseline={isXAxis ? 'hanging' : 'central'}
+          className="text-xs font-normal tracking-wide fill-white"
+        // style={{ transformOrigin: `${isXAxis ? 0 : -8}px ${isXAxis ? 9 : 0}px` }}
+        >
+          {formatNumber(axisValue.value, { notation: 'compact' })}
+        </text>
+      </g>
+    )
+  });
 }
 
 export const ChartContainer = ({
@@ -533,12 +561,7 @@ export const ChartContainer = ({
 }: ChartContainerProps) => {
 
   // Autogenerate unique hex colors
-  const colors = [...Array(series.length)].map((_, i) => {
-    const r = Math.floor(Math.random() * 255);
-    const g = Math.floor(Math.random() * 255);
-    const b = Math.floor(Math.random() * 255);
-    return `rgb(${r}, ${g}, ${b})`;
-  });
+  const colors = generateChartColors([...Array(series.length)].length)
 
   const dataSeries = series?.map((s) => {
     return {
@@ -772,7 +795,6 @@ type LineChartProps = {
    * Used to controll the x positions of the data points in series
    */
   xAxis?: AxisData;
-  yAxis?: AxisData;
   dataset?: {
     [key: string]: number | string;
   }[];
@@ -783,13 +805,13 @@ type LineChartProps = {
     data?: number[];
     color?: string;
     area?: boolean;
+    showMark?: (({ index }: { index: number }) => boolean) | boolean;
   }[];
   width?: number;
   height?: number;
 };
 export const LineChart = ({
   xAxis,
-  yAxis,
   series = [],
   dataset = [],
   width = 600,
@@ -798,13 +820,7 @@ export const LineChart = ({
   const paddingX = 50;
   const paddingY = 50;
 
-
-  interface Point {
-    x: number;
-    y: number;
-  }
-
-  function catmullRomInterpolation(t: number, p0: number, p1: number, p2: number, p3: number): number {
+  const catmullRomInterpolation = (t: number, p0: number, p1: number, p2: number, p3: number): number => {
     const t2 = t * t;
     const t3 = t * t2;
     return 0.5 * (
@@ -838,43 +854,9 @@ export const LineChart = ({
 
     return result;
   }
-  const arc = (
-    centerX: number,
-    centerY: number,
-    radiusX: number,
-    radiusY: number,
-    startAngle: number,
-    endAngle: number,
-    largeArcFlag: boolean = false,
-    sweepFlag: boolean = true
-  ): string => {
-    // Convert angles from degrees to radians
-    startAngle = (startAngle * Math.PI) / 180;
-    endAngle = (endAngle * Math.PI) / 180;
-
-    // Calculate the start and end points of the arc
-    const startX = centerX + radiusX * Math.cos(startAngle);
-    const startY = centerY + radiusY * Math.sin(startAngle);
-    const endX = centerX + radiusX * Math.cos(endAngle);
-    const endY = centerY + radiusY * Math.sin(endAngle);
-
-    // Use the A command to create the arc path
-    const arcCommand = `A ${radiusX} ${radiusY} 0 ${largeArcFlag ? 1 : 0
-      } ${sweepFlag ? 1 : 0} ${endX} ${endY}`;
-
-    // Construct the full path command
-    const pathData = `M ${startX} ${startY} ${arcCommand}`;
-
-    return pathData;
-  }
 
   // Autogenerate unique hex colors
-  const colors = [...Array(series.length)].map((_, i) => {
-    const r = Math.floor(Math.random() * 255);
-    const g = Math.floor(Math.random() * 255);
-    const b = Math.floor(Math.random() * 255);
-    return `rgb(${r}, ${g}, ${b})`;
-  });
+  const colors = generateChartColors(Array(series.length).length)
 
   const dataSeries = series?.map((s, i) => {
     return {
@@ -915,32 +897,24 @@ export const LineChart = ({
     })
   }); // Path data for the line
 
-  // const path = pathData.map((d, i) => {
-  //   let a = d.map((val, index) => {
-  //     return `${index == 0 ? 'M' : 'L'} ${val.x} ${val.y}`
-  //   }).join(' ') + `${dataSeries[i].area ? ` V${height - paddingY} H0 Z` : ''}`;
+  const path = pathData.map((d, i) => {
 
-  //   return (
-  //     <>
-  //       <path d={a} stroke={dataSeries[i].color} fill={dataSeries[i].area ? "#ff00033" : 'none'} strokeWidth={2} />
-  //       {d.map((val, index) => (<path key={`data-${i}-circle-${index}`} d={arc(val.x, val.y, 5, 5, 0, 359.9, true, true)} stroke={dataSeries[i].color} fill={"#121212"} strokeWidth={3} shapeRendering={"auto"} strokeLinecap="round" />))}
-  //     </>
-  //   )
-  // });
-
-  const path2 = pathData.map((d, i) => {
-
-    const points: [number, number][] = d.map((val, index) => [val.x, val.y]);
+    const points: [number, number][] = d.map((val) => [val.x, val.y]);
     const catmull: { x: number, y: number }[] = drawCatmullRomChart(points);
 
+    // TODO: fix filled area path
     let catmullpath = catmull.map((val, index) => {
       return `${index == 0 ? 'M' : 'L'} ${val.x} ${val.y}`
     }
     ).join(' ') + `${dataSeries[i].area ? ` V${height - paddingY} H0 Z` : ''}`;
+
     return (
       <>
         <path d={catmullpath} stroke={dataSeries[i].color} fill={dataSeries[i].area ? "#ff00033" : 'none'} />
-        {d.map((val, index) => (<path key={`data-${i}-circle-${index}`} d={arc(val.x, val.y, 5, 5, 0, 359.9, true, true)} stroke={dataSeries[i].color} fill={"#121212"} strokeWidth={3} shapeRendering={"auto"} strokeLinecap="round" />))}
+        {d.filter((_, idx) => {
+          const showMark = dataSeries[i]?.showMark;
+          return typeof showMark === 'function' ? showMark({ index: idx }) : showMark !== false;
+        }).map((val, index) => (<path key={`data-${i}-circle-${index}`} d={svgArc(val.x, val.y, 5, 5, 0, 359.9, true, true)} stroke={dataSeries[i].color} fill={"#121212"} strokeWidth={3} shapeRendering={"auto"} strokeLinecap="round" />))}
       </>
     )
   });
@@ -992,8 +966,161 @@ export const LineChart = ({
       >
         <rect x="0" y={paddingY} width={width - 2 * paddingX} height={height - 2 * paddingY} fill="transparent" />
 
-        {/* {path} */}
-        {path2}
+        {path}
+      </g>
+
+    </svg>
+  )
+}
+
+type PieChartProps = {
+  width?: number;
+  height?: number;
+  dataset?: {
+    [key: string]: number | string;
+  }[];
+  series?: {
+    data?: {
+      id?: string | number;
+      value?: number;
+      label?: string;
+      color?: string;
+    }[];
+    /** The radius between the center and the beginning of the arc. The default is set to 0. */
+    innerRadius?: number;
+    /** The radius between the center and the end of the arc. The default is the largest value available in the drawing area. */
+    outerRadius?: number;
+    /** The padding angle between each pie slice */
+    paddingAngle?: number;
+    /** Similar to the CSS border-radius */
+    cornerRadius?: number;
+    /** The angle range of the pie chart. Values are given in degrees. */
+    startAngle?: number;
+    /** The angle range of the pie chart. Values are given in degrees. */
+    endAngle?: number;
+    /** The center of the pie charts. By default the middle of the drawing area. */
+    cx?: number;
+    /** The center of the pie charts. By default the middle of the drawing area. */
+    cy?: number;
+  }[];
+}
+export const PieChart = ({
+  width = 400,
+  height = 200,
+  series,
+}: PieChartProps) => {
+  const dataSeries = series?.map((s) => {
+    // Generate unique colors for each data point
+    const colors = generateChartColors(s?.data.length || 0);
+
+    return {
+      ...s,
+      data: s?.data?.map((d, i) => {
+        return {
+          ...d,
+          color: d?.color || colors[i],
+          value: parseInt(d.value.toString()),
+        };
+      }) ?? [],
+    };
+  });
+
+  const totalValue = series[0]?.data.reduce(
+    (total, slice) => total + (slice.value || 0),
+    0
+  );
+
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+    >
+      <title></title>
+      <desc></desc>
+
+      <g>
+        {dataSeries?.map((serie, index) => {
+
+          let startAngleRS = serie.startAngle || 0;
+
+          return (
+            <g transform={`translate(${0},0)`}>
+              <g>
+                {serie.data.map((slice, i) => {
+                  const {
+                    cx = width / 2,
+                    cy = height / 2,
+                    endAngle = 360,
+                    cornerRadius = 0,
+                    innerRadius = 0,
+                    outerRadius = 100,
+                    paddingAngle = 5
+                  } = serie;
+
+                  const outerRadius2 = Math.min(cx, cy) - outerRadius;
+                  const innerRadiusValue = Math.max(0, innerRadius);
+                  // const { value = 0, color } = slice;
+
+                  // const radius = Math.min(cx, cy) - 10;
+
+                  // const sliceAngle = (slice.value / totalValue) * 360; // totalValue or 100
+                  // const endAngleRS = startAngleRS + sliceAngle;
+
+                  // const largeArcFlag = sliceAngle > 180 ? 1 : 0;
+
+                  // // Calculate the start and end points of the slice
+                  // const startX = cx + radius * Math.cos((startAngleRS - 90) * (Math.PI / 180));
+                  // const startY = cy + radius * Math.sin((startAngleRS - 90) * (Math.PI / 180));
+                  // const endX = cx + radius * Math.cos((endAngleRS - 90) * (Math.PI / 180));
+                  // const endY = cy + radius * Math.sin((endAngleRS - 90) * (Math.PI / 180));
+
+                  // startAngleRS = endAngleRS;
+
+                  const sliceAngle = (slice.value / 100) * (360 - serie.data.length * paddingAngle); // 100 or totalValue
+                  const endAnglers = startAngleRS + sliceAngle;
+
+                  const largeArcFlag = sliceAngle > 180 ? 1 : 0;
+
+                  // Calculate the start and end points of the slice
+                  const startX = cx + outerRadius2 * Math.cos((startAngleRS - 90) * (Math.PI / 180));
+                  const startY = cy + outerRadius2 * Math.sin((startAngleRS - 90) * (Math.PI / 180));
+                  const endX = cx + outerRadius2 * Math.cos((endAnglers - 90) * (Math.PI / 180));
+                  const endY = cy + outerRadius2 * Math.sin((endAnglers - 90) * (Math.PI / 180));
+
+                  // Calculate the start and end points of the inner circle
+                  const innerStartX = cx + innerRadiusValue * Math.cos((startAngleRS - 90) * (Math.PI / 180));
+                  const innerStartY = cy + innerRadiusValue * Math.sin((startAngleRS - 90) * (Math.PI / 180));
+                  const innerEndX = cx + innerRadiusValue * Math.cos((endAnglers - 90) * (Math.PI / 180));
+                  const innerEndY = cy + innerRadiusValue * Math.sin((endAnglers - 90) * (Math.PI / 180));
+
+                  startAngleRS = endAnglers + paddingAngle;
+                  return (
+                    <path
+                      key={i}
+                      // d={`M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY} L ${cx} ${cy} Z`}
+                      d={`
+                        M ${startX} ${startY}
+                        A ${outerRadius2} ${outerRadius2} 0 ${largeArcFlag} 1 ${endX} ${endY}
+                        L ${innerEndX} ${innerEndY}
+                        A ${innerRadiusValue} ${innerRadiusValue} 0 ${largeArcFlag} 0 ${innerStartX} ${innerStartY}
+                        Z
+                      `}
+                      fill={slice.color}
+                    />
+                    // <path
+                    //   key={slice.id || index}
+                    //   d={`M${cx},${cy} L${x1},${y1} A${outerRadius},${outerRadius} 0 ${angle > 180 ? 1 : 0
+                    //     },1 ${x2},${y2} Z`}
+                    //   fill={slice.color || 'blue'}
+                    // />
+                  )
+
+                })}
+              </g>
+            </g>
+          )
+        })}
       </g>
 
     </svg>
