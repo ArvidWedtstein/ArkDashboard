@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useRef } from "react";
-import { formatNumber, generateChartColors, groupBy, svgArc } from "src/lib/formatters";
+import { ArrayElement, formatNumber, generateChartColors, groupBy, svgArc } from "src/lib/formatters";
 
 interface ChartProps {
   labels: string[];
@@ -377,8 +377,13 @@ type AxisData = {
   data?: (string | number)[];
   label?: string;
   scaleType?: "linear" | "log" | "time" | "band" | "point" | "ordinal";
+  scale?: any;
   dataKey?: string;
   valueFormatter?: (value: string | number) => string;
+  min?: number;
+  max?: number;
+  valueMin?: number;
+  valueMax?: number;
 }[]
 type ChartContainerProps = {
   xAxis?: AxisData;
@@ -448,18 +453,40 @@ const generateLabelsAxisRange = (axisData: AxisData, chartData: ChartContainerPr
 }
 
 const numberToChart = (chartData: ChartContainerProps & {
-  paddingX: number;
-  paddingY: number;
+  margin?: {
+    top?: number;
+    right?: number;
+    bottom?: number;
+    left?: number;
+  };
+  availableWidth: number;
+  availableHeight: number;
   max: number;
   min: number;
-}, value: number, isXAxis: boolean = true): number => {
-  const { width, height, paddingX, paddingY, max, min } = chartData;
+}, value: number, isXAxis: boolean = true, scaleType: string = 'linear'): number => {
+  const { width, height, availableWidth, availableHeight, margin, max, min } = chartData;
+  const range = scaleType === 'log' ? Math.log10(max + 1) - Math.log10(min) : max - min;
+
+  const relativeValue = (value - min) / range;
+
+  if (scaleType === 'log') {
+    const logMin = Math.log10(min);
+    const logMax = Math.log10(max + 1); // Add 1 to handle log(0)
+    return isXAxis
+      ? width - margin.left - (Math.log10(min) + relativeValue * (logMax - logMin)) / (logMax - logMin) * availableWidth
+      : height - margin.top - (Math.log10(min) + relativeValue * (logMax - logMin)) / (logMax - logMin) * availableHeight;
+  }
+
   return isXAxis
-    ? width - paddingX - ((value - min) / (max - min)) * (width - 2 * paddingX)
-    : height - paddingY - ((value - min) / (max - min)) * (height - 2 * paddingY);
+    ? width - margin.left - relativeValue * availableWidth
+    : height - margin.top - relativeValue * availableHeight;
+  // return isXAxis
+  //   ? width - margin.left - ((value - min) / (max - min)) * availableWidth
+  //   : height - margin.top - ((value - min) / (max - min)) * availableHeight;
 }
 
 
+type AxisPosition = 'left' | 'right' | 'top' | 'bottom'
 type AxisValue = {
   x: number | null;
   y: number | null;
@@ -472,15 +499,23 @@ type AxisValue = {
   yLine: number;
 }
 const generateAxisRangeValues = (chartData: ChartContainerProps & {
-  paddingX: number;
-  paddingY: number;
+  margin?: {
+    top?: number;
+    right?: number;
+    bottom?: number;
+    left?: number;
+  };
+  availableWidth?: number;
+  availableHeight?: number;
   max: number;
   min: number;
-}, isXAxis: boolean = true): AxisValue[] => {
-  const { width, height, paddingX, paddingY, max, min } = chartData;
+}, scaleType = 'linear', position: AxisPosition = 'bottom'): AxisValue[] => {
+  const { width, height, availableWidth, availableHeight, max, min } = chartData;
 
   // Determine the ideal number of steps based on chart height
-  const idealStepCount = (isXAxis ? (width - 2 * paddingX) : (height - 2 * paddingY)) / 50;
+  const idealStepCount = (position === 'top' || position === 'bottom')
+    ? availableWidth / Math.sqrt(availableWidth)
+    : availableHeight / 10;
 
   // Calculate the raw step size
   const rawStepSize = (max - min) / idealStepCount;
@@ -497,53 +532,66 @@ const generateAxisRangeValues = (chartData: ChartContainerProps & {
   // Generate Axis values with even steps
   return Array.from({ length: stepCount + 1 }, (_, i) => {
     const value = min + i * stepSize;
-    const xy = isXAxis ? width - numberToChart(chartData, value, isXAxis) : numberToChart(chartData, value, isXAxis);
+    const xy = (position === 'top' || position === 'bottom')
+      ? width - numberToChart({ ...chartData, availableWidth, availableHeight }, value, (position === 'top' || position === 'bottom'))
+      : numberToChart({ ...chartData, availableWidth, availableHeight }, value, false);
+
+    const v = scaleType === 'log' ? Math.log10(value + 1) : value;
 
     return {
-      x: isXAxis ? xy : null,
-      y: isXAxis ? null : xy,
-      value: value,
-      xText: isXAxis ? 0 : -8,
-      yText: isXAxis ? 9 : 0,
-      textAnchor: isXAxis ? 'middle' : 'end',
-      dominantBaseline: isXAxis ? 'hanging' : 'central',
-      xLine: isXAxis ? 0 : -6,
-      yLine: isXAxis ? 6 : 0,
+      x: (position === 'top' || position === 'bottom') ? xy : 0,
+      y: (position === 'top' || position === 'bottom') ? 0 : xy,
+      value: isFinite(v) ? v : 0,
+      xText: (position === 'top' || position === 'bottom') ? 0 : position === 'left' ? -8 : 8,
+      yText: (position === 'top' || position === 'bottom') ? 9 : 0,
+      textAnchor: (position === 'top' || position === 'bottom') ? 'middle' : (position === 'left') ? 'end' : 'start',
+      dominantBaseline: (position === 'top' || position === 'bottom') ? 'hanging' : 'central',
+      xLine: (position === 'top' || position === 'bottom') ? 0 : (position === 'left') ? -6 : 6,
+      yLine: (position === 'top' || position === 'bottom') ? 6 : 0,
     }
   }) as AxisValue[];
 }
 
 /**
+ * TODO: Add support for log scale
+ * TODO: Fix text only going to line end
  * Generates the numbers and lines for the axis
  * @param isXAxis
  * @returns
  */
 const generateAxisRange = (chartData: ChartContainerProps & {
-  paddingX: number;
-  paddingY: number;
+  xAxisData?: AxisData;
+  yAxisData?: AxisData;
   max: number;
   min: number;
-}, isXAxis: boolean = true) => {
-  return generateAxisRangeValues(chartData, isXAxis).map((axisValue) => {
+  margin?: {
+    top?: number;
+    right?: number;
+    bottom?: number;
+    left?: number;
+  }
+}, scaleType = 'linear', position: AxisPosition = 'bottom') => {
+  return generateAxisRangeValues({ availableWidth: (chartData.width - chartData.margin.left - chartData.margin.right), availableHeight: (chartData.height - chartData.margin.top - chartData.margin.bottom), ...chartData }, scaleType, position).map((axisValue) => {
     return (
       <g
-        key={`${isXAxis ? 'x' : 'y'}-axis-${axisValue.value} `}
-        transform={`translate(${isXAxis ? axisValue.x : 0}, ${isXAxis ? 0 : axisValue.y})`}
+        key={`${position === 'top' || position === 'bottom' ? 'x' : 'y'}-axis-${axisValue.value} `}
+        transform={`translate(${axisValue.x}, ${axisValue.y})`}
         className="text-xs font-normal tracking-wide"
       >
-        <line x2={isXAxis ? 0 : -6} y2={isXAxis ? 6 : 0} className="stroke-white" style={{ shapeRendering: 'crispEdges' }} />
+        <line x2={axisValue.xLine} y2={axisValue.yLine} className="stroke-white" style={{ shapeRendering: 'crispEdges' }} />
         <text
           // +labelStep / 2 to center text
           stroke="none"
-          x={isXAxis ? 0 : -8}
-          y={isXAxis ? 9 : 0}
-          transform-origin={`${isXAxis ? 0 : -8}px ${isXAxis ? 9 : 0}px`}
-          textAnchor={isXAxis ? 'middle' : 'end'}
-          dominantBaseline={isXAxis ? 'hanging' : 'central'}
+          x={axisValue.xText}
+          y={axisValue.yText}
+          transform-origin={`${axisValue.xText}px ${axisValue.yText}px`}
+          textAnchor={axisValue.textAnchor}
+          dominantBaseline={axisValue.dominantBaseline}
           className="text-xs font-normal tracking-wide fill-white"
-        // style={{ transformOrigin: `${isXAxis ? 0 : -8}px ${isXAxis ? 9 : 0}px` }}
         >
-          {formatNumber(axisValue.value, { notation: 'compact' })}
+          <tspan x={axisValue.xText} dy="0">
+            {formatNumber(axisValue.value, { notation: 'compact' })}
+          </tspan>
         </text>
       </g>
     )
@@ -588,6 +636,13 @@ export const ChartContainer = ({
 
   const paddingX = 50;
   const paddingY = 50;
+
+  const margin = {
+    top: 50,
+    right: 50,
+    bottom: 50,
+    left: 50,
+  }
   const categoryGapRatio = 0.5;
   const barGapRatio = 0.1;
 
@@ -740,11 +795,12 @@ export const ChartContainer = ({
         <line
           x1={paddingX}
           x2={width - paddingX}
+          y1={0}
           className="stroke-1 stroke-white"
           style={{ shapeRendering: 'crispEdges' }}
         />
 
-        {xAxisData.filter(x => x?.data.length > 0).length > 0 ? generateLabelsAxisRange(xAxisData, { width, height, paddingX, paddingY, dataset, series }, true) : generateAxisRange({ width, height, paddingX, paddingY, min, max }, true)}
+        {xAxisData.filter(x => x?.data.length > 0).length > 0 ? generateLabelsAxisRange(xAxisData, { width, height, paddingX, paddingY, dataset, series }, true) : generateAxisRange({ width, height, xAxisData, yAxisData, margin, min, max }, 'linear', 'bottom')}
 
         {/* Axis Labels */}
         {generateLabels(true)}
@@ -761,7 +817,7 @@ export const ChartContainer = ({
           style={{ shapeRendering: 'crispEdges' }}
         />
 
-        {yAxisData.filter(y => y.data.length > 0).length > 0 ? generateLabelsAxisRange(yAxisData, { width, height, paddingX, paddingY, dataset, series }, false) : generateAxisRange({ width, height, paddingX, paddingY, min, max }, false)}
+        {yAxisData.filter(y => y.data.length > 0).length > 0 ? generateLabelsAxisRange(yAxisData, { width, height, paddingX, paddingY, dataset, series }, false) : generateAxisRange({ width, height, xAxisData, yAxisData, margin, min, max }, 'linear', 'left')}
 
         {/* Axis Labels */}
         {generateLabels(false)}
@@ -795,6 +851,7 @@ type LineChartProps = {
    * Used to controll the x positions of the data points in series
    */
   xAxis?: AxisData;
+  yAxis?: AxisData;
   dataset?: {
     [key: string]: number | string;
   }[];
@@ -809,14 +866,22 @@ type LineChartProps = {
   }[];
   width?: number;
   height?: number;
+  type?: 'line' | 'scatter';
 };
 export const LineChart = ({
   xAxis,
+  yAxis,
   series = [],
   dataset = [],
   width = 600,
   height = 400,
 }: LineChartProps) => {
+  const margin = {
+    top: 50,
+    right: 50,
+    bottom: 50,
+    left: 50,
+  };
   const paddingX = 50;
   const paddingY = 50;
 
@@ -880,16 +945,12 @@ export const LineChart = ({
   const yMax = Math.max(...dataSeries.flatMap((d) => d?.data));
   const yMin = Math.min(...dataSeries.flatMap((d) => d?.data));
 
-  // Create a function to map x and y values to the chart's coordinates
-  //  const xScale = (x) => (x - xMin) / (xMax - xMin) * (width - paddingX - paddingX);
-  //  const yScale = (y) => height - paddingY - (y - yMin) / (yMax - yMin) * (height - paddingY - paddingY);
-
   const pathData = dataSeries.map((d, i) => {
     return d.data.map((val, index) => {
       const xval = xAxisData.length > 0 && xAxisData ? xAxisData[0]?.data.length > 0 && xAxisData[0].data.length < index ? xAxisData[0]?.data[index] ? parseInt(xAxisData[0]?.data[index]?.toString()) : index : index : index;
 
-      const x = width - numberToChart({ width, height, paddingX, paddingY, dataset, series, min: xMin, max: xMax }, xval, true) - paddingX
-      const y = numberToChart({ width, height, paddingX, paddingY, max: Math.max(...d.data), min: Math.min(...d.data) }, val, false)
+      const x = width - numberToChart({ width, height, availableWidth: width - margin.left - margin.right, availableHeight: height - margin.top - margin.bottom, margin, dataset, series, min: xMin, max: xMax }, xval, true) - paddingX
+      const y = numberToChart({ width, height, availableWidth: width - margin.left - margin.right, availableHeight: height - margin.top - margin.bottom, margin, max: Math.max(...d.data), min: Math.min(...d.data) }, val, false)
       return {
         x,
         y
@@ -938,7 +999,7 @@ export const LineChart = ({
           style={{ shapeRendering: 'crispEdges' }}
         />
 
-        {generateAxisRange({ width, height, paddingX, paddingY, min: xMin, max: xMax }, true)}
+        {generateAxisRange({ width, height, xAxisData, yAxisData: yAxis, margin, min: xMin, max: xMax }, 'linear', 'bottom')}
       </g>
 
       {/* Y-Axis */}
@@ -952,7 +1013,7 @@ export const LineChart = ({
           style={{ shapeRendering: 'crispEdges' }}
         />
 
-        {generateAxisRange({ width, height, paddingX, paddingY, min: yMin, max: yMax }, false)}
+        {generateAxisRange({ width, height, xAxisData, yAxisData: yAxis, margin, min: yMin, max: yMax }, 'linear', 'left')}
 
         {/* Axis Labels */}
         {/* {generateLabels(false)} */}
@@ -967,6 +1028,368 @@ export const LineChart = ({
         <rect x="0" y={paddingY} width={width - 2 * paddingX} height={height - 2 * paddingY} fill="transparent" />
 
         {path}
+      </g>
+
+    </svg>
+  )
+}
+
+type ScatterChartProps =
+  | {
+    type: 'scatter';
+    /**
+     * X-Axis data.
+     * Used to control the x positions of the data points in series
+     */
+    xAxis?: (ArrayElement<AxisData> & {
+      min?: number;
+      max?: number;
+    })[];
+    yAxis?: (ArrayElement<AxisData> & {
+      min?: number;
+      max?: number;
+    })[];
+    series?: {
+      yAxisKey?: string;
+      label?: string;
+      data: { x: number; y: number; id?: number | string }[];
+      color?: string;
+      id?: string;
+    }[];
+    width?: number;
+    height?: number;
+    leftAxis?: string;
+    rightAxis?: string;
+  }
+  | {
+    type: 'line';
+    /**
+     * X-Axis data.
+     * Used to control the x positions of the data points in series
+     */
+    xAxis?: (ArrayElement<AxisData> & {
+      min?: number;
+      max?: number;
+    })[];
+    yAxis?: (ArrayElement<AxisData> & {
+      min?: number;
+      max?: number;
+    })[];
+    series?: {
+      yAxisKey?: string;
+      label?: string;
+      data: number[];
+      color?: string;
+      id?: string;
+    }[];
+    width?: number;
+    height?: number;
+    leftAxis?: string;
+    rightAxis?: string;
+  };
+
+export const ScatterChart = ({
+  xAxis,
+  yAxis,
+  series = [],
+  width = 600,
+  height = 400,
+  leftAxis = 'left',
+  rightAxis,
+  type,
+}: ScatterChartProps) => {
+  const margin = {
+    top: 50,
+    right: 50,
+    bottom: 50,
+    left: 50,
+  }
+
+  const availableWidth = width - margin.left - margin.right;
+  const availableHeight = height - margin.top - margin.bottom;
+
+  const catmullRomInterpolation = (t: number, p0: number, p1: number, p2: number, p3: number): number => {
+    const t2 = t * t;
+    const t3 = t * t2;
+    return 0.5 * (
+      (2 * p1) +
+      (-p0 + p2) * t +
+      (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
+      (-p0 + 3 * p1 - 3 * p2 + p3) * t3
+    );
+  }
+
+  function drawCatmullRomChart(
+    points: [number, number][],
+    numPoints: number = 100
+  ) {
+
+    const result = [];
+    const numSegments = points.length - 1;
+
+    for (let i = 0; i < numSegments; i++) {
+      const p0 = i > 0 ? points[i - 1][1] : points[i][1];
+      const p1 = points[i][1];
+      const p2 = points[i + 1][1];
+      const p3 = i < numSegments - 1 ? points[i + 2][1] : p2;
+
+      for (let j = 0; j < numPoints; j++) {
+        const t = j / numPoints;
+        const interpolatedValue = catmullRomInterpolation(t, p0, p1, p2, p3);
+        result.push({ x: points[i][0] + t * (points[i + 1][0] - points[i][0]), y: interpolatedValue });
+      }
+    }
+
+    return result;
+  }
+
+  // Autogenerate unique hex colors
+  const colors = generateChartColors(Array(series.length).length)
+
+  const dataSeries = series?.map((s, i) => {
+    return {
+      ...s,
+      color: s?.color || colors[i]
+    };
+  });
+
+  const xAxisData = xAxis?.map((x) => {
+    let id = x?.id ?? 'bottom';
+    let position: AxisPosition = id
+      ? id === rightAxis
+        ? 'right'
+        : id === leftAxis
+          ? 'left'
+          : 'bottom'
+      : 'bottom';
+    let scaleType = x.scaleType ?? 'linear';
+
+    let valueMin = Math.min(...dataSeries.flatMap((s) => type === 'scatter' ? s.data.map(x => x.x) : s.data), x.min ?? null, ...(x?.data && x.data.every(x => !isNaN(parseInt(x.toString()))) ? x.data.map(x => parseInt(x.toString())) : []));
+    let valueMax = Math.max(...dataSeries.flatMap((s) => type === 'scatter' ? s.data.map(x => x.x) : s.data), x.max ?? null, ...(x?.data && x.data.every(x => !isNaN(parseInt(x.toString()))) ? x.data.map(x => parseInt(x.toString())) : []));
+    return {
+      ...x,
+      id,
+      data: x.data,
+      axisValues: generateAxisRangeValues({ margin, width, height, min: valueMin, max: valueMax, availableWidth, availableHeight }, scaleType, position),
+      scaleType,
+      scale: scaleType === 'log' ? (d) => Math.log10(d + 1) : (d) => d,
+      valueMin,
+      valueMax,
+      position,
+    };
+  }) ?? [];
+
+  const yAxisData = yAxis?.map((x) => {
+    let id = x?.id ?? 'left';
+
+    let position: AxisPosition = id
+      ? id === rightAxis
+        ? 'right'
+        : 'left'
+      : 'left';
+
+    let scaleType = x.scaleType ?? 'linear'
+
+    let valueMin = Math.min(...dataSeries.flatMap((s) => type === 'scatter' ? s.data.map(x => x.y) : s.data), x.min ?? null, ...(x?.data && x?.data.every(x => !isNaN(parseInt(x.toString()))) ? x.data.map(x => parseInt(x.toString())) : []));
+    let valueMax = Math.max(...dataSeries.flatMap((s) => type === 'scatter' ? s.data.map(x => x.y) : s.data), x.max ?? null, ...(x?.data && x?.data.every(x => !isNaN(parseInt(x.toString()))) ? x.data.map(x => parseInt(x.toString())) : []));
+    return {
+      ...x,
+      id,
+      data: x.data,
+      axisValues: generateAxisRangeValues({ margin, width, height, min: valueMin, max: valueMax, availableWidth, availableHeight }, scaleType, position),
+      scaleType,
+      scale: scaleType === 'log' ? (d) => Math.log10(d + 1) : (d) => d,
+      valueMin,
+      valueMax,
+      position,
+    };
+  }) ?? [];
+
+  const pathData = dataSeries.map((d, i) => {
+    return d.data.map((val, index) => {
+      // TODO: fix
+      const xval = xAxisData.length > 0 && xAxisData
+        ? xAxisData[0]?.data.length > 0 && index < xAxisData[0].data.length - 1
+          ? xAxisData[0]?.data[index]
+            ? parseInt(xAxisData[0]?.data[index]?.toString())
+            : index
+          : index
+        : index;
+
+      const minX = xAxisData[0].valueMin;
+      const maxX = xAxisData[0].valueMax;
+      const x = width - numberToChart({ width, height, availableWidth, availableHeight, margin, min: minX, max: maxX }, xval, true) - margin.right
+      const y = numberToChart({ width, height, availableWidth, availableHeight, margin, max: Math.max(...d.data), min: Math.min(...d.data) }, val, false, yAxisData.find((axis) => axis?.id ? axis.id === d.yAxisKey : true)?.scaleType ?? 'linear')
+      return {
+        x,
+        y
+      }
+    })
+  }); // Path data for the line
+
+  const path = pathData.map((d, i) => {
+
+    const points: [number, number][] = d.map((val) => [val.x, val.y]);
+    const catmull: { x: number, y: number }[] = drawCatmullRomChart(points);
+
+    // TODO: fix filled area path
+    let catmullpath = catmull.map((val, index) => {
+      return `${index == 0 ? 'M' : 'L'} ${val.x} ${val.y}`
+    }
+    ).join(' ') + `${dataSeries[i].area ? ` V${height - margin.bottom} H0 Z` : ''}`;
+
+    return (
+      <>
+        <path d={catmullpath} stroke={dataSeries[i].color} fill={dataSeries[i].area ? "#ff00033" : 'none'} />
+        {d.filter((_, idx) => {
+          const showMark = dataSeries[i]?.showMark;
+          return typeof showMark === 'function' ? showMark({ index: idx }) : showMark !== false;
+        }).map((val, index) => (
+          <path
+            key={`data-${i}-circle-${index}`}
+            d={svgArc(val.x, val.y, 5, 5, 0, 359.9, true, true)}
+            stroke={dataSeries[i].color}
+            fill={"#121212"}
+            strokeWidth={3}
+            shapeRendering={"auto"}
+            strokeLinecap="round"
+          />
+        ))}
+      </>
+    )
+  });
+
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+    >
+      <title></title>
+      <desc></desc>
+
+      {/* X-Axis Bottom */}
+      {xAxisData.map((axis, i) => (
+        <g
+          key={`x-axis-${i}`}
+          transform={`translate(0, ${height - margin.bottom})`}
+        >
+          <line
+            x1={margin.left}
+            x2={width - margin.right}
+            className="stroke-1 stroke-white"
+            style={{ shapeRendering: 'crispEdges' }}
+          />
+
+          {axis.axisValues.map(({ value, x, y, xLine, yLine, xText, yText, textAnchor, dominantBaseline }, index) => (
+            <g
+              key={`x-axis-${value} `}
+              transform={`translate(${x}, ${y})`}
+              className="text-xs font-normal tracking-wide"
+            >
+              <line x2={xLine} y2={yLine} className="stroke-white" style={{ shapeRendering: 'crispEdges' }} />
+              <text
+                // +labelStep / 2 to center text
+                stroke="none"
+                x={xText}
+                y={yText}
+                transform-origin={`${xText}px ${yText}px`}
+                textAnchor={textAnchor}
+                dominantBaseline={dominantBaseline}
+                className="text-xs font-normal tracking-wide fill-white"
+              >
+                <tspan x={xText} dy="0">
+                  {formatNumber(value, { notation: 'compact' })}
+                </tspan>
+              </text>
+            </g>
+          ))}
+        </g>
+      ))}
+
+      {/* Y-Axis Left */}
+      {yAxisData.some((axis) => (leftAxis && axis?.id) ? axis.id === leftAxis : true) && yAxisData.filter((axis) => axis?.id === leftAxis).map((axis) => (
+        <g
+          transform={`translate(${margin.left}, 0)`}
+        >
+          <line
+            y1={margin.top}
+            y2={height - margin.bottom}
+            className="stroke-1 stroke-white"
+            style={{ shapeRendering: 'crispEdges' }}
+          />
+
+          {generateAxisRange({ width, height, xAxisData, yAxisData, margin, min: axis.valueMin, max: axis.valueMax }, axis.scaleType, axis.position)}
+        </g>
+      ))}
+
+      {/* Y-Axis Right */}
+      {rightAxis && yAxisData.some((axis) => axis?.id ? axis.id === rightAxis : true) && yAxisData.filter((axis) => axis?.id === rightAxis).map((axis) => (
+        <g
+          transform={`translate(${width - margin.right}, 0)`}
+        >
+          <line
+            y1={margin.top}
+            y2={height - margin.bottom}
+            className="stroke-1 stroke-white"
+            style={{ shapeRendering: 'crispEdges' }}
+          />
+
+          {generateAxisRange({ width, height, xAxisData, yAxisData, margin, min: axis.valueMin, max: axis.valueMax }, axis.scaleType, axis.position)}
+        </g>
+      ))}
+
+      {/* Points */}
+      <g
+        style={{ shapeRendering: 'crispEdges', transition: 'opacity 0.2s ease-in 0s, fill 0.2s ease-in 0s' }}
+        transform={`translate(${margin.left}, 0)`}
+      >
+        <rect x="0" y={margin.top} width={availableWidth} height={availableHeight} fill="transparent" />
+
+        {type === 'scatter' && dataSeries.map((d, i) => {
+          return d.data.map((val, index) => {
+            const maxY = yAxisData.find((axis) => axis?.id ? axis.id === d.yAxisKey : true)?.valueMax ?? Math.max(...dataSeries.flatMap((d) => d?.data.map((d) => d.y)));
+            const minY = yAxisData.find((axis) => axis?.id ? axis.id === d.yAxisKey : true)?.valueMin ?? Math.min(...dataSeries.flatMap((d) => d?.data.map((d) => d.y)));
+
+            const minX = xAxisData[0].valueMin;
+            const maxX = xAxisData[0].valueMax;
+            const x = width - numberToChart({ width, height, availableWidth, availableHeight, margin, min: minX, max: maxX }, val.x, true) - margin.right
+            const y = numberToChart({ width, height, availableWidth, availableHeight, margin, max: maxY, min: minY }, val.y, false)
+            return (
+              <circle
+                key={`data-${i}-circle-${index}`}
+                transform={`translate(${x}, ${y})`}
+                cx={0}
+                cy={0}
+                fill={dataSeries[i].color}
+                r={4}
+                shapeRendering={"auto"}
+                strokeLinecap="round"
+              />
+            )
+          })
+        })}
+        {type === 'line' && path}
+      </g>
+
+      {/* Legends / Labels */}
+      <g>
+        {series && dataSeries.filter((s) => s.label).map((serie, i) => {
+          return (
+            <g key={`legend - ${i}`} className="inline-flex items-center space-x-2" transform={`translate(${margin.left + ((availableWidth / series.length) * i)} 25)`}>
+              <rect y={-10} width="20" height="20" fill={serie.color} />
+              <text
+                x={25}
+                y={0}
+                textAnchor="start"
+                dominantBaseline="central"
+                className="text-sm font-normal tracking-wide fill-white align-middle capitalize"
+              >
+                <tspan x={25} dy={0}>{serie.label}</tspan>
+              </text>
+            </g>
+          )
+        })}
       </g>
 
     </svg>
@@ -992,7 +1415,10 @@ type PieChartProps = {
     outerRadius?: number;
     /** The padding angle between each pie slice */
     paddingAngle?: number;
-    /** Similar to the CSS border-radius */
+    /**
+     * Similar to the CSS border-radius.
+     * NOT IMPLEMENTED YET PLZ HELP
+     */
     cornerRadius?: number;
     /** The angle range of the pie chart. Values are given in degrees. */
     startAngle?: number;
@@ -1004,11 +1430,13 @@ type PieChartProps = {
     cy?: number;
   }[];
 }
+
 export const PieChart = ({
   width = 400,
   height = 200,
   series,
 }: PieChartProps) => {
+
   const dataSeries = series?.map((s) => {
     // Generate unique colors for each data point
     const colors = generateChartColors(s?.data.length || 0);
@@ -1025,11 +1453,6 @@ export const PieChart = ({
     };
   });
 
-  const totalValue = series[0]?.data.reduce(
-    (total, slice) => total + (slice.value || 0),
-    0
-  );
-
   return (
     <svg
       width={width}
@@ -1041,79 +1464,59 @@ export const PieChart = ({
 
       <g>
         {dataSeries?.map((serie, index) => {
+          const {
+            cx = width / 2,
+            cy = height / 2,
+            startAngle = 0,
+            endAngle = 360,
+            paddingAngle = 5,
+            innerRadius = 0,
+            outerRadius = 100,
+            cornerRadius = 0,
+          } = serie;
 
-          let startAngleRS = serie.startAngle || 0;
-
+          let startAngleRS = startAngle;
           return (
-            <g transform={`translate(${0},0)`}>
+            <g key={`serie-${index}`} transform={`translate(${0},0)`}>
               <g>
                 {serie.data.map((slice, i) => {
-                  const {
-                    cx = width / 2,
-                    cy = height / 2,
-                    endAngle = 360,
-                    cornerRadius = 0,
-                    innerRadius = 0,
-                    outerRadius = 100,
-                    paddingAngle = 5
-                  } = serie;
-
-                  const outerRadius2 = Math.min(cx, cy) - outerRadius;
+                  const theOuterRadius = Math.min(cx, cy) - outerRadius;
                   const innerRadiusValue = Math.max(0, innerRadius);
-                  // const { value = 0, color } = slice;
 
-                  // const radius = Math.min(cx, cy) - 10;
+                  const totalValue = serie.data.reduce((acc, dataSlice) => acc + dataSlice.value, 0);
 
-                  // const sliceAngle = (slice.value / totalValue) * 360; // totalValue or 100
-                  // const endAngleRS = startAngleRS + sliceAngle;
-
-                  // const largeArcFlag = sliceAngle > 180 ? 1 : 0;
-
-                  // // Calculate the start and end points of the slice
-                  // const startX = cx + radius * Math.cos((startAngleRS - 90) * (Math.PI / 180));
-                  // const startY = cy + radius * Math.sin((startAngleRS - 90) * (Math.PI / 180));
-                  // const endX = cx + radius * Math.cos((endAngleRS - 90) * (Math.PI / 180));
-                  // const endY = cy + radius * Math.sin((endAngleRS - 90) * (Math.PI / 180));
-
-                  // startAngleRS = endAngleRS;
-
-                  const sliceAngle = (slice.value / 100) * (360 - serie.data.length * paddingAngle); // 100 or totalValue
-                  const endAnglers = startAngleRS + sliceAngle;
+                  // const sliceAngle = (slice.value / 100) * (360 - serie.data.length * paddingAngle); // 100 or totalValue
+                  const sliceAngle = (slice.value / totalValue) * (endAngle - startAngle - serie.data.length * paddingAngle); // 100 or totalValue
+                  const endAngleRS = startAngleRS + sliceAngle;
 
                   const largeArcFlag = sliceAngle > 180 ? 1 : 0;
 
                   // Calculate the start and end points of the slice
-                  const startX = cx + outerRadius2 * Math.cos((startAngleRS - 90) * (Math.PI / 180));
-                  const startY = cy + outerRadius2 * Math.sin((startAngleRS - 90) * (Math.PI / 180));
-                  const endX = cx + outerRadius2 * Math.cos((endAnglers - 90) * (Math.PI / 180));
-                  const endY = cy + outerRadius2 * Math.sin((endAnglers - 90) * (Math.PI / 180));
+                  const startX = cx + theOuterRadius * Math.cos((startAngleRS - 90) * (Math.PI / 180));
+                  const startY = cy + theOuterRadius * Math.sin((startAngleRS - 90) * (Math.PI / 180));
+                  const endX = cx + theOuterRadius * Math.cos((endAngleRS - 90) * (Math.PI / 180));
+                  const endY = cy + theOuterRadius * Math.sin((endAngleRS - 90) * (Math.PI / 180));
 
                   // Calculate the start and end points of the inner circle
                   const innerStartX = cx + innerRadiusValue * Math.cos((startAngleRS - 90) * (Math.PI / 180));
                   const innerStartY = cy + innerRadiusValue * Math.sin((startAngleRS - 90) * (Math.PI / 180));
-                  const innerEndX = cx + innerRadiusValue * Math.cos((endAnglers - 90) * (Math.PI / 180));
-                  const innerEndY = cy + innerRadiusValue * Math.sin((endAnglers - 90) * (Math.PI / 180));
+                  const innerEndX = cx + innerRadiusValue * Math.cos((endAngleRS - 90) * (Math.PI / 180));
+                  const innerEndY = cy + innerRadiusValue * Math.sin((endAngleRS - 90) * (Math.PI / 180));
 
-                  startAngleRS = endAnglers + paddingAngle;
+                  startAngleRS = endAngleRS + paddingAngle;
+
                   return (
                     <path
-                      key={i}
-                      // d={`M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY} L ${cx} ${cy} Z`}
+                      key={`serie-${index}-slice-${i}`}
                       d={`
-                        M ${startX} ${startY}
-                        A ${outerRadius2} ${outerRadius2} 0 ${largeArcFlag} 1 ${endX} ${endY}
-                        L ${innerEndX} ${innerEndY}
-                        A ${innerRadiusValue} ${innerRadiusValue} 0 ${largeArcFlag} 0 ${innerStartX} ${innerStartY}
-                        Z
-                      `}
+                      M ${startX} ${startY}
+                      A ${theOuterRadius} ${theOuterRadius} 0 ${largeArcFlag} 1 ${endX} ${endY}
+                      L ${innerEndX} ${innerEndY}
+                      A ${innerRadiusValue} ${innerRadiusValue} 0 ${largeArcFlag} 0 ${innerStartX} ${innerStartY}
+                      Z
+                    `}
                       fill={slice.color}
                     />
-                    // <path
-                    //   key={slice.id || index}
-                    //   d={`M${cx},${cy} L${x1},${y1} A${outerRadius},${outerRadius} 0 ${angle > 180 ? 1 : 0
-                    //     },1 ${x2},${y2} Z`}
-                    //   fill={slice.color || 'blue'}
-                    // />
                   )
 
                 })}

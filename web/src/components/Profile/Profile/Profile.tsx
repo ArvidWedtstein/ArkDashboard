@@ -3,7 +3,7 @@ import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
 import Avatar from "src/components/Util/Avatar/Avatar";
-import Chart, { ChartContainer, LineChart as Linechart2, PieChart } from "src/components/Util/Chart/Chart";
+import Chart, { ChartContainer, LineChart as Linechart2, PieChart, ScatterChart } from "src/components/Util/Chart/Chart";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 
 import { combineBySummingKeys, groupBy } from "src/lib/formatters";
@@ -397,6 +397,55 @@ const Profile = ({ profile }: Props) => {
             height={300}
           />
 
+          <ScatterChart
+            width={500}
+            height={300}
+            series={[
+              {
+                yAxisKey: 'linearAxis',
+                // data: [
+                //   { x: 100, y: 200, id: 1 },
+                //   { x: 120, y: 100, id: 2 },
+                //   { x: 170, y: 300, id: 3 },
+                //   { x: 140, y: 250, id: 4 },
+                //   { x: 150, y: 400, id: 5 },
+                //   { x: 110, y: 280, id: 6 },
+                // ],
+                data: [1, 10, 30, 50, 70, 90, 100],
+                label: 'Linear',
+                id: 'pvId'
+              },
+              {
+                yAxisKey: 'logAxis',
+                // data: [
+                //   { x: 300, y: 300, id: 1 },
+                //   { x: 400, y: 500, id: 2 },
+                //   { x: 200, y: 700, id: 3 },
+                //   { x: 340, y: 350, id: 4 },
+                //   { x: 560, y: 500, id: 5 },
+                //   { x: 230, y: 780, id: 6 },
+                //   { x: 500, y: 400, id: 7 },
+                //   { x: 300, y: 500, id: 8 },
+                //   { x: 240, y: 300, id: 9 },
+                //   { x: 320, y: 550, id: 10 },
+                //   { x: 500, y: 400, id: 11 },
+                //   { x: 420, y: 280, id: 12 },
+                // ],
+                data: [1, 10, 30, 50, 70, 90, 100],
+                label: 'Log',
+                id: 'serie2'
+              }
+            ]}
+            xAxis={[{ data: [1, 10, 30, 50, 70, 90, 100] }]}
+            yAxis={[
+              { id: 'linearAxis', label: 'Linear', scaleType: 'linear' },
+              { id: 'logAxis', label: 'Log', scaleType: 'log' },
+            ]}
+            leftAxis="linearAxis"
+            rightAxis="logAxis"
+            type="line"
+          />
+
           <PieChart
             series={[
               {
@@ -406,9 +455,9 @@ const Profile = ({ profile }: Props) => {
                   { id: 2, value: 3, label: 'series C' },
                 ],
                 paddingAngle: 5,
-                // startAngle: 30,
-                // endAngle: 360,
-                innerRadius: 200,
+                startAngle: -90,
+                endAngle: 180,
+                innerRadius: 90,
                 outerRadius: 100,
                 cornerRadius: 5,
               }

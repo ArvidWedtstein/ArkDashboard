@@ -1129,6 +1129,8 @@ export const removeDuplicates = <T extends {}>(array: T[]): T[] => {
   return [...new Set(array)];
 };
 
+
+
 export const svgArc = (
   centerX: number,
   centerY: number,
@@ -1159,8 +1161,13 @@ export const svgArc = (
   return pathData;
 }
 
-export const generateChartColors = (seriesCount: number) => {
-  const baseColors = [];
+/**
+ *
+ * @param {number} seriesCount - The number of series to generate colors for.
+ * @returns
+ */
+export const generateChartColors = (seriesCount: number): string[] => {
+  const baseColors: string[] = [];
   const colorThreshold = 100; // Adjust as needed
 
   for (let i = 0; i < seriesCount; i++) {
@@ -1186,7 +1193,7 @@ export const generateChartColors = (seriesCount: number) => {
   }
 
   // Ensure the colors are visible on a dark background
-  const darkBackgroundColors = baseColors.map((color) => {
+  return baseColors.map((color) => {
     let [r, g, b] = color.match(/\d+/g).map((c) => parseInt(c, 10));
     const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
 
@@ -1201,8 +1208,6 @@ export const generateChartColors = (seriesCount: number) => {
       return color;
     }
   });
-
-  return darkBackgroundColors;
 }
 
 /**
