@@ -818,6 +818,82 @@ export const formatXYtoLatLon = (
   };
 };
 
+
+
+export const svgArc = (
+  centerX: number,
+  centerY: number,
+  radiusX: number,
+  radiusY: number,
+  startAngle: number,
+  endAngle: number,
+  largeArcFlag: boolean = false,
+  sweepFlag: boolean = true
+): string => {
+  // Convert angles from degrees to radians
+  startAngle = (startAngle * Math.PI) / 180;
+  endAngle = (endAngle * Math.PI) / 180;
+
+  // Calculate the start and end points of the arc
+  const startX = centerX + radiusX * Math.cos(startAngle);
+  const startY = centerY + radiusY * Math.sin(startAngle);
+  const endX = centerX + radiusX * Math.cos(endAngle);
+  const endY = centerY + radiusY * Math.sin(endAngle);
+
+  // Use the A command to create the arc path
+  const arcCommand = `A ${radiusX} ${radiusY} 0 ${largeArcFlag ? 1 : 0
+    } ${sweepFlag ? 1 : 0} ${endX} ${endY}`;
+
+  // Construct the full path command
+  const pathData = `M ${startX} ${startY} ${arcCommand}`;
+
+  return pathData;
+}
+
+// export const catmullRomInterpolation = (t: number, p0: number, p1: number, p2: number, p3: number): number => {
+//   const t2 = t * t;
+//   const t3 = t * t2;
+//   return 0.5 * (
+//     (2 * p1) +
+//     (-p0 + p2) * t +
+//     (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
+//     (-p0 + 3 * p1 - 3 * p2 + p3) * t3
+//   );
+// }
+export const catmullRomInterpolation = (t: number, p0: number, p1: number, p2: number, p3: number): number => {
+  const t2 = t * t;
+  const t3 = t2 * t;
+  const a = -0.5 * p0 + 1.5 * p1 - 1.5 * p2 + 0.5 * p3;
+  const b = p0 - 2.5 * p1 + 2 * p2 - 0.5 * p3;
+  const c = -0.5 * p0 + 0.5 * p2;
+  const d = p1;
+  return a * t3 + b * t2 + c * t + d;
+}
+
+export const drawCatmullRomChart = (
+  points: [number, number][],
+  numPoints: number = 100
+): { x: number; y: number }[] => {
+
+  const result: { x: number, y: number }[] = [];
+  const numSegments = points.length - 1;
+
+  for (let i = 0; i < numSegments; i++) {
+    const p0 = i > 0 ? points[i - 1][1] : points[i][1];
+    const p1 = points[i][1];
+    const p2 = points[i + 1][1];
+    const p3 = i < numSegments - 1 ? points[i + 2][1] : p2;
+
+    for (let j = 0; j < numPoints; j++) {
+      const t = j / numPoints;
+      const interpolatedValue = catmullRomInterpolation(t, p0, p1, p2, p3);
+      result.push({ x: points[i][0] + t * (points[i + 1][0] - points[i][0]), y: interpolatedValue });
+    }
+  }
+
+  return result;
+}
+
 interface SvgPath {
   pathData: string;
 }
@@ -1130,36 +1206,6 @@ export const removeDuplicates = <T extends {}>(array: T[]): T[] => {
 };
 
 
-
-export const svgArc = (
-  centerX: number,
-  centerY: number,
-  radiusX: number,
-  radiusY: number,
-  startAngle: number,
-  endAngle: number,
-  largeArcFlag: boolean = false,
-  sweepFlag: boolean = true
-): string => {
-  // Convert angles from degrees to radians
-  startAngle = (startAngle * Math.PI) / 180;
-  endAngle = (endAngle * Math.PI) / 180;
-
-  // Calculate the start and end points of the arc
-  const startX = centerX + radiusX * Math.cos(startAngle);
-  const startY = centerY + radiusY * Math.sin(startAngle);
-  const endX = centerX + radiusX * Math.cos(endAngle);
-  const endY = centerY + radiusY * Math.sin(endAngle);
-
-  // Use the A command to create the arc path
-  const arcCommand = `A ${radiusX} ${radiusY} 0 ${largeArcFlag ? 1 : 0
-    } ${sweepFlag ? 1 : 0} ${endX} ${endY}`;
-
-  // Construct the full path command
-  const pathData = `M ${startX} ${startY} ${arcCommand}`;
-
-  return pathData;
-}
 
 /**
  *

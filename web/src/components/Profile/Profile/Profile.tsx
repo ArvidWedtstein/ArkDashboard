@@ -3,7 +3,7 @@ import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
 import Avatar from "src/components/Util/Avatar/Avatar";
-import Chart, { ChartContainer, LineChart as Linechart2, PieChart, ScatterChart } from "src/components/Util/Chart/Chart";
+import Chart, { ChartContainer, PieChart, ScatterChart } from "src/components/Util/Chart/Chart";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 
 import { combineBySummingKeys, groupBy } from "src/lib/formatters";
@@ -384,21 +384,8 @@ const Profile = ({ profile }: Props) => {
             ]}
           />
 
-          <Linechart2
-            // xAxis={[{ data: [0, 2.5, 3, 5, 8, 10] }]}
-            series={[
-              {
-                data: [0, 3, 5, 1, 5, 2, 10, 6],
-                area: true,
-                // showMark: ({ index }) => index % 2 === 0,
-              },
-            ]}
-            width={500}
-            height={300}
-          />
-
           <ScatterChart
-            width={500}
+            width={501}
             height={300}
             series={[
               {
@@ -443,6 +430,17 @@ const Profile = ({ profile }: Props) => {
             ]}
             leftAxis="linearAxis"
             rightAxis="logAxis"
+            type="line"
+          />
+          <ScatterChart
+            width={420}
+            height={300}
+            series={[
+              {
+                data: [5, 4, 3, 5, 0, 5, 2, 10, 6],
+                area: true,
+              },
+            ]}
             type="line"
           />
 
