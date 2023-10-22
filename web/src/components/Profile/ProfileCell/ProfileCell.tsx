@@ -38,21 +38,21 @@ export const Loading = () => (
     <div className="flex w-full items-center justify-between">
       <div className="flex w-1/3 items-center justify-center gap-16">
         <div className="flex flex-col items-center justify-center gap-2">
-          <div className="h-4 w-6 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-          <div className="h-2 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+          <div className="h-4 w-6 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
+          <div className="h-2 w-12 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
         </div>
         <div className="flex flex-col items-center justify-center gap-2">
-          <div className="h-4 w-6 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-          <div className="h-2 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+          <div className="h-4 w-6 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
+          <div className="h-2 w-12 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
         </div>
         <div className="flex flex-col items-center justify-center gap-2">
-          <div className="h-4 w-6 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-          <div className="h-2 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+          <div className="h-4 w-6 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
+          <div className="h-2 w-12 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
         </div>
       </div>
       <div className="w-1/3">
         <svg
-          className="mx-auto h-32 w-32 text-gray-200 dark:text-gray-700"
+          className="dark:text-zinv-700 mx-auto h-32 w-32 text-zinc-200"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           fill="currentColor"
@@ -64,11 +64,11 @@ export const Loading = () => (
       <div className="w-1/3"></div>
     </div>
     <div className="w-full space-y-2">
-      <div className="my-2 mx-auto h-2.5 w-48 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-      <div className="mx-auto h-2 w-64 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-      <div className="mx-auto h-2 max-w-[440px] rounded-full bg-gray-200 dark:bg-gray-700"></div>
-      <div className="mx-auto h-2 max-w-[460px] rounded-full bg-gray-200 dark:bg-gray-700"></div>
-      <div className="mx-auto h-2 max-w-[360px] rounded-full bg-gray-200 dark:bg-gray-700"></div>
+      <div className="my-2 mx-auto h-2.5 w-48 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
+      <div className="mx-auto h-2 w-64 rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
+      <div className="mx-auto h-2 max-w-[440px] rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
+      <div className="mx-auto h-2 max-w-[460px] rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
+      <div className="mx-auto h-2 max-w-[360px] rounded-full bg-zinc-200 dark:bg-zinc-700"></div>
     </div>
     <span className="sr-only">Loading...</span>
   </div>

@@ -3,8 +3,13 @@ import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import { useAuth } from "src/auth";
 import Avatar from "src/components/Util/Avatar/Avatar";
-import Chart, { ChartContainer, PieChart, ScatterChart } from "src/components/Util/Chart/Chart";
+import Chart, {
+  ChartContainer,
+  PieChart,
+  ScatterChart,
+} from "src/components/Util/Chart/Chart";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
+import Tooltip from "src/components/Util/Tooltip/Tooltip";
 
 import { combineBySummingKeys, groupBy } from "src/lib/formatters";
 
@@ -92,7 +97,7 @@ const Profile = ({ profile }: Props) => {
                         new Date(profile.created_at).getFullYear() +
                         (new Date().getMonth() -
                           new Date(profile.created_at).getMonth()) /
-                        12
+                          12
                       ).toPrecision(1)}
                     </span>
                     <span className="text-sm text-gray-600 dark:text-stone-300">
@@ -281,14 +286,14 @@ const Profile = ({ profile }: Props) => {
             xAxis={[
               {
                 scaleType: "band",
-                label: 'test',
+                label: "test",
                 dataKey: "month",
               },
             ]}
             yAxis={[
               {
                 label: "Y Axis",
-              }
+              },
             ]}
             dataset={[
               {
@@ -296,91 +301,91 @@ const Profile = ({ profile }: Props) => {
                 paris: 57,
                 newYork: 86,
                 seoul: 21,
-                month: 'Jan',
+                month: "Jan",
               },
               {
                 london: 50,
                 paris: 52,
                 newYork: 78,
                 seoul: 28,
-                month: 'Feb',
+                month: "Feb",
               },
               {
                 london: 47,
                 paris: 53,
                 newYork: 106,
                 seoul: 41,
-                month: 'Mar',
+                month: "Mar",
               },
               {
                 london: 54,
                 paris: 56,
                 newYork: 92,
                 seoul: 73,
-                month: 'Apr',
+                month: "Apr",
               },
               {
                 london: 57,
                 paris: 69,
                 newYork: 92,
                 seoul: 99,
-                month: 'May',
+                month: "May",
               },
               {
                 london: 60,
                 paris: 63,
                 newYork: 103,
                 seoul: 144,
-                month: 'June',
+                month: "June",
               },
               {
                 london: 59,
                 paris: 60,
                 newYork: 105,
                 seoul: 319,
-                month: 'July',
+                month: "July",
               },
               {
                 london: 65,
                 paris: 60,
                 newYork: 106,
                 seoul: 249,
-                month: 'Aug',
+                month: "Aug",
               },
               {
                 london: 51,
                 paris: 51,
                 newYork: 95,
                 seoul: 131,
-                month: 'Sept',
+                month: "Sept",
               },
               {
                 london: 60,
                 paris: 65,
                 newYork: 97,
                 seoul: 55,
-                month: 'Oct',
+                month: "Oct",
               },
               {
                 london: 67,
                 paris: 64,
                 newYork: 76,
                 seoul: 48,
-                month: 'Nov',
+                month: "Nov",
               },
               {
                 london: 61,
                 paris: 70,
                 newYork: 103,
                 seoul: 20,
-                month: 'Dec',
+                month: "Dec",
               },
             ]}
             series={[
-              { dataKey: 'london', label: 'London' },
-              { dataKey: 'newYork', label: 'New York' },
-              { dataKey: 'paris', label: 'Paris' },
-              { dataKey: 'seoul', label: 'Seoul' },
+              { dataKey: "london", label: "London" },
+              { dataKey: "newYork", label: "New York" },
+              { dataKey: "paris", label: "Paris" },
+              { dataKey: "seoul", label: "Seoul" },
             ]}
           />
 
@@ -389,7 +394,7 @@ const Profile = ({ profile }: Props) => {
             height={300}
             series={[
               {
-                yAxisKey: 'linearAxis',
+                yAxisKey: "linearAxis",
                 // data: [
                 //   { x: 100, y: 200, id: 1 },
                 //   { x: 120, y: 100, id: 2 },
@@ -399,11 +404,11 @@ const Profile = ({ profile }: Props) => {
                 //   { x: 110, y: 280, id: 6 },
                 // ],
                 data: [1, 10, 30, 50, 70, 90, 100],
-                label: 'Linear',
-                id: 'pvId'
+                label: "Linear",
+                id: "pvId",
               },
               {
-                yAxisKey: 'logAxis',
+                yAxisKey: "logAxis",
                 // data: [
                 //   { x: 300, y: 300, id: 1 },
                 //   { x: 400, y: 500, id: 2 },
@@ -419,14 +424,14 @@ const Profile = ({ profile }: Props) => {
                 //   { x: 420, y: 280, id: 12 },
                 // ],
                 data: [1, 10, 30, 50, 70, 90, 100],
-                label: 'Log',
-                id: 'serie2'
-              }
+                label: "Log",
+                id: "serie2",
+              },
             ]}
             xAxis={[{ data: [1, 10, 30, 50, 70, 90, 100] }]}
             yAxis={[
-              { id: 'linearAxis', label: 'Linear', scaleType: 'linear' },
-              { id: 'logAxis', label: 'Log', scaleType: 'log' },
+              { id: "linearAxis", label: "Linear", scaleType: "linear" },
+              { id: "logAxis", label: "Log", scaleType: "log" },
             ]}
             leftAxis="linearAxis"
             rightAxis="logAxis"
@@ -448,14 +453,14 @@ const Profile = ({ profile }: Props) => {
             xAxis={[
               {
                 scaleType: "band",
-                label: 'test',
+                label: "test",
                 dataKey: "month",
               },
             ]}
             yAxis={[
               {
                 label: "Y Axis",
-              }
+              },
             ]}
             dataset={[
               {
@@ -463,91 +468,91 @@ const Profile = ({ profile }: Props) => {
                 paris: 57,
                 newYork: 86,
                 seoul: 21,
-                month: 'Jan',
+                month: "Jan",
               },
               {
                 london: 50,
                 paris: 52,
                 newYork: 78,
                 seoul: 28,
-                month: 'Feb',
+                month: "Feb",
               },
               {
                 london: 47,
                 paris: 53,
                 newYork: 106,
                 seoul: 41,
-                month: 'Mar',
+                month: "Mar",
               },
               {
                 london: 54,
                 paris: 56,
                 newYork: 92,
                 seoul: 73,
-                month: 'Apr',
+                month: "Apr",
               },
               {
                 london: 57,
                 paris: 69,
                 newYork: 92,
                 seoul: 99,
-                month: 'May',
+                month: "May",
               },
               {
                 london: 60,
                 paris: 63,
                 newYork: 103,
                 seoul: 144,
-                month: 'June',
+                month: "June",
               },
               {
                 london: 59,
                 paris: 60,
                 newYork: 105,
                 seoul: 319,
-                month: 'July',
+                month: "July",
               },
               {
                 london: 65,
                 paris: 60,
                 newYork: 106,
                 seoul: 249,
-                month: 'Aug',
+                month: "Aug",
               },
               {
                 london: 51,
                 paris: 51,
                 newYork: 95,
                 seoul: 131,
-                month: 'Sept',
+                month: "Sept",
               },
               {
                 london: 60,
                 paris: 65,
                 newYork: 97,
                 seoul: 55,
-                month: 'Oct',
+                month: "Oct",
               },
               {
                 london: 67,
                 paris: 64,
                 newYork: 76,
                 seoul: 48,
-                month: 'Nov',
+                month: "Nov",
               },
               {
                 london: 61,
                 paris: 70,
                 newYork: 103,
                 seoul: 20,
-                month: 'Dec',
+                month: "Dec",
               },
             ]}
             series={[
-              { dataKey: 'london', label: 'London' },
-              { dataKey: 'newYork', label: 'New York' },
-              { dataKey: 'paris', label: 'Paris' },
-              { dataKey: 'seoul', label: 'Seoul' },
+              { dataKey: "london", label: "London" },
+              { dataKey: "newYork", label: "New York" },
+              { dataKey: "paris", label: "Paris" },
+              { dataKey: "seoul", label: "Seoul" },
             ]}
             type="bar"
           />
@@ -556,9 +561,9 @@ const Profile = ({ profile }: Props) => {
             series={[
               {
                 data: [
-                  { id: 0, value: 25, label: 'series A' },
-                  { id: 1, value: 6, label: 'series B' },
-                  { id: 2, value: 3, label: 'series C' },
+                  { id: 0, value: 25, label: "series A" },
+                  { id: 1, value: 6, label: "series B" },
+                  { id: 2, value: 3, label: "series C" },
                 ],
                 paddingAngle: 5,
                 startAngle: -90,
@@ -566,7 +571,7 @@ const Profile = ({ profile }: Props) => {
                 innerRadius: 90,
                 outerRadius: 100,
                 cornerRadius: 5,
-              }
+              },
             ]}
             width={500}
             height={500}

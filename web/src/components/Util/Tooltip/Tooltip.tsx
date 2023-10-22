@@ -1,44 +1,62 @@
-import { CSSProperties, useState } from "react";
+import { useState } from "react";
+import { createPortal } from "react-dom";
 
 interface TooltipProps {
   content: string | React.ReactNode;
   children: React.ReactNode;
   className?: string;
   animation?: boolean;
+  delay?: number;
+  direction?: "top" | "bottom" | "left" | "right";
 }
 const Tooltip = ({
   content,
   children,
-  className,
-  animation = true,
+  direction = "top",
+  delay = 400,
 }: TooltipProps) => {
-  const [showTooltip, setShowTooltip] = useState<boolean>(false);
-  const tooltipStyle: {
-    opacity: number;
-    transition: string;
-  } = {
-    opacity: showTooltip ? 1 : 0,
-    transition: animation ? "opacity 0.3s" : "none",
+  let timeout;
+  const margin = 20;
+  const [active, setActive] = useState(false);
+  const [position, setPosition] = useState({ top: 0, left: 0 });
+
+  const showTip = (e: React.MouseEvent<SVGGElement | HTMLDivElement>) => {
+    timeout = setTimeout(() => {
+      const { pageX, pageY } = e;
+      setActive(true);
+      setPosition({ top: pageY, left: pageX });
+    }, delay || 400);
+  };
+  const updatePosition = (
+    e: React.MouseEvent<HTMLDivElement | SVGGElement>
+  ) => {
+    if (!active) return;
+    const { pageX, pageY } = e;
+    setPosition({ top: pageY, left: pageX + margin });
   };
 
+  const hideTip = () => {
+    clearTimeout(timeout);
+    setActive(false);
+  };
+
+  const tooltip = active && (
+    <div
+      className={`absolute z-50 w-max rounded-lg border border-zinc-500 bg-zinc-700 p-2 text-gray-700 shadow dark:text-white`}
+      style={{ top: position.top, left: position.left, position: "absolute" }}
+    >
+      {content}
+    </div>
+  );
+
   return (
-    <div className={`relative ${className}`}>
-      <div
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
-      >
-        {children}
-      </div>
-      {showTooltip && (
-        <div
-          onMouseEnter={() => setShowTooltip(true)}
-          onMouseLeave={() => setShowTooltip(false)}
-          className="absolute z-50 w-max rounded-lg border border-zinc-500 bg-zinc-700 p-2 text-gray-700 shadow dark:text-white"
-          style={{ ...tooltipStyle }}
-        >
-          {content}
-        </div>
-      )}
+    <div
+      onMouseEnter={showTip}
+      onMouseMove={updatePosition}
+      onMouseLeave={hideTip}
+    >
+      {children}
+      {createPortal(tooltip, document.body)}
     </div>
   );
 };
