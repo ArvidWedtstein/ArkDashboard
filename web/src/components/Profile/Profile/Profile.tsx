@@ -97,7 +97,7 @@ const Profile = ({ profile }: Props) => {
                         new Date(profile.created_at).getFullYear() +
                         (new Date().getMonth() -
                           new Date(profile.created_at).getMonth()) /
-                          12
+                        12
                       ).toPrecision(1)}
                     </span>
                     <span className="text-sm text-gray-600 dark:text-stone-300">
@@ -271,16 +271,6 @@ const Profile = ({ profile }: Props) => {
             </Tabs>
           </div>
 
-          <Chart
-            labels={["Test", "tert2", "monday"]}
-            data={[3, 6, 8, 3]}
-            options={{
-              verticalLines: true,
-              horizontalLines: true,
-              horizontalLabels: true,
-              verticalLabels: true,
-            }}
-          />
           <ChartContainer
             height={300}
             xAxis={[
@@ -395,34 +385,12 @@ const Profile = ({ profile }: Props) => {
             series={[
               {
                 yAxisKey: "linearAxis",
-                // data: [
-                //   { x: 100, y: 200, id: 1 },
-                //   { x: 120, y: 100, id: 2 },
-                //   { x: 170, y: 300, id: 3 },
-                //   { x: 140, y: 250, id: 4 },
-                //   { x: 150, y: 400, id: 5 },
-                //   { x: 110, y: 280, id: 6 },
-                // ],
                 data: [1, 10, 30, 50, 70, 90, 100],
                 label: "Linear",
                 id: "pvId",
               },
               {
                 yAxisKey: "logAxis",
-                // data: [
-                //   { x: 300, y: 300, id: 1 },
-                //   { x: 400, y: 500, id: 2 },
-                //   { x: 200, y: 700, id: 3 },
-                //   { x: 340, y: 350, id: 4 },
-                //   { x: 560, y: 500, id: 5 },
-                //   { x: 230, y: 780, id: 6 },
-                //   { x: 500, y: 400, id: 7 },
-                //   { x: 300, y: 500, id: 8 },
-                //   { x: 240, y: 300, id: 9 },
-                //   { x: 320, y: 550, id: 10 },
-                //   { x: 500, y: 400, id: 11 },
-                //   { x: 420, y: 280, id: 12 },
-                // ],
                 data: [1, 10, 30, 50, 70, 90, 100],
                 label: "Log",
                 id: "serie2",
@@ -437,6 +405,7 @@ const Profile = ({ profile }: Props) => {
             rightAxis="logAxis"
             type="line"
           />
+
           <ScatterChart
             width={420}
             height={300}
@@ -449,17 +418,48 @@ const Profile = ({ profile }: Props) => {
             type="line"
           />
           <ScatterChart
+            width={420}
+            height={300}
+            xAxis={[{
+              min: 0,
+            }]}
+            series={[
+              {
+                label: 'test',
+                data: [
+                  { x: 9, y: 46 },
+                  { x: 15, y: 30 },
+                  { x: 43, y: 19 },
+                  { x: 45, y: 54 },
+                  { x: 39, y: 27 },
+                  { x: 12, y: 12 },
+                ],
+              },
+              {
+                label: 'test2',
+                data: [
+                  { x: 16, y: 47 },
+                  { x: 14, y: 30 },
+                  { x: 5, y: 19 },
+                  { x: 45, y: 32 },
+                  { x: 35, y: 14 },
+                  { x: 26, y: 12 },
+                ],
+              },
+            ]}
+            type="scatter"
+          />
+          <ScatterChart
             height={301}
             xAxis={[
               {
                 scaleType: "band",
-                label: "test",
                 dataKey: "month",
               },
             ]}
             yAxis={[
               {
-                label: "Y Axis",
+                label: "",
               },
             ]}
             dataset={[
@@ -557,6 +557,27 @@ const Profile = ({ profile }: Props) => {
             type="bar"
           />
 
+          <ScatterChart
+            series={[
+              {
+                data: [
+                  { id: 0, value: 25, label: "series A" },
+                  { id: 1, value: 6, label: "series B" },
+                  { id: 2, value: 3, label: "series C" },
+                ],
+                paddingAngle: 5,
+                startAngle: -90,
+                endAngle: 180,
+                innerRadius: 90,
+                outerRadius: 100,
+                cornerRadius: 5,
+                arcLabel: true,
+              },
+            ]}
+            width={500}
+            height={500}
+            type="pie"
+          />
           <PieChart
             series={[
               {
@@ -571,6 +592,7 @@ const Profile = ({ profile }: Props) => {
                 innerRadius: 90,
                 outerRadius: 100,
                 cornerRadius: 5,
+                arcLabel: true,
               },
             ]}
             width={500}

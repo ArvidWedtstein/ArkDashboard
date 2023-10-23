@@ -52,7 +52,7 @@ export const Loading = () => (
       </div>
       <div className="w-1/3">
         <svg
-          className="dark:text-zinv-700 mx-auto h-32 w-32 text-zinc-200"
+          className="dark:text-zinc-700 mx-auto h-32 w-32 text-zinc-200"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           fill="currentColor"

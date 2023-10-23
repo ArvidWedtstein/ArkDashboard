@@ -4,7 +4,7 @@ import { MetaTags, useMutation } from "@redwoodjs/web";
 import { CheckmarkIcon, toast } from "@redwoodjs/web/dist/toast";
 import clsx from "clsx";
 import { useEffect, useMemo, useRef, useState } from "react";
-import Chart from "src/components/Util/Chart/Chart";
+import Chart, { ScatterChart } from "src/components/Util/Chart/Chart";
 import StatCard from "src/components/Util/StatCard/StatCard";
 import Table from "src/components/Util/Table/Table";
 import Toast from "src/components/Util/Toast/Toast";
@@ -187,7 +187,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
             value={formatNumber(
               (optimizedBasespots.filter((b) => b.progress == 100).length /
                 optimizedBasespots.length) *
-                100,
+              100,
               { maximumSignificantDigits: 3 }
             )}
             valueDisplay="percent"
@@ -210,28 +210,38 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
           />
           <StatCard stat={"Test"} value={10} />
 
-          <Chart
-            options={{ verticalLabels: true, horizontalLabels: true }}
-            className="rounded-lg border border-transparent bg-gray-200 text-black shadow-lg transition ease-in-out dark:bg-zinc-700 dark:text-white"
-            height={100}
-            data={Object.values(
-              groupDatesByMonth(
+          <div className="rounded-lg border border-transparent bg-gray-200 text-black shadow-lg transition ease-in-out dark:bg-zinc-700 dark:text-white">
+            <ScatterChart
+              margin={{
+                top: 40,
+                left: 40,
+                right: 40,
+              }}
+              type="line"
+              height={200}
+              dataset={Object.entries(groupDatesByMonth(
                 profiles
                   .map((p) => new Date(p.created_at))
                   .sort((a, b) => a.getTime() - b.getTime())
-              )
-            ).map((g: Date[]) => g.length)}
-            labels={Object.keys(
-              groupDatesByMonth(
-                profiles
-                  .map((p) => new Date(p.created_at))
-                  .sort((a, b) => a.getTime() - b.getTime())
-              )
-            ).map((p) =>
-              new Date(p).toLocaleDateString("en-GB", { month: "short" })
-            )}
-            title={"New Users in the last months"}
-          />
+              )).map(([k, v]: [k: string, v: unknown[]]) => ({
+                month: new Date(k).toLocaleDateString("en-GB", { month: "short" }),
+                newUsers: v.length,
+              }))}
+              series={[
+                {
+                  area: true,
+                  color: '#34b364',
+                  dataKey: 'newUsers'
+                }
+              ]}
+              xAxis={[{
+                scaleType: 'point',
+                dataKey: 'month',
+                label: 'New Users in the last months'
+              }]}
+            // title={"New Users in the last months"}
+            />
+          </div>
         </div>
 
         <Table
@@ -392,7 +402,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                                   input: {
                                     banned_until: new Date(
                                       new Date().getTime() +
-                                        1000 * 60 * 60 * 24 * 7
+                                      1000 * 60 * 60 * 24 * 7
                                     ),
                                   },
                                 },
@@ -457,13 +467,10 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
                       <Toast
                         t={t}
                         title={`You're about to change ${row.username}'s role`}
-                        message={`Are you sure you want to change ${
-                          row.username
-                        }'s role from ${
-                          roles.find((r) => r.id == value)?.name
-                        } to ${
-                          roles.find((r) => r.id == e.target.value)?.name
-                        }?`}
+                        message={`Are you sure you want to change ${row.username
+                          }'s role from ${roles.find((r) => r.id == value)?.name
+                          } to ${roles.find((r) => r.id == e.target.value)?.name
+                          }?`}
                         actionType="OkCancel"
                         primaryAction={() => {
                           toast.promise(

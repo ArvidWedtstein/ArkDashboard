@@ -1,29 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 interface TooltipProps {
   content: string | React.ReactNode;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
   animation?: boolean;
   delay?: number;
+  active?: boolean;
   direction?: "top" | "bottom" | "left" | "right";
 }
-const Tooltip = ({
+const Tooltip = React.memo(({
   content,
   children,
   direction = "top",
+  active,
   delay = 400,
+
 }: TooltipProps) => {
   let timeout;
   const margin = 20;
-  const [active, setActive] = useState(false);
+  const [tooltipActive, setTooltipActive] = useState(active ?? false);
   const [position, setPosition] = useState({ top: 0, left: 0 });
 
   const showTip = (e: React.MouseEvent<SVGGElement | HTMLDivElement>) => {
     timeout = setTimeout(() => {
       const { pageX, pageY } = e;
-      setActive(true);
+      setTooltipActive(true);
       setPosition({ top: pageY, left: pageX });
     }, delay || 400);
   };
@@ -37,10 +40,10 @@ const Tooltip = ({
 
   const hideTip = () => {
     clearTimeout(timeout);
-    setActive(false);
+    setTooltipActive(false);
   };
 
-  const tooltip = active && (
+  const tooltip = tooltipActive && (
     <div
       className={`absolute z-50 w-max rounded-lg border border-zinc-500 bg-zinc-700 p-2 text-gray-700 shadow dark:text-white`}
       style={{ top: position.top, left: position.left, position: "absolute" }}
@@ -59,6 +62,6 @@ const Tooltip = ({
       {createPortal(tooltip, document.body)}
     </div>
   );
-};
+});
 
 export default Tooltip;
