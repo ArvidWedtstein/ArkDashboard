@@ -5,11 +5,9 @@ import { useAuth } from "src/auth";
 import Avatar from "src/components/Util/Avatar/Avatar";
 import Chart, {
   ChartContainer,
-  PieChart,
   ScatterChart,
 } from "src/components/Util/Chart/Chart";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
-import Tooltip from "src/components/Util/Tooltip/Tooltip";
 
 import { combineBySummingKeys, groupBy } from "src/lib/formatters";
 
@@ -380,7 +378,7 @@ const Profile = ({ profile }: Props) => {
           />
 
           <ScatterChart
-            width={500}
+            width={499}
             height={300}
             series={[
               {
@@ -396,7 +394,7 @@ const Profile = ({ profile }: Props) => {
                 id: "serie2",
               },
             ]}
-            xAxis={[{ data: [1, 10, 30, 50, 70, 90, 100] }]}
+            xAxis={[{ data: [1, 10, 30, 50, 70, 90, 100], scaleType: "linear" }]}
             yAxis={[
               { id: "linearAxis", label: "Linear", scaleType: "linear" },
               { id: "logAxis", label: "Log", scaleType: "log" },
@@ -409,16 +407,17 @@ const Profile = ({ profile }: Props) => {
           <ScatterChart
             width={420}
             height={300}
+            xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
             series={[
               {
-                data: [5, 4, 3, 5, 0, 5, 2, 10, 6],
-                area: true,
+                data: [2, 5.5, 2, 8.5, 1.5, 5, 7],
+                area: false,
               },
             ]}
             type="line"
           />
           <ScatterChart
-            width={420}
+            width={501}
             height={300}
             xAxis={[{
               min: 0,
@@ -577,26 +576,6 @@ const Profile = ({ profile }: Props) => {
             width={500}
             height={500}
             type="pie"
-          />
-          <PieChart
-            series={[
-              {
-                data: [
-                  { id: 0, value: 25, label: "series A" },
-                  { id: 1, value: 6, label: "series B" },
-                  { id: 2, value: 3, label: "series C" },
-                ],
-                paddingAngle: 5,
-                startAngle: -90,
-                endAngle: 180,
-                innerRadius: 90,
-                outerRadius: 100,
-                cornerRadius: 5,
-                arcLabel: true,
-              },
-            ]}
-            width={500}
-            height={500}
           />
 
           {currentUser && currentUser.id === profile.id && (

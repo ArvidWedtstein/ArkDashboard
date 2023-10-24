@@ -502,13 +502,15 @@ const numberToChart = (
   const { width, height, availableWidth, availableHeight, margin, max, min } =
     chartData;
   const range =
-    scaleType === "log" ? Math.log10(max + 1) - Math.log10(min) : max - min;
+    scaleType === "log" ? Math.log10(max + 1) - Math.log10(min) : Math.ceil(max - min);
 
   const relativeValue = (value - min) / range;
 
   if (scaleType === "log") {
     const logMin = Math.log10(min);
     const logMax = Math.log10(max + 1); // Add 1 to handle log(0)
+
+    console.log(logMax, logMin, range)
     return isXAxis
       ? width -
       margin.left -
@@ -524,8 +526,7 @@ const numberToChart = (
 
   return isXAxis
     ? ((value - min) / (max - min)) * availableWidth
-    : // ? width - margin.left - relativeValue * availableWidth
-    height - margin.bottom - relativeValue * availableHeight;
+    : height - margin.bottom - relativeValue * availableHeight;
 };
 
 type AxisPosition = "left" | "right" | "top" | "bottom";
@@ -586,7 +587,9 @@ const generateAxisRangeValues = (
     stepExponent
   );
   const stepSize = Math.ceil(rawStepSize / stepMultiplier) * stepMultiplier;
-  // const stepSize = max - min <= 10 ? 1 : Math.ceil(rawStepSize / stepMultiplier) * stepMultiplier;
+
+
+  // console.log(`1: ${stepSize} VS 2: ${calculateStepSize()}`)
 
   // Calculate the number of steps based on the rounded step size
   const stepCount = Math.ceil((max - min) / stepSize);
@@ -596,7 +599,7 @@ const generateAxisRangeValues = (
     { length: (scaleType === "band" || scaleType === 'point' ? labelsNumber : stepCount) + 1 },
     (_, i) => {
       const value =
-        (isFinite(min) ? min : 0) +
+        (isFinite(min) ? min - (min % stepMultiplier) : 0) +
         i * (scaleType === "band" || scaleType === 'point' ? labelStep(labelsNumber) : stepSize);
 
       const xy = isHorizontal
@@ -604,12 +607,12 @@ const generateAxisRangeValues = (
           ? margin.left + value
           : margin.left +
           numberToChart(
-            { ...chartData, availableWidth, availableHeight },
+            { ...chartData, min: min - (min % stepMultiplier), availableWidth, availableHeight },
             value,
             isHorizontal
           )
         : numberToChart(
-          { ...chartData, availableWidth, availableHeight },
+          { ...chartData, min: min - (min % stepMultiplier), availableWidth, availableHeight },
           value,
           isHorizontal
         );
@@ -652,7 +655,7 @@ const generateAxisRangeValues = (
           scaleType === "band"
             ? !!v
             : data.length > 0
-              ? data.includes(value)
+              ? data.includes(v)
               : true,
       };
     }
@@ -1037,6 +1040,7 @@ export const ChartContainer = ({
     </svg>
   );
 };
+
 type BaseChartSeries = {
   id?: string | number;
   dataKey?: string;
@@ -1047,7 +1051,7 @@ type BaseChartSeries = {
 }
 
 type PieChartSeries = BaseChartSeries & {
-  data?: { id?: string | number; value: number; label?: string; }[];
+  data?: { id?: string | number; value: number; label?: string; color?: string; }[];
   /** The radius between the center and the beginning of the arc. The default is set to 0. */
   innerRadius?: number;
   /** The radius between the center and the end of the arc. The default is the largest value available in the drawing area. */
@@ -1300,27 +1304,28 @@ export const ScatterChart = ({
             : [])
       ) ??
       null;
+    const axisValues = generateAxisRangeValues(
+      {
+        margin,
+        width,
+        height,
+        min: valueMin,
+        max: valueMax,
+        availableWidth,
+        availableHeight,
+      },
+      scaleType,
+      position,
+      tickSize,
+      x.disableTicks ?? false,
+      data
+    );
 
     return {
       ...x,
       id,
       data,
-      axisValues: generateAxisRangeValues(
-        {
-          margin,
-          width,
-          height,
-          min: valueMin,
-          max: valueMax,
-          availableWidth,
-          availableHeight,
-        },
-        scaleType,
-        position,
-        tickSize,
-        x.disableTicks ?? false,
-        data
-      ),
+      axisValues,
       scaleType,
       scale: scaleType === "log" ? (d) => Math.log10(d + 1) : (d) => d,
       valueMin,
@@ -1407,80 +1412,121 @@ export const ScatterChart = ({
     };
   });
 
+
+
   // TODO: use this to calculate all chart types?
-  const pathData = dataSeries.map((d, i) => {
+  const pointData = dataSeries.map((d, i) => {
     const xAxis = xAxisData.find((axis) =>
       axis?.id ? axis.id === d.xAxisKey : true
     );
     const yAxis = yAxisData.find((axis) =>
       axis?.id ? axis.id === d.yAxisKey : true
     );
+
     const minX = xAxis?.valueMin;
     const maxX = xAxis?.valueMax;
 
     const minY = yAxis?.valueMin;
     const maxY = yAxis?.valueMax;
 
+    if (type === 'line' && width == 499) console.log(minX, maxX, minY, maxY)
+
+    // TODO: add bar
+    // TODO: calc for horizontal
     return d.data.map((val, index) => {
-      const xValue = xAxis?.axisValues[index]
-        ? xAxis.axisValues[index].value
-        : index;
+      const x = type === 'scatter'
+        ? numberToChart(
+          {
+            width,
+            height,
+            availableWidth,
+            availableHeight,
+            margin,
+            min: minX,
+            max: maxX,
+          },
+          val.x,
+          true,
+          xAxis.scaleType
+        )
+        : xAxis.scaleType === 'point'
+          ? xAxis.axisValues[index].x - margin.left
+          : xAxis.scaleType === 'linear' && xAxis.data.length > 0 && xAxis.data.every((x) => !isNaN(parseInt(x.toString())))
+            ? index < xAxis.data.length
+              ? numberToChart(
+                {
+                  width,
+                  height,
+                  availableWidth,
+                  availableHeight,
+                  margin,
+                  min: minX,
+                  max: maxX,
+                },
+                parseInt(xAxis.data[index].toString()),
+                true,
+                xAxis.scaleType
+              )
+              : null
+            : index < xAxis.axisValues.length
+              ? xAxis.axisValues[index].x - margin.left
+              : numberToChart(
+                {
+                  width,
+                  height,
+                  availableWidth,
+                  availableHeight,
+                  margin,
+                  min: minX,
+                  max: maxX,
+                },
+                index,
+                true,
+                xAxis.scaleType
+              );
 
-      const xv = xAxis?.axisValues?.find((x) => x.value === xValue);
+      const y = type === 'scatter'
+        ? numberToChart(
+          {
+            width,
+            height,
+            availableWidth,
+            availableHeight,
+            margin,
+            min: minX,
+            max: maxX,
+          },
+          val.y,
+          false,
+          xAxis.scaleType
+        )
+        : numberToChart(
+          {
+            width,
+            height,
+            availableWidth,
+            availableHeight,
+            margin,
+            min: minY,
+            max: maxY,
+          },
+          val,
+          false,
+          yAxis.scaleType
+        );
 
-
-      // TODO: fix
-      const xval =
-        xAxisData.length > 0 && xAxisData
-          ? xAxisData[0]?.data.length > 0 &&
-            index < xAxisData[0].data.length - 1
-            ? xAxisData[0]?.data[index]
-              ? parseInt(xAxisData[0]?.data[index]?.toString())
-              : index
-            : index
-          : index;
-
-      // let xv = xAxis.axisValues?.find((x, i) => x.value === xval);
-
-      // const x = numberToChart({ width, height, availableWidth, availableHeight, margin, min: minX, max: maxX }, xval, true)
-      const x = xv?.x ? xv.x - margin.left : numberToChart(
-        {
-          width,
-          height,
-          availableWidth,
-          availableHeight,
-          margin,
-          min: minX,
-          max: maxX,
-        },
-        xv?.value || xval,
-        true,
-        xAxis.scaleType ?? "linear"
-      );
-
-      const y = numberToChart(
-        {
-          width,
-          height,
-          availableWidth,
-          availableHeight,
-          margin,
-          min: minY,
-          max: maxY,
-        },
-        val,
-        false,
-        yAxis.scaleType ?? "linear"
-      );
       return {
         x,
         y,
+        ogX: val.x ?? null,
+        ogY: val.y ?? null,
+        value: d.label,
       };
-    });
-  }); // Path data for the line
+    }).filter((x) => x.x !== null && x.y !== null);
+  });
 
   const lineData = {
-    filledArea: type === 'line' ? pathData
+    filledArea: type === 'line' ? pointData
       .filter((_, i) => dataSeries[i]['area'])
       .map((d, i) => {
         const points: [number, number][] = d.map((val) => [val.x, val.y]);
@@ -1502,7 +1548,7 @@ export const ScatterChart = ({
           </g>
         );
       }) : [],
-    line: pathData.map((d, i) => {
+    line: pointData.map((d, i) => {
       const points: [number, number][] = d.map((val) => [val.x, val.y]);
       const catmull = drawCatmullRomChart(points);
 
@@ -1527,7 +1573,7 @@ export const ScatterChart = ({
         </g>
       );
     }),
-    points: pathData.flatMap((d, i) => {
+    points: pointData.flatMap((d, i) => {
       return d
         .filter((_, idx) => {
           const showMark = dataSeries[i]["showMark"];
@@ -1535,86 +1581,22 @@ export const ScatterChart = ({
             ? showMark({ index: idx })
             : showMark !== false;
         })
-        .map((val, index) => (
-          <path
+        .map((point, index) => (
+          <circle
             key={`data-${i}-circle-${index}`}
-            d={svgArc(val.x, val.y, 5, 5, 0, 359.9, true, true)}
-            stroke={dataSeries[i].color}
-            fill={dataSeries[i].color}
+            transform={`translate(${point.x}, ${point.y})`}
             fillOpacity={0.3}
-            strokeWidth={2}
-            shapeRendering={"crispEdges"}
+            cx={0}
+            cy={0}
+            fill={dataSeries[i].color}
+            r={5}
+            shapeRendering={"auto"}
+            stroke={dataSeries[i].color}
             strokeLinecap="round"
+            strokeWidth={2}
           />
         ));
     }),
-  };
-
-  const [tooltip, setTooltip] = useState<{
-    top: number;
-    left: number;
-    data?: {
-      content: string;
-      color?: string;
-      serie?: string;
-    }[];
-  }>({ top: 0, left: 0, data: [] });
-  const [tooltipActive, setTooltipActive] = useState<boolean>(false);
-
-  const showTip = (e: React.MouseEvent<SVGGElement>) => {
-    e.preventDefault();
-    const { pageX, pageY } = e;
-    const path = e.target;
-    if (tooltipActive) return;
-
-    // if (!e?.target || !(e.target instanceof SVGCircleElement)) {
-    //   return setTooltipActive(false);
-    // }
-    // if (type === 'scatter' && typeof e.target === "object" && e.target instanceof SVGCircleElement) {
-    //   setTooltipActive(true);
-    //   setTooltip({
-    //     top: pageY,
-    //     left: pageX + 20,
-    //     data: [
-    //       {
-    //         content: (path as SVGCircleElement).dataset["value"],
-    //         color: (path as SVGCircleElement).getAttribute("fill"),
-    //         serie: (path as SVGCircleElement).dataset["serie"],
-    //       },
-    //     ],
-    //   });
-    // }
-  };
-
-  const updatePosition = useCallback((
-    e: React.MouseEvent<HTMLDivElement | SVGGElement>
-  ) => {
-    e.preventDefault();
-
-    const { pageX, pageY } = e;
-
-    // const path = e.target;
-    // if (!e?.target || !(e.target instanceof SVGCircleElement)) {
-    //   return setTooltipActive(false);
-    // }
-    // if (type === 'scatter' && typeof e.target === "object" && e.target instanceof SVGCircleElement) {
-    //   setTooltipActive(true);
-    //   setTooltip({
-    //     top: pageY,
-    //     left: pageX + 20,
-    //     data: [
-    //       {
-    //         content: (path as SVGCircleElement).dataset["value"],
-    //         color: (path as SVGCircleElement).getAttribute("fill"),
-    //         serie: (path as SVGCircleElement).dataset["serie"],
-    //       },
-    //     ],
-    //   });
-    // }
-  }, []);
-
-  const hideTip = () => {
-    // setTooltipActive(false);
   };
 
 
@@ -1623,28 +1605,6 @@ export const ScatterChart = ({
       <title></title>
       <desc></desc>
 
-
-      {/* {tooltipActive && createPortal(
-        <div
-          className={`absolute z-50 w-max rounded-lg border border-zinc-500 bg-zinc-700 p-2 text-gray-700 shadow dark:text-white`}
-          style={{ top: tooltip.top, left: tooltip.left, position: "absolute" }}
-        >
-          {tooltip.data?.map((d, i) => (
-            <div
-              key={`tooltip-${i}`}
-              className="inline-flex items-center justify-center space-x-2"
-            >
-              <span
-                className="h-3 w-3 rounded-full"
-                style={{ backgroundColor: d.color }}
-              />
-              <span className="pr-3">{d.serie}</span>
-              <span>{d.content}</span>
-            </div>
-          ))}
-        </div>,
-        document.body
-      )} */}
       {type === "line" && (
         <g
           style={{
@@ -1766,9 +1726,6 @@ export const ScatterChart = ({
               transition: "opacity 0.2s ease-in 0s, fill 0.2s ease-in 0s",
             }}
             transform={`translate(${margin.left}, 0)`}
-            // onMouseEnter={showTip}
-            // onMouseMove={debounce(updatePosition, 500)}
-            // onMouseLeave={hideTip}
             pointerEvents={'all'}
           >
             <rect
@@ -1780,79 +1737,30 @@ export const ScatterChart = ({
               pointerEvents={'none'}
             />
 
-            {type === "scatter" &&
-              dataSeries.map((d, i) => {
-                return d.data.map((val, index) => {
-                  const maxY =
-                    yAxisData.find((axis) =>
-                      axis?.id ? axis.id === d.yAxisKey : true
-                    )?.valueMax ??
-                    Math.max(
-                      ...dataSeries.flatMap((d) => d?.data.map((d) => d.y))
-                    );
+            {type === 'scatter' &&
+              pointData.map((points, i) => points.map((point, idx) => {
+                return (
+                  <circle
+                    key={`data-${i}-circle-${idx}`}
+                    transform={`translate(${point.x}, ${point.y})`}
+                    data-value={`(${point.ogX}, ${point.ogY})`}
+                    data-serie={point.label}
+                    cx={0}
+                    cy={0}
+                    fill={dataSeries[i].color}
+                    r={4}
+                    shapeRendering={"auto"}
+                    strokeLinecap="round"
+                  />
+                )
+              }))
+            }
 
-                  const minY =
-                    yAxisData.find((axis) =>
-                      axis?.id ? axis.id === d.yAxisKey : true
-                    )?.valueMin ??
-                    Math.min(
-                      ...dataSeries.flatMap((d) => d?.data.map((d) => d.y))
-                    );
-
-                  // TODO: fix this xAxisData[0] stuff
-                  const minX = xAxisData[0].valueMin;
-                  const maxX = xAxisData[0].valueMax;
-                  const x = numberToChart(
-                    {
-                      width,
-                      height,
-                      availableWidth,
-                      availableHeight,
-                      margin,
-                      min: minX,
-                      max: maxX,
-                    },
-                    val.x,
-                    true
-                  );
-                  const y = numberToChart(
-                    {
-                      width,
-                      height,
-                      availableWidth,
-                      availableHeight,
-                      margin,
-                      max: maxY,
-                      min: minY,
-                    },
-                    val.y,
-                    false
-                  );
-                  return (
-                    <circle
-                      key={`data-${i}-circle-${index}`}
-                      transform={`translate(${x}, ${y})`}
-                      data-value={`(${val.x}, ${val.y})`}
-                      data-serie={d.label}
-                      cx={0}
-                      cy={0}
-                      fill={dataSeries[i].color}
-                      r={4}
-                      shapeRendering={"crispEdges"}
-                      strokeLinecap="round"
-                    />
-                  );
-                });
-              })}
             {type === "line" && lineData.line}
             {type === "line" && lineData.points}
 
             {type === 'pie' && (
-              <g
-                onMouseEnter={showTip}
-                onMouseMove={updatePosition}
-                onMouseLeave={hideTip}
-              >
+              <g>
                 {dataSeries?.map((serie, index) => {
                   const {
                     cx = width / 3,
@@ -1866,7 +1774,7 @@ export const ScatterChart = ({
                     arcLabel,
                   } = serie;
 
-                  let startAngleRS = startAngle;
+                  let sliceStartAngle = startAngle;
 
                   const totalValue = serie.data.reduce(
                     (acc, dataSlice) => acc + dataSlice.value,
@@ -1885,7 +1793,8 @@ export const ScatterChart = ({
                           const sliceAngle =
                             (slice.value / totalValue) *
                             (endAngle - startAngle - serie.data.length * paddingAngle);
-                          const endAngleRS = startAngleRS + sliceAngle;
+
+                          const sliceEndAngle = sliceStartAngle + sliceAngle;
 
                           const largeArcFlag = sliceAngle > 180 ? 1 : 0;
 
@@ -1893,70 +1802,70 @@ export const ScatterChart = ({
                           const startX =
                             cx +
                             outerRadiusSize *
-                            Math.cos((startAngleRS - 90) * (Math.PI / 180));
+                            Math.cos((sliceStartAngle - 90) * (Math.PI / 180));
                           const startY =
                             cy +
                             outerRadiusSize *
-                            Math.sin((startAngleRS - 90) * (Math.PI / 180));
+                            Math.sin((sliceStartAngle - 90) * (Math.PI / 180));
                           const endX =
                             cx +
                             outerRadiusSize *
-                            Math.cos((endAngleRS - 90) * (Math.PI / 180));
+                            Math.cos((sliceEndAngle - 90) * (Math.PI / 180));
                           const endY =
                             cy +
                             outerRadiusSize *
-                            Math.sin((endAngleRS - 90) * (Math.PI / 180));
+                            Math.sin((sliceEndAngle - 90) * (Math.PI / 180));
 
                           // Calculate the start and end points of the inner circle
                           const innerStartX =
                             cx +
                             innerRadiusValue *
-                            Math.cos((startAngleRS - 90) * (Math.PI / 180));
+                            Math.cos((sliceStartAngle - 90) * (Math.PI / 180));
                           const innerStartY =
                             cy +
                             innerRadiusValue *
-                            Math.sin((startAngleRS - 90) * (Math.PI / 180));
+                            Math.sin((sliceStartAngle - 90) * (Math.PI / 180));
                           const innerEndX =
                             cx +
                             innerRadiusValue *
-                            Math.cos((endAngleRS - 90) * (Math.PI / 180));
+                            Math.cos((sliceEndAngle - 90) * (Math.PI / 180));
                           const innerEndY =
                             cy +
                             innerRadiusValue *
-                            Math.sin((endAngleRS - 90) * (Math.PI / 180));
+                            Math.sin((sliceEndAngle - 90) * (Math.PI / 180));
 
 
                           const labelX =
                             cx +
                             (outerRadiusSize + innerRadiusValue) / 2 *
-                            Math.cos(((startAngleRS + endAngleRS) / 2 - 90) * (Math.PI / 180)) + 5;
+                            Math.cos(((sliceStartAngle + sliceEndAngle) / 2 - 90) * (Math.PI / 180)) + 5;
                           const labelY =
                             cy +
                             (outerRadiusSize + innerRadiusValue) / 2 *
-                            Math.sin(((startAngleRS + endAngleRS) / 2 - 90) * (Math.PI / 180)) + 5;
+                            Math.sin(((sliceStartAngle + sliceEndAngle) / 2 - 90) * (Math.PI / 180)) + 5;
 
                           const baseFontSize = 8; // Set your base font size
                           const fontSize = (outerRadiusSize * 0.1) + baseFontSize;
 
-                          startAngleRS = endAngleRS + paddingAngle;
+                          sliceStartAngle = sliceEndAngle + paddingAngle;
 
-                          // TODO: move events to svg, and detect which slice is hovered
                           return (
                             <g key={`serie-${index}-slice-${i}`}>
                               <path
+                                shapeRendering={"auto"}
                                 data-value={slice.value}
                                 data-serie={slice.label}
                                 d={`
-                        M ${startX} ${startY}
-                        A ${outerRadiusSize} ${outerRadiusSize} 0 ${largeArcFlag} 1 ${endX} ${endY}
-                        L ${innerEndX} ${innerEndY}
-                        A ${innerRadiusValue} ${innerRadiusValue} 0 ${largeArcFlag} 0 ${innerStartX} ${innerStartY}
-                        Z
-                      `}
+                                  M ${startX} ${startY}
+                                  A ${outerRadiusSize} ${outerRadiusSize} 0 ${largeArcFlag} 1 ${endX} ${endY}
+                                  L ${innerEndX} ${innerEndY}
+                                  A ${innerRadiusValue} ${innerRadiusValue} 0 ${largeArcFlag} 0 ${innerStartX} ${innerStartY}
+                                  Z
+                                `}
                                 fill={slice.color}
                               ></path>
                               {arcLabel && (
-                                <text x={labelX} y={labelY} textAnchor="middle" pointerEvents={'none'} className="dark:fill-white fill-black select-none pointer-events-none" alignmentBaseline="middle" fontSize={fontSize}>
+                                <text x={labelX} y={labelY} textAnchor="middle" pointerEvents={'none'} textRendering={"auto"} className="dark:fill-white fill-black select-none pointer-events-none" alignmentBaseline="middle" fontSize={fontSize}>
                                   {slicePercentage.toFixed(1)}%
                                 </text>
                               )}
@@ -1976,340 +1885,55 @@ export const ScatterChart = ({
       {/* Legends / Labels */}
       <g>
         {dataSeries
-          .filter((s) => s.label)
+          .filter((s) => type === 'pie' ? true : s.label)
           .map((serie, i) => {
+            const x = type === 'pie' ? width / 2 + width / 4 : margin.left + (availableWidth / series.length) * i;
+            const y = type === 'pie' ? availableHeight / 2 - margin.bottom - margin.top : 25;
+            let yOffset = y; // Offset to position labels underneath each other
+
             return (
               <g
-                key={`legend - ${i}`}
-                className="inline-flex items-center space-x-2"
-                transform={`translate(${margin.left + (availableWidth / series.length) * i
-                  } 25)`}
+                key={`legend-${i}`}
+                transform={`translate(${x}, ${y})`}
               >
-                <rect y={-10} width="20" height="20" fill={serie.color} />
-                <text
-                  x={25}
-                  y={0}
-                  textAnchor="start"
-                  dominantBaseline="central"
-                  className="dark:fill-white fill-black align-middle text-sm font-normal capitalize tracking-wide"
-                >
-                  <tspan x={25} dy={0}>
-                    {serie.label}
-                  </tspan>
-                </text>
-              </g>
-            );
-          })}
-      </g>
-    </svg >
-  );
-};
-
-type PieChartProps = {
-  width?: number;
-  height?: number;
-  dataset?: {
-    [key: string]: number | string;
-  }[];
-  series?: {
-    data?: {
-      id?: string | number;
-      value?: number;
-      label?: string;
-      color?: string;
-    }[];
-    /** The radius between the center and the beginning of the arc. The default is set to 0. */
-    innerRadius?: number;
-    /** The radius between the center and the end of the arc. The default is the largest value available in the drawing area. */
-    outerRadius?: number;
-    /** The padding angle between each pie slice */
-    paddingAngle?: number;
-    /**
-     * Similar to the CSS border-radius.
-     * NOT IMPLEMENTED YET PLZ HELP
-     */
-    cornerRadius?: number;
-    /** The angle range of the pie chart. Values are given in degrees. */
-    startAngle?: number;
-    /** The angle range of the pie chart. Values are given in degrees. */
-    endAngle?: number;
-    /** The center of the pie charts. By default the middle of the drawing area. */
-    cx?: number;
-    /** The center of the pie charts. By default the middle of the drawing area. */
-    cy?: number;
-    /** Should percentage be shown? */
-    arcLabel?: boolean;
-  }[];
-};
-
-export const PieChart = ({
-  width = 400,
-  height = 200,
-  series,
-}: PieChartProps) => {
-  const dataSeries = useMemo(() => {
-    if (series.length === 0) return [];
-    return series?.map((s) => {
-      // Generate unique colors for each data point
-      const colors = generateChartColors(s?.data.length || 0);
-      return {
-        ...s,
-        data:
-          s?.data?.map((d, i) => {
-            return {
-              ...d,
-              color: d?.color || colors[i],
-              value: parseInt(d.value.toString()),
-            };
-          }) ?? [],
-      };
-    });
-  }, [series]);
-
-  const [tooltip, setTooltip] = useState<{
-    active: boolean;
-    top: number;
-    left: number;
-    data?: {
-      content: string;
-      color?: string;
-      serie?: string;
-    }[];
-  }>({ active: false, top: 0, left: 0, data: [] });
-
-  const showTip = (e: React.MouseEvent<SVGGElement | HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const { pageX, pageY } = e;
-
-    const path = e.target as SVGPathElement;
-    setTooltip({
-      active: true,
-      top: pageY,
-      left: pageX + 10,
-      data: [
-        {
-          content: path.dataset["value"],
-        },
-      ],
-    });
-  };
-  const updatePosition = (
-    e: React.MouseEvent<HTMLDivElement | SVGGElement>
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!tooltip.active) return;
-
-    const { pageX, pageY } = e;
-
-    const path = e.target as SVGPathElement;
-    setTooltip({
-      active: true,
-      top: pageY,
-      left: pageX + 10,
-      data: [
-        {
-          content: path.dataset["value"],
-          color: path.getAttribute("fill"),
-          serie: path.dataset["serie"],
-        },
-      ],
-    });
-  };
-
-  const hideTip = () => {
-    setTooltip({ active: false, top: 0, left: 0 });
-  };
-
-  const tooltipElement =
-    tooltip.active &&
-    createPortal(
-      <div
-        className={`absolute z-50 w-max rounded-lg border border-zinc-500 bg-zinc-700 p-2 text-gray-700 shadow dark:text-white`}
-        style={{ top: tooltip.top, left: tooltip.left, position: "absolute" }}
-      >
-        {tooltip.data?.map((d, i) => (
-          <div
-            key={`tooltip-${i}`}
-            className="inline-flex items-center justify-center space-x-2"
-          >
-            <span
-              className="h-3 w-3 rounded-full"
-              style={{ backgroundColor: d.color }}
-            />
-            <span className="pr-3">{d.serie}</span>
-            <span>{d.content}</span>
-          </div>
-        ))}
-      </div>,
-      document.body
-    );
-
-  return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
-      <title></title>
-      <desc></desc>
-
-      {tooltipElement}
-
-      <g
-        onMouseEnter={showTip}
-        onMouseMove={updatePosition}
-        onMouseLeave={hideTip}
-      >
-        {dataSeries?.map((serie, index) => {
-          const {
-            cx = width / 3,
-            cy = height / 2,
-            startAngle = 0,
-            endAngle = 360,
-            paddingAngle = 5,
-            innerRadius = 0,
-            outerRadius = 100,
-            cornerRadius = 0,
-            arcLabel,
-          } = serie;
-
-          let startAngleRS = startAngle;
-
-          const totalValue = serie.data.reduce(
-            (acc, dataSlice) => acc + dataSlice.value,
-            0
-          );
-          return (
-            <g key={`serie-${index}`} transform={`translate(${0},${0})`}>
-              <g>
-                {serie.data.map((slice, i) => {
-                  const outerRadiusSize = Math.min(cx, cy) - outerRadius;
-                  const innerRadiusValue = Math.max(0, innerRadius);
-
-                  // Calculate slice percentage out of total value
-                  const slicePercentage = (slice.value / totalValue) * 100;
-
-                  const sliceAngle =
-                    (slice.value / totalValue) *
-                    (endAngle - startAngle - serie.data.length * paddingAngle);
-                  const endAngleRS = startAngleRS + sliceAngle;
-
-                  const largeArcFlag = sliceAngle > 180 ? 1 : 0;
-
-                  // Calculate the start and end points of the slice
-                  const startX =
-                    cx +
-                    outerRadiusSize *
-                    Math.cos((startAngleRS - 90) * (Math.PI / 180));
-                  const startY =
-                    cy +
-                    outerRadiusSize *
-                    Math.sin((startAngleRS - 90) * (Math.PI / 180));
-                  const endX =
-                    cx +
-                    outerRadiusSize *
-                    Math.cos((endAngleRS - 90) * (Math.PI / 180));
-                  const endY =
-                    cy +
-                    outerRadiusSize *
-                    Math.sin((endAngleRS - 90) * (Math.PI / 180));
-
-                  // Calculate the start and end points of the inner circle
-                  const innerStartX =
-                    cx +
-                    innerRadiusValue *
-                    Math.cos((startAngleRS - 90) * (Math.PI / 180));
-                  const innerStartY =
-                    cy +
-                    innerRadiusValue *
-                    Math.sin((startAngleRS - 90) * (Math.PI / 180));
-                  const innerEndX =
-                    cx +
-                    innerRadiusValue *
-                    Math.cos((endAngleRS - 90) * (Math.PI / 180));
-                  const innerEndY =
-                    cy +
-                    innerRadiusValue *
-                    Math.sin((endAngleRS - 90) * (Math.PI / 180));
-
-
-                  const labelX =
-                    cx +
-                    (outerRadiusSize + innerRadiusValue) / 2 *
-                    Math.cos(((startAngleRS + endAngleRS) / 2 - 90) * (Math.PI / 180)) + 5;
-                  const labelY =
-                    cy +
-                    (outerRadiusSize + innerRadiusValue) / 2 *
-                    Math.sin(((startAngleRS + endAngleRS) / 2 - 90) * (Math.PI / 180)) + 5;
-
-                  const baseFontSize = 8; // Set your base font size
-                  const fontSize = (outerRadiusSize * 0.1) + baseFontSize;
-
-                  startAngleRS = endAngleRS + paddingAngle;
-
-                  // TODO: move events to svg, and detect which slice is hovered
+                {type === 'pie' ? serie.data.filter((d) => d["label"]).map((slice, index) => {
+                  const { label, color } = slice as ArrayElement<PieChartSeries["data"]>;
+                  const labelY = yOffset;
+                  yOffset += 30; // You can adjust this value to control vertical spacing
                   return (
-                    <g key={`serie-${index}-slice-${i}`}>
-                      <path
-                        data-value={slice.value}
-                        data-serie={slice.label}
-                        d={`
-                        M ${startX} ${startY}
-                        A ${outerRadiusSize} ${outerRadiusSize} 0 ${largeArcFlag} 1 ${endX} ${endY}
-                        L ${innerEndX} ${innerEndY}
-                        A ${innerRadiusValue} ${innerRadiusValue} 0 ${largeArcFlag} 0 ${innerStartX} ${innerStartY}
-                        Z
-                      `}
-                        fill={slice.color}
-                      ></path>
-                      {arcLabel && (
-                        <text x={labelX} y={labelY} textAnchor="middle" pointerEvents={'none'} className="dark:fill-white fill-black select-none pointer-events-none" alignmentBaseline="middle" fontSize={fontSize}>
-                          {slicePercentage.toFixed(1)}%
-                        </text>
-                      )}
+                    <g
+                      key={`serie-${i}-slice-${index}`}
+                      transform={`translate(0, ${labelY})`}
+                    >
+                      <rect x={0} y={-8} width={16} height={16} fill={color} />
+                      <text
+                        x={24}
+                        y={0}
+                        textAnchor="start"
+                        dominantBaseline="middle"
+                        className="dark:fill-white fill-black"
+                      >
+                        {label}
+                      </text>
                     </g>
-                  );
-                })}
+                  )
+                }) : (
+                  <>
+                    <rect x={0} y={-10} width={20} height={20} fill={serie.color} />
+                    <text
+                      x={25}
+                      y={0}
+                      textAnchor="start"
+                      dominantBaseline="middle"
+                      className="dark:fill-white fill-black align-middle text-sm font-normal capitalize tracking-wide"
+                    >
+                      {serie.label}
+                    </text>
+                  </>
+                )}
               </g>
-            </g>
-          );
-        })}
-      </g>
-
-      <g>
-        {dataSeries?.map((serie, index) => {
-          const x = width / 2 + width / 4;
-          const y = 0;
-          let yOffset = y; // Offset to position labels underneath each other
-
-          return serie.data
-            .filter((d) => d.label)
-            .map((slice, i) => {
-              const labelY = yOffset;
-              yOffset += 30; // You can adjust this value to control vertical spacing
-              return (
-                <g
-                  key={`serie-${index}-slice-${i}`}
-                  transform={`translate(${x}, ${labelY})`}
-                >
-                  <rect
-                    x={0}
-                    y={"50%"}
-                    width={"16px"}
-                    height={"16px"}
-                    fill={slice.color}
-                  />
-                  <text
-                    x={10 + 16}
-                    y={"50%"}
-                    className="dark:fill-white fill-black"
-                    textAnchor="start"
-                    dominantBaseline="central"
-                  >
-                    <tspan>{slice.label}</tspan>
-                  </text>
-                </g>
-              );
-            });
-        })}
+            )
+          })}
       </g>
     </svg>
   );
