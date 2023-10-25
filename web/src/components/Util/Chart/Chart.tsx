@@ -14,6 +14,7 @@ import {
   drawCatmullRomChart,
   formatNumber,
   generateChartColors,
+  groupBy,
   svgArc,
 } from "src/lib/formatters";
 import Tooltip from "../Tooltip/Tooltip";
@@ -199,10 +200,9 @@ const Chart = ({
             labelY.setAttribute("x", `-15`);
             labelY.setAttribute(
               "y",
-              `${
-                height -
-                margin -
-                ((i - yAxisMin) / yAxisRange) * (height - 2 * margin)
+              `${height -
+              margin -
+              ((i - yAxisMin) / yAxisRange) * (height - 2 * margin)
               }`
             );
             labelY.setAttribute("font-size", `${max - min > 10 ? 12 : 8}`);
@@ -217,12 +217,12 @@ const Chart = ({
             const yLine = line(
               0,
               height -
-                margin -
-                ((i - yAxisMin) / yAxisRange) * (height - 2 * margin),
+              margin -
+              ((i - yAxisMin) / yAxisRange) * (height - 2 * margin),
               width,
               height -
-                margin -
-                ((i - yAxisMin) / yAxisRange) * (height - 2 * margin)
+              margin -
+              ((i - yAxisMin) / yAxisRange) * (height - 2 * margin)
             );
             yLine.setAttribute("stroke", "#ffffff");
             yLine.setAttribute("stroke-opacity", "0.2");
@@ -465,24 +465,24 @@ const generateLabelsAxisRange = (
           {((axis?.dataKey && dataset && dataset[i]) ||
             (i >= 0 && i < labelsNumber) ||
             !centerText) && (
-            <text
-              // Center text in the middle of the tick
-              x={`${isXAxis ? (centerText ? labelStep / 2 : 0) : -8}px`}
-              y={`${isXAxis ? 9 : centerText ? labelStep / 2 : 0}px`} // +labelStep / 2 to center text
-              stroke="none"
-              fill="white"
-              transform-origin={`${isXAxis ? 0 : -8}px 0px`}
-              textAnchor={isXAxis ? "middle" : "end"}
-              dominantBaseline={isXAxis ? "hanging" : "central"}
-              className="text-xs font-normal tracking-wide"
-            >
-              {dataset && dataset.length > 0 && i < dataset.length
-                ? dataset[i][axis.dataKey]
-                : axis?.data[i]
-                ? axis?.data[i]
-                : i.toString() ?? ""}
-            </text>
-          )}
+              <text
+                // Center text in the middle of the tick
+                x={`${isXAxis ? (centerText ? labelStep / 2 : 0) : -8}px`}
+                y={`${isXAxis ? 9 : centerText ? labelStep / 2 : 0}px`} // +labelStep / 2 to center text
+                stroke="none"
+                fill="white"
+                transform-origin={`${isXAxis ? 0 : -8}px 0px`}
+                textAnchor={isXAxis ? "middle" : "end"}
+                dominantBaseline={isXAxis ? "hanging" : "central"}
+                className="text-xs font-normal tracking-wide"
+              >
+                {dataset && dataset.length > 0 && i < dataset.length
+                  ? dataset[i][axis.dataKey]
+                  : axis?.data[i]
+                    ? axis?.data[i]
+                    : i.toString() ?? ""}
+              </text>
+            )}
         </g>
       );
     }
@@ -520,18 +520,17 @@ const numberToChart = (
     const logMin = Math.log10(min);
     const logMax = Math.log10(max + 1); // Add 1 to handle log(0)
 
-    console.log(logMax, logMin, range);
     return isXAxis
       ? width -
-          margin.left -
-          ((Math.log10(min) + relativeValue * (logMax - logMin)) /
-            (logMax - logMin)) *
-            availableWidth
+      margin.left -
+      ((Math.log10(min) + relativeValue * (logMax - logMin)) /
+        (logMax - logMin)) *
+      availableWidth
       : height -
-          margin.top -
-          ((Math.log10(min) + relativeValue * (logMax - logMin)) /
-            (logMax - logMin)) *
-            availableHeight;
+      margin.top -
+      ((Math.log10(min) + relativeValue * (logMax - logMin)) /
+        (logMax - logMin)) *
+      availableHeight;
   }
 
   return isXAxis
@@ -577,7 +576,7 @@ const generateAxisRangeValues = (
   const isHorizontal = position === "top" || position === "bottom";
 
   const labelsNumber =
-    scaleType === "point" ? data.length - 1 : data.length || 0;
+    (scaleType === "point" ? data.length - 1 : data.length) || 0;
 
   const labelStep = (labelsNum: number) =>
     (isHorizontal ? availableWidth : availableHeight) / labelsNum;
@@ -598,7 +597,6 @@ const generateAxisRangeValues = (
   );
   const stepSize = Math.ceil(rawStepSize / stepMultiplier) * stepMultiplier;
 
-  // console.log(`1: ${stepSize} VS 2: ${calculateStepSize()}`)
 
   // Calculate the number of steps based on the rounded step size
   const stepCount = Math.ceil((max - min) / stepSize);
@@ -615,25 +613,27 @@ const generateAxisRangeValues = (
       const value =
         (isFinite(min) ? min - (min % stepMultiplier) : 0) +
         i *
-          (scaleType === "band" || scaleType === "point"
-            ? labelStep(labelsNumber)
-            : stepSize);
+        (scaleType === "band" || scaleType === "point"
+          ? labelStep(labelsNumber)
+          : stepSize);
 
       const xy = isHorizontal
         ? scaleType === "band" || scaleType === "point"
           ? margin.left + value
           : margin.left +
-            numberToChart(
-              {
-                ...chartData,
-                min: min - (min % stepMultiplier),
-                availableWidth,
-                availableHeight,
-              },
-              value,
-              isHorizontal
-            )
-        : numberToChart(
+          numberToChart(
+            {
+              ...chartData,
+              min: min - (min % stepMultiplier),
+              availableWidth,
+              availableHeight,
+            },
+            value,
+            isHorizontal
+          )
+        : scaleType === "band" || scaleType === "point"
+          ? margin.top + value
+          : numberToChart(
             {
               ...chartData,
               min: min - (min % stepMultiplier),
@@ -650,8 +650,8 @@ const generateAxisRangeValues = (
             ? Math.log10(value)
             : 0
           : scaleType === "band" || scaleType === "point"
-          ? data[i]
-          : value;
+            ? data[i]
+            : value;
 
       return {
         x: isHorizontal ? xy : 0,
@@ -666,18 +666,20 @@ const generateAxisRangeValues = (
             ? labelStep(labelsNumber) / 2
             : 0
           : position === "left"
-          ? disableTicks
-            ? -7
-            : -(3 + tickSize)
-          : disableTicks
-          ? 7
-          : 3 + tickSize,
-        yText: isHorizontal ? (disableTicks ? 7 : 3 + tickSize) : 0,
+            ? disableTicks
+              ? -7
+              : -(3 + tickSize)
+            : disableTicks
+              ? 7
+              : 3 + tickSize,
+        yText: isHorizontal ? (disableTicks ? 7 : 3 + tickSize) : scaleType === "band"
+          ? labelStep(labelsNumber) / 2
+          : 0,
         textAnchor: isHorizontal
           ? "middle"
           : position === "left"
-          ? "end"
-          : "start",
+            ? "end"
+            : "start",
         dominantBaseline: isHorizontal ? "hanging" : "central",
         xLine: isHorizontal ? 0 : position === "left" ? -tickSize : tickSize,
         yLine: isHorizontal ? tickSize : 0,
@@ -685,8 +687,8 @@ const generateAxisRangeValues = (
           scaleType === "band"
             ? !!v
             : data.length > 0
-            ? data.includes(v)
-            : true,
+              ? data.includes(v)
+              : true,
       };
     }
   ) as AxisValue[];
@@ -727,9 +729,8 @@ const generateAxisRange = (
   ).map((axisValue) => {
     return (
       <g
-        key={`${position === "top" || position === "bottom" ? "x" : "y"}-axis-${
-          axisValue.value
-        } `}
+        key={`${position === "top" || position === "bottom" ? "x" : "y"}-axis-${axisValue.value
+          } `}
         transform={`translate(${axisValue.x}, ${axisValue.y})`}
         className="text-xs font-normal tracking-wide"
       >
@@ -860,31 +861,30 @@ export const ChartContainer = ({
         <React.Fragment key={`axis-${axisIndex}`}>
           {dataSeries[0].data.map((_, j) => (
             <g
-              transform={`translate(${isXAxis ? j * categoryWidth : 0}, ${
-                isXAxis ? 0 : j * categoryWidth
-              })`}
+              transform={`translate(${isXAxis ? j * categoryWidth : 0}, ${isXAxis ? 0 : j * categoryWidth
+                })`}
               key={`category-${j}`}
             >
               {dataSeries.map((data, i) => {
                 const rectWidth = isXAxis
                   ? barWidth
                   : ((data.data[j] - min) / (max - min)) *
-                    (width - 2 * paddingX);
+                  (width - 2 * paddingX);
                 const rectHeight = isXAxis
                   ? ((data.data[j] - min) / (max - min)) *
-                    (height - 2 * paddingY)
+                  (height - 2 * paddingY)
                   : barWidth;
 
                 const x = isXAxis
                   ? Math.round(
-                      (barPositions[i][j] + categoryWidth / 2) * 1000
-                    ) / 1000
+                    (barPositions[i][j] + categoryWidth / 2) * 1000
+                  ) / 1000
                   : 0;
                 const y = isXAxis
                   ? height - paddingY - rectHeight
                   : Math.round(
-                      (barPositions[i][j] + paddingY + categoryWidth / 2) * 1000
-                    ) / 1000;
+                    (barPositions[i][j] + paddingY + categoryWidth / 2) * 1000
+                  ) / 1000;
 
                 return (
                   <rect
@@ -950,32 +950,32 @@ export const ChartContainer = ({
           transition: "opacity 0.2s ease-in 0s, fill 0.2s ease-in 0s",
         }}
         transform={`translate(${paddingX}, 0)`}
-        // onMouseMove={(e) => {
-        //   const target = e.target as HTMLDivElement;
-        //   const value = target.getAttribute('data-value');
+      // onMouseMove={(e) => {
+      //   const target = e.target as HTMLDivElement;
+      //   const value = target.getAttribute('data-value');
 
-        //   // if (!value) return
-        //   const x = e.clientX;
-        //   const y = e.clientY;
+      //   // if (!value) return
+      //   const x = e.clientX;
+      //   const y = e.clientY;
 
-        //   // if (document.getElementById('marker')) return;
-        //   const markerPath = `M0 ${height - y} L${x} ${height - paddingY} L0 ${height - paddingY} L0 ${height} Z`;
-        //   let marker = document.getElementById('marker') ? document.getElementById('marker') : document.createElementNS("http://www.w3.org/2000/svg", "path");
-        //   marker.setAttribute("d", markerPath);
-        //   marker.setAttribute("fill", "#ffffff");
-        //   marker.setAttribute("fill-opacity", "0.2");
-        //   marker.style.pointerEvents = 'none';
-        //   marker.id = "marker"
+      //   // if (document.getElementById('marker')) return;
+      //   const markerPath = `M0 ${height - y} L${x} ${height - paddingY} L0 ${height - paddingY} L0 ${height} Z`;
+      //   let marker = document.getElementById('marker') ? document.getElementById('marker') : document.createElementNS("http://www.w3.org/2000/svg", "path");
+      //   marker.setAttribute("d", markerPath);
+      //   marker.setAttribute("fill", "#ffffff");
+      //   marker.setAttribute("fill-opacity", "0.2");
+      //   marker.style.pointerEvents = 'none';
+      //   marker.id = "marker"
 
-        //   e.currentTarget.appendChild(marker);
-        // }}
-        // onMouseOut={(e) => {
-        //   const target = e.currentTarget as SVGGElement;
-        //   const marker = document.getElementById('marker');
-        //   if (marker) {
-        //     target.removeChild(marker);
-        //   }
-        // }}
+      //   e.currentTarget.appendChild(marker);
+      // }}
+      // onMouseOut={(e) => {
+      //   const target = e.currentTarget as SVGGElement;
+      //   const marker = document.getElementById('marker');
+      //   if (marker) {
+      //     target.removeChild(marker);
+      //   }
+      // }}
       >
         <rect
           x="0"
@@ -1000,15 +1000,15 @@ export const ChartContainer = ({
 
         {xAxisData.filter((x) => x?.data.length > 0).length > 0
           ? generateLabelsAxisRange(
-              xAxisData,
-              { width, height, paddingX, paddingY, dataset, series },
-              true
-            )
+            xAxisData,
+            { width, height, paddingX, paddingY, dataset, series },
+            true
+          )
           : generateAxisRange(
-              { width, height, xAxisData, yAxisData, margin, min, max },
-              "linear",
-              "bottom"
-            )}
+            { width, height, xAxisData, yAxisData, margin, min, max },
+            "linear",
+            "bottom"
+          )}
 
         {/* Axis Labels */}
         {generateLabels(true)}
@@ -1025,15 +1025,15 @@ export const ChartContainer = ({
 
         {yAxisData.filter((y) => y.data.length > 0).length > 0
           ? generateLabelsAxisRange(
-              yAxisData,
-              { width, height, paddingX, paddingY, dataset, series },
-              false
-            )
+            yAxisData,
+            { width, height, paddingX, paddingY, dataset, series },
+            false
+          )
           : generateAxisRange(
-              { width, height, xAxisData, yAxisData, margin, min, max },
-              "linear",
-              "left"
-            )}
+            { width, height, xAxisData, yAxisData, margin, min, max },
+            "linear",
+            "left"
+          )}
 
         {/* Axis Labels */}
         {generateLabels(false)}
@@ -1050,9 +1050,8 @@ export const ChartContainer = ({
               <g
                 key={`legend - ${serie?.dataKey || index}`}
                 className="inline-flex items-center space-x-2"
-                transform={`translate(${
-                  paddingX + ((width - 2 * paddingX) / series.length) * index
-                }, 0)`}
+                transform={`translate(${paddingX + ((width - 2 * paddingX) / series.length) * index
+                  }, 0)`}
               >
                 <rect width="12" height="12" fill={serie.color} />
                 <text
@@ -1097,6 +1096,7 @@ type PieChartSeries = BaseChartSeries & {
   /** The padding angle between each pie slice */
   paddingAngle?: number;
   /**
+   * TODO: implement
    * Similar to the CSS border-radius.
    * NOT IMPLEMENTED YET PLZ HELP
    */
@@ -1187,91 +1187,14 @@ export const ScatterChart = ({
   const availableWidth = width - margin.left - margin.right;
   const availableHeight = height - margin.top - margin.bottom;
 
-  const categoryGapRatio = 0.3;
-  const barGapRatio = 0.1;
+  const categoryGapRatio = 0.1;
+  const barGapRatio = 0.4;
 
   const AxisPositionMap: { [key: string]: AxisPosition } = {
     [leftAxis]: "left",
     [rightAxis]: "right",
     [topAxis]: "top",
     [bottomAxis]: "bottom",
-  };
-
-  // TODO: check if it works vertically
-  const generateBars = (axisData: ArrayElement<AxisData>) => {
-    const xAxis = xAxisData.find((x) =>
-      dataSeries.some((d) => d.xAxisKey == x.id)
-    );
-    const yAxis = yAxisData.find((y) =>
-      dataSeries.some((d) => d.yAxisKey == y.id)
-    );
-    const isXAxis =
-      axisData.position === "bottom" || axisData.position === "top";
-
-    const min = isFinite(axisData.valueMin)
-      ? axisData.valueMin
-      : isXAxis
-      ? yAxis.valueMin
-      : xAxis.valueMin;
-    const max = isFinite(axisData.valueMax)
-      ? axisData.valueMax
-      : isXAxis
-      ? yAxis.valueMax
-      : xAxis.valueMax;
-
-    return axisData.axisValues
-      .filter((axis) => axis.isMarkerPoint)
-      .map((axisValue, index) => {
-        const groupWidth = axisValue.stepSize - (dataSeries.length - 1);
-
-        // Calculate category spacing
-        const categorySpacing = groupWidth * categoryGapRatio;
-
-        // Calculate bar width and gap
-        const totalBarWidth =
-          (groupWidth - categorySpacing) / dataSeries.length;
-        const barWidth = totalBarWidth * (1 - barGapRatio);
-        const barGap = totalBarWidth * barGapRatio;
-
-        return (
-          <g
-            data-group={index + 1}
-            transform={`translate(${isXAxis ? axisValue.x - margin.left : 0}, ${
-              isXAxis ? 0 : axisValue.y - margin.top
-            })`}
-            key={`category-${index}`}
-          >
-            {dataSeries.map((data, barIndex) => {
-              const rectWidth = isXAxis
-                ? barWidth
-                : ((data.data[index] - min) / (max - min)) * availableWidth;
-              const rectHeight = isXAxis
-                ? ((data.data[index] - min) / (max - min)) * availableHeight
-                : barWidth;
-
-              const x = isXAxis
-                ? Math.round(
-                    (barIndex * (barWidth + barGap) + categorySpacing / 2) *
-                      1000
-                  ) / 1000
-                : 0;
-              const y = isXAxis ? height - margin.bottom - rectHeight : 0;
-
-              return (
-                <rect
-                  key={`bar-${barIndex}-${index}`}
-                  data-value={data.data[index]}
-                  x={x}
-                  y={y}
-                  width={rectWidth}
-                  height={rectHeight}
-                  fill={data.color}
-                />
-              );
-            })}
-          </g>
-        );
-      });
   };
 
   const dataSeries: ChartPropsWithType["series"] = useMemo(() => {
@@ -1290,14 +1213,14 @@ export const ScatterChart = ({
           (dataset.length > 0 && s.dataKey
             ? dataset?.map((d) => parseInt(d[s.dataKey].toString()))
             : type === "pie"
-            ? s?.data?.map((d, i) => {
+              ? s?.data?.map((d, i) => {
                 return {
                   ...d,
                   color: d?.color || colors[i],
                   value: parseInt(d.value.toString()),
                 };
               })
-            : s.data) ?? [],
+              : s.data) ?? [],
       };
     });
   }, [series, dataset]);
@@ -1317,17 +1240,18 @@ export const ScatterChart = ({
     let valueMin =
       x.min ??
       Math.min(
+        type === "bar" ? 0 : null,
         ...(!data || data.length == 0
           ? dataSeries.flatMap((s) =>
-              type === "scatter"
-                ? s.data.map((x) =>
-                    position === "top" || position === "bottom" ? x.x : x.y
-                  )
-                : s.data
-            )
+            type === "scatter"
+              ? s.data.map((x) =>
+                position === "top" || position === "bottom" ? x.x : x.y
+              )
+              : s.data
+          )
           : data && data.every((x) => !isNaN(parseInt(x.toString())))
-          ? data.map((x) => parseInt(x.toString()))
-          : [])
+            ? data.map((x) => parseInt(x.toString()))
+            : [])
       ) ??
       null;
     let valueMax =
@@ -1335,15 +1259,15 @@ export const ScatterChart = ({
       Math.max(
         ...(!data || data.length == 0
           ? dataSeries.flatMap((s) =>
-              type === "scatter"
-                ? s.data.map((x) =>
-                    position === "top" || position === "bottom" ? x.x : x.y
-                  )
-                : s.data
-            )
+            type === "scatter"
+              ? s.data.map((x) =>
+                position === "top" || position === "bottom" ? x.x : x.y
+              )
+              : s.data
+          )
           : data && data.every((x) => !isNaN(parseInt(x.toString())))
-          ? data.map((x) => parseInt(x.toString()))
-          : [])
+            ? data.map((x) => parseInt(x.toString()))
+            : [])
       ) ??
       null;
     const axisValues = generateAxisRangeValues(
@@ -1369,7 +1293,6 @@ export const ScatterChart = ({
       data,
       axisValues,
       scaleType,
-      scale: scaleType === "log" ? (d) => Math.log10(d + 1) : (d) => d,
       valueMin,
       valueMax,
       position,
@@ -1379,45 +1302,52 @@ export const ScatterChart = ({
     };
   });
 
-  const yAxisData = (yAxis ?? [{ id: "left" }])?.map((x) => {
-    let id = x?.id ?? "left";
+  const yAxisData = (yAxis ?? [{ id: "left" }])?.map((y) => {
+    let id = y?.id ?? "left";
     let position: AxisPosition = AxisPositionMap[id] || "left";
 
-    let data =
-      (dataset.length > 0 && x.dataKey
-        ? dataset?.map((d) => parseInt(d[x.dataKey].toString()))
-        : x.data) ?? [];
+    let scaleType = y.scaleType ?? "linear";
+    let tickSize = y.tickSize ?? 6;
 
-    let scaleType = x.scaleType ?? "linear";
-    let tickSize = x.tickSize ?? 6;
+    let disableTicks = y.disableTicks ?? false;
+
+    let data =
+      (dataset.length > 0 && y.dataKey
+        ? dataset?.map((d) => {
+          if (scaleType === 'linear') {
+            return parseInt(d[y.dataKey].toString())
+          }
+          return d[y.dataKey]
+        })
+        : y.data) ?? [];
 
     let valueMin =
-      x.min ??
+      y.min ??
       Math.min(
         type === "bar" ? 0 : null,
         ...dataSeries.flatMap((s) =>
           type === "scatter"
-            ? s.data.map((x) =>
-                position === "top" || position === "bottom" ? x.x : x.y
-              )
+            ? s.data.map((xy) =>
+              position === "top" || position === "bottom" ? xy.x : xy.y
+            )
             : s.data
         ),
-        ...(x?.data && x?.data.every((x) => !isNaN(parseInt(x.toString())))
-          ? x.data.map((x) => parseInt(x.toString()))
+        ...(y?.data && y?.data.every((y) => !isNaN(parseInt(y.toString())))
+          ? y.data.map((y) => parseInt(y.toString()))
           : [])
       );
     let valueMax =
-      x.max ??
+      y.max ??
       Math.max(
         ...dataSeries.flatMap((s) =>
           type === "scatter"
             ? s.data.map((x) =>
-                position === "top" || position === "bottom" ? x.x : x.y
-              )
+              position === "top" || position === "bottom" ? x.x : x.y
+            )
             : s.data
         ),
-        ...(x?.data && x?.data.every((x) => !isNaN(parseInt(x.toString())))
-          ? x.data.map((x) => parseInt(x.toString()))
+        ...(y?.data && y?.data.every((x) => !isNaN(parseInt(x.toString())))
+          ? y.data.map((x) => parseInt(x.toString()))
           : [])
       );
 
@@ -1434,22 +1364,21 @@ export const ScatterChart = ({
       scaleType,
       position,
       tickSize,
-      x.disableTicks ?? false,
+      disableTicks,
       data
     );
 
     return {
-      ...x,
+      ...y,
       id,
       data,
       axisValues,
       scaleType,
-      scale: scaleType === "log" ? (d) => Math.log10(d + 1) : (d) => d,
       valueMin,
       valueMax,
       position,
-      disableLine: x.disableLine ?? false,
-      disableTicks: x.disableTicks ?? false,
+      disableLine: y.disableLine ?? false,
+      disableTicks,
       tickSize,
     };
   });
@@ -1463,13 +1392,16 @@ export const ScatterChart = ({
       axis?.id ? axis.id === d.yAxisKey : true
     );
 
+    const bandAxis = [...xAxisData, ...yAxisData].find((axis) =>
+      type === 'bar' ? axis.scaleType === "band" : true
+    );
+
     const minX = xAxis?.valueMin;
     const maxX = xAxis?.valueMax;
 
     const minY = yAxis?.valueMin;
     const maxY = yAxis?.valueMax;
 
-    // if (type === "line" && width == 499) console.log(minX, maxX, minY, maxY);
 
     const {
       cx = width / 3,
@@ -1490,81 +1422,117 @@ export const ScatterChart = ({
       0
     );
 
-    // TODO: add bar
+    // #region Bar
+    const groupSize = bandAxis && bandAxis.axisValues.length > 0 ? bandAxis?.axisValues[0].stepSize - (dataSeries.length - 1) : 0;
+
+    // Calculate category spacing
+    const categorySpacing = groupSize * categoryGapRatio;
+
+    // Calculate bar width and gap
+    const totalBarSize =
+      (groupSize - categorySpacing) / dataSeries.length;
+    const barSize = totalBarSize * (1 - barGapRatio);
+    const barGap = totalBarSize * barGapRatio;
+
+    const isXAxis = bandAxis ? bandAxis.position === "bottom" || bandAxis.position === "top" : false;
+    // #endregion
+
     // TODO: calc for horizontal
     return d.data
       .map((val, index) => {
+        const rectWidth = isXAxis
+          ? barSize
+          : ((val - minX) / (maxX - minX)) * availableWidth;
+        const rectHeight = isXAxis
+          ? ((val - minY) / (maxY - minY)) * availableHeight
+          : barSize;
+
+        if (height === 301 && !isXAxis) console.log(minX, maxX, minY, maxY)
         const x =
           type === "scatter"
             ? numberToChart(
-                {
-                  width,
-                  height,
-                  availableWidth,
-                  availableHeight,
-                  margin,
-                  min: minX,
-                  max: maxX,
-                },
-                val.x,
-                true,
-                xAxis.scaleType
-              )
-            : xAxis.scaleType === "point"
-            ? xAxis.axisValues[index].x - margin.left
-            : xAxis.scaleType === "linear" &&
-              xAxis.data.length > 0 &&
-              xAxis.data.every((x) => !isNaN(parseInt(x.toString())))
-            ? index < xAxis.data.length
-              ? numberToChart(
-                  {
-                    width,
-                    height,
-                    availableWidth,
-                    availableHeight,
-                    margin,
-                    min: minX,
-                    max: maxX,
-                  },
-                  parseInt(xAxis.data[index].toString()),
-                  true,
-                  xAxis.scaleType
-                )
-              : null
-            : index < xAxis.axisValues.length
-            ? xAxis.axisValues[index].x - margin.left
-            : numberToChart(
-                {
-                  width,
-                  height,
-                  availableWidth,
-                  availableHeight,
-                  margin,
-                  min: minX,
-                  max: maxX,
-                },
-                index,
-                true,
-                xAxis.scaleType
-              );
+              {
+                width,
+                height,
+                availableWidth,
+                availableHeight,
+                margin,
+                min: minX,
+                max: maxX,
+              },
+              val.x,
+              true,
+              xAxis.scaleType
+            )
+            : type === 'bar'
+              ? isXAxis
+                ? Math.round(
+                  (i * (barSize + barGap) + categorySpacing / 2) *
+                  1000
+                ) / 1000
+                : 0
+              : xAxis.scaleType === "point"
+                ? xAxis.axisValues[index].x - margin.left
+                : xAxis.scaleType === "linear" &&
+                  xAxis.data.length > 0 &&
+                  xAxis.data.every((x) => !isNaN(parseInt(x.toString())))
+                  ? index < xAxis.data.length
+                    ? numberToChart(
+                      {
+                        width,
+                        height,
+                        availableWidth,
+                        availableHeight,
+                        margin,
+                        min: minX,
+                        max: maxX,
+                      },
+                      parseInt(xAxis.data[index].toString()),
+                      true,
+                      xAxis.scaleType
+                    )
+                    : null
+                  : index < xAxis.axisValues.length
+                    ? xAxis.axisValues[index].x - margin.left
+                    : numberToChart(
+                      {
+                        width,
+                        height,
+                        availableWidth,
+                        availableHeight,
+                        margin,
+                        min: minX,
+                        max: maxX,
+                      },
+                      index,
+                      true,
+                      xAxis.scaleType
+                    );
 
         const y =
           type === "scatter"
             ? numberToChart(
-                {
-                  width,
-                  height,
-                  availableWidth,
-                  availableHeight,
-                  margin,
-                  min: minX,
-                  max: maxX,
-                },
-                val.y,
-                false,
-                xAxis.scaleType
-              )
-            : numberToChart(
+              {
+                width,
+                height,
+                availableWidth,
+                availableHeight,
+                margin,
+                min: minX,
+                max: maxX,
+              },
+              val.y,
+              false,
+              xAxis.scaleType
+            )
+            : type === 'bar'
+              ? isXAxis
+                ? height - margin.bottom - rectHeight
+                : Math.round(
+                  (i * (barSize + barGap) + categorySpacing / 2) *
+                  1000
+                ) / 1000
+              : numberToChart(
                 {
                   width,
                   height,
@@ -1578,6 +1546,20 @@ export const ScatterChart = ({
                 false,
                 yAxis.scaleType
               );
+
+        if (type === 'bar') {
+          return {
+            x,
+            y,
+            groupX: isXAxis ? bandAxis.axisValues[index].x - margin.left : 0,
+            groupY: isXAxis ? 0 : bandAxis.axisValues[index].y,
+            width: rectWidth,
+            height: rectHeight,
+            value: val,
+            color: d.color,
+          }
+        }
+
 
         //#region Pie
         if (type === "pie") {
@@ -1599,11 +1581,11 @@ export const ScatterChart = ({
           const startX =
             cx +
             outerRadiusSize *
-              Math.cos((sliceStartAngle - 90) * (Math.PI / 180));
+            Math.cos((sliceStartAngle - 90) * (Math.PI / 180));
           const startY =
             cy +
             outerRadiusSize *
-              Math.sin((sliceStartAngle - 90) * (Math.PI / 180));
+            Math.sin((sliceStartAngle - 90) * (Math.PI / 180));
           const endX =
             cx +
             outerRadiusSize * Math.cos((sliceEndAngle - 90) * (Math.PI / 180));
@@ -1615,11 +1597,11 @@ export const ScatterChart = ({
           const innerStartX =
             cx +
             innerRadiusValue *
-              Math.cos((sliceStartAngle - 90) * (Math.PI / 180));
+            Math.cos((sliceStartAngle - 90) * (Math.PI / 180));
           const innerStartY =
             cy +
             innerRadiusValue *
-              Math.sin((sliceStartAngle - 90) * (Math.PI / 180));
+            Math.sin((sliceStartAngle - 90) * (Math.PI / 180));
           const innerEndX =
             cx +
             innerRadiusValue * Math.cos((sliceEndAngle - 90) * (Math.PI / 180));
@@ -1630,16 +1612,16 @@ export const ScatterChart = ({
           const labelX =
             cx +
             ((outerRadiusSize + innerRadiusValue) / 2) *
-              Math.cos(
-                ((sliceStartAngle + sliceEndAngle) / 2 - 90) * (Math.PI / 180)
-              ) +
+            Math.cos(
+              ((sliceStartAngle + sliceEndAngle) / 2 - 90) * (Math.PI / 180)
+            ) +
             5;
           const labelY =
             cy +
             ((outerRadiusSize + innerRadiusValue) / 2) *
-              Math.sin(
-                ((sliceStartAngle + sliceEndAngle) / 2 - 90) * (Math.PI / 180)
-              ) +
+            Math.sin(
+              ((sliceStartAngle + sliceEndAngle) / 2 - 90) * (Math.PI / 180)
+            ) +
             5;
 
           const baseFontSize = 8; // Set your base font size
@@ -1681,40 +1663,39 @@ export const ScatterChart = ({
           value: d.label,
         };
       })
-      .filter((x) => x.x !== null && x.y !== null);
+      .filter((x) => type === 'scatter' || type === 'line' ? x.x !== null && x.y !== null : true);
   });
 
   const lineData = {
     filledArea:
       type === "line"
         ? pointData
-            .filter((_, i) => dataSeries[i]["area"])
-            .map((d, i) => {
-              const points: [number, number][] = d.map((val) => [val.x, val.y]);
-              const catmull = drawCatmullRomChart(points);
+          .filter((_, i) => dataSeries[i]["area"])
+          .map((d, i) => {
+            const points: [number, number][] = d.map((val) => [val.x, val.y]);
+            const catmull = drawCatmullRomChart(points);
 
-              let catmullfilled =
-                catmull
-                  .map(
-                    ({ x, y }, index) => `${index == 0 ? "M" : "L"} ${x} ${y}`
-                  )
-                  .join(" ") +
-                `${
-                  dataSeries[i]["area"]
-                    ? ` V${height - margin.bottom} H0 Z`
-                    : ""
-                }`;
+            let catmullfilled =
+              catmull
+                .map(
+                  ({ x, y }, index) => `${index == 0 ? "M" : "L"} ${x} ${y}`
+                )
+                .join(" ") +
+              `${dataSeries[i]["area"]
+                ? ` V${height - margin.bottom} H0 Z`
+                : ""
+              }`;
 
-              return (
-                <g key={`filled-area-${i}`}>
-                  <path
-                    d={catmullfilled}
-                    fill={dataSeries[i].color}
-                    fillOpacity={0.1}
-                  />
-                </g>
-              );
-            })
+            return (
+              <g key={`filled-area-${i}`}>
+                <path
+                  d={catmullfilled}
+                  fill={dataSeries[i].color}
+                  fillOpacity={0.1}
+                />
+              </g>
+            );
+          })
         : [],
     line: pointData.map((d, i) => {
       const points: [number, number][] = d.map((val) => [val.x, val.y]);
@@ -1794,7 +1775,28 @@ export const ScatterChart = ({
         >
           {[...xAxisData, ...yAxisData]
             .filter((x) => x.scaleType === "band")
-            .map((axis) => generateBars(axis))}
+            .map((axis) => {
+              return Object.values(groupBy(pointData.flatMap((points) => points), axis.position === 'top' || axis.position === 'bottom' ? 'groupX' : 'groupY')).map((group, groupIndex) => {
+                if (!(axis.position === 'top' || axis.position === 'bottom')) console.log(group)
+                return (
+                  <g key={`BarChart-Group-${groupIndex}`} transform={`translate(${group[0].groupX}, ${group[0].groupY})`}>
+                    {group.map(({ value, color, x, y, width, height }, barIndex) => {
+                      return (
+                        <rect
+                          key={`group-${groupIndex}-bar-${barIndex}`}
+                          data-value={value}
+                          x={x}
+                          y={y}
+                          width={width}
+                          height={height}
+                          fill={color}
+                        />
+                      )
+                    })}
+                  </g>
+                )
+              })
+            })}
         </g>
       )}
 
@@ -1810,22 +1812,19 @@ export const ScatterChart = ({
             label,
           }) => (
             <g
-              key={`${
-                position === "bottom" || position === "top" ? "x" : "y"
-              }-axis-${position}`}
-              transform={`translate(${
-                position == "left"
-                  ? margin.left
-                  : position === "right"
+              key={`${position === "bottom" || position === "top" ? "x" : "y"
+                }-axis-${position}`}
+              transform={`translate(${position == "left"
+                ? margin.left
+                : position === "right"
                   ? width - margin.right
                   : 0
-              }, ${
-                position === "bottom"
+                }, ${position === "bottom"
                   ? height - margin.bottom
                   : position === "top"
-                  ? margin.top
-                  : 0
-              })`}
+                    ? margin.top
+                    : 0
+                })`}
             >
               {!disableLine && (
                 <line
@@ -1868,9 +1867,8 @@ export const ScatterChart = ({
                   index
                 ) => (
                   <g
-                    key={`${
-                      position === "bottom" || position === "top" ? "x" : "y"
-                    }-axis-${position}-${index} `}
+                    key={`${position === "bottom" || position === "top" ? "x" : "y"
+                      }-axis-${position}-${index} `}
                     transform={`translate(${x}, ${y})`}
                     className="text-xs font-normal tracking-wide"
                   >

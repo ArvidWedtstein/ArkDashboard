@@ -271,14 +271,14 @@ const Profile = ({ profile }: Props) => {
 
           <ChartContainer
             height={300}
-            xAxis={[
+            yAxis={[
               {
                 scaleType: "band",
                 label: "test",
                 dataKey: "month",
               },
             ]}
-            yAxis={[
+            xAxis={[
               {
                 label: "Y Axis",
               },
@@ -378,78 +378,114 @@ const Profile = ({ profile }: Props) => {
           />
 
           <ScatterChart
-            width={499}
-            height={300}
-            series={[
-              {
-                yAxisKey: "linearAxis",
-                data: [1, 10, 30, 50, 70, 90, 100],
-                label: "Linear",
-                id: "pvId",
-              },
-              {
-                yAxisKey: "logAxis",
-                data: [1, 10, 30, 50, 70, 90, 100],
-                label: "Log",
-                id: "serie2",
-              },
-            ]}
-            xAxis={[{ data: [1, 10, 30, 50, 70, 90, 100], scaleType: "linear" }]}
-            yAxis={[
-              { id: "linearAxis", label: "Linear", scaleType: "linear" },
-              { id: "logAxis", label: "Log", scaleType: "log" },
-            ]}
-            leftAxis="linearAxis"
-            rightAxis="logAxis"
-            type="line"
-          />
-
-          <ScatterChart
-            width={420}
-            height={300}
-            xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
-            series={[
-              {
-                data: [2, 5.5, 2, 8.5, 1.5, 5, 7],
-                area: false,
-              },
-            ]}
-            type="line"
-          />
-          <ScatterChart
-            width={501}
-            height={300}
-            xAxis={[{
-              min: 0,
-            }]}
-            series={[
-              {
-                label: 'test',
-                data: [
-                  { x: 9, y: 46 },
-                  { x: 15, y: 30 },
-                  { x: 43, y: 19 },
-                  { x: 45, y: 54 },
-                  { x: 39, y: 27 },
-                  { x: 12, y: 12 },
-                ],
-              },
-              {
-                label: 'test2',
-                data: [
-                  { x: 16, y: 47 },
-                  { x: 14, y: 30 },
-                  { x: 5, y: 19 },
-                  { x: 45, y: 32 },
-                  { x: 35, y: 14 },
-                  { x: 26, y: 12 },
-                ],
-              },
-            ]}
-            type="scatter"
-          />
-          <ScatterChart
             height={301}
+            yAxis={[
+              {
+                scaleType: "band",
+                dataKey: "month",
+              },
+            ]}
+            xAxis={[
+              {
+                label: "",
+              },
+            ]}
+            dataset={[
+              {
+                london: 24,
+                paris: 57,
+                newYork: 86,
+                seoul: 21,
+                month: "Jan",
+              },
+              {
+                london: 50,
+                paris: 52,
+                newYork: 78,
+                seoul: 28,
+                month: "Feb",
+              },
+              {
+                london: 47,
+                paris: 53,
+                newYork: 106,
+                seoul: 41,
+                month: "Mar",
+              },
+              {
+                london: 54,
+                paris: 56,
+                newYork: 92,
+                seoul: 73,
+                month: "Apr",
+              },
+              {
+                london: 57,
+                paris: 69,
+                newYork: 92,
+                seoul: 99,
+                month: "May",
+              },
+              {
+                london: 60,
+                paris: 63,
+                newYork: 103,
+                seoul: 144,
+                month: "June",
+              },
+              {
+                london: 59,
+                paris: 60,
+                newYork: 105,
+                seoul: 319,
+                month: "July",
+              },
+              {
+                london: 65,
+                paris: 60,
+                newYork: 106,
+                seoul: 249,
+                month: "Aug",
+              },
+              {
+                london: 51,
+                paris: 51,
+                newYork: 95,
+                seoul: 131,
+                month: "Sept",
+              },
+              {
+                london: 60,
+                paris: 65,
+                newYork: 97,
+                seoul: 55,
+                month: "Oct",
+              },
+              {
+                london: 67,
+                paris: 64,
+                newYork: 76,
+                seoul: 48,
+                month: "Nov",
+              },
+              {
+                london: 61,
+                paris: 70,
+                newYork: 103,
+                seoul: 20,
+                month: "Dec",
+              },
+            ]}
+            series={[
+              { dataKey: "london", label: "London" },
+              { dataKey: "newYork", label: "New York" },
+              { dataKey: "paris", label: "Paris" },
+              { dataKey: "seoul", label: "Seoul" },
+            ]}
+            type="bar"
+          />
+          <ScatterChart
+            height={300}
             xAxis={[
               {
                 scaleType: "band",
@@ -554,6 +590,78 @@ const Profile = ({ profile }: Props) => {
               { dataKey: "seoul", label: "Seoul" },
             ]}
             type="bar"
+          />
+
+          <ScatterChart
+            width={499}
+            height={300}
+            series={[
+              {
+                yAxisKey: "linearAxis",
+                data: [1, 10, 30, 50, 70, 90, 100],
+                label: "Linear",
+                id: "pvId",
+              },
+              {
+                yAxisKey: "logAxis",
+                data: [1, 10, 30, 50, 70, 90, 100],
+                label: "Log",
+                id: "serie2",
+              },
+            ]}
+            xAxis={[{ data: [1, 10, 30, 50, 70, 90, 100], scaleType: "linear" }]}
+            yAxis={[
+              { id: "linearAxis", label: "Linear", scaleType: "linear" },
+              { id: "logAxis", label: "Log", scaleType: "log" },
+            ]}
+            leftAxis="linearAxis"
+            rightAxis="logAxis"
+            type="line"
+          />
+
+          <ScatterChart
+            width={420}
+            height={300}
+            xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+            series={[
+              {
+                data: [2, 5.5, 2, 8.5, 1.5, 5, 7],
+                area: false,
+              },
+            ]}
+            type="line"
+          />
+          <ScatterChart
+            width={501}
+            height={300}
+            xAxis={[{
+              min: 0,
+            }]}
+            series={[
+              {
+                label: 'test',
+                data: [
+                  { x: 9, y: 46 },
+                  { x: 15, y: 30 },
+                  { x: 43, y: 19 },
+                  { x: 45, y: 54 },
+                  { x: 39, y: 27 },
+                  { x: 12, y: 12 },
+                ],
+              },
+              {
+                label: 'test2',
+                data: [
+                  { x: 16, y: 47 },
+                  { x: 14, y: 30 },
+                  { x: 5, y: 19 },
+                  { x: 45, y: 32 },
+                  { x: 35, y: 14 },
+                  { x: 26, y: 12 },
+                ],
+              },
+            ]}
+            type="scatter"
           />
 
           <ScatterChart
