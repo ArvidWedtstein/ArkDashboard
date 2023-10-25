@@ -1,6 +1,7 @@
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
+import clsx from "clsx";
 import { useAuth } from "src/auth";
 import Avatar from "src/components/Util/Avatar/Avatar";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
@@ -42,6 +43,16 @@ const Profile = ({ profile }: Props) => {
     }
   };
 
+  const arrayToRows = <T extends unknown>(array: T[], columns: number = 1): T[][] => {
+    const result: T[][] = [];
+
+    for (let i = 0; i < array.length; i += columns) {
+      result.push(array.slice(i, i + columns));
+    }
+
+    return result;
+  }
+
   return (
     <article className="">
       <section className="relative h-[200px]">
@@ -55,7 +66,7 @@ const Profile = ({ profile }: Props) => {
           <span
             id="blackOverlay"
             className="absolute left-0 h-full w-full bg-black opacity-50"
-          ></span>
+          />
         </div>
       </section>
       <section className="relative -mt-32 py-16">
@@ -240,23 +251,59 @@ const Profile = ({ profile }: Props) => {
               <Tab label="Seasons">
                 <div className="mb-6 px-4 py-5 dark:text-gray-300">
                   <div className="grid grid-cols-2 justify-center gap-1 overflow-hidden rounded-lg">
-                    {profile.TimelineSeasonPerson.map((season) => (
-                      <Link
-                        to={routes.timelineSeason({
-                          id: season.TimelineSeason.id,
-                        })}
-                        key={`season-${season.TimelineSeason.id}`}
-                        className="hover:border-pea-500 w-full rounded-sm border border-transparent bg-zinc-700 p-4 transition ease-in-out first:rounded-tl-lg"
-                      >
-                        <p>{season.TimelineSeason.tribe_name}</p>
-                        <p>
-                          {season.TimelineSeason.season ? "S" : ""}
-                          {season.TimelineSeason.season}{" "}
-                          <span>{season.TimelineSeason.server}</span>
-                        </p>
-                      </Link>
-                    ))}
+                    {arrayToRows(profile.TimelineSeasonPerson, 2).map((row, i) => {
+                      return row.map((season, sIdx) => (
+                        <Link
+                          to={routes.timelineSeason({
+                            id: season.TimelineSeason.id,
+                          })}
+                          key={`season-${season.TimelineSeason.id}`}
+                          className={clsx("hover:border-pea-500 w-full rounded-sm border border-transparent bg-zinc-700 p-4 transition ease-in-out duration-75 first:rounded-tl-lg last:rounded-br-lg", {
+                            "rounded-bl-lg": arrayToRows(profile.TimelineSeasonPerson, 2).length === i + 1 && sIdx === 0,
+                            "rounded-br-lg": arrayToRows(profile.TimelineSeasonPerson, 2).length === i + 1 && sIdx === row.length - 1 && row.length % 2 === 0,
+                            "rounded-tr-lg": i === 0 && sIdx === row.length - 1,
+                          })}
+                        >
+                          <p>{season.TimelineSeason.tribe_name}</p>
+                          <p>
+                            {season.TimelineSeason.season ? "S" : ""}
+                            {season.TimelineSeason.season}{" "}
+                            <span>{season.TimelineSeason.server}</span>
+                          </p>
+                        </Link>
+                      ))
+                    })}
+
                     {profile.TimelineSeasonPerson.length % 2 === 1 && (
+                      <div className="w-full rounded-sm bg-zinc-700 p-4"></div>
+                    )}
+                  </div>
+                </div>
+              </Tab>
+              <Tab label="Basespots">
+                <div className="mb-6 px-4 py-5 dark:text-gray-300">
+                  <div className="grid grid-cols-2 justify-center gap-1 overflow-hidden rounded-lg">
+                    {arrayToRows(profile.Basespot, 2).map((row, i) => {
+                      return row.map((basespot, bsIdx) => (
+                        <Link
+                          to={routes.basespot({
+                            id: basespot.id,
+                          })}
+                          key={`basespot-${basespot.id}`}
+                          className={clsx("hover:border-pea-500 w-full rounded-sm border border-transparent bg-zinc-700 p-4 transition ease-in-out duration-75 first:rounded-tl-lg last:rounded-br-lg", {
+                            "rounded-bl-lg": arrayToRows(profile.Basespot, 2).length === i + 1 && bsIdx === 0,
+                            "rounded-br-lg": arrayToRows(profile.Basespot, 2).length === i + 1 && bsIdx === row.length - 1 && row.length % 2 === 0,
+                            "rounded-tr-lg": i === 0 && bsIdx === row.length - 1,
+                          })}
+                        >
+                          <p>{basespot.name}</p>
+                          <p>
+                            {basespot.description}
+                          </p>
+                        </Link>
+                      ))
+                    })}
+                    {profile.Basespot.length % 2 === 1 && (
                       <div className="w-full rounded-sm bg-zinc-700 p-4"></div>
                     )}
                   </div>
@@ -298,7 +345,7 @@ const Profile = ({ profile }: Props) => {
           )}
         </div>
       </section>
-    </article>
+    </article >
   );
 };
 

@@ -26,6 +26,13 @@ export const QUERY = gql`
           server
         }
       }
+      Basespot {
+        id
+        name
+        description
+        created_at
+        map_id
+      }
     }
   }
 `;

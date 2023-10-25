@@ -111,7 +111,7 @@ const Tabs = memo(({
       "flex-col": orientation === "horizontal",
       "flex-row": orientation === "vertical",
     })}>
-      <div className={clsx(`relative -mb-px border-gray-200 dark:border-zinc-700 flex flex-wrap text-center text-sm font-medium text-zinc-500 dark:text-gray-400`, {
+      <div className={clsx(`relative border-black/10 dark:border-white/10 flex flex-wrap text-center text-sm font-medium text-zinc-500 dark:text-gray-400`, {
         "flex-row border-b space-x-2": orientation === "horizontal",
         "flex-col border-r space-y-2": orientation === "vertical",
       })} role="tablist">
@@ -129,7 +129,7 @@ const Tabs = memo(({
             />
           )
           )}
-        <div className={clsx(`absolute bg-pea-600 dark:bg-pea-500 transition-all ease-in-out duration-300`, {
+        <div className={clsx(`absolute bg-pea-600 dark:bg-pea-500 transition-all ease-in-out duration-300`, { // -mb-px
           "h-0.5 w-0 bottom-0 left-0": orientation === "horizontal",
           "w-0.5 h-0 top-0 right-0": orientation === "vertical",
         })} style={tabStyle} />
