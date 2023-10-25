@@ -1,10 +1,7 @@
-import { set } from "@redwoodjs/forms";
-import { Link } from "@redwoodjs/router";
 import { MetaTags, useMutation } from "@redwoodjs/web";
-import { CheckmarkIcon, toast } from "@redwoodjs/web/dist/toast";
-import clsx from "clsx";
-import { useEffect, useMemo, useRef, useState } from "react";
-import Chart, { ScatterChart } from "src/components/Util/Chart/Chart";
+import { toast } from "@redwoodjs/web/dist/toast";
+import { useEffect, useMemo, useState } from "react";
+import Chart from "src/components/Util/Chart/Chart";
 import StatCard from "src/components/Util/StatCard/StatCard";
 import Table from "src/components/Util/Table/Table";
 import Toast from "src/components/Util/Toast/Toast";
@@ -211,7 +208,7 @@ const Admin = ({ basespots, profiles, roles }: FindAdminData) => {
           <StatCard stat={"Test"} value={10} />
 
           <div className="rounded-lg border border-transparent bg-gray-200 text-black shadow-lg transition ease-in-out dark:bg-zinc-700 dark:text-white">
-            <ScatterChart
+            <Chart
               margin={{
                 top: 40,
                 left: 40,

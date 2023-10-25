@@ -1,393 +1,15 @@
 import {
-  ReactNode,
-  useCallback,
-  useEffect,
   useMemo,
-  useRef,
-  useState,
 } from "react";
-import { createPortal } from "react-dom";
 import {
   ArrayElement,
   IntRange,
-  debounce,
   drawCatmullRomChart,
   formatNumber,
   generateChartColors,
   groupBy,
-  svgArc,
+
 } from "src/lib/formatters";
-import Tooltip from "../Tooltip/Tooltip";
-
-interface ChartProps {
-  labels: string[];
-  data: number[];
-  width?: number;
-  height?: number;
-  title?: string;
-  type?: "line" | "bar" | "pie";
-  options?: {
-    horizontalLines?: boolean;
-    verticalLines?: boolean;
-    verticalLabels?: boolean;
-    horizontalLabels?: boolean;
-    lineAnimation?: boolean;
-  };
-  className?: string;
-}
-const Chart = ({
-  width = 460,
-  height = 260,
-  labels,
-  data,
-  title,
-  type,
-  options = {
-    horizontalLines: true,
-    verticalLines: false,
-    verticalLabels: false,
-    horizontalLabels: true,
-    lineAnimation: true,
-  },
-  className,
-}: ChartProps) => {
-  const chartRef = useRef(null);
-  useEffect(() => {
-    // Create an SVG element to render the chart
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", `${width + 40}`);
-    svg.setAttribute("height", `${height + 40}`);
-    svg.setAttribute("class", `group`);
-    chartRef.current.innerHTML = "";
-    chartRef.current.appendChild(svg);
-
-    // Set up the chart dimensions
-    const margin = 20; // Margin around the chart
-    const xAxisInterval = (width - 2 * margin) / (labels.length - 1); // Interval between x-axis points
-    const yAxisMax = Math.max(...data); // Maximum value in the data
-    const yAxisMin = Math.min(...data); // Minimum value in the data
-    const yAxisRange = yAxisMax - yAxisMin; // Range of the y-axis values
-
-    // Function to map data points to chart coordinates
-    const mapPoint = (x: number, y: number): [number, number] => {
-      const xCoord = margin + x * xAxisInterval;
-      const yCoord =
-        height - margin - ((y - yAxisMin) / yAxisRange) * (height - 2 * margin);
-      return [xCoord, yCoord];
-    };
-
-    // Function to calculate the Catmull-Rom interpolation
-    const catmullRomInterpolation = (
-      p0: number,
-      p1: number,
-      p2: number,
-      p3: number,
-      t: number
-    ): number => {
-      const t2 = t * t;
-      const t3 = t2 * t;
-      return (
-        0.5 *
-        (2 * p1 +
-          (-p0 + p2) * t +
-          (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
-          (-p0 + 3 * p1 - 3 * p2 + p3) * t3)
-      );
-    };
-
-    // Function to generate the smooth line using Catmull-Rom interpolation
-    const generateSmoothLine = (points: [number, number][]): string => {
-      const pathSegments = ["M", points[0][0], points[0][1]];
-
-      for (let i = 1; i < points.length - 2; i++) {
-        const p0 = points[i - 1] || points[0];
-        const p1 = points[i];
-        const p2 = points[i + 1];
-        const p3 = points[i + 2] || points[points.length - 1];
-
-        for (let t = 0; t < 1; t += 0.05) {
-          const x = catmullRomInterpolation(p0[0], p1[0], p2[0], p3[0], t);
-          const y = catmullRomInterpolation(p0[1], p1[1], p2[1], p3[1], t);
-          pathSegments.push("L", x, y);
-        }
-      }
-
-      pathSegments.push(
-        "L",
-        points[points.length - 1][0],
-        points[points.length - 1][1]
-      );
-
-      return pathSegments.join(" ");
-    };
-
-    const line = (
-      x1: number,
-      y1: number,
-      x2: number,
-      y2: number,
-      stroke: string = "#dddddd"
-    ) => {
-      const line = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "line"
-      );
-      line.setAttribute("x1", `${x1}`);
-      line.setAttribute("y1", `${y1}`);
-      line.setAttribute("x2", `${x2}`);
-      line.setAttribute("y2", `${y2}`);
-      line.setAttribute("stroke", stroke);
-      return line;
-    };
-    // const group = (transform?: string,) => {
-    //   const group = document.createElementNS(
-    //     "http://www.w3.org/2000/svg",
-    //     "g"
-    //   );
-    //   group.
-    // }
-    // Function to render the chart
-    const renderChart = (): void => {
-      // Clear any existing chart
-      svg.innerHTML = "";
-
-      // Create a group for the chart content
-      const chartGroup = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "g"
-      );
-      chartGroup.setAttribute("transform", `translate(${margin}, ${margin})`);
-      svg.appendChild(chartGroup);
-
-      // Draw x-axis
-      const xAxis = line(0, height, width, height);
-      chartGroup.appendChild(xAxis);
-
-      // Draw y-axis
-      const yAxis = line(0, -20, 0, height);
-      chartGroup.appendChild(yAxis);
-
-      // Draw data points and smooth line
-      const labelGroup = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "g"
-      );
-      labelGroup.setAttribute("width", "100%");
-      labelGroup.setAttribute("height", "100%");
-      labelGroup.setAttribute("transform", `translate(0, 0)`);
-
-      chartGroup.appendChild(labelGroup);
-
-      const max = Math.max(...data);
-      const min = Math.min(...data);
-      const lineGroupY = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "g"
-      );
-      lineGroupY.setAttribute("transform", `translate(0, 0)`);
-      lineGroupY.setAttribute("width", "100%");
-      lineGroupY.setAttribute("height", "100%");
-      labelGroup.appendChild(lineGroupY);
-
-      let mx = max + (max - min > 10 ? 1 : 0.5);
-      if (options?.verticalLabels || options.horizontalLines) {
-        for (let i = min; i <= mx; i += max - min > 10 ? 1 : 0.5) {
-          if (options?.verticalLabels) {
-            const labelY = document.createElementNS(
-              "http://www.w3.org/2000/svg",
-              "text"
-            );
-            labelY.setAttribute("x", `-15`);
-            labelY.setAttribute(
-              "y",
-              `${height -
-              margin -
-              ((i - yAxisMin) / yAxisRange) * (height - 2 * margin)
-              }`
-            );
-            labelY.setAttribute("font-size", `${max - min > 10 ? 12 : 8}`);
-            labelY.setAttribute("textAnchor", "right");
-            labelY.setAttribute("alignment-baseline", "middle");
-            labelY.setAttribute("fill", "white");
-            labelY.textContent = i.toFixed(1).toString();
-            lineGroupY.appendChild(labelY);
-          }
-
-          if (options?.horizontalLines) {
-            const yLine = line(
-              0,
-              height -
-              margin -
-              ((i - yAxisMin) / yAxisRange) * (height - 2 * margin),
-              width,
-              height -
-              margin -
-              ((i - yAxisMin) / yAxisRange) * (height - 2 * margin)
-            );
-            yLine.setAttribute("stroke", "#ffffff");
-            yLine.setAttribute("stroke-opacity", "0.2");
-            yLine.setAttribute("z-index", "-1");
-            yLine.setAttribute("stroke-width", "0.5");
-            yLine.setAttribute(
-              "class",
-              `transition-all duration-300 ease-in-out animate-fly-in`
-            );
-            lineGroupY.appendChild(yLine);
-          }
-        }
-      }
-
-      const points: [number, number][] = [];
-      for (let i = 0; i < labels.length; i++) {
-        if (i == 0) {
-          const [_, y] = mapPoint(0, data[i]);
-          points.push([0, y]);
-        }
-        const [x, y] = mapPoint(i, data[i]);
-        points.push([x, y]);
-
-        if (i == labels.length - 1) points.push([width, height]);
-
-        const lineGroupX = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "g"
-        );
-        lineGroupX.setAttribute("transform", `translate(${x}, 0)`);
-        lineGroupX.setAttribute("width", "100%");
-        lineGroupX.setAttribute("height", "100%");
-
-        if (options.horizontalLabels) {
-          const labelX = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "text"
-          );
-          labelX.setAttribute("x", `0`);
-          labelX.setAttribute("y", `${height + margin - 5}`);
-          labelX.setAttribute("font-size", "12");
-          labelX.setAttribute("text-anchor", "middle");
-          labelX.setAttribute("fill", "white");
-          labelX.textContent = labels[i];
-          lineGroupX.appendChild(labelX);
-        }
-
-        if (options.verticalLines) {
-          const yLine = line(0, height, 0, -20, "#ffffff");
-          yLine.setAttribute("stroke-opacity", "0.2");
-          lineGroupX.appendChild(yLine);
-        }
-
-        labelGroup.appendChild(lineGroupX);
-
-        const dataPoint = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "circle"
-        );
-        dataPoint.setAttribute("cx", `${x}`);
-        dataPoint.setAttribute("cy", `${y}`);
-        dataPoint.setAttribute("r", "3");
-        dataPoint.setAttribute("fill", "#12d393");
-        dataPoint.setAttribute("stroke", "none");
-        // dataPoint.setAttribute("title", `${labels[i]}: ${data[i]}`);
-        dataPoint.setAttribute("class", ` transition-all duration-300`);
-
-        chartGroup.appendChild(dataPoint);
-      }
-
-      const smoothLine = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "path"
-      );
-      smoothLine.setAttribute("d", generateSmoothLine(points));
-      smoothLine.setAttribute("stroke", "#26934f");
-      smoothLine.setAttribute("fill", "none");
-      smoothLine.setAttribute("strokeWidth", "1");
-
-      if (options.lineAnimation) {
-        smoothLine.setAttribute(
-          "stroke-dasharray",
-          `${smoothLine.getTotalLength()} ${smoothLine.getTotalLength()}`
-        );
-        smoothLine.setAttribute(
-          "stroke-dashoffset",
-          `${smoothLine.getTotalLength()}`
-        );
-
-        smoothLine.style.animation = `chartLineAnimation 3s ease-out forwards`;
-
-        // Add keyframes for the animation
-        const style = document.createElement("style");
-        style.textContent = `
-      @keyframes chartLineAnimation {
-        from {
-          stroke-dashoffset: ${smoothLine.getTotalLength()};
-        }
-        to {
-          stroke-dashoffset: 0;
-        }
-      }
-    `;
-        document.head.appendChild(style);
-      }
-      smoothLine.setAttribute("class", `transition-all duration-300`);
-      chartGroup.appendChild(smoothLine);
-
-      const gradient = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "linearGradient"
-      );
-      gradient.setAttribute("id", "chartGradient");
-      gradient.setAttribute("gradientUnits", "userSpaceOnUse");
-      gradient.setAttribute("x1", "0");
-      gradient.setAttribute("y1", `0`);
-      gradient.setAttribute("x2", "0");
-      gradient.setAttribute("y2", `${height}`);
-      chartGroup.appendChild(gradient);
-
-      // Add gradient stops
-      const gradientStop1 = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "stop"
-      );
-      gradientStop1.setAttribute("offset", "0");
-      gradientStop1.setAttribute("stop-color", "#34b364");
-      gradientStop1.setAttribute("stop-opacity", "0.2");
-      gradient.appendChild(gradientStop1);
-
-      const gradientStop2 = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "stop"
-      );
-      gradientStop2.setAttribute("offset", "1");
-      gradientStop2.setAttribute("stop-color", "#34b364");
-      gradientStop2.setAttribute("stop-opacity", "0.2");
-      gradient.appendChild(gradientStop2);
-
-      // Create filled area
-      const filledArea = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "path"
-      );
-      const areaPath = `${smoothLine.getAttribute("d")} V${height} H0 Z`;
-      filledArea.setAttribute("d", areaPath);
-      filledArea.setAttribute("fill", "url(#chartGradient)");
-      filledArea.setAttribute("fill-opacity", "1");
-      chartGroup.appendChild(filledArea);
-    };
-
-    // Call the renderChart function to generate the chart
-    renderChart();
-  }, []);
-  return (
-    <div className={className}>
-      {title && (
-        <h1 className="m-1 mb-0 w-full text-center text-white">{title}</h1>
-      )}
-      <div ref={chartRef}></div>
-    </div>
-  );
-};
-
-export default Chart;
 
 type AxisData = {
   id?: string;
@@ -397,7 +19,6 @@ type AxisData = {
   scale?: any;
   dataKey?: string;
   valueFormatter?: (value: string | number) => string;
-
   axisValues?: Readonly<AxisValue[]>;
   min?: number;
   max?: number;
@@ -423,71 +44,6 @@ type ChartContainerProps = {
   }[];
   width?: number;
   height?: number;
-};
-
-const generateLabelsAxisRange = (
-  axisData: AxisData,
-  chartData: ChartContainerProps & {
-    paddingX: number;
-    paddingY: number;
-  },
-  isXAxis: boolean = true,
-  centerText: boolean = true
-) => {
-  const { width, height, paddingX, paddingY, dataset } = chartData;
-
-  const labelsNumber =
-    axisData.reduce(
-      (partialSum, axis) => partialSum + (axis?.data.length || 0),
-      0
-    ) - (centerText ? 0 : 1);
-  const labelStep =
-    (isXAxis ? width - paddingX * 2 : height - paddingY * 2) / labelsNumber;
-
-  return axisData?.map((axis, index) => {
-    const labels = [];
-
-    for (let i = 0; i <= labelsNumber; i++) {
-      const xy = (isXAxis ? paddingX : paddingY) + i * labelStep;
-
-      labels.push(
-        <g
-          key={`${isXAxis ? "x" : "y"} - axis - ${i} `}
-          transform={`translate(${isXAxis ? xy : 0}, ${isXAxis ? 0 : xy})`}
-          className="text-white"
-        >
-          <line
-            y2={`${isXAxis ? 6 : 0}px`}
-            x2={`${isXAxis ? 0 : -6}px`}
-            className="stroke-white"
-            style={{ shapeRendering: "crispEdges" }}
-          />
-          {((axis?.dataKey && dataset && dataset[i]) ||
-            (i >= 0 && i < labelsNumber) ||
-            !centerText) && (
-              <text
-                // Center text in the middle of the tick
-                x={`${isXAxis ? (centerText ? labelStep / 2 : 0) : -8}px`}
-                y={`${isXAxis ? 9 : centerText ? labelStep / 2 : 0}px`} // +labelStep / 2 to center text
-                stroke="none"
-                fill="white"
-                transform-origin={`${isXAxis ? 0 : -8}px 0px`}
-                textAnchor={isXAxis ? "middle" : "end"}
-                dominantBaseline={isXAxis ? "hanging" : "central"}
-                className="text-xs font-normal tracking-wide"
-              >
-                {dataset && dataset.length > 0 && i < dataset.length
-                  ? dataset[i][axis.dataKey]
-                  : axis?.data[i]
-                    ? axis?.data[i]
-                    : i.toString() ?? ""}
-              </text>
-            )}
-        </g>
-      );
-    }
-    return labels;
-  });
 };
 
 const numberToChart = (
@@ -611,7 +167,7 @@ const generateAxisRangeValues = (
     },
     (_, i) => {
       const value =
-        (isFinite(min) ? min - (min % stepMultiplier) : 0) +
+        (isFinite(min) && min != 0 ? min - (min % stepMultiplier) : 0) +
         i *
         (scaleType === "band" || scaleType === "point"
           ? labelStep(labelsNumber)
@@ -694,384 +250,8 @@ const generateAxisRangeValues = (
   ) as AxisValue[];
 };
 
-/**
- * TODO: Add support for log scale
- * Generates the numbers and lines for the axis
- * @param isXAxis
- * @returns
- */
-const generateAxisRange = (
-  chartData: ChartContainerProps & {
-    xAxisData?: AxisData;
-    yAxisData?: AxisData;
-    max: number;
-    min: number;
-    margin?: {
-      top?: number;
-      right?: number;
-      bottom?: number;
-      left?: number;
-    };
-  },
-  scaleType = "linear",
-  position: AxisPosition = "bottom"
-) => {
-  let availableWidth =
-    chartData.width - chartData.margin.left - chartData.margin.right;
-  let availableHeight =
-    chartData.height - chartData.margin.top - chartData.margin.bottom;
-  return generateAxisRangeValues(
-    { availableWidth, availableHeight, ...chartData },
-    scaleType,
-    position,
-    6,
-    false
-  ).map((axisValue) => {
-    return (
-      <g
-        key={`${position === "top" || position === "bottom" ? "x" : "y"}-axis-${axisValue.value
-          } `}
-        transform={`translate(${axisValue.x}, ${axisValue.y})`}
-        className="text-xs font-normal tracking-wide"
-      >
-        <line
-          x2={axisValue.xLine}
-          y2={axisValue.yLine}
-          className="stroke-black dark:stroke-white"
-          style={{ shapeRendering: "crispEdges" }}
-        />
-        <text
-          // +labelStep / 2 to center text
-          stroke="none"
-          x={axisValue.xText}
-          y={axisValue.yText}
-          transform-origin={`${axisValue.xText}px ${axisValue.yText}px`}
-          textAnchor={axisValue.textAnchor}
-          dominantBaseline={axisValue.dominantBaseline}
-          className="fill-black text-xs font-normal tracking-wide dark:fill-white"
-        >
-          <tspan x={axisValue.xText} dy="0">
-            {formatNumber(axisValue.value, { notation: "compact" })}
-          </tspan>
-        </text>
-      </g>
-    );
-  });
-};
 
-export const ChartContainer = ({
-  xAxis,
-  yAxis,
-  series = [],
-  dataset = [],
-  width = 600,
-  height = 400,
-  ...props
-}: ChartContainerProps) => {
-  // Autogenerate unique hex colors
-  const colors = generateChartColors([...Array(series.length)].length);
 
-  const dataSeries = series?.map((s) => {
-    return {
-      ...s,
-      color: s?.color || colors[series.indexOf(s)],
-      data:
-        (dataset.length > 0
-          ? dataset?.map((d) => parseInt(d[s.dataKey].toString()))
-          : s.data) ?? [],
-    };
-  });
-
-  const xAxisData = xAxis
-    ?.filter((x) => x.scaleType != null)
-    ?.map((x) => {
-      return {
-        ...x,
-        data:
-          dataset && dataset.length > 0
-            ? dataset?.map((d) => d[x.dataKey])
-            : x.data,
-      };
-    }) ?? [{ data: [...Array(series.length)].map((_, i) => i) }];
-
-  const yAxisData =
-    yAxis
-      ?.filter((y) => y.scaleType != null)
-      ?.map((y) => {
-        return {
-          ...y,
-          data:
-            dataset && dataset.length > 0
-              ? dataset?.map((d) => d[y.dataKey])
-              : y.data,
-        };
-      }) || [];
-
-  const paddingX = 50;
-  const paddingY = 50;
-
-  const margin = {
-    top: 50,
-    right: 50,
-    bottom: 50,
-    left: 50,
-  };
-  const categoryGapRatio = 0.5;
-  const barGapRatio = 0.1;
-
-  const max = Math.max(...dataSeries.flatMap((d) => d?.data));
-  const min = Math.min(...dataSeries.flatMap((d) => d?.data), 0);
-
-  const calculateBarDimensions = (isXAxis: boolean = true) => {
-    // Determine the number of data points and categories
-    const numDataPoints = dataSeries.length;
-    const numCategories = dataSeries[0]?.data.length;
-
-    // Calculate the width of a single category and single bar based on orientation
-    const totalWidth = isXAxis
-      ? width - margin.left - margin.right
-      : height - margin.top - margin.bottom;
-
-    const categoryWidth = (totalWidth * (1 - categoryGapRatio)) / numCategories;
-    const barWidth = (categoryWidth * (1 - barGapRatio)) / numDataPoints;
-
-    // Initialize an array to store the bar positions
-    // Calculate the position of each bar within its category
-    const barPositions = Array(numDataPoints)
-      .fill(0)
-      .map((_, i) => {
-        const basePosition = i * (barWidth + barGapRatio * categoryWidth);
-        return Array(numCategories)
-          .fill(0)
-          .map((_, j) => j * categoryWidth + basePosition);
-      });
-
-    return { barWidth, barPositions, categoryWidth };
-  };
-
-  const generateBars = (isXAxis: boolean = true) => {
-    const axisData = isXAxis ? xAxisData : yAxisData;
-
-    const { barWidth, barPositions, categoryWidth } =
-      calculateBarDimensions(isXAxis);
-
-    return axisData
-      ?.filter((axis) => axis.data.some((data) => data))
-      ?.map((axis, axisIndex) => (
-        <React.Fragment key={`axis-${axisIndex}`}>
-          {dataSeries[0].data.map((_, j) => (
-            <g
-              transform={`translate(${isXAxis ? j * categoryWidth : 0}, ${isXAxis ? 0 : j * categoryWidth
-                })`}
-              key={`category-${j}`}
-            >
-              {dataSeries.map((data, i) => {
-                const rectWidth = isXAxis
-                  ? barWidth
-                  : ((data.data[j] - min) / (max - min)) *
-                  (width - 2 * paddingX);
-                const rectHeight = isXAxis
-                  ? ((data.data[j] - min) / (max - min)) *
-                  (height - 2 * paddingY)
-                  : barWidth;
-
-                const x = isXAxis
-                  ? Math.round(
-                    (barPositions[i][j] + categoryWidth / 2) * 1000
-                  ) / 1000
-                  : 0;
-                const y = isXAxis
-                  ? height - paddingY - rectHeight
-                  : Math.round(
-                    (barPositions[i][j] + paddingY + categoryWidth / 2) * 1000
-                  ) / 1000;
-
-                return (
-                  <rect
-                    key={`bar-${i}-${j}`}
-                    data-value={data.data[j]}
-                    x={x}
-                    y={y}
-                    width={rectWidth}
-                    height={rectHeight}
-                    fill={data.color}
-                  />
-                );
-              })}
-            </g>
-          ))}
-        </React.Fragment>
-      ));
-  };
-
-  const generateLabels = (isXAxis: boolean = true) => {
-    const axisData = isXAxis ? xAxisData : yAxisData;
-    return axisData
-      ?.filter((xy) => xy.label)
-      .map((axis) => {
-        const barHeight = ((3 - min) / (max - min)) * (height - 2 * paddingY);
-        const maxY =
-          height -
-          paddingY -
-          ((max - min - min) / (max - min)) * (height - 2 * paddingY);
-
-        return (
-          <text
-            key={`${isXAxis ? "x" : "y"}-axis-label-${axis.label} `}
-            x={
-              isXAxis
-                ? (width - 2 * paddingX) / 2 + paddingX
-                : maxY - barHeight / 2
-            }
-            y={isXAxis ? 40 : -30}
-            dominantBaseline="auto"
-            textAnchor="middle"
-            className={
-              "origin-center fill-white stroke-none text-sm font-normal" +
-              (isXAxis ? " " : "  -rotate-90 transform")
-            }
-          >
-            {axis.label}
-          </text>
-        );
-      });
-  };
-
-  return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
-      <title></title>
-      <desc></desc>
-
-      {/* Bars */}
-      <g
-        clipPath="url(#:r30:-clip-path)"
-        style={{
-          shapeRendering: "crispEdges",
-          transition: "opacity 0.2s ease-in 0s, fill 0.2s ease-in 0s",
-        }}
-        transform={`translate(${paddingX}, 0)`}
-      // onMouseMove={(e) => {
-      //   const target = e.target as HTMLDivElement;
-      //   const value = target.getAttribute('data-value');
-
-      //   // if (!value) return
-      //   const x = e.clientX;
-      //   const y = e.clientY;
-
-      //   // if (document.getElementById('marker')) return;
-      //   const markerPath = `M0 ${height - y} L${x} ${height - paddingY} L0 ${height - paddingY} L0 ${height} Z`;
-      //   let marker = document.getElementById('marker') ? document.getElementById('marker') : document.createElementNS("http://www.w3.org/2000/svg", "path");
-      //   marker.setAttribute("d", markerPath);
-      //   marker.setAttribute("fill", "#ffffff");
-      //   marker.setAttribute("fill-opacity", "0.2");
-      //   marker.style.pointerEvents = 'none';
-      //   marker.id = "marker"
-
-      //   e.currentTarget.appendChild(marker);
-      // }}
-      // onMouseOut={(e) => {
-      //   const target = e.currentTarget as SVGGElement;
-      //   const marker = document.getElementById('marker');
-      //   if (marker) {
-      //     target.removeChild(marker);
-      //   }
-      // }}
-      >
-        <rect
-          x="0"
-          y={paddingY}
-          width={width - 2 * paddingX}
-          height={height - 2 * paddingY}
-          fill="none"
-        />
-        {generateBars(true)}
-        {generateBars(false)}
-      </g>
-
-      {/* X-Axis Labels */}
-      <g transform={`translate(0, ${height - paddingY})`}>
-        <line
-          x1={paddingX}
-          x2={width - paddingX}
-          y1={0}
-          className="stroke-white stroke-1"
-          style={{ shapeRendering: "crispEdges" }}
-        />
-
-        {xAxisData.filter((x) => x?.data.length > 0).length > 0
-          ? generateLabelsAxisRange(
-            xAxisData,
-            { width, height, paddingX, paddingY, dataset, series },
-            true
-          )
-          : generateAxisRange(
-            { width, height, xAxisData, yAxisData, margin, min, max },
-            "linear",
-            "bottom"
-          )}
-
-        {/* Axis Labels */}
-        {generateLabels(true)}
-      </g>
-
-      {/* Y-Axis */}
-      <g transform={`translate(${paddingX}, 0)`}>
-        <line
-          y1={paddingY}
-          y2={height - paddingY}
-          className="stroke-white stroke-1"
-          style={{ shapeRendering: "crispEdges" }}
-        />
-
-        {yAxisData.filter((y) => y.data.length > 0).length > 0
-          ? generateLabelsAxisRange(
-            yAxisData,
-            { width, height, paddingX, paddingY, dataset, series },
-            false
-          )
-          : generateAxisRange(
-            { width, height, xAxisData, yAxisData, margin, min, max },
-            "linear",
-            "left"
-          )}
-
-        {/* Axis Labels */}
-        {generateLabels(false)}
-      </g>
-
-      {/* Labels */}
-      {series && (
-        <g
-          className="translate-y-4 transform fill-white"
-          transform={`translate(${paddingX}, 0)`}
-        >
-          {dataSeries?.map((serie, index) => {
-            return (
-              <g
-                key={`legend - ${serie?.dataKey || index}`}
-                className="inline-flex items-center space-x-2"
-                transform={`translate(${paddingX + ((width - 2 * paddingX) / series.length) * index
-                  }, 0)`}
-              >
-                <rect width="12" height="12" fill={serie.color} />
-                <text
-                  className="translate-x-4 translate-y-1 transform fill-white align-middle text-base font-normal capitalize tracking-wide"
-                  dominantBaseline="central"
-                >
-                  {serie.label}
-                </text>
-              </g>
-            );
-          })}
-        </g>
-      )}
-
-      <clipPath id=":r30:-clip-path">
-        <rect x={0} y={0} width={width} height={height} />
-      </clipPath>
-    </svg>
-  );
-};
 
 type BaseChartSeries = {
   id?: string | number;
@@ -1159,7 +339,7 @@ type ChartPropsWithType = {
   scatter: IChartProps & { series: ScatterChartSeries[] };
 }[IChartProps["type"]];
 
-export const ScatterChart = ({
+const Chart = ({
   xAxis,
   yAxis,
   series = [],
@@ -1240,7 +420,7 @@ export const ScatterChart = ({
     let valueMin =
       x.min ??
       Math.min(
-        type === "bar" ? 0 : null,
+        ...[type === "bar" ? 0 : null,
         ...(!data || data.length == 0
           ? dataSeries.flatMap((s) =>
             type === "scatter"
@@ -1251,7 +431,7 @@ export const ScatterChart = ({
           )
           : data && data.every((x) => !isNaN(parseInt(x.toString())))
             ? data.map((x) => parseInt(x.toString()))
-            : [])
+            : [])].filter(x => x != null)
       ) ??
       null;
     let valueMax =
@@ -1270,6 +450,7 @@ export const ScatterChart = ({
             : [])
       ) ??
       null;
+
     const axisValues = generateAxisRangeValues(
       {
         margin,
@@ -1324,17 +505,17 @@ export const ScatterChart = ({
     let valueMin =
       y.min ??
       Math.min(
-        type === "bar" ? 0 : null,
-        ...dataSeries.flatMap((s) =>
-          type === "scatter"
-            ? s.data.map((xy) =>
-              position === "top" || position === "bottom" ? xy.x : xy.y
-            )
-            : s.data
-        ),
-        ...(y?.data && y?.data.every((y) => !isNaN(parseInt(y.toString())))
-          ? y.data.map((y) => parseInt(y.toString()))
-          : [])
+        type === "bar" ? 0 : null, ...(!data || data.length == 0
+          ? dataSeries.flatMap((s) =>
+            type === "scatter"
+              ? s.data.map((x) =>
+                position === "top" || position === "bottom" ? x.x : x.y
+              )
+              : s.data
+          )
+          : data && data.every((x) => !isNaN(parseInt(x.toString())))
+            ? data.map((x) => parseInt(x.toString()))
+            : [])
       );
     let valueMax =
       y.max ??
@@ -1396,12 +577,23 @@ export const ScatterChart = ({
       type === 'bar' ? axis.scaleType === "band" : true
     );
 
-    const minX = xAxis?.valueMin;
-    const maxX = xAxis?.valueMax;
+    const minX = isFinite(xAxis?.valueMin)
+      ? xAxis?.valueMin
+      : 0;
+    const maxX = isFinite(xAxis?.valueMax)
+      ? xAxis?.valueMax
+      : 0;
 
-    const minY = yAxis?.valueMin;
-    const maxY = yAxis?.valueMax;
-
+    const minY = isFinite(yAxis?.valueMin)
+      ? yAxis?.valueMin
+      : isFinite(xAxis?.valueMin) && type == 'bar'
+        ? xAxis?.valueMin
+        : 0;
+    const maxY = isFinite(yAxis?.valueMax)
+      ? yAxis?.valueMax
+      : isFinite(xAxis?.valueMax) && type == 'bar'
+        ? xAxis?.valueMax
+        : 0;
 
     const {
       cx = width / 3,
@@ -1423,31 +615,61 @@ export const ScatterChart = ({
     );
 
     // #region Bar
-    const groupSize = bandAxis && bandAxis.axisValues.length > 0 ? bandAxis?.axisValues[0].stepSize - (dataSeries.length - 1) : 0;
 
-    // Calculate category spacing
-    const categorySpacing = groupSize * categoryGapRatio;
+    if (type === 'bar') {
+      const groupSize = bandAxis && bandAxis.axisValues.length > 0 ? bandAxis?.axisValues[0].stepSize - (dataSeries.length - 1) : 0;
 
-    // Calculate bar width and gap
-    const totalBarSize =
-      (groupSize - categorySpacing) / dataSeries.length;
-    const barSize = totalBarSize * (1 - barGapRatio);
-    const barGap = totalBarSize * barGapRatio;
+      // Calculate category spacing
+      const categorySpacing = groupSize * categoryGapRatio;
 
-    const isXAxis = bandAxis ? bandAxis.position === "bottom" || bandAxis.position === "top" : false;
+      // Calculate bar width and gap
+      const totalBarSize =
+        (groupSize - categorySpacing) / dataSeries.length;
+      const barSize = totalBarSize * (1 - barGapRatio);
+      const barGap = totalBarSize * barGapRatio;
+
+      const isXAxis = bandAxis ? bandAxis.position === "bottom" || bandAxis.position === "top" : false;
+
+      return d.data
+        .map((val, index) => {
+          const rectWidth = isXAxis
+            ? barSize
+            : ((val - minX) / (maxX - minX)) * availableWidth;
+          const rectHeight = isXAxis
+            ? ((val - minY) / (maxY - minY)) * availableHeight
+            : barSize;
+
+          const x = isXAxis
+            ? Math.round(
+              (i * (barSize + barGap) + categorySpacing / 2) *
+              1000
+            ) / 1000
+            : 0
+
+          const y = isXAxis
+            ? height - margin.bottom - rectHeight
+            : Math.round(
+              (i * (barSize + barGap) + categorySpacing / 2) *
+              1000
+            ) / 1000
+
+
+          return {
+            x,
+            y,
+            groupX: isXAxis ? bandAxis.axisValues[index].x - margin.left : 0,
+            groupY: isXAxis ? 0 : bandAxis.axisValues[index].y,
+            width: rectWidth,
+            height: rectHeight,
+            value: val,
+            color: d.color,
+          }
+        })
+    }
     // #endregion
 
-    // TODO: calc for horizontal
     return d.data
       .map((val, index) => {
-        const rectWidth = isXAxis
-          ? barSize
-          : ((val - minX) / (maxX - minX)) * availableWidth;
-        const rectHeight = isXAxis
-          ? ((val - minY) / (maxY - minY)) * availableHeight
-          : barSize;
-
-        if (height === 301 && !isXAxis) console.log(minX, maxX, minY, maxY)
         const x =
           type === "scatter"
             ? numberToChart(
@@ -1464,50 +686,43 @@ export const ScatterChart = ({
               true,
               xAxis.scaleType
             )
-            : type === 'bar'
-              ? isXAxis
-                ? Math.round(
-                  (i * (barSize + barGap) + categorySpacing / 2) *
-                  1000
-                ) / 1000
-                : 0
-              : xAxis.scaleType === "point"
-                ? xAxis.axisValues[index].x - margin.left
-                : xAxis.scaleType === "linear" &&
-                  xAxis.data.length > 0 &&
-                  xAxis.data.every((x) => !isNaN(parseInt(x.toString())))
-                  ? index < xAxis.data.length
-                    ? numberToChart(
-                      {
-                        width,
-                        height,
-                        availableWidth,
-                        availableHeight,
-                        margin,
-                        min: minX,
-                        max: maxX,
-                      },
-                      parseInt(xAxis.data[index].toString()),
-                      true,
-                      xAxis.scaleType
-                    )
-                    : null
-                  : index < xAxis.axisValues.length
-                    ? xAxis.axisValues[index].x - margin.left
-                    : numberToChart(
-                      {
-                        width,
-                        height,
-                        availableWidth,
-                        availableHeight,
-                        margin,
-                        min: minX,
-                        max: maxX,
-                      },
-                      index,
-                      true,
-                      xAxis.scaleType
-                    );
+            : xAxis.scaleType === "point"
+              ? xAxis.axisValues[index].x - margin.left
+              : xAxis.scaleType === "linear" &&
+                xAxis.data.length > 0 &&
+                xAxis.data.every((x) => !isNaN(parseInt(x.toString())))
+                ? index < xAxis.data.length
+                  ? numberToChart(
+                    {
+                      width,
+                      height,
+                      availableWidth,
+                      availableHeight,
+                      margin,
+                      min: minX,
+                      max: maxX,
+                    },
+                    parseInt(xAxis.data[index].toString()),
+                    true,
+                    xAxis.scaleType
+                  )
+                  : null
+                : index < xAxis.axisValues.length
+                  ? xAxis.axisValues[index].x - margin.left
+                  : numberToChart(
+                    {
+                      width,
+                      height,
+                      availableWidth,
+                      availableHeight,
+                      margin,
+                      min: minX,
+                      max: maxX,
+                    },
+                    index,
+                    true,
+                    xAxis.scaleType
+                  );
 
         const y =
           type === "scatter"
@@ -1525,40 +740,34 @@ export const ScatterChart = ({
               false,
               xAxis.scaleType
             )
-            : type === 'bar'
-              ? isXAxis
-                ? height - margin.bottom - rectHeight
-                : Math.round(
-                  (i * (barSize + barGap) + categorySpacing / 2) *
-                  1000
-                ) / 1000
-              : numberToChart(
-                {
-                  width,
-                  height,
-                  availableWidth,
-                  availableHeight,
-                  margin,
-                  min: minY,
-                  max: maxY,
-                },
-                val,
-                false,
-                yAxis.scaleType
-              );
 
-        if (type === 'bar') {
-          return {
-            x,
-            y,
-            groupX: isXAxis ? bandAxis.axisValues[index].x - margin.left : 0,
-            groupY: isXAxis ? 0 : bandAxis.axisValues[index].y,
-            width: rectWidth,
-            height: rectHeight,
-            value: val,
-            color: d.color,
-          }
-        }
+            : isNaN(numberToChart(
+              {
+                width,
+                height,
+                availableWidth,
+                availableHeight,
+                margin,
+                min: minY,
+                max: maxY,
+              },
+              val,
+              false,
+              yAxis.scaleType
+            )) ? 0 : numberToChart(
+              {
+                width,
+                height,
+                availableWidth,
+                availableHeight,
+                margin,
+                min: minY,
+                max: maxY,
+              },
+              val,
+              false,
+              yAxis.scaleType
+            );
 
 
         //#region Pie
@@ -1666,88 +875,6 @@ export const ScatterChart = ({
       .filter((x) => type === 'scatter' || type === 'line' ? x.x !== null && x.y !== null : true);
   });
 
-  const lineData = {
-    filledArea:
-      type === "line"
-        ? pointData
-          .filter((_, i) => dataSeries[i]["area"])
-          .map((d, i) => {
-            const points: [number, number][] = d.map((val) => [val.x, val.y]);
-            const catmull = drawCatmullRomChart(points);
-
-            let catmullfilled =
-              catmull
-                .map(
-                  ({ x, y }, index) => `${index == 0 ? "M" : "L"} ${x} ${y}`
-                )
-                .join(" ") +
-              `${dataSeries[i]["area"]
-                ? ` V${height - margin.bottom} H0 Z`
-                : ""
-              }`;
-
-            return (
-              <g key={`filled-area-${i}`}>
-                <path
-                  d={catmullfilled}
-                  fill={dataSeries[i].color}
-                  fillOpacity={0.1}
-                />
-              </g>
-            );
-          })
-        : [],
-    line: pointData.map((d, i) => {
-      const points: [number, number][] = d.map((val) => [val.x, val.y]);
-      const catmull = drawCatmullRomChart(points);
-
-      let catmullpath = catmull
-        .map((val, index) => {
-          return `${index == 0 ? "M" : "L"} ${val.x} ${val.y}`;
-        })
-        .join(" ");
-
-      return (
-        <g key={`line-${i}`}>
-          <path
-            d={catmullpath}
-            stroke={dataSeries[i].color}
-            fill={"none"}
-            style={{
-              strokeWidth: "2px",
-              strokeLinejoin: "round",
-              shapeRendering: "auto",
-            }}
-          />
-        </g>
-      );
-    }),
-    points: pointData.flatMap((d, i) => {
-      return d
-        .filter((_, idx) => {
-          const showMark = dataSeries[i]["showMark"];
-          return typeof showMark === "function"
-            ? showMark({ index: idx })
-            : showMark !== false;
-        })
-        .map((point, index) => (
-          <circle
-            key={`data-${i}-circle-${index}`}
-            transform={`translate(${point.x}, ${point.y})`}
-            fillOpacity={0.3}
-            cx={0}
-            cy={0}
-            fill={dataSeries[i].color}
-            r={5}
-            shapeRendering={"auto"}
-            stroke={dataSeries[i].color}
-            strokeLinecap="round"
-            strokeWidth={2}
-          />
-        ));
-    }),
-  };
-
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
       <title></title>
@@ -1761,7 +888,33 @@ export const ScatterChart = ({
           }}
           transform={`translate(${margin.left}, 0)`}
         >
-          {lineData.filledArea}
+          {pointData
+            .filter((_, i) => dataSeries[i]["area"])
+            .map((d, i) => {
+              const points: [number, number][] = d.map((val) => [val.x, val.y]);
+              const catmull = drawCatmullRomChart(points);
+
+              let catmullfilled =
+                catmull
+                  .map(
+                    ({ x, y }, index) => `${index == 0 ? "M" : "L"} ${x} ${y}`
+                  )
+                  .join(" ") +
+                `${dataSeries[i]["area"]
+                  ? ` V${height - margin.bottom} H0 Z`
+                  : ""
+                }`;
+
+              return (
+                <g key={`filled-area-${i}`}>
+                  <path
+                    d={catmullfilled}
+                    fill={dataSeries[i].color}
+                    fillOpacity={0.1}
+                  />
+                </g>
+              );
+            })}
         </g>
       )}
 
@@ -1773,11 +926,13 @@ export const ScatterChart = ({
           }}
           transform={`translate(${margin.left}, 0)`}
         >
+
+          {/* Bar Chart */}
           {[...xAxisData, ...yAxisData]
             .filter((x) => x.scaleType === "band")
             .map((axis) => {
-              return Object.values(groupBy(pointData.flatMap((points) => points), axis.position === 'top' || axis.position === 'bottom' ? 'groupX' : 'groupY')).map((group, groupIndex) => {
-                if (!(axis.position === 'top' || axis.position === 'bottom')) console.log(group)
+              const isXAxis = axis.position === "bottom" || axis.position === "top";
+              return Object.values(groupBy(pointData.flatMap((points) => points), isXAxis ? 'groupX' : 'groupY')).map((group, groupIndex) => {
                 return (
                   <g key={`BarChart-Group-${groupIndex}`} transform={`translate(${group[0].groupX}, ${group[0].groupY})`}>
                     {group.map(({ value, color, x, y, width, height }, barIndex) => {
@@ -1810,125 +965,123 @@ export const ScatterChart = ({
             disableTicks,
             scaleType,
             label,
-          }) => (
-            <g
-              key={`${position === "bottom" || position === "top" ? "x" : "y"
-                }-axis-${position}`}
-              transform={`translate(${position == "left"
-                ? margin.left
-                : position === "right"
-                  ? width - margin.right
-                  : 0
-                }, ${position === "bottom"
-                  ? height - margin.bottom
-                  : position === "top"
-                    ? margin.top
+          }) => {
+            const isXAxis = position === "bottom" || position === "top";
+            return (
+              <g
+                key={`${isXAxis ? "x" : "y"}-axis-${position}`}
+                transform={`translate(${position == "left"
+                  ? margin.left
+                  : position === "right"
+                    ? width - margin.right
                     : 0
-                })`}
-            >
-              {!disableLine && (
-                <line
-                  x1={
-                    position === "top" || position === "bottom"
-                      ? margin.left
+                  }, ${position === "bottom"
+                    ? height - margin.bottom
+                    : position === "top"
+                      ? margin.top
                       : 0
-                  }
-                  x2={
-                    position === "top" || position === "bottom"
-                      ? width - margin.right
-                      : 0
-                  }
-                  y1={
-                    position === "left" || position === "right" ? margin.top : 0
-                  }
-                  y2={
-                    position === "left" || position === "right"
-                      ? height - margin.bottom
-                      : 0
-                  }
-                  className="stroke-black stroke-1 dark:stroke-white"
-                  style={{ shapeRendering: "crispEdges" }}
-                />
-              )}
-
-              {axisValues.map(
-                (
-                  {
-                    value,
-                    x,
-                    y,
-                    xLine,
-                    yLine,
-                    xText,
-                    yText,
-                    textAnchor,
-                    dominantBaseline,
-                  },
-                  index
-                ) => (
-                  <g
-                    key={`${position === "bottom" || position === "top" ? "x" : "y"
-                      }-axis-${position}-${index} `}
-                    transform={`translate(${x}, ${y})`}
-                    className="text-xs font-normal tracking-wide"
-                  >
-                    {!disableTicks && (
-                      <line
-                        x2={xLine}
-                        y2={yLine}
-                        className="stroke-black dark:stroke-white"
-                        style={{ shapeRendering: "crispEdges" }}
-                      />
-                    )}
-
-                    <text
-                      stroke="none"
-                      x={xText}
-                      y={yText}
-                      transform-origin={`${xText}px ${yText}px`}
-                      textAnchor={textAnchor}
-                      dominantBaseline={dominantBaseline}
-                      className="fill-black text-xs font-normal tracking-wide dark:fill-white"
-                    >
-                      <tspan x={xText} dy="0">
-                        {scaleType === "band" || scaleType === "point"
-                          ? value
-                          : formatNumber(value, { notation: "compact" })}
-                      </tspan>
-                    </text>
-                  </g>
-                )
-              )}
-
-              {label && (
-                <text
-                  stroke="none"
-                  x={
-                    position === "bottom" || position === "top" ? width / 2 : 0
-                  }
-                  y={
-                    position === "left" || position === "right"
-                      ? height / 2
-                      : margin.bottom / 2 + 5
-                  }
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  className="fill-black text-xs font-normal tracking-wide dark:fill-white"
-                >
-                  <tspan
-                    x={
-                      position === "bottom" || position === "top"
-                        ? width / 2
+                  })`}
+              >
+                {!disableLine && (
+                  <line
+                    x1={
+                      isXAxis
+                        ? margin.left
                         : 0
                     }
-                    dy="0"
+                    x2={
+                      isXAxis
+                        ? width - margin.right
+                        : 0
+                    }
+                    y1={
+                      isXAxis ? 0 : margin.top
+                    }
+                    y2={
+                      isXAxis ? 0 : height - margin.bottom
+                    }
+                    className="stroke-black stroke-1 dark:stroke-white"
+                    style={{ shapeRendering: "crispEdges" }}
+                  />
+                )}
+
+                {axisValues.map(
+                  (
+                    {
+                      value,
+                      x,
+                      y,
+                      xLine,
+                      yLine,
+                      xText,
+                      yText,
+                      textAnchor,
+                      dominantBaseline,
+                    },
+                    index
+                  ) => (
+                    <g
+                      key={`${position === "bottom" || position === "top" ? "x" : "y"
+                        }-axis-${position}-${index} `}
+                      transform={`translate(${x}, ${y})`}
+                      className="text-xs font-normal tracking-wide"
+                    >
+                      {!disableTicks && (
+                        <line
+                          x2={xLine}
+                          y2={yLine}
+                          className="stroke-black dark:stroke-white"
+                          style={{ shapeRendering: "crispEdges" }}
+                        />
+                      )}
+
+                      <text
+                        stroke="none"
+                        x={xText}
+                        y={yText}
+                        transform-origin={`${xText}px ${yText}px`}
+                        textAnchor={textAnchor}
+                        dominantBaseline={dominantBaseline}
+                        className="fill-black text-xs font-normal tracking-wide dark:fill-white"
+                      >
+                        <tspan x={xText} dy="0">
+                          {scaleType === "band" || scaleType === "point"
+                            ? value
+                            : formatNumber(value, { notation: "compact" })}
+                        </tspan>
+                      </text>
+                    </g>
+                  )
+                )}
+
+                {label && (
+                  <text
+                    stroke="none"
+                    x={
+                      isXAxis ? width / 2 : 0
+                    }
+                    y={
+                      isXAxis ? margin.bottom / 2 + 5 : height / 2
+                    }
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                    className="fill-black text-xs font-normal tracking-wide dark:fill-white"
                   >
-                    {label}
-                  </tspan>
-                </text>
-              )}
-            </g>
-          )
+                    <tspan
+                      x={
+                        isXAxis
+                          ? width / 2
+                          : 0
+                      }
+                      dy="0"
+                    >
+                      {label}
+                    </tspan>
+                  </text>
+                )}
+              </g>
+            )
+          }
         )}
 
       {/* Points, Paths, Bars */}
@@ -1970,8 +1123,53 @@ export const ScatterChart = ({
               })
             )}
 
-          {type === "line" && lineData.line}
-          {type === "line" && lineData.points}
+          {type === 'line' && pointData.map((d, i) => {
+            const points: [number, number][] = d.map((val) => [val.x, val.y]);
+            const catmull = drawCatmullRomChart(points);
+
+            let catmullpath = catmull
+              .map((val, index) => {
+                return `${index == 0 ? "M" : "L"} ${val.x} ${val.y}`;
+              })
+              .join(" ");
+
+            return (
+              <g key={`line-${i}`}>
+                <path
+                  d={catmullpath}
+                  stroke={dataSeries[i].color}
+                  fill={"none"}
+                  style={{
+                    strokeWidth: "2px",
+                    strokeLinejoin: "round",
+                    shapeRendering: "auto",
+                  }}
+                />
+                {d
+                  .filter((_, idx) => {
+                    const showMark = dataSeries[i]["showMark"];
+                    return typeof showMark === "function"
+                      ? showMark({ index: idx })
+                      : showMark !== false;
+                  })
+                  .map((point, index) => (
+                    <circle
+                      key={`data-${i}-circle-${index}`}
+                      transform={`translate(${point.x}, ${point.y})`}
+                      fillOpacity={0.3}
+                      cx={0}
+                      cy={0}
+                      fill={dataSeries[i].color}
+                      r={5}
+                      shapeRendering={"auto"}
+                      stroke={dataSeries[i].color}
+                      strokeLinecap="round"
+                      strokeWidth={2}
+                    />
+                  ))}
+              </g>
+            );
+          })}
 
           {type === "pie" &&
             pointData.map((pies, i) =>
@@ -2114,3 +1312,5 @@ export const ScatterChart = ({
     </svg>
   );
 };
+
+export default Chart;
