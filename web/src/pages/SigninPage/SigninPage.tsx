@@ -21,6 +21,7 @@ type FormSigninPage = NonNullable<{
 
 const SigninPage = () => {
   const { isAuthenticated, loading, logIn } = useAuth();
+  const [showPassword, setShowPassword] = React.useState(false);
   // const captcha = React.useRef(null);
 
   useEffect(() => {
@@ -55,7 +56,7 @@ const SigninPage = () => {
   };
 
   return (
-    <article className="text-gray-600 dark:text-white sm:p-8 p-2">
+    <article className="p-2 text-gray-600 dark:text-white sm:p-8">
       <MetaTags title="Login" />
       <header className="mt-4 text-center">
         <h2 className="rw-heading-secondary text-lg font-semibold">Signin</h2>
@@ -73,10 +74,6 @@ const SigninPage = () => {
               autoFocus
               autoComplete="email"
               validation={{
-                required: {
-                  value: true,
-                  message: "Email is required",
-                },
                 pattern: {
                   message: "Email must be valid",
                   value: /[^@]+@[^\.]+\..+/,
@@ -94,7 +91,7 @@ const SigninPage = () => {
                     <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
                     <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
                   </svg>
-                )
+                ),
               }}
             />
           </RouteFocus>
@@ -102,14 +99,20 @@ const SigninPage = () => {
           <InputOutlined
             name="password"
             label="Password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             margin="normal"
             autoComplete="current-password"
-            validation={{
-              required: {
-                value: true,
-                message: "Password is required",
-              },
+            InputProps={{
+              endAdornment: (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowPassword(!showPassword);
+                  }}
+                >
+                  Show
+                </button>
+              ),
             }}
           />
 

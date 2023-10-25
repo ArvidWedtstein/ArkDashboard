@@ -85,16 +85,16 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
         </Link>
 
         <Lookup
+          label={"Map"}
           options={maps.map((map) => ({
             label: map.name,
             value: map.id.toString(),
             image: `https://xyhqysuxlcxuodtuwrlf.supabase.co/storage/v1/object/public/arkimages/Map/${map.icon}`,
           }))}
-          placeholder="Choose a Map"
           defaultValue={[map]}
           onSelect={(e) => {
             setParams({
-              ...(e[0].value && { map: e[0].value.toString() }),
+              ...(e[0]?.value && { map: e[0].value.toString() }),
               ...(params.type && { type: params.type }),
             });
           }}
@@ -110,11 +110,11 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
             { label: "Underwater", value: "underwater" },
           ]}
           defaultValue={[type]}
-          placeholder="Choose a type"
+          label="Type"
           onSelect={(e) => {
             setParams({
-              ...(e[0].value && { type: e[0].value.toString() }),
-              ...(params.map && { map: params.map.toString() }),
+              ...(e[0]?.value && { map: e[0].value.toString() }),
+              ...(params.type && { type: params.type }),
             });
           }}
         />

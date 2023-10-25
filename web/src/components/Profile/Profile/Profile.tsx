@@ -43,7 +43,10 @@ const Profile = ({ profile }: Props) => {
     }
   };
 
-  const arrayToRows = <T extends unknown>(array: T[], columns: number = 1): T[][] => {
+  const arrayToRows = <T extends unknown>(
+    array: T[],
+    columns: number = 1
+  ): T[][] => {
     const result: T[][] = [];
 
     for (let i = 0; i < array.length; i += columns) {
@@ -51,7 +54,7 @@ const Profile = ({ profile }: Props) => {
     }
 
     return result;
-  }
+  };
 
   return (
     <article className="">
@@ -102,7 +105,7 @@ const Profile = ({ profile }: Props) => {
                         new Date(profile.created_at).getFullYear() +
                         (new Date().getMonth() -
                           new Date(profile.created_at).getMonth()) /
-                        12
+                          12
                       ).toPrecision(1)}
                     </span>
                     <span className="text-sm text-gray-600 dark:text-stone-300">
@@ -251,28 +254,42 @@ const Profile = ({ profile }: Props) => {
               <Tab label="Seasons">
                 <div className="mb-6 px-4 py-5 dark:text-gray-300">
                   <div className="grid grid-cols-2 justify-center gap-1 overflow-hidden rounded-lg">
-                    {arrayToRows(profile.TimelineSeasonPerson, 2).map((row, i) => {
-                      return row.map((season, sIdx) => (
-                        <Link
-                          to={routes.timelineSeason({
-                            id: season.TimelineSeason.id,
-                          })}
-                          key={`season-${season.TimelineSeason.id}`}
-                          className={clsx("hover:border-pea-500 w-full rounded-sm border border-transparent bg-zinc-700 p-4 transition ease-in-out duration-75 first:rounded-tl-lg last:rounded-br-lg", {
-                            "rounded-bl-lg": arrayToRows(profile.TimelineSeasonPerson, 2).length === i + 1 && sIdx === 0,
-                            "rounded-br-lg": arrayToRows(profile.TimelineSeasonPerson, 2).length === i + 1 && sIdx === row.length - 1 && row.length % 2 === 0,
-                            "rounded-tr-lg": i === 0 && sIdx === row.length - 1,
-                          })}
-                        >
-                          <p>{season.TimelineSeason.tribe_name}</p>
-                          <p>
-                            {season.TimelineSeason.season ? "S" : ""}
-                            {season.TimelineSeason.season}{" "}
-                            <span>{season.TimelineSeason.server}</span>
-                          </p>
-                        </Link>
-                      ))
-                    })}
+                    {arrayToRows(profile.TimelineSeasonPerson, 2).map(
+                      (row, i) => {
+                        return row.map((season, sIdx) => (
+                          <Link
+                            to={routes.timelineSeason({
+                              id: season.TimelineSeason.id,
+                            })}
+                            key={`season-${season.TimelineSeason.id}`}
+                            className={clsx(
+                              "hover:border-pea-500 w-full rounded-sm border border-transparent bg-zinc-700 p-4 transition duration-75 ease-in-out first:rounded-tl-lg last:rounded-br-lg",
+                              {
+                                "rounded-bl-lg":
+                                  arrayToRows(profile.TimelineSeasonPerson, 2)
+                                    .length ===
+                                    i + 1 && sIdx === 0,
+                                "rounded-br-lg":
+                                  arrayToRows(profile.TimelineSeasonPerson, 2)
+                                    .length ===
+                                    i + 1 &&
+                                  sIdx === row.length - 1 &&
+                                  row.length % 2 === 0,
+                                "rounded-tr-lg":
+                                  i === 0 && sIdx === row.length - 1,
+                              }
+                            )}
+                          >
+                            <p>{season.TimelineSeason.tribe_name}</p>
+                            <p>
+                              {season.TimelineSeason.season ? "S" : ""}
+                              {season.TimelineSeason.season}{" "}
+                              <span>{season.TimelineSeason.server}</span>
+                            </p>
+                          </Link>
+                        ));
+                      }
+                    )}
 
                     {profile.TimelineSeasonPerson.length % 2 === 1 && (
                       <div className="w-full rounded-sm bg-zinc-700 p-4"></div>
@@ -290,18 +307,26 @@ const Profile = ({ profile }: Props) => {
                             id: basespot.id,
                           })}
                           key={`basespot-${basespot.id}`}
-                          className={clsx("hover:border-pea-500 w-full rounded-sm border border-transparent bg-zinc-700 p-4 transition ease-in-out duration-75 first:rounded-tl-lg last:rounded-br-lg", {
-                            "rounded-bl-lg": arrayToRows(profile.Basespot, 2).length === i + 1 && bsIdx === 0,
-                            "rounded-br-lg": arrayToRows(profile.Basespot, 2).length === i + 1 && bsIdx === row.length - 1 && row.length % 2 === 0,
-                            "rounded-tr-lg": i === 0 && bsIdx === row.length - 1,
-                          })}
+                          className={clsx(
+                            "hover:border-pea-500 w-full rounded-sm border border-transparent bg-zinc-700 p-4 transition duration-75 ease-in-out first:rounded-tl-lg last:rounded-br-lg",
+                            {
+                              "rounded-bl-lg":
+                                arrayToRows(profile.Basespot, 2).length ===
+                                  i + 1 && bsIdx === 0,
+                              "rounded-br-lg":
+                                arrayToRows(profile.Basespot, 2).length ===
+                                  i + 1 &&
+                                bsIdx === row.length - 1 &&
+                                row.length % 2 === 0,
+                              "rounded-tr-lg":
+                                i === 0 && bsIdx === row.length - 1,
+                            }
+                          )}
                         >
                           <p>{basespot.name}</p>
-                          <p>
-                            {basespot.description}
-                          </p>
+                          <p>{basespot.description}</p>
                         </Link>
-                      ))
+                      ));
                     })}
                     {profile.Basespot.length % 2 === 1 && (
                       <div className="w-full rounded-sm bg-zinc-700 p-4"></div>
@@ -345,7 +370,7 @@ const Profile = ({ profile }: Props) => {
           )}
         </div>
       </section>
-    </article >
+    </article>
   );
 };
 
