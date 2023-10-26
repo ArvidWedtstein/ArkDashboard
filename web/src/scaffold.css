@@ -101,6 +101,21 @@
     @apply box-border rounded-lg py-2.5 px-4 text-sm font-medium text-gray-900 dark:text-white;
   }
 
+  button .ripple {
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.7);
+    position: absolute;
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+  }
+
+  @keyframes ripple {
+    to {
+      transform: scale(2.5);
+      opacity: 0;
+    }
+  }
+
   .rw-button.disabled,
   .rw-button[disabled] {
     @apply !cursor-not-allowed select-none opacity-50;

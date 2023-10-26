@@ -67,21 +67,6 @@ export const jsonTruncate = (obj: unknown, maxlength: number = 150) => {
   return truncate(JSON.stringify(obj, null, 2), maxlength);
 };
 
-// const dateFormatter = new Intl.DateTimeFormat("en-GB", {
-// 	day: "2-digit",
-// 	month: "2-digit",
-// 	year: "numeric",
-// 	timeZone: "utc",
-// });
-
-// const dateTimeFormatter = new Intl.DateTimeFormat("en-GB", {
-// 	day: "2-digit",
-// 	month: "2-digit",
-// 	year: "numeric",
-// 	hour: "2-digit",
-// 	minute: "2-digit",
-// 	timeZone: "utc",
-// });
 interface options {
   dateStyle?: "long" | "short" | "full" | "medium";
   timeStyle?: "long" | "short" | "full" | "medium" | "none";
@@ -568,6 +553,16 @@ export const getWeekDates = (date?: Date): [Date, Date] => {
 
   return [start, end];
 };
+
+export function toISODate(date: Date): string;
+export function toISODate(date: null): null;
+export function toISODate(date: Date | null): string | null {
+  if (date) {
+    return date.toISOString().split("T")[0];
+  }
+
+  return null;
+}
 
 /**
  * TODO: remove
