@@ -533,26 +533,119 @@ export const timeFormatL = (seconds, onlyLast = false) => {
 };
 
 /**
- * @description Returns the start and end date of the current week
- * @returns {Array} array of start and end dates of the current week
+ *
+ * @param date
+ * @param value
+ * @param unit
+ * @returns
  */
-export const getWeekDates = (date?: Date): [Date, Date] => {
-  let now = date ?? new Date();
-  let dayOfWeek = now.getUTCDay();
-  let numDay = now.getUTCDate();
+export const addToDate = (date: Date, value: number = 0, unit: "day" | "week" | "month" | "year" = 'day') => {
+  const result = new Date(date);
 
-  let start = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), numDay - dayOfWeek)
-  );
-  start.setUTCHours(0, 0, 0, 0);
+  if (unit === 'day') {
+    result.setDate(result.getDate() + value);
+  } else if (unit === 'month') {
+    result.setMonth(result.getMonth() + value);
+  } else if (unit === 'year') {
+    result.setFullYear(result.getFullYear() + value);
+  }
 
-  let end = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), numDay + (7 - dayOfWeek))
-  );
-  end.setUTCHours(0, 0, 0, 0);
+  return result;
+}
 
-  return [start, end];
-};
+/**
+ *  Returns an array of dates between the two dates
+ * @param currentDay
+ * @param lastDay
+ * @returns
+ */
+export const getDaysBetweenDates = (currentDay: Date, lastDay: Date): Date[] => {
+  return Array.from({ length: (+lastDay - +currentDay) / (24 * 60 * 60 * 1000) + 1 }, (_, index) => {
+    return addToDate(new Date(currentDay), index, 'day');
+  });
+}
+
+/**
+ *
+ * @param firstDayOfWeek
+ * @returns
+ */
+export const getWeekdays = (firstDayOfWeek = 1): Date[] => {
+  const weekdays: Date[] = [];
+  let date = new Date();
+
+  // Set the date to the first day of the week (Monday)
+  date.setDate(date.getDate() - ((date.getDay() - firstDayOfWeek + 7) % 7));
+
+  // Get the weekdays (Monday to Sunday)
+  for (let i = 0; i < 7; i++) {
+    weekdays.push(new Date(date));
+    date.setDate(date.getDate() + 1);
+  }
+
+  return weekdays;
+}
+
+/**
+ *
+ * @param date
+ * @returns
+ */
+export const toLocaleISODate = (date: Date) => {
+  return `${date.getFullYear()}-${(date.getMonth() + 1 + "").padStart(2, "0")}-${(date.getDate() + "").padStart(
+    2,
+    "0",
+  )}`;
+}
+
+/**
+ * Get Start or End of a period
+ * @param date
+ * @param type
+ * @param period
+ * @param startOn
+ * @returns
+ */
+export const adjustCalendarDate = (date: Date, type: 'start' | 'end', period: 'week' | 'month' | 'year', startOn = 0): Date => {
+  const result = new Date(date);
+
+  if (type === 'start') {
+    if (period === 'week') {
+      const dayOfWeek = result.getUTCDay();
+      const diff = (dayOfWeek - startOn + 7) % 7;
+      result.setUTCDate(result.getUTCDate() - diff);
+    } else if (period === 'month') {
+      result.setDate(1);
+    }
+  } else if (type === 'end') {
+    if (period === 'month') {
+      result.setMonth(result.getMonth() + 1, 0);
+    } else if (period === 'week') {
+      const dayOfWeek = result.getUTCDay();
+      const diff = (6 - dayOfWeek + 7) % 7;
+      result.setUTCDate(result.getUTCDate() + diff);
+    } else if (period === 'year') {
+      result.setFullYear(result.getFullYear() + 1, 0, 0);
+    }
+  }
+
+  return result;
+}
+
+/**
+ *
+ * @param date
+ * @returns
+ */
+export const getISOWeek = (date: Date = new Date()): number => {
+  const dayMs = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
+  const startOfYear = new Date(date.getFullYear(), 0, 1);
+  const daysSinceStart = Math.floor((+date - +startOfYear) / dayMs);
+  const dayOfWeek = (date.getUTCDay() + 6) % 7; // Ensure Sunday (0) is 7 in ISO week
+  const weekNumber = Math.ceil((daysSinceStart + 1 - dayOfWeek) / 7);
+
+  return weekNumber;
+}
 
 export function toISODate(date: Date): string;
 export function toISODate(date: null): null;

@@ -6,7 +6,7 @@ import { useAuth } from "src/auth";
 import { ContextMenu } from "src/components/Util/ContextMenu/ContextMenu";
 import { FormModal } from "src/components/Util/Modal/Modal";
 import Table from "src/components/Util/Table/Table";
-import { getWeekDates, pluralize, timeTag } from "src/lib/formatters";
+import { getISOWeek, pluralize, timeTag } from "src/lib/formatters";
 
 import type { FindTribes, permission } from "types/graphql";
 import NewTribe from "../NewTribe/NewTribe";
@@ -17,12 +17,7 @@ const TribesList = ({ tribes }: FindTribes) => {
   const [open, setOpen] = useState(false);
 
   const filterDatesByCurrentWeek = (dates: FindTribes["tribes"]) => {
-    let start = +getWeekDates()[0];
-    let end = +getWeekDates()[1];
-    return dates.filter((d) => {
-      let date = +new Date(d.created_at);
-      return date >= start && date < end;
-    });
+    return dates.filter((d) => getISOWeek(new Date()) === getISOWeek(new Date(d.created_at)));
   };
 
   return (

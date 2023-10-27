@@ -19,8 +19,8 @@ module.exports = {
       },
       animation: {
         "circle-progress": "progress 1s ease-out forwards",
-        "fade-in": "fadein 0.5s ease-in forwards",
-        "fade-out": "fadeout 0.5s linear forwards",
+        "fade-in": "fadein 0.3s ease-in forwards",
+        "fade-out": "fadeout 0.3s linear forwards",
         "fly-in": "flyIn 0.3s ease-out",
         "fly-out": "flyOut 0.3s ease-out",
         "fly-in-top": "flyInTop 0.1s ease-out",
