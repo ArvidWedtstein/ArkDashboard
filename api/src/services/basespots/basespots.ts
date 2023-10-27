@@ -6,7 +6,6 @@ import type {
 
 import { db } from "src/lib/db";
 import { requireAuth } from "src/lib/auth";
-import { prismaVersion } from "@redwoodjs/api";
 
 const POSTS_PER_PAGE = 6;
 export const basespotPage: QueryResolvers["basespotPage"] = ({
@@ -37,15 +36,49 @@ export const basespotPage: QueryResolvers["basespotPage"] = ({
   };
 };
 
-export const basespotsTypes: QueryResolvers["basespotTypes"] = () => {
-  // return db.basespot.findMany();
-  // return db.$queryRaw`SELECT type FROM Basespot;`;
-  return db.basespot.groupBy({
-    by: ["type"],
+export const basespotPagination: QueryResolvers["basespotPagination"] = async ({
+  take,
+  lastCursor,
+}) => {
+  let result = await db.basespot.findMany({
+    take: take ? take : 9,
+    ...(lastCursor && {
+      skip: 1,
+      cursor: {
+        id: lastCursor as string,
+      },
+    }),
+    orderBy: {
+      id: "desc",
+    },
   });
-  // return db.basespot.findMany({
-  //   distinct: ["type"],
-  // });
+
+  if (result.length === 0) {
+    return {
+      basespots: [],
+      cursor: null,
+      hasNextPage: false,
+    };
+  }
+
+  const lastPostInResults = result[result.length - 1];
+  const cursor = lastPostInResults.id;
+  console.log(cursor, lastCursor, result.length);
+  const nextPage = await db.basespot.findMany({
+    take: take ? take : 7,
+    skip: 1, // Do not include the cursor itself in the query result.
+    cursor: {
+      id: cursor,
+    },
+  });
+
+  const hasNextPage = nextPage.length > 0;
+
+  return {
+    basespots: result,
+    cursor: cursor,
+    hasNextPage: hasNextPage,
+  };
 };
 
 export const basespots: QueryResolvers["basespots"] = () => {

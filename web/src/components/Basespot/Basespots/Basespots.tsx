@@ -1,5 +1,6 @@
 import { navigate, parseSearch } from "@redwoodjs/router";
 import { Link, routes, useParams } from "@redwoodjs/router";
+import { useQuery } from "@redwoodjs/web";
 import { useEffect, useState } from "react";
 import ArkCard from "src/components/Util/ArkCard/ArkCard";
 
@@ -7,9 +8,35 @@ import { Lookup } from "src/components/Util/Lookup/Lookup";
 import { random, truncate } from "src/lib/formatters";
 
 import type { FindBasespots } from "types/graphql";
+import { useLazyQuery } from "@apollo/client";
 
-const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
-  let basespots = basespotPage.basespots;
+const QUERY = gql`
+  query FindBasespots($take: Int, $lastCursor: String) {
+    basespotPagination(take: $take, lastCursor: $lastCursor) {
+      basespots {
+        id
+        name
+        description
+        latitude
+        longitude
+        thumbnail
+        created_at
+        updated_at
+        map_id
+        estimated_for_players
+        Map {
+          name
+        }
+      }
+      hasNextPage
+      cursor
+    }
+  }
+`;
+const BasespotsList = ({ basespotPagination, maps }: FindBasespots) => {
+  const [basespot, setBasespot] = useState(basespotPagination.basespots);
+  const [cursor, setCursor] = useState(basespotPagination.cursor);
+  let basespots = basespotPagination.basespots;
   let { map, type } = useParams();
 
   const [params, setParams] = useState({ map, type });
@@ -25,6 +52,33 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
       })
     );
   }, [params]);
+  const [loadMore, { called, loading, data, variables }] = useLazyQuery(QUERY, {
+    variables: {
+      take: 9,
+      lastCursor: cursor,
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+    query: QUERY,
+    onCompleted: (data) => {
+      console.log(data);
+      setCursor(data.basespotPagination.cursor);
+      if (
+        data.basespotPagination.basespots.length == 0 ||
+        !data.basespotPagination.hasNextPage
+      )
+        return;
+      setBasespot([...basespot, ...data.basespotPagination.basespots]);
+    },
+  });
+
+  const loadMoreData = (e) => {
+    e.preventDefault();
+    if (!loading) {
+      loadMore();
+    }
+  };
 
   const mapImages = {
     theisland:
@@ -51,7 +105,6 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
     genesis2:
       "https://cdn.cloudflare.steamstatic.com/steam/apps/1646720/ss_5cad67b512285163143cfe21513face50c0a00f6.1920x1080.jpg?t=1622744444",
   };
-  // const [currentMap, setCurrentMap] = useState(map || null);
 
   return (
     <div className="-m-3">
@@ -72,7 +125,7 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
       <div className="my-4 flex items-center justify-start gap-3">
         <Link
           to={routes.newBasespot()}
-          className="rw-button rw-button-green-outline"
+          className="rw-button rw-button-green-outline rw-button-large"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -83,6 +136,20 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
           </svg>
           New Basespot
         </Link>
+        <button
+          type="button"
+          onClick={loadMoreData}
+          className="rw-button rw-button-green-outline rw-button-large"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 448 512"
+            className="rw-button-icon-start"
+          >
+            <path d="M432 256C432 264.8 424.8 272 416 272h-176V448c0 8.844-7.156 16.01-16 16.01S208 456.8 208 448V272H32c-8.844 0-16-7.15-16-15.99C16 247.2 23.16 240 32 240h176V64c0-8.844 7.156-15.99 16-15.99S240 55.16 240 64v176H416C424.8 240 432 247.2 432 256z" />
+          </svg>
+          test
+        </button>
 
         <Lookup
           label={"Map"}
@@ -120,7 +187,7 @@ const BasespotsList = ({ basespotPage, maps }: FindBasespots) => {
         />
       </div>
       <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {basespots.map((basespot, i) => (
+        {basespot.map((basespot, i) => (
           <ArkCard
             className=""
             key={`${basespot.id}-${i}`}
