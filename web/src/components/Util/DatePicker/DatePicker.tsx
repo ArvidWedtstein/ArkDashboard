@@ -15,6 +15,8 @@ type DatePickerProps = {
   views?: ViewType[];
   disabled?: boolean;
   readOnly?: boolean;
+  defaultValue?: Date;
+  onChange?: (date: Date) => void;
 }
 const DatePicker = ({
   displayWeekNumber = false,
@@ -23,9 +25,11 @@ const DatePicker = ({
   views = ["day", "year"],
   disabled = false,
   readOnly = false,
+  defaultValue = new Date(),
+  onChange,
 }: DatePickerProps) => {
-  const [date, setDate] = useState<Date>(new Date());
-  const [period, setPeriod] = useState<string>(() => toLocalPeriod(new Date()));
+  const [selectedDate, setSelectedDate] = useState<Date>(defaultValue);
+  const [period, setPeriod] = useState<string>(() => toLocalPeriod(defaultValue));
   const [currentView, setCurrentView] = useState<ViewType>(views.includes('day') ? 'day' : views[0] || 'day');
 
 
@@ -46,7 +50,7 @@ const DatePicker = ({
 
   const onSelectDate = (e: MouseEvent<HTMLButtonElement>, date: Date) => {
     if (readOnly) return;
-    setDate(date);
+    setSelectedDate(date);
 
     if (date.getMonth() !== Number(period.substring(5)) - 1) {
       if (date.getMonth() < Number(period.substring(5)) - 1) {
@@ -55,7 +59,8 @@ const DatePicker = ({
         navigateMonth(1);
       }
     }
-    // console.log("SELECTED DATE", date);
+
+    onChange?.(date);
   }
 
   const [firstDay, lastDay] = useCalendarDateRange(period, firstDayOfWeek);
@@ -238,8 +243,8 @@ const DatePicker = ({
                             className={clsx("inline-flex justify-center items-center relative select-none appearance-none outline-0 font-montserrat hover:bg-pea-300/10 box-border align-middle text-xs leading-[1.66] tracking-[0.03333em] p-0 w-9 h-9 rounded-full bg-transparent mx-0.5 text-white transition-colors duration-200", {
                               "text-white/70": day.getMonth() !== Number(period.substring(5)) - 1,
                               "invisible": !showDaysOutsideCurrentMonth && day.getMonth() !== Number(period.substring(5)) - 1,
-                              "border border-white/70": toLocaleISODate(new Date()) === toLocaleISODate(day) && toLocaleISODate(day) != toLocaleISODate(date),
-                              "text-black/80 font-medium bg-pea-400 hover:bg-pea-500 hover:will-change-[background-color]": toLocaleISODate(day) === toLocaleISODate(date),
+                              "border border-white/70": toLocaleISODate(new Date()) === toLocaleISODate(day) && toLocaleISODate(day) != toLocaleISODate(selectedDate),
+                              "text-black/80 font-medium bg-pea-400 hover:bg-pea-500 hover:will-change-[background-color]": toLocaleISODate(day) === toLocaleISODate(selectedDate),
                             })}
                             type="button"
                             role="gridcell"
@@ -247,7 +252,7 @@ const DatePicker = ({
                             tabIndex={-1}
                             aria-colindex={j + 1}
                             disabled={disabled}
-                            aria-selected={toLocaleISODate(date) === toLocaleISODate(day)}
+                            aria-selected={toLocaleISODate(selectedDate) === toLocaleISODate(day)}
                             data-timestamp={day.getTime()}
                             onClick={(e) => onSelectDate(e, day)}
                             aria-current={toLocaleISODate(new Date()) === toLocaleISODate(day) ? "date" : undefined}
