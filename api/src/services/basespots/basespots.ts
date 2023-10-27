@@ -60,10 +60,10 @@ export const basespotPagination: QueryResolvers["basespotPagination"] = async ({
       hasNextPage: false,
     };
   }
-
+  // https://community.redwoodjs.com/t/infinite-scrolling-using-field-policy-inmemorycache/3570/3
   const lastPostInResults = result[result.length - 1];
   const cursor = lastPostInResults.id;
-  console.log(cursor, lastCursor, result.length);
+  // console.log(cursor, lastCursor, result.length);
   const nextPage = await db.basespot.findMany({
     take: take ? take : 7,
     skip: 1, // Do not include the cursor itself in the query result.
