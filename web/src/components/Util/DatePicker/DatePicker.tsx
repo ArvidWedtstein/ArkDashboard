@@ -161,7 +161,7 @@ const DatePicker = ({
         {currentView === 'year' && (
           <div className="flex flex-wrap px-1 w-full box-border h-full relative max-h-[280px] overflow-y-auto" style={{ alignContent: 'stretch' }} role="radiogroup">
             {years.map((year) => (
-              <div className="basis-1/3 flex items-center justify-center" key={year}>
+              <div className="basis-1/4 flex items-center justify-center" key={year}>
                 <button
                   role="radio"
                   type="button"
@@ -171,7 +171,6 @@ const DatePicker = ({
                   tabIndex={-1}
                   aria-checked={Number(period.substring(0, 4)) === year}
                   onClick={() => selectYear(year)}
-                // aria-label={"Year"}
                 >
                   {year}
                 </button>
