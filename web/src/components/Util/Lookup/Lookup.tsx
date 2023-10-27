@@ -1,9 +1,11 @@
+import { FieldError, RegisterOptions, useController } from "@redwoodjs/forms";
 import {
-  FieldError,
-  RegisterOptions,
-  useController,
-} from "@redwoodjs/forms";
-import { CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
+  CSSProperties,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import useComponentVisible from "../../useComponentVisible";
 import { ArrayElement, debounce } from "src/lib/formatters";
 import clsx from "clsx";
@@ -39,9 +41,7 @@ interface ILookup {
     [key: string]: string | object | number | boolean | undefined;
   }[];
   groupBy?: (option: ILookup["options"][0]) => string;
-  renderTags?: (
-    lookupOptions: Readonly<ILookup["options"]>
-  ) => React.ReactNode;
+  renderTags?: (lookupOptions: Readonly<ILookup["options"]>) => React.ReactNode;
   onInputChange?: (
     event: React.ChangeEvent<HTMLInputElement>,
     newInputValue: string
@@ -98,7 +98,12 @@ export const Lookup = ({
   const [lookupOptions, setLookupOptions] = useState<ILookupOptions[]>([]);
 
   const { field } =
-    !!name && useController({ name: name, defaultValue: defaultValue || value, rules: validation });
+    !!name &&
+    useController({
+      name: name,
+      defaultValue: defaultValue || value,
+      rules: validation,
+    });
   const [searchTerm, setSearchTerm] = useState<string>(inputValue || "");
   const [internalValue, setInternalValue] = useState<string>("");
 
@@ -157,8 +162,9 @@ export const Lookup = ({
     setSearchTerm("");
     setInternalValue("");
     const valuesToSelect: string[] =
-      (value ?? defaultValue)?.map((s) => s?.trim()).slice(0, multiple ? undefined : 1) ||
-      [];
+      (value ?? defaultValue)
+        ?.map((s) => s?.trim())
+        .slice(0, multiple ? undefined : 1) || [];
 
     const selected: ILookupOptions[] = options.map((option) => {
       const isSelected = valuesToSelect.includes(option.value.toString());
@@ -174,7 +180,11 @@ export const Lookup = ({
 
     setLookupOptions(selected);
     !!name && field.onChange(multiple ? valuesToSelect : valuesToSelect[0]);
-    setInternalValue(multiple ? "" : options?.find((e) => e.value === valuesToSelect[0])?.label ?? "");
+    setInternalValue(
+      multiple
+        ? ""
+        : options?.find((e) => e.value === valuesToSelect[0])?.label ?? ""
+    );
     updateLayout();
   }, [defaultValue, value]);
 
@@ -208,8 +218,8 @@ export const Lookup = ({
         field.onChange(
           multiple
             ? updateOptions
-              .filter((f) => f != null && f.selected)
-              .map((o) => o?.value)
+                .filter((f) => f != null && f.selected)
+                .map((o) => o?.value)
             : option.value
         );
       }
@@ -241,20 +251,23 @@ export const Lookup = ({
     name && field.onChange([]);
   };
 
-  let lastFocusType = ""
-  const toggleLookup = (e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLInputElement>) => {
+  let lastFocusType = "";
+  const toggleLookup = (
+    e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLInputElement>
+  ) => {
     e.stopPropagation();
 
     if (!disabled) {
       if (lastFocusType == "button" && e.currentTarget.type == "text") return;
 
       setIsComponentVisible(!isComponentVisible);
-      const input = (ref.current.firstChild as HTMLDivElement).querySelector('input');
-      if (e.currentTarget.type == 'button') input?.focus();
+      const input = (ref.current.firstChild as HTMLDivElement).querySelector(
+        "input"
+      );
+      if (e.currentTarget.type == "button") input?.focus();
 
       lastFocusType = e.currentTarget.type;
       if (!isComponentVisible) {
-
         if (selectOnFocus) {
           input?.select();
         }
@@ -266,7 +279,10 @@ export const Lookup = ({
     }
   };
 
-  const renderOption = (option: ILookupOptions, index: number): React.JSX.Element => {
+  const renderOption = (
+    option: ILookupOptions,
+    index: number
+  ): React.JSX.Element => {
     return (
       <li
         key={`option-${option.value}-${index}`}
@@ -277,7 +293,8 @@ export const Lookup = ({
         className={clsx("flex items-center py-2 px-4 last:rounded-b-lg", {
           "cursor-not-allowed text-zinc-500/50": option.disabled,
           "first:rounded-t-lg": index == 0 && !groupBy,
-          "hover:bg-zinc-200 dark:hover:bg-zinc-600/90 dark:hover:text-white": !option.disabled,
+          "hover:bg-zinc-200 dark:hover:bg-zinc-600/90 dark:hover:text-white":
+            !option.disabled,
         })}
       >
         {"image" in option && (
@@ -285,7 +302,13 @@ export const Lookup = ({
         )}
         <span className="grow">{option.label}</span>
         {option.selected && (
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="h-5 w-5 shrink-0">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+            className="h-5 w-5 shrink-0"
+          >
             <path
               fillRule="evenodd"
               d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
@@ -295,7 +318,7 @@ export const Lookup = ({
         )}
       </li>
     );
-  }
+  };
 
   return (
     <div
@@ -323,8 +346,9 @@ export const Lookup = ({
               "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
                 isComponentVisible ||
                 lookupOptions.filter((o) => o != null && o.selected).length >
-                0 ||
-                searchTerm.length > 0 || internalValue.length > 0,
+                  0 ||
+                searchTerm.length > 0 ||
+                internalValue.length > 0,
             }
           )}
           htmlFor={`input-${name}`}
@@ -339,11 +363,10 @@ export const Lookup = ({
               "pr-10":
                 !disableClearable &&
                 lookupOptions.filter((d) => d != null && d.selected).length ==
-                0,
+                  0,
               "pr-12":
                 !disableClearable &&
-                lookupOptions.filter((d) => d != null && d.selected).length >
-                0,
+                lookupOptions.filter((d) => d != null && d.selected).length > 0,
             }
           )}
         >
@@ -351,32 +374,31 @@ export const Lookup = ({
           {renderTags != null
             ? renderTags(lookupOptions.filter((o) => o != null && o.selected))
             : multiple &&
-            lookupOptions.filter((o) => o != null && o.selected).length >
-            0 &&
-            lookupOptions
-              .filter((o) => o != null && o.selected)
-              .map((option) => (
-                <div
-                  role="button"
-                  className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
-                >
-                  <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
-                    {option.label}
-                  </span>
-                  {!readOnly && (
-                    <svg
-                      onClick={(e) => handleOptionSelect(e, option)}
-                      className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
-                      viewBox="0 0 24 24"
-                      focusable="false"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
-                    </svg>
-                  )}
-                </div>
-              ))}
+              lookupOptions.filter((o) => o != null && o.selected).length > 0 &&
+              lookupOptions
+                .filter((o) => o != null && o.selected)
+                .map((option) => (
+                  <div
+                    role="button"
+                    className="relative m-0.5 box-border inline-flex h-8 max-w-[calc(100%-6px)] select-none appearance-none items-center justify-center whitespace-nowrap rounded-2xl bg-white/10 align-middle text-xs outline-0"
+                  >
+                    <span className="overflow-hidden text-ellipsis whitespace-nowrap px-3">
+                      {option.label}
+                    </span>
+                    {!readOnly && (
+                      <svg
+                        onClick={(e) => handleOptionSelect(e, option)}
+                        className="mr-1 -ml-1.5 inline-block h-4 w-4 shrink-0 select-none fill-current text-base text-white/60 transition-colors hover:text-white/40"
+                        viewBox="0 0 24 24"
+                        focusable="false"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" />
+                      </svg>
+                    )}
+                  </div>
+                ))}
 
           <input
             aria-invalid="false"
@@ -398,11 +420,11 @@ export const Lookup = ({
           <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
             {!disableClearable &&
               lookupOptions.filter((d) => d != null && d.selected).length >
-              0 && (
+                0 && (
                 <button
                   type="button"
                   onClick={handleClearSelection}
-                  className="relative -mr-0.5 box-border align-middle inline-flex appearance-none items-center justify-center rounded-full p-1 transition-colors duration-75 hover:bg-white/10 peer-hover:visible peer-focus:visible"
+                  className="relative -mr-0.5 box-border inline-flex appearance-none items-center justify-center rounded-full p-1 align-middle transition-colors duration-75 hover:bg-white/10 peer-hover:visible peer-focus:visible"
                 >
                   <svg
                     className="h-4 w-4 shrink-0 select-none fill-current"
@@ -417,13 +439,16 @@ export const Lookup = ({
             <button
               type="button"
               onClick={toggleLookup}
-              className="relative -mr-0.5 inline-flex select-none appearance-none items-center justify-center rounded-full p-1 transition-colors duration-75 align-middle hover:bg-white/10"
+              className="relative -mr-0.5 inline-flex select-none appearance-none items-center justify-center rounded-full p-1 align-middle transition-colors duration-75 hover:bg-white/10"
             >
               <svg
-                className={clsx("h-4 w-4 will-change-transform transition-transform duration-75", {
-                  "shrink-0": !isComponentVisible,
-                  "shrink-0 rotate-180": isComponentVisible,
-                })}
+                className={clsx(
+                  "h-4 w-4 transition-transform duration-75 will-change-transform",
+                  {
+                    "shrink-0": !isComponentVisible,
+                    "shrink-0 rotate-180": isComponentVisible,
+                  }
+                )}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -449,9 +474,10 @@ export const Lookup = ({
               {
                 "top-0":
                   isComponentVisible ||
-                  lookupOptions.filter((o) => o != null && o.selected)
-                    .length > 0 ||
-                  searchTerm.length > 0 || internalValue.length > 0,
+                  lookupOptions.filter((o) => o != null && o.selected).length >
+                    0 ||
+                  searchTerm.length > 0 ||
+                  internalValue.length > 0,
               }
             )}
           >
@@ -464,7 +490,8 @@ export const Lookup = ({
                     isComponentVisible ||
                     lookupOptions.filter((o) => o != null && o.selected)
                       .length > 0 ||
-                    searchTerm.length > 0 || internalValue.length > 0,
+                    searchTerm.length > 0 ||
+                    internalValue.length > 0,
                 }
               )}
             >
@@ -511,7 +538,7 @@ export const Lookup = ({
             role="listbox"
           >
             {!options ||
-              lookupOptions.filter((option) => {
+              (lookupOptions.filter((option) => {
                 if (filterlookupOptions) {
                   return !option?.selected && option?.inSearch;
                 }
@@ -521,41 +548,50 @@ export const Lookup = ({
                 <li className="flex items-center py-2 px-4 text-zinc-500/70 dark:text-zinc-300/70">
                   No options
                 </li>
-              )}
+              ))}
 
-            {groupBy ? Object.entries(lookupOptions
-              .filter((option) => {
-                if (filterlookupOptions) {
-                  return !option?.selected && option?.inSearch;
-                }
+            {groupBy
+              ? Object.entries(
+                  lookupOptions
+                    .filter((option) => {
+                      if (filterlookupOptions) {
+                        return !option?.selected && option?.inSearch;
+                      }
 
-                return option.inSearch;
-              }).reduce((acc, obj) => {
-                let groupKey: any = obj; // Use 'any' type for indexing
+                      return option.inSearch;
+                    })
+                    .reduce((acc, obj) => {
+                      let groupKey: any = obj; // Use 'any' type for indexing
 
-                groupKey = groupBy(obj);
+                      groupKey = groupBy(obj);
 
-                if (!acc.hasOwnProperty(groupKey)) {
-                  acc[groupKey] = [];
-                }
+                      if (!acc.hasOwnProperty(groupKey)) {
+                        acc[groupKey] = [];
+                      }
 
-                acc[groupKey].push(obj);
-                return acc;
-              }, {})).map(([groupTitle, groupedItems]: [groupedTitle: string, groupedItems: ILookupOptions[]]) => (
-                <li className="overflow-hidden" key={`group-${groupTitle}`}>
-                  <div className="px-2 py-1">{groupTitle}</div>
-                  <ul>
-                    {groupedItems.map(renderOption)}
-                  </ul>
-                </li>
-              )) : lookupOptions
-                .filter((option) => {
-                  if (filterlookupOptions) {
-                    return !option?.selected && option?.inSearch;
-                  }
+                      acc[groupKey].push(obj);
+                      return acc;
+                    }, {})
+                ).map(
+                  ([groupTitle, groupedItems]: [
+                    groupedTitle: string,
+                    groupedItems: ILookupOptions[]
+                  ]) => (
+                    <li className="overflow-hidden" key={`group-${groupTitle}`}>
+                      <div className="px-2 py-1">{groupTitle}</div>
+                      <ul>{groupedItems.map(renderOption)}</ul>
+                    </li>
+                  )
+                )
+              : lookupOptions
+                  .filter((option) => {
+                    if (filterlookupOptions) {
+                      return !option?.selected && option?.inSearch;
+                    }
 
-                  return option.inSearch;
-                }).map(renderOption)}
+                    return option.inSearch;
+                  })
+                  .map(renderOption)}
           </ul>
         </div>,
         document.body

@@ -1,13 +1,37 @@
+import { FieldError } from "@redwoodjs/forms";
 import clsx from "clsx";
-import { MouseEvent, useEffect, useState } from "react";
-import { addToDate, adjustCalendarDate, getDaysBetweenDates, getISOWeek, getWeekdays, toLocaleISODate } from "src/lib/formatters";
-
+import { CSSProperties, MouseEvent, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import useComponentVisible from "src/components/useComponentVisible";
+import {
+  addToDate,
+  adjustCalendarDate,
+  getDaysBetweenDates,
+  getISOWeek,
+  getWeekdays,
+  toLocaleISODate,
+} from "src/lib/formatters";
 
 function toLocalPeriod(date: Date): string {
-  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}`;
+  return `${date.getFullYear()}-${(date.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}`;
 }
 
 type ViewType = "year" | "month" | "day";
+type InputFieldProps = {
+  margin?: "none" | "dense" | "normal";
+  label?: string;
+  helperText?: string;
+  name?: string;
+  required?: boolean;
+  disableClearable?: boolean;
+  btnClassName?: string;
+  InputProps?: {
+    startAdornment?: React.ReactNode;
+    style?: CSSProperties;
+  };
+};
 type DatePickerProps = {
   displayWeekNumber?: boolean;
   showDaysOutsideCurrentMonth?: boolean;
@@ -17,7 +41,9 @@ type DatePickerProps = {
   readOnly?: boolean;
   defaultValue?: Date;
   onChange?: (date: Date) => void;
-}
+  firstDayOfWeek?: number;
+} & InputFieldProps;
+
 const DatePicker = ({
   displayWeekNumber = false,
   showDaysOutsideCurrentMonth = true,
@@ -25,28 +51,91 @@ const DatePicker = ({
   views = ["day", "year"],
   disabled = false,
   readOnly = false,
+  disableClearable,
   defaultValue = new Date(),
+  firstDayOfWeek = 1,
+  margin = "normal",
+  btnClassName,
+  label,
+  name,
+  helperText,
+  required,
+  InputProps,
   onChange,
 }: DatePickerProps) => {
-  const [selectedDate, setSelectedDate] = useState<Date>(defaultValue);
-  const [period, setPeriod] = useState<string>(() => toLocalPeriod(defaultValue));
-  const [currentView, setCurrentView] = useState<ViewType>(views.includes('day') ? 'day' : views[0] || 'day');
+  const { ref, setIsComponentVisible, isComponentVisible } =
+    useComponentVisible(false);
 
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+  const [selectedDate, setSelectedDate] = useState<Date | null>(
+    defaultValue ? new Date(defaultValue) : null
+  );
+  const [period, setPeriod] = useState<string>(() =>
+    toLocalPeriod(defaultValue)
+  );
+  const [currentView, setCurrentView] = useState<ViewType>(
+    views.includes("day") ? "day" : views[0] || "day"
+  );
 
-  const firstDayOfWeek = 1;
-  const days = getWeekdays(firstDayOfWeek)
+  const updateLayout = () => {
+    if (!ref?.current) return;
 
-  const useCalendarDateRange = (period: string | Date, weekStartsOn: number = 0) => {
-    const [first, setFirst] = useState(() => adjustCalendarDate(adjustCalendarDate(new Date(period), 'start', 'month'), 'start', 'week', weekStartsOn));
-    const [last, setLast] = useState(() => adjustCalendarDate(new Date(period), 'end', 'month'));
+    const spaceingToButton = 4;
+    const btn = (ref.current.firstChild as HTMLDivElement)
+      .children[1] as HTMLDivElement;
+    const menu = ref.current.lastChild as HTMLDivElement;
+
+    const btnBounds = btn.getBoundingClientRect();
+    const menuBounds = menu.getBoundingClientRect();
+
+    let dropdownLeft = btnBounds.left;
+    let dropdownTop = btnBounds.top + btnBounds.height + spaceingToButton;
+
+    // Flip dropdown to right if it goes off screen
+    if (dropdownLeft + menuBounds.width > window.innerWidth) {
+      dropdownLeft = btnBounds.right - menuBounds.width;
+    }
+
+    // Flip dropdown to top if it goes off screen bottom. Account for scroll
+    if (dropdownTop + menuBounds.height > window.innerHeight + window.scrollY) {
+      dropdownTop = btn.offsetTop - menuBounds.height - spaceingToButton;
+    }
+
+    setMenuPosition({ top: dropdownTop, left: dropdownLeft });
+  };
+
+  const days = getWeekdays(firstDayOfWeek);
+
+  const useCalendarDateRange = (
+    period: string | Date,
+    weekStartsOn: number = 0
+  ) => {
+    const [first, setFirst] = useState(() =>
+      adjustCalendarDate(
+        adjustCalendarDate(new Date(period), "start", "month"),
+        "start",
+        "week",
+        weekStartsOn
+      )
+    );
+    const [last, setLast] = useState(() =>
+      adjustCalendarDate(new Date(period), "end", "month")
+    );
 
     useEffect(() => {
-      setFirst(adjustCalendarDate(adjustCalendarDate(new Date(period), 'start', 'month'), 'start', 'week', weekStartsOn));
-      setLast(adjustCalendarDate(new Date(period), 'end', 'month'));
+      setFirst(
+        adjustCalendarDate(
+          adjustCalendarDate(new Date(period), "start", "month"),
+          "start",
+          "week",
+          weekStartsOn
+        )
+      );
+      setLast(adjustCalendarDate(new Date(period), "end", "month"));
     }, [period, weekStartsOn]);
 
     return [first, last];
-  }
+  };
 
   const onSelectDate = (e: MouseEvent<HTMLButtonElement>, date: Date) => {
     if (readOnly) return;
@@ -61,221 +150,555 @@ const DatePicker = ({
     }
 
     onChange?.(date);
-  }
+  };
 
   const [firstDay, lastDay] = useCalendarDateRange(period, firstDayOfWeek);
 
-  const daysOfMonth = Array.from({ length: !!fixedWeekNumber && fixedWeekNumber > 0 ? fixedWeekNumber : getDaysBetweenDates(firstDay, lastDay).length / 7 + 1 }, (_, weekIndex) => {
-    return Array.from({ length: 7 }, (_day, index) => {
-      return addToDate(firstDay, weekIndex * 7 + index, 'day');
-    });
-  });
+  const daysOfMonth = Array.from(
+    {
+      length:
+        !!fixedWeekNumber && fixedWeekNumber > 0
+          ? fixedWeekNumber
+          : getDaysBetweenDates(firstDay, lastDay).length / 7 + 1,
+    },
+    (_, weekIndex) => {
+      return Array.from({ length: 7 }, (_day, index) => {
+        return addToDate(firstDay, weekIndex * 7 + index, "day");
+      });
+    }
+  );
 
-  const years = Array.from({ length: 2100 - 1900 + 1 }, (_, index) => 1900 + index);
+  const years = Array.from(
+    { length: 2100 - 1900 + 1 },
+    (_, index) => 1900 + index
+  );
 
-  const months = Array.from({ length: 12 }, (_, index) => index + 1).map((month) => {
-    return new Date(`${Number(period.substring(0, 4))}-${month}`);
-  });
+  const months = Array.from({ length: 12 }, (_, index) => index + 1).map(
+    (month) => {
+      return new Date(`${Number(period.substring(0, 4))}-${month}`);
+    }
+  );
 
   const navigateMonth = (change: -1 | 1) => {
-    const newDate = addToDate(new Date(period), change, 'month');
+    const newDate = addToDate(new Date(period), change, "month");
 
     setPeriod(toLocalPeriod(newDate));
-
-  }
+  };
 
   const selectYear = (year: number) => {
     if (readOnly) return;
 
     const newDate = new Date(`${year}-${Number(period.substring(5))}`);
     setPeriod(toLocalPeriod(newDate));
-    setCurrentView(views.includes('month') ? 'month' : 'day');
-  }
+    setCurrentView(views.includes("month") ? "month" : "day");
+  };
 
   const selectMonth = (month: number) => {
     if (readOnly) return;
 
     const newDate = new Date(`${Number(period.substring(0, 4))}-${month}`);
     setPeriod(toLocalPeriod(newDate));
-    setCurrentView(views.includes('day') ? 'day' : 'year');
-  }
+    setCurrentView(views.includes("day") ? "day" : "year");
+  };
 
   const selectView = (view: ViewType) => {
     setCurrentView(view);
-  }
+  };
 
+  const toggleLookup = (
+    e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLInputElement>
+  ) => {
+    e.stopPropagation();
+
+    if (!disabled) {
+      setIsComponentVisible(!isComponentVisible);
+
+      if (!isComponentVisible) {
+        updateLayout();
+      }
+    }
+  };
   return (
-    <div className="overflow-hidden w-80 max-h-[334px] mx-auto flex flex-col">
-      <div className="flex items-center justify-center max-h-8 min-h-[2rem] pr-3 pl-6 mb-2 mt-3 text-white">
+    <>
+      <div
+        className={clsx(
+          "relative flex w-fit min-w-[10rem] items-center text-black dark:text-white"
+        )}
+        ref={ref}
+      >
         <div
-          className="flex overflow-hidden items-center justify-center cursor-pointer text-base mr-auto font-medium"
-          role="presentation"
-          aria-live="polite"
-          onClick={() => currentView === 'year' || currentView === 'month' ? selectView('day') : (views.includes('year') || views.includes('month')) ? selectView(views.includes('year') ? 'year' : 'month') : selectView('day')}
+          className={clsx(
+            "relative mx-0 inline-flex w-full min-w-0 flex-col p-0 align-top text-black dark:text-white",
+            {
+              "pointer-events-none text-black/50 dark:text-white/50": disabled,
+              "mt-2 mb-1": margin === "dense",
+              "mt-4 mb-2": margin === "normal",
+              "mt-0 mb-0": margin == "none",
+            }
+          )}
         >
-          <div className="block relative">
-            <div className={"opacity-100 transition-opacity duration-200 mr-1.5"}>
-              {new Date(period).toLocaleDateString((navigator && navigator.language), { month: 'long', year: 'numeric' })}
+          <label
+            className={clsx(
+              "pointer-events-none absolute left-0 top-0 z-10 block max-w-[calc(100%-24px)] origin-top-left translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis text-base font-normal leading-6 transition duration-200",
+              {
+                "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
+                  isComponentVisible,
+                // ||
+                // lookupOptions.filter((o) => o != null && o.selected).length >
+                //   0 ||
+                // searchTerm.length > 0 ||
+                // internalValue.length > 0,
+              }
+            )}
+            htmlFor={`input-${name}`}
+          >
+            {label ?? name} {required && " *"}
+          </label>
+          <div
+            className={clsx(
+              "relative box-border inline-flex w-full cursor-text flex-wrap items-center rounded p-2 text-base font-normal leading-6",
+              btnClassName,
+              {
+                "pr-10": !disableClearable,
+                //    &&
+                //   lookupOptions.filter((d) => d != null && d.selected).length ==
+                //     0,
+                // "pr-12":
+                //   !disableClearable &&
+                //   lookupOptions.filter((d) => d != null && d.selected).length >
+                //     0,
+              }
+            )}
+          >
+            <input
+              aria-invalid="false"
+              id={`input-${name}`}
+              type="text"
+              size={3}
+              className={
+                "peer m-0 box-content block h-6 w-0 min-w-[30px] grow appearance-none rounded border-0 bg-transparent py-2 px-1 font-[inherit] text-base focus:outline-none disabled:pointer-events-none"
+              }
+              style={{}}
+              disabled={disabled}
+              // value={internalValue}
+              readOnly={readOnly}
+              required={required}
+              // onChange={handleInputChange}
+              // onClick={toggleLookup}
+              role="combobox"
+            />
+
+            <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
+              {!disableClearable && (
+                <button
+                  type="button"
+                  // onClick={handleClearSelection}
+                  className="relative -mr-0.5 box-border inline-flex appearance-none items-center justify-center rounded-full p-1 align-middle transition-colors duration-75 hover:bg-white/10 peer-hover:visible peer-focus:visible"
+                >
+                  <svg
+                    className="h-4 w-4 shrink-0 select-none fill-current"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    focusable="false"
+                  >
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                  </svg>
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={toggleLookup}
+                className="relative -mr-0.5 inline-flex select-none appearance-none items-center justify-center rounded-full p-1 align-middle transition-colors duration-75 hover:bg-white/10"
+              >
+                <svg
+                  className={clsx(
+                    "h-4 w-4 transition-transform duration-75 will-change-transform",
+                    {
+                      "shrink-0": !isComponentVisible,
+                      "shrink-0 rotate-180": isComponentVisible,
+                    }
+                  )}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d={"M19 9l-7 7-7-7"}
+                  />
+                </svg>
+              </button>
             </div>
+            <fieldset
+              aria-hidden="true"
+              style={{
+                ...InputProps?.style,
+                inset: "-5px 0px 0px",
+              }}
+              className={clsx(
+                "pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded border border-zinc-500 px-2 text-left transition duration-75 peer-invalid:!border-red-500 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
+                {
+                  "top-0": isComponentVisible,
+                  // || lookupOptions.filter((o) => o != null && o.selected)
+                  //   .length > 0 ||
+                  // searchTerm.length > 0 ||
+                  // internalValue.length > 0,
+                }
+              )}
+            >
+              <legend
+                style={{ float: "unset", height: "11px" }}
+                className={clsx(
+                  "invisible block w-auto max-w-[.01px] overflow-hidden whitespace-nowrap !p-0 !text-xs transition-all duration-75",
+                  {
+                    "!max-w-full": isComponentVisible,
+                    // || lookupOptions.filter((o) => o != null && o.selected)
+                    //   .length > 0 ||
+                    // searchTerm.length > 0 ||
+                    // internalValue.length > 0,
+                  }
+                )}
+              >
+                <span className="visible inline-block px-1 opacity-0">
+                  {label ?? name} {required && " *"}
+                </span>
+              </legend>
+            </fieldset>
           </div>
 
-          {!disabled && (
-            <button
-              onClick={() => currentView === 'year' || currentView === 'month' ? selectView('day') : (views.includes('year') || views.includes('month')) ? selectView(views.includes('year') ? 'year' : 'month') : selectView('day')}
-              className="inline-flex items-center justify-center box-border cursor-pointer relative select-none mr-auto bg-transparent align-middle appearance-none text-lg p-1 rounded-full text-center"
-              aria-label={currentView === 'year' ? 'year view is open, switch to calendar view' : 'calendar view is open, switch to year view'}
+          {!!name && <FieldError name={name} className="rw-field-error" />}
+          {helperText && (
+            <p
+              id={`${name}-helper-text`}
+              className="mx-3 mt-0.5 mb-0 text-left text-xs font-normal leading-5 tracking-wide text-black/70 dark:text-white/70"
             >
-              <svg className={clsx("w-6 h-6 inline-block will-change-transform text-2xl flex-shrink-0 fill-current select-none transition-transform duration-300", {
-                "transform rotate-180": currentView === 'year' || currentView === 'month',
-              })} focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ArrowDropDownIcon">
-                <path d="M7 10l5 5 5-5z" />
-              </svg>
-            </button>
+              {helperText}
+            </p>
           )}
         </div>
-        <div className="flex opacity-100 transition-opacity duration-200">
-          <button
-            className="inline-flex items-center justify-center box-border cursor-pointer relative select-none appearance-none flex-[0_0_auto] text-2xl p-2 text-center -mr-3 bg-transparent rounded-full align-middle"
-            aria-label="Previous month"
-            onClick={() => navigateMonth(-1)}
-            disabled={disabled}
+
+        {/* Dropdown Menu */}
+        {createPortal(
+          <div
+            role="menu"
+            style={{
+              top: `${menuPosition.top}px`,
+              left: `${menuPosition.left}px`,
+              position: "absolute",
+            }}
+            className={clsx(
+              "z-30 w-fit min-w-[15rem] max-w-full select-none overflow-hidden rounded-lg border border-zinc-500 bg-white shadow transition-colors duration-300 ease-in-out dark:bg-zinc-800",
+              {
+                invisible: !isComponentVisible,
+                visible: isComponentVisible,
+              }
+            )}
           >
-            <svg className="w-4 h-4 fill-current inline-block select-none shrink-0 transition-colors" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ArrowLeftIcon">
-              <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
-            </svg>
-          </button>
-          <div className="w-6" />
-          <button
-            className="inline-flex items-center justify-center box-border cursor-pointer relative select-none appearance-none flex-[0_0_auto] text-2xl p-2 text-center -mr-3 bg-transparent rounded-full align-middle"
-            aria-label="Next month"
-            onClick={() => navigateMonth(1)}
-            disabled={disabled}
-          >
-            <svg className="w-4 h-4 fill-current inline-block select-none shrink-0 transition-colors" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ArrowRightIcon">
-              <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-            </svg>
-          </button>
-        </div>
-      </div>
-      <div className="block relative">
-        {currentView === 'year' && (
-          <div className="flex flex-wrap px-1 w-full box-border h-full relative max-h-[280px] overflow-y-auto" style={{ alignContent: 'stretch' }} role="radiogroup">
-            {years.map((year) => (
-              <div className="basis-1/4 flex items-center justify-center" key={year}>
-                <button
-                  role="radio"
-                  type="button"
-                  className={clsx("bg-transparent h-9 my-2 text-base leading-7 cursor-pointer font-normal rounded-[18px] w-[72px] text-black dark:text-white", {
-                    "dark:text-black/80 text-white/80 bg-pea-400 hover:bg-pea-500 hover:will-change-[background-color]": year === Number(period.substring(0, 4)),
-                  })}
-                  tabIndex={-1}
-                  aria-checked={Number(period.substring(0, 4)) === year}
-                  onClick={() => selectYear(year)}
+            <div
+              className="mx-auto flex h-fit max-h-[334px] w-80 flex-col overflow-hidden"
+              aria-labelledby="dropdownButton"
+            >
+              <div className="mb-2 mt-3 flex max-h-8 min-h-[2rem] items-center justify-center pr-3 pl-6 text-white">
+                <div
+                  className="mr-auto flex cursor-pointer items-center justify-center overflow-hidden text-base font-medium"
+                  role="presentation"
+                  aria-live="polite"
+                  onClick={() =>
+                    currentView === "year" || currentView === "month"
+                      ? selectView("day")
+                      : views.includes("year") || views.includes("month")
+                      ? selectView(views.includes("year") ? "year" : "month")
+                      : selectView("day")
+                  }
                 >
-                  {year}
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-        {currentView === 'month' && (
-          <div className="flex flex-wrap px-1 w-full box-border h-full relative max-h-[280px] overflow-y-auto" style={{ alignContent: 'stretch' }} role="radiogroup">
-            {months.map((month, index) => (
-              <div className="basis-1/3 flex items-center justify-center" key={index}>
-                <button
-                  role="radio"
-                  type="button"
-                  className={clsx("bg-transparent h-9 my-2 text-base leading-7 cursor-pointer font-normal rounded-[18px] w-[72px] text-black dark:text-white", {
-                    "dark:text-black/80 text-white/80 bg-pea-400 hover:bg-pea-500 hover:will-change-[background-color]": month.getMonth() === Number(period.substring(5)) - 1,
-                  })}
-                  tabIndex={-1}
-                  aria-checked={month.getMonth() === Number(period.substring(5)) - 1}
-                  onClick={() => selectMonth(month.getMonth() + 1)}
-                  aria-label={month.toLocaleDateString((navigator && navigator.language), { month: 'long' })}
-                >
-                  {month.toLocaleDateString((navigator && navigator.language), { month: 'short' })}
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-        {currentView === 'day' && (
-          <div className="opacity-100">
-            <div className="flex items-center justify-center" role="row">
-              {displayWeekNumber && (
-                <span
-                  role="columnheader"
-                  className="w-9 h-10 flex items-center justify-center mx-0.5 text-center text-xs font-normal text-white/50"
-                  aria-label={"Week number"}
-                >
-                  #
-                </span>
-              )}
-              {days.map((day: Date, index) => (
-                <span
-                  key={`weekday-${index}`}
-                  className="w-9 h-10 flex items-center justify-center mx-0.5 text-center text-xs font-normal text-white/70 tracking-[0.03333em] leading-[1.66]"
-                  role="columnheader"
-                  aria-label={day.toLocaleDateString((navigator && navigator.language), { weekday: 'long' })}
-                >
-                  {day.toLocaleDateString((navigator && navigator.language), { weekday: 'narrow', localeMatcher: 'best fit' })}
-                </span>
-              ))}
-            </div>
-            <div className="block relative overflow-x-hidden min-h-[240px] " role="presentation">
-              <div className={clsx("overflow-hidden absolute top-0 right-0 left-0")} role="rowgroup">
-                {daysOfMonth.map((week, index) => {
-                  return (
-                    <div className="my-0.5 mx-0 flex justify-center" role="row" aria-rowindex={index + 1}>
-                      {displayWeekNumber && (
-                        <p
-                          className="inline-flex justify-center items-center relative select-none appearance-none outline-0 font-montserrat tracking-[0.03333em] box-border text-xs align-middle leading-[1.66] w-9 h-9 text-white/50 mx-0.5"
-                          role="rowheader"
-                          aria-label={`Week ${getISOWeek(week[0])}`}
-                        >
-                          {getISOWeek(week[0])}.
-                        </p>
+                  <div className="relative block">
+                    <div
+                      className={
+                        "mr-1.5 opacity-100 transition-opacity duration-200"
+                      }
+                    >
+                      {new Date(period).toLocaleDateString(
+                        navigator && navigator.language,
+                        { month: "long", year: "numeric" }
                       )}
-                      {week.map((day, j) => {
-                        return (
-                          <button
-                            className={clsx("inline-flex justify-center items-center relative select-none appearance-none outline-0 font-montserrat hover:bg-pea-300/10 box-border align-middle text-xs leading-[1.66] tracking-[0.03333em] p-0 w-9 h-9 rounded-full bg-transparent mx-0.5 text-white transition-colors duration-200", {
-                              "text-white/70": day.getMonth() !== Number(period.substring(5)) - 1,
-                              "invisible": !showDaysOutsideCurrentMonth && day.getMonth() !== Number(period.substring(5)) - 1,
-                              "border border-white/70": toLocaleISODate(new Date()) === toLocaleISODate(day) && toLocaleISODate(day) != toLocaleISODate(selectedDate),
-                              "text-black/80 font-medium bg-pea-400 hover:bg-pea-500 hover:will-change-[background-color]": toLocaleISODate(day) === toLocaleISODate(selectedDate),
-                            })}
-                            type="button"
-                            role="gridcell"
-                            aria-disabled="false"
-                            tabIndex={-1}
-                            aria-colindex={j + 1}
-                            disabled={disabled}
-                            aria-selected={toLocaleISODate(selectedDate) === toLocaleISODate(day)}
-                            data-timestamp={day.getTime()}
-                            onClick={(e) => onSelectDate(e, day)}
-                            aria-current={toLocaleISODate(new Date()) === toLocaleISODate(day) ? "date" : undefined}
-                          >
-                            {day.getDate()}
-                          </button>
-                        )
-                      })}
                     </div>
-                  )
-                })}
+                  </div>
+
+                  {!disabled && (
+                    <button
+                      onClick={() =>
+                        currentView === "year" || currentView === "month"
+                          ? selectView("day")
+                          : views.includes("year") || views.includes("month")
+                          ? selectView(
+                              views.includes("year") ? "year" : "month"
+                            )
+                          : selectView("day")
+                      }
+                      className="relative mr-auto box-border inline-flex cursor-pointer select-none appearance-none items-center justify-center rounded-full bg-transparent p-1 text-center align-middle text-lg"
+                      aria-label={
+                        currentView === "year"
+                          ? "year view is open, switch to calendar view"
+                          : "calendar view is open, switch to year view"
+                      }
+                    >
+                      <svg
+                        className={clsx(
+                          "inline-block h-6 w-6 flex-shrink-0 select-none fill-current text-2xl transition-transform duration-300 will-change-transform",
+                          {
+                            "rotate-180 transform":
+                              currentView === "year" || currentView === "month",
+                          }
+                        )}
+                        focusable="false"
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        data-testid="ArrowDropDownIcon"
+                      >
+                        <path d="M7 10l5 5 5-5z" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+                <div className="flex opacity-100 transition-opacity duration-200">
+                  <button
+                    className="relative -mr-3 box-border inline-flex flex-[0_0_auto] cursor-pointer select-none appearance-none items-center justify-center rounded-full bg-transparent p-2 text-center align-middle text-2xl"
+                    aria-label="Previous month"
+                    onClick={() => navigateMonth(-1)}
+                    disabled={disabled}
+                  >
+                    <svg
+                      className="inline-block h-4 w-4 shrink-0 select-none fill-current transition-colors"
+                      focusable="false"
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      data-testid="ArrowLeftIcon"
+                    >
+                      <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
+                    </svg>
+                  </button>
+                  <div className="w-6" />
+                  <button
+                    className="relative -mr-3 box-border inline-flex flex-[0_0_auto] cursor-pointer select-none appearance-none items-center justify-center rounded-full bg-transparent p-2 text-center align-middle text-2xl"
+                    aria-label="Next month"
+                    onClick={() => navigateMonth(1)}
+                    disabled={disabled}
+                  >
+                    <svg
+                      className="inline-block h-4 w-4 shrink-0 select-none fill-current transition-colors"
+                      focusable="false"
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      data-testid="ArrowRightIcon"
+                    >
+                      <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div className="relative block">
+                {currentView === "year" && (
+                  <div
+                    className="relative box-border flex h-full max-h-[280px] w-full flex-wrap overflow-y-auto px-1"
+                    style={{ alignContent: "stretch" }}
+                    role="radiogroup"
+                  >
+                    {years.map((year) => (
+                      <div
+                        className="flex basis-1/4 items-center justify-center"
+                        key={year}
+                      >
+                        <button
+                          role="radio"
+                          type="button"
+                          className={clsx(
+                            "my-2 h-9 w-[72px] cursor-pointer rounded-[18px] bg-transparent text-base font-normal leading-7 text-black dark:text-white",
+                            {
+                              "bg-pea-400 hover:bg-pea-500 text-white/80 hover:will-change-[background-color] dark:text-black/80":
+                                year === Number(period.substring(0, 4)),
+                            }
+                          )}
+                          tabIndex={-1}
+                          aria-checked={Number(period.substring(0, 4)) === year}
+                          onClick={() => selectYear(year)}
+                        >
+                          {year}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {currentView === "month" && (
+                  <div
+                    className="relative box-border flex h-full max-h-[280px] w-full flex-wrap overflow-y-auto px-1"
+                    style={{ alignContent: "stretch" }}
+                    role="radiogroup"
+                  >
+                    {months.map((month, index) => (
+                      <div
+                        className="flex basis-1/3 items-center justify-center"
+                        key={index}
+                      >
+                        <button
+                          role="radio"
+                          type="button"
+                          className={clsx(
+                            "my-2 h-9 w-[72px] cursor-pointer rounded-[18px] bg-transparent text-base font-normal leading-7 text-black dark:text-white",
+                            {
+                              "bg-pea-400 hover:bg-pea-500 text-white/80 hover:will-change-[background-color] dark:text-black/80":
+                                month.getMonth() ===
+                                Number(period.substring(5)) - 1,
+                            }
+                          )}
+                          tabIndex={-1}
+                          aria-checked={
+                            month.getMonth() === Number(period.substring(5)) - 1
+                          }
+                          onClick={() => selectMonth(month.getMonth() + 1)}
+                          aria-label={month.toLocaleDateString(
+                            navigator && navigator.language,
+                            { month: "long" }
+                          )}
+                        >
+                          {month.toLocaleDateString(
+                            navigator && navigator.language,
+                            {
+                              month: "short",
+                            }
+                          )}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {currentView === "day" && (
+                  <div className="opacity-100">
+                    <div
+                      className="flex items-center justify-center"
+                      role="row"
+                    >
+                      {displayWeekNumber && (
+                        <span
+                          role="columnheader"
+                          className="mx-0.5 flex h-10 w-9 items-center justify-center text-center text-xs font-normal text-white/50"
+                          aria-label={"Week number"}
+                        >
+                          #
+                        </span>
+                      )}
+                      {days.map((day: Date, index) => (
+                        <span
+                          key={`weekday-${index}`}
+                          className="mx-0.5 flex h-10 w-9 items-center justify-center text-center text-xs font-normal leading-[1.66] tracking-[0.03333em] text-white/70"
+                          role="columnheader"
+                          aria-label={day.toLocaleDateString(
+                            navigator && navigator.language,
+                            { weekday: "long" }
+                          )}
+                        >
+                          {day.toLocaleDateString(
+                            navigator && navigator.language,
+                            {
+                              weekday: "narrow",
+                              localeMatcher: "best fit",
+                            }
+                          )}
+                        </span>
+                      ))}
+                    </div>
+                    <div
+                      className="relative block min-h-[240px] overflow-x-hidden "
+                      role="presentation"
+                    >
+                      <div
+                        className={clsx(
+                          "absolute top-0 right-0 left-0 overflow-hidden"
+                        )}
+                        role="rowgroup"
+                      >
+                        {daysOfMonth.map((week, index) => {
+                          return (
+                            <div
+                              className="my-0.5 mx-0 flex justify-center"
+                              role="row"
+                              aria-rowindex={index + 1}
+                            >
+                              {displayWeekNumber && (
+                                <p
+                                  className="font-montserrat relative mx-0.5 box-border inline-flex h-9 w-9 select-none appearance-none items-center justify-center align-middle text-xs leading-[1.66] tracking-[0.03333em] text-white/50 outline-0"
+                                  role="rowheader"
+                                  aria-label={`Week ${getISOWeek(week[0])}`}
+                                >
+                                  {getISOWeek(week[0])}.
+                                </p>
+                              )}
+                              {week.map((day, j) => {
+                                return (
+                                  <button
+                                    className={clsx(
+                                      "font-montserrat hover:bg-pea-300/10 relative mx-0.5 box-border inline-flex h-9 w-9 select-none appearance-none items-center justify-center rounded-full bg-transparent p-0 align-middle text-xs leading-[1.66] tracking-[0.03333em] text-white outline-0 transition-colors duration-200",
+                                      {
+                                        "text-white/70":
+                                          day.getMonth() !==
+                                          Number(period.substring(5)) - 1,
+                                        invisible:
+                                          !showDaysOutsideCurrentMonth &&
+                                          day.getMonth() !==
+                                            Number(period.substring(5)) - 1,
+                                        "border border-white/70":
+                                          toLocaleISODate(new Date()) ===
+                                            toLocaleISODate(day) &&
+                                          toLocaleISODate(day) !=
+                                            toLocaleISODate(selectedDate),
+                                        "bg-pea-400 hover:bg-pea-500 font-medium text-black/80 hover:will-change-[background-color]":
+                                          toLocaleISODate(day) ===
+                                          toLocaleISODate(selectedDate),
+                                      }
+                                    )}
+                                    type="button"
+                                    role="gridcell"
+                                    aria-disabled="false"
+                                    tabIndex={-1}
+                                    aria-colindex={j + 1}
+                                    disabled={disabled}
+                                    aria-selected={
+                                      toLocaleISODate(selectedDate) ===
+                                      toLocaleISODate(day)
+                                    }
+                                    data-timestamp={day.getTime()}
+                                    onClick={(e) => onSelectDate(e, day)}
+                                    aria-current={
+                                      toLocaleISODate(new Date()) ===
+                                      toLocaleISODate(day)
+                                        ? "date"
+                                        : undefined
+                                    }
+                                  >
+                                    {day.getDate()}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
       </div>
-    </div>
+    </>
   );
 };
 
-export default DatePicker
-
-
-
+export default DatePicker;
 
 // OLD CODE
 // const DatePicker = () => {
