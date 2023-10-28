@@ -1,10 +1,10 @@
+import { DateField, Form } from "@redwoodjs/forms";
 import { Link, routes, navigate } from "@redwoodjs/router";
 import { useMutation } from "@redwoodjs/web";
 import { toast } from "@redwoodjs/web/toast";
 import clsx from "clsx";
 import { useAuth } from "src/auth";
 import Avatar from "src/components/Util/Avatar/Avatar";
-import Calendar from "src/components/Util/Calendar/Calendar";
 import DatePicker from "src/components/Util/DatePicker/DatePicker";
 import Tabs, { Tab } from "src/components/Util/Tabs/Tabs";
 
@@ -107,7 +107,7 @@ const Profile = ({ profile }: Props) => {
                         new Date(profile.created_at).getFullYear() +
                         (new Date().getMonth() -
                           new Date(profile.created_at).getMonth()) /
-                        12
+                          12
                       ).toPrecision(1)}
                     </span>
                     <span className="text-sm text-gray-600 dark:text-stone-300">
@@ -127,6 +127,7 @@ const Profile = ({ profile }: Props) => {
             </div>
 
             <DatePicker displayWeekNumber />
+
             <div className="my-6 flex w-full flex-col flex-wrap text-center text-gray-800 dark:text-stone-100">
               <div>
                 <p className="text-xl font-medium tracking-wide">
@@ -153,7 +154,7 @@ const Profile = ({ profile }: Props) => {
             </div>
             <Tabs>
               <Tab label="Permissions">
-                <div className="my-3 w-full overflow-x-auto rounded-lg border border-zinc-500 text-left dark:bg-zinc-700 bg-zinc-400 shadow-md">
+                <div className="my-3 w-full overflow-x-auto rounded-lg border border-zinc-500 bg-zinc-400 text-left shadow-md dark:bg-zinc-700">
                   <div className="min-w-max overflow-hidden">
                     <div className="grid grid-cols-4 gap-x-16 rounded-t-lg bg-gray-100 p-4 text-sm font-medium text-gray-900 dark:bg-zinc-800 dark:text-white">
                       <div className="flex items-center">Permissions</div>
@@ -271,11 +272,11 @@ const Profile = ({ profile }: Props) => {
                                 "rounded-bl-lg":
                                   arrayToRows(profile.TimelineSeasonPerson, 2)
                                     .length ===
-                                  i + 1 && sIdx === 0,
+                                    i + 1 && sIdx === 0,
                                 "rounded-br-lg":
                                   arrayToRows(profile.TimelineSeasonPerson, 2)
                                     .length ===
-                                  i + 1 &&
+                                    i + 1 &&
                                   sIdx === row.length - 1 &&
                                   row.length % 2 === 0,
                                 "rounded-tr-lg":
@@ -315,10 +316,10 @@ const Profile = ({ profile }: Props) => {
                             {
                               "rounded-bl-lg":
                                 arrayToRows(profile.Basespot, 2).length ===
-                                i + 1 && bsIdx === 0,
+                                  i + 1 && bsIdx === 0,
                               "rounded-br-lg":
                                 arrayToRows(profile.Basespot, 2).length ===
-                                i + 1 &&
+                                  i + 1 &&
                                 bsIdx === row.length - 1 &&
                                 row.length % 2 === 0,
                               "rounded-tr-lg":

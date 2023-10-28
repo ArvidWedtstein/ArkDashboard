@@ -1,6 +1,7 @@
 import { FieldError } from "@redwoodjs/forms";
 import clsx from "clsx";
-import { CSSProperties, MouseEvent, useEffect, useState } from "react";
+import { format, isValid, parse } from "date-fns";
+import { CSSProperties, MouseEvent, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import useComponentVisible from "src/components/useComponentVisible";
 import {
@@ -28,7 +29,6 @@ type InputFieldProps = {
   disableClearable?: boolean;
   btnClassName?: string;
   InputProps?: {
-    startAdornment?: React.ReactNode;
     style?: CSSProperties;
   };
 };
@@ -67,9 +67,11 @@ const DatePicker = ({
     useComponentVisible(false);
 
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+  const [activeSegment, setActiveSegment] = useState(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(
     defaultValue ? new Date(defaultValue) : null
   );
+  const [internalValue, setInternalValue] = useState<string>("");
   const [period, setPeriod] = useState<string>(() =>
     toLocalPeriod(defaultValue)
   );
@@ -82,7 +84,7 @@ const DatePicker = ({
 
     const spaceingToButton = 4;
     const btn = (ref.current.firstChild as HTMLDivElement)
-      .children[1] as HTMLDivElement;
+      .children[0] as HTMLDivElement;
     const menu = ref.current.lastChild as HTMLDivElement;
 
     const btnBounds = btn.getBoundingClientRect();
@@ -205,7 +207,7 @@ const DatePicker = ({
     setCurrentView(view);
   };
 
-  const toggleLookup = (
+  const toggleOpen = (
     e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLInputElement>
   ) => {
     e.stopPropagation();
@@ -218,6 +220,102 @@ const DatePicker = ({
       }
     }
   };
+
+  const applyDateMask = (value) => {
+    let maskedValue = value.replace(/\D/g, ""); // Remove non-numeric characters
+
+    if (maskedValue.length >= 2) {
+      maskedValue = maskedValue.slice(0, 2) + "/" + maskedValue.slice(2);
+    }
+    if (maskedValue.length >= 5) {
+      maskedValue = maskedValue.slice(0, 5) + "/" + maskedValue.slice(5);
+    }
+    if (maskedValue.length > 10) {
+      maskedValue = maskedValue.slice(0, 10);
+    }
+
+    return maskedValue;
+  };
+
+  const updateSegment = (inputText, segment, newValue) => {
+    const formattedValue = applyDateMask(inputText);
+    const segmentIndex = {
+      month: [0, 2],
+      day: [3, 5],
+      year: [6, 10],
+    }[segment];
+
+    if (segmentIndex) {
+      const chars = formattedValue.split("");
+      chars.splice(
+        segmentIndex[0],
+        segmentIndex[1] - segmentIndex[0] + 1,
+        newValue
+      );
+      return chars.join("");
+    }
+
+    return formattedValue;
+  };
+
+  const handleInputChange = (e) => {
+    const inputText: string = e.target.value;
+
+    const parsedDate = parse(inputText, "MM/dd/yyyy", new Date());
+    let updatedValue = applyDateMask(inputText);
+
+    console.log(
+      "updatedValue",
+      updateSegment(updatedValue, activeSegment, e.target.key)
+    );
+    setInternalValue(updatedValue);
+    console.log(updatedValue);
+    if (
+      parsedDate &&
+      parsedDate instanceof Date &&
+      !isNaN(parsedDate.getTime())
+    ) {
+      console.log("parsedDate", parsedDate);
+      setSelectedDate(parsedDate);
+    }
+  };
+
+  const formatAndSetDate = (value) => {
+    setInternalValue(value);
+
+    if (value.length === 10) {
+      const parsedDate = parse(value, "MM/dd/yyyy", new Date());
+
+      if (isValid(parsedDate)) {
+        setSelectedDate(parsedDate);
+      }
+    }
+  };
+
+  const handleBlur = (e) => {
+    if (selectedDate) {
+      setInternalValue(format(selectedDate, "MM/dd/yyyy"));
+    }
+  };
+
+  const handleClick = (e) => {
+    const position = e.target.selectionStart;
+    console.log("position", position);
+    if (position < 2) {
+      setActiveSegment("month");
+      e.target.setSelectionRange(0, 2);
+    } else if (position >= 3 && position <= 5) {
+      setActiveSegment("day");
+      e.target.setSelectionRange(3, 5);
+    } else if (position >= 6 && position < 10) {
+      setActiveSegment("year");
+      e.target.setSelectionRange(6, 10);
+    } else {
+      setActiveSegment("month");
+      e.target.setSelectionRange(0, 2);
+    }
+  };
+
   return (
     <>
       <div
@@ -228,7 +326,7 @@ const DatePicker = ({
       >
         <div
           className={clsx(
-            "relative mx-0 inline-flex w-full min-w-0 flex-col p-0 align-top text-black dark:text-white",
+            "group relative mx-0 inline-flex min-w-0 flex-col p-0 text-black dark:text-white",
             {
               "pointer-events-none text-black/50 dark:text-white/50": disabled,
               "mt-2 mb-1": margin === "dense",
@@ -237,66 +335,71 @@ const DatePicker = ({
             }
           )}
         >
-          <label
-            className={clsx(
-              "pointer-events-none absolute left-0 top-0 z-10 block max-w-[calc(100%-24px)] origin-top-left translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis text-base font-normal leading-6 transition duration-200",
-              {
-                "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
-                  isComponentVisible,
-                // ||
-                // lookupOptions.filter((o) => o != null && o.selected).length >
-                //   0 ||
-                // searchTerm.length > 0 ||
-                // internalValue.length > 0,
-              }
-            )}
-            htmlFor={`input-${name}`}
-          >
-            {label ?? name} {required && " *"}
-          </label>
+          {(label || name) && (
+            <label
+              className={clsx(
+                "pointer-events-none absolute left-0 top-0 z-10 block max-w-[calc(100%-24px)] origin-top-left translate-x-3.5 translate-y-4 scale-100 transform overflow-hidden text-ellipsis text-base font-normal leading-6 transition duration-200",
+                {
+                  "!pointer-events-auto !max-w-[calc(133%-32px)] !-translate-y-2 !translate-x-3.5 !scale-75 !select-none":
+                    isComponentVisible,
+                  // ||
+                  // lookupOptions.filter((o) => o != null && o.selected).length >
+                  //   0 ||
+                  // searchTerm.length > 0 ||
+                  // internalValue.length > 0,
+                }
+              )}
+              htmlFor={`input-${name}`}
+            >
+              {label ?? name} {required && " *"}
+            </label>
+          )}
           <div
             className={clsx(
-              "relative box-border inline-flex w-full cursor-text flex-wrap items-center rounded p-2 text-base font-normal leading-6",
-              btnClassName,
-              {
-                "pr-10": !disableClearable,
-                //    &&
-                //   lookupOptions.filter((d) => d != null && d.selected).length ==
-                //     0,
-                // "pr-12":
-                //   !disableClearable &&
-                //   lookupOptions.filter((d) => d != null && d.selected).length >
-                //     0,
-              }
+              "relative box-border inline-flex cursor-text items-center rounded pr-3.5 text-base font-normal leading-6 text-black dark:text-white",
+              btnClassName
             )}
           >
+            {/* TODO: fix date section editing */}
             <input
               aria-invalid="false"
               id={`input-${name}`}
               type="text"
-              size={3}
+              inputMode="numeric"
+              value={internalValue}
+              onBlur={handleBlur}
+              onChange={handleInputChange}
+              onClick={handleClick}
+              placeholder={`MM/DD/YYYY`}
               className={
-                "peer m-0 box-content block h-6 w-0 min-w-[30px] grow appearance-none rounded border-0 bg-transparent py-2 px-1 font-[inherit] text-base focus:outline-none disabled:pointer-events-none"
+                "peer m-0 box-content block h-6 w-full min-w-0 grow rounded border-0 bg-transparent py-4 pr-0 pl-3.5 font-[inherit] text-base text-current focus:outline-none disabled:pointer-events-none"
               }
-              style={{}}
               disabled={disabled}
-              // value={internalValue}
               readOnly={readOnly}
               required={required}
-              // onChange={handleInputChange}
-              // onClick={toggleLookup}
-              role="combobox"
+              autoComplete="off"
             />
 
-            <div className="absolute right-2 top-[calc(50%-14px)] whitespace-nowrap text-black/70 dark:text-white/70">
-              {!disableClearable && (
+            {!disableClearable && internalValue != "" && (
+              <div
+                aria-details="InputAdornment-End"
+                className="ml-2 -mr-2 flex h-[0.01em] max-h-8 items-center whitespace-nowrap text-black dark:text-white"
+              >
                 <button
                   type="button"
-                  // onClick={handleClearSelection}
-                  className="relative -mr-0.5 box-border inline-flex appearance-none items-center justify-center rounded-full p-1 align-middle transition-colors duration-75 hover:bg-white/10 peer-hover:visible peer-focus:visible"
+                  tabIndex={0}
+                  title="Clear value"
+                  disabled={disabled}
+                  onClick={(e) => {
+                    setSelectedDate(null);
+                    setInternalValue("");
+                  }}
+                  className={clsx(
+                    "relative box-border inline-flex flex-[0_0_auto] select-none appearance-none items-center justify-center rounded-full p-2 align-middle opacity-0 transition-colors duration-75 hover:bg-white/10 group-hover:opacity-100 peer-hover:opacity-100 peer-focus:opacity-100"
+                  )}
                 >
                   <svg
-                    className="h-4 w-4 shrink-0 select-none fill-current"
+                    className="inline-block h-5 w-5 shrink-0 select-none fill-current"
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                     focusable="false"
@@ -304,34 +407,41 @@ const DatePicker = ({
                     <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
                   </svg>
                 </button>
-              )}
+              </div>
+            )}
+            <div
+              aria-details="InputAdornment-End"
+              className="ml-2 flex h-[0.01em] max-h-8 items-center whitespace-nowrap text-black dark:text-white"
+            >
               <button
                 type="button"
-                onClick={toggleLookup}
-                className="relative -mr-0.5 inline-flex select-none appearance-none items-center justify-center rounded-full p-1 align-middle transition-colors duration-75 hover:bg-white/10"
+                tabIndex={0}
+                onClick={toggleOpen}
+                aria-label={`Choose date${
+                  selectedDate
+                    ? `, selected date is ${selectedDate.toLocaleDateString(
+                        navigator && navigator.language,
+                        {
+                          dateStyle: "long",
+                        }
+                      )}`
+                    : ""
+                }`}
+                disabled={disabled}
+                className="relative -mr-3 box-border inline-flex flex-[0_0_auto] select-none appearance-none items-center justify-center rounded-full p-2 hover:bg-white/10"
               >
+                {/* TODO: insert date icon */}
                 <svg
-                  className={clsx(
-                    "h-4 w-4 transition-transform duration-75 will-change-transform",
-                    {
-                      "shrink-0": !isComponentVisible,
-                      "shrink-0 rotate-180": isComponentVisible,
-                    }
-                  )}
-                  fill="none"
-                  stroke="currentColor"
+                  className="inline-block h-5 w-5 shrink-0 select-none fill-current"
                   viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
+                  focusable="false"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d={"M19 9l-7 7-7-7"}
-                  />
+                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
                 </svg>
               </button>
             </div>
+
             <fieldset
               aria-hidden="true"
               style={{
@@ -339,7 +449,7 @@ const DatePicker = ({
                 inset: "-5px 0px 0px",
               }}
               className={clsx(
-                "pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded border border-zinc-500 px-2 text-left transition duration-75 peer-invalid:!border-red-500 peer-hover:border-2 peer-hover:border-zinc-300 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
+                "pointer-events-none absolute m-0 min-w-0 overflow-hidden rounded border border-zinc-500 px-2 text-left transition duration-75 group-hover:border-2 group-hover:border-zinc-300 peer-invalid:!border-red-500 peer-focus:border-2 peer-focus:border-zinc-300 peer-disabled:border peer-disabled:border-zinc-500",
                 {
                   "top-0": isComponentVisible,
                   // || lookupOptions.filter((o) => o != null && o.selected)
@@ -354,7 +464,7 @@ const DatePicker = ({
                 className={clsx(
                   "invisible block w-auto max-w-[.01px] overflow-hidden whitespace-nowrap !p-0 !text-xs transition-all duration-75",
                   {
-                    "!max-w-full": isComponentVisible,
+                    "!max-w-full": isComponentVisible && label,
                     // || lookupOptions.filter((o) => o != null && o.selected)
                     //   .length > 0 ||
                     // searchTerm.length > 0 ||
@@ -362,9 +472,11 @@ const DatePicker = ({
                   }
                 )}
               >
-                <span className="visible inline-block px-1 opacity-0">
-                  {label ?? name} {required && " *"}
-                </span>
+                {(label || name) && (
+                  <span className="visible inline-block px-1 opacity-0">
+                    {label ?? name} {required && " *"}
+                  </span>
+                )}
               </legend>
             </fieldset>
           </div>
@@ -401,7 +513,7 @@ const DatePicker = ({
               className="mx-auto flex h-fit max-h-[334px] w-80 flex-col overflow-hidden"
               aria-labelledby="dropdownButton"
             >
-              <div className="mb-2 mt-3 flex max-h-8 min-h-[2rem] items-center justify-center pr-3 pl-6 text-white">
+              <div className="mb-2 mt-4 flex max-h-8 min-h-[2rem] items-center justify-center pr-3 pl-6 text-white">
                 <div
                   className="mr-auto flex cursor-pointer items-center justify-center overflow-hidden text-base font-medium"
                   role="presentation"
@@ -471,7 +583,7 @@ const DatePicker = ({
                     disabled={disabled}
                   >
                     <svg
-                      className="inline-block h-4 w-4 shrink-0 select-none fill-current transition-colors"
+                      className="inline-block h-5 w-5 shrink-0 select-none fill-current transition-colors"
                       focusable="false"
                       aria-hidden="true"
                       viewBox="0 0 24 24"
@@ -482,13 +594,13 @@ const DatePicker = ({
                   </button>
                   <div className="w-6" />
                   <button
-                    className="relative -mr-3 box-border inline-flex flex-[0_0_auto] cursor-pointer select-none appearance-none items-center justify-center rounded-full bg-transparent p-2 text-center align-middle text-2xl"
+                    className="relative -ml-3 box-border inline-flex flex-[0_0_auto] cursor-pointer select-none appearance-none items-center justify-center rounded-full bg-transparent p-2 text-center align-middle text-2xl"
                     aria-label="Next month"
                     onClick={() => navigateMonth(1)}
                     disabled={disabled}
                   >
                     <svg
-                      className="inline-block h-4 w-4 shrink-0 select-none fill-current transition-colors"
+                      className="inline-block h-5 w-5 shrink-0 select-none fill-current transition-colors"
                       focusable="false"
                       aria-hidden="true"
                       viewBox="0 0 24 24"

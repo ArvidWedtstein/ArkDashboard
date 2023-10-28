@@ -52,8 +52,6 @@ interface ILookup {
     searchTerm: string
   ) => boolean;
   InputProps?: {
-    startAdornment?: React.ReactNode;
-    endAdornment?: React.ReactNode;
     style?: CSSProperties;
   };
   placeholder?: string;
@@ -357,7 +355,7 @@ export const Lookup = ({
         </label>
         <div
           className={clsx(
-            "relative box-border inline-flex w-full cursor-text flex-wrap items-center rounded p-2 text-base font-normal leading-6",
+            "relative box-border inline-flex w-full cursor-text flex-wrap items-center rounded text-base font-normal leading-6",
             btnClassName,
             {
               "pr-10":
@@ -405,7 +403,7 @@ export const Lookup = ({
             id={`input-${name}`}
             type="text"
             className={
-              "peer m-0 box-content block h-6 w-0 min-w-[30px] grow rounded border-0 bg-transparent py-2 px-1 font-[inherit] text-base focus:outline-none disabled:pointer-events-none"
+              "peer m-0 box-content block h-6 w-0 min-w-[30px] grow rounded border-0 bg-transparent py-4 px-3 font-[inherit] text-base focus:outline-none disabled:pointer-events-none"
             }
             disabled={disabled}
             value={internalValue}

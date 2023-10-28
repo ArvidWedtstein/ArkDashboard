@@ -158,19 +158,19 @@ export const dynamicSort = <T extends {}>(
 ): Array<T> =>
   property != "" && array
     ? [...array].sort((a: T, b: T) => {
-      const aValue = a[property];
-      const bValue = b[property];
+        const aValue = a[property];
+        const bValue = b[property];
 
-      if (ascending) {
-        if (aValue < bValue) return -1;
-        if (aValue > bValue) return 1;
-        return 0;
-      } else {
-        if (aValue > bValue) return -1;
-        if (aValue < bValue) return 1;
-        return 0;
-      }
-    })
+        if (ascending) {
+          if (aValue < bValue) return -1;
+          if (aValue > bValue) return 1;
+          return 0;
+        } else {
+          if (aValue > bValue) return -1;
+          if (aValue < bValue) return 1;
+          return 0;
+        }
+      })
     : array;
 
 /**
@@ -183,8 +183,9 @@ export const formatBytes = (a, b = 2) => {
   if (!+a) return "0 Bytes";
   const c = 0 > b ? 0 : b,
     d = Math.floor(Math.log(a) / Math.log(1024));
-  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
-    }`;
+  return `${parseFloat((a / Math.pow(1024, d)).toFixed(c))} ${
+    ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]
+  }`;
 };
 
 /**
@@ -539,19 +540,23 @@ export const timeFormatL = (seconds, onlyLast = false) => {
  * @param unit
  * @returns
  */
-export const addToDate = (date: Date, value: number = 0, unit: "day" | "week" | "month" | "year" = 'day') => {
+export const addToDate = (
+  date: Date,
+  value: number = 0,
+  unit: "day" | "week" | "month" | "year" = "day"
+) => {
   const result = new Date(date);
 
-  if (unit === 'day') {
+  if (unit === "day") {
     result.setDate(result.getDate() + value);
-  } else if (unit === 'month') {
+  } else if (unit === "month") {
     result.setMonth(result.getMonth() + value);
-  } else if (unit === 'year') {
+  } else if (unit === "year") {
     result.setFullYear(result.getFullYear() + value);
   }
 
   return result;
-}
+};
 
 /**
  *  Returns an array of dates between the two dates
@@ -559,11 +564,17 @@ export const addToDate = (date: Date, value: number = 0, unit: "day" | "week" | 
  * @param lastDay
  * @returns
  */
-export const getDaysBetweenDates = (currentDay: Date, lastDay: Date): Date[] => {
-  return Array.from({ length: (+lastDay - +currentDay) / (24 * 60 * 60 * 1000) + 1 }, (_, index) => {
-    return addToDate(new Date(currentDay), index, 'day');
-  });
-}
+export const getDaysBetweenDates = (
+  currentDay: Date,
+  lastDay: Date
+): Date[] => {
+  return Array.from(
+    { length: (+lastDay - +currentDay) / (24 * 60 * 60 * 1000) + 1 },
+    (_, index) => {
+      return addToDate(new Date(currentDay), index, "day");
+    }
+  );
+};
 
 /**
  *
@@ -584,19 +595,20 @@ export const getWeekdays = (firstDayOfWeek = 1): Date[] => {
   }
 
   return weekdays;
-}
+};
 
 /**
  *
  * @param date
  * @returns
  */
-export const toLocaleISODate = (date: Date) => {
-  return `${date.getFullYear()}-${(date.getMonth() + 1 + "").padStart(2, "0")}-${(date.getDate() + "").padStart(
+export const toLocaleISODate = (date: Date | null) => {
+  if (!date) return;
+  return `${date.getFullYear()}-${(date.getMonth() + 1 + "").padStart(
     2,
-    "0",
-  )}`;
-}
+    "0"
+  )}-${(date.getDate() + "").padStart(2, "0")}`;
+};
 
 /**
  * Get Start or End of a period
@@ -606,31 +618,36 @@ export const toLocaleISODate = (date: Date) => {
  * @param startOn
  * @returns
  */
-export const adjustCalendarDate = (date: Date, type: 'start' | 'end', period: 'week' | 'month' | 'year', startOn = 0): Date => {
+export const adjustCalendarDate = (
+  date: Date,
+  type: "start" | "end",
+  period: "week" | "month" | "year",
+  startOn = 0
+): Date => {
   const result = new Date(date);
 
-  if (type === 'start') {
-    if (period === 'week') {
+  if (type === "start") {
+    if (period === "week") {
       const dayOfWeek = result.getUTCDay();
       const diff = (dayOfWeek - startOn + 7) % 7;
       result.setUTCDate(result.getUTCDate() - diff);
-    } else if (period === 'month') {
+    } else if (period === "month") {
       result.setDate(1);
     }
-  } else if (type === 'end') {
-    if (period === 'month') {
+  } else if (type === "end") {
+    if (period === "month") {
       result.setMonth(result.getMonth() + 1, 0);
-    } else if (period === 'week') {
+    } else if (period === "week") {
       const dayOfWeek = result.getUTCDay();
       const diff = (6 - dayOfWeek + 7) % 7;
       result.setUTCDate(result.getUTCDate() + diff);
-    } else if (period === 'year') {
+    } else if (period === "year") {
       result.setFullYear(result.getFullYear() + 1, 0, 0);
     }
   }
 
   return result;
-}
+};
 
 /**
  *
@@ -645,7 +662,7 @@ export const getISOWeek = (date: Date = new Date()): number => {
   const weekNumber = Math.ceil((daysSinceStart + 1 - dayOfWeek) / 7);
 
   return weekNumber;
-}
+};
 
 export function toISODate(date: Date): string;
 export function toISODate(date: null): null;
@@ -906,8 +923,6 @@ export const formatXYtoLatLon = (
   };
 };
 
-
-
 export const svgArc = (
   centerX: number,
   centerY: number,
@@ -929,14 +944,15 @@ export const svgArc = (
   const endY = centerY + radiusY * Math.sin(endAngle);
 
   // Use the A command to create the arc path
-  const arcCommand = `A ${radiusX} ${radiusY} 0 ${largeArcFlag ? 1 : 0
-    } ${sweepFlag ? 1 : 0} ${endX} ${endY}`;
+  const arcCommand = `A ${radiusX} ${radiusY} 0 ${largeArcFlag ? 1 : 0} ${
+    sweepFlag ? 1 : 0
+  } ${endX} ${endY}`;
 
   // Construct the full path command
   const pathData = `M ${startX} ${startY} ${arcCommand}`;
 
   return pathData;
-}
+};
 
 // export const catmullRomInterpolation = (t: number, p0: number, p1: number, p2: number, p3: number): number => {
 //   const t2 = t * t;
@@ -948,7 +964,13 @@ export const svgArc = (
 //     (-p0 + 3 * p1 - 3 * p2 + p3) * t3
 //   );
 // }
-export const catmullRomInterpolation = (t: number, p0: number, p1: number, p2: number, p3: number): number => {
+export const catmullRomInterpolation = (
+  t: number,
+  p0: number,
+  p1: number,
+  p2: number,
+  p3: number
+): number => {
   const t2 = t * t;
   const t3 = t2 * t;
   const a = -0.5 * p0 + 1.5 * p1 - 1.5 * p2 + 0.5 * p3;
@@ -956,14 +978,13 @@ export const catmullRomInterpolation = (t: number, p0: number, p1: number, p2: n
   const c = -0.5 * p0 + 0.5 * p2;
   const d = p1;
   return a * t3 + b * t2 + c * t + d;
-}
+};
 
 export const drawCatmullRomChart = (
   points: [number, number][],
   numPoints: number = 100
 ): { x: number; y: number }[] => {
-
-  const result: { x: number, y: number }[] = [];
+  const result: { x: number; y: number }[] = [];
   const numSegments = points.length - 1;
 
   for (let i = 0; i < numSegments; i++) {
@@ -975,12 +996,15 @@ export const drawCatmullRomChart = (
     for (let j = 0; j < numPoints; j++) {
       const t = j / numPoints;
       const interpolatedValue = catmullRomInterpolation(t, p0, p1, p2, p3);
-      result.push({ x: points[i][0] + t * (points[i + 1][0] - points[i][0]), y: interpolatedValue });
+      result.push({
+        x: points[i][0] + t * (points[i + 1][0] - points[i][0]),
+        y: interpolatedValue,
+      });
     }
   }
 
   return result;
-}
+};
 
 interface SvgPath {
   pathData: string;
@@ -1190,9 +1214,9 @@ export const generatePDF = (crafts) => {
       tableX - cellPadding * 2,
       30 + crafts.length * 20,
       tableX +
-      (Object.keys(crafts[0]).length - 1) *
-      (tableSize.width / Object.keys(crafts[0]).length) +
-      columnWidths[Object.keys(crafts[0]).length - 1],
+        (Object.keys(crafts[0]).length - 1) *
+          (tableSize.width / Object.keys(crafts[0]).length) +
+        columnWidths[Object.keys(crafts[0]).length - 1],
       40 + (crafts.length - 1) * 20 + cellPadding,
       true,
       `0.9 0.9 0.9`
@@ -1226,7 +1250,7 @@ export const generatePDF = (crafts) => {
                     x:
                       tableX +
                       (Object.keys(crafts[0]).length - 1) *
-                      (tableSize.width / Object.keys(crafts[0]).length) +
+                        (tableSize.width / Object.keys(crafts[0]).length) +
                       columnWidths[Object.keys(crafts[0]).length - 1],
                     y: cellY + cellPadding,
                   },
@@ -1293,8 +1317,6 @@ export const removeDuplicates = <T extends {}>(array: T[]): T[] => {
   return [...new Set(array)];
 };
 
-
-
 /**
  *
  * @param {number} seriesCount - The number of series to generate colors for.
@@ -1312,9 +1334,7 @@ export const generateChartColors = (seriesCount: number): string[] => {
       b = Math.floor(Math.random() * 256);
     } while (
       baseColors.some((color) => {
-        const [cr, cg, cb] = color
-          .match(/\d+/g)
-          .map((c) => parseInt(c, 10));
+        const [cr, cg, cb] = color.match(/\d+/g).map((c) => parseInt(c, 10));
         return (
           Math.abs(r - cr) < colorThreshold &&
           Math.abs(g - cg) < colorThreshold &&
@@ -1342,7 +1362,7 @@ export const generateChartColors = (seriesCount: number): string[] => {
       return color;
     }
   });
-}
+};
 
 /**
  * Returns color from red to green based on percentage
@@ -1658,19 +1678,19 @@ export class SimplexNoise3D {
 
     const gi0 =
       SimplexNoise3D.perm[
-      ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
+        ii + SimplexNoise3D.perm[jj + SimplexNoise3D.perm[kk]]
       ] % 12;
     const gi1 =
       SimplexNoise3D.perm[
-      ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
+        ii + i1 + SimplexNoise3D.perm[jj + j1 + SimplexNoise3D.perm[kk + k1]]
       ] % 12;
     const gi2 =
       SimplexNoise3D.perm[
-      ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
+        ii + i2 + SimplexNoise3D.perm[jj + j2 + SimplexNoise3D.perm[kk + k2]]
       ] % 12;
     const gi3 =
       SimplexNoise3D.perm[
-      ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
+        ii + 1 + SimplexNoise3D.perm[jj + 1 + SimplexNoise3D.perm[kk + 1]]
       ] % 1;
 
     let n0, n1, n2, n3;
